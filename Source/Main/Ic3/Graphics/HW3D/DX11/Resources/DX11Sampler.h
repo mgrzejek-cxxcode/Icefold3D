@@ -1,0 +1,31 @@
+
+#pragma once
+
+#ifndef __IC3_GRAPHICS_HW3D_DX11_SAMPLER_H__
+#define __IC3_GRAPHICS_HW3D_DX11_SAMPLER_H__
+
+#include "../DX11Prerequisites.h"
+#include <Ic3/Graphics/GCI/State/Sampler.h>
+
+namespace Ic3::Graphics::GCI
+{
+
+	ic3DeclareClassHandle( DX11Sampler );
+
+	class DX11Sampler : public Sampler
+	{
+	public:
+		ComPtr<ID3D11SamplerState> const mD3D11SamplerState;
+
+		DX11Sampler( DX11GPUDevice & pGPUDevice, ComPtr<ID3D11SamplerState> pD3D11SamplerState );
+		virtual ~DX11Sampler();
+
+		static DX11SamplerHandle create( DX11GPUDevice & pDX11GPUDevice, const SamplerCreateInfo & pCreateInfo );
+
+	private:
+		static bool translateSamplerConfig( const SamplerConfig & pSamplerConfig, D3D11_SAMPLER_DESC & pOutD3D11SamplerConfig );
+	};
+
+} // namespace Ic3::Graphics::GCI
+
+#endif // __IC3_GRAPHICS_HW3D_DX11_SAMPLER_H__

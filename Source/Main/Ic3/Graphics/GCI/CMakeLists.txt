@@ -1,0 +1,146 @@
+
+set( IC3_GRAPHICS_GCI_SRC_FILES
+        "Prerequisites/CommonTypes.h"
+        "Prerequisites/CoreInterfaceDefs.h"
+        "Prerequisites/CoreInterfaceDefs.cpp"
+        "Prerequisites/GPUDataFormats.h"
+        "Prerequisites/GPUDataFormats.cpp"
+        "Prerequisites/VertexAttribFormatUtils.h"
+
+        "Prerequisites.h"
+        "Prerequisites.cpp"
+
+        "CommonCommandDefs.h"
+        "CommandContext.h"
+        "CommandContext.cpp"
+        "CommandList.h"
+        "CommandList.cpp"
+        "CommandSystem.h"
+        "CommandSystem.cpp"
+        "DisplayCommon.h"
+        "DisplayManager.h"
+        "DisplayManager.cpp"
+        "GPUDevice.h"
+        "GPUDevice.cpp"
+        "GPUDeviceNull.h"
+        "GPUDriver.h"
+        "GPUDriver.cpp"
+        "GPUDriverAPI.h"
+        "GPUDriverNull.h"
+        "GPUDriverPlugin.h"
+        "GPUUtils.h"
+        "GPUUtils.cpp"
+        "GPUCapabilities.h"
+        "PresentationLayer.h"
+        "PresentationLayer.cpp"
+        # "systemDisplayManager.h"
+        # "systemDisplayManager.cpp"
+
+        "Memory/CommonGPUMemoryDefs.h"
+        "Memory/CommonGPUMemoryDefs.cpp"
+        "Memory/GPUMemoryAllocator.h"
+        "Memory/GPUMemoryAllocator.cpp"
+        "Memory/GPUMemoryHeap.h"
+        "Memory/GPUMemoryHeap.cpp"
+        "Memory/GPUMemoryPool.h"
+        "Memory/GPUMemoryPool.cpp"
+        "Memory/GPUMemoryRef.h"
+        "Memory/GPUMemoryRef.cpp"
+
+        "Resources/CommonGPUResourceDefs.h"
+        "Resources/GPUBuffer.h"
+        "Resources/GPUBuffer.cpp"
+        "Resources/GPUBufferReference.h"
+        "Resources/GPUBufferReference.cpp"
+        "Resources/GPUBufferCommon.h"
+        "Resources/GPUBufferCommon.cpp"
+        "Resources/GPUResource.h"
+        "Resources/GPUResource.cpp"
+        "Resources/RenderTargetTexture.h"
+        "Resources/RenderTargetTexture.cpp"
+        "Resources/Shader.h"
+        "Resources/Shader.cpp"
+        "Resources/ShaderCommon.h"
+        "Resources/Texture.h"
+        "Resources/Texture.cpp"
+        "Resources/TextureCommon.h"
+        "Resources/TextureCommon.cpp"
+        "Resources/TextureDimensions.h"
+        "Resources/TextureDimensions.cpp"
+        "Resources/TextureReference.h"
+        "Resources/TextureReference.cpp"
+
+        "State/CommonGPUStateDefs.h"
+        "State/CommonGPUStateDefs.cpp"
+        "State/CommonGraphicsConfig.h"
+        "State/CommonGraphicsConfig.cpp"
+        "State/CommonGraphicsConfigImmutableStates.h"
+        "State/CommonGraphicsConfigImmutableStates.cpp"
+
+        "State/GraphicsPipelineImmutableState.h"
+        "State/GraphicsPipelineImmutableState.cpp"
+        "State/GraphicsShaderLinkageImmutableState.h"
+        "State/GraphicsShaderLinkageImmutableState.cpp"
+
+        "State/InputAssemblerCommon.h"
+        "State/InputAssemblerCommon.cpp"
+        "State/InputAssemblerDynamicStates.h"
+        "State/InputAssemblerDynamicStates.cpp"
+        "State/InputAssemblerImmutableStates.h"
+        "State/InputAssemblerImmutableStates.cpp"
+
+        "State/GraphicsPipelineStateController.h"
+        "State/GraphicsPipelineStateController.cpp"
+        "State/GraphicsShaderState.h"
+        "State/GraphicsShaderState.cpp"
+        "State/PipelineImmutableStateCache.h"
+        "State/PipelineImmutableStateCache.cpp"
+        "State/PipelineStateObject.h"
+        "State/PipelineStateObject.cpp"
+        "State/SeparablePipelineState.h"
+        "State/SeparablePipelineState.cpp"
+        "State/ShaderInputSignature.h"
+        "State/ShaderInputSignature.cpp"
+
+        "State/RenderPassCommon.h"
+        "State/RenderPassCommon.cpp"
+        "State/RenderTargetCommon.h"
+        "State/RenderTargetCommon.cpp"
+        "State/RenderTargetDynamicStates.h"
+        "State/RenderTargetDynamicStates.cpp"
+        "State/RenderTargetImmutableStates.h"
+        "State/RenderTargetImmutableStates.cpp"
+
+        "State/Sampler.h"
+        "State/Sampler.cpp"
+        "State/SamplerCommon.h"
+        "State/SamplerCommon.cpp"
+        "resources/ShaderInputTexture.cpp"
+        "resources/ShaderInputTexture.h"
+        )
+
+if( "${IC3_COMPONENTS_BUILD_MODE}" STREQUAL "STATIC" )
+    add_library( Ic3.Graphics.GCI STATIC ${IC3_GRAPHICS_GCI_SRC_FILES} )
+    target_compile_definitions( Ic3.Graphics.GCI PRIVATE
+            "IC3_BUILD_STATIC=1" )
+else()
+    add_library( Ic3.Graphics.GCI SHARED ${IC3_GRAPHICS_GCI_SRC_FILES} )
+endif()
+
+set_target_properties( Ic3.Graphics.GCI PROPERTIES
+        OUTPUT_NAME "Ic3.Graphics.GCI"
+        )
+
+target_compile_definitions( Ic3.Graphics.GCI PRIVATE
+        "IC3_GRAPHICS_GCI_BUILD=1"
+        )
+
+target_include_directories( Ic3.Graphics.GCI PUBLIC
+        "${IC3_INCLUDE_DIR}"
+        )
+
+target_link_libraries( Ic3.Graphics.GCI PUBLIC
+        Ic3.CoreLib
+        Ic3.Math
+        Ic3.Cppx
+        )

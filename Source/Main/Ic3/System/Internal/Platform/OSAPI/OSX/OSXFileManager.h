@@ -1,0 +1,8 @@
+
+#ifndef __IC3_SYSTEM_PLATFORM_OSAPI_OSX_FILE_MANAGER_H__
+#define __IC3_SYSTEM_PLATFORM_OSAPI_OSX_FILE_MANAGER_H__
+
+#include "OSXCommon.h"
+#include "../../Shared/POSIX/POSIXFileManager.h"
+
+#endif // __IC3_SYSTEM_PLATFORM_OSAPI_OSX_FILE_MANAGER_H__
