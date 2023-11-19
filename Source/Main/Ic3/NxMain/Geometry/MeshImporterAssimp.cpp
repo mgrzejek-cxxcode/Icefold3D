@@ -69,11 +69,11 @@ namespace Ic3
 		void assimpReadMeshVertexAttributeData(
 				const TInput * pInputData,
 				const size_t pElementsNum,
-				const DataBufferRegionSubElementRefReadWrite & pWriteRegion,
+				const InterleavedBufferElementRefReadWrite & pWriteRegion,
 				const VertexAttributeFormat & pAttributeFormat,
 				const DataTypeConversionFunction & pConversionFunction )
 		{
-			const auto vertexAttributeComponentsNum = GCI::CxDefs::getVertexAttribFormatComponentsNum( pAttributeFormat.componentFormat );
+			const auto vertexAttributeComponentsNum = GCI::CxDef::getVertexAttribFormatComponentsNum( pAttributeFormat.componentFormat );
 
 			auto * currentWritePtr = pWriteRegion.basePtr;
 
@@ -112,12 +112,12 @@ namespace Ic3
 				if( pMeshData.mDataFormat.isAttributeActive( iAttribute ) )
 				{
 					const auto & attributeFormat = pMeshData.mDataFormat.attribute( iAttribute );
-					const auto attributeDataBaseType = GCI::CxDefs::getVertexAttribFormatBaseDataType( attributeFormat.componentFormat );
+					const auto attributeDataBaseType = GCI::CxDef::getVertexAttribFormatBaseDataType( attributeFormat.componentFormat );
 					const auto attributeDataWriteRegion = pMeshData.getVertexAttributeDataSubRegionReadWrite( meshSubComponentData->geometryDataRef, iAttribute );
 
-					switch( attributeFormat.semantics.semID )
+					switch( attributeFormat.semantics.smtID )
 					{
-						case EVertexAttributeSemanticsID::Position:
+						case EShaderInputSemanticID::Position:
 						{
 							const auto conversionFunction = gmutil::getGeometryConversionFunction<Math::Vec3d>( attributeDataBaseType );
 
@@ -132,7 +132,7 @@ namespace Ic3
 
 							break;
 						}
-						case EVertexAttributeSemanticsID::Normal:
+						case EShaderInputSemanticID::Normal:
 						{
 							const auto conversionFunction = gmutil::getGeometryConversionFunction<Math::Vec3d>( attributeDataBaseType );
 
@@ -147,7 +147,7 @@ namespace Ic3
 
 							break;
 						}
-						case EVertexAttributeSemanticsID::TexCoord0:
+						case EShaderInputSemanticID::TexCoord0:
 						{
 							const auto conversionFunction = gmutil::getGeometryConversionFunction<Math::Vec3d>( attributeDataBaseType );
 

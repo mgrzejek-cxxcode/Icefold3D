@@ -18,7 +18,7 @@ namespace Ic3::Graphics::GCI
 	{
 		std::unique_ptr<CommandContext> commandContext;
 
-		const auto contextExecutionMode = CxDefs::getCommandObjectExecutionMode( pContextType );
+		const auto contextExecutionMode = CxDef::getCommandObjectExecutionMode( pContextType );
 		if( auto * commandList = acquireCommandList( contextExecutionMode ) )
 		{
 			if( contextExecutionMode == ECommandExecutionMode::Direct )

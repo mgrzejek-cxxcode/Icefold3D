@@ -1,7 +1,7 @@
 
 #include "GeometryDataTransfer.h"
-#include "GeometryDataFormat.h"
-#include "GeometryStorage.h"
+#include "CVertexPipelineConfig.h"
+#include "GeometryStorageGPU.h"
 
 namespace Ic3
 {

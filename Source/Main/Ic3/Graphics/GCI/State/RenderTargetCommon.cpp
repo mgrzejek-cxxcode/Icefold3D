@@ -65,7 +65,7 @@ namespace Ic3::Graphics::GCI
 						{
 							return false;
 						}
-						const auto requiredUsageFlags = CxDefs::getRTAttachmentRequiredUsageMask( pIndex );
+						const auto requiredUsageFlags = CxDef::getRTAttachmentRequiredUsageMask( pIndex );
 						if( !attachmentBinding.attachmentTexture->mResourceFlags.isSetAnyOf( requiredUsageFlags ) )
 						{
 							return false;
@@ -147,8 +147,8 @@ namespace Ic3::Graphics::GCI
 		{
 			RenderTargetLayout rtLayout{};
 			rtLayout.activeAttachmentsMask = E_RT_ATTACHMENT_FLAG_COLOR_0_BIT;
-			rtLayout.sharedImageRect = CxDefs::TEXTURE_SIZE_2D_UNDEFINED;
-			rtLayout.sharedMSAALevel = CxDefs::TEXTURE_MSAA_LEVEL_UNDEFINED;
+			rtLayout.sharedImageRect = CxDef::TEXTURE_SIZE_2D_UNDEFINED;
+			rtLayout.sharedMSAALevel = CxDef::TEXTURE_MSAA_LEVEL_UNDEFINED;
 			rtLayout.colorAttachments[0].format = ETextureFormat::BGRA8UN;
 			return rtLayout;
 		}
@@ -157,8 +157,8 @@ namespace Ic3::Graphics::GCI
 		{
 			RenderTargetLayout rtLayout{};
 			rtLayout.activeAttachmentsMask = E_RT_ATTACHMENT_FLAG_COLOR_0_BIT | E_RT_ATTACHMENT_FLAG_DEPTH_STENCIL_BIT;
-			rtLayout.sharedImageRect = CxDefs::TEXTURE_SIZE_2D_UNDEFINED;
-			rtLayout.sharedMSAALevel = CxDefs::TEXTURE_MSAA_LEVEL_UNDEFINED;
+			rtLayout.sharedImageRect = CxDef::TEXTURE_SIZE_2D_UNDEFINED;
+			rtLayout.sharedMSAALevel = CxDef::TEXTURE_MSAA_LEVEL_UNDEFINED;
 			rtLayout.colorAttachments[0].format = ETextureFormat::BGRA8UN;
 			rtLayout.depthStencilAttachment.format = ETextureFormat::D24UNS8U;
 			return rtLayout;
@@ -168,8 +168,8 @@ namespace Ic3::Graphics::GCI
 		{
 			RenderTargetLayout rtLayout{};
 			rtLayout.activeAttachmentsMask = E_RT_ATTACHMENT_FLAG_COLOR_0_BIT;
-			rtLayout.sharedImageRect = CxDefs::TEXTURE_SIZE_2D_UNDEFINED;
-			rtLayout.sharedMSAALevel = CxDefs::TEXTURE_MSAA_LEVEL_UNDEFINED;
+			rtLayout.sharedImageRect = CxDef::TEXTURE_SIZE_2D_UNDEFINED;
+			rtLayout.sharedMSAALevel = CxDef::TEXTURE_MSAA_LEVEL_UNDEFINED;
 			rtLayout.colorAttachments[0].format = ETextureFormat::RGBA8UN;
 			return rtLayout;
 		}
@@ -178,8 +178,8 @@ namespace Ic3::Graphics::GCI
 		{
 			RenderTargetLayout rtLayout{};
 			rtLayout.activeAttachmentsMask = E_RT_ATTACHMENT_FLAG_COLOR_0_BIT | E_RT_ATTACHMENT_FLAG_DEPTH_STENCIL_BIT;
-			rtLayout.sharedImageRect = CxDefs::TEXTURE_SIZE_2D_UNDEFINED;
-			rtLayout.sharedMSAALevel = CxDefs::TEXTURE_MSAA_LEVEL_UNDEFINED;
+			rtLayout.sharedImageRect = CxDef::TEXTURE_SIZE_2D_UNDEFINED;
+			rtLayout.sharedMSAALevel = CxDef::TEXTURE_MSAA_LEVEL_UNDEFINED;
 			rtLayout.colorAttachments[0].format = ETextureFormat::RGBA8UN;
 			rtLayout.depthStencilAttachment.format = ETextureFormat::D24UNS8U;
 			return rtLayout;
@@ -206,7 +206,7 @@ namespace Ic3::Graphics::GCI
 //			if( attachmentLayoutDesc )
 //			{
 //				auto attachmentIndex = static_cast<uint32>( attachmentLayoutDesc.attachmentID );
-//				if( attachmentIndex < gpm::RT_MAX_COLOR_ATTACHMENTS_NUM )
+//				if( attachmentIndex < GCM::RT_MAX_COLOR_ATTACHMENTS_NUM )
 //				{
 //					renderTargetLayout.colorAttachmentArray[attachmentIndex].format = attachmentLayoutDesc.format;
 //					renderTargetLayout.colorAttachmentActiveCount += 1;
@@ -257,7 +257,7 @@ namespace Ic3::Graphics::GCI
 //			if( attachmentResourceBindingDesc )
 //			{
 //				auto attachmentIndex = static_cast<uint32>( attachmentResourceBindingDesc.attachmentID );
-//				if( attachmentIndex >= gpm::RT_MAX_COMBINED_ATTACHMENTS_NUM )
+//				if( attachmentIndex >= GCM::RT_MAX_COMBINED_ATTACHMENTS_NUM )
 //				{
 //					ic3DebugInterrupt();
 //					return false;
@@ -266,7 +266,7 @@ namespace Ic3::Graphics::GCI
 //				RenderTargetAttachmentLayout * attachmentLayoutPtr = nullptr;
 //				RenderTargetAttachmentResourceBinding * attachmentResourceBindingPtr = nullptr;
 //
-//				if( attachmentIndex < gpm::RT_MAX_COLOR_ATTACHMENTS_NUM )
+//				if( attachmentIndex < GCM::RT_MAX_COLOR_ATTACHMENTS_NUM )
 //				{
 //					attachmentLayoutPtr = &( renderTargetLayout.colorAttachmentArray[attachmentIndex] );
 //					attachmentResourceBindingPtr = &( rtResourceBinding.colorAttachmentArray[attachmentIndex] );
@@ -325,7 +325,7 @@ namespace Ic3::Graphics::GCI
 //	                                           const RenderTargetLayout & pRTLayout )
 //	{
 //
-//		for( uint32 caIndex = 0; caIndex < gpm::RT_MAX_COLOR_ATTACHMENTS_NUM; ++caIndex )
+//		for( uint32 caIndex = 0; caIndex < GCM::RT_MAX_COLOR_ATTACHMENTS_NUM; ++caIndex )
 //		{
 //			auto & caResourceBinding = pRTResourceBinding.colorAttachmentArray[caIndex];
 //			auto & caLayout = pRTLayout.colorAttachmentArray[caIndex];

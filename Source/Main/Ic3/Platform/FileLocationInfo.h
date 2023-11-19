@@ -11,7 +11,7 @@
 namespace Ic3
 {
 
-	namespace CxDefs
+	namespace CxDef
 	{
 
 		/// @brief Represents empty char* literal.
@@ -34,8 +34,8 @@ namespace Ic3
 		FileLocationInfo & operator=( const FileLocationInfo & ) = default;
 
 		FileLocationInfo()
-		: function( CxDefs::STR_CHAR_EMPTY )
-		, filename( CxDefs::STR_CHAR_EMPTY )
+		: function( CxDef::STR_CHAR_EMPTY )
+		, filename( CxDef::STR_CHAR_EMPTY )
 		, lineNumber( 0 )
 		{}
 

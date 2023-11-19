@@ -1,253 +1,313 @@
 
 #pragma once
 
-#ifndef __IC3_NXMAIN_GEOMETRY_DATA_FORMAT_H__
-#define __IC3_NXMAIN_GEOMETRY_DATA_FORMAT_H__
+#ifndef __IC3_NXMAIN_VERTEX_INPUT_LAYOUT_H__
+#define __IC3_NXMAIN_VERTEX_INPUT_LAYOUT_H__
 
 #include "GeometryCommonDefs.h"
-#include "GeometryVertexFormat.h"
-#include <unordered_map>
+#include "../GCI/VertexPipelineLayouts.h"
 
 namespace Ic3
 {
-	
-	struct GeometryDataFormatBaseProperties
-	{
-		uint32 activeAttributesNum = 0;
-		uint32 activeAttributeSlotsNum = 0;
-		uint32 activeVertexStreamsNum = 0;
-		uint32 vertexElementSizeInBytes = 0;
-		Bitmask<GCI::EIAVertexAttributeFlags> activeAttributesMask;
-		Bitmask<EVertexAttributeSemanticsFlags> activeAttributeSemanticsMask;
-		Bitmask<GCI::EIAVertexStreamBindingFlags> activeVertexStreamsMask;
-	};
 
-	class GeometryDataFormatBase
+	class CVertexPipelineConfig
 	{
+		friend class CVertexPipelineConfigBuilder;
+
 	public:
-		GeometryDataFormatBase(
-				VertexAttributeArrayLayoutBase * pAttribLayoutPtr,
-				VertexStreamArrayLayoutBase * pStreamLayoutPtr );
+		const GCI::EPrimitiveTopology & mPrimitiveTopology;
+		const GCI::EIndexDataFormat & mIndexDataFormat;
+		const CVertexAttributeArrayLayout & mAttributeLayout;
+		const CVertexStreamArrayLayout & mStreamLayout;
 
-		virtual ~GeometryDataFormatBase();
-
-		IC3_ATTR_NO_DISCARD std::string getFormatStringID() const noexcept;
-
-		IC3_ATTR_NO_DISCARD const VertexAttributeFormat & attribute( uint32 pAttributeIndex ) const;
-
-		IC3_ATTR_NO_DISCARD const VertexAttributeFormat & attribute( EVertexAttributeSemanticsID pAttributeSemantics ) const;
-
-		IC3_ATTR_NO_DISCARD const VertexStreamFormat & vertexStream( uint32 pStreamIndex ) const;
-
-		IC3_ATTR_NO_DISCARD ArrayView<const uint16> activeVertexStreams() const noexcept;
-
-		IC3_ATTR_NO_DISCARD uint32 activeVertexStreamsNum() const noexcept;
-
-		IC3_ATTR_NO_DISCARD uint16 firstActiveVertexStream() const noexcept;
-
-		IC3_ATTR_NO_DISCARD uint32 vertexElementSizeInBytes() const noexcept;
-
-		IC3_ATTR_NO_DISCARD uint32 vertexStreamElementSizeInBytes( uint32 pStreamIndex ) const;
-
-		IC3_ATTR_NO_DISCARD GCI::EIndexDataFormat indexDataFormat() const noexcept;
-
-		IC3_ATTR_NO_DISCARD uint32 indexElementSizeInBytes() const noexcept;
-
-		IC3_ATTR_NO_DISCARD bool isAttributeSemanticsActive( EVertexAttributeSemanticsID pAttributeSemantics ) const noexcept;
-
-		IC3_ATTR_NO_DISCARD bool isFixedAttributeActive( EFixedVertexAttributeID pFixedAttribute ) const noexcept;
-
-		IC3_ATTR_NO_DISCARD bool isIndexedGeometry() const noexcept;
-
-		IC3_ATTR_NO_DISCARD bool isAttributeSlotUsed( uint32 pAttributeIndex ) const;
-
-		IC3_ATTR_NO_DISCARD bool isAttributeActive( uint32 pAttributeIndex ) const;
-
-		IC3_ATTR_NO_DISCARD bool isVertexStreamActive( uint32 pStreamIndex ) const;
+	public:
+		CVertexPipelineConfig();
+		~CVertexPipelineConfig();
 
 		IC3_ATTR_NO_DISCARD bool empty() const noexcept;
 
-		void setIndexDataFormat( GCI::EIndexDataFormat pIndexDataFormat );
+		IC3_ATTR_NO_DISCARD bool isIndexedGeometry() const noexcept;
+		IC3_ATTR_NO_DISCARD bool isAttributeActive( uint32 pAttributeIndex ) const;
+		IC3_ATTR_NO_DISCARD bool isVertexStreamActive( uint32 pStreamIndex ) const;
 
-		void setPrimitiveTopology( GCI::EPrimitiveTopology pTopology );
+		IC3_ATTR_NO_DISCARD uint32 getIndexDataSize() const noexcept;
 
-		bool configureFixedAttribute(
-				EFixedVertexAttributeID pFixedAttributeID,
-				uint32 pStreamIndex,
-				uint16 pStreamElementRelativeOffset = GCI::CxDefs::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND );
+		IC3_ATTR_NO_DISCARD uint32 resolveAttributeRef( std::string_view pSemanticName, uint32 pSubIndex = 0 ) const noexcept;
+		IC3_ATTR_NO_DISCARD uint32 resolveAttributeRef( EShaderInputSemanticID pSemanticID ) const noexcept;
+		IC3_ATTR_NO_DISCARD uint32 resolveAttributeRef( EStandardVertexAttributeID pAttributeID ) const noexcept;
+		IC3_ATTR_NO_DISCARD uint32 resolveAttributeRef( const SShaderSemantics & pSemantics ) const noexcept;
 
-		template <typename TVertex, typename TAttribute>
-		bool configureFixedAttribute(
-				EFixedVertexAttributeID pFixedAttributeID,
-				uint32 pStreamIndex,
-				TAttribute TVertex::* pAttributePtr );
+		IC3_ATTR_NO_DISCARD const SGenericVertexAttributeInfo * getAttribute( uint32 pAttributeIndex ) const noexcept;
+		IC3_ATTR_NO_DISCARD const SGenericVertexAttributeInfo * getAttribute( std::string_view pSemanticName, uint32 pSubIndex = 0 ) const noexcept;
+		IC3_ATTR_NO_DISCARD const SGenericVertexAttributeInfo * getAttribute( EShaderInputSemanticID pSemanticID ) const noexcept;
+		IC3_ATTR_NO_DISCARD const SGenericVertexAttributeInfo * getAttribute( EStandardVertexAttributeID pAttributeID ) const noexcept;
+		IC3_ATTR_NO_DISCARD const SGenericVertexAttributeInfo * getAttribute( const SShaderSemantics & pSemantics ) const noexcept;
 
-		bool configureCustomAttribute(
-				uint32 pAttributeBaseIndex,
-				VertexAttributeSemantics pSemantics,
-				GCI::EVertexAttribFormat pAttributeBaseFormat,
-				uint32 pAttributeComponentsNum,
-				uint32 pStreamIndex,
-				uint16 pStreamElementRelativeOffset = GCI::CxDefs::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND,
-				EVertexDataRate pAttributeDataRate = EVertexDataRate::PerVertex );
+		IC3_ATTR_NO_DISCARD const SVertexStreamInfo * getStream( uint32 pStreamIndex ) const noexcept;
 
-		template <typename TVertex, typename TAttribute>
-		bool configureCustomAttribute(
-				uint32 pAttributeBaseIndex,
-				VertexAttributeSemantics pSemantics,
-				GCI::EVertexAttribFormat pAttributeBaseFormat,
-				uint32 pAttributeComponentsNum,
-				uint32 pStreamIndex,
-				TAttribute TVertex::* pAttributePtr,
-				EVertexDataRate pAttributeDataRate = EVertexDataRate::PerVertex );
-
-		template <typename TVertex, typename TAttribute>
-		bool configureCustomAttributeAuto(
-				uint32 pAttributeBaseIndex,
-				VertexAttributeSemantics pSemantics,
-				uint32 pStreamIndex,
-				TAttribute TVertex::* pAttributePtr,
-				EVertexDataRate pAttributeDataRate = EVertexDataRate::PerVertex );
-
-		IC3_ATTR_NO_DISCARD GCI::IAInputLayoutDefinition generateGpaInputLayoutDefinition() const noexcept;
+		IC3_ATTR_NO_DISCARD const SVertexStreamInfo * getStreamForAttribute( uint32 pAttributeIndex ) const noexcept;
+		IC3_ATTR_NO_DISCARD const SVertexStreamInfo * getStreamForAttribute( std::string_view pSemanticName, uint32 pSubIndex = 0 ) const noexcept;
+		IC3_ATTR_NO_DISCARD const SVertexStreamInfo * getStreamForAttribute( EShaderInputSemanticID pSemanticID ) const noexcept;
+		IC3_ATTR_NO_DISCARD const SVertexStreamInfo * getStreamForAttribute( EStandardVertexAttributeID pAttributeID ) const noexcept;
+		IC3_ATTR_NO_DISCARD const SVertexStreamInfo * getStreamForAttribute( const SShaderSemantics & pSemantics ) const noexcept;
 
 	private:
-		template <typename TAttribute>
-		IC3_ATTR_NO_DISCARD bool checkAttributeAutoDataFormat(
-				GCI::EVertexAttribFormat pAttributeComponentFormat,
-				uint16 pAttributeComponentsNum ) const noexcept;
+		IC3_ATTR_NO_DISCARD const SVertexStreamInfo * _getVertexStreamForAttribute(
+				const SGenericVertexAttributeInfo * pAttributeInfo ) const noexcept;
 
-		IC3_ATTR_NO_DISCARD bool checkAttributeDefinitionParams(
-				uint32 pAttributeBaseIndex,
-				uint32 pAttributeComponentsNum,
-				uint32 pStreamIndex,
-				EVertexDataRate pAttributeDataRate );
+	protected:
+		GCI::EPrimitiveTopology _primitiveTopology = GCI::EPrimitiveTopology::Undefined;
+		GCI::EIndexDataFormat _indexDataFormat = GCI::EIndexDataFormat::Undefined;
+		CVertexAttributeArrayLayout _attribLayout;
+		CVertexStreamArrayLayout _streamLayout;
+		GCI::IAInputLayoutImmutableStateHandle _gciInputLayoutDefault;
+		GCI::IAInputLayoutImmutableStateHandle _gciInputLayoutPosition;
+		GCI::IAInputLayoutImmutableStateHandle _gciInputLayoutPositionNormal;
+	};
+
+	inline uint32 CVertexPipelineConfig::resolveAttributeRef( std::string_view pSemanticName, uint32 pSubIndex ) const noexcept
+	{
+		return mAttributeLayout.resolveAttributeRef( pSemanticName, pSubIndex );
+	}
+
+	inline uint32 CVertexPipelineConfig::resolveAttributeRef( EShaderInputSemanticID pSemanticID ) const noexcept
+	{
+		return mAttributeLayout.resolveAttributeRef( pSemanticID );
+	}
+
+	inline uint32 CVertexPipelineConfig::resolveAttributeRef( EStandardVertexAttributeID pAttributeID ) const noexcept
+	{
+		return mAttributeLayout.resolveAttributeRef( pAttributeID );
+	}
+
+	inline uint32 CVertexPipelineConfig::resolveAttributeRef( const SShaderSemantics & pSemantics ) const noexcept
+	{
+		return mAttributeLayout.resolveAttributeRef( pSemantics );
+	}
+
+	inline const SGenericVertexAttributeInfo * CVertexPipelineConfig::getAttribute( uint32 pAttributeIndex ) const noexcept
+	{
+		return mAttributeLayout.getAttribute( pAttributeIndex );
+	}
+
+	inline const SGenericVertexAttributeInfo * CVertexPipelineConfig::getAttribute( std::string_view pSemanticName, uint32 pSubIndex ) const noexcept
+	{
+		return mAttributeLayout.getAttribute( pSemanticName, pSubIndex );
+	}
+
+	inline const SGenericVertexAttributeInfo * CVertexPipelineConfig::getAttribute( EShaderInputSemanticID pSemanticID ) const noexcept
+	{
+		return mAttributeLayout.getAttribute( pSemanticID );
+	}
+
+	inline const SGenericVertexAttributeInfo * CVertexPipelineConfig::getAttribute( EStandardVertexAttributeID pAttributeID ) const noexcept
+	{
+		return mAttributeLayout.getAttribute( pAttributeID );
+	}
+
+	inline const SGenericVertexAttributeInfo * CVertexPipelineConfig::getAttribute( const SShaderSemantics & pSemantics ) const noexcept
+	{
+		return mAttributeLayout.getAttribute( pSemantics );
+	}
+
+	inline const SVertexStreamInfo * CVertexPipelineConfig::getStream( uint32 pStreamIndex ) const noexcept
+	{
+		return mStreamLayout.getStream( pStreamIndex );
+	}
+
+
+	class CVertexPipelineConfigBuilder
+	{
+	public:
+		CVertexPipelineConfigBuilder();
+		virtual ~CVertexPipelineConfigBuilder();
 
 		IC3_ATTR_NO_DISCARD bool checkAttributeSlotRangeFree(
 				uint32 pAttributeBaseIndex,
 				uint32 pAttributeComponentsNum ) const noexcept;
 
-		IC3_ATTR_NO_DISCARD bool checkAttributeVertexStreamCompatibility(
-				uint32 pStreamIndex,
-				EVertexDataRate pAttributeDataRate ) const noexcept;
+		IC3_ATTR_NO_DISCARD bool validateAttributeDefinition(
+				SVertexAttributeDefinition & pAttributeDefinition,
+				uint32 pComponentStrideInBytes = 0,
+				uint32 pCombinedAttributeDataStride = 0 ) const noexcept;
 
-		void updateStateWithNewAttribute( uint32 pNewAttributeIndex );
+		IC3_ATTR_NO_DISCARD SharedHandle<CVertexPipelineConfig> getPipelineConfig() const noexcept;
+
+		void setPrimitiveTopology( GCI::EPrimitiveTopology pTopology );
+
+		void setIndexDataFormat( GCI::EIndexDataFormat pIndexDataFormat );
+
+		SGenericVertexAttributeInfo * addAttribute( SVertexAttributeDefinition pAttributeDefinition );
+
+		SGenericVertexAttributeInfo * addStandardAttribute(
+				EStandardVertexAttributeID pAttributeID,
+				uint32 pStreamIndex,
+				uint32 pStreamRelativeOffset,
+				uint32 pDataStride = 0 );
+
+		template <typename TVertex, typename TAttribute>
+		bool addAttribute(
+				uint32 pBaseIndex,
+				TAttribute TVertex::* pAttributePtr,
+				SShaderSemantics pSemantics,
+				uint32 pStreamIndex,
+				uint32 pStreamRelativeOffset = GCI::CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND,
+				uint32 pInstanceRate = 0 );
+
+		template <typename TVertex, typename TAttribute>
+		bool addStandardAttribute(
+				EStandardVertexAttributeID pAttributeID,
+				TAttribute TVertex::* pAttributePtr,
+				uint32 pStreamIndex,
+				uint32 pStreamRelativeOffset = GCI::CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND );
+
+		SharedHandle<CVertexPipelineConfig> reset( SharedHandle<CVertexPipelineConfig> pPipelineConfig = nullptr );
+
+	private:
+		IC3_ATTR_NO_DISCARD bool validateAttributeDefinition(
+				SVertexAttributeDefinition & pAttributeDefinition,
+				uint32 pComponentStrideInBytes );
 
 		IC3_ATTR_NO_DISCARD bool resolveAttributeSemanticsDefinition(
-				VertexAttributeSemantics & pAttributeSemantics );
+				SShaderSemantics & pAttributeSemantics );
+
+		SGenericVertexAttributeInfo & updateAttribute(
+				const SVertexAttributeDefinition & pAttributeDefinition,
+				uint32 pComponentStrideInBytes );
+
+		void updateAttributeSubComponents(
+				SGenericVertexAttributeInfo & pBaseAttribute,
+				uint32 pAttributeComponentsNum,
+				uint32 pComponentStrideInBytes );
+
+		void updateVertexStreamState(
+				SGenericVertexAttributeInfo & pBaseAttribute );;
 
 	private:
-		VertexAttributeArrayLayoutBase * _attribLayoutPtr;
-		VertexStreamArrayLayoutBase * _streamLayoutPtr;
-		GCI::EIndexDataFormat _indexDataFormat;
-		GCI::EPrimitiveTopology _primitiveTopology;
-	};
-
-	template <size_t tVertexAttributeArraySize = 0, size_t tVertexStreamArraySize = 0>
-	class GeometryDataFormat : public GeometryDataFormatBase
-	{
-	public:
-		using VertexAttributeArrayLayoutType = VertexAttributeArrayLayout<tVertexAttributeArraySize>;
-		using VertexStreamArrayLayoutType = VertexStreamArrayLayout<tVertexStreamArraySize>;
-
-		GeometryDataFormat()
-		: GeometryDataFormatBase( &_attribLayout, &_streamLayout )
-		{}
-
-	private:
-		VertexAttributeArrayLayoutType _attribLayout;
-		VertexStreamArrayLayoutType _streamLayout;
+		SharedHandle<CVertexPipelineConfig> _pipelineConfig;
 	};
 
 	template <typename TVertex, typename TAttribute>
-	inline bool GeometryDataFormatBase::configureFixedAttribute(
-			EFixedVertexAttributeID pFixedAttributeID,
-			uint32 pStreamIndex,
-			TAttribute TVertex::* pAttributePtr )
+	inline bool CVertexPipelineConfigBuilder::addAttribute(
+			uint32 pBaseIndex,
+			TAttribute TVertex::* pAttributePtr,
+			SShaderSemantics pSemantics,
+			uint32 pVertexBufferIndex,
+			uint32 pVertexBufferRelativeOffset,
+			uint32 pInstanceRate )
 	{
-		const auto fixedAttributeFormat = CxDefs::getFixedVertexAttributeBaseFormat( pFixedAttributeID );
-		const auto fixedAttributeComponentsNum = CxDefs::getFixedVertexAttributeComponentsNum( pFixedAttributeID );
-		if( !checkAttributeAutoDataFormat<TAttribute>( fixedAttributeFormat, fixedAttributeComponentsNum ) )
-		{
-			return false;
-		}
+		using AttributeFormatTraits = GCI::VertexAttribFormatDataTypeTraits<TAttribute>;
 
-		return configureFixedAttribute(
-				pFixedAttributeID,
-				pStreamIndex,
-				memberOffset( pAttributePtr ) );
+		SVertexAttributeDefinition attributeDefinition{};
+		attributeDefinition.baseAttributeIndex = pBaseIndex;
+		attributeDefinition.baseFormat = AttributeFormatTraits::sBaseAttribFormat;
+		attributeDefinition.instanceRate = pInstanceRate;
+		attributeDefinition.dataStride = sizeof( TVertex );
+		attributeDefinition.vertexStreamIndex = pVertexBufferIndex;
+		attributeDefinition.vertexStreamRelativeOffset = pVertexBufferRelativeOffset + memberOffset( pAttributePtr );
+		attributeDefinition.semantics = std::move( pSemantics );
+		attributeDefinition.componentsNum = AttributeFormatTraits::sAttribComponentsNum;
+		attributeDefinition.subComponentPadding = 0;
+
+		return addAttribute( std::move( attributeDefinition ) );
 	}
 
 	template <typename TVertex, typename TAttribute>
-	inline bool GeometryDataFormatBase::configureCustomAttribute(
-			uint32 pAttributeBaseIndex,
-			VertexAttributeSemantics pSemantics,
-			GCI::EVertexAttribFormat pAttributeBaseFormat,
-			uint32 pAttributeComponentsNum,
-			uint32 pStreamIndex,
+	inline bool CVertexPipelineConfigBuilder::addStandardAttribute(
+			EStandardVertexAttributeID pFixedAttributeID,
 			TAttribute TVertex::* pAttributePtr,
-			EVertexDataRate pAttributeDataRate )
+			uint32 pVertexBufferIndex,
+			uint32 pVertexBufferRelativeOffset )
 	{
-		if( !checkAttributeAutoDataFormat<TAttribute>( pAttributeBaseFormat, pAttributeComponentsNum ) )
+		const auto fixedAttributeFormat = CxDef::getStandardVertexAttributeBaseFormat( pFixedAttributeID );
+		const auto fixedAttributeComponentsNum = CxDef::getStandardVertexAttributeComponentsNum( pFixedAttributeID );
+		if( !GCIUtils::checkAttributeAutoDataFormat<TAttribute>( fixedAttributeFormat, fixedAttributeComponentsNum ) )
 		{
 			return false;
 		}
 
-		return configureCustomAttribute(
-				pAttributeBaseIndex,
-				std::move( pSemantics ),
-				pAttributeBaseFormat,
-				pAttributeComponentsNum,
-				pStreamIndex,
-				memberOffset( pAttributePtr ),
-				pAttributeDataRate );
+		return setStandardAttribute( pFixedAttributeID, pVertexBufferIndex, pVertexBufferRelativeOffset + memberOffset( pAttributePtr ) );
 	}
 
-	template <typename TVertex, typename TAttribute>
-	inline bool GeometryDataFormatBase::configureCustomAttributeAuto(
-			uint32 pAttributeBaseIndex,
-			VertexAttributeSemantics pSemantics,
-			uint32 pStreamIndex,
-			TAttribute TVertex::* pAttributePtr,
-			EVertexDataRate pAttributeDataRate )
-	{
-		using AttributeTraits = GCI::VertexAttribFormatDataTypeTraits<TAttribute>;
-		if( !checkAttributeAutoDataFormat<TAttribute>( AttributeTraits::sVertexAttribFormat, AttributeTraits::sVertexAttribComponentsNum ) )
-		{
-			return false;
-		}
-
-		return configureCustomAttribute(
-				pAttributeBaseIndex,
-				std::move( pSemantics ),
-				AttributeTraits::sVertexAttribFormat,
-				AttributeTraits::sVertexAttribComponentsNum,
-				pStreamIndex,
-				memberOffset( pAttributePtr ),
-				pAttributeDataRate );
-	}
-
-	template <typename TAttribute>
-	inline bool GeometryDataFormatBase::checkAttributeAutoDataFormat(
-			GCI::EVertexAttribFormat pAttributeComponentFormat,
-			uint16 pAttributeComponentsNum ) const noexcept
-	{
-		const auto componentByteSize = GCI::CxDefs::getVertexAttribFormatByteSize( pAttributeComponentFormat );
-		const auto attributeByteSize = componentByteSize * pAttributeComponentsNum;
-
-		return sizeof( TAttribute ) == attributeByteSize;
-	}
-
-	namespace gpa
-	{
-
-		IC3_ATTR_NO_DISCARD const char * getStandardVertexAttributeSemanticsName( EVertexAttributeSemanticsID pSemanticsID );
-
-		IC3_ATTR_NO_DISCARD std::string generateVertexFormatStringID( const VertexAttributeFormatArray & pAttributeArray );
-
-	}
-
+	//	template <typename TVertex, typename TAttribute>
+	//	inline bool CVertexPipelineConfigBuilder::setFixedAttribute(
+	//			EStandardVertexAttributeID pFixedAttributeID,
+	//			uint32 pStreamIndex,
+	//			TAttribute TVertex::* pAttributePtr )
+	//	{
+	//		const auto fixedAttributeFormat = CxDef::getStandardVertexAttributeBaseFormat( pFixedAttributeID );
+	//		const auto fixedAttributeComponentsNum = CxDef::getStandardVertexAttributeComponentsNum( pFixedAttributeID );
+	//		if( !checkAttributeAutoDataFormat<TAttribute>( fixedAttributeFormat, fixedAttributeComponentsNum ) )
+	//		{
+	//			return false;
+	//		}
+	//
+	//		return setFixedAttribute(
+	//				pFixedAttributeID,
+	//				pStreamIndex,
+	//				memberOffset( pAttributePtr ) );
+	//	}
+	//
+	//	template <typename TVertex, typename TAttribute>
+	//	inline bool CVertexPipelineConfigBuilder::setCustomAttribute(
+	//			uint32 pAttributeBaseIndex,
+	//			SShaderSemantics pSemantics,
+	//			GCI::EVertexAttribFormat pAttributeBaseFormat,
+	//			uint32 pAttributeComponentsNum,
+	//			uint32 pStreamIndex,
+	//			TAttribute TVertex::* pAttributePtr,
+	//			EVertexDataRate pAttributeDataRate )
+	//	{
+	//		if( !checkAttributeAutoDataFormat<TAttribute>( pAttributeBaseFormat, pAttributeComponentsNum ) )
+	//		{
+	//			return false;
+	//		}
+	//
+	//		return setCustomAttribute(
+	//				pAttributeBaseIndex,
+	//				std::move( pSemantics ),
+	//				pAttributeBaseFormat,
+	//				pAttributeComponentsNum,
+	//				pStreamIndex,
+	//				memberOffset( pAttributePtr ),
+	//				pAttributeDataRate );
+	//	}
+	//
+	//	template <typename TVertex, typename TAttribute>
+	//	inline bool CVertexPipelineConfigBuilder::setCustomAttributeAuto(
+	//			uint32 pAttributeBaseIndex,
+	//			SShaderSemantics pSemantics,
+	//			uint32 pStreamIndex,
+	//			TAttribute TVertex::* pAttributePtr,
+	//			EVertexDataRate pAttributeDataRate )
+	//	{
+	//		using AttributeTraits = GCI::VertexAttribFormatDataTypeTraits<TAttribute>;
+	//		if( !checkAttributeAutoDataFormat<TAttribute>( AttributeTraits::sVertexAttribFormat, AttributeTraits::sVertexAttribComponentsNum ) )
+	//		{
+	//			return false;
+	//		}
+	//
+	//		return setCustomAttribute(
+	//				pAttributeBaseIndex,
+	//				std::move( pSemantics ),
+	//				AttributeTraits::sVertexAttribFormat,
+	//				AttributeTraits::sVertexAttribComponentsNum,
+	//				pStreamIndex,
+	//				memberOffset( pAttributePtr ),
+	//				pAttributeDataRate );
+	//	}
+	//
+	//	template <typename TAttribute>
+	//	inline bool CVertexPipelineConfigBuilder::checkAttributeAutoDataFormat(
+	//			GCI::EVertexAttribFormat pAttributeComponentFormat,
+	//			uint16 pAttributeComponentsNum ) const noexcept
+	//	{
+	//		const auto componentByteSize = GCI::CxDef::getVertexAttribFormatByteSize( pAttributeComponentFormat );
+	//		const auto attributeByteSize = componentByteSize * pAttributeComponentsNum;
+	//
+	//		return sizeof( TAttribute ) == attributeByteSize;
+	//	}
 
 } // namespace Ic3
 
-#endif // __IC3_NXMAIN_GEOMETRY_DATA_FORMAT_H__
+#endif // __IC3_NXMAIN_VERTEX_INPUT_LAYOUT_H__

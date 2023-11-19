@@ -13,40 +13,40 @@ namespace Ic3
     enum : exception_category_value_t
     {
         E_EXCEPTION_CATEGORY_DEBUG =
-            CxDefs::declareExceptionCategory( ExceptionBaseType::Debug, ic3ExcCategoryIID( 0 ) ),
+            CxDef::declareExceptionCategory( ExceptionBaseType::Debug, ic3ExcCategoryIID( 0 ) ),
 
         E_EXCEPTION_CATEGORY_ENGINE_SUBMODULE =
-            CxDefs::declareExceptionCategory( ExceptionBaseType::EngineSubModule, ic3ExcCategoryIID( 0 ) ),
+            CxDef::declareExceptionCategory( ExceptionBaseType::EngineSubModule, ic3ExcCategoryIID( 0 ) ),
 
         E_EXCEPTION_CATEGORY_FRAMEWORK_CORE =
-            CxDefs::declareExceptionCategory( ExceptionBaseType::FrameworkCore, ic3ExcCategoryIID( 0 ) ),
+            CxDef::declareExceptionCategory( ExceptionBaseType::FrameworkCore, ic3ExcCategoryIID( 0 ) ),
 
         E_EXCEPTION_CATEGORY_INTERNAL =
-            CxDefs::declareExceptionCategory( ExceptionBaseType::Internal, ic3ExcCategoryIID( 0 ) ),
+            CxDef::declareExceptionCategory( ExceptionBaseType::Internal, ic3ExcCategoryIID( 0 ) ),
 
         E_EXCEPTION_CATEGORY_INTERRUPT =
-            CxDefs::declareExceptionCategory( ExceptionBaseType::Interrupt, ic3ExcCategoryIID( 0 ) ),
+            CxDef::declareExceptionCategory( ExceptionBaseType::Interrupt, ic3ExcCategoryIID( 0 ) ),
 
         E_EXCEPTION_CATEGORY_MATH =
-            CxDefs::declareExceptionCategory( ExceptionBaseType::Math, ic3ExcCategoryIID( 0 ) ),
+            CxDef::declareExceptionCategory( ExceptionBaseType::Math, ic3ExcCategoryIID( 0 ) ),
 
         E_EXCEPTION_CATEGORY_RESULT_PROXY =
-            CxDefs::declareExceptionCategory( ExceptionBaseType::ResultProxy, ic3ExcCategoryIID( 0 ) ),
+            CxDef::declareExceptionCategory( ExceptionBaseType::ResultProxy, ic3ExcCategoryIID( 0 ) ),
 
         E_EXCEPTION_CATEGORY_SYSTEM =
-            CxDefs::declareExceptionCategory( ExceptionBaseType::System, ic3ExcCategoryIID( 0 ) ),
+            CxDef::declareExceptionCategory( ExceptionBaseType::System, ic3ExcCategoryIID( 0 ) ),
 
         E_EXCEPTION_CATEGORY_USER_EXTERNAL =
-            CxDefs::declareExceptionCategory( ExceptionBaseType::UserExternal, ic3ExcCategoryIID( 0 ) ),
+            CxDef::declareExceptionCategory( ExceptionBaseType::UserExternal, ic3ExcCategoryIID( 0 ) ),
     };
 
     enum : exception_code_value_t
     {
         E_EXC_DEBUG_PLACEHOLDER =
-            CxDefs::declareExceptionCode( E_EXCEPTION_CATEGORY_DEBUG, ic3ExcCodeIID( 0x01 ) ),
+            CxDef::declareExceptionCode( E_EXCEPTION_CATEGORY_DEBUG, ic3ExcCodeIID( 0x01 ) ),
 
         E_EXC_RESULT_CODE_ERROR =
-            CxDefs::declareExceptionCode( E_EXCEPTION_CATEGORY_RESULT_PROXY, ic3ExcCodeIID( 0x01 ) ),
+            CxDef::declareExceptionCode( E_EXCEPTION_CATEGORY_RESULT_PROXY, ic3ExcCodeIID( 0x01 ) ),
     };
 
 	/// @brief
@@ -209,19 +209,19 @@ namespace Ic3
 	template <ExceptionBaseType tExceptionBaseType>
 	struct ExceptionBaseTypeClassProxy
     {
-	    using Type = typename ExceptionClassResolver<tExceptionBaseType, CxDefs::isExceptionBaseTypeValid( tExceptionBaseType )>::Type;
+	    using Type = typename ExceptionClassResolver<tExceptionBaseType, CxDef::isExceptionBaseTypeValid( tExceptionBaseType )>::Type;
     };
 
 	template <exception_category_value_t tExceptionCategory>
 	struct ExceptionCategoryClassProxy
     {
-	    using Type = typename ExceptionBaseTypeClassProxy<CxDefs::getExceptionCategoryBaseType( tExceptionCategory )>::Type;
+	    using Type = typename ExceptionBaseTypeClassProxy<CxDef::getExceptionCategoryBaseType( tExceptionCategory )>::Type;
     };
 
 	template <exception_code_value_t tExceptionCode>
 	struct ExceptionCodeClassProxy
     {
-	    using Type = typename ExceptionCategoryClassProxy<CxDefs::getExceptionCodeCategory( tExceptionCode )>::Type;
+	    using Type = typename ExceptionCategoryClassProxy<CxDef::getExceptionCodeCategory( tExceptionCode )>::Type;
     };
 
 	template <>
@@ -234,12 +234,12 @@ namespace Ic3
         template <exception_category_value_t tExceptionCategory> \
         struct ExceptionCategoryClassProxy \
         { \
-            using Type = typename ::Ic3::ExceptionBaseTypeClassProxy<Ic3::CxDefs::getExceptionCategoryBaseType( tExceptionCategory )>::Type; \
+            using Type = typename ::Ic3::ExceptionBaseTypeClassProxy<Ic3::CxDef::getExceptionCategoryBaseType( tExceptionCategory )>::Type; \
         }; \
         template <exception_code_value_t tExceptionCode> \
         struct ExceptionCodeClassProxy \
         { \
-            using Type = typename ExceptionCategoryClassProxy<Ic3::CxDefs::getExceptionCodeCategory( tExceptionCode )>::Type; \
+            using Type = typename ExceptionCategoryClassProxy<Ic3::CxDef::getExceptionCodeCategory( tExceptionCode )>::Type; \
         }
 
     #define ic3SetExceptionCategoryType( pExceptionCategory, pType ) \
@@ -262,7 +262,7 @@ namespace Ic3
 		// TException is a class derived from ExceptionClass<ExceptionBaseType>. It contains 'baseType'
 		// member with type tag. It should match the type embedded within the code. In case of mismatch, there is
 		// either a typo (in case of manual call) or a problem with the throwException() function defined below.
-		ic3DebugAssert( TException::mBaseType == CxDefs::getExceptionCodeBaseType( pExceptionInfo.code ) );
+		ic3DebugAssert( TException::mBaseType == CxDef::getExceptionCodeBaseType( pExceptionInfo.code ) );
 
 		throw TException( std::move( pExceptionInfo ), std::forward<TArgs>( pArgs )... );
 	}

@@ -2,186 +2,170 @@
 #ifndef __IC3_CPPX_RANGE_H__
 #define __IC3_CPPX_RANGE_H__
 
-#include "StaticLimits.h"
+#include "TypeTraits.h"
 #include "Utilities.h"
 
 namespace Ic3
 {
 
-	enum class ERangeType
+	template <typename TVal>
+	struct SRange
 	{
-		Exclusive,
-		Inclusive,
-		InclusiveLeft,
-		InclusiveRight
-	};
+		using SelfType = SRange<TVal>;
 
-	template <typename TVal, ERangeType tERangeType = ERangeType::Inclusive>
-	struct Range
-	{
 		TVal begin;
 		TVal end;
-	};
 
-	template <typename TVal>
-	using ExclusiveRange = Range<TVal, ERangeType::Exclusive>;
-
-	template <typename TVal>
-	using InclusiveRange = Range<TVal, ERangeType::Inclusive>;
-
-	template <typename TVal, ERangeType>
-	struct LeftRangeBound;
-
-	template <typename TVal, ERangeType>
-	struct RightRangeBound;
-
-	template <ERangeType tERangeType, typename TVal>
-	inline bool checkRangeLeftBound( const Range<TVal, tERangeType> & pRange, TVal pValue )
-	{
-		return LeftRangeBound<TVal, tERangeType>::inside( pRange, pValue );
-	}
-
-	template <ERangeType tERangeType, typename TVal>
-	inline bool checkRangeRightBound( const Range<TVal, tERangeType> & pRange, TVal pValue )
-	{
-		return RightRangeBound<TVal, tERangeType>::inside( pRange, pValue );
-	}
-
-	template <ERangeType tERangeType, typename TVal>
-	inline bool checkValueInsideRange( const Range<TVal, tERangeType> & pRange, TVal pValue )
-	{
-		return checkRangeLeftBound( pRange, pValue ) && checkRangeRightBound( pRange, pValue );
-	}
-
-	template <typename TVal>
-	inline bool checkValueInsideInclusiveRange( const Range<TVal, ERangeType::Inclusive> & pRange, TVal pValue )
-	{
-		return checkRangeLeftBound( pRange, pValue ) && checkRangeRightBound( pRange, pValue );
-	}
-
-	template <ERangeType tERangeType, typename TVal>
-	inline bool checkValueOutsideRange( const Range<TVal, tERangeType> & pRange, TVal pValue )
-	{
-		return !checkRangeLeftBound( pRange, pValue ) || !checkRangeRightBound( pRange, pValue );
-	}
-
-	template <typename TVal>
-	inline bool checkRangeOverlap( const InclusiveRange<TVal> & pFirst, const InclusiveRange<TVal> & pSecond )
-	{
-		return checkValueInsideRange( pFirst, pSecond.begin ) || checkValueInsideRange( pFirst, pSecond.end );
-	}
-
-	template <typename TVal>
-	inline bool checkRangeSubRange( const InclusiveRange<TVal> & pRange, const InclusiveRange<TVal> & pSubRange )
-	{
-		return checkRangeLeftBound( pRange, pSubRange.begin ) && checkRangeRightBound( pRange, pSubRange.end );
-	}
-
-	template <typename TVal, ERangeType tERangeType>
-	struct LeftRangeBound
-	{
-		static bool inside( const Range<TVal, tERangeType> & pRange, TVal pValue )
+		IC3_ATTR_NO_DISCARD typename QUnsignedTypeEquivalent<TVal>::Type length() const noexcept
 		{
-			return pValue > pRange.begin;
+			return static_cast<typename QUnsignedTypeEquivalent<TVal>::Type>( ( end - begin ) + static_cast<TVal>( 1 ) );
+		}
+
+		template <typename TOther>
+		IC3_ATTR_NO_DISCARD bool contains( TOther pValue ) const noexcept
+		{
+			return ( pValue >= begin ) && ( pValue <= end );
+		}
+
+		template <typename TOther>
+		IC3_ATTR_NO_DISCARD bool contains( const SRange<TOther> & pOther ) const noexcept
+		{
+			return contains( pOther.begin ) && contains( pOther.end );
+		}
+
+		template <typename TOther>
+		IC3_ATTR_NO_DISCARD bool overlapsWith( const SRange<TOther> & pOther ) const noexcept
+		{
+			return contains( pOther.begin ) || contains( pOther.end );
+		}
+
+		template <typename TOther>
+		IC3_ATTR_NO_DISCARD bool isSubRangeOf( const SRange<TOther> & pOther ) const noexcept
+		{
+			return pOther.contains( *this );
+		}
+
+		IC3_ATTR_NO_DISCARD static constexpr SRange maxRange() noexcept
+		{
+			return SRange{ QLimits<TVal>::minValue, QLimits<TVal>::maxValue };
+		}
+
+		void setEmpty()
+		{
+			begin = static_cast<TVal>( 0 );
+			end = static_cast<TVal>( 0 );
+		}
+
+		void setInvalid()
+		{
+			begin = QLimits<TVal>::maxValue;
+			end = QLimits<TVal>::minValue;
+		}
+
+		void setMax()
+		{
+			begin = QLimits<TVal>::minValue;
+			end = QLimits<TVal>::maxValue;
 		}
 	};
 
 	template <typename TVal>
-	struct LeftRangeBound<TVal, ERangeType::Inclusive>
+	inline bool rangeContains( const SRange<TVal> & pRange, TVal pValue ) noexcept
 	{
-		static bool inside( const Range<TVal, ERangeType::Inclusive> & pRange, TVal pValue )
-		{
-			return pValue >= pRange.begin;
-		}
-	};
+		return pRange.contains( pValue );
+	}
 
 	template <typename TVal>
-	struct LeftRangeBound<TVal, ERangeType::InclusiveLeft>
+	inline bool rangeContains( const SRange<TVal> & pFirst, const SRange<TVal> & pSecond ) noexcept
 	{
-		static bool inside( const Range<TVal, ERangeType::InclusiveLeft> & pRange, TVal pValue )
-		{
-			return pValue >= pRange.begin;
-		}
-	};
-
-	template <typename TVal, ERangeType tERangeType>
-	struct RightRangeBound
-	{
-		static bool inside( const Range<TVal, tERangeType> & pRange, TVal pValue )
-		{
-			return pValue < pRange.end;
-		}
-	};
+		return pFirst.contains( pSecond );
+	}
 
 	template <typename TVal>
-	struct RightRangeBound<TVal, ERangeType::Inclusive>
+	inline bool rangeOverlapsWith( const SRange<TVal> & pFirst, const SRange<TVal> & pSecond ) noexcept
 	{
-		static bool inside( const Range<TVal, ERangeType::Inclusive> & pRange, TVal pValue )
-		{
-			return pValue <= pRange.end;
-		}
-	};
+		return pFirst.overlapsWith( pSecond );
+	}
 
 	template <typename TVal>
-	struct RightRangeBound<TVal, ERangeType::InclusiveRight>
+	inline bool rangeIsSubRangeOf( const SRange<TVal> & pFirst, const SRange<TVal> & pSecond ) noexcept
 	{
-		static bool inside( const Range<TVal, ERangeType::InclusiveRight> & pRange, TVal pValue )
-		{
-			return pValue <= pRange.end;
-		}
-	};
+		return pFirst.isSubRangeOf( pSecond );
+	}
 
 	template <typename TSize, typename TOffset = TSize>
-	struct Region
+	struct SRegion
 	{
-		static_assert( !std::is_signed_v<TSize>, "Region size cannot be negative, hence usage of signed types is forbidden." );
+		static_assert( !std::is_signed_v<TSize>, "The region size cannot be negative, hence usage of signed types is forbidden." );
 
-		using Range = InclusiveRange<TSize>;
+		using SelfType = SRegion<TSize, TOffset>;
+		using RangeType = SRange<TSize>;
 
 		TOffset offset = 0;
 		TSize size = 0;
 
-		IC3_ATTR_NO_DISCARD explicit operator bool() const
+		IC3_ATTR_NO_DISCARD explicit operator bool() const noexcept
 		{
 			return !empty();
 		}
 
-		IC3_ATTR_NO_DISCARD Range asRange() const
+		IC3_ATTR_NO_DISCARD RangeType asRange() const noexcept
 		{
 			return { offset, offset + size };
 		}
 
-		IC3_ATTR_NO_DISCARD bool empty() const
+		IC3_ATTR_NO_DISCARD bool empty() const noexcept
 		{
 			return size == 0;
 		}
 
-		IC3_ATTR_NO_DISCARD bool contains( const Region<TSize, TOffset> & pOther ) const
+		IC3_ATTR_NO_DISCARD bool contains( TOffset pOffset ) const noexcept
 		{
-			return checkRangeSubRange( asRange(), pOther.asRange() );
+			return rangeContains( asRange(), pOffset );
 		}
 
-		void reset()
+		IC3_ATTR_NO_DISCARD bool contains( const SRegion<TSize, TOffset> & pOther ) const noexcept
 		{
-			offset = 0;
-			size = 0;
+			return rangeContains( asRange(), pOther.asRange() );
+		}
+
+		IC3_ATTR_NO_DISCARD bool overlapsWith( const SRegion<TSize, TOffset> & pOther ) const noexcept
+		{
+			return rangeOverlapsWith( asRange(), pOther.asRange() );
+		}
+
+		IC3_ATTR_NO_DISCARD bool isSubRegionOf( const SRegion<TSize, TOffset> & pOther ) const noexcept
+		{
+			return rangeIsSubRangeOf( asRange(), pOther.asRange() );
+		}
+
+		void setEmpty()
+		{
+			offset = static_cast<TOffset>( 0 );
+			size = static_cast<TSize>( 0 );
+		}
+
+		void setMax()
+		{
+			offset = static_cast<TOffset>( 0 );
+			size = QLimits<TSize>::maxValue;
 		}
 	};
 
 	template <typename TSize, typename TOffset>
-	inline bool operator==( const Region<TSize, TOffset> & pLhs, const Region<TSize, TOffset> & pRhs )
+	inline bool operator==( const SRegion<TSize, TOffset> & pLhs, const SRegion<TSize, TOffset> & pRhs )
 	{
 		return ( pLhs.offset == pRhs.offset ) && ( pLhs.size == pRhs.size );
 	}
 
 	template <typename TSize, typename TOffset>
-	inline bool operator!=( const Region<TSize, TOffset> & pLhs, const Region<TSize, TOffset> & pRhs )
+	inline bool operator!=( const SRegion<TSize, TOffset> & pLhs, const SRegion<TSize, TOffset> & pRhs )
 	{
 		return ( pLhs.offset != pRhs.offset ) || ( pLhs.size != pRhs.size );
 	}
 
 	template <typename TOffset, typename TSize, typename TLimit>
-	inline Region<TSize, TOffset> getValidRegion( TOffset pOffset, TSize pSize, TLimit pSizeLimit )
+	inline SRegion<TSize, TOffset> getValidRegion( TOffset pOffset, TSize pSize, TLimit pSizeLimit )
 	{
 		const auto validOffset = getMinOf( pOffset, pSizeLimit );
 		const auto maxRegionSize = pSizeLimit - validOffset;
@@ -191,7 +175,7 @@ namespace Ic3
 	}
 
 	template <typename TOffset, typename TSize, typename TLimit>
-	inline Region<TSize, TOffset> getValidRegion( const Region<TSize, TOffset> & pRegion, TLimit pSizeLimit )
+	inline SRegion<TSize, TOffset> getValidRegion( const SRegion<TSize, TOffset> & pRegion, TLimit pSizeLimit )
 	{
 		getValidRegion( pRegion.offset, pRegion.size, pSizeLimit );
 	}

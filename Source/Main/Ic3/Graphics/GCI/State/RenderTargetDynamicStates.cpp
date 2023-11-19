@@ -35,8 +35,8 @@ namespace Ic3::Graphics::GCI
 
 	RenderTargetAttachmentBinding & RenderTargetBindingDynamicState::setColorAttachmentBinding( native_uint pIndex )
 	{
-		ic3DebugAssert( CxDefs::isRTAttachmentIndexValid( pIndex ) );
-		_renderTargetBindingDefinition.activeAttachmentsMask.set( CxDefs::makeRTAttachmentFlag( pIndex ) );
+		ic3DebugAssert( CxDef::isRTAttachmentIndexValid( pIndex ) );
+		_renderTargetBindingDefinition.activeAttachmentsMask.set( CxDef::makeRTAttachmentFlag( pIndex ) );
 		return _renderTargetBindingDefinition.colorAttachments[pIndex];
 	}
 
@@ -86,7 +86,7 @@ namespace Ic3::Graphics::GCI
 
 	void RenderTargetBindingDynamicState::resetColorAttachmentBindings()
 	{
-		_resetColorAttachmentBindings( 0, gpm::RT_MAX_COLOR_ATTACHMENTS_NUM );
+		_resetColorAttachmentBindings( 0, GCM::RT_MAX_COLOR_ATTACHMENTS_NUM );
 	}
 
 	void RenderTargetBindingDynamicState::resetDepthStencilAttachmentBinding()
@@ -106,11 +106,11 @@ namespace Ic3::Graphics::GCI
 			native_uint pCount,
 			const RenderTargetAttachmentBinding * pRPCAttachmentBindings )
 	{
-		for( native_uint caIndex = pFirstIndex; CxDefs::isRTColorAttachmentIndexValid( caIndex ) && ( pCount != 0 ); ++caIndex, --pCount )
+		for( native_uint caIndex = pFirstIndex; CxDef::isRTColorAttachmentIndexValid( caIndex ) && ( pCount != 0 ); ++caIndex, --pCount )
 		{
 			const auto & sourceCABinding = pRPCAttachmentBindings[caIndex - pFirstIndex];
 
-			const auto colorAttachmentBit = CxDefs::makeRTAttachmentFlag( caIndex );
+			const auto colorAttachmentBit = CxDef::makeRTAttachmentFlag( caIndex );
 
 			_renderTargetBindingDefinition.colorAttachments[caIndex] = sourceCABinding;
 			_renderTargetBindingDefinition.activeAttachmentsMask.setOrUnset( colorAttachmentBit, !sourceCABinding.empty() );
@@ -119,9 +119,9 @@ namespace Ic3::Graphics::GCI
 
 	void RenderTargetBindingDynamicState::_resetColorAttachmentBindings( native_uint pFirstIndex, native_uint pCount )
 	{
-		for( native_uint caIndex = pFirstIndex; CxDefs::isRTColorAttachmentIndexValid( caIndex ) && ( pCount != 0 ); ++caIndex, --pCount )
+		for( native_uint caIndex = pFirstIndex; CxDef::isRTColorAttachmentIndexValid( caIndex ) && ( pCount != 0 ); ++caIndex, --pCount )
 		{
-			const auto colorAttachmentBit = CxDefs::makeRTAttachmentFlag( caIndex );
+			const auto colorAttachmentBit = CxDef::makeRTAttachmentFlag( caIndex );
 
 			_renderTargetBindingDefinition.colorAttachments[caIndex].reset();
 			_renderTargetBindingDefinition.activeAttachmentsMask.unset( colorAttachmentBit );
@@ -160,8 +160,8 @@ namespace Ic3::Graphics::GCI
 
 	RenderPassAttachmentConfig & RenderPassConfigurationDynamicState::setColorAttachmentUsage( native_uint pIndex )
 	{
-		ic3DebugAssert( CxDefs::isRTAttachmentIndexValid( pIndex ) );
-		_renderPassConfiguration.activeAttachmentsMask.set( CxDefs::makeRTAttachmentFlag( pIndex ) );
+		ic3DebugAssert( CxDef::isRTAttachmentIndexValid( pIndex ) );
+		_renderPassConfiguration.activeAttachmentsMask.set( CxDef::makeRTAttachmentFlag( pIndex ) );
 		return _renderPassConfiguration.colorAttachments[pIndex];
 	}
 
@@ -211,7 +211,7 @@ namespace Ic3::Graphics::GCI
 
 	void RenderPassConfigurationDynamicState::resetColorAttachmentUsages()
 	{
-		_resetColorAttachmentUsages( 0, gpm::RT_MAX_COLOR_ATTACHMENTS_NUM );
+		_resetColorAttachmentUsages( 0, GCM::RT_MAX_COLOR_ATTACHMENTS_NUM );
 	}
 
 	void RenderPassConfigurationDynamicState::resetDepthStencilAttachmentUsage()
@@ -231,11 +231,11 @@ namespace Ic3::Graphics::GCI
 			native_uint pCount,
 			const RenderPassAttachmentConfig * pRPCAttachmentUsages )
 	{
-		for( native_uint caIndex = pFirstIndex; CxDefs::isRTColorAttachmentIndexValid( caIndex ) && ( pCount != 0 ); ++caIndex, --pCount )
+		for( native_uint caIndex = pFirstIndex; CxDef::isRTColorAttachmentIndexValid( caIndex ) && ( pCount != 0 ); ++caIndex, --pCount )
 		{
 			const auto & sourceCAUsage = pRPCAttachmentUsages[caIndex - pFirstIndex];
 
-			const auto colorAttachmentBit = CxDefs::makeRTAttachmentFlag( caIndex );
+			const auto colorAttachmentBit = CxDef::makeRTAttachmentFlag( caIndex );
 
 			_renderPassConfiguration.colorAttachments[caIndex] = sourceCAUsage;
 			_renderPassConfiguration.activeAttachmentsMask.setOrUnset( colorAttachmentBit, !sourceCAUsage.empty() );
@@ -244,9 +244,9 @@ namespace Ic3::Graphics::GCI
 
 	void RenderPassConfigurationDynamicState::_resetColorAttachmentUsages( native_uint pFirstIndex, native_uint pCount )
 	{
-		for( native_uint caIndex = pFirstIndex; CxDefs::isRTColorAttachmentIndexValid( caIndex ) && ( pCount != 0 ); ++caIndex, --pCount )
+		for( native_uint caIndex = pFirstIndex; CxDef::isRTColorAttachmentIndexValid( caIndex ) && ( pCount != 0 ); ++caIndex, --pCount )
 		{
-			const auto colorAttachmentBit = CxDefs::makeRTAttachmentFlag( caIndex );
+			const auto colorAttachmentBit = CxDef::makeRTAttachmentFlag( caIndex );
 
 			_renderPassConfiguration.colorAttachments[caIndex].reset();
 			_renderPassConfiguration.activeAttachmentsMask.unset( colorAttachmentBit );

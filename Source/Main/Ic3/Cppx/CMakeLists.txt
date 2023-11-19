@@ -5,6 +5,7 @@ set( IC3_CPPX_SRC_FILES
         "BitmaskAtomic.h"
         "ByteArray.h"
         "Chrono.h"
+        "FixedVector.h"
         "FsUtils.h"
         "FsUtils.cpp"
         "Hash.h"
@@ -24,11 +25,11 @@ set( IC3_CPPX_SRC_FILES
         "TypeTraits.h"
         "Utilities.h"
         "Variant.h"
-        )
+)
 
 add_library( Ic3.Cppx STATIC
         ${IC3_CPPX_SRC_FILES}
-        )
+)
 
 ebsAppendInternal(IC3_MODULE_TARGET_LIST "Ic3.Cppx")
 

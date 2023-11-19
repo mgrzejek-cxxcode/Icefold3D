@@ -1,11 +1,12 @@
 
-#include "GeometryStorage.h"
+#include "GeometryStorageGPU.h"
 #include <Ic3/Graphics/GCI/GPUDevice.h>
 #include <Ic3/Graphics/GCI/Resources//GPUBuffer.h>
 
 namespace Ic3
 {
 
+	/*
 	GeometryStorage::GeometryStorage( const GeometryDataFormatBase & pDataFormat )
 	: GeometryContainer( pDataFormat )
 	{}
@@ -93,7 +94,7 @@ namespace Ic3
 						bufferSizeInBytes,
 						bufferUsagePolicy );
 
-				_vertexStreamBindingMask.set( GCI::CxDefs::makeIAVertexBufferFlag( iVertexStream ) );
+				_vertexStreamBindingMask.set( GCI::CxDef::makeIAVertexBufferFlag( iVertexStream ) );
 			}
 		}
 
@@ -122,7 +123,7 @@ namespace Ic3
 			if( pCreateInfo.vertexBufferDescArray[iVertexStream].allocationMode == EGeometryBufferAllocationMode::ShareExternal )
 			{
 				_vertexBufferArray[iVertexStream] = pSharedStorage.getVertexBuffer( iVertexStream );
-				_vertexStreamBindingMask.set( GCI::CxDefs::makeIAVertexBufferFlag( iVertexStream ) );
+				_vertexStreamBindingMask.set( GCI::CxDef::makeIAVertexBufferFlag( iVertexStream ) );
 			}
 		}
 
@@ -201,8 +202,8 @@ namespace Ic3
 	{
 		GCI::GPUBufferCreateInfo bufferCreateInfo;
 		bufferCreateInfo.bufferSize = pBufferSize;
-		bufferCreateInfo.memoryFlags = CxDefs::getGPUBufferUsagePolicyMemoryFlags( pUsagePolicy );
-		bufferCreateInfo.resourceFlags = CxDefs::getGPUBufferUsagePolicyResourceFlags( pUsagePolicy );
+		bufferCreateInfo.memoryFlags = CxDef::getGPUBufferUsagePolicyMemoryFlags( pUsagePolicy );
+		bufferCreateInfo.resourceFlags = CxDef::getGPUBufferUsagePolicyResourceFlags( pUsagePolicy );
 		bufferCreateInfo.resourceFlags.unset( GCI::E_GPU_BUFFER_BIND_MASK_ALL );
 		bufferCreateInfo.resourceFlags.set( GCI::E_GPU_BUFFER_BIND_FLAG_INDEX_BUFFER_BIT );
 
@@ -219,8 +220,8 @@ namespace Ic3
 	{
 		GCI::GPUBufferCreateInfo bufferCreateInfo;
 		bufferCreateInfo.bufferSize = pBufferSize;
-		bufferCreateInfo.memoryFlags = CxDefs::getGPUBufferUsagePolicyMemoryFlags( pUsagePolicy );
-		bufferCreateInfo.resourceFlags = CxDefs::getGPUBufferUsagePolicyResourceFlags( pUsagePolicy );
+		bufferCreateInfo.memoryFlags = CxDef::getGPUBufferUsagePolicyMemoryFlags( pUsagePolicy );
+		bufferCreateInfo.resourceFlags = CxDef::getGPUBufferUsagePolicyResourceFlags( pUsagePolicy );
 		bufferCreateInfo.resourceFlags.unset( GCI::E_GPU_BUFFER_BIND_MASK_ALL );
 		bufferCreateInfo.resourceFlags.set( GCI::E_GPU_BUFFER_BIND_FLAG_VERTEX_BUFFER_BIT );
 
@@ -311,5 +312,6 @@ namespace Ic3
 		}
 		return bufferUsagePolicy;
 	}
+	 */
 
 }

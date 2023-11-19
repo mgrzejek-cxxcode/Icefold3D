@@ -49,7 +49,7 @@ namespace Ic3::Graphics::GCI
 	{
 		if( pCreateInfo.memoryBaseAlignment == 0 )
 		{
-		    pCreateInfo.memoryBaseAlignment = Ic3::CxDefs::MEMORY_DEFAULT_ALIGNMENT;
+		    pCreateInfo.memoryBaseAlignment = Ic3::CxDef::MEMORY_DEFAULT_ALIGNMENT;
 		}
 
 		if( ( pCreateInfo.bufferSize == 0 ) && pCreateInfo.initDataDesc )

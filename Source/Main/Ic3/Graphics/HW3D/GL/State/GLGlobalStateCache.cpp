@@ -80,7 +80,7 @@ namespace Ic3::Graphics::GCI
 			{
 				bool compareCurrentState = isSeparateBlendingEnabled;
 
-				for( uint32 caIndex = 0; CxDefs::isRTColorAttachmentIndexValid( caIndex ); ++caIndex )
+				for( uint32 caIndex = 0; CxDef::isRTColorAttachmentIndexValid( caIndex ); ++caIndex )
 				{
 					auto & cachedBlendProps = cachedBlendConfig.attachments[caIndex];
 					const auto & blendProps = pBlendConfig.attachments[caIndex];

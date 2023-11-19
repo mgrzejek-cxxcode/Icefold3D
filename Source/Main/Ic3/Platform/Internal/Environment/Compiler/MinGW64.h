@@ -27,9 +27,9 @@
 #define IC3_PCL_DEBUG_OUTPUT( text )  printf( "%s\n", text )
 #define IC3_PCL_SLEEP( miliseconds )  usleep( miliseconds * 1000 )
 
-#define IC3_PCL_BYTESWAP16	__builtin_bswap16
-#define IC3_PCL_BYTESWAP32	__builtin_bswap32
-#define IC3_PCL_BYTESWAP64	__builtin_bswap64
+#define IC3_PCL_BSWAP16	__builtin_bswap16
+#define IC3_PCL_BSWAP32	__builtin_bswap32
+#define IC3_PCL_BSWAP64	__builtin_bswap64
 
 #define IC3_PCL_ROTL16( x, n ) ( (x << n) | (x >> (16-n)) )
 #define IC3_PCL_ROTL32( x, n ) ( (x << n) | (x >> (32-n)) )

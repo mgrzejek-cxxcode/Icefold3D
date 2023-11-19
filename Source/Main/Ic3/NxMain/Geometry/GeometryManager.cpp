@@ -1,10 +1,11 @@
 
-#include "GeometryManager.h"
-#include "GeometryStorage.h"
+#include "GeometrySystem.h"
+#include "GeometryStorageGPU.h"
 
 namespace Ic3
 {
 
+	/*
 	GeometryManager::GeometryManager( const CoreEngineState & pCES )
 	: GPUResourceContainer(  pCES )
 	{}
@@ -60,5 +61,6 @@ namespace Ic3
 
 		return _storages.back().get();
 	}
+	 */
 
 }

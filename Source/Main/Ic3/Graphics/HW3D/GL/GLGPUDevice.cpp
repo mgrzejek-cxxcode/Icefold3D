@@ -37,7 +37,7 @@ namespace Ic3::Graphics::GCI
 		{
 			auto * glcCommandSyncData = static_cast<GLCommandSyncData *>( pCommandSync.syncData );
 
-			glClientWaitSync( glcCommandSyncData->openglSyncFence, 0, Limits<GLuint64>::maxValue );
+			glClientWaitSync( glcCommandSyncData->openglSyncFence, 0, QLimits<GLuint64>::maxValue );
 			ic3OpenGLCheckLastResult();
 
 			releaseGLCommandSyncData( pCommandSync.syncData );

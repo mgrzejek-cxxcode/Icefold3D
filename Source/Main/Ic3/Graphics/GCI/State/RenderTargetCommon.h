@@ -38,7 +38,7 @@ namespace Ic3::Graphics::GCI
 		RTStencilOnly = E_RENDER_TARGET_BUFFER_FLAG_STENCIL_BIT,
 	};
 
-	namespace CxDefs
+	namespace CxDef
 	{
 
 		/// @brief
@@ -52,7 +52,7 @@ namespace Ic3::Graphics::GCI
 		IC3_ATTR_NO_DISCARD inline constexpr uint32 getRTAttachmentRequiredUsageMask( native_uint pAttachmentIndex )
 		{
 			return
-				( pAttachmentIndex < gpm::RT_MAX_COLOR_ATTACHMENTS_NUM ) ?
+				( pAttachmentIndex < GCM::RT_MAX_COLOR_ATTACHMENTS_NUM ) ?
 				E_GPU_RESOURCE_USAGE_FLAG_RENDER_TARGET_COLOR_BIT :
 				E_GPU_RESOURCE_USAGE_MASK_RENDER_TARGET_DEPTH_STENCIL;
 		}
@@ -60,12 +60,12 @@ namespace Ic3::Graphics::GCI
 	}
 
 	template <typename TAttachmentProperty>
-	using RenderTargetColorAttachmentPropertyArray = std::array<TAttachmentProperty, gpm::RT_MAX_COLOR_ATTACHMENTS_NUM>;
+	using RenderTargetColorAttachmentPropertyArray = std::array<TAttachmentProperty, GCM::RT_MAX_COLOR_ATTACHMENTS_NUM>;
 
 	template <typename TAttachmentProperty>
 	struct RenderTargetAttachmentPropertySet
 	{
-		using AttachmentPropertyArray = std::array<TAttachmentProperty, gpm::RT_MAX_COMBINED_ATTACHMENTS_NUM>;
+		using AttachmentPropertyArray = std::array<TAttachmentProperty, GCM::RT_MAX_COMBINED_ATTACHMENTS_NUM>;
 
 		AttachmentPropertyArray attachments;
 
@@ -76,14 +76,14 @@ namespace Ic3::Graphics::GCI
 		TAttachmentProperty & depthStencilAttachment;
 
 		RenderTargetAttachmentPropertySet()
-		: colorAttachments( bindArrayView( attachments.data(), gpm::RT_MAX_COLOR_ATTACHMENTS_NUM ) )
+		: colorAttachments( bindArrayView( attachments.data(), GCM::RT_MAX_COLOR_ATTACHMENTS_NUM ) )
 		, depthStencilAttachment( attachments[E_RT_ATTACHMENT_INDEX_DEPTH_STENCIL] )
 		{}
 
 		RenderTargetAttachmentPropertySet( const RenderTargetAttachmentPropertySet<TAttachmentProperty> & pSource )
 		: attachments( pSource.attachments )
 		, activeAttachmentsMask( pSource.activeAttachmentsMask )
-		, colorAttachments( bindArrayView( attachments.data(), gpm::RT_MAX_COLOR_ATTACHMENTS_NUM ) )
+		, colorAttachments( bindArrayView( attachments.data(), GCM::RT_MAX_COLOR_ATTACHMENTS_NUM ) )
 		, depthStencilAttachment( attachments[E_RT_ATTACHMENT_INDEX_DEPTH_STENCIL] )
 		{}
 
@@ -106,7 +106,7 @@ namespace Ic3::Graphics::GCI
 
 		IC3_ATTR_NO_DISCARD bool isColorAttachmentActive( uint32 pAttachmentIndex ) const noexcept
 		{
-			const auto attachmentBit = CxDefs::makeRTAttachmentFlag( pAttachmentIndex );
+			const auto attachmentBit = CxDef::makeRTAttachmentFlag( pAttachmentIndex );
 			return ( attachmentBit != 0 ) && activeAttachmentsMask.isSet( attachmentBit );
 		}
 
@@ -193,7 +193,7 @@ namespace Ic3::Graphics::GCI
 	/// @brief A definition of a vertex layout used to create a driver-specific RenderTargetLayout object.
 	struct RenderTargetLayout : public RenderTargetAttachmentPropertySet<RenderTargetAttachmentLayout>
 	{
-		TextureSize2D sharedImageRect = CxDefs::TEXTURE_SIZE_2D_UNDEFINED;
+		TextureSize2D sharedImageRect = CxDef::TEXTURE_SIZE_2D_UNDEFINED;
 
 		uint32 sharedMSAALevel = 0;
 	};
@@ -232,11 +232,11 @@ namespace Ic3::Graphics::GCI
 		for( // Iterate using RTA (Render Target Attachment) index value.
 			native_uint attachmentIndex = 0;
 			// Stop after reaching the limit or when there are no active attachments to process.
-			CxDefs::isRTAttachmentIndexValid( attachmentIndex ) && !activeAttachmentsMask.empty();
+			CxDef::isRTAttachmentIndexValid( attachmentIndex ) && !activeAttachmentsMask.empty();
 			// This is rather self-descriptive, but it looked bad without this third comment here :)
 			++attachmentIndex )
 		{
-			const auto attachmentBit = CxDefs::makeRTAttachmentFlag( attachmentIndex );
+			const auto attachmentBit = CxDef::makeRTAttachmentFlag( attachmentIndex );
 			// Check if the attachments mask has this bit set.
 			if( activeAttachmentsMask.isSet( attachmentBit ) )
 			{
@@ -265,11 +265,11 @@ namespace Ic3::Graphics::GCI
 		for( // Iterate using RTA (Render Target Attachment) index value.
 			native_uint attachmentIndex = 0;
 			// Stop after reaching the limit or when there are no active attachments to process.
-			CxDefs::isRTColorAttachmentIndexValid( attachmentIndex ) && !activeAttachmentsMask.empty();
+			CxDef::isRTColorAttachmentIndexValid( attachmentIndex ) && !activeAttachmentsMask.empty();
 			// This is rather self-descriptive, but it looked bad without this third comment here :)
 			++attachmentIndex )
 		{
-			const auto attachmentBit = CxDefs::makeRTAttachmentFlag( attachmentIndex );
+			const auto attachmentBit = CxDef::makeRTAttachmentFlag( attachmentIndex );
 			// Check if the attachments mask has this bit set.
 			if( activeAttachmentsMask.isSet( attachmentBit ) )
 			{

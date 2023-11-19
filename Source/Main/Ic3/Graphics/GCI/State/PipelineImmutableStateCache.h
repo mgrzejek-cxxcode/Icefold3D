@@ -30,7 +30,7 @@ namespace Ic3::Graphics::GCI
 	struct PipelineImmutableStateCreateInfo
 	{
 		/// A unique name given to an immutable state object.
-		UniqueGPUObjectID uniqueID = CxDefs::GPU_OBJECT_ID_INVALID;
+		UniqueGPUObjectID uniqueID = CxDef::GPU_OBJECT_ID_INVALID;
 
 		/// A unique name given to an immutable state object.
 		RefWrapper<const UniqueGPUObjectName> uniqueName;
@@ -74,12 +74,12 @@ namespace Ic3::Graphics::GCI
 		{
 			const auto controlInputHash = hashCompute<EHashAlgo::FNV1A64>( pCreateInfo.inputDesc.get() );
 
-			if( ( pCreateInfo.uniqueID == CxDefs::GPU_OBJECT_ID_AUTO ) && !pCreateInfo.uniqueName->empty() )
+			if( ( pCreateInfo.uniqueID == CxDef::GPU_OBJECT_ID_AUTO ) && !pCreateInfo.uniqueName->empty() )
 			{
 				pCreateInfo.uniqueID = generateUniqueGPUObjectID( pCreateInfo.uniqueName );
 			}
 
-			if( CxDefs::isUniqueGPUObjectIDValid( pCreateInfo.uniqueID ) )
+			if( CxDef::isUniqueGPUObjectIDValid( pCreateInfo.uniqueID ) )
 			{
 				const auto existingStateRef = _cachedStates.find( pCreateInfo.uniqueID.asValue() );
 				if( existingStateRef != _cachedStates.end() )
@@ -105,7 +105,7 @@ namespace Ic3::Graphics::GCI
 				return nullptr;
 			}
 
-			if( !CxDefs::isUniqueGPUObjectIDValid( pCreateInfo.uniqueID ) )
+			if( !CxDef::isUniqueGPUObjectIDValid( pCreateInfo.uniqueID ) )
 			{
 				pCreateInfo.uniqueID.idValue = reinterpret_cast<uint64>( newImmutableState.get() );
 			}
@@ -128,7 +128,7 @@ namespace Ic3::Graphics::GCI
 		/// The data stored internally for every cached state object.
 		struct CachedStateData
 		{
-			using ControlInputHash = HashObject<EHashAlgo::FNV1A64>;
+			using ControlInputHash = SHashObject<EHashAlgo::FNV1A64>;
 			/// Control hash which is a hash of the inputDesc (passed inside the createInfo struct).
 			ControlInputHash controlInputHash;
 			/// The actual immutable state.

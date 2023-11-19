@@ -33,7 +33,7 @@ namespace Ic3
 	struct VariantStorage
 	{
 		static constexpr size_t size = StaticMaxSizeofT<TLst...>::value;
-		static constexpr size_t alignment = StaticMaxAlignofT<TLst...>::value;
+		static constexpr size_t alignment = StaticMaxAlignOfT<TLst...>::value;
 
 		using Type = typename std::aligned_storage<size, alignment>::type;
 	};
@@ -109,7 +109,7 @@ namespace Ic3
 	template <typename TVal, typename... TRest>
 	struct VariantProxy<TVal, TRest...>
 	{
-//		template <typename TArg, std::enable_if_t<IsTypeOnTypeList<TArg, TVal, TRest...>::value, int>>
+//		template <typename TArg, std::enable_if_t<QIsTypeOnTypeList<TArg, TVal, TRest...>::value, int>>
 //		static variant_index_t construct( void * pStorage, TArg pArg )
 //		{
 //			using Type = std::remove_cv_t<std::remove_reference_t<TArg>>;
@@ -284,7 +284,7 @@ namespace Ic3
 	template <typename... TLst>
 	class Variant
 	{
-		static_assert( std::is_void<typename FirstMatchingType<std::is_reference, TLst...>::Type>::value, "No references allowed" );
+		static_assert( std::is_void<typename QFirstMatchingType<std::is_reference, TLst...>::Type>::value, "No references allowed" );
 		
 	public:
 		static constexpr size_t storageSize = VariantStorage<TLst...>::size;

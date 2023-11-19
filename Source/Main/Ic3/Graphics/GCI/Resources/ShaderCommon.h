@@ -12,12 +12,12 @@ namespace Ic3::Graphics::GCI
 
 	ic3DeclareClassHandle( Shader );
 
-	namespace CxDefs
+	namespace CxDef
 	{
 
 		IC3_ATTR_NO_DISCARD inline constexpr uint32 makeShaderType( native_uint pStageIndex )
 		{
-			return ( static_cast<uint32>( pStageIndex ) << 16 ) | CxDefs::makeShaderStageBit( static_cast< uint32 >( pStageIndex ) );
+			return ( static_cast<uint32>( pStageIndex ) << 16 ) | CxDef::makeShaderStageBit( static_cast< uint32 >( pStageIndex ) );
 		}
 
 	}
@@ -37,12 +37,12 @@ namespace Ic3::Graphics::GCI
 	enum class EShaderType : uint32
 	{
 		Unknown    = 0,
-		GSVertex   = CxDefs::makeShaderType( E_SHADER_STAGE_INDEX_GRAPHICS_VERTEX        ),
-		GSHull     = CxDefs::makeShaderType( E_SHADER_STAGE_INDEX_GRAPHICS_HULL          ),
-		GSDomain   = CxDefs::makeShaderType( E_SHADER_STAGE_INDEX_GRAPHICS_DOMAIN        ),
-		GSGeometry = CxDefs::makeShaderType( E_SHADER_STAGE_INDEX_GRAPHICS_GEOMETRY      ),
-		GSPixel    = CxDefs::makeShaderType( E_SHADER_STAGE_INDEX_GRAPHICS_PIXEL         ),
-		CSCompute  = CxDefs::makeShaderType( E_SHADER_STAGE_INDEX_COMPUTE                ),
+		GSVertex   = CxDef::makeShaderType( E_SHADER_STAGE_INDEX_GRAPHICS_VERTEX        ),
+		GSHull     = CxDef::makeShaderType( E_SHADER_STAGE_INDEX_GRAPHICS_HULL          ),
+		GSDomain   = CxDef::makeShaderType( E_SHADER_STAGE_INDEX_GRAPHICS_DOMAIN        ),
+		GSGeometry = CxDef::makeShaderType( E_SHADER_STAGE_INDEX_GRAPHICS_GEOMETRY      ),
+		GSPixel    = CxDef::makeShaderType( E_SHADER_STAGE_INDEX_GRAPHICS_PIXEL         ),
+		CSCompute  = CxDef::makeShaderType( E_SHADER_STAGE_INDEX_COMPUTE                ),
 	};
 
 	struct alignas( 32 ) ShaderBinary
@@ -93,7 +93,7 @@ namespace Ic3::Graphics::GCI
 		}
 	};
 
-	namespace CxDefs
+	namespace CxDef
 	{
 
 		IC3_ATTR_NO_DISCARD inline constexpr bool isShaderStageIndexValid( native_uint pStageIndex )
@@ -128,7 +128,7 @@ namespace Ic3::Graphics::GCI
 
 		IC3_ATTR_NO_DISCARD inline constexpr EShaderType getShaderTypeFromStageIndex( native_uint pStageIndex )
 		{
-			return isShaderStageIndexValid( pStageIndex ) ? static_cast<EShaderType>( CxDefs::makeShaderType( pStageIndex ) ) : EShaderType::Unknown;
+			return isShaderStageIndexValid( pStageIndex ) ? static_cast<EShaderType>( CxDef::makeShaderType( pStageIndex ) ) : EShaderType::Unknown;
 		}
 		
 	}

@@ -548,7 +548,7 @@ namespace Ic3::System
 				{
 					auto & eInputMouseMove = osxProcessMouseMoveEvent( pEventController, mouseCursorState, pOutEvent );
 					const auto buttonID = osxQueryMouseButtonID( pNativeEvent.nsEvent );
-					const auto buttonFlag = CxDefs::getMouseButtonFlagFromButtonID( buttonID );
+					const auto buttonFlag = CxDef::getMouseButtonFlagFromButtonID( buttonID );
 					eInputMouseMove.buttonStateMask = buttonFlag;
 					break;
 				}

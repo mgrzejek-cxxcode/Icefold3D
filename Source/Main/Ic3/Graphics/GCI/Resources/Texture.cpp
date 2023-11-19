@@ -29,14 +29,14 @@ namespace Ic3::Graphics::GCI
 			case ETextureClass::T2D:
 			{
 				TextureSubResource2D subResource2D;
-				subResource2D.mipLevel = CxDefs::TEX_SUBRESOURCE_MIP_LEVEL_ALL_MIPS;
+				subResource2D.mipLevel = CxDef::TEX_SUBRESOURCE_MIP_LEVEL_ALL_MIPS;
 				return TextureSubResource{ subResource2D, ETextureClass::T2D };
 			}
 			case ETextureClass::T2DArray:
 			{
 				TextureSubResource2DArray subResource2DArray;
-				subResource2DArray.arrayIndex = CxDefs::TEX_SUBRESOURCE_ARRAY_INDEX_ALL_TEXTURES;
-				subResource2DArray.mipLevel = CxDefs::TEX_SUBRESOURCE_MIP_LEVEL_ALL_MIPS;
+				subResource2DArray.arrayIndex = CxDef::TEX_SUBRESOURCE_ARRAY_INDEX_ALL_TEXTURES;
+				subResource2DArray.mipLevel = CxDef::TEX_SUBRESOURCE_MIP_LEVEL_ALL_MIPS;
 				return TextureSubResource{ subResource2DArray, ETextureClass::T2DArray };
 			}
 			case ETextureClass::T2DMS:
@@ -48,22 +48,22 @@ namespace Ic3::Graphics::GCI
 			case ETextureClass::T2DMSArray:
 			{
 				TextureSubResource2DArray subResource2DMSArray;
-				subResource2DMSArray.arrayIndex = CxDefs::TEX_SUBRESOURCE_ARRAY_INDEX_ALL_TEXTURES;
+				subResource2DMSArray.arrayIndex = CxDef::TEX_SUBRESOURCE_ARRAY_INDEX_ALL_TEXTURES;
 				subResource2DMSArray.mipLevel = 0; // MSAA textures only have a single sub-resource (mip level 0).
 				return TextureSubResource{ subResource2DMSArray, ETextureClass::T2DMSArray };
 			}
 			case ETextureClass::T3D:
 			{
 				TextureSubResource3D subResource3D;
-				subResource3D.mipLevel = CxDefs::TEX_SUBRESOURCE_MIP_LEVEL_ALL_MIPS;
-				subResource3D.depthLayerIndex = CxDefs::TEX_SUBRESOURCE_DEPTH_ALL_LAYERS;
+				subResource3D.mipLevel = CxDef::TEX_SUBRESOURCE_MIP_LEVEL_ALL_MIPS;
+				subResource3D.depthLayerIndex = CxDef::TEX_SUBRESOURCE_DEPTH_ALL_LAYERS;
 				return TextureSubResource{ subResource3D };
 			}
 			case ETextureClass::TCubeMap:
 			{
 				TextureSubResourceCubeMap subResourceCubeMap;
-				subResourceCubeMap.faceIndex = CxDefs::TEX_SUBRESOURCE_CUBE_MAP_FACE_ALL_FACES;
-				subResourceCubeMap.mipLevel = CxDefs::TEX_SUBRESOURCE_MIP_LEVEL_ALL_MIPS;
+				subResourceCubeMap.faceIndex = CxDef::TEX_SUBRESOURCE_CUBE_MAP_FACE_ALL_FACES;
+				subResourceCubeMap.mipLevel = CxDef::TEX_SUBRESOURCE_MIP_LEVEL_ALL_MIPS;
 				return TextureSubResource{ subResourceCubeMap };
 			}
 			default:
@@ -107,7 +107,7 @@ namespace Ic3::Graphics::GCI
 			{
 				TextureSubResource3D subResource3D;
 				subResource3D.mipLevel = 0;
-				subResource3D.depthLayerIndex = CxDefs::TEX_SUBRESOURCE_DEPTH_ALL_LAYERS;
+				subResource3D.depthLayerIndex = CxDef::TEX_SUBRESOURCE_DEPTH_ALL_LAYERS;
 				return TextureSubResource{ subResource3D };
 			}
 			case ETextureClass::TCubeMap:

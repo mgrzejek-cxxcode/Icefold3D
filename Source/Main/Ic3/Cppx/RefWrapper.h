@@ -41,7 +41,7 @@ namespace Ic3
 			return _valuePtr;
 		}
 
-		constexpr explicit operator bool() const noexcept
+		IC3_ATTR_NO_DISCARD constexpr explicit operator bool() const noexcept
 		{
 			return _valuePtr != nullptr;
 		}
@@ -61,7 +61,7 @@ namespace Ic3
 	};
 
 	template <typename TValue>
-	inline constexpr RefWrapper<TValue> makeRef( TValue & pRef ) noexcept
+	IC3_ATTR_NO_DISCARD inline constexpr RefWrapper<TValue> makeRef( TValue & pRef ) noexcept
 	{
 		return RefWrapper<TValue>( pRef );
 	}

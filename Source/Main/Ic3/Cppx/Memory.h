@@ -14,7 +14,7 @@ namespace Ic3
 	using MemoryFreeCallback = std::function<void( void * )>;
 	using MemoryReallocCallback = std::function<void *( void *, size_t )>;
 
-	namespace CxDefs
+	namespace CxDef
 	{
 
 		inline constexpr uint32 MEMORY_DEFAULT_ALIGNMENT = IC3_PCL_MEMORY_BASE_ALIGNMENT;
@@ -27,7 +27,7 @@ namespace Ic3
 		MemoryAllocCallback apiAlloc;
 		MemoryFreeCallback apiFree;
 		MemoryReallocCallback apiRealloc;
-		uint32 memoryAlignment = CxDefs::MEMORY_DEFAULT_ALIGNMENT;
+		uint32 memoryAlignment = CxDef::MEMORY_DEFAULT_ALIGNMENT;
 
 	public:
 		explicit operator bool() const
@@ -66,8 +66,8 @@ namespace Ic3
 	template <typename TSize, typename TOffset = TSize>
 	struct AlignedMemoryAllocInfo
 	{
-		Region<TSize, TOffset> accessibleRegion;
-		Region<TSize, TOffset> reservedRegion;
+		SRegion<TSize, TOffset> accessibleRegion;
+		SRegion<TSize, TOffset> reservedRegion;
 	};
 
 	inline constexpr uint64 memCheckRequestedCopySize( uint64 pBufferSize, uint64 pCopySize, uint64 pCopyOffset )
@@ -251,7 +251,7 @@ namespace Ic3
 	}
 
 	template <typename TVal>
-	inline void memZero( std::vector<TVal> & pVector, size_t pZeroOffset = 0, size_t pZeroCount = CxDefs::MAX_SIZE )
+	inline void memZero( std::vector<TVal> & pVector, size_t pZeroOffset = 0, size_t pZeroCount = CxDef::MAX_SIZE )
 	{
 		const auto vectorSize = pVector.size();
 		pZeroCount = getMinOf( pZeroCount, vectorSize );

@@ -9,22 +9,22 @@
 namespace Ic3::Graphics::GCI
 {
 
-	namespace CxDefs
+	namespace CxDef
 	{
 
 		/// @brief A special value for texture array index indicating all resources in an array.
 		/// For a specific mip level, it references a vertical mip slice for a texture array.
-		constexpr auto TEX_SUBRESOURCE_ARRAY_INDEX_ALL_TEXTURES = Limits<uint32>::maxValue;
+		constexpr auto TEX_SUBRESOURCE_ARRAY_INDEX_ALL_TEXTURES = QLimits<uint32>::maxValue;
 
 		/// @brief
-		constexpr auto TEX_SUBRESOURCE_CUBE_MAP_FACE_ALL_FACES = Limits<uint32>::maxValue;
+		constexpr auto TEX_SUBRESOURCE_CUBE_MAP_FACE_ALL_FACES = QLimits<uint32>::maxValue;
 
 		/// @brief
-		constexpr auto TEX_SUBRESOURCE_DEPTH_ALL_LAYERS = Limits<uint32>::maxValue;
+		constexpr auto TEX_SUBRESOURCE_DEPTH_ALL_LAYERS = QLimits<uint32>::maxValue;
 
 		/// @brief A special value for mip level index indicating all levels a texture contains.
 		/// For a given texture, it references all sub-resources in that texture..
-		constexpr auto TEX_SUBRESOURCE_MIP_LEVEL_ALL_MIPS = Limits<uint32>::maxValue;
+		constexpr auto TEX_SUBRESOURCE_MIP_LEVEL_ALL_MIPS = QLimits<uint32>::maxValue;
 
 	}
 
@@ -282,7 +282,7 @@ namespace Ic3::Graphics::GCI
 
 	struct TextureSubResource2DArray : public TextureSubResource2D
 	{
-		/// An index within a texture array. Use CxDefs::TEX_SUBRESOURCE_INDEX_MIP_VERTICAL_SLICE for a vertical mip slice.
+		/// An index within a texture array. Use CxDef::TEX_SUBRESOURCE_INDEX_MIP_VERTICAL_SLICE for a vertical mip slice.
 		uint32 arrayIndex;
 	};
 
@@ -294,7 +294,7 @@ namespace Ic3::Graphics::GCI
 
 	struct TextureSubResourceCubeMap : public TextureSubResource2D
 	{
-		/// An index of the cube map face. Use CxDefs::TEX_SUBRESOURCE_INDEX_MIP_VERTICAL_SLICE for a vertical mip slice.
+		/// An index of the cube map face. Use CxDef::TEX_SUBRESOURCE_INDEX_MIP_VERTICAL_SLICE for a vertical mip slice.
 		uint32 faceIndex;
 	};
 

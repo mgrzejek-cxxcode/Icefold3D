@@ -15,15 +15,15 @@ namespace Ic3::Graphics::GCI
 	ic3DeclareClassHandle( Texture );
 	ic3DeclareClassHandle( RenderTargetTexture );
 
-	namespace CxDefs
+	namespace CxDef
 	{
 
 		/// @brief Identifies all mip levels available in a texture resource. Can be used for all resource accesses.
-		constexpr uint32 TEXTURE_MIP_LEVEL_ALL = Limits<uint32>::maxValue;
+		constexpr uint32 TEXTURE_MIP_LEVEL_ALL = QLimits<uint32>::maxValue;
 
-		inline constexpr TextureSize2D TEXTURE_SIZE_2D_UNDEFINED{ Limits<uint32>::maxValue, Limits<uint32>::maxValue };
+		inline constexpr TextureSize2D TEXTURE_SIZE_2D_UNDEFINED{ QLimits<uint32>::maxValue, QLimits<uint32>::maxValue };
 
-		inline constexpr uint32 TEXTURE_MSAA_LEVEL_UNDEFINED = Limits<uint32>::maxValue;
+		inline constexpr uint32 TEXTURE_MSAA_LEVEL_UNDEFINED = QLimits<uint32>::maxValue;
 
 	}
 
@@ -147,7 +147,7 @@ namespace Ic3::Graphics::GCI
 
 	struct TextureSubTextureInitDataDesc
 	{
-		using MipLevelInitDataDescArray = std::array<TextureMipSubLevelInitDataDesc, gpm::TEXTURE_MAX_MIP_LEVELS_NUM>;
+		using MipLevelInitDataDescArray = std::array<TextureMipSubLevelInitDataDesc, GCM::TEXTURE_MAX_MIP_LEVELS_NUM>;
 		MipLevelInitDataDescArray mipLevelInitDataArray;
 		uint32 subTextureIndex;
 	};

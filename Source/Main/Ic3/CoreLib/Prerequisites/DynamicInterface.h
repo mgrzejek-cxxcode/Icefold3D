@@ -152,6 +152,11 @@ namespace Ic3
     using pClassName##Handle = SharedHandle<pClassName>; \
     using pClassName##WeakHandle = WeakHandle<pClassName>
 
+#define ic3DeclareInterfaceHandle( pInterfaceName ) \
+    class pInterfaceName; \
+    using pInterfaceName##Handle = SharedHandle<pInterfaceName>; \
+    using pInterfaceName##WeakHandle = WeakHandle<pInterfaceName>
+
 #define ic3DeclareTypedefHandle( pAliasName, pTypeName ) \
     using pAliasName = pTypeName; \
     using pAliasName##Handle = SharedHandle<pAliasName>; \

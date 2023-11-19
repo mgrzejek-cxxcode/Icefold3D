@@ -1,8 +1,8 @@
 
 #include "MeshLoader.h"
 #include "MeshGroup.h"
-#include "GeometryStorage.h"
-#include "GeometryManager.h"
+#include "GeometryStorageGPU.h"
+#include "GeometrySystem.h"
 #include "GeometryDataTransfer.h"
 
 namespace Ic3

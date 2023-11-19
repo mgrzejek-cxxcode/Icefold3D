@@ -50,7 +50,7 @@ namespace Ic3::Graphics::GCI
 		Unknown = 0,
 	};
 
-	namespace CxDefs
+	namespace CxDef
 	{
 
 		inline constexpr uint16 declareShaderInputResourceType( EShaderInputResourceClass pResourceClass, uint8 pIndex )
@@ -62,15 +62,15 @@ namespace Ic3::Graphics::GCI
 
 	enum class EShaderInputResourceType : uint16
 	{
-		CBVConstantBuffer = CxDefs::declareShaderInputResourceType( EShaderInputResourceClass::CBV, 0 ),
-		SRVTextureBuffer  = CxDefs::declareShaderInputResourceType( EShaderInputResourceClass::SRV, 1 ),
-		SRVTextureImage   = CxDefs::declareShaderInputResourceType( EShaderInputResourceClass::SRV, 2 ),
-		UAVStorageBuffer  = CxDefs::declareShaderInputResourceType( EShaderInputResourceClass::UAV, 3 ),
-		UAVStorageImage   = CxDefs::declareShaderInputResourceType( EShaderInputResourceClass::UAV, 4 ),
+		CBVConstantBuffer = CxDef::declareShaderInputResourceType( EShaderInputResourceClass::CBV, 0 ),
+		SRVTextureBuffer  = CxDef::declareShaderInputResourceType( EShaderInputResourceClass::SRV, 1 ),
+		SRVTextureImage   = CxDef::declareShaderInputResourceType( EShaderInputResourceClass::SRV, 2 ),
+		UAVStorageBuffer  = CxDef::declareShaderInputResourceType( EShaderInputResourceClass::UAV, 3 ),
+		UAVStorageImage   = CxDef::declareShaderInputResourceType( EShaderInputResourceClass::UAV, 4 ),
 		Unknown           = 0
 	};
 
-	namespace CxDefs
+	namespace CxDef
 	{
 
 		inline constexpr EShaderInputResourceClass getShaderInputResourceResourceClass( EShaderInputResourceType pResourceType )
@@ -96,7 +96,7 @@ namespace Ic3::Graphics::GCI
 
 		struct ConstantGroup
 		{
-			using ConstantList = std::array<ConstantDesc, gpm::IS_MAX_CONSTANT_GROUP_SIZE>;
+			using ConstantList = std::array<ConstantDesc, GCM::IS_MAX_CONSTANT_GROUP_SIZE>;
 			EShaderConstantAccessClass accessClass;
 			ConstantList constantList;
 			uint32 constantsNum = 0;
@@ -129,14 +129,14 @@ namespace Ic3::Graphics::GCI
 
 		struct DescriptorSet
 		{
-			using DescriptorList = std::array<DescriptorDesc, gpm::IS_MAX_DESCRIPTOR_SET_SIZE>;
+			using DescriptorList = std::array<DescriptorDesc, GCM::IS_MAX_DESCRIPTOR_SET_SIZE>;
 			EShaderInputDescriptorType descriptorType;
 			DescriptorList descriptorList;
 			uint32 descriptorsNum = 0;
 		};
 
-		using ConstantGroupArray = std::array<ConstantGroup, gpm::SHADER_COMBINED_STAGES_NUM>;
-		using DescriptorSetArray = std::array<DescriptorSet, gpm::IS_MAX_DESCRIPTOR_SETS_NUM>;
+		using ConstantGroupArray = std::array<ConstantGroup, GCM::SHADER_COMBINED_STAGES_NUM>;
+		using DescriptorSetArray = std::array<DescriptorSet, GCM::IS_MAX_DESCRIPTOR_SETS_NUM>;
 
 		Bitmask<EShaderStageFlags> activeShaderStagesMask;
 		ConstantGroupArray constantGroupArray;

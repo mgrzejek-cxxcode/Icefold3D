@@ -394,9 +394,9 @@ namespace Ic3::Graphics::GCI
 		{
 			DX11RenderTargetBindingData dx11RenderTargetBindingData;
 
-			for( native_uint caIndex = 0; caIndex < gpm::RT_MAX_COLOR_ATTACHMENTS_NUM; ++caIndex )
+			for( native_uint caIndex = 0; caIndex < GCM::RT_MAX_COLOR_ATTACHMENTS_NUM; ++caIndex )
 			{
-				const auto attachmentBit = CxDefs::makeRTAttachmentFlag( caIndex );
+				const auto attachmentBit = CxDef::makeRTAttachmentFlag( caIndex );
 				if( pBindingDefinition.activeAttachmentsMask.isSet( attachmentBit ) )
 				{
 					if( const auto & attachmentBinding = pBindingDefinition.colorAttachments[caIndex] )

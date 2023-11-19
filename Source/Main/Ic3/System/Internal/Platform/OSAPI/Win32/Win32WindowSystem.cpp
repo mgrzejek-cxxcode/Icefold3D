@@ -322,7 +322,7 @@ namespace Ic3::System
 			constexpr DWORD cvResizeableFrameStyle = cvFixedFrameStyle | WS_SIZEBOX | WS_MAXIMIZEBOX;
 
 			//
-			DWORD resultStyle = Limits<DWORD>::maxValue;
+			DWORD resultStyle = QLimits<DWORD>::maxValue;
 
 			switch ( pStyle )
 			{

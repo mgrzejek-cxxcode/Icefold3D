@@ -18,7 +18,7 @@ namespace Ic3
 
 	public:
 		using MyType = Bitmask<TVal>;
-		using ValueType = typename UintTypeBySize<sizeof( TVal )>::Type;
+		using ValueType = typename QUintTypeBySize<sizeof( TVal )>::Type;
 
 	public:
 		constexpr Bitmask() noexcept

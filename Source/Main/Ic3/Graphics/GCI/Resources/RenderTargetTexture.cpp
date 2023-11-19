@@ -12,7 +12,7 @@ namespace Ic3::Graphics::GCI
 			TextureReference pTargetTexture )
 	: GPUResourceView( pGPUDevice, EGPUResourceBaseType::Texture, pTargetTexture->mTextureProperties.resourceFlags )
 	, mRTTextureType( pRTTextureType )
-	, mRTBufferMask( CxDefs::getRTBufferMaskForRenderTargetTextureType( pRTTextureType ) )
+	, mRTBufferMask( CxDef::getRTBufferMaskForRenderTargetTextureType( pRTTextureType ) )
 	, mRTTextureLayout( pRTTextureLayout )
 	, mTargetTexture( pTargetTexture )
 	{}
@@ -25,7 +25,7 @@ namespace Ic3::Graphics::GCI
 			Bitmask<resource_flags_value_t> pRenderBufferFlags )
 	: GPUResourceView( pGPUDevice, EGPUResourceBaseType::Texture, pRenderBufferFlags )
 	, mRTTextureType( pRTTextureType )
-	, mRTBufferMask( CxDefs::getRTBufferMaskForRenderTargetTextureType( pRTTextureType ) )
+	, mRTBufferMask( CxDef::getRTBufferMaskForRenderTargetTextureType( pRTTextureType ) )
 	, mRTTextureLayout( pRTTextureLayout )
 	, mTargetTexture()
 	, _internalRenderBuffer( pInternalRenderBuffer )
@@ -53,7 +53,7 @@ namespace Ic3::Graphics::GCI
 
 		ERenderTargetTextureType queryRenderTargetTextureType( ETextureFormat pFormat )
 		{
-			const Bitmask<uint8> pixelFormatFlags = CxDefs::getTextureFormatFlags( pFormat );
+			const Bitmask<uint8> pixelFormatFlags = CxDef::getTextureFormatFlags( pFormat );
 
 			if( pixelFormatFlags.isSet( E_GPU_DATA_FORMAT_FLAG_COMPRESSED_BIT ) )
 			{

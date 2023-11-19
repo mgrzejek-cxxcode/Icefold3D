@@ -107,9 +107,9 @@ namespace Ic3::Graphics::GCI
 			uint32 currentVertexAttributesNum = 0;
 			uint64 currentAttributePackedRelativeOffset = 0;
 
-			for( uint32 attributeIndex = 0; attributeIndex < gpm::IA_MAX_VERTEX_ATTRIBUTES_NUM; ++attributeIndex )
+			for( uint32 attributeIndex = 0; attributeIndex < GCM::IA_MAX_VERTEX_ATTRIBUTES_NUM; ++attributeIndex )
 			{
-				const auto attributeBit = CxDefs::makeIAVertexAttributeFlag( attributeIndex );
+				const auto attributeBit = CxDef::makeIAVertexAttributeFlag( attributeIndex );
 				if( pDefinition.activeAttributesMask.isSet( attributeBit ) )
 				{
 					const auto & inputAttributeInfo = pDefinition.attributeArray[attributeIndex];
@@ -118,19 +118,19 @@ namespace Ic3::Graphics::GCI
 					// Translate the attribute data. This includes the relative offset.
 					dx11AttributeInfo = translateIAVertexAttributeInfoDX11( inputAttributeInfo );
 
-					if( inputAttributeInfo.relativeOffset == CxDefs::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND )
+					if( inputAttributeInfo.relativeOffset == CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND )
 					{
 						// If the offset is APPEND, update it with the current packed offset calculated.
 						dx11AttributeInfo.AlignedByteOffset = numeric_cast<uint32>( memGetAlignedValue( currentAttributePackedRelativeOffset, 4 ) );
 					}
-					else if( inputAttributeInfo.relativeOffset == CxDefs::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND16 )
+					else if( inputAttributeInfo.relativeOffset == CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND16 )
 					{
 						// If the offset is APPEND, update it with the current packed offset calculated.
 						dx11AttributeInfo.AlignedByteOffset = numeric_cast<uint32>( memGetAlignedValue( currentAttributePackedRelativeOffset, 16 ) );
 					}
 
 					// Update the current packed offset.
-					const auto attributeByteSize = CxDefs::getVertexAttribFormatByteSize( inputAttributeInfo.format );
+					const auto attributeByteSize = CxDef::getVertexAttribFormatByteSize( inputAttributeInfo.format );
 					currentAttributePackedRelativeOffset = dx11AttributeInfo.AlignedByteOffset + attributeByteSize;
 
 					++currentVertexAttributesNum;
@@ -151,42 +151,42 @@ namespace Ic3::Graphics::GCI
 		DX11IAVertexStreamDefinition translateIAVertexStreamDefinitionDX11(
 				const IAVertexStreamDefinition & pDefinition )
 		{
-			DX11IAVertexStreamDefinition dx11IaVertexStreamDefinition;
+			DX11IAVertexStreamDefinition dx11IAVertexStreamDefinition;
 
 			if( pDefinition.indexBufferReference )
 			{
 				auto * dx11IndexBuffer = pDefinition.indexBufferReference.sourceBuffer->queryInterface<DX11GPUBuffer>();
 
-				dx11IaVertexStreamDefinition.indexBufferBinding.buffer = dx11IndexBuffer->mD3D11Buffer.Get();
+				dx11IAVertexStreamDefinition.indexBufferBinding.buffer = dx11IndexBuffer->mD3D11Buffer.Get();
 
-				dx11IaVertexStreamDefinition.indexBufferBinding.offset =
+				dx11IAVertexStreamDefinition.indexBufferBinding.offset =
 						numeric_cast<uint32>( pDefinition.indexBufferReference.relativeOffset );
 
-				dx11IaVertexStreamDefinition.indexBufferBinding.format =
+				dx11IAVertexStreamDefinition.indexBufferBinding.format =
 						ATL::translateBaseDataTypeDX( static_cast<EBaseDataType>( pDefinition.indexBufferReference.indexFormat ) );
 			}
 
-			for( native_uint vertexInputStreamIndex = 0; vertexInputStreamIndex < gpm::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM; ++vertexInputStreamIndex )
+			for( native_uint vertexInputStreamIndex = 0; vertexInputStreamIndex < GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM; ++vertexInputStreamIndex )
 			{
 				if( const auto & vertexBufferReference = pDefinition.vertexBufferReferences[vertexInputStreamIndex] )
 				{
 					auto * dx11VertexBuffer = vertexBufferReference.sourceBuffer->queryInterface<DX11GPUBuffer>();
 
-					dx11IaVertexStreamDefinition.vertexBufferBindings.bindingData.bufferArray[vertexInputStreamIndex] =
+					dx11IAVertexStreamDefinition.vertexBufferBindings.bindingData.bufferArray[vertexInputStreamIndex] =
 							dx11VertexBuffer->mD3D11Buffer.Get();
 
-					dx11IaVertexStreamDefinition.vertexBufferBindings.bindingData.offsetArray[vertexInputStreamIndex] =
+					dx11IAVertexStreamDefinition.vertexBufferBindings.bindingData.offsetArray[vertexInputStreamIndex] =
 							numeric_cast<UINT>( vertexBufferReference.relativeOffset );
 
-					dx11IaVertexStreamDefinition.vertexBufferBindings.bindingData.strideArray[vertexInputStreamIndex] =
+					dx11IAVertexStreamDefinition.vertexBufferBindings.bindingData.strideArray[vertexInputStreamIndex] =
 							numeric_cast<UINT>( vertexBufferReference.vertexStride );
 				}
 			}
 
-			dx11IaVertexStreamDefinition.activeBindingsMask = pDefinition.activeBindingsMask;
-			dx11IaVertexStreamDefinition.vertexBufferBindings.activeRanges = smutil::generateActiveVertexBufferRanges( pDefinition.vertexBufferReferences );
+			dx11IAVertexStreamDefinition.activeBindingsMask = pDefinition.activeBindingsMask;
+			dx11IAVertexStreamDefinition.vertexBufferBindings.activeRanges = smutil::generateActiveVertexBufferRanges( pDefinition.vertexBufferReferences );
 
-			return dx11IaVertexStreamDefinition;
+			return dx11IAVertexStreamDefinition;
 		}
 
 	}

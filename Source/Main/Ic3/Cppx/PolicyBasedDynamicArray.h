@@ -9,7 +9,7 @@
 namespace Ic3
 {
 
-	template <size_t tFixedCapacity, size_t tResizeFactor, size_t tMaximumCapacity = Limits<size_t>::maxValue>
+	template <size_t tFixedCapacity, size_t tResizeFactor, size_t tMaximumCapacity = QLimits<size_t>::maxValue>
 	struct DynamicArrayPolicy
 	{
 		static constexpr size_t sFixedCapacity = tFixedCapacity;

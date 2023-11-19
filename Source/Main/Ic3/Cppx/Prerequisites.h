@@ -12,7 +12,7 @@
 namespace Ic3
 {
 
-	namespace CxDefs
+	namespace CxDef
 	{
 
 		/// @brief Represents max value which can be stored in the size_t type.
@@ -22,6 +22,12 @@ namespace Ic3
 		inline constexpr size_t INVALID_POSITION = static_cast<size_t>( -1 );
 
 	}
+
+	template <typename TValue, TValue tInitValue = TValue{}>
+	struct StateWrapper
+	{
+		TValue state = tInitValue;
+	};
 
 	template <typename TType>
 	struct ArrayDelete
@@ -52,6 +58,12 @@ namespace Ic3
 	inline TResult numeric_cast( TInput pInput )
 	{
 		ic3DebugAssert( pInput <= std::numeric_limits<TResult>::max() );
+		return static_cast<TResult>( pInput );
+	}
+
+	template <typename TResult, typename TInput>
+	inline constexpr TResult static_numeric_cast( TInput pInput )
+	{
 		return static_cast<TResult>( pInput );
 	}
 

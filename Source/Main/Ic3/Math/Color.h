@@ -84,19 +84,19 @@ namespace Ic3::Math
 		{}
 
 		constexpr RGBAColorNorm( RGBAColor pColor )
-		: fpRed( static_cast<TReal>( pColor.u8Red ) / static_cast<TReal>( Limits<uint8>::maxValue ) )
-		, fpGreen( static_cast<TReal>( pColor.u8Green ) / static_cast<TReal>( Limits<uint8>::maxValue ) )
-		, fpBlue( static_cast<TReal>( pColor.u8Blue ) / static_cast<TReal>( Limits<uint8>::maxValue ) )
-		, fpAlpha( static_cast<TReal>( pColor.u8Alpha ) / static_cast<TReal>( Limits<uint8>::maxValue ) )
+		: fpRed( static_cast<TReal>( pColor.u8Red ) / static_cast<TReal>( QLimits<uint8>::maxValue ) )
+		, fpGreen( static_cast<TReal>( pColor.u8Green ) / static_cast<TReal>( QLimits<uint8>::maxValue ) )
+		, fpBlue( static_cast<TReal>( pColor.u8Blue ) / static_cast<TReal>( QLimits<uint8>::maxValue ) )
+		, fpAlpha( static_cast<TReal>( pColor.u8Alpha ) / static_cast<TReal>( QLimits<uint8>::maxValue ) )
 		{}
 
 		constexpr RGBAColor toU8Color() const
 		{
 			return RGBAColor(
-				static_cast<uint8>( fpRed * Limits<uint8>::maxValue  ),
-				static_cast<uint8>( fpGreen * Limits<uint8>::maxValue  ),
-				static_cast<uint8>( fpBlue * Limits<uint8>::maxValue  ),
-				static_cast<uint8>( fpAlpha * Limits<uint8>::maxValue  ) );
+				static_cast<uint8>( fpRed * QLimits<uint8>::maxValue  ),
+				static_cast<uint8>( fpGreen * QLimits<uint8>::maxValue  ),
+				static_cast<uint8>( fpBlue * QLimits<uint8>::maxValue  ),
+				static_cast<uint8>( fpAlpha * QLimits<uint8>::maxValue  ) );
 		}
 	};
 

@@ -30,7 +30,7 @@ namespace Ic3::Graphics::GCI
 		uint32 instanceRate;
 	};
 
-	using GLIAVertexAttributeInfoArray = std::array<GLIAVertexAttributeInfo, gpm::IA_MAX_VERTEX_ATTRIBUTES_NUM>;
+	using GLIAVertexAttributeInfoArray = std::array<GLIAVertexAttributeInfo, GCM::IA_MAX_VERTEX_ATTRIBUTES_NUM>;
 
 	struct GLIAInputLayoutDefinition
 	{
@@ -77,15 +77,15 @@ namespace Ic3::Graphics::GCI
 		struct SeparateBindings
 		{
 			/// Array of GL-specific handles. Zero at index N means the binding for stream N is not active.
-			GLuint handleArray[gpm::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM];
+			GLuint handleArray[GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM];
 			/// Array of offsets, in bytes, from the beginning of each buffer storage. Undefined for inactive bindings.
-			GLintptr offsetArray[gpm::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM];
+			GLintptr offsetArray[GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM];
 			/// Array of data strides, in bytes, of the data in each buffer. Undefined for inactive bindings.
-			GLsizei strideArray[gpm::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM];
+			GLsizei strideArray[GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM];
 		};
 
 		/// Interleaved VB bindings (an array of structs).
-		using InterleavedBindingsArray = std::array<GLIAVertexBufferBinding, gpm::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM>;
+		using InterleavedBindingsArray = std::array<GLIAVertexBufferBinding, GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM>;
 
 		union
 		{

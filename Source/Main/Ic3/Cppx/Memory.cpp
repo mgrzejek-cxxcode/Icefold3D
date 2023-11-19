@@ -18,7 +18,7 @@ namespace Ic3
 			allocationProxy.apiRealloc = []( void * pMemory, size_t pNewSize ) -> void * {
 				return std::realloc( pMemory, pNewSize );
 			};
-			allocationProxy.memoryAlignment = CxDefs::MEMORY_DEFAULT_ALIGNMENT;
+			allocationProxy.memoryAlignment = CxDef::MEMORY_DEFAULT_ALIGNMENT;
 		}
 		catch( ... )
 		{

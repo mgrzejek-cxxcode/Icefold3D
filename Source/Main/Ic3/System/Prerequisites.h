@@ -50,18 +50,18 @@ namespace Ic3::System
 
 	enum : exception_category_value_t
 	{
-		E_EXCEPTION_CATEGORY_SYSTEM_CORE    = CxDefs::declareExceptionCategory( ExceptionBaseType::System, 0x01 ),
-		E_EXCEPTION_CATEGORY_SYSTEM_DISPLAY = CxDefs::declareExceptionCategory( ExceptionBaseType::System, 0x02 ),
-		E_EXCEPTION_CATEGORY_SYSTEM_EVENT   = CxDefs::declareExceptionCategory( ExceptionBaseType::System, 0x03 ),
-		E_EXCEPTION_CATEGORY_SYSTEM_FILE    = CxDefs::declareExceptionCategory( ExceptionBaseType::System, 0x04 ),
-		E_EXCEPTION_CATEGORY_SYSTEM_METAL   = CxDefs::declareExceptionCategory( ExceptionBaseType::System, 0x05 ),
-		E_EXCEPTION_CATEGORY_SYSTEM_OPENGL  = CxDefs::declareExceptionCategory( ExceptionBaseType::System, 0x07 ),
-		E_EXCEPTION_CATEGORY_SYSTEM_WINDOW  = CxDefs::declareExceptionCategory( ExceptionBaseType::System, 0x09 ),
+		E_EXCEPTION_CATEGORY_SYSTEM_CORE    = CxDef::declareExceptionCategory( ExceptionBaseType::System, 0x01 ),
+		E_EXCEPTION_CATEGORY_SYSTEM_DISPLAY = CxDef::declareExceptionCategory( ExceptionBaseType::System, 0x02 ),
+		E_EXCEPTION_CATEGORY_SYSTEM_EVENT   = CxDef::declareExceptionCategory( ExceptionBaseType::System, 0x03 ),
+		E_EXCEPTION_CATEGORY_SYSTEM_FILE    = CxDef::declareExceptionCategory( ExceptionBaseType::System, 0x04 ),
+		E_EXCEPTION_CATEGORY_SYSTEM_METAL   = CxDef::declareExceptionCategory( ExceptionBaseType::System, 0x05 ),
+		E_EXCEPTION_CATEGORY_SYSTEM_OPENGL  = CxDef::declareExceptionCategory( ExceptionBaseType::System, 0x07 ),
+		E_EXCEPTION_CATEGORY_SYSTEM_WINDOW  = CxDef::declareExceptionCategory( ExceptionBaseType::System, 0x09 ),
 	};
 
 	enum : exception_code_value_t
 	{
-		E_EXC_SYSTEM_INTERFACE_NOT_SUPPORTED = CxDefs::declareExceptionCode( E_EXCEPTION_CATEGORY_SYSTEM_CORE, 0x04 ),
+		E_EXC_SYSTEM_INTERFACE_NOT_SUPPORTED = CxDef::declareExceptionCode( E_EXCEPTION_CATEGORY_SYSTEM_CORE, 0x04 ),
 	};
 
 	/// @brief Helper proxy-like base class for platform-specific types.

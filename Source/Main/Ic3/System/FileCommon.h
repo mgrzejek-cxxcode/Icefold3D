@@ -20,11 +20,11 @@ namespace Ic3::System
 	using file_offset_t = native_int;
 	using file_size_t = native_uint;
 
-	inline constexpr auto CX_FILE_SIZE_MAX = Limits<file_size_t>::maxValue;
+	inline constexpr auto CX_FILE_SIZE_MAX = QLimits<file_size_t>::maxValue;
 
 	enum : exception_code_value_t
 	{
-		E_EXC_SYSTEM_FILE_OPEN_ERROR = Ic3::CxDefs::declareExceptionCode( E_EXCEPTION_CATEGORY_SYSTEM_FILE, 1 )
+		E_EXC_SYSTEM_FILE_OPEN_ERROR = Ic3::CxDef::declareExceptionCode( E_EXCEPTION_CATEGORY_SYSTEM_FILE, 1 )
 	};
 
 	enum class EFilePointerRefPos : enum_default_value_t

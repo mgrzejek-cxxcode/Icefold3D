@@ -589,14 +589,14 @@ namespace Ic3::System
 
 	bool EventDispatcher::postEvent( EventObject pEvent )
 	{
-		if( CxDefs::validateEventCode( pEvent.code ) )
+		if( CxDef::validateEventCode( pEvent.code ) )
 		{
 			if( _preProcessEvent( pEvent ) )
 			{
 				pEvent.commonData.timeStamp = PerfCounter::queryCurrentStamp();
 
 				{
-					auto codeIndexValue = static_cast<size_t>( CxDefs::getEventCodeCodeIndex( pEvent.code ) );
+					auto codeIndexValue = static_cast<size_t>( CxDef::getEventCodeCodeIndex( pEvent.code ) );
 					auto & eventHandler = _privateData->handlerMapByCodeIndex[codeIndexValue];
 					if( eventHandler && eventHandler( pEvent ) )
 					{
@@ -604,7 +604,7 @@ namespace Ic3::System
 					}
 				}
 				{
-					auto categoryValue = static_cast<size_t>( CxDefs::getEventCodeCategory( pEvent.code ) );
+					auto categoryValue = static_cast<size_t>( CxDef::getEventCodeCategory( pEvent.code ) );
 					auto & eventHandler = _privateData->handlerMapByCategory[categoryValue];
 					if( eventHandler && eventHandler( pEvent ) )
 					{
@@ -612,7 +612,7 @@ namespace Ic3::System
 					}
 				}
 				{
-					auto baseTypeValue = static_cast<size_t>( CxDefs::getEventCodeBaseType( pEvent.code ) );
+					auto baseTypeValue = static_cast<size_t>( CxDef::getEventCodeBaseType( pEvent.code ) );
 					auto & eventHandler = _privateData->handlerMapByBaseType[baseTypeValue];
 					if( eventHandler && eventHandler( pEvent ) )
 					{
@@ -763,7 +763,7 @@ namespace Ic3::System
 			}
 		}
 
-		const auto buttonMask = CxDefs::getMouseButtonFlagFromButtonID( pMouseButtonEvent.buttonID );
+		const auto buttonMask = CxDef::getMouseButtonFlagFromButtonID( pMouseButtonEvent.buttonID );
 		if( pMouseButtonEvent.buttonAction == EMouseButtonActionType::Click )
 		{
 			pMouseButtonEvent.buttonStateMask.set( buttonMask );

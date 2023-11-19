@@ -97,7 +97,7 @@ namespace Ic3::System
 	};
 
 
-	namespace CxDefs
+	namespace CxDef
 	{
 
 		inline constexpr EMouseButtonFlagBits getMouseButtonFlagFromButtonID( EMouseButtonID pButtonID )

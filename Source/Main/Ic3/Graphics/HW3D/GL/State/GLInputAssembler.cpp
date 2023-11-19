@@ -178,15 +178,15 @@ namespace Ic3::Graphics::GCI
 			glcAttributeInfo.streamIndex = static_cast<GLuint>( pAttributeInfo.streamIndex );
 			glcAttributeInfo.instanceRate = pAttributeInfo.instanceRate;
 			glcAttributeInfo.relativeOffset = static_cast<uint32>( pAttributeInfo.relativeOffset );
-			glcAttributeInfo.byteSize = CxDefs::getVertexAttribFormatByteSize( pAttributeInfo.format );
+			glcAttributeInfo.byteSize = CxDef::getVertexAttribFormatByteSize( pAttributeInfo.format );
 
-			const auto attributeBaseType = CxDefs::getVertexAttribFormatBaseDataType( pAttributeInfo.format );
+			const auto attributeBaseType = CxDef::getVertexAttribFormatBaseDataType( pAttributeInfo.format );
 			glcAttributeInfo.baseType = ATL::translateGLBaseDataType( attributeBaseType );
 
-			const auto attributeComponentsNum = CxDefs::getVertexAttribFormatComponentsNum( pAttributeInfo.format );
+			const auto attributeComponentsNum = CxDef::getVertexAttribFormatComponentsNum( pAttributeInfo.format );
 			glcAttributeInfo.componentsNum = static_cast<uint32>( attributeComponentsNum );
 
-			const auto attributeFormatFlags = CxDefs::getVertexAttribFormatFlags( pAttributeInfo.format );
+			const auto attributeFormatFlags = CxDef::getVertexAttribFormatFlags( pAttributeInfo.format );
 			glcAttributeInfo.normalized = attributeFormatFlags.isSet( E_GPU_DATA_FORMAT_FLAG_NORMALIZED_BIT ) ? GL_TRUE : GL_FALSE;
 
 			return glcAttributeInfo;
@@ -202,9 +202,9 @@ namespace Ic3::Graphics::GCI
 			uint32 currentVertexAttributesNum = 0;
 			uint64 currentAttributePackedRelativeOffset = 0;
 
-			for( uint32 attributeIndex = 0; attributeIndex < gpm::IA_MAX_VERTEX_ATTRIBUTES_NUM; ++attributeIndex )
+			for( uint32 attributeIndex = 0; attributeIndex < GCM::IA_MAX_VERTEX_ATTRIBUTES_NUM; ++attributeIndex )
 			{
-				const auto attributeBit = CxDefs::makeIAVertexAttributeFlag( attributeIndex );
+				const auto attributeBit = CxDef::makeIAVertexAttributeFlag( attributeIndex );
 				if( pDefinition.activeAttributesMask.isSet( attributeBit ) )
 				{
 					const auto & inputAttributeInfo = pDefinition.attributeArray[attributeIndex];
@@ -213,12 +213,12 @@ namespace Ic3::Graphics::GCI
 					// Translate the attribute data. This includes the relative offset.
 					glcAttributeInfo = translateIAVertexAttributeInfoGL( inputAttributeInfo );
 
-					if( inputAttributeInfo.relativeOffset == CxDefs::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND )
+					if( inputAttributeInfo.relativeOffset == CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND )
 					{
 						// If the offset is APPEND, update it with the current packed offset calculated.
 						glcAttributeInfo.relativeOffset = numeric_cast<uint32>( currentAttributePackedRelativeOffset );
 					}
-					else if( inputAttributeInfo.relativeOffset == CxDefs::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND16 )
+					else if( inputAttributeInfo.relativeOffset == CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND16 )
 					{
 						// If the offset is APPEND, update it with the current packed offset calculated.
 						glcAttributeInfo.relativeOffset = numeric_cast<uint32>( memGetAlignedValue( currentAttributePackedRelativeOffset, 16 ) );
@@ -281,10 +281,10 @@ namespace Ic3::Graphics::GCI
 			pOutGLBindings.initializeSeparate();
 		#endif
 
-			for( native_uint streamIndex = 0; streamIndex < gpm::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM; ++streamIndex )
+			for( native_uint streamIndex = 0; streamIndex < GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM; ++streamIndex )
 			{
 				const auto & inputVertexBufferRef = pVBReferences[streamIndex];
-				const auto vbBindingFlag = CxDefs::makeIAVertexBufferFlag( streamIndex );
+				const auto vbBindingFlag = CxDef::makeIAVertexBufferFlag( streamIndex );
 
 				if( inputVertexBufferRef && pBindingMask.isSet( vbBindingFlag ) )
 				{
@@ -330,7 +330,7 @@ namespace Ic3::Graphics::GCI
 				pOutGLBinding.handle = glcIndexBuffer->mGLBufferObject->mGLHandle;
 				pOutGLBinding.offset = pIBReference.dataOffset();
 				pOutGLBinding.format = ATL::translateGLIndexDataFormat( pIBReference.indexFormat );
-				pOutGLBinding.elementByteSize = CxDefs::getIndexDataFormatByteSize( pIBReference.indexFormat );
+				pOutGLBinding.elementByteSize = CxDef::getIndexDataFormatByteSize( pIBReference.indexFormat );
 
 				return true;
 			}
@@ -388,9 +388,9 @@ namespace Ic3::Graphics::GCI
 			glBindVertexArray( pVertexArrayObject.mGLHandle );
 			ic3OpenGLHandleLastError();
 
-			for( uint32 attributeIndex = 0; attributeIndex < gpm::IA_MAX_VERTEX_ATTRIBUTES_NUM; ++attributeIndex )
+			for( uint32 attributeIndex = 0; attributeIndex < GCM::IA_MAX_VERTEX_ATTRIBUTES_NUM; ++attributeIndex )
 			{
-				const auto attributeBit = CxDefs::makeIAVertexAttributeFlag( attributeIndex );
+				const auto attributeBit = CxDef::makeIAVertexAttributeFlag( attributeIndex );
 				if( pInputLayoutDefinition.activeAttributesMask.isSet( attributeBit ) )
 				{
 					const auto & glcAttribute = pInputLayoutDefinition.attributeArray[attributeIndex];
@@ -459,9 +459,9 @@ namespace Ic3::Graphics::GCI
 
 			GLuint currentVBBinding = 0;
 
-			for( uint32 attributeIndex = 0; attributeIndex < gpm::IA_MAX_VERTEX_ATTRIBUTES_NUM; ++attributeIndex )
+			for( uint32 attributeIndex = 0; attributeIndex < GCM::IA_MAX_VERTEX_ATTRIBUTES_NUM; ++attributeIndex )
 			{
-				const auto attributeBit = CxDefs::makeIAVertexAttributeFlag( attributeIndex );
+				const auto attributeBit = CxDef::makeIAVertexAttributeFlag( attributeIndex );
 				if( pInputLayoutDefinition.activeAttributesMask.isSet( attributeBit ) )
 				{
 					const auto & glcAttribute = pInputLayoutDefinition.attributeArray[attributeIndex];

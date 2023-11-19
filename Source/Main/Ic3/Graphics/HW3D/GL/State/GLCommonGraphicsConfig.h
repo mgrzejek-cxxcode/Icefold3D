@@ -36,7 +36,7 @@ namespace Ic3::Graphics::GCI
 	{
 		Bitmask<ERTAttachmentFlags> attachmentsMask;
 		Bitmask<EBlendConfigFlags> flags;
-		GLRTColorAttachmentBlendSettings attachments[gpm::RT_MAX_COLOR_ATTACHMENTS_NUM];
+		GLRTColorAttachmentBlendSettings attachments[GCM::RT_MAX_COLOR_ATTACHMENTS_NUM];
 		Math::RGBAColorR32Norm constantColor;
 	};
 

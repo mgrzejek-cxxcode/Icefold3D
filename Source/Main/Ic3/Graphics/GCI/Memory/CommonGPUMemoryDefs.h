@@ -21,17 +21,17 @@ namespace Ic3::Graphics::GCI
     using gpu_memory_heap_id_t = uint64;
     using gpu_memory_pool_id_t = uint64;
 
-    using GPUMemoryRegion = Region<gpu_memory_size_t>;
-    using GPUMemoryRange = GPUMemoryRegion::Range;
+    using GPUMemoryRegion = SRegion<gpu_memory_size_t>;
+    using GPUMemoryRange = GPUMemoryRegion::SRange;
 
-	namespace CxDefs
+	namespace CxDef
 	{
 
 		/// @brief
-		inline constexpr gpu_memory_size_t GPU_MEMORY_OFFSET_INVALID = Limits<gpu_memory_size_t>::maxValue;
+		inline constexpr gpu_memory_size_t GPU_MEMORY_OFFSET_INVALID = QLimits<gpu_memory_size_t>::maxValue;
 
 		/// @brief
-		inline constexpr gpu_memory_size_t GPU_MEMORY_SIZE_MAX = Limits<gpu_memory_size_t>::maxValue;
+		inline constexpr gpu_memory_size_t GPU_MEMORY_SIZE_MAX = QLimits<gpu_memory_size_t>::maxValue;
 
 	}
 

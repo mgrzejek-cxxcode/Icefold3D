@@ -4,11 +4,43 @@
 #ifndef __IC3_NXMAIN_GEOMETRY_CONTAINER_H__
 #define __IC3_NXMAIN_GEOMETRY_CONTAINER_H__
 
-#include "GeometryDataFormat.h"
+#include "VertexPipelineConfig.h"
 #include "GeometryBuffer.h"
 
 namespace Ic3
 {
+
+	ic3DeclareInterfaceHandle( IGeometryStorage );
+
+	class IGeometryContainer
+	{
+	public:
+		IGeometryContainer();
+		virtual ~IGeometryContainer();
+
+		IC3_ATTR_NO_DISCARD bool isStorageInitialized() const noexcept;
+
+		IC3_ATTR_NO_DISCARD bool isIndexedGeometry() const noexcept;
+
+		IC3_ATTR_NO_DISCARD GeometryIndexBufferReference getIndexBuffer() const noexcept;
+
+		IC3_ATTR_NO_DISCARD GeometryVertexBufferReference getVertexBuffer( size_t pVertexStreamIndex ) const noexcept;
+
+		bool setIndexBuffer( const GeometryIndexBufferReference & pIndexBufferReference );
+
+		bool setVertexBuffer( uint32 pVertexStreamIndex, const GeometryVertexBufferReference & pVertexBufferReference );
+
+	protected:
+		void setVertexBufferRefsStorage( GeometryVertexBufferReference * pVertexBufferRefsPtr );
+
+		void initializeContainerStorage();
+
+	protected:
+		IGeometryStorageHandle _internalStorage;
+		GeometryDataReference _allGeometryDataRef;
+		GeometryIndexBufferReference _indexBufferRefPtr;
+		GeometryVertexBufferReference * _vertexBufferRefsPtr;
+	};
 
 	struct GeometrySizeMetrics
 	{
@@ -61,74 +93,6 @@ namespace Ic3
 	template <typename TBufferData>
 	class GeometryDataStore<TBufferData, 0> : public GeometryDataStoreBase
 	{
-	};
-
-	class GeometryContainerBase
-	{
-	public:
-		GeometryDataFormatBase const mDataFormat;
-		GeometryStorageCapacity const mStorageCapacity;
-
-	public:
-		GeometryContainerBase( const GeometryDataFormatBase & pDataFormat, const GeometryStorageCapacity & pStorageCapacity )
-		: mDataFormat( pDataFormat )
-		, mStorageCapacity( pStorageCapacity )
-		{}
-
-		virtual ~GeometryContainerBase();
-
-		IC3_ATTR_NO_DISCARD bool isStorageInitialized() const noexcept;
-
-		IC3_ATTR_NO_DISCARD bool isIndexedGeometry() const noexcept;
-
-		IC3_ATTR_NO_DISCARD GeometryIndexBufferReference getIndexBuffer() const noexcept;
-
-		IC3_ATTR_NO_DISCARD GeometryVertexBufferReference getVertexBuffer( size_t pVertexStreamIndex ) const noexcept;
-
-		bool setIndexBuffer( const GeometryIndexBufferReference & pIndexBufferReference );
-
-		bool setVertexBuffer( uint32 pVertexStreamIndex, const GeometryVertexBufferReference & pVertexBufferReference );
-
-	protected:
-		void setVertexBufferRefsStorage( GeometryVertexBufferReference * pVertexBufferRefsPtr );
-
-		void initializeContainerStorage();
-
-	protected:
-		GeometryDataReference _allGeometryDataRef;
-		GeometryIndexBufferReference _indexBufferRefPtr;
-		GeometryVertexBufferReference * _vertexBufferRefsPtr;
-	};
-
-	template <size_t tVertexStreamArraySize>
-	class GeometryContainer : public GeometryContainerBase
-	{
-	public:
-		GeometryContainer( const GeometryDataFormatBase & pDataFormat, const GeometryStorageCapacity & pStorageCapacity )
-		: GeometryContainerBase( pDataFormat, pStorageCapacity )
-		{
-			setVertexBufferRefsStorage( _vertexBufferRefs.data() );
-		}
-
-	private:
-		using GeometryVertexBufferRefArray = std::array<GeometryVertexBufferReference, tVertexStreamArraySize>;
-		GeometryVertexBufferRefArray _vertexBufferRefs;
-	};
-
-	template <>
-	class GeometryContainer<0> : public GeometryContainerBase
-	{
-	public:
-		GeometryContainer( const GeometryDataFormatBase & pDataFormat, const GeometryStorageCapacity & pStorageCapacity )
-		: GeometryContainerBase( pDataFormat, pStorageCapacity )
-		{
-			_vertexBufferRefs.resize( pDataFormat.activeVertexStreamsNum() );
-			setVertexBufferRefsStorage( _vertexBufferRefs.data() );
-		}
-
-	private:
-		using GeometryVertexBufferRefDynamicArray = std::vector<GeometryVertexBufferReference>;
-		GeometryVertexBufferRefDynamicArray _vertexBufferRefs;
 	};
 
 	class GeometryDataSource

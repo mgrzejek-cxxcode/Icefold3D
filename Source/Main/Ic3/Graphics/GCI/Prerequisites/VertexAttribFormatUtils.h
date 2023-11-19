@@ -90,45 +90,61 @@ namespace Ic3::Graphics::GCI
 	template <typename TScalar, size_t tSize>
 	struct VertexAttribFormatDataTypeTraits<Math::Vector<TScalar, tSize>>
 	{
-		static constexpr auto sVertexAttribFormat = ( EVertexAttribFormat )CxDefs::declareVertexAttribFormat(
+		using BaseDataType = TScalar;
+
+		static constexpr auto sAttribComponentsNum = 1;
+		static constexpr auto sScalarValuesNum = tSize;
+		static constexpr auto sSizeInBytes = sizeof( BaseDataType ) * sScalarValuesNum;
+
+		static constexpr auto sBaseAttribFormat = ( EVertexAttribFormat )CxDef::declareVertexAttribFormat(
 				BaseScalarDataTypeTraits<TScalar>::sBaseDataType,
 				tSize,
 				BaseScalarDataTypeTraits<TScalar>::sBaseDataFlags );
-
-		static constexpr auto sVertexAttribComponentsNum = 1;
 	};
 
 	template <typename TScalar, size_t tRows, size_t tColumns>
 	struct VertexAttribFormatDataTypeTraits<Math::Matrix<TScalar, tRows, tColumns>>
 	{
-		static constexpr auto sVertexAttribFormat = ( EVertexAttribFormat )CxDefs::declareVertexAttribFormat(
+		using BaseDataType = TScalar;
+
+		static constexpr auto sAttribComponentsNum = tRows;
+		static constexpr auto sScalarValuesNum = tRows * tColumns;
+		static constexpr auto sSizeInBytes = sizeof( BaseDataType ) * sScalarValuesNum;
+
+		static constexpr auto sBaseAttribFormat = ( EVertexAttribFormat )CxDef::declareVertexAttribFormat(
 				BaseScalarDataTypeTraits<TScalar>::sBaseDataType,
 				tColumns,
 				BaseScalarDataTypeTraits<TScalar>::sBaseDataFlags );
-
-		static constexpr auto sVertexAttribComponentsNum = tRows;
 	};
 
 	template <>
 	struct VertexAttribFormatDataTypeTraits<Math::RGBAColor>
 	{
-		static constexpr auto sVertexAttribFormat = ( EVertexAttribFormat )CxDefs::declareVertexAttribFormat(
+		using BaseDataType = uint8;
+
+		static constexpr auto sAttribComponentsNum = 1;
+		static constexpr auto sScalarValuesNum = 4;
+		static constexpr auto sSizeInBytes = sizeof( BaseDataType ) * sScalarValuesNum;
+
+		static constexpr auto sBaseAttribFormat = ( EVertexAttribFormat )CxDef::declareVertexAttribFormat(
 				BaseScalarDataTypeTraits<uint8>::sBaseDataType,
 				4,
-				BaseScalarDataTypeTraits<uint8>::sBaseDataFlags | E_GPU_DATA_FORMAT_FLAG_NORMALIZED_BIT );
-
-		static constexpr auto sVertexAttribComponentsNum = 1;
+				BaseScalarDataTypeTraits<uint8>::sBaseDataFlags );
 	};
 
 	template <>
 	struct VertexAttribFormatDataTypeTraits<Math::RGBAColorNorm<float>>
 	{
-		static constexpr auto sVertexAttribFormat = ( EVertexAttribFormat )CxDefs::declareVertexAttribFormat(
+		using BaseDataType = float;
+
+		static constexpr auto sAttribComponentsNum = 1;
+		static constexpr auto sScalarValuesNum = 4;
+		static constexpr auto sSizeInBytes = sizeof( BaseDataType ) * sScalarValuesNum;
+
+		static constexpr auto sBaseAttribFormat = ( EVertexAttribFormat )CxDef::declareVertexAttribFormat(
 				BaseScalarDataTypeTraits<float>::sBaseDataType,
 				4,
 				BaseScalarDataTypeTraits<float>::sBaseDataFlags );
-
-		static constexpr auto sVertexAttribComponentsNum = 1;
 	};
 
 } // namespace Ic3::Graphics::GCI

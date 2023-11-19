@@ -93,8 +93,8 @@ namespace Ic3::System
 	enum : exception_code_value_t
 	{
 		///
-		E_EXC_SYSTEM_OPENGL_API_VERSION_NOT_SUPPORTED = Ic3::CxDefs::declareExceptionCode( E_EXCEPTION_CATEGORY_SYSTEM_OPENGL, 0x03 ),
-		E_EXC_SYSTEM_OPENGL_API_PROFILE_NOT_SUPPORTED = Ic3::CxDefs::declareExceptionCode( E_EXCEPTION_CATEGORY_SYSTEM_OPENGL, 0x04 ),
+		E_EXC_SYSTEM_OPENGL_API_VERSION_NOT_SUPPORTED = Ic3::CxDef::declareExceptionCode( E_EXCEPTION_CATEGORY_SYSTEM_OPENGL, 0x03 ),
+		E_EXC_SYSTEM_OPENGL_API_PROFILE_NOT_SUPPORTED = Ic3::CxDef::declareExceptionCode( E_EXCEPTION_CATEGORY_SYSTEM_OPENGL, 0x04 ),
 	};
 
 	inline constexpr Version CX_GL_VERSION_BEST_SUPPORTED{ CX_UINT16_MAX, CX_UINT16_MAX };
@@ -147,14 +147,14 @@ namespace Ic3::System
 
 	public:
 		constexpr OpenGLErrorInfo( bool pStatus )
-		: errorCode( pStatus ? 0u : Limits<uint32>::maxValue )
-		, errorString( Ic3::CxDefs::STR_CHAR_EMPTY )
+		: errorCode( pStatus ? 0u : QLimits<uint32>::maxValue )
+		, errorString( Ic3::CxDef::STR_CHAR_EMPTY )
 		{}
 
 		template <typename TGLErrorCode>
 		constexpr OpenGLErrorInfo( TGLErrorCode pErrorCode, const char * pErrorMessage = nullptr )
 		: errorCode( numeric_cast<uint32>( pErrorCode ) )
-		, errorString( pErrorMessage ? Ic3::CxDefs::STR_CHAR_EMPTY : pErrorMessage )
+		, errorString( pErrorMessage ? Ic3::CxDef::STR_CHAR_EMPTY : pErrorMessage )
 		{}
 	};
 

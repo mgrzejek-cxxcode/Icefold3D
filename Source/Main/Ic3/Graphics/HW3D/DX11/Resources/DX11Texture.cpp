@@ -457,7 +457,7 @@ namespace Ic3::Graphics::GCI
 				auto subResourcesNum = pCreateInfo.dimensions.arraySize * pCreateInfo.dimensions.mipLevelsNum;
 				dx11InitDataDesc.textureSubResourcesNum = subResourcesNum;
 				dx11InitDataDesc.d3d11SubResourceDataArray.resize( subResourcesNum );
-				dx11InitDataDesc.pixelByteSize = CxDefs::getTextureFormatByteSize( pCreateInfo.internalFormat );
+				dx11InitDataDesc.pixelByteSize = CxDef::getTextureFormatByteSize( pCreateInfo.internalFormat );
 
 				for( uint32 subTextureIndex = 0; subTextureIndex < pCreateInfo.dimensions.arraySize; ++subTextureIndex )
 				{

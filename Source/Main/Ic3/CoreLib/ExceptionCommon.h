@@ -76,7 +76,7 @@ namespace Ic3
         Reserved
     };
 
-	namespace CxDefs
+	namespace CxDef
 	{
 
 
@@ -100,7 +100,7 @@ namespace Ic3
 
 	}
 
-    namespace CxDefs
+    namespace CxDef
     {
 
 	    /// @brief Checks whether the specified value is a valid ExceptionBaseType.

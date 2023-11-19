@@ -15,8 +15,8 @@ namespace Ic3
 		static constexpr auto sHashAlgo1 = EHashAlgo::FNV1A32;
 		static constexpr auto sHashAlgo2 = EHashAlgo::SDBM;
 
-		using Hash1 = HashObject<sHashAlgo1>;
-		using Hash2 = HashObject<sHashAlgo2>;
+		using Hash1 = SHashObject<sHashAlgo1>;
+		using Hash2 = SHashObject<sHashAlgo2>;
 		using ValueType = uint64;
 
 		uint64 idValue;
@@ -75,39 +75,11 @@ namespace Ic3
 		}
 	};
 
-	inline HFSIdentifier generateHFSIdentifier( const char * pCStr )
+	template <typename TInput, typename... TRest>
+	inline HFSIdentifier generateHFSIdentifier( const TInput & pInput, const TRest & ...pRest )
 	{
-		const auto hash1 = hashCompute<EHashAlgo::FNV1A32>( pCStr );
-		const auto hash2 = hashCompute<EHashAlgo::SDBM>( pCStr );
-		return HFSIdentifier{ hash1, hash2 };
-	}
-
-	inline HFSIdentifier generateHFSIdentifier( const wchar_t * pWCStr )
-	{
-		const auto hash1 = hashCompute<EHashAlgo::FNV1A32>( pWCStr );
-		const auto hash2 = hashCompute<EHashAlgo::SDBM>( pWCStr );
-		return HFSIdentifier{ hash1, hash2 };
-	}
-
-	inline HFSIdentifier generateHFSIdentifier( const std::string & pString )
-	{
-		const auto hash1 = hashCompute<EHashAlgo::FNV1A32>( pString );
-		const auto hash2 = hashCompute<EHashAlgo::SDBM>( pString );
-		return HFSIdentifier{ hash1, hash2 };
-	}
-
-	inline HFSIdentifier generateHFSIdentifier( const std::wstring & pString )
-	{
-		const auto hash1 = hashCompute<EHashAlgo::FNV1A32>( pString );
-		const auto hash2 = hashCompute<EHashAlgo::SDBM>( pString );
-		return HFSIdentifier{ hash1, hash2 };
-	}
-
-	template <typename TInput>
-	inline HFSIdentifier generateHFSIdentifier( const TInput & pInput )
-	{
-		const auto hash1 = hashCompute<EHashAlgo::FNV1A32>( pInput );
-		const auto hash2 = hashCompute<EHashAlgo::SDBM>( pInput );
+		const auto hash1 = hashCompute<EHashAlgo::FNV1A32>( pInput, pRest... );
+		const auto hash2 = hashCompute<EHashAlgo::SDBM>( pInput, pRest... );
 		return HFSIdentifier{ hash1, hash2 };
 	}
 

@@ -53,11 +53,11 @@ namespace Ic3::Graphics::GCI
 	{
 		Bitmask<ERTAttachmentFlags> activeAttachmentsMask = 0;
 
-		DX11RenderTargetColorAttachment colorAttachments[gpm::RT_MAX_COLOR_ATTACHMENTS_NUM];
+		DX11RenderTargetColorAttachment colorAttachments[GCM::RT_MAX_COLOR_ATTACHMENTS_NUM];
 		DX11RenderTargetDepthStencilAttachment depthStencilAttachment;
-		DX11RenderTargetResolveAttachment resolveAttachments[gpm::RT_MAX_COMBINED_ATTACHMENTS_NUM];
+		DX11RenderTargetResolveAttachment resolveAttachments[GCM::RT_MAX_COMBINED_ATTACHMENTS_NUM];
 
-		ID3D11RenderTargetView * d3d11ColorAttachmentRTViewArray[gpm::RT_MAX_COLOR_ATTACHMENTS_NUM];
+		ID3D11RenderTargetView * d3d11ColorAttachmentRTViewArray[GCM::RT_MAX_COLOR_ATTACHMENTS_NUM];
 		ID3D11DepthStencilView * d3d11DepthStencilAttachmentDSView;
 	};
 

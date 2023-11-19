@@ -19,7 +19,7 @@ namespace Ic3
 	using GpaUniqueObjectID = GCI::UniqueGPUObjectID;
 	using GpaUniqueObjectName = GCI::UniqueGPUObjectName;
 
-	namespace CxDefs
+	namespace CxDef
 	{
 
 		constexpr uint32 GPA_SHADER_BINDING_METRIC_CB_MAX_NUM = GCI::gpm::RES_MAX_CONSTANT_BUFFERS_NUM;

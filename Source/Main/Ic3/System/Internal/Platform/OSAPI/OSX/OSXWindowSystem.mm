@@ -218,7 +218,7 @@ namespace Ic3::System
 			//
 			constexpr NSUInteger cvResizeableFrameStyle = cvFixedFrameStyle | NSWindowStyleMaskResizable;
 
-			NSUInteger resultStyle = Limits<NSUInteger>::maxValue;
+			NSUInteger resultStyle = QLimits<NSUInteger>::maxValue;
 
 			switch ( pStyle )
 			{

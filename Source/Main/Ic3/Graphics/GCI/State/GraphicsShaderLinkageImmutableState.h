@@ -35,12 +35,12 @@ namespace Ic3::Graphics::GCI
 
 		IC3_ATTR_NO_DISCARD bool isStageActive( uint32 pStageIndex ) const noexcept
 		{
-			return mCommonProperties.activeStagesMask.isSet( CxDefs::makeShaderStageBit( pStageIndex ) );
+			return mCommonProperties.activeStagesMask.isSet( CxDef::makeShaderStageBit( pStageIndex ) );
 		}
 
 		IC3_ATTR_NO_DISCARD bool isStageActive( EShaderType pShaderType ) const noexcept
 		{
-			return mCommonProperties.activeStagesMask.isSet( CxDefs::getShaderStageBit( pShaderType ) );
+			return mCommonProperties.activeStagesMask.isSet( CxDef::getShaderStageBit( pShaderType ) );
 		}
 
 		IC3_ATTR_NO_DISCARD uint32 getActiveStagesNum() const noexcept

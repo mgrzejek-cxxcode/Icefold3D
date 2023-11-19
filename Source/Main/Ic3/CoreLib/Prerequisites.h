@@ -47,6 +47,14 @@
 namespace Ic3
 {
 
+	// E -> Enum
+	// S -> Struct
+	// I -> Interface
+	// C -> Class
+	// T -> Template
+	// Q -> Queries/Traits
+	// R -> Aliases/Typedefs
+
 	/// @brief Helper struct for triggering a "empty-init" ctor. Used whenever default initialization has a different meaning.
 	struct InitEmptyTag
 	{

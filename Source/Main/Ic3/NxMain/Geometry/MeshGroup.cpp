@@ -1,7 +1,7 @@
 
 #include "Mesh.h"
 #include "MeshGroup.h"
-#include "GeometryStorage.h"
+#include "GeometryStorageGPU.h"
 
 namespace Ic3
 {
