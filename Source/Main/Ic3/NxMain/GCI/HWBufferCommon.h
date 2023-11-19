@@ -84,19 +84,19 @@ namespace Ic3
 		                              bshLeft<uint64, 32>( GCI::E_GPU_MEMORY_MAP_FLAG_WRITE_APPEND_BIT ),
 	};
 
-	namespace CxDefs
+	namespace CxDef
 	{
 
 		template <typename TBufferUsage>
 		inline constexpr GCI::gpu_memory_flags_value_t getHWBufferUsageGPUMemoryFlags( TBufferUsage pBufferUsage )
 		{
-			return static_cast<GCI::gpu_memory_flags_value_t>( ( ( ( hardware_buffer_flags_value_t ) pBufferUsage ) >> 32 ) & Limits<uint32>::maxValue );
+			return static_cast<GCI::gpu_memory_flags_value_t>( ( ( ( hardware_buffer_flags_value_t ) pBufferUsage ) >> 32 ) & QLimits<uint32>::maxValue );
 		}
 
 		template <typename TBufferUsage>
 		inline constexpr GCI::resource_flags_value_t getHWBufferUsageGPUResourceFlags( TBufferUsage pBufferUsage )
 		{
-			return static_cast<GCI::resource_flags_value_t>( ( ( hardware_buffer_flags_value_t ) pBufferUsage ) & Limits<uint32>::maxValue );
+			return static_cast<GCI::resource_flags_value_t>( ( ( hardware_buffer_flags_value_t ) pBufferUsage ) & QLimits<uint32>::maxValue );
 		}
 
 	}

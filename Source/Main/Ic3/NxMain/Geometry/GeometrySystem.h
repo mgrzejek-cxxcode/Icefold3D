@@ -9,7 +9,8 @@
 namespace Ic3
 {
 
-	class GPUResourceContainer : public CoreEngineObject
+	/*
+	 * class GPUResourceContainer : public CoreEngineObject
 	{
 	public:
 		GPUResourceContainer( const CoreEngineState & pCES )
@@ -49,6 +50,7 @@ namespace Ic3
 
 		NamedGeometryStorageMap _namedStoragesMap;
 	};
+	 */
 
 } // namespace Ic3
 
