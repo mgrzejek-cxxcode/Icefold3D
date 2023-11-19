@@ -15,8 +15,8 @@ namespace Ic3
     using memory_diff_t = native_int;
     using memory_size_t = native_uint;
 
-    using MemoryRegion = SRegion<memory_size_t>;
-    using MemoryRange = MemoryRegion::SRange;
+    using SMemoryRegion = SRegion<memory_size_t>;
+    using SMemoryRange = SMemoryRegion::RangeType;
 
 	namespace CxDef
 	{

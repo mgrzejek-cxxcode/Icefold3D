@@ -89,7 +89,7 @@ namespace Ic3::Graphics::GCI
 		return reinterpret_cast<byte *>( mappedMemoryPtr );
 	}
 
-	MemoryRegion GLBufferObject::queryMappedRegion( GLenum pActiveBindTarget ) const
+	SMemoryRegion GLBufferObject::queryMappedRegion( GLenum pActiveBindTarget ) const
 	{
 		auto bufferBindTarget = checkActiveBindTarget( pActiveBindTarget );
 
@@ -101,7 +101,7 @@ namespace Ic3::Graphics::GCI
 		glGetBufferParameteri64v( bufferBindTarget, GL_BUFFER_MAP_LENGTH, &mapLength );
 		ic3OpenGLHandleLastError();
 
-		MemoryRegion mappedRegion;
+		SMemoryRegion mappedRegion;
 		mappedRegion.offset = static_cast<memory_size_t>( mapOffset );
 		mappedRegion.size = static_cast<memory_size_t>( mapLength );
 
