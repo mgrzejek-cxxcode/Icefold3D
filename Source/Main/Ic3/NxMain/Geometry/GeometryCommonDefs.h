@@ -22,55 +22,34 @@ namespace Ic3
 	ic3DeclareClassHandle( IndexBuffer );
 	ic3DeclareClassHandle( VertexBuffer );
 
-	// using GeometryStoragePtr = std::unique_ptr<GeometryStorage>;
-	// using SharedGeometryRefHandle = const GeometryReference *;
+	ic3DeclareInterfaceHandle( IGeometryStorage );
+	ic3DeclareInterfaceHandle( IGeometryStorageManaged );
+	ic3DeclareInterfaceHandle( IGeometryStorageShared );
 
-	namespace CxDef
+	template <typename TStruct>
+	using RGeometryVertexBufferGenericArray = std::array<TStruct, GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM>;
+
+	struct SGeometryBufferMemoryRef
 	{
+		uint32 bufferIndex = 0;
 
-		constexpr auto GEOMETRY_INDEX_INVALID = QLimits<uint32>::maxValue;
+		uintptr_t internalMemoryRef = 0;
 
-	}
+		SMemoryRegion memoryRegion;
 
-	// Describes a region of geometry data located within a single buffer (it can be a CPU-side buffer
-	// located in RAM or a hardware GPU buffer). It is used to reference a subregion within large
-	// buffers containing multiple geometry objects.
-	struct GeometryBufferRegion
-	{
-		// Offset, from the start of the buffer, to the data referenced by this region, in number of elements.
-		uint32 offsetInElementsNum = 0;
-
-		// Size of the data referenced by this region, in number of elements.
-		uint32 sizeInElementsNum = 0;
-
-		// Appends an adjacent region to the current one. Appended region's offset must be equal
-		// to current's region offset + size, otherwise the call is ignored and this region remains unchanged.
-		bool append( const GeometryBufferRegion & pOther );
+		explicit operator bool() const noexcept
+		{
+			return !memoryRegion.empty();
+		}
 	};
 
-	struct GeometryDataReference
+	struct SGeometryInstanceMemoryRef
 	{
-		GeometryBufferRegion indexDataRegion;
-		GeometryBufferRegion vertexDataRegion;
+		IGeometryStorage * storage = nullptr;
 
-		//
-		bool append( const GeometryDataReference & pOther );
-	};
+		SGeometryBufferMemoryRef indexBufferMemoryRef;
 
-	struct GeometryAttributeDataCPURef
-	{
-		const byte * dataPtr = nullptr;
-		uint32 elementSize = 0;
-		uint32 offsetInElementsNum = 0;
-		uint32 sizeInElementsNum = 0;
-	};
-
-	struct GeometrySize
-	{
-		uint32 indexElementsNum = 0;
-		uint32 vertexElementsNum = 0;
-
-		void append( const GeometrySize & pOther );
+		RGeometryVertexBufferGenericArray<SGeometryBufferMemoryRef> vertexBufferMemoryRefArray;
 	};
 
 	template <typename TByte>
@@ -79,6 +58,8 @@ namespace Ic3
 		TByte * baseDataPtr = nullptr;
 
 		uint32 dataRegionSizeInBytes = 0;
+
+		uint32 elementStrideInBytes = 0;
 
 		explicit operator bool() const noexcept
 		{
@@ -130,14 +111,14 @@ namespace Ic3
 
 		GeometryBufferDataIterator operator++( int ) noexcept
 		{
-			GeometryBufferDataIterator result{ _dataRef, _currentElementOffset };
+			GeometryBufferDataIterator result{ *this };
 			++_currentElementOffset;
 			return result;
 		}
 
-		GeometryBufferDataIterator operator--( int ) noexcept
+		const GeometryBufferDataIterator operator--( int ) noexcept
 		{
-			GeometryBufferDataIterator result{ _dataRef, _currentElementOffset };
+			GeometryBufferDataIterator result{ *this };
 			--_currentElementOffset;
 			return result;
 		}

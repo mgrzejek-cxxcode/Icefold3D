@@ -18,9 +18,7 @@ namespace Ic3
 		EVertexAttributeClass attributeClass = EVertexAttributeClass::Undefined;
 
 		/// Index of the sub-component. For base components and single-component attributes this is zero.
-		uint16 subComponentIndex = 0;
-
-		uint16 subComponentsNum = 1;
+		uint16 componentIndex = 0;
 
 		/// Pointer to the base component (with subComponentIndex=0).
 		SGenericVertexAttributeInfo * baseAttribute = nullptr;
@@ -39,7 +37,14 @@ namespace Ic3
 		/// Returns the absolute, zero-based index of the slot in the IA attribute array.
 		IC3_ATTR_NO_DISCARD uint16 slotIndex() const noexcept
 		{
-			return baseAttributeIndex + subComponentIndex;
+			return baseAttributeIndex + componentIndex;
+		}
+
+		//
+		IC3_ATTR_NO_DISCARD const SShaderSemantics & getSemantics() const noexcept
+		{
+			ic3DebugAssert( ( isBaseAttribute() && semantics ) || ( !isBaseAttribute() && baseAttribute ) );
+			return isBaseAttribute() ? semantics : baseAttribute->semantics;
 		}
 
 		/// Return the sub-component with the specified index. Returns nullptr if this attribute is not one of the
@@ -47,6 +52,12 @@ namespace Ic3
 		/// for single-component attributes only '0' is accepted (for which the attribute itself is returned).
 		/// @param pComponentIndex The index of an attribute's component to retrieve.
 		IC3_NXMAIN_API_NO_DISCARD SGenericVertexAttributeInfo * getComponent( uint32 pComponentIndex ) const noexcept;
+
+		///
+		IC3_NXMAIN_API void initBaseAttributeFromDefinition( SVertexAttributeDefinition pDefinition );
+
+		///
+		IC3_NXMAIN_API void initSubComponentFromBaseAttribute( const SGenericVertexAttributeInfo & pBaseAttribute, uint32 pSubComponentIndex );
 	};
 
 	/// @brief
@@ -143,6 +154,20 @@ namespace Ic3
 
 	namespace GCIUtils
 	{
+
+		IC3_NXMAIN_API SGenericVertexAttributeInfo & updateVertexAttributeLayoutWithAttributeDefinition(
+				SVertexAttributeDefinition pAttributeDefinition,
+				SVertexAttributeArrayLayoutData & pAttributeLayoutData,
+				SVertexStreamArrayLayoutData * pStreamLayoutData = nullptr );
+
+		IC3_NXMAIN_API bool createVertexAttributeArrayLayout(
+				const ArrayView<SVertexAttributeDefinition> & pAttributeDefinitions,
+				SVertexAttributeArrayLayoutData & pAttributeLayoutData,
+				SVertexStreamArrayLayoutData * pStreamLayoutData = nullptr );
+
+		IC3_NXMAIN_API bool createVertexStreamArrayLayout(
+				SVertexAttributeArrayLayoutData & pAttributeLayoutData,
+				SVertexStreamArrayLayoutData & pStreamLayoutData );
 
 		IC3_NXMAIN_API_NO_DISCARD const char * getAttributeFormatStringIdentifier( GCI::EVertexAttribFormat pGCIAttributeFormat );
 

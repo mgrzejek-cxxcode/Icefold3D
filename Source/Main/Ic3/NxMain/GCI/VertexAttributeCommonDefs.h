@@ -67,13 +67,10 @@ namespace Ic3
 		/// Instance rate. A value of 0 means the attribute contains per-vertex data.
 		uint16 instanceRate = 0;
 
-		/// Data stride of the attribute, i.e. how much to advance from an attribute's address to get the next one.
-		/// Important note: this stride is for the *WHOLE* attribute, so for multi-component attributes it describes
-		/// the combined stride for all components.
-		/// In case this struct is a part of an attribute definition (via SVertexAttributeDefinition) and dataStride=0
-		/// is specified, the stride is computed as: CADS = (baseSize() + subComponentPadding) * subComponentsNum;
-		/// CADS (Combined Attribute Data Stride) is computed for every attribute as part of the validation process.
-		/// If the specified dataStride is smaller than the CADS, the definition is considered invalid.
+		/// Number of components in the attribute, i.e. number of generic attribute slots this attribute occupies.
+		uint16 componentsNum = 1;
+
+		///
 		uint16 dataStride = 0;
 
 		/// An index of a vertex buffer slot this attribute is fetched from.
@@ -81,7 +78,7 @@ namespace Ic3
 
 		/// An offset from the start of the vertex buffer data to the beginning of the attribute's data.
 		/// This is a *relative* offset from the start of the bound range of the buffer, not from it's physical base address.
-		uint32 vertexStreamRelativeOffset = 0;
+		uint16 vertexStreamRelativeOffset = 0;
 
 		/// Semantics of the attribute.
 		SShaderSemantics semantics {};
@@ -112,6 +109,12 @@ namespace Ic3
 			return GCI::CxDef::getVertexAttribFormatByteSize( baseFormat );
 		}
 
+		///
+		IC3_ATTR_NO_DISCARD uint32 totalDataStride() const noexcept
+		{
+			return dataStride * componentsNum;
+		}
+
 		/// Clears the definition and resets to default following properties:
 		/// - baseFormat (set to GCI::EVertexAttribFormat::Undefined)
 		/// - baseAttributeIndex (set to GCI::CxDef::IA_VERTEX_ATTRIBUTE_INDEX_UNDEFINED)
@@ -127,11 +130,8 @@ namespace Ic3
 	};
 
 	/// @brief
-	struct SBaseVertexAttributeInfo : public SCommonVertexAttributeInfo
+	struct SVertexAttributeDefinition : public SCommonVertexAttributeInfo
 	{
-		/// Number of components in the attribute, i.e. number of generic attribute slots this attribute occupies.
-		uint16 componentsNum = 1;
-
 		/// Defines an extra padding applied to each of the attribute's subcomponent. Affects the combined data stride.
 		/// @example Consider an attribute which is a 3x3 float matrix. Such attribute would occupy three generic
 		/// attribute slots, each containing a single 3-component float vector. In order to get each attribute aligned
@@ -144,12 +144,14 @@ namespace Ic3
 		/// - dataStride should be 48 (or 0 which will result in 64 computed automatically)
 		/// - subComponentPadding should be 4
 		/// - subComponentsNum should be 3
-		uint16 subComponentPadding = 0;
-	};
+		// uint16 componentPadding = 0;
 
-	/// @brief
-	struct SVertexAttributeDefinition : public SBaseVertexAttributeInfo
-	{
+		///
+		IC3_ATTR_NO_DISCARD uint32 getDataStride() const noexcept
+		{
+			return ( dataStride > 0 ) ? dataStride : baseSize();
+		}
+
 		/// Returns true if the attribute specification is valid, i.e. active (SCommonVertexAttributeInfo::active()
 		/// returns true) and the number of components and their padding have correct values.
 		IC3_ATTR_NO_DISCARD bool valid() const noexcept
@@ -159,7 +161,7 @@ namespace Ic3
 			       cxGCIValidVertexAttributeIndexRange.contains( baseAttributeIndex ) &&
 			       // Vertex stream index should be in the valid range of supported values.
 			       cxGCIValidVertexStreamIndexRange.contains( vertexStreamIndex ) &&
-				   // Each component has to have at least one component and no more than GCM::IA_MAX_VERTEX_ATTRIBUTE_COMPONENTS_NUM.
+			       // Each component has to have at least one component and no more than GCM::IA_MAX_VERTEX_ATTRIBUTE_COMPONENTS_NUM.
 			       cxGCIValidVertexAttributeComponentsNumberRange.contains( componentsNum ) &&
 			       // Attributes can have multiple components (e.g. a 4x4 matrix is a 4-component attribute, with each component
 			       // being a 4-element vector). Even though the base index is valid, we need to check all potential sub-attributes.
@@ -167,7 +169,6 @@ namespace Ic3
 
 		}
 	};
-
 } // namespace Ic3
 
 #endif // __IC3_NXMAIN_VERTEX_ATTRIBUTE_COMMON_DEFS_H__

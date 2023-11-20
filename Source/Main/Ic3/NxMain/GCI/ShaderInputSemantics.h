@@ -183,7 +183,7 @@ namespace Ic3
 		, smtName( GCIUtils::getShaderInputSemanticNameFromID( smtID ) )
 		{}
 
-		explicit SShaderSemantics( std::string pSemanticName )
+		SShaderSemantics( std::string pSemanticName )
 		: smtID( GCIUtils::getShaderInputSemanticIDFromName( pSemanticName ) )
 		, smtName( std::move( pSemanticName ) )
 		{}

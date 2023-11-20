@@ -10,7 +10,14 @@
 namespace Ic3
 {
 
+	ic3DeclareInterfaceHandle( IGeometryContainer );
 	ic3DeclareInterfaceHandle( IGeometryStorage );
+
+	struct SGeometryReference
+	{
+		IGeometryContainer * container = nullptr;
+		uint32 geometryIndex = 0;
+	};
 
 	class IGeometryContainer
 	{
@@ -18,28 +25,25 @@ namespace Ic3
 		IGeometryContainer();
 		virtual ~IGeometryContainer();
 
-		IC3_ATTR_NO_DISCARD bool isStorageInitialized() const noexcept;
+		IC3_ATTR_NO_DISCARD virtual IGeometryStorage * getStorage() const noexcept = 0;
 
-		IC3_ATTR_NO_DISCARD bool isIndexedGeometry() const noexcept;
-
-		IC3_ATTR_NO_DISCARD GeometryIndexBufferReference getIndexBuffer() const noexcept;
-
-		IC3_ATTR_NO_DISCARD GeometryVertexBufferReference getVertexBuffer( size_t pVertexStreamIndex ) const noexcept;
-
-		bool setIndexBuffer( const GeometryIndexBufferReference & pIndexBufferReference );
-
-		bool setVertexBuffer( uint32 pVertexStreamIndex, const GeometryVertexBufferReference & pVertexBufferReference );
+		virtual bool setStorage( IGeometryStorageHandle pStorage ) = 0;
 
 	protected:
-		void setVertexBufferRefsStorage( GeometryVertexBufferReference * pVertexBufferRefsPtr );
+		CVertexAttributeArrayLayout _vertexAttributeLayout;
+	};
 
-		void initializeContainerStorage();
-
-	protected:
+	class CGeometryDataSource : public IGeometryContainer
+	{
+	public:
+	private:
 		IGeometryStorageHandle _internalStorage;
-		GeometryDataReference _allGeometryDataRef;
-		GeometryIndexBufferReference _indexBufferRefPtr;
-		GeometryVertexBufferReference * _vertexBufferRefsPtr;
+	};
+
+	class CMeshContainer : public IGeometryContainer
+	{
+	private:
+		IGeometryStorageManagedHandle _internalManagedStorage;
 	};
 
 	struct GeometrySizeMetrics
@@ -86,8 +90,6 @@ namespace Ic3
 	template <typename TBufferData, size_t tVertexStreamArraySize>
 	class GeometryDataStore : public GeometryDataStoreBase
 	{
-	protected:
-		TBufferData _indexBufferData
 	};
 
 	template <typename TBufferData>

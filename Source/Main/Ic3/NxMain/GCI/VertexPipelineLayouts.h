@@ -33,6 +33,9 @@ namespace Ic3
 
 		IC3_ATTR_NO_DISCARD bool empty() const noexcept;
 
+		IC3_ATTR_NO_DISCARD SVertexAttributeArrayLayoutData & getLayoutData() noexcept;
+		IC3_ATTR_NO_DISCARD const SVertexAttributeArrayLayoutData & getLayoutData() const noexcept;
+
 		IC3_ATTR_NO_DISCARD uint32 resolveAttributeRef( std::string_view pSemanticName, uint32 pSubIndex = 0 ) const noexcept;
 		IC3_ATTR_NO_DISCARD uint32 resolveAttributeRef( EShaderInputSemanticID pSemanticID ) const noexcept;
 		IC3_ATTR_NO_DISCARD uint32 resolveAttributeRef( EStandardVertexAttributeID pAttributeID ) const noexcept;
@@ -105,11 +108,14 @@ namespace Ic3
 		SVertexStreamInfo & operator[]( size_t pStreamIndex ) noexcept;
 		IC3_ATTR_NO_DISCARD const SVertexStreamInfo & operator[]( size_t pStreamIndex ) const noexcept;
 
-		IC3_ATTR_NO_DISCARD const SVertexStreamInfo * getStream( uint32 pStreamIndex ) const noexcept;
-
 		IC3_ATTR_NO_DISCARD explicit operator bool() const noexcept;
 
+		IC3_ATTR_NO_DISCARD SVertexStreamArrayLayoutData & getLayoutData() noexcept;
+		IC3_ATTR_NO_DISCARD const SVertexStreamArrayLayoutData & getLayoutData() const noexcept;
+
 		IC3_ATTR_NO_DISCARD bool empty() const noexcept;
+
+		IC3_ATTR_NO_DISCARD const SVertexStreamInfo * getStream( uint32 pStreamIndex ) const noexcept;
 
 		IC3_ATTR_NO_DISCARD ArrayView<const SVertexStreamInfo> getActiveStreamsRange() const noexcept;
 
