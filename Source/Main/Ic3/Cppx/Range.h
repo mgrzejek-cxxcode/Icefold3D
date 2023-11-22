@@ -16,6 +16,14 @@ namespace Ic3
 		TVal begin;
 		TVal end;
 
+		constexpr SRange() = default;
+
+		template <typename TBegin, typename TEnd, typename std::enable_if_t<std::is_arithmetic_v<TBegin> && std::is_arithmetic_v<TEnd>, int> = 0>
+		constexpr SRange( TBegin pBegin, TEnd pEnd )
+		: begin( static_cast<TVal>( pBegin ) )
+		, end( static_cast<TVal>( pEnd ) )
+		{}
+
 		IC3_ATTR_NO_DISCARD typename QUnsignedTypeEquivalent<TVal>::Type length() const noexcept
 		{
 			return static_cast<typename QUnsignedTypeEquivalent<TVal>::Type>( ( end - begin ) + static_cast<TVal>( 1 ) );
@@ -48,6 +56,20 @@ namespace Ic3
 		IC3_ATTR_NO_DISCARD static constexpr SRange maxRange() noexcept
 		{
 			return SRange{ QLimits<TVal>::minValue, QLimits<TVal>::maxValue };
+		}
+
+		template <typename TOther>
+		IC3_ATTR_NO_DISCARD SRange & add( const SRange<TOther> & pOther ) noexcept
+		{
+			if( pOther.begin < begin )
+			{
+				begin = pOther.begin;
+			}
+			if( pOther.end > end )
+			{
+				end = pOther.end;
+			}
+			return *this;
 		}
 
 		void setEmpty()

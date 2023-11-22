@@ -12,7 +12,7 @@ namespace Ic3
 
 	/// @brief A definition of a generic vertex attribute. This is a per-slot definition - for multi-component attributes
 	/// it contains properties of a single component of such attribute (as opposed to SBaseVertexAttributeInfo).
-	struct SGenericVertexAttributeInfo : public SCommonVertexAttributeInfo
+	struct SGenericVertexAttributeInfo : public SCommonVertexAttributeData
 	{
 		/// Attribute class - either a base attribute or a sub-component.
 		EVertexAttributeClass attributeClass = EVertexAttributeClass::Undefined;
@@ -20,12 +20,33 @@ namespace Ic3
 		/// Index of the sub-component. For base components and single-component attributes this is zero.
 		uint16 componentIndex = 0;
 
-		/// Pointer to the base component (with subComponentIndex=0).
-		SGenericVertexAttributeInfo * baseAttribute = nullptr;
+		/// Data stride for this attribute. It is at least baseSize(), but may be greater if either an additional,
+		/// per-component padding (SVertexAttributeDefinition::componentPadding) or an explicit component stride
+		/// (SVertexAttributeDefinition::componentStride) have been specified.
+		/// @see SVertexAttributeDefinition::componentPadding
+		/// @see SVertexAttributeDefinition::componentStride
+		uint16 elementStride = 0;
 
-		/// Pointer to the next component of the attribute. For single-component attributes and the last component of
-		/// multi-component attribute this is nullptr.
-		SGenericVertexAttributeInfo * nextComponent = nullptr;
+		/// Returns true if the attribute data describes an active attribute.
+		IC3_ATTR_NO_DISCARD explicit operator bool() const noexcept
+		{
+			return active();
+		}
+
+		///
+		IC3_ATTR_NO_DISCARD bool active() const noexcept
+		{
+			return ( attributeClass != EVertexAttributeClass::Undefined ) &&
+			       ( baseFormat != GCI::EVertexAttribFormat::Undefined ) &&
+			       ( baseAttributeIndex != GCI::CxDef::IA_VERTEX_ATTRIBUTE_INDEX_UNDEFINED ) &&
+			       ( vertexStreamIndex != GCI::CxDef::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED );
+		}
+
+		///
+		IC3_ATTR_NO_DISCARD uint32 attributeArrayIndex() const noexcept
+		{
+			return baseAttributeIndex + componentIndex;
+		}
 
 		/// Returns true if the attribute defined by this instance is a base attribute, i.e. either a single-component
 		/// attribute or a base component
@@ -34,42 +55,88 @@ namespace Ic3
 			return attributeClass == EVertexAttributeClass::BaseAttribute;
 		}
 
-		/// Returns the absolute, zero-based index of the slot in the IA attribute array.
-		IC3_ATTR_NO_DISCARD uint16 slotIndex() const noexcept
+		///
+		IC3_ATTR_NO_DISCARD bool equals( const SGenericVertexAttributeInfo & pOther ) const noexcept
 		{
-			return baseAttributeIndex + componentIndex;
+			return ( baseFormat == pOther.baseFormat ) &&
+			       ( baseAttributeIndex == pOther.baseAttributeIndex ) &&
+			       ( componentsNum == pOther.componentsNum ) &&
+			       ( instanceRate == pOther.instanceRate ) &&
+			       ( vertexStreamIndex == pOther.vertexStreamIndex ) &&
+			       ( vertexStreamRelativeOffset == pOther.vertexStreamRelativeOffset ) &&
+			       ( semantics.smtName == pOther.semantics.smtName ) &&
+			       ( attributeClass == pOther.attributeClass ) &&
+			       ( componentIndex == pOther.componentIndex ) &&
+			       ( elementStride == pOther.elementStride );
 		}
 
-		//
-		IC3_ATTR_NO_DISCARD const SShaderSemantics & getSemantics() const noexcept
+		void initBaseAttributeFromDefinition( SVertexAttributeDefinition pDefinition )
 		{
-			ic3DebugAssert( ( isBaseAttribute() && semantics ) || ( !isBaseAttribute() && baseAttribute ) );
-			return isBaseAttribute() ? semantics : baseAttribute->semantics;
+			baseFormat = pDefinition.baseFormat;
+			baseAttributeIndex = pDefinition.baseAttributeIndex;
+			componentsNum = pDefinition.componentsNum;
+			instanceRate = pDefinition.instanceRate;
+			vertexStreamIndex = pDefinition.vertexStreamIndex;
+			vertexStreamRelativeOffset = pDefinition.vertexStreamRelativeOffset;
+			semantics = std::move( pDefinition.semantics );
+			attributeClass = EVertexAttributeClass::BaseAttribute;
+			componentIndex = 0;
+			elementStride = pDefinition.componentStride;
 		}
 
-		/// Return the sub-component with the specified index. Returns nullptr if this attribute is not one of the
-		/// components of a multi-component attribute for which the specified index is defined. This also means that
-		/// for single-component attributes only '0' is accepted (for which the attribute itself is returned).
-		/// @param pComponentIndex The index of an attribute's component to retrieve.
-		IC3_NXMAIN_API_NO_DISCARD SGenericVertexAttributeInfo * getComponent( uint32 pComponentIndex ) const noexcept;
+		void initSubComponentFromBaseAttribute( const SGenericVertexAttributeInfo & pBaseAttribute, uint32 pComponentIndex )
+		{
+			baseFormat = pBaseAttribute.baseFormat;
+			baseAttributeIndex = pBaseAttribute.baseAttributeIndex;
+			componentsNum = 0;
+			instanceRate = pBaseAttribute.instanceRate;
+			vertexStreamIndex = pBaseAttribute.vertexStreamIndex;
+			vertexStreamRelativeOffset = pBaseAttribute.vertexStreamRelativeOffset + ( pComponentIndex * pBaseAttribute.elementStride );
+			attributeClass = EVertexAttributeClass::SubComponent;
+			componentIndex = pComponentIndex;
+			elementStride = pBaseAttribute.elementStride;
+		}
 
-		///
-		IC3_NXMAIN_API void initBaseAttributeFromDefinition( SVertexAttributeDefinition pDefinition );
-
-		///
-		IC3_NXMAIN_API void initSubComponentFromBaseAttribute( const SGenericVertexAttributeInfo & pBaseAttribute, uint32 pSubComponentIndex );
+		void reset()
+		{
+			attributeClass = EVertexAttributeClass::Undefined;
+			baseFormat = GCI::EVertexAttribFormat::Undefined;
+			baseAttributeIndex = GCI::CxDef::IA_VERTEX_ATTRIBUTE_INDEX_UNDEFINED;
+			vertexStreamIndex = GCI::CxDef::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED;
+			semantics.clear();
+		}
 	};
 
 	/// @brief
-	struct SVertexStreamInfo
+	struct SVertexStreamUsageInfo
 	{
 		Bitmask<GCI::EIAVertexAttributeFlags> activeAttributesMask {};
+
 		uint16 activeAttributesNum = 0;
+
 		uint16 elementStrideInBytes = 0;
+
+		EVertexDataRate streamDataRate = EVertexDataRate::Undefined;
+
+		/// Returns true if this instance describes an active vertex data stream.
+		IC3_ATTR_NO_DISCARD explicit operator bool() const noexcept
+		{
+			return active();
+		}
 
 		IC3_ATTR_NO_DISCARD bool active() const noexcept
 		{
-			return !activeAttributesMask.empty() && ( activeAttributesNum > 0 );
+			return !activeAttributesMask.empty() && ( activeAttributesNum > 0 ) && ( streamDataRate != EVertexDataRate::Undefined );
+		}
+
+		IC3_ATTR_NO_DISCARD bool checkAttributeCompatibility( const SCommonVertexAttributeData & pAttributeData ) const noexcept
+		{
+			return ( streamDataRate == EVertexDataRate::Undefined ) || ( streamDataRate == pAttributeData.getVertexDataRate() );
+		}
+
+		void initWithFirstAttribute( const SCommonVertexAttributeData & pAttributeData )
+		{
+			streamDataRate = pAttributeData.getVertexDataRate();
 		}
 
 		void reset()
@@ -77,6 +144,7 @@ namespace Ic3
 			activeAttributesMask.clear();
 			activeAttributesNum = 0;
 			elementStrideInBytes = 0;
+			streamDataRate = EVertexDataRate::Undefined;
 		}
 	};
 
@@ -84,6 +152,7 @@ namespace Ic3
 	struct SVertexAttributeArrayLayoutData
 	{
 		using AttributeArray = std::array<SGenericVertexAttributeInfo, GCM::IA_MAX_VERTEX_ATTRIBUTES_NUM>;
+		using AttributeIndexArray = SortedArray<uint32>;
 		using SemanticIDMap = std::unordered_map<EShaderInputSemanticID, uint32>;
 		using SemanticNameMap = std::unordered_map<std::string_view, uint32>;
 
@@ -91,6 +160,7 @@ namespace Ic3
 		uint32 activeBaseAttributesNum = 0;
 		uint32 activeGenericAttributesNum = 0;
 		SVertexAttributeIndexRange activeAttributesRange = SVertexAttributeIndexRange::maxRange();
+		AttributeIndexArray activeAttributes;
 		Bitmask<GCI::EIAVertexAttributeFlags> activeAttributesMask;
 		Bitmask<EShaderInputSemanticFlags> activeAttributeSemanticsMask;
 		SemanticIDMap semanticIDMap;
@@ -108,6 +178,28 @@ namespace Ic3
 			return attributesArray[pAttributeIndex];
 		}
 
+		SGenericVertexAttributeInfo & attributeAt( size_t pAttributeIndex )
+		{
+			ic3DebugAssert( cxGCIValidVertexAttributeIndexRange.contains( pAttributeIndex ) );
+			return attributesArray.at( pAttributeIndex );
+		}
+
+		IC3_ATTR_NO_DISCARD const SGenericVertexAttributeInfo & attributeAt( size_t pAttributeIndex ) const
+		{
+			ic3DebugAssert( cxGCIValidVertexAttributeIndexRange.contains( pAttributeIndex ) );
+			return attributesArray.at( pAttributeIndex );
+		}
+
+		IC3_ATTR_NO_DISCARD SGenericVertexAttributeInfo * attributePtr( size_t pAttributeIndex )
+		{
+			return cxGCIValidVertexAttributeIndexRange.contains( pAttributeIndex ) ? &( attributesArray[pAttributeIndex] ) : nullptr;
+		}
+
+		IC3_ATTR_NO_DISCARD const SGenericVertexAttributeInfo * attributePtr( size_t pAttributeIndex ) const
+		{
+			return cxGCIValidVertexAttributeIndexRange.contains( pAttributeIndex ) ? &( attributesArray[pAttributeIndex] ) : nullptr;
+		}
+
 		IC3_ATTR_NO_DISCARD explicit operator bool() const noexcept
 		{
 			return !empty();
@@ -117,28 +209,69 @@ namespace Ic3
 		{
 			return activeGenericAttributesNum == 0;
 		}
+
+		void reset()
+		{
+			for( auto & attributeInfo : attributesArray )
+			{
+				attributeInfo.reset();
+			}
+
+			activeBaseAttributesNum = 0;
+			activeGenericAttributesNum = 0;
+			activeAttributesRange = SVertexAttributeIndexRange::maxRange();
+			activeAttributes.clear();
+			activeAttributesMask.clear();
+			activeAttributeSemanticsMask.clear();
+			semanticIDMap.clear();
+			semanticNameMap.clear();
+		}
 	};
 
 	/// @brief
 	struct SVertexStreamArrayLayoutData
 	{
-		using StreamArray = std::array<SVertexStreamInfo, GCM::IA_MAX_VERTEX_STREAMS_NUM>;
+		using StreamArray = std::array<SVertexStreamUsageInfo, GCM::IA_MAX_VERTEX_STREAMS_NUM>;
+		using StreamIndexArray = SortedArray<uint32>;
 
 		StreamArray streamArray;
 		uint32 activeStreamsNum = 0;
 		SVertexStreamIndexRange activeStreamsRange = SVertexStreamIndexRange::maxRange();
+		StreamIndexArray activeStreams;
 		Bitmask<GCI::EIAVertexStreamBindingFlags> activeStreamsMask;
 
-		SVertexStreamInfo & operator[]( size_t pStreamIndex ) noexcept
+		SVertexStreamUsageInfo & operator[]( size_t pStreamIndex ) noexcept
 		{
 			ic3DebugAssert( cxGCIValidVertexStreamIndexRange.contains( pStreamIndex ) );
 			return streamArray[pStreamIndex];
 		}
 
-		IC3_ATTR_NO_DISCARD const SVertexStreamInfo & operator[]( size_t pStreamIndex ) const noexcept
+		IC3_ATTR_NO_DISCARD const SVertexStreamUsageInfo & operator[]( size_t pStreamIndex ) const noexcept
 		{
 			ic3DebugAssert( cxGCIValidVertexStreamIndexRange.contains( pStreamIndex ) );
 			return streamArray[pStreamIndex];
+		}
+
+		SVertexStreamUsageInfo & streamAt( size_t pStreamIndex )
+		{
+			ic3DebugAssert( cxGCIValidVertexStreamIndexRange.contains( pStreamIndex ) );
+			return streamArray.at( pStreamIndex );
+		}
+
+		IC3_ATTR_NO_DISCARD const SVertexStreamUsageInfo & streamAt( size_t pStreamIndex ) const
+		{
+			ic3DebugAssert( cxGCIValidVertexStreamIndexRange.contains( pStreamIndex ) );
+			return streamArray.at( pStreamIndex );
+		}
+
+		IC3_ATTR_NO_DISCARD SVertexStreamUsageInfo * streamPtr( size_t pStreamIndex ) noexcept
+		{
+			return cxGCIValidVertexStreamIndexRange.contains( pStreamIndex ) ? &( streamArray[pStreamIndex] ) : nullptr;
+		}
+
+		IC3_ATTR_NO_DISCARD const SVertexStreamUsageInfo * streamPtr( size_t pStreamIndex ) const noexcept
+		{
+			return cxGCIValidVertexStreamIndexRange.contains( pStreamIndex ) ? &( streamArray[pStreamIndex] ) : nullptr;
 		}
 
 		IC3_ATTR_NO_DISCARD explicit operator bool() const noexcept
@@ -150,22 +283,53 @@ namespace Ic3
 		{
 			return activeStreamsNum == 0;
 		}
+
+		void reset()
+		{
+			for( auto & streamUsage : streamArray )
+			{
+				streamUsage.reset();
+			}
+
+			activeStreamsNum = 0;
+			activeStreamsRange = SVertexStreamIndexRange::maxRange();
+			activeStreams.clear();
+			activeStreamsMask.clear();
+		}
 	};
 
 	namespace GCIUtils
 	{
 
-		IC3_NXMAIN_API SGenericVertexAttributeInfo & updateVertexAttributeLayoutWithAttributeDefinition(
+		IC3_NXMAIN_API_NO_DISCARD bool checkAttributeLayoutArraySlotsFree(
+				const SVertexAttributeArrayLayoutData & pAttributeLayoutData,
+				uint32 pAttributeBaseIndex,
+				uint32 pAttributeComponentsNum );
+
+		IC3_NXMAIN_API_NO_DISCARD bool validateVertexAttributeDefinition(
+				const SVertexAttributeDefinition & pAttributeDefinition,
+				const SVertexAttributeArrayLayoutData & pAttributeLayoutData,
+				const SVertexStreamArrayLayoutData * pStreamLayoutData = nullptr );
+
+		IC3_NXMAIN_API_NO_DISCARD bool validateVertexAttributeDefinitionWithUpdate(
+				SVertexAttributeDefinition & pAttributeDefinition,
+				const SVertexAttributeArrayLayoutData & pAttributeLayoutData,
+				const SVertexStreamArrayLayoutData * pStreamLayoutData = nullptr );
+
+		IC3_NXMAIN_API SGenericVertexAttributeInfo * appendVertexLayoutAttribute(
 				SVertexAttributeDefinition pAttributeDefinition,
 				SVertexAttributeArrayLayoutData & pAttributeLayoutData,
 				SVertexStreamArrayLayoutData * pStreamLayoutData = nullptr );
 
-		IC3_NXMAIN_API bool createVertexAttributeArrayLayout(
-				const ArrayView<SVertexAttributeDefinition> & pAttributeDefinitions,
-				SVertexAttributeArrayLayoutData & pAttributeLayoutData,
-				SVertexStreamArrayLayoutData * pStreamLayoutData = nullptr );
+		IC3_NXMAIN_API bool appendVertexStreamAttribute(
+				SVertexStreamArrayLayoutData & pStreamLayoutData,
+				const SGenericVertexAttributeInfo & pBaseAttribute );
 
-		IC3_NXMAIN_API bool createVertexStreamArrayLayout(
+		IC3_NXMAIN_API bool createVertexStreamLayoutFromAttributeLayout(
+				const SVertexAttributeArrayLayoutData & pAttributeLayoutData,
+				SVertexStreamArrayLayoutData & pStreamLayoutData );
+
+		IC3_NXMAIN_API bool createVertexStreamLayoutFromAttributeLayoutWithUpdate(
 				SVertexAttributeArrayLayoutData & pAttributeLayoutData,
 				SVertexStreamArrayLayoutData & pStreamLayoutData );
 
@@ -177,27 +341,25 @@ namespace Ic3
 
 		IC3_NXMAIN_API_NO_DISCARD std::string generateVertexAttributeLayoutString( const SVertexAttributeArrayLayoutData & pLayoutData );
 
-		template <typename TAttribute>
+		template <typename TAttributeFormatTraits>
 		IC3_ATTR_NO_DISCARD inline bool checkAttributeAutoDataFormat(
 				GCI::EVertexAttribFormat pAttributeBaseFormat,
 				uint32 pAttributeComponentsNum = 0 ) noexcept
 		{
-			using AttributeFormatTraits = GCI::VertexAttribFormatDataTypeTraits<TAttribute>;
-
-			if( AttributeFormatTraits::sBaseAttribFormat != pAttributeBaseFormat )
+			if( pAttributeBaseFormat != TAttributeFormatTraits::sBaseAttribFormat )
 			{
 				return false;
 			}
 
-			if( ( pAttributeComponentsNum != 0 ) && ( AttributeFormatTraits::sAttribComponentsNum != pAttributeComponentsNum ) )
+			if( ( pAttributeComponentsNum != 0 ) && ( TAttributeFormatTraits::sAttribComponentsNum != pAttributeComponentsNum ) )
 			{
 				return false;
 			}
 
-			const auto componentByteSize = GCI::CxDef::getVertexAttribFormatByteSize( pAttributeBaseFormat );
-			const auto attributeByteSize = componentByteSize * AttributeFormatTraits::sAttribComponentsNum;
+			const auto specifiedComponentByteSize = GCI::CxDef::getVertexAttribFormatByteSize( pAttributeBaseFormat );
+			const auto specifiedAttributeByteSize = specifiedComponentByteSize * pAttributeComponentsNum;
 
-			if( AttributeFormatTraits::sSizeInBytes != attributeByteSize )
+			if( specifiedAttributeByteSize != TAttributeFormatTraits::sSizeInBytes )
 			{
 				return false;
 			}

@@ -4,48 +4,103 @@
 namespace Ic3
 {
 
-	void SGenericVertexAttributeInfo::initBaseAttributeFromDefinition( SVertexAttributeDefinition pDefinition )
-	{
-		baseFormat = pDefinition.baseFormat;
-		baseAttributeIndex = pDefinition.baseAttributeIndex;
-		instanceRate = pDefinition.instanceRate;
-		componentsNum = pDefinition.componentsNum;
-		dataStride = pDefinition.getDataStride();
-		vertexStreamIndex = pDefinition.vertexStreamIndex;
-		vertexStreamRelativeOffset = pDefinition.vertexStreamRelativeOffset;
-		semantics = std::move( pDefinition.semantics );
-		attributeClass = EVertexAttributeClass::BaseAttribute;
-		componentIndex = 0;
-	}
-
-	void SGenericVertexAttributeInfo::initSubComponentFromBaseAttribute( const SGenericVertexAttributeInfo & pBaseAttribute, uint32 pSubComponentIndex )
-	{
-		baseFormat = pBaseAttribute.baseFormat;
-		baseAttributeIndex = pBaseAttribute.baseAttributeIndex;
-		instanceRate = pBaseAttribute.instanceRate;
-		componentsNum = pBaseAttribute.componentsNum;
-		dataStride = pBaseAttribute.dataStride;
-		vertexStreamIndex = pBaseAttribute.vertexStreamIndex;
-		vertexStreamRelativeOffset = 0;
-		attributeClass = EVertexAttributeClass::SubComponent;
-		componentIndex = pSubComponentIndex;
-	}
-
 	namespace GCIUtils
 	{
 
-		SGenericVertexAttributeInfo & updateVertexAttributeLayoutWithAttributeDefinition(
+		bool checkAttributeLayoutArraySlotsFree(
+				const SVertexAttributeArrayLayoutData & pAttributeLayoutData,
+				uint32 pAttributeBaseIndex,
+				uint32 pAttributeComponentsNum )
+		{
+			for( uint32 nComponent = 0; nComponent < pAttributeComponentsNum; ++nComponent )
+			{
+				const auto componentIndex = pAttributeBaseIndex + nComponent;
+				const auto & attributeInfo = pAttributeLayoutData[componentIndex];
+
+				if( attributeInfo.active() )
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		bool validateVertexAttributeDefinition(
+				const SVertexAttributeDefinition & pAttributeDefinition,
+				const SVertexAttributeArrayLayoutData & pAttributeLayoutData,
+				const SVertexStreamArrayLayoutData * pStreamLayoutData )
+		{
+			if( !pAttributeDefinition.valid() )
+			{
+				return false;
+			}
+
+			if( !checkAttributeLayoutArraySlotsFree( pAttributeLayoutData, pAttributeDefinition.baseAttributeIndex, pAttributeDefinition.componentsNum ) )
+			{
+				return false;
+			}
+
+			if( pStreamLayoutData )
+			{
+				const auto & attributeStream = pStreamLayoutData->streamAt( pAttributeDefinition.vertexStreamIndex );
+				if( !attributeStream.checkAttributeCompatibility( pAttributeDefinition ) )
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		bool validateVertexAttributeDefinitionWithUpdate(
+				SVertexAttributeDefinition & pAttributeDefinition,
+				const SVertexAttributeArrayLayoutData & pAttributeLayoutData,
+				const SVertexStreamArrayLayoutData * pStreamLayoutData )
+		{
+			if( !validateVertexAttributeDefinition( pAttributeDefinition, pAttributeLayoutData, pStreamLayoutData ) )
+			{
+				return false;
+			}
+
+			if( pAttributeDefinition.hasAppendAsRelativeOffset() )
+			{
+				const auto & attributeStream = pStreamLayoutData->streamAt( pAttributeDefinition.vertexStreamIndex );
+				if( pAttributeDefinition.vertexStreamRelativeOffset == GCI::CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND16 )
+				{
+					pAttributeDefinition.vertexStreamRelativeOffset = memGetAlignedValue( attributeStream.elementStrideInBytes, 16 );
+				}
+				else if( pAttributeDefinition.vertexStreamRelativeOffset == GCI::CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND )
+				{
+					pAttributeDefinition.vertexStreamRelativeOffset = attributeStream.elementStrideInBytes;
+				}
+			}
+
+			const auto attributeBaseSize = pAttributeDefinition.baseSize();
+			if( pAttributeDefinition.componentStride < attributeBaseSize )
+			{
+				pAttributeDefinition.componentStride = attributeBaseSize + pAttributeDefinition.componentPadding;
+			}
+
+			return true;
+		}
+
+		SGenericVertexAttributeInfo * appendVertexLayoutAttribute(
 				SVertexAttributeDefinition pAttributeDefinition,
 				SVertexAttributeArrayLayoutData & pAttributeLayoutData,
 				SVertexStreamArrayLayoutData * pStreamLayoutData )
 		{
+			if( !GCIUtils::validateVertexAttributeDefinitionWithUpdate( pAttributeDefinition, pAttributeLayoutData, pStreamLayoutData ) )
+			{
+				return nullptr;
+			}
+
 			const auto baseAttributeIndex = pAttributeDefinition.baseAttributeIndex;
-			const auto lastComponentIndex = baseAttributeIndex + pAttributeDefinition.componentsNum - 1;
+			const auto vertexStreamIndex = pAttributeDefinition.vertexStreamIndex;
+			const auto attributeComponentsNum = pAttributeDefinition.componentsNum;
 
 			auto & baseAttributeInfo = pAttributeLayoutData[baseAttributeIndex];
 			baseAttributeInfo.initBaseAttributeFromDefinition( std::move( pAttributeDefinition ) );
-			baseAttributeInfo.attributeClass = EVertexAttributeClass::BaseAttribute;
-			baseAttributeInfo.componentIndex = 0;
 
 			pAttributeLayoutData.activeBaseAttributesNum += 1;
 			pAttributeLayoutData.activeGenericAttributesNum += 1;
@@ -55,58 +110,84 @@ namespace Ic3
 			pAttributeLayoutData.semanticIDMap[baseAttributeInfo.semantics.smtID] = baseAttributeIndex;
 			pAttributeLayoutData.semanticNameMap[baseAttributeInfo.semantics.smtName] = baseAttributeIndex;
 
-			if( baseAttributeInfo.componentsNum == 1 )
+			for( uint32 nComponent = 1; nComponent < attributeComponentsNum; ++nComponent )
 			{
-				baseAttributeInfo.baseAttribute = &baseAttributeInfo;
-				baseAttributeInfo.nextComponent = nullptr;
-			}
-			else
-			{
-				auto * baseAttributePtr = &baseAttributeInfo;
-				auto * previousAttributePtr = baseAttributePtr;
+				const auto subComponentIndex = baseAttributeIndex + nComponent;
 
-				for( uint32 nComponent = 1; nComponent < baseAttributeInfo.componentsNum; ++nComponent )
-				{
-					const auto subComponentIndex = baseAttributeInfo.baseAttributeIndex + nComponent;
-					const auto subComponentOffset = nComponent * baseAttributeInfo.dataStride;
+				auto & subComponentInfo = pAttributeLayoutData.attributeAt( subComponentIndex );
+				subComponentInfo.initSubComponentFromBaseAttribute( baseAttributeInfo, nComponent );
 
-					auto & subComponentInfo = pAttributeLayoutData[subComponentIndex];
-					subComponentInfo.initSubComponentFromBaseAttribute( baseAttributeInfo, nComponent );
-					subComponentInfo.vertexStreamRelativeOffset = baseAttributeInfo.vertexStreamRelativeOffset + subComponentOffset;
-
-					pAttributeLayoutData.activeGenericAttributesNum += 1;
-					pAttributeLayoutData.activeAttributesMask.set( GCI::CxDef::makeIAVertexAttributeFlag( subComponentIndex ) );
-
-					previousAttributePtr->baseAttribute = baseAttributePtr;
-					previousAttributePtr->nextComponent = &subComponentInfo;
-					previousAttributePtr = previousAttributePtr->nextComponent;
-				}
-
-				previousAttributePtr->baseAttribute = baseAttributePtr;
-				previousAttributePtr->nextComponent = nullptr;
+				pAttributeLayoutData.activeGenericAttributesNum += 1;
+				pAttributeLayoutData.activeAttributesMask.set( GCI::CxDef::makeIAVertexAttributeFlag( subComponentIndex ) );
 			}
 
-			if( baseAttributeIndex < pAttributeLayoutData.activeAttributesRange.begin )
+			const auto lastComponentIndex = baseAttributeIndex + attributeComponentsNum - 1;
+			pAttributeLayoutData.activeAttributesRange.add( SVertexAttributeIndexRange{ baseAttributeIndex, lastComponentIndex } );
+
+			if( pStreamLayoutData )
 			{
-				pAttributeLayoutData.activeAttributesRange.begin = baseAttributeIndex;
+				appendVertexStreamAttribute( *pStreamLayoutData, baseAttributeInfo );
 			}
 
-			if( lastComponentIndex > pAttributeLayoutData.activeAttributesRange.end )
-			{
-				pAttributeLayoutData.activeAttributesRange.end = lastComponentIndex;
-			}
-
-			return baseAttributeInfo;
+			return &baseAttributeInfo;
 		}
 
-		bool createVertexAttributeArrayLayout(
-				const ArrayView<SVertexAttributeDefinition> & pAttributeDefinitions,
-				SVertexAttributeArrayLayoutData & pAttributeLayoutData,
-				SVertexStreamArrayLayoutData * pStreamLayoutData )
+		bool appendVertexStreamAttribute(
+				SVertexStreamArrayLayoutData & pStreamLayoutData,
+				const SGenericVertexAttributeInfo & pBaseAttribute )
 		{
+			auto & attributeStream = pStreamLayoutData.streamAt( pBaseAttribute.vertexStreamIndex );
+
+			if( !attributeStream )
+			{
+				attributeStream.initWithFirstAttribute( pBaseAttribute );
+
+				pStreamLayoutData.activeStreamsNum += 1;
+				pStreamLayoutData.activeStreamsRange.add( SVertexAttributeIndexRange{ pBaseAttribute.vertexStreamIndex, pBaseAttribute.vertexStreamIndex  } );
+				pStreamLayoutData.activeStreamsMask.set( GCI::CxDef::makeIAVertexBufferFlag( pBaseAttribute.vertexStreamIndex ) );
+				pStreamLayoutData.activeStreams.insert( pBaseAttribute.vertexStreamIndex );
+			}
+
+			for( uint32 nComponent = 0; nComponent < pBaseAttribute.componentsNum; ++nComponent )
+			{
+				const auto attributeIndex = pBaseAttribute.baseAttributeIndex + nComponent;
+
+				attributeStream.activeAttributesNum += 1;
+				attributeStream.activeAttributesMask.set( GCI::CxDef::makeIAVertexAttributeFlag( attributeIndex ) );
+				attributeStream.elementStrideInBytes += pBaseAttribute.elementStride;
+			}
 		}
 
-		bool createVertexStreamArrayLayout(
+		bool createVertexStreamLayoutFromAttributeLayout(
+				const SVertexAttributeArrayLayoutData & pAttributeLayoutData,
+				SVertexStreamArrayLayoutData & pStreamLayoutData )
+		{
+			pStreamLayoutData.reset();
+
+			for( const auto & attributeInfo : pAttributeLayoutData.attributesArray )
+			{
+				if( attributeInfo && attributeInfo.isBaseAttribute() )
+				{
+					auto & attributeStream = pStreamLayoutData.streamAt( attributeInfo.vertexStreamIndex );
+
+					if( !attributeStream )
+					{
+						attributeStream.initWithFirstAttribute( attributeInfo );
+					}
+
+					for( uint32 nComponent = 0; nComponent < attributeInfo.componentsNum; ++nComponent )
+					{
+						const auto attributeIndex = attributeInfo.baseAttributeIndex + nComponent;
+
+						attributeStream.activeAttributesNum += 1;
+						attributeStream.activeAttributesMask.set( GCI::CxDef::makeIAVertexAttributeFlag( attributeIndex ) );
+						attributeStream.elementStrideInBytes += attributeInfo.elementStride;
+					}
+				}
+			}
+		}
+
+		bool createVertexStreamLayoutFromAttributeLayoutWithUpdate(
 				SVertexAttributeArrayLayoutData & pAttributeLayoutData,
 				SVertexStreamArrayLayoutData & pStreamLayoutData )
 		{
@@ -202,10 +283,10 @@ namespace Ic3
 			formatStr.append( 1, ':' );
 			formatStr.append( baseFormatStr );
 
-			if( pAttributeInfo.subComponentsNum > 1 )
+			if( pAttributeInfo.componentsNum > 1 )
 			{
 				formatStr.append( 1, '[' );
-				formatStr.append( std::to_string( pAttributeInfo.subComponentsNum ) );
+				formatStr.append( std::to_string( pAttributeInfo.componentsNum ) );
 				formatStr.append( 1, ']' );
 			}
 

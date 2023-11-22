@@ -118,6 +118,8 @@ namespace Ic3
 
 		virtual void updateStorageInternal() = 0;
 
+		IC3_ATTR_NO_DISCARD virtual SGeometryInstanceMemoryRef allocateGeometryMemory( const SGeometryBufferAllocationDesc & pAllocationDesc ) = 0;
+
 		IC3_ATTR_NO_DISCARD virtual GeometryBufferDataRefReadOnly getIndexDataPtrReadOnly() const noexcept = 0;
 
 		IC3_ATTR_NO_DISCARD virtual GeometryBufferDataRefReadWrite getIndexDataPtrReadWrite() = 0;
@@ -144,10 +146,14 @@ namespace Ic3
 
 	class CGeometryStorageSharedExternal : public IGeometryStorageShared
 	{
+	public:
+		IC3_ATTR_NO_DISCARD virtual int addGeometrySharedData( const SSharedGeometryDataDesc & pSharedDataDesc ) = 0;
 	};
 
 	class CGeometryStorageSharedSubAlloc : public IGeometryStorageShared
 	{
+	public:
+		IC3_ATTR_NO_DISCARD virtual SGeometryInstanceMemoryRef allocateGeometryMemory( const SGeometryBufferAllocationDesc & pAllocationDesc ) = 0;
 	};
 
 } // namespace Ic3

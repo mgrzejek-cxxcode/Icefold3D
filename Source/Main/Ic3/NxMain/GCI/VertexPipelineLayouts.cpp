@@ -4,153 +4,64 @@
 namespace Ic3
 {
 
-	CVertexAttributeArrayLayout::CVertexAttributeArrayLayout()
-	: mLayoutData( _layoutData )
+	CVertexDataLayout::CVertexDataLayout()
+	: mIndexDataFormat( _indexDataFormat )
+	, mPrimitiveTopology( _primitiveTopology )
+	, mAttribLayoutData( _attribLayoutData )
+	, mStreamLayoutData( _streamLayoutData )
 	{}
 
-	CVertexAttributeArrayLayout::CVertexAttributeArrayLayout( CVertexAttributeArrayLayout && pSource ) noexcept
-	: mLayoutData( _layoutData )
-	, _layoutData( std::move( pSource._layoutData ) )
+	CVertexDataLayout::CVertexDataLayout( CVertexDataLayout && pSource ) noexcept
+	: mIndexDataFormat( _indexDataFormat )
+	, mPrimitiveTopology( _primitiveTopology )
+	, mAttribLayoutData( _attribLayoutData )
+	, mStreamLayoutData( _streamLayoutData )
 	{}
 
-	CVertexAttributeArrayLayout & CVertexAttributeArrayLayout::operator=( CVertexAttributeArrayLayout && pRhs ) noexcept
+	CVertexDataLayout & CVertexDataLayout::operator=( CVertexDataLayout && pRhs ) noexcept
 	{
-		_layoutData = std::move( pRhs._layoutData );
+		_indexDataFormat = pRhs._indexDataFormat;
+		_primitiveTopology = pRhs._primitiveTopology;
+		_attribLayoutData = std::move( pRhs._attribLayoutData );
+		_streamLayoutData = std::move( pRhs._streamLayoutData );
 		return *this;
 	}
 
-	CVertexAttributeArrayLayout::CVertexAttributeArrayLayout( const CVertexAttributeArrayLayout & pSource )
-	: mLayoutData( _layoutData )
-	, _layoutData( pSource._layoutData )
+	CVertexDataLayout::CVertexDataLayout( const CVertexDataLayout & pSource )
+	: mIndexDataFormat( _indexDataFormat )
+	, mPrimitiveTopology( _primitiveTopology )
+	, mAttribLayoutData( _attribLayoutData )
+	, mStreamLayoutData( _streamLayoutData )
+	, _indexDataFormat( pSource._indexDataFormat )
+	, _primitiveTopology( pSource._primitiveTopology )
+	, _attribLayoutData( pSource._attribLayoutData )
+	, _streamLayoutData( pSource._streamLayoutData )
 	{}
 
-	CVertexAttributeArrayLayout & CVertexAttributeArrayLayout::operator=( const CVertexAttributeArrayLayout & pRhs )
+	CVertexDataLayout & CVertexDataLayout::operator=( const CVertexDataLayout & pRhs )
 	{
-		_layoutData = pRhs._layoutData;
+		_indexDataFormat = pRhs._indexDataFormat;
+		_primitiveTopology = pRhs._primitiveTopology;
+		_attribLayoutData = pRhs._attribLayoutData;
+		_streamLayoutData = pRhs._streamLayoutData;
 		return *this;
 	}
 
-	CVertexAttributeArrayLayout::~CVertexAttributeArrayLayout() = default;
+	CVertexDataLayout::~CVertexDataLayout() = default;
 
-	SGenericVertexAttributeInfo & CVertexAttributeArrayLayout::operator[]( size_t pAttributeIndex ) noexcept
+	bool CVertexDataLayout::empty() const noexcept
 	{
-		return _layoutData[pAttributeIndex];
+		return _attribLayoutData.empty();
 	}
 
-	const SGenericVertexAttributeInfo & CVertexAttributeArrayLayout::operator[]( size_t pAttributeIndex ) const noexcept
+	bool CVertexDataLayout::equals( const CVertexDataLayout & pOther ) const noexcept
 	{
-		return _layoutData[pAttributeIndex];
-	}
-
-	CVertexAttributeArrayLayout::operator bool() const noexcept
-	{
-		return !empty();
-	}
-
-	bool CVertexAttributeArrayLayout::empty() const noexcept
-	{
-		return _layoutData.empty();
-	}
-
-	uint32 CVertexAttributeArrayLayout::resolveAttributeRef( std::string_view pSemanticName, uint32 pSubIndex ) const noexcept
-	{
-		const auto attribNameMapIter = _layoutData.semanticNameMap.find( pSemanticName );
-		if( attribNameMapIter != _layoutData.semanticNameMap.end() )
+		for( uint32 nAttribute = 0; nAttribute < GCM::IA_MAX_VERTEX_ATTRIBUTES_NUM; ++nAttribute )
 		{
-			const auto & baseAttributeInfo = _layoutData.attributesArray[attribNameMapIter->second];
-			if( pSubIndex < baseAttributeInfo.subComponentsNum )
-			{
-				return attribNameMapIter->second + pSubIndex;
-			}
-		}
-		return cxGCIVertexAttributeIndexUndefined;
-	}
+			const auto & attribute = _attribLayoutData[nAttribute];
+			const auto & otherAttribute = pOther._attribLayoutData[nAttribute];
 
-	uint32 CVertexAttributeArrayLayout::resolveAttributeRef( EShaderInputSemanticID pSemanticID ) const noexcept
-	{
-		const auto attribIDMapIter = _layoutData.semanticIDMap.find( pSemanticID );
-		if( attribIDMapIter != _layoutData.semanticIDMap.end() )
-		{
-			return attribIDMapIter->second;
-		}
-		return cxGCIVertexAttributeIndexUndefined;
-	}
-
-	uint32 CVertexAttributeArrayLayout::resolveAttributeRef( EStandardVertexAttributeID pAttributeID ) const noexcept
-	{
-		const auto semanticID = CxDef::getStandardVertexAttributeSemanticID( pAttributeID );
-		return resolveAttributeRef( semanticID );
-	}
-
-	uint32 CVertexAttributeArrayLayout::resolveAttributeRef( const SShaderSemantics & pSemantics ) const noexcept
-	{
-		const auto semanticName = pSemantics.empty() ? pSemantics.smtName : std::string_view{};
-		return resolveAttributeRef( semanticName );
-	}
-
-	const SGenericVertexAttributeInfo * CVertexAttributeArrayLayout::getAttribute( uint32 pAttributeIndex ) const noexcept
-	{
-		if( cxGCIValidVertexAttributeIndexRange.contains( pAttributeIndex ) )
-		{
-			if( const auto & attributeInfo = _layoutData[pAttributeIndex] )
-			{
-				return &attributeInfo;
-			}
-		}
-
-		return nullptr;
-	}
-
-	const SGenericVertexAttributeInfo * CVertexAttributeArrayLayout::getAttribute( std::string_view pSemanticName, uint32 pSubIndex ) const noexcept
-	{
-		const auto resolvedIndex = resolveAttributeRef( pSemanticName, pSubIndex );
-		return getAttribute( resolvedIndex );
-	}
-
-	const SGenericVertexAttributeInfo * CVertexAttributeArrayLayout::getAttribute( EShaderInputSemanticID pSemanticID ) const noexcept
-	{
-		const auto resolvedIndex = resolveAttributeRef( pSemanticID );
-		return getAttribute( resolvedIndex );
-	}
-
-	const SGenericVertexAttributeInfo * CVertexAttributeArrayLayout::getAttribute( EStandardVertexAttributeID pAttributeID ) const noexcept
-	{
-		const auto resolvedIndex = resolveAttributeRef( pAttributeID );
-		return getAttribute( resolvedIndex );
-	}
-
-	const SGenericVertexAttributeInfo * CVertexAttributeArrayLayout::getAttribute( const SShaderSemantics & pSemantics ) const noexcept
-	{
-		const auto resolvedIndex = resolveAttributeRef( pSemantics );
-		return getAttribute( resolvedIndex );
-	}
-
-	ArrayView<const SGenericVertexAttributeInfo> CVertexAttributeArrayLayout::getActiveAttributesRange() const noexcept
-	{
-		return bindArrayView( _layoutData.attributesArray.data() + _layoutData.activeAttributesRange.begin,
-		                      _layoutData.activeAttributesRange.length() );
-	}
-
-	std::string CVertexAttributeArrayLayout::generateVertexFormatStringID() const noexcept
-	{
-		return GCIUtils::generateVertexAttributeLayoutString( _layoutData );
-	}
-
-	std::vector<SVertexAttributeDefinition> CVertexAttributeArrayLayout::generateAttributeDefinitionArray() const noexcept
-	{
-		return {};
-	}
-
-	bool CVertexAttributeArrayLayout::checkAttributeSlotRangeFree(
-			uint32 pAttributeBaseIndex,
-			uint32 pAttributeComponentsNum ) const noexcept
-	{
-		for( uint32 nComponent = 0; nComponent < pAttributeComponentsNum; ++nComponent )
-		{
-			const auto componentIndex = pAttributeBaseIndex + nComponent;
-			const auto & attributeInfo = _layoutData.attributesArray[componentIndex];
-
-			if( attributeInfo.active() )
+			if( !attribute.equals( otherAttribute ) )
 			{
 				return false;
 			}
@@ -159,248 +70,186 @@ namespace Ic3
 		return true;
 	}
 
-	bool CVertexAttributeArrayLayout::validateAttributeDefinition(
-			SVertexAttributeDefinition & pAttributeDefinition,
-			uint32 pComponentStrideInBytes,
-			uint32 pCombinedAttributeDataStride ) const noexcept
+	bool CVertexDataLayout::isIndexedGeometry() const noexcept
 	{
-		if( !pAttributeDefinition.valid() )
-		{
-			return false;
-		}
+		return _indexDataFormat != GCI::EIndexDataFormat::Undefined;
+	}
 
-		if( !checkAttributeSlotRangeFree( pAttributeDefinition.baseAttributeIndex, pAttributeDefinition.componentsNum ) )
-		{
-			return false;
-		}
+	bool CVertexDataLayout::isAttributeActive( uint32 pAttributeIndex ) const
+	{
+		const auto * attributeInfo = _attribLayoutData.attributePtr( pAttributeIndex );
+		return attributeInfo && attributeInfo->active();
+	}
 
-		if( pCombinedAttributeDataStride == 0 )
+	bool CVertexDataLayout::isVertexStreamActive( uint32 pStreamIndex ) const
+	{
+		const auto * streamUsage = _streamLayoutData.streamPtr( pStreamIndex );
+		return streamUsage && streamUsage->active();
+	}
+
+	const SortedArray<uint32> & CVertexDataLayout::getActiveAttributeIndexList() const noexcept
+	{
+		return _attribLayoutData.activeAttributes;
+	}
+
+	const SortedArray<uint32> & CVertexDataLayout::getActiveStreamIndexList() const noexcept
+	{
+		return _streamLayoutData.activeStreams;
+	}
+
+	uint32 CVertexDataLayout::resolveAttributeRef( EShaderInputSemanticID pSemanticID, uint32 pSubIndex ) const noexcept
+	{
+		const auto attribIDMapIter = _attribLayoutData.semanticIDMap.find( pSemanticID );
+		if( attribIDMapIter != _attribLayoutData.semanticIDMap.end() )
 		{
-			if( pComponentStrideInBytes == 0 )
+			const auto & baseAttributeInfo = _attribLayoutData.attributesArray[attribIDMapIter->second];
+			if( pSubIndex < baseAttributeInfo.componentsNum )
 			{
-				pComponentStrideInBytes = pAttributeDefinition.baseSize() + pAttributeDefinition.subComponentPadding;
+				return attribIDMapIter->second + pSubIndex;
 			}
-
-			pCombinedAttributeDataStride = pComponentStrideInBytes * pAttributeDefinition.componentsNum;
 		}
-
-		if( pAttributeDefinition.vertexStreamRelativeOffset >= GCI::CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND16 )
-		{
-			return false;
-		}
-
-		if( ( pAttributeDefinition.dataStride > 0 ) && ( pAttributeDefinition.dataStride < pCombinedAttributeDataStride ) )
-		{
-			return false;
-		}
-
-		if( pAttributeDefinition.dataStride == 0 )
-		{
-			pAttributeDefinition.dataStride = pCombinedAttributeDataStride;
-		}
-
-		return true;
+		return cxGCIVertexAttributeIndexUndefined;
 	}
 
-	SGenericVertexAttributeInfo * CVertexAttributeArrayLayout::setAttribute( SVertexAttributeDefinition pAttributeDefinition )
+	uint32 CVertexDataLayout::resolveAttributeRef( EStandardVertexAttributeID pAttributeID, uint32 pSubIndex ) const noexcept
 	{
-		const auto componentStrideInBytes = pAttributeDefinition.baseSize() + pAttributeDefinition.subComponentPadding;
-		const auto combinedAttributeDataStride = componentStrideInBytes * pAttributeDefinition.componentsNum;
-
-		if( !validateAttributeDefinition( pAttributeDefinition, componentStrideInBytes, combinedAttributeDataStride ) )
-		{
-			return nullptr;
-		}
-
-		auto & baseAttributeInfo = _updateBaseAttribute( pAttributeDefinition, componentStrideInBytes );
-
-		return &baseAttributeInfo;
+		const auto semanticID = CxDef::getStandardVertexAttributeSemanticID( pAttributeID );
+		return resolveAttributeRef( semanticID );
 	}
 
-	SGenericVertexAttributeInfo * CVertexAttributeArrayLayout::setAttributeUnchecked( SVertexAttributeDefinition pAttributeDefinition )
+	uint32 CVertexDataLayout::resolveAttributeRef( std::string_view pSemanticName, uint32 pSubIndex ) const noexcept
 	{
-		const auto componentStrideInBytes = pAttributeDefinition.baseSize() + pAttributeDefinition.subComponentPadding;
-		const auto combinedAttributeDataStride = componentStrideInBytes * pAttributeDefinition.componentsNum;
-
-		auto & baseAttributeInfo = _updateBaseAttribute( pAttributeDefinition, componentStrideInBytes );
-
-		return &baseAttributeInfo;
+		const auto attribNameMapIter = _attribLayoutData.semanticNameMap.find( pSemanticName );
+		if( attribNameMapIter != _attribLayoutData.semanticNameMap.end() )
+		{
+			const auto & baseAttributeInfo = _attribLayoutData.attributesArray[attribNameMapIter->second];
+			if( pSubIndex < baseAttributeInfo.componentsNum )
+			{
+				return attribNameMapIter->second + pSubIndex;
+			}
+		}
+		return cxGCIVertexAttributeIndexUndefined;
 	}
 
-	SGenericVertexAttributeInfo * CVertexAttributeArrayLayout::setStandardAttribute(
+	uint32 CVertexDataLayout::resolveAttributeRef( const SShaderSemantics & pSemantics, uint32 pSubIndex ) const noexcept
+	{
+		const auto semanticName = pSemantics.empty() ? pSemantics.smtName : std::string_view{};
+		return resolveAttributeRef( semanticName, pSubIndex );
+	}
+
+	std::string CVertexDataLayout::generateVertexFormatStringID() const noexcept
+	{
+		return GCIUtils::generateVertexAttributeLayoutString( _attribLayoutData );
+	}
+
+	std::vector<SVertexAttributeDefinition> CVertexDataLayout::generateAttributeDefinitionArray() const noexcept
+	{
+		std::vector<SVertexAttributeDefinition> resultDefinitionArray;
+		if( !_attribLayoutData.empty() )
+		{
+			resultDefinitionArray.reserve( _attribLayoutData.activeBaseAttributesNum );
+			for( const auto & baseAttributeInfo : _attribLayoutData.attributesArray )
+			{
+				if( baseAttributeInfo.isBaseAttribute() )
+				{
+					auto & attributeDefinition = resultDefinitionArray.emplace_back();
+					attributeDefinition.baseFormat = baseAttributeInfo.baseFormat;
+					attributeDefinition.baseAttributeIndex = baseAttributeInfo.baseAttributeIndex;
+					attributeDefinition.componentsNum = baseAttributeInfo.componentsNum;
+					attributeDefinition.instanceRate = baseAttributeInfo.instanceRate;
+					attributeDefinition.vertexStreamIndex = baseAttributeInfo.vertexStreamIndex;
+					attributeDefinition.vertexStreamRelativeOffset = baseAttributeInfo.vertexStreamRelativeOffset;
+					attributeDefinition.semantics = baseAttributeInfo.semantics;
+					attributeDefinition.componentPadding = 0;
+					attributeDefinition.componentStride = baseAttributeInfo.elementStride;
+				}
+			}
+		}
+		return resultDefinitionArray;
+	}
+
+	const SGenericVertexAttributeInfo * CVertexDataLayout::addAttribute( SVertexAttributeDefinition pAttributeDefinition )
+	{
+		return GCIUtils::appendVertexLayoutAttribute(  std::move( pAttributeDefinition ), _attribLayoutData, &_streamLayoutData );
+	}
+
+	const SGenericVertexAttributeInfo * CVertexDataLayout::addStandardAttribute(
 			EStandardVertexAttributeID pAttributeID,
 			uint32 pStreamIndex,
 			uint32 pStreamRelativeOffset,
 			uint32 pDataStride )
 	{
-		SVertexAttributeDefinition attributeDefinition{};
+		if( pDataStride == 0 )
+		{
+			pDataStride = CxDef::getStandardVertexAttributeComponentByteSize( pAttributeID );
+		}
+
+		SVertexAttributeDefinition attributeDefinition;
 		attributeDefinition.baseAttributeIndex = CxDef::getStandardVertexAttributeBaseIndex( pAttributeID );
 		attributeDefinition.baseFormat = CxDef::getStandardVertexAttributeBaseFormat( pAttributeID );
-		attributeDefinition.semantics.smtID = CxDef::getStandardVertexAttributeSemanticID( pAttributeID );
 		attributeDefinition.componentsNum = CxDef::getStandardVertexAttributeComponentsNum( pAttributeID );
-		attributeDefinition.subComponentPadding = 0u;
-		const auto standardAttributeFlags = CxDef::getStandardShaderInputSemanticFlags( pAttributeID );
-		attributeDefinition.instanceRate = standardAttributeFlags.isSetAnyOf( E_SHADER_INPUT_SEMANTIC_MASK_INSTANCE_ALL ) ? 1 : 0;
+		attributeDefinition.componentStride = pDataStride;
+		attributeDefinition.instanceRate = 0;
+		attributeDefinition.componentPadding = 0;
 		attributeDefinition.vertexStreamIndex = pStreamIndex;
-		attributeDefinition.vertexStreamRelativeOffset = numeric_cast<uint16>( pStreamRelativeOffset );
+		attributeDefinition.vertexStreamRelativeOffset = pStreamRelativeOffset;
+		attributeDefinition.semantics = SShaderSemantics{ pAttributeID };
 
-		return setAttribute( std::move( attributeDefinition ) );
+		return addAttribute( std::move( attributeDefinition ) );
 	}
 
-	void CVertexAttributeArrayLayout::reset()
+	SortedArray<uint32> CVertexDataLayout::addAttributes( ArrayView<SVertexAttributeDefinition> pAttributeDefinitions )
 	{
-		for( auto & attributeInfo : _layoutData.attributesArray )
+		SortedArray<uint32> resultIndexArray{};
+
+		for( auto & attributeDefinition : pAttributeDefinitions )
 		{
-			attributeInfo.reset();
+			if( const auto * baseAttributeInfo = addAttribute( std::move( attributeDefinition ) ) )
+			{
+				resultIndexArray.insert( baseAttributeInfo->baseAttributeIndex );
+			}
 		}
 
-		_layoutData.activeBaseAttributesNum = 0;
-		_layoutData.activeGenericAttributesNum = 0;
-		_layoutData.activeAttributesRange.setInvalid();
-		_layoutData.activeAttributesMask.clear();
-		_layoutData.activeAttributeSemanticsMask.clear();
-		_layoutData.semanticIDMap.clear();
-		_layoutData.semanticNameMap.clear();
+		return resultIndexArray;
 	}
 
-	SGenericVertexAttributeInfo & CVertexAttributeArrayLayout::_updateBaseAttribute(
-			SVertexAttributeDefinition & pAttributeDefinition,
-			uint32 pComponentStrideInBytes )
+	SortedArray<uint32> CVertexDataLayout::setAttributes( ArrayView<SVertexAttributeDefinition> pAttributeDefinitions )
 	{
-		const auto baseAttributeIndex = pAttributeDefinition.baseAttributeIndex;
-		const auto lastComponentIndex = baseAttributeIndex + pAttributeDefinition.componentsNum - 1;
-
-		auto & baseAttributeInfo = _layoutData[baseAttributeIndex];
-		baseAttributeInfo.baseFormat = pAttributeDefinition.baseFormat;
-		baseAttributeInfo.baseAttributeIndex = baseAttributeIndex;
-		baseAttributeInfo.instanceRate = pAttributeDefinition.instanceRate;
-		baseAttributeInfo.dataStride = pAttributeDefinition.dataStride;
-		baseAttributeInfo.vertexStreamIndex = pAttributeDefinition.vertexStreamIndex;
-		baseAttributeInfo.vertexStreamRelativeOffset = pAttributeDefinition.vertexStreamRelativeOffset;
-		baseAttributeInfo.semantics = std::move( pAttributeDefinition.semantics );
-		baseAttributeInfo.attributeClass = EVertexAttributeClass::BaseAttribute;
-		baseAttributeInfo.subComponentIndex = 0;
-
-		_layoutData.activeBaseAttributesNum += 1;
-		_layoutData.activeGenericAttributesNum += 1;
-		_layoutData.activeAttributesMask.set( GCI::CxDef::makeIAVertexAttributeFlag( baseAttributeIndex ) );
-		_layoutData.activeAttributeSemanticsMask.set( static_cast<uint32>( baseAttributeInfo.semantics.smtID ) );
-
-		_layoutData.semanticIDMap[baseAttributeInfo.semantics.smtID] = baseAttributeIndex;
-		_layoutData.semanticNameMap[baseAttributeInfo.semantics.smtName] = baseAttributeIndex;
-
-		if( pAttributeDefinition.componentsNum == 1 )
-		{
-			baseAttributeInfo.baseAttribute = &baseAttributeInfo;
-			baseAttributeInfo.nextComponent = nullptr;
-		}
-		else
-		{
-			_updateSubComponents( baseAttributeInfo, pAttributeDefinition.componentsNum, pComponentStrideInBytes );
-		}
-
-		if( baseAttributeIndex < _layoutData.activeAttributesRange.begin )
-		{
-			_layoutData.activeAttributesRange.begin = baseAttributeIndex;
-		}
-
-		if( lastComponentIndex > _layoutData.activeAttributesRange.end )
-		{
-			_layoutData.activeAttributesRange.end = lastComponentIndex;
-		}
-
-		return baseAttributeInfo;
+		resetLayouts();
+		return addAttributes( pAttributeDefinitions );
 	}
 
-	void CVertexAttributeArrayLayout::_updateSubComponents(
-			SGenericVertexAttributeInfo & pBaseAttribute,
-			uint32 pAttributeComponentsNum,
-			uint32 pComponentStrideInBytes )
+	void CVertexDataLayout::setIndexDataFormat( GCI::EIndexDataFormat pIndexDataFormat )
 	{
-		ic3DebugAssert( pAttributeComponentsNum > 1 );
-
-		auto * baseAttributePtr = &pBaseAttribute;
-		auto * previousAttributePtr = baseAttributePtr;
-
-		for( uint32 nComponent = 1; nComponent < pAttributeComponentsNum; ++nComponent )
-		{
-			const auto subComponentIndex = pBaseAttribute.baseAttributeIndex + nComponent;
-
-			auto & subComponentInfo = _layoutData[subComponentIndex];
-			subComponentInfo.baseFormat = pBaseAttribute.baseFormat;
-			subComponentInfo.baseAttributeIndex = pBaseAttribute.baseAttributeIndex;
-			subComponentInfo.instanceRate = pBaseAttribute.instanceRate;
-			subComponentInfo.dataStride = pBaseAttribute.dataStride;
-			subComponentInfo.vertexStreamIndex = pBaseAttribute.vertexStreamIndex;
-			subComponentInfo.vertexStreamRelativeOffset = pBaseAttribute.vertexStreamRelativeOffset + ( nComponent * pComponentStrideInBytes );
-			subComponentInfo.attributeClass = EVertexAttributeClass::SubComponent;
-			subComponentInfo.subComponentIndex = nComponent;
-
-			_layoutData.activeGenericAttributesNum += 1;
-			_layoutData.activeAttributesMask.set( GCI::CxDef::makeIAVertexAttributeFlag( subComponentIndex ) );
-
-			previousAttributePtr->baseAttribute = baseAttributePtr;
-			previousAttributePtr->nextComponent = &subComponentInfo;
-			previousAttributePtr = previousAttributePtr->nextComponent;
-		}
-
-		previousAttributePtr->baseAttribute = baseAttributePtr;
-		previousAttributePtr->nextComponent = nullptr;
+		_indexDataFormat = pIndexDataFormat;
 	}
 
-
-	CVertexStreamArrayLayout::CVertexStreamArrayLayout()
-	: mLayoutData( _layoutData )
-	{}
-
-	CVertexStreamArrayLayout::CVertexStreamArrayLayout( CVertexStreamArrayLayout && pSource ) noexcept
-	: mLayoutData( _layoutData )
-	, _layoutData( std::move( pSource._layoutData ) )
-	{}
-
-	CVertexStreamArrayLayout & CVertexStreamArrayLayout::operator=( CVertexStreamArrayLayout && pRhs ) noexcept
+	void CVertexDataLayout::setPrimitiveTopology( GCI::EPrimitiveTopology pPrimitiveTopology )
 	{
-		_layoutData = std::move( pRhs._layoutData );
-		return *this;
+		_primitiveTopology = pPrimitiveTopology;
 	}
 
-	CVertexStreamArrayLayout::CVertexStreamArrayLayout( const CVertexStreamArrayLayout & pSource )
-	: mLayoutData( _layoutData )
-	, _layoutData( pSource._layoutData )
-	{}
-
-	CVertexStreamArrayLayout & CVertexStreamArrayLayout::operator=( const CVertexStreamArrayLayout & pRhs )
+	void CVertexDataLayout::resetIndexDataFormat()
 	{
-		_layoutData = pRhs._layoutData;
-		return *this;
+		_indexDataFormat = GCI::EIndexDataFormat::Undefined;
 	}
 
-	CVertexStreamArrayLayout::~CVertexStreamArrayLayout() = default;
-
-	SVertexStreamInfo & CVertexStreamArrayLayout::operator[]( size_t pStreamIndex ) noexcept
+	void CVertexDataLayout::resetPrimitiveTopology()
 	{
-		return _layoutData[pStreamIndex];
+		_primitiveTopology = GCI::EPrimitiveTopology::Undefined;
 	}
 
-	const SVertexStreamInfo & CVertexStreamArrayLayout::operator[]( size_t pStreamIndex ) const noexcept
+	void CVertexDataLayout::resetLayouts()
 	{
-		return _layoutData[pStreamIndex];
+		_attribLayoutData.reset();
+		_streamLayoutData.reset();
 	}
 
-	CVertexStreamArrayLayout::operator bool() const noexcept
+	void CVertexDataLayout::resetAll()
 	{
-		return !empty();
-	}
-
-	bool CVertexStreamArrayLayout::empty() const noexcept
-	{
-		return _layoutData.empty();
-	}
-
-	ArrayView<const SVertexStreamInfo> CVertexStreamArrayLayout::getActiveStreamsRange() const noexcept
-	{
-		return bindArrayView( _layoutData.streamArray.data() + _layoutData.activeStreamsRange.begin,
-		                      _layoutData.activeStreamsRange.length() );
+		resetIndexDataFormat();
+		resetPrimitiveTopology();
+		resetLayouts();
 	}
 
 }
