@@ -28,7 +28,7 @@ namespace Ic3::Script
 		IC3_SCRIPT_API void typeError( lua_State * pLuaState, int pIndex, const char * pExpectedStr );
 
 		/// @brief Allocates new userdata of specified size and sets metatable of given name.
-		IC3_SCRIPT_API void * newObject( lua_State * pLuaState, size_t pSize, const char* pMetatableName );
+		IC3_SCRIPT_API void * newObject( lua_State * pLuaState, size_t pSize, const char* pMetatableName, bool pBalanced = true );
 
 		/// @brief Prints on the screen all values currently residing on the stack.
 		IC3_SCRIPT_API void dumpStack( lua_State * pLuaState );
@@ -70,7 +70,55 @@ namespace Ic3::Script
 		IC3_SCRIPT_API void pushString( lua_State * pLuaState, const char * pString, size_t pLength = CxDef::INVALID_LENGTH );
 
 		/// @brief pushes user data to the top of the stack.
-		IC3_SCRIPT_API bool pushUserData( lua_State * pLuaState, void * pUserData, const char * pMetatableName );
+		IC3_SCRIPT_API bool pushUserData( lua_State * pLuaState, void * pUserData, const char * pMetatableName = nullptr );
+
+		inline bool retrieveExistingUserDataForObject( lua_State * pLuaState, const void * pObject, bool pKeepNil = false )
+		{
+			lua_pushlightuserdata( pLuaState, const_cast<void *>( pObject ) );
+			// Stack: [..., pObject]
+
+			lua_rawget( pLuaState, LUA_REGISTRYINDEX );
+			// Fetches LUA_REGISTRY[pObject]
+			// Stack: [..., userDataOrNil]
+
+			if( !lua_isnil( pLuaState, -1 ) && lua_isuserdata( pLuaState, -1 ) )
+			{
+				return true;
+			}
+
+			if( !pKeepNil )
+			{
+				lua_pop( pLuaState, -1 );
+				// Stack: [...]
+			}
+
+			return false;
+		}
+
+		/// @brief pushes user data to the top of the stack.
+		template <typename T>
+		inline bool pushObject( lua_State * pLuaState, T * pObject )
+		{
+			// const auto objectAlreadyInLua
+			// if( !retrieveExistingUserDataForObject )
+			const size_t allocSize = sizeof( T * );
+			const char * metatableName = LuaCore::getTypeMetatableName<T>();
+
+			void * objectWrapPtr = LuaCore::newObject( pLuaState, allocSize, metatableName, false );
+			// Stack: [..., objectWrapPtr]
+
+			lua_pushlightuserdata( pLuaState, pObject );
+			// Stack: [..., objectWrapPtr, pUserData]
+
+			lua_insert( pLuaState, -2) ;
+			// Stack: [..., pUserData, objectWrapPtr]
+
+			lua_rawset( pLuaState, LUA_REGISTRYINDEX );
+			// LUA_REGISTRY[pUserData] = objectWrapPtr
+			// Stack: [...]
+
+			lua_rawget( pLuaState, LUA_REGISTRYINDEX );
+		}
 
 
 		/// @brief QQQ
@@ -172,10 +220,10 @@ namespace Ic3::Script
 			return result;
 		}
 
-		inline void pushValue( lua_State * pLuaState, const std::string & pValue )
-		{
-			pushString( pLuaState, pValue.data(), pValue.length() );
-		}
+//		inline void pushValue( lua_State * pLuaState, const std::string & pValue )
+//		{
+//			pushString( pLuaState, pValue.data(), pValue.length() );
+//		}
 
 		///<summary>
 		///</summary>

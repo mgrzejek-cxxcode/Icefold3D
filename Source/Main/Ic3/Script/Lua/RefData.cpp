@@ -175,6 +175,7 @@ namespace Ic3::Script
 			{ "print", ic3ScriptFunction( &RefData::print ) },
 			{ "getSize", ic3ScriptFunction( &RefData::getSize ) },
 			{ "getName", ic3ScriptFunction( &RefData::getName ) },
+			//{ "equals", ic3ScriptFunction( &RefData::equals ) },
 			{ nullptr, nullptr }
 		};
 
@@ -252,7 +253,9 @@ namespace Ic3::Script
 		lua_pushstring(lua_state, "__propertyset");
 		lua_newtable(lua_state);
 		luaL_setfuncs(lua_state, reg_spec_vset, 0);
+		LuaCore::dumpStack(lua_state);
 		lua_settable(lua_state, -3); // fmeta_table.__propertyset = reg_spec_vset
+		LuaCore::dumpStack(lua_state);
 
 		lua_pushliteral(lua_state, "__index");
 		lua_pushstring(lua_state, meta_name);
@@ -263,6 +266,11 @@ namespace Ic3::Script
 		lua_pushliteral(lua_state, "__newindex");
 		lua_pushstring(lua_state, meta_name);
 		lua_pushcclosure(lua_state, RDNewIndexMeta, 1);
+		lua_rawset(lua_state, fmeta_table);
+		LuaCore::dumpStack(lua_state);
+
+		lua_pushliteral(lua_state, "__call");
+		lua_pushcfunction(lua_state, ic3ScriptConstructor( NewRefData ));
 		lua_rawset(lua_state, fmeta_table);
 		LuaCore::dumpStack(lua_state);
 		

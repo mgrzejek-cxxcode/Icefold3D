@@ -9,6 +9,16 @@
 namespace Ic3::Script
 {
 
+	template <typename TClass>
+	void pushObjectNew( lua_State * pLuaState, TClass && pValue )
+	{
+		const size_t allocSize = sizeof( TClass );
+		const char * metatableName = LuaCore::getTypeMetatableName<TClass>();
+		void * objectPtr = LuaCore::newObject( pLuaState, allocSize, metatableName, false );
+		new ( objectPtr ) TClass( std::move( pValue ) );
+
+	}
+
 	namespace LuaWrappers
 	{
 
@@ -45,7 +55,7 @@ namespace Ic3::Script
 			{
 				void * memPtr = allocNewObject<TRet>( pLuaState );
 				auto * objectPtr = reinterpret_cast<TRet *>( memPtr );
-				auto argsTuple = ArgsWrapper::getArgs( pLuaState, 0, ArgsSequence() );
+				auto argsTuple = ArgsWrapper::retrieveLuaArgs( pLuaState, 0, ArgsSequence() );
 				execute( pFuncPtr, objectPtr, argsTuple, ArgsSequence() );
 				LuaCore::pushValue<TRet>( pLuaState, objectPtr );
 			}
@@ -69,7 +79,7 @@ namespace Ic3::Script
 
 			static void destroy( lua_State * pLuaState, void( *pFuncPtr )( void * ) )
 			{
-				auto argsTuple = ArgsWrapper::getArgs( pLuaState, 0, ArgsSequence() );
+				auto argsTuple = ArgsWrapper::retrieveLuaArgs( pLuaState, 0, ArgsSequence() );
 				execute( pFuncPtr, argsTuple );
 			}
 		};

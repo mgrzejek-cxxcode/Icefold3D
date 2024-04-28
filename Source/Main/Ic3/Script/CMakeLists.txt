@@ -1,7 +1,23 @@
 
 set( IC3_SCRIPT_SRC_FILES
-    "Prerequisites.h"
-    "Prerequisites.cpp"
+
+	"Prerequisites/CommonDefs.h"
+	"Prerequisites/CommonTypes.h"
+
+	"Prerequisites.h"
+	"ScriptSystem.h"
+	"ScriptSystem.cpp"
+
+	"Lua/LuaCoreAPI.h"
+    "Lua/LuaCoreAPI.cpp"
+	"Lua/LuaScriptSystem.h"
+	"Lua/LuaScriptSystem.cpp"
+	"Lua/RefData.h"
+	"Lua/RefData.cpp"
+
+	"Lua/Interop/LuaClass.h"
+	"Lua/Interop/LuaFunctions.h"
+	"Lua/Interop/LuaVariables.h"
 )
 
 if( "${IC3_COMPONENTS_BUILD_MODE}" STREQUAL "STATIC" )
@@ -13,7 +29,7 @@ else()
 endif()
 
 set_target_properties( Ic3.Script PROPERTIES
-		OUTPUT_NAME "ts3dx-component-script"
+		OUTPUT_NAME "Ic3.Script"
 		)
 
 target_compile_definitions( Ic3.Script PRIVATE
@@ -25,4 +41,8 @@ target_include_directories( Ic3.Graphics.GCI PUBLIC
 		)
 
 target_link_libraries( Ic3.Script PUBLIC
+		ExtLib.Lua
+		Ic3.CoreLib
+		Ic3.Cppx
+		Ic3.System
 		)

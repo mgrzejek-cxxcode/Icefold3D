@@ -67,7 +67,7 @@ namespace Ic3::Script
 			ExsTraceError(TRC_Script_System, "Type error (%s expected).", metatableName);
 		}
 
-		void * newObject( lua_State * pLuaState, size_t pSize, const char* pMetatableName )
+		void * newObject( lua_State * pLuaState, size_t pSize, const char* pMetatableName, bool pBalanced )
 		{
 			bool metatableValid = queryMetatable( pLuaState, pMetatableName );
 			if( metatableValid )
@@ -83,17 +83,21 @@ namespace Ic3::Script
 				lua_setmetatable( pLuaState, -2 );
 				// Stack: [..., userdata]
 
-				lua_pop( pLuaState, 1 );
-				// Stack: [...]
+				if( pBalanced )
+				{
+					lua_pop( pLuaState, 1 );
+					// Stack: [...]
+				}
 
 				return dataPtr;
 			}
+
 			return nullptr;
 		}
 
 		void dumpStack( lua_State * pLuaState )
 		{
-			return;
+			//return;
 			int topIndex = lua_gettop( pLuaState );
 			if( topIndex == 0 )
 			{

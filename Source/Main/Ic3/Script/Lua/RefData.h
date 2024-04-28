@@ -41,6 +41,8 @@ namespace Ic3::Script
 		void addTwo( const char * pStr1, const char * pStr2 );
 		void print();
 
+		bool equals( RefData & pOther ) const;
+
 		static int getCnt();
 
 		[[nodiscard]] size_t getSize() const;
@@ -56,7 +58,7 @@ namespace Ic3::Script
 
 	inline size_t RefData::getSize() const
 	{
-		return this->_data.size();
+		return this->name.length();
 	}
 
 	inline const std::string & RefData::getName() const
@@ -64,6 +66,8 @@ namespace Ic3::Script
 		return name;
 	}
 
+
+	ic3DeclareScriptTypeExt( RefData, "Ic3.NxMain" );
 
 }
 

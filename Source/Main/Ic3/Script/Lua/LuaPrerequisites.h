@@ -60,6 +60,8 @@ namespace Ic3::Script
 		template <class T>
 		inline const char * getTypeMetatableName()
 		{
+			return TypeMetaInfo<T>::sQualifiedTypeName;
+
 			static std::string metatableName{};
 
 			if( metatableName.empty() )

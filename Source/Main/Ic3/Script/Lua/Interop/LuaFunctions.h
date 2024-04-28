@@ -19,31 +19,72 @@ namespace Ic3::Script
 
 			using SeqType = std::make_integer_sequence<int, sArgsNum>;
 
-			template <int tArgsNum>
-			struct Arg
-			{
-				using Type = typename std::tuple_element< sArgsNum, std::tuple<TArgs...> >::type;
-			};
-
 			/// @brief Retrieves arguments from the lua stack and returns them packed into a tuple.
-			/// @param lua Lua state object. </param>
-			/// @param stackHeadSize Number of elements on the stack *after* last argument. </param>
-			/// @param sequence Generated integer sequence, used for proper pack expansion. </param>
+			/// @param pLuaState Lua state object.
+			/// @param pStackHeadSize Number of elements on the stack *after* last argument.
+			/// @param pSequence Generated integer sequence, used for proper pack expansion.
 			template <int... tSeq>
-			static std::tuple<TArgs...> getArgs( lua_State * pLuaState,
-												 int pStackHeadSize,
-												 std::integer_sequence<int, tSeq...> pSequence )
+			static std::tuple<TArgs...> retrieveLuaArgs( lua_State * pLuaState,
+			                                             int pStackHeadSize,
+			                                             std::integer_sequence<int, tSeq...> pSequence )
 			{
 				return std::tuple<TArgs...>( LuaCore::getFunctionArgument<TArgs>( pLuaState, sArgsNum, tSeq - pStackHeadSize )... );
 			}
+		};
+
+		template <typename TRet>
+		struct FunctionReturnValueBinder
+		{
+			using Type = TRet;
+		};
+
+		template <typename TRet>
+		struct FunctionReturnValueBinder<TRet &&>
+		{
+			using Type = TRet &&;
+		};
+
+		template <typename TRet>
+		struct FunctionReturnValueBinder<TRet &>
+		{
+			using Type = TRet &;
+		};
+
+		template <typename TRet>
+		struct FunctionReturnValueBinder<const TRet &>
+		{
+			using Type = const TRet &;
+		};
+
+
+
+		template <typename TFunction>
+		struct BaseFunction;
+
+		template <typename TRet, typename... TArgs>
+		struct BaseFunction<TRet(*)( TArgs... )>
+		{
+			using ArgsWrapper = FunctionArgs<TArgs...>;
+			using ArgsSequence = typename ArgsWrapper::SeqType;
+			using ReturnValueType = typename FunctionReturnValueBinder<TRet>::Type;
+			static const auto sArgsNum = ArgsWrapper::sArgsNum;
+		};
+
+		template <typename TClass, typename TRet, typename... TArgs>
+		struct BaseFunction<TRet( TClass::* )( TArgs... )>
+		{
+			using ArgsWrapper = FunctionArgs<TArgs...>;
+			using ArgsSequence = typename ArgsWrapper::SeqType;
+			using ReturnValueType = typename FunctionReturnValueBinder<TRet>::Type;
+			static const auto sArgsNum = ArgsWrapper::sArgsNum;
 		};
 
 
 		template <typename TClass, typename TRet, typename... TArgs>
 		struct MemberFunction
 		{
-			template <int... tSeq>
-			static TRet execute( TRet( TClass::* pFuncPtr )( TArgs... ),
+			template <typename TFunction, int... tSeq>
+			static TRet execute( TFunction pFuncPtr,
 								 TClass * pInstancePtr,
 								 const std::tuple<TArgs...> & pArgs,
 								 std::integer_sequence<int, tSeq...> )
@@ -51,8 +92,8 @@ namespace Ic3::Script
 				return ( pInstancePtr->*( pFuncPtr ) )( std::get<tSeq>( pArgs )... );
 			}
 
-			template <int... tSeq>
-			static TRet execute( TRet( TClass::* pFuncPtr )( TArgs... ) const,
+			template <typename TFunction, int... tSeq>
+			static TRet execute( TFunction pFuncPtr,
 								 const TClass * pInstancePtr,
 								 const std::tuple<TArgs...> & pArgs,
 								 std::integer_sequence<int, tSeq...> )
@@ -89,7 +130,7 @@ namespace Ic3::Script
 			static int call( lua_State * pLuaState, void( TClass::* pFuncPtr )( TArgs... ) )
 			{
 				TClass * thisPtr = LuaCore::getThisPointer<TClass>( pLuaState, sArgsNum );
-				auto argsTuple = ArgsWrapper::getArgs( pLuaState, 0, ArgsSequence() );
+				auto argsTuple = ArgsWrapper::retrieveLuaArgs( pLuaState, 0, ArgsSequence() );
 				BaseFunction::execute( pFuncPtr, thisPtr, argsTuple, ArgsSequence() );
 				return 0;
 			}
@@ -107,7 +148,7 @@ namespace Ic3::Script
 			static int call( lua_State * pLuaState, void( TClass::* pFuncPtr )( TArgs... ) const )
 			{
 				const TClass * thisPtr = LuaCore::getThisPointer<TClass>( pLuaState, sArgsNum );
-				auto argsTuple = ArgsWrapper::getArgs( pLuaState, 0, ArgsSequence() );
+				auto argsTuple = ArgsWrapper::retrieveLuaArgs( pLuaState, 0, ArgsSequence() );
 				BaseFunction::execute( pFuncPtr, thisPtr, argsTuple, ArgsSequence() );
 				return 0;
 			}
@@ -125,7 +166,7 @@ namespace Ic3::Script
 			static int call( lua_State * pLuaState, TRet( TClass::* pFuncPtr )( TArgs... ) )
 			{
 				TClass * thisPtr = LuaCore::getThisPointer<TClass>( pLuaState, sArgsNum );
-				auto argsTuple = ArgsWrapper::getArgs( pLuaState, 0, ArgsSequence() );
+				auto argsTuple = ArgsWrapper::retrieveLuaArgs( pLuaState, 0, ArgsSequence() );
 				auto callResult = BaseFunction::execute( pFuncPtr, thisPtr, argsTuple, ArgsSequence() );
 				LuaCore::pushValue<TRet>( pLuaState, callResult );
 				return 1;
@@ -145,9 +186,9 @@ namespace Ic3::Script
 			static int call( lua_State * pLuaState, TRet( TClass::* pFuncPtr )( TArgs... ) const )
 			{
 				const TClass * thisPtr = LuaCore::getThisPointer<TClass>( pLuaState, sArgsNum );
-				auto argsTuple = ArgsWrapper::getArgs( pLuaState, 0, ArgsSequence() );
+				auto argsTuple = ArgsWrapper::retrieveLuaArgs( pLuaState, 0, ArgsSequence() );
 				auto callResult = BaseFunction::execute( pFuncPtr, thisPtr, argsTuple, ArgsSequence() );
-				LuaCore::pushValue( pLuaState, callResult );
+				LuaCore::pushValue<decltype(callResult)>( pLuaState, callResult );
 				return 1;
 			}
 		};
@@ -163,7 +204,7 @@ namespace Ic3::Script
 
 			static int call( lua_State * pLuaState, void( *pFuncPtr )( TArgs... ) )
 			{
-				auto argsTuple = ArgsWrapper::getArgs( pLuaState, 0, ArgsSequence() );
+				auto argsTuple = ArgsWrapper::retrieveLuaArgs( pLuaState, 0, ArgsSequence() );
 				BaseFunction::execute( pFuncPtr, argsTuple, ArgsSequence() );
 				return 0;
 			}
@@ -180,7 +221,7 @@ namespace Ic3::Script
 
 			static int call( lua_State * pLuaState, TRet( *pFuncPtr )( TArgs... ) )
 			{
-				auto argsTuple = ArgsWrapper::getArgs( pLuaState, 0, ArgsSequence() );
+				auto argsTuple = ArgsWrapper::retrieveLuaArgs( pLuaState, 0, ArgsSequence() );
 				auto callResult = BaseFunction::execute( pFuncPtr, argsTuple, ArgsSequence() );
 				LuaCore::pushValue<TRet>( pLuaState, callResult );
 				return 1;
@@ -188,7 +229,7 @@ namespace Ic3::Script
 		};
 
 		template <typename TFunctionType, TFunctionType tFunctionPtr>
-		struct FunctionWrapper
+		struct FunctionProxy
 		{
 			static int proxyCall( lua_State * pLuaState )
 			{
@@ -197,7 +238,7 @@ namespace Ic3::Script
 		};
 
 		#define ic3ScriptFunction( pFunction ) \
-			LuaWrappers::FunctionWrapper<decltype( pFunction ), pFunction>::proxyCall
+			LuaWrappers::FunctionProxy<decltype( pFunction ), pFunction>::proxyCall
 
 	}
 
