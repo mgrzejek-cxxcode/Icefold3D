@@ -5,7 +5,7 @@
 #include "Prerequisites.h"
 #include <atomic>
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	template <typename TVal>

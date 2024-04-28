@@ -5,21 +5,21 @@
 #include "TypeTraits.h"
 #include "Utilities.h"
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	template <typename TVal>
-	struct SRange
+	struct Range
 	{
-		using SelfType = SRange<TVal>;
+		using SelfType = Range<TVal>;
 
 		TVal begin;
 		TVal end;
 
-		constexpr SRange() = default;
+		constexpr Range() = default;
 
 		template <typename TBegin, typename TEnd, typename std::enable_if_t<std::is_arithmetic_v<TBegin> && std::is_arithmetic_v<TEnd>, int> = 0>
-		constexpr SRange( TBegin pBegin, TEnd pEnd )
+		constexpr Range( TBegin pBegin, TEnd pEnd )
 		: begin( static_cast<TVal>( pBegin ) )
 		, end( static_cast<TVal>( pEnd ) )
 		{}
@@ -36,30 +36,30 @@ namespace Ic3
 		}
 
 		template <typename TOther>
-		IC3_ATTR_NO_DISCARD bool contains( const SRange<TOther> & pOther ) const noexcept
+		IC3_ATTR_NO_DISCARD bool contains( const Range<TOther> & pOther ) const noexcept
 		{
 			return contains( pOther.begin ) && contains( pOther.end );
 		}
 
 		template <typename TOther>
-		IC3_ATTR_NO_DISCARD bool overlapsWith( const SRange<TOther> & pOther ) const noexcept
+		IC3_ATTR_NO_DISCARD bool overlapsWith( const Range<TOther> & pOther ) const noexcept
 		{
 			return contains( pOther.begin ) || contains( pOther.end );
 		}
 
 		template <typename TOther>
-		IC3_ATTR_NO_DISCARD bool isSubRangeOf( const SRange<TOther> & pOther ) const noexcept
+		IC3_ATTR_NO_DISCARD bool isSubRangeOf( const Range<TOther> & pOther ) const noexcept
 		{
 			return pOther.contains( *this );
 		}
 
-		IC3_ATTR_NO_DISCARD static constexpr SRange maxRange() noexcept
+		IC3_ATTR_NO_DISCARD static constexpr Range maxRange() noexcept
 		{
-			return SRange{ QLimits<TVal>::minValue, QLimits<TVal>::maxValue };
+			return Range{ QLimits<TVal>::minValue, QLimits<TVal>::maxValue };
 		}
 
 		template <typename TOther>
-		IC3_ATTR_NO_DISCARD SRange & add( const SRange<TOther> & pOther ) noexcept
+		IC3_ATTR_NO_DISCARD Range & add( const Range<TOther> & pOther ) noexcept
 		{
 			if( pOther.begin < begin )
 			{
@@ -92,25 +92,25 @@ namespace Ic3
 	};
 
 	template <typename TVal>
-	inline bool rangeContains( const SRange<TVal> & pRange, TVal pValue ) noexcept
+	inline bool rangeContains( const Range<TVal> & pRange, TVal pValue ) noexcept
 	{
 		return pRange.contains( pValue );
 	}
 
 	template <typename TVal>
-	inline bool rangeContains( const SRange<TVal> & pFirst, const SRange<TVal> & pSecond ) noexcept
+	inline bool rangeContains( const Range<TVal> & pFirst, const Range<TVal> & pSecond ) noexcept
 	{
 		return pFirst.contains( pSecond );
 	}
 
 	template <typename TVal>
-	inline bool rangeOverlapsWith( const SRange<TVal> & pFirst, const SRange<TVal> & pSecond ) noexcept
+	inline bool rangeOverlapsWith( const Range<TVal> & pFirst, const Range<TVal> & pSecond ) noexcept
 	{
 		return pFirst.overlapsWith( pSecond );
 	}
 
 	template <typename TVal>
-	inline bool rangeIsSubRangeOf( const SRange<TVal> & pFirst, const SRange<TVal> & pSecond ) noexcept
+	inline bool rangeIsSubRangeOf( const Range<TVal> & pFirst, const Range<TVal> & pSecond ) noexcept
 	{
 		return pFirst.isSubRangeOf( pSecond );
 	}
@@ -121,7 +121,7 @@ namespace Ic3
 		static_assert( !std::is_signed_v<TSize>, "The region size cannot be negative, hence usage of signed types is forbidden." );
 
 		using SelfType = SRegion<TSize, TOffset>;
-		using RangeType = SRange<TSize>;
+		using RangeType = Range<TSize>;
 
 		TOffset offset = 0;
 		TSize size = 0;

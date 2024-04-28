@@ -18,16 +18,13 @@ namespace Ic3
 		/// @brief Represents max value which can be stored in the size_t type.
 		inline constexpr size_t MAX_SIZE = static_cast<size_t>( -1 );
 
+		/// @brief
+		inline constexpr size_t INVALID_LENGTH = static_cast<size_t>( -1 );
+
 		/// @brief Represents and invalid position (e.g. in a container or a continuous range).
 		inline constexpr size_t INVALID_POSITION = static_cast<size_t>( -1 );
 
 	}
-
-	template <typename TValue, TValue tInitValue = TValue{}>
-	struct StateWrapper
-	{
-		TValue state = tInitValue;
-	};
 
 	template <typename TType>
 	struct ArrayDelete

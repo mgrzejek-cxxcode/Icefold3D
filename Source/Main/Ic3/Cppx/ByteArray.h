@@ -4,7 +4,7 @@
 
 #include "MemoryBuffer.h"
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	class ByteArray
@@ -279,7 +279,7 @@ namespace Ic3
 
 		void swap( DynamicByteArray & pOther )
 		{
-			Ic3::swap( _internalBuffer, pOther._internalBuffer );
+			Ic3::Cppx::swap( _internalBuffer, pOther._internalBuffer );
 			std::swap( _storageMemoryPtr, pOther._storageMemoryPtr );
 			std::swap( _dataSize, pOther._dataSize );
 		}

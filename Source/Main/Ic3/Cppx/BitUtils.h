@@ -6,7 +6,7 @@
 #include "TypeTraits.h"
 #include <climits>
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	template <typename TUint, size_t tShift, typename TInput>

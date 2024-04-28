@@ -4,7 +4,7 @@
 
 #include "StaticAlgo.h"
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	template <typename _Type>
@@ -29,7 +29,7 @@ namespace Ic3
 
 	public:
 		Optional()
-			: _valuePtr( nullptr )
+		: _valuePtr( nullptr )
 		{}
 
 		Optional( _Type && pInput )

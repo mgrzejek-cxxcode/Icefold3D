@@ -6,7 +6,7 @@
 #include "MemoryBuffer.h"
 #include <variant>
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	template <size_t tFixedCapacity, size_t tResizeFactor, size_t tMaximumCapacity = QLimits<size_t>::maxValue>

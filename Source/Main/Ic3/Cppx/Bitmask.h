@@ -6,7 +6,7 @@
 #include "TypeTraits.h"
 #include <Ic3/Platform/GDS.h>
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	template <typename TVal>

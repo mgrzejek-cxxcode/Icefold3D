@@ -5,7 +5,7 @@
 #include "ArrayView.h"
 #include <string>
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	enum class IntegerBase : uint32
@@ -17,35 +17,35 @@ namespace Ic3
 	};
 
 	/// @brief Creates ArrayView that wraps an std::basic_string object
-	/// @tparam _Char Type of the string's internal characters.
+	/// @tparam TChar Type of the string's internal characters.
 	/// @param pString A string object to be mapped to a view.
 	/// @return ArrayView referencing specified string object.
-	template <typename _Char>
-	inline ArrayView<_Char> bindArrayView( std::basic_string<_Char> & pString )
+	template <typename TChar>
+	inline ArrayView<TChar> bindArrayView( std::basic_string<TChar> & pString )
 	{
-		return ArrayView<_Char>( &( pString[0] ), pString.length() );
+		return ArrayView<TChar>( &( pString[0] ), pString.length() );
 	}
 
 	/// @brief Creates ArrayView that wraps an std::basic_string object
-	/// @tparam _Char Type of the string's internal characters.
+	/// @tparam TChar Type of the string's internal characters.
 	/// @param pString A string object to be mapped to a view.
 	/// @return ArrayView referencing specified string object.
-	template <typename _Char>
-	inline ArrayView<const _Char> bindArrayView( const std::basic_string<_Char> & pString )
+	template <typename TChar>
+	inline ArrayView<const TChar> bindArrayView( const std::basic_string<TChar> & pString )
 	{
-		return ArrayView<const _Char>( &( pString[0] ), pString.length() );
+		return ArrayView<const TChar>( &( pString[0] ), pString.length() );
 	}
 
 
 	/// @brief
-	template <typename _Char>
+	template <typename TChar>
 	struct ToStringProxy;
 
 	template <>
 	struct ToStringProxy<char>
 	{
-		template <class _T>
-		static std::basic_string<char> toString( const _T & pValue )
+		template <class TValue>
+		static std::basic_string<char> toString( const TValue & pValue )
 		{
 			return std::to_string( pValue );
 		}
@@ -54,8 +54,8 @@ namespace Ic3
 	template <>
 	struct ToStringProxy<wchar_t>
 	{
-		template <class _T>
-		static std::basic_string<wchar_t> toString( const _T & pValue )
+		template <class TValue>
+		static std::basic_string<wchar_t> toString( const TValue & pValue )
 		{
 			return std::to_wstring( pValue );
 		}
@@ -63,7 +63,7 @@ namespace Ic3
 
 
 	/// @brief
-	template <typename _Ret>
+	template <typename TRet>
 	struct FromStringProxy;
 
 	template <>
@@ -83,8 +83,8 @@ namespace Ic3
 			return std::pair<int32_t, wchar_t *>( value, endPtr );
 		}
 
-		template <typename _Char>
-		static std::pair<int32_t, size_t> fromString( const std::basic_string<_Char> & pInputStr, IntegerBase pBase = IntegerBase::Decimal )
+		template <typename TChar>
+		static std::pair<int32_t, size_t> fromString( const std::basic_string<TChar> & pInputStr, IntegerBase pBase = IntegerBase::Decimal )
 		{
 			size_t processedNum = 0;
 			int32_t value = std::stol( pInputStr, &processedNum, static_cast< int >( pBase ) );
@@ -109,8 +109,8 @@ namespace Ic3
 			return std::pair<uint32_t, wchar_t *>( value, endPtr );
 		}
 
-		template <typename _Char>
-		static std::pair<uint32_t, size_t> fromString( const std::basic_string<_Char> & pInputStr, IntegerBase pBase = IntegerBase::Decimal )
+		template <typename TChar>
+		static std::pair<uint32_t, size_t> fromString( const std::basic_string<TChar> & pInputStr, IntegerBase pBase = IntegerBase::Decimal )
 		{
 			size_t processedNum = 0;
 			uint32_t value = std::stoul( pInputStr, &processedNum, static_cast< int >( pBase ) );
@@ -135,8 +135,8 @@ namespace Ic3
 			return std::pair<int64_t, wchar_t *>( value, endPtr );
 		}
 
-		template <typename _Char>
-		static std::pair<int64_t, size_t> fromString( const std::basic_string<_Char> & pInputStr, IntegerBase pBase = IntegerBase::Decimal )
+		template <typename TChar>
+		static std::pair<int64_t, size_t> fromString( const std::basic_string<TChar> & pInputStr, IntegerBase pBase = IntegerBase::Decimal )
 		{
 			size_t processedNum = 0;
 			int64_t value = std::stoll( pInputStr, &processedNum, static_cast< int >( pBase ) );
@@ -161,8 +161,8 @@ namespace Ic3
 			return std::pair<uint64_t, wchar_t *>( value, endPtr );
 		}
 
-		template <typename _Char>
-		static std::pair<uint64_t, size_t> fromString( const std::basic_string<_Char> & pInputStr, IntegerBase pBase = IntegerBase::Decimal )
+		template <typename TChar>
+		static std::pair<uint64_t, size_t> fromString( const std::basic_string<TChar> & pInputStr, IntegerBase pBase = IntegerBase::Decimal )
 		{
 			size_t processedNum = 0;
 			uint64_t value = std::stoull( pInputStr, &processedNum, static_cast< int >( pBase ) );
@@ -187,8 +187,8 @@ namespace Ic3
 			return std::pair<float, wchar_t *>( value, endPtr );
 		}
 
-		template <typename _Char>
-		static std::pair<float, size_t> fromString( const std::basic_string<_Char> & pInputStr )
+		template <typename TChar>
+		static std::pair<float, size_t> fromString( const std::basic_string<TChar> & pInputStr )
 		{
 			size_t processedNum = 0;
 			float value = std::stof( pInputStr, &processedNum );
@@ -213,8 +213,8 @@ namespace Ic3
 			return std::pair<double, wchar_t *>( value, endPtr );
 		}
 
-		template <typename _Char>
-		static std::pair<double, size_t> fromString( const std::basic_string<_Char> & pInputStr )
+		template <typename TChar>
+		static std::pair<double, size_t> fromString( const std::basic_string<TChar> & pInputStr )
 		{
 			size_t processedNum = 0;
 			double value = std::stod( pInputStr, &processedNum );
@@ -239,8 +239,8 @@ namespace Ic3
 			return std::pair<long double, wchar_t *>( value, endPtr );
 		}
 
-		template <typename _Char>
-		static std::pair<long double, size_t> fromString( const std::basic_string<_Char> & pInputStr )
+		template <typename TChar>
+		static std::pair<long double, size_t> fromString( const std::basic_string<TChar> & pInputStr )
 		{
 			size_t processedNum = 0;
 			long double value = std::stold( pInputStr, &processedNum );
@@ -250,38 +250,38 @@ namespace Ic3
 
 
 	/// @brief
-	template <typename _Char, typename _T>
-	std::basic_string<_Char> toString( const _T & pValue )
+	template <typename TChar, typename TValue>
+	std::basic_string<TChar> toString( const TValue & pValue )
 	{
-		return ToStringProxy<_Char>::toString( pValue );
+		return ToStringProxy<TChar>::toString( pValue );
 	}
 
 	/// @brief
-	template <typename _T, typename _Char>
-	std::pair<_T, _Char *> fromString( const _Char * pInputStr )
+	template <typename TValue, typename TChar>
+	std::pair<TValue, TChar *> fromString( const TChar * pInputStr )
 	{
-		return FromStringProxy<_T>::fromString( pInputStr );
+		return FromStringProxy<TValue>::fromString( pInputStr );
 	}
 
 	/// @brief
-	template <typename _T, typename _Char>
-	std::pair<_T, _Char *> fromString( const _Char * pInputStr, IntegerBase pBase )
+	template <typename TValue, typename TChar>
+	std::pair<TValue, TChar *> fromString( const TChar * pInputStr, IntegerBase pBase )
 	{
-		return FromStringProxy<_T>::fromString( pInputStr, pBase );
+		return FromStringProxy<TValue>::fromString( pInputStr, pBase );
 	}
 
 	/// @brief
-	template <typename _T, typename _Char>
-	std::pair<_T, size_t> fromString( const std::basic_string<_Char> & pInputStr )
+	template <typename TValue, typename TChar>
+	std::pair<TValue, size_t> fromString( const std::basic_string<TChar> & pInputStr )
 	{
-		return FromStringProxy<_T>::fromString( pInputStr );
+		return FromStringProxy<TValue>::fromString( pInputStr );
 	}
 
 	/// @brief
-	template <typename _T, typename _Char>
-	std::pair<_T, size_t> fromString( const std::basic_string<_Char> & pInputStr, IntegerBase pBase )
+	template <typename TValue, typename TChar>
+	std::pair<TValue, size_t> fromString( const std::basic_string<TChar> & pInputStr, IntegerBase pBase )
 	{
-		return FromStringProxy<_T>::fromString( pInputStr, pBase );
+		return FromStringProxy<TValue>::fromString( pInputStr, pBase );
 	}
 
 }

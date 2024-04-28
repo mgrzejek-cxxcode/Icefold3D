@@ -5,7 +5,7 @@
 #include "ArrayView.h"
 #include <string>
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	enum class EHashAlgo : enum_default_value_t
@@ -305,10 +305,10 @@ namespace Ic3
 namespace std
 {
 
-	template <Ic3::EHashAlgo tHashAlgo>
-	struct hash< Ic3::SHashObject<tHashAlgo> >
+	template <Ic3::Cppx::EHashAlgo tHashAlgo>
+	struct hash< Ic3::Cppx::SHashObject<tHashAlgo> >
 	{
-		size_t operator()( const Ic3::SHashObject<tHashAlgo> & pHashObject ) const noexcept
+		size_t operator()( const Ic3::Cppx::SHashObject<tHashAlgo> & pHashObject ) const noexcept
 		{
 			return Ic3::numeric_cast<size_t>( pHashObject.hashValue );
 		}

@@ -6,7 +6,7 @@
 #include <cassert>
 #include <functional>
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	template <typename TCounter = RefCounter>
@@ -85,46 +85,46 @@ namespace Ic3
 
 	public:
 		IntrusivePtr()
-			: _ptr( nullptr )
+		: _ptr( nullptr )
 		{}
 
 		IntrusivePtr( IntrusivePtr && pSrcObject )
-			: _ptr( nullptr )
+		: _ptr( nullptr )
 		{
 			swap( pSrcObject );
 		}
 
 		IntrusivePtr( const IntrusivePtr & pSrcObject )
-			: _ptr( nullptr )
+		: _ptr( nullptr )
 		{
 			_setNoRelease( pSrcObject._ptr );
 		}
 
 		template <typename TOther>
 		IntrusivePtr( IntrusivePtr<TOther> && pOther )
-			: _ptr( static_cast<TType *>( pOther._ptr ) )
+		: _ptr( static_cast<TType *>( pOther._ptr ) )
 		{
 			pOther._ptr = nullptr;
 		}
 
 		template <typename TOther>
 		IntrusivePtr( const IntrusivePtr<TOther> & pOther )
-			: _ptr( nullptr )
+		: _ptr( nullptr )
 		{
 			_setNoRelease( pOther._ptr );
 		}
 
 		IntrusivePtr( std::nullptr_t )
-			: _ptr( nullptr )
+		: _ptr( nullptr )
 		{}
 
 		explicit IntrusivePtr( TType * pObject )
-			: _ptr( pObject )
+		: _ptr( pObject )
 		{}
 
 		template <typename TOther>
 		explicit IntrusivePtr( TOther * pObject )
-			: _ptr( static_cast<TType *>( pObject ) )
+		: _ptr( static_cast<TType *>( pObject ) )
 		{}
 
 		~IntrusivePtr()

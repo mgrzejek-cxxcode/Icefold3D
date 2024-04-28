@@ -7,19 +7,12 @@
 
 #define IC3_USE_RUNTIME_CHECKED_MEMORY_ROUTINES 0
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	using MemoryAllocCallback = std::function<void *( size_t )>;
 	using MemoryFreeCallback = std::function<void( void * )>;
 	using MemoryReallocCallback = std::function<void *( void *, size_t )>;
-
-	namespace CxDef
-	{
-
-		inline constexpr uint32 MEMORY_DEFAULT_ALIGNMENT = IC3_PCL_MEMORY_BASE_ALIGNMENT;
-
-	}
 
 	struct MemoryAllocationProxy
 	{
@@ -27,7 +20,7 @@ namespace Ic3
 		MemoryAllocCallback apiAlloc;
 		MemoryFreeCallback apiFree;
 		MemoryReallocCallback apiRealloc;
-		uint32 memoryAlignment = CxDef::MEMORY_DEFAULT_ALIGNMENT;
+		uint32 memoryAlignment = kMemoryCPUDefaultAlignment;
 
 	public:
 		explicit operator bool() const

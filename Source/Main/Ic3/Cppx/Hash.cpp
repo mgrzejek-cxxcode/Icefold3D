@@ -3,7 +3,7 @@
 #include "StaticLimits.h"
 #include <zlib/zlib.h>
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	uint32 QHashTraits<EHashAlgo::Adler32>::compute( const void * pInput, size_t pInputSize )

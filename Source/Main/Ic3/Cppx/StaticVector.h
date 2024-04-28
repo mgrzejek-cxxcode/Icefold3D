@@ -4,7 +4,7 @@
 
 #include "ArrayView.h"
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	template <typename T, size_t tMaxCapacity>

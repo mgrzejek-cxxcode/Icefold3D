@@ -1,15 +1,17 @@
 
 set( IC3_CPPX_SRC_FILES
         "Prerequisites.h"
+        "Aligned.h"
         "Bitmask.h"
         "BitmaskAtomic.h"
         "ByteArray.h"
         "Chrono.h"
-        "FixedVector.h"
+        "FlatMap.h"
         "FsUtils.h"
         "FsUtils.cpp"
         "Hash.h"
         "Hash.cpp"
+        "IntrusivePtr.h"
         "Memory.h"
         "Memory.cpp"
         "MemoryBuffer.h"
@@ -42,7 +44,7 @@ target_include_directories( Ic3.Cppx PUBLIC
         )
 
 target_link_libraries( Ic3.Cppx PUBLIC
-        Lib.External.zlib
+        ExtLib.Zlib
         Ic3.Platform
         )
         

@@ -4,7 +4,7 @@
 
 #include "Utilities.h"
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	template <typename TValue>

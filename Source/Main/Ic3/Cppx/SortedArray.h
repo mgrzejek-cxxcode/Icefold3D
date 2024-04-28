@@ -1,12 +1,12 @@
 
-#ifndef __IC3_CPPX_SORTED_ARRAY__H__
-#define __IC3_CPPX_SORTED_ARRAY__H__
+#ifndef __IC3_CPPX_SORTED_ARRAY_H__
+#define __IC3_CPPX_SORTED_ARRAY_H__
 
 #include "StaticAlgo.h"
 #include "StaticLimits.h"
 #include <stdexcept>
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	template < typename TValue,
@@ -34,8 +34,7 @@ namespace Ic3
 		SortedArray( const SortedArray & ) = default;
 		SortedArray& operator=( const SortedArray & ) = default;
 
-		SortedArray()
-		{}
+		SortedArray() = default;
 
 		explicit SortedArray( const TAlloc & pAllocator )
 		: _underlyingContainer( pAllocator )
@@ -222,13 +221,12 @@ namespace Ic3
 			if( rangeBeginPos != CxDef::INVALID_POSITION )
 			{
 				auto rangeEndPos = _findUpper( pRight, CompareType{} );
-				if( rangeEndPos < rangeBeginPos )
+				if( rangeBeginPos <= rangeEndPos )
 				{
-					throw std::out_of_range("Invalid range specification" );
+					const auto eraseFrom = _underlyingContainer.begin() + rangeBeginPos;
+					const auto eraseTo = _underlyingContainer.begin() + rangeEndPos;
+					return _underlyingContainer.erase( eraseFrom, eraseTo );
 				}
-				const auto eraseFrom = _underlyingContainer.begin() + rangeBeginPos;
-				const auto eraseTo = _underlyingContainer.begin() + rangeEndPos;
-				return _underlyingContainer.erase( eraseFrom, eraseTo );
 			}
 			return _underlyingContainer.end();
 		}
@@ -334,4 +332,4 @@ namespace Ic3
 
 }
 
-#endif // __IC3_CPPX_SORTED_ARRAY__H__
+#endif // __IC3_CPPX_SORTED_ARRAY_H__

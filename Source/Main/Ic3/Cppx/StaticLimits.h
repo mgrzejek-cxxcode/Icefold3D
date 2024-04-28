@@ -9,7 +9,7 @@
 #include <numeric>
 #include <type_traits>
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	template <typename TType, size_t tTypeSize, bool tSigned>

@@ -5,7 +5,7 @@
 #include "Prerequisites.h"
 #include <numeric>
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	template <typename T1, typename T2 = T1>

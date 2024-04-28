@@ -5,40 +5,32 @@
 #include "Bitmask.h"
 #include <string>
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
-	class FSUtilityAPI
+	enum EFSAPIFlags : uint32
 	{
-	public:
-		enum EFlags : uint32
-		{
-			E_SPLIT_PATH_FLAG_ASSUME_DIRECTORY_BIT = 0x0001,
+		E_FSAPI_SPLIT_PATH_FLAG_ASSUME_DIRECTORY_BIT = 0x0001,
 
-			E_SPLIT_PATH_FLAG_ASSUME_FILE_BIT = 0x0002,
+		E_FSAPI_SPLIT_PATH_FLAG_ASSUME_FILE_BIT      = 0x0002,
 
-			E_SPLIT_PATH_FLAGS_DEFAULT = E_SPLIT_PATH_FLAG_ASSUME_DIRECTORY_BIT,
+		E_FSAPI_SPLIT_PATH_FLAGS_DEFAULT             = E_FSAPI_SPLIT_PATH_FLAG_ASSUME_DIRECTORY_BIT,
 
-			E_SPLIT_PATH_MASK_ALL =
-				E_SPLIT_PATH_FLAG_ASSUME_DIRECTORY_BIT |
-				E_SPLIT_PATH_FLAG_ASSUME_FILE_BIT
-		};
-
-		struct FilePathInfo
-		{
-			std::string directory;
-			std::string fileName;
-		};
-
-		FSUtilityAPI() = delete;
-		~FSUtilityAPI() = delete;
-
-		static std::string normalizePath( const std::string & pPath );
-
-		static FilePathInfo splitPath( std::string pFilePath, Bitmask<EFlags> pFlags = E_SPLIT_PATH_FLAGS_DEFAULT );
-
-		static bool isFilenameWithExtension( const std::string & pFilename );
+		E_FSAPI_SPLIT_PATH_MASK_ALL                  = E_FSAPI_SPLIT_PATH_FLAG_ASSUME_DIRECTORY_BIT |
+		                                               E_FSAPI_SPLIT_PATH_FLAG_ASSUME_FILE_BIT
 	};
+
+	struct FilePathInfo
+	{
+		std::string directory;
+		std::string fileName;
+	};
+
+	std::string fsNormalizePath( const std::string & pPath );
+
+	FilePathInfo fsSplitPath( std::string pFilePath, Bitmask<EFSAPIFlags> pFlags = E_FSAPI_SPLIT_PATH_FLAGS_DEFAULT );
+
+	bool fsIsFilenameWithExtension( const std::string & pFilename );
 
 }
 

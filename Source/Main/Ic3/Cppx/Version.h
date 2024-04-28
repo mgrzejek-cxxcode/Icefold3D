@@ -59,7 +59,7 @@ namespace Ic3
 	};
 
 	/// @brief An invalid version constant - both major and minor components are set to UINT16_MAX.
-	inline constexpr Version CX_VERSION_INVALID{ CX_UINT16_MAX, CX_UINT16_MAX };
+	inline constexpr Version CX_VERSION_INVALID{ Cppx::CX_UINT16_MAX, Cppx::CX_UINT16_MAX };
 
 	/// @brief An unknown version constant - both major and minor components are set to 0.
 	inline constexpr Version CX_VERSION_UNKNOWN{ 0, 0 };

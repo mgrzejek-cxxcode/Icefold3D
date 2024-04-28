@@ -1,10 +1,10 @@
 
-#ifndef __IC3_CPPX_TYPE_TRAITS__H__
-#define __IC3_CPPX_TYPE_TRAITS__H__
+#ifndef __IC3_CPPX_TYPE_TRAITS_H__
+#define __IC3_CPPX_TYPE_TRAITS_H__
 
 #include "StaticLimits.h"
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	/// @brief Contains a static `size_t` member variable `value` which yields the length of `TTypes...`.
@@ -44,11 +44,11 @@ namespace Ic3
 	{};
 
 	template <int tN, int... tSeq>
-	struct IntegerSequenceGenerator : IntegerSequenceGenerator<tN - 1, tN - 1, tSeq...>
+	struct QIntegerSequenceGenerator : QIntegerSequenceGenerator<tN - 1, tN - 1, tSeq...>
 	{};
 
 	template <int... tSeq>
-	struct IntegerSequenceGenerator<0, tSeq...>
+	struct QIntegerSequenceGenerator<0, tSeq...>
 	{
 		using Type = QIntegerSequence<tSeq...>;
 	};
@@ -230,4 +230,4 @@ namespace Ic3
 
 }
 
-#endif /* __IC3_CPPX_TYPE_TRAITS__H__ */
+#endif /* __IC3_CPPX_TYPE_TRAITS_H__ */

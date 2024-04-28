@@ -6,7 +6,7 @@
 #include "StaticAlgo.h"
 #include "TypeTraits.h"
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	template <typename TChar = char>

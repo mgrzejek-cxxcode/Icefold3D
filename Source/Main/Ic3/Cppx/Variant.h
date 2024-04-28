@@ -5,7 +5,7 @@
 #include "StaticAlgo.h"
 #include <typeinfo>
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	/// @brief Type for storing the Variant type index.
@@ -309,16 +309,10 @@ namespace Ic3
 			_typeIndex = VariantProxy<TLst...>::copy( _typeIndex, &( _storage ), &( pSrcObject._pStorage ) );
 		}
 
-		template <typename TValue>//, typename std::enable_if_t<!std::is_same<TValue, MyType>::value, int>>
+		template <typename TValue> //, typename std::enable_if_t<!std::is_same<TValue, MyType>::value, int>>
 		Variant( TValue && pValue ) noexcept
 		{
-			_typeIndex = VariantProxy<TLst...>::construct( &( _storage ), std::move( pValue ) );
-		}
-
-		template <typename TValue>//, typename std::enable_if_t<!std::is_same<TValue, MyType>::value, int>>
-		Variant( const TValue & pValue )
-		{
-			_typeIndex = VariantProxy<TLst...>::construct( &( _storage ), pValue );
+			_typeIndex = VariantProxy<TLst...>::construct( &( _storage ), std::forward<TValue>( pValue ) );
 		}
 
 		~Variant()
@@ -349,39 +343,20 @@ namespace Ic3
 		template <typename TTarget>
 		Variant & operator=( TTarget && pRhs )
 		{
-			_reInit<TTarget>( std::move( pRhs ) );
-			return *this;
-		}
-
-		template <typename TTarget>
-		Variant & operator=( const TTarget & pRhs )
-		{
-			_reInit<TTarget>( pRhs );
+			_reInit<TTarget>( std::forward<TTarget>( pRhs ) );
 			return *this;
 		}
 
 		template <typename TTarget>
 		void set( TTarget && pValue )
 		{
-			_reInit<TTarget>( std::move( pValue ) );
-		}
-
-		template <typename TTarget>
-		void set( const TTarget & pValue )
-		{
-			_reInit<TTarget>( pValue );
+			_reInit<TTarget>( std::forward<TTarget>( pValue ) );
 		}
 
 		template <typename TTarget>
 		void setConv( TTarget && pValue )
 		{
-			_reInitConv<TTarget>( std::move( pValue ) );
-		}
-
-		template <typename TTarget>
-		void setConv( const TTarget & pValue )
-		{
-			_reInitConv<TTarget>( pValue );
+			_reInitConv<TTarget>( std::forward<TTarget>( pValue ) );
 		}
 
 		template <typename TTarget, typename... TArgs>

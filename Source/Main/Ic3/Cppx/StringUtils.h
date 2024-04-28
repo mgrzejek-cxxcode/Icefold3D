@@ -7,11 +7,11 @@
 #include <cwctype>
 #include <functional>
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	/// @brief
-	template <typename _Char>
+	template <typename TChar>
 	struct CharConv;
 
 	template <>
@@ -44,7 +44,7 @@ namespace Ic3
 
 
 	/// @brief
-	template <typename _Char>
+	template <typename TChar>
 	struct StringConv;
 
 	template <>
@@ -132,42 +132,42 @@ namespace Ic3
 			return StringConv<_CharOut>::convert( pInput );
 		}
 
-		template <typename _Char>
-		inline void makeLowerTransform( std::basic_string<_Char> & pInput )
+		template <typename TChar>
+		inline void makeLowerTransform( std::basic_string<TChar> & pInput )
 		{
-			std::transform( pInput.begin(), pInput.end(), pInput.begin(), CharConv<_Char>::toLower );
+			std::transform( pInput.begin(), pInput.end(), pInput.begin(), CharConv<TChar>::toLower );
 		}
 
-		template <typename _Char>
-		inline void makeUpperTransform( std::basic_string<_Char> & pInput )
+		template <typename TChar>
+		inline void makeUpperTransform( std::basic_string<TChar> & pInput )
 		{
-			std::transform( pInput.begin(), pInput.end(), pInput.begin(), CharConv<_Char>::toUpper );
+			std::transform( pInput.begin(), pInput.end(), pInput.begin(), CharConv<TChar>::toUpper );
 		}
 
-		template <typename _Char>
-		inline std::basic_string<_Char> makeLower( const std::basic_string<_Char> & pInput )
+		template <typename TChar>
+		inline std::basic_string<TChar> makeLower( const std::basic_string<TChar> & pInput )
 		{
-			std::basic_string<_Char> result = pInput;
+			std::basic_string<TChar> result = pInput;
 			makeLowerTransform( result );
 			return result;
 		}
 
-		template <typename _Char>
-		inline std::basic_string<_Char> makeUpper( const std::basic_string<_Char> & pInput )
+		template <typename TChar>
+		inline std::basic_string<TChar> makeUpper( const std::basic_string<TChar> & pInput )
 		{
-			std::basic_string<_Char> result = pInput;
+			std::basic_string<TChar> result = pInput;
 			makeUpperTransform( result );
 			return result;
 		}
 
-		template <typename _Char, class _Apred>
-		inline size_t splitString( const _Char * pInputStr, size_t pInputStrLength, _Char pSeparator, _Apred pAppendPredicate )
+		template <typename TChar, class _Apred>
+		inline size_t splitString( const TChar * pInputStr, size_t pInputStrLength, TChar pSeparator, _Apred pAppendPredicate )
 		{
 			size_t result = 0;
 
-			for( const _Char * strEnd = pInputStr + pInputStrLength; pInputStr < strEnd; )
+			for( const TChar * strEnd = pInputStr + pInputStrLength; pInputStr < strEnd; )
 			{
-				const _Char * tokenPtr = std::char_traits<_Char>::find( pInputStr, pInputStrLength, pSeparator );
+				const TChar * tokenPtr = std::char_traits<TChar>::find( pInputStr, pInputStrLength, pSeparator );
 				if( tokenPtr == nullptr )
 				{
 					pAppendPredicate( pInputStr, strEnd - pInputStr );
@@ -186,21 +186,21 @@ namespace Ic3
 			return result;
 		}
 
-		template <typename _Char, class _Apred>
-		inline size_t splitString( const _Char * pInputStr, _Char pSeparator, _Apred pAppendPredicate )
+		template <typename TChar, class _Apred>
+		inline size_t splitString( const TChar * pInputStr, TChar pSeparator, _Apred pAppendPredicate )
 		{
-			size_t inputStrLength = std::char_traits<_Char>::length( pInputStr );
+			size_t inputStrLength = std::char_traits<TChar>::length( pInputStr );
 			return splitString( pInputStr, inputStrLength, pSeparator, pAppendPredicate );
 		}
 
-		template <typename _Char, class _Apred>
-		inline size_t splitString( const std::basic_string<_Char> & pInputStr, _Char pSeparator, _Apred pAppendPredicate )
+		template <typename TChar, class _Apred>
+		inline size_t splitString( const std::basic_string<TChar> & pInputStr, TChar pSeparator, _Apred pAppendPredicate )
 		{
 			return splitString( pInputStr.data(), pInputStr.length(), pSeparator, pAppendPredicate );
 		}
 
-		template <typename _Res, typename _Char, class _Apred>
-		inline _Res splitStringEx( const _Char * pInputStr, size_t pInputStrLength, _Char pSeparator, _Apred pAppendPredicate )
+		template <typename _Res, typename TChar, class _Apred>
+		inline _Res splitStringEx( const TChar * pInputStr, size_t pInputStrLength, TChar pSeparator, _Apred pAppendPredicate )
 		{
 			_Res result{};
 			auto appendPredCb = std::bind( pAppendPredicate, std::ref( result ), std::placeholders::_1, std::placeholders::_2 );
@@ -208,29 +208,29 @@ namespace Ic3
 			return result;
 		}
 
-		template <typename _Res, typename _Char, class _Apred>
-		inline _Res splitStringEx( const _Char * pInputStr, _Char pSeparator, _Apred pAppendPredicate )
+		template <typename _Res, typename TChar, class _Apred>
+		inline _Res splitStringEx( const TChar * pInputStr, TChar pSeparator, _Apred pAppendPredicate )
 		{
-			size_t inputStrLength = std::char_traits<_Char>::length( pInputStr );
+			size_t inputStrLength = std::char_traits<TChar>::length( pInputStr );
 			return splitStringEx<_Res>( pInputStr, inputStrLength, pSeparator, pAppendPredicate );
 		}
 
-		template <typename _Res, typename _Char, class _Apred>
-		inline _Res splitStringEx( const std::basic_string<_Char> & pInputStr, _Char pSeparator, _Apred pAppendPredicate )
+		template <typename _Res, typename TChar, class _Apred>
+		inline _Res splitStringEx( const std::basic_string<TChar> & pInputStr, TChar pSeparator, _Apred pAppendPredicate )
 		{
 			return splitStringEx<_Res>( pInputStr.data(), pInputStr.length(), pSeparator, pAppendPredicate );
 		}
 
-		template <typename _Char>
-		inline std::basic_string<_Char> extractShortFilePath( const std::basic_string<_Char> & pFilename, _Char pPathSeparator )
+		template <typename TChar>
+		inline std::basic_string<TChar> extractShortFilePath( const std::basic_string<TChar> & pFilename, TChar pPathSeparator )
 		{
-			std::basic_string<_Char> shortFilename = pFilename;
+			std::basic_string<TChar> shortFilename = pFilename;
 			size_t filenameSeparator = shortFilename.find_last_of( pPathSeparator, 0 );
 
-			if( filenameSeparator != std::basic_string<_Char>::npos )
+			if( filenameSeparator != std::basic_string<TChar>::npos )
 			{
 				size_t lastDirSep = shortFilename.find_last_of( pPathSeparator, filenameSeparator );
-				if( lastDirSep != std::basic_string<_Char>::npos )
+				if( lastDirSep != std::basic_string<TChar>::npos )
 				{
 					shortFilename.erase( 0, lastDirSep + 1 );
 				}
@@ -239,10 +239,10 @@ namespace Ic3
 			return shortFilename;
 		}
 
-		template <typename _Char>
-		inline std::basic_string<_Char> extractShortFilePath( const _Char * pFilename, _Char pPathSeparator )
+		template <typename TChar>
+		inline std::basic_string<TChar> extractShortFilePath( const TChar * pFilename, TChar pPathSeparator )
 		{
-			return extractShortFilePath( std::basic_string<_Char>{pFilename}, pPathSeparator );
+			return extractShortFilePath( std::basic_string<TChar>{pFilename}, pPathSeparator );
 		}
 
 	}

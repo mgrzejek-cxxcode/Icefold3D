@@ -5,7 +5,7 @@
 #include "Range.h"
 #include "Utilities.h"
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	template <bool tIsDataConst>
@@ -63,7 +63,7 @@ namespace Ic3
 			return !empty();
 		}
 
-		IC3_ATTR_NO_DISCARD TVal & operator[](size_t pIndex) const
+		IC3_ATTR_NO_DISCARD TVal & operator[]( size_t pIndex ) const
 		{
 			ic3DebugAssert( pIndex < _size );
 			return _dataPtr[pIndex];
