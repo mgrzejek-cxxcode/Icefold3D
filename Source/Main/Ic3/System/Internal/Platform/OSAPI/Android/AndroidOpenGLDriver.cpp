@@ -19,16 +19,16 @@ namespace Ic3::System
 
 	void AndroidOpenGLSystemDriver::_initializeAndroidDriverState()
 	{
-		auto & aSessionData = platform::androidGetASessionData( *this );
+		auto & aSessionData = Platform::androidGetASessionData( *this );
 
-		platform::eglInitializeGLDriver( mNativeData );
+		Platform::eglInitializeGLDriver( mNativeData );
 
 		mNativeData.eNativeWindow = aSessionData.aNativeWindow;
 	}
 
 	void AndroidOpenGLSystemDriver::_releaseAndroidDriverState()
 	{
-		platform::eglReleaseGLDriver( mNativeData );
+		Platform::eglReleaseGLDriver( mNativeData );
 
 		mNativeData.eNativeWindow = nullptr;
 	}
@@ -41,19 +41,19 @@ namespace Ic3::System
 
 	OpenGLDisplaySurfaceHandle AndroidOpenGLSystemDriver::_nativeCreateDisplaySurface( const OpenGLDisplaySurfaceCreateInfo & pCreateInfo )
 	{
-		auto & aSessionData = platform::androidGetASessionData( *this );
+		auto & aSessionData = Platform::androidGetASessionData( *this );
 
 		// Choose an EGLConfig that matches the specified requirements (pCreateInfo.visualConfig)
 		// and version. Version is required to properly query configs with the correct API level
 		// support (EGL_OPENGL_ES_BIT/EGL_OPENGL_ES2_BIT/EGL_OPENGL_ES3_BIT).
-		EGLConfig fbConfig = platform::eglChooseCoreFBConfig( mNativeData.eDisplay,
+		EGLConfig fbConfig = Platform::eglChooseCoreFBConfig( mNativeData.eDisplay,
 		                                                      pCreateInfo.visualConfig,
 		                                                      pCreateInfo.runtimeVersionDesc.apiVersion );
 
 		// EGL_NATIVE_VISUAL_ID is an attribute of the EGLConfig that is guaranteed to be
 		// accepted by ANativeWindow_setBuffersGeometry(). As soon as we retrieve an EGLConfig,
 		// we can reconfigure the ANativeWindow buffers using the value of EGL_NATIVE_VISUAL_ID.
-		EGLint fbConfigNativeVisualID = platform::eglQueryFBConfigAttribute( mNativeData.eDisplay,
+		EGLint fbConfigNativeVisualID = Platform::eglQueryFBConfigAttribute( mNativeData.eDisplay,
 		                                                                     fbConfig,
 		                                                                     EGL_NATIVE_VISUAL_ID );
 
@@ -68,7 +68,7 @@ namespace Ic3::System
 
 		auto displaySurface = createSysObject<AndroidOpenGLDisplaySurface>( getHandle<AndroidOpenGLSystemDriver>() );
 
-		platform::eglCreateSurface( displaySurface->mNativeData,
+		Platform::eglCreateSurface( displaySurface->mNativeData,
 		                            mNativeData.eDisplay,
 		                            mNativeData.eNativeWindow,
 		                            fbConfig,
@@ -80,14 +80,14 @@ namespace Ic3::System
 	OpenGLDisplaySurfaceHandle AndroidOpenGLSystemDriver::_nativeCreateDisplaySurfaceForCurrentThread()
 	{
 		auto displaySurface = createSysObject<AndroidOpenGLDisplaySurface>( getHandle<AndroidOpenGLSystemDriver>() );
-		platform::eglCreateSurfaceForCurrentThread( displaySurface->mNativeData );
+		Platform::eglCreateSurfaceForCurrentThread( displaySurface->mNativeData );
 		return displaySurface;
 	}
 
 	void AndroidOpenGLSystemDriver::_nativeDestroyDisplaySurface( OpenGLDisplaySurface & pDisplaySurface )
 	{
 		auto * androidDisplaySurface = pDisplaySurface.queryInterface<AndroidOpenGLDisplaySurface>();
-		platform::eglDestroySurface( androidDisplaySurface->mNativeData );
+		Platform::eglDestroySurface( androidDisplaySurface->mNativeData );
 	}
 
 	OpenGLRenderContextHandle AndroidOpenGLSystemDriver::_nativeCreateRenderContext( OpenGLDisplaySurface & pDisplaySurface,
@@ -97,7 +97,7 @@ namespace Ic3::System
 
 		auto renderContext = createSysObject<AndroidOpenGLRenderContext>( getHandle<AndroidOpenGLSystemDriver>() );
 
-		platform::eglCreateCoreContext( renderContext->mNativeData,
+		Platform::eglCreateCoreContext( renderContext->mNativeData,
 		                                androidDisplaySurface->mNativeData,
 		                                pCreateInfo );
 
@@ -107,14 +107,14 @@ namespace Ic3::System
 	OpenGLRenderContextHandle AndroidOpenGLSystemDriver::_nativeCreateRenderContextForCurrentThread()
 	{
 		auto renderContext = createSysObject<AndroidOpenGLRenderContext>( getHandle<AndroidOpenGLSystemDriver>() );
-		platform::eglCreateCoreContextForCurrentThread( renderContext->mNativeData );
+		Platform::eglCreateCoreContextForCurrentThread( renderContext->mNativeData );
 		return renderContext;
 	}
 
 	void AndroidOpenGLSystemDriver::_nativeDestroyRenderContext( OpenGLRenderContext & pRenderContext )
 	{
 		auto * androidRenderContext = pRenderContext.queryInterface<AndroidOpenGLRenderContext>();
-		platform::eglDestroyRenderContext( androidRenderContext->mNativeData );
+		Platform::eglDestroyRenderContext( androidRenderContext->mNativeData );
 	}
 
 	void AndroidOpenGLSystemDriver::_nativeResetContextBinding()
@@ -234,7 +234,7 @@ namespace Ic3::System
 	void AndroidOpenGLRenderContext::_nativeBindForCurrentThread( const OpenGLDisplaySurface & pTargetSurface )
 	{
 		const auto * androidDisplaySurface = pTargetSurface.queryInterface<AndroidOpenGLDisplaySurface>();
-		platform::eglBindContextForCurrentThread( mNativeData, androidDisplaySurface->mNativeData );
+		Platform::eglBindContextForCurrentThread( mNativeData, androidDisplaySurface->mNativeData );
 	}
 
 	bool AndroidOpenGLRenderContext::_nativeIsCurrent() const

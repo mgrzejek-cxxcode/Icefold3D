@@ -11,7 +11,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		struct AndroidSysContextNativeData
@@ -26,7 +26,7 @@ namespace Ic3::System
 
 	}
 
-	class AndroidSysContext : public SysContext, public NativeObject<platform::AndroidSysContextNativeData>
+	class AndroidSysContext : public SysContext, public NativeObject<Platform::AndroidSysContextNativeData>
 	{
 	public:
 		std::unique_ptr<JavaVMInstance> const mJVMInstance;
@@ -59,9 +59,9 @@ namespace Ic3::System
 
 		void updateANativeWindowReference( ANativeWindow * pANativeWindow );
 
-		platform::ASessionData & getASessionData();
+		Platform::ASessionData & getASessionData();
 
-		const platform::ASessionData & getASessionData() const;
+		const Platform::ASessionData & getASessionData() const;
 
 	private:
 		void _initializeAndroidContextState( AndroidAppState * pAppState );

@@ -10,7 +10,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		struct DisplayDriverNativeDataDXGI
@@ -37,12 +37,12 @@ namespace Ic3::System
 
 	}
 
-    using DisplayAdapterDXGI = NativeObject<DisplayAdapter, platform::DisplayAdapterNativeDataDXGI>;
-    using DisplayOutputDXGI = NativeObject<DisplayOutput, platform::DisplayOutputNativeDataDXGI>;
-    using DisplayVideoModeDXGI = NativeObject<DisplayVideoMode, platform::DisplayVideoModeNativeDataDXGI>;
+    using DisplayAdapterDXGI = NativeObject<DisplayAdapter, Platform::DisplayAdapterNativeDataDXGI>;
+    using DisplayOutputDXGI = NativeObject<DisplayOutput, Platform::DisplayOutputNativeDataDXGI>;
+    using DisplayVideoModeDXGI = NativeObject<DisplayVideoMode, Platform::DisplayVideoModeNativeDataDXGI>;
 
 	/// @brief
-	class DisplayDriverDXGI : public NativeObject<DisplayDriver, platform::DisplayDriverNativeDataDXGI>
+	class DisplayDriverDXGI : public NativeObject<DisplayDriver, Platform::DisplayDriverNativeDataDXGI>
 	{
 	public:
 		explicit DisplayDriverDXGI( DisplayManagerHandle pDisplayManager );

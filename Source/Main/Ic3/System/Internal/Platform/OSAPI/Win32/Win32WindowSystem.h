@@ -12,7 +12,7 @@ namespace Ic3::System
 	ic3SysDeclareHandle( Win32Window );
 	ic3SysDeclareHandle( Win32WindowManager );
 
-	namespace platform
+	namespace Platform
 	{
 
 		struct Win32WindowNativeData : public Win32EventSourceNativeData
@@ -61,7 +61,7 @@ namespace Ic3::System
         virtual void _nativeDestroyWindow( Window & pWindow ) override final;
 	};
 
-	class Win32Window : public Win32NativeObject<Window, platform::Win32WindowNativeData>
+	class Win32Window : public Win32NativeObject<Window, Platform::Win32WindowNativeData>
 	{
 		friend class Win32WindowManager;
 

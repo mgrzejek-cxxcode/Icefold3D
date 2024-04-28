@@ -12,7 +12,7 @@ namespace Ic3::System
 
 	class Win32EventController;
 
-	namespace platform
+	namespace Platform
 	{
 
 		struct Win32EventSourceNativeData

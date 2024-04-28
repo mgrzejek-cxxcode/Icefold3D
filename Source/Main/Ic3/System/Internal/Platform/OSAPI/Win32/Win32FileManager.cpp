@@ -5,7 +5,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		HANDLE _win32OpenFileGeneric( const char * pFilePath, DWORD pFileAccess, DWORD pOpenMode, DWORD pFileFlags );
@@ -31,10 +31,10 @@ namespace Ic3::System
 
 	FileHandle Win32FileManager::_nativeOpenFile( std::string pFilePath, EFileOpenMode pOpenMode )
 	{
-		const auto fileAccess = platform::_win32TranslateFileOpenModeToWin32Access( pOpenMode );
-		const auto creationDisposition = platform::_win32TranslateFileOpenModeToWin32CreationDisposition( pOpenMode );
+		const auto fileAccess = Platform::_win32TranslateFileOpenModeToWin32Access( pOpenMode );
+		const auto creationDisposition = Platform::_win32TranslateFileOpenModeToWin32CreationDisposition( pOpenMode );
 
-		auto fileHandle = platform::_win32OpenFileGeneric( pFilePath.c_str(), fileAccess, creationDisposition, FILE_ATTRIBUTE_NORMAL );
+		auto fileHandle = Platform::_win32OpenFileGeneric( pFilePath.c_str(), fileAccess, creationDisposition, FILE_ATTRIBUTE_NORMAL );
 		auto fileObject = createSysObject<Win32File>( getHandle<Win32FileManager>() );
 		fileObject->setInternalWin32FileHandle( fileHandle );
 
@@ -46,7 +46,7 @@ namespace Ic3::System
 		const auto fileAccess = GENERIC_READ | GENERIC_WRITE;
 		const auto creationDisposition = CREATE_ALWAYS;
 
-		auto fileHandle = platform::_win32OpenFileGeneric( pFilePath.c_str(), fileAccess, creationDisposition, FILE_ATTRIBUTE_NORMAL );
+		auto fileHandle = Platform::_win32OpenFileGeneric( pFilePath.c_str(), fileAccess, creationDisposition, FILE_ATTRIBUTE_NORMAL );
 		auto fileObject = createSysObject<Win32File>( getHandle<Win32FileManager>() );
 		fileObject->setInternalWin32FileHandle( fileHandle );
 
@@ -58,9 +58,9 @@ namespace Ic3::System
 		const auto fileAccess = GENERIC_READ | GENERIC_WRITE;
 		const auto creationDisposition = CREATE_ALWAYS;
 
-		auto tempFilePath = platform::_win32GenerateTempFileName();
+		auto tempFilePath = Platform::_win32GenerateTempFileName();
 
-		auto fileHandle = platform::_win32OpenFileGeneric( tempFilePath.c_str(), fileAccess, creationDisposition, FILE_ATTRIBUTE_TEMPORARY );
+		auto fileHandle = Platform::_win32OpenFileGeneric( tempFilePath.c_str(), fileAccess, creationDisposition, FILE_ATTRIBUTE_TEMPORARY );
 		auto fileObject = createSysObject<Win32File>( getHandle<Win32FileManager>() );
 		fileObject->setInternalWin32FileHandle( fileHandle );
 
@@ -81,7 +81,7 @@ namespace Ic3::System
 		if( win32FindFileHandle == INVALID_HANDLE_VALUE )
 		{
 			auto lastError = ::GetLastError();
-			auto lastErrorMessage = platform::mseQuerySystemErrorMessage( lastError );
+			auto lastErrorMessage = Platform::mseQuerySystemErrorMessage( lastError );
 			ic3ThrowDesc( E_EXC_DEBUG_PLACEHOLDER, std::move( lastErrorMessage ) );
 		}
 
@@ -107,7 +107,7 @@ namespace Ic3::System
 				}
 				else
 				{
-					auto lastErrorMessage = platform::mseQuerySystemErrorMessage( lastError );
+					auto lastErrorMessage = Platform::mseQuerySystemErrorMessage( lastError );
 					ic3ThrowDesc( E_EXC_DEBUG_PLACEHOLDER, std::move( lastErrorMessage ) );
 				}
 			}
@@ -118,7 +118,7 @@ namespace Ic3::System
 
 	std::string Win32FileManager::_nativeGenerateTemporaryFileName()
 	{
-		return platform::_win32GenerateTempFileName();
+		return Platform::_win32GenerateTempFileName();
 	}
 
 	bool Win32FileManager::_nativeCheckDirectoryExists( const std::string & pDirPath )
@@ -153,7 +153,7 @@ namespace Ic3::System
 	{
 		if( mNativeData.fileHandle )
 		{
-			platform::_win32CloseFile( mNativeData.fileHandle );
+			Platform::_win32CloseFile( mNativeData.fileHandle );
 			mNativeData.fileHandle = nullptr;
 		}
 	}
@@ -165,7 +165,7 @@ namespace Ic3::System
 
 		if( readResult && ( readBytesNum == 0 ) )
 		{
-			mNativeData.flags.set( platform::E_WIN32_FILE_FLAG_EOF_BIT );
+			mNativeData.flags.set( Platform::E_WIN32_FILE_FLAG_EOF_BIT );
 		}
 
 		if( !readResult )
@@ -173,11 +173,11 @@ namespace Ic3::System
 			auto errorCode = ::GetLastError();
 			if( errorCode == ERROR_HANDLE_EOF )
 			{
-				mNativeData.flags.set( platform::E_WIN32_FILE_FLAG_EOF_BIT );
+				mNativeData.flags.set( Platform::E_WIN32_FILE_FLAG_EOF_BIT );
 			}
 			else
 			{
-				auto errorMessage = platform::mseQuerySystemErrorMessage( errorCode );
+				auto errorMessage = Platform::mseQuerySystemErrorMessage( errorCode );
 				ic3ThrowDesc( E_EXC_DEBUG_PLACEHOLDER, std::move( errorMessage ) );
 			}
 		}
@@ -193,7 +193,7 @@ namespace Ic3::System
 		if( !writeResult )
 		{
 			auto errorCode = ::GetLastError();
-			auto errorMessage = platform::mseQuerySystemErrorMessage( errorCode );
+			auto errorMessage = Platform::mseQuerySystemErrorMessage( errorCode );
 			ic3ThrowDesc( E_EXC_DEBUG_PLACEHOLDER, std::move( errorMessage ) );
 		}
 
@@ -205,7 +205,7 @@ namespace Ic3::System
 		LARGE_INTEGER u64FileOffset;
 		u64FileOffset.QuadPart = static_cast<decltype( u64FileOffset.QuadPart )>( pOffset );
 
-		auto win32FPMoveMode = platform::_win32TranslateFilePointerRefPos( pRefPos );
+		auto win32FPMoveMode = Platform::_win32TranslateFilePointerRefPos( pRefPos );
 
 		u64FileOffset.LowPart = ::SetFilePointer( mNativeData.fileHandle,
 		                                          u64FileOffset.LowPart,
@@ -217,7 +217,7 @@ namespace Ic3::System
 			auto lastError = ::GetLastError();
 			if( lastError != NO_ERROR )
 			{
-				auto errorMessage = platform::mseQuerySystemErrorMessage( lastError );
+				auto errorMessage = Platform::mseQuerySystemErrorMessage( lastError );
 				ic3ThrowDesc( E_EXC_DEBUG_PLACEHOLDER, std::move( errorMessage ) );
 			}
 		}
@@ -271,7 +271,7 @@ namespace Ic3::System
 
 	bool Win32File::_nativeCheckEOF() const
 	{
-		return mNativeData.flags.isSet( platform::E_WIN32_FILE_FLAG_EOF_BIT );
+		return mNativeData.flags.isSet( Platform::E_WIN32_FILE_FLAG_EOF_BIT );
 	}
 
 	bool Win32File::_nativeIsGood() const
@@ -280,7 +280,7 @@ namespace Ic3::System
 	}
 
 
-	namespace platform
+	namespace Platform
 	{
 
 		HANDLE _win32OpenFileGeneric( const char * pFilePath, DWORD pFileAccess, DWORD pOpenMode, DWORD pFileFlags )
@@ -290,7 +290,7 @@ namespace Ic3::System
 			if( fileHandle == INVALID_HANDLE_VALUE )
 			{
 				auto lastErrorCode = ::GetLastError();
-				auto errorMessage = platform::mseQuerySystemErrorMessage( lastErrorCode );
+				auto errorMessage = Platform::mseQuerySystemErrorMessage( lastErrorCode );
 				ic3ThrowDesc( E_EXC_SYSTEM_FILE_OPEN_ERROR, std::move( errorMessage ) );
 			}
 
@@ -304,7 +304,7 @@ namespace Ic3::System
 			if( closeResult == FALSE )
 			{
 				auto lastErrorCode = ::GetLastError();
-				auto errorMessage = platform::mseQuerySystemErrorMessage( lastErrorCode );
+				auto errorMessage = Platform::mseQuerySystemErrorMessage( lastErrorCode );
 				ic3DebugInterrupt();
 			}
 		}

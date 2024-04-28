@@ -8,7 +8,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		struct X11SysContextNativeData
@@ -22,7 +22,7 @@ namespace Ic3::System
 
 	}
 
-	class X11SysContext : public NativeObject<SysContext, platform::X11SysContextNativeData>
+	class X11SysContext : public NativeObject<SysContext, Platform::X11SysContextNativeData>
 	{
 	public:
 		X11SysContext();

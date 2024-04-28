@@ -37,7 +37,7 @@ namespace Ic3::System
 
 	enum class EKeyCode : uint32
 	{
-		Unknown = CX_UINT32_MAX,
+		Unknown = Cppx::CX_UINT32_MAX,
 
 		Num0 = 0, // 0x00
 		Num1 = 1, // 0x01
@@ -150,22 +150,22 @@ namespace Ic3::System
 
 		bool & operator[]( size_t pIndex )
 		{
-			return staticArrayElement( stateArray, pIndex );
+			return Cppx::staticArrayElement( stateArray, pIndex );
 		}
 
 		bool operator[]( size_t pIndex ) const
 		{
-			return staticArrayElement( stateArray, pIndex );
+			return Cppx::staticArrayElement( stateArray, pIndex );
 		}
 
 		bool & operator[]( EKeyCode pKeyCode )
 		{
-			return staticArrayElement( stateArray, pKeyCode );
+			return Cppx::staticArrayElement( stateArray, pKeyCode );
 		}
 
 		bool operator[]( EKeyCode pKeyCode ) const
 		{
-			return staticArrayElement( stateArray, pKeyCode );
+			return Cppx::staticArrayElement( stateArray, pKeyCode );
 		}
 
 		void reset()
@@ -200,7 +200,7 @@ namespace Ic3::System
 		inline EKeyCode getModifierKeyCodeFromModifierFlags( Bitmask<EKeyModifierFlags> pModifierFlags )
 		{
 			const auto maskValue = static_cast<uint32>( pModifierFlags & E_KEY_MODIFIER_MASK_ALL );
-			const auto setBitsNum = popCount( maskValue );
+			const auto setBitsNum = Cppx::popCount( maskValue );
 
 			ic3DebugAssert( setBitsNum <= 1 );
 

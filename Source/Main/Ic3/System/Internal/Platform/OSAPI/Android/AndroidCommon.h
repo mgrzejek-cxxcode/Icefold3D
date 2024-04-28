@@ -13,7 +13,7 @@ namespace Ic3::System
 	class SysContext;
 	class EventController;
 
-	namespace platform
+	namespace Platform
 	{
 
 		enum : uint32
@@ -76,21 +76,21 @@ namespace Ic3::System
 		explicit AndroidNativeObject( SysContextHandle pSysContext, TBaseTypeArgs && ...pBaseTypeArgs )
 		: TBaseType( pSysContext, std::forward<TBaseTypeArgs>( pBaseTypeArgs )... )
 		{
-			this->mNativeData.setSessionData( platform::androidGetASessionData( *pSysContext ) );
+			this->mNativeData.setSessionData( Platform::androidGetASessionData( *pSysContext ) );
 		}
 
 		template <typename TParentSysObject, typename... TBaseTypeArgs>
 		explicit AndroidNativeObject( TParentSysObject & pParentSysObject, TBaseTypeArgs && ...pBaseTypeArgs )
 		: TBaseType( pParentSysObject, std::forward<TBaseTypeArgs>( pBaseTypeArgs )... )
 		{
-			this->mNativeData.setSessionData( platform::androidGetASessionData( pParentSysObject ) );
+			this->mNativeData.setSessionData( Platform::androidGetASessionData( pParentSysObject ) );
 		}
 
 		template <typename TParentSysObject, typename... TBaseTypeArgs>
 		explicit AndroidNativeObject( SysHandle<TParentSysObject> pParentSysObject, TBaseTypeArgs && ...pBaseTypeArgs )
 		: TBaseType( pParentSysObject, std::forward<TBaseTypeArgs>( pBaseTypeArgs )... )
 		{
-			this->mNativeData.setSessionData( platform::androidGetASessionData( *pParentSysObject ) );
+			this->mNativeData.setSessionData( Platform::androidGetASessionData( *pParentSysObject ) );
 		}
 
 		virtual ~AndroidNativeObject()

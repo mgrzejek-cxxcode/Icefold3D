@@ -25,7 +25,7 @@ namespace Ic3::System
 		EColorFormat::R10G10B10A2,
 	};
 
-	static_assert( staticArraySize( cvColorFormatArray ) == CX_ENUM_COLOR_FORMAT_COUNT );
+	static_assert( Cppx::staticArraySize( cvColorFormatArray ) == CX_ENUM_COLOR_FORMAT_COUNT );
 
 	union DisplayOutputIDGen
 	{

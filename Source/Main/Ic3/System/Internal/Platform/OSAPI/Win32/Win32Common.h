@@ -11,7 +11,7 @@
 namespace Ic3::System
 {
 
-    namespace platform
+    namespace Platform
     {
 
 		enum EWin32SystemWindowFlags : uint32

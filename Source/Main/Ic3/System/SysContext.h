@@ -7,7 +7,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		struct AssetLoaderCreateInfoNativeParams;
@@ -28,12 +28,12 @@ namespace Ic3::System
 
 	struct AssetLoaderCreateInfo
 	{
-		platform::AssetLoaderCreateInfoNativeParams * nativeParams = nullptr;
+		Platform::AssetLoaderCreateInfoNativeParams * nativeParams = nullptr;
 	};
 
 	struct SysContextCreateInfo
 	{
-		platform::SysContextCreateInfoNativeParams * nativeParams = nullptr;
+		Platform::SysContextCreateInfoNativeParams * nativeParams = nullptr;
 	};
 
 	/// @brief
@@ -65,7 +65,7 @@ namespace Ic3::System
 		std::string queryCurrentProcessExecutableDirectory() const;
 	};
 
-	namespace platform
+	namespace Platform
 	{
 
 		/// @brief Creates a new SysContext instance and returns the handle.

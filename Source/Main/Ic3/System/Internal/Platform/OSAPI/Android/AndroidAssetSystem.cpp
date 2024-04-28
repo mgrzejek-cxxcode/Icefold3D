@@ -6,14 +6,14 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		int _androidTranslateFilePointerRefPos( EFilePointerRefPos pFileRefPos );
 
 		AAsset * _androidResolveAsset( AAssetManager * pAAssetManager,
 		                               AAssetDir * pAAssetDir,
-		                               FSUtilityAPI::FilePathInfo & pAssetPathInfo,
+		                               Cppx::FilePathInfo & pAssetPathInfo,
 		                               Bitmask<EAssetOpenFlags> pFlags );
 
 	}
@@ -32,7 +32,7 @@ namespace Ic3::System
 
 	void AndroidAssetLoader::_initializeAndroidAssetLoaderData()
 	{
-		auto & aSessionData = platform::androidGetASessionData( *this );
+		auto & aSessionData = Platform::androidGetASessionData( *this );
 		mNativeData.aAssetManager = aSessionData.aCommonAppState->activity->assetManager;
 	}
 
@@ -41,13 +41,13 @@ namespace Ic3::System
 		mNativeData.aAssetManager = nullptr;
 	}
 
-	AssetHandle AndroidAssetLoader::_nativeOpenSubAsset( FSUtilityAPI::FilePathInfo pAssetPathInfo, Bitmask<EAssetOpenFlags> pFlags )
+	AssetHandle AndroidAssetLoader::_nativeOpenSubAsset( Cppx::FilePathInfo pAssetPathInfo, Bitmask<EAssetOpenFlags> pFlags )
 	{
 		SysHandle<AndroidAsset> asset = nullptr;
 
 		auto * aAssetManager = mNativeData.aAssetManager;
 
-		if( auto * aAsset = platform::_androidResolveAsset( aAssetManager, nullptr, pAssetPathInfo, pFlags ) )
+		if( auto * aAsset = Platform::_androidResolveAsset( aAssetManager, nullptr, pAssetPathInfo, pFlags ) )
 		{
 			asset = createSysObject<AndroidAsset>( getHandle<AndroidAssetLoader>() );
 			asset->setName( std::move( pAssetPathInfo.fileName ) );
@@ -135,14 +135,14 @@ namespace Ic3::System
 	{
 		SysHandle<AndroidAsset> asset = nullptr;
 
-		FSUtilityAPI::FilePathInfo assetPathInfo;
+		Cppx::FilePathInfo assetPathInfo;
 		assetPathInfo.directory = getDirName();
 		assetPathInfo.fileName = std::move( pAssetName );
 
 		auto * aAssetManager = mNativeData.aAssetManager;
 		auto * aAssetDir = mNativeData.aAssetDir;
 
-		if( auto * aAsset = platform::_androidResolveAsset( aAssetManager, aAssetDir, assetPathInfo, pFlags ) )
+		if( auto * aAsset = Platform::_androidResolveAsset( aAssetManager, aAssetDir, assetPathInfo, pFlags ) )
 		{
 			asset = createSysObject<AndroidAsset>( getHandle<AndroidAssetLoader>() );
 			asset->setName( std::move( assetPathInfo.fileName ) );
@@ -194,7 +194,7 @@ namespace Ic3::System
 
 	file_offset_t AndroidAsset::_nativeSetReadPointer( file_offset_t pOffset, EFilePointerRefPos pRefPos )
 	{
-		auto seekOrigin = platform::_androidTranslateFilePointerRefPos( pRefPos );
+		auto seekOrigin = Platform::_androidTranslateFilePointerRefPos( pRefPos );
 		auto seekResult = AAsset_seek64( mNativeData.aAsset, pOffset, seekOrigin );
 		return numeric_cast<file_offset_t>( seekResult );
 	}
@@ -206,7 +206,7 @@ namespace Ic3::System
 	}
 
 
-	namespace platform
+	namespace Platform
 	{
 
 		int _androidTranslateFilePointerRefPos( EFilePointerRefPos pFileRefPos )
@@ -237,7 +237,7 @@ namespace Ic3::System
 
 		AAsset * _androidResolveAsset( AAssetManager * pAAssetManager,
 		                               AAssetDir * pAAssetDir,
-		                               FSUtilityAPI::FilePathInfo & pAssetPathInfo,
+		                               Cppx::FilePathInfo & pAssetPathInfo,
 		                               Bitmask<EAssetOpenFlags> pFlags )
 		{
 			AAsset * aAsset = nullptr;

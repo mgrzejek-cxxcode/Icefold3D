@@ -20,7 +20,7 @@ namespace Ic3::System
 	using file_offset_t = native_int;
 	using file_size_t = native_uint;
 
-	inline constexpr auto CX_FILE_SIZE_MAX = QLimits<file_size_t>::maxValue;
+	inline constexpr auto CX_FILE_SIZE_MAX = Cppx::QLimits<file_size_t>::maxValue;
 
 	enum : exception_code_value_t
 	{

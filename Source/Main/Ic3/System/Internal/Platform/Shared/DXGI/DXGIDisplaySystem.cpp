@@ -8,7 +8,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		DXGI_FORMAT _dxgiTranslateColorFormatToDXGIFormat( EColorFormat pColorFormat );
@@ -210,7 +210,7 @@ namespace Ic3::System
 		// but this has been resolved by proxy function inside DisplayOutput::PrivateData struct.
 		// If there is a case the call below fails, make sure this function is ALWAYS called with
 		// a "resolved" color format (look for 'dsmResolveSystemColorFormat').
-		auto dxgiFormat = platform::_dxgiTranslateColorFormatToDXGIFormat( pColorFormat );
+		auto dxgiFormat = Platform::_dxgiTranslateColorFormatToDXGIFormat( pColorFormat );
 
 		if( dxgiFormat == DXGI_FORMAT_UNKNOWN )
 		{
@@ -286,7 +286,7 @@ namespace Ic3::System
 	}
 
 
-	namespace platform
+	namespace Platform
 	{
 
 		DXGI_FORMAT _dxgiTranslateColorFormatToDXGIFormat( EColorFormat pColorFormat )

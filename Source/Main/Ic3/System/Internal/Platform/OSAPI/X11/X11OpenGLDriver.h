@@ -13,7 +13,7 @@ namespace Ic3::System
 	ic3SysDeclareHandle( X11OpenGLRenderContext );
 	ic3SysDeclareHandle( X11OpenGLRenderContext );
 
-	namespace platform
+	namespace Platform
 	{
 
 		using GLXFBConfigArray = std::vector<GLXFBConfig>;
@@ -57,7 +57,7 @@ namespace Ic3::System
 
 
 	/// @brief X11-specific implementation of the OpenGLSystemDriver class.
-	class X11OpenGLSystemDriver : public X11NativeObject<OpenGLSystemDriver, platform::X11OpenGLSystemDriverNativeData>
+	class X11OpenGLSystemDriver : public X11NativeObject<OpenGLSystemDriver, Platform::X11OpenGLSystemDriverNativeData>
 	{
 	public:
 		X11OpenGLSystemDriver( X11DisplayManagerHandle pDisplayManager );
@@ -107,7 +107,7 @@ namespace Ic3::System
 	};
 
 	/// @brief X11-specific implementation of the OpenGLDisplaySurface class.
-	class X11OpenGLDisplaySurface : public X11NativeObject<OpenGLDisplaySurface, platform::X11OpenGLDisplaySurfaceNativeData>
+	class X11OpenGLDisplaySurface : public X11NativeObject<OpenGLDisplaySurface, Platform::X11OpenGLDisplaySurfaceNativeData>
 	{
 	public:
 		explicit X11OpenGLDisplaySurface( X11OpenGLSystemDriverHandle pGLSystemDriver );
@@ -151,7 +151,7 @@ namespace Ic3::System
 	};
 
 	/// @brief X11-specific implementation of the OpenGLRenderContext class.
-	class X11OpenGLRenderContext : public X11NativeObject<OpenGLRenderContext, platform::X11OpenGLRenderContextNativeData>
+	class X11OpenGLRenderContext : public X11NativeObject<OpenGLRenderContext, Platform::X11OpenGLRenderContextNativeData>
 	{
 	public:
 		explicit X11OpenGLRenderContext( X11OpenGLSystemDriverHandle pGLSystemDriver );

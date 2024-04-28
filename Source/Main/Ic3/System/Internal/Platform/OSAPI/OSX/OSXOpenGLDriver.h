@@ -21,7 +21,7 @@ namespace Ic3::System
 	ic3SysDeclareHandle( OSXOpenGLDisplaySurface );
 	ic3SysDeclareHandle( OSXOpenGLRenderContext );
 
-	namespace platform
+	namespace Platform
 	{
 
 		struct OSXOpenGLDisplaySurfaceNativeData : public OSXWindowNativeData
@@ -43,7 +43,7 @@ namespace Ic3::System
 	}
 
 	/// @brief OSX-specific implementation of the OpenGLSystemDriver class.
-	class OSXOpenGLSystemDriver : public OSXNativeObject<OpenGLSystemDriver, platform::OSXOpenGLSystemDriverNativeData>
+	class OSXOpenGLSystemDriver : public OSXNativeObject<OpenGLSystemDriver, Platform::OSXOpenGLSystemDriverNativeData>
 	{
 	public:
 		OSXOpenGLSystemDriver( OSXDisplayManagerHandle pDisplayManager );
@@ -102,7 +102,7 @@ namespace Ic3::System
 	};
 
 	/// @brief OSX-specific implementation of the OpenGLDisplaySurface class.
-	class OSXOpenGLDisplaySurface : public OSXNativeObject<OpenGLDisplaySurface, platform::OSXOpenGLDisplaySurfaceNativeData>
+	class OSXOpenGLDisplaySurface : public OSXNativeObject<OpenGLDisplaySurface, Platform::OSXOpenGLDisplaySurfaceNativeData>
 	{
 	public:
 		explicit OSXOpenGLDisplaySurface( OSXOpenGLSystemDriverHandle pGLSystemDriver );
@@ -146,7 +146,7 @@ namespace Ic3::System
 	};
 
 	/// @brief OSX-specific implementation of the OpenGLRenderContext class.
-	class OSXOpenGLRenderContext : public OSXNativeObject<OpenGLRenderContext, platform::OSXOpenGLRenderContextNativeData>
+	class OSXOpenGLRenderContext : public OSXNativeObject<OpenGLRenderContext, Platform::OSXOpenGLRenderContextNativeData>
 	{
 	public:
 		explicit OSXOpenGLRenderContext( OSXOpenGLSystemDriverHandle pGLSystemDriver );

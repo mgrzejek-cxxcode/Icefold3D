@@ -110,7 +110,7 @@ namespace Ic3::System
 	EDisplayAdapterVendorID dsmResolveAdapterVendorID( const std::string & pAdapterName )
 	{
 		auto adapterVendorID = EDisplayAdapterVendorID::Unknown;
-		auto adapterString = strUtils::makeUpper( pAdapterName );
+		auto adapterString = Cppx::strUtils::makeUpper( pAdapterName );
 
 		if( ( adapterString.find( "AMD" ) != std::string::npos ) || ( adapterString.find( "ATI" ) != std::string::npos ) )
 		{

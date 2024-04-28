@@ -220,7 +220,7 @@ namespace Ic3::System
 		return eventCounter;
 	}
 
-	uint32 EventController::dispatchPendingEventsWaitTimeout( const Microseconds & pTimeout, uint32 pLimit )
+	uint32 EventController::dispatchPendingEventsWaitTimeout( const Cppx::Microseconds & pTimeout, uint32 pLimit )
 	{
 		validateActiveDispatcherState();
 
@@ -733,7 +733,7 @@ namespace Ic3::System
 				if( inputMouseState.lastPressButtonID == pMouseButtonEvent.buttonID )
 				{
 					auto lastClickDiff = pMouseButtonEvent.timeStamp - inputMouseState.lastPressTimestamp;
-					auto lastClickDiffMs = PerfCounter::convertToDuration<EDurationPeriod::Millisecond>( lastClickDiff );
+					auto lastClickDiffMs = PerfCounter::convertToDuration<Cppx::EDurationPeriod::Millisecond>( lastClickDiff );
 					if( lastClickDiffMs <= eventSystemConfig.mouseClickSequenceTimeoutMs )
 					{
 						if( inputMouseState.currentMultiClickSequenceLength == 1 )

@@ -78,7 +78,7 @@ namespace Ic3::System
 			throw 0;
 		}
 
-		const auto screenBounds = platform::osxQueryDisplayRect( mNativeData.cgMainDisplayID );
+		const auto screenBounds = Platform::osxQueryDisplayRect( mNativeData.cgMainDisplayID );
 
 		pOutOffset = screenBounds.offset;
 	}
@@ -90,7 +90,7 @@ namespace Ic3::System
 			throw 0;
 		}
 
-		pOutSize = platform::osxQueryDisplaySize( mNativeData.cgMainDisplayID );
+		pOutSize = Platform::osxQueryDisplaySize( mNativeData.cgMainDisplayID );
 	}
 
 	void OSXDisplayManager::_nativeQueryMinWindowSize( DisplaySize & pOutSize ) const
@@ -118,7 +118,7 @@ namespace Ic3::System
 	}
 
 
-	namespace platform
+	namespace Platform
 	{
 
 		ScreenRect osxQueryDisplayRect( CGDirectDisplayID pCGDisplayID )

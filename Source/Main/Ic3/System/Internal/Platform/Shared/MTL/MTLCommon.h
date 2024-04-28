@@ -11,7 +11,7 @@
 namespace Ic3::System
 {
 
-    namespace platform
+    namespace Platform
     {
 
         IC3_ATTR_NO_DISCARD MTLPixelFormat mtlChoosePixelFormatForVisualConfig( const VisualConfig & pVisualConfig );

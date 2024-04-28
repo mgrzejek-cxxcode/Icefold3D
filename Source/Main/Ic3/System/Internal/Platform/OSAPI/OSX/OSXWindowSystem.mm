@@ -8,7 +8,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		OSXFrameGeometry _osxCheckFrameGeometry( NSScreen * pNSScreen, const FrameGeometry & pFrameGeometry );
@@ -31,10 +31,10 @@ namespace Ic3::System
 		auto osxDisplayManager = mDisplayManager->getHandle<OSXDisplayManager>();
 		auto windowObject = createSysObject<OSXWindow>( getHandle<OSXWindowManager>() );
 
-		platform::osxCreateWindow( windowObject->mNativeData, nullptr, pCreateInfo );
-		platform::osxCreateWindowDefaultView( windowObject->mNativeData );
-		platform::osxCreateEventListener( windowObject->mNativeData );
-		platform::osxSetInputWindow( windowObject->mNativeData );
+		Platform::osxCreateWindow( windowObject->mNativeData, nullptr, pCreateInfo );
+		Platform::osxCreateWindowDefaultView( windowObject->mNativeData );
+		Platform::osxCreateEventListener( windowObject->mNativeData );
+		Platform::osxSetInputWindow( windowObject->mNativeData );
 
 		return windowObject;
 	}
@@ -58,7 +58,7 @@ namespace Ic3::System
 	
 	void OSXWindow::_nativeSetTitle( const std::string & pTitle )
 	{
-        platform::osxSetFrameTitle( mNativeData.nsWindow, pTitle );
+        Platform::osxSetFrameTitle( mNativeData.nsWindow, pTitle );
     }
 	
 	void OSXWindow::_nativeUpdateGeometry( const FrameGeometry & pFrameGeometry, Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
@@ -70,7 +70,7 @@ namespace Ic3::System
 	}
 	
 
-	namespace platform
+	namespace Platform
 	{
 
 		void osxCreateWindow( OSXWindowNativeData & pWindowNativeData, NSScreen * pTargetScreen, const WindowCreateInfo & pCreateInfo )
@@ -218,7 +218,7 @@ namespace Ic3::System
 			//
 			constexpr NSUInteger cvResizeableFrameStyle = cvFixedFrameStyle | NSWindowStyleMaskResizable;
 
-			NSUInteger resultStyle = QLimits<NSUInteger>::maxValue;
+			NSUInteger resultStyle = Cppx::QLimits<NSUInteger>::maxValue;
 
 			switch ( pStyle )
 			{
@@ -265,7 +265,7 @@ namespace Ic3::System
 			frameRect.size.width = static_cast<CGFloat>( pFrameGeometry.size.x );
 			frameRect.size.height = static_cast<CGFloat>( pFrameGeometry.size.y );
 
-			frameRect.origin.x = getMaxOf( frameRect.origin.x, 0.0f );
+			frameRect.origin.x = Cppx::getMaxOf( frameRect.origin.x, 0.0f );
 			frameRect.origin.y = screenRect.size.height - frameRect.origin.y - frameRect.size.height;
 
 			OSXFrameGeometry osxGeometry{};
@@ -300,7 +300,7 @@ namespace Ic3::System
 				frameRect.size.width = static_cast<CGFloat>( pFrameGeometry.size.x );
 				frameRect.size.height = static_cast<CGFloat>( pFrameGeometry.size.y );
 
-				frameRect.origin.x = getMaxOf( frameRect.origin.x, 0.0f );
+				frameRect.origin.x = Cppx::getMaxOf( frameRect.origin.x, 0.0f );
 				frameRect.origin.y = screenRect.size.height - frameRect.origin.y - frameRect.size.height;
 
 				osxGeometry.frameRect = frameRect;

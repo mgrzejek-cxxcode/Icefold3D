@@ -65,7 +65,7 @@
 	[self setNextResponder:pWindow];
 
 	// Enable touch events support.
-	if( platform::osxCheckAppKitFrameworkVersion( NSAppKitVersionNumber10_12_2 ) )
+	if( Platform::osxCheckAppKitFrameworkVersion( NSAppKitVersionNumber10_12_2 ) )
 	{
 		[self setAllowedTouchTypes:NSTouchTypeMaskDirect];
 	}

@@ -97,13 +97,13 @@ namespace Ic3::System
 	{
 		mNativeData.aSessionData.aCommonAppState = pAppState;
 		mNativeData.aSessionData.aCommonAppState->ic3SetUserData(
-			platform::E_ANDROID_APP_STATE_USER_DATA_INDEX_SYS_CONTEXT, this );
+			Platform::E_ANDROID_APP_STATE_USER_DATA_INDEX_SYS_CONTEXT, this );
 	}
 
 	void AndroidSysContext::_releaseAndroidContextState()
 	{
 		mNativeData.aSessionData.aCommonAppState->ic3SetUserData(
-			platform::E_ANDROID_APP_STATE_USER_DATA_INDEX_SYS_CONTEXT, nullptr );
+			Platform::E_ANDROID_APP_STATE_USER_DATA_INDEX_SYS_CONTEXT, nullptr );
 		mNativeData.aSessionData.aCommonAppState = nullptr;
 	}
 
@@ -120,12 +120,12 @@ namespace Ic3::System
 		}
 	}
 
-	platform::ASessionData & AndroidSysContext::getASessionData()
+	Platform::ASessionData & AndroidSysContext::getASessionData()
 	{
 		return mNativeData.aSessionData;
 	}
 
-	const platform::ASessionData & AndroidSysContext::getASessionData() const
+	const Platform::ASessionData & AndroidSysContext::getASessionData() const
 	{
 		return mNativeData.aSessionData;
 	}

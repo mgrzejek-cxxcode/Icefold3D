@@ -22,7 +22,7 @@ namespace Ic3::System
 
 	/// @brief Predefined frame size: max. When used, frame size is the maximum size allowed by the system.
 	/// Max size usually means the current size of the screen, but selected frame style may affect this (Win32).
-	inline constexpr FrameSize CX_FRAME_SIZE_MAX { CX_UINT32_MAX, CX_UINT32_MAX };
+	inline constexpr FrameSize CX_FRAME_SIZE_MAX { Cppx::CX_UINT32_MAX, Cppx::CX_UINT32_MAX };
 
 	/// @brief Window styles supported by the system.
 	enum class EFrameStyle : enum_default_value_t
@@ -90,7 +90,7 @@ namespace Ic3::System
 		virtual void setTitle( const std::string & pTitleText ) = 0;
 
 		virtual void updateGeometry( const FrameGeometry & pFrameGeometry,
-		                             Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) = 0;
+		                             Cppx::Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) = 0;
 
 		IC3_SYSTEM_API_NODISCARD virtual FrameSize getClientAreaSize() const = 0;
 

@@ -14,7 +14,7 @@ namespace Ic3::System
 	ic3SysDeclareHandle( OSXWindow );
 	ic3SysDeclareHandle( OSXWindowManager );
 
-	namespace platform
+	namespace Platform
 	{
 
 		struct OSXWindowNativeData : public OSXEventSourceNativeData
@@ -46,7 +46,7 @@ namespace Ic3::System
 
 	}
 
-	class OSXWindowManager : public OSXNativeObject<WindowManager, platform::OSXNativeDataCommon>
+	class OSXWindowManager : public OSXNativeObject<WindowManager, Platform::OSXNativeDataCommon>
 	{
 	public:
 		explicit OSXWindowManager( OSXDisplayManagerHandle pDisplayManager );
@@ -60,7 +60,7 @@ namespace Ic3::System
 		virtual void _nativeDestroyWindow( Window & pWindow ) override final;
 	};
 
-	class OSXWindow : public OSXNativeObject<Window, platform::OSXWindowNativeData>
+	class OSXWindow : public OSXNativeObject<Window, Platform::OSXWindowNativeData>
 	{
 		friend class OSXWindowManager;
 

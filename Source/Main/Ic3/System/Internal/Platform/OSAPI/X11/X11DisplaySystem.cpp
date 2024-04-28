@@ -5,7 +5,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		bool _x11CheckColorFormatSupport( XDisplay pXDisplay, int pScreenIndex, EColorFormat pColorFormat );
@@ -26,7 +26,7 @@ namespace Ic3::System
 
 	void X11DisplayManager::_initializeX11DisplayManagerState()
 	{
-		auto & xSessionData = platform::x11GetXSessionData( *this );
+		auto & xSessionData = Platform::x11GetXSessionData( *this );
 
 		// Get default screen depth for the X screen.
 		auto screenDepth = XDefaultDepth( xSessionData.display, xSessionData.screenIndex );
@@ -114,7 +114,7 @@ namespace Ic3::System
 		}
 		else
 		{
-			auto & xSessionData = platform::x11GetXSessionData( *this );
+			auto & xSessionData = Platform::x11GetXSessionData( *this );
 
 			const auto displayWidth = XDisplayWidth( xSessionData.display, xSessionData.screenIndex );
 			const auto displayHeight = XDisplayHeight( xSessionData.display, xSessionData.screenIndex );
@@ -144,7 +144,7 @@ namespace Ic3::System
 
 	void X11DisplayDriver::_initializeX11DisplayDriverState()
 	{
-		auto & xSessionData = platform::x11GetXSessionData( *this );
+		auto & xSessionData = Platform::x11GetXSessionData( *this );
 
 		//
 		mNativeData.xrrScreenResources = XRRGetScreenResources( xSessionData.display, xSessionData.rootWindowXID );
@@ -203,7 +203,7 @@ namespace Ic3::System
 
 	void X11DisplayDriver::_nativeEnumDisplayDevices()
 	{
-		auto & xSessionData = platform::x11GetXSessionData( *this );
+		auto & xSessionData = Platform::x11GetXSessionData( *this );
 
 		auto adapterObject = createAdapter<X11DisplayAdapter>( *this );
 
@@ -265,10 +265,10 @@ namespace Ic3::System
 			return;
 		}
 
-		auto & xSessionData = platform::x11GetXSessionData( *this );
+		auto & xSessionData = Platform::x11GetXSessionData( *this );
 		auto * outputX11 = pOutput.queryInterface<X11DisplayOutput>();
 
-		if( !platform::_x11CheckColorFormatSupport( xSessionData.display, xSessionData.screenIndex, pColorFormat ) )
+		if( !Platform::_x11CheckColorFormatSupport( xSessionData.display, xSessionData.screenIndex, pColorFormat ) )
 		{
 			return;
 		}
@@ -350,7 +350,7 @@ namespace Ic3::System
 	}
 
 
-	namespace platform
+	namespace Platform
 	{
 
 		bool _x11CheckColorFormatSupport( XDisplay pXDisplay, int pScreenIndex, EColorFormat pColorFormat )

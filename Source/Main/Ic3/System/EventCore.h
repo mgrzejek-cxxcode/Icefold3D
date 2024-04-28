@@ -127,17 +127,17 @@ namespace Ic3::System
 		///  would normally do).
 		uint32 dispatchPendingEventsAuto();
 
-		uint32 dispatchPendingEventsPeek( uint32 pLimit = CX_INT32_MAX );
+		uint32 dispatchPendingEventsPeek( uint32 pLimit = Cppx::CX_INT32_MAX );
 
-		uint32 dispatchPendingEventsWait( uint32 pLimit = CX_INT32_MAX );
+		uint32 dispatchPendingEventsWait( uint32 pLimit = Cppx::CX_INT32_MAX );
 
-		uint32 dispatchPendingEventsWaitTimeout( const Microseconds & pTimeout, uint32 pLimit = CX_INT32_MAX );
+		uint32 dispatchPendingEventsWaitTimeout( const Cppx::Microseconds & pTimeout, uint32 pLimit = Cppx::CX_INT32_MAX );
 
 		void validateActiveDispatcherState() const;
 
 		IC3_ATTR_NO_DISCARD EventSystemSharedState & getEventSystemSharedState() noexcept;
 
-		IC3_ATTR_NO_DISCARD bool checkEventSystemConfigFlags( Bitmask<EEventSystemConfigFlags> pFlags ) const;
+		IC3_ATTR_NO_DISCARD bool checkEventSystemConfigFlags( Cppx::Bitmask<EEventSystemConfigFlags> pFlags ) const;
 
 		IC3_ATTR_NO_DISCARD EventSource * findEventSource( const EventSourceFindPredicate & pPredicate ) const;
 
@@ -172,7 +172,7 @@ namespace Ic3::System
 		// System-level call. Pulls events from the system queue.
 		// If the queue is empty, waits until an event arrives or the specified timeout occurs.
 		// A separate function because on some OSes timeout-based event fetching may be tricky (yes, you again, Win32).
-		virtual bool _nativeDispatchPendingEventsWaitTimeout( const Microseconds & pTimeout ) { return false; }
+		virtual bool _nativeDispatchPendingEventsWaitTimeout( const Cppx::Microseconds & pTimeout ) { return false; }
 
 		// Registers the event source at the system level. Empty for most OSes.
 		// Win32: replaces WNDPROC with a custom one and allocates extra window data.
@@ -193,13 +193,13 @@ namespace Ic3::System
 		bool _checkAndPostAppAutoQuitEvent( EEventCode pEvent, EventSource & pEventSource );
 
 		//
-		void _setInternalStateFlags( Bitmask<uint32> pFlags, bool pSetOrUnset );
+		void _setInternalStateFlags( Cppx::Bitmask<uint32> pFlags, bool pSetOrUnset );
 
 		//
-		IC3_ATTR_NO_DISCARD uint32 _checkInternalStateFlags( Bitmask<uint32> pFlags ) const;
+		IC3_ATTR_NO_DISCARD uint32 _checkInternalStateFlags( Cppx::Bitmask<uint32> pFlags ) const;
 
 		//
-		IC3_ATTR_NO_DISCARD Bitmask<uint32> _getInternalStateFlags() const;
+		IC3_ATTR_NO_DISCARD Cppx::Bitmask<uint32> _getInternalStateFlags() const;
 
 	protected:
 		struct EventControllerPrivateData;
@@ -227,7 +227,7 @@ namespace Ic3::System
 		void resetEventHandler( EEventCodeIndex pCodeIndex );
 		void resetDefaultEventHandler();
 
-		void setEventSystemConfigFlags( Bitmask<EEventSystemConfigFlags> pFlags, bool pSetOrUnset = true );
+		void setEventSystemConfigFlags( Cppx::Bitmask<EEventSystemConfigFlags> pFlags, bool pSetOrUnset = true );
 
 		void setIdleProcessingMode( bool pIdle );
 
@@ -236,9 +236,9 @@ namespace Ic3::System
 		bool postEventAppQuit();
 		bool postEventAppTerminate();
 
-		IC3_ATTR_NO_DISCARD bool checkEventSystemConfigFlags( Bitmask<EEventSystemConfigFlags> pFlags ) const;
+		IC3_ATTR_NO_DISCARD bool checkEventSystemConfigFlags( Cppx::Bitmask<EEventSystemConfigFlags> pFlags ) const;
 
-		IC3_ATTR_NO_DISCARD Bitmask<EEventSystemConfigFlags> getEventSystemConfigFlags() const;
+		IC3_ATTR_NO_DISCARD Cppx::Bitmask<EEventSystemConfigFlags> getEventSystemConfigFlags() const;
 
 	friendapi:
 		const EventSystemConfig & getEventSystemConfig() const;

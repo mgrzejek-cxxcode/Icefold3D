@@ -177,7 +177,7 @@ namespace Ic3::System
 
 	ArrayView<const EColorFormat> DisplayOutput::getSupportedColorFormatList() const
 	{
-		return bindArrayView( _privateData->supportedColorFormatList.data(),
+		return Cppx::bindArrayView( _privateData->supportedColorFormatList.data(),
 		              _privateData->supportedColorFormatList.size() );
 	}
 

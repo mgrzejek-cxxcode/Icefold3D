@@ -8,7 +8,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		struct Win32SysContextNativeData
@@ -23,7 +23,7 @@ namespace Ic3::System
 
 	}
 
-	class Win32SysContext : public NativeObject<SysContext, platform::Win32SysContextNativeData>
+	class Win32SysContext : public NativeObject<SysContext, Platform::Win32SysContextNativeData>
 	{
 	public:
 		Win32SysContext();

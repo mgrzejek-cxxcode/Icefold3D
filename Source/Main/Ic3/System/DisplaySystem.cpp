@@ -183,12 +183,12 @@ namespace Ic3::System
 			else
 			{
 				// Size of the window must be less than the size of the screen...
-				resultGeometry.size.x = getMinOf( resultGeometry.size.x, screenSize.x );
-				resultGeometry.size.y = getMinOf( resultGeometry.size.y, screenSize.y );
+				resultGeometry.size.x = Cppx::getMinOf( resultGeometry.size.x, screenSize.x );
+				resultGeometry.size.y = Cppx::getMinOf( resultGeometry.size.y, screenSize.y );
 
 				// ... but at the same time bigger than the minimum allowed size (Win32-specific, really).
-				resultGeometry.size.x = getMaxOf( resultGeometry.size.x, minFrameSize.x );
-				resultGeometry.size.y = getMaxOf( resultGeometry.size.y, minFrameSize.y );
+				resultGeometry.size.x = Cppx::getMaxOf( resultGeometry.size.x, minFrameSize.x );
+				resultGeometry.size.y = Cppx::getMaxOf( resultGeometry.size.y, minFrameSize.y );
 			}
 		}
 
@@ -201,8 +201,8 @@ namespace Ic3::System
 		{
 			auto maxPosX = static_cast<int32>( screenSize.x - resultGeometry.size.x );
 			auto maxPosY = static_cast<int32>( screenSize.y - resultGeometry.size.y );
-			resultGeometry.position.x = getMinOf( resultGeometry.position.x, maxPosX );
-			resultGeometry.position.y = getMinOf( resultGeometry.position.y, maxPosY );
+			resultGeometry.position.x = Cppx::getMinOf( resultGeometry.position.x, maxPosX );
+			resultGeometry.position.y = Cppx::getMinOf( resultGeometry.position.y, maxPosY );
 		}
 
 		resultGeometry.position.x += screenOffset.x;

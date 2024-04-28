@@ -128,107 +128,107 @@
 -( void ) keyDown:( NSEvent * ) pEvent
 {
 	ic3DbgEventLog("keyDown");
-	nativeEventDispatch( *mEventController, platform::NativeEventType( pEvent ) );
+	nativeEventDispatch( *mEventController, Platform::NativeEventType( pEvent ) );
 }
 
 -( void ) keyUp:( NSEvent * ) pEvent
 {
 	ic3DbgEventLog("keyUp");
-	nativeEventDispatch( *mEventController, platform::NativeEventType( pEvent ) );
+	nativeEventDispatch( *mEventController, Platform::NativeEventType( pEvent ) );
 }
 
 -( void ) flagsChanged:( NSEvent * ) pEvent
 {
 	ic3DbgEventLog("flagsChanged");
-	nativeEventDispatch( *mEventController, platform::NativeEventType( pEvent ) );
+	nativeEventDispatch( *mEventController, Platform::NativeEventType( pEvent ) );
 }
 
 -( void ) mouseEntered:( NSEvent * ) pEvent
 {
 	ic3DbgEventLog("mouseEntered");
-	nativeEventDispatch( *mEventController, platform::NativeEventType( pEvent ) );
+	nativeEventDispatch( *mEventController, Platform::NativeEventType( pEvent ) );
 }
 
 -( void ) mouseExited:( NSEvent * ) pEvent
 {
 	ic3DbgEventLog("mouseExited");
-	nativeEventDispatch( *mEventController, platform::NativeEventType( pEvent ) );
+	nativeEventDispatch( *mEventController, Platform::NativeEventType( pEvent ) );
 }
 
 -( void ) mouseMoved:( NSEvent * ) pEvent
 {
 	ic3DbgEventLog("mouseMoved");
-	nativeEventDispatch( *mEventController, platform::NativeEventType( pEvent ) );
+	nativeEventDispatch( *mEventController, Platform::NativeEventType( pEvent ) );
 }
 
 -( void ) mouseDown:( NSEvent * ) pEvent
 {
 	ic3DbgEventLog("mouseDown");
-	nativeEventDispatch( *mEventController, platform::NativeEventType( pEvent ) );
+	nativeEventDispatch( *mEventController, Platform::NativeEventType( pEvent ) );
 }
 
 -( void ) mouseUp:( NSEvent * ) pEvent
 {
 	ic3DbgEventLog("mouseUp");
-	nativeEventDispatch( *mEventController, platform::NativeEventType( pEvent ) );
+	nativeEventDispatch( *mEventController, Platform::NativeEventType( pEvent ) );
 }
 
 -( void ) mouseDragged:( NSEvent * ) pEvent
 {
 	ic3DbgEventLog("mouseDragged");
-	nativeEventDispatch( *mEventController, platform::NativeEventType( pEvent ) );
+	nativeEventDispatch( *mEventController, Platform::NativeEventType( pEvent ) );
 }
 
 -( void ) rightMouseDown:( NSEvent * ) pEvent
 {
 	ic3DbgEventLog("rightMouseDown");
-	nativeEventDispatch( *mEventController, platform::NativeEventType( pEvent ) );
+	nativeEventDispatch( *mEventController, Platform::NativeEventType( pEvent ) );
 }
 
 -( void ) rightMouseUp:( NSEvent * ) pEvent
 {
 	ic3DbgEventLog("rightMouseUp");
-	nativeEventDispatch( *mEventController, platform::NativeEventType( pEvent ) );
+	nativeEventDispatch( *mEventController, Platform::NativeEventType( pEvent ) );
 }
 
 -( void ) rightMouseDragged:( NSEvent * ) pEvent
 {
 	ic3DbgEventLog("rightMouseDragged");
-	nativeEventDispatch( *mEventController, platform::NativeEventType( pEvent ) );
+	nativeEventDispatch( *mEventController, Platform::NativeEventType( pEvent ) );
 }
 
 -( void ) otherMouseDown:( NSEvent * ) pEvent
 {
 	ic3DbgEventLog("otherMouseDown");
-	nativeEventDispatch( *mEventController, platform::NativeEventType( pEvent ) );
+	nativeEventDispatch( *mEventController, Platform::NativeEventType( pEvent ) );
 }
 
 -( void ) otherMouseUp:( NSEvent * ) pEvent
 {
 	ic3DbgEventLog("otherMouseUp");
-	nativeEventDispatch( *mEventController, platform::NativeEventType( pEvent ) );
+	nativeEventDispatch( *mEventController, Platform::NativeEventType( pEvent ) );
 }
 
 -( void ) otherMouseDragged:( NSEvent * ) pEvent
 {
 	ic3DbgEventLog("otherMouseDragged");
-	nativeEventDispatch( *mEventController, platform::NativeEventType( pEvent ) );
+	nativeEventDispatch( *mEventController, Platform::NativeEventType( pEvent ) );
 }
 
 -( void ) scrollWheel:( NSEvent * ) pEvent
 {
 	ic3DbgEventLog("scrollWheel");
-	nativeEventDispatch( *mEventController, platform::NativeEventType( pEvent ) );
+	nativeEventDispatch( *mEventController, Platform::NativeEventType( pEvent ) );
 }
 
 -( void ) tabletPoint:( NSEvent * ) pEvent
 {
-	nativeEventDispatch( *mEventController, platform::NativeEventType( pEvent ) );
+	nativeEventDispatch( *mEventController, Platform::NativeEventType( pEvent ) );
 }
 
 -( void ) tabletProximity:( NSEvent * ) pEvent
 {
-	nativeEventDispatch( *mEventController, platform::NativeEventType( pEvent ) );
+	nativeEventDispatch( *mEventController, Platform::NativeEventType( pEvent ) );
 }
 
 -( void ) touchesBeganWithEvent:( NSEvent * ) pEvent
@@ -305,7 +305,7 @@
 
 -( void ) windowWillClose:( NSNotification * ) pNotification
 {
-	nativeEventDispatch( *mEventController, platform::NativeEventType( platform::OSXEventIDWindowWillClose, pNotification ) );
+	nativeEventDispatch( *mEventController, Platform::NativeEventType( Platform::OSXEventIDWindowWillClose, pNotification ) );
 }
 
 -( BOOL ) windowShouldClose:( id ) pSender

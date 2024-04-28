@@ -13,7 +13,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		SysContextHandle createSysContext( const SysContextCreateInfo & pCreateInfo )
@@ -36,7 +36,7 @@ namespace Ic3::System
 
 	AssetLoaderHandle X11SysContext::createAssetLoader( const AssetLoaderCreateInfo & pCreateInfo )
 	{
-		return platform::createFileAssetLoader( getHandle<X11SysContext>(), *pCreateInfo.nativeParams );
+		return Platform::createFileAssetLoader( getHandle<X11SysContext>(), *pCreateInfo.nativeParams );
 	}
 
 	DisplayManagerHandle X11SysContext::createDisplayManager()
@@ -109,7 +109,7 @@ namespace Ic3::System
 	{
 		mNativeData.xSessionData.display = nullptr;
 		mNativeData.xSessionData.screenIndex = -1;
-		mNativeData.xSessionData.rootWindowXID = platform::E_X11_XID_NONE;
+		mNativeData.xSessionData.rootWindowXID = Platform::E_X11_XID_NONE;
 		mNativeData.xSessionData.atomCache.wmProtocolDelete = 0;
 		mNativeData.xSessionData.atomCache.wmProtocolDestroy = 0;
 		mNativeData.xSessionData.atomCache.wmState = 0;

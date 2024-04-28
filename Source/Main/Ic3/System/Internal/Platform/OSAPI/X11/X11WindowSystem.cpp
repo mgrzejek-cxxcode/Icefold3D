@@ -6,7 +6,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		// Returns an array of _NET_WM_ACTION_xxx atoms for the specified frame style.
@@ -27,19 +27,19 @@ namespace Ic3::System
 
 	WindowHandle X11WindowManager::_nativeCreateWindow( WindowCreateInfo pCreateInfo )
 	{
-		auto & xSessionData = platform::x11GetXSessionData( *this );
+		auto & xSessionData = Platform::x11GetXSessionData( *this );
 
 		auto windowObject = createSysObject<X11Window>( getHandle<X11WindowManager>() );
 
-		platform::X11WindowCreateInfo x11CreateInfo;
+		Platform::X11WindowCreateInfo x11CreateInfo;
 		x11CreateInfo.frameGeometry = pCreateInfo.frameGeometry;
 		x11CreateInfo.title = std::move( pCreateInfo.title );
 		x11CreateInfo.colorDepth = XDefaultDepth( xSessionData.display, xSessionData.screenIndex );
 		x11CreateInfo.windowVisual = XDefaultVisual( xSessionData.display, xSessionData.screenIndex );
 
-		platform::x11CreateWindow( windowObject->mNativeData, x11CreateInfo );
+		Platform::x11CreateWindow( windowObject->mNativeData, x11CreateInfo );
 
-		platform::x11WindowPostCreateUpdate( windowObject->mNativeData, x11CreateInfo );
+		Platform::x11WindowPostCreateUpdate( windowObject->mNativeData, x11CreateInfo );
 
 		return windowObject;
 	}
@@ -48,7 +48,7 @@ namespace Ic3::System
 	{
 		auto * x11Window = pWindow.queryInterface<X11Window>();
 
-		platform::x11DestroyWindow( x11Window->mNativeData );
+		Platform::x11DestroyWindow( x11Window->mNativeData );
 	}
 	
 
@@ -63,32 +63,32 @@ namespace Ic3::System
 
 	void X11Window::_nativeSetFullscreenMode( bool pEnable )
 	{
-		platform::x11SetWindowFullscreenState( mNativeData, pEnable );
+		Platform::x11SetWindowFullscreenState( mNativeData, pEnable );
 	}
 
 	void X11Window::_nativeSetTitle( const std::string & pTitle )
 	{
-		return platform::x11SetFrameTitle( mNativeData, pTitle );
+		return Platform::x11SetFrameTitle( mNativeData, pTitle );
 	}
 
 	void X11Window::_nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
 	                                       Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
 	{
-		return platform::x11UpdateFrameGeometry( mNativeData, pFrameGeometry, pUpdateFlags );
+		return Platform::x11UpdateFrameGeometry( mNativeData, pFrameGeometry, pUpdateFlags );
 	}
 
 	FrameSize X11Window::_nativeGetSize( EFrameSizeMode pSizeMode ) const
 	{
-		return platform::x11GetFrameSize( mNativeData, pSizeMode );
+		return Platform::x11GetFrameSize( mNativeData, pSizeMode );
 	}
 
 
-	namespace platform
+	namespace Platform
 	{
 
 		void x11CreateWindow( X11WindowNativeData & pWindowNativeData, const X11WindowCreateInfo & pCreateInfo )
 		{
-			auto & xSessionData = platform::x11GetXSessionData( pWindowNativeData );
+			auto & xSessionData = Platform::x11GetXSessionData( pWindowNativeData );
 
 			// Colormap for our window.
 			Colormap colormap = XCreateColormap( xSessionData.display,
@@ -140,7 +140,7 @@ namespace Ic3::System
 			// First thing to enforce requested window behaviour: action table. It defines what kind of actions
 			// (like moving, resizing, entering fullscreen) are allowed for a given window. Based on the style,
 			// we query the table and set it for our newly created window.
-			auto windowActionTable = platform::_x11QueryActionTableForFrameStyle( xSessionData.display, windowStyle );
+			auto windowActionTable = Platform::_x11QueryActionTableForFrameStyle( xSessionData.display, windowStyle );
 
 			// This could happen only if we added/changed something and forgot to adjust this code.
 			ic3DebugAssert( !windowActionTable.empty() );
@@ -157,7 +157,7 @@ namespace Ic3::System
 			                 ( unsigned char * )windowActionTable.data(),
 			                 ( int )windowActionTable.size() );
 
-			auto windowSizeHints = platform::_x11QuerySizeHintsForFrameStyle( xSessionData.display, windowStyle, pCreateInfo.frameGeometry );
+			auto windowSizeHints = Platform::_x11QuerySizeHintsForFrameStyle( xSessionData.display, windowStyle, pCreateInfo.frameGeometry );
 
 			// Note, that this call must be done before the window is mapped to the screen. Otherwise, most WMs
 			// will not recognize PMinSize/PMaxSize hints, making non-resizable windows very much resizable ones.
@@ -166,7 +166,7 @@ namespace Ic3::System
 
 		void x11WindowPostCreateUpdate( X11WindowNativeData & pWindowNativeData, const X11WindowCreateInfo & pCreateInfo )
 		{
-			auto & xSessionData = platform::x11GetXSessionData( pWindowNativeData );
+			auto & xSessionData = Platform::x11GetXSessionData( pWindowNativeData );
 			
 			XMoveWindow( xSessionData.display,
 			             pWindowNativeData.windowXID,
@@ -204,7 +204,7 @@ namespace Ic3::System
 
 		void x11DestroyWindow( X11WindowNativeData & pWindowNativeData )
 		{
-			auto & xSessionData = platform::x11GetXSessionData( pWindowNativeData );
+			auto & xSessionData = Platform::x11GetXSessionData( pWindowNativeData );
 
 			XUnmapWindow( xSessionData.display, pWindowNativeData.windowXID );
 
@@ -226,7 +226,7 @@ namespace Ic3::System
 				return;
 			}
 
-			auto & xSessionData = platform::x11GetXSessionData( pWindowNativeData );
+			auto & xSessionData = Platform::x11GetXSessionData( pWindowNativeData );
 
 			XEvent wmEvent;
 			memset( &wmEvent, 0, sizeof( wmEvent ) );
@@ -249,7 +249,7 @@ namespace Ic3::System
 
 		void x11SetFrameTitle( const X11WindowNativeData & pWindowNativeData, const std::string & pTitle )
 		{
-			auto & xSessionData = platform::x11GetXSessionData( pWindowNativeData );
+			auto & xSessionData = Platform::x11GetXSessionData( pWindowNativeData );
 
 			XStoreName( xSessionData.display, pWindowNativeData.windowXID, pTitle.c_str() );
 
@@ -260,7 +260,7 @@ namespace Ic3::System
 		                             const FrameGeometry & pFrameGeometry,
 		                             Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
 		{
-			auto & xSessionData = platform::x11GetXSessionData( pWindowNativeData );
+			auto & xSessionData = Platform::x11GetXSessionData( pWindowNativeData );
 
 			if( pUpdateFlags.isSet( E_FRAME_GEOMETRY_UPDATE_FLAG_POSITION_BIT ) )
 			{
@@ -283,7 +283,7 @@ namespace Ic3::System
 
 		FrameSize x11GetFrameSize( const X11WindowNativeData & pWindowNativeData, EFrameSizeMode pSizeMode )
 		{
-			auto & xSessionData = platform::x11GetXSessionData( pWindowNativeData );
+			auto & xSessionData = Platform::x11GetXSessionData( pWindowNativeData );
 
 			XWindowAttributes windowAttributes;
 			XGetWindowAttributes( xSessionData.display,

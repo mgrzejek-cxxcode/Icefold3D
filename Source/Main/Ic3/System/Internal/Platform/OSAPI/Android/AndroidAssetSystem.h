@@ -13,7 +13,7 @@ namespace Ic3::System
 	ic3DeclareClassHandle( AndroidAssetDirectory );
 	ic3DeclareClassHandle( AndroidAsset );
 
-	namespace platform
+	namespace Platform
 	{
 
 		struct AndroidAssetNativeData : public AndroidNativeDataCommon
@@ -39,7 +39,7 @@ namespace Ic3::System
 
 	}
 
-	class AndroidAssetLoader : public AndroidNativeObject<AssetLoader, platform::AndroidAssetLoaderNativeData>
+	class AndroidAssetLoader : public AndroidNativeObject<AssetLoader, Platform::AndroidAssetLoaderNativeData>
 	{
 	public:
 		explicit AndroidAssetLoader( SysContextHandle pSysContext );
@@ -50,7 +50,7 @@ namespace Ic3::System
 		void _releaseAndroidAssetLoaderData();
 
 		/// @copybrief AssetLoader::_nativeOpenSubAsset
-		virtual AssetHandle _nativeOpenSubAsset( FSUtilityAPI::FilePathInfo pAssetPathInfo,
+		virtual AssetHandle _nativeOpenSubAsset( Cppx::FilePathInfo pAssetPathInfo,
 		                                         Bitmask<EAssetOpenFlags> pFlags ) override final;
 
 		/// @copybrief AssetLoader::_nativeOpenDirectory
@@ -60,7 +60,7 @@ namespace Ic3::System
 		virtual bool _nativeCheckDirectoryExists( const std::string & pDirectoryName ) const override final;
 	};
 
-	class AndroidAssetDirectory : public AndroidNativeObject<AssetDirectory, platform::AndroidAssetDirectoryNativeData>
+	class AndroidAssetDirectory : public AndroidNativeObject<AssetDirectory, Platform::AndroidAssetDirectoryNativeData>
 	{
 		friend class AndroidAssetLoader;
 
@@ -88,7 +88,7 @@ namespace Ic3::System
 		virtual bool _nativeCheckAssetExists( const std::string & pAssetName ) const override final;
 	};
 
-	class AndroidAsset : public AndroidNativeObject<Asset, platform::AndroidAssetNativeData>
+	class AndroidAsset : public AndroidNativeObject<Asset, Platform::AndroidAssetNativeData>
 	{
 		friend class AndroidAssetLoader;
 

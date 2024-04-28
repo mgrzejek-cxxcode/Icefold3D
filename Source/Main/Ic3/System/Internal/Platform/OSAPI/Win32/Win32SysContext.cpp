@@ -15,7 +15,7 @@
 namespace Ic3::System
 {
 
-    namespace platform
+    namespace Platform
     {
 
         SysContextHandle createSysContext( const SysContextCreateInfo & pCreateInfo )
@@ -38,7 +38,7 @@ namespace Ic3::System
 	
 	AssetLoaderHandle Win32SysContext::createAssetLoader( const AssetLoaderCreateInfo & pCreateInfo )
 	{
-		return platform::createFileAssetLoader( getHandle<Win32SysContext>(), *pCreateInfo.nativeParams );
+		return Platform::createFileAssetLoader( getHandle<Win32SysContext>(), *pCreateInfo.nativeParams );
 	}
 
 	DisplayManagerHandle Win32SysContext::createDisplayManager()

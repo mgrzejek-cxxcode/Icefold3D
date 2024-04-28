@@ -166,21 +166,21 @@
 
 -( void ) applicationWillFinishLaunching: (NSNotification *)pNotification
 {
-	auto & osxSharedData = Ic3::System::platform::osxGetOSXSharedData( *mOSXSysContext );
-	ic3DebugAssert( !osxSharedData.stateFlags.isSet( Ic3::System::platform::E_OSX_COMMON_STATE_APP_FINISHED_LAUNCHING_BIT ) );
+	auto & osxSharedData = Ic3::System::Platform::osxGetOSXSharedData( *mOSXSysContext );
+	ic3DebugAssert( !osxSharedData.stateFlags.isSet( Ic3::System::Platform::E_OSX_COMMON_STATE_APP_FINISHED_LAUNCHING_BIT ) );
 
 	if( ![NSApp mainMenu] )
 	{
-		if( !Ic3::System::platform::osxNibLoadMenuNibFile() )
+		if( !Ic3::System::Platform::osxNibLoadMenuNibFile() )
 		{
-			Ic3::System::platform::osxNibCreateDefaultApplicationMenu();
+			Ic3::System::Platform::osxNibCreateDefaultApplicationMenu();
 		}
 	}
 }
 
 -( void ) applicationDidFinishLaunching:( NSNotification * )pNotification
 {
-	auto & osxSharedData = Ic3::System::platform::osxGetOSXSharedData( *mOSXSysContext );
+	auto & osxSharedData = Ic3::System::Platform::osxGetOSXSharedData( *mOSXSysContext );
 
 	[NSOSXApplicationProxy registerUserDefaults];
 
@@ -213,7 +213,7 @@
 	// This has to go after the app's activation policy is properly set.
 	[NSApp activateIgnoringOtherApps:YES];
 
-	osxSharedData.stateFlags.set( Ic3::System::platform::E_OSX_COMMON_STATE_APP_FINISHED_LAUNCHING_BIT );
+	osxSharedData.stateFlags.set( Ic3::System::Platform::E_OSX_COMMON_STATE_APP_FINISHED_LAUNCHING_BIT );
 }
 
 -( BOOL ) applicationShouldTerminateAfterLastWindowClosed:( NSApplication * )pApplication

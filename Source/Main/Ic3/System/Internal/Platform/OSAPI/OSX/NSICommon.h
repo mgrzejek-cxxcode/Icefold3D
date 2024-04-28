@@ -15,7 +15,7 @@ namespace Ic3::System
 {
 
     // Required to create the alias below.
-    namespace platform
+    namespace Platform
     {}
 
     class OSXSysContext;
@@ -27,7 +27,7 @@ namespace Ic3::System
 
 }
 
-namespace platform = Ic3::System::platform;
+namespace Platform = Ic3::System::Platform;
 
 using OSXSysContext = Ic3::System::OSXSysContext;
 using OSXDisplayManager = Ic3::System::OSXDisplayManager;

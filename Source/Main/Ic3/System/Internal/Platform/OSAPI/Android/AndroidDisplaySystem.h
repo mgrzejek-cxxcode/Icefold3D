@@ -12,7 +12,7 @@ namespace Ic3::System
 	ic3SysDeclareHandle( AndroidDisplayManager );
 	ic3SysDeclareHandle( AndroidDisplayDriver );
 
-	namespace platform
+	namespace Platform
 	{
 
 		using AndroidDisplayManagerNativeData = AndroidNativeDataCommon;
@@ -24,7 +24,7 @@ namespace Ic3::System
 	}
 
 	/// @brief
-	class AndroidDisplayAdapter : public AndroidNativeObject<DisplayAdapter, platform::AndroidDisplayAdapterNativeData>
+	class AndroidDisplayAdapter : public AndroidNativeObject<DisplayAdapter, Platform::AndroidDisplayAdapterNativeData>
 	{
 		friend class AndroidDisplayDriver;
 
@@ -34,7 +34,7 @@ namespace Ic3::System
 	};
 
 	/// @brief
-	class AndroidDisplayOutput : public AndroidNativeObject<DisplayOutput, platform::AndroidDisplayOutputNativeData>
+	class AndroidDisplayOutput : public AndroidNativeObject<DisplayOutput, Platform::AndroidDisplayOutputNativeData>
 	{
 		friend class AndroidDisplayDriver;
 
@@ -44,7 +44,7 @@ namespace Ic3::System
 	};
 
 	/// @brief
-	class AndroidDisplayVideoMode : public AndroidNativeObject<DisplayVideoMode, platform::AndroidDisplayVideoModeNativeData>
+	class AndroidDisplayVideoMode : public AndroidNativeObject<DisplayVideoMode, Platform::AndroidDisplayVideoModeNativeData>
 	{
 		friend class AndroidDisplayDriver;
 
@@ -54,7 +54,7 @@ namespace Ic3::System
 	};
 
 	/// @brief
-	class AndroidDisplayManager : public AndroidNativeObject<DisplayManager, platform::AndroidDisplayManagerNativeData>
+	class AndroidDisplayManager : public AndroidNativeObject<DisplayManager, Platform::AndroidDisplayManagerNativeData>
 	{
 	public:
 		explicit AndroidDisplayManager( SysContextHandle pSysContext );
@@ -69,7 +69,7 @@ namespace Ic3::System
 	};
 
 	/// @brief
-	class AndroidDisplayDriver : public AndroidNativeObject<DisplayDriver, platform::AndroidDisplayDriverNativeData>
+	class AndroidDisplayDriver : public AndroidNativeObject<DisplayDriver, Platform::AndroidDisplayDriverNativeData>
 	{
 	public:
 		explicit AndroidDisplayDriver( AndroidDisplayManagerHandle pDisplayManager );

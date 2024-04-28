@@ -38,12 +38,12 @@ namespace Ic3::System
 
 	FrameSize AndroidWindow::_nativeGetSize( EFrameSizeMode /* pSizeMode */ ) const
 	{
-		auto & aSessionData = platform::androidGetASessionData( *this );
-		return platform::androidQueryNativeWindowSize( aSessionData.aNativeWindow );
+		auto & aSessionData = Platform::androidGetASessionData( *this );
+		return Platform::androidQueryNativeWindowSize( aSessionData.aNativeWindow );
 	}
 
 
-	namespace platform
+	namespace Platform
 	{
 
 		Math::Size2u androidQueryNativeWindowSize( ANativeWindow * pANativeWindow )

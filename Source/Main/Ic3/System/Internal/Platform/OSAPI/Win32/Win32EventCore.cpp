@@ -7,7 +7,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		LRESULT __stdcall _win32EventSourceProxyEventProc( HWND pHWND, UINT pMessage, WPARAM pWparam, LPARAM pLparam );
@@ -48,10 +48,10 @@ namespace Ic3::System
 
 	void Win32EventController::_nativeRegisterEventSource( EventSource & pEventSource )
 	{
-		auto * eventSourceNativeData = pEventSource.getEventSourceNativeDataAs<platform::Win32EventSourceNativeData>();
+		auto * eventSourceNativeData = pEventSource.getEventSourceNativeDataAs<Platform::Win32EventSourceNativeData>();
 		ic3DebugAssert( eventSourceNativeData != nullptr );
 
-		auto * win32EventSourceState = new platform::Win32EventSourceState();
+		auto * win32EventSourceState = new Platform::Win32EventSourceState();
 		win32EventSourceState->eventController = this;
 		win32EventSourceState->savedEventCallback = ::GetWindowLongPtrA( eventSourceNativeData->hwnd, GWLP_WNDPROC );
 		win32EventSourceState->savedEventCallbackUserData = ::GetWindowLongPtrA( eventSourceNativeData->hwnd, GWLP_USERDATA );
@@ -59,7 +59,7 @@ namespace Ic3::System
 		auto win32EventSourceStateAddress = reinterpret_cast<LONG_PTR>( win32EventSourceState );
 		::SetWindowLongPtrA( eventSourceNativeData->hwnd, GWLP_USERDATA, win32EventSourceStateAddress );
 
-		auto eventSourceProcAddress = reinterpret_cast<LONG_PTR>( platform::_win32EventSourceProxyEventProc );
+		auto eventSourceProcAddress = reinterpret_cast<LONG_PTR>( Platform::_win32EventSourceProxyEventProc );
 		::SetWindowLongPtrA( eventSourceNativeData->hwnd, GWLP_WNDPROC, eventSourceProcAddress );
 
 		// Trigger the update of the window to ensure changes are visible.
@@ -68,12 +68,12 @@ namespace Ic3::System
 
 	void Win32EventController::_nativeUnregisterEventSource( EventSource & pEventSource )
 	{
-        auto * eventSourceNativeData = pEventSource.getEventSourceNativeDataAs<platform::Win32EventSourceNativeData>();
+        auto * eventSourceNativeData = pEventSource.getEventSourceNativeDataAs<Platform::Win32EventSourceNativeData>();
         ic3DebugAssert( eventSourceNativeData != nullptr );
 
 		LONG_PTR windowUserData = ::GetWindowLongPtrA( eventSourceNativeData->hwnd, GWLP_USERDATA );
 
-		if( auto * win32EventSourceState = reinterpret_cast<platform::Win32EventSourceState *>( windowUserData ) )
+		if( auto * win32EventSourceState = reinterpret_cast<Platform::Win32EventSourceState *>( windowUserData ) )
 		{
             ::SetWindowLongPtrA( eventSourceNativeData->hwnd, GWLP_WNDPROC, win32EventSourceState->savedEventCallback );
 
@@ -113,7 +113,7 @@ namespace Ic3::System
 	}
 
 
-	namespace platform
+	namespace Platform
 	{
 
 		bool nativeEventTranslate( EventController & pEventController, const NativeEventType & pNativeEvent, EventObject & pOutEvent )
@@ -126,7 +126,7 @@ namespace Ic3::System
 		EventSource * win32FindEventSourceByHWND( Win32EventController & pEventController, HWND pHWND )
 		{
 			auto * eventSource = pEventController.findEventSource( [pHWND]( const EventSource & pEventSource ) -> bool {
-				const auto * eventSourceNativeData = pEventSource.getEventSourceNativeDataAs<platform::Win32EventSourceNativeData>();
+				const auto * eventSourceNativeData = pEventSource.getEventSourceNativeDataAs<Platform::Win32EventSourceNativeData>();
 				return eventSourceNativeData->hwnd == pHWND;
 			});
 			return eventSource;
@@ -166,7 +166,7 @@ namespace Ic3::System
 						// TODO: Log this!
 						ic3DebugInterrupt();
 					}
-					auto * win32EventSourceState = new platform::Win32EventSourceState();
+					auto * win32EventSourceState = new Platform::Win32EventSourceState();
 					auto win32EventSourceStateAddress = reinterpret_cast<LONG_PTR>( win32EventSourceState );
 					::SetWindowLongPtrA( pHWND, GWLP_USERDATA, win32EventSourceStateAddress );
 					break;
@@ -176,7 +176,7 @@ namespace Ic3::System
 					LONG_PTR windowUserData = ::GetWindowLongPtrA( pHWND, GWLP_USERDATA );
 					if( windowUserData != 0 )
 					{
-						auto * win32EventSourceState = reinterpret_cast<platform::Win32EventSourceState *>( windowUserData );
+						auto * win32EventSourceState = reinterpret_cast<Platform::Win32EventSourceState *>( windowUserData );
 						delete win32EventSourceState;
 						::SetWindowLongPtrA( pHWND, GWLP_USERDATA, 0 );
 					}
@@ -248,9 +248,9 @@ namespace Ic3::System
 					break;
 				}
 				// This is our custom message for fullscreen state changes.
-				case platform::CX_WIN32_MESSAGE_ID_FULLSCREEN_STATE_CHANGE:
+				case Platform::CX_WIN32_MESSAGE_ID_FULLSCREEN_STATE_CHANGE:
 				{
-					auto * win32WindowNativeData = pEventSource.getEventSourceNativeDataAs<platform::Win32WindowNativeData>();
+					auto * win32WindowNativeData = pEventSource.getEventSourceNativeDataAs<Platform::Win32WindowNativeData>();
 
 					// Fullscreen state is encoded in the WPARAM argument. Note, that it will always differ
 					// from the current fullscreen state (this is checked upfront before sending the message).
@@ -258,7 +258,7 @@ namespace Ic3::System
 
 					// The actual update. Sets proper window geometry, updates the style.
 					// This is handled automatically by the WM on X11, but here we need to explicitly do it.
-					platform::win32UpdateWindowFullscreenState( *win32WindowNativeData, isFullscreenEnabled );
+					Platform::win32UpdateWindowFullscreenState( *win32WindowNativeData, isFullscreenEnabled );
 
 					auto & eWindowUpdateFullscreen = pOutEvent.eWindowUpdateFullscreen;
 					eWindowUpdateFullscreen.eventCode = E_EVENT_CODE_WINDOW_UPDATE_FULLSCREEN;

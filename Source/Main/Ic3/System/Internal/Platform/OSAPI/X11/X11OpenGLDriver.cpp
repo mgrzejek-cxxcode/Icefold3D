@@ -10,7 +10,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		PFNGLXCREATECONTEXTATTRIBSARBPROC _x11QueryGLXCreateContextAttribsProc();
@@ -68,9 +68,9 @@ namespace Ic3::System
 		// Init state should be first created here and destroyed as soon as proper GL
 		// contexts are created (this is not enforce, though, and controlled explicitly
 		// by the user and done by calling releaseInitState() method od the driver).
-		mNativeData.initState = std::make_unique<platform::X11OpenGLSystemDriverNativeData::InitState>();
+		mNativeData.initState = std::make_unique<Platform::X11OpenGLSystemDriverNativeData::InitState>();
 
-		auto & xSessionData = platform::x11GetXSessionData( *this );
+		auto & xSessionData = Platform::x11GetXSessionData( *this );
 
 		int glxVersionMajor = 0;
 		int glxVersionMinor = 0;
@@ -86,18 +86,18 @@ namespace Ic3::System
 		legacyVisualConfig = vsxGetDefaultVisualConfigForSysWindow();
 		legacyVisualConfig.flags.set( E_VISUAL_ATTRIB_FLAG_LEGACY_BIT );
 
-		platform::X11WindowCreateInfo windowCreateInfo;
+		Platform::X11WindowCreateInfo windowCreateInfo;
 		windowCreateInfo.frameGeometry.position = { 0, 0 };
 		windowCreateInfo.frameGeometry.size = { 600, 600 };
 		windowCreateInfo.frameGeometry.style = EFrameStyle::Overlay;
 
 		auto & tmpSurfaceNativeData = mNativeData.initState->surfaceData;
 		tmpSurfaceNativeData.setSessionData( xSessionData );
-		platform::_x11CreateGLWindowAndSurface( tmpSurfaceNativeData, windowCreateInfo, legacyVisualConfig );
+		Platform::_x11CreateGLWindowAndSurface( tmpSurfaceNativeData, windowCreateInfo, legacyVisualConfig );
 
 		auto & tmpContextNativeData = mNativeData.initState->contextData;
 		tmpContextNativeData.setSessionData( xSessionData );
-		platform::_x11CreateAndBindLegacyRenderContext( tmpContextNativeData, tmpSurfaceNativeData );
+		Platform::_x11CreateAndBindLegacyRenderContext( tmpContextNativeData, tmpSurfaceNativeData );
 	}
 
 	void X11OpenGLSystemDriver::_nativeReleaseInitState() noexcept
@@ -107,7 +107,7 @@ namespace Ic3::System
 			return;
 		}
 
-		auto & xSessionData = platform::x11GetXSessionData( *this );
+		auto & xSessionData = Platform::x11GetXSessionData( *this );
 
 		auto & tmpSurfaceNativeData = mNativeData.initState->surfaceData;
 		auto & tmpContextNativeData = mNativeData.initState->contextData;
@@ -119,9 +119,9 @@ namespace Ic3::System
 			tmpContextNativeData.resetSessionData();
 		}
 
-		if( tmpSurfaceNativeData.windowXID != platform::E_X11_XID_NONE )
+		if( tmpSurfaceNativeData.windowXID != Platform::E_X11_XID_NONE )
 		{
-			platform::_x11DestroyGLWindowAndSurface( tmpSurfaceNativeData );
+			Platform::_x11DestroyGLWindowAndSurface( tmpSurfaceNativeData );
 			tmpSurfaceNativeData.fbConfig = nullptr;
 			tmpSurfaceNativeData.resetSessionData();
 		}
@@ -139,18 +139,18 @@ namespace Ic3::System
 	{
 		auto displaySurface = createSysObject<X11OpenGLDisplaySurface>( getHandle<X11OpenGLSystemDriver>() );
 
-		platform::X11WindowCreateInfo x11WindowCreateInfo;
+		Platform::X11WindowCreateInfo x11WindowCreateInfo;
 		x11WindowCreateInfo.frameGeometry = pCreateInfo.frameGeometry;
 		x11WindowCreateInfo.title = "TS3 OpenGL Window";
 		x11WindowCreateInfo.fullscreenMode = pCreateInfo.flags.isSet( E_OPENGL_DISPLAY_SURFACE_CREATE_FLAG_FULLSCREEN_BIT );
 
-		platform::_x11CreateGLWindowAndSurface( displaySurface->mNativeData, x11WindowCreateInfo, pCreateInfo.visualConfig );
+		Platform::_x11CreateGLWindowAndSurface( displaySurface->mNativeData, x11WindowCreateInfo, pCreateInfo.visualConfig );
 
-		platform::x11WindowPostCreateUpdate( displaySurface->mNativeData, x11WindowCreateInfo );
+		Platform::x11WindowPostCreateUpdate( displaySurface->mNativeData, x11WindowCreateInfo );
 
-		if( auto glXSwapIntervalEXTProc = platform::_x11QueryGLXSwapIntervalProc() )
+		if( auto glXSwapIntervalEXTProc = Platform::_x11QueryGLXSwapIntervalProc() )
 		{
-			auto & xSessionData = platform::x11GetXSessionData( *this );
+			auto & xSessionData = Platform::x11GetXSessionData( *this );
 
 			if( pCreateInfo.flags.isSet( E_OPENGL_DISPLAY_SURFACE_CREATE_FLAG_SYNC_DISABLED_BIT ) )
 			{
@@ -171,7 +171,7 @@ namespace Ic3::System
 
 	OpenGLDisplaySurfaceHandle X11OpenGLSystemDriver::_nativeCreateDisplaySurfaceForCurrentThread()
 	{
-		auto & xSessionData = platform::x11GetXSessionData( *this );
+		auto & xSessionData = Platform::x11GetXSessionData( *this );
 
 		auto currentWindowXID = glXGetCurrentDrawable();
 
@@ -193,11 +193,11 @@ namespace Ic3::System
 	OpenGLRenderContextHandle X11OpenGLSystemDriver::_nativeCreateRenderContext( OpenGLDisplaySurface & pDisplaySurface,
 	                                                                             const OpenGLRenderContextCreateInfo & pCreateInfo )
 	{
-		auto & xSessionData = platform::x11GetXSessionData( *this );
+		auto & xSessionData = Platform::x11GetXSessionData( *this );
 
 		auto * x11DisplaySurface = pDisplaySurface.queryInterface<X11OpenGLDisplaySurface>();
 
-		auto glXCreateContextAttribsProc = platform::_x11QueryGLXCreateContextAttribsProc();
+		auto glXCreateContextAttribsProc = Platform::_x11QueryGLXCreateContextAttribsProc();
 
 		int contextAPIProfile = 0;
 		Bitmask<int> contextCreateFlags = 0;
@@ -288,13 +288,13 @@ namespace Ic3::System
 	void X11OpenGLSystemDriver::_nativeDestroyRenderContext( OpenGLRenderContext & pRenderContext )
 	{
 		auto * x11RenderContext = pRenderContext.queryInterface<X11OpenGLRenderContext>();
-		platform::_x11DestroyGLContext( x11RenderContext->mNativeData );
+		Platform::_x11DestroyGLContext( x11RenderContext->mNativeData );
 	}
 
 	void X11OpenGLSystemDriver::_nativeResetContextBinding()
 	{
-		auto & xSessionData = platform::x11GetXSessionData( *this );
-		::glXMakeContextCurrent( xSessionData.display, platform::E_X11_XID_NONE, platform::E_X11_XID_NONE, nullptr );
+		auto & xSessionData = Platform::x11GetXSessionData( *this );
+		::glXMakeContextCurrent( xSessionData.display, Platform::E_X11_XID_NONE, Platform::E_X11_XID_NONE, nullptr );
 	}
 
 	std::vector<EDepthStencilFormat> X11OpenGLSystemDriver::_nativeQuerySupportedDepthStencilFormats( EColorFormat pColorFormat ) const
@@ -335,12 +335,12 @@ namespace Ic3::System
 
 	void X11OpenGLDisplaySurface::_releaseX11SurfaceState()
 	{
-		platform::_x11DestroyGLWindowAndSurface( mNativeData );
+		Platform::_x11DestroyGLWindowAndSurface( mNativeData );
 	}
 
 	void X11OpenGLDisplaySurface::_nativeSwapBuffers()
 	{
-		auto & xSessionData = platform::x11GetXSessionData( *this );
+		auto & xSessionData = Platform::x11GetXSessionData( *this );
 		glXSwapBuffers( xSessionData.display, mNativeData.windowXID );
 	}
 
@@ -351,7 +351,7 @@ namespace Ic3::System
 
 	VisualConfig X11OpenGLDisplaySurface::_nativeQueryVisualConfig() const
 	{
-		auto & xSessionData = platform::x11GetXSessionData( *this );
+		auto & xSessionData = Platform::x11GetXSessionData( *this );
 
 		XWindowAttributes windowAttributes;
 		XGetWindowAttributes( xSessionData.display, mNativeData.windowXID, &windowAttributes );
@@ -401,12 +401,12 @@ namespace Ic3::System
 
 	FrameSize X11OpenGLDisplaySurface::_nativeQueryRenderAreaSize() const
 	{
-		return platform::x11GetFrameSize( mNativeData, EFrameSizeMode::ClientArea );
+		return Platform::x11GetFrameSize( mNativeData, EFrameSizeMode::ClientArea );
 	}
 
 	bool X11OpenGLDisplaySurface::_nativeSysValidate() const
 	{
-		return ( mNativeData.windowXID != platform::E_X11_XID_NONE ) && mNativeData.fbConfig;
+		return ( mNativeData.windowXID != Platform::E_X11_XID_NONE ) && mNativeData.fbConfig;
 	}
 
 	void X11OpenGLDisplaySurface::_nativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode )
@@ -414,28 +414,28 @@ namespace Ic3::System
 
 	void X11OpenGLDisplaySurface::_nativeSetFullscreenMode( bool pEnable )
 	{
-		platform::x11SetWindowFullscreenState( mNativeData, pEnable );
+		Platform::x11SetWindowFullscreenState( mNativeData, pEnable );
 	}
 
 	void X11OpenGLDisplaySurface::_nativeSetTitle( const std::string & pTitle )
 	{
-		return platform::x11SetFrameTitle( mNativeData, pTitle );
+		return Platform::x11SetFrameTitle( mNativeData, pTitle );
 	}
 
 	void X11OpenGLDisplaySurface::_nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
 	                                                     Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
 	{
-		return platform::x11UpdateFrameGeometry( mNativeData, pFrameGeometry, pUpdateFlags );
+		return Platform::x11UpdateFrameGeometry( mNativeData, pFrameGeometry, pUpdateFlags );
 	}
 
 	FrameSize X11OpenGLDisplaySurface::_nativeGetSize( EFrameSizeMode pSizeMode ) const
 	{
-		return platform::x11GetFrameSize( mNativeData, pSizeMode );
+		return Platform::x11GetFrameSize( mNativeData, pSizeMode );
 	}
 
 	bool X11OpenGLDisplaySurface::_nativeIsFullscreen() const
 	{
-		return platform::x11IsFullscreenWindow( mNativeData );
+		return Platform::x11IsFullscreenWindow( mNativeData );
 	}
 
 
@@ -450,7 +450,7 @@ namespace Ic3::System
 
 	void X11OpenGLRenderContext::_nativeBindForCurrentThread( const OpenGLDisplaySurface & pTargetSurface )
 	{
-		auto & xSessionData = platform::x11GetXSessionData( *this );
+		auto & xSessionData = Platform::x11GetXSessionData( *this );
 
 		const auto * x11DisplaySurface = pTargetSurface.queryInterface<X11OpenGLDisplaySurface>();
 
@@ -473,11 +473,11 @@ namespace Ic3::System
 
 	void X11OpenGLRenderContext::_releaseX11ContextState()
 	{
-		platform::_x11DestroyGLContext( mNativeData );
+		Platform::_x11DestroyGLContext( mNativeData );
 	}
 
 	
-	namespace platform
+	namespace Platform
 	{
 
 		PFNGLXCREATECONTEXTATTRIBSARBPROC _x11QueryGLXCreateContextAttribsProc()
@@ -510,7 +510,7 @@ namespace Ic3::System
 		                                   X11WindowCreateInfo & pWindowCreateInfo,
 		                                   const VisualConfig & pVisualConfig )
 		{
-			auto & xSessionData = platform::x11GetXSessionData( pGLSurfaceNativeData );
+			auto & xSessionData = Platform::x11GetXSessionData( pGLSurfaceNativeData );
 
 			X11OpenGLVisualConfig x11GLVisualConfig{};
 			if( pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_LEGACY_BIT ) )
@@ -533,17 +533,17 @@ namespace Ic3::System
 			pWindowCreateInfo.colorDepth = x11GLVisualConfig.xVisualInfo->depth;
 			pWindowCreateInfo.windowVisual = x11GLVisualConfig.xVisualInfo->visual;
 
-			platform::x11CreateWindow( pGLSurfaceNativeData, pWindowCreateInfo );
+			Platform::x11CreateWindow( pGLSurfaceNativeData, pWindowCreateInfo );
 		}
 
 		void _x11DestroyGLWindowAndSurface( X11OpenGLDisplaySurfaceNativeData & pGLSurfaceNativeData )
 		{
-			platform::x11DestroyWindow( pGLSurfaceNativeData );
+			Platform::x11DestroyWindow( pGLSurfaceNativeData );
 		}
 
 		void _x11DestroyGLContext( X11OpenGLRenderContextNativeData & pGLContextNativeData )
 		{
-			auto & xSessionData = platform::x11GetXSessionData( pGLContextNativeData );
+			auto & xSessionData = Platform::x11GetXSessionData( pGLContextNativeData );
 			if( pGLContextNativeData.contextHandle != nullptr )
 			{
 				auto currentContextHandle = ::glXGetCurrentContext();
@@ -560,7 +560,7 @@ namespace Ic3::System
 		void _x11CreateAndBindLegacyRenderContext( X11OpenGLRenderContextNativeData & pGLContextNativeData,
 		                                           const X11OpenGLDisplaySurfaceNativeData & pGLSurfaceNativeData )
 		{
-			auto & xSessionData = platform::x11GetXSessionData( pGLSurfaceNativeData );
+			auto & xSessionData = Platform::x11GetXSessionData( pGLSurfaceNativeData );
 
 			auto tempContextHandle = ::glXCreateContext( xSessionData.display, pGLSurfaceNativeData.visualInfo, nullptr, True );
 			if( !tempContextHandle )

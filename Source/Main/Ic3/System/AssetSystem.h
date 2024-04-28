@@ -30,7 +30,7 @@ namespace Ic3::System
 		bool checkDirectoryExists( const std::string & pDirectoryName ) const;
 
 	private:
-		virtual AssetHandle _nativeOpenSubAsset( FSUtilityAPI::FilePathInfo pAssetPathInfo, Bitmask<EAssetOpenFlags> pFlags ) = 0;
+		virtual AssetHandle _nativeOpenSubAsset( Cppx::FilePathInfo pAssetPathInfo, Bitmask<EAssetOpenFlags> pFlags ) = 0;
 
 		virtual AssetDirectoryHandle _nativeOpenDirectory( std::string pDirectoryName ) = 0;
 
@@ -86,7 +86,7 @@ namespace Ic3::System
 		virtual ~Asset() noexcept;
 
 		file_size_t readData( void * pTargetBuffer, file_size_t pTargetBufferSize, file_size_t pReadSize = CX_FILE_SIZE_MAX );
-		file_size_t readData( MemoryBuffer & pBuffer, file_size_t pReadSize = CX_FILE_SIZE_MAX );
+		file_size_t readData( Cppx::MemoryBuffer & pBuffer, file_size_t pReadSize = CX_FILE_SIZE_MAX );
 
 		template <typename TChar>
 		file_size_t readData( std::basic_string<TChar> & pString, file_size_t pReadSize = CX_FILE_SIZE_MAX )
@@ -100,7 +100,7 @@ namespace Ic3::System
 			return readData( pVector.data(), pVector.size() * sizeof( TValue ), pReadSize );
 		}
 
-		file_size_t readAll( DynamicMemoryBuffer & pBuffer, size_t pExtraAllocSize = 0 )
+		file_size_t readAll( Cppx::DynamicMemoryBuffer & pBuffer, size_t pExtraAllocSize = 0 )
 		{
 			const auto assetSize = _nativeGetSize();
 			pBuffer.resize( assetSize + pExtraAllocSize );

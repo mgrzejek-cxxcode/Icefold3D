@@ -53,7 +53,7 @@ namespace Ic3::System
 		/// - if an object should be destroyed "remotely" (e.g. custom OS-level stuff), this can be used to do that.
 		bool destroySystemObject();
 
-		IC3_ATTR_NO_DISCARD bool isStateMaskSet( Bitmask<ESysObjectStateFlags> pMask ) const
+		IC3_ATTR_NO_DISCARD bool isStateMaskSet( Cppx::Bitmask<ESysObjectStateFlags> pMask ) const
 		{
 			return _stateMask.isSet( pMask );
 		}
@@ -85,13 +85,13 @@ namespace Ic3::System
 			return _stateMask.testAndSet( E_SYS_OBJECT_STATE_FLAG_DESTROY_REQUEST_FLAG_SET_BIT );
 		}
 
-		void setStateFlags( bool pSetOrUnset, Bitmask<ESysObjectStateFlags> pFlags )
+		void setStateFlags( bool pSetOrUnset, Cppx::Bitmask<ESysObjectStateFlags> pFlags )
 		{
 			_stateMask.setOrUnset( pFlags, pSetOrUnset );
 		}
 
 	private:
-		AtomicBitmask<uint32> _stateMask;
+	    Cppx::AtomicBitmask<uint32> _stateMask;
     };
 
     struct SysObjectDeleter

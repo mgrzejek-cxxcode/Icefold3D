@@ -11,7 +11,7 @@ namespace Ic3::System
 
 	class X11EventController;
 
-	namespace platform
+	namespace Platform
 	{
 
 		enum class EX11MouseButtonID : enum_default_value_t
@@ -51,7 +51,7 @@ namespace Ic3::System
 
 	}
 
-	class X11EventController : public X11NativeObject<EventController, platform::X11NativeDataCommon>
+	class X11EventController : public X11NativeObject<EventController, Platform::X11NativeDataCommon>
 	{
 	public:
 		X11EventController( SysContextHandle pSysContext );

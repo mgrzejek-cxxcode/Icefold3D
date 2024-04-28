@@ -32,11 +32,13 @@
 namespace Ic3::System
 {
 
+	using Cppx::Bitmask;
+
 	ic3EnableCustomExceptionSupport();
 	ic3EnableEnumTypeInfoSupport();
 
 	template <typename TObject>
-	using SysHandle = ::Ic3::SharedHandle<TObject>;
+	using SysHandle = ::Ic3::RSharedHandle<TObject>;
 
 	/// @brief Declares the handle type for a given system class.
 	/// The handle's type name is created by appending 'Handle' suffix to a given class name.

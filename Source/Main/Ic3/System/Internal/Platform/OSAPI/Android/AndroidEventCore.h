@@ -9,7 +9,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		enum class AndroidNativeEventType : enum_default_value_t
@@ -42,7 +42,7 @@ namespace Ic3::System
 
 	}
 
-	class AndroidEventController : public AndroidNativeObject<EventController, platform::AndroidNativeDataCommon>
+	class AndroidEventController : public AndroidNativeObject<EventController, Platform::AndroidNativeDataCommon>
 	{
 	public:
 		AndroidEventController( SysContextHandle pSysContext );

@@ -17,8 +17,8 @@ namespace Ic3::System
 			return nullptr;
 		}
 
-		auto assetRefName = FSUtilityAPI::normalizePath( pAssetRefName );
-		auto assetPathInfo = FSUtilityAPI::splitPath( std::move( assetRefName ), FSUtilityAPI::E_SPLIT_PATH_FLAG_ASSUME_FILE_BIT );
+		auto assetRefName = Cppx::fsNormalizePath( pAssetRefName );
+		auto assetPathInfo = fsSplitPath( std::move( assetRefName ), Cppx::E_FSAPI_SPLIT_PATH_FLAG_ASSUME_FILE_BIT );
 
 		return _nativeOpenSubAsset( std::move( assetPathInfo ), pFlags );
 	}
@@ -124,12 +124,12 @@ namespace Ic3::System
 			return 0;
 		}
 
-		const auto readSize = getMinOf( pTargetBufferSize, pReadSize );
+		const auto readSize = Cppx::getMinOf( pTargetBufferSize, pReadSize );
 
 		return _nativeReadData( pTargetBuffer, readSize );
 	}
 
-	file_size_t Asset::readData( MemoryBuffer & pBuffer, file_size_t pReadSize )
+	file_size_t Asset::readData( Cppx::MemoryBuffer & pBuffer, file_size_t pReadSize )
 	{
 		return readData( pBuffer.data(), pBuffer.size(), pReadSize );
 	}

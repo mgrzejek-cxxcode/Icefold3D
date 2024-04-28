@@ -97,7 +97,7 @@ namespace Ic3::System
 		E_EXC_SYSTEM_OPENGL_API_PROFILE_NOT_SUPPORTED = Ic3::CxDef::declareExceptionCode( E_EXCEPTION_CATEGORY_SYSTEM_OPENGL, 0x04 ),
 	};
 
-	inline constexpr Version CX_GL_VERSION_BEST_SUPPORTED{ CX_UINT16_MAX, CX_UINT16_MAX };
+	inline constexpr Version CX_GL_VERSION_BEST_SUPPORTED{ Cppx::CX_UINT16_MAX, Cppx::CX_UINT16_MAX };
 
 	inline constexpr Version CX_GL_VERSION_UNKNOWN{ 0, 0 };
 
@@ -147,7 +147,7 @@ namespace Ic3::System
 
 	public:
 		constexpr OpenGLErrorInfo( bool pStatus )
-		: errorCode( pStatus ? 0u : QLimits<uint32>::maxValue )
+		: errorCode( pStatus ? 0u : Cppx::QLimits<uint32>::maxValue )
 		, errorString( Ic3::CxDef::STR_CHAR_EMPTY )
 		{}
 

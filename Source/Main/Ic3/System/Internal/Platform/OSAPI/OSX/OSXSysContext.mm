@@ -16,7 +16,7 @@
 namespace Ic3::System
 {
 
-    namespace platform
+    namespace Platform
     {
 
         SysContextHandle createSysContext( const SysContextCreateInfo & pCreateInfo )
@@ -40,7 +40,7 @@ namespace Ic3::System
     AssetLoaderHandle OSXSysContext::createAssetLoader( const AssetLoaderCreateInfo & pCreateInfo )
     {
 		ic3DebugAssert( pCreateInfo.nativeParams );
-        return platform::createFileAssetLoader( getHandle<SysContext>(), *pCreateInfo.nativeParams );
+        return Platform::createFileAssetLoader( getHandle<SysContext>(), *pCreateInfo.nativeParams );
     }
 
     DisplayManagerHandle OSXSysContext::createDisplayManager()
@@ -126,7 +126,7 @@ namespace Ic3::System
 	{
 	@autoreleasepool
 	{
-		auto & osxSharedData = platform::osxGetOSXSharedData( *this );
+		auto & osxSharedData = Platform::osxGetOSXSharedData( *this );
 
 		if( !NSApp )
 		{
@@ -139,10 +139,10 @@ namespace Ic3::System
 				[NSApp setDelegate:nsAppDelegate];
 
 				mNativeData.nsApplicationDelegate = nsAppDelegate;
-				mNativeData.osxSharedData.stateFlags.isSet( platform::E_OSX_COMMON_STATE_APP_DELEGATE_INITIALIZED_BIT );
+				mNativeData.osxSharedData.stateFlags.isSet( Platform::E_OSX_COMMON_STATE_APP_DELEGATE_INITIALIZED_BIT );
 			}
 
-			if( !mNativeData.osxSharedData.stateFlags.isSet( platform::E_OSX_COMMON_STATE_APP_FINISHED_LAUNCHING_BIT ) )
+			if( !mNativeData.osxSharedData.stateFlags.isSet( Platform::E_OSX_COMMON_STATE_APP_FINISHED_LAUNCHING_BIT ) )
 			{
 				[NSApp finishLaunching];
 
