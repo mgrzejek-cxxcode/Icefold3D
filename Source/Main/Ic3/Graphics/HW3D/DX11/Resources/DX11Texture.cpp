@@ -247,7 +247,7 @@ namespace Ic3::Graphics::GCI
 
 			if( FAILED( hResult ) )
 			{
-				const auto errStr = System::platform::mseQueryCOMErrorMessage(hResult);
+				const auto errStr = System::Platform::mseQueryCOMErrorMessage(hResult);
 				ic3DebugInterrupt();
 				return nullptr;
 			}

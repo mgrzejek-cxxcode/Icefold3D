@@ -21,7 +21,7 @@ namespace Ic3::Graphics::GCI
 		auto sysContext = pCreateInfo.sysContext;
 		if( !sysContext )
 		{
-			sysContext = System::platform::createSysContext( pCreateInfo.sysContextCreateInfo );
+			sysContext = System::Platform::createSysContext( pCreateInfo.sysContextCreateInfo );
 			if( !sysContext )
 			{
 				return nullptr;

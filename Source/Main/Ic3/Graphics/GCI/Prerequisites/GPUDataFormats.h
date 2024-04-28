@@ -230,20 +230,20 @@ namespace Ic3::Graphics::GCI
 			return ( uint8 )( ( ( vertex_attrib_format_value_t )pFormat >> 16 ) & 0xFF );
 		}
 
-		IC3_ATTR_NO_DISCARD inline constexpr Bitmask<uint8> getVertexAttribFormatFlags( EVertexAttribFormat pFormat )
+		IC3_ATTR_NO_DISCARD inline constexpr Cppx::Bitmask<uint8> getVertexAttribFormatFlags( EVertexAttribFormat pFormat )
 		{
 			return ( uint8 )( ( ( vertex_attrib_format_value_t )pFormat >> 8 ) & 0xFF );
 		}
 
 		IC3_ATTR_NO_DISCARD inline constexpr bool isTextureFormatSRGB( ETextureFormat pFormat ) noexcept
 		{
-			const Bitmask<uint8> formatFlags = getTextureFormatFlags( pFormat );
+			const Cppx::Bitmask<uint8> formatFlags = getTextureFormatFlags( pFormat );
 			return formatFlags.isSet( E_GPU_DATA_FORMAT_FLAG_SRGB_BIT );
 		}
 
 		IC3_ATTR_NO_DISCARD inline constexpr bool isVertexAttribFormatNormalized( EVertexAttribFormat pFormat ) noexcept
 		{
-			const Bitmask<uint8> formatFlags = getVertexAttribFormatFlags( pFormat );
+			const Cppx::Bitmask<uint8> formatFlags = getVertexAttribFormatFlags( pFormat );
 			return formatFlags.isSet( E_GPU_DATA_FORMAT_FLAG_NORMALIZED_BIT );
 		}
 

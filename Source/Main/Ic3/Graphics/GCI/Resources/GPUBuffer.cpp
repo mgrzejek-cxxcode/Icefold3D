@@ -37,7 +37,7 @@ namespace Ic3::Graphics::GCI
 		}
 
 		const GPUMemoryRegion bufferDataRegion{ 0, mBufferProperties.byteSize };
-		if( !Ic3::checkRangeSubRange( bufferDataRegion.asRange(), pRegion.asRange() ) )
+		if( !Ic3::rangeIsSubRangeOf( pRegion.asRange(), bufferDataRegion.asRange() ) )
 		{
 			return false;
 		}
@@ -49,7 +49,7 @@ namespace Ic3::Graphics::GCI
 	{
 		if( pCreateInfo.memoryBaseAlignment == 0 )
 		{
-		    pCreateInfo.memoryBaseAlignment = Ic3::CxDef::MEMORY_DEFAULT_ALIGNMENT;
+		    pCreateInfo.memoryBaseAlignment = Ic3::kMemoryCPUDefaultAlignment;
 		}
 
 		if( ( pCreateInfo.bufferSize == 0 ) && pCreateInfo.initDataDesc )

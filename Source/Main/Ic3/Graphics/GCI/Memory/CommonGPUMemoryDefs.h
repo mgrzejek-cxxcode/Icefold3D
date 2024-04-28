@@ -21,17 +21,17 @@ namespace Ic3::Graphics::GCI
     using gpu_memory_heap_id_t = uint64;
     using gpu_memory_pool_id_t = uint64;
 
-    using GPUMemoryRegion = SRegion<gpu_memory_size_t>;
-    using GPUMemoryRange = GPUMemoryRegion::SRange;
+    using GPUMemoryRegion = Cppx::SRegion<gpu_memory_size_t>;
+    using GPUMemoryRange = GPUMemoryRegion::RangeType;
 
 	namespace CxDef
 	{
 
 		/// @brief
-		inline constexpr gpu_memory_size_t GPU_MEMORY_OFFSET_INVALID = QLimits<gpu_memory_size_t>::maxValue;
+		inline constexpr gpu_memory_size_t GPU_MEMORY_OFFSET_INVALID = Cppx::QLimits<gpu_memory_size_t>::maxValue;
 
 		/// @brief
-		inline constexpr gpu_memory_size_t GPU_MEMORY_SIZE_MAX = QLimits<gpu_memory_size_t>::maxValue;
+		inline constexpr gpu_memory_size_t GPU_MEMORY_SIZE_MAX = Cppx::QLimits<gpu_memory_size_t>::maxValue;
 
 	}
 
@@ -142,14 +142,14 @@ namespace Ic3::Graphics::GCI
 
 	struct StructuredResourceAlignedMemory
 	{
-		DynamicByteArray alignedBuffer;
+		Cppx::DynamicByteArray alignedBuffer;
 		StructuredResourceAlignedMemoryMetrics metrics;
 	};
 
 	struct ResourceMemoryInfo
 	{
         memory_align_t baseAlignment;
-		Bitmask<EGPUMemoryFlags> memoryFlags;
+		Cppx::Bitmask<EGPUMemoryFlags> memoryFlags;
 		gpu_memory_heap_id_t sourceHeapID;
 		GPUMemoryRegion sourceHeapRegion;
 	};
@@ -159,7 +159,7 @@ namespace Ic3::Graphics::GCI
 		const ResourceMemoryInfo * sourceMemory = nullptr;
 		GPUMemoryRegion mappedRegion;
 		void * pointer;
-		Bitmask<EGPUMemoryMapFlags> memoryMapFlags;
+		Cppx::Bitmask<EGPUMemoryMapFlags> memoryMapFlags;
 
 		constexpr explicit operator bool () const
 		{
@@ -171,20 +171,20 @@ namespace Ic3::Graphics::GCI
 	{
 
 		/// @brief Returns true if the requested memory map mode is valid for the memory with given properties (flags).
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool checkMemoryMapAccess( EGPUMemoryMapMode pRequestedMapMode, Bitmask<EGPUMemoryFlags> pMemoryFlags );
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool checkMemoryMapAccess( EGPUMemoryMapMode pRequestedMapMode, Cppx::Bitmask<EGPUMemoryFlags> pMemoryFlags );
 
 		IC3_GRAPHICS_GCI_API_NO_DISCARD StructuredResourceAlignedMemory alignStructuredResourceDataAuto(
 				const void * pData,
 				native_uint pElementSize,
 				native_uint pElementsNum );
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD DynamicByteArray alignStructuredResourceData(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD Cppx::DynamicByteArray alignStructuredResourceData(
 				const void * pData,
 				native_uint pElementSize,
 				native_uint pElementsNum,
 				memory_align_t pAlignedStride );
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD DynamicByteArray alignStructuredResourceData(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD Cppx::DynamicByteArray alignStructuredResourceData(
 				const void * pData,
 				const StructuredResourceAlignedMemoryMetrics & pMetrics );
 

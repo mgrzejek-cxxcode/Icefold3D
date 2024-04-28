@@ -201,7 +201,7 @@ namespace Ic3::Graphics::GCI
 	struct ResourceCreateInfo
 	{
 		Bitmask<resource_flags_value_t> resourceFlags = 0;
-		memory_align_t memoryBaseAlignment = Ic3::CxDef::MEMORY_DEFAULT_ALIGNMENT;
+		memory_align_t memoryBaseAlignment = kMemoryCPUDefaultAlignment;
 		Bitmask<EGPUMemoryFlags> memoryFlags = E_GPU_RESOURCE_MEMORY_MASK_DEFAULT;
 	};
 

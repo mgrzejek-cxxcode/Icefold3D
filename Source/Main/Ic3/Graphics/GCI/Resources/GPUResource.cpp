@@ -23,7 +23,7 @@ namespace Ic3::Graphics::GCI
 
 	bool GPUResource::isMapped( const GPUMemoryRegion & pRegion ) const
 	{
-		return Ic3::checkRangeSubRange( _mappedMemory.mappedRegion.asRange(), pRegion.asRange() );
+		return Ic3::rangeIsSubRangeOf( pRegion.asRange(), _mappedMemory.mappedRegion.asRange() );
 	}
 
 	ref_counter_value_t GPUResource::addActiveRef()
@@ -53,7 +53,7 @@ namespace Ic3::Graphics::GCI
 	{
 		_mappedMemory.pointer = nullptr;
 		_mappedMemory.memoryMapFlags = 0;
-		_mappedMemory.mappedRegion.reset();
+		_mappedMemory.mappedRegion.setEmpty();
 	}
 
 

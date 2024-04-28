@@ -11,7 +11,7 @@ namespace Ic3::Graphics::GCI
 	ic3EnableEnumTypeInfoSupport();
 
 	template <typename TClass>
-	using GpaHandle = SharedHandle<TClass>;
+	using GpaHandle = RSharedHandle<TClass>;
 
 	using UniqueGPUObjectID = HFSIdentifier;
 	using UniqueGPUObjectName = std::string;
@@ -43,11 +43,11 @@ namespace Ic3::Graphics::GCI
 
 		/// A special constant which can be used for object IDs to indicate that ID should be assigned automatically.
 		/// In most cases it is safe to assume that object address will be used as the ID (unless stated otherwise).
-		inline constexpr UniqueGPUObjectID GPU_OBJECT_ID_AUTO { QLimits<uint64>::maxValue };
+		inline constexpr UniqueGPUObjectID GPU_OBJECT_ID_AUTO { Cppx::QLimits<uint64>::maxValue };
 
 		/// An invalid object ID. Such IDs may refer to objects which are either uninitialised, marked for deletion,
 		/// or do not yet exist in the object management system. This ID also means "not found" in case of queries.
-		inline constexpr UniqueGPUObjectID GPU_OBJECT_ID_INVALID { QLimits<uint64>::maxValue - 1 };
+		inline constexpr UniqueGPUObjectID GPU_OBJECT_ID_INVALID { Cppx::QLimits<uint64>::maxValue - 1 };
 
 		///
 		inline constexpr UniqueGPUObjectID GPU_OBJECT_ID_EMPTY { 0 };
