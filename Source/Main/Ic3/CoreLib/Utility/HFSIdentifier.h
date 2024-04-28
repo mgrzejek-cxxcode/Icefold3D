@@ -12,11 +12,11 @@ namespace Ic3
 	struct HFSIdentifier
 	{
 	public:
-		static constexpr auto sHashAlgo1 = EHashAlgo::FNV1A32;
-		static constexpr auto sHashAlgo2 = EHashAlgo::SDBM;
+		static constexpr auto sHashAlgo1 = Cppx::EHashAlgo::FNV1A32;
+		static constexpr auto sHashAlgo2 = Cppx::EHashAlgo::SDBM;
 
-		using Hash1 = SHashObject<sHashAlgo1>;
-		using Hash2 = SHashObject<sHashAlgo2>;
+		using Hash1 = Cppx::SHashObject<sHashAlgo1>;
+		using Hash2 = Cppx::SHashObject<sHashAlgo2>;
 		using ValueType = uint64;
 
 		uint64 idValue;
@@ -78,8 +78,8 @@ namespace Ic3
 	template <typename TInput, typename... TRest>
 	inline HFSIdentifier generateHFSIdentifier( const TInput & pInput, const TRest & ...pRest )
 	{
-		const auto hash1 = hashCompute<EHashAlgo::FNV1A32>( pInput, pRest... );
-		const auto hash2 = hashCompute<EHashAlgo::SDBM>( pInput, pRest... );
+		const auto hash1 = Cppx::hashCompute<Cppx::EHashAlgo::FNV1A32>( pInput, pRest... );
+		const auto hash2 = Cppx::hashCompute<Cppx::EHashAlgo::SDBM>( pInput, pRest... );
 		return HFSIdentifier{ hash1, hash2 };
 	}
 

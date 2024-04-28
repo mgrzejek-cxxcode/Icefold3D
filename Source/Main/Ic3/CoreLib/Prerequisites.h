@@ -8,6 +8,7 @@
 #include <Ic3/Cppx/BitUtils.h>
 #include <Ic3/Cppx/RefWrapper.h>
 #include <Ic3/Cppx/StaticLimits.h>
+#include <Ic3/Cppx/StringView.h>
 
 #if( IC3_BUILD_STATIC )
 #  define IC3_CORELIB_API
@@ -38,6 +39,14 @@
 #endif
 
 #define friendapi protected
+
+namespace Ic3
+{
+
+	using Cppx::ArrayView;
+	using Cppx::StringView;
+
+}
 
 #include "Prerequisites/CoreDefs.h"
 #include "Prerequisites/CoreEnums.h"

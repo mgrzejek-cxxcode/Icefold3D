@@ -79,7 +79,7 @@ namespace Ic3
 		if( pHorizontalLayout.hSpacing < _config.horizontalLayout.hSpacing )
 		{
 			auto hSpacingDiff = _config.horizontalLayout.hSpacing - pHorizontalLayout.hSpacing;
-			_allocPointerOffset.x = getMinOf( _allocPointerOffset.x + hSpacingDiff, _boundingRectDimensions.x );
+			_allocPointerOffset.x = Cppx::getMinOf( _allocPointerOffset.x + hSpacingDiff, _boundingRectDimensions.x );
 		}
 
 		_config.horizontalLayout = pHorizontalLayout;
@@ -87,8 +87,8 @@ namespace Ic3
 
 	void RectAllocator::updateVerticalLayout( RectAllocatorConfig::VerticalLayout & pVerticalLayout )
 	{
-		auto vMoveOffset = getMaxOf( _config.verticalLayout.vSpacing, pVerticalLayout.vSpacing );
-		_allocPointerOffset.y = getMinOf( _allocPointerOffset.y + vMoveOffset, _boundingRectDimensions.y );
+		auto vMoveOffset = Cppx::getMaxOf( _config.verticalLayout.vSpacing, pVerticalLayout.vSpacing );
+		_allocPointerOffset.y = Cppx::getMinOf( _allocPointerOffset.y + vMoveOffset, _boundingRectDimensions.y );
 		_allocPointerOffset.x = 0;
 	}
 

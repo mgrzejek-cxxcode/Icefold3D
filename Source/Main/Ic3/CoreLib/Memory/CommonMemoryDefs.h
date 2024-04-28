@@ -15,17 +15,17 @@ namespace Ic3
     using memory_diff_t = native_int;
     using memory_size_t = native_uint;
 
-    using SMemoryRegion = SRegion<memory_size_t>;
+    using SMemoryRegion = Cppx::SRegion<memory_size_t>;
     using SMemoryRange = SMemoryRegion::RangeType;
 
 	namespace CxDef
 	{
 
 		/// @brief Represents an invalid memory offset, expressed as the maximum value of the memory_size_t type.
-		constexpr memory_size_t MEMORY_OFFSET_INVALID = QLimits<memory_size_t>::maxValue;
+		constexpr memory_size_t MEMORY_OFFSET_INVALID = Cppx::QLimits<memory_size_t>::maxValue;
 
 		/// @brief Represents maximum possible size of single block/region of memory.
-		constexpr memory_size_t MEMORY_SIZE_MAX = QLimits<memory_size_t>::maxValue;
+		constexpr memory_size_t MEMORY_SIZE_MAX = Cppx::QLimits<memory_size_t>::maxValue;
 
 	}
 
@@ -39,7 +39,7 @@ namespace Ic3
 inline void * operator new( size_t pSize, const Ic3::AllocNewSizeExplicitTag &, size_t pExtraSize )
 {
 	const auto requestedObjectSize = pSize + pExtraSize;
-	const auto allocationSize = Ic3::memGetAlignedValue( requestedObjectSize, Ic3::CxDef::MEMORY_DEFAULT_ALIGNMENT );
+	const auto allocationSize = Ic3::Cppx::memGetAlignedValue( requestedObjectSize, Ic3::kMemoryCPUDefaultAlignment );
 	return std::malloc( allocationSize );
 }
 

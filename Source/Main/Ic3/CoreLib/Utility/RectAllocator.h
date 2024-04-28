@@ -11,7 +11,7 @@ namespace Ic3
 	{
 		struct HorizontalLayout
 		{
-			uint32 hLineAdvanceThreshold = QLimits<uint32>::maxValue;
+			uint32 hLineAdvanceThreshold = Cppx::QLimits<uint32>::maxValue;
 			uint32 hSpacing = 0;
 		};
 		struct VerticalLayout
