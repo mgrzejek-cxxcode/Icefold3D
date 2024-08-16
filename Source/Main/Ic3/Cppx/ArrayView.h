@@ -5,7 +5,7 @@
 #include "Range.h"
 #include "Utilities.h"
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	template <bool tIsDataConst>
@@ -63,7 +63,7 @@ namespace Ic3
 			return !empty();
 		}
 
-		IC3_ATTR_NO_DISCARD TVal & operator[](size_t pIndex) const
+		IC3_ATTR_NO_DISCARD TVal & operator[]( size_t pIndex ) const
 		{
 			ic3DebugAssert( pIndex < _size );
 			return _dataPtr[pIndex];
@@ -132,7 +132,7 @@ namespace Ic3
 	}
 
 	template <typename TVal, typename TOffset, typename TSize>
-	IC3_ATTR_NO_DISCARD inline ArrayView<TVal> bindArrayView( TVal * pMemory, const Region<TSize, TOffset> & pRegion )
+	IC3_ATTR_NO_DISCARD inline ArrayView<TVal> bindArrayView( TVal * pMemory, const SRegion<TSize, TOffset> & pRegion )
 	{
 		return ArrayView<TVal>( pMemory + pRegion.offset, pRegion.size );
 	}
@@ -149,7 +149,7 @@ namespace Ic3
 	}
 
 	template <typename TVal, size_t tSize, typename TOffset, typename TSize>
-	IC3_ATTR_NO_DISCARD inline ArrayView<TVal> bindArrayView( TVal( &pArray )[tSize], const Region<TSize, TOffset> & pRegion )
+	IC3_ATTR_NO_DISCARD inline ArrayView<TVal> bindArrayView( TVal( &pArray )[tSize], const SRegion<TSize, TOffset> & pRegion )
 	{
 		const auto validRegion = getValidRegion( pRegion, tSize );
 		return ArrayView<TVal>( &pArray[0] + validRegion.offset, validRegion.size );
@@ -167,7 +167,7 @@ namespace Ic3
 	}
 
 	template <typename TVal, size_t tSize, typename TOffset, typename TSize>
-	IC3_ATTR_NO_DISCARD inline ArrayView<TVal> bindArrayView( std::array<TVal, tSize> & pArray, const Region<TSize, TOffset> & pRegion )
+	IC3_ATTR_NO_DISCARD inline ArrayView<TVal> bindArrayView( std::array<TVal, tSize> & pArray, const SRegion<TSize, TOffset> & pRegion )
 	{
 		const auto validRegion = getValidRegion( pRegion, tSize );
 		return ArrayView<TVal>( pArray.data() + validRegion.offset, validRegion.size );
@@ -185,11 +185,32 @@ namespace Ic3
 	}
 
 	template <typename TVal, size_t tSize, typename TOffset, typename TSize>
-	IC3_ATTR_NO_DISCARD inline ArrayView<const TVal> bindArrayView( const std::array<TVal, tSize> & pArray, const Region<TSize, TOffset> & pRegion )
+	IC3_ATTR_NO_DISCARD inline ArrayView<const TVal> bindArrayView( const std::array<TVal, tSize> & pArray, const SRegion<TSize, TOffset> & pRegion )
 	{
 		const auto validRegion = getValidRegion( pRegion, tSize );
 		return ArrayView<const TVal>( pArray.data() + validRegion.offset, validRegion.size );
 	}
+
+	template <bool tConstValue>
+	struct ValueByteTypeProxy;
+
+	template <>
+	struct ValueByteTypeProxy<false>
+	{
+		using Type = byte;
+	};
+
+	template <>
+	struct ValueByteTypeProxy<true>
+	{
+		using Type = const byte;
+	};
+
+	template <typename TValue>
+	struct ValueByteType
+	{
+		using Type = typename ValueByteTypeProxy<std::is_const<TValue>::value>::Type;
+	};
 
 	using ReadOnlyMemoryView = ArrayView<const byte>;
 	using ReadWriteMemoryView = ArrayView<byte>;

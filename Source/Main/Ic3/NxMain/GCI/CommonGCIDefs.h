@@ -8,6 +8,8 @@
 namespace Ic3
 {
 
+	namespace GCM = Graphics::GCM;
+
 	enum class EGPUBufferUsagePolicy : uint64
 	{
 		Undefined = 0,
@@ -55,22 +57,22 @@ namespace Ic3
 				bshLeft<uint64, 32>( GCI::E_GPU_MEMORY_MAP_FLAG_WRITE_INVALIDATE_BIT ),
 	};
 
-	namespace CxDefs
+	namespace CxDef
 	{
 
 		IC3_ATTR_NO_DISCARD inline constexpr uint16 getIndexDataFormatByteSize( GCI::EIndexDataFormat pIndexFormat ) noexcept
 		{
-			return GCI::CxDefs::getIndexDataFormatByteSize( pIndexFormat );
+			return GCI::CxDef::getIndexDataFormatByteSize( pIndexFormat );
 		}
 
 		inline constexpr GCI::gpu_memory_flags_value_t getGPUBufferUsagePolicyMemoryFlags( EGPUBufferUsagePolicy pUsagePolicy )
 		{
-			return static_cast<GCI::gpu_memory_flags_value_t>( ( ( ( uint64 ) pUsagePolicy ) >> 32 ) & Limits<uint32>::maxValue );
+			return static_cast<GCI::gpu_memory_flags_value_t>( ( ( ( uint64 ) pUsagePolicy ) >> 32 ) & QLimits<uint32>::maxValue );
 		}
 
 		inline constexpr GCI::resource_flags_value_t getGPUBufferUsagePolicyResourceFlags( EGPUBufferUsagePolicy pUsagePolicy )
 		{
-			return static_cast<GCI::resource_flags_value_t>( ( ( uint64 ) pUsagePolicy ) & Limits<uint32>::maxValue );
+			return static_cast<GCI::resource_flags_value_t>( ( ( uint64 ) pUsagePolicy ) & QLimits<uint32>::maxValue );
 		}
 
 	}
@@ -96,7 +98,7 @@ namespace Ic3
 //
 //		GPUBufferRef( std::nullptr_t )
 //		: buffer{ nullptr }
-//		, memoryRegion{ 0, GCI::CxDefs::GPU_MEMORY_SIZE_MAX }
+//		, memoryRegion{ 0, GCI::CxDef::GPU_MEMORY_SIZE_MAX }
 //		{}
 //
 //		explicit operator bool() const

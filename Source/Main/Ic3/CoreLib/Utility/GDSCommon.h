@@ -28,7 +28,7 @@ namespace Ic3
 	enum : exception_category_value_t
 	{
 		E_EXCEPTION_CATEGORY_FRAMEWORK_CORE_GDS =
-			CxDefs::declareExceptionCategory( ExceptionBaseType::FrameworkCore, ic3ExcCategoryIID( 0x7C ) ),
+			CxDef::declareExceptionCategory( ExceptionBaseType::FrameworkCore, ic3ExcCategoryIID( 0x7C ) ),
 	};
 
 	class CoreGdsException : public FrameworkCoreException
@@ -44,7 +44,7 @@ namespace Ic3
 	enum : exception_code_value_t
 	{
 		E_EXC_CORE_GDS =
-			CxDefs::declareExceptionCode( E_EXCEPTION_CATEGORY_FRAMEWORK_CORE_GDS, ic3ExcCodeIID( 0x71 ) ),
+			CxDef::declareExceptionCode( E_EXCEPTION_CATEGORY_FRAMEWORK_CORE_GDS, ic3ExcCodeIID( 0x71 ) ),
 	};
 
 } // namespace Ic3

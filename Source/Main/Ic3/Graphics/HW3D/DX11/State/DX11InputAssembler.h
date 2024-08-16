@@ -11,7 +11,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	using DX11IAVertexAttributeInfoArray = std::array<D3D11_INPUT_ELEMENT_DESC, gpm::IA_MAX_VERTEX_ATTRIBUTES_NUM>;
+	using DX11IAVertexAttributeInfoArray = std::array<D3D11_INPUT_ELEMENT_DESC, GCM::IA_MAX_VERTEX_ATTRIBUTES_NUM>;
 
 	struct DX11IAInputLayoutDefinition
 	{
@@ -36,11 +36,11 @@ namespace Ic3::Graphics::GCI
 	{
 		struct BindingData
 		{
-			ID3D11Buffer * bufferArray[gpm::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM];
+			ID3D11Buffer * bufferArray[GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM];
 
-			UINT offsetArray[gpm::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM];
+			UINT offsetArray[GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM];
 
-			UINT strideArray[gpm::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM];
+			UINT strideArray[GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM];
 		};
 
 		IAVertexBufferRangeList activeRanges;

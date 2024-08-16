@@ -14,7 +14,7 @@ namespace Ic3::System
 	ic3SysDeclareHandle( OSXDisplayManager );
 	ic3SysDeclareHandle( OSXDisplayDriver );
 
-	namespace platform
+	namespace Platform
 	{
 
 		struct OSXDisplayManagerNativeData : public OSXNativeDataCommon
@@ -46,12 +46,12 @@ namespace Ic3::System
 
 	}
 
-	using OSXDisplayAdapter = OSXNativeObject<DisplayAdapter, platform::OSXDisplayAdapterNativeData>;
-	using OSXDisplayOutput = OSXNativeObject<DisplayOutput, platform::OSXDisplayOutputNativeData>;
-	using OSXDisplayVideoMode = OSXNativeObject<DisplayVideoMode, platform::OSXDisplayVideoModeNativeData>;
+	using OSXDisplayAdapter = OSXNativeObject<DisplayAdapter, Platform::OSXDisplayAdapterNativeData>;
+	using OSXDisplayOutput = OSXNativeObject<DisplayOutput, Platform::OSXDisplayOutputNativeData>;
+	using OSXDisplayVideoMode = OSXNativeObject<DisplayVideoMode, Platform::OSXDisplayVideoModeNativeData>;
 
 	/// @brief
-	class OSXDisplayManager : public OSXNativeObject<DisplayManager, platform::OSXDisplayManagerNativeData>
+	class OSXDisplayManager : public OSXNativeObject<DisplayManager, Platform::OSXDisplayManagerNativeData>
 	{
 	public:
 		explicit OSXDisplayManager( SysContextHandle pSysContext );
@@ -71,7 +71,7 @@ namespace Ic3::System
 	};
 
 	/// @brief
-	class OSXDisplayDriver : public OSXNativeObject<DisplayDriver, platform::OSXDisplayDriverNativeData>
+	class OSXDisplayDriver : public OSXNativeObject<DisplayDriver, Platform::OSXDisplayDriverNativeData>
 	{
 	public:
 		explicit OSXDisplayDriver( OSXDisplayManagerHandle pDisplayManager );

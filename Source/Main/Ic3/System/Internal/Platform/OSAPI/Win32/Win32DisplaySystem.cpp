@@ -7,7 +7,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		// Returns a name for an output by extracting the output part from the DisplayDevice registry key.
@@ -294,7 +294,7 @@ namespace Ic3::System
 	}
 
 
-	namespace platform
+	namespace Platform
 	{
 
 		std::string _win32GetAdapterOutputName( const std::string & pAdapterRegistryKey )

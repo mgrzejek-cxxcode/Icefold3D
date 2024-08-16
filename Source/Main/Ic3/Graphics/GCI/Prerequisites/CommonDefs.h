@@ -11,7 +11,7 @@ namespace Ic3::Graphics::GCI
 	ic3EnableEnumTypeInfoSupport();
 
 	template <typename TClass>
-	using GpaHandle = SharedHandle<TClass>;
+	using GpaHandle = RSharedHandle<TClass>;
 
 	using UniqueGPUObjectID = HFSIdentifier;
 	using UniqueGPUObjectName = std::string;
@@ -25,58 +25,34 @@ namespace Ic3::Graphics::GCI
 #define ic3GpaDeclareClassHandle( pClassName ) ic3DeclareClassHandle( pClassName )
 #define ic3GpaDeclareTypedefHandle( pAliasName, pTypeName ) ic3DeclareTypedefHandle( pAliasName, pTypeName )
 
-	// GpuAPI Metrics
-	namespace gpm
+	namespace CxDef
 	{
 
-		constexpr uint32 IA_MAX_VERTEX_ATTRIBUTES_NUM = 16;
-		constexpr uint32 IA_MAX_VERTEX_BUFFER_BINDINGS_NUM = 16;
-
-		constexpr uint32 RT_MAX_COLOR_ATTACHMENTS_NUM = 8;
-		constexpr uint32 RT_MAX_COMBINED_ATTACHMENTS_NUM = 9;
-
-		constexpr uint32 IS_MAX_CONSTANT_GROUP_SIZE = 32;
-		constexpr uint32 IS_MAX_DESCRIPTOR_SET_SIZE = 16;
-		constexpr uint32 IS_MAX_DESCRIPTOR_SETS_NUM = 4;
-		constexpr uint32 IS_MAX_DWORD_SIZE = 64;
-
-		constexpr uint32 SHADER_COMBINED_STAGES_NUM = 6;
-		constexpr uint32 SHADER_GRAPHICS_STAGES_NUM = 5;
-
-		constexpr uint32 RES_MAX_CONSTANT_BUFFERS_NUM = 16;
-		constexpr uint32 RES_MAX_TEXTURE_UNITS_NUM = 16;
-
-		constexpr uint32 TEXTURE_MAX_MIP_LEVELS_NUM = 16;
-
-	}
-
-	namespace CxDefs
-	{
-
-		constexpr uint32 GPU_SYSTEM_METRIC_IA_MAX_VERTEX_ATTRIBUTES_NUM = 16;
-		constexpr uint32 GPU_SYSTEM_METRIC_IA_MAX_VERTEX_BUFFER_BINDINGS_NUM = 16;
-		constexpr uint32 GPU_SYSTEM_METRIC_RT_MAX_COLOR_ATTACHMENTS_NUM = 8;
-		constexpr uint32 GPU_SYSTEM_METRIC_RT_MAX_COMBINED_ATTACHMENTS_NUM = 9;
-		constexpr uint32 GPU_SYSTEM_METRIC_SHADER_COMBINED_STAGES_NUM = 6;
-		constexpr uint32 GPU_SYSTEM_METRIC_SHADER_GRAPHICS_STAGES_NUM = 5;
-		constexpr uint32 GPU_SYSTEM_METRIC_IS_MAX_CONSTANT_GROUP_SIZE = 32;
-		constexpr uint32 GPU_SYSTEM_METRIC_IS_MAX_DESCRIPTOR_SET_SIZE = 16;
-		constexpr uint32 GPU_SYSTEM_METRIC_IS_MAX_DESCRIPTOR_SETS_NUM = 4;
-		constexpr uint32 GPU_SYSTEM_METRIC_IS_MAX_DWORD_SIZE = 64;
-		constexpr uint32 GPU_SYSTEM_METRIC_RES_MAX_TEXTURE_UNITS_NUM = 32;
-		constexpr uint32 GPU_SYSTEM_METRIC_TEXTURE_MAX_MIP_LEVELS_NUM = 16;
+		// constexpr uint32 GPU_SYSTEM_METRIC_IA_MAX_VERTEX_ATTRIBUTES_NUM = 16;
+		// constexpr uint32 GPU_SYSTEM_METRIC_IA_MAX_VERTEX_BUFFER_BINDINGS_NUM = 16;
+		// constexpr uint32 GPU_SYSTEM_METRIC_RT_MAX_COLOR_ATTACHMENTS_NUM = 8;
+		// constexpr uint32 GPU_SYSTEM_METRIC_RT_MAX_COMBINED_ATTACHMENTS_NUM = 9;
+		// constexpr uint32 GPU_SYSTEM_METRIC_SHADER_COMBINED_STAGES_NUM = 6;
+		// constexpr uint32 GPU_SYSTEM_METRIC_SHADER_GRAPHICS_STAGES_NUM = 5;
+		// constexpr uint32 GPU_SYSTEM_METRIC_IS_MAX_CONSTANT_GROUP_SIZE = 32;
+		// constexpr uint32 GPU_SYSTEM_METRIC_IS_MAX_DESCRIPTOR_SET_SIZE = 16;
+		// constexpr uint32 GPU_SYSTEM_METRIC_IS_MAX_DESCRIPTOR_SETS_NUM = 4;
+		// constexpr uint32 GPU_SYSTEM_METRIC_IS_MAX_DWORD_SIZE = 64;
+		// constexpr uint32 GPU_SYSTEM_METRIC_RES_MAX_TEXTURE_UNITS_NUM = 32;
+		// constexpr uint32 GPU_SYSTEM_METRIC_TEXTURE_MAX_MIP_LEVELS_NUM = 16;
 
 		/// A special constant which can be used for object IDs to indicate that ID should be assigned automatically.
 		/// In most cases it is safe to assume that object address will be used as the ID (unless stated otherwise).
-		inline constexpr UniqueGPUObjectID GPU_OBJECT_ID_AUTO { Limits<uint64>::maxValue };
+		inline constexpr UniqueGPUObjectID GPU_OBJECT_ID_AUTO { Cppx::QLimits<uint64>::maxValue };
 
 		/// An invalid object ID. Such IDs may refer to objects which are either uninitialised, marked for deletion,
 		/// or do not yet exist in the object management system. This ID also means "not found" in case of queries.
-		inline constexpr UniqueGPUObjectID GPU_OBJECT_ID_INVALID { Limits<uint64>::maxValue - 1 };
+		inline constexpr UniqueGPUObjectID GPU_OBJECT_ID_INVALID { Cppx::QLimits<uint64>::maxValue - 1 };
 
 		///
 		inline constexpr UniqueGPUObjectID GPU_OBJECT_ID_EMPTY { 0 };
 
+		///
 		inline constexpr bool isUniqueGPUObjectIDValid( UniqueGPUObjectID pUniqueID ) noexcept
 		{
 			return ( pUniqueID != GPU_OBJECT_ID_INVALID ) && ( pUniqueID != GPU_OBJECT_ID_EMPTY );
@@ -108,7 +84,7 @@ namespace Ic3::Graphics::GCI
 		E_SHADER_STAGE_INDEX_COMPUTE,
 
 		/// Base stage index, i.e. index of the first supported stage. Values below this one are not valid stage indexes.
-		/// To compute a zero-based index, subtract this from a valid stage index or use CxDefs::getShaderStageAbsoluteIndex().
+		/// To compute a zero-based index, subtract this from a valid stage index or use CxDef::getShaderStageAbsoluteIndex().
 		E_SHADER_STAGE_INDEX_BASE = E_SHADER_STAGE_INDEX_GRAPHICS_VERTEX,
 
 		/// Index of the last graphics stage. Used to verify if a specified index is a valid graphics stage index.
@@ -129,7 +105,7 @@ namespace Ic3::Graphics::GCI
 	/// @see EShaderStageIndex
 	enum EShaderStageFlags : uint32
 	{
-		// Note: CxDefs::declareShaderType() and other enum utility functions assume, that shader-related bits will fit
+		// Note: CxDef::declareShaderType() and other enum utility functions assume, that shader-related bits will fit
 		// 16-bit value range and have values up to 0xFFFF (no shifting is performed). In case of any alterations,
 		// update that part of the functionality accordingly (see shaderCommon.h).
 
@@ -156,7 +132,7 @@ namespace Ic3::Graphics::GCI
 	static_assert( E_SHADER_STAGE_MASK_ALL < 0xFFFF );
 
 	/// Constant Expressions
-	namespace CxDefs
+	namespace CxDef
 	{
 
 		/// @brief Returns an EShaderStageIndex matching the specified shader stage index value.

@@ -10,7 +10,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		struct PosixFileNativeData
@@ -36,7 +36,7 @@ namespace Ic3::System
 		virtual bool _nativeCheckFileExists( const std::string & pFilePath ) override final;
 	};
 
-	class PosixFile : public NativeObject<File, platform::PosixFileNativeData>
+	class PosixFile : public NativeObject<File, Platform::PosixFileNativeData>
 	{
 		friend class PosixFileManager;
 

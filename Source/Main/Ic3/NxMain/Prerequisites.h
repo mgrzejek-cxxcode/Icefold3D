@@ -30,21 +30,14 @@
 #  endif
 #endif
 
+#define IC3_NXMAIN_API_NO_DISCARD IC3_NXMAIN_API IC3_ATTR_NO_DISCARD
+
 #include "Prerequisites/GCICommon.h"
 #include "Prerequisites/GeometryCommon.h"
 #include "Prerequisites/coreEngineState.h"
 
 namespace Ic3
 {
-
-	namespace gpa
-	{
-
-		constexpr uint32 MAX_GEOMETRY_VERTEX_ATTRIBUTES_NUM = GCI::gpm::IA_MAX_VERTEX_ATTRIBUTES_NUM;
-
-		constexpr uint32 MAX_GEOMETRY_VERTEX_STREAMS_NUM = GCI::gpm::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM;
-
-	}
 
 	template <typename TData>
 	using GeometryVertexStreamGenericArray = std::array<TData, gpa::MAX_GEOMETRY_VERTEX_STREAMS_NUM>;

@@ -10,7 +10,7 @@ namespace Ic3::System
 	using MouseCursorPos = Math::Vec2i32;
 
 	// Represents invalid mouse position. Used as a default value for last position registered.
-	inline constexpr MouseCursorPos CX_EVENT_MOUSE_POS_INVALID { CX_INT32_MAX, CX_INT32_MAX };
+	inline constexpr MouseCursorPos CX_EVENT_MOUSE_POS_INVALID { Cppx::CX_INT32_MAX, Cppx::CX_INT32_MAX };
 
 	enum EMouseButtonFlagBits : uint32
 	{
@@ -97,7 +97,7 @@ namespace Ic3::System
 	};
 
 
-	namespace CxDefs
+	namespace CxDef
 	{
 
 		inline constexpr EMouseButtonFlagBits getMouseButtonFlagFromButtonID( EMouseButtonID pButtonID )

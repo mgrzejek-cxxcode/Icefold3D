@@ -5,7 +5,7 @@
 #include "Prerequisites.h"
 #include <numeric>
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	template <typename T1, typename T2 = T1>
@@ -167,19 +167,19 @@ namespace Ic3
 	template <intmax_t... tValues>
 	struct StaticMaxSizeofVal
 	{
-		static constexpr size_t value = StaticMaxSizeofT<typename IntTypeByValue<tValues>::Type...>::value;
+		static constexpr size_t value = StaticMaxSizeofT<typename QIntTypeByValue<tValues>::Type...>::value;
 	};
 
 	template <typename... _Types>
-	struct StaticMaxAlignofT
+	struct StaticMaxAlignOfT
 	{
 		static constexpr size_t value = static_cast< size_t >( StaticMax<alignof( _Types )...>::value );
 	};
 
 	template <intmax_t... tValues>
-	struct StaticMaxAlignofVal
+	struct StaticMaxAlignOfVal
 	{
-		static constexpr size_t value = StaticMaxAlignofT<typename IntTypeByValue<tValues>::Type...>::value;
+		static constexpr size_t value = StaticMaxAlignOfT<typename QIntTypeByValue<tValues>::Type...>::value;
 	};
 
 }

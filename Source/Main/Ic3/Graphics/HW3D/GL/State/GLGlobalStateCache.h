@@ -21,8 +21,8 @@ namespace Ic3::Graphics::GCI
 			GLuint textureHandle;
 		};
 
-		using SamplerBindings = std::array<GLuint, gpm::RES_MAX_TEXTURE_UNITS_NUM>;
-		using TextureUnitBindings = std::array<TextureUnitBinding, gpm::RES_MAX_TEXTURE_UNITS_NUM>;
+		using SamplerBindings = std::array<GLuint, GCM::RES_MAX_TEXTURE_UNITS_NUM>;
+		using TextureUnitBindings = std::array<TextureUnitBinding, GCM::RES_MAX_TEXTURE_UNITS_NUM>;
 
 		GLuint shaderPipelineBinding;
 		GLuint shaderProgramBinding;

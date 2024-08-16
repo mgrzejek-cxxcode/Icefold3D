@@ -11,11 +11,11 @@ namespace Ic3::Graphics::GCI
 				const IAVertexAttributeInfoArray & pVertexAttributes ) noexcept
 		{
 			Bitmask<EIAVertexAttributeFlags> activeAttributesMask = 0;
-			for( uint32 attributeIndex = 0; attributeIndex < gpm::IA_MAX_VERTEX_ATTRIBUTES_NUM; ++attributeIndex )
+			for( uint32 attributeIndex = 0; attributeIndex < GCM::IA_MAX_VERTEX_ATTRIBUTES_NUM; ++attributeIndex )
 			{
 				if( pVertexAttributes[attributeIndex].active() )
 				{
-					activeAttributesMask.set( CxDefs::makeIAVertexAttributeFlag( attributeIndex ) );
+					activeAttributesMask.set( CxDef::makeIAVertexAttributeFlag( attributeIndex ) );
 				}
 			}
 			return activeAttributesMask;
@@ -38,9 +38,9 @@ namespace Ic3::Graphics::GCI
 			vertexBufferActiveRanges.reserve( optimalActiveRangesNumPreAllocSize );
 
 			IAVertexBufferRange currentVBRange{};
-			currentVBRange.firstIndex = CxDefs::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED;
+			currentVBRange.firstIndex = CxDef::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED;
 
-			for( input_assembler_index_t streamIndex = 0; streamIndex < gpm::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM; ++streamIndex )
+			for( input_assembler_index_t streamIndex = 0; streamIndex < GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM; ++streamIndex )
 			{
 				const auto & currentVBReference = pVBReferences[streamIndex];
 
@@ -48,7 +48,7 @@ namespace Ic3::Graphics::GCI
 				{
 					// If the range is not valid, "open" it.
 					// Set the current stream as the first stream in the range and range size to 0.
-					if( currentVBRange.firstIndex == CxDefs::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED )
+					if( currentVBRange.firstIndex == CxDef::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED )
 					{
 						currentVBRange.firstIndex = streamIndex;
 						currentVBRange.length = 0;
@@ -58,7 +58,7 @@ namespace Ic3::Graphics::GCI
 					++currentVBRange.length;
 				}
 
-				if( currentVBReference.empty() || ( streamIndex + 1 == gpm::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM ) )
+				if( currentVBReference.empty() || ( streamIndex + 1 == GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM ) )
 				{
 					// If the range is not empty, add it to the list of active ranges.
 					if( currentVBRange.length > 0 )
@@ -67,7 +67,7 @@ namespace Ic3::Graphics::GCI
 					}
 
 					// Reset the range by setting the first index to an invalid value and clear the length
-					currentVBRange.firstIndex = CxDefs::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED;
+					currentVBRange.firstIndex = CxDef::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED;
 					currentVBRange.length = 0;
 				}
 			}

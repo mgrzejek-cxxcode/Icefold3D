@@ -7,7 +7,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		enum EAndroidScreenOrientation : int
@@ -26,18 +26,18 @@ namespace Ic3::System
 	{
 	public:
 		JavaVMInstance * const mJVMInstance;
-		platform::JNIThreadID const mJNIThreadID;
-		platform::JNIEnvPtr const mJNIEnv;
+		Platform::JNIThreadID const mJNIThreadID;
+		Platform::JNIEnvPtr const mJNIEnv;
 
 	public:
 		JavaNativeInterface( JavaVMInstance & pJVMInstance,
-		                     platform::JNIThreadID pJNIThreadID,
-		                     platform::JNIEnvPtr pJNIEnvPtr );
+		                     Platform::JNIThreadID pJNIThreadID,
+		                     Platform::JNIEnvPtr pJNIEnvPtr );
 
 		~JavaNativeInterface() noexcept;
 
 		void nativeActivitySetRequestedOrientation( jobject pNativeActivity,
-		                                            platform::EAndroidScreenOrientation pOrientation );
+		                                            Platform::EAndroidScreenOrientation pOrientation );
 	};
 
 }

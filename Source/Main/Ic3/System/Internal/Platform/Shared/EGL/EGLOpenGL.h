@@ -10,7 +10,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		inline constexpr size_t CX_EGL_MAX_EGL_CONFIGS_NUM = 256u;

@@ -26,7 +26,7 @@ namespace Ic3::System
 		Bitmask<EEventSystemConfigFlags> configFlags = 0u;
 
 		// Timeout (in milliseconds) after which mouse click sequence is reset.
-		duration_value_t mouseClickSequenceTimeoutMs = 100;
+		Cppx::duration_value_t mouseClickSequenceTimeoutMs = 100;
 	};
 
 	struct EventSystemSharedState
@@ -104,7 +104,7 @@ namespace Ic3::System
 		std::array<EventHandler, CX_ENUM_EVENT_CODE_INDEX_COUNT> handlerMapByCodeIndex;
 	};
 
-	namespace platform
+	namespace Platform
 	{
 
 		struct NativeEventType;

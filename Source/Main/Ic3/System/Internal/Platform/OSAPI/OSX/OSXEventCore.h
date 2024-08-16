@@ -14,7 +14,7 @@ namespace Ic3::System
 
 	class OSXEventController;
 
-	namespace platform
+	namespace Platform
 	{
 
 		enum OSXEventID : NSUInteger
@@ -150,7 +150,7 @@ namespace Ic3::System
 
 	}
 
-	class OSXEventController : public OSXNativeObject<EventController, platform::OSXEventControllerNativeData>
+	class OSXEventController : public OSXNativeObject<EventController, Platform::OSXEventControllerNativeData>
 	{
 	public:
 		OSXEventController( SysContextHandle pSysContext );

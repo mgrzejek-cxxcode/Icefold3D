@@ -5,74 +5,74 @@
 #include "Prerequisites.h"
 #include <array>
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
-	template <typename _First, typename _Second = _First>
-	inline constexpr typename std::common_type<_First, _Second>::type getMaxOf( const _First & pFirst, const _Second & pSecond )
+	template <typename TFirst, typename TSecond = TFirst>
+	inline constexpr typename std::common_type<TFirst, TSecond>::type getMaxOf( const TFirst & pFirst, const TSecond & pSecond )
 	{
 		return ( pFirst >= pSecond ) ? pFirst : pSecond;
 	}
 
-	template <typename _T0, typename _T1, typename ..._Rest>
-	inline constexpr typename std::common_type<_T0, _T1, _Rest...>::type getMaxOf( const _T0 & p0, const _T1 & p1, _Rest && ...pRest )
+	template <typename T0, typename T1, typename ...TRest>
+	inline constexpr typename std::common_type<T0, T1, TRest...>::type getMaxOf( const T0 & p0, const T1 & p1, TRest && ...pRest )
 	{
-		return getMaxOf( getMaxOf( p0, p1 ), std::forward<_Rest>( pRest )... );
+		return getMaxOf( getMaxOf( p0, p1 ), std::forward<TRest>( pRest )... );
 	}
 
 
-	template <typename _First, typename _Second = _First>
-	inline constexpr typename std::common_type<_First, _Second>::type getMinOf( const _First & pFirst, const _Second & pSecond )
+	template <typename TFirst, typename TSecond = TFirst>
+	inline constexpr typename std::common_type<TFirst, TSecond>::type getMinOf( const TFirst & pFirst, const TSecond & pSecond )
 	{
 		return pFirst <= pSecond ? pFirst : pSecond;
 	}
 
-	template <typename _T0, typename _T1, typename ..._Rest>
-	inline constexpr typename std::common_type<_T0, _T1, _Rest...>::type getMinOf( const _T0 & p0, const _T1 & p1, _Rest && ...pRest )
+	template <typename T0, typename T1, typename ...TRest>
+	inline constexpr typename std::common_type<T0, T1, TRest...>::type getMinOf( const T0 & p0, const T1 & p1, TRest && ...pRest )
 	{
-		return getMinOf( getMinOf( p0, p1 ), std::forward<_Rest>( pRest )... );
+		return getMinOf( getMinOf( p0, p1 ), std::forward<TRest>( pRest )... );
 	}
 
 
-	template <typename _Type, typename _Member>
-	inline uint32 memberOffset( _Member _Type::* pMptr )
+	template <typename TClass, typename TMember>
+	inline uint32 memberOffset( TMember TClass::* pMptr )
 	{
-		return static_cast<uint32>( reinterpret_cast<byte *>( &( static_cast<_Type *>( nullptr )->*pMptr ) ) - static_cast<byte *>( nullptr ) );
+		return static_cast<uint32>( reinterpret_cast<byte *>( &( static_cast<TClass *>( nullptr )->*pMptr ) ) - static_cast<byte *>( nullptr ) );
 	}
 
 
-	template <typename TVal, size_t tSize, typename _Index>
-	inline constexpr TVal & staticArrayElement( TVal( &pArray )[tSize], _Index pIndex )
-	{
-		return pArray[static_cast<size_t>( pIndex )];
-	}
-
-	template <typename TVal, size_t tSize, typename _Index>
-	inline constexpr const TVal & staticArrayElement( const TVal( &pArray )[tSize], _Index pIndex )
+	template <typename TVal, size_t tSize, typename TIndex>
+	inline constexpr TVal & staticArrayElement( TVal( &pArray )[tSize], TIndex pIndex )
 	{
 		return pArray[static_cast<size_t>( pIndex )];
 	}
 
-	template <typename TVal, size_t tSize, typename _Index>
-	inline constexpr TVal & staticArrayElement( std::array<TVal, tSize> & pArray, _Index pIndex )
+	template <typename TVal, size_t tSize, typename TIndex>
+	inline constexpr const TVal & staticArrayElement( const TVal( &pArray )[tSize], TIndex pIndex )
 	{
 		return pArray[static_cast<size_t>( pIndex )];
 	}
 
-	template <typename TVal, size_t tSize, typename _Index>
-	inline constexpr const TVal & staticArrayElement( const std::array<TVal, tSize> & pArray, _Index pIndex )
+	template <typename TVal, size_t tSize, typename TIndex>
+	inline constexpr TVal & staticArrayElement( std::array<TVal, tSize> & pArray, TIndex pIndex )
 	{
 		return pArray[static_cast<size_t>( pIndex )];
 	}
 
-	template <typename TVal, size_t tSize, typename _Index>
-	inline constexpr const TVal & staticArrayElementOrDefault( const TVal( &pArray )[tSize], _Index pIndex, const TVal & pDefault )
+	template <typename TVal, size_t tSize, typename TIndex>
+	inline constexpr const TVal & staticArrayElement( const std::array<TVal, tSize> & pArray, TIndex pIndex )
+	{
+		return pArray[static_cast<size_t>( pIndex )];
+	}
+
+	template <typename TVal, size_t tSize, typename TIndex>
+	inline constexpr const TVal & staticArrayElementOrDefault( const TVal( &pArray )[tSize], TIndex pIndex, const TVal & pDefault )
 	{
 		return ( static_cast<size_t>( pIndex ) < tSize ) ? pArray[static_cast<size_t>( pIndex )] : pDefault;
 	}
 
-	template <typename TVal, size_t tSize, typename _Index>
-	inline constexpr const TVal & staticArrayElementOrDefault( const std::array<TVal, tSize> & pArray, _Index pIndex, const TVal & pDefault )
+	template <typename TVal, size_t tSize, typename TIndex>
+	inline constexpr const TVal & staticArrayElementOrDefault( const std::array<TVal, tSize> & pArray, TIndex pIndex, const TVal & pDefault )
 	{
 		return ( static_cast<size_t>( pIndex ) < tSize ) ? pArray[static_cast<size_t>( pIndex )] : pDefault;
 	}

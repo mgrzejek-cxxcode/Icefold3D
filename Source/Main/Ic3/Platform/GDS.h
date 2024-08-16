@@ -145,7 +145,7 @@ namespace Ic3
 				}
 				else
 				{
-					*( reinterpret_cast<TVal *>( pOutputBuffer ) ) = static_cast<TVal>( IC3_PCL_BYTESWAP16( static_cast<uint16>( pValue ) ) );
+					*( reinterpret_cast<TVal *>( pOutputBuffer ) ) = static_cast<TVal>( IC3_PCL_BSWAP16( static_cast<uint16>( pValue ) ) );
 				}
 			}
 
@@ -159,7 +159,7 @@ namespace Ic3
 				}
 				else
 				{
-					return static_cast<TVal>( IC3_PCL_BYTESWAP16( *( reinterpret_cast<const uint16 *>( pInputData ) ) ) );
+					return static_cast<TVal>( IC3_PCL_BSWAP16( *( reinterpret_cast<const uint16 *>( pInputData ) ) ) );
 				}
 			}
 		};
@@ -177,7 +177,7 @@ namespace Ic3
 				}
 				else
 				{
-					*( reinterpret_cast<TVal *>( pOutputBuffer ) ) = static_cast<TVal>( IC3_PCL_BYTESWAP32( static_cast<uint32>( pValue ) ) );
+					*( reinterpret_cast<TVal *>( pOutputBuffer ) ) = static_cast<TVal>( IC3_PCL_BSWAP32( static_cast<uint32>( pValue ) ) );
 				}
 			}
 
@@ -190,7 +190,7 @@ namespace Ic3
 				}
 				else
 				{
-					return static_cast<TVal>( IC3_PCL_BYTESWAP32( *( reinterpret_cast<const uint32 *>( pInputData ) ) ) );
+					return static_cast<TVal>( IC3_PCL_BSWAP32( *( reinterpret_cast<const uint32 *>( pInputData ) ) ) );
 				}
 			}
 		};
@@ -208,7 +208,7 @@ namespace Ic3
 				}
 				else
 				{
-					*( reinterpret_cast<TVal *>( pOutputBuffer ) ) = static_cast<TVal>( IC3_PCL_BYTESWAP64( static_cast<uint64>( pValue ) ) );
+					*( reinterpret_cast<TVal *>( pOutputBuffer ) ) = static_cast<TVal>( IC3_PCL_BSWAP64( static_cast<uint64>( pValue ) ) );
 				}
 			}
 
@@ -221,7 +221,7 @@ namespace Ic3
 				}
 				else
 				{
-					return static_cast<TVal>( IC3_PCL_BYTESWAP64( *( reinterpret_cast<const uint64 *>( pInputData ) ) ) );
+					return static_cast<TVal>( IC3_PCL_BSWAP64( *( reinterpret_cast<const uint64 *>( pInputData ) ) ) );
 				}
 			}
 		};

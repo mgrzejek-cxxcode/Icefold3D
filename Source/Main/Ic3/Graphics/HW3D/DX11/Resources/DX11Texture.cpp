@@ -247,7 +247,7 @@ namespace Ic3::Graphics::GCI
 
 			if( FAILED( hResult ) )
 			{
-				const auto errStr = System::platform::mseQueryCOMErrorMessage(hResult);
+				const auto errStr = System::Platform::mseQueryCOMErrorMessage(hResult);
 				ic3DebugInterrupt();
 				return nullptr;
 			}
@@ -457,7 +457,7 @@ namespace Ic3::Graphics::GCI
 				auto subResourcesNum = pCreateInfo.dimensions.arraySize * pCreateInfo.dimensions.mipLevelsNum;
 				dx11InitDataDesc.textureSubResourcesNum = subResourcesNum;
 				dx11InitDataDesc.d3d11SubResourceDataArray.resize( subResourcesNum );
-				dx11InitDataDesc.pixelByteSize = CxDefs::getTextureFormatByteSize( pCreateInfo.internalFormat );
+				dx11InitDataDesc.pixelByteSize = CxDef::getTextureFormatByteSize( pCreateInfo.internalFormat );
 
 				for( uint32 subTextureIndex = 0; subTextureIndex < pCreateInfo.dimensions.arraySize; ++subTextureIndex )
 				{

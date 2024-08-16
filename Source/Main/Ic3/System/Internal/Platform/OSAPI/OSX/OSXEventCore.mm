@@ -9,7 +9,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		void _osxTranslateEventInputKeyboard( EventController & pEventController, EventSource & pEventSource, const NativeEventType & pNativeEvent, EventObject & pOutEvent );
@@ -35,7 +35,7 @@ namespace Ic3::System
 	@autoreleasepool
 	{
 		auto * eventSourceNativeData =
-			pEventSource.getEventSourceNativeDataAs<platform::OSXEventSourceNativeData>();
+			pEventSource.getEventSourceNativeDataAs<Platform::OSXEventSourceNativeData>();
 
 		auto * nsEventListener = ( NSOSXEventListener * )eventSourceNativeData->nsEventListener;
 
@@ -48,7 +48,7 @@ namespace Ic3::System
 	@autoreleasepool
 	{
 		auto * eventSourceNativeData =
-				pEventSource.getEventSourceNativeDataAs<platform::OSXEventSourceNativeData>();
+				pEventSource.getEventSourceNativeDataAs<Platform::OSXEventSourceNativeData>();
 
 		auto * nsEventListener = ( NSOSXEventListener * )eventSourceNativeData->nsEventListener;
 
@@ -96,7 +96,7 @@ namespace Ic3::System
 		return true;
 	}
 
-	namespace platform
+	namespace Platform
 	{
 
 		bool nativeEventTranslate( EventController & pEventController, const NativeEventType & pNativeEvent, EventObject & pOutEvent )
@@ -114,7 +114,7 @@ namespace Ic3::System
 		EventSource * osxFindEventSourceByNSWindow( OSXEventController & pEventController, NSWindow * pNSWindow )
 		{
 			auto * eventSource = pEventController.findEventSource( [pNSWindow]( const EventSource & pEventSource ) -> bool {
-				const auto * eventSourceNativeData = pEventSource.getEventSourceNativeDataAs<platform::OSXEventSourceNativeData>();
+				const auto * eventSourceNativeData = pEventSource.getEventSourceNativeDataAs<Platform::OSXEventSourceNativeData>();
 				return eventSourceNativeData->nsWindow == pNSWindow;
 			});
 			return eventSource;
@@ -197,7 +197,7 @@ namespace Ic3::System
 				/* 3 */ EMouseButtonID::XB1,
 				/* 4 */ EMouseButtonID::XB2,
 			};
-			return staticArrayElement( sMouseButtonIDArray, [pNSEvent buttonNumber] );
+			return Cppx::staticArrayElement( sMouseButtonIDArray, [pNSEvent buttonNumber] );
 		}
 
 		struct OSXMouseCursorState
@@ -246,14 +246,14 @@ namespace Ic3::System
 			bool mouseIsInsideWindowFrame = false;
 			bool mouseIsInsideWindowClientArea = false;
 
-			if( checkValueInsideInclusiveRange( { 0.0, nsWindowClientAreaSize.size.width }, mousePositionWindowSpace.x ) &&
-			    checkValueInsideInclusiveRange( { 0.0, nsWindowClientAreaSize.size.height }, mousePositionWindowSpace.y ) )
+			if( Cppx::rangeContains( { 0.0, nsWindowClientAreaSize.size.width }, mousePositionWindowSpace.x ) &&
+			    Cppx::rangeContains( { 0.0, nsWindowClientAreaSize.size.height }, mousePositionWindowSpace.y ) )
 			{
 				mouseIsInsideWindowFrame = true;
 				mouseIsInsideWindowClientArea = true;
 			}
-			else if( checkValueInsideInclusiveRange( { 0.0, nsWindowFrame.size.width }, mousePositionWindowSpace.x ) &&
-			         checkValueInsideInclusiveRange( { 0.0, nsWindowFrame.size.height }, mousePositionWindowSpace.y ) )
+			else if( Cppx::rangeContains( { 0.0, nsWindowFrame.size.width }, mousePositionWindowSpace.x ) &&
+			         Cppx::rangeContains( { 0.0, nsWindowFrame.size.height }, mousePositionWindowSpace.y ) )
 			{
 				mouseIsInsideWindowFrame = true;
 			}
@@ -548,7 +548,7 @@ namespace Ic3::System
 				{
 					auto & eInputMouseMove = osxProcessMouseMoveEvent( pEventController, mouseCursorState, pOutEvent );
 					const auto buttonID = osxQueryMouseButtonID( pNativeEvent.nsEvent );
-					const auto buttonFlag = CxDefs::getMouseButtonFlagFromButtonID( buttonID );
+					const auto buttonFlag = CxDef::getMouseButtonFlagFromButtonID( buttonID );
 					eInputMouseMove.buttonStateMask = buttonFlag;
 					break;
 				}

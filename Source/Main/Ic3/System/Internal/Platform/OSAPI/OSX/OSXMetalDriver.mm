@@ -22,10 +22,10 @@ namespace Ic3::System
         windowCreateInfo.frameGeometry = pCreateInfo.frameGeometry;
         windowCreateInfo.title = "TS3 Metal Window";
 
-        platform::osxCreateWindow( displaySurface->mNativeData, nullptr, windowCreateInfo );
-        platform::osxCreateSurfaceMetalView( displaySurface->mNativeData, pCreateInfo );
-        platform::osxCreateEventListener( displaySurface->mNativeData );
-        platform::osxSetInputWindow( displaySurface->mNativeData );
+        Platform::osxCreateWindow( displaySurface->mNativeData, nullptr, windowCreateInfo );
+        Platform::osxCreateSurfaceMetalView( displaySurface->mNativeData, pCreateInfo );
+        Platform::osxCreateEventListener( displaySurface->mNativeData );
+        Platform::osxSetInputWindow( displaySurface->mNativeData );
 
 		displaySurface->mSurfaceData->caMetalLayer = displaySurface->mNativeData.caMetalLayer;
 
@@ -69,7 +69,7 @@ namespace Ic3::System
 
     void OSXMetalDisplaySurface::_nativeSetTitle( const std::string & pTitle )
     {
-        platform::osxSetFrameTitle( mNativeData.nsWindow, pTitle );
+        Platform::osxSetFrameTitle( mNativeData.nsWindow, pTitle );
     }
 
     void OSXMetalDisplaySurface::_nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
@@ -79,7 +79,7 @@ namespace Ic3::System
 
     FrameSize OSXMetalDisplaySurface::_nativeGetSize( EFrameSizeMode pSizeMode ) const
     {
-        return platform::osxGetFrameSize( mNativeData.nsWindow, pSizeMode );
+        return Platform::osxGetFrameSize( mNativeData.nsWindow, pSizeMode );
     }
 
     bool OSXMetalDisplaySurface::_nativeIsFullscreen() const
@@ -87,7 +87,7 @@ namespace Ic3::System
         return false;
     }
 
-    namespace platform
+    namespace Platform
     {
 
         void osxCreateSurfaceMetalView( OSXMetalDisplaySurfaceNativeData & pSurfaceNativeData,
@@ -107,7 +107,7 @@ namespace Ic3::System
                 auto * nsMetalView = [[NSOSXMetalView alloc] initForWindow:nsWindow];
 				auto * caMetalLayer = nsMetalView->mMetalLayer;
 
-	            const auto mtlPixelFormat = platform::mtlChoosePixelFormatForVisualConfig( pCreateInfo.visualConfig );
+	            const auto mtlPixelFormat = Platform::mtlChoosePixelFormatForVisualConfig( pCreateInfo.visualConfig );
 	            [caMetalLayer setPixelFormat:mtlPixelFormat];
 
 	            const auto layerRect = [nsWindow contentRectForFrameRect:[nsWindow frame]];

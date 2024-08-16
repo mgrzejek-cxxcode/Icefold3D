@@ -6,7 +6,7 @@
 #include "TypeTraits.h"
 #include <climits>
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	template <typename TUint, size_t tShift, typename TInput>
@@ -27,35 +27,35 @@ namespace Ic3
 
 	inline uint16 popCount( uint8 pValue )
 	{
-		return static_cast<uint16>( IC3_PCL_POPCOUNT16( static_cast<uint16>( pValue ) ) );
+		return static_cast<uint16>( IC3_PCL_POPCNT16( static_cast<uint16>( pValue ) ) );
 	}
 
 	inline uint16 popCount( uint16 pValue )
 	{
-		return static_cast<uint16>( IC3_PCL_POPCOUNT16( pValue ) );
+		return static_cast<uint16>( IC3_PCL_POPCNT16( pValue ) );
 	}
 
 	inline uint16 popCount( uint32 pValue )
 	{
-		return static_cast<uint16>( IC3_PCL_POPCOUNT32( pValue ) );
+		return static_cast<uint16>( IC3_PCL_POPCNT32( pValue ) );
 	}
 
 	inline uint16 popCount( uint64 pValue )
 	{
-		return static_cast<uint16>( IC3_PCL_POPCOUNT64( pValue ) );
+		return static_cast<uint16>( IC3_PCL_POPCNT64( pValue ) );
 	}
 
 	template <typename TVal>
 	inline constexpr TVal makeLSFBitmask( size_t pBitCount )
 	{
-		return ( pBitCount < Limits<TVal>::bitCount ) ? static_cast<TVal>( ( 1u << pBitCount ) - 1 ) : Limits<TVal>::maxValue;
+		return ( pBitCount < QLimits<TVal>::bitCount ) ? static_cast<TVal>( ( 1u << pBitCount ) - 1 ) : QLimits<TVal>::maxValue;
 	}
 
 	template <size_t tBitCount>
-	inline constexpr typename UintTypeByBits<tBitCount>::Type makeLSFBitmask()
+	inline constexpr typename QUintTypeByBits<tBitCount>::Type makeLSFBitmask()
 	{
-		using TVal = typename UintTypeByBits<tBitCount>::Type;
-		return ( tBitCount < Limits<TVal>::bitCount ) ? static_cast<TVal>( ( 1u << tBitCount ) - 1 ) : Limits<TVal>::maxValue;
+		using TVal = typename QUintTypeByBits<tBitCount>::Type;
+		return ( tBitCount < QLimits<TVal>::bitCount ) ? static_cast<TVal>( ( 1u << tBitCount ) - 1 ) : QLimits<TVal>::maxValue;
 	}
 
 }

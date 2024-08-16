@@ -11,9 +11,9 @@ namespace Ic3
 
 	struct ContextResourcesBindingState
 	{
-		GCI::GPUBufferHandle constantBuffers[CxDefs::GPA_SHADER_BINDING_METRIC_CB_MAX_NUM];
+		GCI::GPUBufferHandle constantBuffers[CxDef::GPA_SHADER_BINDING_METRIC_CB_MAX_NUM];
 
-		TextureUnitBinding textureUnits[CxDefs::GPA_SHADER_BINDING_METRIC_TEX_MAX_NUM];
+		TextureUnitBinding textureUnits[CxDef::GPA_SHADER_BINDING_METRIC_TEX_MAX_NUM];
 	};
 
 	class RenderingContext

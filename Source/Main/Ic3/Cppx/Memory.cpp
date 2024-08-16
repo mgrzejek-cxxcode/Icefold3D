@@ -1,7 +1,7 @@
 
 #include "Memory.h"
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	static MemoryAllocationProxy getDefaultAllocationProxy() noexcept
@@ -18,7 +18,7 @@ namespace Ic3
 			allocationProxy.apiRealloc = []( void * pMemory, size_t pNewSize ) -> void * {
 				return std::realloc( pMemory, pNewSize );
 			};
-			allocationProxy.memoryAlignment = CxDefs::MEMORY_DEFAULT_ALIGNMENT;
+			allocationProxy.memoryAlignment = kMemoryCPUDefaultAlignment;
 		}
 		catch( ... )
 		{
@@ -31,7 +31,7 @@ namespace Ic3
 
 	bool memCheckMemoryOverlap( const void * pMemory1, size_t pSize1, const void * pMemory2, size_t pSize2 )
 	{
-		// For a two different regions with at least one being of size 0, there can be no overlap.
+		// For two different regions with at least one being of size 0, there can be no overlap.
 		if( ( pSize1 == 0 ) || ( pSize2 == 0 ) )
 		{
 			return false;

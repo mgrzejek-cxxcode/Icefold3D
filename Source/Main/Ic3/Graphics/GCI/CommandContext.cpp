@@ -12,7 +12,7 @@ namespace Ic3::Graphics::GCI
 	, mCommandList( &pCommandList )
 	, mCommandSystem( mCommandList->mCommandSystem )
 	, mContextType( pContextType )
-	, mCommandFlags( CxDefs::getCommandObjectPropertyFlags( pContextType ) )
+	, mCommandFlags( CxDef::getCommandObjectPropertyFlags( pContextType ) )
 	{}
 
 	CommandContext::~CommandContext() = default;

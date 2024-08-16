@@ -12,7 +12,7 @@ namespace Ic3::System
 	ic3SysDeclareHandle( X11Window );
 	ic3SysDeclareHandle( X11WindowManager );
 
-	namespace platform
+	namespace Platform
 	{
 
 		struct X11WindowNativeData : public X11EventSourceNativeData
@@ -58,7 +58,7 @@ namespace Ic3::System
 
 	}
 
-	class X11WindowManager : public X11NativeObject<WindowManager, platform::X11NativeDataCommon>
+	class X11WindowManager : public X11NativeObject<WindowManager, Platform::X11NativeDataCommon>
 	{
 	public:
 		explicit X11WindowManager( X11DisplayManagerHandle pDisplayManager );
@@ -72,7 +72,7 @@ namespace Ic3::System
 		virtual void _nativeDestroyWindow( Window & pWindow ) override final;
 	};
 
-	class X11Window : public X11NativeObject<Window, platform::X11WindowNativeData>
+	class X11Window : public X11NativeObject<Window, Platform::X11WindowNativeData>
 	{
 		friend class X11WindowManager;
 

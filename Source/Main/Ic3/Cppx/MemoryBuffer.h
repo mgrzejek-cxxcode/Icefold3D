@@ -5,7 +5,7 @@
 #include "ArrayView.h"
 #include "Memory.h"
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	class MemoryBuffer
@@ -174,7 +174,7 @@ namespace Ic3
 		{
 			std::swap( _bufferBasePtr, pOther._bufferBasePtr );
 			std::swap( _bufferLength, pOther._bufferLength );
-			Ic3::swap( _allocationProxy, pOther._allocationProxy );
+			Ic3::Cppx::swap( _allocationProxy, pOther._allocationProxy );
 		}
 
 	private:

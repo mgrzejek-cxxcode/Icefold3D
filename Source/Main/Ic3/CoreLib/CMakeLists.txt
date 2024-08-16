@@ -5,6 +5,8 @@ set( IC3_CORELIB_SRC_FILES
 		"Prerequisites/DynamicInterface.h"
         "Prerequisites/DynamicInterface.cpp"
         "Prerequisites/Result.h"
+        "Prerequisites/SharedHandle.h"
+
         "Prerequisites.h"
         "Prerequisites.cpp"
 

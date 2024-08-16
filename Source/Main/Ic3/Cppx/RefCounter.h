@@ -5,7 +5,7 @@
 #include "Prerequisites.h"
 #include <atomic>
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	using ref_counter_value_t = native_uint;
@@ -46,7 +46,7 @@ namespace Ic3
 			return --_refsNum;
 		}
 
-		ref_counter_value_t getValue() const
+		IC3_ATTR_NO_DISCARD ref_counter_value_t getValue() const
 		{
 			return _refsNum;
 		}
@@ -94,13 +94,13 @@ namespace Ic3
 			return refsNum - 1;
 		}
 
-		ref_counter_value_t getValue() const
+		IC3_ATTR_NO_DISCARD ref_counter_value_t getValue() const
 		{
 			return _refsNum.load( std::memory_order_relaxed );
 		}
 
 	private:
-		std::atomic< ref_counter_value_t > _refsNum;
+		std::atomic<ref_counter_value_t> _refsNum;
 	};
 
 

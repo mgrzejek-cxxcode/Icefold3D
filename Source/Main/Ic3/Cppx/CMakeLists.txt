@@ -1,14 +1,17 @@
 
 set( IC3_CPPX_SRC_FILES
         "Prerequisites.h"
+        "Aligned.h"
         "Bitmask.h"
         "BitmaskAtomic.h"
         "ByteArray.h"
         "Chrono.h"
+        "FlatMap.h"
         "FsUtils.h"
         "FsUtils.cpp"
         "Hash.h"
         "Hash.cpp"
+        "IntrusivePtr.h"
         "Memory.h"
         "Memory.cpp"
         "MemoryBuffer.h"
@@ -24,11 +27,11 @@ set( IC3_CPPX_SRC_FILES
         "TypeTraits.h"
         "Utilities.h"
         "Variant.h"
-        )
+)
 
 add_library( Ic3.Cppx STATIC
         ${IC3_CPPX_SRC_FILES}
-        )
+)
 
 ebsAppendInternal(IC3_MODULE_TARGET_LIST "Ic3.Cppx")
 
@@ -41,7 +44,7 @@ target_include_directories( Ic3.Cppx PUBLIC
         )
 
 target_link_libraries( Ic3.Cppx PUBLIC
-        Lib.External.zlib
+        ExtLib.Zlib
         Ic3.Platform
         )
         

@@ -47,16 +47,16 @@ namespace Ic3::Graphics::GCI
 	using shader_input_ref_id_t = uint64;
 	using shader_input_index_t = uint32;
 
-	using GraphicsShaderArray = std::array<ShaderHandle, gpm::SHADER_GRAPHICS_STAGES_NUM>;
+	using GraphicsShaderArray = std::array<ShaderHandle, GCM::SHADER_GRAPHICS_STAGES_NUM>;
 
-	namespace CxDefs
+	namespace CxDef
 	{
 
 		///
 		constexpr auto PIPELINE_INTERNAL_STATE_ID_INVALID = 0u;
 
 		///
-		constexpr auto RT_ATTACHMENT_MSAA_LEVEL_INVALID = Limits<uint32>::maxValue;
+		constexpr auto RT_ATTACHMENT_MSAA_LEVEL_INVALID = QLimits<uint32>::maxValue;
 
 		///
 		constexpr auto PIPELINE_IMMUTABLE_STATE_TYPES_NUM = 8u;
@@ -64,19 +64,19 @@ namespace Ic3::Graphics::GCI
 		/// @brief
 		inline constexpr uint32 makeRTAttachmentFlag( native_uint pAttachmentIndex )
 		{
-			return ( pAttachmentIndex < gpm::RT_MAX_COMBINED_ATTACHMENTS_NUM ) ? ( 1 << static_cast<render_target_index_t>( pAttachmentIndex ) ) : 0u;
+			return ( pAttachmentIndex < GCM::RT_MAX_COMBINED_ATTACHMENTS_NUM ) ? ( 1 << static_cast<render_target_index_t>( pAttachmentIndex ) ) : 0u;
 		}
 
 		/// @brief
 		inline constexpr bool isRTAttachmentIndexValid( native_uint pIndex )
 		{
-			return pIndex < gpm::RT_MAX_COMBINED_ATTACHMENTS_NUM;
+			return pIndex < GCM::RT_MAX_COMBINED_ATTACHMENTS_NUM;
 		}
 
 		/// @brief
 		inline constexpr bool isRTColorAttachmentIndexValid( native_uint pIndex )
 		{
-			return pIndex < gpm::RT_MAX_COLOR_ATTACHMENTS_NUM;
+			return pIndex < GCM::RT_MAX_COLOR_ATTACHMENTS_NUM;
 		}
 
 	}
@@ -111,17 +111,17 @@ namespace Ic3::Graphics::GCI
 	/// @brief A set of bit flags representing render target attachments.
 	enum ERTAttachmentFlags : uint32
 	{
-		E_RT_ATTACHMENT_FLAG_COLOR_0_BIT       = CxDefs::makeRTAttachmentFlag( E_RT_ATTACHMENT_INDEX_COLOR_0 ),
-		E_RT_ATTACHMENT_FLAG_COLOR_1_BIT       = CxDefs::makeRTAttachmentFlag( E_RT_ATTACHMENT_INDEX_COLOR_1 ),
-		E_RT_ATTACHMENT_FLAG_COLOR_2_BIT       = CxDefs::makeRTAttachmentFlag( E_RT_ATTACHMENT_INDEX_COLOR_2 ),
-		E_RT_ATTACHMENT_FLAG_COLOR_3_BIT       = CxDefs::makeRTAttachmentFlag( E_RT_ATTACHMENT_INDEX_COLOR_3 ),
-		E_RT_ATTACHMENT_FLAG_COLOR_4_BIT       = CxDefs::makeRTAttachmentFlag( E_RT_ATTACHMENT_INDEX_COLOR_4 ),
-		E_RT_ATTACHMENT_FLAG_COLOR_5_BIT       = CxDefs::makeRTAttachmentFlag( E_RT_ATTACHMENT_INDEX_COLOR_5 ),
-		E_RT_ATTACHMENT_FLAG_COLOR_6_BIT       = CxDefs::makeRTAttachmentFlag( E_RT_ATTACHMENT_INDEX_COLOR_6 ),
-		E_RT_ATTACHMENT_FLAG_COLOR_7_BIT       = CxDefs::makeRTAttachmentFlag( E_RT_ATTACHMENT_INDEX_COLOR_7 ),
-		E_RT_ATTACHMENT_FLAG_DEPTH_STENCIL_BIT = CxDefs::makeRTAttachmentFlag( E_RT_ATTACHMENT_INDEX_DEPTH_STENCIL ),
+		E_RT_ATTACHMENT_FLAG_COLOR_0_BIT       = CxDef::makeRTAttachmentFlag( E_RT_ATTACHMENT_INDEX_COLOR_0 ),
+		E_RT_ATTACHMENT_FLAG_COLOR_1_BIT       = CxDef::makeRTAttachmentFlag( E_RT_ATTACHMENT_INDEX_COLOR_1 ),
+		E_RT_ATTACHMENT_FLAG_COLOR_2_BIT       = CxDef::makeRTAttachmentFlag( E_RT_ATTACHMENT_INDEX_COLOR_2 ),
+		E_RT_ATTACHMENT_FLAG_COLOR_3_BIT       = CxDef::makeRTAttachmentFlag( E_RT_ATTACHMENT_INDEX_COLOR_3 ),
+		E_RT_ATTACHMENT_FLAG_COLOR_4_BIT       = CxDef::makeRTAttachmentFlag( E_RT_ATTACHMENT_INDEX_COLOR_4 ),
+		E_RT_ATTACHMENT_FLAG_COLOR_5_BIT       = CxDef::makeRTAttachmentFlag( E_RT_ATTACHMENT_INDEX_COLOR_5 ),
+		E_RT_ATTACHMENT_FLAG_COLOR_6_BIT       = CxDef::makeRTAttachmentFlag( E_RT_ATTACHMENT_INDEX_COLOR_6 ),
+		E_RT_ATTACHMENT_FLAG_COLOR_7_BIT       = CxDef::makeRTAttachmentFlag( E_RT_ATTACHMENT_INDEX_COLOR_7 ),
+		E_RT_ATTACHMENT_FLAG_DEPTH_STENCIL_BIT = CxDef::makeRTAttachmentFlag( E_RT_ATTACHMENT_INDEX_DEPTH_STENCIL ),
 
-		E_RT_ATTACHMENT_MASK_COLOR_ALL = makeLSFBitmask<uint32>( gpm::RT_MAX_COLOR_ATTACHMENTS_NUM ),
+		E_RT_ATTACHMENT_MASK_COLOR_ALL = makeLSFBitmask<uint32>( GCM::RT_MAX_COLOR_ATTACHMENTS_NUM ),
 		E_RT_ATTACHMENT_MASK_ALL = E_RT_ATTACHMENT_MASK_COLOR_ALL | E_RT_ATTACHMENT_FLAG_DEPTH_STENCIL_BIT,
 
 		E_RT_ATTACHMENT_MASK_DEFAULT_C0_DS =

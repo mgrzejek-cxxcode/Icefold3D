@@ -11,7 +11,7 @@ namespace Ic3::System
 	ic3SysDeclareHandle( AndroidWindow );
 	ic3SysDeclareHandle( AndroidWindowManager );
 
-	namespace platform
+	namespace Platform
 	{
 
 		using AndroidWindowManagerNativeData = AndroidNativeDataCommon;
@@ -21,7 +21,7 @@ namespace Ic3::System
 
 	}
 
-	class AndroidWindowManager : public WindowManager, public NativeObject<platform::AndroidWindowManagerNativeData>
+	class AndroidWindowManager : public WindowManager, public NativeObject<Platform::AndroidWindowManagerNativeData>
 	{
 	public:
 		explicit AndroidWindowManager( DisplayManagerHandle pDisplayManager );
@@ -32,7 +32,7 @@ namespace Ic3::System
 		virtual WindowHandle _nativeCreateWindow( WindowCreateInfo pCreateInfo ) override final;
 	};
 
-	class AndroidWindow : public Window, public NativeObject<platform::AndroidWindowNativeData>
+	class AndroidWindow : public Window, public NativeObject<Platform::AndroidWindowNativeData>
 	{
 		friend class AndroidWindowManager;
 

@@ -1,5 +1,7 @@
 
 set( IC3_GRAPHICS_GCI_SRC_FILES
+        "../Common/GraphicsCoreMetrics.h"
+
         "Prerequisites/CommonTypes.h"
         "Prerequisites/CoreInterfaceDefs.h"
         "Prerequisites/CoreInterfaceDefs.cpp"

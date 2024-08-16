@@ -1,13 +1,8 @@
 
-#pragma once
+#ifndef __IC3_SCRIPT_PREREQUISITES_H__
+#define __IC3_SCRIPT_PREREQUISITES_H__
 
-#include <Ic3/Platform/Debug.h>
-#include <Ic3/Cppx/ArrayView.h>
-#include <Ic3/Cppx/Bitmask.h>
-#include <Ic3/Cppx/StaticAlgo.h>
-#include <Ic3/Cppx/Variant.h>
-#include <Ic3/CoreLib/Exception.h>
-#include <Ic3/CoreLib/Result.h>
+#include <Ic3/CoreLib/Prerequisites.h>
 
 #if( IC3_BUILD_STATIC )
 #  define IC3_SCRIPT_API
@@ -28,6 +23,31 @@
 namespace Ic3::Script
 {
 
-	IC3_SCRIPT_API void init();
+	template <typename T>
+	struct TypeMetaInfo;
+
+#define ic3DeclareScriptType( pClass )                              \
+	template <> struct TypeMetaInfo<pClass> {                       \
+		static constexpr const char * sClassName = #pClass;         \
+		static constexpr const char * sNamespace = "";              \
+		static constexpr const char * sQualifiedTypeName = #pClass; \
+	};
+
+#define ic3DeclareScriptTypeExt( pClass, pNamespace )                              \
+	template <> struct TypeMetaInfo<pClass> {                                      \
+		static constexpr const char * sClassName = #pClass;                        \
+		static constexpr const char * sNamespace = pNamespace;                     \
+		static constexpr const char * sQualifiedTypeName = pNamespace "." #pClass; \
+	};
+
+	template <typename TClass>
+	class ClassDefinition
+	{
+	};
+
+	template <typename TFunction>
+	class FunctionDef;
 
 }
+
+#endif //__IC3_SCRIPT_PREREQUISITES_H__

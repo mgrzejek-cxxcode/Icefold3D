@@ -9,7 +9,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		struct OSXSysContextNativeData
@@ -27,7 +27,7 @@ namespace Ic3::System
 
 	}
 
-	class OSXSysContext : public NativeObject<SysContext, platform::OSXSysContextNativeData>
+	class OSXSysContext : public NativeObject<SysContext, Platform::OSXSysContextNativeData>
 	{
 	public:
 		OSXSysContext();
@@ -74,7 +74,7 @@ namespace Ic3::System
 			E_STATE_NS_APP_PROXY_REGISTERED = 0x1000,
 		};
 
-		AtomicBitmask<uint32> _stateMask;
+		Cppx::AtomicBitmask<uint32> _stateMask;
 	};
 
 } // namespace Ic3::System

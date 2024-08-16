@@ -1,23 +1,23 @@
 
 #include "MeshData.h"
-#include "GeometryDataFormat.h"
+#include "CVertexPipelineConfig.h"
 #include <Ic3/NxMain/res/image/pngCommon.h>
 
 
 namespace Ic3
 {
 
-	DataBufferRegionSubElementRefReadWrite MeshData::getIndexDataSubRegionReadWrite(
+	InterleavedBufferElementRefReadWrite MeshData::getIndexDataSubRegionReadWrite(
 			const CPUGeometryDataReferenceBase & pMeshDataRef ) noexcept
 	{
-		return DataBufferRegionSubElementRefReadWrite {
+		return InterleavedBufferElementRefReadWrite {
 				_indexDataBuffer.data() + ( pMeshDataRef.indexDataRegion.offsetInElementsNum * pMeshDataRef.indexDataRegion.elementSize ),
 				mDataFormat.indexElementSizeInBytes(),
 				mDataFormat.indexElementSizeInBytes()
 		};
 	}
 
-	DataBufferRegionSubElementRefReadWrite MeshData::getVertexAttributeDataSubRegionReadWrite(
+	InterleavedBufferElementRefReadWrite MeshData::getVertexAttributeDataSubRegionReadWrite(
 			const CPUGeometryDataReferenceBase & pMeshDataRef,
 			uint32 pAttributeIndex ) noexcept
 	{
@@ -26,7 +26,7 @@ namespace Ic3
 
 		auto * bufferBasePtr = _vertexDataBuffers[attributeFormat.streamIndex].data();
 
-		return DataBufferRegionSubElementRefReadWrite {
+		return InterleavedBufferElementRefReadWrite {
 				bufferBasePtr + ( vertexStreamDataRef.offsetInElementsNum * vertexStreamDataRef.elementSize ) + attributeFormat.streamElementRelativeOffset,
 				attributeFormat.attributeTotalSizeInBytes,
 				vertexStreamDataRef.elementSize

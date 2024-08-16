@@ -101,7 +101,7 @@ namespace Ic3::Graphics::GCI
 				constantParameter.cParamType = EShaderInputParameterType::Constant;
 				constantParameter.iFormat = constantDesc.format;
 				constantParameter.iStageIndex = constantDesc.bindingIndex;
-				constantParameter.iByteSize = CxDefs::getVertexAttribFormatByteSize( constantDesc.format );
+				constantParameter.iByteSize = CxDef::getVertexAttribFormatByteSize( constantDesc.format );
 				constantParameter.iDwordSize = computeConstantDwordSize( constantParameter.iByteSize );
 				constantParameter.iAccessClass = constantGroupDesc.accessClass;
 
@@ -128,7 +128,7 @@ namespace Ic3::Graphics::GCI
 			}
 			else
 			{
-				constant.iVisibilityMask = CxDefs::getShaderConstantVisibilityStageMask( constant.iAccessClass );
+				constant.iVisibilityMask = CxDef::getShaderConstantVisibilityStageMask( constant.iAccessClass );
 			}
 		}
 
@@ -176,7 +176,7 @@ namespace Ic3::Graphics::GCI
 					descriptor.cParamType = EShaderInputParameterType::Resource;
 					descriptor.uResourceInfo.resourceArraySize = descriptorDesc.uResourceDesc.resourceArraySize;
 					descriptor.uResourceInfo.resourceType = descriptorDesc.uResourceDesc.resourceType;
-					descriptor.uResourceInfo.resourceClass = CxDefs::getShaderInputResourceResourceClass( descriptorDesc.uResourceDesc.resourceType );
+					descriptor.uResourceInfo.resourceClass = CxDef::getShaderInputResourceResourceClass( descriptorDesc.uResourceDesc.resourceType );
 					descriptor.uResourceInfo.resourceBaseRegisterIndex = descriptorDesc.uResourceDesc.resourceBaseRegisterIndex;
 				}
 				else if( descriptorSetDesc.descriptorType == EShaderInputDescriptorType::Sampler )
@@ -209,7 +209,7 @@ namespace Ic3::Graphics::GCI
 		size_t constantsNum = 0;
 		size_t totalDwordSize = 0;
 
-		if( pInputSignatureDesc.constantGroupsNum > gpm::SHADER_COMBINED_STAGES_NUM + 1 )
+		if( pInputSignatureDesc.constantGroupsNum > GCM::SHADER_COMBINED_STAGES_NUM + 1 )
 		{
 			ic3DebugInterrupt();
 			return false;
@@ -218,7 +218,7 @@ namespace Ic3::Graphics::GCI
 		for( uint32 inputConstantGroupIndex = 0; inputConstantGroupIndex < pInputSignatureDesc.constantGroupsNum; ++inputConstantGroupIndex )
 		{
 			const auto & constantGroupDesc = pInputSignatureDesc.constantGroupArray[inputConstantGroupIndex];
-			auto groupShaderStageMask = CxDefs::getShaderConstantVisibilityStageMask( constantGroupDesc.accessClass );
+			auto groupShaderStageMask = CxDef::getShaderConstantVisibilityStageMask( constantGroupDesc.accessClass );
 
 			constantsNum += constantGroupDesc.constantsNum;
 
@@ -232,11 +232,11 @@ namespace Ic3::Graphics::GCI
 			{
 				const auto & constantDesc = constantGroupDesc.constantList[inputConstantIndex];
 
-				auto constantByteSize = CxDefs::getVertexAttribFormatByteSize( constantDesc.format );
+				auto constantByteSize = CxDef::getVertexAttribFormatByteSize( constantDesc.format );
 				auto constantDwordSize = computeConstantDwordSize( constantByteSize );
 				totalDwordSize += constantDwordSize;
 
-				if( totalDwordSize > gpm::IS_MAX_DWORD_SIZE )
+				if( totalDwordSize > GCM::IS_MAX_DWORD_SIZE )
 				{
 					ic3DebugInterrupt();
 					return false;
@@ -256,7 +256,7 @@ namespace Ic3::Graphics::GCI
 		size_t descriptorsNum = 0;
 		size_t descriptorSetsNum = pInputSignatureDesc.descriptorSetsNum;
 
-		if( descriptorSetsNum > gpm::IS_MAX_DESCRIPTOR_SETS_NUM )
+		if( descriptorSetsNum > GCM::IS_MAX_DESCRIPTOR_SETS_NUM )
 		{
 			ic3DebugInterrupt();
 			return false;

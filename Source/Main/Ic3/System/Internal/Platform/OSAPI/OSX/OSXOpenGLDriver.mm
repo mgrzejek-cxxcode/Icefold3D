@@ -17,7 +17,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		//
@@ -42,11 +42,11 @@ namespace Ic3::System
 
 	void OSXOpenGLSystemDriver::_initializeOSXDriverState()
 	{
-		if( platform::osxCheckAppKitFrameworkVersion( NSAppKitVersionNumber10_10 ) )
+		if( Platform::osxCheckAppKitFrameworkVersion( NSAppKitVersionNumber10_10 ) )
 		{
 			_nsSupportedOpenGLVersion = NSOpenGLProfileVersion4_1Core;
 		}
-		else if( platform::osxCheckAppKitFrameworkVersion( NSAppKitVersionNumber10_7 ) )
+		else if( Platform::osxCheckAppKitFrameworkVersion( NSAppKitVersionNumber10_7 ) )
 		{
 			_nsSupportedOpenGLVersion = NSOpenGLProfileVersion3_2Core;
 		}
@@ -104,11 +104,11 @@ namespace Ic3::System
 	{
 	@autoreleasepool
 	{
-		NSOpenGLPixelFormatAttribute nsOpenGLPixelFormatAttribArray[platform::CX_OSX_MAX_NSGL_FBCONFIG_ATTRIBUTES_NUM + 2];
+		NSOpenGLPixelFormatAttribute nsOpenGLPixelFormatAttribArray[Platform::CX_OSX_MAX_NSGL_FBCONFIG_ATTRIBUTES_NUM + 2];
 		nsOpenGLPixelFormatAttribArray[0] = NSOpenGLPFAOpenGLProfile;
-		nsOpenGLPixelFormatAttribArray[1] = platform::_osxGetAPIProfileForSurface( pCreateInfo, _nsSupportedOpenGLVersion );
+		nsOpenGLPixelFormatAttribArray[1] = Platform::_osxGetAPIProfileForSurface( pCreateInfo, _nsSupportedOpenGLVersion );
 
-		platform::_osxGetAttribArrayForVisualConfig( pCreateInfo.visualConfig, &( nsOpenGLPixelFormatAttribArray[2] ) );
+		Platform::_osxGetAttribArrayForVisualConfig( pCreateInfo.visualConfig, &( nsOpenGLPixelFormatAttribArray[2] ) );
 
 		auto * nsOpenGLPixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:nsOpenGLPixelFormatAttribArray];
 
@@ -119,10 +119,10 @@ namespace Ic3::System
 		windowCreateInfo.frameGeometry = pCreateInfo.frameGeometry;
 		windowCreateInfo.title = "TS3 OpenGL Window";
 
-		platform::osxCreateWindow( displaySurface->mNativeData, nullptr, windowCreateInfo );
-		platform::osxCreateWindowDefaultView( displaySurface->mNativeData );
-		platform::osxCreateEventListener( displaySurface->mNativeData );
-		platform::osxSetInputWindow( displaySurface->mNativeData );
+		Platform::osxCreateWindow( displaySurface->mNativeData, nullptr, windowCreateInfo );
+		Platform::osxCreateWindowDefaultView( displaySurface->mNativeData );
+		Platform::osxCreateEventListener( displaySurface->mNativeData );
+		Platform::osxSetInputWindow( displaySurface->mNativeData );
 
 		return displaySurface;
 	}
@@ -258,7 +258,7 @@ namespace Ic3::System
 
 	void OSXOpenGLDisplaySurface::_nativeSetTitle( const std::string & pTitle )
 	{
-        platform::osxSetFrameTitle( mNativeData.nsWindow, pTitle );
+        Platform::osxSetFrameTitle( mNativeData.nsWindow, pTitle );
 	}
 
 	void OSXOpenGLDisplaySurface::_nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
@@ -318,7 +318,7 @@ namespace Ic3::System
 	{
 	}
 
-	namespace platform
+	namespace Platform
 	{
 
 		NSOpenGLPixelFormatAttribute _osxGetAPIProfileForSurface( const OpenGLDisplaySurfaceCreateInfo & pCreateInfo,

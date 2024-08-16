@@ -32,7 +32,7 @@ namespace Ic3::Graphics::GCI
         E_DEVICE_COMMAND_QUEUE_ID_DEFAULT_COMPUTE = 1u,
         E_DEVICE_COMMAND_QUEUE_ID_DEFAULT_TRANSFER = 2u,
         E_DEVICE_COMMAND_QUEUE_ID_PRESENT = 3u,
-        E_DEVICE_COMMAND_QUEUE_ID_UNKNOWN = Limits<gpu_cmd_device_queue_id_t>::maxValue,
+        E_DEVICE_COMMAND_QUEUE_ID_UNKNOWN = QLimits<gpu_cmd_device_queue_id_t>::maxValue,
     };
 
 	enum ECommandListActionFlags : uint32
@@ -111,7 +111,7 @@ namespace Ic3::Graphics::GCI
 	using ECommandContextType = ECommandObjectType;
 	using ECommandListType = ECommandObjectType;
 
-	namespace CxDefs
+	namespace CxDef
 	{
 
 		inline constexpr ECommandExecutionMode getCommandObjectExecutionMode( ECommandObjectType pType ) noexcept

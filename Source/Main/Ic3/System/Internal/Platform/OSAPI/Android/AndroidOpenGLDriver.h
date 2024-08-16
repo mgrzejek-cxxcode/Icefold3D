@@ -15,7 +15,7 @@ namespace Ic3::System
 	ic3SysDeclareHandle( AndroidOpenGLRenderContext );
 	ic3SysDeclareHandle( AndroidOpenGLRenderContext );
 
-	namespace platform
+	namespace Platform
 	{
 
 		struct AndroidOpenGLDisplaySurfaceNativeData : public EGLDisplaySurfaceNativeData, public AndroidNativeDataCommon
@@ -33,7 +33,7 @@ namespace Ic3::System
 	}
 
 	/// @brief Android-specific implementation of the OpenGLSystemDriver class.
-	class AndroidOpenGLSystemDriver : public AndroidNativeObject<OpenGLSystemDriver, platform::AndroidOpenGLSystemDriverNativeData>
+	class AndroidOpenGLSystemDriver : public AndroidNativeObject<OpenGLSystemDriver, Platform::AndroidOpenGLSystemDriverNativeData>
 	{
 	public:
 		AndroidOpenGLSystemDriver( AndroidDisplayManagerHandle pDisplayManager );
@@ -87,7 +87,7 @@ namespace Ic3::System
 	};
 
 	/// @brief Android-specific implementation of the OpenGLDisplaySurface class.
-	class AndroidOpenGLDisplaySurface : public AndroidNativeObject<OpenGLDisplaySurface, platform::AndroidOpenGLDisplaySurfaceNativeData>
+	class AndroidOpenGLDisplaySurface : public AndroidNativeObject<OpenGLDisplaySurface, Platform::AndroidOpenGLDisplaySurfaceNativeData>
 	{
 	public:
 		explicit AndroidOpenGLDisplaySurface( AndroidOpenGLSystemDriverHandle pGLSystemDriver );
@@ -123,7 +123,7 @@ namespace Ic3::System
 	};
 
 	/// @brief Android-specific implementation of the OpenGLRenderContext class.
-	class AndroidOpenGLRenderContext : public AndroidNativeObject<OpenGLRenderContext, platform::AndroidOpenGLRenderContextNativeData>
+	class AndroidOpenGLRenderContext : public AndroidNativeObject<OpenGLRenderContext, Platform::AndroidOpenGLRenderContextNativeData>
 	{
 	public:
 		explicit AndroidOpenGLRenderContext( AndroidOpenGLSystemDriverHandle pGLSystemDriver );

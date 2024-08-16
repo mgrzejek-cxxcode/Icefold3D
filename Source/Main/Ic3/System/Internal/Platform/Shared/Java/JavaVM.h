@@ -8,7 +8,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		/// @brief Internal flags used for ThreadState.
@@ -47,7 +47,7 @@ namespace Ic3::System
 	/// provides abstraction on top of it and adds a thread-safe JNI management API.
 	class JavaVMInstance final
 	{
-		friend struct platform::JavaNativeInterfaceDeleter;
+		friend struct Platform::JavaNativeInterfaceDeleter;
 
 	public:
 		// The JavaVM pointer associated with the instance.
@@ -64,7 +64,7 @@ namespace Ic3::System
 		/// do this *IF* (and only if) the current calling thread is the one whose JNI is being
 		/// requested. In other words, a thread must first initialize its state before anyone else
 		/// can retrieve it. This can be done with initializeCurrentThreadJNIState().
-		JavaNativeInterfacePtr acquireJNI( platform::JNIThreadID pJNIThreadID );
+		JavaNativeInterfacePtr acquireJNI( Platform::JNIThreadID pJNIThreadID );
 
 		/// @brief Acquires an active reference to the JNI object of the current thread.
 		/// @see JavaVMInstance::acquireJNI
@@ -92,13 +92,13 @@ namespace Ic3::System
 
 	private:
 		// Returns the JNI object for a specified thread. If not present, auto-creates it if requested.
-		JavaNativeInterface * _acquireJNI( platform::JNIThreadID pJNIThreadID, bool pAutoCreateState );
+		JavaNativeInterface * _acquireJNI( Platform::JNIThreadID pJNIThreadID, bool pAutoCreateState );
 
 		// Returns the whole state object for a specified thread. If not present, auto-creates it if requested.
-		platform::JNIThreadState * _getJNIThreadState( platform::JNIThreadID pJNIThreadID, bool pAutoCreateState );
+		Platform::JNIThreadState * _getJNIThreadState( Platform::JNIThreadID pJNIThreadID, bool pAutoCreateState );
 
 		// Handles destruction of the thread state for a specified thread.
-		void _onJNIThreadStateDestroyRequest( platform::JNIThreadID pJNIThreadID, bool pForceRelease );
+		void _onJNIThreadStateDestroyRequest( Platform::JNIThreadID pJNIThreadID, bool pForceRelease );
 
 	private:
 		struct JavaVMInstancePrivateData;

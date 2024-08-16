@@ -13,9 +13,9 @@ namespace Ic3
 	using event_code_value_t = uint32;
 
 	template <event_code_value_t tEventCode, typename... TEventArgs>
-	struct Event
+	struct SEvent
 	{
-		static constexpr event_code_value_t eventCode = tEventCode;
+		static constexpr event_code_value_t sEventCode = tEventCode;
 	};
 
 }

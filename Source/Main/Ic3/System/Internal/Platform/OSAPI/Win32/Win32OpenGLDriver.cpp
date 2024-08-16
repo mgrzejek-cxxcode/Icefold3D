@@ -5,7 +5,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		// Creates Win32 OpenGL surface using provided visual config.
@@ -66,7 +66,7 @@ namespace Ic3::System
 		// Init state should be first created here and destroyed as soon as proper GL
 		// contexts are created (this is not enforce, though, and controlled explicitly
 		// by the user and done by calling releaseInitState() method od the driver).
-		mNativeData.initState = std::make_unique<platform::Win32OpenGLSystemDriverNativeData::InitState>();
+		mNativeData.initState = std::make_unique<Platform::Win32OpenGLSystemDriverNativeData::InitState>();
 
 		WindowCreateInfo tempWindowCreateInfo;
 		tempWindowCreateInfo.frameGeometry.position = { 0, 0 };
@@ -81,7 +81,7 @@ namespace Ic3::System
 
 		// Create a surface window. In case of Win32, Win32OpenGLDisplaySurfaceNativeData inherits from WindowNativeData
 		// for this very reason: to allow treating surfaces as windows (as that's exactly the case on desktop).
-		platform::win32CreateWindow( tmpSurfaceNativeData, tempWindowCreateInfo );
+		Platform::win32CreateWindow( tmpSurfaceNativeData, tempWindowCreateInfo );
 
 		// Create a surface. This sets up the PFD and configures HDC properly.
 		_win32CreateGLSurface( tmpSurfaceNativeData, legacyVisualConfig );
@@ -127,7 +127,7 @@ namespace Ic3::System
 
 		auto & tmpSurfaceNativeData = mNativeData.initState->surfaceData;
 		_win32DestroyGLSurface( tmpSurfaceNativeData );
-		platform::win32DestroyWindow( tmpSurfaceNativeData );
+		Platform::win32DestroyWindow( tmpSurfaceNativeData );
 
 		mNativeData.initState.reset();
 	}
@@ -140,7 +140,7 @@ namespace Ic3::System
 		surfaceWindowCreateInfo.frameGeometry = pCreateInfo.frameGeometry;
 		surfaceWindowCreateInfo.title = "TS3 OpenGL Window";
 
-		platform::win32CreateWindow( displaySurface->mNativeData, surfaceWindowCreateInfo );
+		Platform::win32CreateWindow( displaySurface->mNativeData, surfaceWindowCreateInfo );
 
 		_win32CreateGLSurface( displaySurface->mNativeData, pCreateInfo.visualConfig );
 
@@ -333,8 +333,8 @@ namespace Ic3::System
 
 	void Win32OpenGLDisplaySurface::_releaseWin32SurfaceState()
 	{
-		platform::_win32DestroyGLSurface( mNativeData );
-		platform::win32DestroyWindow( mNativeData );
+		Platform::_win32DestroyGLSurface( mNativeData );
+		Platform::win32DestroyWindow( mNativeData );
 	}
 
 	void Win32OpenGLDisplaySurface::_nativeSwapBuffers()
@@ -397,7 +397,7 @@ namespace Ic3::System
 
 	FrameSize Win32OpenGLDisplaySurface::_nativeQueryRenderAreaSize() const
 	{
-		return platform::win32GetFrameSize( mNativeData.hwnd, EFrameSizeMode::ClientArea );
+		return Platform::win32GetFrameSize( mNativeData.hwnd, EFrameSizeMode::ClientArea );
 	}
 
 	bool Win32OpenGLDisplaySurface::_nativeSysValidate() const
@@ -410,28 +410,28 @@ namespace Ic3::System
 
 	void Win32OpenGLDisplaySurface::_nativeSetFullscreenMode( bool pEnable )
 	{
-		platform::win32ChangeWindowFullscreenState( mNativeData, pEnable );
+		Platform::win32ChangeWindowFullscreenState( mNativeData, pEnable );
 	}
 
 	void Win32OpenGLDisplaySurface::_nativeSetTitle( const std::string & pTitle )
 	{
-		platform::win32SetFrameTitle( mNativeData.hwnd, pTitle );
+		Platform::win32SetFrameTitle( mNativeData.hwnd, pTitle );
 	}
 
 	void Win32OpenGLDisplaySurface::_nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
 	                                                       Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
 	{
-		platform::win32UpdateFrameGeometry( mNativeData.hwnd, pFrameGeometry, pUpdateFlags );
+		Platform::win32UpdateFrameGeometry( mNativeData.hwnd, pFrameGeometry, pUpdateFlags );
 	}
 
 	FrameSize Win32OpenGLDisplaySurface::_nativeGetSize( EFrameSizeMode pSizeMode ) const
 	{
-		return platform::win32GetFrameSize( mNativeData.hwnd, pSizeMode );
+		return Platform::win32GetFrameSize( mNativeData.hwnd, pSizeMode );
 	}
 
     bool Win32OpenGLDisplaySurface::_nativeIsFullscreen() const
     {
-        return platform::win32IsFullscreenWindow( mNativeData );
+        return Platform::win32IsFullscreenWindow( mNativeData );
     }
 
 
@@ -463,11 +463,11 @@ namespace Ic3::System
 
 	void Win32OpenGLRenderContext::_releaseWin32ContextState()
 	{
-		platform::_win32DestroyGLContext( mNativeData );
+		Platform::_win32DestroyGLContext( mNativeData );
 	}
 
 
-	namespace platform
+	namespace Platform
 	{
 
 		void _win32CreateGLSurface( Win32OpenGLDisplaySurfaceNativeData & pGLSurfaceNativeData,

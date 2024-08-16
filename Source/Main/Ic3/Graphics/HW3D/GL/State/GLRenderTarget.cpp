@@ -111,9 +111,9 @@ namespace Ic3::Graphics::GCI
 				return nullptr;
 			}
 
-			for( uint32 caIndex = 0; CxDefs::isRTColorAttachmentIndexValid( caIndex ); ++caIndex )
+			for( uint32 caIndex = 0; CxDef::isRTColorAttachmentIndexValid( caIndex ); ++caIndex )
 			{
-				const auto attachmentBit = CxDefs::makeRTAttachmentFlag( caIndex );
+				const auto attachmentBit = CxDef::makeRTAttachmentFlag( caIndex );
 				if( pAttachmentMask.isSet( attachmentBit ) )
 				{
 					auto & colorAttachmentBinding = pBindingDefinition.colorAttachments[caIndex];
@@ -184,9 +184,9 @@ namespace Ic3::Graphics::GCI
 			if( pRenderPassConfiguration.attachmentsActionClearMask != 0 )
 			{
 				auto colorAttachmentsClearMask = pRenderPassConfiguration.attachmentsActionClearMask & E_RT_ATTACHMENT_MASK_COLOR_ALL;
-				for( uint32 caIndex = 0; CxDefs::isRTColorAttachmentIndexValid( caIndex ); ++caIndex )
+				for( uint32 caIndex = 0; CxDef::isRTColorAttachmentIndexValid( caIndex ); ++caIndex )
 				{
-					const auto attachmentBit = CxDefs::makeRTAttachmentFlag( caIndex );
+					const auto attachmentBit = CxDef::makeRTAttachmentFlag( caIndex );
 					if( colorAttachmentsClearMask.isSet( attachmentBit ) )
 					{
 						const auto & attachmentConfig = pRenderPassConfiguration.colorAttachments[caIndex];
@@ -260,9 +260,9 @@ namespace Ic3::Graphics::GCI
 				ic3OpenGLHandleLastError();
 
 				auto colorAttachmentsResolveMask = pRenderPassConfiguration.attachmentsActionResolveMask;
-				for( uint32 caIndex = 0; CxDefs::isRTColorAttachmentIndexValid( caIndex ); ++caIndex )
+				for( uint32 caIndex = 0; CxDef::isRTColorAttachmentIndexValid( caIndex ); ++caIndex )
 				{
-					const auto attachmentBit = CxDefs::makeRTAttachmentFlag( caIndex );
+					const auto attachmentBit = CxDef::makeRTAttachmentFlag( caIndex );
 					if( colorAttachmentsResolveMask.isSet( attachmentBit ) )
 					{
 						glReadBuffer( GL_COLOR_ATTACHMENT0 + caIndex );

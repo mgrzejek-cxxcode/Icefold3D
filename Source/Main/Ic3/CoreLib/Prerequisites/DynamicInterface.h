@@ -9,10 +9,10 @@ namespace Ic3
 {
 
 	template <typename TClass>
-	using SharedHandle = std::shared_ptr<TClass>;
+	using RSharedHandle = std::shared_ptr<TClass>;
 
 	template <typename TClass>
-	using WeakHandle = std::weak_ptr<TClass>;
+	using RWeakHandle = std::weak_ptr<TClass>;
 
 	inline constexpr std::nullptr_t cvNullHandle { nullptr };
 
@@ -62,7 +62,7 @@ namespace Ic3
 		}
 
 		template <typename TInterfaceSubClass>
-		IC3_ATTR_NO_DISCARD SharedHandle<TInterfaceSubClass> getHandle()
+		IC3_ATTR_NO_DISCARD RSharedHandle<TInterfaceSubClass> getHandle()
 		{
 		#if( IC3_DEBUG )
 			return dynamic_ptr_cast_check<TInterfaceSubClass>( shared_from_this() );
@@ -72,7 +72,7 @@ namespace Ic3
 		}
 
 		template <typename TInterfaceSubClass>
-		IC3_ATTR_NO_DISCARD SharedHandle<TInterfaceSubClass> queryHandle()
+		IC3_ATTR_NO_DISCARD RSharedHandle<TInterfaceSubClass> queryHandle()
 		{
 		#if( IC3_DEBUG )
 			return dynamic_ptr_cast_throw<TInterfaceSubClass>( shared_from_this() );
@@ -87,7 +87,7 @@ namespace Ic3
 	};
 
 	template <typename TClass, typename... TArgs>
-	IC3_ATTR_NO_DISCARD inline SharedHandle<TClass> createDynamicInterfaceObject( TArgs && ...pArgs )
+	IC3_ATTR_NO_DISCARD inline RSharedHandle<TClass> createDynamicInterfaceObject( TArgs && ...pArgs )
 	{
 		auto objectHandle = std::make_shared<TClass>( std::forward<TArgs>( pArgs )... );
 	#if( IC3_DEBUG )
@@ -98,7 +98,7 @@ namespace Ic3
 	}
 
     template <typename TClass, typename TDeleter, typename... TArgs>
-    IC3_ATTR_NO_DISCARD inline SharedHandle<TClass> createDynamicInterfaceObjectWithDeleter( TDeleter pDeleter, TArgs && ...pArgs )
+    IC3_ATTR_NO_DISCARD inline RSharedHandle<TClass> createDynamicInterfaceObjectWithDeleter( TDeleter pDeleter, TArgs && ...pArgs )
     {
         auto objectHandle = std::shared_ptr<TClass>{ new TClass( std::forward<TArgs>( pArgs )... ), std::forward<TDeleter>( pDeleter ) };
     #if( IC3_DEBUG )
@@ -149,13 +149,18 @@ namespace Ic3
 
 #define ic3DeclareClassHandle( pClassName ) \
     class pClassName; \
-    using pClassName##Handle = SharedHandle<pClassName>; \
-    using pClassName##WeakHandle = WeakHandle<pClassName>
+    using pClassName##Handle = RSharedHandle<pClassName>; \
+    using pClassName##RWeakHandle = RWeakHandle<pClassName>
+
+#define ic3DeclareInterfaceHandle( pInterfaceName ) \
+    class pInterfaceName; \
+    using pInterfaceName##Handle = RSharedHandle<pInterfaceName>; \
+    using pInterfaceName##RWeakHandle = RWeakHandle<pInterfaceName>
 
 #define ic3DeclareTypedefHandle( pAliasName, pTypeName ) \
     using pAliasName = pTypeName; \
-    using pAliasName##Handle = SharedHandle<pAliasName>; \
-    using pAliasName##WeakHandle = WeakHandle<pAliasName>
+    using pAliasName##Handle = RSharedHandle<pAliasName>; \
+    using pAliasName##RWeakHandle = RWeakHandle<pAliasName>
 
 }
 

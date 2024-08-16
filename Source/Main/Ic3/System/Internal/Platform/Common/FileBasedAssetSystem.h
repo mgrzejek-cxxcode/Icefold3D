@@ -11,7 +11,7 @@ namespace Ic3::System
 
 	ic3SysDeclareHandle( FileAssetLoader );
 
-	namespace platform
+	namespace Platform
 	{
 
 		struct FileAssetNativeData
@@ -53,7 +53,7 @@ namespace Ic3::System
 
 	}
 
-	class FileAssetLoader : public NativeObject<AssetLoader, platform::FileAssetLoaderNativeData>
+	class FileAssetLoader : public NativeObject<AssetLoader, Platform::FileAssetLoaderNativeData>
 	{
 	public:
 		FileManagerHandle const mFileManager;
@@ -66,7 +66,7 @@ namespace Ic3::System
 
 	private:
 		/// @copybrief AssetLoader::_nativeOpenSubAsset
-		virtual AssetHandle _nativeOpenSubAsset( FSUtilityAPI::FilePathInfo pAssetPathInfo,
+		virtual AssetHandle _nativeOpenSubAsset( Cppx::FilePathInfo pAssetPathInfo,
 		                                         Bitmask<EAssetOpenFlags> pFlags ) override final;
 
 		/// @copybrief AssetLoader::_nativeOpenDirectory
@@ -76,7 +76,7 @@ namespace Ic3::System
 		virtual bool _nativeCheckDirectoryExists( const std::string & pDirectoryName ) const override final;
 	};
 	
-	class FileAssetDirectory : public NativeObject<AssetDirectory, platform::FileAssetDirectoryNativeData>
+	class FileAssetDirectory : public NativeObject<AssetDirectory, Platform::FileAssetDirectoryNativeData>
 	{
 		friend class FileAssetLoader;
 
@@ -101,7 +101,7 @@ namespace Ic3::System
 		virtual bool _nativeCheckAssetExists( const std::string & pAssetName ) const override final;
 	};
 
-	class FileAsset : public NativeObject<Asset, platform::FileAssetNativeData>
+	class FileAsset : public NativeObject<Asset, Platform::FileAssetNativeData>
 	{
 		friend class FileAssetLoader;
 		

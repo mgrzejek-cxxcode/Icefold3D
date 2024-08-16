@@ -13,10 +13,10 @@ namespace Ic3
 {
 
 	template <typename TClass, typename TEvent>
-	class EventEmitter;
+	class CEventEmitter;
 
 	template <typename TClass, event_code_value_t tEventCode, typename... TEventArgs>
-	class EventEmitter< TClass, Event<tEventCode, TEventArgs...> >
+	class CEventEmitter< TClass, SEvent<tEventCode, TEventArgs...> >
 	{
 	public:
 		using Handler = std::function<void( TClass &, TEventArgs... )>;
@@ -26,7 +26,7 @@ namespace Ic3
 		using HandlerRefList = std::list<HandlerRef>;
 
 	public:
-		explicit EventEmitter( TClass & pSourceObjectRef )
+		explicit CEventEmitter( TClass & pSourceObjectRef )
 		: _sourceObjectRef( pSourceObjectRef )
 		{}
 
@@ -96,6 +96,19 @@ namespace Ic3
 			return true;
 		}
 
+		template <typename TRet, typename TReceiver>
+		bool disconnectSlot( TReceiver * pReceiver, TRet( TReceiver:: * pSlot )( TClass &, TEventArgs... ) ) const
+		{
+			return false;
+		}
+
+	private:
+		HandlerList * _getHandlersForReceiver( uintptr_t pReceiverRefID ) const
+		{
+			const auto handlerMapIter = _handlerMap.find( pReceiverRefID );
+			return ( handlerMapIter != _handlerMap.end() ) ? &( handlerMapIter->second ) : nullptr;
+		}
+
 	private:
 		TClass & _sourceObjectRef;
 		mutable HandlerMap _handlerMap;
@@ -103,21 +116,21 @@ namespace Ic3
 	};
 
 	// template <event_code_value_t tEventCode, typename... TEventArgs, typename TRet, typename TReceiver>
-	// void eventConnect( const EventEmitter< Event<tEventCode, TEventArgs...> > & pEmitter, TRet( TReceiver:: * pSlot )( TEventArgs... ), TReceiver * pReceiver )
+	// void eventConnect( const CEventEmitter< Event<tEventCode, TEventArgs...> > & pEmitter, TRet( TReceiver:: * pSlot )( TEventArgs... ), TReceiver * pReceiver )
 	// {
 	// 	pEmitter.connect( pSlot, pReceiver );
 	// }
 	// template <event_code_value_t tEventCode, typename... TEventArgs, typename TReceiver>
-	// void eventDisconnect( const EventEmitter< Event<tEventCode, TEventArgs...> > & pEmitter, TReceiver * pReceiver )
+	// void eventDisconnect( const CEventEmitter< Event<tEventCode, TEventArgs...> > & pEmitter, TReceiver * pReceiver )
 	// {
 	// 	pEmitter.disconnect( pReceiver );
 	// }
 
 #define ic3AddEvent( pEventType, pVariableName ) \
 	private: \
-		EventEmitter<pEventType> _evt##pVariableName; \
+		CEventEmitter<pEventType> _evt##pVariableName; \
 	public: \
-		const EventEmitter<pEventType> & mEvt##pVariableName = _evt##pVariableName;
+		const CEventEmitter<pEventType> & mEvt##pVariableName = _evt##pVariableName;
 
 #define slots
 

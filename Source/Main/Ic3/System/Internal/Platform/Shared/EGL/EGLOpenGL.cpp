@@ -5,7 +5,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		// Returns an array of EGLConfigs matching specified VisualConfig definition and API version (ES).
@@ -42,7 +42,7 @@ namespace Ic3::System
 		void _eglValidateRequestedContextVersion( EOpenGLAPIClass pTargetAPIClass, Version & pVersion );
 
 
-		void platform::eglInitializeGLDriver( EGLDriverNativeData & pEGLDriverNativeData )
+		void Platform::eglInitializeGLDriver( EGLDriverNativeData & pEGLDriverNativeData )
 		{
 			EGLDisplay eglDisplay = ::eglGetDisplay( EGL_DEFAULT_DISPLAY );
 			if( eglDisplay == EGL_NO_DISPLAY )
@@ -65,7 +65,7 @@ namespace Ic3::System
 			pEGLDriverNativeData.eglVersion.minor = eglVersionMinor;
 		}
 
-		void platform::eglReleaseGLDriver( EGLDriverNativeData & pEGLDriverNativeData )
+		void Platform::eglReleaseGLDriver( EGLDriverNativeData & pEGLDriverNativeData )
 		{
 			auto eglResult = ::eglTerminate( pEGLDriverNativeData.eDisplay );
 			pEGLDriverNativeData.eDisplay = EGL_NO_DISPLAY;
@@ -73,7 +73,7 @@ namespace Ic3::System
 			pEGLDriverNativeData.eglVersion.minor = 0;
 		}
 
-		EGLConfig platform::eglChooseCoreFBConfig( EGLDisplay pDisplay,
+		EGLConfig Platform::eglChooseCoreFBConfig( EGLDisplay pDisplay,
 		                                           const VisualConfig & pVisualConfig,
 		                                           const Version & pTargetAPIVersion )
 		{
@@ -96,7 +96,7 @@ namespace Ic3::System
 			return eglConfigList[0];
 		}
 
-		EGLint platform::eglQueryFBConfigAttribute( EGLDisplay pEGLDisplay, EGLConfig pEGLConfig, EGLenum pAttribute )
+		EGLint Platform::eglQueryFBConfigAttribute( EGLDisplay pEGLDisplay, EGLConfig pEGLConfig, EGLenum pAttribute )
 		{
 			EGLint fbConfigAttribute = 0;
 
@@ -109,7 +109,7 @@ namespace Ic3::System
 			return fbConfigAttribute;
 		}
 
-		void platform::eglCreateSurface( EGLDisplaySurfaceNativeData & pEGLSurfaceNativeData,
+		void Platform::eglCreateSurface( EGLDisplaySurfaceNativeData & pEGLSurfaceNativeData,
 		                                 EGLDisplay pEGLDisplay,
 		                                 EGLNativeWindowType pWindow,
 		                                 EGLConfig pEGLConfig,
@@ -136,7 +136,7 @@ namespace Ic3::System
 			pEGLSurfaceNativeData.eFBConfig = pEGLConfig;
 		}
 
-		void platform::eglCreateSurfaceForCurrentThread( EGLDisplaySurfaceNativeData & pEGLSurfaceNativeData )
+		void Platform::eglCreateSurfaceForCurrentThread( EGLDisplaySurfaceNativeData & pEGLSurfaceNativeData )
 		{
 			auto eDisplay = ::eglGetCurrentDisplay();
 			auto eSurfaceHandle = ::eglGetCurrentSurface( EGL_DRAW );
@@ -164,7 +164,7 @@ namespace Ic3::System
 			pEGLSurfaceNativeData.eFBConfig = surfaceConfig;
 		}
 
-		void platform::eglDestroySurface( EGLDisplaySurfaceNativeData & pEGLSurfaceNativeData )
+		void Platform::eglDestroySurface( EGLDisplaySurfaceNativeData & pEGLSurfaceNativeData )
 		{
 			auto eglResult = ::eglDestroySurface( pEGLSurfaceNativeData.eDisplay, pEGLSurfaceNativeData.eSurfaceHandle );
 
@@ -174,7 +174,7 @@ namespace Ic3::System
 			pEGLSurfaceNativeData.eNativeWindow = nullptr;
 		}
 
-		void platform::eglCreateCoreContext( EGLRenderContextNativeData & pEGLContextNativeData,
+		void Platform::eglCreateCoreContext( EGLRenderContextNativeData & pEGLContextNativeData,
 		                                     const EGLDisplaySurfaceNativeData & pEGLSurfaceNativeData,
 		                                     const OpenGLRenderContextCreateInfo & pCreateInfo )
 		{
@@ -226,7 +226,7 @@ namespace Ic3::System
 			pEGLContextNativeData.eContextHandle = contextHandle;
 		}
 
-		void platform::eglCreateCoreContextForCurrentThread( EGLRenderContextNativeData & pEGLContextNativeData )
+		void Platform::eglCreateCoreContextForCurrentThread( EGLRenderContextNativeData & pEGLContextNativeData )
 		{
 			auto eDisplay = ::eglGetCurrentDisplay();
 			auto eContextHandle = ::eglGetCurrentContext();
@@ -235,7 +235,7 @@ namespace Ic3::System
 			pEGLContextNativeData.eContextHandle = eContextHandle;
 		}
 
-		void platform::eglDestroyRenderContext( EGLRenderContextNativeData & pEGLContextNativeData )
+		void Platform::eglDestroyRenderContext( EGLRenderContextNativeData & pEGLContextNativeData )
 		{
 			if( pEGLContextNativeData.eContextHandle != nullptr )
 			{
@@ -252,7 +252,7 @@ namespace Ic3::System
 			}
 		}
 
-		void platform::eglBindContextForCurrentThread( const EGLRenderContextNativeData & pEGLContextNativeData,
+		void Platform::eglBindContextForCurrentThread( const EGLRenderContextNativeData & pEGLContextNativeData,
 		                                               const EGLDisplaySurfaceNativeData & pEGLSurfaceNativeData )
 		{
 			::eglMakeCurrent( pEGLContextNativeData.eDisplay,

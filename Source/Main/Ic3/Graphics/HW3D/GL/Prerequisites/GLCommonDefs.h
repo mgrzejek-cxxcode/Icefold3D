@@ -24,9 +24,9 @@
 namespace Ic3::Graphics::GCI
 {
 
-	constexpr GLenum cvGLInvalidValue = Limits<GLenum>::maxValue;
+	constexpr GLenum cvGLInvalidValue = QLimits<GLenum>::maxValue;
 
-	constexpr GLuint cvGLInvalidProgramLocation = Limits<GLuint>::maxValue;
+	constexpr GLuint cvGLInvalidProgramLocation = QLimits<GLuint>::maxValue;
 
 	enum EGLRuntimeSupportFlags : uint32
 	{

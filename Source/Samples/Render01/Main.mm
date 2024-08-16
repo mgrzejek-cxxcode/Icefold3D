@@ -34,8 +34,8 @@
 #include <Ic3/NxMain/Renderer/ShaderLibrary.h>
 #include <Ic3/NxMain/Renderer/ShaderLoader.h>
 #include <Ic3/NxMain/Renderer/Effects/shadowRenderer.h>
-#include <Ic3/NxMain/Geometry/GeometryManager.h>
-#include <Ic3/NxMain/Geometry/GeometryStorage.h>
+#include <Ic3/NxMain/Geometry/GeometrySystem.h>
+#include <Ic3/NxMain/Geometry/GeometryStorageGPU.h>
 #include <Ic3/NxMain/Geometry/GeometryDataTransfer.h>
 
 #include <chrono>
@@ -340,7 +340,7 @@ int main( int pArgc, const char ** pArgv )
 
 	CoreEngineState ces{ sysContext, gxDriverState.device };
 
-	GeometryDataFormat gdf;
+	VertexDataLayout gdf;
 	gdf.configureFixedAttribute( EFixedVertexAttributeID::Position, 0 );
 	gdf.configureFixedAttribute( EFixedVertexAttributeID::Normal, 0 );
 	gdf.configureFixedAttribute( EFixedVertexAttributeID::FixedColor, 0 );
@@ -641,7 +641,7 @@ int main( int pArgc, const char ** pArgv )
 
 					for( uint32 iMeshComponent = 0; iMeshComponent < meshTree->getComponentsNum(); ++iMeshComponent )
 					{
-						auto * meshComponent = meshTree->getSubComponent( iMeshComponent );
+						auto * meshComponent = meshTree->getComponent( iMeshComponent );
 						auto * geometryRef = meshComponent->geometryDataRef();
 
 

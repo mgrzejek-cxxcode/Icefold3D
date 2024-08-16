@@ -5,7 +5,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		ASessionData & androidGetASessionData( SysContext & pSysContext )

@@ -108,7 +108,7 @@ namespace Ic3::Graphics::GCI
 	struct GPUBufferSubDataCopyDesc
 	{
 		GPUMemoryRegion sourceBufferRegion;
-		gpu_memory_size_t targetBufferOffset = CxDefs::GPU_MEMORY_OFFSET_INVALID;
+		gpu_memory_size_t targetBufferOffset = CxDef::GPU_MEMORY_OFFSET_INVALID;
 		Bitmask<EGPUBufferDataCopyFlags> flags = E_GPU_BUFFER_DATA_COPY_FLAGS_DEFAULT;
 	};
 

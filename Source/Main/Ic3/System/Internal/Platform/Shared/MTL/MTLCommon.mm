@@ -4,7 +4,7 @@
 namespace Ic3::System
 {
 
-    namespace platform
+    namespace Platform
     {
 
         MTLPixelFormat mtlChoosePixelFormatForVisualConfig( const VisualConfig & pVisualConfig )

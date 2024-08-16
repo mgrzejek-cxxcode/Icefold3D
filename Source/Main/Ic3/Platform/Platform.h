@@ -31,6 +31,22 @@
 #define IC3_ATTR_NO_DISCARD \
 	IC3_PCL_ATTR_FUNC_NO_DISCARD
 
+#define IC3_DEFAULT_COPYABLE( pClassName ) \
+	pClassName( const pClassName & ) = default; \
+	pClassName & operator=( const pClassName & ) = default;
+
+#define IC3_DEFAULT_MOVABLE( pClassName ) \
+	pClassName( pClassName && ) = default; \
+	pClassName & operator=( pClassName && ) = default;
+
+#define IC3_NON_COPYABLE( pClassName ) \
+	pClassName( const pClassName & ) = delete; \
+	pClassName & operator=( const pClassName & ) = delete;
+
+#define IC3_NON_MOVABLE( pClassName ) \
+	pClassName( pClassName && ) = delete; \
+	pClassName & operator=( pClassName && ) = delete;
+
 namespace Ic3
 {
 

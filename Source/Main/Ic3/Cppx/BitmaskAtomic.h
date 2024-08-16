@@ -5,7 +5,7 @@
 #include "Prerequisites.h"
 #include <atomic>
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	template <typename TVal>
@@ -17,7 +17,7 @@ namespace Ic3
 
 	public:
 		using MyType = AtomicBitmask<TVal>;
-		using ValueType = typename UintTypeBySize<sizeof( TVal )>::Type;
+		using ValueType = typename QUintTypeBySize<sizeof( TVal )>::Type;
 
 	public:
 		AtomicBitmask( const AtomicBitmask & ) = delete;

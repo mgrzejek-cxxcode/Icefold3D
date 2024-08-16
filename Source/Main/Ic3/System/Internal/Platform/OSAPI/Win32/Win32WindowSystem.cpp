@@ -6,7 +6,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		// Registers custom window class in the system.
@@ -43,7 +43,7 @@ namespace Ic3::System
 	{
 		auto windowObject = createSysObject<Win32Window>( getHandle<Win32WindowManager>() );
 
-		platform::win32CreateWindow( windowObject->mNativeData, pCreateInfo );
+		Platform::win32CreateWindow( windowObject->mNativeData, pCreateInfo );
 
 		::ShowWindow( windowObject->mNativeData.hwnd, SW_SHOWNORMAL );
 
@@ -54,7 +54,7 @@ namespace Ic3::System
     {
         auto * win32Window = pWindow.queryInterface<Win32Window>();
 
-        platform::win32DestroyWindow( win32Window->mNativeData );
+        Platform::win32DestroyWindow( win32Window->mNativeData );
     }
 
 
@@ -69,27 +69,27 @@ namespace Ic3::System
 
 	void Win32Window::_nativeSetFullscreenMode( bool pEnable )
 	{
-		platform::win32ChangeWindowFullscreenState( mNativeData, pEnable );
+		Platform::win32ChangeWindowFullscreenState( mNativeData, pEnable );
 	}
 
 	void Win32Window::_nativeSetTitle( const std::string & pTitle )
 	{
-		platform::win32SetFrameTitle( mNativeData.hwnd, pTitle );
+		Platform::win32SetFrameTitle( mNativeData.hwnd, pTitle );
 	}
 
 	void Win32Window::_nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
 	                                         Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
 	{
-		platform::win32UpdateFrameGeometry( mNativeData.hwnd, pFrameGeometry, pUpdateFlags );
+		Platform::win32UpdateFrameGeometry( mNativeData.hwnd, pFrameGeometry, pUpdateFlags );
 	}
 
 	FrameSize Win32Window::_nativeGetSize( EFrameSizeMode pSizeMode ) const
 	{
-		return platform::win32GetFrameSize( mNativeData.hwnd, pSizeMode );
+		return Platform::win32GetFrameSize( mNativeData.hwnd, pSizeMode );
 	}
 
 
-	namespace platform
+	namespace Platform
 	{
 
 		void win32CreateWindow( Win32WindowNativeData & pWindowNativeData, const WindowCreateInfo & pCreateInfo )
@@ -175,7 +175,7 @@ namespace Ic3::System
 				// Out custom message indicates a fullscreen state change request. Already pre-validated,
 				// it just needs to be handled and dispatched.
 
-				const auto messageID = platform::CX_WIN32_MESSAGE_ID_FULLSCREEN_STATE_CHANGE;
+				const auto messageID = Platform::CX_WIN32_MESSAGE_ID_FULLSCREEN_STATE_CHANGE;
 				const auto wParam = static_cast<WPARAM>( pSetFullscreen ? 1 : 0 );
 
 				// This is an asynchronous post. This functions returns immediately - the message will be
@@ -229,7 +229,7 @@ namespace Ic3::System
 
 		void win32UpdateFrameGeometry( HWND pHWND, const FrameGeometry & pFrameGeometry, Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
 		{
-			auto win32Geometry = platform::_win32CheckFrameGeometryUpdate( pHWND, pFrameGeometry, pUpdateFlags );
+			auto win32Geometry = Platform::_win32CheckFrameGeometryUpdate( pHWND, pFrameGeometry, pUpdateFlags );
 
 			::SetWindowLongA( pHWND, GWL_STYLE, win32Geometry.style );
 
@@ -264,7 +264,7 @@ namespace Ic3::System
 
 		bool win32IsFullscreenWindow( const Win32WindowNativeData & pWindowNativeData )
 		{
-			return pWindowNativeData.sysWindowFlags.isSet( platform::E_WIN32_SYSTEM_WINDOW_FLAG_WM_STATE_FULLSCREEN );
+			return pWindowNativeData.sysWindowFlags.isSet( Platform::E_WIN32_SYSTEM_WINDOW_FLAG_WM_STATE_FULLSCREEN );
 		}
 
 		void _win32RegisterWndClass( Win32WindowNativeData & pWindowNativeData )
@@ -322,7 +322,7 @@ namespace Ic3::System
 			constexpr DWORD cvResizeableFrameStyle = cvFixedFrameStyle | WS_SIZEBOX | WS_MAXIMIZEBOX;
 
 			//
-			DWORD resultStyle = Limits<DWORD>::maxValue;
+			DWORD resultStyle = QLimits<DWORD>::maxValue;
 
 			switch ( pStyle )
 			{

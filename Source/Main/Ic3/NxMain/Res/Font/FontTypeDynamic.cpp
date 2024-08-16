@@ -128,7 +128,7 @@ namespace Ic3
 	bool DynamicFontLoader::processFontInitData( FreeTypeFontObject * pFTFontObject, const DynamicFontCreateInfo & pFontCreateInfo, FTInternalFontData & pFontData )
 	{
 		// Size, in bytes, of a single pixel of a texture/glyph image.
-		const uint32 cxPixelByteSize = GCI::CxDefs::getTextureFormatByteSize( pFontCreateInfo.fontDesc.textureFormat );
+		const uint32 cxPixelByteSize = GCI::CxDef::getTextureFormatByteSize( pFontCreateInfo.fontDesc.textureFormat );
 
 		const auto cxTextureWidth = pFontCreateInfo.fontDesc.textureDimensions.x;  // Width of a single font texture, in pixels.
 		const auto cxTextureHeight = pFontCreateInfo.fontDesc.textureDimensions.y; // Height of a single font texture, in pixels.

@@ -12,7 +12,7 @@ namespace Ic3::System
 	ic3SysDeclareHandle( Win32DisplayManager );
 	ic3SysDeclareHandle( Win32DisplayDriver );
 
-	namespace platform
+	namespace Platform
 	{
 
 		struct Win32DisplayDriverNativeData
@@ -42,9 +42,9 @@ namespace Ic3::System
 	}
 
 	/// @brief
-	using Win32DisplayAdapter = Win32NativeObject<DisplayAdapter, platform::Win32DisplayAdapterNativeData>;
-	using Win32DisplayOutput = Win32NativeObject<DisplayOutput, platform::Win32DisplayOutputNativeData>;
-	using Win32DisplayVideoMode = Win32NativeObject<DisplayVideoMode, platform::Win32DisplayVideoModeNativeData>;
+	using Win32DisplayAdapter = Win32NativeObject<DisplayAdapter, Platform::Win32DisplayAdapterNativeData>;
+	using Win32DisplayOutput = Win32NativeObject<DisplayOutput, Platform::Win32DisplayOutputNativeData>;
+	using Win32DisplayVideoMode = Win32NativeObject<DisplayVideoMode, Platform::Win32DisplayVideoModeNativeData>;
 
 	/// @brief
 	class Win32DisplayManager : public DisplayManager
@@ -64,7 +64,7 @@ namespace Ic3::System
 	};
 
 	/// @brief
-	class Win32DisplayDriver : public Win32NativeObject<DisplayDriver, platform::Win32DisplayDriverNativeData>
+	class Win32DisplayDriver : public Win32NativeObject<DisplayDriver, Platform::Win32DisplayDriverNativeData>
 	{
 	public:
 		explicit Win32DisplayDriver( DisplayManagerHandle pDisplayManager );

@@ -10,6 +10,8 @@
 #include <Ic3/CoreLib/Utility/HFSIdentifier.h>
 #include <Ic3/Cppx/Utilities.h>
 
+#include <Ic3/Graphics/Common/GraphicsCoreMetrics.h>
+
 #include <memory>
 
 #if( IC3_BUILD_STATIC )
@@ -42,7 +44,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	/// @namespace CxDefs
+	/// @namespace CxDef
 	/// @brief GpuAPI-level constant expressions and utility functions used by those.
 
 	/// @namespace defaults
@@ -129,7 +131,7 @@ namespace Ic3::Graphics::GCI
 		Unknown = 0x00
 	};
 
-	namespace CxDefs
+	namespace CxDef
 	{
 
 		inline constexpr uint32 makeGPUDriverID( EGPUDriverAPI pDriverAPI, uint32 pAPISubVersion )
@@ -141,14 +143,14 @@ namespace Ic3::Graphics::GCI
 
 	enum class EGPUDriverID : uint32
 	{
-		GDIDirectX11      = CxDefs::makeGPUDriverID( EGPUDriverAPI::DirectX, 0x11 ),
-		GDIDirectX12      = CxDefs::makeGPUDriverID( EGPUDriverAPI::DirectX, 0x12 ),
-		GDIMetal1         = CxDefs::makeGPUDriverID( EGPUDriverAPI::Metal,   0x01 ),
-		GDIOpenGLDesktop4 = CxDefs::makeGPUDriverID( EGPUDriverAPI::OpenGL,  0xD4 ),
-		GDIOpenGLES3      = CxDefs::makeGPUDriverID( EGPUDriverAPI::OpenGL,  0xE3 ),
-		GDIVulkan10       = CxDefs::makeGPUDriverID( EGPUDriverAPI::Vulkan,  0x10 ),
-		GDINull           = CxDefs::makeGPUDriverID( EGPUDriverAPI::Unknown, 0xFF ),
-		GDIUnknown        = CxDefs::makeGPUDriverID( EGPUDriverAPI::Unknown, 0x00 )
+		GDIDirectX11      = CxDef::makeGPUDriverID( EGPUDriverAPI::DirectX, 0x11 ),
+		GDIDirectX12      = CxDef::makeGPUDriverID( EGPUDriverAPI::DirectX, 0x12 ),
+		GDIMetal1         = CxDef::makeGPUDriverID( EGPUDriverAPI::Metal,   0x01 ),
+		GDIOpenGLDesktop4 = CxDef::makeGPUDriverID( EGPUDriverAPI::OpenGL,  0xD4 ),
+		GDIOpenGLES3      = CxDef::makeGPUDriverID( EGPUDriverAPI::OpenGL,  0xE3 ),
+		GDIVulkan10       = CxDef::makeGPUDriverID( EGPUDriverAPI::Vulkan,  0x10 ),
+		GDINull           = CxDef::makeGPUDriverID( EGPUDriverAPI::Unknown, 0xFF ),
+		GDIUnknown        = CxDef::makeGPUDriverID( EGPUDriverAPI::Unknown, 0x00 )
 	};
 
 } // namespace Ic3::Graphics::GCI

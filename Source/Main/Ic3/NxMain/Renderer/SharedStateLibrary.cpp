@@ -19,7 +19,7 @@ namespace Ic3
 	{
 		{
 			mCES.mGPUDevice->createCachedImmutableState<GCI::BlendImmutableState>(
-					CxDefs::GPA_STATE_ID_IA_INPUT_LAYOUT_DEFAULT,
+					CxDef::GPA_STATE_ID_IA_INPUT_LAYOUT_DEFAULT,
 					GCI::defaults::cvPipelineBlendConfigDefault );
 		}
 	}
@@ -28,12 +28,12 @@ namespace Ic3
 	{
 		{
 			mCES.mGPUDevice->createCachedImmutableState<GCI::DepthStencilImmutableState>(
-					CxDefs::GPA_STATE_ID_IA_INPUT_LAYOUT_DEFAULT,
+					CxDef::GPA_STATE_ID_IA_INPUT_LAYOUT_DEFAULT,
 					GCI::defaults::cvPipelineDepthStencilConfigDefault );
 		}
 		{
 			mCES.mGPUDevice->createCachedImmutableState<GCI::DepthStencilImmutableState>(
-					CxDefs::GPA_STATE_ID_DEPTH_STENCIL_DEPTH_TEST_ENABLE,
+					CxDef::GPA_STATE_ID_DEPTH_STENCIL_DEPTH_TEST_ENABLE,
 					GCI::defaults::cvPipelineDepthStencilConfigEnableDepthTest );
 		}
 	}
@@ -46,7 +46,7 @@ namespace Ic3
 			rasterizerConfig.frontFaceVerticesOrder = GCI::ETriangleVerticesOrder::CounterClockwise;
 
 			mCES.mGPUDevice->createCachedImmutableState<GCI::RasterizerImmutableState>(
-					CxDefs::GPA_STATE_ID_RASTERIZER_DEFAULT_CULL_BACK_CCW,
+					CxDef::GPA_STATE_ID_RASTERIZER_DEFAULT_CULL_BACK_CCW,
 					rasterizerConfig );
 		}
 		{
@@ -55,7 +55,7 @@ namespace Ic3
 			rasterizerConfig.frontFaceVerticesOrder = GCI::ETriangleVerticesOrder::Clockwise;
 
 			mCES.mGPUDevice->createCachedImmutableState<GCI::RasterizerImmutableState>(
-					CxDefs::GPA_STATE_ID_RASTERIZER_DEFAULT_CULL_BACK_CW,
+					CxDef::GPA_STATE_ID_RASTERIZER_DEFAULT_CULL_BACK_CW,
 					rasterizerConfig );
 		}
 		{
@@ -64,7 +64,7 @@ namespace Ic3
 			rasterizerConfig.frontFaceVerticesOrder = GCI::ETriangleVerticesOrder::CounterClockwise;
 
 			mCES.mGPUDevice->createCachedImmutableState<GCI::RasterizerImmutableState>(
-					CxDefs::GPA_STATE_ID_RASTERIZER_DEFAULT_CULL_FRONT_CCW,
+					CxDef::GPA_STATE_ID_RASTERIZER_DEFAULT_CULL_FRONT_CCW,
 					rasterizerConfig );
 		}
 		{
@@ -73,7 +73,7 @@ namespace Ic3
 			rasterizerConfig.frontFaceVerticesOrder = GCI::ETriangleVerticesOrder::Clockwise;
 
 			mCES.mGPUDevice->createCachedImmutableState<GCI::RasterizerImmutableState>(
-					CxDefs::GPA_STATE_ID_RASTERIZER_DEFAULT_CULL_FRONT_CW,
+					CxDef::GPA_STATE_ID_RASTERIZER_DEFAULT_CULL_FRONT_CW,
 					rasterizerConfig );
 		}
 	}
@@ -89,14 +89,14 @@ namespace Ic3
 					GCI::E_IA_VERTEX_ATTRIBUTE_FLAG_ATTR_2_BIT |
 					GCI::E_IA_VERTEX_ATTRIBUTE_FLAG_ATTR_3_BIT;
 			inputLayoutDefinition.attributeArray[0] = { 0, "POSITION", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec3F32, 0 };
-			inputLayoutDefinition.attributeArray[1] = { 0, "COLOR", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec4F32, Ic3::Graphics::GCI::CxDefs::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND };
-			inputLayoutDefinition.attributeArray[2] = { 0, "NORMAL", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec3F32, Ic3::Graphics::GCI::CxDefs::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND };
-			inputLayoutDefinition.attributeArray[3] = { 0, "TEXCOORD", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec2F32, Ic3::Graphics::GCI::CxDefs::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND };
+			inputLayoutDefinition.attributeArray[1] = { 0, "COLOR", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec4F32, Ic3::Graphics::GCI::CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND };
+			inputLayoutDefinition.attributeArray[2] = { 0, "NORMAL", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec3F32, Ic3::Graphics::GCI::CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND };
+			inputLayoutDefinition.attributeArray[3] = { 0, "TEXCOORD", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec2F32, Ic3::Graphics::GCI::CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND };
 
-			const auto shaderPassthroughIADefaultVS = mShaderLibrary->getShader( CxDefs::GPA_RESOURCE_ID_SHADER_PASSTHROUGH_IA_DEFAULT_VS );
+			const auto shaderPassthroughIADefaultVS = mShaderLibrary->getShader( CxDef::GPA_RESOURCE_ID_SHADER_PASSTHROUGH_IA_DEFAULT_VS );
 
 			mCES.mGPUDevice->createCachedImmutableState<GCI::IAInputLayoutImmutableState>(
-					CxDefs::GPA_STATE_ID_IA_INPUT_LAYOUT_DEFAULT,
+					CxDef::GPA_STATE_ID_IA_INPUT_LAYOUT_DEFAULT,
 					inputLayoutDefinition,
 					*shaderPassthroughIADefaultVS );
 		}
@@ -109,14 +109,14 @@ namespace Ic3
 					GCI::E_IA_VERTEX_ATTRIBUTE_FLAG_ATTR_2_BIT |
 					GCI::E_IA_VERTEX_ATTRIBUTE_FLAG_ATTR_3_BIT;
 			inputLayoutDefinition.attributeArray[0] = { 0, "POSITION", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec3F32, 0 };
-			inputLayoutDefinition.attributeArray[1] = { 0, "COLOR", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec4F32, Ic3::Graphics::GCI::CxDefs::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND16 };
-			inputLayoutDefinition.attributeArray[2] = { 0, "NORMAL", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec3F32, Ic3::Graphics::GCI::CxDefs::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND16 };
-			inputLayoutDefinition.attributeArray[3] = { 0, "TEXCOORD", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec2F32, Ic3::Graphics::GCI::CxDefs::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND16 };
+			inputLayoutDefinition.attributeArray[1] = { 0, "COLOR", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec4F32, Ic3::Graphics::GCI::CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND16 };
+			inputLayoutDefinition.attributeArray[2] = { 0, "NORMAL", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec3F32, Ic3::Graphics::GCI::CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND16 };
+			inputLayoutDefinition.attributeArray[3] = { 0, "TEXCOORD", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec2F32, Ic3::Graphics::GCI::CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND16 };
 
-			const auto shaderPassthroughIADefaultVS = mShaderLibrary->getShader( CxDefs::GPA_RESOURCE_ID_SHADER_PASSTHROUGH_IA_DEFAULT_VS );
+			const auto shaderPassthroughIADefaultVS = mShaderLibrary->getShader( CxDef::GPA_RESOURCE_ID_SHADER_PASSTHROUGH_IA_DEFAULT_VS );
 
 			mCES.mGPUDevice->createCachedImmutableState<GCI::IAInputLayoutImmutableState>(
-					CxDefs::GPA_STATE_ID_IA_INPUT_LAYOUT_DEFAULT_16B,
+					CxDef::GPA_STATE_ID_IA_INPUT_LAYOUT_DEFAULT_16B,
 					inputLayoutDefinition,
 					*shaderPassthroughIADefaultVS );
 		}

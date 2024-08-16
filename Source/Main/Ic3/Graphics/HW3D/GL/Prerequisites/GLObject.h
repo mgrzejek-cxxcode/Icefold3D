@@ -7,9 +7,9 @@
 namespace Ic3::Graphics::GCI
 {
 
-	constexpr auto CX_GL_OBJECT_HANDLE_INVALID = Limits<GLuint>::maxValue;
+	constexpr auto CX_GL_OBJECT_HANDLE_INVALID = QLimits<GLuint>::maxValue;
 
-	constexpr auto CX_GL_BIND_TARGET_UNKNOWN = Limits<GLenum>::maxValue;
+	constexpr auto CX_GL_BIND_TARGET_UNKNOWN = QLimits<GLenum>::maxValue;
 
 	enum class GLObjectBaseType : enum_default_value_t
 	{

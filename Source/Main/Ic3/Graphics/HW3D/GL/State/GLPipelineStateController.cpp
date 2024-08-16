@@ -389,8 +389,8 @@ namespace Ic3::Graphics::GCI
 	{
 		auto * shaderStateCore = pShaderState.queryInterface<GLGraphicsShaderLinkageImmutableStateCore>();
 
-		auto constantBaseType = CxDefs::getVertexAttribFormatBaseDataType( pConstantInfo.iFormat );
-		auto constantLength = CxDefs::getVertexAttribFormatComponentsNum( pConstantInfo.iFormat );
+		auto constantBaseType = CxDef::getVertexAttribFormatBaseDataType( pConstantInfo.iFormat );
+		auto constantLength = CxDef::getVertexAttribFormatComponentsNum( pConstantInfo.iFormat );
 
 		smutil::updateUniformDataCurrentGL(
 				*shaderStateCore->mGLShaderPipelineObject,
@@ -419,7 +419,7 @@ namespace Ic3::Graphics::GCI
 		// and debugging a lot easier (unused buffers from previous passes did some confusion in few cases).
 		// glBindVertexBuffers(
 		// 	0u,
-		// 	gpm::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM,
+		// 	GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM,
 		// 	&( pVertexBufferBindings.separateBindings.handleArray[0] ),
 		// 	&( pVertexBufferBindings.separateBindings.offsetArray[0] ),
 		// 	&( pVertexBufferBindings.separateBindings.strideArray[0] ) );
@@ -505,8 +505,8 @@ namespace Ic3::Graphics::GCI
 	{
 		auto * shaderStateCompat = pShaderState.queryInterface<GLGraphicsShaderLinkageImmutableStateCompat>();
 
-		auto constantBaseType = CxDefs::getVertexAttribFormatBaseDataType( pConstantInfo.iFormat );
-		auto constantLength = CxDefs::getVertexAttribFormatComponentsNum( pConstantInfo.iFormat );
+		auto constantBaseType = CxDef::getVertexAttribFormatBaseDataType( pConstantInfo.iFormat );
+		auto constantLength = CxDef::getVertexAttribFormatComponentsNum( pConstantInfo.iFormat );
 
 		smutil::updateUniformDataExplicitGL(
 				*shaderStateCompat->mGLShaderProgramObject,

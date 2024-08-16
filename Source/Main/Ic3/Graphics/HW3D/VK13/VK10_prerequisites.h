@@ -4,7 +4,7 @@
 #ifndef __IC3_GRAPHICS_HW3D_VK13_PREREQUISITES_H__
 #define __IC3_GRAPHICS_HW3D_VK13_PREREQUISITES_H__
 
-#include <ic3/GPUapiVK/VKPrerequisites.h>
+#include <Ic3/GPUapiVK/VKPrerequisites.h>
 
 #if( IC3_BUILD_STATIC )
 #  define ICFGX_VK10_API

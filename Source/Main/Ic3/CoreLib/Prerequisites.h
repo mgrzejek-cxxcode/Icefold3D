@@ -8,6 +8,7 @@
 #include <Ic3/Cppx/BitUtils.h>
 #include <Ic3/Cppx/RefWrapper.h>
 #include <Ic3/Cppx/StaticLimits.h>
+#include <Ic3/Cppx/StringView.h>
 
 #if( IC3_BUILD_STATIC )
 #  define IC3_CORELIB_API
@@ -39,6 +40,14 @@
 
 #define friendapi protected
 
+namespace Ic3
+{
+
+	using Cppx::ArrayView;
+	using Cppx::StringView;
+
+}
+
 #include "Prerequisites/CoreDefs.h"
 #include "Prerequisites/CoreEnums.h"
 #include "Prerequisites/Result.h"
@@ -46,6 +55,14 @@
 
 namespace Ic3
 {
+
+	// E -> Enum
+	// S -> Struct
+	// I -> Interface
+	// C -> Class
+	// T -> Template
+	// Q -> Queries/Traits
+	// R -> Aliases/Typedefs
 
 	/// @brief Helper struct for triggering a "empty-init" ctor. Used whenever default initialization has a different meaning.
 	struct InitEmptyTag

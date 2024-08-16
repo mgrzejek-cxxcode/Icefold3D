@@ -14,7 +14,7 @@ namespace Ic3::System
 	ic3SysDeclareHandle( OSXMetalSystemDriver );
 	ic3SysDeclareHandle( OSXMetalRenderContext );
 
-	namespace platform
+	namespace Platform
 	{
 
 		struct OSXMetalDisplaySurfaceNativeData : public OSXWindowNativeData
@@ -36,7 +36,7 @@ namespace Ic3::System
 	}
 
 	/// @brief OSX-specific implementation of the MetalSystemDriver class.
-	class OSXMetalSystemDriver : public OSXNativeObject<MetalSystemDriver, platform::OSXMetalSystemDriverNativeData>
+	class OSXMetalSystemDriver : public OSXNativeObject<MetalSystemDriver, Platform::OSXMetalSystemDriverNativeData>
 	{
 	public:
 		OSXMetalSystemDriver( OSXDisplayManagerHandle pDisplayManager );
@@ -51,7 +51,7 @@ namespace Ic3::System
 	};
 
     /// @brief OSX-specific implementation of the MetalDisplaySurface class.
-    class OSXMetalDisplaySurface : public OSXNativeObject<MetalDisplaySurface, platform::OSXMetalDisplaySurfaceNativeData>
+    class OSXMetalDisplaySurface : public OSXNativeObject<MetalDisplaySurface, Platform::OSXMetalDisplaySurfaceNativeData>
     {
     public:
         explicit OSXMetalDisplaySurface( OSXMetalSystemDriverHandle pGLSystemDriver );

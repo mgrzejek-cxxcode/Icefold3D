@@ -1,12 +1,12 @@
 
-#ifndef __IC3_CPPX_SORTED_ARRAY__H__
-#define __IC3_CPPX_SORTED_ARRAY__H__
+#ifndef __IC3_CPPX_SORTED_ARRAY_H__
+#define __IC3_CPPX_SORTED_ARRAY_H__
 
 #include "StaticAlgo.h"
 #include "StaticLimits.h"
 #include <stdexcept>
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	template < typename TValue,
@@ -34,8 +34,7 @@ namespace Ic3
 		SortedArray( const SortedArray & ) = default;
 		SortedArray& operator=( const SortedArray & ) = default;
 
-		SortedArray()
-		{}
+		SortedArray() = default;
 
 		explicit SortedArray( const TAlloc & pAllocator )
 		: _underlyingContainer( pAllocator )
@@ -50,57 +49,67 @@ namespace Ic3
 			return _underlyingContainer[pIndex];
 		}
 
-		const TValue & operator[]( size_t pIndex ) const
+		IC3_ATTR_NO_DISCARD const TValue & operator[]( size_t pIndex ) const
 		{
 			return _underlyingContainer[pIndex];
 		}
 
-		TValue & at( size_t pIndex )
+		IC3_ATTR_NO_DISCARD TValue & at( size_t pIndex )
 		{
 			return _underlyingContainer.at( pIndex );
 		}
 
-		const TValue & at( size_t pIndex ) const
+		IC3_ATTR_NO_DISCARD const TValue & at( size_t pIndex ) const
 		{
 			return _underlyingContainer.at( pIndex );
 		}
 
-		Iterator begin()
+		IC3_ATTR_NO_DISCARD TValue * data() noexcept
+		{
+			return _underlyingContainer.data();
+		}
+
+		IC3_ATTR_NO_DISCARD const TValue * data() const noexcept
+		{
+			return _underlyingContainer.data();
+		}
+
+		IC3_ATTR_NO_DISCARD Iterator begin()
 		{
 			return _underlyingContainer.begin();
 		}
 
-		ConstIterator begin() const
+		IC3_ATTR_NO_DISCARD ConstIterator begin() const
 		{
 			return _underlyingContainer.begin();
 		}
 
-		Iterator end()
+		IC3_ATTR_NO_DISCARD Iterator end()
 		{
 			return _underlyingContainer.end();
 		}
 
-		ConstIterator end() const
+		IC3_ATTR_NO_DISCARD ConstIterator end() const
 		{
 			return _underlyingContainer.end();
 		}
 
-		TValue & front()
+		IC3_ATTR_NO_DISCARD TValue & front()
 		{
 			return _underlyingContainer.front();
 		}
 
-		const TValue & front() const
+		IC3_ATTR_NO_DISCARD const TValue & front() const
 		{
 			return _underlyingContainer.front();
 		}
 
-		TValue & back()
+		IC3_ATTR_NO_DISCARD TValue & back()
 		{
 			return _underlyingContainer.back();
 		}
 
-		const TValue & back() const
+		IC3_ATTR_NO_DISCARD const TValue & back() const
 		{
 			return _underlyingContainer.back();
 		}
@@ -119,20 +128,20 @@ namespace Ic3
 			return _underlyingContainer.insert( insertIterator, pValue );
 		}
 
-		Iterator find( const TValue & pValue )
+		IC3_ATTR_NO_DISCARD Iterator find( const TValue & pValue )
 		{
 			auto elementPos = _findLower( pValue, CompareType{} );
-			if( ( elementPos != CxDefs::INVALID_POSITION ) && ( _underlyingContainer[elementPos] == pValue ) )
+			if( ( elementPos != CxDef::INVALID_POSITION ) && ( _underlyingContainer[elementPos] == pValue ) )
 			{
 				return _underlyingContainer.begin() + elementPos;
 			}
 			return _underlyingContainer.end();
 		}
 
-		ConstIterator find( const TValue & pValue ) const
+		IC3_ATTR_NO_DISCARD ConstIterator find( const TValue & pValue ) const
 		{
 			auto elementPos = _findLower( pValue, CompareType{} );
-			if( ( elementPos != CxDefs::INVALID_POSITION ) && ( _underlyingContainer[elementPos] == pValue ) )
+			if( ( elementPos != CxDef::INVALID_POSITION ) && ( _underlyingContainer[elementPos] == pValue ) )
 			{
 				return _underlyingContainer.begin() + elementPos;
 			}
@@ -140,10 +149,10 @@ namespace Ic3
 		}
 
 		template < typename TRef, typename TRefEqual = CmpEqualT<TValue> >
-		Iterator find( const TRef & pValue, TRefEqual pRefEqual = TRefEqual{} )
+		IC3_ATTR_NO_DISCARD Iterator find( const TRef & pValue, TRefEqual pRefEqual = TRefEqual{} )
 		{
 			auto elementPos = _findLower( pValue, CompareType{} );
-			if( ( elementPos != CxDefs::INVALID_POSITION ) && pRefEqual( _underlyingContainer[elementPos], pValue ) )
+			if( ( elementPos != CxDef::INVALID_POSITION ) && pRefEqual( _underlyingContainer[elementPos], pValue ) )
 			{
 				return _underlyingContainer.begin() + elementPos;
 			}
@@ -151,10 +160,10 @@ namespace Ic3
 		}
 
 		template < typename TRef, typename TRefEqual = CmpEqualT<TValue> >
-		ConstIterator find( const TRef & pValue, TRefEqual pRefEqual = TRefEqual{} ) const
+		IC3_ATTR_NO_DISCARD ConstIterator find( const TRef & pValue, TRefEqual pRefEqual = TRefEqual{} ) const
 		{
 			auto elementPos = _findLower( pValue, CompareType{} );
-			if( ( elementPos != CxDefs::INVALID_POSITION ) && pRefEqual( _underlyingContainer[elementPos], pValue ) )
+			if( ( elementPos != CxDef::INVALID_POSITION ) && pRefEqual( _underlyingContainer[elementPos], pValue ) )
 			{
 				return _underlyingContainer.begin() + elementPos;
 			}
@@ -162,10 +171,10 @@ namespace Ic3
 		}
 
 		template < typename TRef, typename TRefCompare = CmpLessT<TValue>, typename TRefEqual = CmpEqualT<TValue> >
-		Iterator find( const TRef & pValue, TRefCompare pRefCompare, TRefEqual pRefEqual )
+		IC3_ATTR_NO_DISCARD Iterator find( const TRef & pValue, TRefCompare pRefCompare, TRefEqual pRefEqual )
 		{
 			auto elementPos = _findLower( pValue, pRefCompare );
-			if( ( elementPos != CxDefs::INVALID_POSITION ) && pRefEqual( _underlyingContainer[elementPos], pValue ) )
+			if( ( elementPos != CxDef::INVALID_POSITION ) && pRefEqual( _underlyingContainer[elementPos], pValue ) )
 			{
 				return _underlyingContainer.begin() + elementPos;
 			}
@@ -173,10 +182,10 @@ namespace Ic3
 		}
 
 		template < typename TRef, typename TRefCompare = CmpLessT<TValue>, typename TRefEqual = CmpEqualT<TValue> >
-		ConstIterator find( const TRef & pValue, TRefCompare pRefCompare, TRefEqual pRefEqual ) const
+		IC3_ATTR_NO_DISCARD ConstIterator find( const TRef & pValue, TRefCompare pRefCompare, TRefEqual pRefEqual ) const
 		{
 			auto elementPos = _findLower( pValue, pRefCompare );
-			if( ( elementPos != CxDefs::INVALID_POSITION ) && pRefEqual( _underlyingContainer[elementPos], pValue ) )
+			if( ( elementPos != CxDef::INVALID_POSITION ) && pRefEqual( _underlyingContainer[elementPos], pValue ) )
 			{
 				return _underlyingContainer.begin() + elementPos;
 			}
@@ -196,7 +205,7 @@ namespace Ic3
 		Iterator remove( const TValue & pValue )
 		{
 			auto rangeBeginPos = _findLower( pValue, CompareType{} );
-			if( rangeBeginPos != CxDefs::INVALID_POSITION )
+			if( rangeBeginPos != CxDef::INVALID_POSITION )
 			{
 				auto rangeEndPos = _findUpper( pValue, CompareType{} );
 				const auto eraseFrom = _underlyingContainer.begin() + rangeBeginPos;
@@ -209,16 +218,15 @@ namespace Ic3
 		Iterator remove( const TValue & pLeft, const TValue & pRight )
 		{
 			auto rangeBeginPos = _findLower( pLeft, CompareType{} );
-			if( rangeBeginPos != CxDefs::INVALID_POSITION )
+			if( rangeBeginPos != CxDef::INVALID_POSITION )
 			{
 				auto rangeEndPos = _findUpper( pRight, CompareType{} );
-				if( rangeEndPos < rangeBeginPos )
+				if( rangeBeginPos <= rangeEndPos )
 				{
-					throw std::out_of_range("Invalid range specification" );
+					const auto eraseFrom = _underlyingContainer.begin() + rangeBeginPos;
+					const auto eraseTo = _underlyingContainer.begin() + rangeEndPos;
+					return _underlyingContainer.erase( eraseFrom, eraseTo );
 				}
-				const auto eraseFrom = _underlyingContainer.begin() + rangeBeginPos;
-				const auto eraseTo = _underlyingContainer.begin() + rangeEndPos;
-				return _underlyingContainer.erase( eraseFrom, eraseTo );
 			}
 			return _underlyingContainer.end();
 		}
@@ -251,12 +259,12 @@ namespace Ic3
 			_underlyingContainer.reserve( pCapacity );
 		}
 
-		size_t size() const
+		IC3_ATTR_NO_DISCARD size_t size() const
 		{
 			return _underlyingContainer.size();
 		}
 
-		bool empty() const
+		IC3_ATTR_NO_DISCARD bool empty() const
 		{
 			return _underlyingContainer.empty();
 		}
@@ -282,7 +290,7 @@ namespace Ic3
 			auto rangeBegin = _underlyingContainer.begin();
 			auto rangeEnd = _underlyingContainer.end();
 			auto resultIter = std::lower_bound( rangeBegin, rangeEnd, pRefValue, std::forward<TPred>( pPredicate )... );
-			return ( resultIter != rangeEnd ) ? ( resultIter - rangeBegin ) : CxDefs::INVALID_POSITION;
+			return ( resultIter != rangeEnd ) ? ( resultIter - rangeBegin ) : CxDef::INVALID_POSITION;
 		}
 
 		template <typename TRef, typename... TPred>
@@ -291,7 +299,7 @@ namespace Ic3
 			auto rangeBegin = _underlyingContainer.begin();
 			auto rangeEnd = _underlyingContainer.end();
 			auto resultIter = std::upper_bound( rangeBegin, rangeEnd, pRefValue, std::forward<TPred>( pPredicate )... );
-			return ( resultIter != rangeEnd ) ? ( resultIter - rangeBegin ) : CxDefs::INVALID_POSITION;
+			return ( resultIter != rangeEnd ) ? ( resultIter - rangeBegin ) : CxDef::INVALID_POSITION;
 		}
 
 	private:
@@ -324,4 +332,4 @@ namespace Ic3
 
 }
 
-#endif // __IC3_CPPX_SORTED_ARRAY__H__
+#endif // __IC3_CPPX_SORTED_ARRAY_H__

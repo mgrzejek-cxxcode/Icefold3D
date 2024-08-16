@@ -1,8 +1,8 @@
 
 #include "VK_presentationLayer.h"
-#include <ic3/GPUapiVK/VKUDevice.h>
-#include <ic3/GPUapiVK/VK_commandList.h>
-#include <ic3/GPUapiVK/VK_commandSystem.h>
+#include <Ic3/GPUapiVK/VKUDevice.h>
+#include <Ic3/GPUapiVK/VK_commandList.h>
+#include <Ic3/GPUapiVK/VK_commandSystem.h>
 
 namespace Ic3::Graphics::GCI
 {

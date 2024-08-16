@@ -12,7 +12,7 @@ namespace Ic3::System
 	class JavaNativeInterface;
 	class JavaVMInstance;
 
-	namespace platform
+	namespace Platform
 	{
 
 		using JNIEnvPtr = JNIEnv *;

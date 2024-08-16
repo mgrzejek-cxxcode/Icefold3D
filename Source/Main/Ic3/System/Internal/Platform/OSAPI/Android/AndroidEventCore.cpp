@@ -10,7 +10,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		void _androidOnAppCommand( AndroidAppState * pAppState, int32_t pCommand );
@@ -31,18 +31,18 @@ namespace Ic3::System
 	AndroidEventController::AndroidEventController( SysContextHandle pSysContext )
 	: AndroidNativeObject( std::move( pSysContext ) )
 	{
-		auto & aSessionData = platform::androidGetASessionData( *this );
-		aSessionData.aCommonAppState->onAppCmd = platform::_androidOnAppCommand;
-		aSessionData.aCommonAppState->onInputEvent = platform::_androidOnInputEvent;
-		aSessionData.aCommonAppState->ic3SetUserData( platform::E_ANDROID_APP_STATE_USER_DATA_INDEX_EVENT_CONTROLLER, this );
+		auto & aSessionData = Platform::androidGetASessionData( *this );
+		aSessionData.aCommonAppState->onAppCmd = Platform::_androidOnAppCommand;
+		aSessionData.aCommonAppState->onInputEvent = Platform::_androidOnInputEvent;
+		aSessionData.aCommonAppState->ic3SetUserData( Platform::E_ANDROID_APP_STATE_USER_DATA_INDEX_EVENT_CONTROLLER, this );
 	}
 
 	AndroidEventController::~AndroidEventController() noexcept
 	{
-		auto & aSessionData = platform::androidGetASessionData( *this );
+		auto & aSessionData = Platform::androidGetASessionData( *this );
 		aSessionData.aCommonAppState->onAppCmd = nullptr;
 		aSessionData.aCommonAppState->onInputEvent = nullptr;
-		aSessionData.aCommonAppState->ic3SetUserData( platform::E_ANDROID_APP_STATE_USER_DATA_INDEX_EVENT_CONTROLLER, nullptr );
+		aSessionData.aCommonAppState->ic3SetUserData( Platform::E_ANDROID_APP_STATE_USER_DATA_INDEX_EVENT_CONTROLLER, nullptr );
 	}
 
 	void AndroidEventController::_nativeRegisterEventSource( EventSource & pEventSource )
@@ -58,13 +58,13 @@ namespace Ic3::System
 		// AndroidAppState (modified android_app struct) is the basic entity used to store any internal
 		// data (to avoid introducing our custom types into the low-level android stuff).
 
-		auto & aSessionData = platform::androidGetASessionData( *this );
+		auto & aSessionData = Platform::androidGetASessionData( *this );
 
 		int events = 0;
 		AndroidPollSource * source = nullptr;
 
 		// Poll single event without any wait ("peek mode"). We will get the source in case of success.
-		auto pollResult = ALooper_pollOnce( platform::CX_ANDROID_EVENT_LOOPER_WAIT_TIMEOUT_IMMEDIATE,
+		auto pollResult = ALooper_pollOnce( Platform::CX_ANDROID_EVENT_LOOPER_WAIT_TIMEOUT_IMMEDIATE,
 		                                    nullptr,
 		                                    &events,
 		                                    reinterpret_cast<void**>( &source ) );
@@ -85,7 +85,7 @@ namespace Ic3::System
 					// So we use our own additional E_ANDROID_EVT_CMD_USER_DESTROY_REQUESTED event code
 					// and artificially emit it when the destroyRequested is set to true (the value changes
 					// *after* process() is executed on a source).
-					_androidOnAppCommand( aSessionData.aCommonAppState, platform::E_ANDROID_EVT_CMD_USER_DESTROY_REQUESTED );
+					_androidOnAppCommand( aSessionData.aCommonAppState, Platform::E_ANDROID_EVT_CMD_USER_DESTROY_REQUESTED );
 				}
 
 				return true;
@@ -97,13 +97,13 @@ namespace Ic3::System
 
 	bool AndroidEventController::_nativeDispatchPendingEventsWait()
 	{
-		auto & aSessionData = platform::androidGetASessionData( *this );
+		auto & aSessionData = Platform::androidGetASessionData( *this );
 
 		int events = 0;
 		AndroidPollSource * source = nullptr;
 
 		// Same thing as inside nativeFetchNextEvent, but here we block if there is no event in the queue.
-		auto pollResult = ALooper_pollOnce( platform::CX_ANDROID_EVENT_LOOPER_WAIT_TIMEOUT_INFINITY,
+		auto pollResult = ALooper_pollOnce( Platform::CX_ANDROID_EVENT_LOOPER_WAIT_TIMEOUT_INFINITY,
 		                                    nullptr,
 		                                    &events,
 		                                    reinterpret_cast<void**>( &source ) );
@@ -117,7 +117,7 @@ namespace Ic3::System
 				if( aSessionData.aCommonAppState->destroyRequested != 0 )
 				{
 					_androidOnAppCommand( aSessionData.aCommonAppState,
-					                      platform::E_ANDROID_EVT_CMD_USER_DESTROY_REQUESTED );
+					                      Platform::E_ANDROID_EVT_CMD_USER_DESTROY_REQUESTED );
 				}
 
 				return true;
@@ -128,7 +128,7 @@ namespace Ic3::System
 	}
 
 
-	namespace platform
+	namespace Platform
 	{
 
 		void _androidOnAppCommand( AndroidAppState * pAppState, int32_t pCommand )
@@ -166,7 +166,7 @@ namespace Ic3::System
 		bool nativeEventTranslate( EventController & pEventController, const NativeEventType & pNativeEvent, EventObject & pOutEvent )
 		{
 			auto * androidEventController = pEventController.queryInterface<AndroidEventController>();
-			auto & aSessionData = platform::androidGetASessionData( *androidEventController );
+			auto & aSessionData = Platform::androidGetASessionData( *androidEventController );
 
 			pOutEvent.commonData.eventCode != E_EVENT_CODE_UNDEFINED;
 

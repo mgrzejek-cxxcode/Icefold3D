@@ -6,13 +6,13 @@
 #include "StaticAlgo.h"
 #include "TypeTraits.h"
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	template <typename TChar = char>
 	struct StringView
 	{
-		static_assert( IsTypeOnTypeList<TChar, char, wchar_t, char16_t, char32_t>::value, "Invalid char type for StringView" );
+		static_assert( QIsTypeOnTypeList<TChar, char, wchar_t, char16_t, char32_t>::value, "Invalid char type for StringView" );
 
 	public:
 		using CharType = typename std::remove_cv<TChar>::type;

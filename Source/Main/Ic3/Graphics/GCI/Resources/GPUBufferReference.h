@@ -21,7 +21,7 @@ namespace Ic3::Graphics::GCI
 
 		GPUBufferReference( GPUBufferHandle pGPUBuffer );
 		GPUBufferReference( GPUBufferHandle pGPUBuffer, const GPUMemoryRegion & pReferencedSubRegion );
-		GPUBufferReference( GPUBufferHandle pGPUBuffer, gpu_memory_size_t pOffset, gpu_memory_size_t pSize = CxDefs::GPU_MEMORY_SIZE_MAX );
+		GPUBufferReference( GPUBufferHandle pGPUBuffer, gpu_memory_size_t pOffset, gpu_memory_size_t pSize = CxDef::GPU_MEMORY_SIZE_MAX );
 
 		GPUBuffer * operator->() const noexcept;
 
@@ -44,7 +44,7 @@ namespace Ic3::Graphics::GCI
 		bool setRefBuffer( GPUBufferHandle pGPUBuffer, const GPUMemoryRegion & pReferencedSubRegion );
 
 		/// @brief
-		bool setRefBuffer( GPUBufferHandle pGPUBuffer, gpu_memory_size_t pOffset, gpu_memory_size_t pSize = CxDefs::GPU_MEMORY_SIZE_MAX );
+		bool setRefBuffer( GPUBufferHandle pGPUBuffer, gpu_memory_size_t pOffset, gpu_memory_size_t pSize = CxDef::GPU_MEMORY_SIZE_MAX );
 
 		/// @brief
 		bool reset();

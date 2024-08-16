@@ -5,7 +5,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		X11SessionData & x11GetXSessionData( SysContext & pSysContext )

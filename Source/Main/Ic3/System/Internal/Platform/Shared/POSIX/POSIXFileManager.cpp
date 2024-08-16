@@ -6,7 +6,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		FILE * _posixOpenFileGeneric( const char * pFilePath, const char * pOpenMode );
@@ -27,8 +27,8 @@ namespace Ic3::System
 
 	FileHandle PosixFileManager::_nativeOpenFile( std::string pFilePath, EFileOpenMode pOpenMode )
 	{
-		auto openMode = platform::_posixTranslateFileOpenMode( pOpenMode );
-		auto filePtr = platform::_posixOpenFileGeneric( pFilePath.c_str(), openMode );
+		auto openMode = Platform::_posixTranslateFileOpenMode( pOpenMode );
+		auto filePtr = Platform::_posixOpenFileGeneric( pFilePath.c_str(), openMode );
 		auto fileObject = createSysObject<PosixFile>( getHandle<PosixFileManager>() );
 		fileObject->setInternalFilePtr( filePtr );
 
@@ -37,7 +37,7 @@ namespace Ic3::System
 
 	FileHandle PosixFileManager::_nativeCreateFile( std::string pFilePath )
 	{
-		auto filePtr = platform::_posixOpenFileGeneric( pFilePath.c_str(), "w+" );
+		auto filePtr = Platform::_posixOpenFileGeneric( pFilePath.c_str(), "w+" );
 		auto fileObject = createSysObject<PosixFile>( getHandle<PosixFileManager>() );
 		fileObject->setInternalFilePtr( filePtr );
 
@@ -46,9 +46,9 @@ namespace Ic3::System
 
 	FileHandle PosixFileManager::_nativeCreateTemporaryFile()
 	{
-		auto tempFilePath = platform::_posixGenerateTempFileName();
+		auto tempFilePath = Platform::_posixGenerateTempFileName();
 
-		auto filePtr = platform::_posixOpenFileGeneric( tempFilePath.c_str(), "w+" );
+		auto filePtr = Platform::_posixOpenFileGeneric( tempFilePath.c_str(), "w+" );
 		auto fileObject = createSysObject<PosixFile>( getHandle<PosixFileManager>() );
 		fileObject->setInternalFilePtr( filePtr );
 
@@ -99,7 +99,7 @@ namespace Ic3::System
 
 	std::string PosixFileManager::_nativeGenerateTemporaryFileName()
 	{
-		return platform::_posixGenerateTempFileName();
+		return Platform::_posixGenerateTempFileName();
 	}
 
 	bool PosixFileManager::_nativeCheckDirectoryExists( const std::string & pDirPath )
@@ -155,12 +155,12 @@ namespace Ic3::System
 
 	file_offset_t PosixFile::_nativeSetFilePointer( file_offset_t pOffset, EFilePointerRefPos pRefPos )
 	{
-		auto fileSeekPos = platform::_posixTranslateFilePointerRefPos( pRefPos );
+		auto fileSeekPos = Platform::_posixTranslateFilePointerRefPos( pRefPos );
 		auto seekResult = ::fseek( mNativeData.filePtr, static_cast<long>( pOffset ), fileSeekPos );
 
 		if( seekResult != 0 )
 		{
-			auto errnoString = platform::posixQueryErrnoStringByCode( errno );
+			auto errnoString = Platform::posixQueryErrnoStringByCode( errno );
 			ic3ThrowDesc( E_EXC_DEBUG_PLACEHOLDER, std::move( errnoString ) );
 		}
 
@@ -207,7 +207,7 @@ namespace Ic3::System
 	}
 
 
-	namespace platform
+	namespace Platform
 	{
 
 		FILE * _posixOpenFileGeneric( const char * pFilePath, const char * pOpenMode )
@@ -216,7 +216,7 @@ namespace Ic3::System
 
 			if( !filePtr )
 			{
-				auto errnoString = platform::posixQueryErrnoStringByCode( errno );
+				auto errnoString = Platform::posixQueryErrnoStringByCode( errno );
 				ic3ThrowDesc( E_EXC_SYSTEM_FILE_OPEN_ERROR, std::move( errnoString ) );
 			}
 

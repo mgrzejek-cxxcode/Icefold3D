@@ -13,7 +13,7 @@ namespace Ic3::System
 	template <typename TVal>
 	using ComPtr = Microsoft::WRL::ComPtr<TVal>;
 
-	namespace platform
+	namespace Platform
 	{
 
 		std::string mseQueryCOMErrorMessage( HRESULT pHResult );

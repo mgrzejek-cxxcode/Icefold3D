@@ -18,22 +18,22 @@ namespace Ic3::System
 			return 0;
 		}
 
-		const auto readSize = getMinOf( pTargetBufferSize, pReadSize );
+		const auto readSize = Cppx::getMinOf( pTargetBufferSize, pReadSize );
 
 		return _nativeReadData( pTargetBuffer, readSize );
 	}
 
-	file_size_t File::read( const ReadWriteMemoryView & pTarget, file_size_t pReadSize )
+	file_size_t File::read( const Cppx::ReadWriteMemoryView & pTarget, file_size_t pReadSize )
 	{
 		return read( pTarget.data(), pTarget.size(), pReadSize );
 	}
 
-	file_size_t File::readAuto( DynamicMemoryBuffer & pTarget, file_size_t pReadSize )
+	file_size_t File::readAuto( Cppx::DynamicMemoryBuffer & pTarget, file_size_t pReadSize )
 	{
 		return _readAuto( pTarget, pReadSize );
 	}
 
-	file_size_t File::readAuto( DynamicByteArray & pTarget, file_size_t pReadSize )
+	file_size_t File::readAuto( Cppx::DynamicByteArray & pTarget, file_size_t pReadSize )
 	{
 		return _readAuto( pTarget, pReadSize );
 	}
@@ -45,17 +45,17 @@ namespace Ic3::System
 			return 0;
 		}
 
-		const auto writeSize = getMinOf( pDataSize, pWriteSize );
+		const auto writeSize = Cppx::getMinOf( pDataSize, pWriteSize );
 
 		return _nativeWriteData( pData, writeSize );
 	}
 	
-	file_size_t File::write( const MemoryBuffer & pSource, file_size_t pWriteSize )
+	file_size_t File::write( const Cppx::MemoryBuffer & pSource, file_size_t pWriteSize )
 	{
 		return _write( pSource, pWriteSize );
 	}
 
-	file_size_t File::write( const ByteArray & pSource, file_size_t pWriteSize )
+	file_size_t File::write( const Cppx::ByteArray & pSource, file_size_t pWriteSize )
 	{
 		return _write( pSource, pWriteSize );
 	}

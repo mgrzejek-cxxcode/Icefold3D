@@ -60,16 +60,16 @@ namespace Ic3::System
 	using DisplayVideoModePredicate = std::function<bool( const DisplayVideoMode & )>;
 
 	/// @brief Represents invalid display system index (of an adapter or an output, for example).
-	inline constexpr dsm_index_t CX_DSM_INDEX_INVALID = Limits<dsm_index_t>::maxValue - 1;
+	inline constexpr dsm_index_t CX_DSM_INDEX_INVALID = Cppx::QLimits<dsm_index_t>::maxValue - 1;
 
 	/// @brief
-	inline constexpr dsm_index_t CX_DSM_INDEX_DEFAULT = Limits<dsm_index_t>::maxValue;
+	inline constexpr dsm_index_t CX_DSM_INDEX_DEFAULT = Cppx::QLimits<dsm_index_t>::maxValue;
 
 	/// @brief
-	inline constexpr dsm_output_id_t CX_DSM_OUTPUT_ID_DEFAULT = Limits<dsm_output_id_t>::maxValue;
+	inline constexpr dsm_output_id_t CX_DSM_OUTPUT_ID_DEFAULT = Cppx::QLimits<dsm_output_id_t>::maxValue;
 
 	/// @brief Represents invalid display settings hash. Used to identify/report invalid and/or empty configurations.
-	inline constexpr dsm_video_settings_hash_t CX_DSM_VIDEO_SETTINGS_HASH_INVALID = Limits<dsm_video_settings_hash_t>::maxValue;
+	inline constexpr dsm_video_settings_hash_t CX_DSM_VIDEO_SETTINGS_HASH_INVALID = Cppx::QLimits<dsm_video_settings_hash_t>::maxValue;
 
 	/// @brief Specifies supported types of drivers available through a DisplayManager.
 	/// Driver support is platform-specific and some of them may not be available on some systems.

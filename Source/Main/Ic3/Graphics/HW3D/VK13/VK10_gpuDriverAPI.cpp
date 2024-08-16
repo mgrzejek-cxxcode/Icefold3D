@@ -2,7 +2,7 @@
 #include "VK10UDriverAPI.h"
 #include "ic3/GPUapiVK/VKUDriver.h"
 #include "ic3/GPUapiVK/VKUDevice.h"
-#include <ic3/GPUapiVK/system/VK_presentationLayer.h>
+#include <Ic3/GPUapiVK/system/VK_presentationLayer.h>
 
 namespace Ic3::Graphics::GCI
 {

@@ -12,11 +12,14 @@
 namespace Ic3
 {
 
-	namespace CxDefs
+	namespace CxDef
 	{
 
 		/// @brief Represents max value which can be stored in the size_t type.
 		inline constexpr size_t MAX_SIZE = static_cast<size_t>( -1 );
+
+		/// @brief
+		inline constexpr size_t INVALID_LENGTH = static_cast<size_t>( -1 );
 
 		/// @brief Represents and invalid position (e.g. in a container or a continuous range).
 		inline constexpr size_t INVALID_POSITION = static_cast<size_t>( -1 );
@@ -52,6 +55,12 @@ namespace Ic3
 	inline TResult numeric_cast( TInput pInput )
 	{
 		ic3DebugAssert( pInput <= std::numeric_limits<TResult>::max() );
+		return static_cast<TResult>( pInput );
+	}
+
+	template <typename TResult, typename TInput>
+	inline constexpr TResult static_numeric_cast( TInput pInput )
+	{
 		return static_cast<TResult>( pInput );
 	}
 

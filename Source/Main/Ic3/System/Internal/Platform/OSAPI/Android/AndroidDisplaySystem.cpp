@@ -8,7 +8,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		EColorFormat _androidTranslateAHWBufferFormatToColorFormat( AHardwareBuffer_Format pAHWBufferFormat );
@@ -50,14 +50,14 @@ namespace Ic3::System
 
 	void AndroidDisplayManager::_nativeQueryDefaultDisplaySize( DisplaySize & pOutSize ) const
 	{
-		auto & aSessionData = platform::androidGetASessionData( *this );
-		pOutSize = platform::androidQueryNativeWindowSize( aSessionData.aNativeWindow );
+		auto & aSessionData = Platform::androidGetASessionData( *this );
+		pOutSize = Platform::androidQueryNativeWindowSize( aSessionData.aNativeWindow );
 	}
 
 	void AndroidDisplayManager::_nativeQueryMinWindowSize( DisplaySize & pOutSize ) const
 	{
-		auto & aSessionData = platform::androidGetASessionData( *this );
-		pOutSize = platform::androidQueryNativeWindowSize( aSessionData.aNativeWindow );
+		auto & aSessionData = Platform::androidGetASessionData( *this );
+		pOutSize = Platform::androidQueryNativeWindowSize( aSessionData.aNativeWindow );
 	}
 
 
@@ -86,11 +86,11 @@ namespace Ic3::System
 
 	void AndroidDisplayDriver::_nativeEnumVideoModes( DisplayOutput & pOutput, EColorFormat pColorFormat )
 	{
-		auto & aSessionData = platform::androidGetASessionData( *this );
+		auto & aSessionData = Platform::androidGetASessionData( *this );
 
 		auto aWindowFormat = ANativeWindow_getFormat( aSessionData.aNativeWindow );
 		auto aHWBufferFormat = static_cast<AHardwareBuffer_Format>( aWindowFormat );
-		auto colorFormat = platform::_androidTranslateAHWBufferFormatToColorFormat( aHWBufferFormat );
+		auto colorFormat = Platform::_androidTranslateAHWBufferFormatToColorFormat( aHWBufferFormat );
 
 		if( pColorFormat != colorFormat )
 		{
@@ -109,16 +109,16 @@ namespace Ic3::System
 
 	EColorFormat AndroidDisplayDriver::_nativeQueryDefaultSystemColorFormat() const
 	{
-		auto & aSessionData = platform::androidGetASessionData( *this );
+		auto & aSessionData = Platform::androidGetASessionData( *this );
 
 		auto aWindowFormat = ANativeWindow_getFormat( aSessionData.aNativeWindow );
 		auto aHWBufferFormat = static_cast<AHardwareBuffer_Format>( aWindowFormat );
-		auto colorFormat = platform::_androidTranslateAHWBufferFormatToColorFormat( aHWBufferFormat );
+		auto colorFormat = Platform::_androidTranslateAHWBufferFormatToColorFormat( aHWBufferFormat );
 
 		return colorFormat;
 	}
 
-	namespace platform
+	namespace Platform
 	{
 
 		EColorFormat _androidTranslateAHWBufferFormatToColorFormat( AHardwareBuffer_Format pAHWBufferFormat )

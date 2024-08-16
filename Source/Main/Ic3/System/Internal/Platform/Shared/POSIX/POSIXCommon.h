@@ -7,7 +7,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		const char * posixQueryErrnoStringByCode( int pErrno );

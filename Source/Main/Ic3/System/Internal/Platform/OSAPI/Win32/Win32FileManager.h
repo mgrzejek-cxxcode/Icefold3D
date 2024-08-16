@@ -8,7 +8,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 		enum EWin32FileFlags : uint32
 		{
@@ -39,7 +39,7 @@ namespace Ic3::System
 		virtual bool _nativeCheckFileExists( const std::string & pFilePath ) override final;
 	};
 
-	class Win32File : public Win32NativeObject<File, platform::Win32FileNativeData>
+	class Win32File : public Win32NativeObject<File, Platform::Win32FileNativeData>
 	{
 		friend class Win32FileManager;
 

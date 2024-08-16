@@ -4,7 +4,7 @@
 #include "Prerequisites.h"
 #include <chrono>
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	using duration_value_t = uint64;

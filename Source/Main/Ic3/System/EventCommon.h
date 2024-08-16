@@ -95,7 +95,7 @@ namespace Ic3::System
 	};
 
 
-	namespace CxDefs
+	namespace CxDef
 	{
 
 		inline constexpr event_code_value_t declareEventCode( EEventBaseType pEventBaseType, EEventCategory pEventCategory, EEventCodeIndex pEventCodeIndex )
@@ -166,36 +166,36 @@ namespace Ic3::System
 	enum EEventCode : event_code_value_t
 	{
 		E_EVENT_CODE_UNDEFINED = 0,
-		E_EVENT_CODE_APP_ACTIVITY_DISPLAY_INIT  = CxDefs::declareEventCodeAppActivity( EEventCodeIndex::AppActivityDisplayInit ),
-		E_EVENT_CODE_APP_ACTIVITY_DISPLAY_TERM  = CxDefs::declareEventCodeAppActivity( EEventCodeIndex::AppActivityDisplayTerm ),
-		E_EVENT_CODE_APP_ACTIVITY_FOCUS_GAINED  = CxDefs::declareEventCodeAppActivity( EEventCodeIndex::AppActivityFocusGained ),
-		E_EVENT_CODE_APP_ACTIVITY_FOCUS_LOST    = CxDefs::declareEventCodeAppActivity( EEventCodeIndex::AppActivityFocusLost ),
-		E_EVENT_CODE_APP_ACTIVITY_PAUSE         = CxDefs::declareEventCodeAppActivity( EEventCodeIndex::AppActivityPause ),
-		E_EVENT_CODE_APP_ACTIVITY_RESUME        = CxDefs::declareEventCodeAppActivity( EEventCodeIndex::AppActivityResume ),
-		E_EVENT_CODE_APP_ACTIVITY_START         = CxDefs::declareEventCodeAppActivity( EEventCodeIndex::AppActivityStart ),
-		E_EVENT_CODE_APP_ACTIVITY_STOP          = CxDefs::declareEventCodeAppActivity( EEventCodeIndex::AppActivityStop ),
-		E_EVENT_CODE_APP_ACTIVITY_QUIT          = CxDefs::declareEventCodeAppActivity( EEventCodeIndex::AppActivityQuit ),
-		E_EVENT_CODE_APP_ACTIVITY_TERMINATE     = CxDefs::declareEventCodeAppActivity( EEventCodeIndex::AppActivityTerminate ),
+		E_EVENT_CODE_APP_ACTIVITY_DISPLAY_INIT  = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityDisplayInit ),
+		E_EVENT_CODE_APP_ACTIVITY_DISPLAY_TERM  = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityDisplayTerm ),
+		E_EVENT_CODE_APP_ACTIVITY_FOCUS_GAINED  = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityFocusGained ),
+		E_EVENT_CODE_APP_ACTIVITY_FOCUS_LOST    = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityFocusLost ),
+		E_EVENT_CODE_APP_ACTIVITY_PAUSE         = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityPause ),
+		E_EVENT_CODE_APP_ACTIVITY_RESUME        = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityResume ),
+		E_EVENT_CODE_APP_ACTIVITY_START         = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityStart ),
+		E_EVENT_CODE_APP_ACTIVITY_STOP          = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityStop ),
+		E_EVENT_CODE_APP_ACTIVITY_QUIT          = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityQuit ),
+		E_EVENT_CODE_APP_ACTIVITY_TERMINATE     = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityTerminate ),
 
-		E_EVENT_CODE_INPUT_GAMEPAD_AXIS    = CxDefs::declareEventCodeInputGamepad( EEventCodeIndex::InputGamepadAxis ),
-		E_EVENT_CODE_INPUT_GAMEPAD_BUTTON  = CxDefs::declareEventCodeInputGamepad( EEventCodeIndex::InputGamepadButton ),
-		E_EVENT_CODE_INPUT_GAMEPAD_STATE   = CxDefs::declareEventCodeInputGamepad( EEventCodeIndex::InputGamepadState ),
+		E_EVENT_CODE_INPUT_GAMEPAD_AXIS    = CxDef::declareEventCodeInputGamepad( EEventCodeIndex::InputGamepadAxis ),
+		E_EVENT_CODE_INPUT_GAMEPAD_BUTTON  = CxDef::declareEventCodeInputGamepad( EEventCodeIndex::InputGamepadButton ),
+		E_EVENT_CODE_INPUT_GAMEPAD_STATE   = CxDef::declareEventCodeInputGamepad( EEventCodeIndex::InputGamepadState ),
 
-		E_EVENT_CODE_INPUT_KEYBOARD  = CxDefs::declareEventCodeInputKeyboard( EEventCodeIndex::InputKeyboard ),
+		E_EVENT_CODE_INPUT_KEYBOARD  = CxDef::declareEventCodeInputKeyboard( EEventCodeIndex::InputKeyboard ),
 
-		E_EVENT_CODE_INPUT_MOUSE_BUTTON  = CxDefs::declareEventCodeInputMouse( EEventCodeIndex::InputMouseButton ),
-		E_EVENT_CODE_INPUT_MOUSE_MOVE    = CxDefs::declareEventCodeInputMouse( EEventCodeIndex::InputMouseMove ),
-		E_EVENT_CODE_INPUT_MOUSE_SCROLL  = CxDefs::declareEventCodeInputMouse( EEventCodeIndex::InputMouseScroll ),
+		E_EVENT_CODE_INPUT_MOUSE_BUTTON  = CxDef::declareEventCodeInputMouse( EEventCodeIndex::InputMouseButton ),
+		E_EVENT_CODE_INPUT_MOUSE_MOVE    = CxDef::declareEventCodeInputMouse( EEventCodeIndex::InputMouseMove ),
+		E_EVENT_CODE_INPUT_MOUSE_SCROLL  = CxDef::declareEventCodeInputMouse( EEventCodeIndex::InputMouseScroll ),
 
-		E_EVENT_CODE_INPUT_TOUCH_DOWN  = CxDefs::declareEventCodeInputTouch( EEventCodeIndex::InputTouchDown ),
-		E_EVENT_CODE_INPUT_TOUCH_MOVE  = CxDefs::declareEventCodeInputTouch( EEventCodeIndex::InputTouchMove ),
-		E_EVENT_CODE_INPUT_TOUCH_UP    = CxDefs::declareEventCodeInputTouch( EEventCodeIndex::InputTouchUp ),
+		E_EVENT_CODE_INPUT_TOUCH_DOWN  = CxDef::declareEventCodeInputTouch( EEventCodeIndex::InputTouchDown ),
+		E_EVENT_CODE_INPUT_TOUCH_MOVE  = CxDef::declareEventCodeInputTouch( EEventCodeIndex::InputTouchMove ),
+		E_EVENT_CODE_INPUT_TOUCH_UP    = CxDef::declareEventCodeInputTouch( EEventCodeIndex::InputTouchUp ),
 
-		E_EVENT_CODE_WINDOW_UPDATE_CREATE     = CxDefs::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateCreate ),
-		E_EVENT_CODE_WINDOW_UPDATE_DESTROY    = CxDefs::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateDestroy ),
-		E_EVENT_CODE_WINDOW_UPDATE_FULLSCREEN = CxDefs::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateFullscreen ),
-		E_EVENT_CODE_WINDOW_UPDATE_RESIZE     = CxDefs::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateResize ),
-		E_EVENT_CODE_WINDOW_UPDATE_VISIBILITY = CxDefs::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateVisibility )
+		E_EVENT_CODE_WINDOW_UPDATE_CREATE     = CxDef::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateCreate ),
+		E_EVENT_CODE_WINDOW_UPDATE_DESTROY    = CxDef::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateDestroy ),
+		E_EVENT_CODE_WINDOW_UPDATE_FULLSCREEN = CxDef::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateFullscreen ),
+		E_EVENT_CODE_WINDOW_UPDATE_RESIZE     = CxDef::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateResize ),
+		E_EVENT_CODE_WINDOW_UPDATE_VISIBILITY = CxDef::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateVisibility )
 	};
 
 } // namespace Ic3::System

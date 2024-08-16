@@ -3,15 +3,15 @@
 #include "StaticLimits.h"
 #include <zlib/zlib.h>
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
-	uint32 HashTraits<EHashAlgo::Adler32>::compute( const void * pInput, size_t pInputSize )
+	uint32 QHashTraits<EHashAlgo::Adler32>::compute( const void * pInput, size_t pInputSize )
 	{
 		return update( sHashInitValue, pInput, pInputSize );
 	}
 
-	uint32 HashTraits<EHashAlgo::Adler32>::update( uint32 pHash, const void * pInput, size_t pInputSize )
+	uint32 QHashTraits<EHashAlgo::Adler32>::update( uint32 pHash, const void * pInput, size_t pInputSize )
 	{
 		uint32 result = pHash;
 		if( pInputSize > 0 )
@@ -24,12 +24,12 @@ namespace Ic3
 	}
 
 
-	uint32 HashTraits<EHashAlgo::CRC32>::compute( const void * pInput, size_t pInputSize )
+	uint32 QHashTraits<EHashAlgo::CRC32>::compute( const void * pInput, size_t pInputSize )
 	{
 		return update( sHashInitValue, pInput, pInputSize );
 	}
 
-	uint32 HashTraits<EHashAlgo::CRC32>::update( uint32 pHash, const void * pInput, size_t pInputSize )
+	uint32 QHashTraits<EHashAlgo::CRC32>::update( uint32 pHash, const void * pInput, size_t pInputSize )
 	{
 		uint32 result = pHash;
 		if( pInputSize > 0 )
@@ -49,12 +49,12 @@ namespace Ic3
 	}
 
 
-	uint32 HashTraits<EHashAlgo::DJB2>::compute( const void * pInput, size_t pInputSize )
+	uint32 QHashTraits<EHashAlgo::DJB2>::compute( const void * pInput, size_t pInputSize )
 	{
 		return update( sHashInitValue, pInput, pInputSize );
 	}
 
-	uint32 HashTraits<EHashAlgo::DJB2>::update( uint32 pHash, const void * pInput, size_t pInputSize )
+	uint32 QHashTraits<EHashAlgo::DJB2>::update( uint32 pHash, const void * pInput, size_t pInputSize )
 	{
 		uint32 result = pHash;
 		if( pInputSize > 0 )
@@ -71,12 +71,12 @@ namespace Ic3
 
 	constexpr uint32 sFNV32PrimeValue = 0x01000193;
 
-	uint32 HashTraits<EHashAlgo::FNV1A32>::compute( const void * pInput, size_t pInputSize )
+	uint32 QHashTraits<EHashAlgo::FNV1A32>::compute( const void * pInput, size_t pInputSize )
 	{
 		return update( sHashInitValue, pInput, pInputSize );
 	}
 
-	uint32 HashTraits<EHashAlgo::FNV1A32>::update( uint32 pHash, const void * pInput, size_t pInputSize )
+	uint32 QHashTraits<EHashAlgo::FNV1A32>::update( uint32 pHash, const void * pInput, size_t pInputSize )
 	{
 		uint32 result = pHash;
 		if( pInputSize > 0 )
@@ -93,14 +93,14 @@ namespace Ic3
 
 
 	constexpr uint64 sFNV64PrimeValue = 0x100000001B3;
-	constexpr uint64 sU64Mask = Limits<uint64>::maxValue << 8;
+	constexpr uint64 sU64Mask = QLimits<uint64>::maxValue << 8;
 
-	uint64 HashTraits<EHashAlgo::FNV1A64>::compute( const void * pInput, size_t pInputSize )
+	uint64 QHashTraits<EHashAlgo::FNV1A64>::compute( const void * pInput, size_t pInputSize )
 	{
 		return update( sHashInitValue, pInput, pInputSize );
 	}
 
-	uint64 HashTraits<EHashAlgo::FNV1A64>::update( uint64 pHash, const void * pInput, size_t pInputSize )
+	uint64 QHashTraits<EHashAlgo::FNV1A64>::update( uint64 pHash, const void * pInput, size_t pInputSize )
 	{
 		uint64 result = pHash;
 		if( pInputSize > 0 )
@@ -116,12 +116,12 @@ namespace Ic3
 	}
 
 
-	uint32 HashTraits<EHashAlgo::SDBM>::compute( const void * pInput, size_t pInputSize )
+	uint32 QHashTraits<EHashAlgo::SDBM>::compute( const void * pInput, size_t pInputSize )
 	{
 		return update( sHashInitValue, pInput, pInputSize );
 	}
 
-	uint32 HashTraits<EHashAlgo::SDBM>::update( uint32 pHash, const void * pInput, size_t pInputSize )
+	uint32 QHashTraits<EHashAlgo::SDBM>::update( uint32 pHash, const void * pInput, size_t pInputSize )
 	{
 		uint32 result = pHash;
 		if( pInputSize > 0 )

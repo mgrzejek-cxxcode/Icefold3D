@@ -5,7 +5,7 @@
 #define __IC3_NXMAIN_MESH_GROUP_H__
 
 #include "Mesh.h"
-#include "../Geometry/GeometryDataFormat.h"
+#include "../Geometry/CVertexPipelineConfig.h"
 #include <unordered_map>
 
 namespace Ic3

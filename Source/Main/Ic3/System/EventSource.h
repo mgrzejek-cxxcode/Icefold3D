@@ -46,8 +46,8 @@ namespace Ic3::System
 		// NOTE: this is an active reference, so the controller is always accessible to a source object.
 		EventControllerHandle _eventControllerActiveRef = nullptr;
 
-		// Native data of this event source. This is actually a pointer to platform::EventSourceNativeData,
-		// but the whole platform:: content is by default not visible in the public part of the library.
+		// Native data of this event source. This is actually a pointer to Platform::EventSourceNativeData,
+		// but the whole Platform:: content is by default not visible in the public part of the library.
 		// Actual event sources (Window, GLSurface, etc.) set this on construction.
 		void * _eventSourceNativeData;
 	};

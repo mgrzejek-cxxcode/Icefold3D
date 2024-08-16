@@ -44,17 +44,17 @@ namespace Ic3
 
 		IC3_ATTR_NO_DISCARD const void * getIndexBaseDataPtr() const noexcept;
 
-		IC3_ATTR_NO_DISCARD DataBufferRegionSubElementRefReadOnly getIndexDataSubRegionReadOnly(
+		IC3_ATTR_NO_DISCARD InterleavedBufferElementRefReadOnly getIndexDataSubRegionReadOnly(
 				const CPUGeometryDataReferenceBase & pMeshDataRef ) const noexcept;
 
-		IC3_ATTR_NO_DISCARD DataBufferRegionSubElementRefReadOnly getVertexAttributeDataSubRegionReadOnly(
+		IC3_ATTR_NO_DISCARD InterleavedBufferElementRefReadOnly getVertexAttributeDataSubRegionReadOnly(
 				const CPUGeometryDataReferenceBase & pMeshDataRef,
 				uint32 pAttributeIndex ) const noexcept;
 
-		IC3_ATTR_NO_DISCARD DataBufferRegionSubElementRefReadWrite getIndexDataSubRegionReadWrite(
+		IC3_ATTR_NO_DISCARD InterleavedBufferElementRefReadWrite getIndexDataSubRegionReadWrite(
 				const CPUGeometryDataReferenceBase & pMeshDataRef ) noexcept;
 
-		IC3_ATTR_NO_DISCARD DataBufferRegionSubElementRefReadWrite getVertexAttributeDataSubRegionReadWrite(
+		IC3_ATTR_NO_DISCARD InterleavedBufferElementRefReadWrite getVertexAttributeDataSubRegionReadWrite(
 				const CPUGeometryDataReferenceBase & pMeshDataRef,
 				uint32 pAttributeIndex ) noexcept;
 

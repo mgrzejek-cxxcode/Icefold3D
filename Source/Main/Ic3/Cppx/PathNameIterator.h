@@ -5,7 +5,7 @@
 #include "Prerequisites.h"
 #include <string>
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	class PathNameIterator

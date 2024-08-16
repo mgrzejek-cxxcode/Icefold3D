@@ -53,7 +53,7 @@ namespace Ic3::Graphics::GCI
 			{
 				_refBufferObject->releaseActiveRef();
 				_refBufferObject = nullptr;
-				_refSubRegion.reset();
+				_refSubRegion.setEmpty();
 
 				referenceUpdated = true;
 			}

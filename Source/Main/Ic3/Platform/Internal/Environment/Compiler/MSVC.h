@@ -33,13 +33,13 @@
 #define  IC3_PCL_DEBUG_OUTPUT( text )  OutputDebugStringA( text )
 #define  IC3_PCL_SLEEP( miliseconds )  Sleep( miliseconds )
 
-#define  IC3_PCL_BYTESWAP16	_byteswap_ushort
-#define  IC3_PCL_BYTESWAP32	_byteswap_ulong
-#define  IC3_PCL_BYTESWAP64	_byteswap_uint64
+#define  IC3_PCL_BSWAP16	_byteswap_ushort
+#define  IC3_PCL_BSWAP32	_byteswap_ulong
+#define  IC3_PCL_BSWAP64	_byteswap_uint64
 
-#define  IC3_PCL_POPCOUNT16	__popcnt16
-#define  IC3_PCL_POPCOUNT32	__popcnt
-#define  IC3_PCL_POPCOUNT64	__popcnt64
+#define  IC3_PCL_POPCNT16	__popcnt16
+#define  IC3_PCL_POPCNT32	__popcnt
+#define  IC3_PCL_POPCNT64	__popcnt64
 
 #define  IC3_PCL_ROTL16 _rotl16
 #define  IC3_PCL_ROTL32 _rotl

@@ -21,7 +21,7 @@ namespace Ic3::Graphics::GCI
 
 	UniqueGPUObjectID GPUDeviceChildObject::queryObjectID() const
 	{
-		return CxDefs::GPU_OBJECT_ID_EMPTY;
+		return CxDef::GPU_OBJECT_ID_EMPTY;
 	}
 
 } // namespace Ic3::Graphics::GCI

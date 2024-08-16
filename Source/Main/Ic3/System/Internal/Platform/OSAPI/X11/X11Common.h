@@ -12,7 +12,7 @@ namespace Ic3::System
 
 	class SysContext;
 
-	namespace platform
+	namespace Platform
 	{
 
 		using XDisplay = Display *;
@@ -107,21 +107,21 @@ namespace Ic3::System
 		explicit X11NativeObject( SysContextHandle pSysContext, TBaseTypeArgs && ...pBaseTypeArgs )
 		: NativeObject<TBaseType, TNativeData>( pSysContext, std::forward<TBaseTypeArgs>( pBaseTypeArgs )... )
 		{
-			this->mNativeData.setSessionData( platform::x11GetXSessionData( *pSysContext ) );
+			this->mNativeData.setSessionData( Platform::x11GetXSessionData( *pSysContext ) );
 		}
 
 		template <typename TParentSysObject, typename... TBaseTypeArgs>
 		explicit X11NativeObject( TParentSysObject & pParentSysObject, TBaseTypeArgs && ...pBaseTypeArgs )
 		: NativeObject<TBaseType, TNativeData>( pParentSysObject, std::forward<TBaseTypeArgs>( pBaseTypeArgs )... )
 		{
-			this->mNativeData.setSessionData( platform::x11GetXSessionData( pParentSysObject ) );
+			this->mNativeData.setSessionData( Platform::x11GetXSessionData( pParentSysObject ) );
 		}
 
 		template <typename TParentSysObject, typename... TBaseTypeArgs>
 		explicit X11NativeObject( SysHandle<TParentSysObject> pParentSysObject, TBaseTypeArgs && ...pBaseTypeArgs )
 		: NativeObject<TBaseType, TNativeData>( pParentSysObject, std::forward<TBaseTypeArgs>( pBaseTypeArgs )... )
 		{
-			this->mNativeData.setSessionData( platform::x11GetXSessionData( *pParentSysObject ) );
+			this->mNativeData.setSessionData( Platform::x11GetXSessionData( *pParentSysObject ) );
 		}
 
 		virtual ~X11NativeObject()

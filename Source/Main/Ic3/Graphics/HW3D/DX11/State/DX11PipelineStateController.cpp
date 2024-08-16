@@ -463,7 +463,7 @@ namespace Ic3::Graphics::GCI
 		else
 		{
 			mDX11CommandList->mD3D11DeviceContext1->OMSetRenderTargets(
-				gpm::RT_MAX_COLOR_ATTACHMENTS_NUM,
+				GCM::RT_MAX_COLOR_ATTACHMENTS_NUM,
 				pRenderTargetBindingData.d3d11ColorAttachmentRTViewArray,
 				pRenderTargetBindingData.d3d11DepthStencilAttachmentDSView );
 		}

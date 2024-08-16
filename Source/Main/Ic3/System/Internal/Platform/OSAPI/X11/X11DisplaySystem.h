@@ -15,7 +15,7 @@ namespace Ic3::System
 	ic3SysDeclareHandle( X11DisplayManager );
 	ic3SysDeclareHandle( X11DisplayDriver );
 
-	namespace platform
+	namespace Platform
 	{
 
 		struct X11DisplayManagerNativeData : public X11NativeDataCommon
@@ -53,12 +53,12 @@ namespace Ic3::System
 
 	}
 
-	using X11DisplayAdapter = X11NativeObject<DisplayAdapter, platform::X11DisplayAdapterNativeData>;
-	using X11DisplayOutput = X11NativeObject<DisplayOutput, platform::X11DisplayOutputNativeData>;
-	using X11DisplayVideoMode = X11NativeObject<DisplayVideoMode, platform::X11DisplayVideoModeNativeData>;
+	using X11DisplayAdapter = X11NativeObject<DisplayAdapter, Platform::X11DisplayAdapterNativeData>;
+	using X11DisplayOutput = X11NativeObject<DisplayOutput, Platform::X11DisplayOutputNativeData>;
+	using X11DisplayVideoMode = X11NativeObject<DisplayVideoMode, Platform::X11DisplayVideoModeNativeData>;
 
 	/// @brief Implementation of DisplayManager for the X11 subsystem.
-	class X11DisplayManager : public X11NativeObject<DisplayManager, platform::X11DisplayManagerNativeData>
+	class X11DisplayManager : public X11NativeObject<DisplayManager, Platform::X11DisplayManagerNativeData>
 	{
 	public:
 		explicit X11DisplayManager( SysContextHandle pSysContext );
@@ -78,7 +78,7 @@ namespace Ic3::System
 	};
 
 	/// @brief Implementation of DisplayDriver for the X11 subsystem.
-	class X11DisplayDriver : public X11NativeObject<DisplayDriver, platform::X11DisplayDriverNativeData>
+	class X11DisplayDriver : public X11NativeObject<DisplayDriver, Platform::X11DisplayDriverNativeData>
 	{
 	public:
 		explicit X11DisplayDriver( X11DisplayManagerHandle pDisplayManager );

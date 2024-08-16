@@ -28,16 +28,16 @@ namespace Ic3::Graphics::GCI
 	using resource_flags_value_t = uint32;
 	using resource_id_t = uint64;
 
-	namespace CxDefs
+	namespace CxDef
 	{
 
 		/// A special constant which can be used for resources IDs to indicate that ID should be assigned automatically.
 		/// In most cases it is safe to assume that object address will be used as the ID (unless stated otherwise).
-		inline constexpr resource_id_t RESOURCE_ID_AUTO = Limits<uint64>::maxValue - 1;
+		inline constexpr resource_id_t RESOURCE_ID_AUTO = QLimits<uint64>::maxValue - 1;
 
 		/// An invalid resource ID. Such IDs may refer to resources which are either uninitialised, marked for deletion,
 		/// or do not yet exist in the resource management system. This ID also means "not found" in case of queries.
-		inline constexpr resource_id_t RESOURCE_ID_INVALID = Limits<uint64>::maxValue;
+		inline constexpr resource_id_t RESOURCE_ID_INVALID = QLimits<uint64>::maxValue;
 
 	}
 
@@ -201,7 +201,7 @@ namespace Ic3::Graphics::GCI
 	struct ResourceCreateInfo
 	{
 		Bitmask<resource_flags_value_t> resourceFlags = 0;
-		memory_align_t memoryBaseAlignment = Ic3::CxDefs::MEMORY_DEFAULT_ALIGNMENT;
+		memory_align_t memoryBaseAlignment = kMemoryCPUDefaultAlignment;
 		Bitmask<EGPUMemoryFlags> memoryFlags = E_GPU_RESOURCE_MEMORY_MASK_DEFAULT;
 	};
 

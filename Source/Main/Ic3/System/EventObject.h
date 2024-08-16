@@ -63,12 +63,12 @@ namespace Ic3::System
 
 		constexpr explicit operator bool() const
 		{
-			return ( code != E_EVENT_CODE_UNDEFINED ) && CxDefs::validateEventCode( code );
+			return ( code != E_EVENT_CODE_UNDEFINED ) && CxDef::validateEventCode( code );
 		}
 
 		 IC3_ATTR_NO_DISCARD constexpr EEventCategory category() const
 		{
-			return CxDefs::getEventCodeCategory( code );
+			return CxDef::getEventCodeCategory( code );
 		}
 	};
 

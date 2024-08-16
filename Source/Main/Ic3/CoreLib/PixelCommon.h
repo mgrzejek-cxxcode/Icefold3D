@@ -9,7 +9,7 @@
 namespace Ic3
 {
 
-	namespace CxDefs
+	namespace CxDef
 	{
 
 		inline constexpr uint32 declarePixelDataLayout( uint8 pIndex, uint8 pChannelsNum )
@@ -22,19 +22,19 @@ namespace Ic3
 	enum class EPixelDataLayout : uint32
 	{
 		Undefined = 0,
-		Alpha     = CxDefs::declarePixelDataLayout( 0x1, 1 ),
-		Depth     = CxDefs::declarePixelDataLayout( 0x2, 1 ),
-		DS        = CxDefs::declarePixelDataLayout( 0x3, 2 ),
-		BGR       = CxDefs::declarePixelDataLayout( 0x4, 3 ),
-		BGRA      = CxDefs::declarePixelDataLayout( 0x5, 4 ),
-		Red       = CxDefs::declarePixelDataLayout( 0x6, 1 ),
-		RG        = CxDefs::declarePixelDataLayout( 0x7, 2 ),
-		RGB       = CxDefs::declarePixelDataLayout( 0x8, 3 ),
-		RGBA      = CxDefs::declarePixelDataLayout( 0x9, 4 ),
-		S3TC      = CxDefs::declarePixelDataLayout( 0xA, 1 ),
+		Alpha     = CxDef::declarePixelDataLayout( 0x1, 1 ),
+		Depth     = CxDef::declarePixelDataLayout( 0x2, 1 ),
+		DS        = CxDef::declarePixelDataLayout( 0x3, 2 ),
+		BGR       = CxDef::declarePixelDataLayout( 0x4, 3 ),
+		BGRA      = CxDef::declarePixelDataLayout( 0x5, 4 ),
+		Red       = CxDef::declarePixelDataLayout( 0x6, 1 ),
+		RG        = CxDef::declarePixelDataLayout( 0x7, 2 ),
+		RGB       = CxDef::declarePixelDataLayout( 0x8, 3 ),
+		RGBA      = CxDef::declarePixelDataLayout( 0x9, 4 ),
+		S3TC      = CxDef::declarePixelDataLayout( 0xA, 1 ),
 	};
 
-	namespace CxDefs
+	namespace CxDef
 	{
 
 		inline constexpr uint32 getPixelDataLayoutChannelsNum( EPixelDataLayout pPixelDataLayout )

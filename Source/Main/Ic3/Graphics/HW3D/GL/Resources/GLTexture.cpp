@@ -29,7 +29,7 @@ namespace Ic3::Graphics::GCI
 		openglCreateInfo.internalFormat = ATL::translateGLTextureInternalFormat( pCreateInfo.internalFormat );
 		openglCreateInfo.openglInitDataDesc.subTextureInitDataPtr = pCreateInfo.initDataDesc.subTextureInitDataBasePtr;
 		openglCreateInfo.openglInitDataDesc.textureInitFlags = pCreateInfo.initDataDesc.textureInitFlags;
-		auto textureInitDataBaseType = CxDefs::getTextureFormatBaseDataType( pCreateInfo.internalFormat );
+		auto textureInitDataBaseType = CxDef::getTextureFormatBaseDataType( pCreateInfo.internalFormat );
 		openglCreateInfo.openglInitDataDesc.openglPixelDataLayout = ATL::translateGLTexturePixelDataLayout( pCreateInfo.internalFormat );
 		openglCreateInfo.openglInitDataDesc.openglPixelDataType = ATL::translateGLBaseDataType( textureInitDataBaseType );
 

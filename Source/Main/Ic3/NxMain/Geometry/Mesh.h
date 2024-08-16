@@ -77,7 +77,7 @@ namespace Ic3
 
 		IC3_ATTR_NO_DISCARD uint32 getComponentsNum() const noexcept;
 
-		IC3_ATTR_NO_DISCARD MeshComponent * getSubComponent( uint32 pIndex ) const noexcept;
+		IC3_ATTR_NO_DISCARD MeshComponent * getComponent( uint32 pIndex ) const noexcept;
 
 		IC3_ATTR_NO_DISCARD MeshComponent * findSubComponent( const std::string & pName ) const noexcept;
 
@@ -96,7 +96,7 @@ namespace Ic3
 		return static_cast<uint32>( _meshSubComponents.size() );
 	}
 
-	inline MeshComponent * Mesh::getSubComponent( uint32 pIndex ) const noexcept
+	inline MeshComponent * Mesh::getComponent( uint32 pIndex ) const noexcept
 	{
 		return ( pIndex < _meshSubComponentsIndex.size() ) ? _meshSubComponentsIndex[pIndex] : nullptr;
 	}

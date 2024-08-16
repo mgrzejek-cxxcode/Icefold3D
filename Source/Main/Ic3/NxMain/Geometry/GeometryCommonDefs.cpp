@@ -1,7 +1,7 @@
 
 #include "GeometryContainer.h"
-#include "GeometryDataFormat.h"
-#include "GeometryStorage.h"
+#include "CVertexPipelineConfig.h"
+#include "GeometryStorageGPU.h"
 
 namespace Ic3
 {
@@ -42,14 +42,14 @@ namespace Ic3
 	uint32 GeometryReferenceBase::vertexDataOffsetInElementsNum() const noexcept
 	{
 		const auto firstActiveStream = dataFormat->firstActiveVertexStream();
-		ic3DebugAssert( firstActiveStream != GCI::CxDefs::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED );
+		ic3DebugAssert( firstActiveStream != GCI::CxDef::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED );
 		return vertexStreamDataRegions[firstActiveStream].offsetInElementsNum;
 	}
 
 	uint32 GeometryReferenceBase::vertexDataSizeInElementsNum() const noexcept
 	{
 		const auto firstActiveStream = dataFormat->firstActiveVertexStream();
-		ic3DebugAssert( firstActiveStream != GCI::CxDefs::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED );
+		ic3DebugAssert( firstActiveStream != GCI::CxDef::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED );
 		return vertexStreamDataRegions[firstActiveStream].sizeInElementsNum;
 	}
 
@@ -66,7 +66,7 @@ namespace Ic3
 	GeometrySize GeometryReferenceBase::calculateGeometrySize() const noexcept
 	{
 		const auto firstActiveStream = dataFormat->firstActiveVertexStream();
-		ic3DebugAssert( firstActiveStream != GCI::CxDefs::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED );
+		ic3DebugAssert( firstActiveStream != GCI::CxDef::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED );
 
 		return {
 			vertexStreamDataRegions[firstActiveStream].sizeInElementsNum,
@@ -87,7 +87,7 @@ namespace Ic3
 
 	GeometryReference::GeometryReference( GeometryStorage & pStorage )
 	: storage( &pStorage )
-	, geometryIndex( CxDefs::GEOMETRY_INDEX_INVALID )
+	, geometryIndex( CxDef::GEOMETRY_INDEX_INVALID )
 	, dataReference( pStorage.mDataFormat )
 	{}
 

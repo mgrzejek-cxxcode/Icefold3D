@@ -12,7 +12,7 @@
 namespace Ic3
 {
 
-	namespace CxDefs
+	namespace CxDef
 	{
 
 		constexpr GpaUniqueObjectID GPA_RESOURCE_ID_SHADER_PASSTHROUGH_IA_DEFAULT_VS { 0xFF007001 };

@@ -1,100 +1,161 @@
 
 #pragma once
 
-#ifndef __IC3_NXMAIN_GEOMETRY_STORAGE_H__
-#define __IC3_NXMAIN_GEOMETRY_STORAGE_H__
+#ifndef __IC3_NXMAIN_GEOMETRY_SYSTEM_H__
+#define __IC3_NXMAIN_GEOMETRY_SYSTEM_H__
 
-#include "GeometryContainer.h"
-#include <Ic3/Graphics/GCI/State/InputAssemblerImmutableStates.h>
+#include "VertexPipelineConfig.h"
 #include <deque>
+#include <unordered_map>
 
 namespace Ic3
 {
 
-	enum class EGeometryBufferAllocationMode : enum_default_value_t
+	enum EGeometryStoragePropertyFlags : uint32
 	{
-		AllocLocal,
-		ShareExternal
+		/// The storage has been correctly initialized. All buffers have been
+		/// created/allocated and match the internal storage specification.
+		E_GEOMETRY_STORAGE_PROPERTY_FLAG_STATE_INITIALIZED_BIT = 0x0001,
+
+		///
+		E_GEOMETRY_STORAGE_PROPERTY_MASK_STATE_ALL = 0x000F,
+
+		///
+		E_GEOMETRY_STORAGE_PROPERTY_FLAG_FEATURE_CONTINUOUS_STORAGE_BIT = 0x0010,
+
+		///
+		E_GEOMETRY_STORAGE_PROPERTY_FLAG_FEATURE_DIRECT_MEMORY_ACCESS_BIT = 0x0020,
+
+		///
+		E_GEOMETRY_STORAGE_PROPERTY_FLAG_FEATURE_ALL = 0x00F0,
 	};
 
-	struct GeometryStorageCreateInfo
+	struct SGeometryBufferMemoryState
 	{
-		struct GeometryBufferDesc
+		size_t sizeInBytes = 0;
+		uint32 baseAlignment = 0;
+		uintptr_t currentAllocationOffset = 0;
+		uintptr_t freeSpace = 0;
+	};
+
+	struct SGeometryStorageIndexBufferState : public SGeometryBufferMemoryState
+	{};
+
+	struct SGeometryStorageVertexBufferState : public SGeometryBufferMemoryState
+	{};
+
+	struct SGeometryBufferAllocationDesc
+	{
+		uint32 elementSizeInBytes = 0;
+		uint32 elementsNum = 0;
+		uint32 explicitAllocationSize = 0;
+
+		explicit operator bool() const noexcept
 		{
-			EGeometryBufferAllocationMode allocationMode = EGeometryBufferAllocationMode::AllocLocal;
-			EGPUBufferUsagePolicy bufferUsagePolicy = EGPUBufferUsagePolicy::Undefined;
-		};
-
-		EGPUBufferUsagePolicy commonBufferUsagePolicy = EGPUBufferUsagePolicy::Undefined;
-
-		const GeometryDataFormatBase * dataFormat;
-
-		GeometryContainerStorageCapacity capacity;
-
-		GeometryBufferDesc indexBufferDesc;
-
-		GeometryVertexStreamGenericArray<GeometryBufferDesc> vertexBufferDescArray;
+			return ( elementSizeInBytes > 0 ) && ( elementsNum > 0 );
+		}
 	};
 
-	template <size_t tVertexStreamArraySize>
-	class GeometrySharedStorage : public GeometryContainer<tVertexStreamArraySize>
+	/// @brief
+	class IC3_NXMAIN_CLASS IGeometryStorage
 	{
 	public:
-		using GeometryRefList = std::deque<GeometryReference>;
+		IGeometryStorage() = default;
+		virtual ~IGeometryStorage() = default;
 
+		IC3_ATTR_NO_DISCARD virtual GeometryBufferDataRefReadOnly getBufferPtrReadOnly( const SGeometryBufferMemoryRef & pMemoryRef ) const noexcept = 0;
+
+		IC3_ATTR_NO_DISCARD virtual GeometryBufferDataRefReadWrite getBufferPtrReadWrite( const SGeometryBufferMemoryRef & pMemoryRef ) const noexcept = 0;
+
+		IC3_ATTR_NO_DISCARD virtual bool hasDirectMemoryAccess() const noexcept = 0;
+
+		IC3_ATTR_NO_DISCARD virtual bool hasContinuousStorage() const noexcept = 0;
+
+		IC3_ATTR_NO_DISCARD bool isIndexedGeometry() const noexcept;
+
+		IC3_ATTR_NO_DISCARD uint32 getActiveVertexBuffersNum() const noexcept;
+
+		IC3_ATTR_NO_DISCARD bool isVertexBufferActive( size_t pBufferIndex ) const noexcept;
+
+	protected:
+		Bitmask<GCI::EIAVertexStreamBindingFlags> _activeBuffersMask;
+	};
+
+	struct SManagedGeometryAllocationDesc
+	{
+		SGeometryBufferAllocationDesc indexDataAllocDesc;
+		RGeometryVertexBufferGenericArray<SGeometryBufferAllocationDesc> vertexDataAllocDescArray;
+	};
+
+	struct SGeometrySharedMemoryDesc
+	{
+		uintptr_t memoryAddress = 0;
+		uint32 elementSizeInBytes = 0;
+		uint32 elementsNum = 0;
+
+		explicit operator bool() const noexcept
+		{
+			return ( memoryAddress != 0 ) && ( elementSizeInBytes > 0 ) && ( elementsNum > 0 );
+		}
+	};
+
+	struct SSharedGeometryDataDesc
+	{
+		SGeometrySharedMemoryDesc indexDataDesc;
+		RGeometryVertexBufferGenericArray<SGeometrySharedMemoryDesc> vertexDataDescArray;
+	};
+
+	class IGeometryStorageManaged : public IGeometryStorage
+	{
 	public:
-		GeometrySharedStorage( const GeometryDataFormatBase & pDataFormat );
+		virtual bool initializeIndexBuffer( size_t pBufferSizeInBytes, uint32 pAlignment ) = 0;
 
-		virtual ~GeometrySharedStorage() = default;
+		virtual bool initializeVertexBuffer( size_t pBufferIndex, size_t pBufferSizeInBytes, uint32 pAlignment ) = 0;
 
-		GCI::IAVertexStreamImmutableStateHandle getGpaVertexStreamState() const noexcept;
+		virtual void releaseIndexBuffer() = 0;
 
-		SharedGeometryRefHandle addIndexedGeometry( uint32 pVertexElementsNum, uint32 pIndexElementsNum );
+		virtual void releaseVertexBuffer( size_t pBufferIndex ) = 0;
 
-		SharedGeometryRefHandle addNonIndexedGeometry( uint32 pVertexElementsNum );
+		virtual void updateStorageInternal() = 0;
 
-		void releaseStorage() {}
+		IC3_ATTR_NO_DISCARD virtual SGeometryInstanceMemoryRef allocateGeometryMemory( const SGeometryBufferAllocationDesc & pAllocationDesc ) = 0;
 
-		static GeometryStoragePtr createStorage(
-				const CoreEngineState & pCES,
-				const GeometryStorageCreateInfo & pCreateInfo,
-				const GeometryStorage * pSharedStorage = nullptr );
+		IC3_ATTR_NO_DISCARD virtual GeometryBufferDataRefReadOnly getIndexDataPtrReadOnly() const noexcept = 0;
 
-	private:
-		void createStorageGPUBuffers( const CoreEngineState & pCES, const GeometryStorageCreateInfo & pCreateInfo );
+		IC3_ATTR_NO_DISCARD virtual GeometryBufferDataRefReadWrite getIndexDataPtrReadWrite() = 0;
 
-		void bindSharedGPUBuffers( const GeometryStorageCreateInfo & pCreateInfo, const GeometryStorage & pSharedStorage );
+		IC3_ATTR_NO_DISCARD virtual GeometryBufferDataRefReadOnly getVertexDataPtrReadOnly( size_t pBufferIndex ) const noexcept = 0;
 
-		void initializeVertexStreamState( const CoreEngineState & pCES );
+		IC3_ATTR_NO_DISCARD virtual GeometryBufferDataRefReadWrite getVertexDataPtrReadWrite( size_t pBufferIndex ) = 0;
 
-		GeometryReference * addGeometry( uint32 pVertexElementsNum, uint32 pIndexElementsNum );
+		IC3_ATTR_NO_DISCARD const SGeometryStorageIndexBufferState & getIndexBufferState() const noexcept;
 
-		IC3_ATTR_NO_DISCARD static GCI::GPUBufferHandle createIndexBuffer(
-				const CoreEngineState & pCES,
-				GCI::gpu_memory_size_t pBufferSize,
-				EGPUBufferUsagePolicy pUsagePolicy );
+		IC3_ATTR_NO_DISCARD const SGeometryStorageVertexBufferState & getVertexBufferState( size_t pBufferIndex ) const noexcept;
 
-		IC3_ATTR_NO_DISCARD static GCI::GPUBufferHandle createVertexBuffer(
-				const CoreEngineState & pCES,
-				GCI::gpu_memory_size_t pBufferSize,
-				EGPUBufferUsagePolicy pUsagePolicy );
+	protected:
+		using VertexBufferStateArray = std::array<SGeometryStorageVertexBufferState, GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM>;
+		SGeometryStorageIndexBufferState _indexBufferState;
+		VertexBufferStateArray _vertexBufferStateArray;
+	};
 
-		IC3_ATTR_NO_DISCARD static bool validateSharedBuffersConfiguration(
-				const GeometryStorageCreateInfo & pCreateInfo,
-				const GeometryStorage & pSharedStorage );
+	class IGeometryStorageShared : public IGeometryStorage
+	{
+	public:
+		const SGeometryInstanceMemoryRef * addGeometry( const SSharedGeometryDataDesc & pGeometryDataDesc );
+	};
 
-		IC3_ATTR_NO_DISCARD static EGPUBufferUsagePolicy resolveGeometryBufferUsagePolicy(
-				EGPUBufferUsagePolicy pBufferUsagePolicy,
-				EGPUBufferUsagePolicy pCommonUsagePolicy );
+	class CGeometryStorageSharedExternal : public IGeometryStorageShared
+	{
+	public:
+		IC3_ATTR_NO_DISCARD virtual int addGeometrySharedData( const SSharedGeometryDataDesc & pSharedDataDesc ) = 0;
+	};
 
-	private:
-		GeometryReferenceList _geometryRefList;
-		GCI::GPUBufferHandle _indexBuffer;
-		GeometryVertexStreamGenericArray<GCI::GPUBufferHandle> _vertexBufferArray;
-		Bitmask<GCI::EIAVertexStreamBindingFlags> _vertexStreamBindingMask;
-		GCI::IAVertexStreamImmutableStateHandle _gpaVertexStreamState;
+	class CGeometryStorageSharedSubAlloc : public IGeometryStorageShared
+	{
+	public:
+		IC3_ATTR_NO_DISCARD virtual SGeometryInstanceMemoryRef allocateGeometryMemory( const SGeometryBufferAllocationDesc & pAllocationDesc ) = 0;
 	};
 
 } // namespace Ic3
 
-#endif // __IC3_NXMAIN_GEOMETRY_STORAGE_H__
+#endif // __IC3_NXMAIN_GEOMETRY_SYSTEM_H__

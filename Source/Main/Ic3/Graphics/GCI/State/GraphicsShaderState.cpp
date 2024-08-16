@@ -44,14 +44,14 @@ namespace Ic3::Graphics::GCI
 
 	Shader * GraphicsShaderSet::operator[]( size_t pIndex ) const noexcept
 	{
-		ic3DebugAssert( CxDefs::isShaderStageIndexValid( pIndex ) );
+		ic3DebugAssert( CxDef::isShaderStageIndexValid( pIndex ) );
 		return commonShaderArray[pIndex].get();
 	}
 
 	Shader * GraphicsShaderSet::operator[]( EShaderType pShaderType ) const noexcept
 	{
-		ic3DebugAssert( CxDefs::isShaderTypeGraphics( pShaderType ) );
-		const auto stageIndex = CxDefs::getShaderStageIndex( pShaderType );
+		ic3DebugAssert( CxDef::isShaderTypeGraphics( pShaderType ) );
+		const auto stageIndex = CxDef::getShaderStageIndex( pShaderType );
 		return commonShaderArray[stageIndex].get();
 	}
 
@@ -72,11 +72,11 @@ namespace Ic3::Graphics::GCI
 
 	bool GraphicsShaderSet::validateShaders() const noexcept
 	{
-		for( uint32 stageIndex = 0; stageIndex < gpm::SHADER_GRAPHICS_STAGES_NUM; ++stageIndex )
+		for( uint32 stageIndex = 0; stageIndex < GCM::SHADER_GRAPHICS_STAGES_NUM; ++stageIndex )
 		{
 			if( auto shader = _shaderArray[stageIndex] )
 			{
-				const auto shaderType = CxDefs::getShaderTypeFromStageIndex( stageIndex );
+				const auto shaderType = CxDef::getShaderTypeFromStageIndex( stageIndex );
 				if( shader->mShaderType != shaderType )
 				{
 					return false;
@@ -91,18 +91,18 @@ namespace Ic3::Graphics::GCI
 	{
 		if( pShader )
 		{
-			const auto stageIndex = CxDefs::getShaderStageIndex( pShader->mShaderType );
+			const auto stageIndex = CxDef::getShaderStageIndex( pShader->mShaderType );
 			_shaderArray[stageIndex] = pShader;
 		}
 	}
 
 	void GraphicsShaderSet::setShaders( const GraphicsShaderArray & pShaderArray ) noexcept
 	{
-		for( uint32 stageIndex = 0; stageIndex < gpm::SHADER_GRAPHICS_STAGES_NUM; ++stageIndex )
+		for( uint32 stageIndex = 0; stageIndex < GCM::SHADER_GRAPHICS_STAGES_NUM; ++stageIndex )
 		{
 			if( const auto shader = pShaderArray[stageIndex] )
 			{
-				const auto shaderTypeAtIndex = CxDefs::getShaderTypeFromStageIndex( stageIndex );
+				const auto shaderTypeAtIndex = CxDef::getShaderTypeFromStageIndex( stageIndex );
 				if( shader->mShaderType == shaderTypeAtIndex )
 				{
 					_shaderArray[stageIndex] = shader;
@@ -113,14 +113,14 @@ namespace Ic3::Graphics::GCI
 
 	void GraphicsShaderSet::resetStage( uint32 pStageIndex ) noexcept
 	{
-		ic3DebugAssert( CxDefs::isShaderStageIndexValidGraphics( pStageIndex ) );
+		ic3DebugAssert( CxDef::isShaderStageIndexValidGraphics( pStageIndex ) );
 		_shaderArray[pStageIndex] = cvNullHandle;
 	}
 
 	void GraphicsShaderSet::resetStage( EShaderType pShaderType ) noexcept
 	{
-		ic3DebugAssert( CxDefs::isShaderTypeGraphics( pShaderType ) );
-		const auto stageIndex = CxDefs::getShaderStageIndex( pShaderType );
+		ic3DebugAssert( CxDef::isShaderTypeGraphics( pShaderType ) );
+		const auto stageIndex = CxDef::getShaderStageIndex( pShaderType );
 		_shaderArray[stageIndex] = cvNullHandle;
 	}
 
@@ -132,14 +132,14 @@ namespace Ic3::Graphics::GCI
 		{
 			Bitmask<EShaderStageFlags> activeStagesMask = 0;
 
-			for( uint32 stageIndex = 0; stageIndex < gpm::SHADER_GRAPHICS_STAGES_NUM; ++stageIndex )
+			for( uint32 stageIndex = 0; stageIndex < GCM::SHADER_GRAPHICS_STAGES_NUM; ++stageIndex )
 			{
 				if( const auto shader = pShaderArray[stageIndex] )
 				{
-					const auto shaderTypeAtIndex = CxDefs::getShaderTypeFromStageIndex( stageIndex );
+					const auto shaderTypeAtIndex = CxDef::getShaderTypeFromStageIndex( stageIndex );
 					if( shader->mShaderType == shaderTypeAtIndex )
 					{
-						const auto shaderTypeBit = CxDefs::makeShaderStageBit( stageIndex );
+						const auto shaderTypeBit = CxDef::makeShaderStageBit( stageIndex );
 						activeStagesMask.set( shaderTypeBit );
 					}
 				}

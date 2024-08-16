@@ -92,7 +92,7 @@ namespace Ic3::Graphics::GCI
 
 	enum class EDepthWriteMask : uint16
 	{
-		All = Limits<uint16>::maxValue,
+		All = QLimits<uint16>::maxValue,
 		None = 0
 	};
 
@@ -166,7 +166,7 @@ namespace Ic3::Graphics::GCI
 		/// If ENABLE_MRT_SEPARATE_CONFIG_BIT is set, each active target uses its corresponding entry.
 		/// Otherwise, attachments[0] is used for all targets and rest of the array is ignored.
 		/// @see EBlendConfigFlags
-		RTColorAttachmentBlendSettings attachments[gpm::RT_MAX_COLOR_ATTACHMENTS_NUM];
+		RTColorAttachmentBlendSettings attachments[GCM::RT_MAX_COLOR_ATTACHMENTS_NUM];
 
 		Math::RGBAColorR32Norm constantColor;
 	};

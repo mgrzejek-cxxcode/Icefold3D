@@ -37,8 +37,8 @@ namespace Ic3
 		template <typename TOtherValue>
 		explicit ResultProxy( TOtherValue pCode )
 		: code( static_cast<TValue>( pCode ) )
-		, codeStr( CxDefs::STR_CHAR_EMPTY )
-		, infoStr( CxDefs::STR_CHAR_EMPTY )
+		, codeStr( CxDef::STR_CHAR_EMPTY )
+		, infoStr( CxDef::STR_CHAR_EMPTY )
 		{}
 
 		/// @brief Initializes result object with specified content.
@@ -48,8 +48,8 @@ namespace Ic3
 		template <typename TOtherValue>
 		ResultProxy( TOtherValue pCode, const char * pCodeStr, const char * pInfoStr = nullptr )
 		: code( static_cast<TValue>( pCode ) )
-		, codeStr( pCodeStr ? pCodeStr : CxDefs::STR_CHAR_EMPTY )
-		, infoStr( pInfoStr ? pCodeStr : CxDefs::STR_CHAR_EMPTY )
+		, codeStr( pCodeStr ? pCodeStr : CxDef::STR_CHAR_EMPTY )
+		, infoStr( pInfoStr ? pCodeStr : CxDef::STR_CHAR_EMPTY )
 		{}
 
 		constexpr explicit operator bool() const
@@ -87,7 +87,7 @@ namespace Ic3
 	constexpr result_code_value_t CX_RESULT_CODE_CATEGORY_MASK = 0x0000FF00;
 	constexpr result_code_value_t CX_RESULT_CODE_IID_MASK      = 0x000000FF;
 
-	namespace CxDefs
+	namespace CxDef
 	{
 
 		///
@@ -123,14 +123,14 @@ namespace Ic3
 	
 	enum : result_code_value_t
 	{
-		E_RESULT_CODE_GENERIC_SUCCESS = CxDefs::declareResultCode( EResultCodeType::Success, E_RESULT_CATEGORY_GENERIC, 0 )
+		E_RESULT_CODE_GENERIC_SUCCESS = CxDef::declareResultCode( EResultCodeType::Success, E_RESULT_CATEGORY_GENERIC, 0 )
 	};
 
 	struct ResultCodeErrorPredicate
 	{
 		constexpr bool operator()( result_code_value_t pResultCode ) const
 		{
-			return CxDefs::getResultCodeType( pResultCode ) == EResultCodeType::Error;
+			return CxDef::getResultCodeType( pResultCode ) == EResultCodeType::Error;
 		}
 	};
 
@@ -171,7 +171,7 @@ namespace Ic3
 	#define ic3ResultGetCodeStr( pResult ) ic3MakeStr( pResult )
 
 	/// @brief
-	#define ic3ResultGetInfoStr( pResult ) CxDefs::STR_CHAR_EMPTY
+	#define ic3ResultGetInfoStr( pResult ) CxDef::STR_CHAR_EMPTY
 
 #endif
 

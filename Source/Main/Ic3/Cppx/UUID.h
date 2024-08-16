@@ -1,7 +1,7 @@
 
 #include "Prerequisites.h"
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	inline std::string getUUIDString( const std::string & pInput, char pLeftDelim = '{' )

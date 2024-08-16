@@ -4,7 +4,7 @@
 #ifndef __IC3_NXMAIN_GEOMETRY_COMMON_DEFS_H__
 #define __IC3_NXMAIN_GEOMETRY_COMMON_DEFS_H__
 
-#include "../GCI/CommonGCIDefs.h"
+#include "../GCI/ShaderInputSemantics.h"
 #include <Ic3/Graphics/GCI/State/InputAssemblerCommon.h>
 #include <Ic3/Graphics/GCI/Resources/GPUBufferReference.h>
 #include <list>
@@ -15,210 +15,65 @@ namespace Ic3
 	struct GeometryReference;
 	struct GeometryStorageCreateInfo;
 
-	class GeometryContainerBase;
-	class GeometryDataFormatBase;
 	class GeometryDataGpuTransfer;
 	class GeometryManager;
 
 	ic3DeclareClassHandle( GeometryBuffer );
 	ic3DeclareClassHandle( IndexBuffer );
 	ic3DeclareClassHandle( VertexBuffer );
-	ic3DeclareClassHandle( GeometryDataSourceBase );
-	ic3DeclareClassHandle( GeometrySharedStorageBase );
 
-	using GeometryStoragePtr = std::unique_ptr<GeometryStorage>;
-	using SharedGeometryRefHandle = const GeometryReference *;
+	ic3DeclareInterfaceHandle( IGeometryStorage );
+	ic3DeclareInterfaceHandle( IGeometryStorageManaged );
+	ic3DeclareInterfaceHandle( IGeometryStorageShared );
 
-	namespace CxDefs
+	template <typename TStruct>
+	using RGeometryVertexBufferGenericArray = std::array<TStruct, GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM>;
+
+	struct SGeometryBufferMemoryRef
 	{
+		uint32 bufferIndex = 0;
 
-		constexpr auto GEOMETRY_INDEX_INVALID = Limits<uint32>::maxValue;
+		uintptr_t internalMemoryRef = 0;
 
-	}
+		SMemoryRegion memoryRegion;
 
-	enum EVertexAttributeSemanticsFlags : uint32
-	{
-		E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_POSITION_BIT    =    0x01,
-		E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_NORMAL_BIT      =    0x02,
-		E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TANGENT_BIT     =    0x04,
-		E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_FIXED_COLOR_BIT =    0x08,
-		E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_0_BIT =   0x010,
-		E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_1_BIT =   0x020,
-		E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_2_BIT =   0x040,
-		E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_3_BIT =   0x080,
-		E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_4_BIT =   0x100,
-		E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_5_BIT =   0x200,
-		E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_6_BIT =   0x400,
-		E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_7_BIT =   0x800,
-		E_VERTEX_ATTRIBUTE_SEMANTICS_MASK_TEX_COORD_ALL   =   0xFF0,
-		E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_RESERVED_13_BIT =  0x1000,
-		E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_RESERVED_14_BIT =  0x2000,
-		E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_RESERVED_15_BIT =  0x4000,
-		E_VERTEX_ATTRIBUTE_SEMANTICS_MASK_RESERVED_ALL    =  0x7000,
-		E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_INSTANCE_0_BIT  = 0x10000,
-		E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_INSTANCE_1_BIT  = 0x20000,
-		E_VERTEX_ATTRIBUTE_SEMANTICS_MASK_INSTANCE_ALL    = 0x30000,
-		E_VERTEX_ATTRIBUTE_SEMANTICS_MASK_ALL             = 0x37FFF,
-
-		E_VERTEX_ATTRIBUTE_SEMANTICS_MASK_INSTANCE_0_OVERLAP =
-				E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_3_BIT |
-				E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_4_BIT |
-				E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_5_BIT |
-				E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_6_BIT,
-
-		E_VERTEX_ATTRIBUTE_SEMANTICS_MASK_INSTANCE_1_OVERLAP =
-				E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_7_BIT |
-				E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_RESERVED_13_BIT |
-				E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_RESERVED_14_BIT |
-				E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_RESERVED_15_BIT,
+		explicit operator bool() const noexcept
+		{
+			return !memoryRegion.empty();
+		}
 	};
 
-	namespace CxDefs
+	struct SGeometryInstanceMemoryRef
 	{
+		IGeometryStorage * storage = nullptr;
 
-		inline constexpr uint32 declareVertexAttributeSemanticsID( EVertexAttributeSemanticsFlags pSemanticsFlags )
-		{
-			return static_cast<uint32>( pSemanticsFlags );
-		}
+		SGeometryBufferMemoryRef indexBufferMemoryRef;
 
-		inline constexpr uint64 declareFixedVertexAttributeID(
-				uint16 pBaseIndex,
-				uint16 pComponentsNum,
-				GCI::EVertexAttribFormat pBaseFormat,
-				Bitmask<EVertexAttributeSemanticsFlags> pSemanticsFlags )
-		{
-			return static_cast<uint64>(
-					( ( ( uint64 )pBaseIndex & 0xF ) << 60 ) |
-					( ( ( uint64 )pComponentsNum & 0xF ) << 56 ) |
-					( ( ( uint64 )pBaseFormat & Limits<uint32>::maxValue ) << 24 ) |
-					( ( uint64 )pSemanticsFlags & E_VERTEX_ATTRIBUTE_SEMANTICS_MASK_ALL ) );
-		}
-
-	}
-
-	enum class EVertexAttributeSemanticsID : uint32
-	{
-		Undefined  = 0,
-		Custom     = static_cast<uint32>( E_VERTEX_ATTRIBUTE_SEMANTICS_MASK_ALL ) ^ Limits<uint32>::maxValue,
-		Position   = CxDefs::declareVertexAttributeSemanticsID( E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_POSITION_BIT    ),
-		Normal     = CxDefs::declareVertexAttributeSemanticsID( E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_NORMAL_BIT      ),
-		Tangent    = CxDefs::declareVertexAttributeSemanticsID( E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TANGENT_BIT     ),
-		FixedColor = CxDefs::declareVertexAttributeSemanticsID( E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_FIXED_COLOR_BIT ),
-		TexCoord0  = CxDefs::declareVertexAttributeSemanticsID( E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_0_BIT ),
-		TexCoord1  = CxDefs::declareVertexAttributeSemanticsID( E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_1_BIT ),
-		TexCoord2  = CxDefs::declareVertexAttributeSemanticsID( E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_2_BIT ),
-		TexCoord3  = CxDefs::declareVertexAttributeSemanticsID( E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_3_BIT ),
-		TexCoord4  = CxDefs::declareVertexAttributeSemanticsID( E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_4_BIT ),
-		TexCoord5  = CxDefs::declareVertexAttributeSemanticsID( E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_5_BIT ),
-		TexCoord6  = CxDefs::declareVertexAttributeSemanticsID( E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_6_BIT ),
-		TexCoord7  = CxDefs::declareVertexAttributeSemanticsID( E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_7_BIT ),
-		Instance0  = CxDefs::declareVertexAttributeSemanticsID( E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_INSTANCE_0_BIT  ),
-		Instance1  = CxDefs::declareVertexAttributeSemanticsID( E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_INSTANCE_1_BIT  ),
-	};
-
-	enum class EFixedVertexAttributeID : uint64
-	{
-		Undefined  = 0,
-		Position   = CxDefs::declareFixedVertexAttributeID(  0, 1, GCI::EVertexAttribFormat::Vec3F32, E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_POSITION_BIT ),
-		Normal     = CxDefs::declareFixedVertexAttributeID(  1, 1, GCI::EVertexAttribFormat::Vec3F32, E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_NORMAL_BIT ),
-		Tangent    = CxDefs::declareFixedVertexAttributeID(  2, 1, GCI::EVertexAttribFormat::Vec3F32, E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TANGENT_BIT ),
-		FixedColor = CxDefs::declareFixedVertexAttributeID(  4, 1, GCI::EVertexAttribFormat::Vec4F32, E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_FIXED_COLOR_BIT ),
-		TexCoord0  = CxDefs::declareFixedVertexAttributeID(  5, 1, GCI::EVertexAttribFormat::Vec2F32, E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_0_BIT ),
-		TexCoord1  = CxDefs::declareFixedVertexAttributeID(  6, 1, GCI::EVertexAttribFormat::Vec2F32, E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_1_BIT ),
-		TexCoord2  = CxDefs::declareFixedVertexAttributeID(  7, 1, GCI::EVertexAttribFormat::Vec2F32, E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_2_BIT ),
-		TexCoord3  = CxDefs::declareFixedVertexAttributeID(  8, 1, GCI::EVertexAttribFormat::Vec2F32, E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_3_BIT ),
-		TexCoord4  = CxDefs::declareFixedVertexAttributeID(  9, 1, GCI::EVertexAttribFormat::Vec2F32, E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_4_BIT ),
-		TexCoord5  = CxDefs::declareFixedVertexAttributeID( 10, 1, GCI::EVertexAttribFormat::Vec2F32, E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_5_BIT ),
-		TexCoord6  = CxDefs::declareFixedVertexAttributeID( 11, 1, GCI::EVertexAttribFormat::Vec2F32, E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_6_BIT ),
-		TexCoord7  = CxDefs::declareFixedVertexAttributeID( 12, 1, GCI::EVertexAttribFormat::Vec2F32, E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_TEX_COORD_7_BIT ),
-		Reserved13 = CxDefs::declareFixedVertexAttributeID( 13, 1, GCI::EVertexAttribFormat::Vec4F32, E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_RESERVED_13_BIT ),
-		Reserved14 = CxDefs::declareFixedVertexAttributeID( 14, 1, GCI::EVertexAttribFormat::Vec4F32, E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_RESERVED_14_BIT ),
-		Reserved15 = CxDefs::declareFixedVertexAttributeID( 15, 1, GCI::EVertexAttribFormat::Vec4F32, E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_RESERVED_15_BIT ),
-		Instance0  = CxDefs::declareFixedVertexAttributeID(  8, 4, GCI::EVertexAttribFormat::Vec4F32, E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_INSTANCE_0_BIT ),
-		Instance1  = CxDefs::declareFixedVertexAttributeID( 12, 4, GCI::EVertexAttribFormat::Vec4F32, E_VERTEX_ATTRIBUTE_SEMANTICS_FLAG_INSTANCE_1_BIT ),
-	};
-
-	namespace CxDefs
-	{
-
-		inline uint16 getFixedVertexAttributeBaseIndex( EFixedVertexAttributeID pFixedAttributeID )
-		{
-			return static_cast<uint16>( ( ( uint64 )pFixedAttributeID >> 60 ) & 0xF );
-		}
-
-		inline uint16 getFixedVertexAttributeComponentsNum( EFixedVertexAttributeID pFixedAttributeID )
-		{
-			return static_cast<uint16>( ( ( uint64 )pFixedAttributeID >> 56 ) & 0xF );
-		}
-
-		inline GCI::EVertexAttribFormat getFixedVertexAttributeBaseFormat( EFixedVertexAttributeID pFixedAttributeID )
-		{
-			return static_cast<GCI::EVertexAttribFormat>( ( ( uint64 )pFixedAttributeID >> 24 ) & Limits<uint32>::maxValue );
-		}
-
-		inline uint32 getFixedVertexAttributeComponentByteSize( EFixedVertexAttributeID pFixedAttributeID )
-		{
-			return GCI::CxDefs::getVertexAttribFormatByteSize( getFixedVertexAttributeBaseFormat( pFixedAttributeID ) );
-		}
-
-		inline uint32 getFixedVertexAttributeByteSize( EFixedVertexAttributeID pFixedAttributeID )
-		{
-			return getFixedVertexAttributeComponentsNum( pFixedAttributeID ) * getFixedVertexAttributeComponentByteSize( pFixedAttributeID );
-		}
-
-		inline Bitmask<EVertexAttributeSemanticsFlags> getFixedVertexAttributeSemanticsFlags( EFixedVertexAttributeID pFixedAttributeID )
-		{
-			return static_cast<uint32>( ( uint64 )pFixedAttributeID & 0xFFFFFF );
-		}
-
-		inline EVertexAttributeSemanticsID getFixedVertexAttributeSemanticsID( EFixedVertexAttributeID pFixedAttributeID )
-		{
-			return static_cast<EVertexAttributeSemanticsID>( declareVertexAttributeSemanticsID( getFixedVertexAttributeSemanticsFlags( pFixedAttributeID ) ) );
-		}
-
-		inline bool isVertexAttributeSemanticsValid( EVertexAttributeSemanticsID pSemanticsID )
-		{
-			const auto semanticsMask = makeBitmask( pSemanticsID );
-			return semanticsMask.isSetAnyOf( E_VERTEX_ATTRIBUTE_SEMANTICS_MASK_ALL ) && ( semanticsMask.countBits() == 1 );
-		}
-
-		inline bool isVertexAttributeSemanticsDefined( EVertexAttributeSemanticsID pSemanticsID )
-		{
-			return isVertexAttributeSemanticsValid( pSemanticsID ) || ( pSemanticsID == EVertexAttributeSemanticsID::Custom );
-		}
-
-	}
-
-	// Describes a region of geometry data located within a single buffer (it can be a CPU-side buffer
-	// located in RAM or a hardware GPU buffer). It is used to reference a subregion within large
-	// buffers containing multiple geometry objects.
-	struct GeometryBufferRegion
-	{
-		// Offset, from the start of the buffer, to the data referenced by this region, in number of elements.
-		uint32 offsetInElementsNum = 0;
-
-		// Size of the data referenced by this region, in number of elements.
-		uint32 sizeInElementsNum = 0;
-
-		// Appends an adjacent region to the current one. Appended region's offset must be equal
-		// to current's region offset + size, otherwise the call is ignored and this region remains unchanged.
-		bool append( const GeometryBufferRegion & pOther );
+		RGeometryVertexBufferGenericArray<SGeometryBufferMemoryRef> vertexBufferMemoryRefArray;
 	};
 
 	template <typename TByte>
 	struct GeometryBufferDataRef
 	{
-		TByte * baseElementPtr = nullptr;
+		TByte * baseDataPtr = nullptr;
 
-		uint32 dataSizeInElementsNum = 0;
+		uint32 dataRegionSizeInBytes = 0;
 
-		uint32 elementSizeInBytes = 0;
-
-		uint32 strideInBytes = 0;
+		uint32 elementStrideInBytes = 0;
 
 		explicit operator bool() const noexcept
 		{
-			return baseElementPtr && ( dataSizeInElementsNum > 0 );
+			return baseDataPtr && ( dataRegionSizeInBytes > 0 );
+		}
+
+		IC3_ATTR_NO_DISCARD bool empty() noexcept
+		{
+			return !std::is_const_v<TByte> && baseDataPtr;
+		}
+
+		IC3_ATTR_NO_DISCARD bool isWritable() noexcept
+		{
+			return !std::is_const_v<TByte> && baseDataPtr;
 		}
 	};
 
@@ -256,14 +111,14 @@ namespace Ic3
 
 		GeometryBufferDataIterator operator++( int ) noexcept
 		{
-			GeometryBufferDataIterator result{ _dataRef, _currentElementOffset };
+			GeometryBufferDataIterator result{ *this };
 			++_currentElementOffset;
 			return result;
 		}
 
-		GeometryBufferDataIterator operator--( int ) noexcept
+		const GeometryBufferDataIterator operator--( int ) noexcept
 		{
-			GeometryBufferDataIterator result{ _dataRef, _currentElementOffset };
+			GeometryBufferDataIterator result{ *this };
 			--_currentElementOffset;
 			return result;
 		}
@@ -291,24 +146,7 @@ namespace Ic3
 	template <typename TValue>
 	using GeometryBufferDataIteratorReadWrite = GeometryBufferDataIterator<TValue, byte>;
 
-	struct GeometrySize
-	{
-		uint32 indexElementsNum = 0;
-		uint32 vertexElementsNum = 0;
-
-		void append( const GeometrySize & pOther );
-	};
-
-	struct GeometryDataReference
-	{
-		GeometryBufferRegion indexDataRegion;
-		GeometryBufferRegion vertexDataRegion;
-
-		//
-		bool append( const GeometryDataReference & pOther );
-	};
-
-	struct GeometryReference
+	struct GeometryReference22
 	{
 		const GeometryDataFormatBase * dataFormat = nullptr;
 

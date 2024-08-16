@@ -37,7 +37,7 @@ namespace Ic3::Graphics::GCI
 
 		IC3_ATTR_NO_DISCARD byte * queryMappedPtr( GLenum pActiveBindTarget = 0 ) const;
 
-		IC3_ATTR_NO_DISCARD MemoryRegion queryMappedRegion( GLenum pActiveBindTarget = 0 ) const;
+		IC3_ATTR_NO_DISCARD SMemoryRegion queryMappedRegion( GLenum pActiveBindTarget = 0 ) const;
 
 		IC3_ATTR_NO_DISCARD memory_size_t querySize( GLenum pActiveBindTarget = 0 ) const;
 

@@ -9,7 +9,7 @@
 #include <numeric>
 #include <type_traits>
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
 	template <typename TType, size_t tTypeSize, bool tSigned>
@@ -96,76 +96,76 @@ namespace Ic3
 	};
 
 	template <typename>
-	struct Limits;
+	struct QLimits;
 
 	template <>
-	struct Limits<char> : public IntegerLimitsProxy<char, sizeof( char ), std::is_signed<char>::value>
+	struct QLimits<char> : public IntegerLimitsProxy<char, sizeof( char ), std::is_signed<char>::value>
 	{
 		using ValueType = char;
 	};
 
 	template <>
-	struct Limits<signed char> : public IntegerLimitsProxy<signed char, sizeof( signed char ), true>
+	struct QLimits<signed char> : public IntegerLimitsProxy<signed char, sizeof( signed char ), true>
 	{
 		using ValueType = signed char;
 	};
 
 	template <>
-	struct Limits<unsigned char> : public IntegerLimitsProxy<unsigned char, sizeof( unsigned char ), false>
+	struct QLimits<unsigned char> : public IntegerLimitsProxy<unsigned char, sizeof( unsigned char ), false>
 	{
 		using ValueType = unsigned char;
 	};
 
 	template <>
-	struct Limits<signed short> : public IntegerLimitsProxy<signed short, sizeof( signed short ), true>
+	struct QLimits<signed short> : public IntegerLimitsProxy<signed short, sizeof( signed short ), true>
 	{
 		using ValueType = signed short;
 	};
 
 	template <>
-	struct Limits<unsigned short> : public IntegerLimitsProxy<unsigned short, sizeof( unsigned short ), false>
+	struct QLimits<unsigned short> : public IntegerLimitsProxy<unsigned short, sizeof( unsigned short ), false>
 	{
 		using ValueType = unsigned short;
 	};
 
 	template <>
-	struct Limits<signed int> : public IntegerLimitsProxy<signed int, sizeof( signed int ), true>
+	struct QLimits<signed int> : public IntegerLimitsProxy<signed int, sizeof( signed int ), true>
 	{
 		using ValueType = signed int;
 	};
 
 	template <>
-	struct Limits<unsigned int> : public IntegerLimitsProxy<unsigned int, sizeof( unsigned int ), false>
+	struct QLimits<unsigned int> : public IntegerLimitsProxy<unsigned int, sizeof( unsigned int ), false>
 	{
 		using ValueType = unsigned int;
 	};
 
 	template <>
-	struct Limits<signed long> : public IntegerLimitsProxy<signed long, sizeof( signed long ), true>
+	struct QLimits<signed long> : public IntegerLimitsProxy<signed long, sizeof( signed long ), true>
 	{
 		using ValueType = signed long;
 	};
 
 	template <>
-	struct Limits<unsigned long> : public IntegerLimitsProxy<unsigned long, sizeof( unsigned long ), false>
+	struct QLimits<unsigned long> : public IntegerLimitsProxy<unsigned long, sizeof( unsigned long ), false>
 	{
 		using ValueType = unsigned long;
 	};
 
 	template <>
-	struct Limits<signed long long> : public IntegerLimitsProxy<signed long long, sizeof( signed long long ), true>
+	struct QLimits<signed long long> : public IntegerLimitsProxy<signed long long, sizeof( signed long long ), true>
 	{
 		using ValueType = signed long long;
 	};
 
 	template <>
-	struct Limits<unsigned long long> : public IntegerLimitsProxy<unsigned long long, sizeof( unsigned long long ), false>
+	struct QLimits<unsigned long long> : public IntegerLimitsProxy<unsigned long long, sizeof( unsigned long long ), false>
 	{
 		using ValueType = unsigned long long;
 	};
 
 	template <>
-	struct Limits<float>
+	struct QLimits<float>
 	{
 		using ValueType = float;
 
@@ -176,7 +176,7 @@ namespace Ic3
 	};
 
 	template <>
-	struct Limits<double>
+	struct QLimits<double>
 	{
 		using ValueType = double;
 
@@ -187,7 +187,7 @@ namespace Ic3
 	};
 
 	template <>
-	struct Limits<long double>
+	struct QLimits<long double>
 	{
 		using ValueType = long double;
 
@@ -197,20 +197,20 @@ namespace Ic3
 		static constexpr ValueType roundError = 0.5L;
 	};
 
-	constexpr auto CX_INT16_MAX = Limits<int16>::maxValue;
-	constexpr auto CX_INT16_MIN = Limits<int16>::minValue;
-	constexpr auto CX_UINT16_MAX = Limits<uint16>::maxValue;
-	constexpr auto CX_UINT16_MIN = Limits<uint16>::minValue;
+	constexpr auto CX_INT16_MAX = QLimits<int16>::maxValue;
+	constexpr auto CX_INT16_MIN = QLimits<int16>::minValue;
+	constexpr auto CX_UINT16_MAX = QLimits<uint16>::maxValue;
+	constexpr auto CX_UINT16_MIN = QLimits<uint16>::minValue;
 
-	constexpr auto CX_INT32_MAX = Limits<int32>::maxValue;
-	constexpr auto CX_INT32_MIN = Limits<int32>::minValue;
-	constexpr auto CX_UINT32_MAX = Limits<uint32>::maxValue;
-	constexpr auto CX_UINT32_MIN = Limits<uint32>::minValue;
+	constexpr auto CX_INT32_MAX = QLimits<int32>::maxValue;
+	constexpr auto CX_INT32_MIN = QLimits<int32>::minValue;
+	constexpr auto CX_UINT32_MAX = QLimits<uint32>::maxValue;
+	constexpr auto CX_UINT32_MIN = QLimits<uint32>::minValue;
 
-	constexpr auto CX_INT64_MAX = Limits<int64>::maxValue;
-	constexpr auto CX_INT64_MIN = Limits<int64>::minValue;
-	constexpr auto CX_UINT64_MAX = Limits<uint64>::maxValue;
-	constexpr auto CX_UINT64_MIN = Limits<uint64>::minValue;
+	constexpr auto CX_INT64_MAX = QLimits<int64>::maxValue;
+	constexpr auto CX_INT64_MIN = QLimits<int64>::minValue;
+	constexpr auto CX_UINT64_MAX = QLimits<uint64>::maxValue;
+	constexpr auto CX_UINT64_MIN = QLimits<uint64>::minValue;
 
 }
 

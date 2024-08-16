@@ -12,7 +12,7 @@ namespace Ic3::Graphics::GCI
 
 	using display_system_id_t = uint64;
 
-	constexpr display_system_id_t cvDisplaySystemIDDefault = Limits<display_system_id_t>::maxValue;
+	constexpr display_system_id_t cvDisplaySystemIDDefault = QLimits<display_system_id_t>::maxValue;
 	constexpr display_system_id_t cvDisplaySystemIDInvalid = cvDisplaySystemIDDefault - 1;
 
 	enum EAdapterFlags : uint32

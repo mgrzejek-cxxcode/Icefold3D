@@ -13,7 +13,7 @@ namespace Ic3::System
 
 	class OSXSysContext;
 
-	namespace platform
+	namespace Platform
 	{
 
 		enum EOSXCommonStateFlags : uint32
@@ -24,7 +24,7 @@ namespace Ic3::System
 
 		struct OSXSharedData
 		{
-			AtomicBitmask<EOSXCommonStateFlags> stateFlags = 0u;
+			Cppx::AtomicBitmask<EOSXCommonStateFlags> stateFlags = 0u;
 		};
 
 		struct OSXNativeDataCommon
@@ -86,21 +86,21 @@ namespace Ic3::System
 		explicit OSXNativeObject( SysContextHandle pSysContext, TBaseTypeArgs && ...pBaseTypeArgs )
 		: NativeObject<TBaseType, TNativeData>( pSysContext, std::forward<TBaseTypeArgs>( pBaseTypeArgs )... )
 		{
-			this->mNativeData.setSharedData( platform::osxGetOSXSharedData( *pSysContext ) );
+			this->mNativeData.setSharedData( Platform::osxGetOSXSharedData( *pSysContext ) );
 		}
 
 		template <typename TParentSysObject, typename... TBaseTypeArgs>
 		explicit OSXNativeObject( TParentSysObject & pParentSysObject, TBaseTypeArgs && ...pBaseTypeArgs )
 		: NativeObject<TBaseType, TNativeData>( pParentSysObject, std::forward<TBaseTypeArgs>( pBaseTypeArgs )... )
 		{
-			this->mNativeData.setSharedData( platform::osxGetOSXSharedData( pParentSysObject ) );
+			this->mNativeData.setSharedData( Platform::osxGetOSXSharedData( pParentSysObject ) );
 		}
 
 		template <typename TParentSysObject, typename... TBaseTypeArgs>
 		explicit OSXNativeObject( SysHandle<TParentSysObject> pParentSysObject, TBaseTypeArgs && ...pBaseTypeArgs )
 		: NativeObject<TBaseType, TNativeData>( pParentSysObject, std::forward<TBaseTypeArgs>( pBaseTypeArgs )... )
 		{
-			this->mNativeData.setSharedData( platform::osxGetOSXSharedData( *pParentSysObject ) );
+			this->mNativeData.setSharedData( Platform::osxGetOSXSharedData( *pParentSysObject ) );
 		}
 
 		virtual ~OSXNativeObject()

@@ -2,10 +2,10 @@
 #include "FSUtils.h"
 #include "StringUtils.h"
 
-namespace Ic3
+namespace Ic3::Cppx
 {
 
-	std::string FSUtilityAPI::normalizePath( const std::string & pPath )
+	std::string fsNormalizePath( const std::string & pPath )
 	{
 		auto localPathString = pPath;
 		std::replace( localPathString.begin(),
@@ -76,25 +76,25 @@ namespace Ic3
 		return result;
 	}
 
-	FSUtilityAPI::FilePathInfo FSUtilityAPI::splitPath( std::string pFilePath, Bitmask<EFlags> pFlags )
+	FilePathInfo fsSplitPath( std::string pFilePath, Bitmask<EFSAPIFlags> pFlags )
 	{
 		FilePathInfo pathInfo;
 
 		if( !pFilePath.empty() )
 		{
-			if( !pFlags.isSetAnyOf( E_SPLIT_PATH_FLAG_ASSUME_DIRECTORY_BIT | E_SPLIT_PATH_FLAG_ASSUME_FILE_BIT ) )
+			if( !pFlags.isSetAnyOf( E_FSAPI_SPLIT_PATH_FLAG_ASSUME_DIRECTORY_BIT | E_FSAPI_SPLIT_PATH_FLAG_ASSUME_FILE_BIT ) )
 			{
-				pFlags.set( E_SPLIT_PATH_FLAG_ASSUME_DIRECTORY_BIT );
+				pFlags.set( E_FSAPI_SPLIT_PATH_FLAG_ASSUME_DIRECTORY_BIT );
 			}
-			else if( pFlags.isSet( E_SPLIT_PATH_FLAG_ASSUME_DIRECTORY_BIT | E_SPLIT_PATH_FLAG_ASSUME_FILE_BIT ) )
+			else if( pFlags.isSet( E_FSAPI_SPLIT_PATH_FLAG_ASSUME_DIRECTORY_BIT | E_FSAPI_SPLIT_PATH_FLAG_ASSUME_FILE_BIT ) )
 			{
-				pFlags.unset( E_SPLIT_PATH_FLAG_ASSUME_FILE_BIT );
+				pFlags.unset( E_FSAPI_SPLIT_PATH_FLAG_ASSUME_FILE_BIT );
 			}
 
 			auto lastSeparatorPos = pFilePath.find_last_of( IC3_PCL_ENV_DEFAULT_PATH_DELIMITER );
 			if( lastSeparatorPos == std::string::npos )
 			{
-				if( isFilenameWithExtension( pFilePath ) || pFlags.isSet( E_SPLIT_PATH_FLAG_ASSUME_FILE_BIT ) )
+				if( fsIsFilenameWithExtension( pFilePath ) || pFlags.isSet( E_FSAPI_SPLIT_PATH_FLAG_ASSUME_FILE_BIT ) )
 				{
 					pathInfo.fileName = pFilePath;
 				}
@@ -104,7 +104,7 @@ namespace Ic3
 				auto directoryPart = pFilePath.substr( 0, lastSeparatorPos );
 				auto filenamePath = pFilePath.substr( lastSeparatorPos + 1 );
 
-				if( isFilenameWithExtension( filenamePath ) || pFlags.isSet( E_SPLIT_PATH_FLAG_ASSUME_FILE_BIT ) )
+				if( fsIsFilenameWithExtension( filenamePath ) || pFlags.isSet( E_FSAPI_SPLIT_PATH_FLAG_ASSUME_FILE_BIT ) )
 				{
 					pathInfo.directory = std::move( directoryPart );
 					pathInfo.fileName = std::move( filenamePath );
@@ -120,7 +120,7 @@ namespace Ic3
 		return pathInfo;
 	}
 
-	bool FSUtilityAPI::isFilenameWithExtension( const std::string & pFilename )
+	bool fsIsFilenameWithExtension( const std::string & pFilename )
 	{
 		if( !pFilename.empty() )
 		{

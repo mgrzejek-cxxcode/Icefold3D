@@ -5,7 +5,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		const char * posixQueryErrnoStringByCode( int pErrno )
@@ -257,6 +257,6 @@ namespace Ic3::System
 			return "UNKNOWN_ERROR";
 		}
 
-	} // namespace platform
+	} // namespace Platform
 
 } // namespace Ic3::System

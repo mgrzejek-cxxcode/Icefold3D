@@ -9,7 +9,7 @@
 namespace Ic3::System
 {
 
-	namespace platform
+	namespace Platform
 	{
 
 		bool _x11TranslateGenericEvent( EventSource & pEventSource, const XEvent & pXEvent, EventObject & pOutEvent );
@@ -42,13 +42,13 @@ namespace Ic3::System
 
 	bool X11EventController::_nativeDispatchPendingEvents()
 	{
-		auto & xSessionData = platform::x11GetXSessionData( *this );
+		auto & xSessionData = Platform::x11GetXSessionData( *this );
 
-		platform::NativeEventType x11NativeEvent{};
+		Platform::NativeEventType x11NativeEvent{};
 		if( XEventsQueued( xSessionData.display, QueuedAfterReading ) > 0 )
 		{
 			XNextEvent( xSessionData.display, &( x11NativeEvent.xEvent ) );
-			platform::nativeEventDispatch( *this, x11NativeEvent );
+			Platform::nativeEventDispatch( *this, x11NativeEvent );
 			return true;
 		}
 
@@ -57,13 +57,13 @@ namespace Ic3::System
 
 	bool X11EventController::_nativeDispatchPendingEventsWait()
 	{
-		auto & xSessionData = platform::x11GetXSessionData( *this );
+		auto & xSessionData = Platform::x11GetXSessionData( *this );
 
-		platform::NativeEventType x11NativeEvent{};
+		Platform::NativeEventType x11NativeEvent{};
 		if( XEventsQueued( xSessionData.display, QueuedAfterFlush ) > 0 )
 		{
 			XNextEvent( xSessionData.display, &( x11NativeEvent.xEvent ) );
-			platform::nativeEventDispatch( *this, x11NativeEvent );
+			Platform::nativeEventDispatch( *this, x11NativeEvent );
 			return true;
 		}
 
@@ -71,7 +71,7 @@ namespace Ic3::System
 	}
 
 
-	namespace platform
+	namespace Platform
 	{
 
 		bool nativeEventTranslate( EventController & pEventController, const NativeEventType & pNativeEvent, EventObject & pOutEvent )
@@ -89,7 +89,7 @@ namespace Ic3::System
 		EventSource * x11FindEventSourceByXWindow( X11EventController & pEventController, XWindow pWindowXID )
 		{
 			auto * eventSource = pEventController.findEventSource( [pWindowXID]( const EventSource & pEventSource ) -> bool {
-				const auto * eventSourceNativeData = pEventSource.getEventSourceNativeDataAs<platform::X11EventSourceNativeData>();
+				const auto * eventSourceNativeData = pEventSource.getEventSourceNativeDataAs<Platform::X11EventSourceNativeData>();
 				return eventSourceNativeData->windowXID == pWindowXID;
 			});
 			return eventSource;
@@ -216,14 +216,14 @@ namespace Ic3::System
 
 				case PropertyNotify:
 				{
-					auto * eventSourceNativeData = pEventSource.getEventSourceNativeDataAs<platform::X11EventSourceNativeData>();
+					auto * eventSourceNativeData = pEventSource.getEventSourceNativeDataAs<Platform::X11EventSourceNativeData>();
 					auto & xSessionData = x11GetXSessionData( *eventSourceNativeData );
 
 					if( pXEvent.xproperty.atom == xSessionData.atomCache.wmState )
 					{
 						// PropertyNotify is emitted after the state has been changed.
 						// Check what is the current state of WM_STATE_FULLSCREEN.
-						const auto isFullscreenWindow = platform::x11IsFullscreenWindow( xSessionData.display, eventSourceNativeData->windowXID );
+						const auto isFullscreenWindow = Platform::x11IsFullscreenWindow( xSessionData.display, eventSourceNativeData->windowXID );
 
 						// This is the cached fullscreen state, updated on each change.
 						const auto previousFullscreenState = eventSourceNativeData->sysWindowFlags.isSet( E_X11_SYSTEM_WINDOW_FLAG_WM_STATE_FULLSCREEN );
@@ -519,7 +519,7 @@ namespace Ic3::System
 			{
 				case ClientMessage:
 				{
-					auto & xSessionData = platform::x11GetXSessionData( *( pEventSource.mSysContext ) );
+					auto & xSessionData = Platform::x11GetXSessionData( *( pEventSource.mSysContext ) );
 
 					// printf("--ClientMessage: %s\n", XGetAtomName( pXEvent.xclient.display, pXEvent.xclient.message_type ) );
 
