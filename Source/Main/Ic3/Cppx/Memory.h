@@ -17,23 +17,23 @@ namespace Ic3::Cppx
 	struct MemoryAllocationProxy
 	{
 	public:
-		MemoryAllocCallback apiAlloc;
-		MemoryFreeCallback apiFree;
-		MemoryReallocCallback apiRealloc;
-		uint32 memoryAlignment = kMemoryCPUDefaultAlignment;
+		uint32 mMemoryAlignment = cxMemoryCPUDefaultAlignment;
+		MemoryAllocCallback mFnAlloc;
+		MemoryFreeCallback mFnFree;
+		MemoryReallocCallback mFnRealloc;
 
 	public:
 		explicit operator bool() const
 		{
-			return apiAlloc && apiFree && apiRealloc;
+			return mFnAlloc && mFnFree && mFnRealloc;
 		}
 
 		void swap( MemoryAllocationProxy & pOther )
 		{
-			std::swap( apiAlloc, pOther.apiAlloc );
-			std::swap( apiFree, pOther.apiFree );
-			std::swap( apiRealloc, pOther.apiRealloc );
-			std::swap( memoryAlignment, pOther.memoryAlignment );
+			std::swap( mMemoryAlignment, pOther.mMemoryAlignment );
+			std::swap( mFnAlloc, pOther.mFnAlloc );
+			std::swap( mFnFree, pOther.mFnFree );
+			std::swap( mFnRealloc, pOther.mFnRealloc );
 		}
 	};
 
@@ -44,23 +44,23 @@ namespace Ic3::Cppx
 
 	extern const MemoryAllocationProxy cvDefaultMemoryAllocationProxy;
 
-	template <typename TVal>
+	template <typename TPValue>
 	struct MemoryBaseSize
 	{
-		static constexpr size_t size = sizeof( TVal );
+		static constexpr size_t sSize = sizeof( TPValue );
 	};
 
 	template <>
 	struct MemoryBaseSize<void>
 	{
-		static constexpr size_t size = 1;
+		static constexpr size_t sSize = 1;
 	};
 
 	template <typename TSize, typename TOffset = TSize>
 	struct AlignedMemoryAllocInfo
 	{
-		SRegion<TSize, TOffset> accessibleRegion;
-		SRegion<TSize, TOffset> reservedRegion;
+		TRegion<TSize, TOffset> mAccessibleRegion;
+		TRegion<TSize, TOffset> mReservedRegion;
 	};
 
 	inline constexpr uint64 memCheckRequestedCopySize( uint64 pBufferSize, uint64 pCopySize, uint64 pCopyOffset )
@@ -72,23 +72,23 @@ namespace Ic3::Cppx
 	}
 
 	///
-	/// @tparam TValue
+	/// @tparam TPValue
 	/// @param pValue
 	/// @param pAlignment
 	/// @return
-	template <typename TValue>
-	inline constexpr TValue memGetAlignedPowerOf2( TValue pValue, uint32 pAlignment )
+	template <typename TPValue>
+	inline constexpr TPValue memGetAlignedPowerOf2( TPValue pValue, uint32 pAlignment )
 	{
-		return static_cast<TValue>( ( static_cast<uint64>( pValue ) + pAlignment ) & ( ~( static_cast<uint64>( pAlignment ) - 1 ) ) );
+		return static_cast<TPValue>( ( static_cast<uint64>( pValue ) + pAlignment ) & ( ~( static_cast<uint64>( pAlignment ) - 1 ) ) );
 	}
 
 	///
-	/// @tparam TValue
+	/// @tparam TPValue
 	/// @param pValue
 	/// @param pAlignment
 	/// @return
-	template <typename TValue>
-	inline TValue memGetAlignedValue( TValue pValue, uint32 pAlignment )
+	template <typename TPValue>
+	inline TPValue memGetAlignedValue( TPValue pValue, uint32 pAlignment )
 	{
 		const auto valueAlignmentMod = pValue % pAlignment;
 		return ( valueAlignmentMod != 0 ) ? ( pValue + pAlignment - valueAlignmentMod ) : pValue;
@@ -100,24 +100,24 @@ namespace Ic3::Cppx
 		const auto alignedOffset = memGetAlignedValue( pBaseAddress, pAlignment );
 
 		AlignedMemoryAllocInfo<TSize, TOffset> allocInfo;
-		allocInfo.accessibleRegion.offset = alignedOffset;
-		allocInfo.accessibleRegion.size = pAllocationSize;
-		allocInfo.reservedRegion.offset = pBaseAddress;
-		allocInfo.reservedRegion.size = ( alignedOffset - pBaseAddress ) + pAllocationSize;
+		allocInfo.mAccessibleRegion.offset = alignedOffset;
+		allocInfo.mAccessibleRegion.size = pAllocationSize;
+		allocInfo.mReservedRegion.offset = pBaseAddress;
+		allocInfo.mReservedRegion.size = ( alignedOffset - pBaseAddress ) + pAllocationSize;
 
 		return allocInfo;
 	}
 
-	template <typename TVal>
-	bool memCompareEqual( const TVal & pFirst, const TVal & pSecond )
+	template <typename TPValue>
+	bool memCompareEqual( const TPValue & pFirst, const TPValue & pSecond )
 	{
-		return memcmp( &pFirst, &pSecond, sizeof (TVal ) ) == 0;
+		return memcmp( &pFirst, &pSecond, sizeof( TPValue ) ) == 0;
 	}
 
-	template <typename TVal>
-	bool memCompareNotEqual( const TVal & pFirst, const TVal & pSecond )
+	template <typename TPValue>
+	bool memCompareNotEqual( const TPValue & pFirst, const TPValue & pSecond )
 	{
-		return memcmp( &pFirst, &pSecond, sizeof (TVal ) ) != 0;
+		return memcmp( &pFirst, &pSecond, sizeof( TPValue ) ) != 0;
 	}
 
 	///
@@ -130,17 +130,17 @@ namespace Ic3::Cppx
 
 	///
 	/// @param pDst
-	/// @param pDstSize
+	/// @param pDstpSize
 	/// @param pSrc
 	/// @param pCopySize
-	void memCopyChecked( void * pDst, size_t pDstSize, const void * pSrc, size_t pCopySize );
+	void memCopyChecked( void * pDst, size_t pDstpSize, const void * pSrc, size_t pCopySize );
 
 	///
 	/// @param pDst
-	/// @param pDstSize
+	/// @param pDstpSize
 	/// @param pSrc
 	/// @param pCopySize
-	void memCopyUnchecked( void * pDst, size_t pDstSize, const void * pSrc, size_t pCopySize );
+	void memCopyUnchecked( void * pDst, size_t pDstpSize, const void * pSrc, size_t pCopySize );
 
 	/// @brief
 	void memFillChecked( void * pMemoryPtr, size_t pMemorySize, byte pFillValue, size_t pFillSize );
@@ -171,11 +171,11 @@ namespace Ic3::Cppx
 	void memZeroUnchecked( void * pMemoryPtr, size_t pMemorySize, size_t pZeroSize );
 
 	/// @brief
-	template <typename TDst, typename TSrc>
-	inline void memCopy( TDst * pDst, size_t pCapacity, const TSrc * pSrc, size_t pCopyCount )
+	template <typename TPDst, typename TPSrc>
+	inline void memCopy( TPDst * pDst, size_t pCapacity, const TPSrc * pSrc, size_t pCopyCount )
 	{
-		const auto dstByteCapacity = MemoryBaseSize<TDst>::size * pCapacity;
-		const auto copyByteSize = MemoryBaseSize<TSrc>::size * pCopyCount;
+		const auto dstByteCapacity = MemoryBaseSize<TPDst>::size * pCapacity;
+		const auto copyByteSize = MemoryBaseSize<TPSrc>::size * pCopyCount;
 	#if( IC3_USE_RUNTIME_CHECKED_MEMORY_ROUTINES )
 		memCopyChecked( pDst, dstByteCapacity, pSrc, copyByteSize );
 	#else
@@ -184,19 +184,19 @@ namespace Ic3::Cppx
 	}
 
 	/// @brief
-	template <typename TDst, typename TSrc>
-	inline void memCopy( TDst & pDst, const TSrc & pSrc )
+	template <typename TPDst, typename TPSrc>
+	inline void memCopy( TPDst & pDst, const TPSrc & pSrc )
 	{
-		static_assert( sizeof( TDst ) >= sizeof( TSrc ) );
+		static_assert( sizeof( TPDst ) >= sizeof( TPSrc ) );
 		memCopy( &pDst, 1, &pSrc, 1 );
 	}
 
 	/// @brief
-	template <typename TData>
-	inline void memFill( TData * pMemory, size_t pCapacity, byte pFillValue, size_t pFillCount )
+	template <typename TPData>
+	inline void memFill( TPData * pMemory, size_t pCapacity, byte pFillValue, size_t pFillCount )
 	{
-		const auto memoryByteCapacity = MemoryBaseSize<TData>::size * pCapacity;
-		const auto fillByteSize = MemoryBaseSize<TData>::size * pFillCount;
+		const auto memoryByteCapacity = MemoryBaseSize<TPData>::size * pCapacity;
+		const auto fillByteSize = MemoryBaseSize<TPData>::size * pFillCount;
 	#if( IC3_USE_RUNTIME_CHECKED_MEMORY_ROUTINES )
 		memFillChecked( pMemory, memoryByteCapacity, pFillValue, fillByteSize );
 	#else
@@ -205,10 +205,10 @@ namespace Ic3::Cppx
 	}
 
 	/// @brief
-	template <typename TData>
-	inline void memMove( TData * pMemory, size_t pCapacity, size_t pBaseOffset, size_t pCount, ptrdiff_t pMoveOffset )
+	template <typename TPData>
+	inline void memMove( TPData * pMemory, size_t pCapacity, size_t pBaseOffset, size_t pCount, ptrdiff_t pMoveOffset )
 	{
-		constexpr auto elemSize = MemoryBaseSize<TData>::size;
+		constexpr auto elemSize = MemoryBaseSize<TPData>::size;
 	#if( IC3_USE_RUNTIME_CHECKED_MEMORY_ROUTINES )
 		memMoveChecked( pMemory, pCapacity * elemSize, pBaseOffset * elemSize, pCount * elemSize, pMoveOffset * elemSize );
 	#else
@@ -217,11 +217,11 @@ namespace Ic3::Cppx
 	}
 
 	/// @brief
-	template <typename TData>
-	inline void memZero( TData * pMemory, size_t pCapacity, size_t pZeroCount )
+	template <typename TPData>
+	inline void memZero( TPData * pMemory, size_t pCapacity, size_t pZeroCount )
 	{
-		const auto memoryByteCapacity = MemoryBaseSize<TData>::size * pCapacity;
-		const auto zeroByteSize = MemoryBaseSize<TData>::size * pZeroCount;
+		const auto memoryByteCapacity = MemoryBaseSize<TPData>::size * pCapacity;
+		const auto zeroByteSize = MemoryBaseSize<TPData>::size * pZeroCount;
 	#if( IC3_USE_RUNTIME_CHECKED_MEMORY_ROUTINES )
 		memZeroChecked( pMemory, memoryByteCapacity, zeroByteSize );
 	#else
@@ -229,34 +229,34 @@ namespace Ic3::Cppx
 	#endif
 	}
 
-	template <typename TVal, size_t tSize>
-	inline void memZero( TVal ( &pArray )[tSize], size_t pZeroSize = sizeof( TVal ) * tSize )
+	template <typename TPValue, size_t tpSize>
+	inline void memZero( TPValue ( &pArray )[tpSize], size_t pZeroSize = sizeof( TPValue ) * tpSize )
 	{
-		pZeroSize = getMinOf( pZeroSize, sizeof( TVal ) * tSize );
-		memZeroUnchecked( &( pArray[0] ), sizeof( TVal ) * tSize, pZeroSize );
+		pZeroSize = getMinOf( pZeroSize, sizeof( TPValue ) * tpSize );
+		memZeroUnchecked( &( pArray[0] ), sizeof( TPValue ) * tpSize, pZeroSize );
 	}
 
-	template <typename TVal, size_t tSize>
-	inline void memZero( std::array<TVal, tSize> & pArray, size_t pZeroSize = sizeof( TVal ) * tSize )
+	template <typename TPValue, size_t tpSize>
+	inline void memZero( std::array<TPValue, tpSize> & pArray, size_t pZeroSize = sizeof( TPValue ) * tpSize )
 	{
-		pZeroSize = getMinOf( pZeroSize, sizeof( TVal ) * tSize );
-		memZeroUnchecked( &pArray, sizeof( TVal ) * tSize, pZeroSize );
+		pZeroSize = getMinOf( pZeroSize, sizeof( TPValue ) * tpSize );
+		memZeroUnchecked( &pArray, sizeof( TPValue ) * tpSize, pZeroSize );
 	}
 
-	template <typename TVal>
-	inline void memZero( std::vector<TVal> & pVector, size_t pZeroOffset = 0, size_t pZeroCount = CxDef::MAX_SIZE )
+	template <typename TPValue>
+	inline void memZero( std::vector<TPValue> & pVector, size_t pZeroOffset = 0, size_t pZeroCount = cxMaxSize )
 	{
 		const auto vectorSize = pVector.size();
 		pZeroCount = getMinOf( pZeroCount, vectorSize );
 		pZeroOffset = getMinOf( pZeroOffset, vectorSize - pZeroCount );
-		memZeroUnchecked( pVector.data() + pZeroOffset, sizeof( TVal ) * vectorSize, sizeof( TVal ) * pZeroCount );
+		memZeroUnchecked( pVector.data() + pZeroOffset, sizeof( TPValue ) * vectorSize, sizeof( TPValue ) * pZeroCount );
 	}
 
-	template <typename TVal>
-	inline void memZero( TVal & pObject, size_t pZeroSize = sizeof( TVal ) )
+	template <typename TPValue>
+	inline void memZero( TPValue & pObject, size_t pZeroSize = sizeof( TPValue ) )
 	{
-		pZeroSize = getMinOf( pZeroSize, sizeof( TVal ) );
-		memZeroUnchecked( &pObject, sizeof( TVal ), pZeroSize );
+		pZeroSize = getMinOf( pZeroSize, sizeof( TPValue ) );
+		memZeroUnchecked( &pObject, sizeof( TPValue ), pZeroSize );
 	}
 
 }

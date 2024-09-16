@@ -8,178 +8,178 @@
 namespace Ic3::Cppx
 {
 
-	template <typename T1, typename T2 = T1>
-	struct CmpEqual
+	template <typename TP1, typename TP2 = TP1>
+	struct TCmpEqual
 	{
-		constexpr bool operator()( const T1 & pLhs, const T2 & pRhs ) const
+		constexpr bool operator()( const TP1 & pLhs, const TP2 & pRhs ) const
 		{
 			return pLhs == pRhs;
 		}
 	};
 
-	template <typename T1>
-	struct CmpEqualT
+	template <typename TP1>
+	struct TCmpEqualAuto
 	{
-		template <typename T2>
-		constexpr bool operator()( const T1 & pLhs, const T2 & pRhs ) const
+		template <typename TP2>
+		constexpr bool operator()( const TP1 & pLhs, const TP2 & pRhs ) const
 		{
 			return pLhs == pRhs;
 		}
 	};
 
-	template <typename T1, typename T2 = T1>
-	struct CmpNotEqual
+	template <typename TP1, typename TP2 = TP1>
+	struct TCmpNotEqual
 	{
-		constexpr bool operator()( const T1 & pLhs, const T2 & pRhs ) const
+		constexpr bool operator()( const TP1 & pLhs, const TP2 & pRhs ) const
 		{
 			return pLhs != pRhs;
 		}
 	};
 
-	template <typename T1>
-	struct CmpNotEqualT
+	template <typename TP1>
+	struct TCmpNotEqualAuto
 	{
-		template <typename T2>
-		constexpr bool operator()( const T1 & pLhs, const T2 & pRhs ) const
+		template <typename TP2>
+		constexpr bool operator()( const TP1 & pLhs, const TP2 & pRhs ) const
 		{
 			return pLhs != pRhs;
 		}
 	};
 
-	template <typename T1, typename T2 = T1>
-	struct CmpLess
+	template <typename TP1, typename TP2 = TP1>
+	struct TCmpLess
 	{
-		constexpr bool operator()( const T1 & pLhs, const T2 & pRhs ) const
+		constexpr bool operator()( const TP1 & pLhs, const TP2 & pRhs ) const
 		{
 			return pLhs < pRhs;
 		}
 	};
 
-	template <typename T1>
-	struct CmpLessT
+	template <typename TP1>
+	struct TCmpLessAuto
 	{
-		template <typename T2>
-		constexpr bool operator()( const T1 & pLhs, const T2 & pRhs ) const
+		template <typename TP2>
+		constexpr bool operator()( const TP1 & pLhs, const TP2 & pRhs ) const
 		{
 			return pLhs < pRhs;
 		}
 	};
 
-	template <typename T1, typename T2 = T1>
-	struct CmpLessEqual
+	template <typename TP1, typename TP2 = TP1>
+	struct TCmpLessEqual
 	{
-		constexpr bool operator()( const T1 & pLhs, const T2 & pRhs ) const
+		constexpr bool operator()( const TP1 & pLhs, const TP2 & pRhs ) const
 		{
 			return pLhs <= pRhs;
 		}
 	};
 
-	template <typename T1>
-	struct CmpLessEqualT
+	template <typename TP1>
+	struct TCmpLessEqualAuto
 	{
-		template <typename T2>
-		constexpr bool operator()( const T1 & pLhs, const T2 & pRhs ) const
+		template <typename TP2>
+		constexpr bool operator()( const TP1 & pLhs, const TP2 & pRhs ) const
 		{
 			return pLhs <= pRhs;
 		}
 	};
 
-	template <typename T1, typename T2 = T1>
-	struct CmpGreater
+	template <typename TP1, typename TP2 = TP1>
+	struct TCmpGreater
 	{
-		constexpr bool operator()( const T1 & pLhs, const T2 & pRhs ) const
+		constexpr bool operator()( const TP1 & pLhs, const TP2 & pRhs ) const
 		{
 			return pLhs > pRhs;
 		}
 	};
 
-	template <typename T1>
-	struct CmpGreaterT
+	template <typename TP1>
+	struct TCmpGreaterAuto
 	{
-		template <typename T2>
-		constexpr bool operator()( const T1 & pLhs, const T2 & pRhs ) const
+		template <typename TP2>
+		constexpr bool operator()( const TP1 & pLhs, const TP2 & pRhs ) const
 		{
 			return pLhs > pRhs;
 		}
 	};
 
-	template <typename T1, typename T2 = T1>
-	struct CmpGreaterEqual
+	template <typename TP1, typename TP2 = TP1>
+	struct TCmpGreaterEqual
 	{
-		constexpr bool operator()( const T1 & pLhs, const T2 & pRhs ) const
+		constexpr bool operator()( const TP1 & pLhs, const TP2 & pRhs ) const
 		{
 			return pLhs >= pRhs;
 		}
 	};
 
-	template <typename T1>
-	struct CmpGreaterEqualT
+	template <typename TP1>
+	struct TCmpGreaterEqualAuto
 	{
-		template <typename T2>
-		constexpr bool operator()( const T1 & pLhs, const T2 & pRhs ) const
+		template <typename TP2>
+		constexpr bool operator()( const TP1 & pLhs, const TP2 & pRhs ) const
 		{
 			return pLhs >= pRhs;
 		}
 	};
 
-	template <intmax_t tValue>
+	template <intmax_t tpValue>
 	struct StaticAbs
 	{
-		static constexpr intmax_t value = ( tValue < 0 ) ? -tValue : tValue;
+		static constexpr intmax_t value = ( tpValue < 0 ) ? -tpValue : tpValue;
 	};
 
-	template <intmax_t tValue>
+	template <intmax_t tpValue>
 	struct StaticSignOf
 	{
-		static constexpr int32_t value = ( tValue < 0 ) ? -1 : 1;
+		static constexpr int32_t value = ( tpValue < 0 ) ? -1 : 1;
 	};
 
-	template <intmax_t tVal1, intmax_t tVal2, intmax_t... tValN>
+	template <intmax_t tpValue1, intmax_t tpValue2, intmax_t... tpValues>
 	struct StaticMax
 	{
-		static constexpr intmax_t value = StaticMax<tVal1, StaticMax<tVal2, tValN...>::value>::value;
+		static constexpr intmax_t value = StaticMax<tpValue1, StaticMax<tpValue2, tpValues...>::value>::value;
 	};
 
-	template <intmax_t tVal1, intmax_t tVal2>
-	struct StaticMax<tVal1, tVal2>
+	template <intmax_t tpValue1, intmax_t tpValue2>
+	struct StaticMax<tpValue1, tpValue2>
 	{
-		static constexpr intmax_t value = tVal1 >= tVal2 ? tVal1 : tVal2;
+		static constexpr intmax_t value = tpValue1 >= tpValue2 ? tpValue1 : tpValue2;
 	};
 
-	template <intmax_t tVal1, intmax_t tVal2, intmax_t... tValN>
+	template <intmax_t tpValue1, intmax_t tpValue2, intmax_t... tpValues>
 	struct StaticMin
 	{
-		static constexpr intmax_t value = StaticMin<StaticMin<tVal1, tVal2>::value, tValN...>::value;
+		static constexpr intmax_t value = StaticMin<StaticMin<tpValue1, tpValue2>::value, tpValues...>::value;
 	};
 
-	template <intmax_t tVal1, intmax_t tVal2>
-	struct StaticMin<tVal1, tVal2>
+	template <intmax_t tpValue1, intmax_t tpValue2>
+	struct StaticMin<tpValue1, tpValue2>
 	{
-		static constexpr intmax_t value = tVal1 <= tVal2 ? tVal1 : tVal2;
+		static constexpr intmax_t value = tpValue1 <= tpValue2 ? tpValue1 : tpValue2;
 	};
 
-	template <typename... _Types>
+	template <typename... TPTypes>
 	struct StaticMaxSizeofT
 	{
-		static constexpr size_t value = static_cast< size_t >( StaticMax<sizeof( _Types )...>::value );
+		static constexpr size_t value = static_cast< size_t >( StaticMax<sizeof( TPTypes )...>::value );
 	};
 
-	template <intmax_t... tValues>
+	template <intmax_t... tpValues>
 	struct StaticMaxSizeofVal
 	{
-		static constexpr size_t value = StaticMaxSizeofT<typename QIntTypeByValue<tValues>::Type...>::value;
+		static constexpr size_t value = StaticMaxSizeofT<typename QIntTypeByValue<tpValues>::Type...>::value;
 	};
 
-	template <typename... _Types>
+	template <typename... TPTypes>
 	struct StaticMaxAlignOfT
 	{
-		static constexpr size_t value = static_cast< size_t >( StaticMax<alignof( _Types )...>::value );
+		static constexpr size_t value = static_cast< size_t >( StaticMax<alignof( TPTypes )...>::value );
 	};
 
-	template <intmax_t... tValues>
+	template <intmax_t... tpValues>
 	struct StaticMaxAlignOfVal
 	{
-		static constexpr size_t value = StaticMaxAlignOfT<typename QIntTypeByValue<tValues>::Type...>::value;
+		static constexpr size_t value = StaticMaxAlignOfT<typename QIntTypeByValue<tpValues>::Type...>::value;
 	};
 
 }

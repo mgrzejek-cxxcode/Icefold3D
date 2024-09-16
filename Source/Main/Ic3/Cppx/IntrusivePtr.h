@@ -9,14 +9,14 @@
 namespace Ic3::Cppx
 {
 
-	template <typename TCounter = RefCounter>
+	template <typename TPCounter = RefCounter>
 	class RefCountedBase
 	{
 		friend struct RefCountedProxy;
 
 	public:
-		using MyType = RefCountedBase<TCounter>;
-		using CounterType = TCounter;
+		using MyType = RefCountedBase<TPCounter>;
+		using CounterType = TPCounter;
 
 	public:
 		RefCountedBase( const RefCountedBase & ) = delete;
@@ -47,41 +47,41 @@ namespace Ic3::Cppx
 
 	struct RefCountedProxy
 	{
-		template <typename TCounter>
-		static ref_counter_value_t addRef( const RefCountedBase<TCounter> * pRefCountedBase )
+		template <typename TPCounter>
+		static ref_counter_value_t addRef( const RefCountedBase<TPCounter> * pRefCountedBase )
 		{
 			return pRefCountedBase->addRef();
 		}
 
-		template <typename TCounter>
-		static ref_counter_value_t releaseRef( const RefCountedBase<TCounter> * pRefCountedBase )
+		template <typename TPCounter>
+		static ref_counter_value_t releaseRef( const RefCountedBase<TPCounter> * pRefCountedBase )
 		{
 			return pRefCountedBase->releaseRef();
 		}
 	};
 
 
-	template <typename TType>
-	inline ref_counter_value_t addRefDefault( const TType * pObjectPtr )
+	template <typename TPRefCounted>
+	inline ref_counter_value_t addRefDefault( const TPRefCounted * pObjectPtr )
 	{
 		return RefCountedProxy::addRef( pObjectPtr );
 	}
 
-	template <typename TType>
-	inline ref_counter_value_t releaseRefDefault( const TType * pObjectPtr )
+	template <typename TPRefCounted>
+	inline ref_counter_value_t releaseRefDefault( const TPRefCounted * pObjectPtr )
 	{
 		return RefCountedProxy::releaseRef( pObjectPtr );
 	}
 
 
-	template <typename TType, typename TDeleter = DefaultDelete<TType>>
+	template <typename TPRefCounted, typename TPDeleter = DefaultDelete<TPRefCounted>>
 	class IntrusivePtr
 	{
 		template <typename, typename>
 		friend class IntrusivePtr;
 
 	public:
-		using MyType = IntrusivePtr<TType, TDeleter>;
+		using MyType = IntrusivePtr<TPRefCounted, TPDeleter>;
 
 	public:
 		IntrusivePtr()
@@ -100,15 +100,15 @@ namespace Ic3::Cppx
 			_setNoRelease( pSrcObject._ptr );
 		}
 
-		template <typename TOther>
-		IntrusivePtr( IntrusivePtr<TOther> && pOther )
-		: _ptr( static_cast<TType *>( pOther._ptr ) )
+		template <typename TPOther>
+		IntrusivePtr( IntrusivePtr<TPOther> && pOther )
+		: _ptr( static_cast<TPRefCounted *>( pOther._ptr ) )
 		{
 			pOther._ptr = nullptr;
 		}
 
-		template <typename TOther>
-		IntrusivePtr( const IntrusivePtr<TOther> & pOther )
+		template <typename TPOther>
+		IntrusivePtr( const IntrusivePtr<TPOther> & pOther )
 		: _ptr( nullptr )
 		{
 			_setNoRelease( pOther._ptr );
@@ -118,13 +118,13 @@ namespace Ic3::Cppx
 		: _ptr( nullptr )
 		{}
 
-		explicit IntrusivePtr( TType * pObject )
+		explicit IntrusivePtr( TPRefCounted * pObject )
 		: _ptr( pObject )
 		{}
 
-		template <typename TOther>
-		explicit IntrusivePtr( TOther * pObject )
-		: _ptr( static_cast<TType *>( pObject ) )
+		template <typename TPOther>
+		explicit IntrusivePtr( TPOther * pObject )
+		: _ptr( static_cast<TPRefCounted *>( pObject ) )
 		{}
 
 		~IntrusivePtr()
@@ -152,15 +152,15 @@ namespace Ic3::Cppx
 			return *this;
 		}
 
-		template <typename TOther>
-		IntrusivePtr & operator=( IntrusivePtr<TOther> && pRhs )
+		template <typename TPOther>
+		IntrusivePtr & operator=( IntrusivePtr<TPOther> && pRhs )
 		{
 			IntrusivePtr( std::move( pRhs ) ).swap( *this );
 			return *this;
 		}
 
-		template <typename TOther>
-		IntrusivePtr & operator=( const IntrusivePtr<TOther> & pRhs )
+		template <typename TPOther>
+		IntrusivePtr & operator=( const IntrusivePtr<TPOther> & pRhs )
 		{
 			IntrusivePtr( pRhs ).swap( *this );
 			return *this;
@@ -172,14 +172,14 @@ namespace Ic3::Cppx
 			return *this;
 		}
 
-		IntrusivePtr & operator=( TType * pRhs )
+		IntrusivePtr & operator=( TPRefCounted * pRhs )
 		{
 			IntrusivePtr( pRhs ).swap( *this );
 			return *this;
 		}
 
-		template <typename TOther>
-		IntrusivePtr & operator=( TOther * pRhs )
+		template <typename TPOther>
+		IntrusivePtr & operator=( TPOther * pRhs )
 		{
 			IntrusivePtr( pRhs ).swap( *this );
 			return *this;
@@ -190,29 +190,29 @@ namespace Ic3::Cppx
 			return _ptr != nullptr;
 		}
 
-		explicit operator TType * ( ) const
+		explicit operator TPRefCounted * ( ) const
 		{
 			return _ptr;
 		}
 
-		TType & operator*() const
+		TPRefCounted & operator*() const
 		{
 			assert( _ptr != nullptr );
 			return *( _ptr );
 		}
 
-		TType * operator->() const
+		TPRefCounted * operator->() const
 		{
 			assert( _ptr != nullptr );
 			return _ptr;
 		}
 
-		TType * get() const
+		TPRefCounted * get() const
 		{
 			return _ptr;
 		}
 
-		void reset( TType * pPointer = nullptr )
+		void reset( TPRefCounted * pPointer = nullptr )
 		{
 			_set( pPointer );
 		}
@@ -222,7 +222,7 @@ namespace Ic3::Cppx
 			std::swap( _ptr, pOther._ptr );
 		}
 
-		bool empty() const
+		IC3_ATTR_NO_DISCARD bool empty() const
 		{
 			return _ptr != nullptr;
 		}
@@ -237,7 +237,7 @@ namespace Ic3::Cppx
 			}
 		}
 
-		void _setNoRelease( TType * pPointer )
+		void _setNoRelease( TPRefCounted * pPointer )
 		{
 			if( ( pPointer != nullptr ) && ( addRefDefault( pPointer ) > 0 ) )
 			{
@@ -249,17 +249,17 @@ namespace Ic3::Cppx
 			}
 		}
 
-		template <typename TOther>
-		void _setNoRelease( TOther * pPointer )
+		template <typename TPOther>
+		void _setNoRelease( TPOther * pPointer )
 		{
-			_setNoRelease( static_cast<TType *>( pPointer ) );
+			_setNoRelease( static_cast<TPRefCounted *>( pPointer ) );
 		}
 
-		void _set( TType * pPointer )
+		void _set( TPRefCounted * pPointer )
 		{
 			if( pPointer != _ptr )
 			{
-				TType * prevPtr = _ptr;
+				TPRefCounted * prevPtr = _ptr;
 				_setNoRelease( pPointer );
 				if( prevPtr != nullptr )
 				{
@@ -268,97 +268,97 @@ namespace Ic3::Cppx
 			}
 		}
 
-		template <typename TOther>
-		void _set( TOther * pPointer )
+		template <typename TPOther>
+		void _set( TPOther * pPointer )
 		{
-			_set( static_cast<TType *>( pPointer ) );
+			_set( static_cast<TPRefCounted *>( pPointer ) );
 		}
 
-		static void _releasePtr( TType * pPointer )
+		static void _releasePtr( TPRefCounted * pPointer )
 		{
 			ref_counter_value_t remainingRefs = releaseRefDefault( pPointer );
 			if( remainingRefs == 0 )
 			{
-				TDeleter()( pPointer );
+				TPDeleter()( pPointer );
 			}
 		}
 
 	private:
-		TType * _ptr;
+		TPRefCounted * _ptr;
 	};
 
-	template <typename TType, typename TDeleter, typename TOther, typename TOtherdel>
-	inline bool operator==( const IntrusivePtr<TType, TDeleter> & pLhs, const IntrusivePtr<TOther, TOtherdel> & pRhs )
+	template <typename TPRefCounted, typename TPDeleter, typename TPRefCounted2, typename TPDeleter2>
+	inline bool operator==( const IntrusivePtr<TPRefCounted, TPDeleter> & pLhs, const IntrusivePtr<TPRefCounted2, TPDeleter2> & pRhs )
 	{
 		return pLhs.get() == pRhs.get();
 	}
 
-	template <typename TType, typename TDeleter>
-	inline bool operator==( const IntrusivePtr<TType, TDeleter> & pLhs, std::nullptr_t )
+	template <typename TPRefCounted, typename TPDeleter>
+	inline bool operator==( const IntrusivePtr<TPRefCounted, TPDeleter> & pLhs, std::nullptr_t )
 	{
 		return pLhs.empty();
 	}
 
-	template <typename TType, typename TDeleter>
-	inline bool operator==( std::nullptr_t, const IntrusivePtr<TType, TDeleter> & pRhs )
+	template <typename TPRefCounted, typename TPDeleter>
+	inline bool operator==( std::nullptr_t, const IntrusivePtr<TPRefCounted, TPDeleter> & pRhs )
 	{
 		return pRhs.empty();
 	}
 
-	template <typename TType, typename TDeleter, typename TOther, typename TOtherdel>
-	inline bool operator!=( const IntrusivePtr<TType, TDeleter> & pLhs, const IntrusivePtr<TOther, TOtherdel> & pRhs )
+	template <typename TPRefCounted, typename TPDeleter, typename TPRefCounted2, typename TPDeleter2>
+	inline bool operator!=( const IntrusivePtr<TPRefCounted, TPDeleter> & pLhs, const IntrusivePtr<TPRefCounted2, TPDeleter2> & pRhs )
 	{
 		return pLhs.get() != pRhs.get();
 	}
 
-	template <typename TType, typename TDeleter>
-	inline bool operator!=( const IntrusivePtr<TType, TDeleter> & pLhs, std::nullptr_t )
+	template <typename TPRefCounted, typename TPDeleter>
+	inline bool operator!=( const IntrusivePtr<TPRefCounted, TPDeleter> & pLhs, std::nullptr_t )
 	{
 		return !pLhs.empty();
 	}
 
-	template <typename TType, typename TDeleter>
-	inline bool operator!=( std::nullptr_t, const IntrusivePtr<TType, TDeleter> & pRhs )
+	template <typename TPRefCounted, typename TPDeleter>
+	inline bool operator!=( std::nullptr_t, const IntrusivePtr<TPRefCounted, TPDeleter> & pRhs )
 	{
 		return !pRhs.empty();
 	}
 
-	template <typename TType, typename TDeleter, typename TOther, typename TOtherdel>
-	inline bool operator>( const IntrusivePtr<TType, TDeleter> & pLhs, const IntrusivePtr<TOther, TOtherdel> & pRhs )
+	template <typename TPRefCounted, typename TPDeleter, typename TPRefCounted2, typename TPDeleter2>
+	inline bool operator>( const IntrusivePtr<TPRefCounted, TPDeleter> & pLhs, const IntrusivePtr<TPRefCounted2, TPDeleter2> & pRhs )
 	{
 		return pLhs.get() > pRhs.get();
 	}
 
-	template <typename TType, typename TDeleter, typename TOther, typename TOtherdel>
-	inline bool operator>=( const IntrusivePtr<TType, TDeleter> & pLhs, const IntrusivePtr<TOther, TOtherdel> & pRhs )
+	template <typename TPRefCounted, typename TPDeleter, typename TPRefCounted2, typename TPDeleter2>
+	inline bool operator>=( const IntrusivePtr<TPRefCounted, TPDeleter> & pLhs, const IntrusivePtr<TPRefCounted2, TPDeleter2> & pRhs )
 	{
 		return pLhs.get() >= pRhs.get();
 	}
 
-	template <typename TType, typename TDeleter, typename TOther, typename TOtherdel>
-	inline bool operator<( const IntrusivePtr<TType, TDeleter> & pLhs, const IntrusivePtr<TOther, TOtherdel> & pRhs )
+	template <typename TPRefCounted, typename TPDeleter, typename TPRefCounted2, typename TPDeleter2>
+	inline bool operator<( const IntrusivePtr<TPRefCounted, TPDeleter> & pLhs, const IntrusivePtr<TPRefCounted2, TPDeleter2> & pRhs )
 	{
 		return pLhs.get() < pRhs.get();
 	}
 
-	template <typename TType, typename TDeleter, typename TOther, typename TOtherdel>
-	inline bool operator<=( const IntrusivePtr<TType, TDeleter> & pLhs, const IntrusivePtr<TOther, TOtherdel> & pRhs )
+	template <typename TPRefCounted, typename TPDeleter, typename TPRefCounted2, typename TPDeleter2>
+	inline bool operator<=( const IntrusivePtr<TPRefCounted, TPDeleter> & pLhs, const IntrusivePtr<TPRefCounted2, TPDeleter2> & pRhs )
 	{
 		return pLhs.get() <= pRhs.get();
 	}
 
 
-	template <typename TType, typename TDeleter>
-	void swap( IntrusivePtr<TType, TDeleter> & pLeft, IntrusivePtr<TType, TDeleter> & pRight )
+	template <typename TPRefCounted, typename TPDeleter>
+	void swap( IntrusivePtr<TPRefCounted, TPDeleter> & pLeft, IntrusivePtr<TPRefCounted, TPDeleter> & pRight )
 	{
 		pLeft.swap( pRight );
 	}
 
 
-	template <typename TType, class ..._Args>
-	inline IntrusivePtr<TType> makeIntrusive( _Args && ...pArgs )
+	template <typename TPRefCounted, class ...TPArgs>
+	inline IntrusivePtr<TPRefCounted> makeIntrusive( TPArgs && ...pArgs )
 	{
-		return IntrusivePtr<TType>( new TType( std::forward<_Args>( pArgs )... ) );
+		return IntrusivePtr<TPRefCounted>( new TPRefCounted( std::forward<TPArgs>( pArgs )... ) );
 	}
 
 }

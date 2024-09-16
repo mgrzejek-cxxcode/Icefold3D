@@ -9,18 +9,18 @@
 namespace Ic3::Cppx
 {
 
-	template < typename TValue,
-	           typename TCompare = CmpLessT<TValue>,
-	           typename TAlloc = std::allocator<TValue> >
-	class SortedArray
+	template < typename TPValue,
+	           typename TPComparator = TCmpLessAuto<TPValue>,
+	           typename TPAllocator = std::allocator<TPValue> >
+	class TSortedArray
 	{
 	public:
-		using SelfType = SortedArray<TValue, TCompare, TAlloc>;
+		using SelfType = TSortedArray<TPValue, TPComparator, TPAllocator>;
 
-		using ValueType = TValue;
-		using CompareType = TCompare;
+		using ValueType = TPValue;
+		using CompareType = TPComparator;
 
-		using UnderlyingContainerType = std::vector<TValue, TAlloc>;
+		using UnderlyingContainerType = std::vector<TPValue, TPAllocator>;
 
 		using Iterator = typename UnderlyingContainerType::iterator;
 		using ConstIterator = typename UnderlyingContainerType::const_iterator;
@@ -28,48 +28,48 @@ namespace Ic3::Cppx
 		using ConstReverseIterator = typename UnderlyingContainerType::const_reverse_iterator;
 
 	public:
-		SortedArray( SortedArray && ) = default;
-		SortedArray& operator=( SortedArray && ) = default;
+		TSortedArray( TSortedArray && ) = default;
+		TSortedArray& operator=( TSortedArray && ) = default;
 
-		SortedArray( const SortedArray & ) = default;
-		SortedArray& operator=( const SortedArray & ) = default;
+		TSortedArray( const TSortedArray & ) = default;
+		TSortedArray& operator=( const TSortedArray & ) = default;
 
-		SortedArray() = default;
+		TSortedArray() = default;
 
-		explicit SortedArray( const TAlloc & pAllocator )
+		explicit TSortedArray( const TPAllocator & pAllocator )
 		: _underlyingContainer( pAllocator )
 		{}
 
-		explicit SortedArray( size_t pCapacity, const TAlloc & pAllocator = TAlloc() )
+		explicit TSortedArray( size_t pCapacity, const TPAllocator & pAllocator = TPAllocator() )
 		: _underlyingContainer( pCapacity, pAllocator )
 		{}
 
-		TValue & operator[]( size_t pIndex )
+		TPValue & operator[]( size_t pIndex )
 		{
 			return _underlyingContainer[pIndex];
 		}
 
-		IC3_ATTR_NO_DISCARD const TValue & operator[]( size_t pIndex ) const
+		IC3_ATTR_NO_DISCARD const TPValue & operator[]( size_t pIndex ) const
 		{
 			return _underlyingContainer[pIndex];
 		}
 
-		IC3_ATTR_NO_DISCARD TValue & at( size_t pIndex )
+		IC3_ATTR_NO_DISCARD TPValue & at( size_t pIndex )
 		{
 			return _underlyingContainer.at( pIndex );
 		}
 
-		IC3_ATTR_NO_DISCARD const TValue & at( size_t pIndex ) const
+		IC3_ATTR_NO_DISCARD const TPValue & at( size_t pIndex ) const
 		{
 			return _underlyingContainer.at( pIndex );
 		}
 
-		IC3_ATTR_NO_DISCARD TValue * data() noexcept
+		IC3_ATTR_NO_DISCARD TPValue * data() noexcept
 		{
 			return _underlyingContainer.data();
 		}
 
-		IC3_ATTR_NO_DISCARD const TValue * data() const noexcept
+		IC3_ATTR_NO_DISCARD const TPValue * data() const noexcept
 		{
 			return _underlyingContainer.data();
 		}
@@ -94,98 +94,98 @@ namespace Ic3::Cppx
 			return _underlyingContainer.end();
 		}
 
-		IC3_ATTR_NO_DISCARD TValue & front()
+		IC3_ATTR_NO_DISCARD TPValue & front()
 		{
 			return _underlyingContainer.front();
 		}
 
-		IC3_ATTR_NO_DISCARD const TValue & front() const
+		IC3_ATTR_NO_DISCARD const TPValue & front() const
 		{
 			return _underlyingContainer.front();
 		}
 
-		IC3_ATTR_NO_DISCARD TValue & back()
+		IC3_ATTR_NO_DISCARD TPValue & back()
 		{
 			return _underlyingContainer.back();
 		}
 
-		IC3_ATTR_NO_DISCARD const TValue & back() const
+		IC3_ATTR_NO_DISCARD const TPValue & back() const
 		{
 			return _underlyingContainer.back();
 		}
 
-		Iterator insert( TValue && pValue )
+		Iterator insert( TPValue && pValue )
 		{
 			auto insertPosition = _getInsertPosition( pValue, CompareType{} );
 			auto insertIterator = _underlyingContainer.begin() + insertPosition;
 			return _underlyingContainer.insert( insertIterator, std::move( pValue ) );
 		}
 
-		Iterator insert( const TValue & pValue )
+		Iterator insert( const TPValue & pValue )
 		{
 			auto insertPosition = _getInsertPosition( pValue, CompareType{} );
 			auto insertIterator = _underlyingContainer.begin() + insertPosition;
 			return _underlyingContainer.insert( insertIterator, pValue );
 		}
 
-		IC3_ATTR_NO_DISCARD Iterator find( const TValue & pValue )
+		IC3_ATTR_NO_DISCARD Iterator find( const TPValue & pValue )
 		{
 			auto elementPos = _findLower( pValue, CompareType{} );
-			if( ( elementPos != CxDef::INVALID_POSITION ) && ( _underlyingContainer[elementPos] == pValue ) )
+			if( ( elementPos != cxInvalidPosition ) && ( _underlyingContainer[elementPos] == pValue ) )
 			{
 				return _underlyingContainer.begin() + elementPos;
 			}
 			return _underlyingContainer.end();
 		}
 
-		IC3_ATTR_NO_DISCARD ConstIterator find( const TValue & pValue ) const
+		IC3_ATTR_NO_DISCARD ConstIterator find( const TPValue & pValue ) const
 		{
 			auto elementPos = _findLower( pValue, CompareType{} );
-			if( ( elementPos != CxDef::INVALID_POSITION ) && ( _underlyingContainer[elementPos] == pValue ) )
+			if( ( elementPos != cxInvalidPosition ) && ( _underlyingContainer[elementPos] == pValue ) )
 			{
 				return _underlyingContainer.begin() + elementPos;
 			}
 			return _underlyingContainer.end();
 		}
 
-		template < typename TRef, typename TRefEqual = CmpEqualT<TValue> >
+		template < typename TRef, typename TRefEqual = TCmpEqualAuto<TPValue> >
 		IC3_ATTR_NO_DISCARD Iterator find( const TRef & pValue, TRefEqual pRefEqual = TRefEqual{} )
 		{
 			auto elementPos = _findLower( pValue, CompareType{} );
-			if( ( elementPos != CxDef::INVALID_POSITION ) && pRefEqual( _underlyingContainer[elementPos], pValue ) )
+			if( ( elementPos != cxInvalidPosition ) && pRefEqual( _underlyingContainer[elementPos], pValue ) )
 			{
 				return _underlyingContainer.begin() + elementPos;
 			}
 			return _underlyingContainer.end();
 		}
 
-		template < typename TRef, typename TRefEqual = CmpEqualT<TValue> >
+		template < typename TRef, typename TRefEqual = TCmpEqualAuto<TPValue> >
 		IC3_ATTR_NO_DISCARD ConstIterator find( const TRef & pValue, TRefEqual pRefEqual = TRefEqual{} ) const
 		{
 			auto elementPos = _findLower( pValue, CompareType{} );
-			if( ( elementPos != CxDef::INVALID_POSITION ) && pRefEqual( _underlyingContainer[elementPos], pValue ) )
+			if( ( elementPos != cxInvalidPosition ) && pRefEqual( _underlyingContainer[elementPos], pValue ) )
 			{
 				return _underlyingContainer.begin() + elementPos;
 			}
 			return _underlyingContainer.end();
 		}
 
-		template < typename TRef, typename TRefCompare = CmpLessT<TValue>, typename TRefEqual = CmpEqualT<TValue> >
+		template < typename TRef, typename TRefCompare = TCmpLessAuto<TPValue>, typename TRefEqual = TCmpEqualAuto<TPValue> >
 		IC3_ATTR_NO_DISCARD Iterator find( const TRef & pValue, TRefCompare pRefCompare, TRefEqual pRefEqual )
 		{
 			auto elementPos = _findLower( pValue, pRefCompare );
-			if( ( elementPos != CxDef::INVALID_POSITION ) && pRefEqual( _underlyingContainer[elementPos], pValue ) )
+			if( ( elementPos != cxInvalidPosition ) && pRefEqual( _underlyingContainer[elementPos], pValue ) )
 			{
 				return _underlyingContainer.begin() + elementPos;
 			}
 			return _underlyingContainer.end();
 		}
 
-		template < typename TRef, typename TRefCompare = CmpLessT<TValue>, typename TRefEqual = CmpEqualT<TValue> >
+		template < typename TRef, typename TRefCompare = TCmpLessAuto<TPValue>, typename TRefEqual = TCmpEqualAuto<TPValue> >
 		IC3_ATTR_NO_DISCARD ConstIterator find( const TRef & pValue, TRefCompare pRefCompare, TRefEqual pRefEqual ) const
 		{
 			auto elementPos = _findLower( pValue, pRefCompare );
-			if( ( elementPos != CxDef::INVALID_POSITION ) && pRefEqual( _underlyingContainer[elementPos], pValue ) )
+			if( ( elementPos != cxInvalidPosition ) && pRefEqual( _underlyingContainer[elementPos], pValue ) )
 			{
 				return _underlyingContainer.begin() + elementPos;
 			}
@@ -202,10 +202,10 @@ namespace Ic3::Cppx
 			return _underlyingContainer.erase( pStart, pEnd );
 		}
 
-		Iterator remove( const TValue & pValue )
+		Iterator remove( const TPValue & pValue )
 		{
 			auto rangeBeginPos = _findLower( pValue, CompareType{} );
-			if( rangeBeginPos != CxDef::INVALID_POSITION )
+			if( rangeBeginPos != cxInvalidPosition )
 			{
 				auto rangeEndPos = _findUpper( pValue, CompareType{} );
 				const auto eraseFrom = _underlyingContainer.begin() + rangeBeginPos;
@@ -215,10 +215,10 @@ namespace Ic3::Cppx
 			return _underlyingContainer.end();
 		}
 
-		Iterator remove( const TValue & pLeft, const TValue & pRight )
+		Iterator remove( const TPValue & pLeft, const TPValue & pRight )
 		{
 			auto rangeBeginPos = _findLower( pLeft, CompareType{} );
-			if( rangeBeginPos != CxDef::INVALID_POSITION )
+			if( rangeBeginPos != cxInvalidPosition )
 			{
 				auto rangeEndPos = _findUpper( pRight, CompareType{} );
 				if( rangeBeginPos <= rangeEndPos )
@@ -231,7 +231,7 @@ namespace Ic3::Cppx
 			return _underlyingContainer.end();
 		}
 
-		void insertData( const std::vector<TValue> & pValueArray )
+		void insertData( const std::vector<TPValue> & pValueArray )
 		{
 			_underlyingContainer.insert( _underlyingContainer.end(), pValueArray.begin(), pValueArray.end() );
 
@@ -240,7 +240,7 @@ namespace Ic3::Cppx
 			           CompareType{} );
 		}
 
-		void setData( std::vector<TValue> pValueArray )
+		void setData( std::vector<TPValue> pValueArray )
 		{
 			_underlyingContainer = std::move( pValueArray );
 
@@ -290,7 +290,7 @@ namespace Ic3::Cppx
 			auto rangeBegin = _underlyingContainer.begin();
 			auto rangeEnd = _underlyingContainer.end();
 			auto resultIter = std::lower_bound( rangeBegin, rangeEnd, pRefValue, std::forward<TPred>( pPredicate )... );
-			return ( resultIter != rangeEnd ) ? ( resultIter - rangeBegin ) : CxDef::INVALID_POSITION;
+			return ( resultIter != rangeEnd ) ? ( resultIter - rangeBegin ) : cxInvalidPosition;
 		}
 
 		template <typename TRef, typename... TPred>
@@ -299,33 +299,33 @@ namespace Ic3::Cppx
 			auto rangeBegin = _underlyingContainer.begin();
 			auto rangeEnd = _underlyingContainer.end();
 			auto resultIter = std::upper_bound( rangeBegin, rangeEnd, pRefValue, std::forward<TPred>( pPredicate )... );
-			return ( resultIter != rangeEnd ) ? ( resultIter - rangeBegin ) : CxDef::INVALID_POSITION;
+			return ( resultIter != rangeEnd ) ? ( resultIter - rangeBegin ) : cxInvalidPosition;
 		}
 
 	private:
 		UnderlyingContainerType _underlyingContainer;
 	};
 
-	template <typename TValue, typename TCompare, typename TAlloc>
-	inline typename SortedArray<TValue, TCompare, TAlloc>::Iterator begin( SortedArray<TValue, TCompare, TAlloc> & pContainer )
+	template <typename TPValue, typename TPComparator, typename TPAllocator>
+	inline typename TSortedArray<TPValue, TPComparator, TPAllocator>::Iterator begin( TSortedArray<TPValue, TPComparator, TPAllocator> & pContainer )
 	{
 		return pContainer.begin();
 	}
 
-	template <typename TValue, typename TCompare, typename TAlloc>
-	inline typename SortedArray<TValue, TCompare, TAlloc>::ConstIterator begin( const SortedArray<TValue, TCompare, TAlloc> & pContainer )
+	template <typename TPValue, typename TPComparator, typename TPAllocator>
+	inline typename TSortedArray<TPValue, TPComparator, TPAllocator>::ConstIterator begin( const TSortedArray<TPValue, TPComparator, TPAllocator> & pContainer )
 	{
 		return pContainer.begin();
 	}
 
-	template <typename TValue, typename TCompare, typename TAlloc>
-	inline typename SortedArray<TValue, TCompare, TAlloc>::Iterator end( SortedArray<TValue, TCompare, TAlloc> & pContainer )
+	template <typename TPValue, typename TPComparator, typename TPAllocator>
+	inline typename TSortedArray<TPValue, TPComparator, TPAllocator>::Iterator end( TSortedArray<TPValue, TPComparator, TPAllocator> & pContainer )
 	{
 		return pContainer.end();
 	}
 
-	template <typename TValue, typename TCompare, typename TAlloc>
-	inline typename SortedArray<TValue, TCompare, TAlloc>::ConstIterator end( const SortedArray<TValue, TCompare, TAlloc> & pContainer )
+	template <typename TPValue, typename TPComparator, typename TPAllocator>
+	inline typename TSortedArray<TPValue, TPComparator, TPAllocator>::ConstIterator end( const TSortedArray<TPValue, TPComparator, TPAllocator> & pContainer )
 	{
 		return pContainer.end();
 	}

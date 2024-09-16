@@ -8,7 +8,7 @@
 namespace Ic3::Cppx
 {
 
-	template <bool tIsDataConst>
+	template <bool tpIsConst>
 	struct ArrayViewByteType;
 
 	template <>
@@ -24,38 +24,38 @@ namespace Ic3::Cppx
 	};
 
 	/// @brief Simple struct used to wrap and reference continuous blocks of memory.
-	/// @tparam TVal Type of the data the view references.
-	template <typename TVal>
-	struct ArrayView
+	/// @tparam TPValue Type of the data the view references.
+	template <typename TPValue>
+	struct TArrayView
 	{
-		static_assert( !std::is_void<TVal>::value, "Cannot create an ArrayView for void data. Use ArrayView<byte> for that." );
+		static_assert( !std::is_void<TPValue>::value, "Cannot create an ArrayView for void data. Use ArrayView<byte> for that." );
 
 	public:
-		using ByteType = typename ArrayViewByteType<std::is_const<TVal>::value>::Type;
+		using ByteType = typename ArrayViewByteType<std::is_const<TPValue>::value>::Type;
 		
-		ArrayView()
+		TArrayView()
 		: _dataPtr( nullptr )
 		, _size( 0 )
 		{}
 
-		ArrayView( TVal * pMemory, size_t pSize )
+		TArrayView( TPValue * pMemory, size_t pSize )
 		: _dataPtr( pMemory )
 		, _size( pSize )
 		{}
 
-		template <typename TOther>
-		ArrayView( const ArrayView<TOther> & pOther )
+		template <typename TPOther>
+		TArrayView( const TArrayView<TPOther> & pOther )
 		: _dataPtr( pOther.data() )
 		, _size( pOther.size() )
 		{}
 
-		template <size_t tSize>
-		explicit ArrayView( TVal( &pArray )[tSize] )
-		: ArrayView( &( pArray[0] ), tSize )
+		template <size_t tpSize>
+		explicit TArrayView( TPValue( &pArray )[tpSize] )
+		: TArrayView( &( pArray[0] ), tpSize )
 		{}
 
-		explicit ArrayView( std::initializer_list<TVal> pInitList )
-		: ArrayView( pInitList.data(), pInitList.size() )
+		explicit TArrayView( std::initializer_list<TPValue> pInitList )
+		: TArrayView( pInitList.data(), pInitList.size() )
 		{}
 
 		explicit operator bool() const
@@ -63,18 +63,18 @@ namespace Ic3::Cppx
 			return !empty();
 		}
 
-		IC3_ATTR_NO_DISCARD TVal & operator[]( size_t pIndex ) const
+		IC3_ATTR_NO_DISCARD TPValue & operator[]( size_t pIndex ) const
 		{
 			ic3DebugAssert( pIndex < _size );
 			return _dataPtr[pIndex];
 		}
 
-		IC3_ATTR_NO_DISCARD ArrayView<ByteType> asByteView() const
+		IC3_ATTR_NO_DISCARD TArrayView<ByteType> asByteView() const
 		{
-			return ArrayView<ByteType>{ reinterpret_cast<ByteType *>( _dataPtr ), _size * sizeof( TVal ) };
+			return TArrayView<ByteType>{ reinterpret_cast<ByteType *>( _dataPtr ), _size * sizeof( TPValue ) };
 		}
 
-		IC3_ATTR_NO_DISCARD TVal * data() const
+		IC3_ATTR_NO_DISCARD TPValue * data() const
 		{
 			return _dataPtr;
 		}
@@ -89,7 +89,7 @@ namespace Ic3::Cppx
 			return !_dataPtr || ( _size == 0 );
 		}
 
-		void swap( ArrayView & pOther )
+		void swap( TArrayView & pOther )
 		{
 			std::swap( _dataPtr, pOther._dataPtr );
 			std::swap( _size, pOther._size );
@@ -97,101 +97,101 @@ namespace Ic3::Cppx
 
 	private:
 		// Pointer to the beginning of the data.
-		TVal * _dataPtr;
-		// Size of the data, in number of elements of the underlying type (TVal).
+		TPValue * _dataPtr;
+		// Size of the data, in number of elements of the underlying type (TPValue).
 		size_t _size;
 	};
 
-	template <typename TVal>
-	inline void swap( ArrayView<TVal> & pFirst, ArrayView<TVal> & pSecond )
+	template <typename TPValue>
+	inline void swap( TArrayView<TPValue> & pFirst, TArrayView<TPValue> & pSecond )
 	{
 		pFirst.swap( pSecond );
 	}
 
-	template <typename TVal>
-	IC3_ATTR_NO_DISCARD inline TVal * begin( const ArrayView<TVal> & pArrayView )
+	template <typename TPValue>
+	IC3_ATTR_NO_DISCARD inline TPValue * begin( const TArrayView<TPValue> & pArrayView )
 	{
 		return pArrayView.data();
 	}
 
-	template <typename TVal>
-	IC3_ATTR_NO_DISCARD inline TVal * end( const ArrayView<TVal> & pArrayView )
+	template <typename TPValue>
+	IC3_ATTR_NO_DISCARD inline TPValue * end( const TArrayView<TPValue> & pArrayView )
 	{
 		return pArrayView.data() + pArrayView.size();
 	}
 
 	/// @brief Creates ArrayView that wraps specified memory.
-	/// @tparam TVal Type of the data referenced by the view.
+	/// @tparam TPValue Type of the data referenced by the view.
 	/// @param pArrayMemory Pointer to the beginning of the array.
-	/// @param pArraySize Size of the array, in number of elements of type TVal.
+	/// @param pArraySize Size of the array, in number of elements of type TPValue.
 	/// @return ArrayView referencing specified data.
-	template <typename TVal>
-	IC3_ATTR_NO_DISCARD inline ArrayView<TVal> bindArrayView( TVal * pMemory, size_t pSize )
+	template <typename TPValue>
+	IC3_ATTR_NO_DISCARD inline TArrayView<TPValue> bindArrayView( TPValue * pMemory, size_t pSize )
 	{
-		return ArrayView<TVal>( pMemory, pSize );
+		return TArrayView<TPValue>( pMemory, pSize );
 	}
 
-	template <typename TVal, typename TOffset, typename TSize>
-	IC3_ATTR_NO_DISCARD inline ArrayView<TVal> bindArrayView( TVal * pMemory, const SRegion<TSize, TOffset> & pRegion )
+	template <typename TPValue, typename TOffset, typename TSize>
+	IC3_ATTR_NO_DISCARD inline TArrayView<TPValue> bindArrayView( TPValue * pMemory, const TRegion<TSize, TOffset> & pRegion )
 	{
-		return ArrayView<TVal>( pMemory + pRegion.offset, pRegion.size );
+		return TArrayView<TPValue>( pMemory + pRegion.mOffset, pRegion.mSize );
 	}
 
 	/// @brief Creates ArrayView that wraps specified compile time-sized array.
-	/// @tparam TVal Type of the data referenced by the view.
-	/// @tparam tSize Size of the array.
+	/// @tparam TPValue Type of the data referenced by the view.
+	/// @tparam tpSize Size of the array.
 	/// @param pArray Array to create view for.
 	/// @return ArrayView referencing specified data.
-	template <typename TVal, size_t tSize>
-	IC3_ATTR_NO_DISCARD inline ArrayView<TVal> bindArrayView( TVal( &pArray )[tSize] )
+	template <typename TPValue, size_t tpSize>
+	IC3_ATTR_NO_DISCARD inline TArrayView<TPValue> bindArrayView( TPValue( &pArray )[tpSize] )
 	{
-		return ArrayView<TVal>( pArray );
+		return TArrayView<TPValue>( pArray );
 	}
 
-	template <typename TVal, size_t tSize, typename TOffset, typename TSize>
-	IC3_ATTR_NO_DISCARD inline ArrayView<TVal> bindArrayView( TVal( &pArray )[tSize], const SRegion<TSize, TOffset> & pRegion )
+	template <typename TPValue, size_t tpSize, typename TOffset, typename TSize>
+	IC3_ATTR_NO_DISCARD inline TArrayView<TPValue> bindArrayView( TPValue( &pArray )[tpSize], const TRegion<TSize, TOffset> & pRegion )
 	{
-		const auto validRegion = getValidRegion( pRegion, tSize );
-		return ArrayView<TVal>( &pArray[0] + validRegion.offset, validRegion.size );
+		const auto validRegion = getValidRegion( pRegion, tpSize );
+		return TArrayView<TPValue>( &pArray[0] + validRegion.mOffset, validRegion.mSize );
 	}
 
 	/// @brief Creates ArrayView that wraps specified compile time-sized array.
-	/// @tparam TVal Type of the data referenced by the view.
-	/// @tparam tSize Size of the array.
+	/// @tparam TPValue Type of the data referenced by the view.
+	/// @tparam tpSize Size of the array.
 	/// @param pArray Array to create view for.
 	/// @return ArrayView referencing specified data.
-	template <typename TVal, size_t tSize>
-	IC3_ATTR_NO_DISCARD inline ArrayView<TVal> bindArrayView( std::array<TVal, tSize> & pArray )
+	template <typename TPValue, size_t tpSize>
+	IC3_ATTR_NO_DISCARD inline TArrayView<TPValue> bindArrayView( std::array<TPValue, tpSize> & pArray )
 	{
-		return ArrayView<TVal>( pArray.data(), pArray.size() );
+		return TArrayView<TPValue>( pArray.data(), pArray.size() );
 	}
 
-	template <typename TVal, size_t tSize, typename TOffset, typename TSize>
-	IC3_ATTR_NO_DISCARD inline ArrayView<TVal> bindArrayView( std::array<TVal, tSize> & pArray, const SRegion<TSize, TOffset> & pRegion )
+	template <typename TPValue, size_t tpSize, typename TOffset, typename TSize>
+	IC3_ATTR_NO_DISCARD inline TArrayView<TPValue> bindArrayView( std::array<TPValue, tpSize> & pArray, const TRegion<TSize, TOffset> & pRegion )
 	{
-		const auto validRegion = getValidRegion( pRegion, tSize );
-		return ArrayView<TVal>( pArray.data() + validRegion.offset, validRegion.size );
+		const auto validRegion = getValidRegion( pRegion, tpSize );
+		return TArrayView<TPValue>( pArray.data() + validRegion.mOffset, validRegion.mSize );
 	}
 
 	/// @brief Creates ArrayView that wraps specified compile time-sized array.
-	/// @tparam TVal Type of the data referenced by the view.
-	/// @tparam tSize Size of the array.
+	/// @tparam TPValue Type of the data referenced by the view.
+	/// @tparam tpSize Size of the array.
 	/// @param pArray Array to create view for.
 	/// @return ArrayView referencing specified data.
-	template <typename TVal, size_t tSize>
-	IC3_ATTR_NO_DISCARD inline ArrayView<const TVal> bindArrayView( const std::array<TVal, tSize> & pArray )
+	template <typename TPValue, size_t tpSize>
+	IC3_ATTR_NO_DISCARD inline TArrayView<const TPValue> bindArrayView( const std::array<TPValue, tpSize> & pArray )
 	{
-		return ArrayView<const TVal>( pArray.data(), pArray.size() );
+		return TArrayView<const TPValue>( pArray.data(), pArray.size() );
 	}
 
-	template <typename TVal, size_t tSize, typename TOffset, typename TSize>
-	IC3_ATTR_NO_DISCARD inline ArrayView<const TVal> bindArrayView( const std::array<TVal, tSize> & pArray, const SRegion<TSize, TOffset> & pRegion )
+	template <typename TPValue, size_t tpSize, typename TOffset, typename TSize>
+	IC3_ATTR_NO_DISCARD inline TArrayView<const TPValue> bindArrayView( const std::array<TPValue, tpSize> & pArray, const TRegion<TSize, TOffset> & pRegion )
 	{
-		const auto validRegion = getValidRegion( pRegion, tSize );
-		return ArrayView<const TVal>( pArray.data() + validRegion.offset, validRegion.size );
+		const auto validRegion = getValidRegion( pRegion, tpSize );
+		return TArrayView<const TPValue>( pArray.data() + validRegion.mOffset, validRegion.mSize );
 	}
 
-	template <bool tConstValue>
+	template <bool tpIsConst>
 	struct ValueByteTypeProxy;
 
 	template <>
@@ -206,25 +206,25 @@ namespace Ic3::Cppx
 		using Type = const byte;
 	};
 
-	template <typename TValue>
+	template <typename TPValue>
 	struct ValueByteType
 	{
-		using Type = typename ValueByteTypeProxy<std::is_const<TValue>::value>::Type;
+		using Type = typename ValueByteTypeProxy<std::is_const<TPValue>::value>::Type;
 	};
 
-	using ReadOnlyMemoryView = ArrayView<const byte>;
-	using ReadWriteMemoryView = ArrayView<byte>;
+	using ReadOnlyMemoryView = TArrayView<const byte>;
+	using ReadWriteMemoryView = TArrayView<byte>;
 
-	template <typename TVal, std::enable_if_t<std::is_const<TVal>::value && !std::is_void<TVal>::value, int> = 0>
-	IC3_ATTR_NO_DISCARD inline ReadOnlyMemoryView bindMemoryView( TVal * pMemory, size_t pSize )
+	template <typename TPValue, std::enable_if_t<std::is_const<TPValue>::value && !std::is_void<TPValue>::value, int> = 0>
+	IC3_ATTR_NO_DISCARD inline ReadOnlyMemoryView bindMemoryView( TPValue * pMemory, size_t pSize )
 	{
-		return { reinterpret_cast<const byte *>( pMemory ), pSize * sizeof( TVal ) };
+		return { reinterpret_cast<const byte *>( pMemory ), pSize * sizeof( TPValue ) };
 	}
 
-	template <typename TVal, std::enable_if_t<!std::is_const<TVal>::value && !std::is_void<TVal>::value, int> = 0>
-	IC3_ATTR_NO_DISCARD inline ReadWriteMemoryView bindMemoryView( TVal * pMemory, size_t pSize )
+	template <typename TPValue, std::enable_if_t<!std::is_const<TPValue>::value && !std::is_void<TPValue>::value, int> = 0>
+	IC3_ATTR_NO_DISCARD inline ReadWriteMemoryView bindMemoryView( TPValue * pMemory, size_t pSize )
 	{
-		return { reinterpret_cast<byte *>( pMemory ), pSize * sizeof( TVal ) };
+		return { reinterpret_cast<byte *>( pMemory ), pSize * sizeof( TPValue ) };
 	}
 
 	IC3_ATTR_NO_DISCARD inline ReadOnlyMemoryView bindMemoryView( const void * pMemory, size_t pByteLength )

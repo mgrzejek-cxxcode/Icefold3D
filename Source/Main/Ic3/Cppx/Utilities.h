@@ -8,93 +8,93 @@
 namespace Ic3::Cppx
 {
 
-	template <typename TFirst, typename TSecond = TFirst>
-	inline constexpr typename std::common_type<TFirst, TSecond>::type getMaxOf( const TFirst & pFirst, const TSecond & pSecond )
+	template <typename TPFirst, typename TPSecond = TPFirst>
+	inline constexpr typename std::common_type<TPFirst, TPSecond>::type getMaxOf( const TPFirst & pFirst, const TPSecond & pSecond )
 	{
 		return ( pFirst >= pSecond ) ? pFirst : pSecond;
 	}
 
-	template <typename T0, typename T1, typename ...TRest>
-	inline constexpr typename std::common_type<T0, T1, TRest...>::type getMaxOf( const T0 & p0, const T1 & p1, TRest && ...pRest )
+	template <typename TP0, typename TP1, typename ...TPRest>
+	inline constexpr typename std::common_type<TP0, TP1, TPRest...>::type getMaxOf( const TP0 & p0, const TP1 & p1, TPRest && ...pRest )
 	{
-		return getMaxOf( getMaxOf( p0, p1 ), std::forward<TRest>( pRest )... );
+		return getMaxOf( getMaxOf( p0, p1 ), std::forward<TPRest>( pRest )... );
 	}
 
 
-	template <typename TFirst, typename TSecond = TFirst>
-	inline constexpr typename std::common_type<TFirst, TSecond>::type getMinOf( const TFirst & pFirst, const TSecond & pSecond )
+	template <typename TPFirst, typename TPSecond = TPFirst>
+	inline constexpr typename std::common_type<TPFirst, TPSecond>::type getMinOf( const TPFirst & pFirst, const TPSecond & pSecond )
 	{
 		return pFirst <= pSecond ? pFirst : pSecond;
 	}
 
-	template <typename T0, typename T1, typename ...TRest>
-	inline constexpr typename std::common_type<T0, T1, TRest...>::type getMinOf( const T0 & p0, const T1 & p1, TRest && ...pRest )
+	template <typename TP0, typename TP1, typename ...TPRest>
+	inline constexpr typename std::common_type<TP0, TP1, TPRest...>::type getMinOf( const TP0 & p0, const TP1 & p1, TPRest && ...pRest )
 	{
-		return getMinOf( getMinOf( p0, p1 ), std::forward<TRest>( pRest )... );
+		return getMinOf( getMinOf( p0, p1 ), std::forward<TPRest>( pRest )... );
 	}
 
 
-	template <typename TClass, typename TMember>
-	inline uint32 memberOffset( TMember TClass::* pMptr )
+	template <typename TPClass, typename TPMember>
+	inline uint32 memberOffset( TPMember TPClass::* pMPtr )
 	{
-		return static_cast<uint32>( reinterpret_cast<byte *>( &( static_cast<TClass *>( nullptr )->*pMptr ) ) - static_cast<byte *>( nullptr ) );
+		return static_cast<uint32>( reinterpret_cast<byte *>( &( static_cast<TPClass *>( nullptr )->*pMPtr ) ) - static_cast<byte *>( nullptr ) );
 	}
 
 
-	template <typename TVal, size_t tSize, typename TIndex>
-	inline constexpr TVal & staticArrayElement( TVal( &pArray )[tSize], TIndex pIndex )
+	template <typename TPValue, size_t tpSize, typename TPIndex>
+	inline constexpr TPValue & staticArrayElement( TPValue( &pArray )[tpSize], TPIndex pIndex )
 	{
 		return pArray[static_cast<size_t>( pIndex )];
 	}
 
-	template <typename TVal, size_t tSize, typename TIndex>
-	inline constexpr const TVal & staticArrayElement( const TVal( &pArray )[tSize], TIndex pIndex )
+	template <typename TPValue, size_t tpSize, typename TPIndex>
+	inline constexpr const TPValue & staticArrayElement( const TPValue( &pArray )[tpSize], TPIndex pIndex )
 	{
 		return pArray[static_cast<size_t>( pIndex )];
 	}
 
-	template <typename TVal, size_t tSize, typename TIndex>
-	inline constexpr TVal & staticArrayElement( std::array<TVal, tSize> & pArray, TIndex pIndex )
+	template <typename TPValue, size_t tpSize, typename TPIndex>
+	inline constexpr TPValue & staticArrayElement( std::array<TPValue, tpSize> & pArray, TPIndex pIndex )
 	{
 		return pArray[static_cast<size_t>( pIndex )];
 	}
 
-	template <typename TVal, size_t tSize, typename TIndex>
-	inline constexpr const TVal & staticArrayElement( const std::array<TVal, tSize> & pArray, TIndex pIndex )
+	template <typename TPValue, size_t tpSize, typename TPIndex>
+	inline constexpr const TPValue & staticArrayElement( const std::array<TPValue, tpSize> & pArray, TPIndex pIndex )
 	{
 		return pArray[static_cast<size_t>( pIndex )];
 	}
 
-	template <typename TVal, size_t tSize, typename TIndex>
-	inline constexpr const TVal & staticArrayElementOrDefault( const TVal( &pArray )[tSize], TIndex pIndex, const TVal & pDefault )
+	template <typename TPValue, size_t tpSize, typename TPIndex>
+	inline constexpr const TPValue & staticArrayElementOrDefault( const TPValue( &pArray )[tpSize], TPIndex pIndex, const TPValue & pDefault )
 	{
-		return ( static_cast<size_t>( pIndex ) < tSize ) ? pArray[static_cast<size_t>( pIndex )] : pDefault;
+		return ( static_cast<size_t>( pIndex ) < tpSize ) ? pArray[static_cast<size_t>( pIndex )] : pDefault;
 	}
 
-	template <typename TVal, size_t tSize, typename TIndex>
-	inline constexpr const TVal & staticArrayElementOrDefault( const std::array<TVal, tSize> & pArray, TIndex pIndex, const TVal & pDefault )
+	template <typename TPValue, size_t tpSize, typename TPIndex>
+	inline constexpr const TPValue & staticArrayElementOrDefault( const std::array<TPValue, tpSize> & pArray, TPIndex pIndex, const TPValue & pDefault )
 	{
-		return ( static_cast<size_t>( pIndex ) < tSize ) ? pArray[static_cast<size_t>( pIndex )] : pDefault;
+		return ( static_cast<size_t>( pIndex ) < tpSize ) ? pArray[static_cast<size_t>( pIndex )] : pDefault;
 	}
 
-	template <typename TVal, size_t tSize>
-	inline constexpr size_t staticArraySize( const TVal( &pArray )[tSize] )
+	template <typename TPValue, size_t tpSize>
+	inline constexpr size_t staticArraySize( const TPValue( &pArray )[tpSize] )
 	{
-		return tSize;
+		return tpSize;
 	}
 
-	template <typename TVal, size_t tSize>
-	inline constexpr size_t staticArraySize( const std::array<TVal, tSize> & pArray )
+	template <typename TPValue, size_t tpSize>
+	inline constexpr size_t staticArraySize( const std::array<TPValue, tpSize> & pArray )
 	{
-		return tSize;
+		return tpSize;
 	}
 
 
-	template <typename TVal, size_t tSize, typename TOther>
-	inline constexpr size_t copyArrayValues( TVal( &pTarget )[tSize], const TOther( &pSource )[tSize], size_t pOffset = 0, size_t pCount = tSize )
+	template <typename TPValue, size_t tpSize, typename TPOther>
+	inline constexpr size_t copyArrayValues( TPValue( &pTarget )[tpSize], const TPOther( &pSource )[tpSize], size_t pOffset = 0, size_t pCount = tpSize )
 	{
-		const auto offset = getMinOf( pOffset, tSize );
-		const auto count = getMinOf( pCount, tSize - offset );
+		const auto offset = getMinOf( pOffset, tpSize );
+		const auto count = getMinOf( pCount, tpSize - offset );
 
 		for( size_t index = offset; index < offset + count; ++index )
 		{
@@ -105,11 +105,11 @@ namespace Ic3::Cppx
 	}
 
 
-	template <typename TVal, size_t tSize, typename TOther>
-	inline constexpr size_t setArrayValues( TVal( &pArray )[tSize], TOther pValue, size_t pOffset = 0, size_t pCount = tSize )
+	template <typename TPValue, size_t tpSize, typename TPOther>
+	inline constexpr size_t setArrayValues( TPValue( &pArray )[tpSize], TPOther pValue, size_t pOffset = 0, size_t pCount = tpSize )
 	{
-		const auto offset = getMinOf( pOffset, tSize );
-		const auto count = getMinOf( pCount, tSize - offset );
+		const auto offset = getMinOf( pOffset, tpSize );
+		const auto count = getMinOf( pCount, tpSize - offset );
 
 		for( size_t index = offset; index < offset + count; ++index )
 		{
@@ -119,11 +119,11 @@ namespace Ic3::Cppx
 		return count;
 	}
 
-	template <typename TVal, size_t tSize, typename TOther>
-	inline constexpr size_t setArrayValues( std::array<TVal, tSize> & pArray, TOther pValue, size_t pOffset = 0, size_t pCount = tSize  )
+	template <typename TPValue, size_t tpSize, typename TPOther>
+	inline constexpr size_t setArrayValues( std::array<TPValue, tpSize> & pArray, TPOther pValue, size_t pOffset = 0, size_t pCount = tpSize  )
 	{
-		const auto offset = getMinOf( pOffset, tSize );
-		const auto count = getMinOf( pCount, tSize - offset );
+		const auto offset = getMinOf( pOffset, tpSize );
+		const auto count = getMinOf( pCount, tpSize - offset );
 
 		for( size_t index = offset; index < offset + count; ++index )
 		{
@@ -133,8 +133,8 @@ namespace Ic3::Cppx
 		return count;
 	}
 
-	template <typename TIterable, typename TCallable>
-	inline void foreachIn( TIterable && pIterable, TCallable pCallable )
+	template <typename TPIterable, typename TPCallable>
+	inline void foreachIn( TPIterable && pIterable, TPCallable pCallable )
 	{
 		for( auto && element : pIterable )
 		{
@@ -142,33 +142,33 @@ namespace Ic3::Cppx
 		}
 	}
 
-	template <typename TIterable, typename TValue, typename TMemberFunc, typename... TArgs>
-	inline void foreachIn( TIterable && pIterable, TMemberFunc TValue::* pMemberFunc, TArgs && ...pArgs )
+	template <typename TPIterable, typename TPValue, typename TPMemberFunc, typename... TPArgs>
+	inline void foreachIn( TPIterable && pIterable, TPMemberFunc TPValue::* pMemberFunc, TPArgs && ...pArgs )
 	{
 		for( auto && element : pIterable )
 		{
-			( element.*pMemberFunc )( std::forward<TArgs>( pArgs )... );
+			( element.*pMemberFunc )( std::forward<TPArgs>( pArgs )... );
 		}
 	}
 
-	template <typename TIter, typename TValue, typename TMemberFunc, typename... TArgs>
-	inline void foreachIn( TIter pBegin, TIter pEnd, TMemberFunc TValue::* pMemberFunc, TArgs && ...pArgs )
+	template <typename TPIterator, typename TPValue, typename TPMemberFunc, typename... TPArgs>
+	inline void foreachIn( TPIterator pBegin, TPIterator pEnd, TPMemberFunc TPValue::* pMemberFunc, TPArgs && ...pArgs )
 	{
 		for( auto elemIter = pBegin; elemIter != pEnd; ++elemIter )
 		{
-			( elemIter->*pMemberFunc )( std::forward<TArgs>( pArgs )... );
+			( elemIter->*pMemberFunc )( std::forward<TPArgs>( pArgs )... );
 		}
 	}
 
-	template <typename TIter>
-	inline size_t countNonNullPointers( TIter pBegin, TIter pEnd )
+	template <typename TPIterator>
+	inline size_t countNonNullPointers( TPIterator pBegin, TPIterator pEnd )
 	{
 		const auto numElements = std::count_if( pBegin, pEnd, []( auto && pValue ) -> bool { return !!pValue; } );
         return numElements;
 	}
 
-	template <typename TIter>
-	inline size_t countNullPointers( TIter pBegin, TIter pEnd )
+	template <typename TPIterator>
+	inline size_t countNullPointers( TPIterator pBegin, TPIterator pEnd )
 	{
 		const auto numElements = std::count_if( pBegin, pEnd, []( auto && pValue ) -> bool { return !pValue; } );
         return numElements;

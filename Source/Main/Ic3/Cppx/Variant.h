@@ -3,6 +3,7 @@
 #define __IC3_CPPX_VARIANT_H__
 
 #include "StaticAlgo.h"
+#include "TypeTraits.h"
 #include <typeinfo>
 
 namespace Ic3::Cppx
@@ -20,36 +21,36 @@ namespace Ic3::Cppx
 	/// @brief Shared instance of `VariantTypeConvTag`. Use it to force desired overload.
 	inline constexpr VariantTypeConvTag CX_VARIANT_TYPE_CONV{};
 
-	template <typename TVal>
+	template <typename TPValue>
 	struct VariantTypeIndex
 	{
 		static const variant_index_t value;
 	};
 
-	template <typename TVal>
-	inline const variant_index_t VariantTypeIndex<TVal>::value = typeid( TVal ).hash_code();
+	template <typename TPValue>
+	inline const variant_index_t VariantTypeIndex<TPValue>::value = typeid( TPValue ).hash_code();
 
-	template <typename... TLst>
+	template <typename... TPTypeList>
 	struct VariantStorage
 	{
-		static constexpr size_t size = StaticMaxSizeofT<TLst...>::value;
-		static constexpr size_t alignment = StaticMaxAlignOfT<TLst...>::value;
+		static constexpr size_t SIZE = StaticMaxSizeofT<TPTypeList...>::value;
+		static constexpr size_t ALIGNMENT = StaticMaxAlignOfT<TPTypeList...>::value;
 
-		using Type = typename std::aligned_storage<size, alignment>::type;
+		using Type = typename std::aligned_storage<SIZE, ALIGNMENT>::type;
 	};
 
 
-	template <typename TVal, typename... TRest>
+	template <typename TPValue, typename... TPRest>
 	struct VariantTypeSelector
 	{
 	};
 
 
-	template <bool tExactType, typename... TLst>
+	template <bool tpExactType, typename... TPTypeList>
 	struct VariantSetProxy;
 
-	template <typename... TLst>
-	struct VariantSetProxy<true, TLst...>
+	template <typename... TPTypeList>
+	struct VariantSetProxy<true, TPTypeList...>
 	{
 		template <typename TArg>
 		static variant_index_t construct( void * pStorage, TArg pArg )
@@ -60,28 +61,28 @@ namespace Ic3::Cppx
 		}
 	};
 
-	template <typename TVal, typename... TLst>
-	struct VariantSetProxy<false, TVal, TLst...>
+	template <typename TPValue, typename... TPTypeList>
+	struct VariantSetProxy<false, TPValue, TPTypeList...>
 	{
-		template <typename... TArgs, typename std::enable_if<std::is_constructible<TVal, TArgs...>::value>>
-		static variant_index_t construct( void * pStorage, TArgs && ...pArgs )
+		template <typename... TPArgs, typename std::enable_if<std::is_constructible<TPValue, TPArgs...>::value>>
+		static variant_index_t construct( void * pStorage, TPArgs && ...pArgs )
 		{
-			new ( reinterpret_cast<TVal *>( pStorage ) ) TVal( std::forward<TArgs>( pArgs )... );
-			return VariantTypeIndex<TVal>::value;
+			new ( reinterpret_cast<TPValue *>( pStorage ) ) TPValue( std::forward<TPArgs>( pArgs )... );
+			return VariantTypeIndex<TPValue>::value;
 		}
 
-		template <typename... TArgs, typename std::enable_if<!std::is_constructible<TVal, TArgs...>::value>>
-		static variant_index_t construct( void * pStorage, TArgs && ...pArgs )
+		template <typename... TPArgs, typename std::enable_if<!std::is_constructible<TPValue, TPArgs...>::value>>
+		static variant_index_t construct( void * pStorage, TPArgs && ...pArgs )
 		{
-			return VariantSetProxy<false, TLst...>::construct( pStorage, std::forward<TArgs>( pArgs )... );
+			return VariantSetProxy<false, TPTypeList...>::construct( pStorage, std::forward<TPArgs>( pArgs )... );
 		}
 	};
 
 	template <>
 	struct VariantSetProxy<false>
 	{
-		template <typename TInput>
-		static variant_index_t construct( void * pStorage, TInput pInput )
+		template <typename TPInput>
+		static variant_index_t construct( void * pStorage, TPInput pInput )
 		{
 			return CX_INVALID_VARIANT_INDEX;
 		}
@@ -103,13 +104,13 @@ namespace Ic3::Cppx
 	// Performance notice: by using constexpr modifier, the if actually becomes a compile-time check. Since it's a tail
 	// recursion, each function should always end up being just a single call (false ifs should be completely removed by
 	// every decent compiler).
-	template <typename... TLst>
+	template <typename... TPTypeList>
 	struct VariantProxy;
 
-	template <typename TVal, typename... TRest>
-	struct VariantProxy<TVal, TRest...>
+	template <typename TPValue, typename... TPRest>
+	struct VariantProxy<TPValue, TPRest...>
 	{
-//		template <typename TArg, std::enable_if_t<QIsTypeOnTypeList<TArg, TVal, TRest...>::value, int>>
+//		template <typename TArg, std::enable_if_t<QIsTypeOnTypeList<TArg, TPValue, TPRest...>::value, int>>
 //		static variant_index_t construct( void * pStorage, TArg pArg )
 //		{
 //			using Type = std::remove_cv_t<std::remove_reference_t<TArg>>;
@@ -117,114 +118,114 @@ namespace Ic3::Cppx
 //			return VariantTypeIndex<Type>::value;
 //		}
 //
-//		template <typename... TArgs, std::enable_if<std::is_constructible<TVal, TArgs...>::value, int>>
-//		static variant_index_t construct( void * pStorage, TArgs && ...pArgs )
+//		template <typename... TPArgs, std::enable_if<std::is_constructible<TPValue, TPArgs...>::value, int>>
+//		static variant_index_t construct( void * pStorage, TPArgs && ...pArgs )
 //		{
-//			new ( reinterpret_cast<TVal *>( pStorage ) ) TVal( std::forward<TArgs>( pArgs )... );
-//			return VariantTypeIndex<TVal>::value;
+//			new ( reinterpret_cast<TPValue *>( pStorage ) ) TPValue( std::forward<TPArgs>( pArgs )... );
+//			return VariantTypeIndex<TPValue>::value;
 //		}
 //
-//		template <typename... TArgs, std::enable_if<!std::is_constructible<TVal, TArgs...>::value, int>>
-//		static variant_index_t construct( void * pStorage, TArgs && ...pArgs )
+//		template <typename... TPArgs, std::enable_if<!std::is_constructible<TPValue, TPArgs...>::value, int>>
+//		static variant_index_t construct( void * pStorage, TPArgs && ...pArgs )
 //		{
-//			return VariantProxy<TRest...>::construct( pStorage, std::forward<TArgs>( pArgs )... );
+//			return VariantProxy<TPRest...>::construct( pStorage, std::forward<TPArgs>( pArgs )... );
 //		}
 
-		template <typename... TArgs>
-		static variant_index_t construct( void * pStorage, TArgs && ...pArgs )
+		template <typename... TPArgs>
+		static variant_index_t construct( void * pStorage, TPArgs && ...pArgs )
 		{
-			return VariantSetProxy<false, TVal, TRest...>::template construct<TArgs...>( pStorage, std::forward<TArgs>( pArgs )... );
+			return VariantSetProxy<false, TPValue, TPRest...>::template construct<TPArgs...>( pStorage, std::forward<TPArgs>( pArgs )... );
 		}
 
-		template <typename... TArgs>
-		static variant_index_t construct( const variant_index_t pTypeIndex, void * pStorage, TArgs && ...pArgs )
+		template <typename... TPArgs>
+		static variant_index_t construct( const variant_index_t pTypeIndex, void * pStorage, TPArgs && ...pArgs )
 		{
-			if( pTypeIndex == VariantTypeIndex<TVal>::value )
+			if( pTypeIndex == VariantTypeIndex<TPValue>::value )
 			{
-				new ( reinterpret_cast< TVal * >( pStorage ) ) TVal( std::forward<TArgs>( pArgs )... );
-				return VariantTypeIndex<TVal>::value;
+				new ( reinterpret_cast< TPValue * >( pStorage ) ) TPValue( std::forward<TPArgs>( pArgs )... );
+				return VariantTypeIndex<TPValue>::value;
 			}
 			else
 			{
-				return VariantProxy<TRest...>::construct( pTypeIndex, pStorage, std::forward<TArgs>( pArgs )... );
+				return VariantProxy<TPRest...>::construct( pTypeIndex, pStorage, std::forward<TPArgs>( pArgs )... );
 			}
 		}
 
-		template <typename TValue>
-		static variant_index_t constructConv( void * pStorage, TValue pValue )
+		template <typename TPInput>
+		static variant_index_t constructConv( void * pStorage, TPInput pValue )
 		{
-			if( std::is_convertible<TValue, TVal>::value )
+			if( std::is_convertible<TPInput, TPValue>::value )
 			{
-				new ( reinterpret_cast< TVal * >( pStorage ) ) TVal( std::forward<TValue>( pValue ) );
-				return VariantTypeIndex<TVal>::value;
+				new ( reinterpret_cast< TPValue * >( pStorage ) ) TPValue( std::forward<TPInput>( pValue ) );
+				return VariantTypeIndex<TPValue>::value;
 			}
 			else
 			{
-				return VariantProxy<TRest...>::constructConv( std::forward<TValue>( pValue ) );
+				return VariantProxy<TPRest...>::constructConv( std::forward<TPInput>( pValue ) );
 			}
 		}
 
 		static variant_index_t constructDefault( void * pStorage )
 		{
-			if( std::is_default_constructible<TVal>::value )
+			if( std::is_default_constructible<TPValue>::value )
 			{
-				new ( reinterpret_cast< TVal * >( pStorage ) ) TVal();
-				return VariantTypeIndex<TVal>::value;
+				new ( reinterpret_cast< TPValue * >( pStorage ) ) TPValue();
+				return VariantTypeIndex<TPValue>::value;
 			}
 			else
 			{
-				return VariantProxy<TRest...>::constructDefault( pStorage );
+				return VariantProxy<TPRest...>::constructDefault( pStorage );
 			}
 		}
 
 		static variant_index_t copy( const variant_index_t pTypeIndex, void * pStorage, void * pSource )
 		{
-			if( pTypeIndex == VariantTypeIndex<TVal>::value )
+			if( pTypeIndex == VariantTypeIndex<TPValue>::value )
 			{
-				new ( reinterpret_cast<TVal *>( pStorage ) ) TVal( *( reinterpret_cast< TVal * >( pSource ) ) );
-				return VariantTypeIndex<TVal>::value;
+				new ( reinterpret_cast<TPValue *>( pStorage ) ) TPValue( *( reinterpret_cast< TPValue * >( pSource ) ) );
+				return VariantTypeIndex<TPValue>::value;
 			}
 			else
 			{
-				return VariantProxy<TRest...>::copy( pTypeIndex, pSource, pStorage );
+				return VariantProxy<TPRest...>::copy( pTypeIndex, pSource, pStorage );
 			}
 		}
 
 		static variant_index_t move( const variant_index_t pTypeIndex, void * pStorage, void * pSource )
 		{
-			if( pTypeIndex == VariantTypeIndex<TVal>::value )
+			if( pTypeIndex == VariantTypeIndex<TPValue>::value )
 			{
-				new ( reinterpret_cast< TVal * >( pStorage ) ) TVal( std::move( *( reinterpret_cast< TVal * >( pSource ) ) ) );
-				return VariantTypeIndex<TVal>::value;
+				new ( reinterpret_cast< TPValue * >( pStorage ) ) TPValue( std::move( *( reinterpret_cast< TPValue * >( pSource ) ) ) );
+				return VariantTypeIndex<TPValue>::value;
 			}
 			else
 			{
-				return VariantProxy<TRest...>::move( pTypeIndex, pSource, pStorage );
+				return VariantProxy<TPRest...>::move( pTypeIndex, pSource, pStorage );
 			}
 		}
 
 		static variant_index_t destroy( const variant_index_t pTypeIndex, void * pStorage )
 		{
-			if( pTypeIndex == VariantTypeIndex<TVal>::value )
+			if( pTypeIndex == VariantTypeIndex<TPValue>::value )
 			{
-				reinterpret_cast< TVal * >( pStorage )->~TVal();
-				return VariantTypeIndex<TVal>::value;
+				reinterpret_cast< TPValue * >( pStorage )->~TPValue();
+				return VariantTypeIndex<TPValue>::value;
 			}
 			else
 			{
-				return VariantProxy<TRest...>::destroy( pTypeIndex, pStorage );
+				return VariantProxy<TPRest...>::destroy( pTypeIndex, pStorage );
 			}
 		}
 
 		static bool validateType( const variant_index_t pTypeIndex )
 		{
-			if( pTypeIndex == VariantTypeIndex<TVal>::value )
+			if( pTypeIndex == VariantTypeIndex<TPValue>::value )
 			{
 				return true;
 			}
 			else
 			{
-				return VariantProxy<TRest...>::validateType( pTypeIndex );
+				return VariantProxy<TPRest...>::validateType( pTypeIndex );
 			}
 		}
 
@@ -242,14 +243,14 @@ namespace Ic3::Cppx
 	template <>
 	struct VariantProxy<>
 	{
-		template <typename... TArgs>
-		static variant_index_t construct( void *, TArgs && ... )
+		template <typename... TPArgs>
+		static variant_index_t construct( void *, TPArgs && ... )
 		{
 			return CX_INVALID_VARIANT_INDEX;
 		}
 
-		template <typename TValue>
-		static variant_index_t constructConv( variant_index_t, void *, TValue && )
+		template <typename TPValue>
+		static variant_index_t constructConv( variant_index_t, void *, TPValue && )
 		{
 			return CX_INVALID_VARIANT_INDEX;
 		}
@@ -281,38 +282,38 @@ namespace Ic3::Cppx
 	};
 
 
-	template <typename... TLst>
+	template <typename... TPTypeList>
 	class Variant
 	{
-		static_assert( std::is_void<typename QFirstMatchingType<std::is_reference, TLst...>::Type>::value, "No references allowed" );
-		
-	public:
-		static constexpr size_t storageSize = VariantStorage<TLst...>::size;
-		static constexpr size_t storageAlignment = VariantStorage<TLst...>::alignment;
+		static_assert( std::is_void<typename QFirstMatchingType<std::is_reference, TPTypeList...>::Type>::value, "No references allowed" );
 
-		using MyType = Variant<TLst...>;
-		using StorageType = typename VariantStorage<TLst...>::Type;
+	public:
+		static constexpr size_t STORAGE_SIZE = VariantStorage<TPTypeList...>::SIZE;
+		static constexpr size_t STORAGE_ALIGNMENT = VariantStorage<TPTypeList...>::ALIGNMENT;
+
+		using MyType = Variant<TPTypeList...>;
+		using StorageType = typename VariantStorage<TPTypeList...>::Type;
 
 	public:
 		Variant()
 		{
-			_typeIndex = VariantProxy<TLst...>::constructDefault( &( _storage ) );
+			_typeIndex = VariantProxy<TPTypeList...>::constructDefault( &( _storage ) );
 		}
 
 		Variant( Variant && pSrcObject ) noexcept
 		{
-			_typeIndex = VariantProxy<TLst...>::move( _typeIndex, &( _storage ), &( pSrcObject._pStorage ) );
+			_typeIndex = VariantProxy<TPTypeList...>::move( _typeIndex, &( _storage ), &( pSrcObject._pStorage ) );
 		}
 
 		Variant( const Variant & pSrcObject )
 		{
-			_typeIndex = VariantProxy<TLst...>::copy( _typeIndex, &( _storage ), &( pSrcObject._pStorage ) );
+			_typeIndex = VariantProxy<TPTypeList...>::copy( _typeIndex, &( _storage ), &( pSrcObject._pStorage ) );
 		}
 
-		template <typename TValue> //, typename std::enable_if_t<!std::is_same<TValue, MyType>::value, int>>
-		Variant( TValue && pValue ) noexcept
+		template <typename TPValue> //, typename std::enable_if_t<!std::is_same<TPValue, MyType>::value, int>>
+		Variant( TPValue && pValue ) noexcept
 		{
-			_typeIndex = VariantProxy<TLst...>::construct( &( _storage ), std::forward<TValue>( pValue ) );
+			_typeIndex = VariantProxy<TPTypeList...>::construct( &( _storage ), std::forward<TPValue>( pValue ) );
 		}
 
 		~Variant()
@@ -340,69 +341,69 @@ namespace Ic3::Cppx
 			return *this;
 		}
 
-		template <typename TTarget>
-		Variant & operator=( TTarget && pRhs )
+		template <typename TPTarget>
+		Variant & operator=( TPTarget && pRhs )
 		{
-			_reInit<TTarget>( std::forward<TTarget>( pRhs ) );
+			_reInit<TPTarget>( std::forward<TPTarget>( pRhs ) );
 			return *this;
 		}
 
-		template <typename TTarget>
-		void set( TTarget && pValue )
+		template <typename TPTarget>
+		void set( TPTarget && pValue )
 		{
-			_reInit<TTarget>( std::forward<TTarget>( pValue ) );
+			_reInit<TPTarget>( std::forward<TPTarget>( pValue ) );
 		}
 
-		template <typename TTarget>
-		void setConv( TTarget && pValue )
+		template <typename TPTarget>
+		void setConv( TPTarget && pValue )
 		{
-			_reInitConv<TTarget>( std::forward<TTarget>( pValue ) );
+			_reInitConv<TPTarget>( std::forward<TPTarget>( pValue ) );
 		}
 
-		template <typename TTarget, typename... TArgs>
-		void emplace( TArgs &&... pArgs )
+		template <typename TPTarget, typename... TPArgs>
+		void emplace( TPArgs &&... pArgs )
 		{
-			_reInit<TTarget>( std::forward<TArgs>( pArgs )... );
+			_reInit<TPTarget>( std::forward<TPArgs>( pArgs )... );
 		}
 
 		void swap( Variant & pOther )
 		{
-			VariantProxy<TLst...>::template swap<StorageType>( _typeIndex, &( _storage ), pOther._typeIndex, &( pOther._storage ) );
+			VariantProxy<TPTypeList...>::template swap<StorageType>( _typeIndex, &( _storage ), pOther._typeIndex, &( pOther._storage ) );
 			std::swap( _typeIndex, pOther._typeIndex );
 		}
 
-		template <typename TTarget>
+		template <typename TPTarget>
 		IC3_ATTR_NO_DISCARD bool checkType() const
 		{
-			return _typeIndex == VariantTypeIndex<TTarget>::value;
+			return _typeIndex == VariantTypeIndex<TPTarget>::value;
 		}
 
-		template <typename TTarget>
-		IC3_ATTR_NO_DISCARD TTarget & get() const
+		template <typename TPTarget>
+		IC3_ATTR_NO_DISCARD TPTarget & get() const
 		{
-			_validate<TTarget>();
-			return *( reinterpret_cast<TTarget *>( &( _storage ) ) );
+			_validate<TPTarget>();
+			return *( reinterpret_cast<TPTarget *>( &( _storage ) ) );
 		}
 
 	private:
-		template <typename TTarget, typename... TArgs>
-		void _reInit( TArgs && ...pArgs )
+		template <typename TPTarget, typename... TPArgs>
+		void _reInit( TPArgs && ...pArgs )
 		{
-			VariantProxy<TLst...>::destroy( _typeIndex, &( _storage ) );
-			_typeIndex = VariantProxy<TLst...>::construct( VariantTypeIndex<TTarget>::value, &( _storage ), std::forward<TArgs>( pArgs )... );
+			VariantProxy<TPTypeList...>::destroy( _typeIndex, &( _storage ) );
+			_typeIndex = VariantProxy<TPTypeList...>::construct( VariantTypeIndex<TPTarget>::value, &( _storage ), std::forward<TPArgs>( pArgs )... );
 		}
 
-		template <typename T>
-		void _reInitConv( T pValue )
+		template <typename TP>
+		void _reInitConv( TP pValue )
 		{
-			VariantProxy<TLst...>::destroy( _typeIndex, &( _storage ) );
-			_typeIndex = VariantProxy<TLst...>::constructConv( &( _storage ), std::forward<T>( pValue ) );
+			VariantProxy<TPTypeList...>::destroy( _typeIndex, &( _storage ) );
+			_typeIndex = VariantProxy<TPTypeList...>::constructConv( &( _storage ), std::forward<TP>( pValue ) );
 		}
 
-		template <typename T>
+		template <typename TP>
 		void _validate() const
 		{
-			if( _typeIndex != VariantTypeIndex<T>::value )
+			if( _typeIndex != VariantTypeIndex<TP>::value )
 			{
 				throw 0;
 			}
@@ -410,7 +411,7 @@ namespace Ic3::Cppx
 
 		void _release()
 		{
-			VariantProxy<TLst...>::destroy( _typeIndex, &( _storage ) );
+			VariantProxy<TPTypeList...>::destroy( _typeIndex, &( _storage ) );
 			_typeIndex = CX_INVALID_VARIANT_INDEX;
 		}
 

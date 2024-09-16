@@ -80,32 +80,32 @@ namespace Ic3::Cppx
 			return _storageMemoryPtr + pOffset;
 		}
 
-		template <typename TResult>
-		IC3_ATTR_NO_DISCARD TResult * dataAs() noexcept
+		template <typename TPResult>
+		IC3_ATTR_NO_DISCARD TPResult * dataAs() noexcept
 		{
-			ic3DebugAssert( _dataSize % sizeof( TResult ) == 0 );
-			return reinterpret_cast<TResult *>( data() );
+			ic3DebugAssert( _dataSize % sizeof( TPResult ) == 0 );
+			return reinterpret_cast<TPResult *>( data() );
 		}
 
-		template <typename TResult>
-		IC3_ATTR_NO_DISCARD const TResult * dataAs() const noexcept
+		template <typename TPResult>
+		IC3_ATTR_NO_DISCARD const TPResult * dataAs() const noexcept
 		{
-			ic3DebugAssert( _dataSize % sizeof( TResult ) == 0 );
-			return reinterpret_cast<TResult *>( data() );
+			ic3DebugAssert( _dataSize % sizeof( TPResult ) == 0 );
+			return reinterpret_cast<TPResult *>( data() );
 		}
 
-		template <typename TResult>
-		IC3_ATTR_NO_DISCARD TResult * dataOffsetAs( size_t pOffset ) noexcept
+		template <typename TPResult>
+		IC3_ATTR_NO_DISCARD TPResult * dataOffsetAs( size_t pOffset ) noexcept
 		{
-			ic3DebugAssert( ( _dataSize - pOffset ) % sizeof( TResult ) == 0 );
-			return reinterpret_cast<TResult *>( dataOffset( pOffset ) );
+			ic3DebugAssert( ( _dataSize - pOffset ) % sizeof( TPResult ) == 0 );
+			return reinterpret_cast<TPResult *>( dataOffset( pOffset ) );
 		}
 
-		template <typename TResult>
-		IC3_ATTR_NO_DISCARD const TResult * dataOffsetAs( size_t pOffset ) const noexcept
+		template <typename TPResult>
+		IC3_ATTR_NO_DISCARD const TPResult * dataOffsetAs( size_t pOffset ) const noexcept
 		{
-			ic3DebugAssert( ( _dataSize - pOffset ) % sizeof( TResult ) == 0 );
-			return reinterpret_cast<TResult *>( dataOffset( pOffset ) );
+			ic3DebugAssert( ( _dataSize - pOffset ) % sizeof( TPResult ) == 0 );
+			return reinterpret_cast<TPResult *>( dataOffset( pOffset ) );
 		}
 
 		IC3_ATTR_NO_DISCARD bool empty() const noexcept
@@ -118,7 +118,7 @@ namespace Ic3::Cppx
 			return _dataSize;
 		}
 
-		size_t fill( byte pValue, size_t pFillCount = CxDef::MAX_SIZE, size_t pFillOffset = 0 )
+		size_t fill( byte pValue, size_t pFillCount = cxMaxSize, size_t pFillOffset = 0 )
 		{
 			if( pFillOffset >= _dataSize )
 			{
@@ -197,7 +197,7 @@ namespace Ic3::Cppx
 		, _internalBuffer( std::move( pSrcObject._internalBuffer ) )
 		{}
 
-		DynamicByteArray( DynamicMemoryBuffer pInternalBuffer, size_t pSize = CxDef::MAX_SIZE )
+		DynamicByteArray( DynamicMemoryBuffer pInternalBuffer, size_t pSize = cxMaxSize )
 		: _internalBuffer( std::move( pInternalBuffer ) )
 		{
 			_storageMemoryPtr = _internalBuffer.data();

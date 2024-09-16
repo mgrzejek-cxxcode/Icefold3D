@@ -7,120 +7,120 @@
 namespace Ic3::Cppx
 {
 
-	/// @brief Contains a static `size_t` member variable `value` which yields the length of `TTypes...`.
-	template <typename... TTypes>
+	/// @brief Contains a static `size_t` member variable `value` which yields the length of `TPTypes...`.
+	template <typename... TPTypes>
 	struct QTypeCounter
 	{
-		static constexpr size_t value = sizeof...( TTypes );
+		static constexpr size_t value = sizeof...( TPTypes );
 	};
 
 	/// @brief 
-	template <bool tBoolean, typename TTrueType, typename TFalseType>
+	template <bool tpBoolean, typename TPTrueType, typename TPFalseType>
 	struct QConditionalType
 	{
-		using Type = typename std::conditional<tBoolean, TTrueType, TFalseType>::type;
+		using Type = typename std::conditional<tpBoolean, TPTrueType, TPFalseType>::type;
 	};
 
 	/// @brief
-	template <typename TValue, bool tBoolean, TValue tTrueval, TValue tFalseval>
+	template <typename TPValue, bool tpBoolean, TPValue tpTrueVal, TPValue tpFalseVal>
 	struct QConditionalValue;
 	
-	template <typename TValue, TValue tTrueval, TValue tFalseval>
-	struct QConditionalValue<TValue, true, tTrueval, tFalseval>
+	template <typename TPValue, TPValue tpTrueVal, TPValue tpFalseVal>
+	struct QConditionalValue<TPValue, true, tpTrueVal, tpFalseVal>
 	{
-		static constexpr TValue value = tTrueval;
+		static constexpr TPValue value = tpTrueVal;
 	};
 	
-	template <typename TValue, TValue tTrueval, TValue tFalseval>
-	struct QConditionalValue<TValue, false, tTrueval, tFalseval>
+	template <typename TPValue, TPValue tpTrueVal, TPValue tpFalseVal>
+	struct QConditionalValue<TPValue, false, tpTrueVal, tpFalseVal>
 	{
-		static constexpr TValue value = tFalseval;
+		static constexpr TPValue value = tpFalseVal;
 	};
 
 
 	/// @brief
-	template <int... tSeq>
+	template <int... tpSequence>
 	struct QIntegerSequence
 	{};
 
-	template <int tN, int... tSeq>
-	struct QIntegerSequenceGenerator : QIntegerSequenceGenerator<tN - 1, tN - 1, tSeq...>
+	template <int tpN, int... tpSequence>
+	struct QIntegerSequenceGenerator : QIntegerSequenceGenerator<tpN - 1, tpN - 1, tpSequence...>
 	{};
 
-	template <int... tSeq>
-	struct QIntegerSequenceGenerator<0, tSeq...>
+	template <int... tpSequence>
+	struct QIntegerSequenceGenerator<0, tpSequence...>
 	{
-		using Type = QIntegerSequence<tSeq...>;
+		using Type = QIntegerSequence<tpSequence...>;
 	};
 
 
 	/// @brief Contains a member typedef `type`, which is the smallest signed integral type of at least specified size (in bytes)
-	template <size_t tSize>
+	template <size_t tpSize>
 	struct QIntTypeByBits
 	{
 		using Type = typename QConditionalType<
-	        tSize <= ( sizeof( int8 ) * CHAR_BIT ), int8, typename QConditionalType<
-                tSize <= ( sizeof( int16 ) * CHAR_BIT  ), int16, typename QConditionalType<
-                    tSize <= ( sizeof( int32 ) * CHAR_BIT ), int32, typename QConditionalType<
-						tSize <= ( sizeof( int64 ) * CHAR_BIT ), int64, void>::Type>::Type>::Type>::Type;
+	        tpSize <= ( sizeof( int8 ) * CHAR_BIT ), int8, typename QConditionalType<
+                tpSize <= ( sizeof( int16 ) * CHAR_BIT  ), int16, typename QConditionalType<
+                    tpSize <= ( sizeof( int32 ) * CHAR_BIT ), int32, typename QConditionalType<
+						tpSize <= ( sizeof( int64 ) * CHAR_BIT ), int64, void>::Type>::Type>::Type>::Type;
 	};
 
 	/// @brief Contains a member typedef `type`, which is the smallest unsigned integral type of at least specified size (in bytes)
-	template <size_t tSize>
+	template <size_t tpSize>
 	struct QUintTypeByBits
 	{
 		using Type = typename QConditionalType<
-	        tSize <= ( sizeof( uint8 ) * CHAR_BIT ), uint8, typename QConditionalType<
-                tSize <= ( sizeof( uint16 ) * CHAR_BIT ), uint16, typename QConditionalType<
-                    tSize <= ( sizeof( uint32 ) * CHAR_BIT ), uint32, typename QConditionalType<
-						tSize <= ( sizeof( uint64 ) * CHAR_BIT ), uint64, void>::Type>::Type>::Type>::Type;
+	        tpSize <= ( sizeof( uint8 ) * CHAR_BIT ), uint8, typename QConditionalType<
+                tpSize <= ( sizeof( uint16 ) * CHAR_BIT ), uint16, typename QConditionalType<
+                    tpSize <= ( sizeof( uint32 ) * CHAR_BIT ), uint32, typename QConditionalType<
+						tpSize <= ( sizeof( uint64 ) * CHAR_BIT ), uint64, void>::Type>::Type>::Type>::Type;
 	};
 
 
 	/// @brief Contains a member typedef `type`, which is the smallest signed integral type of at least specified size (in bytes)
-	template <size_t tSize>
+	template <size_t tpSize>
 	struct QIntTypeBySize
 	{
 		using Type = typename QConditionalType<
-	        tSize <= sizeof( int8 ), int8, typename QConditionalType<
-                tSize <= sizeof( int16 ), int16, typename QConditionalType<
-                    tSize <= sizeof( int32 ), int32, typename QConditionalType<
-						tSize <= sizeof( int64 ), int64, void>::Type>::Type>::Type>::Type;
+	        tpSize <= sizeof( int8 ), int8, typename QConditionalType<
+                tpSize <= sizeof( int16 ), int16, typename QConditionalType<
+                    tpSize <= sizeof( int32 ), int32, typename QConditionalType<
+						tpSize <= sizeof( int64 ), int64, void>::Type>::Type>::Type>::Type;
 	};
 
 	/// @brief Contains a member typedef `type`, which is the smallest unsigned integral type of at least specified size (in bytes)
-	template <size_t tSize>
+	template <size_t tpSize>
 	struct QUintTypeBySize
 	{
 		using Type = typename QConditionalType<
-	        tSize <= sizeof( uint8 ), uint8, typename QConditionalType<
-                tSize <= sizeof( uint16 ), uint16, typename QConditionalType<
-                    tSize <= sizeof( uint32 ), uint32, typename QConditionalType<
-						tSize <= sizeof( uint64 ), uint64, void>::Type>::Type>::Type>::Type;
+	        tpSize <= sizeof( uint8 ), uint8, typename QConditionalType<
+                tpSize <= sizeof( uint16 ), uint16, typename QConditionalType<
+                    tpSize <= sizeof( uint32 ), uint32, typename QConditionalType<
+						tpSize <= sizeof( uint64 ), uint64, void>::Type>::Type>::Type>::Type;
 	};
 
 	/// @brief Contains a member typedef `type`, which is the smallest signed integral type required to hold the specified value.
-	template <intmax_t tValue>
+	template <intmax_t tpValue>
 	struct QIntTypeByValue
 	{
 		using Type = typename QConditionalType<
-	        ( tValue >= QLimits<int8>::minValue ) && ( tValue <= QLimits<int8>::maxValue ), int8, typename QConditionalType<
-                ( tValue >= QLimits<int16>::minValue ) && ( tValue <= QLimits<int16>::maxValue ), int16, typename QConditionalType<
-                    ( tValue >= QLimits<int32>::minValue ) && ( tValue <= QLimits<int32>::maxValue ), int32, int64>::Type>::Type>::Type;
+	        ( tpValue >= QLimits<int8>::sMinValue ) && ( tpValue <= QLimits<int8>::sMaxValue ), int8, typename QConditionalType<
+                ( tpValue >= QLimits<int16>::sMinValue ) && ( tpValue <= QLimits<int16>::sMaxValue ), int16, typename QConditionalType<
+                    ( tpValue >= QLimits<int32>::sMinValue ) && ( tpValue <= QLimits<int32>::sMaxValue ), int32, int64>::Type>::Type>::Type;
 	};
 
 	/// @brief Contains a member typedef `type`, which is the smallest unsigned integral type required to hold the specified value
-	template <uintmax_t tValue>
+	template <uintmax_t tpValue>
 	struct QUintTypeByValue
 	{
 		using Type = typename QConditionalType<
-	        tValue <= QLimits<uint8>::maxValue, uint8, typename QConditionalType<
-                tValue <= QLimits<uint16>::maxValue, uint16, typename QConditionalType<
-                    tValue <= QLimits<uint32>::maxValue, uint32, uint64>::Type>::Type>::Type;
+	        tpValue <= QLimits<uint8>::sMaxValue, uint8, typename QConditionalType<
+                tpValue <= QLimits<uint16>::sMaxValue, uint16, typename QConditionalType<
+                    tpValue <= QLimits<uint32>::sMaxValue, uint32, uint64>::Type>::Type>::Type;
 	};
 
 
-	template <size_t tTypeSize, bool tIsInteger>
+	template <size_t tpTypeSize, bool tpIsInteger>
 	struct QSignedUnsignedTypesProxy;
 
 	template <>
@@ -166,66 +166,66 @@ namespace Ic3::Cppx
 	};
 
 
-	template <typename TNumeric>
+	template <typename TPNumeric>
 	struct QSignedTypeEquivalent
 	{
-		using Type = typename QSignedUnsignedTypesProxy<sizeof( TNumeric ), std::is_integral<TNumeric>::value>::SignedType;
+		using Type = typename QSignedUnsignedTypesProxy<sizeof( TPNumeric ), std::is_integral<TPNumeric>::value>::SignedType;
 	};
 
-	template <typename TNumeric>
+	template <typename TPNumeric>
 	struct QUnsignedTypeEquivalent
 	{
-		using Type = typename QSignedUnsignedTypesProxy<sizeof( TNumeric ), std::is_integral<TNumeric>::value>::UnsignedType;
+		using Type = typename QSignedUnsignedTypesProxy<sizeof( TPNumeric ), std::is_integral<TPNumeric>::value>::UnsignedType;
 	};
 
 
-	/// @brief Contains a static boolean variable `value`, which yields true if specified type list `TTypes` contains `void` or false otherwise.
-	template <typename... TTypes>
+	/// @brief Contains a static boolean variable `value`, which yields true if specified type list `TPTypes` contains `void` or false otherwise.
+	template <typename... TPTypes>
 	struct QIsVoidOnTypeList;
 
-	template <typename TVal>
-	struct QIsVoidOnTypeList<TVal>
+	template <typename TPValue>
+	struct QIsVoidOnTypeList<TPValue>
 	{
-		static constexpr bool value = std::is_void<TVal>::value;
+		static constexpr bool value = std::is_void<TPValue>::value;
 	};
 
-	template <typename TVal, typename... TRest>
-	struct QIsVoidOnTypeList<TVal, TRest...>
+	template <typename TPValue, typename... TPRest>
+	struct QIsVoidOnTypeList<TPValue, TPRest...>
 	{
-		static constexpr bool value = std::is_void<TVal>::value || QIsVoidOnTypeList<TRest...>::value;
+		static constexpr bool value = std::is_void<TPValue>::value || QIsVoidOnTypeList<TPRest...>::value;
 	};
 
 
-	template <typename TType, typename... TList>
+	template <typename TPType, typename... TList>
 	struct QIsTypeOnTypeList;
 
-	template <typename TType, typename TCheck>
-	struct QIsTypeOnTypeList<TType, TCheck>
+	template <typename TPType, typename TCheck>
+	struct QIsTypeOnTypeList<TPType, TCheck>
 	{
-		static constexpr bool value = std::is_same<TType, TCheck>::value;
+		static constexpr bool value = std::is_same<TPType, TCheck>::value;
 	};
 
-	template <typename TType, typename TCheck, typename... TList>
-	struct QIsTypeOnTypeList<TType, TCheck, TList...>
+	template <typename TPType, typename TCheck, typename... TList>
+	struct QIsTypeOnTypeList<TPType, TCheck, TList...>
 	{
-		static constexpr bool value = std::is_same<TType, TCheck>::value || QIsTypeOnTypeList<TType, TList...>::value;
+		static constexpr bool value = std::is_same<TPType, TCheck>::value || QIsTypeOnTypeList<TPType, TList...>::value;
 	};
 
 
-	/// @brief Contains a member typedef `type`, which is the first type from `TTypes...` which matches `TPred`
-	template <template<typename> class TPred, typename... TTypes>
+	/// @brief Contains a member typedef `type`, which is the first type from `TPTypes...` which matches `TPPredicate`
+	template <template<typename> class TPPredicate, typename... TPTypes>
 	struct QFirstMatchingType;
 
-	template <template<typename> class TPred, typename TVal>
-	struct QFirstMatchingType<TPred, TVal>
+	template <template<typename> class TPPredicate, typename TPValue>
+	struct QFirstMatchingType<TPPredicate, TPValue>
 	{
-		using Type = typename QConditionalType<TPred<TVal>::value, TVal, void>::Type;
+		using Type = typename QConditionalType<TPPredicate<TPValue>::value, TPValue, void>::Type;
 	};
 
-	template <template<typename> class TPred, typename TVal, typename... TRest>
-	struct QFirstMatchingType<TPred, TVal, TRest...>
+	template <template<typename> class TPPredicate, typename TPValue, typename... TPRest>
+	struct QFirstMatchingType<TPPredicate, TPValue, TPRest...>
 	{
-		using Type = typename QConditionalType<TPred<TVal>::value, TVal, typename QFirstMatchingType<TPred, TRest...>::Type>::Type;
+		using Type = typename QConditionalType<TPPredicate<TPValue>::value, TPValue, typename QFirstMatchingType<TPPredicate, TPRest...>::Type>::Type;
 	};
 
 }

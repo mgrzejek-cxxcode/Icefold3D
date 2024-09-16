@@ -7,7 +7,7 @@
 namespace Ic3::Cppx
 {
 
-	template <typename T, size_t tMaxCapacity>
+	template <typename TPValue, size_t tpMaxCapacity>
 	class StaticVector
 	{
 	public:
@@ -26,10 +26,10 @@ namespace Ic3::Cppx
 		{}
 
 	private:
-		using Storage = typename std::aligned_storage<sizeof(T), alignof(T)>::type;
-		Storage _data[tMaxCapacity];
-		size_t _beginIndex = tMaxCapacity;
-		size_t _endIndex = tMaxCapacity;
+		using Storage = typename std::aligned_storage<sizeof( TPValue ), alignof( TPValue )>::type;
+		Storage _data[tpMaxCapacity];
+		size_t _beginIndex = tpMaxCapacity;
+		size_t _endIndex = tpMaxCapacity;
 	};
 
 }

@@ -1,6 +1,6 @@
 
-#ifndef __IC3_CPPX_BITMASK_ATOMIC_H__
-#define __IC3_CPPX_BITMASK_ATOMIC_H__
+#ifndef __IC3_CPPXBitMASK_ATOMIC_H__
+#define __IC3_CPPXBitMASK_ATOMIC_H__
 
 #include "Prerequisites.h"
 #include <atomic>
@@ -8,68 +8,68 @@
 namespace Ic3::Cppx
 {
 
-	template <typename TVal>
-	class AtomicBitmask
+	template <typename TPValue>
+	class TAtomicBitmask
 	{
 		static_assert(
-			( std::is_integral<TVal>::value || std::is_enum<TVal>::value ) && !std::is_same<TVal, bool>::value,
+			( std::is_integral<TPValue>::value || std::is_enum<TPValue>::value ) && !std::is_same<TPValue, bool>::value,
 			"Atomic Masks are only valid for integer and enum types (but not a bool type)!" );
 
 	public:
-		using MyType = AtomicBitmask<TVal>;
-		using ValueType = typename QUintTypeBySize<sizeof( TVal )>::Type;
+		using MyType = TAtomicBitmask<TPValue>;
+		using ValueType = typename QUintTypeBySize<sizeof( TPValue )>::Type;
 
 	public:
-		AtomicBitmask( const AtomicBitmask & ) = delete;
-		AtomicBitmask & operator=( const AtomicBitmask & ) = delete;
+		TAtomicBitmask( const TAtomicBitmask & ) = delete;
+		TAtomicBitmask & operator=( const TAtomicBitmask & ) = delete;
 
-		AtomicBitmask()  noexcept
+		TAtomicBitmask()  noexcept
 		: _value( 0 )
 		{}
 
-		template <typename TBits>
-		AtomicBitmask( TBits pBits ) noexcept
+		template <typename TPBits>
+		TAtomicBitmask( TPBits pBits ) noexcept
 		: _value( static_cast<ValueType>( pBits ) )
 		{}
 
-		template <typename TBits>
-		MyType & operator=( TBits pBits )
+		template <typename TPBits>
+		MyType & operator=( TPBits pBits )
 		{
 			_value.store( static_cast<ValueType>( pBits ), std::memory_order_relaxed );
 			return *this;
 		}
 
-		operator TVal() const
+		operator TPValue() const
 		{
-			return static_cast<TVal>( get() );
+			return static_cast<TPValue>( get() );
 		}
 
-		template <typename TBits>
-		void store( TBits pBits, std::memory_order pOrder = std::memory_order_relaxed )
+		template <typename TPBits>
+		void store( TPBits pBits, std::memory_order pOrder = std::memory_order_relaxed )
 		{
 			_value.store( static_cast<ValueType>( pBits ), pOrder );
 		}
 
-		template <typename TBits>
-		void set( TBits pBits, std::memory_order pOrder = std::memory_order_relaxed )
+		template <typename TPBits>
+		void set( TPBits pBits, std::memory_order pOrder = std::memory_order_relaxed )
 		{
 			_value.fetch_or( static_cast<ValueType>( pBits ), pOrder );
 		}
 
-		template <typename TBits>
-		void toggle( TBits pBits, std::memory_order pOrder = std::memory_order_relaxed )
+		template <typename TPBits>
+		void toggle( TPBits pBits, std::memory_order pOrder = std::memory_order_relaxed )
 		{
 			_value.fetch_xor( static_cast<ValueType>( pBits ), pOrder );
 		}
 
-		template <typename TBits>
-		void unset( TBits pBits, std::memory_order pOrder = std::memory_order_relaxed )
+		template <typename TPBits>
+		void unset( TPBits pBits, std::memory_order pOrder = std::memory_order_relaxed )
 		{
 			_value.fetch_and( ~static_cast<ValueType>( pBits ), pOrder );
 		}
 
-		template <typename TBits>
-		void setOrUnset( TBits pBits, bool pSet, std::memory_order pOrder = std::memory_order_relaxed )
+		template <typename TPBits>
+		void setOrUnset( TPBits pBits, bool pSet, std::memory_order pOrder = std::memory_order_relaxed )
 		{
 			if( pSet )
 			{
@@ -81,8 +81,8 @@ namespace Ic3::Cppx
 			}
 		}
 
-		template <typename TBits>
-		bool testAndSet( TBits pBits )
+		template <typename TPBits>
+		bool testAndSet( TPBits pBits )
 		{
 			ValueType current = _value.load( std::memory_order_relaxed );
 
@@ -103,8 +103,8 @@ namespace Ic3::Cppx
 			}
 		}
 
-		template <typename TBits>
-		bool testAndUnset( TBits pBits )
+		template <typename TPBits>
+		bool testAndUnset( TPBits pBits )
 		{
 			ValueType current = _value.load( std::memory_order_relaxed );
 
@@ -135,20 +135,20 @@ namespace Ic3::Cppx
 			return _value.load( pOrder );
 		}
 
-		template <typename TBits>
-		IC3_ATTR_NO_DISCARD ValueType test( TBits pBits, std::memory_order pOrder = std::memory_order_relaxed ) const
+		template <typename TPBits>
+		IC3_ATTR_NO_DISCARD ValueType test( TPBits pBits, std::memory_order pOrder = std::memory_order_relaxed ) const
 		{
 			return get( pOrder ) & static_cast<ValueType>( pBits );
 		}
 
-		template <typename TBits>
-		IC3_ATTR_NO_DISCARD bool isSet( TBits pBits, std::memory_order pOrder = std::memory_order_relaxed ) const
+		template <typename TPBits>
+		IC3_ATTR_NO_DISCARD bool isSet( TPBits pBits, std::memory_order pOrder = std::memory_order_relaxed ) const
 		{
 			return ( pBits != 0 ) && ( ( get( pOrder ) & static_cast<ValueType>( pBits ) ) == static_cast<ValueType>( pBits ) );
 		}
 
-		template <typename TBits>
-		IC3_ATTR_NO_DISCARD bool isSetAnyOf( TBits pBits, std::memory_order pOrder = std::memory_order_relaxed ) const
+		template <typename TPBits>
+		IC3_ATTR_NO_DISCARD bool isSetAnyOf( TPBits pBits, std::memory_order pOrder = std::memory_order_relaxed ) const
 		{
 			return ( get( pOrder ) & static_cast<ValueType>( pBits ) ) != static_cast<ValueType>( 0 );
 		}
@@ -158,20 +158,20 @@ namespace Ic3::Cppx
 			return get( pOrder ) == 0;
 		}
 
-		template <typename TBits>
-		void operator|=( TBits pBits )
+		template <typename TPBits>
+		void operator|=( TPBits pBits )
 		{
 			_value.fetch_or( static_cast<ValueType>( pBits ), std::memory_order_relaxed );
 		}
 
-		template <typename TBits>
-		void operator&=( TBits pBits )
+		template <typename TPBits>
+		void operator&=( TPBits pBits )
 		{
 			_value.fetch_and( static_cast<ValueType>( pBits ), std::memory_order_relaxed );
 		}
 
-		template <typename TBits>
-		void operator^=( TBits pBits )
+		template <typename TPBits>
+		void operator^=( TPBits pBits )
 		{
 			_value.fetch_xor( static_cast<ValueType>( pBits ), std::memory_order_relaxed );
 		}
@@ -181,20 +181,20 @@ namespace Ic3::Cppx
 			return ~( get() );
 		}
 
-		template <typename TBits>
-		ValueType operator|( TBits pBits ) const
+		template <typename TPBits>
+		ValueType operator|( TPBits pBits ) const
 		{
 			return get() | static_cast<ValueType>( pBits );
 		}
 
-		template <typename TBits>
-		ValueType operator&( TBits pBits ) const
+		template <typename TPBits>
+		ValueType operator&( TPBits pBits ) const
 		{
 			return get() & static_cast<ValueType>( pBits );
 		}
 
-		template <typename TBits>
-		ValueType operator^( TBits pBits ) const
+		template <typename TPBits>
+		ValueType operator^( TPBits pBits ) const
 		{
 			return get() ^ static_cast<ValueType>( pBits );
 		}
@@ -215,4 +215,4 @@ namespace Ic3::Cppx
 
 }
 
-#endif // __IC3_CPPX_BITMASK_ATOMIC_H__
+#endif // __IC3_CPPXBitMASK_ATOMIC_H__

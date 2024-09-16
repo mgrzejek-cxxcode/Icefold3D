@@ -7,36 +7,36 @@
 namespace Ic3::Cppx
 {
 
-	template <typename TValue>
-	struct RefWrapper
+	template <typename TPValue>
+	struct TRefWrapper
 	{
 	public:
-		constexpr RefWrapper() noexcept
+		constexpr TRefWrapper() noexcept
 		: _valuePtr( nullptr )
 		{}
 
-		RefWrapper( const RefWrapper & pSource ) noexcept
+		TRefWrapper( const TRefWrapper & pSource ) noexcept
 		: _valuePtr( pSource._valuePtr )
 		{}
 
-		RefWrapper & operator=( const RefWrapper & pRhs ) noexcept
+		TRefWrapper & operator=( const TRefWrapper & pRhs ) noexcept
 		{
 			_valuePtr = pRhs._valuePtr;
 			return *this;
 		}
 
-		RefWrapper & operator=( TValue & pRhs ) noexcept
+		TRefWrapper & operator=( TPValue & pRhs ) noexcept
 		{
 			_valuePtr = &pRhs;
 			return *this;
 		}
 
-		operator TValue &() const noexcept
+		operator TPValue &() const noexcept
 		{
 			return *_valuePtr;
 		}
 
-		TValue * operator->() const noexcept
+		TPValue * operator->() const noexcept
 		{
 			return _valuePtr;
 		}
@@ -46,24 +46,36 @@ namespace Ic3::Cppx
 			return _valuePtr != nullptr;
 		}
 
-		IC3_ATTR_NO_DISCARD TValue & get() const noexcept
+		IC3_ATTR_NO_DISCARD TPValue & get() const noexcept
 		{
 			return *_valuePtr;
 		}
 
-		void swap( RefWrapper<TValue> & pOther ) noexcept
+		void swap( TRefWrapper<TPValue> & pOther ) noexcept
 		{
 			std::swap( _valuePtr, pOther._valuePtr );
 		}
 
 	private:
-		TValue * _valuePtr;
+		TPValue * _valuePtr;
 	};
 
-	template <typename TValue>
-	IC3_ATTR_NO_DISCARD inline constexpr RefWrapper<TValue> makeRef( TValue & pRef ) noexcept
+	template <typename TPValue>
+	using TRef = TRefWrapper<TPValue>;
+
+	template <typename TPValue>
+	using TConstRef = TRefWrapper<const TPValue>;
+
+	template <typename TPValue>
+	IC3_ATTR_NO_DISCARD inline constexpr TRef<TPValue> makeRef( TPValue & pRef ) noexcept
 	{
-		return RefWrapper<TValue>( pRef );
+		return TRef<TPValue>( pRef );
+	}
+
+	template <typename TPValue>
+	IC3_ATTR_NO_DISCARD inline constexpr TConstRef<TPValue> makeConstRef( const TPValue & pRef ) noexcept
+	{
+		return TConstRef<TPValue>( pRef );
 	}
 
 }

@@ -141,7 +141,7 @@ namespace Ic3::Cppx
 
 		size_t resize( size_t pNewSize )
 		{
-			pNewSize = memGetAlignedValue( pNewSize, _allocationProxy.memoryAlignment );
+			pNewSize = memGetAlignedValue( pNewSize, _allocationProxy.mMemoryAlignment );
 			if( pNewSize == _bufferLength )
 			{
 				return _bufferLength;
@@ -153,7 +153,7 @@ namespace Ic3::Cppx
 			}
 			else
 			{
-				auto * newMemoryPtr = _allocationProxy.apiRealloc( _bufferBasePtr, pNewSize );
+				auto * newMemoryPtr = _allocationProxy.mFnRealloc( _bufferBasePtr, pNewSize );
 				_bufferBasePtr = reinterpret_cast<byte *>( newMemoryPtr );
 				_bufferLength = pNewSize;
 				return _bufferLength;
@@ -164,7 +164,7 @@ namespace Ic3::Cppx
 		{
 			if( _bufferBasePtr != nullptr )
 			{
-				_allocationProxy.apiFree( _bufferBasePtr );
+				_allocationProxy.mFnFree( _bufferBasePtr );
 				_bufferBasePtr = nullptr;
 				_bufferLength = 0;
 			}

@@ -1,6 +1,6 @@
 
-#ifndef __IC3_CPPX_BITMASK_H__
-#define __IC3_CPPX_BITMASK_H__
+#ifndef __IC3_CPPXBitMASK_H__
+#define __IC3_CPPXBitMASK_H__
 
 #include "BitUtils.h"
 #include "TypeTraits.h"
@@ -9,62 +9,62 @@
 namespace Ic3::Cppx
 {
 
-	template <typename TVal>
-	class Bitmask
+	template <typename TPValue>
+	class TBitmask
 	{
 		static_assert(
-			( std::is_integral<TVal>::value || std::is_enum<TVal>::value ) && !std::is_same<TVal, bool>::value,
+			( std::is_integral<TPValue>::value || std::is_enum<TPValue>::value ) && !std::is_same<TPValue, bool>::value,
 			"Atomic masks are only valid for integer and enum types (but not a bool type)!" );
 
 	public:
-		using MyType = Bitmask<TVal>;
-		using ValueType = typename QUintTypeBySize<sizeof( TVal )>::Type;
+		using MyType = TBitmask<TPValue>;
+		using ValueType = typename QUintTypeBySize<sizeof( TPValue )>::Type;
 
 	public:
-		constexpr Bitmask() noexcept
+		constexpr TBitmask() noexcept
 		: _value( 0 )
 		{}
 
-		template <typename TBits>
-		constexpr Bitmask( TBits pValue ) noexcept
+		template <typename TPBits>
+		constexpr TBitmask( TPBits pValue ) noexcept
 		: _value( static_cast<ValueType>( pValue ) )
 		{}
 
-		template <typename TBits>
-		MyType & operator=( TBits pValue )
+		template <typename TPBits>
+		MyType & operator=( TPBits pValue )
 		{
 			_value = static_cast<ValueType>( pValue );
 			return *this;
 		}
 
-		constexpr operator TVal() const
+		constexpr operator TPValue() const
 		{
-			return static_cast<TVal>( _value );
+			return static_cast<TPValue>( _value );
 		}
 
-		template <typename TBits>
-		MyType & store( TBits pBits )
+		template <typename TPBits>
+		MyType & store( TPBits pBits )
 		{
 			_value = static_cast<ValueType>( pBits );
 			return *this;
 		}
 
-		template <typename TBits>
-		MyType & set( TBits pBits )
+		template <typename TPBits>
+		MyType & set( TPBits pBits )
 		{
 			_value |= static_cast<ValueType>( pBits );
 			return *this;
 		}
 
-		template <typename TBits>
-		MyType & toggle( TBits pBits )
+		template <typename TPBits>
+		MyType & toggle( TPBits pBits )
 		{
 			_value ^= static_cast<ValueType>( pBits );
 			return *this;
 		}
 
-		template <typename TBits>
-		MyType & unset( TBits pBits )
+		template <typename TPBits>
+		MyType & unset( TPBits pBits )
 		{
 			_value &= ~static_cast<ValueType>( pBits );
 			return *this;
@@ -76,15 +76,15 @@ namespace Ic3::Cppx
 			return *this;
 		}
 
-		template <typename TBits>
-		MyType & setOrUnset( TBits pBits, bool pSet )
+		template <typename TPBits>
+		MyType & setOrUnset( TPBits pBits, bool pSet )
 		{
 			pSet ? set( pBits ) : unset( pBits );
 			return *this;
 		}
 
-		template <typename TBits>
-		bool testAndSet( TBits pBits )
+		template <typename TPBits>
+		bool testAndSet( TPBits pBits )
 		{
 			if( ( _value & static_cast<ValueType>( pBits ) ) != 0 )
 			{
@@ -95,8 +95,8 @@ namespace Ic3::Cppx
 			return true;
 		}
 
-		template <typename TBits>
-		bool testAndUnset( TBits pBits )
+		template <typename TPBits>
+		bool testAndUnset( TPBits pBits )
 		{
 			if( ( _value & static_cast<ValueType>( pBits ) ) != static_cast<ValueType>( pBits ) )
 			{
@@ -107,22 +107,22 @@ namespace Ic3::Cppx
 			return true;
 		}
 
-		template <typename TBits>
-		MyType & applyAnd( TBits pBits )
+		template <typename TPBits>
+		MyType & applyAnd( TPBits pBits )
 		{
 			_value &= pBits;
 			return *this;
 		}
 
-		template <typename TBits>
-		MyType & applyOr( TBits pBits )
+		template <typename TPBits>
+		MyType & applyOr( TPBits pBits )
 		{
 			_value |= pBits;
 			return *this;
 		}
 
-		template <typename TBits>
-		MyType & applyXor( TBits pBits )
+		template <typename TPBits>
+		MyType & applyXor( TPBits pBits )
 		{
 			_value ^= pBits;
 			return *this;
@@ -143,20 +143,20 @@ namespace Ic3::Cppx
 			return _value;
 		}
 
-		template <typename TBits>
-		IC3_ATTR_NO_DISCARD ValueType test( TBits pBits ) const
+		template <typename TPBits>
+		IC3_ATTR_NO_DISCARD ValueType test( TPBits pBits ) const
 		{
 			return _value & static_cast<ValueType>( pBits );
 		}
 
-		template <typename TBits>
-		IC3_ATTR_NO_DISCARD constexpr bool isSet( TBits pBits ) const
+		template <typename TPBits>
+		IC3_ATTR_NO_DISCARD constexpr bool isSet( TPBits pBits ) const
 		{
 			return ( static_cast<ValueType>( pBits ) != 0 ) && ( ( _value & static_cast<ValueType>( pBits ) ) == static_cast<ValueType>( pBits ) );
 		}
 
-		template <typename TBits>
-		IC3_ATTR_NO_DISCARD constexpr bool isSetAnyOf( TBits pBits ) const
+		template <typename TPBits>
+		IC3_ATTR_NO_DISCARD constexpr bool isSetAnyOf( TPBits pBits ) const
 		{
 			return ( _value & static_cast<ValueType>( pBits ) ) != static_cast<ValueType>( 0 );
 		}
@@ -176,20 +176,20 @@ namespace Ic3::Cppx
 			return popCount( pValue );
 		}
 
-		template <typename TBits>
-		constexpr void operator|=( TBits pBits )
+		template <typename TPBits>
+		constexpr void operator|=( TPBits pBits )
 		{
 			_value |= static_cast<ValueType>( pBits );
 		}
 
-		template <typename TBits>
-		constexpr void operator&=( TBits pBits )
+		template <typename TPBits>
+		constexpr void operator&=( TPBits pBits )
 		{
 			_value &= static_cast<ValueType>( pBits );
 		}
 
-		template <typename TBits>
-		constexpr void operator^=( TBits pBits )
+		template <typename TPBits>
+		constexpr void operator^=( TPBits pBits )
 		{
 			_value ^= static_cast<ValueType>( pBits );
 		}
@@ -209,20 +209,20 @@ namespace Ic3::Cppx
 			return ~( _value );
 		}
 
-		template <typename TBits>
-		constexpr MyType operator|( TBits pBits ) const
+		template <typename TPBits>
+		constexpr MyType operator|( TPBits pBits ) const
 		{
 			return _value | static_cast<ValueType>( pBits );
 		}
 
-		template <typename TBits>
-		constexpr MyType operator&( TBits pBits ) const
+		template <typename TPBits>
+		constexpr MyType operator&( TPBits pBits ) const
 		{
 			return _value & static_cast<ValueType>( pBits );
 		}
 
-		template <typename TBits>
-		constexpr MyType operator^( TBits pBits ) const
+		template <typename TPBits>
+		constexpr MyType operator^( TPBits pBits ) const
 		{
 			return _value ^ static_cast<ValueType>( pBits );
 		}
@@ -241,30 +241,30 @@ namespace Ic3::Cppx
 		ValueType  _value;
 	};
 
-	template <typename TVal>
-	inline void swap( Bitmask<TVal> & pFirst, Bitmask<TVal> & pSecond )
+	template <typename TPValue>
+	inline void swap( TBitmask<TPValue> & pFirst, TBitmask<TPValue> & pSecond )
 	{
 		pFirst.swap( pSecond );
 	}
 
 	template <typename TEnum, typename std::enable_if<std::is_enum<TEnum>::value, int>::type = 0>
-	IC3_ATTR_NO_DISCARD inline constexpr Bitmask<typename std::underlying_type<TEnum>::type> makeBitmask( TEnum pValue = static_cast<TEnum>( 0 ) ) noexcept
+	IC3_ATTR_NO_DISCARD inline constexpr TBitmask<typename std::underlying_type<TEnum>::type> makeBitmask( TEnum pValue = static_cast<TEnum>( 0 ) ) noexcept
 	{
-		return Bitmask<typename std::underlying_type<TEnum>::type>( pValue );
+		return TBitmask<typename std::underlying_type<TEnum>::type>( pValue );
 	}
 
 	template <typename TIntegral, typename std::enable_if<std::is_integral<TIntegral>::value, int>::type = 0>
-	IC3_ATTR_NO_DISCARD inline constexpr Bitmask<TIntegral> makeBitmask( TIntegral pValue ) noexcept
+	IC3_ATTR_NO_DISCARD inline constexpr TBitmask<TIntegral> makeBitmask( TIntegral pValue ) noexcept
 	{
-		return Bitmask<TIntegral>( pValue );
+		return TBitmask<TIntegral>( pValue );
 	}
 
-	template <typename TVal, typename TInput>
-	IC3_ATTR_NO_DISCARD inline constexpr Bitmask<TVal> makeBitmaskEx( TInput pValue = static_cast<TInput>( 0 ) ) noexcept
+	template <typename TPValue, typename TPInput>
+	IC3_ATTR_NO_DISCARD inline constexpr TBitmask<TPValue> makeBitmaskEx( TPInput pValue = static_cast<TPInput>( 0 ) ) noexcept
 	{
-		return Bitmask<TVal>( pValue );
+		return TBitmask<TPValue>( pValue );
 	}
 
 }
 
-#endif // __IC3_CPPX_BITMASK_H__
+#endif // __IC3_CPPXBitMASK_H__

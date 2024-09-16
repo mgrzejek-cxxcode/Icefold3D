@@ -93,7 +93,7 @@ namespace Ic3::Cppx
 
 
 	constexpr uint64 sFNV64PrimeValue = 0x100000001B3;
-	constexpr uint64 sU64Mask = QLimits<uint64>::maxValue << 8;
+	constexpr uint64 sU64Mask = QLimits<uint64>::sMaxValue << 8;
 
 	uint64 QHashTraits<EHashAlgo::FNV1A64>::compute( const void * pInput, size_t pInputSize )
 	{

@@ -9,53 +9,53 @@
 namespace Ic3::Cppx
 {
 
-	template <typename TChar = char>
-	struct StringView
+	template <typename TPChar = char>
+	class TStringView
 	{
-		static_assert( QIsTypeOnTypeList<TChar, char, wchar_t, char16_t, char32_t>::value, "Invalid char type for StringView" );
+		static_assert( QIsTypeOnTypeList<TPChar, char, wchar_t, char16_t, char32_t>::value, "Invalid char type for StringView" );
 
 	public:
-		using CharType = typename std::remove_cv<TChar>::type;
+		using CharType = typename std::remove_cv<TPChar>::type;
 
-		StringView()
+		TStringView()
 		: _basePtr( nullptr )
 		, _length( 0 )
 		{}
 
-		StringView( const CharType * pStr )
+		TStringView( const CharType * pStr )
 		: _basePtr( pStr )
 		, _length( std::char_traits<CharType>::length( pStr ) )
 		{}
 
-		StringView( const CharType * pBegin, const CharType * pEnd )
+		TStringView( const CharType * pBegin, const CharType * pEnd )
 		: _basePtr( pBegin )
 		, _length( pEnd - pBegin )
 		{}
 
-		StringView( const CharType * pStr, size_t pLength )
+		TStringView( const CharType * pStr, size_t pLength )
 		: _basePtr( pStr )
 		, _length( pLength )
 		{}
 
-		StringView( const std::basic_string<TChar> & pString )
+		TStringView( const std::basic_string<TPChar> & pString )
 		: _basePtr( pString.c_str() )
 		, _length( pString.length() )
 		{}
 
-		template <typename TOther>
-		StringView( const StringView<TOther> & pOther )
+		template <typename TPOther>
+		TStringView( const TStringView<TPOther> & pOther )
 		: _basePtr( pOther.data() )
 		, _length( pOther.length() )
 		{}
 
 		template <size_t tSize>
-		explicit StringView( CharType( &pArray )[tSize] )
-		: StringView( &( pArray[0] ), tSize )
+		explicit TStringView( CharType( &pArray )[tSize] )
+		: TStringView( &( pArray[0] ), tSize )
 		{}
 
 		template <size_t tSize>
-		explicit StringView( const CharType( &pArray )[tSize] )
-		: StringView( &( pArray[0] ), tSize )
+		explicit TStringView( const CharType( &pArray )[tSize] )
+		: TStringView( &( pArray[0] ), tSize )
 		{}
 
 		explicit operator bool() const
@@ -80,7 +80,7 @@ namespace Ic3::Cppx
 
 		IC3_ATTR_NO_DISCARD size_t byteSize() const
 		{
-			return _length * sizeof( TChar );
+			return _length * sizeof( TPChar );
 		}
 
 		IC3_ATTR_NO_DISCARD bool empty() const
@@ -88,7 +88,7 @@ namespace Ic3::Cppx
 			return _basePtr && ( _length > 0 );
 		}
 
-		void swap( StringView & pOther )
+		void swap( TStringView & pOther )
 		{
 			std::swap( _basePtr, pOther._basePtr );
 			std::swap( _length, pOther._length );
@@ -99,284 +99,272 @@ namespace Ic3::Cppx
 		size_t _length;
 	};
 
-	template <typename TChar>
-	inline void swap( StringView<TChar> & pFirst, StringView<TChar> & pSecond )
+	template <typename TPChar>
+	inline void swap( TStringView<TPChar> & pFirst, TStringView<TPChar> & pSecond )
 	{
 		pFirst.swap( pSecond );
 	}
 
-	template <typename TChar>
-	inline TChar * begin( const StringView<TChar> & pStringView )
+	template <typename TPChar>
+	inline TPChar * begin( const TStringView<TPChar> & pStringView )
 	{
 		return pStringView.str();
 	}
 
-	template <typename TChar>
-	inline TChar * end( const StringView<TChar> & pStringView )
+	template <typename TPChar>
+	inline TPChar * end( const TStringView<TPChar> & pStringView )
 	{
 		return pStringView.str() + pStringView.length();
 	}
 
-	template <typename TChar>
-	inline bool operator==( const StringView<TChar> & pLhs, const StringView<TChar> & pRhs )
+	template <typename TPChar>
+	inline bool operator==( const TStringView<TPChar> & pLhs, const TStringView<TPChar> & pRhs )
 	{
-		return std::char_traits<TChar>::compare( pLhs.str(), pRhs.str(), getMinOf( pLhs.length(), pRhs.length() ) ) == 0;
+		return std::char_traits<TPChar>::compare( pLhs.str(), pRhs.str(), getMinOf( pLhs.length(), pRhs.length() ) ) == 0;
 	}
 
-	template <typename TChar>
-	inline bool operator==( const StringView<TChar> & pLhs, const std::basic_string<TChar> & pRhs )
+	template <typename TPChar>
+	inline bool operator==( const TStringView<TPChar> & pLhs, const std::basic_string<TPChar> & pRhs )
 	{
-		return std::char_traits<TChar>::compare( pLhs.str(), pRhs.c_str(), getMinOf( pLhs.length(), pRhs.length() ) ) == 0;
+		return std::char_traits<TPChar>::compare( pLhs.str(), pRhs.c_str(), getMinOf( pLhs.length(), pRhs.length() ) ) == 0;
 	}
 
-	template <typename TChar>
-	inline bool operator==( const std::basic_string<TChar> & pLhs, const StringView<TChar> & pRhs )
+	template <typename TPChar>
+	inline bool operator==( const std::basic_string<TPChar> & pLhs, const TStringView<TPChar> & pRhs )
 	{
-		return std::char_traits<TChar>::compare( pLhs.c_str(), pRhs.str(), getMinOf( pLhs.length(), pRhs.length() ) ) == 0;
+		return std::char_traits<TPChar>::compare( pLhs.c_str(), pRhs.str(), getMinOf( pLhs.length(), pRhs.length() ) ) == 0;
 	}
 
-	template <typename TChar>
-	inline bool operator!=( const StringView<TChar> & pLhs, const StringView<TChar> & pRhs )
+	template <typename TPChar>
+	inline bool operator!=( const TStringView<TPChar> & pLhs, const TStringView<TPChar> & pRhs )
 	{
-		return std::char_traits<TChar>::compare( pLhs.str(), pRhs.str(), getMinOf( pLhs.length(), pRhs.length() ) ) != 0;
+		return std::char_traits<TPChar>::compare( pLhs.str(), pRhs.str(), getMinOf( pLhs.length(), pRhs.length() ) ) != 0;
 	}
 
-	template <typename TChar>
-	inline bool operator!=( const StringView<TChar> & pLhs, const std::basic_string<TChar> & pRhs )
+	template <typename TPChar>
+	inline bool operator!=( const TStringView<TPChar> & pLhs, const std::basic_string<TPChar> & pRhs )
 	{
-		return std::char_traits<TChar>::compare( pLhs.str(), pRhs.c_str(), getMinOf( pLhs.length(), pRhs.length() ) ) != 0;
+		return std::char_traits<TPChar>::compare( pLhs.str(), pRhs.c_str(), getMinOf( pLhs.length(), pRhs.length() ) ) != 0;
 	}
 
-	template <typename TChar>
-	inline bool operator!=( const std::basic_string<TChar> & pLhs, const StringView<TChar> & pRhs )
+	template <typename TPChar>
+	inline bool operator!=( const std::basic_string<TPChar> & pLhs, const TStringView<TPChar> & pRhs )
 	{
-		return std::char_traits<TChar>::compare( pLhs.c_str(), pRhs.str(), getMinOf( pLhs.length(), pRhs.length() ) ) != 0;
+		return std::char_traits<TPChar>::compare( pLhs.c_str(), pRhs.str(), getMinOf( pLhs.length(), pRhs.length() ) ) != 0;
 	}
 
-	template <typename TChar>
-	inline bool operator<( const StringView<TChar> & pLhs, const StringView<TChar> & pRhs )
+	template <typename TPChar>
+	inline bool operator<( const TStringView<TPChar> & pLhs, const TStringView<TPChar> & pRhs )
 	{
-		return std::char_traits<TChar>::compare( pLhs.str(), pRhs.str(), getMinOf( pLhs.length(), pRhs.length() ) ) < 0;
+		return std::char_traits<TPChar>::compare( pLhs.str(), pRhs.str(), getMinOf( pLhs.length(), pRhs.length() ) ) < 0;
 	}
 
-	template <typename TChar>
-	inline bool operator<( const StringView<TChar> & pLhs, const std::basic_string<TChar> & pRhs )
+	template <typename TPChar>
+	inline bool operator<( const TStringView<TPChar> & pLhs, const std::basic_string<TPChar> & pRhs )
 	{
-		return std::char_traits<TChar>::compare( pLhs.str(), pRhs.c_str(), getMinOf( pLhs.length(), pRhs.length() ) ) < 0;
+		return std::char_traits<TPChar>::compare( pLhs.str(), pRhs.c_str(), getMinOf( pLhs.length(), pRhs.length() ) ) < 0;
 	}
 
-	template <typename TChar>
-	inline bool operator<( const std::basic_string<TChar> & pLhs, const StringView<TChar> & pRhs )
+	template <typename TPChar>
+	inline bool operator<( const std::basic_string<TPChar> & pLhs, const TStringView<TPChar> & pRhs )
 	{
-		return std::char_traits<TChar>::compare( pLhs.c_str(), pRhs.str(), getMinOf( pLhs.length(), pRhs.length() ) ) < 0;
+		return std::char_traits<TPChar>::compare( pLhs.c_str(), pRhs.str(), getMinOf( pLhs.length(), pRhs.length() ) ) < 0;
 	}
 
-	template <typename TChar>
-	inline bool operator<=( const StringView<TChar> & pLhs, const StringView<TChar> & pRhs )
+	template <typename TPChar>
+	inline bool operator<=( const TStringView<TPChar> & pLhs, const TStringView<TPChar> & pRhs )
 	{
-		return std::char_traits<TChar>::compare( pLhs.str(), pRhs.str(), getMinOf( pLhs.length(), pRhs.length() ) ) <= 0;
+		return std::char_traits<TPChar>::compare( pLhs.str(), pRhs.str(), getMinOf( pLhs.length(), pRhs.length() ) ) <= 0;
 	}
 
-	template <typename TChar>
-	inline bool operator<=( const StringView<TChar> & pLhs, const std::basic_string<TChar> & pRhs )
+	template <typename TPChar>
+	inline bool operator<=( const TStringView<TPChar> & pLhs, const std::basic_string<TPChar> & pRhs )
 	{
-		return std::char_traits<TChar>::compare( pLhs.str(), pRhs.c_str(), getMinOf( pLhs.length(), pRhs.length() ) ) <= 0;
+		return std::char_traits<TPChar>::compare( pLhs.str(), pRhs.c_str(), getMinOf( pLhs.length(), pRhs.length() ) ) <= 0;
 	}
 
-	template <typename TChar>
-	inline bool operator<=( const std::basic_string<TChar> & pLhs, const StringView<TChar> & pRhs )
+	template <typename TPChar>
+	inline bool operator<=( const std::basic_string<TPChar> & pLhs, const TStringView<TPChar> & pRhs )
 	{
-		return std::char_traits<TChar>::compare( pLhs.c_str(), pRhs.str(), getMinOf( pLhs.length(), pRhs.length() ) ) <= 0;
+		return std::char_traits<TPChar>::compare( pLhs.c_str(), pRhs.str(), getMinOf( pLhs.length(), pRhs.length() ) ) <= 0;
 	}
 
-	template <typename TChar>
-	inline bool operator>( const StringView<TChar> & pLhs, const StringView<TChar> & pRhs )
+	template <typename TPChar>
+	inline bool operator>( const TStringView<TPChar> & pLhs, const TStringView<TPChar> & pRhs )
 	{
-		return std::char_traits<TChar>::compare( pLhs.str(), pRhs.str(), getMinOf( pLhs.length(), pRhs.length() ) ) > 0;
+		return std::char_traits<TPChar>::compare( pLhs.str(), pRhs.str(), getMinOf( pLhs.length(), pRhs.length() ) ) > 0;
 	}
 
-	template <typename TChar>
-	inline bool operator>( const StringView<TChar> & pLhs, const std::basic_string<TChar> & pRhs )
+	template <typename TPChar>
+	inline bool operator>( const TStringView<TPChar> & pLhs, const std::basic_string<TPChar> & pRhs )
 	{
-		return std::char_traits<TChar>::compare( pLhs.str(), pRhs.c_str(), getMinOf( pLhs.length(), pRhs.length() ) ) > 0;
+		return std::char_traits<TPChar>::compare( pLhs.str(), pRhs.c_str(), getMinOf( pLhs.length(), pRhs.length() ) ) > 0;
 	}
 
-	template <typename TChar>
-	inline bool operator>( const std::basic_string<TChar> & pLhs, const StringView<TChar> & pRhs )
+	template <typename TPChar>
+	inline bool operator>( const std::basic_string<TPChar> & pLhs, const TStringView<TPChar> & pRhs )
 	{
-		return std::char_traits<TChar>::compare( pLhs.c_str(), pRhs.str(), getMinOf( pLhs.length(), pRhs.length() ) ) > 0;
+		return std::char_traits<TPChar>::compare( pLhs.c_str(), pRhs.str(), getMinOf( pLhs.length(), pRhs.length() ) ) > 0;
 	}
 
-	template <typename TChar>
-	inline bool operator>=( const StringView<TChar> & pLhs, const StringView<TChar> & pRhs )
+	template <typename TPChar>
+	inline bool operator>=( const TStringView<TPChar> & pLhs, const TStringView<TPChar> & pRhs )
 	{
-		return std::char_traits<TChar>::compare( pLhs.str(), pRhs.str(), getMinOf( pLhs.length(), pRhs.length() ) ) >= 0;
+		return std::char_traits<TPChar>::compare( pLhs.str(), pRhs.str(), getMinOf( pLhs.length(), pRhs.length() ) ) >= 0;
 	}
 
-	template <typename TChar>
-	inline bool operator>=( const StringView<TChar> & pLhs, const std::basic_string<TChar> & pRhs )
+	template <typename TPChar>
+	inline bool operator>=( const TStringView<TPChar> & pLhs, const std::basic_string<TPChar> & pRhs )
 	{
-		return std::char_traits<TChar>::compare( pLhs.str(), pRhs.c_str(), getMinOf( pLhs.length(), pRhs.length() ) ) >= 0;
+		return std::char_traits<TPChar>::compare( pLhs.str(), pRhs.c_str(), getMinOf( pLhs.length(), pRhs.length() ) ) >= 0;
 	}
 
-	template <typename TChar>
-	inline bool operator>=( const std::basic_string<TChar> & pLhs, const StringView<TChar> & pRhs )
+	template <typename TPChar>
+	inline bool operator>=( const std::basic_string<TPChar> & pLhs, const TStringView<TPChar> & pRhs )
 	{
-		return std::char_traits<TChar>::compare( pLhs.c_str(), pRhs.str(), getMinOf( pLhs.length(), pRhs.length() ) ) >= 0;
+		return std::char_traits<TPChar>::compare( pLhs.c_str(), pRhs.str(), getMinOf( pLhs.length(), pRhs.length() ) ) >= 0;
 	}
 
 
-	template <typename TChar>
-	struct StringViewCmpEqual
+	template <typename TPChar>
+	struct TStringViewCmpEqual
 	{
-		using is_transparent = void;
-
-		bool operator()( const StringView<TChar> & pLhs, const StringView<TChar> & pRhs ) const
+		bool operator()( const TStringView<TPChar> & pLhs, const TStringView<TPChar> & pRhs ) const
 		{
 			return pLhs == pRhs;
 		}
 
-		bool operator()( const StringView<TChar> & pLhs, const std::basic_string<TChar> & pRhs ) const
+		bool operator()( const TStringView<TPChar> & pLhs, const std::basic_string<TPChar> & pRhs ) const
 		{
 			return pLhs == pRhs;
 		}
 
-		bool operator()( const std::basic_string<TChar> & pLhs, const StringView<TChar> & pRhs ) const
+		bool operator()( const std::basic_string<TPChar> & pLhs, const TStringView<TPChar> & pRhs ) const
 		{
 			return pLhs == pRhs;
 		}
 
-		bool operator()( const std::basic_string<TChar> & pLhs, const std::basic_string<TChar> & pRhs ) const
+		bool operator()( const std::basic_string<TPChar> & pLhs, const std::basic_string<TPChar> & pRhs ) const
 		{
 			return pLhs == pRhs;
 		}
 	};
 
-	template <typename TChar>
-	struct StringViewCmpNotEqual
+	template <typename TPChar>
+	struct TStringViewCmpNotEqual
 	{
-		using is_transparent = void;
-
-		bool operator()( const StringView<TChar> & pLhs, const StringView<TChar> & pRhs ) const
+		bool operator()( const TStringView<TPChar> & pLhs, const TStringView<TPChar> & pRhs ) const
 		{
 			return pLhs != pRhs;
 		}
 
-		bool operator()( const StringView<TChar> & pLhs, const std::basic_string<TChar> & pRhs ) const
+		bool operator()( const TStringView<TPChar> & pLhs, const std::basic_string<TPChar> & pRhs ) const
 		{
 			return pLhs != pRhs;
 		}
 
-		bool operator()( const std::basic_string<TChar> & pLhs, const StringView<TChar> & pRhs ) const
+		bool operator()( const std::basic_string<TPChar> & pLhs, const TStringView<TPChar> & pRhs ) const
 		{
 			return pLhs != pRhs;
 		}
 
-		bool operator()( const std::basic_string<TChar> & pLhs, const std::basic_string<TChar> & pRhs ) const
+		bool operator()( const std::basic_string<TPChar> & pLhs, const std::basic_string<TPChar> & pRhs ) const
 		{
 			return pLhs != pRhs;
 		}
 	};
 
-	template <typename TChar>
-	struct StringViewCmpLess
+	template <typename TPChar>
+	struct TStringViewCmpLess
 	{
-		using is_transparent = void;
-
-		bool operator()( const StringView<TChar> & pLhs, const StringView<TChar> & pRhs ) const
+		bool operator()( const TStringView<TPChar> & pLhs, const TStringView<TPChar> & pRhs ) const
 		{
 			return pLhs < pRhs;
 		}
 
-		bool operator()( const StringView<TChar> & pLhs, const std::basic_string<TChar> & pRhs ) const
+		bool operator()( const TStringView<TPChar> & pLhs, const std::basic_string<TPChar> & pRhs ) const
 		{
 			return pLhs < pRhs;
 		}
 
-		bool operator()( const std::basic_string<TChar> & pLhs, const StringView<TChar> & pRhs ) const
+		bool operator()( const std::basic_string<TPChar> & pLhs, const TStringView<TPChar> & pRhs ) const
 		{
 			return pLhs < pRhs;
 		}
 
-		bool operator()( const std::basic_string<TChar> & pLhs, const std::basic_string<TChar> & pRhs ) const
+		bool operator()( const std::basic_string<TPChar> & pLhs, const std::basic_string<TPChar> & pRhs ) const
 		{
 			return pLhs < pRhs;
 		}
 	};
 
-	template <typename TChar>
-	struct StringViewCmpLessEqual
+	template <typename TPChar>
+	struct TStringViewCmpLessEqual
 	{
-		using is_transparent = void;
-
-		bool operator()( const StringView<TChar> & pLhs, const StringView<TChar> & pRhs ) const
+		bool operator()( const TStringView<TPChar> & pLhs, const TStringView<TPChar> & pRhs ) const
 		{
 			return pLhs <= pRhs;
 		}
 
-		bool operator()( const StringView<TChar> & pLhs, const std::basic_string<TChar> & pRhs ) const
+		bool operator()( const TStringView<TPChar> & pLhs, const std::basic_string<TPChar> & pRhs ) const
 		{
 			return pLhs <= pRhs;
 		}
 
-		bool operator()( const std::basic_string<TChar> & pLhs, const StringView<TChar> & pRhs ) const
+		bool operator()( const std::basic_string<TPChar> & pLhs, const TStringView<TPChar> & pRhs ) const
 		{
 			return pLhs <= pRhs;
 		}
 
-		bool operator()( const std::basic_string<TChar> & pLhs, const std::basic_string<TChar> & pRhs ) const
+		bool operator()( const std::basic_string<TPChar> & pLhs, const std::basic_string<TPChar> & pRhs ) const
 		{
 			return pLhs <= pRhs;
 		}
 	};
 
-	template <typename TChar>
-	struct StringViewCmpGreater
+	template <typename TPChar>
+	struct TStringViewCmpGreater
 	{
-		using is_transparent = void;
-
-		bool operator()( const StringView<TChar> & pLhs, const StringView<TChar> & pRhs ) const
+		bool operator()( const TStringView<TPChar> & pLhs, const TStringView<TPChar> & pRhs ) const
 		{
 			return pLhs > pRhs;
 		}
 
-		bool operator()( const StringView<TChar> & pLhs, const std::basic_string<TChar> & pRhs ) const
+		bool operator()( const TStringView<TPChar> & pLhs, const std::basic_string<TPChar> & pRhs ) const
 		{
 			return pLhs > pRhs;
 		}
 
-		bool operator()( const std::basic_string<TChar> & pLhs, const StringView<TChar> & pRhs ) const
+		bool operator()( const std::basic_string<TPChar> & pLhs, const TStringView<TPChar> & pRhs ) const
 		{
 			return pLhs > pRhs;
 		}
 
-		bool operator()( const std::basic_string<TChar> & pLhs, const std::basic_string<TChar> & pRhs ) const
+		bool operator()( const std::basic_string<TPChar> & pLhs, const std::basic_string<TPChar> & pRhs ) const
 		{
 			return pLhs > pRhs;
 		}
 	};
 
-	template <typename TChar>
-	struct StringViewCmpGreaterEqual
+	template <typename TPChar>
+	struct TStringViewCmpGreaterEqual
 	{
-		using is_transparent = void;
-
-		bool operator()( const StringView<TChar> & pLhs, const StringView<TChar> & pRhs ) const
+		bool operator()( const TStringView<TPChar> & pLhs, const TStringView<TPChar> & pRhs ) const
 		{
 			return pLhs >= pRhs;
 		}
 
-		bool operator()( const StringView<TChar> & pLhs, const std::basic_string<TChar> & pRhs ) const
+		bool operator()( const TStringView<TPChar> & pLhs, const std::basic_string<TPChar> & pRhs ) const
 		{
 			return pLhs >= pRhs;
 		}
 
-		bool operator()( const std::basic_string<TChar> & pLhs, const StringView<TChar> & pRhs ) const
+		bool operator()( const std::basic_string<TPChar> & pLhs, const TStringView<TPChar> & pRhs ) const
 		{
 			return pLhs >= pRhs;
 		}
 
-		bool operator()( const std::basic_string<TChar> & pLhs, const std::basic_string<TChar> & pRhs ) const
+		bool operator()( const std::basic_string<TPChar> & pLhs, const std::basic_string<TPChar> & pRhs ) const
 		{
 			return pLhs >= pRhs;
 		}

@@ -9,19 +9,18 @@
 namespace Ic3::Cppx
 {
 
-	template <size_t tFixedCapacity, size_t tResizeFactor, size_t tMaximumCapacity = QLimits<size_t>::maxValue>
+	template <size_t tpFixedCapacity, size_t tpResizeFactor, size_t tpMaximumCapacity = QLimits<size_t>::sMaxValue>
 	struct DynamicArrayPolicy
 	{
-		static constexpr size_t sFixedCapacity = tFixedCapacity;
-		static constexpr size_t sResizeFactor = tResizeFactor;
-		static constexpr size_t sMaximumCapacity = tMaximumCapacity;
+		static constexpr size_t sFixedCapacity = tpFixedCapacity;
+		static constexpr size_t sResizeFactor = tpResizeFactor;
+		static constexpr size_t sMaximumCapacity = tpMaximumCapacity;
 	};
 
-	template <typename TValue, typename TMemoryPolicy = DynamicArrayPolicy<0, 2>, typename TAlloc = std::allocator<TValue> >
+	template <typename TPValue, typename TMemoryPolicy = DynamicArrayPolicy<0, 2>, typename TPAllocator = std::allocator<TPValue> >
 	class PolicyBasedDynamicArray
 	{
 	private:
-
 	};
 
 }

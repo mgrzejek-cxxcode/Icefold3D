@@ -7,37 +7,37 @@
 namespace Ic3::Cppx
 {
 
-	template <typename _Type>
+	template <typename TPValue>
 	struct OptionalStorage
 	{
-		static constexpr size_t size = sizeof( _Type );
-		static constexpr size_t alignment = alignof( _Type );
+		static constexpr size_t sSize = sizeof( TPValue );
+		static constexpr size_t sAlignment = alignof( TPValue );
 
-		using Type = typename std::aligned_storage<size, alignment>::type;
+		using Type = typename std::aligned_storage<sSize, sAlignment>::type;
 	};
 
-	template <typename _Type>
+	template <typename TPValue>
 	class Optional
 	{
 	public:
-		static constexpr size_t storageSize = OptionalStorage<_Type>::size;
-		static constexpr size_t storageAlignment = OptionalStorage<_Type>::alignment;
+		static constexpr size_t sStorageSize = OptionalStorage<TPValue>::sSize;
+		static constexpr size_t sStorageAlignment = OptionalStorage<TPValue>::sAlignment;
 
-		using ValueType = _Type;
-		using MyType = Optional<_Type>;
-		using StorageType = typename OptionalStorage<_Type>::Type;
+		using ValueType = TPValue;
+		using MyType = Optional<TPValue>;
+		using StorageType = typename OptionalStorage<TPValue>::Type;
 
 	public:
 		Optional()
 		: _valuePtr( nullptr )
 		{}
 
-		Optional( _Type && pInput )
+		Optional( TPValue && pInput )
 		{
 			_init( std::move( pInput ) );
 		}
 
-		Optional( const _Type & pInput )
+		Optional( const TPValue & pInput )
 		{
 			_init( pInput );
 		}
@@ -59,13 +59,13 @@ namespace Ic3::Cppx
 			return *this;
 		}
 
-		Optional & operator=( _Type && pRhs )
+		Optional & operator=( TPValue && pRhs )
 		{
 			_reinit( std::move( pRhs ) );
 			return *this;
 		}
 
-		Optional & operator=( const _Type & pRhs )
+		Optional & operator=( const TPValue & pRhs )
 		{
 			_reinit( pRhs );
 			return *this;
@@ -76,32 +76,32 @@ namespace Ic3::Cppx
 			return _check();
 		}
 
-		_Type& operator*() const
+		TPValue& operator*() const
 		{
 			_validate();
 			return *(_valuePtr);
 		}
 
-		_Type* operator->() const
+		TPValue* operator->() const
 		{
 			_validate();
 			return _valuePtr;
 		}
 
-		void set( _Type && value )
+		void set( TPValue && value )
 		{
 			_reinit( std::move( value ) );
 		}
 
-		void set( const _Type & value )
+		void set( const TPValue & value )
 		{
 			_reinit( value );
 		}
 
-		template <typename... Args>
-		void emplace( Args && ...pArgs )
+		template <typename... TPArgs>
+		void emplace( TPArgs && ...pArgs )
 		{
-			_reinit( std::forward<Args>( pArgs )... );
+			_reinit( std::forward<TPArgs>( pArgs )... );
 		}
 
 		void reset()
@@ -114,13 +114,13 @@ namespace Ic3::Cppx
 			return !_check();
 		}
 
-		const _Type & value() const
+		const TPValue & value() const
 		{
 			_validate();
 			return *(_valuePtr);
 		}
 
-		const _Type & valueOrDefault( const _Type & pDefault ) const
+		const TPValue & valueOrDefault( const TPValue & pDefault ) const
 		{
 			return _check() ? *(_valuePtr) : pDefault;
 		}
@@ -131,26 +131,26 @@ namespace Ic3::Cppx
 		}
 
 	private:
-		template <typename... Args>
-		void _init( Args && ...pArgs )
+		template <typename... TPArgs>
+		void _init( TPArgs && ...pArgs )
 		{
-			_valuePtr = reinterpret_cast<_Type*>( &_storage );
-			new (_valuePtr) _Type( std::forward<Args>( pArgs )... );
+			_valuePtr = reinterpret_cast<TPValue*>( &_storage );
+			new (_valuePtr) TPValue( std::forward<TPArgs>( pArgs )... );
 		}
 
-		template <typename... Args>
-		void _reinit( Args && ...pArgs )
+		template <typename... TPArgs>
+		void _reinit( TPArgs && ...pArgs )
 		{
 			if(_valuePtr != nullptr)
 			{
-				_valuePtr->~_Type();
+				_valuePtr->~TPValue();
 			}
 			else
 			{
-				_valuePtr = reinterpret_cast<_Type*>( &_storage );
+				_valuePtr = reinterpret_cast<TPValue*>( &_storage );
 			}
 
-			new (_valuePtr) _Type( std::forward<Args>( pArgs )... );
+			new (_valuePtr) TPValue( std::forward<TPArgs>( pArgs )... );
 		}
 
 		bool _check() const
@@ -170,14 +170,14 @@ namespace Ic3::Cppx
 		{
 			if(_valuePtr != nullptr)
 			{
-				_valuePtr->~_Type();
+				_valuePtr->~TPValue();
 				_valuePtr = nullptr;
 			}
 		}
 
 	private:
 		StorageType _storage;
-		_Type * _valuePtr;
+		TPValue * _valuePtr;
 	};
 
 }

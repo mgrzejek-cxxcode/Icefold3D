@@ -7,23 +7,23 @@
 namespace Ic3::Cppx
 {
 
-	template <typename T, size_t tAlignment = alignof( T )>
-	struct AlignedStorage
+	template <typename TPValue, size_t tpAlignment = alignof( TPValue )>
+	struct TAlignedStorage
 	{
-		static constexpr auto sAlignment = static_cast<uint32>( getMaxOf( tAlignment, alignof( T ) ) );
+		static constexpr auto sAlignment = static_cast<uint32>( getMaxOf( tpAlignment, alignof( TPValue ) ) );
 		
-		static constexpr auto sSize = static_cast<uint32>( sizeof( T ) );
+		static constexpr auto sSize = static_cast<uint32>( sizeof( TPValue ) );
 		
-		alignas( sAlignment ) byte data[sSize];
+		alignas( sAlignment ) byte mData[sSize];
 
 		IC3_ATTR_NO_DISCARD byte * ptr() noexcept
 		{
-			return &( data[0] );
+			return &( mData[0] );
 		}
 
 		IC3_ATTR_NO_DISCARD const byte * ptr() const noexcept
 		{
-			return &( data[0] );
+			return &( mData[0] );
 		}
 	};
 

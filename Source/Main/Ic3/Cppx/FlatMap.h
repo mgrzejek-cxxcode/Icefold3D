@@ -7,26 +7,26 @@
 namespace Ic3::Cppx
 {
 
-	template < typename TKey,
-	           typename TValue,
-	           typename TCompare = CmpLessT<TValue>,
-	           typename TAlloc = std::allocator<TValue> >
+	template < typename TPKey,
+	           typename TPValue,
+	           typename TPComparator = TCmpLessAuto<TPValue>,
+	           typename TPAllocator = std::allocator<TPValue> >
 	class FlatMap
 	{
 	public:
-		using SelfType = FlatMap<TValue, TCompare, TAlloc>;
+		using SelfType = FlatMap<TPValue, TPComparator, TPAllocator>;
 
-		using KeyType = TKey;
-		using ValueType = TValue;
-		using CompareType = TCompare;
+		using KeyType = TPKey;
+		using ValueType = TPValue;
+		using CompareType = TPComparator;
 
-		struct SElement
+		struct Element
 		{
-			TKey key;
-			TValue value;
+			TPKey mKey;
+			TPValue mValue;
 		};
 
-		using UnderlyingContainerType = SortedArray<SElement, TCompare, TAlloc>;
+		using UnderlyingContainerType = TSortedArray<Element, TPComparator, TPAllocator>;
 
 		using Iterator = typename UnderlyingContainerType::iterator;
 		using ConstIterator = typename UnderlyingContainerType::const_iterator;
@@ -40,23 +40,22 @@ namespace Ic3::Cppx
 		FlatMap( const FlatMap & ) = default;
 		FlatMap& operator=( const FlatMap & ) = default;
 
-		FlatMap()
-		{}
+		FlatMap() = default;
 
-		explicit FlatMap( const TAlloc & pAllocator )
+		explicit FlatMap( const TPAllocator & pAllocator )
 		: _underlyingContainer( pAllocator )
 		{}
 
-		explicit FlatMap( size_t pCapacity, const TAlloc & pAllocator = TAlloc() )
+		explicit FlatMap( size_t pCapacity, const TPAllocator & pAllocator = TPAllocator() )
 		: _underlyingContainer( pCapacity, pAllocator )
 		{}
 
-		TValue & operator[]( size_t pIndex )
+		TPValue & operator[]( size_t pIndex )
 		{
 			return _underlyingContainer[pIndex];
 		}
 
-		IC3_ATTR_NO_DISCARD const TValue & operator[]( size_t pIndex ) const
+		IC3_ATTR_NO_DISCARD const TPValue & operator[]( size_t pIndex ) const
 		{
 			return _underlyingContainer[pIndex];
 		}

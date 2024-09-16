@@ -12,56 +12,51 @@
 namespace Ic3
 {
 
-	namespace CxDef
-	{
+	/// @brief Represents max value which can be stored in the size_t type.
+	inline constexpr size_t cxMaxSize = static_cast<size_t>( -1 );
 
-		/// @brief Represents max value which can be stored in the size_t type.
-		inline constexpr size_t MAX_SIZE = static_cast<size_t>( -1 );
+	/// @brief
+	inline constexpr size_t cxInvalidLength = static_cast<size_t>( -1 );
 
-		/// @brief
-		inline constexpr size_t INVALID_LENGTH = static_cast<size_t>( -1 );
+	/// @brief Represents and invalid position (e.g. in a container or a continuous range).
+	inline constexpr size_t cxInvalidPosition = static_cast<size_t>( -1 );
 
-		/// @brief Represents and invalid position (e.g. in a container or a continuous range).
-		inline constexpr size_t INVALID_POSITION = static_cast<size_t>( -1 );
-
-	}
-
-	template <typename TType>
+	template <typename TPValue>
 	struct ArrayDelete
 	{
-		void operator()( TType * pInputPtr ) const
+		void operator()( TPValue * pInputPtr ) const
 		{
 			delete[] pInputPtr;
 		}
 	};
 
-	template <typename TType>
+	template <typename TPValue>
 	struct DefaultDelete
 	{
-		void operator()( TType * pInputPtr ) const
+		void operator()( TPValue * pInputPtr ) const
 		{
 			delete pInputPtr;
 		}
 	};
 
-	template <typename TType>
+	template <typename TPValue>
 	struct EmptyDelete
 	{
-		void operator()( TType * ) const
+		void operator()( TPValue * ) const
 		{}
 	};
 
-	template <typename TResult, typename TInput>
-	inline TResult numeric_cast( TInput pInput )
+	template <typename TPResult, typename TPInput>
+	inline TPResult numeric_cast( TPInput pInput )
 	{
-		ic3DebugAssert( pInput <= std::numeric_limits<TResult>::max() );
-		return static_cast<TResult>( pInput );
+		ic3DebugAssert( pInput <= std::numeric_limits<TPResult>::max() );
+		return static_cast<TPResult>( pInput );
 	}
 
-	template <typename TResult, typename TInput>
-	inline constexpr TResult static_numeric_cast( TInput pInput )
+	template <typename TPResult, typename TPInput>
+	inline constexpr TPResult static_numeric_cast( TPInput pInput )
 	{
-		return static_cast<TResult>( pInput );
+		return static_cast<TPResult>( pInput );
 	}
 
 }

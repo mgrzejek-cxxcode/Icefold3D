@@ -16,6 +16,7 @@ namespace Ic3::Cppx
 			case '[': rightDelim = ']'; break;
 			case '<': rightDelim = '>'; break;
 			case '$': rightDelim = '$'; break;
+			default : break;
 		}
 
 		if( rightDelim != 0 )
@@ -25,11 +26,11 @@ namespace Ic3::Cppx
 
 			if( ( lbPos != std::string::npos ) && ( rbPos != std::string::npos ) )
 			{
-				auto uuidstr = pInput.substr( lbPos, rbPos - lbPos + 1 );
+				auto uuidStr = pInput.substr( lbPos, rbPos - lbPos + 1 );
 				// #xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx#
-				if( uuidstr.length() == 38 )
+				if( uuidStr.length() == 38 )
 				{
-					result = std::move( uuidstr );
+					result = std::move( uuidStr );
 				}
 			}
 		}

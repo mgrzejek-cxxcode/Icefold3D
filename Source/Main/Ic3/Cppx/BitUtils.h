@@ -1,6 +1,6 @@
 
-#ifndef __IC3_CPPX_BIT_UTILS_H__
-#define __IC3_CPPX_BIT_UTILS_H__
+#ifndef __IC3_CPPXBit_UTILS_H__
+#define __IC3_CPPXBit_UTILS_H__
 
 #include "StaticLimits.h"
 #include "TypeTraits.h"
@@ -9,20 +9,32 @@
 namespace Ic3::Cppx
 {
 
-	template <typename TUint, size_t tShift, typename TInput>
-	inline constexpr TUint bshLeft( TInput pValue )
+	template <typename TPUint, size_t tpShift, typename TPInput>
+	inline constexpr TPUint bshLeft( TPInput pValue )
 	{
-		static_assert( sizeof( TUint ) >= sizeof( TInput ), "Target uint type has smaller size than the input, explicit cast required" );
-		static_assert( tShift <= sizeof( TUint ) * CHAR_BIT, "Bit shift outside the integer range is an Undefined Behaviour" );
-		return static_cast<TUint>( pValue ) << tShift;
+		static_assert(
+			sizeof( TPUint ) >= sizeof( TPInput ),
+			"Target uint type has smaller size than the input, explicit cast required" );
+
+		static_assert(
+			tpShift <= sizeof( TPUint ) * CHAR_BIT,
+			"Bit shift outside the integer range is an Undefined Behaviour" );
+
+		return static_cast<TPUint>( pValue ) << tpShift;
 	}
 
-	template <typename TUint, size_t tShift, typename TInput>
-	inline constexpr TUint bshRight( TInput pValue )
+	template <typename TPUint, size_t tpShift, typename TPInput>
+	inline constexpr TPUint bshRight( TPInput pValue )
 	{
-		static_assert( sizeof( TUint ) >= sizeof( TInput ), "Target uint type has smaller size than the input, explicit cast required" );
-		static_assert( tShift <= sizeof( TUint ) * CHAR_BIT, "Bit shift outside the integer range is an Undefined Behaviour" );
-		return static_cast<TUint>( pValue ) >> tShift;
+		static_assert(
+			sizeof( TPUint ) >= sizeof( TPInput ),
+			"Target uint type has smaller size than the input, explicit cast required" );
+
+		static_assert(
+			tpShift <= sizeof( TPUint ) * CHAR_BIT,
+			"Bit shift outside the integer range is an Undefined Behaviour" );
+
+		return static_cast<TPUint>( pValue ) >> tpShift;
 	}
 
 	inline uint16 popCount( uint8 pValue )
@@ -45,19 +57,19 @@ namespace Ic3::Cppx
 		return static_cast<uint16>( IC3_PCL_POPCNT64( pValue ) );
 	}
 
-	template <typename TVal>
-	inline constexpr TVal makeLSFBitmask( size_t pBitCount )
+	template <typename TPValue>
+	inline constexpr TPValue makeLSFBitmask( size_t pBitCount )
 	{
-		return ( pBitCount < QLimits<TVal>::bitCount ) ? static_cast<TVal>( ( 1u << pBitCount ) - 1 ) : QLimits<TVal>::maxValue;
+		return ( pBitCount < QLimits<TPValue>::sBitCount ) ? static_cast<TPValue>( ( 1u << pBitCount ) - 1 ) : QLimits<TPValue>::sMaxValue;
 	}
 
-	template <size_t tBitCount>
-	inline constexpr typename QUintTypeByBits<tBitCount>::Type makeLSFBitmask()
+	template <size_t tpBitCount>
+	inline constexpr typename QUintTypeByBits<tpBitCount>::Type makeLSFBitmask()
 	{
-		using TVal = typename QUintTypeByBits<tBitCount>::Type;
-		return ( tBitCount < QLimits<TVal>::bitCount ) ? static_cast<TVal>( ( 1u << tBitCount ) - 1 ) : QLimits<TVal>::maxValue;
+		using TPValue = typename QUintTypeByBits<tpBitCount>::Type;
+		return ( tpBitCount < QLimits<TPValue>::sBitCount ) ? static_cast<TPValue>( ( 1u << tpBitCount ) - 1 ) : QLimits<TPValue>::sMaxValue;
 	}
 
 }
 
-#endif // __IC3_CPPX_BIT_UTILS_H__
+#endif // __IC3_CPPXBit_UTILS_H__

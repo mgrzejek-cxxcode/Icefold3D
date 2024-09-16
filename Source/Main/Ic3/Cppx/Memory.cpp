@@ -9,16 +9,16 @@ namespace Ic3::Cppx
 		MemoryAllocationProxy allocationProxy;
 		try
 		{
-			allocationProxy.apiAlloc = []( size_t pSize ) -> void * {
+			allocationProxy.mFnAlloc = []( size_t pSize ) -> void * {
 				return std::malloc( pSize );
 			};
-			allocationProxy.apiFree = []( void * pMemory ) -> void {
+			allocationProxy.mFnFree = []( void * pMemory ) -> void {
 				return std::free( pMemory );
 			};
-			allocationProxy.apiRealloc = []( void * pMemory, size_t pNewSize ) -> void * {
+			allocationProxy.mFnRealloc = []( void * pMemory, size_t pNewSize ) -> void * {
 				return std::realloc( pMemory, pNewSize );
 			};
-			allocationProxy.memoryAlignment = kMemoryCPUDefaultAlignment;
+			allocationProxy.mMemoryAlignment = cxMemoryCPUDefaultAlignment;
 		}
 		catch( ... )
 		{

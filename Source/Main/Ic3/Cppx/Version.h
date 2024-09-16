@@ -33,50 +33,50 @@
 namespace Ic3
 {
 
-	/// @brief Representation of a version in 'major.minor' format.
+	/// @brief Representation of a version in 'major.mNumMinor' format.
 	union Version
 	{
 	public:
 		struct
 		{
 			/// Major component of the version number.
-			uint16 major;
+			uint16 mNumMajor;
 
 			/// Minor component of the version number.
-			uint16 minor;
+			uint16 mNumMinor;
 		};
 
 		/// 32-bit hash of the version, which is assembled by combining both uint16 components into a single 32-bit value.
-		uint32 hash;
+		uint32 mU32Hash;
 
 	public:
 		/// @brief Returns the string representation of the version.
-		/// @return The string representation of the version, formatted as "major.minor".
+		/// @return The string representation of the version, formatted as "major.mNumMinor".
 		IC3_ATTR_NO_DISCARD std::string toString() const
 		{
-			return std::to_string( major ) + "." + std::to_string( minor );
+			return std::to_string( mNumMajor ) + "." + std::to_string( mNumMinor );
 		}
 	};
 
 	/// @brief An invalid version constant - both major and minor components are set to UINT16_MAX.
-	inline constexpr Version CX_VERSION_INVALID{ Cppx::CX_UINT16_MAX, Cppx::CX_UINT16_MAX };
+	inline constexpr Version CX_VERSION_INVALID{Cppx::cxUint16Max, Cppx::cxUint16Max };
 
 	/// @brief An unknown version constant - both major and minor components are set to 0.
 	inline constexpr Version CX_VERSION_UNKNOWN{ 0, 0 };
 
 	inline bool operator==( const Version & pLhs, const Version & pRhs )
 	{
-		return ( pLhs.major == pRhs.major ) && ( pLhs.minor == pRhs.minor );
+		return ( pLhs.mNumMajor == pRhs.mNumMajor ) && ( pLhs.mNumMinor == pRhs.mNumMinor );
 	}
 
 	inline bool operator!=( const Version & pLhs, const Version & pRhs )
 	{
-		return ( pLhs.major != pRhs.major ) || ( pLhs.minor != pRhs.minor );
+		return ( pLhs.mNumMajor != pRhs.mNumMajor ) || ( pLhs.mNumMinor != pRhs.mNumMinor );
 	}
 
 	inline bool operator>( const Version & pLhs, const Version & pRhs )
 	{
-		return ( pLhs.major > pRhs.major ) || ( ( pLhs.major == pRhs.major ) && ( pLhs.minor > pRhs.minor ) );
+		return ( pLhs.mNumMajor > pRhs.mNumMajor ) || ( ( pLhs.mNumMajor == pRhs.mNumMajor ) && ( pLhs.mNumMinor > pRhs.mNumMinor ) );
 	}
 
 	inline bool operator>=( const Version & pLhs, const Version & pRhs )
@@ -86,7 +86,7 @@ namespace Ic3
 
 	inline bool operator<( const Version & pLhs, const Version & pRhs )
 	{
-		return ( pLhs.major < pRhs.major ) || ( ( pLhs.major == pRhs.major ) && ( pLhs.minor < pRhs.minor ) );
+		return ( pLhs.mNumMajor < pRhs.mNumMajor ) || ( ( pLhs.mNumMajor == pRhs.mNumMajor ) && ( pLhs.mNumMinor < pRhs.mNumMinor ) );
 	}
 
 	inline bool operator<=( const Version & pLhs, const Version & pRhs )

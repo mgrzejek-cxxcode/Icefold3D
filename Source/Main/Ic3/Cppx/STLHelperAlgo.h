@@ -10,8 +10,8 @@ namespace Ic3::Cppx
 	/// @brief Finds a value in the specified range which equals to the ref value. Returns the pointer to the element or nullptr.
 	/// @param pRange A range to search withing. Must support begin()/end().
 	/// @param pRef A reference value to compare against.
-	template <typename TRange, typename TValue>
-	typename TRange::value_type * findByRefValueOrGetNull( TRange & pRange, const TValue & pRef )
+	template <typename TPRange, typename TPValue>
+	typename TPRange::value_type * findByRefValueOrGetNull( TPRange & pRange, const TPValue & pRef )
 	{
 		const auto elementIter = std::find_if( begin( pRange ), end( pRange ), [&pRef]( const auto & pElement ) -> bool {
 			return pRef == pElement;
@@ -26,8 +26,8 @@ namespace Ic3::Cppx
 	/// @brief Finds a value in the specified range which equals to the ref value. Returns the pointer to the element or nullptr.
 	/// @param pRange A range to search withing. Must support begin()/end().
 	/// @param pRef A reference value to compare against.
-	template <typename TRange, typename TValue>
-	const typename TRange::value_type * findByRefValueOrGetNull( const TRange & pRange, const TValue & pRef )
+	template <typename TPRange, typename TPValue>
+	const typename TPRange::value_type * findByRefValueOrGetNull( const TPRange & pRange, const TPValue & pRef )
 	{
 		const auto elementIter = std::find_if( begin( pRange ), end( pRange ), [&pRef]( const auto & pElement ) -> bool {
 			return pRef == pElement;
@@ -42,10 +42,10 @@ namespace Ic3::Cppx
 	/// @brief Finds a value in the specified range which fulfills the specified predicate. Returns the pointer to the element or nullptr.
 	/// @param pRange A range to search withing. Must support begin()/end().
 	/// @param pPredicate A predicate to evaluate on each element. Must be a callable, accepting a single range's value-type param.
-	template <typename TRange, typename TPredicate>
-	typename TRange::value_type * findIfOrGetNull( TRange & pRange, TPredicate pPredicate )
+	template <typename TPRange, typename TPPredicate>
+	typename TPRange::value_type * findIfOrGetNull( TPRange & pRange, TPPredicate pPredicate )
 	{
-		const auto elementIter = std::find_if( begin( pRange ), end( pRange ), std::forward<TPredicate>( pPredicate ) );
+		const auto elementIter = std::find_if( begin( pRange ), end( pRange ), std::forward<TPPredicate>( pPredicate ) );
 		if( elementIter != end( pRange ) )
 		{
 			return &( *elementIter );
@@ -56,10 +56,10 @@ namespace Ic3::Cppx
 	/// @brief Finds a value in the specified range which fulfills the specified predicate. Returns the pointer to the element or nullptr.
 	/// @param pRange A range to search withing. Must support begin()/end().
 	/// @param pPredicate A predicate to evaluate on each element. Must be a callable, accepting a single range's value-type param.
-	template <typename TRange, typename TPredicate>
-	const typename TRange::value_type * findIfOrGetNull( const TRange & pRange, TPredicate pPredicate )
+	template <typename TPRange, typename TPPredicate>
+	const typename TPRange::value_type * findIfOrGetNull( const TPRange & pRange, TPPredicate pPredicate )
 	{
-		const auto elementIter = std::find_if( begin( pRange ), end( pRange ), std::forward<TPredicate>( pPredicate ) );
+		const auto elementIter = std::find_if( begin( pRange ), end( pRange ), std::forward<TPPredicate>( pPredicate ) );
 		if( elementIter != end( pRange ) )
 		{
 			return &( *elementIter );
@@ -67,8 +67,8 @@ namespace Ic3::Cppx
 		return nullptr;
 	}
 
-	template <typename TMap, typename TKey = typename TMap::key_type>
-	typename TMap::mapped_type * getMapValuePtrOrNull( TMap & pMap, const TKey & pKey )
+	template <typename TPMap, typename TPKey = typename TPMap::key_type>
+	typename TPMap::mapped_type * getMapValuePtrOrNull( TPMap & pMap, const TPKey & pKey )
 	{
 		const auto valueIter = pMap.find( pKey );
 		if( valueIter != pMap.end() )
@@ -78,8 +78,8 @@ namespace Ic3::Cppx
 		return nullptr;
 	}
 
-	template <typename TMap, typename TKey = typename TMap::key_type>
-	const typename TMap::mapped_type * getMapValuePtrOrNull( const TMap & pMap, const TKey & pKey )
+	template <typename TPMap, typename TPKey = typename TPMap::key_type>
+	const typename TPMap::mapped_type * getMapValuePtrOrNull( const TPMap & pMap, const TPKey & pKey )
 	{
 		const auto valueIter = pMap.find( pKey );
 		if( valueIter != pMap.end() )
@@ -89,8 +89,8 @@ namespace Ic3::Cppx
 		return nullptr;
 	}
 
-	template <typename TMap, typename TKey = typename TMap::key_type>
-	typename TMap::mapped_type & getMapValueRefOrDefault( const TMap & pMap, const TKey & pKey, typename TMap::mapped_type & pDefault )
+	template <typename TPMap, typename TPKey = typename TPMap::key_type>
+	typename TPMap::mapped_type & getMapValueRefOrDefault( const TPMap & pMap, const TPKey & pKey, typename TPMap::mapped_type & pDefault )
 	{
 		const auto valueIter = pMap.find( pKey );
 		if( valueIter != pMap.end() )
@@ -100,8 +100,8 @@ namespace Ic3::Cppx
 		return pDefault;
 	}
 
-	template <typename TMap, typename TKey = typename TMap::key_type>
-	const typename TMap::mapped_type & getMapValueRefOrDefault( const TMap & pMap, const TKey & pKey, const typename TMap::mapped_type & pDefault )
+	template <typename TPMap, typename TPKey = typename TPMap::key_type>
+	const typename TPMap::mapped_type & getMapValueRefOrDefault( const TPMap & pMap, const TPKey & pKey, const typename TPMap::mapped_type & pDefault )
 	{
 		const auto valueIter = pMap.find( pKey );
 		if( valueIter != pMap.end() )

@@ -76,27 +76,27 @@ namespace Ic3::Cppx
 		return result;
 	}
 
-	FilePathInfo fsSplitPath( std::string pFilePath, Bitmask<EFSAPIFlags> pFlags )
+	FilePathInfo fsSplitPath( std::string pFilePath, TBitmask<EFSAPIFlags> pFlags )
 	{
 		FilePathInfo pathInfo;
 
 		if( !pFilePath.empty() )
 		{
-			if( !pFlags.isSetAnyOf( E_FSAPI_SPLIT_PATH_FLAG_ASSUME_DIRECTORY_BIT | E_FSAPI_SPLIT_PATH_FLAG_ASSUME_FILE_BIT ) )
+			if( !pFlags.isSetAnyOf( eFSAPISplitPathFlagAssumeDirectoryBit | eFSAPISplitPathFlagAssumeFileBit ) )
 			{
-				pFlags.set( E_FSAPI_SPLIT_PATH_FLAG_ASSUME_DIRECTORY_BIT );
+				pFlags.set( eFSAPISplitPathFlagAssumeDirectoryBit );
 			}
-			else if( pFlags.isSet( E_FSAPI_SPLIT_PATH_FLAG_ASSUME_DIRECTORY_BIT | E_FSAPI_SPLIT_PATH_FLAG_ASSUME_FILE_BIT ) )
+			else if( pFlags.isSet( eFSAPISplitPathFlagAssumeDirectoryBit | eFSAPISplitPathFlagAssumeFileBit ) )
 			{
-				pFlags.unset( E_FSAPI_SPLIT_PATH_FLAG_ASSUME_FILE_BIT );
+				pFlags.unset( eFSAPISplitPathFlagAssumeFileBit );
 			}
 
 			auto lastSeparatorPos = pFilePath.find_last_of( IC3_PCL_ENV_DEFAULT_PATH_DELIMITER );
 			if( lastSeparatorPos == std::string::npos )
 			{
-				if( fsIsFilenameWithExtension( pFilePath ) || pFlags.isSet( E_FSAPI_SPLIT_PATH_FLAG_ASSUME_FILE_BIT ) )
+				if( fsIsFilenameWithExtension( pFilePath ) || pFlags.isSet( eFSAPISplitPathFlagAssumeFileBit ) )
 				{
-					pathInfo.fileName = pFilePath;
+					pathInfo.mFileName = pFilePath;
 				}
 			}
 			else
@@ -104,16 +104,16 @@ namespace Ic3::Cppx
 				auto directoryPart = pFilePath.substr( 0, lastSeparatorPos );
 				auto filenamePath = pFilePath.substr( lastSeparatorPos + 1 );
 
-				if( fsIsFilenameWithExtension( filenamePath ) || pFlags.isSet( E_FSAPI_SPLIT_PATH_FLAG_ASSUME_FILE_BIT ) )
+				if( fsIsFilenameWithExtension( filenamePath ) || pFlags.isSet( eFSAPISplitPathFlagAssumeFileBit ) )
 				{
-					pathInfo.directory = std::move( directoryPart );
-					pathInfo.fileName = std::move( filenamePath );
+					pathInfo.mDirectory = std::move( directoryPart );
+					pathInfo.mFileName = std::move( filenamePath );
 				}
 			}
 
-			if( pathInfo.directory.empty() && pathInfo.fileName.empty() )
+			if( pathInfo.mDirectory.empty() && pathInfo.mFileName.empty() )
 			{
-				pathInfo.directory = std::move( pFilePath );
+				pathInfo.mDirectory = std::move( pFilePath );
 			}
 		}
 

@@ -45,16 +45,16 @@ namespace Ic3::Cppx
 	};
 
 
-	template <EDurationPeriod tPeriod>
-	using Duration = typename DurationTypeWrapper<tPeriod>::Type;
+	template <EDurationPeriod tpPeriod>
+	using Duration = typename DurationTypeWrapper<tpPeriod>::Type;
 
 
-	template <EDurationPeriod tPeriod>
+	template <EDurationPeriod tpPeriod>
 	struct DurationTraits
 	{
-		using RatioType = typename DurationTypeWrapper<tPeriod>::Type::period;
+		using RatioType = typename DurationTypeWrapper<tpPeriod>::Type::period;
 
-		static constexpr std::pair<native_int, native_int> unitRatio {
+		static constexpr std::pair<native_int, native_int> sUnitRatio {
 			static_cast<native_int>( RatioType::num ),
 			static_cast<native_int>( RatioType::den )
 		};
@@ -66,15 +66,15 @@ namespace Ic3::Cppx
 	using Seconds = Duration<EDurationPeriod::Second>;
 
 	/// @brief Infinite timeout expressed as Nanoseconds value.
-	inline constexpr Nanoseconds cvTimeoutInfiniteNs { CX_INT64_MAX };
+	inline constexpr Nanoseconds cvTimeoutInfiniteNs {cxInt64Max };
 
 	/// @brief Infinite timeout expressed as Microseconds value.
-	inline constexpr Microseconds cvTimeoutInfiniteUs { CX_INT64_MAX };
+	inline constexpr Microseconds cvTimeoutInfiniteUs {cxInt64Max };
 
 	/// @brief Infinite timeout expressed as Milliseconds value.
-	inline constexpr Milliseconds cvTimeoutInfiniteMs { CX_INT64_MAX };
+	inline constexpr Milliseconds cvTimeoutInfiniteMs {cxInt64Max };
 
 	/// @brief Infinite timeout expressed as Seconds value.
-	inline constexpr Seconds cvTimeoutInfiniteSec { CX_INT64_MAX };
+	inline constexpr Seconds cvTimeoutInfiniteSec {cxInt64Max };
 
 }

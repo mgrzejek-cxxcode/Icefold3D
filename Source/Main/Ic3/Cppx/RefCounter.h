@@ -8,14 +8,17 @@
 namespace Ic3::Cppx
 {
 
+	/// @brief
 	using ref_counter_value_t = native_uint;
 
-	enum class RefCounterType : enum_default_value_t
+	/// @brief
+	enum class ERefCounterType : enum_default_value_t
 	{
 		Atomic = 1,
 		NonAtomic,
 	};
 
+	/// @brief
 	class RefCounter
 	{
 	public:
@@ -55,7 +58,7 @@ namespace Ic3::Cppx
 		ref_counter_value_t _refsNum;
 	};
 
-
+	/// @brief
 	class AtomicRefCounter
 	{
 	public:
@@ -63,7 +66,7 @@ namespace Ic3::Cppx
 		AtomicRefCounter& operator=( const AtomicRefCounter & ) = delete;
 
 		explicit AtomicRefCounter( ref_counter_value_t pInitialCounter = 1 )
-			: _refsNum( pInitialCounter )
+		: _refsNum( pInitialCounter )
 		{}
 
 		ref_counter_value_t increment()
@@ -104,17 +107,17 @@ namespace Ic3::Cppx
 	};
 
 
-	template <RefCounterType>
+	template <ERefCounterType>
 	struct RefCounterClass;
 
 	template <>
-	struct RefCounterClass<RefCounterType::Atomic>
+	struct RefCounterClass<ERefCounterType::Atomic>
 	{
 		using Type = AtomicRefCounter;
 	};
 
 	template <>
-	struct RefCounterClass<RefCounterType::NonAtomic>
+	struct RefCounterClass<ERefCounterType::NonAtomic>
 	{
 		using Type = RefCounter;
 	};

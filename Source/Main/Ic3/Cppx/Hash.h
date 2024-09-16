@@ -18,235 +18,235 @@ namespace Ic3::Cppx
 		SDBM
 	};
 
-	struct SHashInput
+	struct HashInput
 	{
-		const void * data;
-		size_t dataSize;
+		const void * mData;
+		size_t mDataSize;
 
 		template <typename TChar>
-		explicit SHashInput( const std::basic_string<TChar> & pString )
-		: data( pString.data() )
-		, dataSize( pString.length() * sizeof( TChar ) )
+		explicit HashInput( const std::basic_string<TChar> & pString )
+		: mData( pString.mData() )
+		, mDataSize( pString.length() * sizeof( TChar ) )
 		{}
 
-		explicit SHashInput( const char * pCStr )
-		: data( pCStr )
-		, dataSize( std::strlen( pCStr ) )
+		explicit HashInput( const char * pCStr )
+		: mData( pCStr )
+		, mDataSize( std::strlen( pCStr ) )
 		{}
 
-		explicit SHashInput( const wchar_t * pWCStr )
-		: data( pWCStr )
-		, dataSize( std::wcslen( pWCStr ) )
+		explicit HashInput( const wchar_t * pWCStr )
+		: mData( pWCStr )
+		, mDataSize( std::wcslen( pWCStr ) )
 		{}
 
-		template <typename TValue>
-		explicit SHashInput( const ArrayView<TValue> & pArrayView )
-		: data( pArrayView.data() )
-		, dataSize( pArrayView.size() * sizeof( TValue ) )
+		template <typename TPValue>
+		explicit HashInput( const TArrayView<TPValue> & pArrayView )
+		: mData( pArrayView.mData() )
+		, mDataSize( pArrayView.size() * sizeof( TPValue ) )
 		{}
 
-		template <typename TValue>
-		explicit SHashInput( const TValue & pObject )
-		: data( &pObject )
-		, dataSize( sizeof( TValue ) )
+		template <typename TPValue>
+		explicit HashInput( const TPValue & pObject )
+		: mData( &pObject )
+		, mDataSize( sizeof( TPValue ) )
 		{}
 
-		template <typename TInput>
-		explicit SHashInput( const TInput * pData, size_t pCount )
-		: data( pData )
-		, dataSize( pCount * sizeof( TInput ) )
+		template <typename TPInput>
+		explicit HashInput( const TPInput * pData, size_t pCount )
+		: mData( pData )
+		, mDataSize( pCount * sizeof( TPInput ) )
 		{}
 	};
 
-	template <EHashAlgo tHashAlgo>
+	template <EHashAlgo tpHashAlgo>
 	struct QHashTraits;
 	
-	template <EHashAlgo tHashAlgo>
-	struct SHashObject
+	template <EHashAlgo tpHashAlgo>
+	struct THashObject
 	{
 	public:
-		using ValueType = typename QHashTraits<tHashAlgo>::ValueType;
+		using ValueType = typename QHashTraits<tpHashAlgo>::ValueType;
 
-		static constexpr EHashAlgo sHashAlgo = tHashAlgo;
+		static constexpr EHashAlgo sHashAlgo = tpHashAlgo;
 
-		ValueType hashValue;
+		ValueType mHashValue;
 
 	public:
-		SHashObject( const SHashObject & ) = default;
-		SHashObject & operator=( const SHashObject & ) = default;
+		THashObject( const THashObject & ) = default;
+		THashObject & operator=( const THashObject & ) = default;
 		
-		constexpr SHashObject() noexcept
-		: hashValue( QHashTraits<tHashAlgo>::sHashInitValue )
+		constexpr THashObject() noexcept
+		: mHashValue( QHashTraits<tpHashAlgo>::sHashInitValue )
 		{}
 
-		constexpr explicit SHashObject( ValueType pValue ) noexcept
-		: hashValue( pValue )
+		constexpr explicit THashObject( ValueType pValue ) noexcept
+		: mHashValue( pValue )
 		{}
 
 		constexpr explicit operator ValueType() const noexcept
 		{
-			return hashValue;
+			return mHashValue;
 		}
 
-		void swap( SHashObject & pOther ) noexcept
+		void swap( THashObject & pOther ) noexcept
 		{
-			std::swap( hashValue, pOther.hashValue );
+			std::swap( mHashValue, pOther.mHashValue );
 		}
 
-		IC3_ATTR_NO_DISCARD bool equals( const SHashObject & pOther ) const noexcept
+		IC3_ATTR_NO_DISCARD bool equals( const THashObject & pOther ) const noexcept
 		{
-			return hashValue == pOther.hashValue;
+			return mHashValue == pOther.mHashValue;
 		}
 
-		IC3_ATTR_NO_DISCARD int32 compare( const SHashObject & pOther ) const noexcept
+		IC3_ATTR_NO_DISCARD int32 compare( const THashObject & pOther ) const noexcept
 		{
-			return equals( pOther ) ? 0 : ( hashValue > pOther.hashValue ? 1 : -1 );
+			return equals( pOther ) ? 0 : ( mHashValue > pOther.mHashValue ? 1 : -1 );
 		}
 
-		IC3_ATTR_NO_DISCARD constexpr bool operator==( const SHashObject<tHashAlgo> & pRhs ) const noexcept
+		IC3_ATTR_NO_DISCARD constexpr bool operator==( const THashObject<tpHashAlgo> & pRhs ) const noexcept
 		{
-			return hashValue == pRhs.hashValue;
+			return mHashValue == pRhs.mHashValue;
 		}
 
-		IC3_ATTR_NO_DISCARD constexpr bool operator!=( const SHashObject<tHashAlgo> & pRhs ) const noexcept
+		IC3_ATTR_NO_DISCARD constexpr bool operator!=( const THashObject<tpHashAlgo> & pRhs ) const noexcept
 		{
-			return hashValue != pRhs.hashValue;
+			return mHashValue != pRhs.mHashValue;
 		}
 
-		IC3_ATTR_NO_DISCARD constexpr bool operator<( const SHashObject<tHashAlgo> & pRhs ) const noexcept
+		IC3_ATTR_NO_DISCARD constexpr bool operator<( const THashObject<tpHashAlgo> & pRhs ) const noexcept
 		{
-			return hashValue < pRhs.hashValue;
+			return mHashValue < pRhs.mHashValue;
 		}
 
-		IC3_ATTR_NO_DISCARD constexpr bool operator<=( const SHashObject<tHashAlgo> & pRhs ) const noexcept
+		IC3_ATTR_NO_DISCARD constexpr bool operator<=( const THashObject<tpHashAlgo> & pRhs ) const noexcept
 		{
-			return hashValue <= pRhs.hashValue;
+			return mHashValue <= pRhs.mHashValue;
 		}
 
-		IC3_ATTR_NO_DISCARD constexpr bool operator>( const SHashObject<tHashAlgo> & pRhs ) const noexcept
+		IC3_ATTR_NO_DISCARD constexpr bool operator>( const THashObject<tpHashAlgo> & pRhs ) const noexcept
 		{
-			return hashValue > pRhs.hashValue;
+			return mHashValue > pRhs.mHashValue;
 		}
 
-		IC3_ATTR_NO_DISCARD constexpr bool operator>=( const SHashObject<tHashAlgo> & pRhs ) const noexcept
+		IC3_ATTR_NO_DISCARD constexpr bool operator>=( const THashObject<tpHashAlgo> & pRhs ) const noexcept
 		{
-			return hashValue >= pRhs.hashValue;
+			return mHashValue >= pRhs.mHashValue;
 		}
 	};
 
-	template <EHashAlgo tHashAlgo>
-	inline constexpr SHashObject<tHashAlgo> cvHashEmpty{ 0u };
+	template <EHashAlgo tpHashAlgo>
+	inline constexpr THashObject<tpHashAlgo> cvHashEmpty{ 0u };
 
-	template <EHashAlgo tHashAlgo>
-	inline constexpr SHashObject<tHashAlgo> cvHashInit{ QHashTraits<tHashAlgo>::sHashInitValue };
+	template <EHashAlgo tpHashAlgo>
+	inline constexpr THashObject<tpHashAlgo> cvHashInit{ QHashTraits<tpHashAlgo>::sHashInitValue };
 
 
 
-	template <EHashAlgo tHashAlgo>
-	IC3_ATTR_NO_DISCARD inline SHashObject<tHashAlgo> hashCompute( const void * pData, size_t pDataLength )
+	template <EHashAlgo tpHashAlgo>
+	IC3_ATTR_NO_DISCARD inline THashObject<tpHashAlgo> hashCompute( const void * pData, size_t pDataLength )
 	{
-		return SHashObject<tHashAlgo>{ QHashTraits<tHashAlgo>::compute( pData, pDataLength ) };
+		return THashObject<tpHashAlgo>{ QHashTraits<tpHashAlgo>::compute( pData, pDataLength ) };
 	}
 
-	template <EHashAlgo tHashAlgo>
-	IC3_ATTR_NO_DISCARD inline SHashObject<tHashAlgo> hashCompute( const SHashInput & pInput )
+	template <EHashAlgo tpHashAlgo>
+	IC3_ATTR_NO_DISCARD inline THashObject<tpHashAlgo> hashCompute( const HashInput & pInput )
 	{
-		return hashCompute<tHashAlgo>( pInput.data, pInput.dataSize );
+		return hashCompute<tpHashAlgo>( pInput.mData, pInput.mDataSize );
 	}
 
-	template <EHashAlgo tHashAlgo, typename TValue>
-	IC3_ATTR_NO_DISCARD inline SHashObject<tHashAlgo> hashCompute( const TValue & pValue )
+	template <EHashAlgo tpHashAlgo, typename TPValue>
+	IC3_ATTR_NO_DISCARD inline THashObject<tpHashAlgo> hashCompute( const TPValue & pValue )
 	{
-		return hashCompute<tHashAlgo>( SHashInput{ pValue } );
+		return hashCompute<tpHashAlgo>( HashInput{ pValue } );
 	}
 
-	template <EHashAlgo tHashAlgo>
-	IC3_ATTR_NO_DISCARD inline SHashObject<tHashAlgo> hashComputeEx( const SHashObject<tHashAlgo> & pInitHash, const void * pData, size_t pDataLength )
+	template <EHashAlgo tpHashAlgo>
+	IC3_ATTR_NO_DISCARD inline THashObject<tpHashAlgo> hashComputeEx( const THashObject<tpHashAlgo> & pInitHash, const void * pData, size_t pDataLength )
 	{
-		return SHashObject<tHashAlgo>{ QHashTraits<tHashAlgo>::update( pInitHash.hashValue, pData, pDataLength ) };
+		return THashObject<tpHashAlgo>{ QHashTraits<tpHashAlgo>::update( pInitHash.mHashValue, pData, pDataLength ) };
 	}
 
-	template <EHashAlgo tHashAlgo>
-	IC3_ATTR_NO_DISCARD inline SHashObject<tHashAlgo> hashComputeEx( const SHashObject<tHashAlgo> & pInitHash, const SHashInput & pInput )
+	template <EHashAlgo tpHashAlgo>
+	IC3_ATTR_NO_DISCARD inline THashObject<tpHashAlgo> hashComputeEx( const THashObject<tpHashAlgo> & pInitHash, const HashInput & pInput )
 	{
-		return hashComputeEx<tHashAlgo>( pInitHash, pInput.data, pInput.dataSize );
+		return hashComputeEx<tpHashAlgo>( pInitHash, pInput.mData, pInput.mDataSize );
 	}
 
-	template <EHashAlgo tHashAlgo, typename TValue>
-	IC3_ATTR_NO_DISCARD inline SHashObject<tHashAlgo> hashComputeEx( const SHashObject<tHashAlgo> & pInitHash, const TValue & pValue )
+	template <EHashAlgo tpHashAlgo, typename TPValue>
+	IC3_ATTR_NO_DISCARD inline THashObject<tpHashAlgo> hashComputeEx( const THashObject<tpHashAlgo> & pInitHash, const TPValue & pValue )
 	{
-		return hashComputeEx<tHashAlgo>( pInitHash, SHashInput{ pValue } );
+		return hashComputeEx<tpHashAlgo>( pInitHash, HashInput{ pValue } );
 	}
 
-	template <EHashAlgo tHashAlgo, typename TValue, typename... TRest>
-	IC3_ATTR_NO_DISCARD inline SHashObject<tHashAlgo> hashCompute( const TValue & pValue, TRest && ...pRest )
+	template <EHashAlgo tpHashAlgo, typename TPValue, typename... TPRest>
+	IC3_ATTR_NO_DISCARD inline THashObject<tpHashAlgo> hashCompute( const TPValue & pValue, TPRest && ...pRest )
 	{
-		return hashComputeEx<tHashAlgo>( hashCompute<tHashAlgo>( pValue ), std::forward<TRest>( pRest )... );
+		return hashComputeEx<tpHashAlgo>( hashCompute<tpHashAlgo>( pValue ), std::forward<TPRest>( pRest )... );
 	}
 
-	template <EHashAlgo tHashAlgo, typename TValue, typename... TRest>
-	IC3_ATTR_NO_DISCARD inline SHashObject<tHashAlgo> hashComputeEx( const SHashObject<tHashAlgo> & pInitHash, const TValue & pValue, TRest && ...pRest )
+	template <EHashAlgo tpHashAlgo, typename TPValue, typename... TPRest>
+	IC3_ATTR_NO_DISCARD inline THashObject<tpHashAlgo> hashComputeEx( const THashObject<tpHashAlgo> & pInitHash, const TPValue & pValue, TPRest && ...pRest )
 	{
-		return hashComputeEx<tHashAlgo>( hashComputeEx<tHashAlgo>( pInitHash, pValue ), std::forward<TRest>( pRest )... );
+		return hashComputeEx<tpHashAlgo>( hashComputeEx<tpHashAlgo>( pInitHash, pValue ), std::forward<TPRest>( pRest )... );
 	}
 
 
-	template <EHashAlgo tHashAlgo>
-	inline void hashComputeInplace( SHashObject<tHashAlgo> & pOutput, const void * pData, size_t pDataLength )
+	template <EHashAlgo tpHashAlgo>
+	inline void hashComputeInplace( THashObject<tpHashAlgo> & pOutput, const void * pData, size_t pDataLength )
 	{
-		pOutput.hashValue = QHashTraits<tHashAlgo>::compute( pData, pDataLength );
+		pOutput.mHashValue = QHashTraits<tpHashAlgo>::compute( pData, pDataLength );
 	}
 
-	template <EHashAlgo tHashAlgo>
-	inline void hashComputeInplace( SHashObject<tHashAlgo> & pOutput, const SHashInput & pInput )
+	template <EHashAlgo tpHashAlgo>
+	inline void hashComputeInplace( THashObject<tpHashAlgo> & pOutput, const HashInput & pInput )
 	{
-		hashComputeInplace<tHashAlgo>( pOutput, pInput.data, pInput.dataSize );
+		hashComputeInplace<tpHashAlgo>( pOutput, pInput.mData, pInput.mDataSize );
 	}
 
-	template <EHashAlgo tHashAlgo, typename TValue>
-	inline void hashComputeInplace( SHashObject<tHashAlgo> & pOutput, const ArrayView<TValue> & pInput )
+	template <EHashAlgo tpHashAlgo, typename TPValue>
+	inline void hashComputeInplace( THashObject<tpHashAlgo> & pOutput, const TArrayView<TPValue> & pInput )
 	{
-		hashComputeInplace<tHashAlgo>( pOutput, pInput.data(), pInput.size() * sizeof( TValue ) );
+		hashComputeInplace<tpHashAlgo>( pOutput, pInput.mData(), pInput.size() * sizeof( TPValue ) );
 	}
 
-	template <EHashAlgo tHashAlgo>
-	inline void hashComputeInplaceEx( SHashObject<tHashAlgo> & pOutput, const SHashObject<tHashAlgo> & pInitHash, const void * pData, size_t pDataLength )
+	template <EHashAlgo tpHashAlgo>
+	inline void hashComputeInplaceEx( THashObject<tpHashAlgo> & pOutput, const THashObject<tpHashAlgo> & pInitHash, const void * pData, size_t pDataLength )
 	{
-		pOutput.hashValue = QHashTraits<tHashAlgo>::update( pInitHash.hashValue, pData, pDataLength );
+		pOutput.mHashValue = QHashTraits<tpHashAlgo>::update( pInitHash.mHashValue, pData, pDataLength );
 	}
 
-	template <EHashAlgo tHashAlgo>
-	inline void hashComputeInplaceEx( SHashObject<tHashAlgo> & pOutput, const SHashObject<tHashAlgo> & pInitHash, const SHashInput & pInput )
+	template <EHashAlgo tpHashAlgo>
+	inline void hashComputeInplaceEx( THashObject<tpHashAlgo> & pOutput, const THashObject<tpHashAlgo> & pInitHash, const HashInput & pInput )
 	{
-		hashComputeInplaceEx<tHashAlgo>( pOutput, pInitHash, pInput.data, pInput.dataSize );
+		hashComputeInplaceEx<tpHashAlgo>( pOutput, pInitHash, pInput.mData, pInput.mDataSize );
 	}
 
-	template <EHashAlgo tHashAlgo, typename TValue>
-	inline void hashComputeInplaceEx( SHashObject<tHashAlgo> & pOutput, const SHashObject<tHashAlgo> & pInitHash, const TValue & pValue )
+	template <EHashAlgo tpHashAlgo, typename TPValue>
+	inline void hashComputeInplaceEx( THashObject<tpHashAlgo> & pOutput, const THashObject<tpHashAlgo> & pInitHash, const TPValue & pValue )
 	{
-		hashComputeInplaceEx<tHashAlgo>( pOutput, pInitHash, SHashInput{ pValue } );
+		hashComputeInplaceEx<tpHashAlgo>( pOutput, pInitHash, HashInput{ pValue } );
 	}
 
-	template <EHashAlgo tHashAlgo, typename TValue, typename... TRest>
-	inline void hashComputeInplace( SHashObject<tHashAlgo> & pOutput, const TValue & pValue, TRest && ...pRest )
+	template <EHashAlgo tpHashAlgo, typename TPValue, typename... TPRest>
+	inline void hashComputeInplace( THashObject<tpHashAlgo> & pOutput, const TPValue & pValue, TPRest && ...pRest )
 	{
-		hashComputeInplaceEx<tHashAlgo>( pOutput, hashCompute<tHashAlgo>( pValue ), std::forward<TRest>( pRest )... );
+		hashComputeInplaceEx<tpHashAlgo>( pOutput, hashCompute<tpHashAlgo>( pValue ), std::forward<TPRest>( pRest )... );
 	}
 
-	template <EHashAlgo tHashAlgo, typename TValue, typename... TRest>
-	inline void hashComputeInplaceEx( SHashObject<tHashAlgo> & pOutput, const SHashObject<tHashAlgo> & pInitHash, const TValue & pValue, TRest && ...pRest )
+	template <EHashAlgo tpHashAlgo, typename TPValue, typename... TPRest>
+	inline void hashComputeInplaceEx( THashObject<tpHashAlgo> & pOutput, const THashObject<tpHashAlgo> & pInitHash, const TPValue & pValue, TPRest && ...pRest )
 	{
-		hashComputeInplaceEx<tHashAlgo>( pOutput, hashComputeEx<tHashAlgo>( pInitHash, pValue ), std::forward<TRest>( pRest )... );
+		hashComputeInplaceEx<tpHashAlgo>( pOutput, hashComputeEx<tpHashAlgo>( pInitHash, pValue ), std::forward<TPRest>( pRest )... );
 	}
 
-	template <typename THashValue>
+	template <typename TPHashValue>
 	struct QHashCommonTraits
 	{
 		/// Underlying type used to store hash value.
-		using ValueType = THashValue;
+		using ValueType = TPHashValue;
 
 		/// Size of the hash value, in bytes.
-		static constexpr size_t sByteSize = sizeof( THashValue );
+		static constexpr size_t sByteSize = sizeof( TPHashValue );
 
 		/// Length of the hexadecimal string representation of a hash.
 		static constexpr size_t sHexLength = sByteSize * 8 / 4;
@@ -305,12 +305,12 @@ namespace Ic3::Cppx
 namespace std
 {
 
-	template <Ic3::Cppx::EHashAlgo tHashAlgo>
-	struct hash< Ic3::Cppx::SHashObject<tHashAlgo> >
+	template <Ic3::Cppx::EHashAlgo tpHashAlgo>
+	struct hash< Ic3::Cppx::THashObject<tpHashAlgo> >
 	{
-		size_t operator()( const Ic3::Cppx::SHashObject<tHashAlgo> & pHashObject ) const noexcept
+		size_t operator()( const Ic3::Cppx::THashObject<tpHashAlgo> & pHashObject ) const noexcept
 		{
-			return Ic3::numeric_cast<size_t>( pHashObject.hashValue );
+			return Ic3::numeric_cast<size_t>( pHashObject.mHashValue );
 		}
 	};
 

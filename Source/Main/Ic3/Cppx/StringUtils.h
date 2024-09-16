@@ -10,8 +10,35 @@
 namespace Ic3::Cppx
 {
 
+	template <const std::string_view & ...tpStrArray>
+	struct StrStaticJoin
+	{
+		static constexpr auto joinImpl() noexcept
+		{
+			constexpr size_t joinedLength = ( tpStrArray.size() + ... + 0 );
+			std::array<char, joinedLength + 1> joinedData{};
+
+			auto staticAppend = [joinedPos = 0, &joinedData]( const auto & pStrView ) mutable {
+				for( auto ch : pStrView ) joinedData[joinedPos++] = ch;
+			};
+
+			( staticAppend( tpStrArray ), ... );
+
+			joinedData[joinedLength] = 0;
+
+			return joinedData;
+		}
+
+		static constexpr auto _joinedStrData = joinImpl();
+
+		static constexpr auto get() noexcept
+		{
+			return std::string_view{ _joinedStrData.data(), _joinedStrData.size() };
+		}
+	};
+
 	/// @brief
-	template <typename TChar>
+	template <typename TPChar>
 	struct CharConv;
 
 	template <>
@@ -44,7 +71,7 @@ namespace Ic3::Cppx
 
 
 	/// @brief
-	template <typename TChar>
+	template <typename TPChar>
 	struct StringConv;
 
 	template <>
@@ -114,60 +141,60 @@ namespace Ic3::Cppx
 	namespace strUtils
 	{
 
-		template <typename _CharOut, typename _CharIn>
-		inline std::basic_string<_CharOut> convertStringRepresentation( const _CharIn * pInput, size_t pInputLength )
+		template <typename TPCharOut, typename TPCharIn>
+		inline std::basic_string<TPCharOut> convertStringRepresentation( const TPCharIn * pInput, size_t pInputLength )
 		{
-			return StringConv<_CharOut>::convert( pInput, pInputLength );
+			return StringConv<TPCharOut>::convert( pInput, pInputLength );
 		}
 
-		template <typename _CharOut, typename _CharIn>
-		inline std::basic_string<_CharOut> convertStringRepresentation( const _CharIn * pInput )
+		template <typename TPCharOut, typename TPCharIn>
+		inline std::basic_string<TPCharOut> convertStringRepresentation( const TPCharIn * pInput )
 		{
-			return StringConv<_CharOut>::convert( pInput );
+			return StringConv<TPCharOut>::convert( pInput );
 		}
 
-		template <typename _CharOut, typename _CharIn>
-		inline std::basic_string<_CharOut> convertStringRepresentation( const std::basic_string<_CharIn> & pInput )
+		template <typename TPCharOut, typename TPCharIn>
+		inline std::basic_string<TPCharOut> convertStringRepresentation( const std::basic_string<TPCharIn> & pInput )
 		{
-			return StringConv<_CharOut>::convert( pInput );
+			return StringConv<TPCharOut>::convert( pInput );
 		}
 
-		template <typename TChar>
-		inline void makeLowerTransform( std::basic_string<TChar> & pInput )
+		template <typename TPChar>
+		inline void makeLowerTransform( std::basic_string<TPChar> & pInput )
 		{
-			std::transform( pInput.begin(), pInput.end(), pInput.begin(), CharConv<TChar>::toLower );
+			std::transform( pInput.begin(), pInput.end(), pInput.begin(), CharConv<TPChar>::toLower );
 		}
 
-		template <typename TChar>
-		inline void makeUpperTransform( std::basic_string<TChar> & pInput )
+		template <typename TPChar>
+		inline void makeUpperTransform( std::basic_string<TPChar> & pInput )
 		{
-			std::transform( pInput.begin(), pInput.end(), pInput.begin(), CharConv<TChar>::toUpper );
+			std::transform( pInput.begin(), pInput.end(), pInput.begin(), CharConv<TPChar>::toUpper );
 		}
 
-		template <typename TChar>
-		inline std::basic_string<TChar> makeLower( const std::basic_string<TChar> & pInput )
+		template <typename TPChar>
+		inline std::basic_string<TPChar> makeLower( const std::basic_string<TPChar> & pInput )
 		{
-			std::basic_string<TChar> result = pInput;
+			std::basic_string<TPChar> result = pInput;
 			makeLowerTransform( result );
 			return result;
 		}
 
-		template <typename TChar>
-		inline std::basic_string<TChar> makeUpper( const std::basic_string<TChar> & pInput )
+		template <typename TPChar>
+		inline std::basic_string<TPChar> makeUpper( const std::basic_string<TPChar> & pInput )
 		{
-			std::basic_string<TChar> result = pInput;
+			std::basic_string<TPChar> result = pInput;
 			makeUpperTransform( result );
 			return result;
 		}
 
-		template <typename TChar, class _Apred>
-		inline size_t splitString( const TChar * pInputStr, size_t pInputStrLength, TChar pSeparator, _Apred pAppendPredicate )
+		template <typename TPChar, class TPAppendPred>
+		inline size_t splitString( const TPChar * pInputStr, size_t pInputStrLength, TPChar pSeparator, TPAppendPred pAppendPredicate )
 		{
 			size_t result = 0;
 
-			for( const TChar * strEnd = pInputStr + pInputStrLength; pInputStr < strEnd; )
+			for( const TPChar * strEnd = pInputStr + pInputStrLength; pInputStr < strEnd; )
 			{
-				const TChar * tokenPtr = std::char_traits<TChar>::find( pInputStr, pInputStrLength, pSeparator );
+				const TPChar * tokenPtr = std::char_traits<TPChar>::find( pInputStr, pInputStrLength, pSeparator );
 				if( tokenPtr == nullptr )
 				{
 					pAppendPredicate( pInputStr, strEnd - pInputStr );
@@ -186,51 +213,51 @@ namespace Ic3::Cppx
 			return result;
 		}
 
-		template <typename TChar, class _Apred>
-		inline size_t splitString( const TChar * pInputStr, TChar pSeparator, _Apred pAppendPredicate )
+		template <typename TPChar, class TPAppendPred>
+		inline size_t splitString( const TPChar * pInputStr, TPChar pSeparator, TPAppendPred pAppendPredicate )
 		{
-			size_t inputStrLength = std::char_traits<TChar>::length( pInputStr );
+			size_t inputStrLength = std::char_traits<TPChar>::length( pInputStr );
 			return splitString( pInputStr, inputStrLength, pSeparator, pAppendPredicate );
 		}
 
-		template <typename TChar, class _Apred>
-		inline size_t splitString( const std::basic_string<TChar> & pInputStr, TChar pSeparator, _Apred pAppendPredicate )
+		template <typename TPChar, class TPAppendPred>
+		inline size_t splitString( const std::basic_string<TPChar> & pInputStr, TPChar pSeparator, TPAppendPred pAppendPredicate )
 		{
 			return splitString( pInputStr.data(), pInputStr.length(), pSeparator, pAppendPredicate );
 		}
 
-		template <typename _Res, typename TChar, class _Apred>
-		inline _Res splitStringEx( const TChar * pInputStr, size_t pInputStrLength, TChar pSeparator, _Apred pAppendPredicate )
+		template <typename TPResult, typename TPChar, class TPAppendPred>
+		inline TPResult splitStringEx( const TPChar * pInputStr, size_t pInputStrLength, TPChar pSeparator, TPAppendPred pAppendPredicate )
 		{
-			_Res result{};
+			TPResult result{};
 			auto appendPredCb = std::bind( pAppendPredicate, std::ref( result ), std::placeholders::_1, std::placeholders::_2 );
 			splitString( pInputStr, pInputStrLength, pSeparator, appendPredCb );
 			return result;
 		}
 
-		template <typename _Res, typename TChar, class _Apred>
-		inline _Res splitStringEx( const TChar * pInputStr, TChar pSeparator, _Apred pAppendPredicate )
+		template <typename TPResult, typename TPChar, class TPAppendPred>
+		inline TPResult splitStringEx( const TPChar * pInputStr, TPChar pSeparator, TPAppendPred pAppendPredicate )
 		{
-			size_t inputStrLength = std::char_traits<TChar>::length( pInputStr );
-			return splitStringEx<_Res>( pInputStr, inputStrLength, pSeparator, pAppendPredicate );
+			size_t inputStrLength = std::char_traits<TPChar>::length( pInputStr );
+			return splitStringEx<TPResult>( pInputStr, inputStrLength, pSeparator, pAppendPredicate );
 		}
 
-		template <typename _Res, typename TChar, class _Apred>
-		inline _Res splitStringEx( const std::basic_string<TChar> & pInputStr, TChar pSeparator, _Apred pAppendPredicate )
+		template <typename TPResult, typename TPChar, class TPAppendPred>
+		inline TPResult splitStringEx( const std::basic_string<TPChar> & pInputStr, TPChar pSeparator, TPAppendPred pAppendPredicate )
 		{
-			return splitStringEx<_Res>( pInputStr.data(), pInputStr.length(), pSeparator, pAppendPredicate );
+			return splitStringEx<TPResult>( pInputStr.data(), pInputStr.length(), pSeparator, pAppendPredicate );
 		}
 
-		template <typename TChar>
-		inline std::basic_string<TChar> extractShortFilePath( const std::basic_string<TChar> & pFilename, TChar pPathSeparator )
+		template <typename TPChar>
+		inline std::basic_string<TPChar> extractShortFilePath( const std::basic_string<TPChar> & pFilename, TPChar pPathSeparator )
 		{
-			std::basic_string<TChar> shortFilename = pFilename;
+			std::basic_string<TPChar> shortFilename = pFilename;
 			size_t filenameSeparator = shortFilename.find_last_of( pPathSeparator, 0 );
 
-			if( filenameSeparator != std::basic_string<TChar>::npos )
+			if( filenameSeparator != std::basic_string<TPChar>::npos )
 			{
 				size_t lastDirSep = shortFilename.find_last_of( pPathSeparator, filenameSeparator );
-				if( lastDirSep != std::basic_string<TChar>::npos )
+				if( lastDirSep != std::basic_string<TPChar>::npos )
 				{
 					shortFilename.erase( 0, lastDirSep + 1 );
 				}
@@ -239,10 +266,10 @@ namespace Ic3::Cppx
 			return shortFilename;
 		}
 
-		template <typename TChar>
-		inline std::basic_string<TChar> extractShortFilePath( const TChar * pFilename, TChar pPathSeparator )
+		template <typename TPChar>
+		inline std::basic_string<TPChar> extractShortFilePath( const TPChar * pFilename, TPChar pPathSeparator )
 		{
-			return extractShortFilePath( std::basic_string<TChar>{pFilename}, pPathSeparator );
+			return extractShortFilePath( std::basic_string<TPChar>{pFilename}, pPathSeparator );
 		}
 
 	}
