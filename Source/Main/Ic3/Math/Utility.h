@@ -54,6 +54,6 @@ namespace Ic3::Math
 		return { std::sin( pValue ), std::cos( pValue ) };
 	}
 
-}
+} // namespace Ic3::Math
 
 #endif // __IC3_MATH_VECTOR_OPS_H__

@@ -3,7 +3,7 @@
 #  error ""
 #endif
 
-namespace Icefold::math
+namespace Ic3::Math
 {
 
 #if( IC3_MATH_SIMD_USE_VX128F )
@@ -36,4 +36,4 @@ namespace Icefold::math
 
 #endif // IC3_MATH_SIMD_USE_VX128F
 
-}
+} // namespace Ic3::Math

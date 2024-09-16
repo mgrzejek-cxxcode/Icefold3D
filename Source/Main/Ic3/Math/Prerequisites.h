@@ -32,20 +32,20 @@
 namespace Ic3::Math
 {
 
-	template <typename TValue, size_t tSize>
-	using Array = TValue[tSize];
+	template <typename TPValue, size_t tpSize>
+	using Array = TPValue[tpSize];
 
-	template <typename TValue>
-	using Array2 = Array<TValue, 2>;
+	template <typename TPValue>
+	using Array2 = Array<TPValue, 2>;
 
-	template <typename TValue>
-	using Array3 = Array<TValue, 3>;
+	template <typename TPValue>
+	using Array3 = Array<TPValue, 3>;
 
-	template <typename TValue>
-	using Array4 = Array<TValue, 4>;
+	template <typename TPValue>
+	using Array4 = Array<TPValue, 4>;
 
-	template <typename TScalar>
-	using enable_if_scalar_t = std::enable_if_t<std::is_arithmetic<TScalar>::value, bool>;
+	template <typename TPScalar>
+	using enable_if_scalar_t = std::enable_if_t<std::is_arithmetic<TPScalar>::value, bool>;
 
 	namespace Constants
 	{
@@ -100,6 +100,6 @@ namespace Ic3::Math
 
 	}
 
-}
+} // namespace Ic3::Math
 
 #endif // __IC3_MATH_PREREQUISITES_H__

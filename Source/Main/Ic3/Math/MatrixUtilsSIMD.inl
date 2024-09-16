@@ -7,7 +7,7 @@
 #  define IC3_MATH_SIMD_ENABLE_TRANSPOSE_WITH_UNPACK 0
 #endif
 
-namespace Icefold::math
+namespace Ic3::Math
 {
 
 #if( IC3_MATH_SIMD_USE_VX128F )
@@ -56,4 +56,4 @@ namespace Icefold::math
 
 #endif // IC3_MATH_SIMD_USE_VX128F
 
-}
+} // namespace Ic3::Math

@@ -19,7 +19,7 @@
 namespace Ic3::Math
 {
 
-	template <typename TOffset, typename TSize>
+	template <typename TPOffset, typename TPSize>
 	struct Rect
 	{
 	public:
@@ -27,16 +27,16 @@ namespace Ic3::Math
 		{
 			struct
 			{
-				Vector2<TOffset> offset;
-				Vector2<TSize> size;
+				Vector2<TPOffset> mOffset;
+				Vector2<TPSize> mSize;
 			};
 
 			struct
 			{
-				TOffset x;
-				TOffset y;
-				TSize width;
-				TSize height;
+				TPOffset mOffX;
+				TPOffset mOffY;
+				TPSize mSzWidth;
+				TPSize mSzHeight;
 			};
 		};
 
@@ -46,43 +46,43 @@ namespace Ic3::Math
 		constexpr Rect( const Rect & ) = default;
 		constexpr Rect & operator=( const Rect & ) = default;
 
-		template <typename TScalar, enable_if_scalar_t<TScalar> = true>
-		constexpr explicit Rect( TScalar pScalar ) noexcept
-		: offset( pScalar, pScalar )
-		, size( pScalar, pScalar )
+		template <typename TPScalar, enable_if_scalar_t<TPScalar> = true>
+		constexpr explicit Rect( TPScalar pScalar ) noexcept
+		: mOffset( pScalar, pScalar )
+		, mSize( pScalar, pScalar )
 		{}
 
-		template <typename TScalar, enable_if_scalar_t<TScalar> = true>
-		constexpr Rect( TScalar pWidth, TScalar pHeight ) noexcept
-		: offset( 0, 0 )
-		, size( pWidth, pHeight )
+		template <typename TPScalar, enable_if_scalar_t<TPScalar> = true>
+		constexpr Rect( TPScalar pWidth, TPScalar pHeight ) noexcept
+		: mOffset( 0, 0 )
+		, mSize( pWidth, pHeight )
 		{}
 
 		template <typename TX, typename TY, typename TWidth, typename THeight>
 		constexpr Rect( TX pX, TY pY, TWidth pWidth, THeight pHeight = 0 ) noexcept
-		: offset( pX, pY )
-		, size( pWidth, ( pHeight == 0 ) ? pWidth : pHeight )
+		: mOffset( pX, pY )
+		, mSize( pWidth, ( pHeight == 0 ) ? pWidth : pHeight )
 		{}
 
 		template <typename T1, typename T2>
 		constexpr Rect( const Vector2<T1> & pOffset, const Vector2<T2> & pSize ) noexcept
-		: offset( pOffset )
-		, size( pSize )
+		: mOffset( pOffset )
+		, mSize( pSize )
 		{}
 
-		IC3_ATTR_NO_DISCARD TSize area() const
+		IC3_ATTR_NO_DISCARD TPSize area() const
 		{
-			return width * height;
+			return mSzWidth * mSzHeight;
 		}
 
 		IC3_ATTR_NO_DISCARD bool isNonZero() const
 		{
-			return ( width != 0 ) && ( height != 0 );
+			return ( mSzWidth != 0 ) && ( mSzHeight != 0 );
 		}
 
 		IC3_ATTR_NO_DISCARD bool isZero() const
 		{
-			return ( width == 0 ) || ( height == 0 );
+			return ( mSzWidth == 0 ) || ( mSzHeight == 0 );
 		}
 	};
 
@@ -92,7 +92,7 @@ namespace Ic3::Math
 	using Rectu64 = Rect<uint64, uint64>;
 	using Rectf   = Rect<float, float>;
 
-}
+} // namespace Ic3::Math
 
 #if( IC3_PCL_COMPILER & IC3_PCL_COMPILER_CLANG )
 #  pragma clang diagnostic pop
