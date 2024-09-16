@@ -15,8 +15,8 @@ namespace Ic3
 		static constexpr auto sHashAlgo1 = Cppx::EHashAlgo::FNV1A32;
 		static constexpr auto sHashAlgo2 = Cppx::EHashAlgo::SDBM;
 
-		using Hash1 = Cppx::SHashObject<sHashAlgo1>;
-		using Hash2 = Cppx::SHashObject<sHashAlgo2>;
+		using Hash1 = Cppx::THashObject<sHashAlgo1>;
+		using Hash2 = Cppx::THashObject<sHashAlgo2>;
 		using ValueType = uint64;
 
 		uint64 idValue;
@@ -36,7 +36,7 @@ namespace Ic3
 		{}
 
 		constexpr HFSIdentifier( const Hash1 & pHash1, const Hash2 & pHash2 ) noexcept
-		: idValue( makeU64Value( pHash1.hashValue, pHash2.hashValue ) )
+		: idValue( makeU64Value( pHash1.mHashValue, pHash2.mHashValue ) )
 		{}
 
 		constexpr operator uint64() const noexcept
@@ -66,7 +66,7 @@ namespace Ic3
 
 		constexpr void set( const Hash1 & pHash1, const Hash2 & pHash2 ) noexcept
 		{
-			set( pHash1.hashValue, pHash2.hashValue );
+			set( pHash1.mHashValue, pHash2.mHashValue );
 		}
 
 		static constexpr uint64 makeU64Value( uint32 pHashValue1, uint32 pHashValue2 ) noexcept
@@ -75,8 +75,8 @@ namespace Ic3
 		}
 	};
 
-	template <typename TInput, typename... TRest>
-	inline HFSIdentifier generateHFSIdentifier( const TInput & pInput, const TRest & ...pRest )
+	template <typename TPInput, typename... TRest>
+	inline HFSIdentifier generateHFSIdentifier( const TPInput & pInput, const TRest & ...pRest )
 	{
 		const auto hash1 = Cppx::hashCompute<Cppx::EHashAlgo::FNV1A32>( pInput, pRest... );
 		const auto hash2 = Cppx::hashCompute<Cppx::EHashAlgo::SDBM>( pInput, pRest... );

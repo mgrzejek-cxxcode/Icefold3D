@@ -5,7 +5,9 @@
 #define __IC3_CORELIB_EXCEPTION_H__
 
 #include "ExceptionCommon.h"
+#include "Reflection/EnumTypeInfo.h"
 #include <exception>
+#include <mutex>
 
 namespace Ic3
 {
@@ -13,31 +15,31 @@ namespace Ic3
     enum : exception_category_value_t
     {
         E_EXCEPTION_CATEGORY_DEBUG =
-            CxDef::declareExceptionCategory( ExceptionBaseType::Debug, ic3ExcCategoryIID( 0 ) ),
+            CxDef::declareExceptionCategory( EExceptionBaseType::DEBUG, ic3ExcCategoryIID( 0 ) ),
 
         E_EXCEPTION_CATEGORY_ENGINE_SUBMODULE =
-            CxDef::declareExceptionCategory( ExceptionBaseType::EngineSubModule, ic3ExcCategoryIID( 0 ) ),
+            CxDef::declareExceptionCategory( EExceptionBaseType::ENGINE_SUBMODULE, ic3ExcCategoryIID( 0 ) ),
 
         E_EXCEPTION_CATEGORY_FRAMEWORK_CORE =
-            CxDef::declareExceptionCategory( ExceptionBaseType::FrameworkCore, ic3ExcCategoryIID( 0 ) ),
+            CxDef::declareExceptionCategory( EExceptionBaseType::FRAMEWORK_CORE, ic3ExcCategoryIID( 0 ) ),
 
         E_EXCEPTION_CATEGORY_INTERNAL =
-            CxDef::declareExceptionCategory( ExceptionBaseType::Internal, ic3ExcCategoryIID( 0 ) ),
+            CxDef::declareExceptionCategory( EExceptionBaseType::INTERNAL, ic3ExcCategoryIID( 0 ) ),
 
         E_EXCEPTION_CATEGORY_INTERRUPT =
-            CxDef::declareExceptionCategory( ExceptionBaseType::Interrupt, ic3ExcCategoryIID( 0 ) ),
+            CxDef::declareExceptionCategory( EExceptionBaseType::INTERRUPT, ic3ExcCategoryIID( 0 ) ),
 
         E_EXCEPTION_CATEGORY_MATH =
-            CxDef::declareExceptionCategory( ExceptionBaseType::Math, ic3ExcCategoryIID( 0 ) ),
+            CxDef::declareExceptionCategory( EExceptionBaseType::MATH, ic3ExcCategoryIID( 0 ) ),
 
         E_EXCEPTION_CATEGORY_RESULT_PROXY =
-            CxDef::declareExceptionCategory( ExceptionBaseType::ResultProxy, ic3ExcCategoryIID( 0 ) ),
+            CxDef::declareExceptionCategory( EExceptionBaseType::RESULT, ic3ExcCategoryIID( 0 ) ),
 
         E_EXCEPTION_CATEGORY_SYSTEM =
-            CxDef::declareExceptionCategory( ExceptionBaseType::System, ic3ExcCategoryIID( 0 ) ),
+            CxDef::declareExceptionCategory( EExceptionBaseType::SYSTEM, ic3ExcCategoryIID( 0 ) ),
 
         E_EXCEPTION_CATEGORY_USER_EXTERNAL =
-            CxDef::declareExceptionCategory( ExceptionBaseType::UserExternal, ic3ExcCategoryIID( 0 ) ),
+            CxDef::declareExceptionCategory( EExceptionBaseType::USER_EXTERNAL, ic3ExcCategoryIID( 0 ) ),
     };
 
     enum : exception_code_value_t
@@ -53,13 +55,15 @@ namespace Ic3
 	struct ExceptionInfo
 	{
 		// Exception code
-		exception_code_value_t code;
-		//
-		std::string description;
-		//
-		FileLocationInfo fileLocationInfo;
+		exception_code_value_t mCode;
 
-		std::string toString() const;
+		//
+		std::string mDescription;
+
+		//
+		FileLocationInfo mFileLocationInfo;
+
+		IC3_ATTR_NO_DISCARD std::string toString() const;
 	};
 
 	/// @brief
@@ -74,7 +78,7 @@ namespace Ic3
 
 	public:
 		/// @brief Constructor.
-		/// @param pType Type of the exception, represented as ExceptionBaseType enum.
+		/// @param pType Type of the exception, represented as EExceptionBaseType enum.
 		/// @param pInfo Exception description, containing basic info about it.
 		Exception( ExceptionInfo pExceptionInfo )
 		: mExceptionInfo( std::move( pExceptionInfo ) )
@@ -85,7 +89,7 @@ namespace Ic3
 
 		/// @brief Returns the name of the exception.
 		/// @return Name of the exception.
-		virtual ExceptionBaseType getBaseType() const = 0;
+		virtual EExceptionBaseType getBaseType() const = 0;
 
 		/// @brief Returns the name of the exception.
 		/// @return Name of the exception.
@@ -100,128 +104,128 @@ namespace Ic3
 	};
 
 	/// @brief
-	/// @tparam tExceptionBaseType
-	template <ExceptionBaseType tExceptionBaseType>
-	class ExceptionClass : public Exception
+	/// @tparam tpExceptionBaseType
+	template <EExceptionBaseType tpExceptionBaseType>
+	class TExceptionClass : public Exception
 	{
 	public:
 		/// @brief
-		static constexpr auto mBaseType = tExceptionBaseType;
+		static constexpr auto mBaseType = tpExceptionBaseType;
 
 	public:
-		explicit ExceptionClass( ExceptionInfo pExceptionInfo )
+		explicit TExceptionClass( ExceptionInfo pExceptionInfo )
 		: Exception( std::move( pExceptionInfo ) )
 		{}
 
 		/// @refitem
 		/// @return
-		virtual ExceptionBaseType getBaseType() const override final
+		virtual EExceptionBaseType getBaseType() const override final
 		{
-			return tExceptionBaseType;
+			return tpExceptionBaseType;
 		}
 
 		/// @refitem
 		/// @return
 		virtual const std::string & getBaseTypeName() const override final
 		{
-			// static std::once_flag initFlag;
+			static std::once_flag initFlag;
 			static std::string baseTypeName;
 
-			// std::call_once( initFlag, []() {
-			// 	const auto & enumInfo = queryEnumTypeInfo<ExceptionBaseType>();
-			// 	const auto & baseTypeConstantInfo = enumInfo.getConstantMap().getByValue( tExceptionBaseType );
-			// 	baseTypeName = baseTypeConstantInfo.name;
-			// } );
+			 std::call_once( initFlag, []() {
+			 	const auto & enumInfo = queryEnumTypeInfo<EExceptionBaseType>();
+			 	const auto & baseTypeConstantInfo = enumInfo.getConstantMap().getByValue( tpExceptionBaseType );
+			 	baseTypeName = baseTypeConstantInfo.name;
+			 } );
 
 			return baseTypeName;
 		}
 	};
 
-	/// @brief Default base class for ExceptionBaseType::Debug.
-	using UnknownException = ExceptionClass<ExceptionBaseType::Unknown>;
+	/// @brief Default base class for EExceptionBaseType::Debug.
+	using UnknownException = TExceptionClass<EExceptionBaseType::UNKNOWN>;
 
-	/// @brief Default base class for ExceptionBaseType::Debug.
-	using DebugException = ExceptionClass<ExceptionBaseType::Debug>;
+	/// @brief Default base class for EExceptionBaseType::Debug.
+	using DebugException = TExceptionClass<EExceptionBaseType::DEBUG>;
 
-	/// @brief Default base class for ExceptionBaseType::EngineSubModule.
-	using EngineSubModuleException = ExceptionClass<ExceptionBaseType::EngineSubModule>;
+	/// @brief Default base class for EExceptionBaseType::EngineSubModule.
+	using EngineSubModuleException = TExceptionClass<EExceptionBaseType::ENGINE_SUBMODULE>;
 
-	/// @brief Default base class for ExceptionBaseType::FrameworkCore.
-	using FrameworkCoreException = ExceptionClass<ExceptionBaseType::FrameworkCore>;
+	/// @brief Default base class for EExceptionBaseType::FrameworkCore.
+	using FrameworkCoreException = TExceptionClass<EExceptionBaseType::FRAMEWORK_CORE>;
 
-	/// @brief Default base class for ExceptionBaseType::Internal.
-	using InternalException = ExceptionClass<ExceptionBaseType::Internal>;
+	/// @brief Default base class for EExceptionBaseType::Internal.
+	using InternalException = TExceptionClass<EExceptionBaseType::INTERNAL>;
 
-	/// @brief Default base class for ExceptionBaseType::Interrupt.
-	using InterruptException = ExceptionClass<ExceptionBaseType::Interrupt>;
+	/// @brief Default base class for EExceptionBaseType::Interrupt.
+	using InterruptException = TExceptionClass<EExceptionBaseType::INTERRUPT>;
 
-	/// @brief Default base class for ExceptionBaseType::Math.
-	using MathException = ExceptionClass<ExceptionBaseType::Math>;
+	/// @brief Default base class for EExceptionBaseType::Math.
+	using MathException = TExceptionClass<EExceptionBaseType::MATH>;
 
-	/// @brief Default base class for ExceptionBaseType::System.
-	using SystemException = ExceptionClass<ExceptionBaseType::System>;
+	/// @brief Default base class for EExceptionBaseType::System.
+	using SystemException = TExceptionClass<EExceptionBaseType::SYSTEM>;
 
-	/// @brief Default base class for ExceptionBaseType::UserExternal.
-	using UserExternalException = ExceptionClass<ExceptionBaseType::UserExternal>;
+	/// @brief Default base class for EExceptionBaseType::UserExternal.
+	using UserExternalException = TExceptionClass<EExceptionBaseType::USER_EXTERNAL>;
 
-	/// @brief Specialized class for ResultWrapper exceptions. Adds ResultProxy object.
-	template <typename TValue, typename TErrorPredicate>
-	class ResultProxyException : public ExceptionClass<ExceptionBaseType::ResultProxy>
+	/// @brief Specialized class for SResultWrapper exceptions. Adds ResultInfo object.
+	template <typename TPResultValueType, typename TPErrorPredicate>
+	class TPResultProxyException : public TExceptionClass<EExceptionBaseType::RESULT>
     {
     public:
-        ResultProxy<TValue, TErrorPredicate> mResult;
+        ResultInfo<TPResultValueType, TPErrorPredicate> mResult;
 
     public:
-        ResultProxyException( ExceptionInfo pExceptionInfo, ResultProxy<TValue, TErrorPredicate> pResult )
-        : ExceptionClass( std::move( pExceptionInfo ) )
+		TPResultProxyException( ExceptionInfo pExceptionInfo, ResultInfo<TPResultValueType, TPErrorPredicate> pResult )
+        : TExceptionClass( std::move( pExceptionInfo ) )
         , mResult( pResult )
         {}
     };
 
-	class ResultCodeException : public ResultProxyException<ResultCode::ValueType, ResultCode::ErrorPredicateType>
+	class ResultCodeException : public TPResultProxyException<ResultCode::ValueType, ResultCode::ErrorPredicateType>
 	{
 	public:
 		ResultCodeException( ExceptionInfo pExceptionInfo, ResultCode pResultCode )
-		: ResultProxyException( std::move( pExceptionInfo ), pResultCode )
+		: TPResultProxyException( std::move( pExceptionInfo ), pResultCode )
 		{}
 	};
 
 
-	template <ExceptionBaseType tExceptionBaseType, bool tIsValidType>
+	template <EExceptionBaseType tpExceptionBaseType, bool tpIsValidType>
 	struct ExceptionClassResolver
     {
 	    using Type = UnknownException;
     };
 
-	template <ExceptionBaseType tExceptionBaseType>
-	struct ExceptionClassResolver<tExceptionBaseType, true>
+	template <EExceptionBaseType tpExceptionBaseType>
+	struct ExceptionClassResolver<tpExceptionBaseType, true>
     {
-	    using Type = ExceptionClass<tExceptionBaseType>;
+	    using Type = TExceptionClass<tpExceptionBaseType>;
     };
 
 	template <>
-	struct ExceptionClassResolver<ExceptionBaseType::ResultProxy, true>
+	struct ExceptionClassResolver<EExceptionBaseType::RESULT, true>
     {
-		template <typename TValue, typename TErrorPredicate>
-	    using Type = ResultProxyException<TValue, TErrorPredicate>;
+		template <typename TPResultValueType, typename TPErrorPredicate>
+	    using Type = TPResultProxyException<TPResultValueType, TPErrorPredicate>;
     };
 
-	template <ExceptionBaseType tExceptionBaseType>
+	template <EExceptionBaseType tpExceptionBaseType>
 	struct ExceptionBaseTypeClassProxy
     {
-	    using Type = typename ExceptionClassResolver<tExceptionBaseType, CxDef::isExceptionBaseTypeValid( tExceptionBaseType )>::Type;
+	    using Type = typename ExceptionClassResolver<tpExceptionBaseType, CxDef::isExceptionBaseTypeValid( tpExceptionBaseType )>::Type;
     };
 
-	template <exception_category_value_t tExceptionCategory>
+	template <exception_category_value_t tpExceptionCategory>
 	struct ExceptionCategoryClassProxy
     {
-	    using Type = typename ExceptionBaseTypeClassProxy<CxDef::getExceptionCategoryBaseType( tExceptionCategory )>::Type;
+	    using Type = typename ExceptionBaseTypeClassProxy<CxDef::getExceptionCategoryBaseType( tpExceptionCategory )>::Type;
     };
 
-	template <exception_code_value_t tExceptionCode>
+	template <exception_code_value_t tpExceptionCode>
 	struct ExceptionCodeClassProxy
     {
-	    using Type = typename ExceptionCategoryClassProxy<CxDef::getExceptionCodeCategory( tExceptionCode )>::Type;
+	    using Type = typename ExceptionCategoryClassProxy<CxDef::getExceptionCodeCategory( tpExceptionCode )>::Type;
     };
 
 	template <>
@@ -231,15 +235,15 @@ namespace Ic3
 	};
 
     #define ic3EnableCustomExceptionSupport() \
-        template <exception_category_value_t tExceptionCategory> \
+        template <exception_category_value_t tpExceptionCategory> \
         struct ExceptionCategoryClassProxy \
         { \
-            using Type = typename ::Ic3::ExceptionBaseTypeClassProxy<Ic3::CxDef::getExceptionCategoryBaseType( tExceptionCategory )>::Type; \
+            using Type = typename ::Ic3::ExceptionBaseTypeClassProxy<Ic3::CxDef::getExceptionCategoryBaseType( tpExceptionCategory )>::Type; \
         }; \
-        template <exception_code_value_t tExceptionCode> \
+        template <exception_code_value_t tpExceptionCode> \
         struct ExceptionCodeClassProxy \
         { \
-            using Type = typename ExceptionCategoryClassProxy<Ic3::CxDef::getExceptionCodeCategory( tExceptionCode )>::Type; \
+            using Type = typename ExceptionCategoryClassProxy<Ic3::CxDef::getExceptionCodeCategory( tpExceptionCode )>::Type; \
         }
 
     #define ic3SetExceptionCategoryType( pExceptionCategory, pType ) \
@@ -259,13 +263,14 @@ namespace Ic3
 	template <typename TException, typename... TArgs>
 	IC3_PCL_ATTR_NO_RETURN inline void throwException( ExceptionInfo pExceptionInfo, TArgs &&... pArgs )
 	{
-		// TException is a class derived from ExceptionClass<ExceptionBaseType>. It contains 'baseType'
+		// TException is a class derived from TExceptionClass<EExceptionBaseType>. It contains 'baseType'
 		// member with type tag. It should match the type embedded within the code. In case of mismatch, there is
 		// either a typo (in case of manual call) or a problem with the throwException() function defined below.
-		ic3DebugAssert( TException::mBaseType == CxDef::getExceptionCodeBaseType( pExceptionInfo.code ) );
+		ic3DebugAssert( TException::mBaseType == CxDef::getExceptionCodeBaseType( pExceptionInfo.mCode ) );
 
 		throw TException( std::move( pExceptionInfo ), std::forward<TArgs>( pArgs )... );
 	}
+
 
 	template <typename TException, typename... TArgs>
 	IC3_PCL_ATTR_NO_RETURN inline void throwException( exception_code_value_t pExceptionCode,
@@ -274,9 +279,9 @@ namespace Ic3
                                                        TArgs &&... pArgs )
 	{
 	    ExceptionInfo exceptionInfo;
-	    exceptionInfo.code = pExceptionCode;
-	    exceptionInfo.description = std::move( pDescription );
-	    exceptionInfo.fileLocationInfo = pFileLocationInfo;
+	    exceptionInfo.mCode = pExceptionCode;
+	    exceptionInfo.mDescription = std::move( pDescription );
+	    exceptionInfo.mFileLocationInfo = pFileLocationInfo;
 
 	    throwException<TException>( std::move( exceptionInfo ), std::forward<TArgs>( pArgs )... );
     }

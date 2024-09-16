@@ -7,30 +7,19 @@
 #include "../Prerequisites.h"
 #include <Ic3/Platform/SyncCommon.h>
 
-namespace Ic3
+namespace Ic3::Sync
 {
 
-    namespace Sync
-    {
-
-        template <typename TMutex>
-        struct AutoUniqueLockTypeProxy;
-
-        template <typename TMutex>
-        struct AutoSharedLockTypeProxy;
-
-    }
-
     /// @brief Returns a lock from a specified lockable object. Used by Sync macros.
-    /// @tparam TLock Type of the lockable object, deduced automatically from the parameter.
+    /// @tparam TPLock Type of the lockable object, deduced automatically from the parameter.
     /// @param  pLock  A lockable object. By default it is returned directly.
     /// @details
     /// This is a simple helper function that enables our sync macros to have a single, lock-type-agnostic
     /// implementation. In order to make custom lockable types working,
-    template <typename TLock>
-    inline constexpr TLock & getLock( TLock & pLock )
+    template <typename TPLock>
+    inline constexpr TPLock & getLock( TPLock & pLock )
     {
-        return pLock;
+	    return pLock;
     }
 
 }

@@ -4,7 +4,7 @@ set( IC3_CORELIB_SRC_FILES
 		"Prerequisites/CoreEnums.h"
 		"Prerequisites/DynamicInterface.h"
         "Prerequisites/DynamicInterface.cpp"
-        "Prerequisites/Result.h"
+        "Prerequisites/ResultCode.h"
         "Prerequisites/SharedHandle.h"
 
         "Prerequisites.h"
@@ -13,7 +13,7 @@ set( IC3_CORELIB_SRC_FILES
         "Exception.h"
 		"Exception.cpp"
 		"ExceptionCommon.h"
-		"ExceptionResult.h"
+		"ReturnValueObject.h"
 		"ExceptionUtils.h"
         "PixelCommon.h"
         "MathImports.h"

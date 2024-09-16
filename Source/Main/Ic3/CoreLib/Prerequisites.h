@@ -6,6 +6,7 @@
 #include <Ic3/Cppx/ArrayView.h>
 #include <Ic3/Cppx/Bitmask.h>
 #include <Ic3/Cppx/BitUtils.h>
+#include <Ic3/Cppx/Range.h>
 #include <Ic3/Cppx/RefWrapper.h>
 #include <Ic3/Cppx/StaticLimits.h>
 #include <Ic3/Cppx/StringView.h>
@@ -43,25 +44,35 @@
 namespace Ic3
 {
 
-	using Cppx::ArrayView;
-	using Cppx::StringView;
+	using Cppx::QLimits;
+	using Cppx::TArrayView;
+	using Cppx::TBitmask;
+	using Cppx::TConstRef;
+	using Cppx::TRange;
+	using Cppx::TRegion;
+	using Cppx::TRef;
+	using Cppx::TRefWrapper;
+	using Cppx::TStringView;
 
 }
 
 #include "Prerequisites/CoreDefs.h"
 #include "Prerequisites/CoreEnums.h"
-#include "Prerequisites/Result.h"
+#include "Prerequisites/ResultCode.h"
 #include "Prerequisites/DynamicInterface.h"
 
 namespace Ic3
 {
 
+	// Naming Convention
 	// E -> Enum
 	// S -> Struct
-	// I -> Interface
 	// C -> Class
-	// T -> Template
-	// Q -> Queries/Traits
+	// I -> Interface
+	// T -> Templates and template type parameters
+	// Q -> Queries/Traits -> compile-time!
+	// F -> Functors
+	// P -> Proxies
 	// R -> Aliases/Typedefs
 
 	/// @brief Helper struct for triggering a "empty-init" ctor. Used whenever default initialization has a different meaning.

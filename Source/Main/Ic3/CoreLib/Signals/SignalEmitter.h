@@ -12,34 +12,34 @@
 namespace Ic3
 {
 
-	template <typename TClass, typename TEvent>
-	class CEventEmitter;
+	template <typename TPClass, typename TPEvent>
+	class EventEmitter;
 
-	template <typename TClass, event_code_value_t tEventCode, typename... TEventArgs>
-	class CEventEmitter< TClass, SEvent<tEventCode, TEventArgs...> >
+	template <typename TPClass, event_code_value_t tpEventCode, typename... TPEventArgs>
+	class EventEmitter< TPClass, Event<tpEventCode, TPEventArgs...> >
 	{
 	public:
-		using Handler = std::function<void( TClass &, TEventArgs... )>;
+		using Handler = std::function<void( TPClass &, TPEventArgs... )>;
 		using HandlerList = std::list<Handler>;
 		using HandlerMap = std::unordered_map<uintptr_t, HandlerList>;
 		using HandlerRef = typename HandlerList::iterator;
 		using HandlerRefList = std::list<HandlerRef>;
 
 	public:
-		explicit CEventEmitter( TClass & pSourceObjectRef )
+		explicit EventEmitter( TPClass & pSourceObjectRef )
 		: _sourceObjectRef( pSourceObjectRef )
 		{}
 
-		void emit( TEventArgs &&... pArgs )
+		void emit( TPEventArgs &&... pArgs )
 		{
 			for( auto & handlerRef : _handlerOrderedRefList )
 			{
-				( *handlerRef )( _sourceObjectRef, std::forward<TEventArgs>( pArgs )... );
+				( *handlerRef )( _sourceObjectRef, std::forward<TPEventArgs>( pArgs )... );
 			}
 		}
 
 		template <typename TRet, typename TReceiver>
-		void connect( uintptr_t pRefID, std::function<TRet( TClass &, TEventArgs... )> pHandler ) const
+		void connect( uintptr_t pRefID, std::function<TRet( TPClass &, TPEventArgs... )> pHandler ) const
 		{
 			auto & handlerList = _handlerMap[pRefID];
 
@@ -48,21 +48,21 @@ namespace Ic3
 		}
 
 		template <typename TRet, typename TReceiver>
-		void connect( TReceiver * pReceiver, TRet( TReceiver:: * pSlot )( TClass &, TEventArgs... ) ) const
+		void connect( TReceiver * pReceiver, TRet( TReceiver:: * pSlot )( TPClass &, TPEventArgs... ) ) const
 		{
 			auto refID = reinterpret_cast<uintptr_t>( pReceiver );
 			auto & handlerList = _handlerMap[refID];
 
 			auto newHandlerRef = handlerList.insert(
 				handlerList.end(),
-				[pReceiver, pSlot]( TClass & pSource, TEventArgs &&... pEventArgs ) -> void {
-					( pReceiver->*pSlot )( pSource, std::forward<TEventArgs>( pEventArgs )... );
+				[pReceiver, pSlot]( TPClass & pSource, TPEventArgs &&... pEventArgs ) -> void {
+					( pReceiver->*pSlot )( pSource, std::forward<TPEventArgs>( pEventArgs )... );
 				} );
 			_handlerOrderedRefList.push_back( newHandlerRef );
 		}
 
 		template <typename TRet, typename TReceiver>
-		bool connectUnique( uintptr_t pRefID, std::function<TRet( TClass &, TEventArgs... )> pHandler ) const
+		bool connectUnique( uintptr_t pRefID, std::function<TRet( TPClass &, TPEventArgs... )> pHandler ) const
 		{
 			auto & handlerList = _handlerMap[pRefID];
 			if( !handlerList.empty() )
@@ -77,7 +77,7 @@ namespace Ic3
 		}
 
 		template <typename TRet, typename TReceiver>
-		bool connectUnique( TReceiver * pReceiver, TRet( TReceiver:: * pSlot )( TClass &, TEventArgs... ) ) const
+		bool connectUnique( TReceiver * pReceiver, TRet( TReceiver:: * pSlot )( TPClass &, TPEventArgs... ) ) const
 		{
 			auto refID = reinterpret_cast<uintptr_t>( pReceiver );
 			auto & handlerList = _handlerMap[refID];
@@ -88,8 +88,8 @@ namespace Ic3
 
 			auto newHandlerRef = handlerList.insert(
 				handlerList.end(),
-				[pReceiver, pSlot]( TClass & pSource, TEventArgs &&... pEventArgs ) -> void {
-					( pReceiver->*pSlot )( pSource, std::forward<TEventArgs>( pEventArgs )... );
+				[pReceiver, pSlot]( TPClass & pSource, TPEventArgs &&... pEventArgs ) -> void {
+					( pReceiver->*pSlot )( pSource, std::forward<TPEventArgs>( pEventArgs )... );
 				} );
 			_handlerOrderedRefList.push_back( newHandlerRef );
 
@@ -97,7 +97,7 @@ namespace Ic3
 		}
 
 		template <typename TRet, typename TReceiver>
-		bool disconnectSlot( TReceiver * pReceiver, TRet( TReceiver:: * pSlot )( TClass &, TEventArgs... ) ) const
+		bool disconnectSlot( TReceiver * pReceiver, TRet( TReceiver:: * pSlot )( TPClass &, TPEventArgs... ) ) const
 		{
 			return false;
 		}
@@ -110,27 +110,27 @@ namespace Ic3
 		}
 
 	private:
-		TClass & _sourceObjectRef;
+		TPClass & _sourceObjectRef;
 		mutable HandlerMap _handlerMap;
 		mutable HandlerRefList _handlerOrderedRefList;
 	};
 
-	// template <event_code_value_t tEventCode, typename... TEventArgs, typename TRet, typename TReceiver>
-	// void eventConnect( const CEventEmitter< Event<tEventCode, TEventArgs...> > & pEmitter, TRet( TReceiver:: * pSlot )( TEventArgs... ), TReceiver * pReceiver )
+	// template <event_code_value_t tpEventCode, typename... TPEventArgs, typename TRet, typename TReceiver>
+	// void eventConnect( const EventEmitter< Event<tpEventCode, TPEventArgs...> > & pEmitter, TRet( TReceiver:: * pSlot )( TPEventArgs... ), TReceiver * pReceiver )
 	// {
 	// 	pEmitter.connect( pSlot, pReceiver );
 	// }
-	// template <event_code_value_t tEventCode, typename... TEventArgs, typename TReceiver>
-	// void eventDisconnect( const CEventEmitter< Event<tEventCode, TEventArgs...> > & pEmitter, TReceiver * pReceiver )
+	// template <event_code_value_t tpEventCode, typename... TPEventArgs, typename TReceiver>
+	// void eventDisconnect( const EventEmitter< Event<tpEventCode, TPEventArgs...> > & pEmitter, TReceiver * pReceiver )
 	// {
 	// 	pEmitter.disconnect( pReceiver );
 	// }
 
 #define ic3AddEvent( pEventType, pVariableName ) \
 	private: \
-		CEventEmitter<pEventType> _evt##pVariableName; \
+		EventEmitter<pEventType> _evt##pVariableName; \
 	public: \
-		const CEventEmitter<pEventType> & mEvt##pVariableName = _evt##pVariableName;
+		const EventEmitter<pEventType> & mEvt##pVariableName = _evt##pVariableName;
 
 #define slots
 

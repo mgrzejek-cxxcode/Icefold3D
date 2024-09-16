@@ -61,7 +61,7 @@ namespace Ic3
 		return valid();
 	}
 
-	XMLAttribute XMLNode::attribute( const StringView<char> & pAttribName ) const
+	XMLAttribute XMLNode::attribute( const TStringView<char> & pAttribName ) const
 	{
 		ic3DebugAssert( valid() );
 		return XMLAttribute{ _rxmlNode->first_attribute( pAttribName.str(), pAttribName.length() ) };
@@ -73,7 +73,7 @@ namespace Ic3
 		return XMLNode{ _rxmlNode->first_node() };
 	}
 
-	XMLNode XMLNode::firstSubNode( const StringView<char> & pNodeName ) const
+	XMLNode XMLNode::firstSubNode( const TStringView<char> & pNodeName ) const
 	{
 		ic3DebugAssert( valid() );
 		return XMLNode{ _rxmlNode->first_node( pNodeName.str(), pNodeName.length() ) };
@@ -85,7 +85,7 @@ namespace Ic3
 		return RxmlParser::countSubNodes( _rxmlNode );
 	}
 
-	size_t XMLNode::countSubNodes( const StringView<char> & pNodeName ) const
+	size_t XMLNode::countSubNodes( const TStringView<char> & pNodeName ) const
 	{
 		ic3DebugAssert( valid() );
 		return RxmlParser::countSubNodes( _rxmlNode, pNodeName.str(), pNodeName.length() );
@@ -97,7 +97,7 @@ namespace Ic3
 		return XMLNode{ _rxmlNode->next_sibling() };
 	}
 
-	XMLNode XMLNode::nextSibling( const StringView<char> & pNodeName ) const
+	XMLNode XMLNode::nextSibling( const TStringView<char> & pNodeName ) const
 	{
 		ic3DebugAssert( valid() );
 		return XMLNode{ _rxmlNode->next_sibling( pNodeName.str(), pNodeName.length() ) };
@@ -121,13 +121,13 @@ namespace Ic3
 		return RxmlParser::getNodeValue( _rxmlNode );
 	}
 
-	bool XMLNode::hasAttribute( const StringView<char> & pAttribName ) const
+	bool XMLNode::hasAttribute( const TStringView<char> & pAttribName ) const
 	{
 		ic3DebugAssert( valid() );
 		return _rxmlNode->first_attribute( pAttribName.str(), pAttribName.length() );
 	}
 
-	bool XMLNode::hasSubNode( const StringView<char> & pNodeName ) const
+	bool XMLNode::hasSubNode( const TStringView<char> & pNodeName ) const
 	{
 		ic3DebugAssert( valid() );
 		return _rxmlNode->first_node( pNodeName.str(), pNodeName.length() );

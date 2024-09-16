@@ -15,23 +15,23 @@ namespace Ic3
     using memory_diff_t = native_int;
     using memory_size_t = native_uint;
 
-    using SMemoryRegion = Cppx::SRegion<memory_size_t>;
-    using SMemoryRange = SMemoryRegion::RangeType;
+	/// @brief
+    using MemoryRegion = TRegion<memory_size_t>;
 
-	namespace CxDef
-	{
+	/// @brief
+    using MemoryRange = MemoryRegion::RangeType;
 
-		/// @brief Represents an invalid memory offset, expressed as the maximum value of the memory_size_t type.
-		constexpr memory_size_t MEMORY_OFFSET_INVALID = Cppx::QLimits<memory_size_t>::maxValue;
+	/// @brief Represents an invalid memory offset, expressed as the maximum value of the memory_size_t type.
+	constexpr memory_size_t cxMemoryOffsetInvalid = Cppx::QLimits<memory_size_t>::sMaxValue;
 
-		/// @brief Represents maximum possible size of single block/region of memory.
-		constexpr memory_size_t MEMORY_SIZE_MAX = Cppx::QLimits<memory_size_t>::maxValue;
+	/// @brief Represents maximum possible size of single block/region of memory.
+	constexpr memory_size_t cxMemorySizeMax = Cppx::QLimits<memory_size_t>::sMaxValue;
 
-	}
-
+	/// @brief
 	struct AllocNewSizeExplicitTag
 	{};
 
+	/// @brief
 	inline constexpr AllocNewSizeExplicitTag cvAllocNewSizeExplicit{};
 
 }
@@ -39,7 +39,7 @@ namespace Ic3
 inline void * operator new( size_t pSize, const Ic3::AllocNewSizeExplicitTag &, size_t pExtraSize )
 {
 	const auto requestedObjectSize = pSize + pExtraSize;
-	const auto allocationSize = Ic3::Cppx::memGetAlignedValue( requestedObjectSize, Ic3::kMemoryCPUDefaultAlignment );
+	const auto allocationSize = Ic3::Cppx::memGetAlignedValue( requestedObjectSize, Ic3::cxMemoryCPUDefaultAlignment );
 	return std::malloc( allocationSize );
 }
 

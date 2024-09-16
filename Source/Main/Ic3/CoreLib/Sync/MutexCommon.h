@@ -6,119 +6,93 @@
 
 #include "CommonSyncDefs.h"
 
-namespace std
+namespace Ic3::Sync
 {
 
-    class mutex;
-    class shared_mutex;
-
-}
-
-namespace Ic3
-{
-
-    namespace Sync
+    struct MutexInterfaceProxyDefault
     {
-
-        struct MutexInterfaceProxyDefault
+        template <typename TPMutex>
+        static void lock( TPMutex & pMutex )
         {
-            template <typename TMutex>
-            static void lock( TMutex & pMutex )
-            {
-                pMutex.lock();
-            }
+            pMutex.lock();
+        }
 
-            template <typename TMutex>
-            static bool tryLock( TMutex & pMutex )
-            {
-                return pMutex.tryLock();
-            }
-
-            template <typename TMutex>
-            static void unlock( TMutex & pMutex )
-            {
-                pMutex.unlock();
-            }
-
-            template <typename TMutex>
-            static void lockShared( TMutex & pMutex )
-            {
-                pMutex.lockShared();
-            }
-
-            template <typename TMutex>
-            static bool tryLockShared( TMutex & pMutex )
-            {
-                return pMutex.tryLockShared();
-            }
-
-            template <typename TMutex>
-            static void unlockShared( TMutex & pMutex )
-            {
-                pMutex.unlockShared();
-            }
-        };
-
-        struct MutexInterfaceProxyStd
+        template <typename TPMutex>
+        static bool tryLock( TPMutex & pMutex )
         {
-            template <typename TMutex>
-            static void lock( TMutex & pMutex )
-            {
-                pMutex.lock();
-            }
+            return pMutex.tryLock();
+        }
 
-            template <typename TMutex>
-            static bool tryLock( TMutex & pMutex )
-            {
-                return pMutex.try_mutex();
-            }
-
-            template <typename TMutex>
-            static void unlock( TMutex & pMutex )
-            {
-                pMutex.unlock();
-            }
-
-            template <typename TMutex>
-            static void lockShared( TMutex & pMutex )
-            {
-                pMutex.lock_shared();
-            }
-
-            template <typename TMutex>
-            static bool tryLockShared( TMutex & pMutex )
-            {
-                return pMutex.try_mutex_shared();
-            }
-
-            template <typename TMutex>
-            static void unlockShared( TMutex & pMutex )
-            {
-                pMutex.unlock_shared();
-            }
-        };
-
-
-        template <typename TMutex>
-        struct MutexInterface
+        template <typename TPMutex>
+        static void unlock( TPMutex & pMutex )
         {
-            using Type = MutexInterfaceProxyDefault;
-        };
+            pMutex.unlock();
+        }
 
-        template <>
-        struct MutexInterface<std::mutex>
+        template <typename TPMutex>
+        static void lockShared( TPMutex & pMutex )
         {
-            using Type = MutexInterfaceProxyStd;
-        };
+            pMutex.lockShared();
+        }
 
-        template <>
-        struct MutexInterface<std::shared_mutex>
+        template <typename TPMutex>
+        static bool tryLockShared( TPMutex & pMutex )
         {
-            using Type = MutexInterfaceProxyStd;
-        };
+            return pMutex.tryLockShared();
+        }
 
-    }
+        template <typename TPMutex>
+        static void unlockShared( TPMutex & pMutex )
+        {
+            pMutex.unlockShared();
+        }
+    };
 
-}
+    struct MutexInterfaceProxyStd
+    {
+        template <typename TPMutex>
+        static void lock( TPMutex & pMutex )
+        {
+            pMutex.lock();
+        }
+
+        template <typename TPMutex>
+        static bool tryLock( TPMutex & pMutex )
+        {
+            return pMutex.try_mutex();
+        }
+
+        template <typename TPMutex>
+        static void unlock( TPMutex & pMutex )
+        {
+            pMutex.unlock();
+        }
+
+        template <typename TPMutex>
+        static void lockShared( TPMutex & pMutex )
+        {
+            pMutex.lock_shared();
+        }
+
+        template <typename TPMutex>
+        static bool tryLockShared( TPMutex & pMutex )
+        {
+            return pMutex.try_mutex_shared();
+        }
+
+        template <typename TPMutex>
+        static void unlockShared( TPMutex & pMutex )
+        {
+            pMutex.unlock_shared();
+        }
+    };
+
+    template <typename TPMutex>
+    struct QMutexInterfaceProxy
+    {
+        using ProxyType = MutexInterfaceProxyDefault;
+    };
+
+} // namespace Ic3::Sync
 
 #endif // __IC3_CORELIB_MUTEX_COMMON_H__

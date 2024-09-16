@@ -7,76 +7,71 @@
 #include "CommonSyncDefs.h"
 #include <atomic>
 
-namespace Ic3
+namespace Ic3::Sync
 {
 
-    namespace Sync
+    enum class ERWLockState : native_uint
     {
+        AVAILABLE,
+        LOCKED
+    };
 
-        enum class RWLockState : native_uint
+    /// @brief Atomic-based spin-lock that provides the ability of observing the status of the lock.
+    class AtomicRWLock
+    {
+    public:
+        AtomicRWLock() = default;
+
+        void lock()
         {
-            Available,
-            Locked
-        };
-
-        /// @brief Atomic-based spin-lock that provides the ability of observing the status of the lock.
-        class AtomicRWLock
-        {
-        public:
-            AtomicRWLock() = default;
-
-            void lock()
+            for( auto spinCounter = 0; ; ++spinCounter )
             {
-                for( auto spinCounter = 0; ; ++spinCounter )
+                auto expectedFlagState = ERWLockState::AVAILABLE;
+                if( _lockFlag.compare_exchange_weak( expectedFlagState,
+                                                     ERWLockState::LOCKED,
+                                                     std::memory_order_acq_rel,
+                                                     std::memory_order_relaxed ) )
                 {
-                    auto expectedFlagState = RWLockState::Available;
-                    if( _lockFlag.compare_exchange_weak( expectedFlagState,
-                                                         RWLockState::Locked,
-                                                         std::memory_order_acq_rel,
-                                                         std::memory_order_relaxed ) )
-                    {
-                        break;
-                    }
-                    yieldCurrentThreadAuto( spinCounter );
+                    break;
+                }
+                yieldCurrentThreadAuto( spinCounter );
+            }
+        }
+
+        void unlock()
+        {
+            _lockFlag.store( ERWLockState::AVAILABLE, std::memory_order_release );
+        }
+
+        bool tryLock()
+        {
+            auto currentFlagState = _lockFlag.load( std::memory_order_acquire );
+            if( currentFlagState == ERWLockState::AVAILABLE )
+            {
+                if( _lockFlag.compare_exchange_strong( currentFlagState,
+                                                       ERWLockState::LOCKED,
+                                                       std::memory_order_acq_rel,
+                                                       std::memory_order_relaxed ) )
+                {
+                    return true;
                 }
             }
+            return false;
+        }
 
-            void unlock()
-            {
-                _lockFlag.store( RWLockState::Available, std::memory_order_release );
-            }
+        IC3_ATTR_NO_DISCARD ERWLockState state() const
+        {
+            return _lockFlag.load( std::memory_order_acquire );
+        }
 
-            bool tryLock()
-            {
-                auto currentFlagState = _lockFlag.load( std::memory_order_acquire );
-                if( currentFlagState == RWLockState::Available )
-                {
-                    if( _lockFlag.compare_exchange_strong( currentFlagState,
-                                                           RWLockState::Locked,
-                                                           std::memory_order_acq_rel,
-                                                           std::memory_order_relaxed ) )
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
+        IC3_ATTR_NO_DISCARD bool locked() const
+        {
+            return state() == ERWLockState::LOCKED;
+        }
 
-            IC3_ATTR_NO_DISCARD RWLockState state() const
-            {
-                return _lockFlag.load( std::memory_order_acquire );
-            }
-
-            IC3_ATTR_NO_DISCARD bool locked() const
-            {
-                return state() == RWLockState::Locked;
-            }
-
-        private:
-            std::atomic<RWLockState> _lockFlag;
-        };
-
-    }
+    private:
+        std::atomic<ERWLockState> _lockFlag;
+    };
 
 }
 

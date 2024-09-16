@@ -9,16 +9,16 @@ namespace Ic3
 
 	enum class EActiveState : uint16
 	{
-		Disabled = 0,
-		Enabled = 1,
-		Unknown = 2
+		DISABLED = 0,
+		ENABLED = 1,
+		UNKNOWN = 2
 	};
 
 	enum EAccessModeFlags : uint32
 	{
-		E_ACCESS_MODE_FLAG_READ_BIT = 0x0001,
-		E_ACCESS_MODE_FLAG_WRITE_BIT = 0x0002,
-		E_ACCESS_MODE_FLAGS_FULL_ACCESS = E_ACCESS_MODE_FLAG_READ_BIT | E_ACCESS_MODE_FLAG_WRITE_BIT,
+		E_ACCESS_MODE_FLAG_READBit = 0x0001,
+		E_ACCESS_MODE_FLAG_WRITEBit = 0x0002,
+		E_ACCESS_MODE_FLAGS_FULL_ACCESS = E_ACCESS_MODE_FLAG_READBit | E_ACCESS_MODE_FLAG_WRITEBit,
 		E_ACCESS_MODE_FLAGS_NONE = 0
 	};
 
@@ -36,21 +36,21 @@ namespace Ic3
 	/// enum class Color { Red, Green, Blue, Unknown };
 	/// ic3TypeInfoEnumDeclare( Color );
 	#define ic3TypeInfoEnumDeclare( TEnum, ... ) \
-        namespace _typeinfo {                                                                                \
-            /* Forward declaration of an enum-specific query function, e.g. queryEnumTypeInfoColor() */      \
+        namespace _typeinfo {                                                                              \
+            /* Forward declaration of an enum-specific query function, e.g. queryEnumTypeInfoColor() */    \
             ::Ic3::EnumTypeInfo<TEnum> & queryEnumTypeInfo##TEnum();                                       \
             const std::string & toString##TEnum( TEnum );                                                  \
-        } /* namespace _typeinfo */                                                                          \
-        /* Implementation of queryEnumTypeInfo<TEnum> template function specialization. */                  \
+        } /* namespace _typeinfo */                                                                        \
+        /* Implementation of queryEnumTypeInfo<TEnum> template function specialization. */                 \
         template <> inline const ::Ic3::EnumTypeInfo<TEnum> & queryEnumTypeInfo<TEnum>()                   \
-        {                                                                                                    \
-            /* Just call the enum-specific function. This allows moving the definition code to .cpp. */      \
-            return _typeinfo::queryEnumTypeInfo##TEnum();                                                   \
-        }                                                                                                    \
-        IC3_ATTR_NO_DISCARD inline const std::string & toString( TEnum pValue )                                                 \
-        {                                                                                                    \
-        	/* Just call the enum-specific function. This allows moving the definition code to .cpp. */      \
-        	return _typeinfo::toString##TEnum( pValue );                                                    \
+        {                                                                                                  \
+            /* Just call the enum-specific function. This allows moving the definition code to .cpp. */    \
+            return _typeinfo::queryEnumTypeInfo##TEnum();                                                  \
+        }                                                                                                  \
+        IC3_ATTR_NO_DISCARD inline const std::string & toString( TEnum pValue )                            \
+        {                                                                                                  \
+        	/* Just call the enum-specific function. This allows moving the definition code to .cpp. */    \
+        	return _typeinfo::toString##TEnum( pValue );                                                   \
         }
 
 	// Enable support for enum type info for the whole Ic3:: namespace.

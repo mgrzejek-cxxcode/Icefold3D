@@ -6,136 +6,131 @@
 
 #include "MutexCommon.h"
 
-namespace Ic3
+namespace Ic3::Sync
 {
 
-    namespace Sync
+    /// @brief Specifies how lock can be accessed and retrieved.
+    enum class ELockableMutexAccess : enum_default_value_t
     {
+        // Lock is always retrieved as non-const reference, which allows the object to be locked
+        // in any possible state. Note, that this implies lock member to be declared as mutable.
+        RELAXED,
 
-        /// @brief Specifies how lock can be accessed and retrieved.
-        enum class ELockableMutexAccess : enum_default_value_t
+        // The type of retrieved lock (in terms of its const-ness) matches the object's type.
+        // This makes impossible to lock an object, that was declared/retrieved as const-qualified.
+        STRICT
+    };
+
+
+    /// @brief Helper base class for types representing lockable objects.
+    /// @tparam TPMutex      Type of the mutex an instance of the class will contain.
+    /// @tparam tpLockAccess Specifies how the mutex can be accessed. Modifies how the public interface is defined.
+    /// TLockable<> is a simple base class which can be used to inject a locking behaviour. Type of the actual lock
+    /// (like std::mutex or some custom ones) can be controlled via first template parameter. The second one controls
+    /// the lock access (see ELockableMutexAccess for more details).
+    /// @example
+    /// TLockable<> also works with ic3SyncAcquire*() macros. This enables a simple syntax to acquire locks:
+    /// @code
+    /// class SharedResource : public TLockable<std::mutex> {};
+    /// SharedResource res;
+    /// // Some time later:
+    /// auto lockGuard = ic3SyncAcquireUnique( res );
+    /// @endcode
+    template <typename TPMutex, ELockableMutexAccess tpLockAccess = ELockableMutexAccess::STRICT>
+    class TLockable;
+
+    /// @brief Specialization of Lockable<> for ELockableMutexAccess::RELAXED.
+    /// RELAXED lock access means, that internal lock is a mutable variable and all public
+    /// lock-related methods are defined as const-qualified (const objects can be locked).
+    template <typename TPMutex>
+    class TLockable<TPMutex, ELockableMutexAccess::RELAXED>
+    {
+    public:
+        using MutexType = TPMutex;
+        using MutexInterfaceProxy = typename QMutexInterfaceProxy<TPMutex>::Type;
+
+    public:
+        TLockable() = default;
+
+        virtual void lock() const
         {
-            // Lock is always retrieved as non-const reference, which allows the object to be locked
-            // in any possible state. Note, that this implies lock member to be declared as mutable.
-            Relaxed,
-
-            // The type of retrieved lock (in terms of its const-ness) matches the object's type.
-            // This makes impossible to lock an object, that was declared/retrieved as const-qualified.
-            Strict
-        };
-
-
-        /// @brief Helper base class for types representing lockable objects.
-        /// @tparam TMutex       Type of the mutex an instance of the class will contain.
-        /// @tparam tLockAccess Specifies how the mutex can be accessed. Modifies how the public interface is defined.
-        /// Lockable<> is a simple base class which can be used to inject a locking behaviour. Type of the actual lock
-        /// (like std::mutex or some custom ones) can be controlled via first template parameter. The second one controls
-        /// the lock access (see ELockableMutexAccess for more details).
-        /// @example
-        /// Lockable<> also works with ic3SyncAcquire*() macros. This enables a simple syntax to acquire locks:
-        /// @code
-        /// class SharedResource : public Lockable<std::mutex> {};
-        /// SharedResource res;
-        /// // Some time later:
-        /// auto lockGuard = ic3SyncAcquireUnique( res );
-        /// @endcode
-        template <typename TMutex, ELockableMutexAccess tLockAccess = ELockableMutexAccess::Strict>
-        class Lockable;
-
-        /// @brief Specialization of Lockable<> for ELockableMutexAccess::Relaxed.
-        /// Relaxed lock access means, that internal lock is a mutable variable and all public
-        /// lock-related methods are defined as const-qualified (const objects can be locked).
-        template <typename TMutex>
-        class Lockable<TMutex, ELockableMutexAccess::Relaxed>
-        {
-        public:
-            using MutexType = TMutex;
-            using MutexInterface = typename MutexInterface<TMutex>::Type;
-
-        public:
-            Lockable() = default;
-
-            virtual void lock() const
-            {
-                MutexInterface::lock( _mutex );
-            }
-
-            virtual bool tryLock() const
-            {
-                return MutexInterface::tryLock( _mutex );
-            }
-
-            virtual void unlock() const
-            {
-                MutexInterface::unlock( _mutex );
-            }
-
-            TMutex & getMutex() const
-            {
-                return _mutex;
-            }
-
-        protected:
-            mutable TMutex _mutex;
-        };
-
-        /// @brief Specialization of Lockable<> for ELockableMutexAccess::Strict.
-        /// Strict lock access means, that internal lock is a "normal" variable and all public
-        /// lock-related methods are defined as non-const-qualified (const objects CANNOT be locked).
-        template <typename TMutex>
-        class Lockable<TMutex, ELockableMutexAccess::Strict>
-        {
-        public:
-            using MutexType = TMutex;
-            using MutexInterface = typename MutexInterface<TMutex>::Type;
-
-        public:
-            Lockable() = default;
-
-            virtual void lock()
-            {
-                MutexInterface::lock( _mutex );
-            }
-
-            virtual bool tryLock()
-            {
-                return MutexInterface::tryLock( _mutex );
-            }
-
-            virtual void unlock()
-            {
-                MutexInterface::unlock( _mutex );
-            }
-
-            TMutex & getMutex()
-            {
-                return _mutex;
-            }
-
-            const TMutex & getMutex() const
-            {
-                return _mutex;
-            }
-
-        protected:
-            TMutex _mutex;
-        };
-
-        // getMutex() implementation for Lockable<>. Returns the internal lock. It enables all
-        // Lockable objects to be used with ic3SyncAcquireUnique()/ic3SyncAcquireShared() macros.
-
-        template <typename TMutex>
-        inline constexpr TMutex & getLock( const Lockable<TMutex, ELockableMutexAccess::Relaxed> & pLock )
-        {
-            return pLock.getMutex();
+            MutexInterfaceProxy::lock( _mutex );
         }
 
-        template <typename TMutex>
-        inline constexpr TMutex & getLock( Lockable<TMutex, ELockableMutexAccess::Strict> & pLock )
+        virtual bool tryLock() const
         {
-            return pLock.getMutex();
+            return MutexInterfaceProxy::tryLock( _mutex );
         }
 
+        virtual void unlock() const
+        {
+            MutexInterfaceProxy::unlock( _mutex );
+        }
+
+        TPMutex & getMutex() const
+        {
+            return _mutex;
+        }
+
+    protected:
+        mutable TPMutex _mutex;
+    };
+
+    /// @brief Specialization of TLockable<> for ELockableMutexAccess::STRICT.
+    /// STRICT lock access means, that internal lock is a "normal" variable and all public
+    /// lock-related methods are defined as non-const-qualified (const objects CANNOT be locked).
+    template <typename TPMutex>
+    class TLockable<TPMutex, ELockableMutexAccess::STRICT>
+    {
+    public:
+        using MutexType = TPMutex;
+        using MutexInterfaceProxy = typename QMutexInterfaceProxy<TPMutex>::Type;
+
+    public:
+        TLockable() = default;
+
+        virtual void lock()
+        {
+            MutexInterfaceProxy::lock( _mutex );
+        }
+
+        virtual bool tryLock()
+        {
+            return MutexInterfaceProxy::tryLock( _mutex );
+        }
+
+        virtual void unlock()
+        {
+            MutexInterfaceProxy::unlock( _mutex );
+        }
+
+        TPMutex & getMutex()
+        {
+            return _mutex;
+        }
+
+        const TPMutex & getMutex() const
+        {
+            return _mutex;
+        }
+
+    protected:
+        TPMutex _mutex;
+    };
+
+    // getMutex() implementation for TLockable<>. Returns the internal lock. It enables all
+    // TLockable objects to be used with ic3SyncAcquireUnique()/ic3SyncAcquireShared() macros.
+
+    template <typename TPMutex>
+    inline constexpr TPMutex & getLock( const TLockable<TPMutex, ELockableMutexAccess::RELAXED> & pLock )
+    {
+        return pLock.getMutex();
+    }
+
+    template <typename TPMutex>
+    inline constexpr TPMutex & getLock( TLockable<TPMutex, ELockableMutexAccess::STRICT> & pLock )
+    {
+        return pLock.getMutex();
     }
 
 }

@@ -47,19 +47,19 @@ namespace Ic3
 
 		explicit operator bool() const;
 
-		XMLAttribute attribute( const StringView<char> & pAttribName ) const;
+		XMLAttribute attribute( const TStringView<char> & pAttribName ) const;
 
 		XMLNode firstSubNode() const;
 
-		XMLNode firstSubNode( const StringView<char> & pNodeName ) const;
+		XMLNode firstSubNode( const TStringView<char> & pNodeName ) const;
 
 		size_t countSubNodes() const;
 
-		size_t countSubNodes( const StringView<char> & pNodeName ) const;
+		size_t countSubNodes( const TStringView<char> & pNodeName ) const;
 
 		XMLNode nextSibling() const;
 
-		XMLNode nextSibling( const StringView<char> & pNodeName ) const;
+		XMLNode nextSibling( const TStringView<char> & pNodeName ) const;
 
 		XMLNode parent() const;
 
@@ -67,9 +67,9 @@ namespace Ic3
 
 		std::string value() const;
 
-		bool hasAttribute( const StringView<char> & pAttribName ) const;
+		bool hasAttribute( const TStringView<char> & pAttribName ) const;
 
-		bool hasSubNode( const StringView<char> & pNodeName ) const;
+		bool hasSubNode( const TStringView<char> & pNodeName ) const;
 
 		bool hasSubNodes() const;
 

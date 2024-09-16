@@ -26,28 +26,25 @@
 namespace Ic3
 {
 
-	template <typename TEnum>
+	template <typename TPEnum>
 	class EnumTypeInfo;
 
-	template <typename TValue, typename TAllocator = std::allocator<TValue>>
-	using Array = std::vector<TValue, TAllocator>;
-
-	template <typename TResult, typename TSrc>
-	IC3_ATTR_NO_DISCARD inline TResult dynamic_cast_dbg( TSrc * pSource )
+	template <typename TPResult, typename TPSrc>
+	IC3_ATTR_NO_DISCARD inline TPResult dynamic_cast_dbg( TPSrc * pSource )
 	{
 	#if( IC3_DEBUG )
-		auto * targetPtr = dynamic_cast<TResult>( pSource );
+		auto * targetPtr = dynamic_cast<TPResult>( pSource );
 		ic3DebugAssert( targetPtr );
 	#else
-		auto * targetPtr = static_cast<TResult>( pSource );
+		auto * targetPtr = static_cast<TPResult>( pSource );
 	#endif
 		return targetPtr;
 	}
 
-	template <typename TResult, typename TSrc>
-	IC3_ATTR_NO_DISCARD inline TResult dynamic_cast_check( TSrc * pSource )
+	template <typename TPResult, typename TPSrc>
+	IC3_ATTR_NO_DISCARD inline TPResult dynamic_cast_check( TPSrc * pSource )
 	{
-		if( auto * targetPtr = dynamic_cast<TResult>( pSource ) )
+		if( auto * targetPtr = dynamic_cast<TPResult>( pSource ) )
 		{
 			return targetPtr;
 		}
@@ -55,20 +52,20 @@ namespace Ic3
 		return nullptr;
 	}
 
-	template <typename TResult, typename TSrc>
-	IC3_ATTR_NO_DISCARD inline TResult dynamic_cast_throw( TSrc * pSource )
+	template <typename TPResult, typename TPSrc>
+	IC3_ATTR_NO_DISCARD inline TPResult dynamic_cast_throw( TPSrc * pSource )
 	{
-		if( auto * targetPtr = dynamic_cast<TResult>( pSource ) )
+		if( auto * targetPtr = dynamic_cast<TPResult>( pSource ) )
 		{
 			return targetPtr;
 		}
 		throw std::bad_cast();
 	}
 
-	template <typename TResult, typename TSrc>
-	IC3_ATTR_NO_DISCARD inline std::shared_ptr<TResult> dynamic_ptr_cast_check( std::shared_ptr<TSrc> pSource )
+	template <typename TPResult, typename TPSrc>
+	IC3_ATTR_NO_DISCARD inline std::shared_ptr<TPResult> dynamic_ptr_cast_check( std::shared_ptr<TPSrc> pSource )
 	{
-		if( auto targetPtr = std::dynamic_pointer_cast<TResult>( std::move( pSource ) ) )
+		if( auto targetPtr = std::dynamic_pointer_cast<TPResult>( std::move( pSource ) ) )
 		{
 			return targetPtr;
 		}
@@ -76,10 +73,10 @@ namespace Ic3
 		return nullptr;
 	}
 
-	template <typename TResult, typename TSrc>
-	IC3_ATTR_NO_DISCARD inline std::shared_ptr<TResult> dynamic_ptr_cast_throw( std::shared_ptr<TSrc> pSource )
+	template <typename TPResult, typename TPSrc>
+	IC3_ATTR_NO_DISCARD inline std::shared_ptr<TPResult> dynamic_ptr_cast_throw( std::shared_ptr<TPSrc> pSource )
 	{
-		if( auto targetPtr = std::dynamic_pointer_cast<TResult>( std::move( pSource ) ) )
+		if( auto targetPtr = std::dynamic_pointer_cast<TPResult>( std::move( pSource ) ) )
 		{
 			return targetPtr;
 		}

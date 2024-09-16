@@ -28,7 +28,7 @@ namespace Ic3
 	enum : exception_category_value_t
 	{
 		E_EXCEPTION_CATEGORY_FRAMEWORK_CORE_GDS =
-			CxDef::declareExceptionCategory( ExceptionBaseType::FrameworkCore, ic3ExcCategoryIID( 0x7C ) ),
+			CxDef::declareExceptionCategory( EExceptionBaseType::FRAMEWORK_CORE, ic3ExcCategoryIID( 0x7C ) ),
 	};
 
 	class CoreGdsException : public FrameworkCoreException
