@@ -15,16 +15,16 @@ namespace Ic3::Graphics::GCI
 
 	enum ERenderTargetBufferFlags : uint32
 	{
-		E_RENDER_TARGET_BUFFER_FLAG_COLOR_BIT = 0x01,
-		E_RENDER_TARGET_BUFFER_FLAG_DEPTH_BIT = 0x02,
-		E_RENDER_TARGET_BUFFER_FLAG_STENCIL_BIT = 0x04,
+		E_RENDER_TARGET_BUFFER_FLAG_COLORBit = 0x01,
+		E_RENDER_TARGET_BUFFER_FLAG_DEPTHBit = 0x02,
+		E_RENDER_TARGET_BUFFER_FLAG_STENCILBit = 0x04,
 
 		E_RENDER_TARGET_BUFFER_MASK_DEPTH_STENCIL =
-			E_RENDER_TARGET_BUFFER_FLAG_DEPTH_BIT |
-			E_RENDER_TARGET_BUFFER_FLAG_STENCIL_BIT,
+			E_RENDER_TARGET_BUFFER_FLAG_DEPTHBit |
+			E_RENDER_TARGET_BUFFER_FLAG_STENCILBit,
 
 		E_RENDER_TARGET_BUFFER_MASK_ALL =
-			E_RENDER_TARGET_BUFFER_FLAG_COLOR_BIT |
+			E_RENDER_TARGET_BUFFER_FLAG_COLORBit |
 			E_RENDER_TARGET_BUFFER_MASK_DEPTH_STENCIL,
 	};
 
@@ -32,17 +32,17 @@ namespace Ic3::Graphics::GCI
 	enum class ERenderTargetTextureType : uint32
 	{
 		Unknown = 0,
-		RTColor = E_RENDER_TARGET_BUFFER_FLAG_COLOR_BIT,
-		RTDepthOnly = E_RENDER_TARGET_BUFFER_FLAG_DEPTH_BIT,
+		RTColor = E_RENDER_TARGET_BUFFER_FLAG_COLORBit,
+		RTDepthOnly = E_RENDER_TARGET_BUFFER_FLAG_DEPTHBit,
 		RTDepthStencil = E_RENDER_TARGET_BUFFER_MASK_DEPTH_STENCIL,
-		RTStencilOnly = E_RENDER_TARGET_BUFFER_FLAG_STENCIL_BIT,
+		RTStencilOnly = E_RENDER_TARGET_BUFFER_FLAG_STENCILBit,
 	};
 
 	namespace CxDef
 	{
 
 		/// @brief
-		IC3_ATTR_NO_DISCARD inline constexpr Bitmask<uint32> getRTBufferMaskForRenderTargetTextureType(
+		IC3_ATTR_NO_DISCARD inline constexpr TBitmask<uint32> getRTBufferMaskForRenderTargetTextureType(
 				ERenderTargetTextureType pRenderTargetTextureType )
 		{
 			return static_cast<uint32>( pRenderTargetTextureType ) & E_RENDER_TARGET_BUFFER_MASK_ALL;
@@ -52,39 +52,39 @@ namespace Ic3::Graphics::GCI
 		IC3_ATTR_NO_DISCARD inline constexpr uint32 getRTAttachmentRequiredUsageMask( native_uint pAttachmentIndex )
 		{
 			return
-				( pAttachmentIndex < GCM::RT_MAX_COLOR_ATTACHMENTS_NUM ) ?
-				E_GPU_RESOURCE_USAGE_FLAG_RENDER_TARGET_COLOR_BIT :
-				E_GPU_RESOURCE_USAGE_MASK_RENDER_TARGET_DEPTH_STENCIL;
+					( pAttachmentIndex < GCM::cxRTMaxColorAttachmentsNum ) ?
+					eGPUResourceUsageFlagRenderTargetColorBit :
+					eGPUResourceUsageMaskRenderTargetDepthStencil;
 		}
 
 	}
 
 	template <typename TAttachmentProperty>
-	using RenderTargetColorAttachmentPropertyArray = std::array<TAttachmentProperty, GCM::RT_MAX_COLOR_ATTACHMENTS_NUM>;
+	using RenderTargetColorAttachmentPropertyArray = std::array<TAttachmentProperty, GCM::cxRTMaxColorAttachmentsNum>;
 
 	template <typename TAttachmentProperty>
 	struct RenderTargetAttachmentPropertySet
 	{
-		using AttachmentPropertyArray = std::array<TAttachmentProperty, GCM::RT_MAX_COMBINED_ATTACHMENTS_NUM>;
+		using AttachmentPropertyArray = std::array<TAttachmentProperty, GCM::cxRTMaxCombinedAttachmentsNum>;
 
 		AttachmentPropertyArray attachments;
 
-		Bitmask<ERTAttachmentFlags> activeAttachmentsMask = 0;
+		TBitmask<ERTAttachmentFlags> activeAttachmentsMask = 0;
 
-		ArrayView<TAttachmentProperty> const colorAttachments;
+		TArrayView<TAttachmentProperty> const colorAttachments;
 
 		TAttachmentProperty & depthStencilAttachment;
 
 		RenderTargetAttachmentPropertySet()
-		: colorAttachments( bindArrayView( attachments.data(), GCM::RT_MAX_COLOR_ATTACHMENTS_NUM ) )
-		, depthStencilAttachment( attachments[E_RT_ATTACHMENT_INDEX_DEPTH_STENCIL] )
+		: colorAttachments( bindArrayView( attachments.data(), GCM::cxRTMaxColorAttachmentsNum ) )
+		, depthStencilAttachment( attachments[eRTAttachmentIndexDepthStencil] )
 		{}
 
 		RenderTargetAttachmentPropertySet( const RenderTargetAttachmentPropertySet<TAttachmentProperty> & pSource )
 		: attachments( pSource.attachments )
 		, activeAttachmentsMask( pSource.activeAttachmentsMask )
-		, colorAttachments( bindArrayView( attachments.data(), GCM::RT_MAX_COLOR_ATTACHMENTS_NUM ) )
-		, depthStencilAttachment( attachments[E_RT_ATTACHMENT_INDEX_DEPTH_STENCIL] )
+		, colorAttachments( Cppx::bindArrayView( attachments.data(), GCM::cxRTMaxColorAttachmentsNum ) )
+		, depthStencilAttachment( attachments[eRTAttachmentIndexDepthStencil] )
 		{}
 
 		RenderTargetAttachmentPropertySet & operator=( const RenderTargetAttachmentPropertySet<TAttachmentProperty> & pRhs )
@@ -101,7 +101,7 @@ namespace Ic3::Graphics::GCI
 
 		IC3_ATTR_NO_DISCARD uint32 countActiveColorAttachments() const noexcept
 		{
-			return popCount( static_cast<uint32>( activeAttachmentsMask & E_RT_ATTACHMENT_MASK_COLOR_ALL ) );
+			return Cppx::popCount( static_cast<uint32>( activeAttachmentsMask & eRTAttachmentMaskColorAll ) );
 		}
 
 		IC3_ATTR_NO_DISCARD bool isColorAttachmentActive( uint32 pAttachmentIndex ) const noexcept
@@ -112,23 +112,23 @@ namespace Ic3::Graphics::GCI
 
 		IC3_ATTR_NO_DISCARD bool isDepthStencilAttachmentActive() const noexcept
 		{
-			return activeAttachmentsMask.isSet( E_RT_ATTACHMENT_FLAG_DEPTH_STENCIL_BIT );
+			return activeAttachmentsMask.isSet( eRtAttachmentFlagDepthStencilBit );
 		}
 
 		IC3_ATTR_NO_DISCARD bool hasAnyColorAttachmentsActive() const noexcept
 		{
-			return ( activeAttachmentsMask & E_RT_ATTACHMENT_MASK_COLOR_ALL) != 0;
+			return (activeAttachmentsMask & eRTAttachmentMaskColorAll) != 0;
 		}
 	};
 
 	template <typename TAttachmentProperty>
 	struct RenderTargetAttachmentConfigurationSet : public RenderTargetAttachmentPropertySet<TAttachmentProperty>
 	{
-		Bitmask<ERTAttachmentFlags> attachmentsActionResolveMask = 0;
+		TBitmask<ERTAttachmentFlags> attachmentsActionResolveMask = 0;
 
 		IC3_ATTR_NO_DISCARD uint32 countAttachmentsActionResolve() const noexcept
 		{
-			return popCount( static_cast<uint32>( attachmentsActionResolveMask & E_RT_ATTACHMENT_MASK_COLOR_ALL ) );
+			return Cppx::popCount( static_cast<uint32>( attachmentsActionResolveMask & eRTAttachmentMaskColorAll ) );
 		}
 	};
 
@@ -172,16 +172,16 @@ namespace Ic3::Graphics::GCI
 	/// @brief
 	struct RenderTargetAttachmentLayout
 	{
-		ETextureFormat format = ETextureFormat::UNKNOWN;
+		ETextureFormat format = ETextureFormat::Unknown;
 
 		void reset()
 		{
-			format = ETextureFormat::UNKNOWN;
+			format = ETextureFormat::Unknown;
 		}
 
 		bool valid() const noexcept
 		{
-			return format != ETextureFormat::UNKNOWN;
+			return format != ETextureFormat::Unknown;
 		}
 
 		explicit operator bool() const noexcept
@@ -193,12 +193,12 @@ namespace Ic3::Graphics::GCI
 	/// @brief A definition of a vertex layout used to create a driver-specific RenderTargetLayout object.
 	struct RenderTargetLayout : public RenderTargetAttachmentPropertySet<RenderTargetAttachmentLayout>
 	{
-		TextureSize2D sharedImageRect = CxDef::TEXTURE_SIZE_2D_UNDEFINED;
+		TextureSize2D sharedImageRect = cxTextureSize2DUndefined;
 
 		uint32 sharedMSAALevel = 0;
 	};
 
-	namespace smutil
+	namespace SMU
 	{
 
 		IC3_GRAPHICS_GCI_API_NO_DISCARD const RenderTargetAttachmentBinding * getRenderTargetBindingDefinitionFirstTarget(
@@ -223,7 +223,7 @@ namespace Ic3::Graphics::GCI
 	}
 
 	template <typename TFunction>
-	inline bool foreachRTAttachmentIndex( Bitmask<ERTAttachmentFlags> pActiveAttachmentsMask, TFunction pFunction )
+	inline bool foreachRTAttachmentIndex( TBitmask<ERTAttachmentFlags> pActiveAttachmentsMask, TFunction pFunction )
 	{
 		// A local copy of the active attachments mask. Bits of already processed attachments
 		// are removed, so when the value reaches 0, we can immediately stop further processing.
@@ -242,7 +242,7 @@ namespace Ic3::Graphics::GCI
 			{
 				// The function returns false if there was some internal error condition
 				// and the processing should be aborted.
-				if( !pFunction( attachmentIndex, makeBitmaskEx<ERTAttachmentFlags>( attachmentBit ) ) )
+				if( !pFunction( attachmentIndex, Cppx::makeBitmaskEx<ERTAttachmentFlags>( attachmentBit ) ) )
 				{
 					return false;
 				}
@@ -256,7 +256,7 @@ namespace Ic3::Graphics::GCI
 	}
 
 	template <typename TFunction>
-	inline bool foreachRTColorAttachmentIndex( Bitmask<ERTAttachmentFlags> pActiveAttachmentsMask, TFunction pFunction )
+	inline bool foreachRTColorAttachmentIndex( TBitmask<ERTAttachmentFlags> pActiveAttachmentsMask, TFunction pFunction )
 	{
 		// A local copy of the active attachments mask. Bits of already processed attachments
 		// are removed, so when the value reaches 0, we can immediately stop further processing.
@@ -275,7 +275,7 @@ namespace Ic3::Graphics::GCI
 			{
 				// The function returns false if there was some internal error condition
 				// and the processing should be aborted.
-				if( !pFunction( attachmentIndex, makeBitmaskEx<ERTAttachmentFlags>( attachmentBit ) ) )
+				if( !pFunction( attachmentIndex, Cppx::makeBitmaskEx<ERTAttachmentFlags>( attachmentBit ) ) )
 				{
 					return false;
 				}

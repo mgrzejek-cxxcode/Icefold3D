@@ -45,7 +45,7 @@ namespace Ic3::Graphics::GCI
 		return *sNullDriverInstance;
 	}
 
-	void GPUDriver::setConfigFlags( Bitmask<EGPUDriverConfigFlags> pConfigFlags )
+	void GPUDriver::setConfigFlags( TBitmask<EGPUDriverConfigFlags> pConfigFlags )
 	{
 		_configFlags = pConfigFlags;
 	}

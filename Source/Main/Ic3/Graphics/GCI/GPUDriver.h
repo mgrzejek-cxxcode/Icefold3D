@@ -16,10 +16,10 @@ namespace Ic3::Graphics::GCI
 	{
 		System::SysContextHandle sysContext = nullptr;
 		System::SysContextCreateInfo sysContextCreateInfo;
-		Bitmask<EGPUDriverConfigFlags> configFlags = GPU_DRIVER_CONFIG_FLAGS_DEFAULT;
+		TBitmask<EGPUDriverConfigFlags> configFlags = eGPUDriverConfigMaskDefault;
 	};
 
-	class IC3_GRAPHICS_GCI_CLASS GPUDriver : public DynamicInterface
+	class IC3_GRAPHICS_GCI_CLASS GPUDriver : public IDynamicObject
 	{
 	public:
 		System::SysContextHandle const mSysContext;
@@ -32,7 +32,7 @@ namespace Ic3::Graphics::GCI
 
 		IC3_ATTR_NO_DISCARD virtual bool isNullDriver() const noexcept;
 
-		Bitmask<EGPUDriverConfigFlags> getConfigFlags() const;
+		TBitmask<EGPUDriverConfigFlags> getConfigFlags() const;
 
 		bool isDebugFunctionalityRequested() const;
 
@@ -43,7 +43,7 @@ namespace Ic3::Graphics::GCI
 		static GPUDriver & nullDriver();
 
 	protected:
-		void setConfigFlags( Bitmask<EGPUDriverConfigFlags> pConfigFlags );
+		void setConfigFlags( TBitmask<EGPUDriverConfigFlags> pConfigFlags );
 
 	private:
 		virtual DisplayManagerHandle _drvCreateDefaultDisplayManager() = 0;
@@ -52,17 +52,17 @@ namespace Ic3::Graphics::GCI
 
 
 	private:
-		Bitmask<EGPUDriverConfigFlags> _configFlags;
+		TBitmask<EGPUDriverConfigFlags> _configFlags;
 	};
 
-	inline Bitmask<EGPUDriverConfigFlags> GPUDriver::getConfigFlags() const
+	inline TBitmask<EGPUDriverConfigFlags> GPUDriver::getConfigFlags() const
 	{
 		return _configFlags;
 	}
 
 	inline bool GPUDriver::isDebugFunctionalityRequested() const
 	{
-		return _configFlags.isSet( E_GPU_DRIVER_CONFIG_FLAG_ENABLE_DEBUG_LAYER_BIT );
+		return _configFlags.isSet( eGPUDriverConfigFlagEnableDebugLayerBit );
 	}
 
 } // namespace Ic3::Graphics::GCI

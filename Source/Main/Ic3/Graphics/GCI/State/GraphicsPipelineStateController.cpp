@@ -42,7 +42,7 @@ namespace Ic3::Graphics::GCI
 
 	void GraphicsPipelineStateController::resetRenderPassDynamicState()
 	{
-		_currentRenderPassDynamicState.activeStateMask.clear();
+		_currentRenderPassDynamicState.mActiveStateMask.clear();
 	}
 
 	bool GraphicsPipelineStateController::setGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO )
@@ -50,10 +50,10 @@ namespace Ic3::Graphics::GCI
 		if( _currentCommonState.graphicsPSO != &pGraphicsPSO )
 		{
 			_currentCommonState.graphicsPSO = &pGraphicsPSO;
-			_stateUpdateMask.set( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_PSO_BIT );
+			_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonPSOBit );
 		}
 
-		return _stateUpdateMask.isSet( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_PSO_BIT );
+		return _stateUpdateMask.isSet( eGraphicsStateUpdateFlagCommonPSOBit );
 	}
 
 	bool GraphicsPipelineStateController::resetGraphicsPipelineStateObject()
@@ -61,16 +61,16 @@ namespace Ic3::Graphics::GCI
 		if( _currentCommonState.graphicsPSO )
 		{
 			_currentCommonState.graphicsPSO = nullptr;
-			_stateUpdateMask.set( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_PSO_BIT );
+			_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonPSOBit );
 		}
 
-		return _stateUpdateMask.isSet( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_PSO_BIT );
+		return _stateUpdateMask.isSet( eGraphicsStateUpdateFlagCommonPSOBit );
 	}
 
 	bool GraphicsPipelineStateController::setIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState )
 	{
 		_currentCommonState.iaVertexStreamState = &( IAVertexStreamImmutableState::getDynamicOverrideState() );
-		_stateUpdateMask.set( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_VERTEX_STREAM_BIT );
+		_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonVertexStreamBit );
 		return true;
 	}
 
@@ -79,23 +79,23 @@ namespace Ic3::Graphics::GCI
 		if( _currentCommonState.iaVertexStreamState != &pIAVertexStreamState )
 		{
 			_currentCommonState.iaVertexStreamState = &pIAVertexStreamState;
-			_stateUpdateMask.set( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_VERTEX_STREAM_BIT );
+			_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonVertexStreamBit );
 		}
 
-		return _stateUpdateMask.isSet( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_VERTEX_STREAM_BIT );
+		return _stateUpdateMask.isSet( eGraphicsStateUpdateFlagCommonVertexStreamBit );
 	}
 
 	bool GraphicsPipelineStateController::resetIAVertexStreamState()
 	{
 		_currentCommonState.iaVertexStreamState = nullptr;
-		_stateUpdateMask.set( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_VERTEX_STREAM_BIT );
+		_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonVertexStreamBit );
 		return true;
 	}
 
 	bool GraphicsPipelineStateController::setRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState )
 	{
 		_currentCommonState.renderTargetBindingState = &( RenderTargetBindingImmutableState::getDynamicOverrideState() );
-		_stateUpdateMask.set( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_RENDER_TARGET_BINDING_BIT );
+		_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonRenderTargetBindingBit );
 		return true;
 	}
 
@@ -104,16 +104,16 @@ namespace Ic3::Graphics::GCI
 		if( _currentCommonState.renderTargetBindingState != &pRenderTargetBindingState )
 		{
 			_currentCommonState.renderTargetBindingState = &pRenderTargetBindingState;
-			_stateUpdateMask.set( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_RENDER_TARGET_BINDING_BIT );
+			_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonRenderTargetBindingBit );
 		}
 
-		return _stateUpdateMask.isSet( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_RENDER_TARGET_BINDING_BIT );
+		return _stateUpdateMask.isSet( eGraphicsStateUpdateFlagCommonRenderTargetBindingBit );
 	}
 
 	bool GraphicsPipelineStateController::resetRenderTargetBindingState()
 	{
 		_currentCommonState.renderTargetBindingState = nullptr;
-		_stateUpdateMask.set( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_RENDER_TARGET_BINDING_BIT );
+		_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonRenderTargetBindingBit );
 		return true;
 	}
 

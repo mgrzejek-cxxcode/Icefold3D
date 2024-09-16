@@ -56,7 +56,7 @@ namespace Ic3::Graphics::GCI
 		return sDynamicOverrideState;
 	}
 
-	namespace smutil
+	namespace SMU
 	{
 
 		IAInputLayoutStateCommonProperties getIAInputLayoutStateCommonProperties(

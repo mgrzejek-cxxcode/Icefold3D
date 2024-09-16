@@ -54,45 +54,45 @@ namespace Ic3::Graphics::GCI
 
 	void TextureInitDataDesc::initialize( const TextureDimensions & pDimensions )
 	{
-		ic3DebugAssert( pDimensions.arraySize > 0 );
-		ic3DebugAssert( pDimensions.mipLevelsNum > 0 );
+		ic3DebugAssert( pDimensions.mArraySize > 0 );
+		ic3DebugAssert( pDimensions.mMipLevelsNum > 0 );
 
-		if( pDimensions.arraySize == 1 )
+		if( pDimensions.mArraySize == 1 )
 		{
 			subTextureInitDataBasePtr = &_subTextureInitData;
 		}
 		else
 		{
-			_subTextureInitDataArray.resize( pDimensions.arraySize );
+			_subTextureInitDataArray.resize( pDimensions.mArraySize );
 			subTextureInitDataBasePtr = _subTextureInitDataArray.data();
 		}
 
-		for( uint32 subTextureIndex = 0; subTextureIndex < pDimensions.arraySize; ++subTextureIndex )
+		for( uint32 subTextureIndex = 0; subTextureIndex < pDimensions.mArraySize; ++subTextureIndex )
 		{
 			auto & subTextureInitData = subTextureInitDataBasePtr[subTextureIndex];
-			subTextureInitData.subTextureIndex = subTextureIndex;
+			subTextureInitData.mSubTextureIndex = subTextureIndex;
 
-			uint32 mipLevelWidth = pDimensions.width;
-			uint32 mipLevelHeight = pDimensions.height;
-			uint32 mipLevelDepth = pDimensions.depth;
+			uint32 mipLevelWidth = pDimensions.mWidth;
+			uint32 mipLevelHeight = pDimensions.mHeight;
+			uint32 mipLevelDepth = pDimensions.mDepth;
 
-			for( uint32 mipLevelIndex = 0; mipLevelIndex < pDimensions.mipLevelsNum; ++mipLevelIndex )
+			for( uint32 mipLevelIndex = 0; mipLevelIndex < pDimensions.mMipLevelsNum; ++mipLevelIndex )
 			{
-				auto & mipLevelInitData = subTextureInitData.mipLevelInitDataArray[mipLevelIndex];
-				mipLevelInitData.mipLevelIndex = mipLevelIndex;
-				mipLevelInitData.mipWidth = mipLevelWidth;
-				mipLevelInitData.mipHeight = mipLevelHeight;
-				mipLevelInitData.mipDepth = mipLevelDepth;
+				auto & mipLevelInitData = subTextureInitData.mMipLevelInitDataArray[mipLevelIndex];
+				mipLevelInitData.mMipLevelIndex = mipLevelIndex;
+				mipLevelInitData.mMipWidth = mipLevelWidth;
+				mipLevelInitData.mMipHeight = mipLevelHeight;
+				mipLevelInitData.mMipDepth = mipLevelDepth;
 
 				mipLevelWidth = getMaxOf( mipLevelWidth >> 1, 1u );
 				mipLevelHeight = getMaxOf( mipLevelHeight >> 1, 1u );
 				mipLevelDepth = getMaxOf( mipLevelDepth >> 1, 1u );
 			}
 
-			if( pDimensions.mipLevelsNum > 1 )
+			if( pDimensions.mMipLevelsNum > 1 )
 			{
-				const auto & sMipLevel = subTextureInitData.mipLevelInitDataArray[pDimensions.mipLevelsNum - 2];
-				ic3DebugAssert( ( sMipLevel.mipWidth != 1 ) || ( sMipLevel.mipHeight != 1 ) || ( sMipLevel.mipDepth != 1 ) );
+				const auto & sMipLevel = subTextureInitData.mMipLevelInitDataArray[pDimensions.mMipLevelsNum - 2];
+				ic3DebugAssert((sMipLevel.mMipWidth != 1 ) || (sMipLevel.mMipHeight != 1 ) || (sMipLevel.mMipDepth != 1 ) );
 			}
 		}
 	}
@@ -137,12 +137,12 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	namespace rcutil
+	namespace RCU
 	{
 
 		static const TextureLayout sInvalidTextureLayout {
 			ETextureClass::Unknown,
-			ETextureFormat::UNKNOWN,
+			ETextureFormat::Unknown,
 			TextureDimensions {
 				0, 0, 0, 0, 0
 			},
@@ -153,20 +153,20 @@ namespace Ic3::Graphics::GCI
 
 		bool checkTextureFormatAndBindFlagsCompatibility(
 				ETextureFormat pTextureFormat,
-				Bitmask<resource_flags_value_t> pBindFlags )
+				TBitmask<resource_flags_value_t> pBindFlags )
 		{
-			if( pBindFlags.isSet( E_GPU_RESOURCE_USAGE_MASK_RENDER_TARGET_DEPTH_STENCIL ) )
+			if( pBindFlags.isSet( eGPUResourceUsageMaskRenderTargetDepthStencil ) )
 			{
 				return ( pTextureFormat == ETextureFormat::D24UNS8U );
 			}
-			else if( pBindFlags.isSet( E_GPU_RESOURCE_USAGE_FLAG_RENDER_TARGET_DEPTH_BIT ) )
+			else if( pBindFlags.isSet( eGPUResourceUsageFlagRenderTargetDepthBit ) )
 			{
 				return
 					( pTextureFormat == ETextureFormat::D16UN ) ||
 					( pTextureFormat == ETextureFormat::D24UNX8 ) ||
 					( pTextureFormat == ETextureFormat::D32F );
 			}
-			else if( pBindFlags.isSet( E_GPU_RESOURCE_USAGE_FLAG_RENDER_TARGET_STENCIL_BIT ) )
+			else if( pBindFlags.isSet( eGPUResourceUsageFlagRenderTargetStencilBit ) )
 			{
 				return ( pTextureFormat == ETextureFormat::X24S8U );
 			}
@@ -187,10 +187,10 @@ namespace Ic3::Graphics::GCI
 		RenderTargetTextureLayout queryRenderTargetTextureLayoutForTexture( const TextureLayout & pTextureLayout ) noexcept
 		{
 			RenderTargetTextureLayout rttLayout{};
-			rttLayout.internalFormat = pTextureLayout.internalFormat;
-			rttLayout.msaaLevel = pTextureLayout.msaaLevel;
-			rttLayout.imageRect.width = pTextureLayout.dimensions.width;
-			rttLayout.imageRect.height = pTextureLayout.dimensions.height;
+			rttLayout.mInternalFormat = pTextureLayout.mInternalFormat;
+			rttLayout.mMSAALevel = pTextureLayout.mMSAALevel;
+			rttLayout.mImageRect.mWidth = pTextureLayout.mDimensions.mWidth;
+			rttLayout.mImageRect.mHeight = pTextureLayout.mDimensions.mHeight;
 			return rttLayout;
 		}
 

@@ -7,14 +7,14 @@
 namespace Ic3::Graphics::GCI
 {
 
-	template <typename TScalar>
+	template <typename TPScalar>
 	struct QBaseScalarDataTypeTraits;
 
 	template <>
 	struct QBaseScalarDataTypeTraits<int8>
 	{
 		static constexpr auto sBaseDataType = EBaseDataType::Byte;
-		static constexpr auto sBaseDataFlags = E_GPU_DATA_FORMAT_FLAG_TYPE_SIGNED_BIT;
+		static constexpr auto sBaseDataFlags = eGPUDataFormatFlagTypeSignedBit;
 		static constexpr auto sByteSize = 1;
 	};
 
@@ -22,7 +22,7 @@ namespace Ic3::Graphics::GCI
 	struct QBaseScalarDataTypeTraits<uint8>
 	{
 		static constexpr auto sBaseDataType = EBaseDataType::Ubyte;
-		static constexpr auto sBaseDataFlags = E_GPU_DATA_FORMAT_FLAG_TYPE_UNSIGNED_BIT;
+		static constexpr auto sBaseDataFlags = eGPUDataFormatFlagTypeUnsignedBit;
 		static constexpr auto sByteSize = 1;
 	};
 
@@ -30,7 +30,7 @@ namespace Ic3::Graphics::GCI
 	struct QBaseScalarDataTypeTraits<int16>
 	{
 		static constexpr auto sBaseDataType = EBaseDataType::Int16;
-		static constexpr auto sBaseDataFlags = E_GPU_DATA_FORMAT_FLAG_TYPE_SIGNED_BIT;
+		static constexpr auto sBaseDataFlags = eGPUDataFormatFlagTypeSignedBit;
 		static constexpr auto sByteSize = 2;
 	};
 
@@ -38,7 +38,7 @@ namespace Ic3::Graphics::GCI
 	struct QBaseScalarDataTypeTraits<uint16>
 	{
 		static constexpr auto sBaseDataType = EBaseDataType::Uint16;
-		static constexpr auto sBaseDataFlags = E_GPU_DATA_FORMAT_FLAG_TYPE_UNSIGNED_BIT;
+		static constexpr auto sBaseDataFlags = eGPUDataFormatFlagTypeUnsignedBit;
 		static constexpr auto sByteSize = 2;
 	};
 
@@ -46,7 +46,7 @@ namespace Ic3::Graphics::GCI
 	struct QBaseScalarDataTypeTraits<int32>
 	{
 		static constexpr auto sBaseDataType = EBaseDataType::Int32;
-		static constexpr auto sBaseDataFlags = E_GPU_DATA_FORMAT_FLAG_TYPE_SIGNED_BIT;
+		static constexpr auto sBaseDataFlags = eGPUDataFormatFlagTypeSignedBit;
 		static constexpr auto sByteSize = 4;
 	};
 
@@ -54,7 +54,7 @@ namespace Ic3::Graphics::GCI
 	struct QBaseScalarDataTypeTraits<uint32>
 	{
 		static constexpr auto sBaseDataType = EBaseDataType::Uint32;
-		static constexpr auto sBaseDataFlags = E_GPU_DATA_FORMAT_FLAG_TYPE_UNSIGNED_BIT;
+		static constexpr auto sBaseDataFlags = eGPUDataFormatFlagTypeUnsignedBit;
 		static constexpr auto sByteSize = 4;
 	};
 
@@ -62,61 +62,61 @@ namespace Ic3::Graphics::GCI
 	struct QBaseScalarDataTypeTraits<float>
 	{
 		static constexpr auto sBaseDataType = EBaseDataType::Float32;
-		static constexpr auto sBaseDataFlags = E_GPU_DATA_FORMAT_FLAG_TYPE_SIGNED_BIT;
+		static constexpr auto sBaseDataFlags = eGPUDataFormatFlagTypeSignedBit;
 		static constexpr auto sByteSize = 4;
 	};
 
 	template <typename TMathType>
 	struct QVertexAttribFormatDataTypeTraits;
 
-	template <size_t tSize>
-	struct QVertexAttribFormatDataTypeTraits<Math::Vector<int64, tSize>>;
+	template <size_t tpSize>
+	struct QVertexAttribFormatDataTypeTraits<Math::Vector<int64, tpSize>>;
 
-	template <size_t tSize>
-	struct QVertexAttribFormatDataTypeTraits<Math::Vector<uint64, tSize>>;
+	template <size_t tpSize>
+	struct QVertexAttribFormatDataTypeTraits<Math::Vector<uint64, tpSize>>;
 
-	template <size_t tSize>
-	struct QVertexAttribFormatDataTypeTraits<Math::Vector<double, tSize>>;
+	template <size_t tpSize>
+	struct QVertexAttribFormatDataTypeTraits<Math::Vector<double, tpSize>>;
 
-	template <size_t tRows, size_t tColumns>
-	struct QVertexAttribFormatDataTypeTraits<Math::Matrix<int64, tRows, tColumns>>;
+	template <size_t tpRows, size_t tpColumns>
+	struct QVertexAttribFormatDataTypeTraits<Math::Matrix<int64, tpRows, tpColumns>>;
 
-	template <size_t tRows, size_t tColumns>
-	struct QVertexAttribFormatDataTypeTraits<Math::Matrix<uint64, tRows, tColumns>>;
+	template <size_t tpRows, size_t tpColumns>
+	struct QVertexAttribFormatDataTypeTraits<Math::Matrix<uint64, tpRows, tpColumns>>;
 
-	template <size_t tRows, size_t tColumns>
-	struct QVertexAttribFormatDataTypeTraits<Math::Matrix<double, tRows, tColumns>>;
+	template <size_t tpRows, size_t tpColumns>
+	struct QVertexAttribFormatDataTypeTraits<Math::Matrix<double, tpRows, tpColumns>>;
 
-	template <typename TScalar, size_t tSize>
-	struct QVertexAttribFormatDataTypeTraits<Math::Vector<TScalar, tSize>>
+	template <typename TPScalar, size_t tpSize>
+	struct QVertexAttribFormatDataTypeTraits<Math::Vector<TPScalar, tpSize>>
 	{
-		using BaseDataType = TScalar;
+		using BaseDataType = TPScalar;
 
 		static constexpr auto sAttribComponentsNum = 1;
-		static constexpr auto sScalarValuesNum = tSize;
-		static constexpr auto sComponentSizeInBytes = sizeof( BaseDataType ) * tSize;
+		static constexpr auto sScalarValuesNum = tpSize;
+		static constexpr auto sComponentSizeInBytes = sizeof( BaseDataType ) * tpSize;
 		static constexpr auto sSizeInBytes = sComponentSizeInBytes;
 
 		static constexpr auto sBaseAttribFormat = ( EVertexAttribFormat )CxDef::declareVertexAttribFormat(
-				QBaseScalarDataTypeTraits<TScalar>::sBaseDataType,
-				tSize,
-				QBaseScalarDataTypeTraits<TScalar>::sBaseDataFlags );
+				QBaseScalarDataTypeTraits<TPScalar>::sBaseDataType,
+				tpSize,
+				QBaseScalarDataTypeTraits<TPScalar>::sBaseDataFlags );
 	};
 
-	template <typename TScalar, size_t tRows, size_t tColumns>
-	struct QVertexAttribFormatDataTypeTraits<Math::Matrix<TScalar, tRows, tColumns>>
+	template <typename TPScalar, size_t tpRows, size_t tpColumns>
+	struct QVertexAttribFormatDataTypeTraits<Math::Matrix<TPScalar, tpRows, tpColumns>>
 	{
-		using BaseDataType = TScalar;
+		using BaseDataType = TPScalar;
 
-		static constexpr auto sAttribComponentsNum = tRows;
-		static constexpr auto sScalarValuesNum = tRows * tColumns;
-		static constexpr auto sComponentSizeInBytes = sizeof( BaseDataType ) * tColumns;
+		static constexpr auto sAttribComponentsNum = tpRows;
+		static constexpr auto sScalarValuesNum = tpRows * tpColumns;
+		static constexpr auto sComponentSizeInBytes = sizeof( BaseDataType ) * tpColumns;
 		static constexpr auto sSizeInBytes = sComponentSizeInBytes * sAttribComponentsNum;
 
 		static constexpr auto sBaseAttribFormat = ( EVertexAttribFormat )CxDef::declareVertexAttribFormat(
-				QBaseScalarDataTypeTraits<TScalar>::sBaseDataType,
-				tColumns,
-				QBaseScalarDataTypeTraits<TScalar>::sBaseDataFlags );
+				QBaseScalarDataTypeTraits<TPScalar>::sBaseDataType,
+				tpColumns,
+				QBaseScalarDataTypeTraits<TPScalar>::sBaseDataFlags );
 	};
 
 	template <>

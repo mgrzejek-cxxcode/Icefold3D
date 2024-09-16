@@ -26,7 +26,7 @@ namespace Ic3::Graphics::GCI
 
 	/// @brief An extra wrapper for data required to create an immutable state object.
 	/// Used to pack the data together and avoid changing function signatures when a change is made.
-	template <typename TInputDesc>
+	template <typename TPInputDesc>
 	struct PipelineImmutableStateCreateInfo
 	{
 		/// A unique name given to an immutable state object.
@@ -36,7 +36,7 @@ namespace Ic3::Graphics::GCI
 		RefWrapper<const UniqueGPUObjectName> uniqueName;
 
 		/// Data needed to initialize the state. Different for every state type.
-		RefWrapper<const TInputDesc> inputDesc;
+		RefWrapper<const TPInputDesc> inputDesc;
 	};
 
 	/// @brief A "sub-cache" used by the actual cache. Manages single state type.
@@ -50,7 +50,7 @@ namespace Ic3::Graphics::GCI
 
 		~PipelineImmutableStateSubCache() = default;
 
-		IC3_ATTR_NO_DISCARD GpaHandle<TState> getState( UniqueGPUObjectID pStateObjectID ) const noexcept
+		IC3_ATTR_NO_DISCARD TGPAHandle<TState> getState( UniqueGPUObjectID pStateObjectID ) const noexcept
 		{
 			const auto existingStateRef = _cachedStates.find( pStateObjectID.asValue() );
 
@@ -63,14 +63,14 @@ namespace Ic3::Graphics::GCI
 			return nullptr;
 		}
 
-		IC3_ATTR_NO_DISCARD GpaHandle<TState> getState( const UniqueGPUObjectName & pStateObjectName ) const noexcept
+		IC3_ATTR_NO_DISCARD TGPAHandle<TState> getState( const UniqueGPUObjectName & pStateObjectName ) const noexcept
 		{
 			const auto uniqueID = generateUniqueGPUObjectID( pStateObjectName );
 			return getState( uniqueID );
 		}
 
 		template <typename TCreateData, typename... TArgs>
-		GpaHandle<TState> createState( PipelineImmutableStateCreateInfo<TCreateData> pCreateInfo, TArgs && ...pArgs )
+		TGPAHandle<TState> createState( PipelineImmutableStateCreateInfo<TCreateData> pCreateInfo, TArgs && ...pArgs )
 		{
 			const auto controlInputHash = hashCompute<EHashAlgo::FNV1A64>( pCreateInfo.inputDesc.get() );
 
@@ -128,11 +128,11 @@ namespace Ic3::Graphics::GCI
 		/// The data stored internally for every cached state object.
 		struct CachedStateData
 		{
-			using ControlInputHash = SHashObject<EHashAlgo::FNV1A64>;
+			using ControlInputHash = THashObject<EHashAlgo::FNV1A64>;
 			/// Control hash which is a hash of the inputDesc (passed inside the createInfo struct).
 			ControlInputHash controlInputHash;
 			/// The actual immutable state.
-			GpaHandle<TState> immutableStateObject;
+			TGPAHandle<TState> immutableStateObject;
 		};
 
 		using cache_map_key_t = UniqueGPUObjectID::ValueType;
@@ -165,33 +165,33 @@ namespace Ic3::Graphics::GCI
 		{}
 
 		template <typename TState>
-		IC3_ATTR_NO_DISCARD GpaHandle<TState> getState( UniqueGPUObjectID pStateObjectID ) const noexcept
+		IC3_ATTR_NO_DISCARD TGPAHandle<TState> getState( UniqueGPUObjectID pStateObjectID ) const noexcept
 		{
 			auto & subCache = _subCacheProxy<TState>();
 			return subCache.getState( pStateObjectID );
 		}
 
 		template <typename TState>
-		IC3_ATTR_NO_DISCARD GpaHandle<TState> getState( const UniqueGPUObjectName & pStateObjectName ) const noexcept
+		IC3_ATTR_NO_DISCARD TGPAHandle<TState> getState( const UniqueGPUObjectName & pStateObjectName ) const noexcept
 		{
 			auto & subCache = _subCacheProxy<TState>();
 			return subCache.getState( pStateObjectName );
 		}
 
-		template <typename TState, typename TInputDesc, typename... TArgs>
-		GpaHandle<TState> createState( UniqueGPUObjectID pUniqueID, const TInputDesc & pInputDesc, TArgs && ...pArgs )
+		template <typename TState, typename TPInputDesc, typename... TArgs>
+		TGPAHandle<TState> createState( UniqueGPUObjectID pUniqueID, const TPInputDesc & pInputDesc, TArgs && ...pArgs )
 		{
-			PipelineImmutableStateCreateInfo<TInputDesc> createInfo{};
+			PipelineImmutableStateCreateInfo<TPInputDesc> createInfo{};
 			createInfo.uniqueID = pUniqueID;
 			createInfo.inputDesc = std::ref( pInputDesc );
 			auto & subCache = _subCacheProxy<TState>();
 			return subCache.createState( std::move( createInfo ), std::forward<TArgs>( pArgs )... );
 		}
 
-		template <typename TState, typename TInputDesc, typename... TArgs>
-		GpaHandle<TState> createState( const UniqueGPUObjectName & pUniqueName, const TInputDesc & pInputDesc, TArgs && ...pArgs )
+		template <typename TState, typename TPInputDesc, typename... TArgs>
+		TGPAHandle<TState> createState( const UniqueGPUObjectName & pUniqueName, const TPInputDesc & pInputDesc, TArgs && ...pArgs )
 		{
-			PipelineImmutableStateCreateInfo<TInputDesc> createInfo{};
+			PipelineImmutableStateCreateInfo<TPInputDesc> createInfo{};
 			createInfo.uniqueName = std::ref( pUniqueName );
 			createInfo.inputDesc = std::ref( pInputDesc );
 			auto & subCache = _subCacheProxy<TState>();
@@ -205,30 +205,30 @@ namespace Ic3::Graphics::GCI
 			return subCache.reset();
 		}
 
-		void reset( Bitmask<EPipelineImmutableStateTypeFlags> pResetMask = E_PIPELINE_IMMUTABLE_STATE_TYPE_MASK_ALL )
+		void reset( TBitmask<EPipelineImmutableStateTypeFlags> pResetMask = ePipelineImmutableStateTypeMaskAll )
 		{
-			if( pResetMask.isSet( E_PIPELINE_IMMUTABLE_STATE_TYPE_FLAG_BLEND_BIT ) )
+			if( pResetMask.isSet( ePipelineImmutableStateTypeFlagBlendBit ) )
 				_stateSubCacheBlend.reset();
 
-			if( pResetMask.isSet( E_PIPELINE_IMMUTABLE_STATE_TYPE_FLAG_DEPTH_STENCIL_BIT ) )
+			if( pResetMask.isSet( ePipelineImmutableStateTypeFlagDepthStencilBit ) )
 				_stateSubCacheDepthStencil.reset();
 
-			if( pResetMask.isSet( E_PIPELINE_IMMUTABLE_STATE_TYPE_FLAG_GRAPHICS_SHADER_LINKAGE_BIT ) )
+			if( pResetMask.isSet( ePipelineImmutableStateTypeFlagGraphicsShaderLinkageBit ) )
 				_stateSubCacheGraphicsShaderLinkage.reset();
 
-			if( pResetMask.isSet( E_PIPELINE_IMMUTABLE_STATE_TYPE_FLAG_IA_INPUT_LAYOUT_BIT ) )
+			if( pResetMask.isSet( ePipelineImmutableStateTypeFlagIAInputLayoutBit ) )
 				_stateSubCacheIAInputLayout.reset();
 
-			if( pResetMask.isSet( E_PIPELINE_IMMUTABLE_STATE_TYPE_FLAG_IA_VERTEX_STREAM_BIT ) )
+			if( pResetMask.isSet( ePipelineImmutableStateTypeFlagIAVertexStreamBit ) )
 				_stateSubCacheIAVertexStream.reset();
 
-			if( pResetMask.isSet( E_PIPELINE_IMMUTABLE_STATE_TYPE_FLAG_RASTERIZER_BIT ) )
+			if( pResetMask.isSet( ePipelineImmutableStateTypeFlagRasterizerBit ) )
 				_stateSubCacheRasterizer.reset();
 
-			if( pResetMask.isSet( E_PIPELINE_IMMUTABLE_STATE_TYPE_FLAG_RENDER_TARGET_BINDING_BIT ) )
+			if( pResetMask.isSet( ePipelineImmutableStateTypeFlagRenderTargetBindingBit ) )
 				_stateSubCacheRenderTargetBinding.reset();
 
-			if( pResetMask.isSet( E_PIPELINE_IMMUTABLE_STATE_TYPE_FLAG_RENDER_PASS_BIT ) )
+			if( pResetMask.isSet( ePipelineImmutableStateTypeFlagRenderPassBit ) )
 				_stateSubCacheRenderPassConfiguration.reset();
 		}
 

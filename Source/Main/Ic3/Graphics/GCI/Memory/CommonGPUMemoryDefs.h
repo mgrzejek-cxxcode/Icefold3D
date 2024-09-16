@@ -21,17 +21,17 @@ namespace Ic3::Graphics::GCI
     using gpu_memory_heap_id_t = uint64;
     using gpu_memory_pool_id_t = uint64;
 
-    using GPUMemoryRegion = Cppx::SRegion<gpu_memory_size_t>;
+    using GPUMemoryRegion = TRegion<gpu_memory_size_t>;
     using GPUMemoryRange = GPUMemoryRegion::RangeType;
 
 	namespace CxDef
 	{
 
 		/// @brief
-		inline constexpr gpu_memory_size_t GPU_MEMORY_OFFSET_INVALID = Cppx::QLimits<gpu_memory_size_t>::maxValue;
+		inline constexpr gpu_memory_size_t GPU_MEMORY_OFFSET_INVALID = Cppx::QLimits<gpu_memory_size_t>::sMaxValue;
 
 		/// @brief
-		inline constexpr gpu_memory_size_t GPU_MEMORY_SIZE_MAX = Cppx::QLimits<gpu_memory_size_t>::maxValue;
+		inline constexpr gpu_memory_size_t GPU_MEMORY_SIZE_MAX = Cppx::QLimits<gpu_memory_size_t>::sMaxValue;
 
 	}
 
@@ -39,96 +39,96 @@ namespace Ic3::Graphics::GCI
 	enum EGPUMemoryFlags : gpu_memory_flags_value_t
 	{
 		// Memory has a READ access granted to the CPU.
-		E_GPU_MEMORY_ACCESS_FLAG_CPU_READ_BIT   = 0x0001,
+		eGPUMemoryAccessFlagCPUReadBit   = 0x0001,
 
 		// Memory has a WRITE access granted to the CPU.
 		// Note: if a region of device-local memory has a WRITE access, but the READ access is (or may be) missing,
 		// the app must ensure it does not read any content of the memory (including potential compiler-issued code).
 		// This can cause a significant performance penalty.
-		E_GPU_MEMORY_ACCESS_FLAG_CPU_WRITE_BIT  = 0x0002,
+		eGPUMemoryAccessFlagCPUWriteBit  = 0x0002,
 
 		// Memory has a READ access granted to the GPU.
-		E_GPU_MEMORY_ACCESS_FLAG_GPU_READ_BIT   = 0x0004,
+		eGPUMemoryAccessFlagGPUReadBit   = 0x0004,
 
 		// Memory has a WRITE access granted to the GPU.
-		E_GPU_MEMORY_ACCESS_FLAG_GPU_WRITE_BIT  = 0x0008,
+		eGPUMemoryAccessFlagGPUWriteBit  = 0x0008,
 
 		// A helper constant yielding both READ and WRITE CPU access.
-		E_GPU_MEMORY_ACCESS_MASK_CPU_READ_WRITE = E_GPU_MEMORY_ACCESS_FLAG_CPU_READ_BIT | E_GPU_MEMORY_ACCESS_FLAG_CPU_WRITE_BIT,
+		eGPUMemoryAccessMaskCPUReadWrite = eGPUMemoryAccessFlagCPUReadBit | eGPUMemoryAccessFlagCPUWriteBit,
 
 		// Mask with all valid ACCESS_FLAG_CPU bits set.
-		E_GPU_MEMORY_ACCESS_MASK_CPU_ALL        = E_GPU_MEMORY_ACCESS_MASK_CPU_READ_WRITE,
+		eGPUMemoryAccessMaskCPUAll        = eGPUMemoryAccessMaskCPUReadWrite,
 
 		// A helper constant yielding both READ and WRITE GPU access.
-		E_GPU_MEMORY_ACCESS_MASK_GPU_READ_WRITE = E_GPU_MEMORY_ACCESS_FLAG_GPU_READ_BIT | E_GPU_MEMORY_ACCESS_FLAG_GPU_WRITE_BIT,
+		eGPUMemoryAccessMaskGPUReadWrite = eGPUMemoryAccessFlagGPUReadBit | eGPUMemoryAccessFlagGPUWriteBit,
 
 		// Mask with all valid ACCESS_FLAG_GPU bits set.
-		E_GPU_MEMORY_ACCESS_MASK_GPU_ALL        = E_GPU_MEMORY_ACCESS_MASK_GPU_READ_WRITE,
+		eGPUMemoryAccessMaskGPUAll        = eGPUMemoryAccessMaskGPUReadWrite,
 
 		// Mask with all valid ACCESS_FLAG bits set.
-		E_GPU_MEMORY_ACCESS_MASK_ALL            = E_GPU_MEMORY_ACCESS_MASK_CPU_ALL | E_GPU_MEMORY_ACCESS_MASK_GPU_ALL,
+		eGPUMemoryAccessMaskAll            = eGPUMemoryAccessMaskCPUAll | eGPUMemoryAccessMaskGPUAll,
 
 		// Memory heap is CPU-cached, which means all host-side writes are not visible to the device until
 		// an explicit flush is performed on the modified memory range.
-		E_GPU_MEMORY_HEAP_PROPERTY_FLAG_CPU_CACHED_BIT     = 0x0010,
+		eGPUMemoryHeapPropertyFlagCPUCachedBit     = 0x0010,
 
 		// Memory heap is CPU-coherent. All host accesses to this memory is automatically made visible to the device.
 		// Mapped memory without this flag will require an explicit Flush() to make CPU writes visible to the GPU.
-		E_GPU_MEMORY_HEAP_PROPERTY_FLAG_CPU_COHERENT_BIT   = 0x0020,
+		eGPUMemoryHeapPropertyFlagCPUCoherentBit   = 0x0020,
 
 		// Memory heap is GPU-coherent. All device accesses to this memory is automatically made visible to the host.
 		// Mapped memory without this flag will require an explicit Invalidate() to make GPU writes visible to the CPU.
-		E_GPU_MEMORY_HEAP_PROPERTY_FLAG_GPU_COHERENT_BIT   = 0x0040,
+		eGPUMemoryHeapPropertyFlagGPUCoherentBit   = 0x0040,
 
 		// Memory heap supports persistent mapping. It can be mapped once and such map pointer can be used as long as
 		// the app needs to. Persistent mapping may require additional visibility control depending on caching/coherency.
-		E_GPU_MEMORY_HEAP_PROPERTY_FLAG_PERSISTENT_MAP_BIT = 0x0080,
+		eGPUMemoryHeapPropertyFlagPersistentMapBit = 0x0080,
 
 		// Mask with all valid HEAP_PROPERTY_FLAG bits set.
-		E_GPU_MEMORY_HEAP_PROPERTY_MASK_ALL                = 0x00F0,
+		eGPUMemoryHeapPropertyMaskAll                = 0x00F0,
 	};
 
 	/// @brief
 	enum EGPUMemoryMapFlags : gpu_memory_flags_value_t
 	{
 		// Memory is mapped with read-only permission.
-		E_GPU_MEMORY_MAP_FLAG_ACCESS_READ_BIT       = E_GPU_MEMORY_ACCESS_FLAG_CPU_READ_BIT,
+		eGPUMemoryMapFlagAccessReadBit       = eGPUMemoryAccessFlagCPUReadBit,
 
 		// Memory is mapped with both read and write permissions.
-		E_GPU_MEMORY_MAP_FLAG_ACCESS_READ_WRITE_BIT = E_GPU_MEMORY_ACCESS_MASK_CPU_READ_WRITE,
+		eGPUMemoryMapFlagAccessReadWriteBit = eGPUMemoryAccessMaskCPUReadWrite,
 
 		// Resource is mapped with write-only permission.
-		E_GPU_MEMORY_MAP_FLAG_ACCESS_WRITE_BIT      = E_GPU_MEMORY_ACCESS_FLAG_CPU_WRITE_BIT,
+		eGPUMemoryMapFlagAccessWriteBit      = eGPUMemoryAccessFlagCPUWriteBit,
 
 		// Resource is mapped with write-only permission. However, application must ensure, that sections of the
 		// resource, that could be potentially in use, will not be affected. Write operations should be performed
 		// only on uninitialized sections of the resource. Since driver assumes that guarantee, this access mode
-		// is more efficient than E_GPU_MEMORY_MAP_FLAG_ACCESS_WRITE_BIT, because it does not involve a CPU<>GPU syncs.
+		// is more efficient than E_GPU_MEMORY_MAP_FLAG_ACCESS_WRITEBit, because it does not involve a CPU<>GPU syncs.
 		// Modifying sections which are in use is an undefined behaviour.
-		E_GPU_MEMORY_MAP_FLAG_WRITE_APPEND_BIT      = 0x1000 | E_GPU_MEMORY_MAP_FLAG_ACCESS_WRITE_BIT,
+		eGPUMemoryMapFlagWriteAppendBit      = 0x1000 | eGPUMemoryMapFlagAccessWriteBit,
 
 		// Resource is mapped with write-only permission. After resource is mapped, all its data is discarded and
 		// becomes undefined. This access can only be used in case of resources with dynamic usage.
-		E_GPU_MEMORY_MAP_FLAG_WRITE_INVALIDATE_BIT  = 0x2000 | E_GPU_MEMORY_MAP_FLAG_ACCESS_WRITE_BIT,
+		eGPUMemoryMapFlagWriteInvalidateBit  = 0x2000 | eGPUMemoryMapFlagAccessWriteBit,
 	};
 
 	/// @brief
 	enum class EGPUMemoryMapMode : uint32
 	{
-	    /// @see EGPUMemoryMapFlags::E_GPU_MEMORY_MAP_FLAG_ACCESS_READ_BIT
-		ReadOnly = E_GPU_MEMORY_MAP_FLAG_ACCESS_READ_BIT,
+	    /// @see EGPUMemoryMapFlags::E_GPU_MEMORY_MAP_FLAG_ACCESS_READBit
+		ReadOnly = eGPUMemoryMapFlagAccessReadBit,
 
-		/// @see EGPUMemoryMapFlags::E_GPU_MEMORY_MAP_FLAG_ACCESS_READ_WRITE_BIT
-		ReadWrite = E_GPU_MEMORY_MAP_FLAG_ACCESS_READ_WRITE_BIT,
+		/// @see EGPUMemoryMapFlags::E_GPU_MEMORY_MAP_FLAG_ACCESS_READ_WRITEBit
+		ReadWrite = eGPUMemoryMapFlagAccessReadWriteBit,
 
-		/// @see EGPUMemoryMapFlags::E_GPU_MEMORY_MAP_FLAG_ACCESS_WRITE_BIT
-		WriteDefault = E_GPU_MEMORY_MAP_FLAG_ACCESS_WRITE_BIT,
+		/// @see EGPUMemoryMapFlags::E_GPU_MEMORY_MAP_FLAG_ACCESS_WRITEBit
+		WriteDefault = eGPUMemoryMapFlagAccessWriteBit,
 
-		/// @see EGPUMemoryMapFlags::E_GPU_MEMORY_MAP_FLAG_WRITE_APPEND_BIT
-		WriteAppend = E_GPU_MEMORY_MAP_FLAG_WRITE_APPEND_BIT,
+		/// @see EGPUMemoryMapFlags::E_GPU_MEMORY_MAP_FLAG_WRITE_APPENDBit
+		WriteAppend = eGPUMemoryMapFlagWriteAppendBit,
 
-		/// @see EGPUMemoryMapFlags::E_GPU_MEMORY_MAP_FLAG_WRITE_INVALIDATE_BIT
-		WriteInvalidate = E_GPU_MEMORY_MAP_FLAG_WRITE_INVALIDATE_BIT,
+		/// @see EGPUMemoryMapFlags::E_GPU_MEMORY_MAP_FLAG_WRITE_INVALIDATEBit
+		WriteInvalidate = eGPUMemoryMapFlagWriteInvalidateBit,
 	};
 
 	struct StructuredResourceAlignedMemoryMetrics
@@ -149,7 +149,7 @@ namespace Ic3::Graphics::GCI
 	struct ResourceMemoryInfo
 	{
         memory_align_t baseAlignment;
-		Cppx::Bitmask<EGPUMemoryFlags> memoryFlags;
+		TBitmask<EGPUMemoryFlags> memoryFlags;
 		gpu_memory_heap_id_t sourceHeapID;
 		GPUMemoryRegion sourceHeapRegion;
 	};
@@ -159,7 +159,7 @@ namespace Ic3::Graphics::GCI
 		const ResourceMemoryInfo * sourceMemory = nullptr;
 		GPUMemoryRegion mappedRegion;
 		void * pointer;
-		Cppx::Bitmask<EGPUMemoryMapFlags> memoryMapFlags;
+		TBitmask<EGPUMemoryMapFlags> memoryMapFlags;
 
 		constexpr explicit operator bool () const
 		{
@@ -171,7 +171,7 @@ namespace Ic3::Graphics::GCI
 	{
 
 		/// @brief Returns true if the requested memory map mode is valid for the memory with given properties (flags).
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool checkMemoryMapAccess( EGPUMemoryMapMode pRequestedMapMode, Cppx::Bitmask<EGPUMemoryFlags> pMemoryFlags );
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool checkMemoryMapAccess( EGPUMemoryMapMode pRequestedMapMode, TBitmask<EGPUMemoryFlags> pMemoryFlags );
 
 		IC3_GRAPHICS_GCI_API_NO_DISCARD StructuredResourceAlignedMemory alignStructuredResourceDataAuto(
 				const void * pData,

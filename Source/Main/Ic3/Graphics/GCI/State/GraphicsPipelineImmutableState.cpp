@@ -42,11 +42,11 @@ namespace Ic3::Graphics::GCI
 			return nullptr;
 		}
 
-		const auto stateCommonProperties = smutil::getGraphicsShaderLinkageCommonPropertiesForShaderSet( pShaderSet );
+		const auto commonProperties = SMU::getGraphicsShaderLinkageCommonPropertiesForShaderSet( pShaderSet );
 
 		const auto shaderImmutableState = createGPUAPIObject<GraphicsShaderLinkageImmutableStateSeparable>(
 				mGPUDevice,
-				stateCommonProperties,
+				commonProperties,
 				pShaderSet );
 
 		return shaderImmutableState;

@@ -11,7 +11,7 @@ namespace Ic3::Graphics::GCI
 	class GPUDevice;
 
 	/// @brief
-    class GPUAPIObject : public DynamicInterface
+    class GPUAPIObject : public IDynamicObject
     {
     };
 
@@ -40,9 +40,9 @@ namespace Ic3::Graphics::GCI
 	};
 
 	template <typename TClass, typename... TArgs>
-	inline GpaHandle<TClass> createGPUAPIObject( TArgs && ...pArgs )
+	inline TGPAHandle<TClass> createGPUAPIObject( TArgs && ...pArgs )
 	{
-		return createDynamicInterfaceObject<TClass>( std::forward<TArgs>( pArgs )... );
+		return createDynamicObject<TClass>( std::forward<TArgs>( pArgs )... );
 	}
 
 } // namespace Ic3::Graphics::GCI

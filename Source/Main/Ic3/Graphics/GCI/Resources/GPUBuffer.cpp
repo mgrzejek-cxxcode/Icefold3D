@@ -47,9 +47,9 @@ namespace Ic3::Graphics::GCI
 
 	bool GPUBuffer::validateBufferCreateInfo( GPUBufferCreateInfo & pCreateInfo )
 	{
-		if( pCreateInfo.memoryBaseAlignment == 0 )
+		if( pCreateInfo.mMemoryBaseAlignment == 0 )
 		{
-		    pCreateInfo.memoryBaseAlignment = Ic3::kMemoryCPUDefaultAlignment;
+		    pCreateInfo.mMemoryBaseAlignment = Ic3::cxMemoryCPUDefaultAlignment;
 		}
 
 		if( ( pCreateInfo.bufferSize == 0 ) && pCreateInfo.initDataDesc )

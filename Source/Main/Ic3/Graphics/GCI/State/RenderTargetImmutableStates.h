@@ -50,7 +50,7 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~RenderPassConfigurationImmutableStateDefault();
 
-		static GpaHandle<RenderPassConfigurationImmutableStateDefault> createInstance(
+		static TGPAHandle<RenderPassConfigurationImmutableStateDefault> createInstance(
 				GPUDevice & pGPUDevice,
 				const RenderPassConfiguration & pConfiguration );
 	};

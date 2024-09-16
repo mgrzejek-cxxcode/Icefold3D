@@ -12,30 +12,27 @@ namespace Ic3::Graphics::GCI
 
 	struct GraphicsShaderSet
 	{
-	private:
-		GraphicsShaderArray _shaderArray;
-
 	public:
-		using ShaderRefType = GraphicsShaderArray::value_type;
+		using ShaderRefType = GraphicsShaderArray::reference;
 
 		/// All shaders in a continuous array, indexed according to order defined by EShaderStageIndex enumeration.
 		/// @see EShaderStageIndex
-		const GraphicsShaderArray & commonShaderArray;
+		GraphicsShaderArray commonShaderArray;
 
-		/// A pointer to a shader object used for the vertex stage of the shader pipeline.
-		ShaderRefType & vertexShader;
+		/// A reference to a shader object (handle) used for the vertex stage of the shader pipeline.
+		ShaderRefType vertexShader;
 
-		/// A pointer to a shader object used for the hull stage of the shader pipeline.
-		ShaderRefType & hullShader;
+		/// A reference to a shader object (handle) used for the hull stage of the shader pipeline.
+		ShaderRefType hullShader;
 
-		/// A pointer to a shader object used for the domain stage of the shader pipeline.
-		ShaderRefType & domainShader;
+		/// A reference to a shader object (handle) used for the domain stage of the shader pipeline.
+		ShaderRefType domainShader;
 
-		/// A pointer to a shader object used for the geometry stage of the shader pipeline.
-		ShaderRefType & geometryShader;
+		/// A reference to a shader object (handle) used for the geometry stage of the shader pipeline.
+		ShaderRefType geometryShader;
 
-		/// A pointer to a shader object used for the pixel stage of the shader pipeline.
-		ShaderRefType & pixelShader;
+		/// A reference to a shader object (handle) used for the pixel stage of the shader pipeline.
+		ShaderRefType pixelShader;
 
 	public:
 		GraphicsShaderSet();
@@ -52,7 +49,7 @@ namespace Ic3::Graphics::GCI
 
 		IC3_ATTR_NO_DISCARD Shader * operator[]( EShaderType pShaderType ) const noexcept;
 
-		IC3_ATTR_NO_DISCARD Bitmask<EShaderStageFlags> getActiveShaderStagesMask() const noexcept;
+		IC3_ATTR_NO_DISCARD TBitmask<EShaderStageFlags> getActiveShaderStagesMask() const noexcept;
 
 		IC3_ATTR_NO_DISCARD uint32 getActiveShaderStagesNum() const noexcept;
 
@@ -70,11 +67,11 @@ namespace Ic3::Graphics::GCI
 	};
 
 	// State Management Utility API
-	namespace smutil
+	namespace SMU
 	{
 
 		/// @brief
-		IC3_GRAPHICS_GCI_API_NO_DISCARD Bitmask<EShaderStageFlags> getActiveShaderStagesMask(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD TBitmask<EShaderStageFlags> getActiveShaderStagesMask(
 				const GraphicsShaderArray & pShaderArray ) noexcept;
 
 		/// @brief

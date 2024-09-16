@@ -19,8 +19,8 @@ namespace Ic3::Graphics::GCI
 
 	enum EGPUDeviceCreateFlags : uint32
 	{
-		E_GPU_DEVICE_CREATE_FLAG_INIT_DEFAULT_PRESENT_QUEUE_BIT = 0x0004,
-		E_GPU_DEVICE_CREATE_FLAGS_DEFAULT = E_GPU_DEVICE_CREATE_FLAG_INIT_DEFAULT_PRESENT_QUEUE_BIT
+		E_GPU_DEVICE_CREATE_FLAG_INIT_DEFAULT_PRESENT_QUEUEBit = 0x0004,
+		E_GPU_DEVICE_CREATE_FLAGS_DEFAULT = E_GPU_DEVICE_CREATE_FLAG_INIT_DEFAULT_PRESENT_QUEUEBit
 	};
 
 	enum EGPUDeviceStateFlags : uint32
@@ -32,7 +32,7 @@ namespace Ic3::Graphics::GCI
 		// DisplayManager * displayManager = nullptr;
 		// display_system_id_t adapterOutputID = cvDisplaySystemIDDefault;
 		display_system_id_t adapterID = cvDisplaySystemIDDefault;
-		Bitmask<EGPUDeviceCreateFlags> flags = E_GPU_DEVICE_CREATE_FLAGS_DEFAULT;
+		TBitmask<EGPUDeviceCreateFlags> flags = E_GPU_DEVICE_CREATE_FLAGS_DEFAULT;
 	};
 
 	class IC3_GRAPHICS_GCI_CLASS GPUDevice : public GPUDriverChildObject
@@ -66,10 +66,10 @@ namespace Ic3::Graphics::GCI
 		IC3_ATTR_NO_DISCARD const RenderTargetAttachmentClearConfig & getDefaultClearConfig() const noexcept;
 
 		template <typename TState>
-		IC3_ATTR_NO_DISCARD GpaHandle<TState> getCachedImmutableState( UniqueGPUObjectID pUniqueID ) const noexcept;
+		IC3_ATTR_NO_DISCARD TGPAHandle<TState> getCachedImmutableState( UniqueGPUObjectID pUniqueID ) const noexcept;
 
 		template <typename TState>
-		IC3_ATTR_NO_DISCARD GpaHandle<TState> getCachedImmutableState( const UniqueGPUObjectName & pStateObjectName ) const noexcept;
+		IC3_ATTR_NO_DISCARD TGPAHandle<TState> getCachedImmutableState( const UniqueGPUObjectName & pStateObjectName ) const noexcept;
 
 		IC3_ATTR_NO_DISCARD GPUBufferHandle createGPUBuffer( const GPUBufferCreateInfo & pCreateInfo );
 		IC3_ATTR_NO_DISCARD SamplerHandle createSampler( const SamplerCreateInfo & pCreateInfo );
@@ -94,13 +94,13 @@ namespace Ic3::Graphics::GCI
 		IC3_ATTR_NO_DISCARD RenderTargetBindingImmutableStateHandle createRenderTargetBindingImmutableState( const RenderTargetBindingDefinition & pDefinition );
 		IC3_ATTR_NO_DISCARD RenderPassConfigurationImmutableStateHandle createRenderPassConfigurationImmutableState( const RenderPassConfiguration & pConfiguration );
 
-		template <typename TState, typename TInputDesc, typename... TArgs>
-		GpaHandle<TState> createCachedImmutableState( UniqueGPUObjectID pUniqueID, const TInputDesc & pInputDesc, TArgs && ...pArgs );
+		template <typename TState, typename TPInputDesc, typename... TArgs>
+		TGPAHandle<TState> createCachedImmutableState( UniqueGPUObjectID pUniqueID, const TPInputDesc & pInputDesc, TArgs && ...pArgs );
 
-		template <typename TState, typename TInputDesc, typename... TArgs>
-		GpaHandle<TState> createCachedImmutableState( const UniqueGPUObjectName & pUniqueName, const TInputDesc & pInputDesc, TArgs && ...pArgs );
+		template <typename TState, typename TPInputDesc, typename... TArgs>
+		TGPAHandle<TState> createCachedImmutableState( const UniqueGPUObjectName & pUniqueName, const TPInputDesc & pInputDesc, TArgs && ...pArgs );
 
-		void resetImmutableStateCache( Bitmask<EPipelineImmutableStateTypeFlags> pResetMask = E_PIPELINE_IMMUTABLE_STATE_TYPE_MASK_ALL );
+		void resetImmutableStateCache( TBitmask<EPipelineImmutableStateTypeFlags> pResetMask = ePipelineImmutableStateTypeMaskAll );
 
 		void setPresentationLayer( PresentationLayerHandle pPresentationLayer );
 
@@ -141,29 +141,29 @@ namespace Ic3::Graphics::GCI
 		/// Requires PipelineImmutableStateFactory to be specified when created.
 		PipelineImmutableStateCache * _immutableStateCachePtr = nullptr;
 
-		Bitmask<uint32> _internalStateFlags;
+		TBitmask<uint32> _internalStateFlags;
 	};
 
 	template <typename TState>
-	inline GpaHandle<TState> GPUDevice::getCachedImmutableState( UniqueGPUObjectID pUniqueID ) const noexcept
+	inline TGPAHandle<TState> GPUDevice::getCachedImmutableState( UniqueGPUObjectID pUniqueID ) const noexcept
 	{
 		return _immutableStateCachePtr->template getState<TState>( pUniqueID );
 	}
 
 	template <typename TState>
-	inline GpaHandle<TState> GPUDevice::getCachedImmutableState( const UniqueGPUObjectName & pUniqueName ) const noexcept
+	inline TGPAHandle<TState> GPUDevice::getCachedImmutableState( const UniqueGPUObjectName & pUniqueName ) const noexcept
 	{
 		return _immutableStateCachePtr->template getState<TState>( pUniqueName );
 	}
 
-	template <typename TState, typename TInputDesc, typename... TArgs>
-	inline GpaHandle<TState> GPUDevice::createCachedImmutableState( UniqueGPUObjectID pUniqueID, const TInputDesc & pInputDesc, TArgs && ...pArgs )
+	template <typename TState, typename TPInputDesc, typename... TArgs>
+	inline TGPAHandle<TState> GPUDevice::createCachedImmutableState( UniqueGPUObjectID pUniqueID, const TPInputDesc & pInputDesc, TArgs && ...pArgs )
 	{
 		return _immutableStateCachePtr->template createState<TState>( pUniqueID, pInputDesc, std::forward<TArgs>( pArgs )... );
 	}
 
-	template <typename TState, typename TInputDesc, typename... TArgs>
-	inline GpaHandle<TState> GPUDevice::createCachedImmutableState( const UniqueGPUObjectName & pUniqueName, const TInputDesc & pInputDesc, TArgs && ...pArgs )
+	template <typename TState, typename TPInputDesc, typename... TArgs>
+	inline TGPAHandle<TState> GPUDevice::createCachedImmutableState( const UniqueGPUObjectName & pUniqueName, const TPInputDesc & pInputDesc, TArgs && ...pArgs )
 	{
 		return _immutableStateCachePtr->template createState<TState>( pUniqueName, pInputDesc, std::forward<TArgs>( pArgs )... );
 	}

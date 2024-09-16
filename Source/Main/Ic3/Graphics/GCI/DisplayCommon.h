@@ -12,33 +12,33 @@ namespace Ic3::Graphics::GCI
 
 	using display_system_id_t = uint64;
 
-	constexpr display_system_id_t cvDisplaySystemIDDefault = QLimits<display_system_id_t>::maxValue;
+	constexpr display_system_id_t cvDisplaySystemIDDefault = QLimits<display_system_id_t>::sMaxValue;
 	constexpr display_system_id_t cvDisplaySystemIDInvalid = cvDisplaySystemIDDefault - 1;
 
 	enum EAdapterFlags : uint32
 	{
-		E_ADAPTER_FLAG_PRIMARY_BIT = static_cast<uint32>( System::E_DISPLAY_ADAPTER_FLAG_PRIMARY_BIT ),
-		E_ADAPTER_FLAG_MULTI_NODE_BIT = static_cast<uint32>( System::E_DISPLAY_ADAPTER_FLAG_MULTI_NODE_BIT ),
-		E_ADAPTER_FLAG_SOFTWARE_BIT = static_cast<uint32>( System::E_DISPLAY_ADAPTER_FLAG_SOFTWARE_BIT ),
+		E_ADAPTER_FLAG_PRIMARYBit = static_cast<uint32>( System::eDisplayAdapterFlagPrimaryBit ),
+		E_ADAPTER_FLAG_MULTI_NODEBit = static_cast<uint32>( System::eDisplayAdapterFlagMultiNodeBit ),
+		E_ADAPTER_FLAG_SOFTWAREBit = static_cast<uint32>( System::eDisplayAdapterFlagSoftwareBit ),
 	};
 
 	enum EOutputFlags : uint32
 	{
-		E_OUTPUT_FLAG_PRIMARY_BIT = static_cast<uint32>( System::E_DISPLAY_OUTPUT_FLAG_PRIMARY_BIT )
+		E_OUTPUT_FLAG_PRIMARYBit = static_cast<uint32>( System::eDisplayOutputFlagPrimaryBit )
 	};
 
 	enum EVideoSettingsFlags : uint16
 	{
-		E_VIDEO_SETTINGS_FLAG_SCAN_INTERLACED_BIT = static_cast<uint32>( System::E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_INTERLACED_BIT ),
-		E_VIDEO_SETTINGS_FLAG_SCAN_PROGRESSIVE_BIT = static_cast<uint32>( System::E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_PROGRESSIVE_BIT ),
-		E_VIDEO_SETTINGS_FLAG_STEREO_BIT = static_cast<uint32>( System::E_DISPLAY_VIDEO_SETTINGS_FLAG_STEREO_BIT )
+		E_VIDEO_SETTINGS_FLAG_SCAN_INTERLACEDBit = static_cast<uint32>( System::eDisplayVideoSettingsFlagScanInterlacedBit ),
+		E_VIDEO_SETTINGS_FLAG_SCAN_PROGRESSIVEBit = static_cast<uint32>( System::eDisplayVideoSettingsFlagScanProgressiveBit ),
+		E_VIDEO_SETTINGS_FLAG_STEREOBit = static_cast<uint32>( System::eDisplayVideoSettingsFlagStereoBit )
 	};
 
 	enum EDisplayConfigurationFlags : uint32
 	{
-		E_DISPLAY_CONFIGURATION_FLAG_FULLSCREEN_BIT = 0x0001,
-		E_DISPLAY_CONFIGURATION_FLAG_SYNC_MODE_ADAPTIVE_BIT = 0x0100,
-		E_DISPLAY_CONFIGURATION_FLAG_SYNC_MODE_VERTICAL_BIT = 0x0200,
+		E_DISPLAY_CONFIGURATION_FLAG_FULLSCREENBit = 0x0001,
+		E_DISPLAY_CONFIGURATION_FLAG_SYNC_MODE_ADAPTIVEBit = 0x0100,
+		E_DISPLAY_CONFIGURATION_FLAG_SYNC_MODE_VERTICALBit = 0x0200,
 	};
 
 	struct ScreenRect
@@ -52,14 +52,14 @@ namespace Ic3::Graphics::GCI
 	{
 		Math::Size2u resolution;
 		uint16 refreshRate = 0u;
-		Bitmask<EVideoSettingsFlags> flags = 0u;
+		TBitmask<EVideoSettingsFlags> flags = 0u;
 	};
 
 	struct AdapterDesc
 	{
 		display_system_id_t id = cvDisplaySystemIDInvalid;
 		std::string name;
-		Bitmask<EAdapterFlags> flags = 0u;
+		TBitmask<EAdapterFlags> flags = 0u;
 	};
 
 	struct OutputDesc
@@ -67,7 +67,7 @@ namespace Ic3::Graphics::GCI
 		display_system_id_t id = cvDisplaySystemIDInvalid;
 		std::string name;
 		System::ScreenRect screenRect;
-		Bitmask<EOutputFlags> flags = 0u;
+		TBitmask<EOutputFlags> flags = 0u;
 	};
 
 	struct VideoModeDesc
@@ -77,48 +77,48 @@ namespace Ic3::Graphics::GCI
 		VideoSettings settings;
 	};
 
-	inline EAdapterFlags translateSysAdapterFlags( Bitmask<System::EDisplayAdapterFlags> pSysAdapterFlags )
+	inline EAdapterFlags translateSysAdapterFlags( TBitmask<System::EDisplayAdapterFlags> pSysAdapterFlags )
 	{
-		Bitmask<EAdapterFlags> result = 0;
-		if( pSysAdapterFlags.isSet( System::E_DISPLAY_ADAPTER_FLAG_PRIMARY_BIT ) )
+		TBitmask<EAdapterFlags> result = 0;
+		if( pSysAdapterFlags.isSet( System::eDisplayAdapterFlagPrimaryBit ) )
 		{
-			result.set( E_ADAPTER_FLAG_PRIMARY_BIT );
+			result.set( E_ADAPTER_FLAG_PRIMARYBit );
 		}
-		if( pSysAdapterFlags.isSet( System::E_DISPLAY_ADAPTER_FLAG_MULTI_NODE_BIT ) )
+		if( pSysAdapterFlags.isSet( System::eDisplayAdapterFlagMultiNodeBit ) )
 		{
-			result.set( E_ADAPTER_FLAG_MULTI_NODE_BIT );
+			result.set( E_ADAPTER_FLAG_MULTI_NODEBit );
 		}
-		if( pSysAdapterFlags.isSet( System::E_DISPLAY_ADAPTER_FLAG_SOFTWARE_BIT ) )
+		if( pSysAdapterFlags.isSet( System::eDisplayAdapterFlagSoftwareBit ) )
 		{
-			result.set( E_ADAPTER_FLAG_SOFTWARE_BIT );
+			result.set( E_ADAPTER_FLAG_SOFTWAREBit );
 		}
 		return result;
 	}
 
-	inline EOutputFlags translateSysOutputFlags( Bitmask<System::EDisplayOutputFlags> pSysOutputFlags )
+	inline EOutputFlags translateSysOutputFlags( TBitmask<System::EDisplayOutputFlags> pSysOutputFlags )
 	{
-		Bitmask<EOutputFlags> result = 0;
-		if( pSysOutputFlags.isSet( System::E_DISPLAY_OUTPUT_FLAG_PRIMARY_BIT ) )
+		TBitmask<EOutputFlags> result = 0;
+		if( pSysOutputFlags.isSet( System::eDisplayOutputFlagPrimaryBit ) )
 		{
-			result.set( E_OUTPUT_FLAG_PRIMARY_BIT );
+			result.set( E_OUTPUT_FLAG_PRIMARYBit );
 		}
 		return result;
 	}
 
-	inline EVideoSettingsFlags translateSysVideoSettingsFlags( Bitmask<System::EDisplayVideoSettingsFlags> pSysVideoSettingsFlags )
+	inline EVideoSettingsFlags translateSysVideoSettingsFlags( TBitmask<System::EDisplayVideoSettingsFlags> pSysVideoSettingsFlags )
 	{
-		Bitmask<EVideoSettingsFlags> result = 0;
-		if( pSysVideoSettingsFlags.isSet( System::E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_INTERLACED_BIT ) )
+		TBitmask<EVideoSettingsFlags> result = 0;
+		if( pSysVideoSettingsFlags.isSet( System::eDisplayVideoSettingsFlagScanInterlacedBit ) )
 		{
-			result.set( E_VIDEO_SETTINGS_FLAG_SCAN_INTERLACED_BIT );
+			result.set( E_VIDEO_SETTINGS_FLAG_SCAN_INTERLACEDBit );
 		}
-		if( pSysVideoSettingsFlags.isSet( System::E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_PROGRESSIVE_BIT ) )
+		if( pSysVideoSettingsFlags.isSet( System::eDisplayVideoSettingsFlagScanProgressiveBit ) )
 		{
-			result.set( E_VIDEO_SETTINGS_FLAG_SCAN_PROGRESSIVE_BIT );
+			result.set( E_VIDEO_SETTINGS_FLAG_SCAN_PROGRESSIVEBit );
 		}
-		if( pSysVideoSettingsFlags.isSet( System::E_DISPLAY_VIDEO_SETTINGS_FLAG_STEREO_BIT ) )
+		if( pSysVideoSettingsFlags.isSet( System::eDisplayVideoSettingsFlagStereoBit ) )
 		{
-			result.set( E_VIDEO_SETTINGS_FLAG_STEREO_BIT );
+			result.set( E_VIDEO_SETTINGS_FLAG_STEREOBit );
 		}
 		return result;
 	}

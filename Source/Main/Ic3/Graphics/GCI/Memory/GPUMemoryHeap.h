@@ -11,16 +11,16 @@ namespace Ic3::Graphics::GCI
 
 	struct GPUMemoryPoolMetrics
 	{
-		memory_align_t baseAlignment;
-		gpu_memory_size_t totalSizeBase;
-		gpu_memory_size_t totalSizeMB;
+		memory_align_t mBaseAlignment;
+		gpu_memory_size_t mTotalSizeBase;
+		gpu_memory_size_t mTotalSizeMB;
 	};
 
 	struct GPUMemoryHeapProperties
 	{
-		gpu_memory_heap_id_t heapID;
-		Bitmask<EGPUMemoryFlags> memoryFlags;
-		GPUMemoryPoolMetrics heapMetrics;
+		gpu_memory_heap_id_t mHeapID;
+		TBitmask<EGPUMemoryFlags> mMemoryFlags;
+		GPUMemoryPoolMetrics mHeapMetrics;
 	};
 
 	class GPUMemoryHeap

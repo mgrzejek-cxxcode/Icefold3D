@@ -31,7 +31,7 @@ namespace Ic3::Graphics::GCI
 		GPUMemoryPool();
 		virtual ~GPUMemoryPool();
 
-		gpu_memory_size_t getCurrentUsage() const;
+		IC3_ATTR_NO_DISCARD gpu_memory_size_t getCurrentUsage() const;
 
 	protected:
 		void setCurrentUsage( gpu_memory_size_t pUsageInBytes );

@@ -54,7 +54,7 @@ namespace Ic3::Graphics::GCI
 
 	RenderPassConfigurationImmutableStateDefault::~RenderPassConfigurationImmutableStateDefault() = default;
 
-	GpaHandle<RenderPassConfigurationImmutableStateDefault> RenderPassConfigurationImmutableStateDefault::createInstance(
+	TGPAHandle<RenderPassConfigurationImmutableStateDefault> RenderPassConfigurationImmutableStateDefault::createInstance(
 			GPUDevice & pGPUDevice,
 			const RenderPassConfiguration & pConfiguration )
 	{

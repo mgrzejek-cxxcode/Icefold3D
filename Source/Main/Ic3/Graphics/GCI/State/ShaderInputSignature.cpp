@@ -27,7 +27,7 @@ namespace Ic3::Graphics::GCI
 	                                                        InputDescriptorLayoutInfo & pOutDescriptorLayoutInfo );
 	static uint32 computeConstantDwordSize( size_t pByteSize );
 
-	namespace smutil
+	namespace SMU
 	{
 
 		ShaderInputSignature createShaderInputSignature( const ShaderInputSignatureDesc & pInputSignatureDesc )
@@ -159,7 +159,7 @@ namespace Ic3::Graphics::GCI
 			auto descriptorSetIndex = descriptorLayout.descriptorSets.size();
 
 			uint32 setDescriptorsNum = 0;
-			Bitmask<EShaderStageFlags> descriptorSetVisibilityMask = 0;
+			TBitmask<EShaderStageFlags> descriptorSetVisibilityMask = 0;
 
 			for( uint32 inputDescriptorIndex = 0; inputDescriptorIndex < descriptorSetDesc.descriptorsNum; ++inputDescriptorIndex )
 			{
@@ -209,7 +209,7 @@ namespace Ic3::Graphics::GCI
 		size_t constantsNum = 0;
 		size_t totalDwordSize = 0;
 
-		if( pInputSignatureDesc.constantGroupsNum > GCM::SHADER_COMBINED_STAGES_NUM + 1 )
+		if( pInputSignatureDesc.constantGroupsNum > GCM::cxShaderCombinedStagesNum + 1 )
 		{
 			ic3DebugInterrupt();
 			return false;
@@ -236,7 +236,7 @@ namespace Ic3::Graphics::GCI
 				auto constantDwordSize = computeConstantDwordSize( constantByteSize );
 				totalDwordSize += constantDwordSize;
 
-				if( totalDwordSize > GCM::IS_MAX_DWORD_SIZE )
+				if( totalDwordSize > GCM::cxISMaxDwordSize )
 				{
 					ic3DebugInterrupt();
 					return false;
@@ -256,7 +256,7 @@ namespace Ic3::Graphics::GCI
 		size_t descriptorsNum = 0;
 		size_t descriptorSetsNum = pInputSignatureDesc.descriptorSetsNum;
 
-		if( descriptorSetsNum > GCM::IS_MAX_DESCRIPTOR_SETS_NUM )
+		if( descriptorSetsNum > GCM::cxISMaxDescriptorSetsNum )
 		{
 			ic3DebugInterrupt();
 			return false;

@@ -22,9 +22,9 @@ namespace Ic3::Graphics::GCI
 
 	enum EGPUDeviceInternalStateFlags : uint32
 	{
-		E_GPU_DEVICE_INTERNAL_STATE_FLAG_DEBUG_DEVICE_BIT = 0x0001,
-		E_GPU_DEVICE_INTERNAL_STATE_FLAG_MULTI_THREAD_ACCESS_BIT = 0x0002,
-		E_GPU_DEVICE_INTERNAL_STATE_FLAG_ENABLE_RESOURCE_ACTIVE_REFS_TRACKING_BIT = 0x0008
+		E_GPU_DEVICE_INTERNAL_STATE_FLAG_DEBUG_DEVICEBit = 0x0001,
+		E_GPU_DEVICE_INTERNAL_STATE_FLAG_MULTI_THREAD_ACCESSBit = 0x0002,
+		E_GPU_DEVICE_INTERNAL_STATE_FLAG_ENABLE_RESOURCE_ACTIVE_REFS_TRACKINGBit = 0x0008
 	};
 
 	
@@ -35,7 +35,7 @@ namespace Ic3::Graphics::GCI
 	{
 		if( pDriver.isDebugFunctionalityRequested() )
 		{
-			_internalStateFlags.set( E_GPU_DEVICE_INTERNAL_STATE_FLAG_DEBUG_DEVICE_BIT );
+			_internalStateFlags.set( E_GPU_DEVICE_INTERNAL_STATE_FLAG_DEBUG_DEVICEBit );
 		}
 	}
 
@@ -48,17 +48,17 @@ namespace Ic3::Graphics::GCI
 
 	bool GPUDevice::isDebugDevice() const noexcept
 	{
-		return _internalStateFlags.isSet( E_GPU_DEVICE_INTERNAL_STATE_FLAG_DEBUG_DEVICE_BIT );
+		return _internalStateFlags.isSet( E_GPU_DEVICE_INTERNAL_STATE_FLAG_DEBUG_DEVICEBit );
 	}
 
 	bool GPUDevice::isMultiThreadAccessSupported() const noexcept
 	{
-		return _internalStateFlags.isSet( E_GPU_DEVICE_INTERNAL_STATE_FLAG_MULTI_THREAD_ACCESS_BIT );
+		return _internalStateFlags.isSet( E_GPU_DEVICE_INTERNAL_STATE_FLAG_MULTI_THREAD_ACCESSBit );
 	}
 
 	bool GPUDevice::isResourceActiveRefsTrackingEnabled() const noexcept
 	{
-		return _internalStateFlags.isSet( E_GPU_DEVICE_INTERNAL_STATE_FLAG_ENABLE_RESOURCE_ACTIVE_REFS_TRACKING_BIT );
+		return _internalStateFlags.isSet( E_GPU_DEVICE_INTERNAL_STATE_FLAG_ENABLE_RESOURCE_ACTIVE_REFS_TRACKINGBit );
 	}
 
 	CommandSystem & GPUDevice::getCommandSystem() const noexcept
@@ -137,16 +137,16 @@ namespace Ic3::Graphics::GCI
 
 	RenderTargetTextureHandle GPUDevice::createRenderTargetTexture( const RenderTargetTextureCreateInfo & pCreateInfo )
 	{
-		if( !pCreateInfo.bindFlags.isSetAnyOf( E_GPU_RESOURCE_USAGE_FLAG_RENDER_TARGET_COLOR_BIT | E_GPU_RESOURCE_USAGE_MASK_RENDER_TARGET_DEPTH_STENCIL ) )
+		if( !pCreateInfo.mBindFlags.isSetAnyOf( eGPUResourceUsageFlagRenderTargetColorBit | eGPUResourceUsageMaskRenderTargetDepthStencil ) )
 		{
 			ic3DebugOutput( "No RT attachment bind flags specified for the RT texture (E_GPU_RESOURCE_USAGE_xxx_RENDER_TARGET_yyy)." );
 			return nullptr;
 		}
 
-		if( pCreateInfo.targetTexture )
+		if( pCreateInfo.mTargetTexture )
 		{
-			const auto & targetTextureResourceFlags = pCreateInfo.targetTexture->mTextureProperties.resourceFlags;
-			if( !targetTextureResourceFlags.isSet( pCreateInfo.bindFlags & E_GPU_RESOURCE_USAGE_MASK_ALL ) )
+			const auto & targetTextureResourceFlags = pCreateInfo.mTargetTexture->mTextureProperties.mResourceFlags;
+			if( !targetTextureResourceFlags.isSet( pCreateInfo.mBindFlags & eGPUResourceUsageMaskAll ) )
 			{
 				ic3DebugOutput( "Target texture for Render Target is not compatible with specified bind flags (E_GPU_RESOURCE_USAGE_xxx)." );
 				return nullptr;
@@ -165,7 +165,7 @@ namespace Ic3::Graphics::GCI
 
 		if( !pCreateInfo.shaderInputSignature )
 		{
-			pCreateInfo.shaderInputSignature = smutil::createShaderInputSignature( pCreateInfo.shaderInputSignatureDesc );
+			pCreateInfo.shaderInputSignature = SMU::createShaderInputSignature( pCreateInfo.shaderInputSignatureDesc );
 		}
 
 		if( !pCreateInfo.blendState )
@@ -245,7 +245,7 @@ namespace Ic3::Graphics::GCI
 		return _immutableStateFactoryBase->createRenderPassState( pConfiguration.getValidated() );
 	}
 
-	void GPUDevice::resetImmutableStateCache( Bitmask<EPipelineImmutableStateTypeFlags> pResetMask )
+	void GPUDevice::resetImmutableStateCache( TBitmask<EPipelineImmutableStateTypeFlags> pResetMask )
 	{
 		ic3DebugAssert( _immutableStateCachePtr );
 		_immutableStateCachePtr->reset( pResetMask );

@@ -14,9 +14,11 @@ namespace Ic3::Graphics::GCI
 	/// @brief
 	struct RenderTargetTextureCreateInfo
 	{
-		TextureReference targetTexture;
-		RenderTargetTextureLayout rtTextureLayout;
-		Bitmask<ETextureBindFlags> bindFlags;
+		TextureReference mTargetTexture;
+
+		RenderTargetTextureLayout mRTTextureLayout;
+
+		TBitmask<ETextureBindFlags> mBindFlags;
 	};
 
 	/// @brief
@@ -28,7 +30,7 @@ namespace Ic3::Graphics::GCI
 	public:
 		ERenderTargetTextureType const mRTTextureType;
 
-		Bitmask<ERenderTargetBufferFlags> const mRTBufferMask;
+		TBitmask<ERenderTargetBufferFlags> const mRTBufferMask;
 
 		RenderTargetTextureLayout const mRTTextureLayout;
 
@@ -48,8 +50,8 @@ namespace Ic3::Graphics::GCI
 			GPUDevice & pGPUDevice,
 			ERenderTargetTextureType pRTTextureType,
 			const RenderTargetTextureLayout & pRTTextureLayout,
-			GpaHandle<GPUDeviceChildObject> pInternalRenderBuffer,
-			Bitmask<resource_flags_value_t> pRenderBufferFlags );
+			TGPAHandle<GPUDeviceChildObject> pInternalRenderBuffer,
+			TBitmask<resource_flags_value_t> pRenderBufferFlags );
 
 		virtual ~RenderTargetTexture();
 
@@ -71,10 +73,10 @@ namespace Ic3::Graphics::GCI
 
 	private:
 		///
-		GpaHandle<GPUDeviceChildObject> _internalRenderBuffer;
+		TGPAHandle<GPUDeviceChildObject> _internalRenderBuffer;
 	};
 
-	namespace rcutil
+	namespace RCU
 	{
 
 		IC3_GRAPHICS_GCI_API_NO_DISCARD ERenderTargetTextureType queryRenderTargetTextureType( ETextureFormat pFormat );

@@ -12,9 +12,10 @@ namespace Ic3::Graphics::GCI
 
 	struct GraphicsShaderLinkageCommonProperties
 	{
-		Bitmask<EShaderStageFlags> activeStagesMask;
-		uint32 activeStagesNum;
-
+		///
+		TBitmask<EShaderStageFlags> mActiveStagesMask;
+		///
+		uint32 mActiveStagesNum;
 	};
 
 	/// @brief
@@ -35,17 +36,17 @@ namespace Ic3::Graphics::GCI
 
 		IC3_ATTR_NO_DISCARD bool isStageActive( uint32 pStageIndex ) const noexcept
 		{
-			return mCommonProperties.activeStagesMask.isSet( CxDef::makeShaderStageBit( pStageIndex ) );
+			return mCommonProperties.mActiveStagesMask.isSet( CxDef::makeShaderStageBit( pStageIndex ) );
 		}
 
 		IC3_ATTR_NO_DISCARD bool isStageActive( EShaderType pShaderType ) const noexcept
 		{
-			return mCommonProperties.activeStagesMask.isSet( CxDef::getShaderStageBit( pShaderType ) );
+			return mCommonProperties.mActiveStagesMask.isSet( CxDef::getShaderStageBit( pShaderType ) );
 		}
 
 		IC3_ATTR_NO_DISCARD uint32 getActiveStagesNum() const noexcept
 		{
-			return mCommonProperties.activeStagesNum;
+			return mCommonProperties.mActiveStagesNum;
 		}
 
 		IC3_ATTR_NO_DISCARD virtual Shader * getShader( size_t pIndex ) const noexcept;
@@ -75,7 +76,7 @@ namespace Ic3::Graphics::GCI
 		IC3_ATTR_NO_DISCARD virtual Shader * getShader( EShaderType pShaderType ) const noexcept override final;
 	};
 
-	namespace smutil
+	namespace SMU
 	{
 
 		IC3_GRAPHICS_GCI_API_NO_DISCARD GraphicsShaderLinkageCommonProperties getGraphicsShaderLinkageCommonPropertiesForShaderSet(

@@ -14,7 +14,7 @@ namespace Ic3::Graphics::GCI
 	{
 		/// Active attributes mask. It contains all bits corresponding to attributes active as part of this descriptor.
 		/// @see EIAVertexAttributeFlags
-		Bitmask<EIAVertexAttributeFlags> activeAttributesMask;
+		TBitmask<EIAVertexAttributeFlags> activeAttributesMask;
 
 		/// Number of active attributes enabled for the IA stage.
 		native_uint activeAttributesNum;
@@ -61,7 +61,7 @@ namespace Ic3::Graphics::GCI
 		IC3_ATTR_NO_DISCARD static const IAVertexStreamImmutableState & getDynamicOverrideState();
 	};
 
-	namespace smutil
+	namespace SMU
 	{
 
 		IC3_GRAPHICS_GCI_API_NO_DISCARD IAInputLayoutStateCommonProperties getIAInputLayoutStateCommonProperties(

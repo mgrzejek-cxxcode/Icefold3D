@@ -33,7 +33,7 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	namespace rcutil
+	namespace RCU
 	{
 
 		EShaderType getShaderObjectType( Shader & pShader )

@@ -10,9 +10,11 @@
 namespace Ic3::Graphics::GCI
 {
 
+	using gpu_resource_ref_counter_value_t = Cppx::ref_counter_value_t;
+
 	struct GPUResourceProperties
 	{
-		Bitmask<resource_flags_value_t> resourceFlags;
+		TBitmask<resource_flags_value_t> mResourceFlags;
 	};
 
 	class GPUResource : public GPUDeviceChildObject
@@ -28,7 +30,7 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~GPUResource();
 
-		IC3_ATTR_NO_DISCARD ref_counter_value_t getActiveRefsNum() const noexcept;
+		IC3_ATTR_NO_DISCARD gpu_resource_ref_counter_value_t getActiveRefsNum() const noexcept;
 
 		IC3_ATTR_NO_DISCARD const ResourceMappedMemory & getMappedMemory() const noexcept;
 
@@ -39,20 +41,20 @@ namespace Ic3::Graphics::GCI
 		IC3_ATTR_NO_DISCARD virtual const GPUResourceProperties & getProperties() const = 0;
 
 	protected:
-		ref_counter_value_t addActiveRef();
+		gpu_resource_ref_counter_value_t addActiveRef();
 
-		ref_counter_value_t releaseActiveRef();
+		gpu_resource_ref_counter_value_t releaseActiveRef();
 
 		void setMappedMemory( const ResourceMappedMemory & pMappedMemory );
 
 		void resetMappedMemory();
 
 	private:
-		AtomicRefCounter _activeRefsCounter;
+		Cppx::AtomicRefCounter _activeRefsCounter;
 		ResourceMappedMemory _mappedMemory;
 	};
 
-	inline ref_counter_value_t GPUResource::getActiveRefsNum() const noexcept
+	inline gpu_resource_ref_counter_value_t GPUResource::getActiveRefsNum() const noexcept
 	{
 		return _activeRefsCounter.getValue();
 	}
@@ -66,12 +68,12 @@ namespace Ic3::Graphics::GCI
 	{
 	public:
 		EGPUResourceBaseType const mAliasedResourceType;
-		Bitmask<resource_flags_value_t> const mResourceFlags;
+		TBitmask<resource_flags_value_t> const mResourceFlags;
 
 		GPUResourceView(
 			GPUDevice & pGPUDevice,
 			EGPUResourceBaseType pAliasedResourceType,
-			Bitmask<resource_flags_value_t> pResourceFlags );
+			TBitmask<resource_flags_value_t> pResourceFlags );
 
 		virtual ~GPUResourceView();
 	};

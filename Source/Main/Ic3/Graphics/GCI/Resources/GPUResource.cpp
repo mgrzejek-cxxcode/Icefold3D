@@ -23,15 +23,15 @@ namespace Ic3::Graphics::GCI
 
 	bool GPUResource::isMapped( const GPUMemoryRegion & pRegion ) const
 	{
-		return Ic3::rangeIsSubRangeOf( pRegion.asRange(), _mappedMemory.mappedRegion.asRange() );
+		return Cppx::rangeIsSubRangeOf( pRegion.asRange(), _mappedMemory.mappedRegion.asRange() );
 	}
 
-	ref_counter_value_t GPUResource::addActiveRef()
+	gpu_resource_ref_counter_value_t GPUResource::addActiveRef()
 	{
 		return _activeRefsCounter.increment();
 	}
 
-	ref_counter_value_t GPUResource::releaseActiveRef()
+	gpu_resource_ref_counter_value_t GPUResource::releaseActiveRef()
 	{
 		const auto activeRefNum = _activeRefsCounter.decrement();
 
@@ -60,7 +60,7 @@ namespace Ic3::Graphics::GCI
 	GPUResourceView::GPUResourceView(
 			GPUDevice & pGPUDevice,
 			EGPUResourceBaseType pAliasedResourceType,
-			Bitmask<resource_flags_value_t> pResourceFlags )
+			TBitmask<resource_flags_value_t> pResourceFlags )
 	: GPUDeviceChildObject( pGPUDevice )
 	, mAliasedResourceType( pAliasedResourceType )
 	, mResourceFlags( pResourceFlags )

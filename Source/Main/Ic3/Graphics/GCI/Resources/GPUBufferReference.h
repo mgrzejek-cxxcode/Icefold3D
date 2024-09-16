@@ -84,7 +84,7 @@ namespace Ic3::Graphics::GCI
 
 	inline bool GPUBufferReference::valid() const noexcept
 	{
-		return _refBufferObject && rcutil::checkGPUBufferRegion( _refBufferObject, _refSubRegion );
+		return _refBufferObject && RCU::checkGPUBufferRegion( _refBufferObject, _refSubRegion );
 	}
 
 } // namespace Ic3::Graphics::GCI

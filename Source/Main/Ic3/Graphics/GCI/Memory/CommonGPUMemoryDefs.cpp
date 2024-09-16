@@ -7,9 +7,9 @@ namespace Ic3::Graphics::GCI
 	namespace memutil
 	{
 
-		bool checkMemoryMapAccess( EGPUMemoryMapMode pRequestedMapMode, Bitmask<EGPUMemoryFlags> pMemoryFlags )
+		bool checkMemoryMapAccess( EGPUMemoryMapMode pRequestedMapMode, TBitmask<EGPUMemoryFlags> pMemoryFlags )
 		{
-			auto mapRequestedAccessFlags = static_cast<uint32>( pRequestedMapMode ) & E_GPU_MEMORY_MAP_FLAG_ACCESS_READ_WRITE_BIT;
+			auto mapRequestedAccessFlags = static_cast<uint32>( pRequestedMapMode ) & eGPUMemoryMapFlagAccessReadWriteBit;
 			return pMemoryFlags.isSet( mapRequestedAccessFlags );
 		}
 

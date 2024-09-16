@@ -28,74 +28,74 @@ namespace Ic3::Graphics::GCI
 
     enum : gpu_cmd_device_queue_id_t
     {
-        E_DEVICE_COMMAND_QUEUE_ID_DEFAULT_GRAPHICS = 0u,
-        E_DEVICE_COMMAND_QUEUE_ID_DEFAULT_COMPUTE = 1u,
-        E_DEVICE_COMMAND_QUEUE_ID_DEFAULT_TRANSFER = 2u,
-        E_DEVICE_COMMAND_QUEUE_ID_PRESENT = 3u,
-        E_DEVICE_COMMAND_QUEUE_ID_UNKNOWN = QLimits<gpu_cmd_device_queue_id_t>::maxValue,
+        eDeviceCommandQueueIdDefaultGraphics = 0u,
+        eDeviceCommandQueueIdDefaultCompute = 1u,
+        eDeviceCommandQueueIdDefaultTransfer = 2u,
+        eDeviceCommandQueueIdPresent = 3u,
+        eDeviceCommandQueueIdUnknown = QLimits<gpu_cmd_device_queue_id_t>::sMaxValue,
     };
 
 	enum ECommandListActionFlags : uint32
 	{
-		E_COMMAND_LIST_ACTION_FLAG_RENDER_PASS_APPLY_PIPELINE_STATE_BIT = 0x01,
-		E_COMMAND_LIST_ACTION_FLAG_RENDER_PASS_PRESERVE_DYNAMIC_STATE_BIT = 0x02,
+		eCommandListActionFlagRenderPassApplyPipelineStateBit = 0x01,
+		eCommandListActionFlagRenderPassPreserveDynamicStateBit = 0x02,
 
-		E_COMMAND_LIST_ACTION_FLAGS_DEFAULT =
-		E_COMMAND_LIST_ACTION_FLAG_RENDER_PASS_APPLY_PIPELINE_STATE_BIT,
+		eCommandListActionFlagsDefault =
+			eCommandListActionFlagRenderPassApplyPipelineStateBit,
 	};
 
 	enum ECommandObjectPropertyFlags : uint32
 	{
-		E_COMMAND_OBJECT_PROPERTY_FLAG_COMMAND_CLASS_COMMON_BIT = 0x01,
-		E_COMMAND_OBJECT_PROPERTY_FLAG_COMMAND_CLASS_TRANSFER_BIT = 0x02,
-		E_COMMAND_OBJECT_PROPERTY_FLAG_COMMAND_CLASS_COMPUTE_BIT = 0x04,
-		E_COMMAND_OBJECT_PROPERTY_FLAG_COMMAND_CLASS_GRAPHICS_BIT = 0x08,
-		E_COMMAND_OBJECT_PROPERTY_MASK_COMMAND_CLASS_ALL = 0x0F,
+		ECommandObjectPropertyFlagCommandClassCommonBit = 0x01,
+		ECommandObjectPropertyFlagCommandClassTransferBit = 0x02,
+		ECommandObjectPropertyFlagCommandClassComputeBit = 0x04,
+		ECommandObjectPropertyFlagCommandClassGraphicsBit = 0x08,
+		ECommandObjectPropertyMaskCommandClassAll = 0x0F,
 
-		E_COMMAND_OBJECT_PROPERTY_FLAG_EXECUTION_MODE_DIRECT_BIT = 0x10,
-		E_COMMAND_OBJECT_PROPERTY_FLAG_EXECUTION_MODE_DEFERRED_BIT = 0x20,
-		E_COMMAND_OBJECT_PROPERTY_MASK_EXECUTION_MODE_ALL = 0x30,
+		ECommandObjectPropertyFlagExecutionModeDirectBit = 0x10,
+			ECommandObjectPropertyFlagExecutionModeDeferredBit = 0x20,
+			ECommandObjectPropertyMaskExecutionModeAll = 0x30,
 
-		E_COMMAND_OBJECT_PROPERTY_MASK_CONTEXT_FAMILY_DIRECT =
-			E_COMMAND_OBJECT_PROPERTY_FLAG_COMMAND_CLASS_COMMON_BIT |
-			E_COMMAND_OBJECT_PROPERTY_FLAG_EXECUTION_MODE_DIRECT_BIT,
+		ECommandObjectPropertyMaskContextFamilyDirect =
+			ECommandObjectPropertyFlagCommandClassCommonBit |
+			ECommandObjectPropertyFlagExecutionModeDirectBit,
 
-		E_COMMAND_OBJECT_PROPERTY_MASK_CONTEXT_FAMILY_DEFERRED =
-			E_COMMAND_OBJECT_PROPERTY_FLAG_COMMAND_CLASS_COMMON_BIT |
-			E_COMMAND_OBJECT_PROPERTY_FLAG_EXECUTION_MODE_DEFERRED_BIT,
+		ECommandObjectPropertyMaskContextFamilyDeferred =
+			ECommandObjectPropertyFlagCommandClassCommonBit |
+			ECommandObjectPropertyFlagExecutionModeDeferredBit,
 
-		E_COMMAND_OBJECT_PROPERTY_MASK_CONTEXT_FAMILY_DIRECT_TRANSFER =
-			E_COMMAND_OBJECT_PROPERTY_MASK_CONTEXT_FAMILY_DIRECT |
-			E_COMMAND_OBJECT_PROPERTY_FLAG_COMMAND_CLASS_TRANSFER_BIT,
+		ECommandObjectPropertyMaskContextFamilyDirectTransfer =
+			ECommandObjectPropertyMaskContextFamilyDirect |
+			ECommandObjectPropertyFlagCommandClassTransferBit,
 
-		E_COMMAND_OBJECT_PROPERTY_MASK_CONTEXT_FAMILY_DIRECT_COMPUTE =
-			E_COMMAND_OBJECT_PROPERTY_MASK_CONTEXT_FAMILY_DIRECT_TRANSFER |
-			E_COMMAND_OBJECT_PROPERTY_FLAG_COMMAND_CLASS_COMPUTE_BIT,
+		ECommandObjectPropertyMaskContextFamilyDirectCompute =
+			ECommandObjectPropertyMaskContextFamilyDirectTransfer |
+			ECommandObjectPropertyFlagCommandClassComputeBit,
 
-		E_COMMAND_OBJECT_PROPERTY_MASK_CONTEXT_FAMILY_DIRECT_GRAPHICS =
-			E_COMMAND_OBJECT_PROPERTY_MASK_CONTEXT_FAMILY_DIRECT_COMPUTE |
-			E_COMMAND_OBJECT_PROPERTY_FLAG_COMMAND_CLASS_GRAPHICS_BIT,
+		ECommandObjectPropertyMaskContextFamilyDirectGraphics =
+			ECommandObjectPropertyMaskContextFamilyDirectCompute |
+			ECommandObjectPropertyFlagCommandClassGraphicsBit,
 
-		E_COMMAND_OBJECT_PROPERTY_MASK_CONTEXT_FAMILY_DEFERRED_GRAPHICS =
-			E_COMMAND_OBJECT_PROPERTY_MASK_CONTEXT_FAMILY_DEFERRED |
-			E_COMMAND_OBJECT_PROPERTY_FLAG_COMMAND_CLASS_GRAPHICS_BIT,
+		ECommandObjectPropertyMaskContextFamilyDeferredGraphics =
+			ECommandObjectPropertyMaskContextFamilyDeferred |
+			ECommandObjectPropertyFlagCommandClassGraphicsBit,
 
-		E_COMMAND_OBJECT_PROPERTY_MASK_ALL =
-			E_COMMAND_OBJECT_PROPERTY_MASK_COMMAND_CLASS_ALL |
-			E_COMMAND_OBJECT_PROPERTY_MASK_EXECUTION_MODE_ALL,
+		ECommandObjectPropertyMaskAll =
+			ECommandObjectPropertyMaskCommandClassAll |
+			ECommandObjectPropertyMaskExecutionModeAll,
 	};
 
 	enum class ECommandExecutionMode : uint32
 	{
-		Direct = E_COMMAND_OBJECT_PROPERTY_FLAG_EXECUTION_MODE_DIRECT_BIT,
-		Deferred = E_COMMAND_OBJECT_PROPERTY_FLAG_EXECUTION_MODE_DEFERRED_BIT
+		Direct = ECommandObjectPropertyFlagExecutionModeDirectBit,
+		Deferred = ECommandObjectPropertyFlagExecutionModeDeferredBit
 	};
 
 	enum class ECommandQueueClass : uint32
 	{
-		Transfer = E_COMMAND_OBJECT_PROPERTY_FLAG_COMMAND_CLASS_COMMON_BIT | E_COMMAND_OBJECT_PROPERTY_FLAG_COMMAND_CLASS_TRANSFER_BIT,
-		Compute = static_cast<uint32>( Transfer ) | E_COMMAND_OBJECT_PROPERTY_FLAG_COMMAND_CLASS_COMPUTE_BIT,
-		Graphics = static_cast<uint32>( Compute ) | E_COMMAND_OBJECT_PROPERTY_FLAG_COMMAND_CLASS_GRAPHICS_BIT,
+		Transfer = ECommandObjectPropertyFlagCommandClassCommonBit | ECommandObjectPropertyFlagCommandClassTransferBit,
+		Compute = static_cast<uint32>( Transfer ) | ECommandObjectPropertyFlagCommandClassComputeBit,
+		Graphics = static_cast<uint32>( Compute ) | ECommandObjectPropertyFlagCommandClassGraphicsBit,
 		Default = 0,
 	};
 
@@ -116,12 +116,12 @@ namespace Ic3::Graphics::GCI
 
 		inline constexpr ECommandExecutionMode getCommandObjectExecutionMode( ECommandObjectType pType ) noexcept
 		{
-			return static_cast<ECommandExecutionMode>( static_cast<uint32>( pType ) & E_COMMAND_OBJECT_PROPERTY_MASK_EXECUTION_MODE_ALL );
+			return static_cast<ECommandExecutionMode>( static_cast<uint32>( pType ) & ECommandObjectPropertyMaskExecutionModeAll );
 		}
 
-		inline constexpr Bitmask<ECommandObjectPropertyFlags> getCommandObjectPropertyFlags( ECommandObjectType pType ) noexcept
+		inline constexpr TBitmask<ECommandObjectPropertyFlags> getCommandObjectPropertyFlags( ECommandObjectType pType ) noexcept
 		{
-			return makeBitmask<uint32>( static_cast<uint32>( pType ) & E_COMMAND_OBJECT_PROPERTY_MASK_ALL );
+			return Cppx::makeBitmask<uint32>( static_cast<uint32>( pType ) & ECommandObjectPropertyMaskAll );
 		}
 
 	}
@@ -158,38 +158,39 @@ namespace Ic3::Graphics::GCI
 
 	struct CommandContextSubmitInfo
 	{
-		ECommandQueueClass queuePreference = ECommandQueueClass::Default;
-		ECommandSubmitStateOp stateOp = ECommandSubmitStateOp::Discard;
-		ECommandSubmitSyncMode syncMode = ECommandSubmitSyncMode::None;
+		ECommandQueueClass mQueuePreference = ECommandQueueClass::Default;
+		ECommandSubmitStateOp mStateOp = ECommandSubmitStateOp::Discard;
+		ECommandSubmitSyncMode mSyncMode = ECommandSubmitSyncMode::None;
 	};
 
-	inline constexpr CommandContextSubmitInfo CX_COMMAND_CONTEXT_SUBMIT_DEFAULT {};
+	inline constexpr CommandContextSubmitInfo cxCommandContextSubmitDefault {};
 
 	struct CommandSync
 	{
 	public:
 		using SyncDataReleaseFuncPtr = void ( * )( void * );
 
-		void * syncData = nullptr;
-		SyncDataReleaseFuncPtr syncDataReleaseFunc = nullptr;
+		void * mSyncData = nullptr;
+
+		SyncDataReleaseFuncPtr mSyncDataReleaseFunc = nullptr;
 
 	public:
 		CommandSync() = default;
 
 		CommandSync( CommandSync && pSrcObject )
-		: syncData( pSrcObject.syncData )
-		, syncDataReleaseFunc( pSrcObject.syncDataReleaseFunc )
+		: mSyncData( pSrcObject.mSyncData )
+		, mSyncDataReleaseFunc( pSrcObject.mSyncDataReleaseFunc )
 		{
-			pSrcObject.syncData = nullptr;
-			pSrcObject.syncDataReleaseFunc = nullptr;
+			pSrcObject.mSyncData = nullptr;
+			pSrcObject.mSyncDataReleaseFunc = nullptr;
 		}
 
 		~CommandSync()
 		{
-			if( syncData && syncDataReleaseFunc )
+			if( mSyncData && mSyncDataReleaseFunc )
 			{
-				syncDataReleaseFunc( syncData );
-				syncData = nullptr;
+				mSyncDataReleaseFunc( mSyncData );
+				mSyncData = nullptr;
 			}
 		}
 
@@ -201,13 +202,13 @@ namespace Ic3::Graphics::GCI
 
 		explicit operator bool() const
 		{
-			return syncData != nullptr;
+			return mSyncData != nullptr;
 		}
 
 		void swap( CommandSync & pOther )
 		{
-			std::swap( syncData, pOther.syncData );
-			std::swap( syncDataReleaseFunc, pOther.syncDataReleaseFunc );
+			std::swap( mSyncData, pOther.mSyncData );
+			std::swap( mSyncDataReleaseFunc, pOther.mSyncDataReleaseFunc );
 		}
 	};
 

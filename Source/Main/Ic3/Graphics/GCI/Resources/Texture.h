@@ -37,11 +37,12 @@ namespace Ic3::Graphics::GCI
 
 		IC3_ATTR_NO_DISCARD TextureSubResource getDefaultSubResourceRef() const;
 
-		static RenderTargetTextureHandle createDefaultRenderTargetTextureView( GPUDevice & pGPUDevice, const RenderTargetTextureCreateInfo & pCreateInfo );
+		static RenderTargetTextureHandle createDefaultRenderTargetTextureView(
+				GPUDevice & pGPUDevice,
+				const RenderTargetTextureCreateInfo & pCreateInfo );
 	};
 
-
-	namespace rcutil
+	namespace RCU
 	{
 
 		IC3_ATTR_NO_DISCARD TextureDimensions getValidTextureDimensions( ETextureClass pTexClass, const TextureDimensions & pDimensions );

@@ -14,7 +14,7 @@ namespace Ic3::Graphics::GCI
 
 	bool CommandSystem::setQueueAlias( gpu_cmd_device_queue_id_t pAliasID, gpu_cmd_device_queue_id_t pMappedID )
 	{
-		if( ( pAliasID == E_DEVICE_COMMAND_QUEUE_ID_UNKNOWN ) || ( pMappedID == E_DEVICE_COMMAND_QUEUE_ID_UNKNOWN ) )
+		if((pAliasID == eDeviceCommandQueueIdUnknown ) || (pMappedID == eDeviceCommandQueueIdUnknown ) )
 		{
 			return false;
 		}
@@ -46,8 +46,8 @@ namespace Ic3::Graphics::GCI
 	gpu_cmd_device_queue_id_t CommandSystem::resolveQueueID( gpu_cmd_device_queue_id_t pQueueID ) const
 	{
 		// Check if the specified ID is an alias. If so, the actual queue ID is the resolved name.
-		auto resolvedID = Cppx::getMapValueRefOrDefault( _deviceQueueAliasMap, pQueueID, E_DEVICE_COMMAND_QUEUE_ID_UNKNOWN );
-		if( resolvedID == E_DEVICE_COMMAND_QUEUE_ID_UNKNOWN )
+		auto resolvedID = Cppx::getMapValueRefOrDefault( _deviceQueueAliasMap, pQueueID, eDeviceCommandQueueIdUnknown );
+		if( resolvedID == eDeviceCommandQueueIdUnknown )
 		{
 			// If no such alias could be found, we assume this is a direct ID of a queue.
 			resolvedID = pQueueID;

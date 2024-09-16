@@ -24,14 +24,14 @@ namespace Ic3::Graphics::GCI
 
 		ECommandContextType const mContextType;
 
-		Bitmask<ECommandObjectPropertyFlags> const mCommandFlags;
+		TBitmask<ECommandObjectPropertyFlags> const mCommandFlags;
 
 	public:
 		virtual ~CommandContext();
 
 		IC3_ATTR_NO_DISCARD bool checkCommandClassSupport( ECommandQueueClass pQueueClass ) const;
 
-		IC3_ATTR_NO_DISCARD bool checkFeatureSupport( Bitmask<ECommandObjectPropertyFlags> pCommandContextFlags ) const;
+		IC3_ATTR_NO_DISCARD bool checkFeatureSupport( TBitmask<ECommandObjectPropertyFlags> pCommandContextFlags ) const;
 
 		void beginCommandSequence();
 		void endCommandSequence();
@@ -45,7 +45,7 @@ namespace Ic3::Graphics::GCI
 	protected:
 		CommandContext( CommandList & pCommandList, ECommandContextType pContextType );
 
-		bool checkCommandListSupport( Bitmask<ECommandObjectPropertyFlags> pCmdListFlags );
+		bool checkCommandListSupport( TBitmask<ECommandObjectPropertyFlags> pCmdListFlags );
 	};
 
 	class CommandContextDirect : public CommandContext
@@ -88,8 +88,8 @@ namespace Ic3::Graphics::GCI
 		void updateBufferDataUpload( GPUBuffer & pBuffer, const TData & pData )
 		{
 			GPUBufferDataUploadDesc dataUploadDesc;
-			dataUploadDesc.flags = E_GPU_BUFFER_DATA_COPY_FLAG_MODE_INVALIDATE_BIT;
-			dataUploadDesc.inputDataDesc.pointer = &pData;
+			dataUploadDesc.flags = eGPUBufferDataCopyFlagModeInvalidateBit;
+			dataUploadDesc.inputDataDesc.mPointer = &pData;
 			dataUploadDesc.inputDataDesc.size = sizeof( TData );
 
 			updateBufferDataUpload( pBuffer, dataUploadDesc );
@@ -99,8 +99,8 @@ namespace Ic3::Graphics::GCI
 		void updateBufferSubDataUpload( GPUBuffer & pBuffer, const TData & pData, gpu_memory_size_t pOffset )
 		{
 			GPUBufferSubDataUploadDesc subDataUploadDesc;
-			subDataUploadDesc.flags = E_GPU_BUFFER_DATA_COPY_FLAG_MODE_INVALIDATE_BIT;
-			subDataUploadDesc.inputDataDesc.pointer = &pData;
+			subDataUploadDesc.flags = eGPUBufferDataCopyFlagModeInvalidateBit;
+			subDataUploadDesc.inputDataDesc.mPointer = &pData;
 			subDataUploadDesc.inputDataDesc.size = sizeof( pData );
 			subDataUploadDesc.bufferRegion.offset = pOffset;
 			subDataUploadDesc.bufferRegion.size = sizeof( TData );
@@ -146,12 +146,12 @@ namespace Ic3::Graphics::GCI
 		~CommandContextDirectGraphics() = default;
 		
 		bool beginRenderPass(
-			const RenderPassConfigurationImmutableState & pRenderPassState,
-			Bitmask<ECommandListActionFlags> pFlags = E_COMMAND_LIST_ACTION_FLAGS_DEFAULT );
+				const RenderPassConfigurationImmutableState & pRenderPassState,
+				TBitmask<ECommandListActionFlags> pFlags = eCommandListActionFlagsDefault );
 
 		bool beginRenderPass(
-			const RenderPassConfigurationDynamicState & pRenderPassState,
-			Bitmask<ECommandListActionFlags> pFlags = E_COMMAND_LIST_ACTION_FLAGS_DEFAULT );
+				const RenderPassConfigurationDynamicState & pRenderPassState,
+				TBitmask<ECommandListActionFlags> pFlags = eCommandListActionFlagsDefault );
 
 		void endRenderPass();
 
@@ -201,12 +201,12 @@ namespace Ic3::Graphics::GCI
 		virtual ~CommandContextDeferredGraphics() = default;
 
 		bool beginRenderPass(
-			const RenderPassConfigurationImmutableState & pRenderPassState,
-			Bitmask<ECommandListActionFlags> pFlags = E_COMMAND_LIST_ACTION_FLAGS_DEFAULT );
+				const RenderPassConfigurationImmutableState & pRenderPassState,
+				TBitmask<ECommandListActionFlags> pFlags = eCommandListActionFlagsDefault );
 
 		bool beginRenderPass(
-			const RenderPassConfigurationDynamicState & pRenderPassState,
-			Bitmask<ECommandListActionFlags> pFlags = E_COMMAND_LIST_ACTION_FLAGS_DEFAULT );
+				const RenderPassConfigurationDynamicState & pRenderPassState,
+				TBitmask<ECommandListActionFlags> pFlags = eCommandListActionFlagsDefault );
 
 		void endRenderPass();
 

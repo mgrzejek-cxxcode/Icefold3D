@@ -12,7 +12,7 @@ namespace Ic3::Graphics::GCI
 
 	enum ECommandListInternalStateFlags : uint32
 	{
-		E_COMMAND_LIST_INTERNAL_STATE_FLAG_ACTIVE_RENDER_PASS_BIT = 0x10000
+		E_COMMAND_LIST_INTERNAL_STATE_FLAG_ACTIVE_RENDER_PASSBit = 0x10000
 	};
 
 	CommandList::CommandList(
@@ -32,18 +32,18 @@ namespace Ic3::Graphics::GCI
 		return checkFeatureSupport( static_cast<ECommandObjectPropertyFlags>( pQueueClass ) );
 	}
 
-	bool CommandList::checkFeatureSupport( Bitmask<ECommandObjectPropertyFlags> pCommandListFlags ) const noexcept
+	bool CommandList::checkFeatureSupport( TBitmask<ECommandObjectPropertyFlags> pCommandListFlags ) const noexcept
 	{
 		// Command list type (its value) is basically a bitwise OR of all supported bits.
-		Bitmask<ECommandObjectPropertyFlags> commandListPropertyFlags = static_cast<ECommandObjectPropertyFlags>( mListType );
+		TBitmask<ECommandObjectPropertyFlags> commandListPropertyFlags = static_cast<ECommandObjectPropertyFlags>( mListType );
 
 		// Check if the specified command classes and/or execution type matches those supported by the list.
-		return commandListPropertyFlags.isSet( pCommandListFlags & E_COMMAND_OBJECT_PROPERTY_MASK_ALL );
+		return commandListPropertyFlags.isSet( pCommandListFlags & ECommandObjectPropertyMaskAll );
 	}
 
 	bool CommandList::isRenderPassActive() const noexcept
 	{
-		return _internalStateMask.isSet( E_COMMAND_LIST_INTERNAL_STATE_FLAG_ACTIVE_RENDER_PASS_BIT );
+		return _internalStateMask.isSet( E_COMMAND_LIST_INTERNAL_STATE_FLAG_ACTIVE_RENDER_PASSBit );
 	}
 
 	bool CommandList::hasPendingGraphicsPipelineStateChanges() const noexcept
@@ -149,8 +149,8 @@ namespace Ic3::Graphics::GCI
 	{
 		GPUBufferSubDataCopyDesc subDataCopyDesc;
 		subDataCopyDesc.flags = pCopyDesc.flags;
-		subDataCopyDesc.flags.set( E_GPU_BUFFER_DATA_COPY_FLAG_MODE_INVALIDATE_BIT );
-		subDataCopyDesc.flags.unset( E_GPU_BUFFER_DATA_COPY_FLAG_MODE_APPEND_BIT );
+		subDataCopyDesc.flags.set( eGPUBufferDataCopyFlagModeInvalidateBit );
+		subDataCopyDesc.flags.unset( eGPUBufferDataCopyFlagModeAppendBit );
 		subDataCopyDesc.sourceBufferRegion.offset = 0;
 		subDataCopyDesc.sourceBufferRegion.size = pSourceBuffer.mBufferProperties.byteSize;
 		subDataCopyDesc.targetBufferOffset = 0;
@@ -181,8 +181,8 @@ namespace Ic3::Graphics::GCI
 	{
 		GPUBufferSubDataUploadDesc subDataUploadDesc;
 		subDataUploadDesc.flags = pUploadDesc.flags;
-		subDataUploadDesc.flags.set( E_GPU_BUFFER_DATA_COPY_FLAG_MODE_INVALIDATE_BIT );
-		subDataUploadDesc.flags.unset( E_GPU_BUFFER_DATA_COPY_FLAG_MODE_APPEND_BIT );
+		subDataUploadDesc.flags.set( eGPUBufferDataCopyFlagModeInvalidateBit );
+		subDataUploadDesc.flags.unset( eGPUBufferDataCopyFlagModeAppendBit );
 		subDataUploadDesc.bufferRegion.offset = 0;
 		subDataUploadDesc.bufferRegion.size = getMinOf( pUploadDesc.inputDataDesc.size, pBuffer.mBufferProperties.byteSize );
 		subDataUploadDesc.inputDataDesc = pUploadDesc.inputDataDesc;
@@ -211,14 +211,14 @@ namespace Ic3::Graphics::GCI
 
 	bool CommandList::beginRenderPass(
 			const RenderPassConfigurationImmutableState & pRenderPassState,
-			Bitmask<ECommandListActionFlags> pFlags )
+			TBitmask<ECommandListActionFlags> pFlags )
 	{
 		return onBeginRenderPass( pFlags );
 	}
 	
 	bool CommandList::beginRenderPass(
 			const RenderPassConfigurationDynamicState & pRenderPassState,
-			Bitmask<ECommandListActionFlags> pFlags )
+			TBitmask<ECommandListActionFlags> pFlags )
 	{
 		return onBeginRenderPass( pFlags );
 	}
@@ -318,20 +318,20 @@ namespace Ic3::Graphics::GCI
 		return _graphicsPipelineStateController->setShaderTextureSampler( pParamRefID, pSampler );
 	}
 
-	bool CommandList::onBeginRenderPass( Bitmask<ECommandListActionFlags> pFlags )
+	bool CommandList::onBeginRenderPass( TBitmask<ECommandListActionFlags> pFlags )
 	{
 		if( isRenderPassActive() )
 		{
 			return false;
 		}
 
-		_internalStateMask.set( E_COMMAND_LIST_INTERNAL_STATE_FLAG_ACTIVE_RENDER_PASS_BIT );
+		_internalStateMask.set( E_COMMAND_LIST_INTERNAL_STATE_FLAG_ACTIVE_RENDER_PASSBit );
 
 		_internalStateMask.setOrUnset(
-				E_COMMAND_LIST_ACTION_FLAG_RENDER_PASS_PRESERVE_DYNAMIC_STATE_BIT,
-				pFlags.isSet( E_COMMAND_LIST_ACTION_FLAG_RENDER_PASS_PRESERVE_DYNAMIC_STATE_BIT ) );
+				eCommandListActionFlagRenderPassPreserveDynamicStateBit,
+				pFlags.isSet( eCommandListActionFlagRenderPassPreserveDynamicStateBit ) );
 
-		if( pFlags.isSet( E_COMMAND_LIST_ACTION_FLAG_RENDER_PASS_APPLY_PIPELINE_STATE_BIT ) )
+		if( pFlags.isSet( eCommandListActionFlagRenderPassApplyPipelineStateBit ) )
 		{
 			_graphicsPipelineStateController->applyStateChanges();
 		}
@@ -343,12 +343,12 @@ namespace Ic3::Graphics::GCI
 	{
 		ic3DebugAssert( isRenderPassActive() );
 
-		if( !_internalStateMask.isSet( E_COMMAND_LIST_ACTION_FLAG_RENDER_PASS_PRESERVE_DYNAMIC_STATE_BIT ) )
+		if( !_internalStateMask.isSet( eCommandListActionFlagRenderPassPreserveDynamicStateBit ) )
 		{
 			_graphicsPipelineStateController->resetRenderPassDynamicState();
 		}
 
-		_internalStateMask.unset( E_COMMAND_LIST_INTERNAL_STATE_FLAG_ACTIVE_RENDER_PASS_BIT );
+		_internalStateMask.unset( E_COMMAND_LIST_INTERNAL_STATE_FLAG_ACTIVE_RENDER_PASSBit );
 	}
 
 
@@ -368,7 +368,7 @@ namespace Ic3::Graphics::GCI
 
 	bool CommandListRenderPassDefault::beginRenderPass(
 			const RenderPassConfigurationImmutableState & pRenderPassState,
-			Bitmask<ECommandListActionFlags> pFlags )
+			TBitmask<ECommandListActionFlags> pFlags )
 	{
 		if( CommandList::beginRenderPass( pRenderPassState, pFlags ) )
 		{
@@ -387,7 +387,7 @@ namespace Ic3::Graphics::GCI
 
 	bool CommandListRenderPassDefault::beginRenderPass(
 			const RenderPassConfigurationDynamicState & pRenderPassState,
-			Bitmask<ECommandListActionFlags> pFlags )
+			TBitmask<ECommandListActionFlags> pFlags )
 	{
 		if( CommandList::beginRenderPass( pRenderPassState, pFlags ) )
 		{

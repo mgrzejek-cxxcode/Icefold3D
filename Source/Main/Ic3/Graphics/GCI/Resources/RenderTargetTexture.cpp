@@ -10,7 +10,7 @@ namespace Ic3::Graphics::GCI
 			ERenderTargetTextureType pRTTextureType,
 			const RenderTargetTextureLayout & pRTTextureLayout,
 			TextureReference pTargetTexture )
-	: GPUResourceView( pGPUDevice, EGPUResourceBaseType::Texture, pTargetTexture->mTextureProperties.resourceFlags )
+	: GPUResourceView( pGPUDevice, EGPUResourceBaseType::Texture, pTargetTexture->mTextureProperties.mResourceFlags )
 	, mRTTextureType( pRTTextureType )
 	, mRTBufferMask( CxDef::getRTBufferMaskForRenderTargetTextureType( pRTTextureType ) )
 	, mRTTextureLayout( pRTTextureLayout )
@@ -21,8 +21,8 @@ namespace Ic3::Graphics::GCI
 			GPUDevice & pGPUDevice,
 			ERenderTargetTextureType pRTTextureType,
 			const RenderTargetTextureLayout & pRTTextureLayout,
-			GpaHandle<GPUDeviceChildObject> pInternalRenderBuffer,
-			Bitmask<resource_flags_value_t> pRenderBufferFlags )
+			TGPAHandle<GPUDeviceChildObject> pInternalRenderBuffer,
+			TBitmask<resource_flags_value_t> pRenderBufferFlags )
 	: GPUResourceView( pGPUDevice, EGPUResourceBaseType::Texture, pRenderBufferFlags )
 	, mRTTextureType( pRTTextureType )
 	, mRTBufferMask( CxDef::getRTBufferMaskForRenderTargetTextureType( pRTTextureType ) )
@@ -48,26 +48,26 @@ namespace Ic3::Graphics::GCI
 		return _internalRenderBuffer && isDepthStencilTexture();
 	}
 
-	namespace rcutil
+	namespace RCU
 	{
 
 		ERenderTargetTextureType queryRenderTargetTextureType( ETextureFormat pFormat )
 		{
-			const Bitmask<uint8> pixelFormatFlags = CxDef::getTextureFormatFlags( pFormat );
+			const TBitmask<uint8> pixelFormatFlags = CxDef::getTextureFormatFlags( pFormat );
 
-			if( pixelFormatFlags.isSet( E_GPU_DATA_FORMAT_FLAG_COMPRESSED_BIT ) )
+			if( pixelFormatFlags.isSet( eGPUDataFormatFlagCompressedBit ) )
 			{
 				return ERenderTargetTextureType::Unknown;
 			}
-			else if( pixelFormatFlags.isSet( E_GPU_DATA_FORMAT_FLAG_DEPTH_STENCIL_BIT ) )
+			else if( pixelFormatFlags.isSet( eGPUDataFormatFlagDepthStencilBit ) )
 			{
 				return ERenderTargetTextureType::RTDepthStencil;
 			}
-			else if( pixelFormatFlags.isSet( E_GPU_DATA_FORMAT_FLAG_DEPTH_BIT ) )
+			else if( pixelFormatFlags.isSet( eGPUDataFormatFlagDepthBit ) )
 			{
 				return ERenderTargetTextureType::RTDepthOnly;
 			}
-			else if( pixelFormatFlags.isSet( E_GPU_DATA_FORMAT_FLAG_STENCIL_BIT ) )
+			else if( pixelFormatFlags.isSet( eGPUDataFormatFlagStencilBit ) )
 			{
 				return ERenderTargetTextureType::RTStencilOnly;
 			}
@@ -80,10 +80,10 @@ namespace Ic3::Graphics::GCI
 		RenderTargetTextureLayout queryRenderTargetTextureLayout( const TextureLayout & pTextureLayout )
 		{
 			RenderTargetTextureLayout rtTextureLayout{};
-			rtTextureLayout.imageRect.width = pTextureLayout.dimensions.width;
-			rtTextureLayout.imageRect.height = pTextureLayout.dimensions.height;
-			rtTextureLayout.internalFormat = pTextureLayout.internalFormat;
-			rtTextureLayout.msaaLevel = pTextureLayout.msaaLevel;
+			rtTextureLayout.mImageRect.mWidth = pTextureLayout.mDimensions.mWidth;
+			rtTextureLayout.mImageRect.mHeight = pTextureLayout.mDimensions.mHeight;
+			rtTextureLayout.mInternalFormat = pTextureLayout.mInternalFormat;
+			rtTextureLayout.mMSAALevel = pTextureLayout.mMSAALevel;
 
 			return rtTextureLayout;
 		}
@@ -98,10 +98,10 @@ namespace Ic3::Graphics::GCI
 			const auto & targetTextureLayout = pTargetTexture->mTextureLayout;
 
 			const auto layoutMatch =
-				( pRTTextureLayout.imageRect.width == targetTextureLayout.dimensions.width ) &&
-				( pRTTextureLayout.imageRect.height == targetTextureLayout.dimensions.height ) &&
-				( pRTTextureLayout.internalFormat == targetTextureLayout.internalFormat ) &&
-				( pRTTextureLayout.msaaLevel == targetTextureLayout.msaaLevel );
+					(pRTTextureLayout.mImageRect.mWidth == targetTextureLayout.mDimensions.mWidth ) &&
+					(pRTTextureLayout.mImageRect.mHeight == targetTextureLayout.mDimensions.mHeight ) &&
+					(pRTTextureLayout.mInternalFormat == targetTextureLayout.mInternalFormat ) &&
+					(pRTTextureLayout.mMSAALevel == targetTextureLayout.mMSAALevel );
 
 			return layoutMatch;
 		}

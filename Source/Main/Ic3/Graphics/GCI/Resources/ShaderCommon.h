@@ -25,39 +25,43 @@ namespace Ic3::Graphics::GCI
 	/// @brief
 	enum EShaderCreateFlags : uint32
 	{
-		E_SHADER_CREATE_FLAG_DEBUG_BIT                = 0x0001,
-		E_SHADER_CREATE_FLAG_OPTIMIZATION_DISABLE_BIT = 0x0010,
-		E_SHADER_CREATE_FLAG_OPTIMIZATION_L0_BIT      = 0x0020,
-		E_SHADER_CREATE_FLAG_OPTIMIZATION_L1_BIT      = 0x0040,
-		E_SHADER_CREATE_FLAG_OPTIMIZATION_MAX_BIT     = 0x0080,
-		E_SHADER_CREATE_FLAGS_DEFAULT = 0
+		eShaderCreateFlagDebugBit               = 0x0001,
+		eShaderCreateFlagOptimizationDisableBit = 0x0010,
+		eShaderCreateFlagOptimizationL0Bit      = 0x0020,
+		eShaderCreateFlagOptimizationL1Bit      = 0x0040,
+		eShaderCreateFlagOptimizationMaxBit     = 0x0080,
+
+		eShaderCreateFlagsDefault = 0
 	};
 
 	/// @brief
 	enum class EShaderType : uint32
 	{
 		Unknown    = 0,
-		GSVertex   = CxDef::makeShaderType( E_SHADER_STAGE_INDEX_GRAPHICS_VERTEX        ),
-		GSHull     = CxDef::makeShaderType( E_SHADER_STAGE_INDEX_GRAPHICS_HULL          ),
-		GSDomain   = CxDef::makeShaderType( E_SHADER_STAGE_INDEX_GRAPHICS_DOMAIN        ),
-		GSGeometry = CxDef::makeShaderType( E_SHADER_STAGE_INDEX_GRAPHICS_GEOMETRY      ),
-		GSPixel    = CxDef::makeShaderType( E_SHADER_STAGE_INDEX_GRAPHICS_PIXEL         ),
-		CSCompute  = CxDef::makeShaderType( E_SHADER_STAGE_INDEX_COMPUTE                ),
+		GSVertex   = CxDef::makeShaderType( eShaderStageIndexGraphicsVertex   ),
+		GSHull     = CxDef::makeShaderType( eShaderStageIndexGraphicsHull     ),
+		GSDomain   = CxDef::makeShaderType( eShaderStageIndexGraphicsDomain   ),
+		GSGeometry = CxDef::makeShaderType( eShaderStageIndexGraphicsGeometry ),
+		GSPixel    = CxDef::makeShaderType( eShaderStageIndexGraphicsPixel    ),
+		CSCompute  = CxDef::makeShaderType( eShaderStageIndexCompute          ),
 	};
 
 	struct alignas( 32 ) ShaderBinary
 	{
 		static constexpr size_t sDataBufferFixedSize = 12;
 
-		uint64 driverSpecificID;
-		uint64 driverSpecificType;
-		uint32 dataSizeInBytes;
-		byte dataBuffer[sDataBufferFixedSize];
+		uint64 mDriverSpecificID;
+
+		uint64 mDriverSpecificType;
+
+		uint32 mDataSizeInBytes;
+
+		byte mDataBuffer[sDataBufferFixedSize];
 
 		ShaderBinary() = default;
 
 		ShaderBinary( std::nullptr_t )
-		: dataSizeInBytes( 0 )
+		: mDataSizeInBytes( 0 )
 		{}
 
 		IC3_ATTR_NO_DISCARD explicit operator bool() const
@@ -67,7 +71,7 @@ namespace Ic3::Graphics::GCI
 
 		IC3_ATTR_NO_DISCARD bool empty() const
 		{
-			return dataSizeInBytes == 0;
+			return mDataSizeInBytes == 0;
 		}
 
 		/// @brief Allocates a ShaderBinary object capable of storing shader binary data of the specified size.
@@ -79,17 +83,17 @@ namespace Ic3::Graphics::GCI
 	/// @brief
 	struct ShaderCreateInfo
 	{
-		EShaderType shaderType = EShaderType::Unknown;
-		UniqueGPUObjectName shaderName;
-		Bitmask<EShaderCreateFlags> createFlags = E_SHADER_CREATE_FLAGS_DEFAULT;
-		std::unique_ptr<ShaderBinary> shaderBinary;
-		DynamicByteArray shaderSource;
-		ReadOnlyMemoryView shaderSourceView;
-		const char * entryPointName = nullptr;
+		EShaderType mShaderType = EShaderType::Unknown;
+		UniqueGPUObjectName mShaderName;
+		TBitmask<EShaderCreateFlags> mCreateFlags = eShaderCreateFlagsDefault;
+		std::unique_ptr<ShaderBinary> mShaderBinary;
+		Cppx::DynamicByteArray mShaderSource;
+		Cppx::ReadOnlyMemoryView mShaderSourceView;
+		const char * mEntryPointName = nullptr;
 
 		explicit operator bool() const noexcept
 		{
-			return ( shaderType != EShaderType::Unknown ) && ( shaderBinary || !shaderSource.empty() || !shaderSourceView.empty() );
+			return ( mShaderType != EShaderType::Unknown ) && (mShaderBinary || !mShaderSource.empty() || !mShaderSourceView.empty() );
 		}
 	};
 
@@ -98,17 +102,17 @@ namespace Ic3::Graphics::GCI
 
 		IC3_ATTR_NO_DISCARD inline constexpr bool isShaderStageIndexValid( native_uint pStageIndex )
 		{
-			return ( pStageIndex >= E_SHADER_STAGE_INDEX_BASE ) && ( pStageIndex <= E_SHADER_STAGE_INDEX_MAX );
+			return ( pStageIndex >= eShaderStageIndexBase ) && ( pStageIndex <= eShaderStageIndexMax );
 		}
 
 		IC3_ATTR_NO_DISCARD inline constexpr bool isShaderStageIndexValidGraphics( native_uint pStageIndex )
 		{
-			return ( pStageIndex >= E_SHADER_STAGE_INDEX_BASE ) && ( pStageIndex <= E_SHADER_STAGE_INDEX_MAX_GRAPHICS );
+			return ( pStageIndex >= eShaderStageIndexBase ) && ( pStageIndex <= eShaderStageIndexMaxGraphics );
 		}
 
 		IC3_ATTR_NO_DISCARD inline constexpr uint32 getShaderStageIndex( EShaderType pShaderType )
 		{
-			return ( static_cast<uint32>( pShaderType ) >> 16 & 0xFFFF ) - E_SHADER_STAGE_INDEX_BASE;
+			return ( static_cast<uint32>( pShaderType ) >> 16 & 0xFFFF ) - eShaderStageIndexBase;
 		}
 
 		IC3_ATTR_NO_DISCARD inline constexpr uint32 getShaderStageBit( EShaderType pShaderType )
@@ -118,12 +122,12 @@ namespace Ic3::Graphics::GCI
 
 		IC3_ATTR_NO_DISCARD inline constexpr bool isShaderTypeGraphics( EShaderType pShaderType )
 		{
-			return getShaderStageIndex( pShaderType ) <= E_SHADER_STAGE_INDEX_MAX_GRAPHICS;
+			return getShaderStageIndex( pShaderType ) <= eShaderStageIndexMaxGraphics;
 		}
 
 		IC3_ATTR_NO_DISCARD inline constexpr bool isShaderTypeValid( EShaderType pShaderType )
 		{
-			return getShaderStageIndex( pShaderType ) <= E_SHADER_STAGE_INDEX_MAX;
+			return getShaderStageIndex( pShaderType ) <= eShaderStageIndexMax;
 		}
 
 		IC3_ATTR_NO_DISCARD inline constexpr EShaderType getShaderTypeFromStageIndex( native_uint pStageIndex )
@@ -133,7 +137,7 @@ namespace Ic3::Graphics::GCI
 		
 	}
 
-	namespace rcutil
+	namespace RCU
 	{
 
 		IC3_GRAPHICS_GCI_API_NO_DISCARD EShaderType getShaderObjectType( Shader & pShader );

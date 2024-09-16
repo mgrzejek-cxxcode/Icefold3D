@@ -9,13 +9,13 @@ namespace Ic3::Graphics::GCI
 
 		const RTColorAttachmentBlendSettings cvCommonRTColorAttachmentBlendSettingsDefault =
 		{
-			EBlendFactor::One,
-			EBlendFactor::One,
-			EBlendFactor::Zero,
-			EBlendFactor::Zero,
-			EBlendOp::Add,
-			EBlendOp::Add,
-			E_BLEND_WRITE_MASK_ALL
+				EBlendFactor::One,
+				EBlendFactor::One,
+				EBlendFactor::Zero,
+				EBlendFactor::Zero,
+				EBlendOp::Add,
+				EBlendOp::Add,
+				eBlendWriteMaskAll
 		};
 
 		const DepthTestSettings cvCommonDepthTestSettingsDefault =
@@ -44,12 +44,12 @@ namespace Ic3::Graphics::GCI
 
 		const BlendConfig cvPipelineBlendConfigDefault =
 		{
-			E_RT_ATTACHMENT_FLAG_COLOR_0_BIT,
-			E_BLEND_CONFIG_FLAGS_DEFAULT,
-			{
+				eRTAttachmentFlagColor0Bit,
+				eBlendConfigMaskDefault,
+				{
 				cvCommonRTColorAttachmentBlendSettingsDefault
 			},
-			Math::RGBAColorR32Norm{ 0.0f, 0.0f, 0.0f, 0.0f },
+				Math::RGBAColorR32Norm{ 0.0f, 0.0f, 0.0f, 0.0f },
 		};
 
 		const DepthStencilConfig cvPipelineDepthStencilConfigDefault =
@@ -61,9 +61,9 @@ namespace Ic3::Graphics::GCI
 
 		const DepthStencilConfig cvPipelineDepthStencilConfigEnableDepthTest =
 		{
-			E_DEPTH_STENCIL_CONFIG_FLAG_ENABLE_DEPTH_TEST_BIT,
-			cvCommonDepthTestSettingsDefault,
-			cvCommonStencilTestSettingsDefault
+				eDepthStencilConfigFlagEnableDepthTestBit,
+				cvCommonDepthTestSettingsDefault,
+				cvCommonStencilTestSettingsDefault
 		};
 
 		const RasterizerConfig cvPipelineRasterizerConfigDefault =

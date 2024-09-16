@@ -21,7 +21,7 @@ namespace Ic3::Graphics::GCI
 
 		ECommandListType const mListType;
 
-		Bitmask<ECommandObjectPropertyFlags> const mCommandFlags;
+		TBitmask<ECommandObjectPropertyFlags> const mCommandFlags;
 
 		CommandList(
 			CommandSystem & pCommandSystem,
@@ -32,7 +32,7 @@ namespace Ic3::Graphics::GCI
 
 		IC3_ATTR_NO_DISCARD bool checkCommandClassSupport( ECommandQueueClass pQueueClass ) const noexcept;
 
-		IC3_ATTR_NO_DISCARD bool checkFeatureSupport( Bitmask<ECommandObjectPropertyFlags> pCommandListFlags ) const noexcept;
+		IC3_ATTR_NO_DISCARD bool checkFeatureSupport( TBitmask<ECommandObjectPropertyFlags> pCommandListFlags ) const noexcept;
 
 		IC3_ATTR_NO_DISCARD bool isRenderPassActive() const noexcept;
 
@@ -60,11 +60,11 @@ namespace Ic3::Graphics::GCI
 
 		virtual bool beginRenderPass(
 				const RenderPassConfigurationImmutableState & pRenderPassState,
-				Bitmask<ECommandListActionFlags> pFlags );
+				TBitmask<ECommandListActionFlags> pFlags );
 
 		virtual bool beginRenderPass(
 				const RenderPassConfigurationDynamicState & pRenderPassState,
-				Bitmask<ECommandListActionFlags> pFlags );
+				TBitmask<ECommandListActionFlags> pFlags );
 
 		virtual void endRenderPass();
 
@@ -94,13 +94,13 @@ namespace Ic3::Graphics::GCI
 		virtual void cmdExecuteDeferredContext( CommandContextDeferred & pDeferredContext ) = 0;
 
 	private:
-		bool onBeginRenderPass( Bitmask<ECommandListActionFlags> pFlags );
+		bool onBeginRenderPass( TBitmask<ECommandListActionFlags> pFlags );
 		void onEndRenderPass();
 
 	protected:
 		std::atomic<bool> _listLockStatus = ATOMIC_VAR_INIT( false );
 
-		Bitmask<uint32> _internalStateMask;
+		TBitmask<uint32> _internalStateMask;
 
 		GraphicsPipelineStateController * _graphicsPipelineStateController = nullptr;
 	};
@@ -119,11 +119,11 @@ namespace Ic3::Graphics::GCI
 
 		virtual bool beginRenderPass(
 				const RenderPassConfigurationImmutableState & pRenderPassState,
-				Bitmask<ECommandListActionFlags> pFlags ) override;
+				TBitmask<ECommandListActionFlags> pFlags ) override;
 
 		virtual bool beginRenderPass(
 				const RenderPassConfigurationDynamicState & pRenderPassState,
-				Bitmask<ECommandListActionFlags> pFlags ) override;
+				TBitmask<ECommandListActionFlags> pFlags ) override;
 
 		virtual void endRenderPass() override;
 

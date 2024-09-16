@@ -8,40 +8,42 @@
 
 namespace Ic3::Graphics
 {
+	
+	using gcm_value_t = uint32;
 
 	// Graphics Core Metrics
 	namespace GCM
 	{
 
-		constexpr uint32 IA_MAX_VERTEX_ATTRIBUTES_NUM = 16;
+		constexpr gcm_value_t cxIAMaxVertexAttributesNum = 16;
 
-		constexpr uint32 IA_MAX_VERTEX_ATTRIBUTE_COMPONENTS_NUM = 4;
+		constexpr gcm_value_t cxIAMaxVertexAttributeComponentsNum = 4;
 
-		constexpr uint32 IA_MAX_VERTEX_BUFFER_BINDINGS_NUM = 16;
+		constexpr gcm_value_t cxIAMaxVertexBufferBindingsNum = 16;
 
-		constexpr uint32 IA_MAX_VERTEX_STREAMS_NUM = IA_MAX_VERTEX_BUFFER_BINDINGS_NUM;
+		constexpr gcm_value_t cxIAMaxVertexStreamsNum = cxIAMaxVertexBufferBindingsNum;
 
-		constexpr uint32 RT_MAX_COLOR_ATTACHMENTS_NUM = 8;
+		constexpr gcm_value_t cxRTMaxColorAttachmentsNum = 8;
 
-		constexpr uint32 RT_MAX_COMBINED_ATTACHMENTS_NUM = 9;
+		constexpr gcm_value_t cxRTMaxCombinedAttachmentsNum = 9;
 
-		constexpr uint32 IS_MAX_CONSTANT_GROUP_SIZE = 32;
+		constexpr gcm_value_t cxISMaxConstantGroupSize = 32;
 
-		constexpr uint32 IS_MAX_DESCRIPTOR_SET_SIZE = 16;
+		constexpr gcm_value_t cxISMaxDescriptorSetSize = 16;
 
-		constexpr uint32 IS_MAX_DESCRIPTOR_SETS_NUM = 4;
+		constexpr gcm_value_t cxISMaxDescriptorSetsNum = 4;
 
-		constexpr uint32 IS_MAX_DWORD_SIZE = 64;
+		constexpr gcm_value_t cxISMaxDwordSize = 64;
 
-		constexpr uint32 SHADER_COMBINED_STAGES_NUM = 6;
+		constexpr gcm_value_t cxShaderCombinedStagesNum = 6;
 
-		constexpr uint32 SHADER_GRAPHICS_STAGES_NUM = 5;
+		constexpr gcm_value_t cxShaderGraphicsStagesNum = 5;
 
-		constexpr uint32 RES_MAX_CONSTANT_BUFFERS_NUM = 16;
+		constexpr gcm_value_t cxResMaxConstantBuffersNum = 16;
 
-		constexpr uint32 RES_MAX_TEXTURE_UNITS_NUM = 16;
+		constexpr gcm_value_t cxResMaxTextureUnitsNum = 16;
 
-		constexpr uint32 TEXTURE_MAX_MIP_LEVELS_NUM = 16;
+		constexpr gcm_value_t cxTextureMaxMipLevelsNum = 16;
 
 	} // namespace GCM
 

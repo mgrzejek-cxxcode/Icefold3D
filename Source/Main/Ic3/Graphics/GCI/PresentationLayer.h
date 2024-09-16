@@ -19,7 +19,7 @@ namespace Ic3::Graphics::GCI
 		System::WindowManagerHandle sysWindowManager = nullptr;
 		System::VisualConfig visualConfig = System::vsxGetDefaultVisualConfigForSysWindow();
 		ScreenRect screenRect;
-		Bitmask<EDisplayConfigurationFlags> displayConfigFlags = 0u;
+		TBitmask<EDisplayConfigurationFlags> displayConfigFlags = 0u;
 	};
 
 	/// @brief

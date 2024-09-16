@@ -10,14 +10,14 @@ namespace Ic3::Graphics::GCI
 	ic3EnableCustomExceptionSupport();
 	ic3EnableEnumTypeInfoSupport();
 
-	template <typename TClass>
-	using GpaHandle = RSharedHandle<TClass>;
+	template <typename TPClass>
+	using TGPAHandle = TSharedHandle<TPClass>;
 
 	using UniqueGPUObjectID = HFSIdentifier;
 	using UniqueGPUObjectName = std::string;
 
-	template <typename TInput>
-	inline UniqueGPUObjectID generateUniqueGPUObjectID( const TInput & pInput )
+	template <typename TPInput>
+	inline UniqueGPUObjectID generateUniqueGPUObjectID( const TPInput & pInput )
 	{
 		return generateHFSIdentifier( pInput );
 	}
@@ -43,11 +43,11 @@ namespace Ic3::Graphics::GCI
 
 		/// A special constant which can be used for object IDs to indicate that ID should be assigned automatically.
 		/// In most cases it is safe to assume that object address will be used as the ID (unless stated otherwise).
-		inline constexpr UniqueGPUObjectID GPU_OBJECT_ID_AUTO { Cppx::QLimits<uint64>::maxValue };
+		inline constexpr UniqueGPUObjectID GPU_OBJECT_ID_AUTO { Cppx::QLimits<uint64>::sMaxValue };
 
 		/// An invalid object ID. Such IDs may refer to objects which are either uninitialised, marked for deletion,
 		/// or do not yet exist in the object management system. This ID also means "not found" in case of queries.
-		inline constexpr UniqueGPUObjectID GPU_OBJECT_ID_INVALID { Cppx::QLimits<uint64>::maxValue - 1 };
+		inline constexpr UniqueGPUObjectID GPU_OBJECT_ID_INVALID { Cppx::QLimits<uint64>::sMaxValue - 1 };
 
 		///
 		inline constexpr UniqueGPUObjectID GPU_OBJECT_ID_EMPTY { 0 };
@@ -62,13 +62,13 @@ namespace Ic3::Graphics::GCI
 
 	enum EGPUDriverConfigFlags : uint32
 	{
-		E_GPU_DRIVER_CONFIG_FLAG_ENABLE_DEBUG_LAYER_BIT           = 0x0001,
-		E_GPU_DRIVER_CONFIG_FLAG_ENABLE_SHADER_DEBUG_INFO_BIT     = 0x0002 | E_GPU_DRIVER_CONFIG_FLAG_ENABLE_DEBUG_LAYER_BIT,
-		E_GPU_DRIVER_CONFIG_FLAG_DISABLE_MULTI_THREAD_ACCESS_BIT  = 0x0010,
-		E_GPU_DRIVER_CONFIG_FLAG_FORCE_COMPATIBILITY_BIT          = 0x0100,
-		E_GPU_DRIVER_CONFIG_FLAG_FORCE_CORE_PROFILE_BIT           = 0x0200,
-		E_GPU_DRIVER_CONFIG_FLAG_USE_REFERENCE_DRIVER_BIT         = 0x8000,
-		GPU_DRIVER_CONFIG_FLAGS_DEFAULT                           = 0
+		eGPUDriverConfigFlagEnableDebugLayerBit         = 0x0001,
+		eGPUDriverConfigFlagEnableShaderDebugInfoBit    = 0x0002 | eGPUDriverConfigFlagEnableDebugLayerBit,
+		eGPUDriverConfigFlagDisableMultiThreadAccessBit = 0x0010,
+		eGPUDriverConfigFlagForceCompatibilityBit       = 0x0100,
+		eGPUDriverConfigFlagForceCoreProfileBit         = 0x0200,
+		eGPUDriverConfigFlagUseReferenceDriverBit       = 0x8000,
+		eGPUDriverConfigMaskDefault                     = 0
 	};
 
 	/// @brief A set of index values for supported shader stages.
@@ -76,25 +76,25 @@ namespace Ic3::Graphics::GCI
 	/// @see EPipelineStageIndex
 	enum EShaderStageIndex : uint32
 	{
-		E_SHADER_STAGE_INDEX_GRAPHICS_VERTEX,
-		E_SHADER_STAGE_INDEX_GRAPHICS_HULL,
-		E_SHADER_STAGE_INDEX_GRAPHICS_DOMAIN,
-		E_SHADER_STAGE_INDEX_GRAPHICS_GEOMETRY,
-		E_SHADER_STAGE_INDEX_GRAPHICS_PIXEL,
-		E_SHADER_STAGE_INDEX_COMPUTE,
+		eShaderStageIndexGraphicsVertex,
+		eShaderStageIndexGraphicsHull,
+		eShaderStageIndexGraphicsDomain,
+		eShaderStageIndexGraphicsGeometry,
+		eShaderStageIndexGraphicsPixel,
+		eShaderStageIndexCompute,
 
 		/// Base stage index, i.e. index of the first supported stage. Values below this one are not valid stage indexes.
 		/// To compute a zero-based index, subtract this from a valid stage index or use CxDef::getShaderStageAbsoluteIndex().
-		E_SHADER_STAGE_INDEX_BASE = E_SHADER_STAGE_INDEX_GRAPHICS_VERTEX,
+		eShaderStageIndexBase = eShaderStageIndexGraphicsVertex,
 
 		/// Index of the last graphics stage. Used to verify if a specified index is a valid graphics stage index.
-		E_SHADER_STAGE_INDEX_MAX_GRAPHICS = E_SHADER_STAGE_INDEX_GRAPHICS_PIXEL,
+		eShaderStageIndexMaxGraphics = eShaderStageIndexGraphicsPixel,
 
 		/// Index of the last stage (in the whole pipeline). Values above this one are not valid stage indexes.
-		E_SHADER_STAGE_INDEX_MAX = E_SHADER_STAGE_INDEX_COMPUTE,
+		eShaderStageIndexMax = eShaderStageIndexCompute,
 
 		/// An explicitly invalid stage index.
-		E_SHADER_STAGE_INDEX_INVALID = 0xFFFF
+		eShaderStageIndexInvalid = 0xFFFFu
 	};
 
 	/// @brief Bit flags for all supported shader stages.
@@ -109,27 +109,27 @@ namespace Ic3::Graphics::GCI
 		// 16-bit value range and have values up to 0xFFFF (no shifting is performed). In case of any alterations,
 		// update that part of the functionality accordingly (see shaderCommon.h).
 
-		E_SHADER_STAGE_FLAG_GRAPHICS_VERTEX_BIT   = 1u << E_SHADER_STAGE_INDEX_GRAPHICS_VERTEX,
-		E_SHADER_STAGE_FLAG_GRAPHICS_HULL_BIT     = 1u << E_SHADER_STAGE_INDEX_GRAPHICS_HULL,
-		E_SHADER_STAGE_FLAG_GRAPHICS_DOMAIN_BIT   = 1u << E_SHADER_STAGE_INDEX_GRAPHICS_DOMAIN,
-		E_SHADER_STAGE_FLAG_GRAPHICS_GEOMETRY_BIT = 1u << E_SHADER_STAGE_INDEX_GRAPHICS_GEOMETRY,
-		E_SHADER_STAGE_FLAG_GRAPHICS_PIXEL_BIT    = 1u << E_SHADER_STAGE_INDEX_GRAPHICS_PIXEL,
-		E_SHADER_STAGE_FLAG_COMPUTE_BIT           = 1u << E_SHADER_STAGE_INDEX_COMPUTE,
+		eShaderStageFlagGraphicsVertexBit   = 1u << eShaderStageIndexGraphicsVertex,
+		eShaderStageFlagGraphicsHullBit     = 1u << eShaderStageIndexGraphicsHull,
+		eShaderStageFlagGraphicsDomainBit   = 1u << eShaderStageIndexGraphicsDomain,
+		eShaderStageFlagGraphicsGeometryBit = 1u << eShaderStageIndexGraphicsGeometry,
+		eShaderStageFlagGraphicsPixelBit    = 1u << eShaderStageIndexGraphicsPixel,
+		eShaderStageFlagComputeBit          = 1u << eShaderStageIndexCompute,
 
 		/// Mask with all graphics stages bits set.
-		E_SHADER_STAGE_MASK_GRAPHICS_ALL = 0x007F,
+		eShaderStageMaskGraphicsAll = 0x007F,
 
 		/// Mask with required stages for vertex-based shader setup (vertex shader and pixel shader).
-		E_SHADER_STAGE_MASK_GRAPHICS_VS_PS = E_SHADER_STAGE_FLAG_GRAPHICS_VERTEX_BIT | E_SHADER_STAGE_FLAG_GRAPHICS_PIXEL_BIT,
+		eShaderStageMaskGraphicsVsPs = eShaderStageFlagGraphicsVertexBit | eShaderStageFlagGraphicsPixelBit,
 
 		/// Mask with all bits for all supported stages (for both graphics and compute) set.
-		E_SHADER_STAGE_MASK_ALL = E_SHADER_STAGE_MASK_GRAPHICS_ALL | E_SHADER_STAGE_FLAG_COMPUTE_BIT,
+		eShaderStageMaskAll = eShaderStageMaskGraphicsAll | eShaderStageFlagComputeBit,
 
 		/// Mask with no valid bits set (integral value is 0).
-		E_SHADER_STAGE_MASK_NONE = 0u,
+		eShaderStageMaskNone = 0u,
 	};
 
-	static_assert( E_SHADER_STAGE_MASK_ALL < 0xFFFF );
+	static_assert( eShaderStageMaskAll < 0xFFFF );
 
 	/// Constant Expressions
 	namespace CxDef
@@ -139,21 +139,21 @@ namespace Ic3::Graphics::GCI
 		/// @return Corresponding EShaderStageIndex for valid index values or E_SHADER_STAGE_INDEX_INVALID otherwise.
 		IC3_ATTR_NO_DISCARD inline constexpr EShaderStageIndex getShaderStageIndexFromValue( native_uint pStageIndex )
 		{
-			return ( pStageIndex <= E_SHADER_STAGE_INDEX_MAX ) ? static_cast<EShaderStageIndex>( pStageIndex ) : E_SHADER_STAGE_INDEX_INVALID;
+			return (pStageIndex <= eShaderStageIndexMax ) ? static_cast<EShaderStageIndex>( pStageIndex ) : eShaderStageIndexInvalid;
 		}
 
 		/// @brief Returns a 32-bit value which is a bit flag matching the shader stage specified using its index.
 		/// @return One of E_SHADER_STAGE_FLAG_xxx values for a valid stage index or 0 otherwise, returned as uint32.
 		IC3_ATTR_NO_DISCARD inline constexpr uint32 makeShaderStageBit( native_uint pStageIndex )
 		{
-			return ( 1 << static_cast<EShaderStageIndex>( pStageIndex ) ) & E_SHADER_STAGE_MASK_ALL;
+			return ( 1 << static_cast<EShaderStageIndex>( pStageIndex ) ) & eShaderStageMaskAll;
 		}
 
 		/// @brief Returns a 32-bit value which is a bit flag matching the graphics shader stage specified using its index.
 		/// @return One of E_SHADER_STAGE_FLAG_GRAPHICS_xxx values for a valid stage index or 0 otherwise, returned as uint32.
 		IC3_ATTR_NO_DISCARD inline constexpr uint32 makeGraphicsShaderStageBit( native_uint pGraphicsStageIndex )
 		{
-			return ( 1 << static_cast<EShaderStageIndex>( pGraphicsStageIndex ) ) & E_SHADER_STAGE_MASK_GRAPHICS_ALL;
+			return ( 1 << static_cast<EShaderStageIndex>( pGraphicsStageIndex ) ) & eShaderStageMaskGraphicsAll;
 		}
 
 		/// @brief
@@ -171,29 +171,29 @@ namespace Ic3::Graphics::GCI
 	/// subset of the pipeline. Some of the values may be "pseudo-stages", indicating execution of some host-side commands.
 	///
 	/// @note
-	/// Values for shader stages (E_PIPELINE_STAGE_INDEX_SHADER_xxx) are guaranteed to be the same as their
-	/// EShaderStageIndex counterparts (E_SHADER_STAGE_INDEX_xxx). That of course means that are 0-based too.
+	/// Values for shader stages (ePipelineStageIndexShaderXXX) are guaranteed to be the same as their
+	/// EShaderStageIndex counterparts (eShaderIndexShaderXXX). That of course means that are 0-based too.
 	enum EPipelineStageIndex : uint32
 	{
-		E_PIPELINE_STAGE_INDEX_SHADER_GRAPHICS_VERTEX   = E_SHADER_STAGE_INDEX_GRAPHICS_VERTEX,
-		E_PIPELINE_STAGE_INDEX_SHADER_GRAPHICS_HULL     = E_SHADER_STAGE_INDEX_GRAPHICS_HULL,
-		E_PIPELINE_STAGE_INDEX_SHADER_GRAPHICS_DOMAIN   = E_SHADER_STAGE_INDEX_GRAPHICS_DOMAIN,
-		E_PIPELINE_STAGE_INDEX_SHADER_GRAPHICS_GEOMETRY = E_SHADER_STAGE_INDEX_GRAPHICS_GEOMETRY,
-		E_PIPELINE_STAGE_INDEX_SHADER_GRAPHICS_PIXEL    = E_SHADER_STAGE_INDEX_GRAPHICS_PIXEL,
-		E_PIPELINE_STAGE_INDEX_SHADER_COMPUTE           = E_SHADER_STAGE_INDEX_COMPUTE,
-		E_PIPELINE_STAGE_INDEX_SHADER_MAX               = E_SHADER_STAGE_INDEX_MAX,
+		ePipelineStageIndexShaderGraphicsVertex   = eShaderStageIndexGraphicsVertex,
+		ePipelineStageIndexShaderGraphicsHull     = eShaderStageIndexGraphicsHull,
+		ePipelineStageIndexShaderGraphicsDomain   = eShaderStageIndexGraphicsDomain,
+		ePipelineStageIndexShaderGraphicsGeometry = eShaderStageIndexGraphicsGeometry,
+		ePipelineStageIndexShaderGraphicsPixel    = eShaderStageIndexGraphicsPixel,
+		ePipelineStageIndexShaderCompute          = eShaderStageIndexCompute,
+		ePipelineStageIndexShaderMax              = eShaderStageIndexMax,
 
-		E_PIPELINE_STAGE_INDEX_GENERIC_HOST_ACCESS,
-		E_PIPELINE_STAGE_INDEX_GENERIC_RESOLVE,
-		E_PIPELINE_STAGE_INDEX_GENERIC_TRANSFER,
-		E_PIPELINE_STAGE_INDEX_IA_INDIRECT_ARGUMENTS_READ,
-		E_PIPELINE_STAGE_INDEX_IA_VERTEX_INPUT_DATA_READ,
-		E_PIPELINE_STAGE_INDEX_FRAGMENT_TEST_EARLY_DS_OP_LOAD,
-		E_PIPELINE_STAGE_INDEX_FRAGMENT_TEST_LATE_DS_OP_STORE,
-		E_PIPELINE_STAGE_INDEX_RT_COLOR_OUTPUT,
+		ePipelineStageIndexGenericHostAccess,
+		ePipelineStageIndexGenericResolve,
+		ePipelineStageIndexGenericTransfer,
+		ePipelineStageIndexIAIndirectArgumentsRead,
+		ePipelineStageIndexIAVertexInputDataRead,
+		ePipelineStageIndexFragmentTestEarlyDSOpLoad,
+		ePipelineStageIndexFragmentTestLateDSOpStore,
+		ePipelineStageIndexRTColorOutput,
 
-		E_PIPELINE_STAGE_INDEX_BASE = E_PIPELINE_STAGE_INDEX_SHADER_GRAPHICS_VERTEX,
-		E_PIPELINE_STAGE_INDEX_MAX = E_PIPELINE_STAGE_INDEX_RT_COLOR_OUTPUT
+		ePipelineStageIndexBase = ePipelineStageIndexShaderGraphicsVertex,
+		ePipelineStageIndexMax = ePipelineStageIndexRTColorOutput
 	};
 
 	/// @brief Bit flags for all supported shader stages.
@@ -202,23 +202,23 @@ namespace Ic3::Graphics::GCI
 	/// The position of this bit is the EShaderStageIndex value for the particular stage.
 	///
 	/// @see EShaderStageIndex
-	enum EPipelineStageFlags : uint32
+	enum ExPipelineStageFlags : uint32
 	{
-		E_PIPELINE_STAGE_FLAG_SHADER_GRAPHICS_VERTEX_BIT          = E_SHADER_STAGE_FLAG_GRAPHICS_VERTEX_BIT,
-		E_PIPELINE_STAGE_FLAG_SHADER_GRAPHICS_HULL_BIT            = E_SHADER_STAGE_FLAG_GRAPHICS_HULL_BIT,
-		E_PIPELINE_STAGE_FLAG_SHADER_GRAPHICS_DOMAIN_BIT          = E_SHADER_STAGE_FLAG_GRAPHICS_DOMAIN_BIT,
-		E_PIPELINE_STAGE_FLAG_SHADER_GRAPHICS_GEOMETRY_BIT        = E_SHADER_STAGE_FLAG_GRAPHICS_GEOMETRY_BIT,
-		E_PIPELINE_STAGE_FLAG_SHADER_GRAPHICS_PIXEL_BIT           = E_SHADER_STAGE_FLAG_GRAPHICS_PIXEL_BIT,
-		E_PIPELINE_STAGE_FLAG_SHADER_COMPUTE_BIT                  = E_PIPELINE_STAGE_INDEX_SHADER_COMPUTE,
+		ePipelineStageFlagShaderGraphicsVertexBit      = eShaderStageFlagGraphicsVertexBit,
+		ePipelineStageFlagShaderGraphicsHullBit        = eShaderStageFlagGraphicsHullBit,
+		ePipelineStageFlagShaderGraphicsDomainBit      = eShaderStageFlagGraphicsDomainBit,
+		ePipelineStageFlagShaderGraphicsGeometryBit    = eShaderStageFlagGraphicsGeometryBit,
+		ePipelineStageFlagShaderGraphicsPixelBit       = eShaderStageFlagGraphicsPixelBit,
+		ePipelineStageFlagShaderComputeBit             = ePipelineStageIndexShaderCompute,
 
-		E_PIPELINE_STAGE_FLAG_GENERIC_HOST_ACCESS_BIT             = 1 << E_PIPELINE_STAGE_INDEX_GENERIC_HOST_ACCESS,
-		E_PIPELINE_STAGE_FLAG_GENERIC_RESOLVE_BIT                 = 1 << E_PIPELINE_STAGE_INDEX_GENERIC_RESOLVE,
-		E_PIPELINE_STAGE_FLAG_GENERIC_TRANSFER_BIT                = 1 << E_PIPELINE_STAGE_INDEX_GENERIC_TRANSFER,
-		E_PIPELINE_STAGE_FLAG_IA_INDIRECT_ARGUMENTS_READ_BIT      = 1 << E_PIPELINE_STAGE_INDEX_IA_INDIRECT_ARGUMENTS_READ,
-		E_PIPELINE_STAGE_FLAG_IA_VERTEX_INPUT_DATA_READ_BIT       = 1 << E_PIPELINE_STAGE_INDEX_IA_VERTEX_INPUT_DATA_READ,
-		E_PIPELINE_STAGE_FLAG_FRAGMENT_TEST_EARLY_DS_OP_LOAD_BIT  = 1 << E_PIPELINE_STAGE_INDEX_FRAGMENT_TEST_EARLY_DS_OP_LOAD,
-		E_PIPELINE_STAGE_FLAG_FRAGMENT_TEST_LATE_DS_OP_STORE_BIT  = 1 << E_PIPELINE_STAGE_INDEX_FRAGMENT_TEST_LATE_DS_OP_STORE,
-		E_PIPELINE_STAGE_FLAG_RT_COLOR_OUTPUT_BIT                 = 1 << E_PIPELINE_STAGE_INDEX_RT_COLOR_OUTPUT,
+		ePipelineStageFlagGenericHostAccessBit         = 1 << ePipelineStageIndexGenericHostAccess,
+		ePipelineStageFlagGenericResolveBit            = 1 << ePipelineStageIndexGenericResolve,
+		ePipelineStageFlagGenericTransferBit           = 1 << ePipelineStageIndexGenericTransfer,
+		ePipelineStageFlagIAIndirectArgumentsReadBit   = 1 << ePipelineStageIndexIAIndirectArgumentsRead,
+		ePipelineStageFlagIAVertexInputDataReadBit     = 1 << ePipelineStageIndexIAVertexInputDataRead,
+		ePipelineStageFlagFragmentTestEarlyDSOpLoadBit = 1 << ePipelineStageIndexFragmentTestEarlyDSOpLoad,
+		ePipelineStageFlagFragmentTestLateDSOpStoreBit = 1 << ePipelineStageIndexFragmentTestLateDSOpStore,
+		ePipelineStageFlagRTColorOutputBit             = 1 << ePipelineStageIndexRTColorOutput,
 	};
 
 } // namespace Ic3::Graphics::GCI

@@ -19,15 +19,15 @@ namespace Ic3::Graphics::GCI
 		GPUMemoryRef( GPUMemoryPool & pSourcePool, const GPUMemoryRegion & pPoolSubRegion );
 		~GPUMemoryRef();
 
+		IC3_ATTR_NO_DISCARD bool empty() const;
+
+		IC3_ATTR_NO_DISCARD bool isMemoryLocked() const;
+
 		void lockMemory();
 
 		bool tryLockMemory();
 
 		void unlockMemory();
-
-		IC3_ATTR_NO_DISCARD bool empty() const;
-
-		IC3_ATTR_NO_DISCARD bool isMemoryLocked() const;
 
 	private:
 		GPUMemoryRegion _poolSubRegion;

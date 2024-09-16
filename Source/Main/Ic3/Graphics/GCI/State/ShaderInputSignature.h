@@ -13,13 +13,13 @@ namespace Ic3::Graphics::GCI
 
 	enum EShaderConstantAccessClass : uint32
 	{
-		ACAllActive  = E_SHADER_STAGE_MASK_ALL,
-		ACGSVertex   = E_SHADER_STAGE_FLAG_GRAPHICS_VERTEX_BIT,
-		ACGSHull     = E_SHADER_STAGE_FLAG_GRAPHICS_HULL_BIT,
-		ACGSDomain   = E_SHADER_STAGE_FLAG_GRAPHICS_DOMAIN_BIT,
-		ACGSGeometry = E_SHADER_STAGE_FLAG_GRAPHICS_GEOMETRY_BIT,
-		ACGSPixel    = E_SHADER_STAGE_FLAG_GRAPHICS_PIXEL_BIT,
-		ACCSCompute  = E_SHADER_STAGE_FLAG_COMPUTE_BIT,
+		ACAllActive  = eShaderStageMaskAll,
+		ACGSVertex   = eShaderStageFlagGraphicsVertexBit,
+		ACGSHull     = eShaderStageFlagGraphicsHullBit,
+		ACGSDomain   = eShaderStageFlagGraphicsDomainBit,
+		ACGSGeometry = eShaderStageFlagGraphicsGeometryBit,
+		ACGSPixel    = eShaderStageFlagGraphicsPixelBit,
+		ACCSCompute  = eShaderStageFlagComputeBit,
 	};
 
 	enum class EShaderInputParameterType : uint16
@@ -78,7 +78,7 @@ namespace Ic3::Graphics::GCI
 			return static_cast<EShaderInputResourceClass>( ( static_cast<uint32>( pResourceType ) >> 8u ) & 0xFFu );
 		}
 
-		inline constexpr Bitmask<EShaderStageFlags> getShaderConstantVisibilityStageMask( EShaderConstantAccessClass pAccessClass )
+		inline constexpr TBitmask<EShaderStageFlags> getShaderConstantVisibilityStageMask( EShaderConstantAccessClass pAccessClass )
 		{
 			return static_cast<uint32>( pAccessClass );
 		}
@@ -96,7 +96,7 @@ namespace Ic3::Graphics::GCI
 
 		struct ConstantGroup
 		{
-			using ConstantList = std::array<ConstantDesc, GCM::IS_MAX_CONSTANT_GROUP_SIZE>;
+			using ConstantList = std::array<ConstantDesc, GCM::cxISMaxConstantGroupSize>;
 			EShaderConstantAccessClass accessClass;
 			ConstantList constantList;
 			uint32 constantsNum = 0;
@@ -118,7 +118,7 @@ namespace Ic3::Graphics::GCI
 
 			shader_input_ref_id_t refID;
 			EShaderInputDescriptorType descriptorType;
-			Bitmask<EShaderStageFlags> shaderVisibilityMask;
+			TBitmask<EShaderStageFlags> shaderVisibilityMask;
 
 			union
 			{
@@ -129,16 +129,16 @@ namespace Ic3::Graphics::GCI
 
 		struct DescriptorSet
 		{
-			using DescriptorList = std::array<DescriptorDesc, GCM::IS_MAX_DESCRIPTOR_SET_SIZE>;
+			using DescriptorList = std::array<DescriptorDesc, GCM::cxISMaxDescriptorSetSize>;
 			EShaderInputDescriptorType descriptorType;
 			DescriptorList descriptorList;
 			uint32 descriptorsNum = 0;
 		};
 
-		using ConstantGroupArray = std::array<ConstantGroup, GCM::SHADER_COMBINED_STAGES_NUM>;
-		using DescriptorSetArray = std::array<DescriptorSet, GCM::IS_MAX_DESCRIPTOR_SETS_NUM>;
+		using ConstantGroupArray = std::array<ConstantGroup, GCM::cxShaderCombinedStagesNum>;
+		using DescriptorSetArray = std::array<DescriptorSet, GCM::cxISMaxDescriptorSetsNum>;
 
-		Bitmask<EShaderStageFlags> activeShaderStagesMask;
+		TBitmask<EShaderStageFlags> activeShaderStagesMask;
 		ConstantGroupArray constantGroupArray;
 		uint32 constantGroupsNum = 0;
 		DescriptorSetArray descriptorSetArray;
@@ -160,7 +160,7 @@ namespace Ic3::Graphics::GCI
 		shader_input_index_t iGlobalIndex;
 		shader_input_index_t iStageIndex;
 		EShaderConstantAccessClass iAccessClass;
-		Bitmask<EShaderStageFlags> iVisibilityMask;
+		TBitmask<EShaderStageFlags> iVisibilityMask;
 	};
 
 	struct ShaderInputParameterDescriptor : public ShaderInputParameterBase
@@ -180,7 +180,7 @@ namespace Ic3::Graphics::GCI
 
 		EShaderInputDescriptorType dDescriptorType;
 		shader_input_index_t dSetIndex;
-		Bitmask<EShaderStageFlags> dShaderVisibilityMask;
+		TBitmask<EShaderStageFlags> dShaderVisibilityMask;
 
 		union
 		{
@@ -195,7 +195,7 @@ namespace Ic3::Graphics::GCI
 		{
 			using CommonConstantArray = std::vector<ShaderInputParameterConstant>;
 
-			Bitmask<EShaderStageFlags> activeShaderStageMask;
+			TBitmask<EShaderStageFlags> activeShaderStageMask;
 			CommonConstantArray commonConstantArray;
 			uint32 constantsNum;
 			uint32 dwordSize;
@@ -215,7 +215,7 @@ namespace Ic3::Graphics::GCI
 				uint32 arrayOffset;
 				uint32 setDescriptorsNum;
 				uint32 setIndex;
-				Bitmask<EShaderStageFlags> shaderVisibilityMask;
+				TBitmask<EShaderStageFlags> shaderVisibilityMask;
 			};
 
 			using CommonDescriptorArray = std::vector<ShaderInputParameterDescriptor>;
@@ -236,7 +236,7 @@ namespace Ic3::Graphics::GCI
 		using ConstantMap = std::unordered_map<shader_input_ref_id_t, ShaderInputParameterConstant *>;
 		using DescriptorMap = std::unordered_map<shader_input_ref_id_t, ShaderInputParameterDescriptor *>;
 
-		Bitmask<EShaderStageFlags> activeShaderStagesMask;
+		TBitmask<EShaderStageFlags> activeShaderStagesMask;
 		//
 		CommonParameterList commonParameterList;
 		//
@@ -278,7 +278,7 @@ namespace Ic3::Graphics::GCI
 		}
 	};
 
-	namespace smutil
+	namespace SMU
 	{
 
 		IC3_GRAPHICS_GCI_API ShaderInputSignature createShaderInputSignature( const ShaderInputSignatureDesc & pSignatureDesc );

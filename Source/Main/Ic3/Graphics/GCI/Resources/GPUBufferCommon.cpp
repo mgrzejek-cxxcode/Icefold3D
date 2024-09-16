@@ -5,23 +5,23 @@
 namespace Ic3::Graphics::GCI
 {
 
-	namespace rcutil
+	namespace RCU
 	{
 
-		EGPUBufferTarget getGPUBufferDefaultTargetFromBindFlags( Bitmask<resource_flags_value_t> pBindFlags )
+		EGPUBufferTarget getGPUBufferDefaultTargetFromBindFlags( TBitmask<resource_flags_value_t> pBindFlags )
 		{
 			const uint32 orderedBindMaskArray[] =
 			{
-				E_GPU_BUFFER_BIND_FLAG_CONSTANT_BUFFER_BIT,
-				E_GPU_BUFFER_BIND_FLAG_VERTEX_BUFFER_BIT,
-				E_GPU_BUFFER_BIND_FLAG_INDEX_BUFFER_BIT,
-				E_GPU_BUFFER_BIND_FLAG_STREAM_OUTPUT_BUFFER_BIT,
-				E_GPU_BUFFER_BIND_FLAG_SHADER_INPUT_BUFFER_BIT,
-				E_GPU_BUFFER_BIND_FLAG_SHADER_UAV_BUFFER_BIT,
-				E_GPU_BUFFER_BIND_FLAG_INDIRECT_DISPATCH_BUFFER_BIT,
-				E_GPU_BUFFER_BIND_FLAG_INDIRECT_DRAW_BUFFER_BIT,
-				E_GPU_BUFFER_BIND_FLAG_TRANSFER_SOURCE_BUFFER_BIT,
-				E_GPU_BUFFER_BIND_FLAG_TRANSFER_TARGET_BUFFER_BIT
+					eGPUBufferBindFlagConstantBufferBit,
+					eGPUBufferBindFlagVertexBufferBit,
+					eGPUBufferBindFlagIndexBufferBit,
+					eGPUBufferBindFlagStreamOutputBufferBit,
+					eGPUBufferBindFlagShaderInputBufferBit,
+					eGPUBufferBindFlagShaderUAVBufferBit,
+					eGPUBufferBindFlagIndirectDispatchBufferBit,
+					eGPUBufferBindFlagIndirectDrawBufferBit,
+					eGPUBufferBindFlagTransferSourceBufferBit,
+					eGPUBufferBindFlagTransferTargetBufferBit
 			};
 
 			for( auto bindMask : orderedBindMaskArray )
@@ -42,7 +42,7 @@ namespace Ic3::Graphics::GCI
 
 		bool checkGPUBufferRegion( GPUBufferHandle pGPUBuffer, gpu_memory_size_t pOffset, gpu_memory_size_t pSize )
 		{
-			const auto bufferSize = rcutil::queryGPUBufferByteSize( pGPUBuffer );
+			const auto bufferSize = RCU::queryGPUBufferByteSize( pGPUBuffer );
 			return ( pSize > 0 ) && ( pOffset < bufferSize ) && ( pSize <= ( bufferSize - pOffset ) );
 		}
 
@@ -53,7 +53,7 @@ namespace Ic3::Graphics::GCI
 
 		GPUMemoryRegion validateGPUBufferRegion( GPUBufferHandle pGPUBuffer, gpu_memory_size_t pOffset, gpu_memory_size_t pSize )
 		{
-			const auto bufferSize = rcutil::queryGPUBufferByteSize( pGPUBuffer );
+			const auto bufferSize = RCU::queryGPUBufferByteSize( pGPUBuffer );
 
 			GPUMemoryRegion validRegion{ 0, 0 };
 			validRegion.offset = getMinOf( pOffset, bufferSize );

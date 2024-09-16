@@ -57,7 +57,7 @@ namespace Ic3::Graphics::GCI
 		TextureHandle _refTextureObject = nullptr;
 
 		/// The format of the referenced texture. If the reference is empty, the format is ETextureFormat::UNKNOWN.
-		ETextureFormat _refTextureFormat = ETextureFormat::UNKNOWN;
+		ETextureFormat _refTextureFormat = ETextureFormat::Unknown;
 
 		/// The referenced sub-resource of the texture.
 		TextureSubResource _refSubResource;
@@ -95,7 +95,7 @@ namespace Ic3::Graphics::GCI
 
 	inline bool TextureReference::valid() const noexcept
 	{
-		return _refTextureObject && rcutil::checkTextureSubResource( _refTextureObject, _refSubResource );
+		return _refTextureObject && RCU::checkTextureSubResource( _refTextureObject, _refSubResource );
 	}
 
 } // namespace Ic3::Graphics::GCI

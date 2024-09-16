@@ -6,22 +6,20 @@ namespace Ic3::Graphics::GCI
 {
 
 	GraphicsShaderSet::GraphicsShaderSet()
-	: commonShaderArray( _shaderArray )
-	, vertexShader( _shaderArray[E_SHADER_STAGE_INDEX_GRAPHICS_VERTEX] )
-	, hullShader( _shaderArray[E_SHADER_STAGE_INDEX_GRAPHICS_HULL] )
-	, domainShader( _shaderArray[E_SHADER_STAGE_INDEX_GRAPHICS_DOMAIN] )
-	, geometryShader( _shaderArray[E_SHADER_STAGE_INDEX_GRAPHICS_GEOMETRY] )
-	, pixelShader( _shaderArray[E_SHADER_STAGE_INDEX_GRAPHICS_PIXEL] )
+	: vertexShader( commonShaderArray[eShaderStageIndexGraphicsVertex] )
+	, hullShader( commonShaderArray[eShaderStageIndexGraphicsHull] )
+	, domainShader( commonShaderArray[eShaderStageIndexGraphicsDomain] )
+	, geometryShader( commonShaderArray[eShaderStageIndexGraphicsGeometry] )
+	, pixelShader( commonShaderArray[eShaderStageIndexGraphicsPixel] )
 	{}
 
 	GraphicsShaderSet::GraphicsShaderSet( const GraphicsShaderSet & pSource )
-	: _shaderArray( pSource._shaderArray )
-	, commonShaderArray( _shaderArray )
-	, vertexShader( _shaderArray[E_SHADER_STAGE_INDEX_GRAPHICS_VERTEX] )
-	, hullShader( _shaderArray[E_SHADER_STAGE_INDEX_GRAPHICS_HULL] )
-	, domainShader( _shaderArray[E_SHADER_STAGE_INDEX_GRAPHICS_DOMAIN] )
-	, geometryShader( _shaderArray[E_SHADER_STAGE_INDEX_GRAPHICS_GEOMETRY] )
-	, pixelShader( _shaderArray[E_SHADER_STAGE_INDEX_GRAPHICS_PIXEL] )
+	: commonShaderArray( pSource.commonShaderArray )
+	, vertexShader( commonShaderArray[eShaderStageIndexGraphicsVertex] )
+	, hullShader( commonShaderArray[eShaderStageIndexGraphicsHull] )
+	, domainShader( commonShaderArray[eShaderStageIndexGraphicsDomain] )
+	, geometryShader( commonShaderArray[eShaderStageIndexGraphicsGeometry] )
+	, pixelShader( commonShaderArray[eShaderStageIndexGraphicsPixel] )
 	{}
 
 	GraphicsShaderSet::GraphicsShaderSet( const GraphicsShaderArray & pShaderArray )
@@ -32,7 +30,7 @@ namespace Ic3::Graphics::GCI
 
 	GraphicsShaderSet & GraphicsShaderSet::operator=( const GraphicsShaderSet & pRhs )
 	{
-		_shaderArray = pRhs._shaderArray;
+		commonShaderArray = pRhs.commonShaderArray;
 		return *this;
 	}
 
@@ -55,14 +53,14 @@ namespace Ic3::Graphics::GCI
 		return commonShaderArray[stageIndex].get();
 	}
 
-	Bitmask<EShaderStageFlags> GraphicsShaderSet::getActiveShaderStagesMask() const noexcept
+	TBitmask<EShaderStageFlags> GraphicsShaderSet::getActiveShaderStagesMask() const noexcept
 	{
-		return smutil::getActiveShaderStagesMask( commonShaderArray );
+		return SMU::getActiveShaderStagesMask( commonShaderArray );
 	}
 
 	uint32 GraphicsShaderSet::getActiveShaderStagesNum() const noexcept
 	{
-		return smutil::getActiveShaderStagesNum( commonShaderArray );
+		return SMU::getActiveShaderStagesNum( commonShaderArray );
 	}
 
 	bool GraphicsShaderSet::empty() const noexcept
@@ -72,9 +70,9 @@ namespace Ic3::Graphics::GCI
 
 	bool GraphicsShaderSet::validateShaders() const noexcept
 	{
-		for( uint32 stageIndex = 0; stageIndex < GCM::SHADER_GRAPHICS_STAGES_NUM; ++stageIndex )
+		for( uint32 stageIndex = 0; stageIndex < GCM::cxShaderGraphicsStagesNum; ++stageIndex )
 		{
-			if( auto shader = _shaderArray[stageIndex] )
+			if( auto shader = commonShaderArray[stageIndex] )
 			{
 				const auto shaderType = CxDef::getShaderTypeFromStageIndex( stageIndex );
 				if( shader->mShaderType != shaderType )
@@ -92,20 +90,20 @@ namespace Ic3::Graphics::GCI
 		if( pShader )
 		{
 			const auto stageIndex = CxDef::getShaderStageIndex( pShader->mShaderType );
-			_shaderArray[stageIndex] = pShader;
+			commonShaderArray[stageIndex] = pShader;
 		}
 	}
 
 	void GraphicsShaderSet::setShaders( const GraphicsShaderArray & pShaderArray ) noexcept
 	{
-		for( uint32 stageIndex = 0; stageIndex < GCM::SHADER_GRAPHICS_STAGES_NUM; ++stageIndex )
+		for( uint32 stageIndex = 0; stageIndex < GCM::cxShaderGraphicsStagesNum; ++stageIndex )
 		{
 			if( const auto shader = pShaderArray[stageIndex] )
 			{
 				const auto shaderTypeAtIndex = CxDef::getShaderTypeFromStageIndex( stageIndex );
 				if( shader->mShaderType == shaderTypeAtIndex )
 				{
-					_shaderArray[stageIndex] = shader;
+					commonShaderArray[stageIndex] = shader;
 				}
 			}
 		}
@@ -114,25 +112,24 @@ namespace Ic3::Graphics::GCI
 	void GraphicsShaderSet::resetStage( uint32 pStageIndex ) noexcept
 	{
 		ic3DebugAssert( CxDef::isShaderStageIndexValidGraphics( pStageIndex ) );
-		_shaderArray[pStageIndex] = cvNullHandle;
+		commonShaderArray[pStageIndex] = cvNullHandle;
 	}
 
 	void GraphicsShaderSet::resetStage( EShaderType pShaderType ) noexcept
 	{
 		ic3DebugAssert( CxDef::isShaderTypeGraphics( pShaderType ) );
 		const auto stageIndex = CxDef::getShaderStageIndex( pShaderType );
-		_shaderArray[stageIndex] = cvNullHandle;
+		commonShaderArray[stageIndex] = cvNullHandle;
 	}
 
-	namespace smutil
+	namespace SMU
 	{
 
-		Bitmask<EShaderStageFlags> getActiveShaderStagesMask(
-				const GraphicsShaderArray & pShaderArray ) noexcept
+		TBitmask<EShaderStageFlags> getActiveShaderStagesMask( const GraphicsShaderArray & pShaderArray ) noexcept
 		{
-			Bitmask<EShaderStageFlags> activeStagesMask = 0;
+			TBitmask<EShaderStageFlags> activeStagesMask = 0;
 
-			for( uint32 stageIndex = 0; stageIndex < GCM::SHADER_GRAPHICS_STAGES_NUM; ++stageIndex )
+			for( uint32 stageIndex = 0; stageIndex < GCM::cxShaderGraphicsStagesNum; ++stageIndex )
 			{
 				if( const auto shader = pShaderArray[stageIndex] )
 				{

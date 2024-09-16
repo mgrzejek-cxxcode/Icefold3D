@@ -13,9 +13,11 @@ namespace Ic3::Graphics::GCI
 	/// @brief
 	struct ShaderInputTextureCreateInfo
 	{
-		TextureReference targetTexture;
-		ShaderInputTextureLayout siTextureLayout;
-		Bitmask<ETextureBindFlags> bindFlags;
+		TextureReference mTargetTexture;
+
+		ShaderInputTextureLayout mInputTextureLayout;
+
+		TBitmask<ETextureBindFlags> mBindFlags;
 	};
 
 	/// @brief

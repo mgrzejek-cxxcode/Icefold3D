@@ -20,7 +20,7 @@ namespace Ic3::Graphics::GCI
 
 	native_uint IAVertexStreamDynamicState::countActiveVertexBuffers() const noexcept
 	{
-		return popCount( _vertexStreamDefinition.activeBindingsMask & E_IA_VERTEX_STREAM_BINDING_MASK_VERTEX_BUFFER_ALL_BITS );
+		return popCount( _vertexStreamDefinition.activeBindingsMask & eIAVertexStreamBindingMaskVertexBufferAllBits );
 	}
 
 	const IAVertexStreamDefinition & IAVertexStreamDynamicState::getVertexStreamDefinition() const noexcept
@@ -58,13 +58,13 @@ namespace Ic3::Graphics::GCI
 
 	IAIndexBufferReference & IAVertexStreamDynamicState::setIndexBufferRef()
 	{
-		_vertexStreamDefinition.activeBindingsMask.set( E_IA_VERTEX_STREAM_BINDING_FLAG_INDEX_BUFFER_BIT );
+		_vertexStreamDefinition.activeBindingsMask.set( eIAVertexStreamBindingFlagIndexBufferBit );
 		return _vertexStreamDefinition.indexBufferReference;
 	}
 
 	void IAVertexStreamDynamicState::setIndexBufferRef( const IAIndexBufferReference & pIBReference )
 	{
-		_vertexStreamDefinition.activeBindingsMask.setOrUnset( E_IA_VERTEX_STREAM_BINDING_FLAG_INDEX_BUFFER_BIT, !pIBReference.empty() );
+		_vertexStreamDefinition.activeBindingsMask.setOrUnset( eIAVertexStreamBindingFlagIndexBufferBit, !pIBReference.empty() );
 		_vertexStreamDefinition.indexBufferReference = pIBReference;
 	}
 
@@ -80,12 +80,12 @@ namespace Ic3::Graphics::GCI
 
 	void IAVertexStreamDynamicState::resetVertexBufferRefs()
 	{
-		_resetVertexBufferRefs( 0, GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM );
+		_resetVertexBufferRefs( 0, GCM::cxIAMaxVertexBufferBindingsNum );
 	}
 
 	void IAVertexStreamDynamicState::resetIndexBufferRef()
 	{
-		_vertexStreamDefinition.activeBindingsMask.unset( E_IA_VERTEX_STREAM_BINDING_FLAG_INDEX_BUFFER_BIT );
+		_vertexStreamDefinition.activeBindingsMask.unset( eIAVertexStreamBindingFlagIndexBufferBit );
 		_vertexStreamDefinition.indexBufferReference.reset();
 	}
 
@@ -97,7 +97,7 @@ namespace Ic3::Graphics::GCI
 
 	void IAVertexStreamDynamicState::_setVertexBufferRefs( native_uint pFirstIndex, native_uint pCount, const IAVertexBufferReference * pVBReferences )
 	{
-		for( native_uint vbIndex = pFirstIndex; ( vbIndex < GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM ) && ( pCount != 0 ); ++vbIndex, --pCount )
+		for( native_uint vbIndex = pFirstIndex; ( vbIndex < GCM::cxIAMaxVertexBufferBindingsNum ) && (pCount != 0 ); ++vbIndex, --pCount )
 		{
 			const auto & sourceVBReference = pVBReferences[vbIndex - pFirstIndex];
 
@@ -110,7 +110,7 @@ namespace Ic3::Graphics::GCI
 
 	void IAVertexStreamDynamicState::_resetVertexBufferRefs( native_uint pFirstIndex, native_uint pCount )
 	{
-		for( native_uint vbIndex = pFirstIndex; ( vbIndex < GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM ) && ( pCount != 0 ); ++vbIndex, --pCount )
+		for( native_uint vbIndex = pFirstIndex; ( vbIndex < GCM::cxIAMaxVertexBufferBindingsNum ) && (pCount != 0 ); ++vbIndex, --pCount )
 		{
 			const auto vertexBufferBit = CxDef::makeIAVertexBufferFlag( vbIndex );
 

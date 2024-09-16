@@ -8,6 +8,7 @@
 #include <Ic3/CoreLib/PixelCommon.h>
 #include <Ic3/CoreLib/MathImports.h>
 #include <Ic3/CoreLib/Utility/HFSIdentifier.h>
+#include <Ic3/Cppx/Hash.h>
 #include <Ic3/Cppx/Utilities.h>
 
 #include <Ic3/Graphics/Common/GraphicsCoreMetrics.h>
@@ -41,6 +42,13 @@
 #include "Prerequisites/GPUDataFormats.h"
 #include "Prerequisites/VertexAttribFormatUtils.h"
 
+namespace Ic3::Graphics
+{
+
+	using Cppx::THashObject;
+
+}
+
 namespace Ic3::Graphics::GCI
 {
 
@@ -50,10 +58,10 @@ namespace Ic3::Graphics::GCI
 	/// @namespace defaults
 	/// @brief GpuAPI-level default/pre-defined values/instances that can be used whenever a common case is implemented.
 
-	/// @namespace rcutil
+	/// @namespace RCU
 	/// @brief Resource Utilities, used to interact with resources and provide additional, common functionalities.
 
-	/// @namespace smutil
+	/// @namespace SMU
 	/// @brief State Management Utilities, used to provide helper methods related to GPU state management.
 
 	// Same for all drivers. A top-level interface for querying capabilities and

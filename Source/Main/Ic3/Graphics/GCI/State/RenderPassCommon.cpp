@@ -20,18 +20,18 @@ namespace Ic3::Graphics::GCI
 				}
 				else
 				{
-					const auto attachmentActionMask = smutil::getRenderPassAttachmentActionMask( attachmentConfig );
-					if( attachmentActionMask.isSet( E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_ACCESS_RESTRICT_BIT ) )
+					const auto attachmentActionMask = SMU::getRenderPassAttachmentActionMask( attachmentConfig );
+					if( attachmentActionMask.isSet( E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_ACCESS_RESTRICTBit ) )
 					{
 						attachmentsAccessRestrictMask.set( pAttachmentBit );
 					}
 					else
 					{
-						if( attachmentActionMask.isSet( E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_LOAD_CLEAR_BIT ) )
+						if( attachmentActionMask.isSet( E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_LOAD_CLEARBit ) )
 						{
 							attachmentsActionClearMask.set( pAttachmentBit );
 						}
-						if( attachmentActionMask.isSet( E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_STORE_RESOLVE_BIT ) )
+						if( attachmentActionMask.isSet( E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_STORE_RESOLVEBit ) )
 						{
 							attachmentsActionResolveMask.set( pAttachmentBit );
 						}
@@ -41,25 +41,25 @@ namespace Ic3::Graphics::GCI
 			} );
 	}
 
-	namespace smutil
+	namespace SMU
 	{
 
-		Bitmask<ERenderPassAttachmentActionFlags> getRenderPassAttachmentActionMask(
+		TBitmask<ERenderPassAttachmentActionFlags> getRenderPassAttachmentActionMask(
 				const RenderPassAttachmentConfig & pAttachmentConfig )
 		{
-			Bitmask<ERenderPassAttachmentActionFlags> attachmentActionMask = 0;
+			TBitmask<ERenderPassAttachmentActionFlags> attachmentActionMask = 0;
 			attachmentActionMask.set( static_cast<uint32>( pAttachmentConfig.renderPassLoadAction ) );
 			attachmentActionMask.set( static_cast<uint32>( pAttachmentConfig.renderPassStoreAction ) );
 			return attachmentActionMask;
 		}
 
-		Bitmask<ERTAttachmentFlags> getRenderPassAttachmentArbitraryActionMask(
+		TBitmask<ERTAttachmentFlags> getRenderPassAttachmentArbitraryActionMask(
 				const RenderPassColorAttachmentConfigArray & pColorAttachments,
 				const RenderPassAttachmentConfig pDepthStencilAttachment,
-				Bitmask<ERTAttachmentFlags> pActiveAttachmentsMask,
-				Bitmask<ERenderPassAttachmentActionFlags> pActionMask )
+				TBitmask<ERTAttachmentFlags> pActiveAttachmentsMask,
+				TBitmask<ERenderPassAttachmentActionFlags> pActionMask )
 		{
-			Bitmask<ERTAttachmentFlags> attachmentActionMask = 0;
+			TBitmask<ERTAttachmentFlags> attachmentActionMask = 0;
 			foreachRTAttachmentIndex( pActiveAttachmentsMask,
 				[&]( native_uint pIndex, ERTAttachmentFlags pAttachmentBit )
 				{
@@ -73,28 +73,28 @@ namespace Ic3::Graphics::GCI
 			return attachmentActionMask;
 		}
 
-		Bitmask<ERTAttachmentFlags> getRenderPassAttachmentClearMask(
+		TBitmask<ERTAttachmentFlags> getRenderPassAttachmentClearMask(
 				const RenderPassColorAttachmentConfigArray & pColorAttachments,
 				const RenderPassAttachmentConfig pDepthStencilAttachment,
-				Bitmask<ERTAttachmentFlags> pActiveAttachmentsMask )
+				TBitmask<ERTAttachmentFlags> pActiveAttachmentsMask )
 		{
 			return getRenderPassAttachmentArbitraryActionMask(
 					pColorAttachments,
 					pDepthStencilAttachment,
 					pActiveAttachmentsMask,
-					E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_LOAD_CLEAR_BIT );
+					E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_LOAD_CLEARBit );
 		}
 
-		Bitmask<ERTAttachmentFlags> getRenderPassAttachmentResolveMask(
+		TBitmask<ERTAttachmentFlags> getRenderPassAttachmentResolveMask(
 				const RenderPassColorAttachmentConfigArray & pColorAttachments,
 				const RenderPassAttachmentConfig pDepthStencilAttachment,
-				Bitmask<ERTAttachmentFlags> pActiveAttachmentsMask )
+				TBitmask<ERTAttachmentFlags> pActiveAttachmentsMask )
 		{
 			return getRenderPassAttachmentArbitraryActionMask(
 					pColorAttachments,
 					pDepthStencilAttachment,
 					pActiveAttachmentsMask,
-					E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_STORE_RESOLVE_BIT );
+					E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_STORE_RESOLVEBit );
 		}
 
 	}

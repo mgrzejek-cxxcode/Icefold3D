@@ -16,7 +16,7 @@ namespace Ic3::Graphics::GCI
 	using VideoModeList = std::vector<VideoModeDesc>;
 
 	/// @brief
-	class IC3_GRAPHICS_GCI_API DisplayManager : public DynamicInterface
+	class IC3_GRAPHICS_GCI_API DisplayManager : public IDynamicObject
 	{
 	public:
 		DisplayManager();

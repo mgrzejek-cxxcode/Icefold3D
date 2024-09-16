@@ -24,46 +24,46 @@ namespace Ic3::Graphics::GCI
 
 	TextureSubResource Texture::getAllSubResourcesRef() const
 	{
-		switch( mTextureLayout.texClass )
+		switch( mTextureLayout.mTexClass )
 		{
 			case ETextureClass::T2D:
 			{
 				TextureSubResource2D subResource2D;
-				subResource2D.mipLevel = CxDef::TEX_SUBRESOURCE_MIP_LEVEL_ALL_MIPS;
+				subResource2D.mMipLevel = cxTexSubresourceMipLevelAllMips;
 				return TextureSubResource{ subResource2D, ETextureClass::T2D };
 			}
 			case ETextureClass::T2DArray:
 			{
 				TextureSubResource2DArray subResource2DArray;
-				subResource2DArray.arrayIndex = CxDef::TEX_SUBRESOURCE_ARRAY_INDEX_ALL_TEXTURES;
-				subResource2DArray.mipLevel = CxDef::TEX_SUBRESOURCE_MIP_LEVEL_ALL_MIPS;
+				subResource2DArray.mArrayIndex = cxTexSubresourceArrayIndexAllTextures;
+				subResource2DArray.mMipLevel = cxTexSubresourceMipLevelAllMips;
 				return TextureSubResource{ subResource2DArray, ETextureClass::T2DArray };
 			}
 			case ETextureClass::T2DMS:
 			{
 				TextureSubResource2D subResource2DMS;
-				subResource2DMS.mipLevel = 0; // MSAA textures only have a single sub-resource (mip level 0).
+				subResource2DMS.mMipLevel = 0; // MSAA textures only have a single sub-resource (mip level 0).
 				return TextureSubResource{ subResource2DMS, ETextureClass::T2DMS };
 			}
 			case ETextureClass::T2DMSArray:
 			{
 				TextureSubResource2DArray subResource2DMSArray;
-				subResource2DMSArray.arrayIndex = CxDef::TEX_SUBRESOURCE_ARRAY_INDEX_ALL_TEXTURES;
-				subResource2DMSArray.mipLevel = 0; // MSAA textures only have a single sub-resource (mip level 0).
+				subResource2DMSArray.mArrayIndex = cxTexSubresourceArrayIndexAllTextures;
+				subResource2DMSArray.mMipLevel = 0; // MSAA textures only have a single sub-resource (mip level 0).
 				return TextureSubResource{ subResource2DMSArray, ETextureClass::T2DMSArray };
 			}
 			case ETextureClass::T3D:
 			{
 				TextureSubResource3D subResource3D;
-				subResource3D.mipLevel = CxDef::TEX_SUBRESOURCE_MIP_LEVEL_ALL_MIPS;
-				subResource3D.depthLayerIndex = CxDef::TEX_SUBRESOURCE_DEPTH_ALL_LAYERS;
+				subResource3D.mMipLevel = cxTexSubresourceMipLevelAllMips;
+				subResource3D.mDepthLayerIndex = cxTexSubresourceDepthAllLayers;
 				return TextureSubResource{ subResource3D };
 			}
 			case ETextureClass::TCubeMap:
 			{
 				TextureSubResourceCubeMap subResourceCubeMap;
-				subResourceCubeMap.faceIndex = CxDef::TEX_SUBRESOURCE_CUBE_MAP_FACE_ALL_FACES;
-				subResourceCubeMap.mipLevel = CxDef::TEX_SUBRESOURCE_MIP_LEVEL_ALL_MIPS;
+				subResourceCubeMap.mFaceIndex = cxTexSubresourceCubeMapFaceAllFaces;
+				subResourceCubeMap.mMipLevel = cxTexSubresourceMipLevelAllMips;
 				return TextureSubResource{ subResourceCubeMap };
 			}
 			default:
@@ -75,46 +75,46 @@ namespace Ic3::Graphics::GCI
 
 	TextureSubResource Texture::getDefaultSubResourceRef() const
 	{
-		switch( mTextureLayout.texClass )
+		switch( mTextureLayout.mTexClass )
 		{
 			case ETextureClass::T2D:
 			{
 				TextureSubResource2D subResource2D;
-				subResource2D.mipLevel = 0;
+				subResource2D.mMipLevel = 0;
 				return TextureSubResource{ subResource2D, ETextureClass::T2D };
 			}
 			case ETextureClass::T2DArray:
 			{
 				TextureSubResource2DArray subResource2DArray;
-				subResource2DArray.arrayIndex = 0;
-				subResource2DArray.mipLevel = 0;
+				subResource2DArray.mArrayIndex = 0;
+				subResource2DArray.mMipLevel = 0;
 				return TextureSubResource{ subResource2DArray, ETextureClass::T2DArray };
 			}
 			case ETextureClass::T2DMS:
 			{
 				TextureSubResource2D subResource2DMS;
-				subResource2DMS.mipLevel = 0;
+				subResource2DMS.mMipLevel = 0;
 				return TextureSubResource{ subResource2DMS, ETextureClass::T2DMS };
 			}
 			case ETextureClass::T2DMSArray:
 			{
 				TextureSubResource2DArray subResource2DMSArray;
-				subResource2DMSArray.arrayIndex = 0;
-				subResource2DMSArray.mipLevel = 0;
+				subResource2DMSArray.mArrayIndex = 0;
+				subResource2DMSArray.mMipLevel = 0;
 				return TextureSubResource{ subResource2DMSArray, ETextureClass::T2DMSArray };
 			}
 			case ETextureClass::T3D:
 			{
 				TextureSubResource3D subResource3D;
-				subResource3D.mipLevel = 0;
-				subResource3D.depthLayerIndex = CxDef::TEX_SUBRESOURCE_DEPTH_ALL_LAYERS;
+				subResource3D.mMipLevel = 0;
+				subResource3D.mDepthLayerIndex = cxTexSubresourceDepthAllLayers;
 				return TextureSubResource{ subResource3D };
 			}
 			case ETextureClass::TCubeMap:
 			{
 				TextureSubResourceCubeMap subResourceCubeMap;
-				subResourceCubeMap.faceIndex = E_TEXTURE_CUBE_MAP_FACE_FIRST;
-				subResourceCubeMap.mipLevel = 0;
+				subResourceCubeMap.mFaceIndex = eTextureCubeMapFaceFirst;
+				subResourceCubeMap.mMipLevel = 0;
 				return TextureSubResource{ subResourceCubeMap };
 			}
 			default:
@@ -130,8 +130,8 @@ namespace Ic3::Graphics::GCI
 	{
 		if( pCreateInfo.targetTexture )
 		{
-			const auto rttType = rcutil::queryRenderTargetTextureType( pCreateInfo.targetTexture->mTextureLayout.internalFormat );
-			const auto rttLayout = rcutil::queryRenderTargetTextureLayout( pCreateInfo.targetTexture->mTextureLayout );
+			const auto rttType = RCU::queryRenderTargetTextureType( pCreateInfo.targetTexture->mTextureLayout.mInternalFormat );
+			const auto rttLayout = RCU::queryRenderTargetTextureLayout( pCreateInfo.targetTexture->mTextureLayout );
 
 			auto existingTextureRTT = createGPUAPIObject<RenderTargetTexture>( pGPUDevice, rttType, rttLayout, pCreateInfo.targetTexture );
 
@@ -142,7 +142,7 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	namespace rcutil
+	namespace RCU
 	{
 
 		TextureDimensions getValidTextureDimensions( ETextureClass pTexClass, const TextureDimensions & pDimensions )
@@ -151,32 +151,32 @@ namespace Ic3::Graphics::GCI
 
 			if( pTexClass == ETextureClass::T2D )
 			{
-				validTextureDimensions.arraySize = 1;
-				validTextureDimensions.depth = 1;
+				validTextureDimensions.mArraySize = 1;
+				validTextureDimensions.mDepth = 1;
 			}
 			else if( pTexClass == ETextureClass::T2DArray )
 			{
-				validTextureDimensions.depth = 1;
+				validTextureDimensions.mDepth = 1;
 			}
 			else if( pTexClass == ETextureClass::T2DMS )
 			{
-				validTextureDimensions.arraySize = 1;
-				validTextureDimensions.depth = 1;
-				validTextureDimensions.mipLevelsNum = 1;
+				validTextureDimensions.mArraySize = 1;
+				validTextureDimensions.mDepth = 1;
+				validTextureDimensions.mMipLevelsNum = 1;
 			}
 			else if( pTexClass == ETextureClass::T2DMSArray )
 			{
-				validTextureDimensions.depth = 1;
-				validTextureDimensions.mipLevelsNum = 1;
+				validTextureDimensions.mDepth = 1;
+				validTextureDimensions.mMipLevelsNum = 1;
 			}
 			else if( pTexClass == ETextureClass::T3D )
 			{
-				validTextureDimensions.arraySize = 1;
+				validTextureDimensions.mArraySize = 1;
 			}
 			else if( pTexClass == ETextureClass::TCubeMap )
 			{
-				validTextureDimensions.depth = 1;
-				validTextureDimensions.arraySize = 1;
+				validTextureDimensions.mDepth = 1;
+				validTextureDimensions.mArraySize = 1;
 			}
 
 			return validTextureDimensions;

@@ -45,15 +45,15 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	namespace smutil
+	namespace SMU
 	{
 
 		GraphicsShaderLinkageCommonProperties getGraphicsShaderLinkageCommonPropertiesForShaderSet(
 				const GraphicsShaderSet & pShaderSet ) noexcept
 		{
 			GraphicsShaderLinkageCommonProperties commonProperties{};
-			commonProperties.activeStagesMask = pShaderSet.getActiveShaderStagesMask();
-			commonProperties.activeStagesNum = pShaderSet.getActiveShaderStagesNum();
+			commonProperties.mActiveStagesMask = pShaderSet.getActiveShaderStagesMask();
+			commonProperties.mActiveStagesNum = pShaderSet.getActiveShaderStagesNum();
 			return commonProperties;
 		}
 

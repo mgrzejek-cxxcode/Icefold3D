@@ -20,7 +20,7 @@ namespace Ic3::Graphics::GCI
 
 	native_uint RenderTargetBindingDynamicState::countActiveColorAttachments() const noexcept
 	{
-		return popCount( _renderTargetBindingDefinition.activeAttachmentsMask & E_RT_ATTACHMENT_MASK_COLOR_ALL );
+		return popCount( _renderTargetBindingDefinition.activeAttachmentsMask & eRTAttachmentMaskColorAll );
 	}
 
 	const RenderTargetBindingDefinition & RenderTargetBindingDynamicState::getBindingDefinition() const noexcept
@@ -63,14 +63,14 @@ namespace Ic3::Graphics::GCI
 
 	RenderTargetAttachmentBinding & RenderTargetBindingDynamicState::setDepthStencilAttachmentBinding()
 	{
-		_renderTargetBindingDefinition.activeAttachmentsMask.set( E_RT_ATTACHMENT_FLAG_DEPTH_STENCIL_BIT );
+		_renderTargetBindingDefinition.activeAttachmentsMask.set( eRtAttachmentFlagDepthStencilBit );
 		return _renderTargetBindingDefinition.depthStencilAttachment;
 	}
 
 	void RenderTargetBindingDynamicState::setDepthStencilAttachmentBinding(
 			const RenderTargetAttachmentBinding & pRPDSAttachmentBinding )
 	{
-		_renderTargetBindingDefinition.activeAttachmentsMask.setOrUnset( E_RT_ATTACHMENT_FLAG_DEPTH_STENCIL_BIT, !pRPDSAttachmentBinding.empty() );
+		_renderTargetBindingDefinition.activeAttachmentsMask.setOrUnset( eRtAttachmentFlagDepthStencilBit, !pRPDSAttachmentBinding.empty() );
 		_renderTargetBindingDefinition.depthStencilAttachment = pRPDSAttachmentBinding;
 	}
 
@@ -86,12 +86,12 @@ namespace Ic3::Graphics::GCI
 
 	void RenderTargetBindingDynamicState::resetColorAttachmentBindings()
 	{
-		_resetColorAttachmentBindings( 0, GCM::RT_MAX_COLOR_ATTACHMENTS_NUM );
+		_resetColorAttachmentBindings( 0, GCM::cxRTMaxColorAttachmentsNum );
 	}
 
 	void RenderTargetBindingDynamicState::resetDepthStencilAttachmentBinding()
 	{
-		_renderTargetBindingDefinition.activeAttachmentsMask.unset( E_RT_ATTACHMENT_FLAG_DEPTH_STENCIL_BIT );
+		_renderTargetBindingDefinition.activeAttachmentsMask.unset( eRtAttachmentFlagDepthStencilBit );
 		_renderTargetBindingDefinition.depthStencilAttachment.reset();
 	}
 
@@ -145,7 +145,7 @@ namespace Ic3::Graphics::GCI
 
 	native_uint RenderPassConfigurationDynamicState::countActiveColorAttachments() const noexcept
 	{
-		return popCount( _renderPassConfiguration.activeAttachmentsMask & E_RT_ATTACHMENT_MASK_COLOR_ALL );
+		return popCount( _renderPassConfiguration.activeAttachmentsMask & eRTAttachmentMaskColorAll );
 	}
 
 	const RenderPassConfiguration & RenderPassConfigurationDynamicState::getRenderPassConfiguration() const noexcept
@@ -188,14 +188,14 @@ namespace Ic3::Graphics::GCI
 
 	RenderPassAttachmentConfig & RenderPassConfigurationDynamicState::setDepthStencilAttachmentUsage()
 	{
-		_renderPassConfiguration.activeAttachmentsMask.set( E_RT_ATTACHMENT_FLAG_DEPTH_STENCIL_BIT );
+		_renderPassConfiguration.activeAttachmentsMask.set( eRtAttachmentFlagDepthStencilBit );
 		return _renderPassConfiguration.depthStencilAttachment;
 	}
 
 	void RenderPassConfigurationDynamicState::setDepthStencilAttachmentUsage(
 			const RenderPassAttachmentConfig & pRPDSAttachmentUsage )
 	{
-		_renderPassConfiguration.activeAttachmentsMask.setOrUnset( E_RT_ATTACHMENT_FLAG_DEPTH_STENCIL_BIT, !pRPDSAttachmentUsage.empty() );
+		_renderPassConfiguration.activeAttachmentsMask.setOrUnset( eRtAttachmentFlagDepthStencilBit, !pRPDSAttachmentUsage.empty() );
 		_renderPassConfiguration.depthStencilAttachment = pRPDSAttachmentUsage;
 	}
 
@@ -211,12 +211,12 @@ namespace Ic3::Graphics::GCI
 
 	void RenderPassConfigurationDynamicState::resetColorAttachmentUsages()
 	{
-		_resetColorAttachmentUsages( 0, GCM::RT_MAX_COLOR_ATTACHMENTS_NUM );
+		_resetColorAttachmentUsages( 0, GCM::cxRTMaxColorAttachmentsNum );
 	}
 
 	void RenderPassConfigurationDynamicState::resetDepthStencilAttachmentUsage()
 	{
-		_renderPassConfiguration.activeAttachmentsMask.unset( E_RT_ATTACHMENT_FLAG_DEPTH_STENCIL_BIT );
+		_renderPassConfiguration.activeAttachmentsMask.unset( eRtAttachmentFlagDepthStencilBit );
 		_renderPassConfiguration.depthStencilAttachment.reset();
 	}
 

@@ -12,16 +12,16 @@ namespace Ic3::Graphics::GCI
         ShaderHandle createShaderFromSource( GPUDevice & pGPUDevice, EShaderType pShaderType, const void * pSource, size_t pSourceLength )
         {
             ShaderCreateInfo shaderCreateInfo;
-            shaderCreateInfo.shaderType = pShaderType;
-            shaderCreateInfo.shaderSourceView = bindMemoryView( pSource, pSourceLength );
+            shaderCreateInfo.mShaderType = pShaderType;
+            shaderCreateInfo.mShaderSourceView = bindMemoryView( pSource, pSourceLength );
 
             if( pGPUDevice.isDebugDevice() )
             {
-                shaderCreateInfo.createFlags = E_SHADER_CREATE_FLAG_DEBUG_BIT;
+                shaderCreateInfo.mCreateFlags = eShaderCreateFlagDebugBit;
             }
             else
             {
-                shaderCreateInfo.createFlags = E_SHADER_CREATE_FLAG_OPTIMIZATION_L1_BIT;
+                shaderCreateInfo.mCreateFlags = eShaderCreateFlagOptimizationL1Bit;
             }
 
             auto shader = pGPUDevice.createShader( shaderCreateInfo );

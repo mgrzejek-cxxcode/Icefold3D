@@ -12,12 +12,12 @@ namespace Ic3::Graphics::GCI
 
 	GPUBufferReference::GPUBufferReference( GPUBufferHandle pGPUBuffer, const GPUMemoryRegion & pReferencedSubRegion )
 	{
-		_setRefBufferInternal( pGPUBuffer, rcutil::validateGPUBufferRegion( pGPUBuffer, pReferencedSubRegion ) );
+		_setRefBufferInternal( pGPUBuffer, RCU::validateGPUBufferRegion( pGPUBuffer, pReferencedSubRegion ) );
 	}
 
 	GPUBufferReference::GPUBufferReference( GPUBufferHandle pGPUBuffer, gpu_memory_size_t pOffset, gpu_memory_size_t pSize )
 	{
-		_setRefBufferInternal( pGPUBuffer, rcutil::validateGPUBufferRegion( pGPUBuffer, pOffset, pSize ) );
+		_setRefBufferInternal( pGPUBuffer, RCU::validateGPUBufferRegion( pGPUBuffer, pOffset, pSize ) );
 	}
 
 	bool GPUBufferReference::setRefBuffer( GPUBufferHandle pGPUBuffer )
@@ -27,12 +27,12 @@ namespace Ic3::Graphics::GCI
 
 	bool GPUBufferReference::setRefBuffer( GPUBufferHandle pGPUBuffer, const GPUMemoryRegion & pReferencedSubRegion )
 	{
-		return _setRefBufferInternal( pGPUBuffer, rcutil::validateGPUBufferRegion( pGPUBuffer, pReferencedSubRegion ) );
+		return _setRefBufferInternal( pGPUBuffer, RCU::validateGPUBufferRegion( pGPUBuffer, pReferencedSubRegion ) );
 	}
 
 	bool GPUBufferReference::setRefBuffer( GPUBufferHandle pGPUBuffer, gpu_memory_size_t pOffset, gpu_memory_size_t pSize )
 	{
-		return _setRefBufferInternal( pGPUBuffer, rcutil::validateGPUBufferRegion( pGPUBuffer, pOffset, pSize ) );
+		return _setRefBufferInternal( pGPUBuffer, RCU::validateGPUBufferRegion( pGPUBuffer, pOffset, pSize ) );
 	}
 
 	bool GPUBufferReference::reset()
@@ -63,7 +63,7 @@ namespace Ic3::Graphics::GCI
 		else if( ( pGPUBuffer != _refBufferObject ) || ( pReferencedSubRegion != _refSubRegion ) )
 		{
 			// Validate if the specified subregion is valid for the given buffer object.
-			if( rcutil::checkGPUBufferRegion( pGPUBuffer, pReferencedSubRegion ) )
+			if( RCU::checkGPUBufferRegion( pGPUBuffer, pReferencedSubRegion ) )
 			{
 				// Update the buffer only if necessary.
 				if( pGPUBuffer != _refBufferObject )
