@@ -76,26 +76,26 @@ namespace Ic3::System
 		{
 			case NSOpenGLProfileVersion4_1Core:
 			{
-				openGLVersionSupportInfo.apiVersion.major = 4;
-				openGLVersionSupportInfo.apiVersion.minor = 1;
+				openGLVersionSupportInfo.mAPIVersion.mNumMajor = 4;
+				openGLVersionSupportInfo.mAPIVersion.mNumMinor = 1;
 				break;
 			}
 			case NSOpenGLProfileVersion3_2Core:
 			{
-				openGLVersionSupportInfo.apiVersion.major = 3;
-				openGLVersionSupportInfo.apiVersion.minor = 2;
+				openGLVersionSupportInfo.mAPIVersion.mNumMajor = 3;
+				openGLVersionSupportInfo.mAPIVersion.mNumMinor = 2;
 				break;
 			}
 			default:
 			{
-				openGLVersionSupportInfo.apiVersion.major = 1;
-				openGLVersionSupportInfo.apiVersion.minor = 0;
+				openGLVersionSupportInfo.mAPIVersion.mNumMajor = 1;
+				openGLVersionSupportInfo.mAPIVersion.mNumMinor = 0;
 				break;
 			}
 		}
 
-		openGLVersionSupportInfo.apiProfile = EOpenGLAPIProfile::Core;
-		openGLVersionSupportInfo.apiClass = EOpenGLAPIClass::OpenGLDesktop;
+		openGLVersionSupportInfo.mAPIProfile = EOpenGLAPIProfile::Core;
+		openGLVersionSupportInfo.mAPIClass = EOpenGLAPIClass::Desktop;
 
 		return openGLVersionSupportInfo;
 	}
@@ -108,16 +108,16 @@ namespace Ic3::System
 		nsOpenGLPixelFormatAttribArray[0] = NSOpenGLPFAOpenGLProfile;
 		nsOpenGLPixelFormatAttribArray[1] = Platform::_osxGetAPIProfileForSurface( pCreateInfo, _nsSupportedOpenGLVersion );
 
-		Platform::_osxGetAttribArrayForVisualConfig( pCreateInfo.visualConfig, &( nsOpenGLPixelFormatAttribArray[2] ) );
+		Platform::_osxGetAttribArrayForVisualConfig( pCreateInfo.mVisualConfig, &( nsOpenGLPixelFormatAttribArray[2] ) );
 
 		auto * nsOpenGLPixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:nsOpenGLPixelFormatAttribArray];
 
 		auto displaySurface = createSysObject<OSXOpenGLDisplaySurface>( getHandle<OSXOpenGLSystemDriver>() );
-		displaySurface->mNativeData.nsPixelFormat = nsOpenGLPixelFormat;
+		displaySurface->mNativeData.mNSPixelFormat = nsOpenGLPixelFormat;
 
 		WindowCreateInfo windowCreateInfo;
-		windowCreateInfo.frameGeometry = pCreateInfo.frameGeometry;
-		windowCreateInfo.title = "TS3 OpenGL Window";
+		windowCreateInfo.mFrameGeometry = pCreateInfo.mFrameGeometry;
+		windowCreateInfo.mTitle = "TS3 OpenGL Window";
 
 		Platform::osxCreateWindow( displaySurface->mNativeData, nullptr, windowCreateInfo );
 		Platform::osxCreateWindowDefaultView( displaySurface->mNativeData );
@@ -143,12 +143,12 @@ namespace Ic3::System
 	@autoreleasepool
 	{
 		auto * osxDisplaySurface = pDisplaySurface.queryInterface<OSXOpenGLDisplaySurface>();
-		auto * nsPixelFormat = osxDisplaySurface->mNativeData.nsPixelFormat;
+		auto * nsPixelFormat = osxDisplaySurface->mNativeData.mNSPixelFormat;
 
 		auto * nsContextHandle = [[NSOSXOpenGLContext alloc] initWithFormat:nsPixelFormat shareContext:nil];
 
 		auto renderContext = createSysObject<OSXOpenGLRenderContext>( getHandle<OSXOpenGLSystemDriver>() );
-		renderContext->mNativeData.nsContextHandle = nsContextHandle;
+		renderContext->mNativeData.mNSContextHandle = nsContextHandle;
 
 		return renderContext;
 	}
@@ -180,7 +180,7 @@ namespace Ic3::System
 
 	bool OSXOpenGLSystemDriver::_nativeIsAPIClassSupported( EOpenGLAPIClass pAPIClass ) const
 	{
-		if( pAPIClass == EOpenGLAPIClass::OpenGLDesktop )
+		if( pAPIClass == EOpenGLAPIClass::Desktop )
 		{
 			return true;
 		}
@@ -219,7 +219,7 @@ namespace Ic3::System
 
 	EOpenGLAPIClass OSXOpenGLDisplaySurface::_nativeQuerySupportedAPIClass() const noexcept
 	{
-		return EOpenGLAPIClass::OpenGLDesktop;
+		return EOpenGLAPIClass::Desktop;
 	}
 
 	VisualConfig OSXOpenGLDisplaySurface::_nativeQueryVisualConfig() const
@@ -236,8 +236,8 @@ namespace Ic3::System
 		// const auto surfaceSize = [NSWindow contentRectForFrameRect:windowFrame
 		//                                                  styleMask:windowStyle];
 
-		const NSRect contentRect = [mNativeData.nsWindow frame];
-		const NSRect framebufferRect = [mNativeData.nsWindow convertRectToBacking:contentRect];
+		const NSRect contentRect = [mNativeData.mNSWindow frame];
+		const NSRect framebufferRect = [mNativeData.mNSWindow convertRectToBacking:contentRect];
 
 		return { framebufferRect.size.width, framebufferRect.size.height };
 	}
@@ -258,11 +258,11 @@ namespace Ic3::System
 
 	void OSXOpenGLDisplaySurface::_nativeSetTitle( const std::string & pTitle )
 	{
-        Platform::osxSetFrameTitle( mNativeData.nsWindow, pTitle );
+        Platform::osxSetFrameTitle( mNativeData.mNSWindow, pTitle );
 	}
 
 	void OSXOpenGLDisplaySurface::_nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-	                                                     Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
+	                                                     TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
 	{
 	}
 
@@ -270,7 +270,7 @@ namespace Ic3::System
 	{
 	@autoreleasepool
 	{
-		const auto windowFrame = [mNativeData.nsWindow frame];
+		const auto windowFrame = [mNativeData.mNSWindow frame];
 		return { windowFrame.size.width, windowFrame.size.height };
 	}
 	}
@@ -294,13 +294,13 @@ namespace Ic3::System
 	@autoreleasepool
 	{
 		auto * osxDisplaySurface = pTargetSurface.queryInterface<OSXOpenGLDisplaySurface>();
-		auto * nsTargetView = static_cast<NSView *>( osxDisplaySurface->mNativeData.nsView );
+		auto * nsTargetView = static_cast<NSView *>( osxDisplaySurface->mNativeData.mNSView );
 
 		auto * nsThreadLocalStorage = [NSThread currentThread].threadDictionary;
-		nsThreadLocalStorage[@"ic3OpenGLContext"] = mNativeData.nsContextHandle;
+		nsThreadLocalStorage[@"ic3OpenGLContext"] = mNativeData.mNSContextHandle;
 
-		[mNativeData.nsContextHandle setView:nsTargetView];
-		[mNativeData.nsContextHandle makeCurrentContext];
+		[mNativeData.mNSContextHandle setView:nsTargetView];
+		[mNativeData.mNSContextHandle makeCurrentContext];
 	}
 	}
 
@@ -311,7 +311,7 @@ namespace Ic3::System
 
 	bool OSXOpenGLRenderContext::_nativeSysValidate() const
 	{
-		return mNativeData.nsContextHandle != nullptr;
+		return mNativeData.mNSContextHandle != nullptr;
 	}
 
 	void OSXOpenGLRenderContext::_releaseOSXContextState()
@@ -326,13 +326,13 @@ namespace Ic3::System
 		{
 			NSOpenGLPixelFormatAttribute nsOpenGLProfile = 0;
 
-			if( ( pCreateInfo.targetAPIClass == EOpenGLAPIClass::OpenGLDesktop ) && ( pCreateInfo.minimumAPIVersion <= Version{ 4, 1 } ) )
+			if((pCreateInfo.mTargetAPIClass == EOpenGLAPIClass::Desktop ) && (pCreateInfo.mMinimumAPIVersion <= Version{4, 1 } ) )
 			{
-				if( ( pCreateInfo.minimumAPIVersion > Version{ 3, 2 } ) && ( pNSMaxSupportedVersion == NSOpenGLProfileVersion4_1Core ) )
+				if((pCreateInfo.mMinimumAPIVersion > Version{3, 2 } ) && (pNSMaxSupportedVersion == NSOpenGLProfileVersion4_1Core ) )
 				{
 					nsOpenGLProfile = NSOpenGLProfileVersion4_1Core;
 				}
-				else if( ( pCreateInfo.minimumAPIVersion >= Version{ 3, 0 } ) && ( pNSMaxSupportedVersion == NSOpenGLProfileVersion3_2Core ) )
+				else if((pCreateInfo.mMinimumAPIVersion >= Version{3, 0 } ) && (pNSMaxSupportedVersion == NSOpenGLProfileVersion3_2Core ) )
 				{
 					nsOpenGLProfile = NSOpenGLProfileVersion3_2Core;
 				}
@@ -353,41 +353,41 @@ namespace Ic3::System
 			ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFAAllowOfflineRenderers );
 
 			ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFAColorSize );
-			ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, pVisualConfig.colorDesc.size );
+			ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, pVisualConfig.mColorDesc.mSize );
 
-			if( pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_TRIPLE_BUFFER_BIT ) )
+			if( pVisualConfig.mFlags.isSet( eVisualAttribFlagTripleBufferBit ) )
 			{
 				ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFATripleBuffer );
 			}
-			else if( pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_DOUBLE_BUFFER_BIT ) )
+			else if( pVisualConfig.mFlags.isSet( eVisualAttribFlagDoubleBufferBit ) )
 			{
 				ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFADoubleBuffer );
 			}
 
-			if( pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_STEREO_DISPLAY_BIT ) )
+			if( pVisualConfig.mFlags.isSet( eVisualAttribFlagStereoDisplayBit ) )
 			{
 				ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFAStereo );
 			}
 
-			if( ( pVisualConfig.msaaDesc.bufferCount != 0 ) && ( pVisualConfig.msaaDesc.quality != 0 ) )
+			if((pVisualConfig.mMSAADesc.mBufferCount != 0 ) && (pVisualConfig.mMSAADesc.mQuality != 0 ) )
 			{
 				ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFASampleBuffers );
-				ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, pVisualConfig.msaaDesc.bufferCount );
+				ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, pVisualConfig.mMSAADesc.mBufferCount );
 				ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFASamples );
-				ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, pVisualConfig.msaaDesc.quality );
+				ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, pVisualConfig.mMSAADesc.mQuality );
 				ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFANoRecovery );
 			}
 
-			if( pVisualConfig.depthStencilDesc.depthBufferSize != 0 )
+			if( pVisualConfig.mDepthStencilDesc.mDepthBufferSize != 0 )
 			{
 				ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFADepthSize );
-				ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, pVisualConfig.depthStencilDesc.depthBufferSize );
+				ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, pVisualConfig.mDepthStencilDesc.mDepthBufferSize );
 			}
 
-			if( pVisualConfig.depthStencilDesc.stencilBufferSize != 0 )
+			if( pVisualConfig.mDepthStencilDesc.mStencilBufferSize != 0 )
 			{
 				ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFAStencilSize );
-				ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, pVisualConfig.depthStencilDesc.stencilBufferSize );
+				ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, pVisualConfig.mDepthStencilDesc.mStencilBufferSize );
 			}
 
 			ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, 0 );

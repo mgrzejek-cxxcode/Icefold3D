@@ -69,13 +69,13 @@ namespace Ic3::System
 		mNativeData.initState = std::make_unique<Platform::Win32OpenGLSystemDriverNativeData::InitState>();
 
 		WindowCreateInfo tempWindowCreateInfo;
-		tempWindowCreateInfo.frameGeometry.position = { 0, 0 };
-		tempWindowCreateInfo.frameGeometry.size = { 600, 600 };
-		tempWindowCreateInfo.frameGeometry.style = EFrameStyle::Overlay;
+		tempWindowCreateInfo.mFrameGeometry.position = { 0, 0 };
+		tempWindowCreateInfo.mFrameGeometry.size = { 600, 600 };
+		tempWindowCreateInfo.mFrameGeometry.style = EFrameStyle::OVERLAY;
 
 		VisualConfig legacyVisualConfig;
 		legacyVisualConfig = vsxGetDefaultVisualConfigForSysWindow();
-		legacyVisualConfig.flags.set( E_VISUAL_ATTRIB_FLAG_LEGACY_BIT );
+		legacyVisualConfig.flags.set( E_VISUAL_ATTRIB_FLAG_LEGACYBit );
 
 		auto & tmpSurfaceNativeData = mNativeData.initState->surfaceData;
 
@@ -137,32 +137,32 @@ namespace Ic3::System
 		auto displaySurface = createSysObject<Win32OpenGLDisplaySurface>( getHandle<Win32OpenGLSystemDriver>() );
 
 		WindowCreateInfo surfaceWindowCreateInfo;
-		surfaceWindowCreateInfo.frameGeometry = pCreateInfo.frameGeometry;
-		surfaceWindowCreateInfo.title = "TS3 OpenGL Window";
+		surfaceWindowCreateInfo.mFrameGeometry = pCreateInfo.mFrameGeometry;
+		surfaceWindowCreateInfo.mTitle = "TS3 OpenGL Window";
 
 		Platform::win32CreateWindow( displaySurface->mNativeData, surfaceWindowCreateInfo );
 
-		_win32CreateGLSurface( displaySurface->mNativeData, pCreateInfo.visualConfig );
+		_win32CreateGLSurface( displaySurface->mNativeData, pCreateInfo.mVisualConfig );
 
-		if( pCreateInfo.flags.isSet( E_OPENGL_DISPLAY_SURFACE_CREATE_FLAG_SYNC_DISABLED_BIT ) )
+		if( pCreateInfo.flags.isSet( E_OPENGL_DISPLAY_SURFACE_CREATE_FLAG_SYNC_DISABLEDBit ) )
 		{
 			wglSwapIntervalEXT( 0 );
 		}
-		else if( pCreateInfo.flags.isSet( E_OPENGL_DISPLAY_SURFACE_CREATE_FLAG_SYNC_ADAPTIVE_BIT ) )
+		else if( pCreateInfo.flags.isSet( E_OPENGL_DISPLAY_SURFACE_CREATE_FLAG_SYNC_ADAPTIVEBit ) )
 		{
 			wglSwapIntervalEXT( -1 );
 		}
-		else if( pCreateInfo.flags.isSet( E_OPENGL_DISPLAY_SURFACE_CREATE_FLAG_SYNC_VERTICAL_BIT ) )
+		else if( pCreateInfo.flags.isSet( E_OPENGL_DISPLAY_SURFACE_CREATE_FLAG_SYNC_VERTICALBit ) )
 		{
 			wglSwapIntervalEXT( 1 );
 		}
 
-		::ShowWindow( displaySurface->mNativeData.hwnd, SW_SHOWNORMAL );
+		::ShowWindow( displaySurface->mNativeData.mHWND, SW_SHOWNORMAL );
 
 		// TODO: Workaround to properly work with current engine's implementation. That should be turned into an explicit flag.
-		if( pCreateInfo.flags.isSet( E_OPENGL_DISPLAY_SURFACE_CREATE_FLAG_FULLSCREEN_BIT ) )
+		if( pCreateInfo.flags.isSet( E_OPENGL_DISPLAY_SURFACE_CREATE_FLAG_FULLSCREENBit ) )
 		{
-			::SetCapture( displaySurface->mNativeData.hwnd );
+			::SetCapture( displaySurface->mNativeData.mHWND );
 			::ShowCursor( FALSE );
 		}
 
@@ -180,12 +180,12 @@ namespace Ic3::System
 		auto displaySurface = createSysObject<Win32OpenGLDisplaySurface>( getHandle<Win32OpenGLSystemDriver>() );
 
 		displaySurface->mNativeData.hdc = currentDC;
-		displaySurface->mNativeData.hwnd = ::WindowFromDC( currentDC );
+		displaySurface->mNativeData.mHWND = ::WindowFromDC( currentDC );
 		displaySurface->mNativeData.pixelFormatIndex = ::GetPixelFormat( currentDC );
 
 		CHAR surfaceWindowClassName[256];
-		::GetClassNameA( displaySurface->mNativeData.hwnd, surfaceWindowClassName, 255 );
-		auto wndProcModuleHandle = ::GetWindowLongPtrA( displaySurface->mNativeData.hwnd, GWLP_HINSTANCE );
+		::GetClassNameA( displaySurface->mNativeData.mHWND, surfaceWindowClassName, 255 );
+		auto wndProcModuleHandle = ::GetWindowLongPtrA( displaySurface->mNativeData.mHWND, GWLP_HINSTANCE );
 
 		displaySurface->mNativeData.wndClsName = surfaceWindowClassName;
 		displaySurface->mNativeData.moduleHandle = reinterpret_cast<HMODULE>( wndProcModuleHandle );
@@ -203,38 +203,38 @@ namespace Ic3::System
 		auto * win32DisplaySurface = pDisplaySurface.queryInterface<Win32OpenGLDisplaySurface>();
 
 		int contextAPIProfile = 0;
-		Bitmask<int> contextCreateFlags = 0;
+		TBitmask<int> contextCreateFlags = 0;
 		HGLRC shareContextHandle = nullptr;
 
 		if( pCreateInfo.contextAPIProfile == EOpenGLAPIProfile::Core )
 		{
-			contextAPIProfile = WGL_CONTEXT_CORE_PROFILE_BIT_ARB;
+			contextAPIProfile = WGL_CONTEXT_CORE_PROFILEBit_ARB;
 		}
 		else if( pCreateInfo.contextAPIProfile == EOpenGLAPIProfile::Legacy )
 		{
-			contextAPIProfile = WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB;
+			contextAPIProfile = WGL_CONTEXT_COMPATIBILITY_PROFILEBit_ARB;
 		}
 		else if( pCreateInfo.contextAPIProfile == EOpenGLAPIProfile::GLES )
 		{
-			contextAPIProfile = WGL_CONTEXT_ES_PROFILE_BIT_EXT;
+			contextAPIProfile = WGL_CONTEXT_ES_PROFILEBit_EXT;
 		}
 
-		if( pCreateInfo.flags.isSet( E_OPENGL_RENDER_CONTEXT_CREATE_FLAG_ENABLE_DEBUG_BIT ) )
+		if( pCreateInfo.flags.isSet( E_OPENGL_RENDER_CONTEXT_CREATE_FLAG_ENABLE_DEBUGBit ) )
 		{
-			contextCreateFlags |= WGL_CONTEXT_DEBUG_BIT_ARB;
+			contextCreateFlags |= WGL_CONTEXT_DEBUGBit_ARB;
 		}
-		if( pCreateInfo.flags.isSet( E_OPENGL_RENDER_CONTEXT_CREATE_FLAG_FORWARD_COMPATIBLE_BIT ) )
+		if( pCreateInfo.flags.isSet( E_OPENGL_RENDER_CONTEXT_CREATE_FLAG_FORWARD_COMPATIBLEBit ) )
 		{
-			contextCreateFlags |= WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
+			contextCreateFlags |= WGL_CONTEXT_FORWARD_COMPATIBLEBit_ARB;
 		}
-		if( pCreateInfo.flags.isSet( E_OPENGL_RENDER_CONTEXT_CREATE_FLAG_ENABLE_SHARING_BIT ) )
+		if( pCreateInfo.flags.isSet( E_OPENGL_RENDER_CONTEXT_CREATE_FLAG_ENABLE_SHARINGBit ) )
 		{
 			if( pCreateInfo.shareContext )
 			{
 				auto * win32ShareContext = pCreateInfo.shareContext->queryInterface<Win32OpenGLRenderContext>();
 				shareContextHandle = win32ShareContext->mNativeData.contextHandle;
 			}
-			else if( pCreateInfo.flags.isSet( E_OPENGL_RENDER_CONTEXT_CREATE_FLAG_SHARE_WITH_CURRENT_BIT ) )
+			else if( pCreateInfo.flags.isSet( E_OPENGL_RENDER_CONTEXT_CREATE_FLAG_SHARE_WITH_CURRENTBit ) )
 			{
 				if( auto * currentWGLContext = ::wglGetCurrentContext() )
 				{
@@ -246,9 +246,9 @@ namespace Ic3::System
 		const int contextAttributes[] =
 		{
 			// Requested OpenGL API version: major part
-			WGL_CONTEXT_MAJOR_VERSION_ARB, pCreateInfo.requestedAPIVersion.major,
+			WGL_CONTEXT_MAJOR_VERSION_ARB, pCreateInfo.requestedAPIVersion.mNumMajor,
 			// Requested OpenGL API version: minor part
-			WGL_CONTEXT_MINOR_VERSION_ARB, pCreateInfo.requestedAPIVersion.minor,
+			WGL_CONTEXT_MINOR_VERSION_ARB, pCreateInfo.requestedAPIVersion.mNumMinor,
 			//
 			WGL_CONTEXT_PROFILE_MASK_ARB, contextAPIProfile,
 			//
@@ -397,12 +397,12 @@ namespace Ic3::System
 
 	FrameSize Win32OpenGLDisplaySurface::_nativeQueryRenderAreaSize() const
 	{
-		return Platform::win32GetFrameSize( mNativeData.hwnd, EFrameSizeMode::ClientArea );
+		return Platform::win32GetFrameSize( mNativeData.mHWND, EFrameSizeMode::CLIENT_AREA );
 	}
 
 	bool Win32OpenGLDisplaySurface::_nativeSysValidate() const
 	{
-		return mNativeData.hwnd && mNativeData.hdc;
+		return mNativeData.mHWND && mNativeData.hdc;
 	}
 
 	void Win32OpenGLDisplaySurface::_nativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode )
@@ -415,18 +415,18 @@ namespace Ic3::System
 
 	void Win32OpenGLDisplaySurface::_nativeSetTitle( const std::string & pTitle )
 	{
-		Platform::win32SetFrameTitle( mNativeData.hwnd, pTitle );
+		Platform::win32SetFrameTitle( mNativeData.mHWND, pTitle );
 	}
 
 	void Win32OpenGLDisplaySurface::_nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-	                                                       Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
+	                                                       TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
 	{
-		Platform::win32UpdateFrameGeometry( mNativeData.hwnd, pFrameGeometry, pUpdateFlags );
+		Platform::win32UpdateFrameGeometry( mNativeData.mHWND, pFrameGeometry, pUpdateFlags );
 	}
 
 	FrameSize Win32OpenGLDisplaySurface::_nativeGetSize( EFrameSizeMode pSizeMode ) const
 	{
-		return Platform::win32GetFrameSize( mNativeData.hwnd, pSizeMode );
+		return Platform::win32GetFrameSize( mNativeData.mHWND, pSizeMode );
 	}
 
     bool Win32OpenGLDisplaySurface::_nativeIsFullscreen() const
@@ -473,7 +473,7 @@ namespace Ic3::System
 		void _win32CreateGLSurface( Win32OpenGLDisplaySurfaceNativeData & pGLSurfaceNativeData,
 		                            const VisualConfig & pVisualConfig )
 		{
-			auto hdc = ::GetWindowDC( pGLSurfaceNativeData.hwnd );
+			auto hdc = ::GetWindowDC( pGLSurfaceNativeData.mHWND );
 			pGLSurfaceNativeData.hdc = hdc;
 
 			PIXELFORMATDESCRIPTOR pixelFormatDescriptor;
@@ -481,7 +481,7 @@ namespace Ic3::System
 			pixelFormatDescriptor.nSize = sizeof( PIXELFORMATDESCRIPTOR );
 			pixelFormatDescriptor.nVersion = 1;
 
-			if( pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_LEGACY_BIT ) )
+			if( pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_LEGACYBit ) )
 			{
 				pGLSurfaceNativeData.pixelFormatIndex = _win32ChooseLegacyGLPixelFormat( hdc, pixelFormatDescriptor );
 			}
@@ -501,7 +501,7 @@ namespace Ic3::System
 		{
 			if( pGLSurfaceNativeData.hdc != nullptr )
 			{
-				::ReleaseDC( pGLSurfaceNativeData.hwnd, pGLSurfaceNativeData.hdc );
+				::ReleaseDC( pGLSurfaceNativeData.mHWND, pGLSurfaceNativeData.hdc );
 
 				pGLSurfaceNativeData.hdc = nullptr;
 				pGLSurfaceNativeData.pixelFormatIndex = 0;
@@ -617,14 +617,14 @@ namespace Ic3::System
 			int doubleBufferRequestedState = TRUE;
 			int stereoModeRequestedState = FALSE;
 
-			if( pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_SINGLE_BUFFER_BIT ) &&
-			!pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_DOUBLE_BUFFER_BIT ) )
+			if( pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_SINGLE_BUFFERBit ) &&
+			!pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_DOUBLE_BUFFERBit ) )
 			{
 				doubleBufferRequestedState = FALSE;
 			}
 
-			if( pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_STEREO_DISPLAY_BIT ) &&
-			!pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_MONO_DISPLAY_BIT ) )
+			if( pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_STEREO_DISPLAYBit ) &&
+			!pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_MONO_DISPLAYBit ) )
 			{
 				stereoModeRequestedState = TRUE;
 			}
@@ -633,8 +633,8 @@ namespace Ic3::System
 			{
 				WGL_DOUBLE_BUFFER_ARB,
 				WGL_STEREO_ARB,
-				WGL_DEPTH_BITS_ARB,
-				WGL_STENCIL_BITS_ARB,
+				WGL_DEPTHBitS_ARB,
+				WGL_STENCILBitS_ARB,
 				WGL_SAMPLES_ARB
 			};
 
@@ -687,47 +687,47 @@ namespace Ic3::System
 			pAttribArray[attribIndex++] = WGL_PIXEL_TYPE_ARB;
 			pAttribArray[attribIndex++] = WGL_TYPE_RGBA_ARB;
 
-			if( pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_DOUBLE_BUFFER_BIT ) )
+			if( pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_DOUBLE_BUFFERBit ) )
 			{
 				pAttribArray[attribIndex++] = WGL_DOUBLE_BUFFER_ARB;
 				pAttribArray[attribIndex++] = GL_TRUE;
 			}
-			else if( pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_SINGLE_BUFFER_BIT ) )
+			else if( pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_SINGLE_BUFFERBit ) )
 			{
 				pAttribArray[attribIndex++] = WGL_DOUBLE_BUFFER_ARB;
 				pAttribArray[attribIndex++] = GL_FALSE;
 			}
 
-			if( pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_MONO_DISPLAY_BIT ) )
+			if( pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_MONO_DISPLAYBit ) )
 			{
 				pAttribArray[attribIndex++] = WGL_STEREO_ARB;
 				pAttribArray[attribIndex++] = GL_FALSE;
 			}
-			else if( pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_STEREO_DISPLAY_BIT ) )
+			else if( pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_STEREO_DISPLAYBit ) )
 			{
 				pAttribArray[attribIndex++] = WGL_STEREO_ARB;
 				pAttribArray[attribIndex++] = GL_TRUE;
 			}
 
-			if( pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_SRGB_CAPABLE_BIT ) )
+			if( pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_SRGB_CAPABLEBit ) )
 			{
 				pAttribArray[attribIndex++] = WGL_FRAMEBUFFER_SRGB_CAPABLE_ARB;
 				pAttribArray[attribIndex++] = GL_TRUE;
 			}
 
-			if( pVisualConfig.colorDesc.rgba.u32Code != 0 )
+			if( pVisualConfig.colorDesc.rgba.mU32Code != 0 )
 			{
-				pAttribArray[attribIndex++] = WGL_RED_BITS_ARB;
-				pAttribArray[attribIndex++] = pVisualConfig.colorDesc.rgba.u8Red;
+				pAttribArray[attribIndex++] = WGL_REDBitS_ARB;
+				pAttribArray[attribIndex++] = pVisualConfig.colorDesc.rgba.mU8Red;
 
-				pAttribArray[attribIndex++] = WGL_GREEN_BITS_ARB;
-				pAttribArray[attribIndex++] = pVisualConfig.colorDesc.rgba.u8Green;
+				pAttribArray[attribIndex++] = WGL_GREENBitS_ARB;
+				pAttribArray[attribIndex++] = pVisualConfig.colorDesc.rgba.mU8Green;
 
-				pAttribArray[attribIndex++] = WGL_BLUE_BITS_ARB;
-				pAttribArray[attribIndex++] = pVisualConfig.colorDesc.rgba.u8Blue;
+				pAttribArray[attribIndex++] = WGL_BLUEBitS_ARB;
+				pAttribArray[attribIndex++] = pVisualConfig.colorDesc.rgba.mU8Blue;
 
-				pAttribArray[attribIndex++] = WGL_ALPHA_BITS_ARB;
-				pAttribArray[attribIndex++] = pVisualConfig.colorDesc.rgba.u8Alpha;
+				pAttribArray[attribIndex++] = WGL_ALPHABitS_ARB;
+				pAttribArray[attribIndex++] = pVisualConfig.colorDesc.rgba.mU8Alpha;
 			}
 
 			if( ( pVisualConfig.msaaDesc.bufferCount != 0 ) && ( pVisualConfig.msaaDesc.quality != 0 ) )
@@ -741,13 +741,13 @@ namespace Ic3::System
 
 			if( pVisualConfig.depthStencilDesc.depthBufferSize != 0 )
 			{
-				pAttribArray[attribIndex++] = WGL_DEPTH_BITS_ARB;
+				pAttribArray[attribIndex++] = WGL_DEPTHBitS_ARB;
 				pAttribArray[attribIndex++] = pVisualConfig.depthStencilDesc.depthBufferSize;
 			}
 
 			if( pVisualConfig.depthStencilDesc.stencilBufferSize != 0 )
 			{
-				pAttribArray[attribIndex++] = WGL_STENCIL_BITS_ARB;
+				pAttribArray[attribIndex++] = WGL_STENCILBitS_ARB;
 				pAttribArray[attribIndex++] = pVisualConfig.depthStencilDesc.stencilBufferSize;
 			}
 

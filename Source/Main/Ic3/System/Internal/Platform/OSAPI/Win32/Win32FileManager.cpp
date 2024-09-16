@@ -123,13 +123,13 @@ namespace Ic3::System
 
 	bool Win32FileManager::_nativeCheckDirectoryExists( const std::string & pDirPath )
 	{
-		Bitmask<DWORD> targetAttributes = ::GetFileAttributesA( pDirPath.c_str() );
+		TBitmask<DWORD> targetAttributes = ::GetFileAttributesA( pDirPath.c_str() );
 		return ( targetAttributes != INVALID_FILE_ATTRIBUTES ) && targetAttributes.isSet( FILE_ATTRIBUTE_DIRECTORY );
 	}
 
 	bool Win32FileManager::_nativeCheckFileExists( const std::string & pFilePath )
 	{
-		Bitmask<DWORD> targetAttributes = ::GetFileAttributesA( pFilePath.c_str() );
+		TBitmask<DWORD> targetAttributes = ::GetFileAttributesA( pFilePath.c_str() );
 		return ( targetAttributes != INVALID_FILE_ATTRIBUTES ) && !targetAttributes.isSet( FILE_ATTRIBUTE_DIRECTORY );
 	}
 	
@@ -145,27 +145,27 @@ namespace Ic3::System
 
 	void Win32File::setInternalWin32FileHandle( HANDLE pFileHandle )
 	{
-		ic3DebugAssert( !mNativeData.fileHandle );
-		mNativeData.fileHandle = pFileHandle;
+		ic3DebugAssert( !mNativeData.mFileHandle );
+		mNativeData.mFileHandle = pFileHandle;
 	}
 
 	void Win32File::_releaseWin32FileHandle()
 	{
-		if( mNativeData.fileHandle )
+		if( mNativeData.mFileHandle )
 		{
-			Platform::_win32CloseFile( mNativeData.fileHandle );
-			mNativeData.fileHandle = nullptr;
+			Platform::_win32CloseFile( mNativeData.mFileHandle );
+			mNativeData.mFileHandle = nullptr;
 		}
 	}
 
 	file_size_t Win32File::_nativeReadData( void * pTargetBuffer, file_size_t pReadSize )
 	{
 		DWORD readBytesNum = 0u;
-		auto readResult = ::ReadFile( mNativeData.fileHandle, pTargetBuffer, pReadSize, &readBytesNum, nullptr );
+		auto readResult = ::ReadFile( mNativeData.mFileHandle, pTargetBuffer, pReadSize, &readBytesNum, nullptr );
 
 		if( readResult && ( readBytesNum == 0 ) )
 		{
-			mNativeData.flags.set( Platform::E_WIN32_FILE_FLAG_EOF_BIT );
+			mNativeData.flags.set( Platform::eWin32FileFlagEOFBit );
 		}
 
 		if( !readResult )
@@ -173,7 +173,7 @@ namespace Ic3::System
 			auto errorCode = ::GetLastError();
 			if( errorCode == ERROR_HANDLE_EOF )
 			{
-				mNativeData.flags.set( Platform::E_WIN32_FILE_FLAG_EOF_BIT );
+				mNativeData.flags.set( Platform::eWin32FileFlagEOFBit );
 			}
 			else
 			{
@@ -188,7 +188,7 @@ namespace Ic3::System
 	file_size_t Win32File::_nativeWriteData( const void * pData, file_size_t pWriteSize )
 	{
 		DWORD writtenBytesNum = 0u;
-		auto writeResult = ::WriteFile(  mNativeData.fileHandle, pData, pWriteSize, &writtenBytesNum, nullptr );
+		auto writeResult = ::WriteFile(  mNativeData.mFileHandle, pData, pWriteSize, &writtenBytesNum, nullptr );
 
 		if( !writeResult )
 		{
@@ -207,7 +207,7 @@ namespace Ic3::System
 
 		auto win32FPMoveMode = Platform::_win32TranslateFilePointerRefPos( pRefPos );
 
-		u64FileOffset.LowPart = ::SetFilePointer( mNativeData.fileHandle,
+		u64FileOffset.LowPart = ::SetFilePointer( mNativeData.mFileHandle,
 		                                          u64FileOffset.LowPart,
 		                                          &( u64FileOffset.HighPart ),
 		                                          win32FPMoveMode );
@@ -233,7 +233,7 @@ namespace Ic3::System
 		LARGE_INTEGER u64GetFilePosition;
 		u64GetFilePosition.QuadPart = 0u;
 
-		::SetFilePointerEx( mNativeData.fileHandle, u64SetFileOffset, &u64GetFilePosition, FILE_CURRENT );
+		::SetFilePointerEx( mNativeData.mFileHandle, u64SetFileOffset, &u64GetFilePosition, FILE_CURRENT );
 
 		return numeric_cast<file_offset_t>( u64GetFilePosition.QuadPart );
 	}
@@ -243,7 +243,7 @@ namespace Ic3::System
 		LARGE_INTEGER u64FileSize;
 		u64FileSize.QuadPart = 0L;
 
-		::GetFileSizeEx( mNativeData.fileHandle, &u64FileSize );
+		::GetFileSizeEx( mNativeData.mFileHandle, &u64FileSize );
 
 		return numeric_cast<file_size_t>( u64FileSize.QuadPart );
 	}
@@ -256,22 +256,22 @@ namespace Ic3::System
 		LARGE_INTEGER u64GetFilePosition;
 		u64GetFilePosition.QuadPart = 0u;
 
-		::SetFilePointerEx( mNativeData.fileHandle, u64SetFileOffset, &u64GetFilePosition, FILE_CURRENT );
+		::SetFilePointerEx( mNativeData.mFileHandle, u64SetFileOffset, &u64GetFilePosition, FILE_CURRENT );
 		const auto previousFilePointer = u64GetFilePosition.QuadPart;
 
-		::SetFilePointerEx( mNativeData.fileHandle, u64SetFileOffset, &u64GetFilePosition, FILE_END );
+		::SetFilePointerEx( mNativeData.mFileHandle, u64SetFileOffset, &u64GetFilePosition, FILE_END );
 		const auto endFilePosition = u64GetFilePosition.QuadPart;
 
 		u64SetFileOffset.QuadPart = previousFilePointer;
 
-		::SetFilePointerEx( mNativeData.fileHandle, u64SetFileOffset, nullptr, FILE_BEGIN );
+		::SetFilePointerEx( mNativeData.mFileHandle, u64SetFileOffset, nullptr, FILE_BEGIN );
 
 		return numeric_cast<file_offset_t>( endFilePosition - previousFilePointer );
 	}
 
 	bool Win32File::_nativeCheckEOF() const
 	{
-		return mNativeData.flags.isSet( Platform::E_WIN32_FILE_FLAG_EOF_BIT );
+		return mNativeData.flags.isSet( Platform::eWin32FileFlagEOFBit );
 	}
 
 	bool Win32File::_nativeIsGood() const

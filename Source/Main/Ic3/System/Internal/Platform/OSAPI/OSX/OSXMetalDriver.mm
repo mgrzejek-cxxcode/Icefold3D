@@ -19,15 +19,15 @@ namespace Ic3::System
         auto displaySurface = createSysObject<OSXMetalDisplaySurface>( getHandle<OSXMetalSystemDriver>() );
 
         WindowCreateInfo windowCreateInfo;
-        windowCreateInfo.frameGeometry = pCreateInfo.frameGeometry;
-        windowCreateInfo.title = "TS3 Metal Window";
+        windowCreateInfo.mFrameGeometry = pCreateInfo.mFrameGeometry;
+        windowCreateInfo.mTitle = "TS3 Metal Window";
 
         Platform::osxCreateWindow( displaySurface->mNativeData, nullptr, windowCreateInfo );
         Platform::osxCreateSurfaceMetalView( displaySurface->mNativeData, pCreateInfo );
         Platform::osxCreateEventListener( displaySurface->mNativeData );
         Platform::osxSetInputWindow( displaySurface->mNativeData );
 
-		displaySurface->mSurfaceData->caMetalLayer = displaySurface->mNativeData.caMetalLayer;
+		displaySurface->mSurfaceData->mCAMetalLayer = displaySurface->mNativeData.mCAMetalLayer;
 
         return displaySurface;
 	}
@@ -45,7 +45,7 @@ namespace Ic3::System
 	
     FrameSize OSXMetalDisplaySurface::_nativeQueryRenderAreaSize() const
     {
-        const auto & drawableSize = [mNativeData.caMetalLayer drawableSize];
+        const auto & drawableSize = [mNativeData.mCAMetalLayer drawableSize];
 
         FrameSize result;
         result.x = static_cast<uint32>( drawableSize.width );
@@ -56,7 +56,7 @@ namespace Ic3::System
 
     bool OSXMetalDisplaySurface::_nativeSysValidate() const
     {
-        return mNativeData.caMetalLayer != nil;
+        return mNativeData.mCAMetalLayer != nil;
     }
 
     void OSXMetalDisplaySurface::_nativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode )
@@ -69,17 +69,17 @@ namespace Ic3::System
 
     void OSXMetalDisplaySurface::_nativeSetTitle( const std::string & pTitle )
     {
-        Platform::osxSetFrameTitle( mNativeData.nsWindow, pTitle );
+        Platform::osxSetFrameTitle( mNativeData.mNSWindow, pTitle );
     }
 
     void OSXMetalDisplaySurface::_nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-                                                        Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
+                                                        TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
     {
     }
 
     FrameSize OSXMetalDisplaySurface::_nativeGetSize( EFrameSizeMode pSizeMode ) const
     {
-        return Platform::osxGetFrameSize( mNativeData.nsWindow, pSizeMode );
+        return Platform::osxGetFrameSize( mNativeData.mNSWindow, pSizeMode );
     }
 
     bool OSXMetalDisplaySurface::_nativeIsFullscreen() const
@@ -95,26 +95,26 @@ namespace Ic3::System
         {
         @autoreleasepool
         {
-            if( ![( id )pSurfaceNativeData.nsWindow isKindOfClass:[NSOSXWindow class]] )
+            if( ![( id )pSurfaceNativeData.mNSWindow isKindOfClass:[NSOSXWindow class]] )
             {
                 return;
             }
 
-            auto * nsWindow = static_cast<NSOSXWindow *>( pSurfaceNativeData.nsWindow );
+            auto * nsWindow = static_cast<NSOSXWindow *>( pSurfaceNativeData.mNSWindow );
 
             @try
             {
                 auto * nsMetalView = [[NSOSXMetalView alloc] initForWindow:nsWindow];
 				auto * caMetalLayer = nsMetalView->mMetalLayer;
 
-	            const auto mtlPixelFormat = Platform::mtlChoosePixelFormatForVisualConfig( pCreateInfo.visualConfig );
+	            const auto mtlPixelFormat = Platform::mtlChoosePixelFormatForVisualConfig( pCreateInfo.mVisualConfig );
 	            [caMetalLayer setPixelFormat:mtlPixelFormat];
 
 	            const auto layerRect = [nsWindow contentRectForFrameRect:[nsWindow frame]];
 	            [caMetalLayer setDrawableSize:CGSizeMake( layerRect.size.width, layerRect.size.height )];
 
-                pSurfaceNativeData.nsView = nsMetalView;
-                pSurfaceNativeData.caMetalLayer = caMetalLayer;
+                pSurfaceNativeData.mNSView = nsMetalView;
+                pSurfaceNativeData.mCAMetalLayer = caMetalLayer;
             }
             @catch( NSException * pException )
             {

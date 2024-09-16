@@ -14,14 +14,14 @@ namespace Ic3::System
 
 	struct MetalDeviceData
 	{
-		id<MTLDevice> mtlDevice;
-		id<MTLCommandQueue> mtlMainCmdQueue;
+		id<MTLDevice> mMTLDevice;
+		id<MTLCommandQueue> mMTLMainCmdQueue;
 	};
 
 	struct MetalDisplaySurfaceData
 	{
-		CAMetalLayer * caMetalLayer = nil;
-		MTLRenderPassDescriptor * mtlClearRPDescriptor = nil;
+		CAMetalLayer * mCAMetalLayer = nil;
+		MTLRenderPassDescriptor * mMTLClearRPDescriptor = nil;
 	};
 
 	struct MetalSystemDriverData

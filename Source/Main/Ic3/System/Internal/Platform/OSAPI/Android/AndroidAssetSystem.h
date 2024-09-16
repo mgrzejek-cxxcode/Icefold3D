@@ -18,19 +18,19 @@ namespace Ic3::System
 
 		struct AndroidAssetNativeData : public AndroidNativeDataCommon
 		{
-			AAssetManager * aAssetManager = nullptr;
-			AAsset * aAsset = nullptr;
+			AAssetManager * mAndrAssetManager = nullptr;
+			AAsset * mAndrAsset = nullptr;
 		};
 
 		struct AndroidAssetDirectoryNativeData : public AndroidNativeDataCommon
 		{
-			AAssetManager * aAssetManager = nullptr;
-			AAssetDir * aAssetDir = nullptr;
+			AAssetManager * mAndrAssetManager = nullptr;
+			AAssetDir * mAndrAssetDir = nullptr;
 		};
 
 		struct AndroidAssetLoaderNativeData : public AndroidNativeDataCommon
 		{
-			AAssetManager * aAssetManager = nullptr;
+			AAssetManager * mAndrAssetManager = nullptr;
 		};
 
 		struct AssetLoaderCreateInfoNativeParams
@@ -51,7 +51,7 @@ namespace Ic3::System
 
 		/// @copybrief AssetLoader::_nativeOpenSubAsset
 		virtual AssetHandle _nativeOpenSubAsset( Cppx::FilePathInfo pAssetPathInfo,
-		                                         Bitmask<EAssetOpenFlags> pFlags ) override final;
+		                                         TBitmask<EAssetOpenFlags> pFlags ) override final;
 
 		/// @copybrief AssetLoader::_nativeOpenDirectory
 		virtual AssetDirectoryHandle _nativeOpenDirectory( std::string pDirectoryName ) override final;
@@ -82,7 +82,7 @@ namespace Ic3::System
 		virtual void _nativeRefreshAssetList() override final;
 
 		/// @copybrief AssetDirectory::_nativeOpenAsset
-		virtual AssetHandle _nativeOpenAsset( std::string pAssetName, Bitmask<EAssetOpenFlags> pFlags ) override final;
+		virtual AssetHandle _nativeOpenAsset( std::string pAssetName, TBitmask<EAssetOpenFlags> pFlags ) override final;
 
 		/// @copybrief AssetDirectory::_nativeCheckAssetExists
 		virtual bool _nativeCheckAssetExists( const std::string & pAssetName ) const override final;

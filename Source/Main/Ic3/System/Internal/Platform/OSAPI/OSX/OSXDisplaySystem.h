@@ -19,9 +19,11 @@ namespace Ic3::System
 
 		struct OSXDisplayManagerNativeData : public OSXNativeDataCommon
 		{
-			std::unique_ptr<CGDirectDisplayID[]> cgActiveDisplayList;
-			CGDisplayCount cgActiveDisplaysNum = 0;
-			CGDirectDisplayID cgMainDisplayID = kCGNullDirectDisplay;
+			std::unique_ptr<CGDirectDisplayID[]> mCGActiveDisplayList;
+
+			CGDisplayCount mCGActiveDisplaysNum = 0;
+
+			CGDirectDisplayID mCGMainDisplayID = kCGNullDirectDisplay;
 		};
 
 		struct OSXDisplayDriverNativeData : public OSXNativeDataCommon

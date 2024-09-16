@@ -16,22 +16,22 @@ namespace Ic3::System
 		{
 			// If set, the thread's JNI state is released automatically when the internal
 			// ref counter drops to 0. See JavaVMInstance::setCurrentThreadAutoReleaseState().
-			E_JNI_THREAD_STATE_AUTO_RELEASE_BIT = 0x8000
+			eJNIThreadStateAutoReleaseBit = 0x8000
 		};
 
 		/// @brief Thread-specific JNI-related data. Created for each thread attached to the VM.
 		struct JNIThreadState
 		{
 			// ID of the thread this state belongs to.
-			JNIThreadID jniThreadID;
+			JNIThreadID mJNIThreadID;
 			// Internal reference counter. Incremented for every new JNIPtr created.
-			std::atomic<uint32> jniRefCounter;
+			std::atomic<uint32> mJNIRefCounter;
 			// Pointer to the JNIEnv struct.
-			JNIEnvPtr jniEnvPtr = nullptr;
+			JNIEnvPtr mJNIEnvPtr = nullptr;
 			// JavaNativeInterface object.
-			JavaNativeInterface * jniObject = nullptr;
+			JavaNativeInterface * mJNIObject = nullptr;
 			// Internal flags.
-			Bitmask<EJNIThreadStateFlags> flags = 0;
+			TBitmask<EJNIThreadStateFlags> mFlags = 0;
 		};
 
 		struct JavaNativeInterfaceDeleter

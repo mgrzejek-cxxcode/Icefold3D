@@ -31,7 +31,7 @@ namespace Ic3::System
 	{
 		if( mNativeData.dxgiFactory == nullptr )
 		{
-			Bitmask<UINT> dxgiFactoryCreateFlags = 0;
+			TBitmask<UINT> dxgiFactoryCreateFlags = 0;
 		#if( IC3_DEBUG )
 			dxgiFactoryCreateFlags.set( DXGI_CREATE_FACTORY_DEBUG );
 		#endif
@@ -116,7 +116,7 @@ namespace Ic3::System
 
 			if( dxgiOutputDesc.AttachedToDesktop )
 			{
-				outputDesc.flags.set( E_DISPLAY_OUTPUT_FLAG_ACTIVE_BIT );
+				outputDesc.flags.set( E_DISPLAY_OUTPUT_FLAG_ACTIVEBit );
 			}
 
 			if( dxgiOutputDesc.Monitor )
@@ -131,7 +131,7 @@ namespace Ic3::System
 				{
 					if( makeBitmask( gdiMonitorInfo.dwFlags ).isSet( MONITORINFOF_PRIMARY ) )
 					{
-						outputDesc.flags.set( E_DISPLAY_OUTPUT_FLAG_PRIMARY_BIT );
+						outputDesc.flags.set( E_DISPLAY_OUTPUT_FLAG_PRIMARYBit );
 					}
 				}
 			}
@@ -178,21 +178,21 @@ namespace Ic3::System
 			
 			auto & adapterDesc = getAdapterDescInternal( *adapterObject );
 			adapterDesc.name = strUtils::convertStringRepresentation<char>( dxgiAdapterDesc.Description );
-			adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_ACTIVE_BIT );
+			adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_ACTIVEBit );
 
 			if( adapterIndex == 0 )
 			{
-				adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_PRIMARY_BIT );
+				adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_PRIMARYBit );
 			}
 
 			auto dxgiAdapterFlags = makeBitmask( dxgiAdapterDesc.Flags );
 			if( dxgiAdapterFlags.isSet( DXGI_ADAPTER_FLAG_SOFTWARE ) )
 			{
-				adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_SOFTWARE_BIT );
+				adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_SOFTWAREBit );
 			}
 			else if( !dxgiAdapterFlags.isSet( DXGI_ADAPTER_FLAG_REMOTE ) )
 			{
-				adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_HARDWARE_BIT );
+				adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_HARDWAREBit );
 			}
 
 			_enumAdapterOutputs( *adapterObject );
@@ -252,15 +252,15 @@ namespace Ic3::System
 
 			if( dxgiDisplayModeDesc.ScanlineOrdering == DXGI_MODE_SCANLINE_ORDER_PROGRESSIVE )
 			{
-				videoSettings.flags.set( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_PROGRESSIVE_BIT );
+				videoSettings.flags.set( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_PROGRESSIVEBit );
 			}
 			else if( dxgiDisplayModeDesc.ScanlineOrdering == DXGI_MODE_SCANLINE_ORDER_LOWER_FIELD_FIRST )
 			{
-				videoSettings.flags.set( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_INTERLACED_BIT );
+				videoSettings.flags.set( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_INTERLACEDBit );
 			}
 			else if( dxgiDisplayModeDesc.ScanlineOrdering == DXGI_MODE_SCANLINE_ORDER_UPPER_FIELD_FIRST )
 			{
-				videoSettings.flags.set( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_INTERLACED_BIT );
+				videoSettings.flags.set( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_INTERLACEDBit );
 			}
 
 			auto settingsHash = dsmComputeVideoSettingsHash( pColorFormat, videoSettings );

@@ -16,11 +16,11 @@ namespace Ic3::System
 	{
 		auto createInfo = std::move( pCreateInfo );
 
-		createInfo.frameGeometry = validateFrameGeometry( createInfo.frameGeometry );
+		createInfo.mFrameGeometry = validateFrameGeometry( createInfo.mFrameGeometry );
 
-		if( createInfo.title.empty() )
+		if( createInfo.mTitle.empty() )
 		{
-			createInfo.title = "Tessline-3DX / Native Window";
+			createInfo.mTitle = "Tessline-3DX / Native Window";
 		}
 
 		return _nativeCreateWindow( std::move( createInfo ) );
@@ -69,26 +69,26 @@ namespace Ic3::System
 	void Window::resizeClientArea( const FrameSize & pSize )
 	{
 		FrameGeometry newFrameGeometry{};
-		newFrameGeometry.position = CX_FRAME_POS_AUTO;
-		newFrameGeometry.size = pSize;
-		newFrameGeometry.style = EFrameStyle::Unspecified;
+		newFrameGeometry.mPosition = cxFramePosAuto;
+		newFrameGeometry.mSize = pSize;
+		newFrameGeometry.mStyle = EFrameStyle::Unspecified;
 
 		newFrameGeometry = mWindowManager->validateFrameGeometry( newFrameGeometry );
 
-		const auto updateFlags = E_FRAME_GEOMETRY_UPDATE_FLAG_POSITION_BIT | E_FRAME_GEOMETRY_UPDATE_FLAG_SIZE_CLIENT_AREA_BIT;
+		const auto updateFlags = eFrameGeometryUpdateFlagPositionBit | eFrameGeometryUpdateFlagSizeClientAreaBit;
 		_nativeUpdateGeometry( newFrameGeometry, updateFlags );
 	}
 
 	void Window::resizeFrame( const FrameSize & pSize )
 	{
 		FrameGeometry newFrameGeometry{};
-		newFrameGeometry.position = CX_FRAME_POS_AUTO;
-		newFrameGeometry.size = pSize;
-		newFrameGeometry.style = EFrameStyle::Unspecified;
+		newFrameGeometry.mPosition = cxFramePosAuto;
+		newFrameGeometry.mSize = pSize;
+		newFrameGeometry.mStyle = EFrameStyle::Unspecified;
 
 		newFrameGeometry = mWindowManager->validateFrameGeometry( newFrameGeometry );
 
-		const auto updateFlags = E_FRAME_GEOMETRY_UPDATE_FLAG_POSITION_BIT | E_FRAME_GEOMETRY_UPDATE_FLAG_SIZE_OUTER_RECT_BIT;
+		const auto updateFlags = eFrameGeometryUpdateFlagPositionBit | eFrameGeometryUpdateFlagSizeOuterRectBit;
 		_nativeUpdateGeometry( newFrameGeometry, updateFlags );
 	}
 
@@ -103,7 +103,7 @@ namespace Ic3::System
 	}
 
 	void Window::updateGeometry( const FrameGeometry & pFrameGeometry,
-	                             Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
+	                             TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
 	{
 		auto newFrameGeometry = mWindowManager->validateFrameGeometry( pFrameGeometry );
 		_nativeUpdateGeometry( newFrameGeometry, pUpdateFlags );

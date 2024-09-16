@@ -203,7 +203,7 @@ namespace Ic3::System
 						auto * sysContext = pAppState->ic3GetUserDataAs<AndroidSysContext>( E_ANDROID_APP_STATE_USER_DATA_INDEX_SYS_CONTEXT );
 						sysContext->updateANativeWindowReference( pAppState->window );
 						sysContext->mSysThreadJNIObject->nativeActivitySetRequestedOrientation(
-							pAppState->activity->clazz, E_ANDROID_SCREEN_ORIENTATION_LANDSCAPE );
+							pAppState->activity->clazz, eAndroidScreenOrientationLandscape );
 
 						pOutEvent.code = E_EVENT_CODE_APP_ACTIVITY_DISPLAY_INIT;
 

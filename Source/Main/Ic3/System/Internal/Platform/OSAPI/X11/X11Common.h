@@ -24,22 +24,22 @@ namespace Ic3::System
 		// and remove them from the global scope.
 		enum : XID
 		{
-			E_X11_XID_ALWAYS = Always,
-			E_X11_XID_NONE = None,
-			E_X11_XID_SUCCESS = Success,
+			eXIDAlways = Always,
+			eXIDNone = None,
+			eXIDSuccess = Success,
 		};
 
 		#undef Always
 		#undef None
 		#undef Success
 
-		inline constexpr auto CX_X11_DISPLAY_NULL = static_cast<XDisplay>( nullptr );
+		inline constexpr auto cxX11DisplayNull = static_cast<XDisplay>( nullptr );
 
 		struct X11SessionInfo
 		{
-			int connectionNumber;
-			std::string vendorName;
-			std::string displayString;
+			int mConnectionNumber;
+			std::string mVendorName;
+			std::string mDisplayString;
 		};
 
 		struct X11SessionData
@@ -52,11 +52,12 @@ namespace Ic3::System
 				Atom wmState = 0;
 				Atom wmStateFullscreen = 0;
 			};
-			XDisplay display = CX_X11_DISPLAY_NULL;
-			XWindow rootWindowXID = E_X11_XID_NONE;
-			int screenIndex = -1;
-			AtomCache atomCache;
-			X11SessionInfo sessionInfo;
+
+			XDisplay mDisplay = cxX11DisplayNull;
+			XWindow mRootWindowXID = eXIDNone;
+			int mScreenIndex = -1;
+			AtomCache mAtomCache;
+			X11SessionInfo mSessionInfo;
 		};
 
 		struct X11NativeDataCommon
@@ -64,24 +65,24 @@ namespace Ic3::System
 		public:
 			void setSessionData( X11SessionData & pSessionData )
 			{
-				ic3DebugAssert( xSessionDataPtr == nullptr );
-				xSessionDataPtr = &pSessionData;
+				ic3DebugAssert( _xSessionDataPtr == nullptr );
+				_xSessionDataPtr = &pSessionData;
 			}
 
 			void resetSessionData()
 			{
-				ic3DebugAssert( xSessionDataPtr != nullptr );
-				xSessionDataPtr = nullptr;
+				ic3DebugAssert( _xSessionDataPtr != nullptr );
+				_xSessionDataPtr = nullptr;
 			}
 
 			IC3_ATTR_NO_DISCARD X11SessionData & getSessionData() const
 			{
-				ic3DebugAssert( xSessionDataPtr != nullptr );
-				return *xSessionDataPtr;
+				ic3DebugAssert( _xSessionDataPtr != nullptr );
+				return *_xSessionDataPtr;
 			}
 
 		private:
-			X11SessionData * xSessionDataPtr = nullptr;
+			X11SessionData * _xSessionDataPtr = nullptr;
 		};
 
 		IC3_SYSTEM_API_NODISCARD X11SessionData & x11GetXSessionData( SysContext & pSysContext );
@@ -118,7 +119,7 @@ namespace Ic3::System
 		}
 
 		template <typename TParentSysObject, typename... TBaseTypeArgs>
-		explicit X11NativeObject( SysHandle<TParentSysObject> pParentSysObject, TBaseTypeArgs && ...pBaseTypeArgs )
+		explicit X11NativeObject( TSysHandle<TParentSysObject> pParentSysObject, TBaseTypeArgs && ...pBaseTypeArgs )
 		: NativeObject<TBaseType, TNativeData>( pParentSysObject, std::forward<TBaseTypeArgs>( pBaseTypeArgs )... )
 		{
 			this->mNativeData.setSessionData( Platform::x11GetXSessionData( *pParentSysObject ) );

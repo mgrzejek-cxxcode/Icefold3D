@@ -20,34 +20,34 @@ namespace Ic3::System
 
 		struct X11OpenGLDisplaySurfaceNativeData : public X11WindowNativeData
 		{
-			GLXFBConfig fbConfig = nullptr;
-			XVisualInfo * visualInfo = nullptr;
+			GLXFBConfig mFBConfig = nullptr;
+			XVisualInfo * mVisualInfo = nullptr;
 		};
 
 		struct X11OpenGLRenderContextNativeData : public X11NativeDataCommon
 		{
-			GLXContext contextHandle = nullptr;
+			GLXContext mContextHandle = nullptr;
 		};
 
 		struct X11OpenGLSystemDriverNativeData : public X11NativeDataCommon
 		{
 			struct InitState
 			{
-				X11OpenGLDisplaySurfaceNativeData surfaceData;
-				X11OpenGLRenderContextNativeData contextData;
+				X11OpenGLDisplaySurfaceNativeData mSurfaceData;
+				X11OpenGLRenderContextNativeData mContextData;
 			};
-			std::unique_ptr<InitState> initState = nullptr;
+			std::unique_ptr<InitState> mInitState = nullptr;
 		};
 
 		struct X11OpenGLVisualConfig
 		{
-			GLXFBConfig fbConfig = nullptr;
+			GLXFBConfig mFBConfig = nullptr;
 
-			XVisualInfo * xVisualInfo = nullptr;
+			XVisualInfo * mXVisualInfo = nullptr;
 
 			explicit operator bool() const
 			{
-				return fbConfig && xVisualInfo;
+				return mFBConfig && mXVisualInfo;
 			}
 		};
 
@@ -141,7 +141,7 @@ namespace Ic3::System
 
 		/// @copybrief OpenGLDisplaySurface::_nativeUpdateGeometry
 		virtual void _nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-		                                    Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
+		                                    TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
 
 		/// @copybrief OpenGLDisplaySurface::_nativeGetSize
 		virtual FrameSize _nativeGetSize( EFrameSizeMode pSizeMode ) const override final;

@@ -23,26 +23,26 @@ namespace Ic3::System
 	enum EEventSystemConfigFlags : uint32
 	{
 		//
-		E_EVENT_SYSTEM_CONFIG_FLAG_IDLE_PROCESSING_MODE_BIT = 0x1,
+		eEventSystemConfigFlagIdleProcessingModeBit = 0x1,
 
 		// If set, an AppQuit event will be posted after the last event source is destroyed.
-		E_EVENT_SYSTEM_CONFIG_FLAG_ENABLE_AUTO_QUIT_ON_LAST_SOURCE_DESTROY_BIT = 0x10,
+		eEventSystemConfigFlagEnableAutoQuitOnLastSourceDestroyBit = 0x10,
 
 		// If set, an AppQuit event will be posted after the primary event source is destroyed.
 		// See EventController::registerPrimaryEventSource() and EventController::setPrimaryEventSource().
-		E_EVENT_SYSTEM_CONFIG_FLAG_ENABLE_AUTO_QUIT_ON_PRIMARY_SOURCE_DESTROY_BIT = 0x20,
+		eEventSystemConfigFlagEnableAutoQuitOnPrimarySourceDestroyBit = 0x20,
 
 		//
-		E_EVENT_SYSTEM_CONFIG_MASK_ENABLE_AUTO_QUIT = 0x30,
+		eEventSystemConfigMaskEnableAutoQuit = 0x30,
 
 		//
-		E_EVENT_SYSTEM_CONFIG_FLAG_ENABLE_MOUSE_DOUBLE_CLICK_BIT = 0x40,
+		eEventSystemConfigFlagEnableMouseDoubleClickBit = 0x40,
 
 		//
-		E_EVENT_SYSTEM_CONFIG_FLAG_ENABLE_MOUSE_MULTI_CLICK_BIT = 0x80 | E_EVENT_SYSTEM_CONFIG_FLAG_ENABLE_MOUSE_DOUBLE_CLICK_BIT,
+		eEventSystemConfigFlagEnableMouseMultiClickBit = 0x80 | eEventSystemConfigFlagEnableMouseDoubleClickBit,
 
 		//
-		E_EVENT_SYSTEM_CONFIG_MASK_ENABLE_MOUSE_CLICK_PROCESSING = 0xC0,
+		eEventSystemConfigMaskEnableMouseClickProcessing = 0xC0,
 
 		// The flags below control what approach is taken to handle automatic app quit
 		// in case one of the situations above happens (last source/primary source is gone).
@@ -50,26 +50,26 @@ namespace Ic3::System
 		// When an auto-quit is triggerred, the even is immediately dispatched to the target dispatcher and executed.
 		// Since the whole logic happens during event pre-processing, this flag essentially causes the event source's
 		// "Close" event to be replaced with the "AppQuit". This is a very aggressive setup and should be used carefully.
-		E_EVENT_SYSTEM_CONFIG_FLAG_SET_AUTO_QUIT_MODE_DIRECT_EVENT_DISPATCH_BIT = 0x0100,
+		eEventSystemConfigFlagSetAutoQuitModeDirectEventDispatchBit = 0x0100,
 
 		// When an auto-quit is triggerred, the AppQuit event is pushed to the front of the priority event queue.
 		// That means it will be the next event dispatched. The event source's "Close" event is delivered as usual.
-		E_EVENT_SYSTEM_CONFIG_FLAG_SET_AUTO_QUIT_MODE_POST_PRIORITY_EVENT_BIT = 0x0200,
+		eEventSystemConfigFlagSetAutoQuitModePostPriorityEventBit = 0x0200,
 
 		// When an auto-quit is triggerred, the AppQuit event is pushed to the back of the priority event queue.
 		// That means it will MOST LIKELY be the next event dispatched, UNLESS the user code heavily uses the priority
 		// queue and there are other events already in it. The event source's "Close" event is delivered as usual.
-		E_EVENT_SYSTEM_CONFIG_FLAG_SET_AUTO_QUIT_MODE_POST_USER_EVENT_BIT = 0x0400,
+		eEventSystemConfigFlagSetAutoQuitModePostUserEventBit = 0x0400,
 
 		// When an auto-quit is triggerred, the AppQuit event is not triggerred immediately. Instead, an internal flag
 		// is set instead. The controller keeps fetching the priority events and peeking the system queue, but no new
 		// events are allowed. When all pending events are processed, system automatically generates the AppQuit event.
-		E_EVENT_SYSTEM_CONFIG_FLAG_SET_AUTO_QUIT_MODE_SET_INTERNAL_REQUEST_ONLY_BIT = 0x0800,
+		eEventSystemConfigFlagSetAutoQuitModeSetInternalRequestOnlyBit = 0x0800,
 
 		//
-		E_EVENT_SYSTEM_CONFIG_MASK_SET_AUTO_QUIT_MODE = 0x0F00,
+		eEventSystemConfigMaskSetAutoQuitMode = 0x0F00,
 
-		E_EVENT_SYSTEM_CONFIG_MASK_ALL = 0xFFFF
+		eEventSystemConfigMaskAll = 0xFFFF
 	};
 
 	/// @brief
@@ -122,22 +122,22 @@ namespace Ic3::System
 		/// #
 		/// This function retrieves pending events from queues and dispatches them. If no events are currently
 		/// available, the function behaves as follows:
-		/// 1) If E_EVENT_SYSTEM_CONFIG_FLAG_IDLE_PROCESSING_MODE_BIT is not set, this function returns immediately.
+		/// 1) If E_EVENT_SYSTEM_CONFIG_FLAG_IDLE_PROCESSING_MODEBit is not set, this function returns immediately.
 		/// 2) Otherwise, it blocks until a new events arrives in the system queue (just like dispatchPendingEventsWait()
 		///  would normally do).
 		uint32 dispatchPendingEventsAuto();
 
-		uint32 dispatchPendingEventsPeek( uint32 pLimit = Cppx::CX_INT32_MAX );
+		uint32 dispatchPendingEventsPeek( uint32 pLimit = Cppx::cxInt32Max );
 
-		uint32 dispatchPendingEventsWait( uint32 pLimit = Cppx::CX_INT32_MAX );
+		uint32 dispatchPendingEventsWait( uint32 pLimit = Cppx::cxInt32Max );
 
-		uint32 dispatchPendingEventsWaitTimeout( const Cppx::Microseconds & pTimeout, uint32 pLimit = Cppx::CX_INT32_MAX );
+		uint32 dispatchPendingEventsWaitTimeout( const Cppx::Microseconds & pTimeout, uint32 pLimit = Cppx::cxInt32Max );
 
 		void validateActiveDispatcherState() const;
 
 		IC3_ATTR_NO_DISCARD EventSystemSharedState & getEventSystemSharedState() noexcept;
 
-		IC3_ATTR_NO_DISCARD bool checkEventSystemConfigFlags( Cppx::Bitmask<EEventSystemConfigFlags> pFlags ) const;
+		IC3_ATTR_NO_DISCARD bool checkEventSystemConfigFlags( TBitmask<EEventSystemConfigFlags> pFlags ) const;
 
 		IC3_ATTR_NO_DISCARD EventSource * findEventSource( const EventSourceFindPredicate & pPredicate ) const;
 
@@ -193,13 +193,13 @@ namespace Ic3::System
 		bool _checkAndPostAppAutoQuitEvent( EEventCode pEvent, EventSource & pEventSource );
 
 		//
-		void _setInternalStateFlags( Cppx::Bitmask<uint32> pFlags, bool pSetOrUnset );
+		void _setInternalStateFlags( TBitmask<uint32> pFlags, bool pSetOrUnset );
 
 		//
-		IC3_ATTR_NO_DISCARD uint32 _checkInternalStateFlags( Cppx::Bitmask<uint32> pFlags ) const;
+		IC3_ATTR_NO_DISCARD uint32 _checkInternalStateFlags( TBitmask<uint32> pFlags ) const;
 
 		//
-		IC3_ATTR_NO_DISCARD Cppx::Bitmask<uint32> _getInternalStateFlags() const;
+		IC3_ATTR_NO_DISCARD TBitmask<uint32> _getInternalStateFlags() const;
 
 	protected:
 		struct EventControllerPrivateData;
@@ -227,7 +227,7 @@ namespace Ic3::System
 		void resetEventHandler( EEventCodeIndex pCodeIndex );
 		void resetDefaultEventHandler();
 
-		void setEventSystemConfigFlags( Cppx::Bitmask<EEventSystemConfigFlags> pFlags, bool pSetOrUnset = true );
+		void setEventSystemConfigFlags( TBitmask<EEventSystemConfigFlags> pFlags, bool pSetOrUnset = true );
 
 		void setIdleProcessingMode( bool pIdle );
 
@@ -236,9 +236,9 @@ namespace Ic3::System
 		bool postEventAppQuit();
 		bool postEventAppTerminate();
 
-		IC3_ATTR_NO_DISCARD bool checkEventSystemConfigFlags( Cppx::Bitmask<EEventSystemConfigFlags> pFlags ) const;
+		IC3_ATTR_NO_DISCARD bool checkEventSystemConfigFlags( TBitmask<EEventSystemConfigFlags> pFlags ) const;
 
-		IC3_ATTR_NO_DISCARD Cppx::Bitmask<EEventSystemConfigFlags> getEventSystemConfigFlags() const;
+		IC3_ATTR_NO_DISCARD TBitmask<EEventSystemConfigFlags> getEventSystemConfigFlags() const;
 
 	friendapi:
 		const EventSystemConfig & getEventSystemConfig() const;

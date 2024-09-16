@@ -40,17 +40,17 @@ namespace Ic3::System
 		                                                                          const perf_counter_ratio_t & pUnitRatio );
 
 		/// @brief Helper function which converts a perf counter duration to a duration value in unit expressed as Ic3::EDurationPeriod.
-		template <Cppx::EDurationPeriod tPeriod>
+		template <Cppx::EDurationPeriod tpPeriod>
 		IC3_SYSTEM_API_NODISCARD static long double convertToDuration( perf_counter_value_t pStampDiff )
 		{
-			return convertToDuration( pStampDiff, Cppx::DurationTraits<tPeriod>::unitRatio );
+			return convertToDuration( pStampDiff, Cppx::DurationTraits<tpPeriod>::sUnitRatio );
 		}
 
 		/// @brief Helper function which converts a duration value in unit expressed as Ic3::EDurationPeriod back to a PC time stamp difference.
-		template <Cppx::EDurationPeriod tPeriod>
-		IC3_SYSTEM_API_NODISCARD static perf_counter_value_t convertFromDuration( const Cppx::Duration<tPeriod> & pDuration )
+		template <Cppx::EDurationPeriod tpPeriod>
+		IC3_SYSTEM_API_NODISCARD static perf_counter_value_t convertFromDuration( const Cppx::Duration<tpPeriod> & pDuration )
 		{
-			return convertFromDuration( pDuration.count(), Cppx::DurationTraits<tPeriod>::unitRatio );
+			return convertFromDuration( pDuration.count(), Cppx::DurationTraits<tpPeriod>::sUnitRatio );
 		}
 	};
 

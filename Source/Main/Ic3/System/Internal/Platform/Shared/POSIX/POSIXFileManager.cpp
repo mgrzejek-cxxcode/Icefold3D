@@ -128,35 +128,35 @@ namespace Ic3::System
 
 	void PosixFile::setInternalFilePtr( FILE * pFilePtr )
 	{
-		ic3DebugAssert( !mNativeData.filePtr );
-		mNativeData.filePtr = pFilePtr;
+		ic3DebugAssert( !mNativeData.mFilePtr );
+		mNativeData.mFilePtr = pFilePtr;
 	}
 
 	void PosixFile::_releasePosixFileHandle()
 	{
-		if( mNativeData.filePtr )
+		if( mNativeData.mFilePtr )
 		{
-			::fclose( mNativeData.filePtr );
-			mNativeData.filePtr = nullptr;
+			::fclose( mNativeData.mFilePtr );
+			mNativeData.mFilePtr = nullptr;
 		}
 	}
 
 	file_size_t PosixFile::_nativeReadData( void * pTargetBuffer, file_size_t pReadSize )
 	{
-		auto readBytesNum = ::fread( pTargetBuffer, 1, pReadSize, mNativeData.filePtr );
+		auto readBytesNum = ::fread( pTargetBuffer, 1, pReadSize, mNativeData.mFilePtr );
 		return numeric_cast<file_size_t>( readBytesNum );
 	}
 
 	file_size_t PosixFile::_nativeWriteData( const void * pData, file_size_t pWriteSize )
 	{
-		auto writtenBytesNum = ::fwrite( pData, 1, pWriteSize, mNativeData.filePtr );
+		auto writtenBytesNum = ::fwrite( pData, 1, pWriteSize, mNativeData.mFilePtr );
 		return numeric_cast<file_size_t>( writtenBytesNum );
 	}
 
 	file_offset_t PosixFile::_nativeSetFilePointer( file_offset_t pOffset, EFilePointerRefPos pRefPos )
 	{
 		auto fileSeekPos = Platform::_posixTranslateFilePointerRefPos( pRefPos );
-		auto seekResult = ::fseek( mNativeData.filePtr, static_cast<long>( pOffset ), fileSeekPos );
+		auto seekResult = ::fseek( mNativeData.mFilePtr, static_cast<long>( pOffset ), fileSeekPos );
 
 		if( seekResult != 0 )
 		{
@@ -164,46 +164,46 @@ namespace Ic3::System
 			ic3ThrowDesc( E_EXC_DEBUG_PLACEHOLDER, std::move( errnoString ) );
 		}
 
-		auto currentFilePointer = ::ftell( mNativeData.filePtr );
+		auto currentFilePointer = ::ftell( mNativeData.mFilePtr );
 		return static_cast<file_offset_t>( currentFilePointer );
 	}
 
 	file_offset_t PosixFile::_nativeGetFilePointer() const
 	{
-		auto currentFilePointer = ::ftell( mNativeData.filePtr );
+		auto currentFilePointer = ::ftell( mNativeData.mFilePtr );
 		return static_cast<file_offset_t>( currentFilePointer );
 	}
 
 	file_size_t PosixFile::_nativeGetSize() const
 	{
-		auto savedFilePointer = ::ftell( mNativeData.filePtr );
-		::fseek( mNativeData.filePtr, 0u, SEEK_END );
+		auto savedFilePointer = ::ftell( mNativeData.mFilePtr );
+		::fseek( mNativeData.mFilePtr, 0u, SEEK_END );
 
-		auto fileSize = ::ftell( mNativeData.filePtr );
-		::fseek( mNativeData.filePtr, savedFilePointer, SEEK_SET );
+		auto fileSize = ::ftell( mNativeData.mFilePtr );
+		::fseek( mNativeData.mFilePtr, savedFilePointer, SEEK_SET );
 
 		return static_cast<file_size_t>( fileSize );
 	}
 
 	file_size_t PosixFile::_nativeGetRemainingBytes() const
 	{
-		auto currentFilePointer = ::ftell( mNativeData.filePtr );
-		::fseek( mNativeData.filePtr, 0u, SEEK_END );
+		auto currentFilePointer = ::ftell( mNativeData.mFilePtr );
+		::fseek( mNativeData.mFilePtr, 0u, SEEK_END );
 
-		auto fileSize = ::ftell( mNativeData.filePtr );
-		::fseek( mNativeData.filePtr, currentFilePointer, SEEK_SET );
+		auto fileSize = ::ftell( mNativeData.mFilePtr );
+		::fseek( mNativeData.mFilePtr, currentFilePointer, SEEK_SET );
 
 		return static_cast<file_size_t>( fileSize - currentFilePointer );
 	}
 
 	bool PosixFile::_nativeCheckEOF() const
 	{
-		return ::feof( mNativeData.filePtr ) != 0;
+		return ::feof( mNativeData.mFilePtr ) != 0;
 	}
 
 	bool PosixFile::_nativeIsGood() const
 	{
-		return !::feof( mNativeData.filePtr ) && !::ferror( mNativeData.filePtr );
+		return !::feof( mNativeData.mFilePtr ) && !::ferror( mNativeData.mFilePtr );
 	}
 
 
@@ -217,7 +217,7 @@ namespace Ic3::System
 			if( !filePtr )
 			{
 				auto errnoString = Platform::posixQueryErrnoStringByCode( errno );
-				ic3ThrowDesc( E_EXC_SYSTEM_FILE_OPEN_ERROR, std::move( errnoString ) );
+				ic3ThrowDesc( eEXCSystemFileOpenError, std::move( errnoString ) );
 			}
 
 			return filePtr;
@@ -258,7 +258,7 @@ namespace Ic3::System
 					fileSeekPos = SEEK_END;
 					break;
 				}
-				case EFilePointerRefPos::PtrCurrent:
+				case EFilePointerRefPos::CurrentPos:
 				{
 					fileSeekPos = SEEK_CUR;
 					break;

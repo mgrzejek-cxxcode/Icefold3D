@@ -33,7 +33,7 @@ namespace Ic3::System
 	{}
 
 	void AndroidWindow::_nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-	                                           Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
+	                                           TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
 	{}
 
 	FrameSize AndroidWindow::_nativeGetSize( EFrameSizeMode /* pSizeMode */ ) const

@@ -15,12 +15,13 @@ namespace Ic3::System
 	struct OpenGLDisplaySurfaceCreateInfo : public WindowCreateInfo
 	{
 		/// Minimum version of the OpenGL API the surface should support. This value is Desktop-/ES-specific.
-		Version minimumAPIVersion;
+		Version mMinimumAPIVersion;
 
 		///
-		EOpenGLAPIClass targetAPIClass;
+		EOpenGLAPIClass mTargetAPIClass;
+
 		/// Creation flags, describing additional surface properties.
-		Bitmask<EOpenGLSurfaceCreateFlags> flags = 0;
+		TBitmask<EOpenGLSurfaceCreateFlags> mFlags = 0;
 
 	};
 
@@ -28,16 +29,16 @@ namespace Ic3::System
 	struct OpenGLRenderContextCreateInfo
 	{
 		/// Handle to an existing GLRenderContext used to share resources. If set to null, no sharing is done.
-		OpenGLRenderContextHandle shareContext = nullptr;
+		OpenGLRenderContextHandle mShareContext = nullptr;
 
 		/// Target version of the API the context should support. Supported version will at least match the requested.
-		Version requestedAPIVersion = CX_GL_VERSION_BEST_SUPPORTED;
+		Version mRequestedAPIVersion = cxGLVersionBestSupported;
 
 		/// Selected API profile the context should *at least* support.
-		EOpenGLAPIProfile contextAPIProfile = EOpenGLAPIProfile::Auto;
+		EOpenGLAPIProfile mContextAPIProfile = EOpenGLAPIProfile::Auto;
 
 		/// Creation flags, describing additional context properties.
-		Bitmask<EOpenGLRenderContextCreateFlags> flags = 0;
+		TBitmask<EOpenGLRenderContextCreateFlags> mFlags = 0;
 	};
 
 	/// @brief
@@ -200,7 +201,7 @@ namespace Ic3::System
 
 		/// @copybrief Frame::updateGeometry
 		virtual void updateGeometry( const FrameGeometry & pFrameGeometry,
-                                     Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
+		                             TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
 
 		/// @copybrief Frame::getClientAreaSize
 		IC3_ATTR_NO_DISCARD virtual FrameSize getClientAreaSize() const override final;
@@ -236,7 +237,7 @@ namespace Ic3::System
 		virtual void _nativeSetTitle( const std::string & pTitle ) = 0;
 
 		virtual void _nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-                                            Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) = 0;
+		                                    TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) = 0;
 
 		virtual FrameSize _nativeGetSize( EFrameSizeMode pSizeMode ) const = 0;
 

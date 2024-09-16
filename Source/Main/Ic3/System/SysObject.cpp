@@ -16,7 +16,7 @@ namespace Ic3::System
 		{
 			onDestroySystemObjectRequested();
 
-			setStateFlags( true, E_SYS_OBJECT_STATE_FLAG_DESTROY_REQUEST_PROCESSED_BIT );
+			setStateFlags( true, eSysObjectStateFlagDestroyRequestProcessedBit );
 
 			return true;
 		}

@@ -13,12 +13,14 @@ namespace Ic3::System
 
 	struct WindowCreateInfo
 	{
-		FrameGeometry frameGeometry = CX_FRAME_GEOMETRY_DEFAULT;
+		/// Geometry of the window's frame (position, size, style, etc).
+		FrameGeometry mFrameGeometry = CX_FRAME_GEOMETRY_DEFAULT;
 
-		std::string title;
+		/// Window title (text visible on the title bar - if present).
+		std::string mTitle;
 
 		/// Visual config for the window. Describes primary rendering properties of the surface.
-		VisualConfig visualConfig;
+		VisualConfig mVisualConfig;
 	};
 
 } // namespace Ic3::System

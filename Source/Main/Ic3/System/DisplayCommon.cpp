@@ -9,23 +9,23 @@ namespace Ic3::System
 	std::string DisplayAdapterDesc::toString() const
 	{
 		std::stringstream strStream;
-		strStream << "Adapter <" << adapterIndex << "> (" << name << ")";
+		strStream << "Adapter <" << mAdapterIndex << "> (" << mName << ")";
 
-		if( flags.isSet( E_DISPLAY_ADAPTER_FLAG_ACTIVE_BIT ) )
+		if( mFlags.isSet( eDisplayAdapterFlagActiveBit ) )
 		{
 			strStream << ", Active";
 		}
 
-		if( flags.isSet( E_DISPLAY_ADAPTER_FLAG_PRIMARY_BIT ) )
+		if( mFlags.isSet( eDisplayAdapterFlagPrimaryBit ) )
 		{
 			strStream << ", Primary";
 		}
 
-		if( flags.isSet( E_DISPLAY_ADAPTER_FLAG_HARDWARE_BIT ) )
+		if( mFlags.isSet( eDisplayAdapterFlagHardwareBit ) )
 		{
 			strStream << ", Hardware";
 		}
-		else if( flags.isSet( E_DISPLAY_ADAPTER_FLAG_SOFTWARE_BIT ) )
+		else if( mFlags.isSet( eDisplayAdapterFlagSoftwareBit ) )
 		{
 			strStream << ", Software";
 		}
@@ -36,20 +36,20 @@ namespace Ic3::System
 	std::string DisplayOutputDesc::toString() const
 	{
 		std::stringstream strStream;
-		strStream << "Output <" << outputIndex << "> (" << name << ")";
+		strStream << "Output <" << mOutputIndex << "> (" << mName << ")";
 
-		if( flags.isSet( E_DISPLAY_OUTPUT_FLAG_ACTIVE_BIT ) )
+		if( mFlags.isSet( eDisplayOutputFlagActiveBit ) )
 		{
 			strStream << ", Active";
 		}
 
-		if( flags.isSet( E_DISPLAY_OUTPUT_FLAG_PRIMARY_BIT ) )
+		if( mFlags.isSet( eDisplayOutputFlagPrimaryBit ) )
 		{
 			strStream << ", Primary";
 		}
 
-		strStream << ", Origin:[" << screenRect.offset.x << "x" << screenRect.offset.y << "]";
-		strStream << ", Size:[" << screenRect.size.x << "x" << screenRect.size.y << "]";
+		strStream << ", Origin:[" << mScreenRect.mOffset.x << "x" << mScreenRect.mOffset.y << "]";
+		strStream << ", Size:[" << mScreenRect.mSize.x << "x" << mScreenRect.mSize.y << "]";
 
 		return strStream.str();
 	}
@@ -57,9 +57,9 @@ namespace Ic3::System
 	std::string DisplayVideoModeDesc::toString() const
 	{
 		std::stringstream strStream;
-		strStream << "DisplayMode <" << videoModeIndex << "> ";
+		strStream << "DisplayMode <" << mVideoModeIndex << "> ";
 
-		const auto settingsText = dsmGetVideoSettingsString( colorFormat, settings );
+		const auto settingsText = dsmGetVideoSettingsString( mColorFormat, mSettings );
 		strStream << settingsText;
 
 		return strStream.str();
@@ -70,18 +70,18 @@ namespace Ic3::System
 		DisplayOutputIDGen outputIDGen;
 		outputIDGen.uAdapterIndex = pAdapterIndex;
 		outputIDGen.uOutputIndex = pOutputIndex;
-		return outputIDGen.outputID;
+		return outputIDGen.mOutputID;
 	}
 
 	dsm_video_settings_hash_t dsmComputeVideoSettingsHash( EColorFormat pFormat, const DisplayVideoSettings & pSettings )
 	{
 		DisplayVideoSettingsHashGen hashValueGen;
-		hashValueGen.uResWidth = static_cast<uint16>( pSettings.resolution.x );
-		hashValueGen.uResHeight = static_cast<uint16>( pSettings.resolution.x );
-		hashValueGen.uRefreshRate = static_cast<uint16>( pSettings.refreshRate );
-		hashValueGen.uFlags = static_cast<uint8>( pSettings.flags );
+		hashValueGen.uResWidth = static_cast<uint16>( pSettings.mResolution.x );
+		hashValueGen.uResHeight = static_cast<uint16>( pSettings.mResolution.x );
+		hashValueGen.uRefreshRate = static_cast<uint16>( pSettings.mRefreshRate );
+		hashValueGen.uFlags = static_cast<uint8>( pSettings.mFlags );
 		hashValueGen.uColorFormatIndex = static_cast<uint8>( pFormat );
-		return hashValueGen.hashValue;
+		return hashValueGen.mHashValue;
 	}
 
 	std::string dsmGetVideoSettingsString( EColorFormat pFormat, const DisplayVideoSettings & pSettings )
@@ -90,18 +90,18 @@ namespace Ic3::System
 		auto settingsHash = dsmComputeVideoSettingsHash( pFormat, pSettings );
 
 		std::stringstream strStream;
-		strStream << pSettings.resolution.x << 'x' << pSettings.resolution.y;
+		strStream << pSettings.mResolution.x << 'x' << pSettings.mResolution.y;
 
-		if( pSettings.flags.isSet( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_PROGRESSIVE_BIT ) )
+		if( pSettings.mFlags.isSet( eDisplayVideoSettingsFlagScanProgressiveBit ) )
 		{
 			strStream << "p";
 		}
-		else if( pSettings.flags.isSet( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_INTERLACED_BIT ) )
+		else if( pSettings.mFlags.isSet( eDisplayVideoSettingsFlagScanInterlacedBit ) )
 		{
 			strStream << "i";
 		}
 
-		strStream << ", " << colorFormatDesc.size << "bit, " << pSettings.refreshRate << "Hz";
+		strStream << ", " << colorFormatDesc.mSize << "bit, " << pSettings.mRefreshRate << "Hz";
 		strStream << ", //0x" << std::hex << settingsHash << std::dec;
 
 		return strStream.str();
@@ -134,7 +134,7 @@ namespace Ic3::System
 		}
 		else if( adapterString.find( "NVIDIA" ) != std::string::npos )
 		{
-			adapterVendorID = EDisplayAdapterVendorID::Nvidia;
+			adapterVendorID = EDisplayAdapterVendorID::NVidia;
 		}
 		else if( adapterString.find( "QUALCOMM" ) != std::string::npos )
 		{

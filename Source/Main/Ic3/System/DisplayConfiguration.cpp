@@ -15,7 +15,7 @@ namespace Ic3::System
 
 	DisplayOutput * DisplayAdapter::findOutput( DisplayOutputPredicate pPredicate ) const
 	{
-		for( auto & outputPtr : _privateData->outputInstanceList )
+		for( auto & outputPtr : _privateData->mOutputInstanceList )
 		{
 			if( pPredicate( *outputPtr ) )
 			{
@@ -28,7 +28,7 @@ namespace Ic3::System
 	DisplayOutputList DisplayAdapter::findOutputs( DisplayOutputPredicate pPredicate ) const
 	{
 		DisplayOutputList outputList;
-		for( auto & outputPtr : _privateData->outputInstanceList )
+		for( auto & outputPtr : _privateData->mOutputInstanceList )
 		{
 			if( pPredicate( *outputPtr ) )
 			{
@@ -42,89 +42,89 @@ namespace Ic3::System
 	{
 		if( pOutputIndex == CX_DSM_INDEX_DEFAULT )
 		{
-			return _privateData->primaryOutput;
+			return _privateData->mPrimaryOutput;
 		}
 		else
 		{
-			return _privateData->outputList.at( pOutputIndex );
+			return _privateData->mOutputList.at( pOutputIndex );
 		}
 	}
 
 	DisplayOutput * DisplayAdapter::getDefaultOutput() const
 	{
-		return _privateData->primaryOutput;
+		return _privateData->mPrimaryOutput;
 	}
 
 	const DisplayAdapterDesc & DisplayAdapter::getAdapterDesc() const
 	{
-		return _privateData->adapterDesc;
+		return _privateData->mAdapterDesc;
 	}
 
 	const DisplayOutputList & DisplayAdapter::getOutputList() const
 	{
-		return _privateData->outputList;
+		return _privateData->mOutputList;
 	}
 
 	bool DisplayAdapter::isActiveAdapter() const
 	{
-		return _privateData->adapterDesc.flags.isSet( E_DISPLAY_ADAPTER_FLAG_ACTIVE_BIT );
+		return _privateData->mAdapterDesc.mFlags.isSet( eDisplayAdapterFlagActiveBit );
 	}
 
 	bool DisplayAdapter::isPrimaryAdapter() const
 	{
-		return _privateData->adapterDesc.flags.isSet( E_DISPLAY_ADAPTER_FLAG_PRIMARY_BIT );
+		return _privateData->mAdapterDesc.mFlags.isSet( eDisplayAdapterFlagPrimaryBit );
 	}
 
 	bool DisplayAdapter::hasActiveOutputs() const
 	{
-		return _privateData->activeOutputsNum > 0;
+		return _privateData->mActiveOutputsNum > 0;
 	}
 
 	bool DisplayAdapter::hasAnyOutputs() const
 	{
-		return !_privateData->outputInstanceList.empty();
+		return !_privateData->mOutputInstanceList.empty();
 	}
 
 	void DisplayAdapter::registerOutput( DisplayOutputHandle pOutput )
 	{
-		const auto outputIndex = _privateData->outputInstanceList.size();
+		const auto outputIndex = _privateData->mOutputInstanceList.size();
 
 		DisplayOutputIDGen outputIDGen;
-		outputIDGen.uAdapterIndex = _privateData->adapterDesc.adapterIndex;
+		outputIDGen.uAdapterIndex = _privateData->mAdapterDesc.mAdapterIndex;
 		outputIDGen.uOutputIndex = static_cast<dsm_index_t>( outputIndex );
 
 		auto & outputDesc = pOutput->getOutputDescInternal();
-		outputDesc.driverType = mDriverType;
-		outputDesc.outputIndex = outputIDGen.uOutputIndex;
-		outputDesc.outputID = outputIDGen.outputID;
+		outputDesc.mDriverType = mDriverType;
+		outputDesc.mOutputIndex = outputIDGen.uOutputIndex;
+		outputDesc.mOutputID = outputIDGen.mOutputID;
 
-		_privateData->outputInstanceList.push_back( std::move( pOutput ) );
+		_privateData->mOutputInstanceList.push_back( std::move( pOutput ) );
 
 		// Outputs are not added to the helper list at this point.
 		// This is done as a post-process step later in DisplayDriver::_enumOutputs().
 		// Assertion added to prevent problems in case of refactoring.
-		ic3DebugAssert( _privateData->outputList.empty() );
+		ic3DebugAssert( _privateData->mOutputList.empty() );
 	}
 
 	uint32 DisplayAdapter::validateOutputsConfiguration()
 	{
-		if( !_privateData->outputInstanceList.empty() )
+		if( !_privateData->mOutputInstanceList.empty() )
 		{
 			// Reserve space for the list of pointers/handles for outputs.
-			_privateData->outputList.reserve( _privateData->outputInstanceList.size() );
+			_privateData->mOutputList.reserve( _privateData->mOutputInstanceList.size() );
 
-			for( auto & outputPtr : _privateData->outputInstanceList )
+			for( auto & outputPtr : _privateData->mOutputInstanceList )
 			{
-				if( outputPtr->isPrimaryOutput() && !_privateData->primaryOutput )
+				if( outputPtr->isPrimaryOutput() && !_privateData->mPrimaryOutput )
 				{
 					// Similar to the default/primary system adapter, we select default
 					// output of an adapter if the driver has not set it during enumeration.
-					_privateData->primaryOutput = outputPtr.get();
+					_privateData->mPrimaryOutput = outputPtr.get();
 				}
 
 				if( outputPtr->isActiveOutput() )
 				{
-					_privateData->activeOutputsNum += 1;
+					_privateData->mActiveOutputsNum += 1;
 				}
 
 				for( auto colorFormat : cvColorFormatArray )
@@ -132,36 +132,36 @@ namespace Ic3::System
 					outputPtr->validateVideoModesConfiguration( colorFormat );
 				}
 
-				_privateData->outputList.push_back( outputPtr.get() );
+				_privateData->mOutputList.push_back( outputPtr.get() );
 			}
 
 			// Validate if the default output for this adapter has been properly set.
-			if( _privateData->primaryOutput )
+			if( _privateData->mPrimaryOutput )
 			{
-				auto & outputDesc = _privateData->primaryOutput->getOutputDescInternal();
-				if( !outputDesc.flags.isSet( E_DISPLAY_OUTPUT_FLAG_PRIMARY_BIT ) )
+				auto & outputDesc = _privateData->mPrimaryOutput->getOutputDescInternal();
+				if( !outputDesc.mFlags.isSet( eDisplayOutputFlagPrimaryBit ) )
 				{
 					ic3DebugOutputFmt(
 						"Primary/Default output of [%s] selected by the driver does not have "\
-						"E_DISPLAY_ADAPTER_FLAG_PRIMARY_BIT set. Is that intentional?",
-						_privateData->adapterDesc.name.c_str() );
+						"E_DISPLAY_ADAPTER_FLAG_PRIMARYBit set. Is that intentional?",
+						_privateData->mAdapterDesc.mName.c_str() );
 				}
 			}
 			else
 			{
-				auto & firstOutput = _privateData->outputInstanceList.front();
+				auto & firstOutput = _privateData->mOutputInstanceList.front();
 				auto & firstOutputDesc = firstOutput->getOutputDescInternal();
-				firstOutputDesc.flags.set( E_DISPLAY_OUTPUT_FLAG_PRIMARY_BIT );
-				_privateData->primaryOutput = firstOutput.get();
+				firstOutputDesc.mFlags.set( eDisplayOutputFlagPrimaryBit );
+				_privateData->mPrimaryOutput = firstOutput.get();
 			}
 		}
 
-		return _privateData->activeOutputsNum;
+		return _privateData->mActiveOutputsNum;
 	}
 
 	DisplayAdapterDesc & DisplayAdapter::getAdapterDescInternal()
 	{
-		return _privateData->adapterDesc;
+		return _privateData->mAdapterDesc;
 	}
 
 
@@ -175,19 +175,19 @@ namespace Ic3::System
 
 	DisplayOutput::~DisplayOutput() noexcept = default;
 
-	ArrayView<const EColorFormat> DisplayOutput::getSupportedColorFormatList() const
+	TArrayView<const EColorFormat> DisplayOutput::getSupportedColorFormatList() const
 	{
-		return Cppx::bindArrayView( _privateData->supportedColorFormatList.data(),
-		              _privateData->supportedColorFormatList.size() );
+		return Cppx::bindArrayView( _privateData->mSupportedColorFormatList.data(),
+		              _privateData->mSupportedColorFormatList.size() );
 	}
 
 	bool DisplayOutput::checkVideoSettingsSupport( const DisplayVideoSettings & pVideoSettings, EColorFormat pColorFormat ) const
 	{
-		const auto & colorFormatData = _privateData->colorFormatMap.at( pColorFormat );
-		for( const auto & videoMode : colorFormatData.videoModeInstanceList )
+		const auto & colorFormatData = _privateData->mColorFormatMap.at( pColorFormat );
+		for( const auto & videoMode : colorFormatData.mVideoModeInstanceList )
 		{
 			const auto & videoModeDesc = videoMode->getModeDesc();
-			if( videoModeDesc.settings.matches( pVideoSettings ) )
+			if( videoModeDesc.mSettings.matches( pVideoSettings ) )
 			{
 				return true;
 			}
@@ -197,11 +197,11 @@ namespace Ic3::System
 
 	DisplayVideoMode * DisplayOutput::findVideoMode( EColorFormat pColorFormat, DisplayVideoModePredicate pPredicate ) const
 	{
-		for( auto & colorFormatData : _privateData->colorFormatMap )
+		for( auto & colorFormatData : _privateData->mColorFormatMap )
 		{
 			if( ( colorFormatData.first == pColorFormat ) || ( pColorFormat == EColorFormat::Unknown ) )
 			{
-				for( auto & videoModePtr : colorFormatData.second.videoModeInstanceList )
+				for( auto & videoModePtr : colorFormatData.second.mVideoModeInstanceList )
 				{
 					if( pPredicate( *videoModePtr ) )
 					{
@@ -216,11 +216,11 @@ namespace Ic3::System
 	DisplayVideoModeList DisplayOutput::findVideoModes( EColorFormat pColorFormat, DisplayVideoModePredicate pPredicate ) const
 	{
 		DisplayVideoModeList videoModeList;
-		for( auto & colorFormatData : _privateData->colorFormatMap )
+		for( auto & colorFormatData : _privateData->mColorFormatMap )
 		{
 			if( ( colorFormatData.first == pColorFormat ) || ( pColorFormat == EColorFormat::Unknown ) )
 			{
-				for( auto & videoModePtr : colorFormatData.second.videoModeInstanceList )
+				for( auto & videoModePtr : colorFormatData.second.mVideoModeInstanceList )
 				{
 					if( pPredicate( *videoModePtr ) )
 					{
@@ -234,7 +234,7 @@ namespace Ic3::System
 
 	const DisplayOutputDesc & DisplayOutput::getOutputDesc() const
 	{
-		return _privateData->outputDesc;
+		return _privateData->mOutputDesc;
 	}
 
 	const DisplayVideoModeList & DisplayOutput::getVideoModeList() const
@@ -245,69 +245,69 @@ namespace Ic3::System
 
 	const DisplayVideoModeList & DisplayOutput::getVideoModeList( EColorFormat pColorFormat ) const
 	{
-		const auto & colorFormatData = _privateData->colorFormatMap.at( pColorFormat );
-		return colorFormatData.videoModeList;
+		const auto & colorFormatData = _privateData->mColorFormatMap.at( pColorFormat );
+		return colorFormatData.mVideoModeList;
 	}
 
 	bool DisplayOutput::isActiveOutput() const
 	{
-		return _privateData->outputDesc.flags.isSet( E_DISPLAY_OUTPUT_FLAG_ACTIVE_BIT );
+		return _privateData->mOutputDesc.mFlags.isSet( eDisplayOutputFlagActiveBit );
 	}
 
 	bool DisplayOutput::isPrimaryOutput() const
 	{
-		return _privateData->outputDesc.flags.isSet( E_DISPLAY_OUTPUT_FLAG_PRIMARY_BIT );
+		return _privateData->mOutputDesc.mFlags.isSet( eDisplayOutputFlagPrimaryBit );
 	}
 
 	bool DisplayOutput::isColorFormatSupported( EColorFormat pColorFormat ) const
 	{
-		const auto & colorFormatData = _privateData->colorFormatMap.at( pColorFormat );
-		return !colorFormatData.videoModeInstanceList.empty();
+		const auto & colorFormatData = _privateData->mColorFormatMap.at( pColorFormat );
+		return !colorFormatData.mVideoModeInstanceList.empty();
 	}
 
 	void DisplayOutput::registerVideoMode( EColorFormat pColorFormat, DisplayVideoModeHandle pVideoMode )
 	{
-		auto & colorFormatData = _privateData->colorFormatMap[pColorFormat];
+		auto & colorFormatData = _privateData->mColorFormatMap[pColorFormat];
 
-		if( colorFormatData.colorFormat == EColorFormat::Unknown )
+		if( colorFormatData.mColorFormat == EColorFormat::Unknown )
 		{
-			colorFormatData.colorFormat = pColorFormat;
-			_privateData->supportedColorFormatList.push_back( pColorFormat );
+			colorFormatData.mColorFormat = pColorFormat;
+			_privateData->mSupportedColorFormatList.push_back( pColorFormat );
 		}
 
-		const auto videoModeIndex = colorFormatData.videoModeInstanceList.size();
+		const auto videoModeIndex = colorFormatData.mVideoModeInstanceList.size();
 
 		DisplayVideoModeIDGen videoModeIDGen;
-		videoModeIDGen.uOutputID = _privateData->outputDesc.outputID;
-		videoModeIDGen.uColorFormatIndex = static_cast<dsm_index_t>( colorFormatData.colorFormat );
+		videoModeIDGen.uOutputID = _privateData->mOutputDesc.mOutputID;
+		videoModeIDGen.uColorFormatIndex = static_cast<dsm_index_t>( colorFormatData.mColorFormat );
 		videoModeIDGen.uModeIndex = static_cast<dsm_index_t>( videoModeIndex );
 
 		auto & videoModeDesc = pVideoMode->getModeDescInternal();
-		videoModeDesc.driverType = mDriverType;
-		videoModeDesc.videoModeIndex = videoModeIDGen.uModeIndex;
-		videoModeDesc.videoModeID = videoModeIDGen.modeID;
-		videoModeDesc.colorFormat = pColorFormat;
+		videoModeDesc.mDriverType = mDriverType;
+		videoModeDesc.mVideoModeIndex = videoModeIDGen.uModeIndex;
+		videoModeDesc.mVideoModeID = videoModeIDGen.mModeID;
+		videoModeDesc.mColorFormat = pColorFormat;
 
-		colorFormatData.videoModeInstanceList.push_back( pVideoMode );
+		colorFormatData.mVideoModeInstanceList.push_back( pVideoMode );
 
 		// Video modes are not added to the helper list at this point.
 		// This is done as a post-process step later in DisplayDriver::_enumVideoModes().
 		// Assertion added to prevent problems in case of refactoring.
-		ic3DebugAssert( colorFormatData.videoModeList.empty() );
+		ic3DebugAssert( colorFormatData.mVideoModeList.empty() );
 	}
 
 	uint32 DisplayOutput::validateVideoModesConfiguration( EColorFormat pColorFormat )
 	{
-		auto & colorFormatData = _privateData->colorFormatMap.at( pColorFormat );
-		auto videoModesNum = colorFormatData.videoModeInstanceList.size();
+		auto & colorFormatData = _privateData->mColorFormatMap.at( pColorFormat );
+		auto videoModesNum = colorFormatData.mVideoModeInstanceList.size();
 
 		if( videoModesNum > 0 )
 		{
-			colorFormatData.videoModeList.reserve( videoModesNum );
+			colorFormatData.mVideoModeList.reserve( videoModesNum );
 
-			for( auto & videoModePtr : colorFormatData.videoModeInstanceList )
+			for( auto & videoModePtr : colorFormatData.mVideoModeInstanceList )
 			{
-				colorFormatData.videoModeList.push_back( videoModePtr.get() );
+				colorFormatData.mVideoModeList.push_back( videoModePtr.get() );
 			}
 		}
 
@@ -316,7 +316,7 @@ namespace Ic3::System
 
 	DisplayOutputDesc & DisplayOutput::getOutputDescInternal()
 	{
-		return _privateData->outputDesc;
+		return _privateData->mOutputDesc;
 	}
 
 
@@ -332,12 +332,12 @@ namespace Ic3::System
 
 	const DisplayVideoModeDesc & DisplayVideoMode::getModeDesc() const
 	{
-		return _privateData->modeDesc;
+		return _privateData->mModeDesc;
 	}
 
 	DisplayVideoModeDesc & DisplayVideoMode::getModeDescInternal()
 	{
-		return _privateData->modeDesc;
+		return _privateData->mModeDesc;
 	}
 
 } // namespace Ic3::System

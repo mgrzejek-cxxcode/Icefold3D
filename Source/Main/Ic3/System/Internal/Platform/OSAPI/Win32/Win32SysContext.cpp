@@ -20,7 +20,7 @@ namespace Ic3::System
 
         SysContextHandle createSysContext( const SysContextCreateInfo & pCreateInfo )
         {
-            return createDynamicInterfaceObject<Win32SysContext>();
+            return createDynamicObject<Win32SysContext>();
         }
 
     }
@@ -38,7 +38,7 @@ namespace Ic3::System
 	
 	AssetLoaderHandle Win32SysContext::createAssetLoader( const AssetLoaderCreateInfo & pCreateInfo )
 	{
-		return Platform::createFileAssetLoader( getHandle<Win32SysContext>(), *pCreateInfo.nativeParams );
+		return Platform::createFileAssetLoader( getHandle<Win32SysContext>(), *pCreateInfo.mNativeParams );
 	}
 
 	DisplayManagerHandle Win32SysContext::createDisplayManager()

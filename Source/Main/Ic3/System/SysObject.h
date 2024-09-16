@@ -10,11 +10,11 @@ namespace Ic3::System
 
 	enum ESysObjectStateFlags : uint32
 	{
-		E_SYS_OBJECT_STATE_FLAG_DESTROY_REQUEST_FLAG_SET_BIT = 0x4000,
+		eSysObjectStateFlagDestroyRequestFlagSetBit = 0x4000,
 
-		E_SYS_OBJECT_STATE_FLAG_DESTROY_REQUEST_PROCESSED_BIT = 0x8000,
+		eSysObjectStateFlagDestroyRequestProcessedBit = 0x8000,
 
-		E_SYS_OBJECT_STATE_FLAG_INVALID_BIT = 0x8000
+		eSysObjectStateFlagInvalidBit = 0x8000
 	};
 
     /// @brief Base class for all system classes
@@ -22,7 +22,7 @@ namespace Ic3::System
     /// This class is used for easy injection of useful stuff (debug logs, instance counting, lifetime control)
     /// into all classes created by the System Library. It also provides (and, thus, enforces!) SysContext
     /// access, so it doesn't have to be declared multiple times (for every separate class in the library).
-    class SysObject : public DynamicInterface
+    class SysObject : public IDynamicObject
     {
     public:
         // Public handle to the SysContext. This is always non-null and specified at construction time.
@@ -53,7 +53,7 @@ namespace Ic3::System
 		/// - if an object should be destroyed "remotely" (e.g. custom OS-level stuff), this can be used to do that.
 		bool destroySystemObject();
 
-		IC3_ATTR_NO_DISCARD bool isStateMaskSet( Cppx::Bitmask<ESysObjectStateFlags> pMask ) const
+		IC3_ATTR_NO_DISCARD bool isStateMaskSet( TBitmask<ESysObjectStateFlags> pMask ) const
 		{
 			return _stateMask.isSet( pMask );
 		}
@@ -64,12 +64,12 @@ namespace Ic3::System
 		/// even though the request has been already made.
 		IC3_ATTR_NO_DISCARD bool isDestroyRequestSet() const
 		{
-			return isStateMaskSet( E_SYS_OBJECT_STATE_FLAG_DESTROY_REQUEST_FLAG_SET_BIT );
+			return isStateMaskSet( eSysObjectStateFlagDestroyRequestFlagSetBit );
 		}
 
 		IC3_ATTR_NO_DISCARD bool isValidSystemObject() const
 		{
-			return !isStateMaskSet( E_SYS_OBJECT_STATE_FLAG_INVALID_BIT );
+			return !isStateMaskSet( eSysObjectStateFlagInvalidBit );
 		}
 
 	protected:
@@ -82,16 +82,16 @@ namespace Ic3::System
 
 		bool setDestroyRequestFlag()
 		{
-			return _stateMask.testAndSet( E_SYS_OBJECT_STATE_FLAG_DESTROY_REQUEST_FLAG_SET_BIT );
+			return _stateMask.testAndSet( eSysObjectStateFlagDestroyRequestFlagSetBit );
 		}
 
-		void setStateFlags( bool pSetOrUnset, Cppx::Bitmask<ESysObjectStateFlags> pFlags )
+		void setStateFlags( bool pSetOrUnset, TBitmask<ESysObjectStateFlags> pFlags )
 		{
 			_stateMask.setOrUnset( pFlags, pSetOrUnset );
 		}
 
 	private:
-	    Cppx::AtomicBitmask<uint32> _stateMask;
+	    Cppx::TAtomicBitmask<uint32> _stateMask;
     };
 
     struct SysObjectDeleter
@@ -108,9 +108,9 @@ namespace Ic3::System
     };
 
     template <typename TObject, typename... TArgs>
-    inline SysHandle<TObject> createSysObject( TArgs && ...pArgs )
+    inline TSysHandle<TObject> createSysObject( TArgs && ...pArgs )
     {
-        return createDynamicInterfaceObjectWithDeleter<TObject>( SysObjectDeleter{}, std::forward<TArgs>( pArgs )... );
+        return createDynamicObjectWithDeleter<TObject>( SysObjectDeleter{}, std::forward<TArgs>( pArgs )... );
     }
 
 } // namespace Ic3::System

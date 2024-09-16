@@ -64,7 +64,7 @@ namespace Ic3::System
 		virtual void setTitle( const std::string & pTitleText ) override final;
 
 		virtual void updateGeometry( const FrameGeometry & pFrameGeometry,
-		                             Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
+		                             TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
 
 		IC3_ATTR_NO_DISCARD virtual FrameSize getClientAreaSize() const override final;
 
@@ -82,7 +82,7 @@ namespace Ic3::System
 		virtual void _nativeSetTitle( const std::string & pTitle ) = 0;
 
 		virtual void _nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-		                                    Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) = 0;
+		                                    TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) = 0;
 
 		virtual FrameSize _nativeGetSize( EFrameSizeMode pSizeMode ) const = 0;
 	};

@@ -15,7 +15,7 @@ namespace Ic3::System
 
 		struct PosixFileNativeData
 		{
-			FILE * filePtr = nullptr;
+			FILE * mFilePtr = nullptr;
 		};
 
 	}

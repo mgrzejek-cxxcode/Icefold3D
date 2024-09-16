@@ -12,7 +12,7 @@ namespace Ic3::System
 	: SysObject( std::move( pSysContext ) )
 	, _privateData( std::make_unique<DisplayManagerPrivateData>() )
 	{
-		_privateData->driverFactoryMap[EDisplayDriverType::Generic] = [this]() {
+		_privateData->mDriverFactoryMap[EDisplayDriverType::Generic] = [this]() {
 			return createDisplayDriver();
 		};
 	#if( IC3_SYSTEM_DSM_DRIVER_TYPE_SUPPORT_DXGI )
@@ -37,7 +37,7 @@ namespace Ic3::System
 			return nullptr;
 		}
 
-		auto & factoryCallback = _privateData->driverFactoryMap.at( pDriverID );
+		auto & factoryCallback = _privateData->mDriverFactoryMap.at( pDriverID );
 		auto displayDriver = factoryCallback();
 
 		return displayDriver;
@@ -113,13 +113,13 @@ namespace Ic3::System
 
 	bool DisplayManager::checkFrameGeometry( const FrameGeometry & pFrameGeometry ) const
 	{
-		const auto & framePos = pFrameGeometry.position;
-		const auto & frameSize = pFrameGeometry.size;
+		const auto & framePos = pFrameGeometry.mPosition;
+		const auto & frameSize = pFrameGeometry.mSize;
 
 		auto screenSize = queryDefaultDisplaySize();
 		auto minFrameSize = queryMinWindowSize();
 
-		if( frameSize != CX_FRAME_SIZE_MAX )
+		if( frameSize != cxFrameSizeMax )
 		{
 			if( ( frameSize.x == 0 ) || ( frameSize.y == 0 ) )
 			{
@@ -135,7 +135,7 @@ namespace Ic3::System
 			}
 		}
 
-		if( framePos != CX_FRAME_POS_AUTO )
+		if( framePos != cxFramePosAuto )
 		{
 			if( ( framePos.x < 0 ) || ( framePos.y < 0 ) )
 			{
@@ -158,18 +158,18 @@ namespace Ic3::System
 	{
 		auto resultGeometry = pFrameGeometry;
 
-		const auto & framePos = pFrameGeometry.position;
-		const auto & frameSize = pFrameGeometry.size;
+		const auto & framePos = pFrameGeometry.mPosition;
+		const auto & frameSize = pFrameGeometry.mSize;
 
 		auto screenOffset = queryDefaultDisplayOffset();
 		auto screenSize = queryDefaultDisplaySize();
 		auto minFrameSize = queryMinWindowSize();
 
-		if( frameSize == CX_FRAME_SIZE_MAX )
+		if( frameSize == cxFrameSizeMax )
 		{
 			// Frame is defined as maximum allowed for the current display/screen. Make it that big.
-			resultGeometry.size.x = screenSize.x;
-			resultGeometry.size.y = screenSize.y;
+			resultGeometry.mSize.x = screenSize.x;
+			resultGeometry.mSize.y = screenSize.y;
 		}
 		else
 		{
@@ -177,36 +177,36 @@ namespace Ic3::System
 			{
 				// Any dimension set to 0 means "use default size". By default,
 				// we just use the ratio of the screen and 70% of its dimensions.
-				resultGeometry.size.x = static_cast<uint32>( screenSize.x * 0.7 );
-				resultGeometry.size.y = static_cast<uint32>( screenSize.y * 0.7 );
+				resultGeometry.mSize.x = static_cast<uint32>( screenSize.x * 0.7 );
+				resultGeometry.mSize.y = static_cast<uint32>( screenSize.y * 0.7 );
 			}
 			else
 			{
 				// Size of the window must be less than the size of the screen...
-				resultGeometry.size.x = Cppx::getMinOf( resultGeometry.size.x, screenSize.x );
-				resultGeometry.size.y = Cppx::getMinOf( resultGeometry.size.y, screenSize.y );
+				resultGeometry.mSize.x = Cppx::getMinOf( resultGeometry.mSize.x, screenSize.x );
+				resultGeometry.mSize.y = Cppx::getMinOf( resultGeometry.mSize.y, screenSize.y );
 
 				// ... but at the same time bigger than the minimum allowed size (Win32-specific, really).
-				resultGeometry.size.x = Cppx::getMaxOf( resultGeometry.size.x, minFrameSize.x );
-				resultGeometry.size.y = Cppx::getMaxOf( resultGeometry.size.y, minFrameSize.y );
+				resultGeometry.mSize.x = Cppx::getMaxOf( resultGeometry.mSize.x, minFrameSize.x );
+				resultGeometry.mSize.y = Cppx::getMaxOf( resultGeometry.mSize.y, minFrameSize.y );
 			}
 		}
 
 		if( ( framePos.x < 0 ) || ( framePos.y < 0 ) )
 		{
-			resultGeometry.position.x = static_cast<int32>( ( screenSize.x - resultGeometry.size.x ) / 2 );
-			resultGeometry.position.y = static_cast<int32>( ( screenSize.y - resultGeometry.size.y ) / 2 );
+			resultGeometry.mPosition.x = static_cast<int32>( ( screenSize.x - resultGeometry.mSize.x ) / 2 );
+			resultGeometry.mPosition.y = static_cast<int32>( ( screenSize.y - resultGeometry.mSize.y ) / 2 );
 		}
 		else
 		{
-			auto maxPosX = static_cast<int32>( screenSize.x - resultGeometry.size.x );
-			auto maxPosY = static_cast<int32>( screenSize.y - resultGeometry.size.y );
-			resultGeometry.position.x = Cppx::getMinOf( resultGeometry.position.x, maxPosX );
-			resultGeometry.position.y = Cppx::getMinOf( resultGeometry.position.y, maxPosY );
+			auto maxPosX = static_cast<int32>( screenSize.x - resultGeometry.mSize.x );
+			auto maxPosY = static_cast<int32>( screenSize.y - resultGeometry.mSize.y );
+			resultGeometry.mPosition.x = Cppx::getMinOf( resultGeometry.mPosition.x, maxPosX );
+			resultGeometry.mPosition.y = Cppx::getMinOf( resultGeometry.mPosition.y, maxPosY );
 		}
 
-		resultGeometry.position.x += screenOffset.x;
-		resultGeometry.position.y += screenOffset.y;
+		resultGeometry.mPosition.x += screenOffset.x;
+		resultGeometry.mPosition.y += screenOffset.y;
 
 		return resultGeometry;
 	}
@@ -232,7 +232,7 @@ namespace Ic3::System
 
 	void DisplayDriver::syncDisplayConfiguration()
 	{
-		if( !_privateData->adapterInstanceList.empty() )
+		if( !_privateData->mAdapterInstanceList.empty() )
 		{
 			_resetDisplayConfiguration();
 		}
@@ -251,7 +251,7 @@ namespace Ic3::System
 
 	DisplayAdapter * DisplayDriver::findAdapter( DisplayAdapterPredicate pPredicate ) const
 	{
-		for( auto & adapterPtr : _privateData->adapterInstanceList )
+		for( auto & adapterPtr : _privateData->mAdapterInstanceList )
 		{
 			if( pPredicate( *adapterPtr ) )
 			{
@@ -264,7 +264,7 @@ namespace Ic3::System
 	DisplayAdapterList DisplayDriver::findAdapters( DisplayAdapterPredicate pPredicate ) const
 	{
 		DisplayAdapterList adapterList;
-		for( auto & adapterPtr : _privateData->adapterInstanceList )
+		for( auto & adapterPtr : _privateData->mAdapterInstanceList )
 		{
 			if( pPredicate( *adapterPtr ) )
 			{
@@ -276,7 +276,7 @@ namespace Ic3::System
 
 	const DisplayAdapterList & DisplayDriver::getAdapterList() const
 	{
-		return _privateData->adapterList;
+		return _privateData->mAdapterList;
 	}
 
 	const DisplayOutputList & DisplayDriver::getOutputList( dsm_index_t pAdapterIndex ) const
@@ -289,17 +289,17 @@ namespace Ic3::System
 	{
 		if( pAdapterIndex == CX_DSM_INDEX_DEFAULT )
 		{
-			return _privateData->primaryAdapter;
+			return _privateData->mPrimaryAdapter;
 		}
 		else
 		{
-			return _privateData->adapterList.at( pAdapterIndex );
+			return _privateData->mAdapterList.at( pAdapterIndex );
 		}
 	}
 
 	DisplayAdapter * DisplayDriver::getDefaultAdapter() const
 	{
-		return _privateData->primaryAdapter;
+		return _privateData->mPrimaryAdapter;
 	}
 
 	DisplayOutput * DisplayDriver::getDefaultOutput( dsm_index_t pAdapterIndex ) const
@@ -327,22 +327,22 @@ namespace Ic3::System
 
 	bool DisplayDriver::hasActiveAdapters() const
 	{
-		return _privateData->activeAdaptersNum > 0;
+		return _privateData->mActiveAdaptersNum > 0;
 	}
 
 	bool DisplayDriver::hasAnyAdapters() const
 	{
-		return !_privateData->adapterInstanceList.empty();
+		return !_privateData->mAdapterInstanceList.empty();
 	}
 
 	bool DisplayDriver::hasValidConfiguration() const
 	{
-		return !_privateData->adapterInstanceList.empty() && ( _privateData->combinedActiveOutputsNum > 0 );
+		return !_privateData->mAdapterInstanceList.empty() && (_privateData->mCombinedActiveOutputsNum > 0 );
 	}
 
 	std::string DisplayDriver::generateConfigurationDump( const std::string & pLinePrefix ) const
 	{
-		const auto adaptersNum = _privateData->adapterInstanceList.size();
+		const auto adaptersNum = _privateData->mAdapterInstanceList.size();
 		const auto displayDevicesNum = adaptersNum * 2;
 		const auto averageDisplayModesNum = 16;
 		const auto averageLineLength = 40 + pLinePrefix.length();
@@ -362,7 +362,7 @@ namespace Ic3::System
 			for( const auto * adapter : adapterList )
 			{
 				const auto & adapterDesc = adapter->getAdapterDesc();
-				if( adapterDesc.adapterIndex > 0 )
+				if( adapterDesc.mAdapterIndex > 0 )
 				{
 					result.append( 1, '\n' );
 				}
@@ -460,11 +460,11 @@ namespace Ic3::System
 
 	void DisplayDriver::_resetDisplayConfiguration()
 	{
-		_privateData->adapterInstanceList.clear();
-		_privateData->adapterList.clear();
-		_privateData->primaryAdapter = nullptr;
-		_privateData->activeAdaptersNum = 0u;
-		_privateData->combinedActiveOutputsNum = 0u;
+		_privateData->mAdapterInstanceList.clear();
+		_privateData->mAdapterList.clear();
+		_privateData->mPrimaryAdapter = nullptr;
+		_privateData->mActiveAdaptersNum = 0u;
+		_privateData->mCombinedActiveOutputsNum = 0u;
 	}
 
 	void DisplayDriver::_enumDisplayDevices()
@@ -474,7 +474,7 @@ namespace Ic3::System
 
 	void DisplayDriver::_enumVideoModes()
 	{
-		for( auto & adapterPtr : _privateData->adapterInstanceList )
+		for( auto & adapterPtr : _privateData->mAdapterInstanceList )
 		{
 			const auto & adapterOutputList = adapterPtr->getOutputList();
 
@@ -490,81 +490,81 @@ namespace Ic3::System
 
 	void DisplayDriver::_registerAdapter( DisplayAdapterHandle pAdapter )
 	{
-		const auto adapterIndex = _privateData->adapterInstanceList.size();
+		const auto adapterIndex = _privateData->mAdapterInstanceList.size();
 
 		auto & adapterDesc = pAdapter->getAdapterDescInternal();
-		adapterDesc.driverType = mDriverType;
-		adapterDesc.adapterIndex = static_cast<dsm_index_t>( adapterIndex );
+		adapterDesc.mDriverType = mDriverType;
+		adapterDesc.mAdapterIndex = static_cast<dsm_index_t>( adapterIndex );
 
-		_privateData->adapterInstanceList.push_back( std::move( pAdapter ) );
+		_privateData->mAdapterInstanceList.push_back( std::move( pAdapter ) );
 
 		// Adapters are not added to the helper list at this point.
 		// This is done as a post-process step later in DisplayDriver::_enumAdapters().
 		// Assertion added to prevent problems in case of refactoring.
-		ic3DebugAssert( _privateData->adapterList.empty() );
+		ic3DebugAssert( _privateData->mAdapterList.empty() );
 	}
 
 	void DisplayDriver::_registerOutput( DisplayAdapter & pAdapter, DisplayOutputHandle pOutput )
 	{
-		ic3DebugAssert( _privateData->adapterList.empty() );
+		ic3DebugAssert( _privateData->mAdapterList.empty() );
 		pAdapter.registerOutput( std::move( pOutput ) );
 	}
 
 	void DisplayDriver::_registerVideoMode( DisplayOutput & pOutput, EColorFormat pColorFormat, DisplayVideoModeHandle pVideoMode )
 	{
-		ic3DebugAssert( _privateData->adapterList.empty() );
+		ic3DebugAssert( _privateData->mAdapterList.empty() );
 		pOutput.registerVideoMode( pColorFormat, std::move( pVideoMode ) );
 	}
 
 	void DisplayDriver::_validateAdaptersConfiguration()
 	{
-		if( !_privateData->adapterInstanceList.empty() )
+		if( !_privateData->mAdapterInstanceList.empty() )
 		{
 			// Reserve space for the list of pointers/handles for adapters.
-			_privateData->adapterList.reserve( _privateData->adapterInstanceList.size() );
+			_privateData->mAdapterList.reserve( _privateData->mAdapterInstanceList.size() );
 
-			for( auto & adapterPtr : _privateData->adapterInstanceList )
+			for( auto & adapterPtr : _privateData->mAdapterInstanceList )
 			{
 				// Update the non-driver-specific part of the adapter info
 				auto & adapterDesc = adapterPtr->getAdapterDescInternal();
 
-				if( adapterDesc.vendorID == EDisplayAdapterVendorID::Unknown )
+				if( adapterDesc.mVendorID == EDisplayAdapterVendorID::Unknown )
 				{
 					// Driver can set the vendor ID internally, but in case it is missing,
 					// this function tries to resolve the ID by looking at the adapter desc.
-					adapterDesc.vendorID = dsmResolveAdapterVendorID( adapterDesc.name );
+					adapterDesc.mVendorID = dsmResolveAdapterVendorID( adapterDesc.mName );
 				}
-				if( adapterPtr->isPrimaryAdapter() && !_privateData->primaryAdapter )
+				if( adapterPtr->isPrimaryAdapter() && !_privateData->mPrimaryAdapter )
 				{
 					// Driver can also explicitly set the primary system adapter.
 					// If it has not been set, we use the first adapter with proper flag set.
-					_privateData->primaryAdapter = adapterPtr.get();
+					_privateData->mPrimaryAdapter = adapterPtr.get();
 				}
 				if( adapterPtr->isActiveAdapter() )
 				{
-					_privateData->activeAdaptersNum += 1;
+					_privateData->mActiveAdaptersNum += 1;
 				}
 
 				auto adapterActiveOutputsNum = adapterPtr->validateOutputsConfiguration();
 
-				_privateData->combinedActiveOutputsNum += adapterActiveOutputsNum;
+				_privateData->mCombinedActiveOutputsNum += adapterActiveOutputsNum;
 
-				_privateData->adapterList.push_back( adapterPtr.get() );
+				_privateData->mAdapterList.push_back( adapterPtr.get() );
 			}
 
 			// Validate if the default system adapter has been properly set.
-			if( _privateData->primaryAdapter )
+			if( _privateData->mPrimaryAdapter )
 			{
 				// Default./primary adapter will usually have the proper bit set (all drivers should do that).
 				// In case the adapter has been set, but this bit is missing, emit a warning. It may be an
 				// intentional choice, but also an error or missing driver-specific init code.
 
-				auto & adapterDesc = _privateData->primaryAdapter->getAdapterDescInternal();
-				if( !adapterDesc.flags.isSet( E_DISPLAY_ADAPTER_FLAG_PRIMARY_BIT ) )
+				auto & adapterDesc = _privateData->mPrimaryAdapter->getAdapterDescInternal();
+				if( !adapterDesc.mFlags.isSet( eDisplayAdapterFlagPrimaryBit ) )
 				{
 					ic3DebugOutput(
 						"Primary/Default adapter selected by the driver does not have "\
-						"E_DISPLAY_ADAPTER_FLAG_PRIMARY_BIT set. Is that intentional?" );
+						"E_DISPLAY_ADAPTER_FLAG_PRIMARYBit set. Is that intentional?" );
 				}
 			}
 			else
@@ -573,10 +573,10 @@ namespace Ic3::System
 				// there has not been any adapter marked as PRIMARY. In this case, just select the first
 				// one, update its state and set as the default one.
 
-				auto & firstAdapter = _privateData->adapterInstanceList.front();
+				auto & firstAdapter = _privateData->mAdapterInstanceList.front();
 				auto & firstAdapterDesc = firstAdapter->getAdapterDescInternal();
-				firstAdapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_PRIMARY_BIT );
-				_privateData->primaryAdapter = firstAdapter.get();
+				firstAdapterDesc.mFlags.set( eDisplayAdapterFlagPrimaryBit );
+				_privateData->mPrimaryAdapter = firstAdapter.get();
 			}
 		}
 	}

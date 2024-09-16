@@ -33,8 +33,8 @@ namespace Ic3::System
 		}
 
 		auto metalDevice = createSysObject<MetalDevice>( std::move( pSysContext ) );
-		metalDevice->mDeviceData->mtlDevice = defaultMTLDevice;
-		metalDevice->mDeviceData->mtlMainCmdQueue = mainMTLCommandQueue;
+		metalDevice->mDeviceData->mMTLDevice = defaultMTLDevice;
+		metalDevice->mDeviceData->mMTLMainCmdQueue = mainMTLCommandQueue;
 
 		return metalDevice;
 	}
@@ -81,26 +81,26 @@ namespace Ic3::System
 	{
 		MetalDisplaySurfaceCreateInfo surfaceCreateInfo = pCreateInfo;
 
-		if( pCreateInfo.flags.isSet( E_METAL_DISPLAY_SURFACE_CREATE_FLAG_FULLSCREEN_BIT ) )
+		if( pCreateInfo.mFlags.isSet( eMetalDisplaySurfaceCreateFlagFullscreenBit ) )
 		{
-			surfaceCreateInfo.frameGeometry.size = CX_FRAME_SIZE_MAX;
-			surfaceCreateInfo.frameGeometry.style = EFrameStyle::Overlay;
+			surfaceCreateInfo.mFrameGeometry.mSize = cxFrameSizeMax;
+			surfaceCreateInfo.mFrameGeometry.mStyle = EFrameStyle::Overlay;
 		}
 		else
 		{
-			surfaceCreateInfo.frameGeometry.position = pCreateInfo.frameGeometry.position;
-			surfaceCreateInfo.frameGeometry.size = pCreateInfo.frameGeometry.size;
-			surfaceCreateInfo.frameGeometry.style = pCreateInfo.frameGeometry.style;
+			surfaceCreateInfo.mFrameGeometry.mPosition = pCreateInfo.mFrameGeometry.mPosition;
+			surfaceCreateInfo.mFrameGeometry.mSize = pCreateInfo.mFrameGeometry.mSize;
+			surfaceCreateInfo.mFrameGeometry.mStyle = pCreateInfo.mFrameGeometry.mStyle;
 		}
 
-		surfaceCreateInfo.frameGeometry = mDisplayManager->validateFrameGeometry( surfaceCreateInfo.frameGeometry );
+		surfaceCreateInfo.mFrameGeometry = mDisplayManager->validateFrameGeometry( surfaceCreateInfo.mFrameGeometry );
 
 		auto displaySurface = _nativeCreateDisplaySurface( pMetalDevice, surfaceCreateInfo );
 
-		auto * caMetalLayer = displaySurface->mSurfaceData->caMetalLayer;
+		auto * caMetalLayer = displaySurface->mSurfaceData->mCAMetalLayer;
 		ic3DebugAssert( caMetalLayer != nil );
 
-		auto mtlDevice = pMetalDevice.mDeviceData->mtlDevice;
+		auto mtlDevice = pMetalDevice.mDeviceData->mMTLDevice;
 		[caMetalLayer setDevice:mtlDevice];
 
 		return displaySurface;
@@ -124,9 +124,9 @@ namespace Ic3::System
 	{
 	@autoreleasepool
 	{
-		auto mtlDevice = mMetalDevice->mDeviceData->mtlDevice;
-		auto mtlCommandQueue = mMetalDevice->mDeviceData->mtlMainCmdQueue;
-		auto caMetalLayer = mSurfaceData->caMetalLayer;
+		auto mtlDevice = mMetalDevice->mDeviceData->mMTLDevice;
+		auto mtlCommandQueue = mMetalDevice->mDeviceData->mMTLMainCmdQueue;
+		auto caMetalLayer = mSurfaceData->mCAMetalLayer;
 
 		id<CAMetalDrawable> currentDrawable = [caMetalLayer nextDrawable];
 		id<MTLTexture> texture = currentDrawable.texture;
@@ -149,26 +149,26 @@ namespace Ic3::System
 	void MetalDisplaySurface::resizeClientArea( const FrameSize & pSize )
 	{
 		FrameGeometry newFrameGeometry{};
-		newFrameGeometry.position = CX_FRAME_POS_AUTO;
-		newFrameGeometry.size = pSize;
-		newFrameGeometry.style = EFrameStyle::Unspecified;
+		newFrameGeometry.mPosition = cxFramePosAuto;
+		newFrameGeometry.mSize = pSize;
+		newFrameGeometry.mStyle = EFrameStyle::Unspecified;
 
 		newFrameGeometry = mMetalDriver->mDisplayManager->validateFrameGeometry( newFrameGeometry );
 
-		const auto updateFlags = E_FRAME_GEOMETRY_UPDATE_FLAG_POSITION_BIT | E_FRAME_GEOMETRY_UPDATE_FLAG_SIZE_CLIENT_AREA_BIT;
+		const auto updateFlags = eFrameGeometryUpdateFlagPositionBit | eFrameGeometryUpdateFlagSizeClientAreaBit;
 		_nativeUpdateGeometry( newFrameGeometry, updateFlags );
 	}
 
 	void MetalDisplaySurface::resizeFrame( const FrameSize & pSize )
 	{
 		FrameGeometry newFrameGeometry{};
-		newFrameGeometry.position = CX_FRAME_POS_AUTO;
-		newFrameGeometry.size = pSize;
-		newFrameGeometry.style = EFrameStyle::Unspecified;
+		newFrameGeometry.mPosition = cxFramePosAuto;
+		newFrameGeometry.mSize = pSize;
+		newFrameGeometry.mStyle = EFrameStyle::Unspecified;
 
 		newFrameGeometry = mMetalDriver->mDisplayManager->validateFrameGeometry( newFrameGeometry );
 
-		const auto updateFlags = E_FRAME_GEOMETRY_UPDATE_FLAG_POSITION_BIT | E_FRAME_GEOMETRY_UPDATE_FLAG_SIZE_OUTER_RECT_BIT;
+		const auto updateFlags = eFrameGeometryUpdateFlagPositionBit | eFrameGeometryUpdateFlagSizeOuterRectBit;
 		_nativeUpdateGeometry( newFrameGeometry, updateFlags );
 	}
 
@@ -183,7 +183,7 @@ namespace Ic3::System
 	}
 
 	void MetalDisplaySurface::updateGeometry( const FrameGeometry & pFrameGeometry,
-	                                           Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
+	                                          TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
 	{
 		_nativeUpdateGeometry( pFrameGeometry, pUpdateFlags );
 	}

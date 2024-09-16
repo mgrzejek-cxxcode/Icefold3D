@@ -19,10 +19,10 @@ namespace Ic3::System
 		Version resultVersion;
 
 		auto majorVersion = fromString<int32>( versionString.substr( 0, dotPos ) );
-		resultVersion.major = static_cast<uint16>( majorVersion.first );
+		resultVersion.mNumMajor = static_cast<uint16>( majorVersion.first );
 
 		auto minorVersion = fromString<int32>( versionString.substr( dotPos + 1, endPos ) );
-		resultVersion.minor = static_cast<uint16>( minorVersion.first );
+		resultVersion.mNumMinor = static_cast<uint16>( minorVersion.first );
 
 		return resultVersion;
 	}

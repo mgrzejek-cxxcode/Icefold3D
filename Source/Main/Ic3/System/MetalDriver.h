@@ -15,7 +15,7 @@ namespace Ic3::System
 	struct MetalDisplaySurfaceCreateInfo : public WindowCreateInfo
 	{
 		/// Creation flags, describing additional surface properties.
-		Bitmask<EMetalSurfaceCreateFlags> flags = 0;
+		TBitmask<EMetalSurfaceCreateFlags> mFlags = 0;
 	};
 
 	class MetalDevice : public SysObject
@@ -94,7 +94,7 @@ namespace Ic3::System
 
 		/// @copybrief Frame::updateGeometry
 		virtual void updateGeometry( const FrameGeometry & pFrameGeometry,
-		                             Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
+		                             TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
 
 		/// @copybrief Frame::getClientAreaSize
 		IC3_ATTR_NO_DISCARD virtual FrameSize getClientAreaSize() const override final;
@@ -117,7 +117,7 @@ namespace Ic3::System
 		virtual void _nativeSetTitle( const std::string & pTitle ) = 0;
 
 		virtual void _nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-		                                    Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) = 0;
+		                                    TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) = 0;
 
 		virtual FrameSize _nativeGetSize( EFrameSizeMode pSizeMode ) const = 0;
 

@@ -13,7 +13,7 @@ namespace Ic3::System
 
 		struct X11SysContextNativeData
 		{
-			X11SessionData xSessionData;
+			X11SessionData mXSessionData;
 		};
 
 		struct SysContextCreateInfoNativeParams

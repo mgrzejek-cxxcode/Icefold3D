@@ -52,7 +52,7 @@ namespace Ic3::System
 
 		// @override Window::_nativeUpdateGeometry
 		virtual void _nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-		                                    Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
+		                                    TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
 
 		// @override Window::_nativeGetSize
 		virtual FrameSize _nativeGetSize( EFrameSizeMode pSizeMode ) const override final;

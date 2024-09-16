@@ -64,18 +64,18 @@ namespace Ic3::System
 
 	void X11OpenGLSystemDriver::_nativeInitializePlatform()
 	{
-		ic3DebugAssert( !mNativeData.initState );
+		ic3DebugAssert( !mNativeData.mInitState );
 		// Init state should be first created here and destroyed as soon as proper GL
 		// contexts are created (this is not enforce, though, and controlled explicitly
 		// by the user and done by calling releaseInitState() method od the driver).
-		mNativeData.initState = std::make_unique<Platform::X11OpenGLSystemDriverNativeData::InitState>();
+		mNativeData.mInitState = std::make_unique<Platform::X11OpenGLSystemDriverNativeData::InitState>();
 
 		auto & xSessionData = Platform::x11GetXSessionData( *this );
 
 		int glxVersionMajor = 0;
 		int glxVersionMinor = 0;
 
-		::glXQueryVersion( xSessionData.display, &glxVersionMajor, &glxVersionMinor );
+		::glXQueryVersion( xSessionData.mDisplay, &glxVersionMajor, &glxVersionMinor );
 		// We need at least version 1.3 of the GLX runtime (that's rather a pretty old one...).
 		if( ( glxVersionMajor <= 0 ) || ( ( glxVersionMajor == 1 ) && ( glxVersionMinor < 3 ) ) )
 		{
@@ -84,55 +84,55 @@ namespace Ic3::System
 
 		VisualConfig legacyVisualConfig;
 		legacyVisualConfig = vsxGetDefaultVisualConfigForSysWindow();
-		legacyVisualConfig.flags.set( E_VISUAL_ATTRIB_FLAG_LEGACY_BIT );
+		legacyVisualConfig.mFlags.set( eVisualAttribFlagLegacyBit );
 
 		Platform::X11WindowCreateInfo windowCreateInfo;
-		windowCreateInfo.frameGeometry.position = { 0, 0 };
-		windowCreateInfo.frameGeometry.size = { 600, 600 };
-		windowCreateInfo.frameGeometry.style = EFrameStyle::Overlay;
+		windowCreateInfo.mFrameGeometry.mPosition = { 0, 0 };
+		windowCreateInfo.mFrameGeometry.mSize = { 600, 600 };
+		windowCreateInfo.mFrameGeometry.mStyle = EFrameStyle::Overlay;
 
-		auto & tmpSurfaceNativeData = mNativeData.initState->surfaceData;
+		auto & tmpSurfaceNativeData = mNativeData.mInitState->mSurfaceData;
 		tmpSurfaceNativeData.setSessionData( xSessionData );
 		Platform::_x11CreateGLWindowAndSurface( tmpSurfaceNativeData, windowCreateInfo, legacyVisualConfig );
 
-		auto & tmpContextNativeData = mNativeData.initState->contextData;
+		auto & tmpContextNativeData = mNativeData.mInitState->mContextData;
 		tmpContextNativeData.setSessionData( xSessionData );
 		Platform::_x11CreateAndBindLegacyRenderContext( tmpContextNativeData, tmpSurfaceNativeData );
 	}
 
 	void X11OpenGLSystemDriver::_nativeReleaseInitState() noexcept
 	{
-		if( !mNativeData.initState )
+		if( !mNativeData.mInitState )
 		{
 			return;
 		}
 
 		auto & xSessionData = Platform::x11GetXSessionData( *this );
 
-		auto & tmpSurfaceNativeData = mNativeData.initState->surfaceData;
-		auto & tmpContextNativeData = mNativeData.initState->contextData;
+		auto & tmpSurfaceNativeData = mNativeData.mInitState->mSurfaceData;
+		auto & tmpContextNativeData = mNativeData.mInitState->mContextData;
 
-		if( tmpContextNativeData.contextHandle != nullptr )
+		if( tmpContextNativeData.mContextHandle != nullptr )
 		{
-			::glXDestroyContext( xSessionData.display, tmpContextNativeData.contextHandle );
-			tmpContextNativeData.contextHandle = nullptr;
+			::glXDestroyContext( xSessionData.mDisplay, tmpContextNativeData.mContextHandle );
+			tmpContextNativeData.mContextHandle = nullptr;
 			tmpContextNativeData.resetSessionData();
 		}
 
-		if( tmpSurfaceNativeData.windowXID != Platform::E_X11_XID_NONE )
+		if( tmpSurfaceNativeData.mWindowXID != Platform::eXIDNone )
 		{
 			Platform::_x11DestroyGLWindowAndSurface( tmpSurfaceNativeData );
-			tmpSurfaceNativeData.fbConfig = nullptr;
+			tmpSurfaceNativeData.mFBConfig = nullptr;
 			tmpSurfaceNativeData.resetSessionData();
 		}
 
-		if( tmpSurfaceNativeData.visualInfo != nullptr )
+		if( tmpSurfaceNativeData.mVisualInfo != nullptr )
 		{
-			XFree( tmpSurfaceNativeData.visualInfo );
-			tmpSurfaceNativeData.visualInfo = nullptr;
+			XFree( tmpSurfaceNativeData.mVisualInfo );
+			tmpSurfaceNativeData.mVisualInfo = nullptr;
 		}
 
-		mNativeData.initState.reset();
+		mNativeData.mInitState.reset();
 	}
 
 	OpenGLDisplaySurfaceHandle X11OpenGLSystemDriver::_nativeCreateDisplaySurface( const OpenGLDisplaySurfaceCreateInfo & pCreateInfo )
@@ -140,11 +140,11 @@ namespace Ic3::System
 		auto displaySurface = createSysObject<X11OpenGLDisplaySurface>( getHandle<X11OpenGLSystemDriver>() );
 
 		Platform::X11WindowCreateInfo x11WindowCreateInfo;
-		x11WindowCreateInfo.frameGeometry = pCreateInfo.frameGeometry;
-		x11WindowCreateInfo.title = "TS3 OpenGL Window";
-		x11WindowCreateInfo.fullscreenMode = pCreateInfo.flags.isSet( E_OPENGL_DISPLAY_SURFACE_CREATE_FLAG_FULLSCREEN_BIT );
+		x11WindowCreateInfo.mFrameGeometry = pCreateInfo.mFrameGeometry;
+		x11WindowCreateInfo.mTitle = "TS3 OpenGL Window";
+		x11WindowCreateInfo.mFullscreenMode = pCreateInfo.mFlags.isSet( eOpenGLDisplaySurfaceCreateFlagFullscreenBit );
 
-		Platform::_x11CreateGLWindowAndSurface( displaySurface->mNativeData, x11WindowCreateInfo, pCreateInfo.visualConfig );
+		Platform::_x11CreateGLWindowAndSurface( displaySurface->mNativeData, x11WindowCreateInfo, pCreateInfo.mVisualConfig );
 
 		Platform::x11WindowPostCreateUpdate( displaySurface->mNativeData, x11WindowCreateInfo );
 
@@ -152,17 +152,17 @@ namespace Ic3::System
 		{
 			auto & xSessionData = Platform::x11GetXSessionData( *this );
 
-			if( pCreateInfo.flags.isSet( E_OPENGL_DISPLAY_SURFACE_CREATE_FLAG_SYNC_DISABLED_BIT ) )
+			if( pCreateInfo.mFlags.isSet( eOpenGLDisplaySurfaceCreateFlagSyncDisabledBit ) )
 			{
-				glXSwapIntervalEXTProc( xSessionData.display, displaySurface->mNativeData.windowXID, 0 );
+				glXSwapIntervalEXTProc( xSessionData.mDisplay, displaySurface->mNativeData.mWindowXID, 0 );
 			}
-			else if( pCreateInfo.flags.isSet( E_OPENGL_DISPLAY_SURFACE_CREATE_FLAG_SYNC_ADAPTIVE_BIT ) )
+			else if( pCreateInfo.mFlags.isSet( eOpenGLDisplaySurfaceCreateFlagSyncAdaptiveBit ) )
 			{
-				glXSwapIntervalEXTProc( xSessionData.display, displaySurface->mNativeData.windowXID, -1 );
+				glXSwapIntervalEXTProc( xSessionData.mDisplay, displaySurface->mNativeData.mWindowXID, -1 );
 			}
-			else if( pCreateInfo.flags.isSet( E_OPENGL_DISPLAY_SURFACE_CREATE_FLAG_SYNC_VERTICAL_BIT ) )
+			else if( pCreateInfo.mFlags.isSet( eOpenGLDisplaySurfaceCreateFlagSyncVerticalBit ) )
 			{
-				glXSwapIntervalEXTProc( xSessionData.display, displaySurface->mNativeData.windowXID, 1 );
+				glXSwapIntervalEXTProc( xSessionData.mDisplay, displaySurface->mNativeData.mWindowXID, 1 );
 			}
 		}
 
@@ -176,12 +176,12 @@ namespace Ic3::System
 		auto currentWindowXID = glXGetCurrentDrawable();
 
 		XWindowAttributes windowAttributes;
-		XGetWindowAttributes( xSessionData.display, currentWindowXID, &windowAttributes );
+		XGetWindowAttributes( xSessionData.mDisplay, currentWindowXID, &windowAttributes );
 
 		auto displaySurface = createSysObject<X11OpenGLDisplaySurface>( getHandle<X11OpenGLSystemDriver>() );
 
-		displaySurface->mNativeData.windowXID = currentWindowXID;
-		displaySurface->mNativeData.xColormap = windowAttributes.colormap;
+		displaySurface->mNativeData.mWindowXID = currentWindowXID;
+		displaySurface->mNativeData.mXColormap = windowAttributes.colormap;
 
 		return displaySurface;
 	}
@@ -200,38 +200,38 @@ namespace Ic3::System
 		auto glXCreateContextAttribsProc = Platform::_x11QueryGLXCreateContextAttribsProc();
 
 		int contextAPIProfile = 0;
-		Bitmask<int> contextCreateFlags = 0;
+		TBitmask<int> contextCreateFlags = 0;
 		GLXContext shareContextHandle = nullptr;
 
-		if( pCreateInfo.contextAPIProfile == EOpenGLAPIProfile::Core )
+		if( pCreateInfo.mContextAPIProfile == EOpenGLAPIProfile::Core )
 		{
 			contextAPIProfile = GLX_CONTEXT_CORE_PROFILE_BIT_ARB;
 		}
-		else if( pCreateInfo.contextAPIProfile == EOpenGLAPIProfile::Legacy )
+		else if( pCreateInfo.mContextAPIProfile == EOpenGLAPIProfile::Legacy )
 		{
 			contextAPIProfile = GLX_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB;
 		}
-		else if( pCreateInfo.contextAPIProfile == EOpenGLAPIProfile::GLES )
+		else if( pCreateInfo.mContextAPIProfile == EOpenGLAPIProfile::GLES )
 		{
 			contextAPIProfile = GLX_CONTEXT_ES_PROFILE_BIT_EXT;
 		}
 
-		if( pCreateInfo.flags.isSet( E_OPENGL_RENDER_CONTEXT_CREATE_FLAG_ENABLE_DEBUG_BIT ) )
+		if( pCreateInfo.mFlags.isSet( eOpenGLRenderContextCreateFlagEnableDebugBit ) )
 		{
 			contextCreateFlags |= GLX_CONTEXT_DEBUG_BIT_ARB;
 		}
-		if( pCreateInfo.flags.isSet( E_OPENGL_RENDER_CONTEXT_CREATE_FLAG_FORWARD_COMPATIBLE_BIT ) )
+		if( pCreateInfo.mFlags.isSet( eOpenGLRenderContextCreateFlagForwardCompatibleBit ) )
 		{
 			contextCreateFlags |= GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
 		}
-		if( pCreateInfo.flags.isSet( E_OPENGL_RENDER_CONTEXT_CREATE_FLAG_ENABLE_SHARING_BIT ) )
+		if( pCreateInfo.mFlags.isSet( eOpenGLRenderContextCreateFlagEnableSharingBit ) )
 		{
-			if( pCreateInfo.shareContext )
+			if( pCreateInfo.mShareContext )
 			{
-				auto * x11ShareContext = pCreateInfo.shareContext->queryInterface<X11OpenGLRenderContext>();
-				shareContextHandle = x11ShareContext->mNativeData.contextHandle;
+				auto * x11ShareContext = pCreateInfo.mShareContext->queryInterface<X11OpenGLRenderContext>();
+				shareContextHandle = x11ShareContext->mNativeData.mContextHandle;
 			}
-			else if( pCreateInfo.flags.isSet( E_OPENGL_RENDER_CONTEXT_CREATE_FLAG_SHARE_WITH_CURRENT_BIT ) )
+			else if( pCreateInfo.mFlags.isSet( eOpenGLRenderContextCreateFlagShareWithCurrentBit ) )
 			{
 				if( auto * currentGLXContext = ::glXGetCurrentContext() )
 				{
@@ -243,9 +243,9 @@ namespace Ic3::System
 		const int contextAttributes[] =
 		{
 			// Requested OpenGL API version: major part
-			GLX_CONTEXT_MAJOR_VERSION_ARB, pCreateInfo.requestedAPIVersion.major,
+			GLX_CONTEXT_MAJOR_VERSION_ARB, pCreateInfo.mRequestedAPIVersion.mNumMajor,
 			// Requested OpenGL API version: minor part
-			GLX_CONTEXT_MINOR_VERSION_ARB, pCreateInfo.requestedAPIVersion.minor,
+			GLX_CONTEXT_MINOR_VERSION_ARB, pCreateInfo.mRequestedAPIVersion.mNumMinor,
 			//
 			GLX_CONTEXT_PROFILE_MASK_ARB, contextAPIProfile,
 			//
@@ -254,8 +254,8 @@ namespace Ic3::System
 			FALSE
 		};
 
-		GLXContext contextHandle = glXCreateContextAttribsProc( xSessionData.display,
-		                                                        x11DisplaySurface->mNativeData.fbConfig,
+		GLXContext contextHandle = glXCreateContextAttribsProc( xSessionData.mDisplay,
+		                                                        x11DisplaySurface->mNativeData.mFBConfig,
 		                                                        shareContextHandle,
 		                                                        True,
 		                                                        &( contextAttributes[0] ) );
@@ -266,7 +266,7 @@ namespace Ic3::System
 		}
 
 		auto renderContext = createSysObject<X11OpenGLRenderContext>( getHandle<X11OpenGLSystemDriver>() );
-		renderContext->mNativeData.contextHandle = contextHandle;
+		renderContext->mNativeData.mContextHandle = contextHandle;
 
 		return renderContext;
 	}
@@ -280,7 +280,7 @@ namespace Ic3::System
 		}
 
 		auto renderContext = createSysObject<X11OpenGLRenderContext>( getHandle<X11OpenGLSystemDriver>() );
-		renderContext->mNativeData.contextHandle = contextHandle;
+		renderContext->mNativeData.mContextHandle = contextHandle;
 
 		return renderContext;
 	}
@@ -294,7 +294,7 @@ namespace Ic3::System
 	void X11OpenGLSystemDriver::_nativeResetContextBinding()
 	{
 		auto & xSessionData = Platform::x11GetXSessionData( *this );
-		::glXMakeContextCurrent( xSessionData.display, Platform::E_X11_XID_NONE, Platform::E_X11_XID_NONE, nullptr );
+		::glXMakeContextCurrent( xSessionData.mDisplay, Platform::eXIDNone, Platform::eXIDNone, nullptr );
 	}
 
 	std::vector<EDepthStencilFormat> X11OpenGLSystemDriver::_nativeQuerySupportedDepthStencilFormats( EColorFormat pColorFormat ) const
@@ -310,7 +310,7 @@ namespace Ic3::System
 
 	bool X11OpenGLSystemDriver::_nativeIsAPIClassSupported( EOpenGLAPIClass pAPIClass ) const
 	{
-		if( pAPIClass == EOpenGLAPIClass::OpenGLDesktop )
+		if( pAPIClass == EOpenGLAPIClass::Desktop )
 		{
 			return true;
 		}
@@ -341,12 +341,12 @@ namespace Ic3::System
 	void X11OpenGLDisplaySurface::_nativeSwapBuffers()
 	{
 		auto & xSessionData = Platform::x11GetXSessionData( *this );
-		glXSwapBuffers( xSessionData.display, mNativeData.windowXID );
+		glXSwapBuffers( xSessionData.mDisplay, mNativeData.mWindowXID );
 	}
 
     EOpenGLAPIClass X11OpenGLDisplaySurface::_nativeQuerySupportedAPIClass() const noexcept
     {
-        return EOpenGLAPIClass::OpenGLDesktop;
+        return EOpenGLAPIClass::Desktop;
     }
 
 	VisualConfig X11OpenGLDisplaySurface::_nativeQueryVisualConfig() const
@@ -354,46 +354,46 @@ namespace Ic3::System
 		auto & xSessionData = Platform::x11GetXSessionData( *this );
 
 		XWindowAttributes windowAttributes;
-		XGetWindowAttributes( xSessionData.display, mNativeData.windowXID, &windowAttributes );
+		XGetWindowAttributes( xSessionData.mDisplay, mNativeData.mWindowXID, &windowAttributes );
 
 		int glxFBRenderType = 0;
 		int glxFBDepthBits = 0;
 		int glxFBStencilBits = 0;
 
-		glXGetFBConfigAttrib( xSessionData.display, mNativeData.fbConfig, GLX_RENDER_TYPE, &glxFBRenderType );
-		glXGetFBConfigAttrib( xSessionData.display, mNativeData.fbConfig, GLX_DEPTH_SIZE, &glxFBDepthBits );
-		glXGetFBConfigAttrib( xSessionData.display, mNativeData.fbConfig, GLX_STENCIL_SIZE, &glxFBStencilBits );
+		glXGetFBConfigAttrib( xSessionData.mDisplay, mNativeData.mFBConfig, GLX_RENDER_TYPE, &glxFBRenderType );
+		glXGetFBConfigAttrib( xSessionData.mDisplay, mNativeData.mFBConfig, GLX_DEPTH_SIZE, &glxFBDepthBits );
+		glXGetFBConfigAttrib( xSessionData.mDisplay, mNativeData.mFBConfig, GLX_STENCIL_SIZE, &glxFBStencilBits );
 
 		VisualConfig visualConfig;
 
 		if( glxFBRenderType == GLX_RGBA_BIT )
 		{
-			visualConfig.colorFormat = EColorFormat::B8G8R8A8;
+			visualConfig.mColorFormat = EColorFormat::B8G8R8A8;
 		}
 		else
 		{
-			visualConfig.colorFormat = EColorFormat::Unknown;
+			visualConfig.mColorFormat = EColorFormat::Unknown;
 		}
 
 		if( ( glxFBDepthBits == 24 ) && ( glxFBStencilBits == 8 ) )
 		{
-			visualConfig.depthStencilFormat = EDepthStencilFormat::D24S8;
+			visualConfig.mDepthStencilFormat = EDepthStencilFormat::D24S8;
 		}
 		else if( ( glxFBDepthBits == 24 ) && ( glxFBStencilBits == 0 ) )
 		{
-			visualConfig.depthStencilFormat = EDepthStencilFormat::D24X8;
+			visualConfig.mDepthStencilFormat = EDepthStencilFormat::D24X8;
 		}
 		else if( ( glxFBDepthBits == 32 ) && ( glxFBStencilBits == 0 ) )
 		{
-			visualConfig.depthStencilFormat = EDepthStencilFormat::D32F;
+			visualConfig.mDepthStencilFormat = EDepthStencilFormat::D32F;
 		}
 		else if( ( glxFBDepthBits == 32 ) && ( glxFBStencilBits == 8 ) )
 		{
-			visualConfig.depthStencilFormat = EDepthStencilFormat::D32FS8;
+			visualConfig.mDepthStencilFormat = EDepthStencilFormat::D32FS8;
 		}
 		else
 		{
-			visualConfig.depthStencilFormat = EDepthStencilFormat::Unknown;
+			visualConfig.mDepthStencilFormat = EDepthStencilFormat::Unknown;
 		}
 
 		return visualConfig;
@@ -406,7 +406,7 @@ namespace Ic3::System
 
 	bool X11OpenGLDisplaySurface::_nativeSysValidate() const
 	{
-		return ( mNativeData.windowXID != Platform::E_X11_XID_NONE ) && mNativeData.fbConfig;
+		return ( mNativeData.mWindowXID != Platform::eXIDNone ) && mNativeData.mFBConfig;
 	}
 
 	void X11OpenGLDisplaySurface::_nativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode )
@@ -423,7 +423,7 @@ namespace Ic3::System
 	}
 
 	void X11OpenGLDisplaySurface::_nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-	                                                     Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
+	                                                     TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
 	{
 		return Platform::x11UpdateFrameGeometry( mNativeData, pFrameGeometry, pUpdateFlags );
 	}
@@ -454,21 +454,21 @@ namespace Ic3::System
 
 		const auto * x11DisplaySurface = pTargetSurface.queryInterface<X11OpenGLDisplaySurface>();
 
-		::glXMakeContextCurrent( xSessionData.display,
-		                         x11DisplaySurface->mNativeData.windowXID,
-		                         x11DisplaySurface->mNativeData.windowXID,
-		                         mNativeData.contextHandle );
+		::glXMakeContextCurrent( xSessionData.mDisplay,
+		                         x11DisplaySurface->mNativeData.mWindowXID,
+		                         x11DisplaySurface->mNativeData.mWindowXID,
+		                         mNativeData.mContextHandle );
 	}
 
 	bool X11OpenGLRenderContext::_nativeSysCheckIsCurrent() const
 	{
 		auto currentContextHandle = glXGetCurrentContext();
-		return mNativeData.contextHandle && ( mNativeData.contextHandle == currentContextHandle );
+		return mNativeData.mContextHandle && ( mNativeData.mContextHandle == currentContextHandle );
 	}
 
 	bool X11OpenGLRenderContext::_nativeSysValidate() const
 	{
-		return mNativeData.contextHandle != nullptr;
+		return mNativeData.mContextHandle != nullptr;
 	}
 
 	void X11OpenGLRenderContext::_releaseX11ContextState()
@@ -513,13 +513,13 @@ namespace Ic3::System
 			auto & xSessionData = Platform::x11GetXSessionData( pGLSurfaceNativeData );
 
 			X11OpenGLVisualConfig x11GLVisualConfig{};
-			if( pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_LEGACY_BIT ) )
+			if( pVisualConfig.mFlags.isSet( eVisualAttribFlagLegacyBit ) )
 			{
-				x11GLVisualConfig = _x11ChooseLegacyGLFBConfig( xSessionData.display, xSessionData.screenIndex );
+				x11GLVisualConfig = _x11ChooseLegacyGLFBConfig( xSessionData.mDisplay, xSessionData.mScreenIndex );
 			}
 			else
 			{
-				x11GLVisualConfig = _x11ChooseCoreGLFBConfig( xSessionData.display, xSessionData.screenIndex, pVisualConfig );
+				x11GLVisualConfig = _x11ChooseCoreGLFBConfig( xSessionData.mDisplay, xSessionData.mScreenIndex, pVisualConfig );
 			}
 
 			if( !x11GLVisualConfig )
@@ -527,11 +527,11 @@ namespace Ic3::System
 				ic3Throw( E_EXC_DEBUG_PLACEHOLDER );
 			}
 
-			pGLSurfaceNativeData.fbConfig = x11GLVisualConfig.fbConfig;
-			pGLSurfaceNativeData.visualInfo = x11GLVisualConfig.xVisualInfo;
+			pGLSurfaceNativeData.mFBConfig = x11GLVisualConfig.mFBConfig;
+			pGLSurfaceNativeData.mVisualInfo = x11GLVisualConfig.mXVisualInfo;
 
-			pWindowCreateInfo.colorDepth = x11GLVisualConfig.xVisualInfo->depth;
-			pWindowCreateInfo.windowVisual = x11GLVisualConfig.xVisualInfo->visual;
+			pWindowCreateInfo.mColorDepth = x11GLVisualConfig.mXVisualInfo->depth;
+			pWindowCreateInfo.mWindowVisual = x11GLVisualConfig.mXVisualInfo->visual;
 
 			Platform::x11CreateWindow( pGLSurfaceNativeData, pWindowCreateInfo );
 		}
@@ -544,16 +544,16 @@ namespace Ic3::System
 		void _x11DestroyGLContext( X11OpenGLRenderContextNativeData & pGLContextNativeData )
 		{
 			auto & xSessionData = Platform::x11GetXSessionData( pGLContextNativeData );
-			if( pGLContextNativeData.contextHandle != nullptr )
+			if( pGLContextNativeData.mContextHandle != nullptr )
 			{
 				auto currentContextHandle = ::glXGetCurrentContext();
-				if( pGLContextNativeData.contextHandle == currentContextHandle )
+				if( pGLContextNativeData.mContextHandle == currentContextHandle )
 				{
-					::glXMakeContextCurrent( xSessionData.display, E_X11_XID_NONE, E_X11_XID_NONE, nullptr );
+					::glXMakeContextCurrent( xSessionData.mDisplay, eXIDNone, eXIDNone, nullptr );
 				}
 
-				::glXDestroyContext( xSessionData.display, pGLContextNativeData.contextHandle );
-				pGLContextNativeData.contextHandle = nullptr;
+				::glXDestroyContext( xSessionData.mDisplay, pGLContextNativeData.mContextHandle );
+				pGLContextNativeData.mContextHandle = nullptr;
 			}
 		}
 
@@ -562,15 +562,15 @@ namespace Ic3::System
 		{
 			auto & xSessionData = Platform::x11GetXSessionData( pGLSurfaceNativeData );
 
-			auto tempContextHandle = ::glXCreateContext( xSessionData.display, pGLSurfaceNativeData.visualInfo, nullptr, True );
+			auto tempContextHandle = ::glXCreateContext( xSessionData.mDisplay, pGLSurfaceNativeData.mVisualInfo, nullptr, True );
 			if( !tempContextHandle )
 			{
 				ic3Throw( E_EXC_DEBUG_PLACEHOLDER );
 			}
 
-			pGLContextNativeData.contextHandle = tempContextHandle;
+			pGLContextNativeData.mContextHandle = tempContextHandle;
 
-			auto makeCurrentResult = ::glXMakeCurrent( xSessionData.display, pGLSurfaceNativeData.windowXID, tempContextHandle );
+			auto makeCurrentResult = ::glXMakeCurrent( xSessionData.mDisplay, pGLSurfaceNativeData.mWindowXID, tempContextHandle );
 			if( makeCurrentResult == False )
 			{
 				ic3Throw( E_EXC_DEBUG_PLACEHOLDER );
@@ -592,7 +592,7 @@ namespace Ic3::System
 				GLX_DEPTH_SIZE    , 24,
 				GLX_STENCIL_SIZE  , 8,
 				GLX_DOUBLEBUFFER  , True,
-				E_X11_XID_NONE,
+				eXIDNone,
 			};
 
 			const int cvDefaultVisualAttribsNoDepthStencil[] =
@@ -606,7 +606,7 @@ namespace Ic3::System
 				GLX_BLUE_SIZE     , 8,
 				GLX_ALPHA_SIZE    , 8,
 				GLX_DOUBLEBUFFER  , True,
-				E_X11_XID_NONE,
+				eXIDNone,
 			};
 
 			int fbConfigListSize = 0;
@@ -652,8 +652,8 @@ namespace Ic3::System
 			XFree( fbConfigList );
 
 			X11OpenGLVisualConfig x11GLVisualConfig;
-			x11GLVisualConfig.fbConfig = bestFBConfig;
-			x11GLVisualConfig.xVisualInfo = glXGetVisualFromFBConfig( pDisplay, bestFBConfig );
+			x11GLVisualConfig.mFBConfig = bestFBConfig;
+			x11GLVisualConfig.mXVisualInfo = glXGetVisualFromFBConfig( pDisplay, bestFBConfig );
 
 			return x11GLVisualConfig;
 		}
@@ -676,8 +676,8 @@ namespace Ic3::System
 			}
 
 			X11OpenGLVisualConfig x11GLVisualConfig;
-			x11GLVisualConfig.fbConfig = bestFBConfig;
-			x11GLVisualConfig.xVisualInfo = glXGetVisualFromFBConfig( pDisplay, bestFBConfig );
+			x11GLVisualConfig.mFBConfig = bestFBConfig;
+			x11GLVisualConfig.mXVisualInfo = glXGetVisualFromFBConfig( pDisplay, bestFBConfig );
 
 			return x11GLVisualConfig;
 		}
@@ -726,14 +726,14 @@ namespace Ic3::System
 			int doubleBufferRequestedState = True;
 			int stereoModeRequestedState = False;
 
-			if( pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_SINGLE_BUFFER_BIT ) &&
-			    !pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_DOUBLE_BUFFER_BIT ) )
+			if( pVisualConfig.mFlags.isSet( eVisualAttribFlagSingleBufferBit ) &&
+			    !pVisualConfig.mFlags.isSet( eVisualAttribFlagDoubleBufferBit ) )
 			{
 				doubleBufferRequestedState = False;
 			}
 
-			if( pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_STEREO_DISPLAY_BIT ) &&
-			    !pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_MONO_DISPLAY_BIT ) )
+			if( pVisualConfig.mFlags.isSet( eVisualAttribFlagStereoDisplayBit ) &&
+			    !pVisualConfig.mFlags.isSet( eVisualAttribFlagMonoDisplayBit ) )
 			{
 				stereoModeRequestedState = True;
 			}
@@ -751,13 +751,13 @@ namespace Ic3::System
 			matchRate += ( fbConfigAttribValue == stereoModeRequestedState );
 
 			glXGetFBConfigAttrib( pDisplay, pFBConfig, GLX_DEPTH_SIZE, &fbConfigAttribValue );
-			matchRate += ( fbConfigAttribValue == pVisualConfig.depthStencilDesc.depthBufferSize );
+			matchRate += ( fbConfigAttribValue == pVisualConfig.mDepthStencilDesc.mDepthBufferSize );
 
 			glXGetFBConfigAttrib( pDisplay, pFBConfig, GLX_STENCIL_SIZE, &fbConfigAttribValue );
-			matchRate += ( fbConfigAttribValue == pVisualConfig.depthStencilDesc.stencilBufferSize );
+			matchRate += ( fbConfigAttribValue == pVisualConfig.mDepthStencilDesc.mDepthBufferSize );
 
 			glXGetFBConfigAttrib( pDisplay, pFBConfig, GLX_SAMPLES, &fbConfigAttribValue );
-			matchRate += ( fbConfigAttribValue == pVisualConfig.msaaDesc.quality );
+			matchRate += ( fbConfigAttribValue == pVisualConfig.mMSAADesc.mQuality );
 
 			auto * fbConfigXVisualInfo =  glXGetVisualFromFBConfig( pDisplay, pFBConfig );
 			matchRate += ( fbConfigXVisualInfo->bits_per_rgb == 8 );
@@ -782,65 +782,65 @@ namespace Ic3::System
 			ic3X11OpenGLContextAttribAppend( pAttribArray, attribIndex, GLX_X_VISUAL_TYPE );
 			ic3X11OpenGLContextAttribAppend( pAttribArray, attribIndex, GLX_TRUE_COLOR );
 
-			if( pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_DOUBLE_BUFFER_BIT ) )
+			if( pVisualConfig.mFlags.isSet( eVisualAttribFlagDoubleBufferBit ) )
 			{
 				pAttribArray[attribIndex++] = GLX_DOUBLEBUFFER;
 				pAttribArray[attribIndex++] = True;
 			}
-			else if( pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_SINGLE_BUFFER_BIT ) )
+			else if( pVisualConfig.mFlags.isSet( eVisualAttribFlagSingleBufferBit ) )
 			{
 				pAttribArray[attribIndex++] = GLX_DOUBLEBUFFER;
 				pAttribArray[attribIndex++] = False;
 			}
 
-			if( pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_MONO_DISPLAY_BIT ) )
+			if( pVisualConfig.mFlags.isSet( eVisualAttribFlagMonoDisplayBit ) )
 			{
 				pAttribArray[attribIndex++] = GLX_STEREO;
 				pAttribArray[attribIndex++] = False;
 			}
-			else if( pVisualConfig.flags.isSet( E_VISUAL_ATTRIB_FLAG_STEREO_DISPLAY_BIT ) )
+			else if( pVisualConfig.mFlags.isSet( eVisualAttribFlagStereoDisplayBit ) )
 			{
 				pAttribArray[attribIndex++] = GLX_STEREO;
 				pAttribArray[attribIndex++] = True;
 			}
 
-			if( ( pVisualConfig.msaaDesc.bufferCount != 0 ) && ( pVisualConfig.msaaDesc.quality != 0 ) )
+			if( ( pVisualConfig.mMSAADesc.mBufferCount != 0 ) && ( pVisualConfig.mMSAADesc.mQuality != 0 ) )
 			{
 				pAttribArray[attribIndex++] = GLX_SAMPLE_BUFFERS;
-				pAttribArray[attribIndex++] = pVisualConfig.msaaDesc.bufferCount;
+				pAttribArray[attribIndex++] = pVisualConfig.mMSAADesc.mBufferCount;
 
 				pAttribArray[attribIndex++] = GLX_SAMPLES;
-				pAttribArray[attribIndex++] = pVisualConfig.msaaDesc.quality;
+				pAttribArray[attribIndex++] = pVisualConfig.mMSAADesc.mQuality;
 			}
 
-			if( pVisualConfig.colorDesc.rgba.u32Code != 0 )
+			if( pVisualConfig.mColorDesc.mRGBA.mU32Code != 0 )
 			{
 				pAttribArray[attribIndex++] = GLX_RED_SIZE;
-				pAttribArray[attribIndex++] = pVisualConfig.colorDesc.rgba.u8Red;
+				pAttribArray[attribIndex++] = pVisualConfig.mColorDesc.mRGBA.mU8Red;
 
 				pAttribArray[attribIndex++] = GLX_GREEN_SIZE;
-				pAttribArray[attribIndex++] = pVisualConfig.colorDesc.rgba.u8Green;
+				pAttribArray[attribIndex++] = pVisualConfig.mColorDesc.mRGBA.mU8Green;
 
 				pAttribArray[attribIndex++] = GLX_BLUE_SIZE;
-				pAttribArray[attribIndex++] = pVisualConfig.colorDesc.rgba.u8Blue;
+				pAttribArray[attribIndex++] = pVisualConfig.mColorDesc.mRGBA.mU8Blue;
 
 				pAttribArray[attribIndex++] = GLX_ALPHA_SIZE;
-				pAttribArray[attribIndex++] = pVisualConfig.colorDesc.rgba.u8Alpha;
+				pAttribArray[attribIndex++] = pVisualConfig.mColorDesc.mRGBA.mU8Alpha;
 			}
 
-			if( pVisualConfig.depthStencilDesc.depthBufferSize != 0 )
+			if( pVisualConfig.mDepthStencilDesc.mDepthBufferSize != 0 )
 			{
 				pAttribArray[attribIndex++] = GLX_DEPTH_SIZE;
-				pAttribArray[attribIndex++] = pVisualConfig.depthStencilDesc.depthBufferSize;
+				pAttribArray[attribIndex++] = pVisualConfig.mDepthStencilDesc.mDepthBufferSize;
 			}
 
-			if( pVisualConfig.depthStencilDesc.stencilBufferSize != 0 )
+			if( pVisualConfig.mDepthStencilDesc.mStencilBufferSize != 0 )
 			{
 				pAttribArray[attribIndex++] = GLX_STENCIL_SIZE;
-				pAttribArray[attribIndex++] = pVisualConfig.depthStencilDesc.stencilBufferSize;
+				pAttribArray[attribIndex++] = pVisualConfig.mDepthStencilDesc.mStencilBufferSize;
 			}
 
-			pAttribArray[attribIndex++] = E_X11_XID_NONE;
+			pAttribArray[attribIndex++] = eXIDNone;
 		}
 
 	}

@@ -21,7 +21,7 @@ namespace Ic3::System
 
         SysContextHandle createSysContext( const SysContextCreateInfo & pCreateInfo )
         {
-            return createDynamicInterfaceObject<OSXSysContext>();
+            return createDynamicObject<OSXSysContext>();
         }
 
     }
@@ -39,8 +39,8 @@ namespace Ic3::System
     
     AssetLoaderHandle OSXSysContext::createAssetLoader( const AssetLoaderCreateInfo & pCreateInfo )
     {
-		ic3DebugAssert( pCreateInfo.nativeParams );
-        return Platform::createFileAssetLoader( getHandle<SysContext>(), *pCreateInfo.nativeParams );
+		ic3DebugAssert( pCreateInfo.mNativeParams );
+        return Platform::createFileAssetLoader( getHandle<SysContext>(), *pCreateInfo.mNativeParams );
     }
 
     DisplayManagerHandle OSXSysContext::createDisplayManager()
@@ -138,15 +138,15 @@ namespace Ic3::System
 				auto * nsAppDelegate = [[NSOSXApplicationDelegate alloc] initWithSysContext:this];
 				[NSApp setDelegate:nsAppDelegate];
 
-				mNativeData.nsApplicationDelegate = nsAppDelegate;
-				mNativeData.osxSharedData.stateFlags.isSet( Platform::E_OSX_COMMON_STATE_APP_DELEGATE_INITIALIZED_BIT );
+				mNativeData.mNSApplicationDelegate = nsAppDelegate;
+				mNativeData.mOSXSharedData.mStateFlags.isSet( Platform::eOSXCommonStateAppDelegateInitializedBit );
 			}
 
-			if( !mNativeData.osxSharedData.stateFlags.isSet( Platform::E_OSX_COMMON_STATE_APP_FINISHED_LAUNCHING_BIT ) )
+			if( !mNativeData.mOSXSharedData.mStateFlags.isSet( Platform::eOSXCommonStateAppFinishedLaunchingBit ) )
 			{
 				[NSApp finishLaunching];
 
-				// Note: E_OSX_COMMON_STATE_APP_FINISHED_LAUNCHING_BIT is usually (better: almost certainly) not set at
+				// Note: eOSXCommonStateAppFinishedLaunchingBit is usually (better: almost certainly) not set at
 				// this point. The reason is that [finishLaunching] posts a message which is caught by the AppDelegate
 				// and processed during event loop. That means, that applicationDidFinishLaunching() may still not be
 				// called when SysContext finishes its initialization process.

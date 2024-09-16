@@ -11,7 +11,7 @@ namespace Ic3::System
 		X11SessionData & x11GetXSessionData( SysContext & pSysContext )
 		{
 			auto * x11SysContext = pSysContext.queryInterface<X11SysContext>();
-			return x11SysContext->mNativeData.xSessionData;
+			return x11SysContext->mNativeData.mXSessionData;
 		}
 
 	}

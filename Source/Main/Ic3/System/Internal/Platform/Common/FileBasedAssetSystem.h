@@ -16,25 +16,27 @@ namespace Ic3::System
 
 		struct FileAssetNativeData
 		{
-			FileHandle fileHandle = nullptr;
-			std::string filePath;
+			FileHandle mFileHandle = nullptr;
+			std::string mFilePath;
 		};
 
 		struct FileAssetDirectoryNativeData
 		{
-			std::string combinedDirPath;
+			std::string mCombinedDirPath;
 		};
 
 		struct FileAssetLoaderNativeData
 		{
-			std::string rootDir;
+			std::string mRootDir;
 		};
 
 		struct AssetLoaderCreateInfoNativeParams
 		{
-			FileManagerHandle fileManager = nullptr;
-			std::string absoluteAssetRootDir;
-			std::string relativeAssetRootDir;
+			FileManagerHandle mFileManager = nullptr;
+
+			std::string mAbsoluteAssetRootDir;
+
+			std::string mRelativeAssetRootDir;
 		};
 
 		IC3_SYSTEM_API_NODISCARD AssetLoaderHandle createFileAssetLoaderExplicit(
@@ -67,7 +69,7 @@ namespace Ic3::System
 	private:
 		/// @copybrief AssetLoader::_nativeOpenSubAsset
 		virtual AssetHandle _nativeOpenSubAsset( Cppx::FilePathInfo pAssetPathInfo,
-		                                         Bitmask<EAssetOpenFlags> pFlags ) override final;
+		                                         TBitmask<EAssetOpenFlags> pFlags ) override final;
 
 		/// @copybrief AssetLoader::_nativeOpenDirectory
 		virtual AssetDirectoryHandle _nativeOpenDirectory( std::string pDirectoryName ) override final;
@@ -95,7 +97,7 @@ namespace Ic3::System
 		virtual void _nativeRefreshAssetList() override final;
 
 		/// @copybrief AssetDirectory::_nativeOpenAsset
-		virtual AssetHandle _nativeOpenAsset( std::string pAssetName, Bitmask<EAssetOpenFlags> pFlags ) override final;
+		virtual AssetHandle _nativeOpenAsset( std::string pAssetName, TBitmask<EAssetOpenFlags> pFlags ) override final;
 
 		/// @copybrief AssetDirectory::_nativeCheckAssetExists
 		virtual bool _nativeCheckAssetExists( const std::string & pAssetName ) const override final;

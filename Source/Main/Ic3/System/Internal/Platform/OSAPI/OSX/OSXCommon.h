@@ -18,13 +18,13 @@ namespace Ic3::System
 
 		enum EOSXCommonStateFlags : uint32
 		{
-			E_OSX_COMMON_STATE_APP_DELEGATE_INITIALIZED_BIT = 0x0001,
-			E_OSX_COMMON_STATE_APP_FINISHED_LAUNCHING_BIT = 0x0002
+			eOSXCommonStateAppDelegateInitializedBit = 0x0001,
+			eOSXCommonStateAppFinishedLaunchingBit = 0x0002
 		};
 
 		struct OSXSharedData
 		{
-			Cppx::AtomicBitmask<EOSXCommonStateFlags> stateFlags = 0u;
+			Cppx::TAtomicBitmask<EOSXCommonStateFlags> mStateFlags = 0u;
 		};
 
 		struct OSXNativeDataCommon
@@ -32,24 +32,24 @@ namespace Ic3::System
 		public:
 			void setSharedData( OSXSharedData & pSharedData )
 			{
-				ic3DebugAssert( osxSharedDataPtr == nullptr );
-				osxSharedDataPtr = &pSharedData;
+				ic3DebugAssert( _osxSharedDataPtr == nullptr );
+				_osxSharedDataPtr = &pSharedData;
 			}
 
 			void resetSharedData()
 			{
-				ic3DebugAssert( osxSharedDataPtr != nullptr );
-				osxSharedDataPtr = nullptr;
+				ic3DebugAssert( _osxSharedDataPtr != nullptr );
+				_osxSharedDataPtr = nullptr;
 			}
 
 			IC3_ATTR_NO_DISCARD OSXSharedData & getSharedData() const
 			{
-				ic3DebugAssert( osxSharedDataPtr != nullptr );
-				return *osxSharedDataPtr;
+				ic3DebugAssert( _osxSharedDataPtr != nullptr );
+				return *_osxSharedDataPtr;
 			}
 
 		private:
-			OSXSharedData * osxSharedDataPtr = nullptr;
+			OSXSharedData * _osxSharedDataPtr = nullptr;
 		};
 
 		IC3_SYSTEM_API_NODISCARD OSXSharedData & osxGetOSXSharedData( SysContext & pSysContext );
@@ -97,7 +97,7 @@ namespace Ic3::System
 		}
 
 		template <typename TParentSysObject, typename... TBaseTypeArgs>
-		explicit OSXNativeObject( SysHandle<TParentSysObject> pParentSysObject, TBaseTypeArgs && ...pBaseTypeArgs )
+		explicit OSXNativeObject( TSysHandle<TParentSysObject> pParentSysObject, TBaseTypeArgs && ...pBaseTypeArgs )
 		: NativeObject<TBaseType, TNativeData>( pParentSysObject, std::forward<TBaseTypeArgs>( pBaseTypeArgs )... )
 		{
 			this->mNativeData.setSharedData( Platform::osxGetOSXSharedData( *pParentSysObject ) );

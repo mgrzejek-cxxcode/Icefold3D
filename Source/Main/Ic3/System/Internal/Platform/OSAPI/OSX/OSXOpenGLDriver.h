@@ -26,12 +26,12 @@ namespace Ic3::System
 
 		struct OSXOpenGLDisplaySurfaceNativeData : public OSXWindowNativeData
 		{
-			NSOpenGLPixelFormat * nsPixelFormat = nil;
+			NSOpenGLPixelFormat * mNSPixelFormat = nil;
 		};
 
 		struct OSXOpenGLRenderContextNativeData : public OSXNativeDataCommon
 		{
-			NSOpenGLContext * nsContextHandle = nil;
+			NSOpenGLContext * mNSContextHandle = nil;
 		};
 
 		struct OSXOpenGLSystemDriverNativeData : public OSXNativeDataCommon
@@ -136,7 +136,7 @@ namespace Ic3::System
 
 		/// @copybrief OpenGLDisplaySurface::_nativeUpdateGeometry
 		virtual void _nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-		                                    Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
+		                                    TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
 
 		/// @copybrief OpenGLDisplaySurface::_nativeGetSize
 		virtual FrameSize _nativeGetSize( EFrameSizeMode pSizeMode ) const override final;

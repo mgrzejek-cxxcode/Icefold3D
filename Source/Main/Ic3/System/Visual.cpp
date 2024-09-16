@@ -32,7 +32,7 @@ namespace Ic3::System
 		Math::RGBAColorU8{ 10, 10, 10, 2 }, 32, EPixelOrder::RGB, EColorSpace::Linear };
 
 	static const ColorDesc sColorDescUnknown {
-		Math::RGBAColorU8{ 0, 0, 0, 0 }, 0, EPixelOrder::Unknown, EColorSpace::Unknown };
+			Math::RGBAColorU8{ 0, 0, 0, 0 }, 0, EPixelOrder::Unknown, EColorSpace::Unknown };
 
 	const std::string & vsxQueryColorFormatStr( EColorFormat pFormat )
 	{
@@ -100,11 +100,11 @@ namespace Ic3::System
 	{
 		static const std::unordered_map<EMSAAMode, MSAADesc> msaaModeMap =
 		{
-			{ EMSAAMode::x1,  sMSAADescX1  },
-			{ EMSAAMode::x2,  sMSAADescX2  },
-			{ EMSAAMode::x4,  sMSAADescX4  },
-			{ EMSAAMode::x8,  sMSAADescX8  },
-			{ EMSAAMode::x16, sMSAADescX16 }
+			{ EMSAAMode::X1,  sMSAADescX1  },
+			{ EMSAAMode::X2,  sMSAADescX2  },
+			{ EMSAAMode::X4,  sMSAADescX4  },
+			{ EMSAAMode::X8,  sMSAADescX8  },
+			{ EMSAAMode::X16, sMSAADescX16 }
 		};
 		return Cppx::getMapValueRefOrDefault( msaaModeMap, pMode, sMSAADescNone );
 	}
@@ -114,13 +114,13 @@ namespace Ic3::System
 		// Default VisualConfig for creating a system-level window.
 		static const VisualConfig sVisualConfigWindowDefault
 		{
-			sColorDescB8G8R8A8,
-			EColorFormat::B8G8R8A8,
-			sDepthStencilDescD24S8,
-			EDepthStencilFormat::D24S8,
-			sMSAADescNone,
-			EMSAAMode::Unknown,
-			E_VISUAL_ATTRIB_FLAG_DOUBLE_BUFFER_BIT
+				sColorDescB8G8R8A8,
+				EColorFormat::B8G8R8A8,
+				sDepthStencilDescD24S8,
+				EDepthStencilFormat::D24S8,
+				sMSAADescNone,
+				EMSAAMode::Unknown,
+				eVisualAttribFlagDoubleBufferBit
 		};
 		return sVisualConfigWindowDefault;
 	}
@@ -128,9 +128,9 @@ namespace Ic3::System
 	bool vsxCheckColorFormatCompatibility( EColorFormat pFormat, uint8 pRed, uint8 pGreen, uint8 pBlue, uint8 pAlpha )
 	{
 		const auto & colorDesc = vsxGetDescForColorFormat( pFormat );
-		const auto & rgba = colorDesc.rgba;
+		const auto & rgba = colorDesc.mRGBA;
 		// Format matches with a color spec if all channels have the exact same size.
-		return ( rgba.u8Red == pRed ) && ( rgba.u8Green == pGreen ) && ( rgba.u8Blue == pBlue ) && ( rgba.u8Alpha == pAlpha );
+		return ( rgba.mU8Red == pRed ) && ( rgba.mU8Green == pGreen ) && ( rgba.mU8Blue == pBlue ) && ( rgba.mU8Alpha == pAlpha );
 	}
 
 } // namespace Ic3::System

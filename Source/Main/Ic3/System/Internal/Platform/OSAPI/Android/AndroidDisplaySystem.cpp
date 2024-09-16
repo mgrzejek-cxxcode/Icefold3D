@@ -73,8 +73,8 @@ namespace Ic3::System
 		auto & adapterDesc = adapterObject->getAdapterDescInternal();
 		adapterDesc.name = "ANDROID_DEFAULT_ADAPTER";
 		adapterDesc.vendorID = EDisplayAdapterVendorID::Google;
-		adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_ACTIVE_BIT );
-		adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_PRIMARY_BIT );
+		adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_ACTIVEBit );
+		adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_PRIMARYBit );
 
 		auto outputObject = adapterObject->createOutput<AndroidDisplayOutput>( *adapterObject );
 		auto & outputDesc = outputObject->getOutputDescInternal();
@@ -103,7 +103,7 @@ namespace Ic3::System
 		auto & videoModeDesc = videoModeObject->getModeDescInternal();
 		videoModeDesc.settings.resolution = pOutput.getOutputDesc().screenRect.size;
 		videoModeDesc.settings.refreshRate = 60;
-		videoModeDesc.settings.flags.set( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_PROGRESSIVE_BIT );
+		videoModeDesc.settings.flags.set( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_PROGRESSIVEBit );
 		videoModeDesc.settingsHash = dsmComputeVideoSettingsHash( pColorFormat, videoModeDesc.settings );
 	}
 

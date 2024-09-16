@@ -33,24 +33,24 @@ namespace Ic3::System
 		public:
 			void setSessionData( ASessionData & pSessionData )
 			{
-				ic3DebugAssert( aSessionDataPtr == nullptr );
-				aSessionDataPtr = &pSessionData;
+				ic3DebugAssert( _andrSessionDataPtr == nullptr );
+				_andrSessionDataPtr = &pSessionData;
 			}
 
 			void resetSessionData()
 			{
-				ic3DebugAssert( aSessionDataPtr != nullptr );
-				aSessionDataPtr = nullptr;
+				ic3DebugAssert( _andrSessionDataPtr != nullptr );
+				_andrSessionDataPtr = nullptr;
 			}
 
 			ASessionData & getSessionData() const
 			{
-				ic3DebugAssert( aSessionDataPtr != nullptr );
-				return *aSessionDataPtr;
+				ic3DebugAssert( _andrSessionDataPtr != nullptr );
+				return *_andrSessionDataPtr;
 			}
 
 		private:
-			ASessionData * aSessionDataPtr = nullptr;
+			ASessionData * _andrSessionDataPtr = nullptr;
 		};
 
 		IC3_SYSTEM_API_NODISCARD ASessionData & androidGetASessionData( SysContext & pSysContext );
@@ -87,7 +87,7 @@ namespace Ic3::System
 		}
 
 		template <typename TParentSysObject, typename... TBaseTypeArgs>
-		explicit AndroidNativeObject( SysHandle<TParentSysObject> pParentSysObject, TBaseTypeArgs && ...pBaseTypeArgs )
+		explicit AndroidNativeObject( TSysHandle<TParentSysObject> pParentSysObject, TBaseTypeArgs && ...pBaseTypeArgs )
 		: TBaseType( pParentSysObject, std::forward<TBaseTypeArgs>( pBaseTypeArgs )... )
 		{
 			this->mNativeData.setSessionData( Platform::androidGetASessionData( *pParentSysObject ) );

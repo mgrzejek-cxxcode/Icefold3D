@@ -54,31 +54,34 @@ namespace Ic3::System
 	enum EOpenGLSurfaceCreateFlags : uint32
 	{
 		/// Surface is created as a fullscreen layer/window, adjusted to the selected display dimensions.
-		E_OPENGL_DISPLAY_SURFACE_CREATE_FLAG_FULLSCREEN_BIT = 0x1000,
+		eOpenGLDisplaySurfaceCreateFlagFullscreenBit = 0x1000,
 
 		/// Enables adaptive sync for the surface: v-sync is performed only when the frame rate exceeds vertical frequency.
-		E_OPENGL_DISPLAY_SURFACE_CREATE_FLAG_SYNC_ADAPTIVE_BIT = 0x2000,
+		eOpenGLDisplaySurfaceCreateFlagSyncAdaptiveBit = 0x2000,
 
 		/// Disables vertical sync for the surface: buffers are swapped immediately upon request.
-		E_OPENGL_DISPLAY_SURFACE_CREATE_FLAG_SYNC_DISABLED_BIT = 0x4000,
+		eOpenGLDisplaySurfaceCreateFlagSyncDisabledBit = 0x4000,
 
 		/// Enables vertical sync for the surface: swap is performed during a v-blank.
-		E_OPENGL_DISPLAY_SURFACE_CREATE_FLAG_SYNC_VERTICAL_BIT = 0x8000,
+		eOpenGLDisplaySurfaceCreateFlagSyncVerticalBit = 0x8000,
 	};
 
 	/// @brief
 	enum EOpenGLRenderContextCreateFlags : uint32
 	{
-		E_OPENGL_RENDER_CONTEXT_CREATE_FLAG_ENABLE_DEBUG_BIT = 0x1000,
-		E_OPENGL_RENDER_CONTEXT_CREATE_FLAG_FORWARD_COMPATIBLE_BIT = 0x2000,
-		E_OPENGL_RENDER_CONTEXT_CREATE_FLAG_ENABLE_SHARING_BIT = 0x0010,
-		E_OPENGL_RENDER_CONTEXT_CREATE_FLAG_SHARE_WITH_CURRENT_BIT = 0x0020
+		eOpenGLRenderContextCreateFlagEnableDebugBit = 0x1000,
+
+		eOpenGLRenderContextCreateFlagForwardCompatibleBit = 0x2000,
+
+		eOpenGLRenderContextCreateFlagEnableSharingBit = 0x0010,
+
+		eOpenGLRenderContextCreateFlagShareWithCurrentBit = 0x0020
 	};
 
 	enum class EOpenGLAPIClass : enum_default_value_t
 	{
-		OpenGLDesktop,
-		OpenGLES
+		Desktop,
+		GLES
 	};
 
 	/// @brief
@@ -93,26 +96,26 @@ namespace Ic3::System
 	enum : exception_code_value_t
 	{
 		///
-		E_EXC_SYSTEM_OPENGL_API_VERSION_NOT_SUPPORTED = Ic3::CxDef::declareExceptionCode( E_EXCEPTION_CATEGORY_SYSTEM_OPENGL, 0x03 ),
-		E_EXC_SYSTEM_OPENGL_API_PROFILE_NOT_SUPPORTED = Ic3::CxDef::declareExceptionCode( E_EXCEPTION_CATEGORY_SYSTEM_OPENGL, 0x04 ),
+		eEXCSystemOpenGLAPIVersionNotSupported = Ic3::CxDef::declareExceptionCode( eExceptionCategorySystemOpenGL, 0x03 ),
+		eEXCSystemOpenGLAPIProfileNotSupported = Ic3::CxDef::declareExceptionCode( eExceptionCategorySystemOpenGL, 0x04 ),
 	};
 
-	inline constexpr Version CX_GL_VERSION_BEST_SUPPORTED{ Cppx::CX_UINT16_MAX, Cppx::CX_UINT16_MAX };
+	inline constexpr Version cxGLVersionBestSupported{Cppx::cxUint16Max, Cppx::cxUint16Max };
 
-	inline constexpr Version CX_GL_VERSION_UNKNOWN{ 0, 0 };
+	inline constexpr Version cxGLVersionUnknown{0, 0 };
 
-	inline constexpr Version CX_GL_VERSION_MAX_DESKTOP{ 4, 6 };
+	inline constexpr Version cxGLVersionMaxDesktop{4, 6 };
 
-	inline constexpr Version CX_GL_VERSION_MAX_ES{ 3, 2 };
+	inline constexpr Version cxGLVersionMaxES{3, 2 };
 
 	/// @brief
 	struct OpenGLVersionSupportInfo
 	{
-		EOpenGLAPIClass apiClass;
+		EOpenGLAPIClass mAPIClass;
 
-		EOpenGLAPIProfile apiProfile;
+		EOpenGLAPIProfile mAPIProfile;
 
-		Version apiVersion;
+		Version mAPIVersion;
 	};
 
 	/// @brief Represents combined info about the current OpenGL subsystem version.
@@ -121,15 +124,19 @@ namespace Ic3::System
 	{
 	public:
 		// Numeric version of the GL (GL_VERSION_MAJOR.GL_VERSION_MINOR)
-		Version apiVersion;
+		Version mAPIVersion;
+
 		// Text version of the GL (GL_VERSION)
-		std::string apiVersionStr;
+		std::string mAPIVersionStr;
+
 		// Text version of the GLSL (GL_SHADING_LANGUAGE_VERSION)
-		std::string glslVersionStr;
+		std::string mGLSLVersionStr;
+
 		// Name of the renderer (GL_RENDERER_NAME)
-		std::string rendererName;
+		std::string mRendererName;
+
 		// Name of the vendor (GL_VENDOR_NAME)
-		std::string vendorName;
+		std::string mVendorName;
 
 	public:
 		IC3_ATTR_NO_DISCARD	std::string toString() const;
@@ -140,21 +147,22 @@ namespace Ic3::System
 	public:
 		// The error identifier. It will contain either a common OpenGL error
 		// code (GLenum) or one of the subsystem-specific ones (AGL/EGL/GLX/WGL).
-		uint32 errorCode;
+		uint32 mErrorCode;
 
-		// Message describing
-		const char * errorString;
+		// Message describing the error, if provided. Some errors do not have
+		// descriptions attached, so this can be an empty string in some cases.
+		const char * mErrorString;
 
 	public:
 		constexpr OpenGLErrorInfo( bool pStatus )
-		: errorCode( pStatus ? 0u : Cppx::QLimits<uint32>::maxValue )
-		, errorString( Ic3::CxDef::STR_CHAR_EMPTY )
+		: mErrorCode( pStatus ? 0u : Cppx::QLimits<uint32>::sMaxValue )
+		, mErrorString( Ic3::CxDef::STR_CHAR_EMPTY )
 		{}
 
 		template <typename TGLErrorCode>
 		constexpr OpenGLErrorInfo( TGLErrorCode pErrorCode, const char * pErrorMessage = nullptr )
-		: errorCode( numeric_cast<uint32>( pErrorCode ) )
-		, errorString( pErrorMessage ? Ic3::CxDef::STR_CHAR_EMPTY : pErrorMessage )
+		: mErrorCode( numeric_cast<uint32>( pErrorCode ) )
+		, mErrorString( pErrorMessage ? Ic3::CxDef::STR_CHAR_EMPTY : pErrorMessage )
 		{}
 	};
 
@@ -175,7 +183,7 @@ namespace Ic3::System
 		{}
 	};
 
-	ic3SetExceptionCategoryType( E_EXCEPTION_CATEGORY_SYSTEM_OPENGL, GLSystemException );
+	ic3SetExceptionCategoryType( eExceptionCategorySystemOpenGL, GLSystemException );
 
 	class OpenGLCoreAPI
 	{

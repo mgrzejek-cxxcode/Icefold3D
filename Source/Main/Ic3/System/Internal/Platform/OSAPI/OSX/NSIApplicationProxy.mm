@@ -167,7 +167,7 @@
 -( void ) applicationWillFinishLaunching: (NSNotification *)pNotification
 {
 	auto & osxSharedData = Ic3::System::Platform::osxGetOSXSharedData( *mOSXSysContext );
-	ic3DebugAssert( !osxSharedData.stateFlags.isSet( Ic3::System::Platform::E_OSX_COMMON_STATE_APP_FINISHED_LAUNCHING_BIT ) );
+	ic3DebugAssert( !osxSharedData.mStateFlags.isSet( Ic3::System::Platform::eOSXCommonStateAppFinishedLaunchingBit ) );
 
 	if( ![NSApp mainMenu] )
 	{
@@ -213,7 +213,7 @@
 	// This has to go after the app's activation policy is properly set.
 	[NSApp activateIgnoringOtherApps:YES];
 
-	osxSharedData.stateFlags.set( Ic3::System::Platform::E_OSX_COMMON_STATE_APP_FINISHED_LAUNCHING_BIT );
+	osxSharedData.mStateFlags.set( Ic3::System::Platform::eOSXCommonStateAppFinishedLaunchingBit );
 }
 
 -( BOOL ) applicationShouldTerminateAfterLastWindowClosed:( NSApplication * )pApplication

@@ -14,11 +14,11 @@ namespace Ic3::System
 
 		struct OSXSysContextNativeData
 		{
-			id nsApplicationProxy = nil;
+			id mNSApplicationProxy = nil;
 
-			id nsApplicationDelegate = nil;
+			id mNSApplicationDelegate = nil;
 
-			OSXSharedData osxSharedData;
+			OSXSharedData mOSXSharedData;
 		};
 
 		struct SysContextCreateInfoNativeParams
@@ -74,7 +74,7 @@ namespace Ic3::System
 			E_STATE_NS_APP_PROXY_REGISTERED = 0x1000,
 		};
 
-		Cppx::AtomicBitmask<uint32> _stateMask;
+		Cppx::TAtomicBitmask<uint32> _stateMask;
 	};
 
 } // namespace Ic3::System

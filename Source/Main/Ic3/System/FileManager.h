@@ -50,23 +50,23 @@ namespace Ic3::System
 		explicit File( FileManagerHandle pFileManager );
 		virtual ~File() noexcept;
 
-		file_size_t read( void * pTargetBuffer, file_size_t pTargetBufferSize, file_size_t pReadSize = CX_FILE_SIZE_MAX );
-		file_size_t read( const Cppx::ReadWriteMemoryView & pTarget, file_size_t pReadSize = CX_FILE_SIZE_MAX );
+		file_size_t read( void * pTargetBuffer, file_size_t pTargetBufferSize, file_size_t pReadSize = cxFileSizeMax );
+		file_size_t read( const Cppx::ReadWriteMemoryView & pTarget, file_size_t pReadSize = cxFileSizeMax );
 
-		file_size_t readAuto( Cppx::DynamicMemoryBuffer & pTarget, file_size_t pReadSize = CX_FILE_SIZE_MAX );
-		file_size_t readAuto( Cppx::DynamicByteArray & pTarget, file_size_t pReadSize = CX_FILE_SIZE_MAX );
+		file_size_t readAuto( Cppx::DynamicMemoryBuffer & pTarget, file_size_t pReadSize = cxFileSizeMax );
+		file_size_t readAuto( Cppx::DynamicByteArray & pTarget, file_size_t pReadSize = cxFileSizeMax );
 
 		template <typename TResizableBuffer>//, std::enable_if_t<!std::is_pointer<TResizableBuffer>::value, int>>
-		file_size_t readAuto( TResizableBuffer & pTarget, file_size_t pReadSize = CX_FILE_SIZE_MAX )
+		file_size_t readAuto( TResizableBuffer & pTarget, file_size_t pReadSize = cxFileSizeMax )
 		{
 			return _readAuto( pTarget, pReadSize );
 		}
 
-		file_size_t write( const void * pData, file_size_t pDataSize, file_size_t pWriteSize = CX_FILE_SIZE_MAX );
-		file_size_t write( const Cppx::ReadOnlyMemoryView & pSource, file_size_t pWriteSize = CX_FILE_SIZE_MAX );
+		file_size_t write( const void * pData, file_size_t pDataSize, file_size_t pWriteSize = cxFileSizeMax );
+		file_size_t write( const Cppx::ReadOnlyMemoryView & pSource, file_size_t pWriteSize = cxFileSizeMax );
 		
-		file_size_t write( const Cppx::MemoryBuffer & pSource, file_size_t pWriteSize = CX_FILE_SIZE_MAX );
-		file_size_t write( const Cppx::ByteArray & pSource, file_size_t pWriteSize = CX_FILE_SIZE_MAX );
+		file_size_t write( const Cppx::MemoryBuffer & pSource, file_size_t pWriteSize = cxFileSizeMax );
+		file_size_t write( const Cppx::ByteArray & pSource, file_size_t pWriteSize = cxFileSizeMax );
 
 		template <typename TBuffer, std::enable_if_t<!std::is_pointer<TBuffer>::value, int>>
 		file_size_t write( const TBuffer & pSource, file_size_t pWriteSize )

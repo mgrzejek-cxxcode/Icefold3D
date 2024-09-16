@@ -12,16 +12,16 @@ namespace Ic3::System
 	struct EGLError
 	{
 	public:
-		EGLenum errorCode;
+		EGLenum mErrorCode;
 
 	public:
 		EGLError( EGLenum pErrorCode )
-		: errorCode( pErrorCode )
+		: mErrorCode( pErrorCode )
 		{}
 
 		constexpr explicit operator bool() const
 		{
-			return errorCode != EGL_SUCCESS;
+			return mErrorCode != EGL_SUCCESS;
 		}
 	};
 

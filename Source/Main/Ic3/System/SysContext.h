@@ -28,16 +28,16 @@ namespace Ic3::System
 
 	struct AssetLoaderCreateInfo
 	{
-		Platform::AssetLoaderCreateInfoNativeParams * nativeParams = nullptr;
+		Platform::AssetLoaderCreateInfoNativeParams * mNativeParams = nullptr;
 	};
 
 	struct SysContextCreateInfo
 	{
-		Platform::SysContextCreateInfoNativeParams * nativeParams = nullptr;
+		Platform::SysContextCreateInfoNativeParams * mNativeParams = nullptr;
 	};
 
 	/// @brief
-	class SysContext : public DynamicInterface
+	class SysContext : public IDynamicObject
 	{
 	public:
 		SysContext();

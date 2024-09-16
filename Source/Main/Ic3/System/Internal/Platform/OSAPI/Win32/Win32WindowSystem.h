@@ -17,16 +17,16 @@ namespace Ic3::System
 
 		struct Win32WindowNativeData : public Win32EventSourceNativeData
 		{
-			ATOM wndClsID = 0;
-			LPCSTR wndClsName = nullptr;
-			HMODULE moduleHandle = nullptr;
-			FrameGeometry fsCachedGeometry = {};
+			ATOM mWndClsID = 0;
+			LPCSTR mWndClsName = nullptr;
+			HMODULE mModuleHandle = nullptr;
+			FrameGeometry mFSCachedGeometry = {};
 		};
 
 		struct Win32FrameGeometry
 		{
-			RECT frameRect;
-			DWORD style;
+			RECT mFrameRect;
+			DWORD mStyle;
 		};
 
 		void win32CreateWindow( Win32WindowNativeData & pWindowNativeData, const WindowCreateInfo & pCreateInfo );
@@ -39,7 +39,7 @@ namespace Ic3::System
 
 		void win32SetFrameTitle( HWND pHWND, const std::string & pTitle );
 
-		void win32UpdateFrameGeometry( HWND pHWND, const FrameGeometry & pFrameGeometry, Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags );
+		void win32UpdateFrameGeometry( HWND pHWND, const FrameGeometry & pFrameGeometry, TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags );
 
 		IC3_SYSTEM_API_NODISCARD FrameSize win32GetFrameSize( HWND pHWND, EFrameSizeMode pSizeMode );
 
@@ -81,7 +81,7 @@ namespace Ic3::System
 
 		// @override Window::_nativeUpdateGeometry
 		virtual void _nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-		                                    Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
+		                                    TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
 
 		// @override Window::_nativeGetSize
 		virtual FrameSize _nativeGetSize( EFrameSizeMode pSizeMode ) const override final;

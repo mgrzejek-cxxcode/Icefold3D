@@ -9,7 +9,7 @@ namespace Ic3::System
 
         MTLPixelFormat mtlChoosePixelFormatForVisualConfig( const VisualConfig & pVisualConfig )
         {
-            switch( pVisualConfig.colorFormat )
+            switch( pVisualConfig.mColorFormat )
             {
                 ic3CaseReturn( EColorFormat::B8G8R8,       MTLPixelFormatBGRA8Unorm );
                 ic3CaseReturn( EColorFormat::B8G8R8A8,     MTLPixelFormatBGRA8Unorm );

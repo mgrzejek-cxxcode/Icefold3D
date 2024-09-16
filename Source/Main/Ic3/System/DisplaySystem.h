@@ -102,7 +102,7 @@ namespace Ic3::System
 		static DisplayVideoModeDesc & getVideoModeDescInternal( DisplayVideoMode & pVideoMode );
 
 		template <typename TAdapter, typename TDriver>
-		SysHandle<TAdapter> createAdapter( TDriver & pDriver)
+		TSysHandle<TAdapter> createAdapter( TDriver & pDriver)
 		{
 			auto adapterHandle = createSysObject<TAdapter>( pDriver );
 			_registerAdapter( adapterHandle );
@@ -110,7 +110,7 @@ namespace Ic3::System
 		}
 
 		template <typename TOutput, typename TAdapter>
-		SysHandle<TOutput> createOutput( TAdapter & pAdapter )
+		TSysHandle<TOutput> createOutput( TAdapter & pAdapter )
 		{
 			auto outputHandle = createSysObject<TOutput>( pAdapter );
 			_registerOutput( pAdapter, outputHandle );
@@ -118,7 +118,7 @@ namespace Ic3::System
 		}
 
 		template <typename TVideoMode, typename TOutput>
-		SysHandle<TVideoMode> createVideoMode( TOutput & pOutput, EColorFormat pColorFormat )
+		TSysHandle<TVideoMode> createVideoMode( TOutput & pOutput, EColorFormat pColorFormat )
 		{
 			auto videoModeHandle = createSysObject<TVideoMode>( pOutput );
 			_registerVideoMode( pOutput, pColorFormat, videoModeHandle );

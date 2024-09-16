@@ -55,12 +55,12 @@ namespace Ic3::System
 	enum class EMSAAMode : uint16
 	{
 		Unknown,
-		x1,
-		x2,
-		x4,
-		x8,
-		x16,
-		Best = static_cast< uint16 >( x16 ),
+		X1,
+		X2,
+		X4,
+		X8,
+		X16,
+		Best = static_cast< uint16 >( X16 ),
 	};
 
 	/// @brief Flags representing attributes (properties) of visuals.
@@ -72,64 +72,70 @@ namespace Ic3::System
 	enum EVisualAttribFlags : uint32
 	{
 		/// Visual supports legacy formats. Used forcreation of temporary GL surfaces.
-		E_VISUAL_ATTRIB_FLAG_LEGACY_BIT = 0x0001,
+		eVisualAttribFlagLegacyBit = 0x0001,
 
 		/// Visual supports double buffering.
-		E_VISUAL_ATTRIB_FLAG_DOUBLE_BUFFER_BIT = 0x0100,
+		eVisualAttribFlagDoubleBufferBit = 0x0100,
 
 		/// Visual does not support double buffering.
-		E_VISUAL_ATTRIB_FLAG_SINGLE_BUFFER_BIT = 0x0200,
+		eVisualAttribFlagSingleBufferBit = 0x0200,
 
 		/// Visual supports triple buffering.
-		E_VISUAL_ATTRIB_FLAG_TRIPLE_BUFFER_BIT = 0x0400,
+		eVisualAttribFlagTripleBufferBit = 0x0400,
 
 		/// Visual is sRGB-capable.
-		E_VISUAL_ATTRIB_FLAG_SRGB_CAPABLE_BIT = 0x1000,
+		eVisualAttribFlagSRGBCapableBit = 0x1000,
 
 		/// Visual has the stereoscopic display mode.
-		E_VISUAL_ATTRIB_FLAG_STEREO_DISPLAY_BIT = 0x0400,
+		eVisualAttribFlagStereoDisplayBit = 0x0400,
 
 		/// Visual has the classic, monoscopic display mode.
-		E_VISUAL_ATTRIB_FLAG_MONO_DISPLAY_BIT = 0x0800,
+		eVisualAttribFlagMonoDisplayBit = 0x0800,
 	};
 
 	struct ColorDesc
 	{
-		Math::RGBAColorU8 rgba;
-		uint32 size = 0;
-		EPixelOrder pixelOrder = EPixelOrder::Unknown;
-		EColorSpace colorSpace = EColorSpace::Unknown;
+		Math::RGBAColorU8 mRGBA;
+		uint32 mSize = 0;
+		EPixelOrder mPixelOrder = EPixelOrder::Unknown;
+		EColorSpace mColorSpace = EColorSpace::Unknown;
 	};
 
 	struct DepthStencilDesc
 	{
-		uint8 depthBufferSize;
-		uint8 stencilBufferSize;
+		uint8 mDepthBufferSize;
+		uint8 mStencilBufferSize;
 	};
 
 	struct MSAADesc
 	{
-		uint8 bufferCount;
-		uint8 quality;
+		uint8 mBufferCount;
+		uint8 mQuality;
 	};
 
 	/// @brief
 	struct VisualConfig
 	{
 		// Struct representation of the color format.
-		ColorDesc colorDesc;
+		ColorDesc mColorDesc;
+
 		// Enum ID of the color format.
-		EColorFormat colorFormat;
+		EColorFormat mColorFormat;
+
 		// Struct representation of a depth/stencil buffer description.
-		DepthStencilDesc depthStencilDesc;
+		DepthStencilDesc mDepthStencilDesc;
+
 		// Enum ID of the depth/stencil buffer format.
-		EDepthStencilFormat depthStencilFormat;
+		EDepthStencilFormat mDepthStencilFormat;
+
 		// Struct representation of the MSAA mode.
-		MSAADesc msaaDesc;
+		MSAADesc mMSAADesc;
+
 		// Enum ID of the MSAA mode.
-		EMSAAMode msaaMode;
+		EMSAAMode mMSAAMode;
+
 		// Additional visual config flags.
-		Bitmask<EVisualAttribFlags> flags;
+		TBitmask<EVisualAttribFlags> mFlags;
 	};
 
 	/// @brief Returns a ColorDesc structure representation of a specified EColorFormat.

@@ -19,15 +19,15 @@ namespace Ic3::System
 
 		struct OSXWindowNativeData : public OSXEventSourceNativeData
 		{
-			OSXWindow * parentWindow = nullptr;
+			OSXWindow * mParentWindow = nullptr;
 
-			NSScreen * nsTargetScreen = nullptr;
+			NSScreen * mNSTargetScreen = nullptr;
 		};
 
 		struct OSXFrameGeometry
 		{
-			NSRect frameRect;
-			NSUInteger style;
+			NSRect mFrameRect;
+			NSUInteger mStyle;
 		};
 
 		void osxCreateWindow( OSXWindowNativeData & pWindowNativeData, NSScreen * pTargetScreen, const WindowCreateInfo & pCreateInfo );
@@ -38,7 +38,7 @@ namespace Ic3::System
 
 		void osxSetFrameTitle( NSWindow * pNSWindow, const std::string & pTitle );
 
-		void osxUpdateFrameGeometry( NSWindow * pNSWindow, const FrameGeometry & pFrameGeometry, Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags );
+		void osxUpdateFrameGeometry( NSWindow * pNSWindow, const FrameGeometry & pFrameGeometry, TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags );
 
 		IC3_SYSTEM_API_NODISCARD FrameSize osxGetFrameSize( NSWindow * pNSWindow, EFrameSizeMode pSizeMode );
 
@@ -80,7 +80,7 @@ namespace Ic3::System
 
 		// @override Window::_nativeUpdateGeometry
 		virtual void _nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-		                                    Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
+		                                    TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
 
 		// @override Window::_nativeGetSize
 		virtual FrameSize _nativeGetSize( EFrameSizeMode pSizeMode ) const override final;

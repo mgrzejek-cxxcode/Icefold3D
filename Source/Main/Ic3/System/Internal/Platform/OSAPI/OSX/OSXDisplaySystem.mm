@@ -58,9 +58,9 @@ namespace Ic3::System
 			mainDisplayID = activeDisplayList[0];
 		}
 
-		mNativeData.cgActiveDisplayList = std::move( activeDisplayList );
-		mNativeData.cgActiveDisplaysNum = activeDisplaysNum;
-		mNativeData.cgMainDisplayID = mainDisplayID;
+		mNativeData.mCGActiveDisplayList = std::move( activeDisplayList );
+		mNativeData.mCGActiveDisplaysNum = activeDisplaysNum;
+		mNativeData.mCGMainDisplayID = mainDisplayID;
 	}
 	
 	void OSXDisplayManager::_releaseOSXDisplayManagerState()
@@ -73,24 +73,24 @@ namespace Ic3::System
 
 	void OSXDisplayManager::_nativeQueryDefaultDisplayOffset( DisplayOffset & pOutOffset ) const
 	{
-		if( mNativeData.cgMainDisplayID == kCGNullDirectDisplay )
+		if( mNativeData.mCGMainDisplayID == kCGNullDirectDisplay )
 		{
 			throw 0;
 		}
 
-		const auto screenBounds = Platform::osxQueryDisplayRect( mNativeData.cgMainDisplayID );
+		const auto screenBounds = Platform::osxQueryDisplayRect( mNativeData.mCGMainDisplayID );
 
-		pOutOffset = screenBounds.offset;
+		pOutOffset = screenBounds.mOffset;
 	}
 
 	void OSXDisplayManager::_nativeQueryDefaultDisplaySize( DisplaySize & pOutSize ) const
 	{
-		if( mNativeData.cgMainDisplayID == kCGNullDirectDisplay )
+		if( mNativeData.mCGMainDisplayID == kCGNullDirectDisplay )
 		{
 			throw 0;
 		}
 
-		pOutSize = Platform::osxQueryDisplaySize( mNativeData.cgMainDisplayID );
+		pOutSize = Platform::osxQueryDisplaySize( mNativeData.mCGMainDisplayID );
 	}
 
 	void OSXDisplayManager::_nativeQueryMinWindowSize( DisplaySize & pOutSize ) const
@@ -128,10 +128,10 @@ namespace Ic3::System
 			const auto cgDisplayRect = ::CGDisplayBounds( pCGDisplayID );
 
 			ScreenRect displayRect{};
-			displayRect.offset.x = static_cast<int32>( cgDisplayRect.origin.x );
-			displayRect.offset.y = static_cast<int32>( cgDisplayRect.origin.y );
-			displayRect.size.x = static_cast<int32>( cgDisplayRect.size.width );
-			displayRect.size.y = static_cast<int32>( cgDisplayRect.size.height );
+			displayRect.mOffset.x = static_cast<int32>( cgDisplayRect.origin.x );
+			displayRect.mOffset.y = static_cast<int32>( cgDisplayRect.origin.y );
+			displayRect.mSize.x = static_cast<int32>( cgDisplayRect.size.width );
+			displayRect.mSize.y = static_cast<int32>( cgDisplayRect.size.height );
 
 			return displayRect;
 		}

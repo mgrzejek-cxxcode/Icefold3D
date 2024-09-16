@@ -10,7 +10,7 @@ namespace Ic3::System
 
 	AssetLoader::~AssetLoader() noexcept = default;
 
-	AssetHandle AssetLoader::openSubAsset( const std::string & pAssetRefName, Bitmask<EAssetOpenFlags> pFlags )
+	AssetHandle AssetLoader::openSubAsset( const std::string & pAssetRefName, TBitmask<EAssetOpenFlags> pFlags )
 	{
 		if( pAssetRefName.empty() )
 		{
@@ -18,7 +18,7 @@ namespace Ic3::System
 		}
 
 		auto assetRefName = Cppx::fsNormalizePath( pAssetRefName );
-		auto assetPathInfo = fsSplitPath( std::move( assetRefName ), Cppx::E_FSAPI_SPLIT_PATH_FLAG_ASSUME_FILE_BIT );
+		auto assetPathInfo = fsSplitPath( std::move( assetRefName ), Cppx::eFSAPISplitPathFlagAssumeFileBit );
 
 		return _nativeOpenSubAsset( std::move( assetPathInfo ), pFlags );
 	}
@@ -65,7 +65,7 @@ namespace Ic3::System
 		_nativeRefreshAssetList();
 	}
 
-	AssetHandle AssetDirectory::openAsset( std::string pAssetName, Bitmask<EAssetOpenFlags> pFlags )
+	AssetHandle AssetDirectory::openAsset( std::string pAssetName, TBitmask<EAssetOpenFlags> pFlags )
 	{
 		if( pAssetName.empty() )
 		{

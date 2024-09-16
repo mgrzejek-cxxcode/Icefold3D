@@ -12,17 +12,17 @@ namespace Ic3::System
 	using FrameSize = Math::Size2u;
 
 	/// @brief Predefined frame position: auto. When used, frame is spawned centered.
-	inline constexpr FramePos CX_FRAME_POS_AUTO { -1, -1 };
+	inline constexpr FramePos cxFramePosAuto {-1, -1 };
 
 	/// @brief Predefined frame position: origin. When used, frame is spawned at the origin point (0,0).
-	inline constexpr FramePos CX_FRAME_POS_ORIGIN { 0, 0 };
+	inline constexpr FramePos cxFramePosOrigin {0, 0 };
 
 	/// @brief Predefined frame size: auto. When used, frame size is selected by the implementation.
-	inline constexpr FrameSize CX_FRAME_SIZE_AUTO { 0, 0 };
+	inline constexpr FrameSize cxFrameSizeAuto {0, 0 };
 
 	/// @brief Predefined frame size: max. When used, frame size is the maximum size allowed by the system.
 	/// Max size usually means the current size of the screen, but selected frame style may affect this (Win32).
-	inline constexpr FrameSize CX_FRAME_SIZE_MAX { Cppx::CX_UINT32_MAX, Cppx::CX_UINT32_MAX };
+	inline constexpr FrameSize cxFrameSizeMax {Cppx::cxUint32Max, Cppx::cxUint32Max };
 
 	/// @brief Window styles supported by the system.
 	enum class EFrameStyle : enum_default_value_t
@@ -43,19 +43,19 @@ namespace Ic3::System
 
 	enum EFrameGeometryUpdateFlags : uint32
 	{
-		E_FRAME_GEOMETRY_UPDATE_FLAG_POSITION_BIT = 0x01,
+		eFrameGeometryUpdateFlagPositionBit = 0x01,
 
-		E_FRAME_GEOMETRY_UPDATE_FLAG_SIZE_BIT = 0x02,
+		eFrameGeometryUpdateFlagSizeBit = 0x02,
 
-		E_FRAME_GEOMETRY_UPDATE_FLAG_STYLE_BIT = 0x08,
+		eFrameGeometryUpdateFlagStyleBit = 0x08,
 
-		E_FRAME_GEOMETRY_UPDATE_FLAG_SIZE_CLIENT_AREA_BIT = 0x10 | E_FRAME_GEOMETRY_UPDATE_FLAG_SIZE_BIT,
+		eFrameGeometryUpdateFlagSizeClientAreaBit = 0x10 | eFrameGeometryUpdateFlagSizeBit,
 
-		E_FRAME_GEOMETRY_UPDATE_FLAG_SIZE_OUTER_RECT_BIT = 0x20 | E_FRAME_GEOMETRY_UPDATE_FLAG_SIZE_BIT,
+		eFrameGeometryUpdateFlagSizeOuterRectBit = 0x20 | eFrameGeometryUpdateFlagSizeBit,
 
-		E_FRAME_GEOMETRY_UPDATE_FLAGS_ALL_DEFAULT = E_FRAME_GEOMETRY_UPDATE_FLAG_POSITION_BIT |
-		                                            E_FRAME_GEOMETRY_UPDATE_FLAG_SIZE_OUTER_RECT_BIT |
-		                                            E_FRAME_GEOMETRY_UPDATE_FLAG_STYLE_BIT
+		eFrameGeometryUpdateMaskAllDefault = eFrameGeometryUpdateFlagPositionBit |
+		                                     eFrameGeometryUpdateFlagSizeOuterRectBit |
+		                                     eFrameGeometryUpdateFlagStyleBit
 	};
 
 	/// @brief
@@ -68,12 +68,12 @@ namespace Ic3::System
 	/// @brief
 	struct FrameGeometry
 	{
-		FramePos position;
-		FrameSize size;
-		EFrameStyle style;
+		FramePos mPosition;
+		FrameSize mSize;
+		EFrameStyle mStyle;
 	};
 
-	inline constexpr FrameGeometry CX_FRAME_GEOMETRY_DEFAULT{ CX_FRAME_POS_AUTO, CX_FRAME_SIZE_AUTO, EFrameStyle::Default };
+	inline constexpr FrameGeometry CX_FRAME_GEOMETRY_DEFAULT{cxFramePosAuto, cxFrameSizeAuto, EFrameStyle::Default };
 
 	class Frame : public EventSource
 	{
@@ -90,7 +90,7 @@ namespace Ic3::System
 		virtual void setTitle( const std::string & pTitleText ) = 0;
 
 		virtual void updateGeometry( const FrameGeometry & pFrameGeometry,
-		                             Cppx::Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) = 0;
+		                             TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) = 0;
 
 		IC3_SYSTEM_API_NODISCARD virtual FrameSize getClientAreaSize() const = 0;
 

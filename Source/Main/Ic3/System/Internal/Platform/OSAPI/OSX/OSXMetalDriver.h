@@ -19,7 +19,7 @@ namespace Ic3::System
 
 		struct OSXMetalDisplaySurfaceNativeData : public OSXWindowNativeData
 		{
-            CAMetalLayer * caMetalLayer = nil;
+            CAMetalLayer * mCAMetalLayer = nil;
 		};
 
 		struct OSXMetalRenderContextNativeData : public OSXNativeDataCommon
@@ -75,7 +75,7 @@ namespace Ic3::System
 
         /// @copybrief MetalDisplaySurface::_nativeUpdateGeometry
         virtual void _nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-                                            Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
+                                            TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
 
         /// @copybrief MetalDisplaySurface::_nativeGetSize
         virtual FrameSize _nativeGetSize( EFrameSizeMode pSizeMode ) const override final;

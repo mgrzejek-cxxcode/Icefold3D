@@ -20,19 +20,19 @@ namespace Ic3::System
 
 		struct X11DisplayManagerNativeData : public X11NativeDataCommon
 		{
-			uint32 screenDepth = 0;
-			Version xrrVersion = CX_VERSION_UNKNOWN;
-			XRRMonitorInfo xrrDefaultMonitorInfo;
+			uint32 mScreenDepth = 0;
+			Version mXRRVersion = CX_VERSION_UNKNOWN;
+			XRRMonitorInfo mXRRDefaultMonitorInfo;
 		};
 
 		struct X11DisplayDriverNativeData : public X11NativeDataCommon
 		{
-			uint32 screenDepth = 0;
-			XRRScreenResources * xrrScreenResources = nullptr;
-			XRRMonitorInfo * xrrMonitorList = nullptr;
-			int xrrMonitorsNum = 0;
-			XRRMonitorInfo * xrrDefaultMonitorInfo = nullptr;
-			std::unordered_map<RRMode, XRRModeInfo *> xrrModeInfoMap;
+			uint32 mScreenDepth = 0;
+			XRRScreenResources * mXRRScreenResources = nullptr;
+			XRRMonitorInfo * mXRRMonitorList = nullptr;
+			int mXRRMonitorsNum = 0;
+			XRRMonitorInfo * mXRRDefaultMonitorInfo = nullptr;
+			std::unordered_map<RRMode, XRRModeInfo *> mXRRModeInfoMap;
 		};
 
 		struct X11DisplayAdapterNativeData : public X11NativeDataCommon
@@ -41,14 +41,14 @@ namespace Ic3::System
 
 		struct X11DisplayOutputNativeData : public X11NativeDataCommon
 		{
-			RROutput xrrOutputID = E_X11_XID_NONE;
-			RRCrtc xrrCrtcID = E_X11_XID_NONE;
+			RROutput mXRROutputID = eXIDNone;
+			RRCrtc mXRRCrtcID = eXIDNone;
 		};
 
 		struct X11DisplayVideoModeNativeData : public X11NativeDataCommon
 		{
-			RRMode xrrModeID = E_X11_XID_NONE;
-			XRRModeInfo * xrrModeInfo = nullptr;
+			RRMode mXRRModeID = eXIDNone;
+			XRRModeInfo * mXRRModeInfo = nullptr;
 		};
 
 	}

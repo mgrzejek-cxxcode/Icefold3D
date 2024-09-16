@@ -23,14 +23,14 @@ namespace Ic3::System
 
 		Platform::eglInitializeGLDriver( mNativeData );
 
-		mNativeData.eNativeWindow = aSessionData.aNativeWindow;
+		mNativeData.mEGLNativeWindowHandle = aSessionData.aNativeWindow;
 	}
 
 	void AndroidOpenGLSystemDriver::_releaseAndroidDriverState()
 	{
 		Platform::eglReleaseGLDriver( mNativeData );
 
-		mNativeData.eNativeWindow = nullptr;
+		mNativeData.mEGLNativeWindowHandle = nullptr;
 	}
 
 	void AndroidOpenGLSystemDriver::_nativeInitializePlatform()
@@ -43,21 +43,21 @@ namespace Ic3::System
 	{
 		auto & aSessionData = Platform::androidGetASessionData( *this );
 
-		// Choose an EGLConfig that matches the specified requirements (pCreateInfo.visualConfig)
+		// Choose an EGLConfig that matches the specified requirements (pCreateInfo.mVisualConfig)
 		// and version. Version is required to properly query configs with the correct API level
-		// support (EGL_OPENGL_ES_BIT/EGL_OPENGL_ES2_BIT/EGL_OPENGL_ES3_BIT).
-		EGLConfig fbConfig = Platform::eglChooseCoreFBConfig( mNativeData.eDisplay,
-		                                                      pCreateInfo.visualConfig,
+		// support (EGL_OPENGL_ESBit/EGL_OPENGL_ES2Bit/EGL_OPENGL_ES3Bit).
+		EGLConfig fbConfig = Platform::eglChooseCoreFBConfig( mNativeData.mEGLDisplay,
+		                                                      pCreateInfo.mVisualConfig,
 		                                                      pCreateInfo.runtimeVersionDesc.apiVersion );
 
 		// EGL_NATIVE_VISUAL_ID is an attribute of the EGLConfig that is guaranteed to be
 		// accepted by ANativeWindow_setBuffersGeometry(). As soon as we retrieve an EGLConfig,
 		// we can reconfigure the ANativeWindow buffers using the value of EGL_NATIVE_VISUAL_ID.
-		EGLint fbConfigNativeVisualID = Platform::eglQueryFBConfigAttribute( mNativeData.eDisplay,
+		EGLint fbConfigNativeVisualID = Platform::eglQueryFBConfigAttribute( mNativeData.mEGLDisplay,
 		                                                                     fbConfig,
 		                                                                     EGL_NATIVE_VISUAL_ID );
 
-		auto aNativeResult = ANativeWindow_setBuffersGeometry( mNativeData.eNativeWindow,
+		auto aNativeResult = ANativeWindow_setBuffersGeometry( mNativeData.mEGLNativeWindowHandle,
 		                                                       0,
 		                                                       0,
 		                                                       fbConfigNativeVisualID );
@@ -69,10 +69,10 @@ namespace Ic3::System
 		auto displaySurface = createSysObject<AndroidOpenGLDisplaySurface>( getHandle<AndroidOpenGLSystemDriver>() );
 
 		Platform::eglCreateSurface( displaySurface->mNativeData,
-		                            mNativeData.eDisplay,
-		                            mNativeData.eNativeWindow,
+		                            mNativeData.mEGLDisplay,
+		                            mNativeData.mEGLNativeWindowHandle,
 		                            fbConfig,
-		                            pCreateInfo.visualConfig );
+		                            pCreateInfo.mVisualConfig );
 
 		return displaySurface;
 	}
@@ -119,7 +119,7 @@ namespace Ic3::System
 
 	void AndroidOpenGLSystemDriver::_nativeResetContextBinding()
 	{
-		::eglMakeCurrent( mNativeData.eDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT );
+		::eglMakeCurrent( mNativeData.mEGLDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT );
 	}
 
 	std::vector<EDepthStencilFormat> AndroidOpenGLSystemDriver::_nativeQuerySupportedDepthStencilFormats( EColorFormat pColorFormat ) const
@@ -164,7 +164,7 @@ namespace Ic3::System
 
 	void AndroidOpenGLDisplaySurface::_nativeSwapBuffers()
 	{
-		::eglSwapBuffers( mNativeData.eDisplay, mNativeData.eSurfaceHandle );
+		::eglSwapBuffers( mNativeData.mEGLDisplay, mNativeData.mEGLSurfaceHandle );
 	}
 
 	FrameSize AndroidOpenGLDisplaySurface::_nativeQueryRenderAreaSize() const
@@ -172,13 +172,13 @@ namespace Ic3::System
 		EGLint surfaceWidth = 0;
 		EGLint surfaceHeight = 0;
 
-		auto queryResult = ::eglQuerySurface( mNativeData.eDisplay, mNativeData.eSurfaceHandle, EGL_WIDTH, &surfaceWidth );
+		auto queryResult = ::eglQuerySurface( mNativeData.mEGLDisplay, mNativeData.mEGLSurfaceHandle, EGL_WIDTH, &surfaceWidth );
 		if( queryResult == EGL_FALSE )
 		{
 			ic3EGLHandleLastError();
 		}
 
-		queryResult = ::eglQuerySurface( mNativeData.eDisplay, mNativeData.eSurfaceHandle, EGL_HEIGHT, &surfaceHeight );
+		queryResult = ::eglQuerySurface( mNativeData.mEGLDisplay, mNativeData.mEGLSurfaceHandle, EGL_HEIGHT, &surfaceHeight );
 		if( queryResult == EGL_FALSE )
 		{
 			ic3EGLHandleLastError();
@@ -193,7 +193,7 @@ namespace Ic3::System
 
 	bool AndroidOpenGLDisplaySurface::_nativeSysValidate() const
 	{
-		return ( mNativeData.eSurfaceHandle != EGL_NO_SURFACE ) && mNativeData.eNativeWindow;
+		return ( mNativeData.mEGLSurfaceHandle != EGL_NO_SURFACE ) && mNativeData.mEGLNativeWindowHandle;
 	}
 
 	void AndroidOpenGLDisplaySurface::_nativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode )
@@ -208,7 +208,7 @@ namespace Ic3::System
 	}
 
 	void AndroidOpenGLDisplaySurface::_nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-	                                                         Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
+	                                                         TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
 	{
 	}
 

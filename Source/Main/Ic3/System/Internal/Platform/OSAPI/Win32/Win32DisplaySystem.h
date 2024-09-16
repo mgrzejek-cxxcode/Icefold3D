@@ -21,22 +21,22 @@ namespace Ic3::System
 
 		struct Win32DisplayAdapterNativeData
 		{
-			std::string deviceUUID;
-			std::string deviceName;
-			DISPLAY_DEVICEA gdiDeviceInfo;
-			std::string displayDeviceID;
+			std::string mDeviceUUID;
+			std::string mDeviceName;
+			DISPLAY_DEVICEA mGDIDeviceInfo;
+			std::string mDisplayDeviceID;
 		};
 
 		struct Win32DisplayOutputNativeData
 		{
-			HMONITOR gdiMonitorHandle;
-			std::string displayDeviceName;
-			std::string outputID;
+			HMONITOR mGDIMonitorHandle;
+			std::string mDisplayDeviceName;
+			std::string mOutputID;
 		};
 
 		struct Win32DisplayVideoModeNativeData
 		{
-			DEVMODEA gdiModeInfo;
+			DEVMODEA mGDIModeInfo;
 		};
 
 	}
@@ -78,13 +78,13 @@ namespace Ic3::System
 		virtual EColorFormat _nativeQueryDefaultSystemColorFormat() const override final;
 
 		// Returns a handle to an existing adapter with a specified UUID (DeviceKey).
-		SysHandle<Win32DisplayAdapter> _findAdapterByUUID( const std::string & pUUID );
+		TSysHandle<Win32DisplayAdapter> _findAdapterByUUID( const std::string & pUUID );
 
 		// Returns a handle to an existing output of a specified adapter with a given output name (DeviceID);
-		SysHandle<Win32DisplayOutput> _findAdapterOutputForDisplayDeviceName( DisplayAdapter & pAdapter, const char * pDeviceName );
+		TSysHandle<Win32DisplayOutput> _findAdapterOutputForDisplayDeviceName( DisplayAdapter & pAdapter, const char * pDeviceName );
 
 		// Returns a handle to an existing output of an existing adapter with a given output name (DeviceID);
-		SysHandle<Win32DisplayOutput> _findAnyOutputForDisplayDeviceName( const char * pDeviceName );
+		TSysHandle<Win32DisplayOutput> _findAnyOutputForDisplayDeviceName( const char * pDeviceName );
 
 		//
 		static BOOL CALLBACK _win32MonitorEnumProc( HMONITOR pMonitorHandle, HDC pHDC, LPRECT pMonitorRect, LPARAM pUserParam );

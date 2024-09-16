@@ -13,12 +13,12 @@ namespace Ic3::System
 
 		struct Win32SysContextNativeData
 		{
-			HINSTANCE appExecModuleHandle;
+			HINSTANCE mAppExecModuleHandle;
 		};
 
 		struct SysContextCreateInfoNativeParams
 		{
-			HINSTANCE appExecModuleHandle;
+			HINSTANCE mAppExecModuleHandle;
 		};
 
 	}

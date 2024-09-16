@@ -13,12 +13,12 @@ namespace Ic3::System
 		OSXSharedData & osxGetOSXSharedData( SysContext & pSysContext )
 		{
 			auto * osxSysContext = pSysContext.queryInterface<OSXSysContext>();
-			return osxSysContext->mNativeData.osxSharedData;
+			return osxSysContext->mNativeData.mOSXSharedData;
 		}
 
 		OSXSharedData & osxGetOSXSharedData( OSXSysContext & pSysContext )
 		{
-			return pSysContext.mNativeData.osxSharedData;
+			return pSysContext.mNativeData.mOSXSharedData;
 		}
 
 		bool osxNibLoadMenuNibFile()

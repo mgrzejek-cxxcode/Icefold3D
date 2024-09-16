@@ -22,23 +22,23 @@ namespace Ic3::System
 
 		struct Win32OpenGLDisplaySurfaceNativeData : public Win32WindowNativeData
 		{
-			HDC hdc;
-			int pixelFormatIndex;
+			HDC mHDC;
+			int mPixelFormatIndex;
 		};
 
 		struct Win32OpenGLRenderContextNativeData
 		{
-			HGLRC contextHandle;
+			HGLRC mContextHandle;
 		};
 
 		struct Win32OpenGLSystemDriverNativeData
 		{
 			struct InitState
 			{
-				Win32OpenGLDisplaySurfaceNativeData surfaceData;
-				Win32OpenGLRenderContextNativeData contextData;
+				Win32OpenGLDisplaySurfaceNativeData mSurfaceData;
+				Win32OpenGLRenderContextNativeData mContextData;
 			};
-			std::unique_ptr<InitState> initState = nullptr;
+			std::unique_ptr<InitState> mInitState = nullptr;
 		};
 
 	}
@@ -130,7 +130,7 @@ namespace Ic3::System
 
 		/// @copybrief OpenGLDisplaySurface::_nativeUpdateGeometry
 		virtual void _nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-		                                    Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
+		                                    TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
 
 		/// @copybrief OpenGLDisplaySurface::_nativeGetSize
 		virtual FrameSize _nativeGetSize( EFrameSizeMode pSizeMode ) const override final;

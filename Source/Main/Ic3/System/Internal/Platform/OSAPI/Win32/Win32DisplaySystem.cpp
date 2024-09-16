@@ -103,19 +103,19 @@ namespace Ic3::System
 			if( adapterObject == nullptr )
 			{
 				auto newAdapterObject = createAdapter<Win32DisplayAdapter>( *this );
-				newAdapterObject->mNativeData.deviceUUID = std::move( adapterUUID );
-				newAdapterObject->mNativeData.deviceName = adapterInfoGDI.DeviceName;
+				newAdapterObject->mNativeData.mDeviceUUID = std::move( adapterUUID );
+				newAdapterObject->mNativeData.mDeviceName = adapterInfoGDI.DeviceName;
 
 				auto & adapterDesc = getAdapterDescInternal( *newAdapterObject );
 				adapterDesc.name = adapterInfoGDI.DeviceString;
 
 				if( makeBitmask( adapterInfoGDI.StateFlags ).isSet( DISPLAY_DEVICE_ATTACHED_TO_DESKTOP ) )
 				{
-					adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_ACTIVE_BIT );
+					adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_ACTIVEBit );
 				}
 				if( makeBitmask( adapterInfoGDI.StateFlags ).isSet( DISPLAY_DEVICE_PRIMARY_DEVICE ) )
 				{
-					adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_PRIMARY_BIT );
+					adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_PRIMARYBit );
 				}
 
 				adapterObject = std::move( newAdapterObject );
@@ -131,8 +131,8 @@ namespace Ic3::System
 				}
 
 				auto outputObject = createOutput<Win32DisplayOutput>( *adapterObject );
-				outputObject->mNativeData.displayDeviceName = adapterInfoGDI.DeviceName;
-				outputObject->mNativeData.outputID = outputInfoGDI.DeviceName;
+				outputObject->mNativeData.mDisplayDeviceName = adapterInfoGDI.DeviceName;
+				outputObject->mNativeData.mOutputID = outputInfoGDI.DeviceName;
 
 				auto & outputDesc = getOutputDescInternal( *outputObject );
 				// NOTE: 'DISPLAY_DEVICE_PRIMARY_DEVICE' flag is not set in case of output devices (unlike adapters).
@@ -140,7 +140,7 @@ namespace Ic3::System
 				// See _win32MonitorEnumProc function above where this gets done.
 				if( makeBitmask( outputInfoGDI.StateFlags ).isSet( DISPLAY_DEVICE_ATTACHED_TO_DESKTOP ) )
 				{
-					outputDesc.flags.set( E_DISPLAY_OUTPUT_FLAG_ACTIVE_BIT );
+					outputDesc.flags.set( E_DISPLAY_OUTPUT_FLAG_ACTIVEBit );
 				}
 			}
 		}
@@ -167,7 +167,7 @@ namespace Ic3::System
 			if( auto outputObject = win32DisplayDriver->_findAnyOutputForDisplayDeviceName( gdiMonitorInfo.szDevice ) )
 			{
 				auto * win32OutputObject = outputObject->queryInterface<Win32DisplayOutput>();
-				win32OutputObject->mNativeData.gdiMonitorHandle = pMonitorHandle;
+				win32OutputObject->mNativeData.mGDIMonitorHandle = pMonitorHandle;
 
 				auto & outputDesc = getOutputDescInternal( *win32OutputObject );
 				outputDesc.name = strUtils::convertStringRepresentation<char>( gdiMonitorInfo.szDevice );
@@ -178,7 +178,7 @@ namespace Ic3::System
 
 				if( makeBitmask( gdiMonitorInfo.dwFlags ).isSet( MONITORINFOF_PRIMARY ) )
 				{
-					outputDesc.flags.set( E_DISPLAY_OUTPUT_FLAG_PRIMARY_BIT );
+					outputDesc.flags.set( E_DISPLAY_OUTPUT_FLAG_PRIMARYBit );
 				}
 			}
 		}
@@ -197,7 +197,7 @@ namespace Ic3::System
 			return;
 		}
 
-		if( ( colorFormatDesc.rgba.u8Red != 8 ) || ( colorFormatDesc.rgba.u8Green != 8 ) || ( colorFormatDesc.rgba.u8Blue != 8 ) )
+		if( ( colorFormatDesc.rgba.mU8Red != 8 ) || ( colorFormatDesc.rgba.mU8Green != 8 ) || ( colorFormatDesc.rgba.mU8Blue != 8 ) )
 		{
 			return;
 		}
@@ -210,7 +210,7 @@ namespace Ic3::System
 
 		for( UINT displayModeIndex = 0; ; ++displayModeIndex )
 		{
-			auto * displayDeviceNameStr = outputWin32->mNativeData.displayDeviceName.c_str();
+			auto * displayDeviceNameStr = outputWin32->mNativeData.mDisplayDeviceName.c_str();
 
 			BOOL edsResult = ::EnumDisplaySettingsExA( displayDeviceNameStr, displayModeIndex, &gdiDevMode, 0 );
 
@@ -231,11 +231,11 @@ namespace Ic3::System
 
 			if( makeBitmask( gdiDevMode.dmDisplayFlags ).isSet( DM_INTERLACED ) )
 			{
-				videoSettings.flags.set( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_INTERLACED_BIT );
+				videoSettings.flags.set( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_INTERLACEDBit );
 			}
 			else
 			{
-				videoSettings.flags.set( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_PROGRESSIVE_BIT );
+				videoSettings.flags.set( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_PROGRESSIVEBit );
 			}
 
 			auto settingsHash = dsmComputeVideoSettingsHash( pColorFormat, videoSettings );
@@ -245,7 +245,7 @@ namespace Ic3::System
 			}
 
 			auto videoModeObject = createVideoMode<Win32DisplayVideoMode>( *outputWin32, pColorFormat );
-			videoModeObject->mNativeData.gdiModeInfo = gdiDevMode;
+			videoModeObject->mNativeData.mGDIModeInfo = gdiDevMode;
 
 			auto & videoModeDesc = getVideoModeDescInternal( *videoModeObject );
 			videoModeDesc.settings = videoSettings;
@@ -261,26 +261,26 @@ namespace Ic3::System
 	}
 
 
-	SysHandle<Win32DisplayAdapter> Win32DisplayDriver::_findAdapterByUUID( const std::string & pUUID )
+	TSysHandle<Win32DisplayAdapter> Win32DisplayDriver::_findAdapterByUUID( const std::string & pUUID )
 	{
 		auto displayAdapter = findAdapter( [&pUUID]( const DisplayAdapter & pAdapter ) -> bool {
 			auto * win32Adapter = pAdapter.queryInterface<Win32DisplayAdapter>();
-			return win32Adapter->mNativeData.deviceUUID == pUUID;
+			return win32Adapter->mNativeData.mDeviceUUID == pUUID;
 		} );
 		return displayAdapter ? displayAdapter->getHandle<Win32DisplayAdapter>() : nullptr;
 	}
 
-	SysHandle<Win32DisplayOutput> Win32DisplayDriver::_findAdapterOutputForDisplayDeviceName( DisplayAdapter & pAdapter,
+	TSysHandle<Win32DisplayOutput> Win32DisplayDriver::_findAdapterOutputForDisplayDeviceName( DisplayAdapter & pAdapter,
 	                                                                                       const char * pDeviceName )
 	{
 		auto displayOutput = pAdapter.findOutput( [pDeviceName]( const DisplayOutput & pOutput ) -> bool {
 			auto * win32Output = pOutput.queryInterface<Win32DisplayOutput>();
-			return win32Output->mNativeData.displayDeviceName == pDeviceName;
+			return win32Output->mNativeData.mDisplayDeviceName == pDeviceName;
 		} );
 		return displayOutput ? displayOutput->getHandle<Win32DisplayOutput>() : nullptr;
 	}
 
-	SysHandle<Win32DisplayOutput> Win32DisplayDriver::_findAnyOutputForDisplayDeviceName( const char * pDeviceName )
+	TSysHandle<Win32DisplayOutput> Win32DisplayDriver::_findAnyOutputForDisplayDeviceName( const char * pDeviceName )
 	{
 		for( auto & adapter : _privateData->adapterInstanceList )
 		{

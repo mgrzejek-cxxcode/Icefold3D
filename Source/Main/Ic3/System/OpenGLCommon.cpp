@@ -11,11 +11,11 @@ namespace Ic3::System
 	{
 		std::ostringstream strStream;
 		strStream << "[OpenGL Rendering Context Information]\n";
-		strStream << "> API Version: " << apiVersion.major << "." << apiVersion.minor << "\n";
-		strStream << "> Runtime Version: " << apiVersionStr << "\n";
-		strStream << "> GLSL Version: " << glslVersionStr << "\n";
-		strStream << "> Renderer ID: " << rendererName << "\n";
-		strStream << "> Vendor Name: " << vendorName;
+		strStream << "> API Version: " << mAPIVersion.mNumMajor << "." << mAPIVersion.mNumMinor << "\n";
+		strStream << "> Runtime Version: " << mAPIVersionStr << "\n";
+		strStream << "> GLSL Version: " << mGLSLVersionStr << "\n";
+		strStream << "> Renderer ID: " << mRendererName << "\n";
+		strStream << "> Vendor Name: " << mVendorName;
 		return strStream.str();
 	}
 
@@ -25,11 +25,11 @@ namespace Ic3::System
 
 		int majorVersion = 0;
 		glGetIntegerv( GL_MAJOR_VERSION, &majorVersion );
-		resultVersion.major = static_cast<uint16>( majorVersion );
+		resultVersion.mNumMajor = static_cast<uint16>( majorVersion );
 
 		int minorVersion = 0;
 		glGetIntegerv( GL_MINOR_VERSION, &minorVersion );
-		resultVersion.minor = static_cast<uint16>( minorVersion );
+		resultVersion.mNumMinor = static_cast<uint16>( minorVersion );
 
 		return resultVersion;
 	}

@@ -35,7 +35,7 @@ namespace Ic3::System
 			dsm_index_t uOutputIndex;
 		};
 
-		dsm_output_id_t outputID = 0;
+		dsm_output_id_t mOutputID = 0;
 	};
 
 	union DisplayVideoModeIDGen
@@ -47,7 +47,7 @@ namespace Ic3::System
 			dsm_index_t uModeIndex;
 		};
 
-		dsm_video_mode_id_t modeID = 0u;
+		dsm_video_mode_id_t mModeID = 0u;
 	};
 
 	union DisplayVideoSettingsHashGen
@@ -61,20 +61,20 @@ namespace Ic3::System
 			uint8 uColorFormatIndex;
 		};
 
-		dsm_video_settings_hash_t hashValue = 0u;
+		dsm_video_settings_hash_t mHashValue = 0u;
 	};
 
 	inline dsm_index_t dsmExtractOutputIDAdapterIndex( dsm_output_id_t pOutputID )
 	{
 		DisplayOutputIDGen outputIDGen;
-		outputIDGen.outputID = pOutputID;
+		outputIDGen.mOutputID = pOutputID;
 		return outputIDGen.uAdapterIndex;
 	}
 
 	inline dsm_index_t dsmExtractOutputIDOutputIndex( dsm_output_id_t pOutputID )
 	{
 		DisplayOutputIDGen outputIDGen;
-		outputIDGen.outputID = pOutputID;
+		outputIDGen.mOutputID = pOutputID;
 		return outputIDGen.uOutputIndex;
 	}
 
@@ -83,7 +83,7 @@ namespace Ic3::System
 
 	struct DisplayManager::DisplayManagerPrivateData
 	{
-		DisplayDriverFactoryMap driverFactoryMap;
+		DisplayDriverFactoryMap mDriverFactoryMap;
 	};
 
 
@@ -91,35 +91,35 @@ namespace Ic3::System
 	struct DisplayDriver::DisplayDriverPrivateData
 	{
 		// Storage for holding all adapters. We use deque to guarantee pointer persistence.
-		std::deque<DisplayAdapterHandle> adapterInstanceList;
+		std::deque<DisplayAdapterHandle> mAdapterInstanceList;
 
 		// Additional helper list, with all adapters stored as handles/pointers.
 		// This is returned directly via the public accessor and allows us to avoid building it on the fly each time.
-		DisplayAdapterList adapterList;
+		DisplayAdapterList mAdapterList;
 
 		// Number of active adapters in the system. Equals adapterList.size() (and, thus, adapterInternalStorage.size() too).
-		uint32 activeAdaptersNum = 0;
+		uint32 mActiveAdaptersNum = 0;
 
 		// Number of all active outputs in the system, i.e. sum of all active outputs for each adapter present in the system.
-		uint32 combinedActiveOutputsNum = 0;
+		uint32 mCombinedActiveOutputsNum = 0;
 
 		// Points to the default/primary adapter in the system. Usually this will be adapterList[0];
-		DisplayAdapter * primaryAdapter = nullptr;
+		DisplayAdapter * mPrimaryAdapter = nullptr;
 	};
 
 	/// @brief Private, implementation-specific data of the DisplayAdapter class.
 	struct DisplayAdapter::DisplayAdapterPrivateData
 	{
 		//
-		DisplayAdapterDesc adapterDesc;
+		DisplayAdapterDesc mAdapterDesc;
 
-		std::deque<DisplayOutputHandle> outputInstanceList;
+		std::deque<DisplayOutputHandle> mOutputInstanceList;
 
-		DisplayOutputList outputList;
+		DisplayOutputList mOutputList;
 
-		uint32 activeOutputsNum = 0;
+		uint32 mActiveOutputsNum = 0;
 
-		DisplayOutput * primaryOutput = nullptr;
+		DisplayOutput * mPrimaryOutput = nullptr;
 	};
 
 	/// @brief Private, implementation-specific data of the DisplayOutput class.
@@ -132,29 +132,29 @@ namespace Ic3::System
 		struct ColorFormatData
 		{
 			// The color format this data refers to.
-			EColorFormat colorFormat = EColorFormat::Unknown;
+			EColorFormat mColorFormat = EColorFormat::Unknown;
 
 			// List of video modes supported for this EColorFormat. Stored as queue - as usual.
-			std::deque<DisplayVideoModeHandle> videoModeInstanceList;
+			std::deque<DisplayVideoModeHandle> mVideoModeInstanceList;
 
 			// Helper list with handles/pointers.
-			DisplayVideoModeList videoModeList;
+			DisplayVideoModeList mVideoModeList;
 		};
 
 		//
-		DisplayOutputDesc outputDesc;
+		DisplayOutputDesc mOutputDesc;
 
 		// The main data. Stores a ColorFormatData struct for each EColorFormat supported/enumerated.
-		std::map<EColorFormat, ColorFormatData> colorFormatMap;
+		std::map<EColorFormat, ColorFormatData> mColorFormatMap;
 
 		//
-		std::vector<EColorFormat> supportedColorFormatList;
+		std::vector<EColorFormat> mSupportedColorFormatList;
 	};
 
 	/// @brief Private, implementation-specific data of the DisplayOutput class.
 	struct DisplayVideoMode::DisplayVideoModePrivateData
 	{
-		DisplayVideoModeDesc modeDesc;
+		DisplayVideoModeDesc mModeDesc;
 	};
 
 } // namespace Ic3::System

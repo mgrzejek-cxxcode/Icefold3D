@@ -17,14 +17,14 @@ namespace Ic3::System
 
 		struct X11WindowNativeData : public X11EventSourceNativeData
 		{
-			Colormap xColormap = E_X11_XID_NONE;
+			Colormap mXColormap = eXIDNone;
 		};
 
 		struct X11WindowCreateInfo : public WindowCreateInfo
 		{
-			Visual * windowVisual = nullptr;
-			int colorDepth = 0;
-			bool fullscreenMode = false;
+			Visual * mWindowVisual = nullptr;
+			int mColorDepth = 0;
+			bool mFullscreenMode = false;
 		};
 
 		void x11CreateWindow( X11WindowNativeData & pWindowNativeData, const X11WindowCreateInfo & pCreateInfo );
@@ -39,7 +39,7 @@ namespace Ic3::System
 
 		void x11UpdateFrameGeometry( const X11WindowNativeData & pWindowNativeData,
 		                             const FrameGeometry & pFrameGeometry,
-		                             Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags );
+		                             TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags );
 
 		IC3_SYSTEM_API_NODISCARD FrameSize x11GetFrameSize( const X11WindowNativeData & pWindowNativeData, EFrameSizeMode pSizeMode );
 
@@ -92,7 +92,7 @@ namespace Ic3::System
 
 		// @override Window::_nativeUpdateGeometry
 		virtual void _nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-											Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
+											TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
 
 		// @override Window::_nativeGetSize
 		virtual FrameSize _nativeGetSize( EFrameSizeMode pSizeMode ) const override final;

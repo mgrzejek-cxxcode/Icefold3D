@@ -29,47 +29,47 @@ namespace Ic3::System
 		auto & xSessionData = Platform::x11GetXSessionData( *this );
 
 		// Get default screen depth for the X screen.
-		auto screenDepth = XDefaultDepth( xSessionData.display, xSessionData.screenIndex );
+		auto screenDepth = XDefaultDepth( xSessionData.mDisplay, xSessionData.mScreenIndex );
 
 		if( screenDepth < 32 )
 		{
 			XVisualInfo visualInfo;
-			if( XMatchVisualInfo( xSessionData.display, xSessionData.screenIndex, 32, TrueColor, &visualInfo ) == True )
+			if( XMatchVisualInfo( xSessionData.mDisplay, xSessionData.mScreenIndex, 32, TrueColor, &visualInfo ) == True )
 			{
 				screenDepth = 32;
 			}
 		}
 
-		mNativeData.screenDepth = screenDepth;
+		mNativeData.mScreenDepth = screenDepth;
 
-		if( mNativeData.xrrVersion == CX_VERSION_UNKNOWN )
+		if( mNativeData.mXRRVersion == CX_VERSION_UNKNOWN )
 		{
 			int xrrVersionMajor = 0;
 			int xrrVersionMinor = 0;
 
-			if( XRRQueryVersion( xSessionData.display, &xrrVersionMajor, &xrrVersionMinor ) == False )
+			if( XRRQueryVersion( xSessionData.mDisplay, &xrrVersionMajor, &xrrVersionMinor ) == False )
 			{
 				return;
 			}
 
-			mNativeData.xrrVersion.major = static_cast<uint16>( xrrVersionMajor );
-			mNativeData.xrrVersion.major = static_cast<uint16>( xrrVersionMinor );
+			mNativeData.mXRRVersion.mNumMajor = static_cast<uint16>( xrrVersionMajor );
+			mNativeData.mXRRVersion.mNumMajor = static_cast<uint16>( xrrVersionMinor );
 		}
 
-		if( auto * xrrScreenResources = XRRGetScreenResources( xSessionData.display, xSessionData.rootWindowXID ) )
+		if( auto * xrrScreenResources = XRRGetScreenResources( xSessionData.mDisplay, xSessionData.mRootWindowXID ) )
 		{
 			int xrrMonitorsNum = 0;
-			auto * xrrMonitorList = XRRGetMonitors( xSessionData.display, xSessionData.rootWindowXID, False, &xrrMonitorsNum );
+			auto * xrrMonitorList = XRRGetMonitors( xSessionData.mDisplay, xSessionData.mRootWindowXID, False, &xrrMonitorsNum );
 
 			if( xrrMonitorList && ( xrrMonitorsNum > 0 ) )
 			{
-                mNativeData.xrrDefaultMonitorInfo = xrrMonitorList[0];
+                mNativeData.mXRRDefaultMonitorInfo = xrrMonitorList[0];
                 for( int monitorIndex = 0; monitorIndex < xrrMonitorsNum; ++monitorIndex )
 				{
 					auto & xrrMonitorInfo = xrrMonitorList[monitorIndex];
 					if( xrrMonitorInfo.primary != 0 )
 					{
-						mNativeData.xrrDefaultMonitorInfo = xrrMonitorInfo;
+						mNativeData.mXRRDefaultMonitorInfo = xrrMonitorInfo;
 						break;
 					}
 				}
@@ -83,7 +83,7 @@ namespace Ic3::System
 
 	void X11DisplayManager::_releaseX11DisplayManagerState()
 	{
-		mNativeData.screenDepth = 0u;
+		mNativeData.mScreenDepth = 0u;
 	}
 
 	DisplayDriverHandle X11DisplayManager::_nativeCreateDisplayDriver()
@@ -93,10 +93,10 @@ namespace Ic3::System
 
 	void X11DisplayManager::_nativeQueryDefaultDisplayOffset( DisplayOffset & pOutOffset ) const
 	{
-		if( mNativeData.xrrVersion != CX_VERSION_UNKNOWN )
+		if( mNativeData.mXRRVersion != CX_VERSION_UNKNOWN )
 		{
-			pOutOffset.x = static_cast<int32>( mNativeData.xrrDefaultMonitorInfo.x );
-			pOutOffset.y = static_cast<int32>( mNativeData.xrrDefaultMonitorInfo.y );
+			pOutOffset.x = static_cast<int32>( mNativeData.mXRRDefaultMonitorInfo.x );
+			pOutOffset.y = static_cast<int32>( mNativeData.mXRRDefaultMonitorInfo.y );
 		}
 		else
 		{
@@ -107,17 +107,17 @@ namespace Ic3::System
 
 	void X11DisplayManager::_nativeQueryDefaultDisplaySize( DisplaySize & pOutSize ) const
 	{
-		if( mNativeData.xrrVersion != CX_VERSION_UNKNOWN )
+		if( mNativeData.mXRRVersion != CX_VERSION_UNKNOWN )
 		{
-			pOutSize.x = static_cast<uint32>( mNativeData.xrrDefaultMonitorInfo.width );
-			pOutSize.y = static_cast<uint32>( mNativeData.xrrDefaultMonitorInfo.height );
+			pOutSize.x = static_cast<uint32>( mNativeData.mXRRDefaultMonitorInfo.width );
+			pOutSize.y = static_cast<uint32>( mNativeData.mXRRDefaultMonitorInfo.height );
 		}
 		else
 		{
 			auto & xSessionData = Platform::x11GetXSessionData( *this );
 
-			const auto displayWidth = XDisplayWidth( xSessionData.display, xSessionData.screenIndex );
-			const auto displayHeight = XDisplayHeight( xSessionData.display, xSessionData.screenIndex );
+			const auto displayWidth = XDisplayWidth( xSessionData.mDisplay, xSessionData.mScreenIndex );
+			const auto displayHeight = XDisplayHeight( xSessionData.mDisplay, xSessionData.mScreenIndex );
 
 			pOutSize.x = static_cast<uint32>( displayWidth );
 			pOutSize.y = static_cast<uint32>( displayHeight );
@@ -147,57 +147,57 @@ namespace Ic3::System
 		auto & xSessionData = Platform::x11GetXSessionData( *this );
 
 		//
-		mNativeData.xrrScreenResources = XRRGetScreenResources( xSessionData.display, xSessionData.rootWindowXID );
-		if( mNativeData.xrrScreenResources == nullptr )
+		mNativeData.mXRRScreenResources = XRRGetScreenResources( xSessionData.mDisplay, xSessionData.mRootWindowXID );
+		if( mNativeData.mXRRScreenResources == nullptr )
 		{
 			ic3Throw( E_EXC_DEBUG_PLACEHOLDER );
 		}
 
 		//
-		mNativeData.xrrMonitorList = XRRGetMonitors( xSessionData.display,
-		                                             xSessionData.rootWindowXID,
+		mNativeData.mXRRMonitorList = XRRGetMonitors( xSessionData.mDisplay,
+		                                             xSessionData.mRootWindowXID,
 		                                             False,
-		                                             &( mNativeData.xrrMonitorsNum ) );
+		                                             &( mNativeData.mXRRMonitorsNum ) );
 
-		if( ( mNativeData.xrrMonitorList == nullptr ) || ( mNativeData.xrrMonitorsNum <= 0 ) )
+		if( ( mNativeData.mXRRMonitorList == nullptr ) || ( mNativeData.mXRRMonitorsNum <= 0 ) )
 		{
 			ic3Throw( E_EXC_DEBUG_PLACEHOLDER ); // ExsThrowException( EXC_Internal_Error );
 		}
 
-        mNativeData.xrrDefaultMonitorInfo = &( mNativeData.xrrMonitorList[0] );
-		for( int monitorIndex = 0; monitorIndex < mNativeData.xrrMonitorsNum; ++monitorIndex )
+        mNativeData.mXRRDefaultMonitorInfo = &( mNativeData.mXRRMonitorList[0] );
+		for( int monitorIndex = 0; monitorIndex < mNativeData.mXRRMonitorsNum; ++monitorIndex )
 		{
-			auto & monitorInfo = mNativeData.xrrMonitorList[monitorIndex];
+			auto & monitorInfo = mNativeData.mXRRMonitorList[monitorIndex];
 			if( monitorInfo.primary != 0 )
 			{
-				mNativeData.xrrDefaultMonitorInfo = &monitorInfo;
+				mNativeData.mXRRDefaultMonitorInfo = &monitorInfo;
                 break;
 			}
 		}
 
-		for( int xrrModeIndex = 0; xrrModeIndex < mNativeData.xrrScreenResources->nmode; ++xrrModeIndex )
+		for( int xrrModeIndex = 0; xrrModeIndex < mNativeData.mXRRScreenResources->nmode; ++xrrModeIndex )
 		{
-			auto & xrrModeInfo = mNativeData.xrrScreenResources->modes[xrrModeIndex];
-			mNativeData.xrrModeInfoMap[xrrModeInfo.id] = &xrrModeInfo;
+			auto & xrrModeInfo = mNativeData.mXRRScreenResources->modes[xrrModeIndex];
+			mNativeData.mXRRModeInfoMap[xrrModeInfo.id] = &xrrModeInfo;
 		}
 	}
 	
 	void X11DisplayDriver::_releaseX11DisplayDriverState()
 	{
-		if( mNativeData.xrrScreenResources != nullptr )
+		if( mNativeData.mXRRScreenResources != nullptr )
 		{
-			XRRFreeScreenResources( mNativeData.xrrScreenResources );
-			mNativeData.xrrScreenResources = nullptr;
+			XRRFreeScreenResources( mNativeData.mXRRScreenResources );
+			mNativeData.mXRRScreenResources = nullptr;
 		}
 
-		if( mNativeData.xrrMonitorList != nullptr )
+		if( mNativeData.mXRRMonitorList != nullptr )
 		{
-			XRRFreeMonitors( mNativeData.xrrMonitorList );
-			mNativeData.xrrMonitorList = nullptr;
-			mNativeData.xrrMonitorsNum = 0;
+			XRRFreeMonitors( mNativeData.mXRRMonitorList );
+			mNativeData.mXRRMonitorList = nullptr;
+			mNativeData.mXRRMonitorsNum = 0;
 		}
 
-		mNativeData.screenDepth = 0;
+		mNativeData.mScreenDepth = 0;
 		mNativeData.resetSessionData();
 	}
 
@@ -208,22 +208,22 @@ namespace Ic3::System
 		auto adapterObject = createAdapter<X11DisplayAdapter>( *this );
 
 		auto & adapterDesc = getAdapterDescInternal( *adapterObject );
-		adapterDesc.name = "XRR Default Adapter";
-		adapterDesc.vendorID = EDisplayAdapterVendorID::Unknown;
-		adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_ACTIVE_BIT );
-		adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_PRIMARY_BIT );
+		adapterDesc.mName = "XRR Default Adapter";
+		adapterDesc.mVendorID = EDisplayAdapterVendorID::Unknown;
+		adapterDesc.mFlags.set( eDisplayAdapterFlagActiveBit );
+		adapterDesc.mFlags.set( eDisplayAdapterFlagPrimaryBit );
 
-		for( size_t monitorIndex = 0; monitorIndex < mNativeData.xrrMonitorsNum; ++monitorIndex )
+		for( size_t monitorIndex = 0; monitorIndex < mNativeData.mXRRMonitorsNum; ++monitorIndex )
 		{
-			auto & monitorInfo = mNativeData.xrrMonitorList[monitorIndex];
-			//char * monitorName = XGetAtomName( xSessionData.display, monitorInfo.name );
+			auto & monitorInfo = mNativeData.mXRRMonitorList[monitorIndex];
+			//char * monitorName = XGetAtomName( xSessionData.mDisplay, monitorInfo.mName );
 
 			// Iterate over monitor's outputs and find the one used by the system.
 			for( int monitorOutputIndex = 0; monitorOutputIndex < monitorInfo.noutput; ++monitorOutputIndex )
 			{
 				auto monitorOutputID = monitorInfo.outputs[monitorOutputIndex];
-				auto * monitorOutputInfo = XRRGetOutputInfo( xSessionData.display,
-				                                             mNativeData.xrrScreenResources,
+				auto * monitorOutputInfo = XRRGetOutputInfo( xSessionData.mDisplay,
+				                                             mNativeData.mXRRScreenResources,
 				                                             monitorOutputID );
 
 				if( monitorOutputInfo )
@@ -231,24 +231,24 @@ namespace Ic3::System
 					if( ( monitorInfo.width != 0 ) && ( monitorInfo.height != 0 ) )
 					{
 						auto outputObject = createOutput<X11DisplayOutput>( *adapterObject );
-						outputObject->mNativeData.xrrOutputID = monitorOutputID;
-						outputObject->mNativeData.xrrCrtcID = monitorOutputInfo->crtc;
+						outputObject->mNativeData.mXRROutputID = monitorOutputID;
+						outputObject->mNativeData.mXRRCrtcID = monitorOutputInfo->crtc;
 
 						auto & outputDesc = getOutputDescInternal( *outputObject );
-						outputDesc.name = monitorOutputInfo->name;
-						outputDesc.screenRect.offset.x = monitorInfo.x;
-						outputDesc.screenRect.offset.y = monitorInfo.y;
-						outputDesc.screenRect.size.x = monitorInfo.width;
-						outputDesc.screenRect.size.y = monitorInfo.height;
+						outputDesc.mName = monitorOutputInfo->name;
+						outputDesc.mScreenRect.mOffset.x = monitorInfo.x;
+						outputDesc.mScreenRect.mOffset.y = monitorInfo.y;
+						outputDesc.mScreenRect.mSize.x = monitorInfo.width;
+						outputDesc.mScreenRect.mSize.y = monitorInfo.height;
 
 						if( monitorOutputInfo->connection == RR_Connected )
 						{
-							outputDesc.flags.set( E_DISPLAY_OUTPUT_FLAG_ACTIVE_BIT );
+							outputDesc.mFlags.set( eDisplayOutputFlagActiveBit );
 						}
 
 						if( monitorInfo.primary != 0 )
 						{
-							outputDesc.flags.set( E_DISPLAY_OUTPUT_FLAG_PRIMARY_BIT );
+							outputDesc.mFlags.set( eDisplayOutputFlagPrimaryBit );
 						}
 					}
 
@@ -268,14 +268,14 @@ namespace Ic3::System
 		auto & xSessionData = Platform::x11GetXSessionData( *this );
 		auto * outputX11 = pOutput.queryInterface<X11DisplayOutput>();
 
-		if( !Platform::_x11CheckColorFormatSupport( xSessionData.display, xSessionData.screenIndex, pColorFormat ) )
+		if( !Platform::_x11CheckColorFormatSupport( xSessionData.mDisplay, xSessionData.mScreenIndex, pColorFormat ) )
 		{
 			return;
 		}
 
-		auto * outputInfo = XRRGetOutputInfo( xSessionData.display,
-		                                      mNativeData.xrrScreenResources,
-		                                      outputX11->mNativeData.xrrOutputID );
+		auto * outputInfo = XRRGetOutputInfo( xSessionData.mDisplay,
+		                                      mNativeData.mXRRScreenResources,
+		                                      outputX11->mNativeData.mXRROutputID );
 		if( outputInfo == nullptr )
 		{
 			ic3Throw( E_EXC_DEBUG_PLACEHOLDER );
@@ -288,8 +288,8 @@ namespace Ic3::System
 			for( size_t modeIndex = 0; modeIndex < outputInfo->nmode; ++modeIndex )
 			{
 				auto outputModeID = outputInfo->modes[modeIndex];
-				auto displayModeInfoPtrIter = mNativeData.xrrModeInfoMap.find( outputModeID );
-				if( displayModeInfoPtrIter == mNativeData.xrrModeInfoMap.end() )
+				auto displayModeInfoPtrIter = mNativeData.mXRRModeInfoMap.find( outputModeID );
+				if( displayModeInfoPtrIter == mNativeData.mXRRModeInfoMap.end() )
 				{
 					continue;
 				}
@@ -310,17 +310,17 @@ namespace Ic3::System
 				}
 
 				DisplayVideoSettings videoSettings;
-				videoSettings.resolution.x = static_cast<uint32>( displayModeInfo.width );
-				videoSettings.resolution.y = static_cast<uint32>( displayModeInfo.height );
-				videoSettings.refreshRate = static_cast<uint16>( refreshRate );
+				videoSettings.mResolution.x = static_cast<uint32>( displayModeInfo.width );
+				videoSettings.mResolution.y = static_cast<uint32>( displayModeInfo.height );
+				videoSettings.mRefreshRate = static_cast<uint16>( refreshRate );
 
 				if( ( displayModeInfo.modeFlags & RR_Interlace ) != 0 )
 				{
-					videoSettings.flags.set( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_INTERLACED_BIT );
+					videoSettings.mFlags.set( eDisplayVideoSettingsFlagScanInterlacedBit );
 				}
 				else
 				{
-					videoSettings.flags.set( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_PROGRESSIVE_BIT );
+					videoSettings.mFlags.set( eDisplayVideoSettingsFlagScanProgressiveBit );
 				}
 
 				auto settingsHash = dsmComputeVideoSettingsHash( pColorFormat, videoSettings );
@@ -330,12 +330,12 @@ namespace Ic3::System
 				}
 
 				auto videoModeObject = createVideoMode<X11DisplayVideoMode>( *outputX11, pColorFormat );
-				videoModeObject->mNativeData.xrrModeID = displayModeInfo.id;
-				videoModeObject->mNativeData.xrrModeInfo = &displayModeInfo;
+				videoModeObject->mNativeData.mXRRModeID = displayModeInfo.id;
+				videoModeObject->mNativeData.mXRRModeInfo = &displayModeInfo;
 
 				auto & videoModeDesc = getVideoModeDescInternal( *videoModeObject );
-				videoModeDesc.settings = videoSettings;
-				videoModeDesc.settingsHash = settingsHash;
+				videoModeDesc.mSettings = videoSettings;
+				videoModeDesc.mSettingsHash = settingsHash;
 
 				lastSettingsHash = settingsHash;
 			}
@@ -358,7 +358,7 @@ namespace Ic3::System
 			const auto & colorFormatDesc = vsxGetDescForColorFormat( pColorFormat );
 
 			XVisualInfo visualInfo;
-			if( XMatchVisualInfo( pXDisplay, pScreenIndex, colorFormatDesc.size, TrueColor, &visualInfo ) == True )
+			if( XMatchVisualInfo( pXDisplay, pScreenIndex, colorFormatDesc.mSize, TrueColor, &visualInfo ) == True )
 			{
 				return true;
 			}

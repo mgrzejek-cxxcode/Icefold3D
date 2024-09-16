@@ -30,19 +30,19 @@ namespace Ic3::System
 
 		enum EX11SystemWindowFlags : uint32
 		{
-			E_X11_SYSTEM_WINDOW_FLAG_WM_STATE_FULLSCREEN = 0x8000
+			eX11SystemWindowFlagWMStateFullscreen = 0x8000
 		};
 
 		struct X11EventSourceNativeData : public X11NativeDataCommon
 		{
-			XWindow windowXID = E_X11_XID_NONE;
+			XWindow mWindowXID = eXIDNone;
 
-			Bitmask<uint32> sysWindowFlags = 0;
+			TBitmask<uint32> mSysWindowFlags = 0;
 		};
 
 		struct NativeEventType
 		{
-			XEvent xEvent;
+			XEvent mXEvent;
 		};
 
 		IC3_SYSTEM_API_NODISCARD EventSource * x11FindEventSourceByXWindow( X11EventController & pEventController, XWindow pWindowXID );

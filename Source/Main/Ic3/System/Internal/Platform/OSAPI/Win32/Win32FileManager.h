@@ -12,13 +12,13 @@ namespace Ic3::System
 	{
 		enum EWin32FileFlags : uint32
 		{
-			E_WIN32_FILE_FLAG_EOF_BIT = 0xF0
+			eWin32FileFlagEOFBit = 0xF0
 		};
 
 		struct Win32FileNativeData
 		{
-			HANDLE fileHandle = nullptr;
-			Bitmask<EWin32FileFlags> flags = 0;
+			HANDLE mFileHandle = nullptr;
+			TBitmask<EWin32FileFlags> mFlags = 0;
 		};
 
 	}

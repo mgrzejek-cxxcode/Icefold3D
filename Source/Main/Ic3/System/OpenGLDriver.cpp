@@ -35,25 +35,25 @@ namespace Ic3::System
 	{
 		OpenGLDisplaySurfaceCreateInfo surfaceCreateInfo = pCreateInfo;
 
-		if( pCreateInfo.flags.isSet( E_OPENGL_DISPLAY_SURFACE_CREATE_FLAG_FULLSCREEN_BIT ) )
+		if( pCreateInfo.mFlags.isSet( eOpenGLDisplaySurfaceCreateFlagFullscreenBit ) )
 		{
-			surfaceCreateInfo.frameGeometry.size = CX_FRAME_SIZE_MAX;
-			surfaceCreateInfo.frameGeometry.style = EFrameStyle::Overlay;
+			surfaceCreateInfo.mFrameGeometry.mSize = cxFrameSizeMax;
+			surfaceCreateInfo.mFrameGeometry.mStyle = EFrameStyle::Overlay;
 		}
 		else
 		{
-			surfaceCreateInfo.frameGeometry.position = pCreateInfo.frameGeometry.position;
-			surfaceCreateInfo.frameGeometry.size = pCreateInfo.frameGeometry.size;
-			surfaceCreateInfo.frameGeometry.style = pCreateInfo.frameGeometry.style;
+			surfaceCreateInfo.mFrameGeometry.mPosition = pCreateInfo.mFrameGeometry.mPosition;
+			surfaceCreateInfo.mFrameGeometry.mSize = pCreateInfo.mFrameGeometry.mSize;
+			surfaceCreateInfo.mFrameGeometry.mStyle = pCreateInfo.mFrameGeometry.mStyle;
 		}
 
-		if( pCreateInfo.minimumAPIVersion == CX_GL_VERSION_BEST_SUPPORTED )
+		if( pCreateInfo.mMinimumAPIVersion == cxGLVersionBestSupported )
 		{
 			const auto versionSupportInfo = _nativeQueryVersionSupportInfo();
-			surfaceCreateInfo.minimumAPIVersion = versionSupportInfo.apiVersion;
+			surfaceCreateInfo.mMinimumAPIVersion = versionSupportInfo.mAPIVersion;
 		}
 
-		surfaceCreateInfo.frameGeometry = mDisplayManager->validateFrameGeometry( surfaceCreateInfo.frameGeometry );
+		surfaceCreateInfo.mFrameGeometry = mDisplayManager->validateFrameGeometry( surfaceCreateInfo.mFrameGeometry );
 
 		auto displaySurface = _nativeCreateDisplaySurface( surfaceCreateInfo );
 		displaySurface->setInternalOwnershipFlag( true );
@@ -74,48 +74,48 @@ namespace Ic3::System
 	{
 		OpenGLRenderContextCreateInfo contextCreateInfo = pCreateInfo;
 
-		if( contextCreateInfo.requestedAPIVersion == CX_VERSION_UNKNOWN  )
+		if( contextCreateInfo.mRequestedAPIVersion == CX_VERSION_UNKNOWN  )
 		{
-			contextCreateInfo.requestedAPIVersion = Version{ 1, 0 };
+			contextCreateInfo.mRequestedAPIVersion = Version{1, 0 };
 		}
-		else if( contextCreateInfo.requestedAPIVersion == CX_GL_VERSION_BEST_SUPPORTED )
+		else if( contextCreateInfo.mRequestedAPIVersion == cxGLVersionBestSupported )
 		{
-			contextCreateInfo.requestedAPIVersion = _versionSupportInfo.apiVersion;
+			contextCreateInfo.mRequestedAPIVersion = _versionSupportInfo.mAPIVersion;
 		}
 
 		const auto surfaceAPIClass = pSurface.querySupportedAPIClass();
-		if( surfaceAPIClass == EOpenGLAPIClass::OpenGLES )
+		if( surfaceAPIClass == EOpenGLAPIClass::GLES )
 		{
-			if( contextCreateInfo.requestedAPIVersion > CX_GL_VERSION_MAX_ES )
+			if( contextCreateInfo.mRequestedAPIVersion > cxGLVersionMaxES )
 			{
 				return nullptr;
 			}
 		}
 		else
 		{
-			if( contextCreateInfo.requestedAPIVersion > CX_GL_VERSION_MAX_DESKTOP )
+			if( contextCreateInfo.mRequestedAPIVersion > cxGLVersionMaxDesktop )
 			{
 				return nullptr;
 			}
 		}
 
-		if( contextCreateInfo.requestedAPIVersion == Version{ 3, 1 } )
+		if( contextCreateInfo.mRequestedAPIVersion == Version{3, 1 } )
 		{
-			if( ( contextCreateInfo.contextAPIProfile == EOpenGLAPIProfile::Auto ) || ( contextCreateInfo.contextAPIProfile == EOpenGLAPIProfile::Core ) )
+			if((contextCreateInfo.mContextAPIProfile == EOpenGLAPIProfile::Auto ) || (contextCreateInfo.mContextAPIProfile == EOpenGLAPIProfile::Core ) )
 			{
-				contextCreateInfo.flags.set( E_OPENGL_RENDER_CONTEXT_CREATE_FLAG_FORWARD_COMPATIBLE_BIT );
+				contextCreateInfo.mFlags.set( eOpenGLRenderContextCreateFlagForwardCompatibleBit );
 			}
 			else
 			{
-				contextCreateInfo.flags.unset( E_OPENGL_RENDER_CONTEXT_CREATE_FLAG_FORWARD_COMPATIBLE_BIT );
+				contextCreateInfo.mFlags.unset( eOpenGLRenderContextCreateFlagForwardCompatibleBit );
 			}
 		}
 
-		if( contextCreateInfo.requestedAPIVersion >= Version{ 3, 2 } )
+		if( contextCreateInfo.mRequestedAPIVersion >= Version{3, 2 } )
 		{
-			if( contextCreateInfo.contextAPIProfile == EOpenGLAPIProfile::Auto )
+			if( contextCreateInfo.mContextAPIProfile == EOpenGLAPIProfile::Auto )
 			{
-				contextCreateInfo.contextAPIProfile = EOpenGLAPIProfile::Core;
+				contextCreateInfo.mContextAPIProfile = EOpenGLAPIProfile::Core;
 			}
 		}
 
@@ -213,14 +213,14 @@ namespace Ic3::System
 	{
 		OpenGLVersionSupportInfo openGLVersionSupportInfo{};
 
-		openGLVersionSupportInfo.apiVersion = OpenGLCoreAPI::queryRuntimeVersion();
-		openGLVersionSupportInfo.apiClass = EOpenGLAPIClass::OpenGLDesktop;
-		openGLVersionSupportInfo.apiProfile = EOpenGLAPIProfile::Legacy;
+		openGLVersionSupportInfo.mAPIVersion = OpenGLCoreAPI::queryRuntimeVersion();
+		openGLVersionSupportInfo.mAPIClass = EOpenGLAPIClass::Desktop;
+		openGLVersionSupportInfo.mAPIProfile = EOpenGLAPIProfile::Legacy;
 
-		if( openGLVersionSupportInfo.apiVersion.major == 0 )
+		if( openGLVersionSupportInfo.mAPIVersion.mNumMajor == 0 )
 		{
-			openGLVersionSupportInfo.apiVersion.major = 1;
-			openGLVersionSupportInfo.apiVersion.minor = 0;
+			openGLVersionSupportInfo.mAPIVersion.mNumMajor = 1;
+			openGLVersionSupportInfo.mAPIVersion.mNumMinor = 0;
 		}
 
 		return openGLVersionSupportInfo;
@@ -276,26 +276,26 @@ namespace Ic3::System
 	void OpenGLDisplaySurface::resizeClientArea( const FrameSize & pSize )
 	{
 		FrameGeometry newFrameGeometry{};
-		newFrameGeometry.position = CX_FRAME_POS_AUTO;
-		newFrameGeometry.size = pSize;
-		newFrameGeometry.style = EFrameStyle::Unspecified;
+		newFrameGeometry.mPosition = cxFramePosAuto;
+		newFrameGeometry.mSize = pSize;
+		newFrameGeometry.mStyle = EFrameStyle::Unspecified;
 
 		newFrameGeometry = mGLSystemDriver->mDisplayManager->validateFrameGeometry( newFrameGeometry );
 
-		const auto updateFlags = E_FRAME_GEOMETRY_UPDATE_FLAG_POSITION_BIT | E_FRAME_GEOMETRY_UPDATE_FLAG_SIZE_CLIENT_AREA_BIT;
+		const auto updateFlags = eFrameGeometryUpdateFlagPositionBit | eFrameGeometryUpdateFlagSizeClientAreaBit;
 		_nativeUpdateGeometry( newFrameGeometry, updateFlags );
 	}
 
 	void OpenGLDisplaySurface::resizeFrame( const FrameSize & pSize )
 	{
 		FrameGeometry newFrameGeometry{};
-		newFrameGeometry.position = CX_FRAME_POS_AUTO;
-		newFrameGeometry.size = pSize;
-		newFrameGeometry.style = EFrameStyle::Unspecified;
+		newFrameGeometry.mPosition = cxFramePosAuto;
+		newFrameGeometry.mSize = pSize;
+		newFrameGeometry.mStyle = EFrameStyle::Unspecified;
 
 		newFrameGeometry = mGLSystemDriver->mDisplayManager->validateFrameGeometry( newFrameGeometry );
 
-		const auto updateFlags = E_FRAME_GEOMETRY_UPDATE_FLAG_POSITION_BIT | E_FRAME_GEOMETRY_UPDATE_FLAG_SIZE_OUTER_RECT_BIT;
+		const auto updateFlags = eFrameGeometryUpdateFlagPositionBit | eFrameGeometryUpdateFlagSizeOuterRectBit;
 		_nativeUpdateGeometry( newFrameGeometry, updateFlags );
 	}
 
@@ -310,7 +310,7 @@ namespace Ic3::System
 	}
 
 	void OpenGLDisplaySurface::updateGeometry( const FrameGeometry & pFrameGeometry,
-	                                           Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
+	                                           TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
 	{
 		_nativeUpdateGeometry( pFrameGeometry, pUpdateFlags );
 	}
@@ -378,23 +378,23 @@ namespace Ic3::System
 		}
 
 		OpenGLSystemVersionInfo systemVersionInfo;
-		systemVersionInfo.apiVersion = OpenGLCoreAPI::queryRuntimeVersion();
+		systemVersionInfo.mAPIVersion = OpenGLCoreAPI::queryRuntimeVersion();
 
 		if( const auto * versionStr = glGetString( GL_VERSION ) )
 		{
-			systemVersionInfo.apiVersionStr.assign( reinterpret_cast<const char *>( versionStr ) );
+			systemVersionInfo.mAPIVersionStr.assign( reinterpret_cast<const char *>( versionStr ) );
 		}
 		if( const auto * glslVersionStr = glGetString( GL_SHADING_LANGUAGE_VERSION ) )
 		{
-			systemVersionInfo.glslVersionStr.assign( reinterpret_cast<const char *>( glslVersionStr ) );
+			systemVersionInfo.mGLSLVersionStr.assign( reinterpret_cast<const char *>( glslVersionStr ) );
 		}
 		if( const auto * rendererNameStr = glGetString( GL_RENDERER ) )
 		{
-			systemVersionInfo.rendererName.assign( reinterpret_cast<const char *>( rendererNameStr ) );
+			systemVersionInfo.mRendererName.assign( reinterpret_cast<const char *>( rendererNameStr ) );
 		}
 		if( const auto * vendorNameStr = glGetString( GL_VENDOR ) )
 		{
-			systemVersionInfo.vendorName.assign( reinterpret_cast<const char *>( vendorNameStr ) );
+			systemVersionInfo.mVendorName.assign( reinterpret_cast<const char *>( vendorNameStr ) );
 		}
 
 		ic3OpenGLResetErrorQueue();

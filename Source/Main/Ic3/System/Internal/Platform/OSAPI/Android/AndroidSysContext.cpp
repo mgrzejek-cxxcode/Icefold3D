@@ -16,11 +16,11 @@ namespace Ic3::System
 
 	SysContextHandle createSysContext( const SysContextCreateInfo & pCreateInfo )
 	{
-		if( !pCreateInfo.nativeParams.aCommonAppState )
+		if( !pCreateInfo.mNativeParams.aCommonAppState )
 		{
 			return nullptr;
 		}
-		return createDynamicInterfaceObject<AndroidSysContext>( pCreateInfo.nativeParams.aCommonAppState );
+		return createDynamicObject<AndroidSysContext>( pCreateInfo.mNativeParams.aCommonAppState );
 	}
 
 

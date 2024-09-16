@@ -34,7 +34,7 @@ namespace Ic3::System
 
 		EKeyCode _win32GetSysKeyCode( WPARAM pWparam );
 
-		Bitmask<EMouseButtonFlagBits> _win32GetMouseButtonStateMask( WPARAM pWparam );
+		TBitmask<EMouseButtonFlagBits> _win32GetMouseButtonStateMask( WPARAM pWparam );
 
 	}
 	
@@ -53,8 +53,8 @@ namespace Ic3::System
 
 		auto * win32EventSourceState = new Platform::Win32EventSourceState();
 		win32EventSourceState->eventController = this;
-		win32EventSourceState->savedEventCallback = ::GetWindowLongPtrA( eventSourceNativeData->hwnd, GWLP_WNDPROC );
-		win32EventSourceState->savedEventCallbackUserData = ::GetWindowLongPtrA( eventSourceNativeData->hwnd, GWLP_USERDATA );
+		win32EventSourceState->mSavedEventCallback = ::GetWindowLongPtrA( eventSourceNativeData->hwnd, GWLP_WNDPROC );
+		win32EventSourceState->mSavedEventCallbackUserData = ::GetWindowLongPtrA( eventSourceNativeData->hwnd, GWLP_USERDATA );
 
 		auto win32EventSourceStateAddress = reinterpret_cast<LONG_PTR>( win32EventSourceState );
 		::SetWindowLongPtrA( eventSourceNativeData->hwnd, GWLP_USERDATA, win32EventSourceStateAddress );
@@ -75,9 +75,9 @@ namespace Ic3::System
 
 		if( auto * win32EventSourceState = reinterpret_cast<Platform::Win32EventSourceState *>( windowUserData ) )
 		{
-            ::SetWindowLongPtrA( eventSourceNativeData->hwnd, GWLP_WNDPROC, win32EventSourceState->savedEventCallback );
+            ::SetWindowLongPtrA( eventSourceNativeData->hwnd, GWLP_WNDPROC, win32EventSourceState->mSavedEventCallback );
 
-            ::SetWindowLongPtrA( eventSourceNativeData->hwnd, GWLP_USERDATA, win32EventSourceState->savedEventCallbackUserData );
+            ::SetWindowLongPtrA( eventSourceNativeData->hwnd, GWLP_USERDATA, win32EventSourceState->mSavedEventCallbackUserData );
 
             // Trigger the update of the window to ensure changes are visible.
             ::SetWindowPos( eventSourceNativeData->hwnd, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED );
@@ -134,7 +134,7 @@ namespace Ic3::System
 
 		bool win32TranslateEvent( Win32EventController & pEventController, const MSG & pMSG, EventObject & pOutEvent )
 		{
-			auto * eventSource = win32FindEventSourceByHWND( pEventController, pMSG.hwnd );
+			auto * eventSource = win32FindEventSourceByHWND( pEventController, pMSG.mHWND );
 
 			if( pMSG.message >= WM_KEYFIRST && pMSG.message <= WM_TOUCH )
 			{
@@ -199,7 +199,7 @@ namespace Ic3::System
 				auto * win32EventSourceState = reinterpret_cast<Win32EventSourceState *>( windowUserData );
 
 				NativeEventType nativeEvent;
-				nativeEvent.hwnd = pHWND;
+				nativeEvent.mHWND = pHWND;
 				nativeEvent.message = pMessage;
 				nativeEvent.wParam = pWparam;
 				nativeEvent.lParam = pLparam;
@@ -221,24 +221,24 @@ namespace Ic3::System
 				{
 					auto & eWindowUpdateVisibility = pOutEvent.eWindowUpdateVisibility;
 					eWindowUpdateVisibility.eventCode = E_EVENT_CODE_WINDOW_UPDATE_VISIBILITY;
-					eWindowUpdateVisibility.newVisibilityState = _win32TranslateWindowVisibility( pMSG.wParam );
-					eWindowUpdateVisibility.eventSource = &pEventSource;
+					eWindowUpdateVisibility.mNewVisibilityState = _win32TranslateWindowVisibility( pMSG.wParam );
+					eWindowUpdateVisibility.mEventSource = &pEventSource;
 					break;
 				}
 				case WM_SIZE:
 				{
 					auto & eWindowUpdateResize = pOutEvent.eWindowUpdateResize;
 					eWindowUpdateResize.eventCode = E_EVENT_CODE_WINDOW_UPDATE_RESIZE;
-					eWindowUpdateResize.newSize.x = LOWORD( pMSG.lParam );
-					eWindowUpdateResize.newSize.y = HIWORD( pMSG.lParam );
-					eWindowUpdateResize.eventSource = &pEventSource;
+					eWindowUpdateResize.mNewSize.x = LOWORD( pMSG.lParam );
+					eWindowUpdateResize.mNewSize.y = HIWORD( pMSG.lParam );
+					eWindowUpdateResize.mEventSource = &pEventSource;
 					break;
 				}
 				case WM_CLOSE:
 				{
 					auto & eWindowUpdateDestroy = pOutEvent.eWindowUpdateDestroy;
 					eWindowUpdateDestroy.eventCode = E_EVENT_CODE_WINDOW_UPDATE_DESTROY;
-					eWindowUpdateDestroy.eventSource = &pEventSource;
+					eWindowUpdateDestroy.mEventSource = &pEventSource;
 					break;
 				}
 				case WM_QUIT:
@@ -262,8 +262,8 @@ namespace Ic3::System
 
 					auto & eWindowUpdateFullscreen = pOutEvent.eWindowUpdateFullscreen;
 					eWindowUpdateFullscreen.eventCode = E_EVENT_CODE_WINDOW_UPDATE_FULLSCREEN;
-					eWindowUpdateFullscreen.fullscreenState = isFullscreenEnabled ? EActiveState::Enabled : EActiveState::Disabled;
-					eWindowUpdateFullscreen.eventSource = &pEventSource;
+					eWindowUpdateFullscreen.mFullscreenState = isFullscreenEnabled ? EActiveState::ENABLED : EActiveState::DISABLED;
+					eWindowUpdateFullscreen.mEventSource = &pEventSource;
 
 					break;
 				}
@@ -505,11 +505,11 @@ namespace Ic3::System
 		{
 			if( pWparam != FALSE )
 			{
-				return EWindowVisibilityState::Visible;
+				return EWindowVisibilityState::VISIBLE;
 			}
 			else
 			{
-				return EWindowVisibilityState::Hidden;
+				return EWindowVisibilityState::HIDDEN;
 			}
 		}
 
@@ -660,9 +660,9 @@ namespace Ic3::System
 			return EKeyCode::Unknown;
 		}
 
-		Bitmask<EMouseButtonFlagBits> _win32GetMouseButtonStateMask( WPARAM pWparam )
+		TBitmask<EMouseButtonFlagBits> _win32GetMouseButtonStateMask( WPARAM pWparam )
 		{
-			return static_cast<EMouseButtonFlagBits>( static_cast<uint32>( pWparam ) & E_MOUSE_BUTTON_FLAG_ALL_BIT );
+			return static_cast<EMouseButtonFlagBits>( static_cast<uint32>( pWparam ) & E_MOUSE_BUTTON_FLAG_ALLBit );
 		}
 
 	}

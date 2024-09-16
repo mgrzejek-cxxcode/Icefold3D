@@ -73,7 +73,7 @@ namespace Ic3::System
 		explicit DisplayOutput( DisplayAdapter & pDisplayAdapter );
 		virtual ~DisplayOutput() noexcept;
 
-		IC3_ATTR_NO_DISCARD ArrayView<const EColorFormat> getSupportedColorFormatList() const;
+		IC3_ATTR_NO_DISCARD TArrayView<const EColorFormat> getSupportedColorFormatList() const;
 
 		IC3_ATTR_NO_DISCARD bool checkVideoSettingsSupport( const DisplayVideoSettings & pVideoSettings,
 		                                                    EColorFormat pColorFormat = EColorFormat::Unknown ) const;

@@ -13,29 +13,29 @@ namespace Ic3::System
 	namespace Platform
 	{
 
-		inline constexpr size_t CX_EGL_MAX_EGL_CONFIGS_NUM = 256u;
+		inline constexpr size_t cxEGLMaxEGLConfigsNum = 256u;
 
-		inline constexpr size_t CX_EGL_MAX_EGL_CONFIG_ATTRIBUTES_NUM = 64u;
+		inline constexpr size_t cxEGLMaxEGLConfigAttributesNum = 64u;
 
 		struct EGLDisplaySurfaceNativeData
 		{
-			EGLDisplay eDisplay = EGL_NO_DISPLAY;
-			EGLNativeWindowType eNativeWindow = nullptr;
-			EGLConfig eFBConfig = nullptr;
-			EGLSurface eSurfaceHandle = nullptr;
+			EGLDisplay mEGLDisplay = EGL_NO_DISPLAY;
+			EGLNativeWindowType mEGLNativeWindowHandle = nullptr;
+			EGLConfig mEGLFBConfig = nullptr;
+			EGLSurface mEGLSurfaceHandle = nullptr;
 		};
 
 		struct EGLRenderContextNativeData
 		{
-			EGLDisplay eDisplay = EGL_NO_DISPLAY;
-			EGLContext eContextHandle = nullptr;
+			EGLDisplay mEGLDisplay = EGL_NO_DISPLAY;
+			EGLContext mEGLContextHandle = nullptr;
 		};
 
 		struct EGLDriverNativeData
 		{
-			EGLDisplay eDisplay = EGL_NO_DISPLAY;
-			EGLNativeWindowType eNativeWindow = nullptr;
-			Version eglVersion;
+			EGLDisplay mEGLDisplay = EGL_NO_DISPLAY;
+			EGLNativeWindowType mEGLNativeWindowHandle = nullptr;
+			Version mEGLVersion;
 		};
 
 		void eglInitializeGLDriver( EGLDriverNativeData & pEGLDriverNativeData );

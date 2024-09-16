@@ -18,7 +18,7 @@ namespace Ic3::System
 
 		SysContextHandle createSysContext( const SysContextCreateInfo & pCreateInfo )
 		{
-			return createDynamicInterfaceObject<X11SysContext>();
+			return createDynamicObject<X11SysContext>();
 		}
 
 	}
@@ -36,7 +36,7 @@ namespace Ic3::System
 
 	AssetLoaderHandle X11SysContext::createAssetLoader( const AssetLoaderCreateInfo & pCreateInfo )
 	{
-		return Platform::createFileAssetLoader( getHandle<X11SysContext>(), *pCreateInfo.nativeParams );
+		return Platform::createFileAssetLoader( getHandle<X11SysContext>(), *pCreateInfo.mNativeParams );
 	}
 
 	DisplayManagerHandle X11SysContext::createDisplayManager()
@@ -92,31 +92,31 @@ namespace Ic3::System
 			ic3Throw( E_EXC_DEBUG_PLACEHOLDER );
 		}
 
-		mNativeData.xSessionData.display = xDisplay;
-		mNativeData.xSessionData.screenIndex = XDefaultScreen( mNativeData.xSessionData.display );
-		mNativeData.xSessionData.rootWindowXID = XRootWindow( mNativeData.xSessionData.display, mNativeData.xSessionData.screenIndex );
-		mNativeData.xSessionData.atomCache.wmProtocol = XInternAtom( mNativeData.xSessionData.display, "WM_PROTOCOLS", True );
-		mNativeData.xSessionData.atomCache.wmProtocolDelete = XInternAtom( mNativeData.xSessionData.display, "WM_DELETE_WINDOW", True );
-		mNativeData.xSessionData.atomCache.wmProtocolDestroy = XInternAtom( mNativeData.xSessionData.display, "WM_DESTROY_WINDOW", True );
-		mNativeData.xSessionData.atomCache.wmState = XInternAtom( mNativeData.xSessionData.display, "_NET_WM_STATE", True );
-		mNativeData.xSessionData.atomCache.wmStateFullscreen = XInternAtom( mNativeData.xSessionData.display, "_NET_WM_STATE_FULLSCREEN", True );
-		mNativeData.xSessionData.sessionInfo.connectionNumber = XConnectionNumber( xDisplay );
-		mNativeData.xSessionData.sessionInfo.vendorName = XServerVendor( xDisplay );
-		mNativeData.xSessionData.sessionInfo.displayString = XDisplayString( xDisplay );
+		mNativeData.mXSessionData.mDisplay = xDisplay;
+		mNativeData.mXSessionData.mScreenIndex = XDefaultScreen( mNativeData.mXSessionData.mDisplay );
+		mNativeData.mXSessionData.mRootWindowXID = XRootWindow( mNativeData.mXSessionData.mDisplay, mNativeData.mXSessionData.mScreenIndex );
+		mNativeData.mXSessionData.mAtomCache.wmProtocol = XInternAtom( mNativeData.mXSessionData.mDisplay, "WM_PROTOCOLS", True );
+		mNativeData.mXSessionData.mAtomCache.wmProtocolDelete = XInternAtom( mNativeData.mXSessionData.mDisplay, "WM_DELETE_WINDOW", True );
+		mNativeData.mXSessionData.mAtomCache.wmProtocolDestroy = XInternAtom( mNativeData.mXSessionData.mDisplay, "WM_DESTROY_WINDOW", True );
+		mNativeData.mXSessionData.mAtomCache.wmState = XInternAtom( mNativeData.mXSessionData.mDisplay, "_NET_WM_STATE", True );
+		mNativeData.mXSessionData.mAtomCache.wmStateFullscreen = XInternAtom( mNativeData.mXSessionData.mDisplay, "_NET_WM_STATE_FULLSCREEN", True );
+		mNativeData.mXSessionData.mSessionInfo.mConnectionNumber = XConnectionNumber( xDisplay );
+		mNativeData.mXSessionData.mSessionInfo.mVendorName = XServerVendor( xDisplay );
+		mNativeData.mXSessionData.mSessionInfo.mDisplayString = XDisplayString( xDisplay );
 	}
 
 	void X11SysContext::_releaseX11ContextState()
 	{
-		mNativeData.xSessionData.display = nullptr;
-		mNativeData.xSessionData.screenIndex = -1;
-		mNativeData.xSessionData.rootWindowXID = Platform::E_X11_XID_NONE;
-		mNativeData.xSessionData.atomCache.wmProtocolDelete = 0;
-		mNativeData.xSessionData.atomCache.wmProtocolDestroy = 0;
-		mNativeData.xSessionData.atomCache.wmState = 0;
-		mNativeData.xSessionData.atomCache.wmStateFullscreen = 0;
-		mNativeData.xSessionData.sessionInfo.connectionNumber = -1;
-		mNativeData.xSessionData.sessionInfo.vendorName.clear();
-		mNativeData.xSessionData.sessionInfo.displayString.clear();
+		mNativeData.mXSessionData.mDisplay = nullptr;
+		mNativeData.mXSessionData.mScreenIndex = -1;
+		mNativeData.mXSessionData.mRootWindowXID = Platform::eXIDNone;
+		mNativeData.mXSessionData.mAtomCache.wmProtocolDelete = 0;
+		mNativeData.mXSessionData.mAtomCache.wmProtocolDestroy = 0;
+		mNativeData.mXSessionData.mAtomCache.wmState = 0;
+		mNativeData.mXSessionData.mAtomCache.wmStateFullscreen = 0;
+		mNativeData.mXSessionData.mSessionInfo.mConnectionNumber = -1;
+		mNativeData.mXSessionData.mSessionInfo.mVendorName.clear();
+		mNativeData.mXSessionData.mSessionInfo.mDisplayString.clear();
 	}
 
 	std::string X11SysContext::queryCurrentProcessWorkingDirectory() const
