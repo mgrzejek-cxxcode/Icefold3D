@@ -6,16 +6,16 @@ namespace Ic3
 
 	std::string FileLocationInfo::toString() const
 	{
-		auto funcStrLength = std::strlen( function );
-		auto fileStrLength = std::strlen( filename );
+		auto funcStrLength = std::strlen( mFunction );
+		auto fileStrLength = std::strlen( mFilename );
 
 		std::string result{};
 		result.reserve( funcStrLength + fileStrLength + 128 );
 
 		result.append( "Function " );
-		result.append( function, funcStrLength );
+		result.append( mFunction, funcStrLength );
 		result.append( " in file " );
-		result.append( filename, fileStrLength );
+		result.append( mFilename, fileStrLength );
 
 	#if defined( IC3_PCL_PROJECT_ROOT_PATH )
 		auto replacePos = result.find( IC3_PCL_PROJECT_ROOT_PATH );
@@ -27,7 +27,7 @@ namespace Ic3
 	#endif
 
 		result.append( ", line " );
-		result.append( std::to_string( lineNumber ) );
+		result.append( std::to_string( mLineNumber ) );
 
 		return result;
 

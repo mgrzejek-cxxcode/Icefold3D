@@ -25,24 +25,26 @@ namespace Ic3
 	struct FileLocationInfo
 	{
 	public:
-		const char * function;
-		const char * filename;
-		int32 lineNumber;
+		const char * mFunction;
+
+		const char * mFilename;
+
+		int32 mLineNumber;
 
 	public:
 		FileLocationInfo( const FileLocationInfo & ) = default;
 		FileLocationInfo & operator=( const FileLocationInfo & ) = default;
 
 		FileLocationInfo()
-		: function( CxDef::STR_CHAR_EMPTY )
-		, filename( CxDef::STR_CHAR_EMPTY )
-		, lineNumber( 0 )
+		: mFunction( CxDef::STR_CHAR_EMPTY )
+		, mFilename( CxDef::STR_CHAR_EMPTY )
+		, mLineNumber( 0 )
 		{}
 
 		FileLocationInfo( const char * pFunction, const char * pFilename, int32 pLineNumber )
-		: function( pFunction )
-		, filename( pFilename )
-		, lineNumber( pLineNumber )
+		: mFunction( pFunction )
+		, mFilename( pFilename )
+		, mLineNumber( pLineNumber )
 		{}
 
 		IC3_ATTR_NO_DISCARD std::string toString() const;

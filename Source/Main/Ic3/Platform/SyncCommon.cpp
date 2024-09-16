@@ -2,42 +2,37 @@
 #include "syncCommon.h"
 #include <thread>
 
-namespace Ic3
+namespace Ic3::Sync
 {
 
-	namespace Sync
+	void hardwarePause()
 	{
+	#if( IC3_PCL_EIS_SUPPORT_HAS_MM_PAUSE )
+		_mm_pause();
+	#endif
+	}
 
-		void hardwarePause()
+	void yieldCurrentThread()
+	{
+		std::this_thread::yield();
+	}
+
+	void yieldCurrentThreadAuto( uint64_t pCounter )
+	{
+		constexpr uint64_t sBusySpinCount = 12;
+		constexpr uint64_t sSpinCountBeforeYield = 48;
+
+		if( pCounter < sBusySpinCount )
 		{
-		#if( IC3_PCL_EIS_SUPPORT_HAS_MM_PAUSE )
-			_mm_pause();
-		#endif
 		}
-
-		void yieldCurrentThread()
+		else if( pCounter < sSpinCountBeforeYield )
 		{
-			std::this_thread::yield();
+			hardwarePause();
 		}
-
-		void yieldCurrentThreadAuto( uint64_t pCounter )
+		else
 		{
-			constexpr uint64_t sBusySpinCount = 12;
-			constexpr uint64_t sSpinCountBeforeYield = 48;
-
-			if( pCounter < sBusySpinCount )
-			{
-			}
-			else if( pCounter < sSpinCountBeforeYield )
-			{
-				hardwarePause();
-			}
-			else
-			{
-				yieldCurrentThread();
-			}
+			yieldCurrentThread();
 		}
-
 	}
 
 }

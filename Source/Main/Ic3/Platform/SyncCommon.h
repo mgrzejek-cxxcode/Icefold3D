@@ -4,26 +4,19 @@
 
 #include "Platform.h"
 
-namespace Ic3
+namespace Ic3::Sync
 {
 
-	//
+	/// @brief
+	void hardwarePause();
 
-	namespace Sync
-	{
+	/// @brief
+	void yieldCurrentThread();
 
-		/// @brief
-		void hardwarePause();
+	/// @brief
+	/// @param pCounter
+	void yieldCurrentThreadAuto( uint64_t pCounter = 0 );
 
-		/// @brief
-		void yieldCurrentThread();
-
-		/// @brief
-		/// @param pCounter
-		void yieldCurrentThreadAuto( uint64_t pCounter = 0 );
-
-	}
-
-}
+} // namespace Ic3::Sync
 
 #endif /* __IC3_PLATFORM_SYNC_COMMON_H__ */

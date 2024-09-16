@@ -1,5 +1,5 @@
 
-#include "debug.h"
+#include "Debug.h"
 #include <cstdarg>
 
 namespace Ic3

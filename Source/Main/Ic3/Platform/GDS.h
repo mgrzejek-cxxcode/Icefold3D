@@ -139,7 +139,7 @@ namespace Ic3
 			template <typename TVal>
 			static inline void serializeIntegral( EByteOrder pByteOrder, byte * pOutputBuffer, const TVal pValue )
 			{
-				if( pByteOrder == EByteOrder::Native )
+				if( pByteOrder == EByteOrder::PlatformNative )
 				{
 					*( reinterpret_cast<TVal *>( pOutputBuffer ) ) = pValue;
 				}
@@ -153,7 +153,7 @@ namespace Ic3
 			template <typename TVal>
 			static inline TVal deserializeIntegral( EByteOrder pByteOrder, const byte * pInputData )
 			{
-				if( pByteOrder == EByteOrder::Native )
+				if( pByteOrder == EByteOrder::PlatformNative )
 				{
 					return *( reinterpret_cast<const TVal *>( pInputData ) );
 				}
@@ -171,7 +171,7 @@ namespace Ic3
 			template <typename TVal>
 			static inline void serializeIntegral( EByteOrder pByteOrder, byte * pOutputBuffer, const TVal pValue )
 			{
-				if( pByteOrder == EByteOrder::Native )
+				if( pByteOrder == EByteOrder::PlatformNative )
 				{
 					*( reinterpret_cast<TVal *>( pOutputBuffer ) ) = pValue;
 				}
@@ -184,7 +184,7 @@ namespace Ic3
 			template <typename TVal>
 			static inline TVal deserializeIntegral( EByteOrder pByteOrder, const byte * pInputData )
 			{
-				if( pByteOrder == EByteOrder::Native )
+				if( pByteOrder == EByteOrder::PlatformNative )
 				{
 					return *( reinterpret_cast<const TVal *>( pInputData ) );
 				}
@@ -202,7 +202,7 @@ namespace Ic3
 			template <typename TVal>
 			static inline void serializeIntegral( EByteOrder pByteOrder, byte * pOutputBuffer, const TVal pValue )
 			{
-				if( pByteOrder == EByteOrder::Native )
+				if( pByteOrder == EByteOrder::PlatformNative )
 				{
 					*( reinterpret_cast<TVal *>( pOutputBuffer ) ) = pValue;
 				}
@@ -215,7 +215,7 @@ namespace Ic3
 			template <typename TVal>
 			static inline TVal deserializeIntegral( EByteOrder pByteOrder, const byte * pInputData )
 			{
-				if( pByteOrder == EByteOrder::Native )
+				if( pByteOrder == EByteOrder::PlatformNative )
 				{
 					return *( reinterpret_cast<const TVal *>( pInputData ) );
 				}

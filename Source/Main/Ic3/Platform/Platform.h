@@ -53,21 +53,27 @@ namespace Ic3
 	/// @brief Represents one of the possible byte orders in binary data representation.
 	enum class EByteOrder : uint32
 	{
-		/// Big-Endian order: high-order byte comes first.
+		/// Big-Endian order: MSB comes first.
 		BigEndian = IC3_PCL_ENDIANNESS_BE,
 
-		/// Little-Endian order: low-order byte comes first.
+		/// Little-Endian order: LSB comes first.
 		LittleEndian = IC3_PCL_ENDIANNESS_LE,
 
-		/// The native byte order for the current target architecture (e.g. Big-Endian for ARM, Little-Endian for x86 family).
-		Native = IC3_PCL_ENDIANNESS_NATIVE,
+		/// PDP-Endian order: LSB comes first in word, MSW comes first in DWORD..
+		PDPEndian = IC3_PCL_ENDIANNESS_PDP,
 
-		/// A non-naive byte order for the current target architecture (e.g. Little-Endian for ARM, Big-Endian for x86 family).
-		NonNative = IC3_PCL_ENDIANNESS_NON_NATIVE,
+		/// The native byte order for the current target architecture (e.g. Big-Endian for ARM, Little-Endian for x86 family).
+		PlatformNative = IC3_PCL_ENDIANNESS_NATIVE,
 
 		/// A default byte order used by the framework. This is always Big-Endian as it is the default one for network.
 		Default = static_cast<uint32>( BigEndian )
 	};
+
+	/// @brief Default alignment value for CPU-side (RAM) memory allocation.
+	inline constexpr uint32 cxMemoryCPUDefaultAlignment = IC3_PCL_MEMORY_BASE_ALIGNMENT;
+
+	/// @brief Default alignment value for GPU-side (VideoRAM) memory allocation.
+	inline constexpr uint32 cxMemoryGPUDefaultAlignment = 64;
 
 }
 
