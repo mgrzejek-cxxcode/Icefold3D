@@ -5,6 +5,8 @@
 namespace Ic3
 {
 
+#if( IC3_CONFIG_CORE_ENABLE_EXTENDED_DEBUG_INTERFACE )
+
 	void DebugInterface::assertionFail( DebugAssertionFailHandlerType pHandler, const FileLocationInfo & pLocationInfo, const char * pConditionStr )
 	{
 		if( !pHandler )
@@ -43,7 +45,7 @@ namespace Ic3
 			va_start( varArgsList, pFormat );
 
 			// This returns the number that *would be written* if buffer was large enough.
-			// For a valid case case, it should always smaller than our buffer size. If not,
+			// For a valid case, it should always smaller than our buffer size. If not,
 			// we need to make the buffer capacity a bit bigger.
 			printCount = vsnprintf( bufferPtr, localBufferSize, pFormat, varArgsList );
 
@@ -88,5 +90,49 @@ namespace Ic3
 	{
 		IC3_PCL_DEBUG_OUTPUT( pText );
 	}
+
+#else
+
+	namespace Impl
+	{
+
+		void debugOutputImpl( DebugPrintHandlerType pHandler, const char * pFormat, ... )
+		{
+			const size_t localBufferSize = 4096;
+			char localBuffer[localBufferSize];
+
+			size_t printCount = 0;
+			char * bufferPtr = &( localBuffer[0] );
+
+			{
+				va_list varArgsList;
+				va_start( varArgsList, pFormat );
+
+				// This returns the number that *would be written* if buffer was large enough.
+				// For a valid case, it should always smaller than our buffer size. If not,
+				// we need to make the buffer capacity a bit bigger.
+				printCount = vsnprintf( bufferPtr, localBufferSize, pFormat, varArgsList );
+
+				if( printCount > localBufferSize )
+				{
+					// Just signal via debug break. We don't need any runtime
+					// error handling - this is used only in debug mode anyway.
+					IC3_PCL_DEBUG_BREAK();
+				}
+
+				va_end( varArgsList );
+			}
+
+			IC3_PCL_DEBUG_OUTPUT( localBuffer );
+		}
+
+		void debugDefaultPrintHandler( const char * pText, size_t pLength )
+		{
+			IC3_PCL_DEBUG_OUTPUT( pText );
+		}
+
+	}
+
+#endif // IC3_CONFIG_CORE_ENABLE_EXTENDED_DEBUG_INTERFACE
 
 }
