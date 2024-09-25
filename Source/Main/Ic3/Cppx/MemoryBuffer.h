@@ -153,7 +153,7 @@ namespace Ic3::Cppx
 			}
 			else
 			{
-				auto * newMemoryPtr = _allocationProxy.mFnRealloc( _bufferBasePtr, pNewSize );
+				auto * newMemoryPtr = std::realloc( _bufferBasePtr, pNewSize );
 				_bufferBasePtr = reinterpret_cast<byte *>( newMemoryPtr );
 				_bufferLength = pNewSize;
 				return _bufferLength;

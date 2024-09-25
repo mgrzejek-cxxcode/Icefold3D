@@ -131,8 +131,8 @@ namespace Ic3::Cppx
 		return TArrayView<TPValue>( pMemory, pSize );
 	}
 
-	template <typename TPValue, typename TOffset, typename TSize>
-	IC3_ATTR_NO_DISCARD inline TArrayView<TPValue> bindArrayView( TPValue * pMemory, const TRegion<TSize, TOffset> & pRegion )
+	template <typename TPValue, typename TPOffset, typename TPSize>
+	IC3_ATTR_NO_DISCARD inline TArrayView<TPValue> bindArrayView( TPValue * pMemory, const TRegion<TPSize, TPOffset> & pRegion )
 	{
 		return TArrayView<TPValue>( pMemory + pRegion.mOffset, pRegion.mSize );
 	}
@@ -148,8 +148,8 @@ namespace Ic3::Cppx
 		return TArrayView<TPValue>( pArray );
 	}
 
-	template <typename TPValue, size_t tpSize, typename TOffset, typename TSize>
-	IC3_ATTR_NO_DISCARD inline TArrayView<TPValue> bindArrayView( TPValue( &pArray )[tpSize], const TRegion<TSize, TOffset> & pRegion )
+	template <typename TPValue, size_t tpSize, typename TPOffset, typename TPSize>
+	IC3_ATTR_NO_DISCARD inline TArrayView<TPValue> bindArrayView( TPValue( &pArray )[tpSize], const TRegion<TPSize, TPOffset> & pRegion )
 	{
 		const auto validRegion = getValidRegion( pRegion, tpSize );
 		return TArrayView<TPValue>( &pArray[0] + validRegion.mOffset, validRegion.mSize );
@@ -166,8 +166,8 @@ namespace Ic3::Cppx
 		return TArrayView<TPValue>( pArray.data(), pArray.size() );
 	}
 
-	template <typename TPValue, size_t tpSize, typename TOffset, typename TSize>
-	IC3_ATTR_NO_DISCARD inline TArrayView<TPValue> bindArrayView( std::array<TPValue, tpSize> & pArray, const TRegion<TSize, TOffset> & pRegion )
+	template <typename TPValue, size_t tpSize, typename TPOffset, typename TPSize>
+	IC3_ATTR_NO_DISCARD inline TArrayView<TPValue> bindArrayView( std::array<TPValue, tpSize> & pArray, const TRegion<TPSize, TPOffset> & pRegion )
 	{
 		const auto validRegion = getValidRegion( pRegion, tpSize );
 		return TArrayView<TPValue>( pArray.data() + validRegion.mOffset, validRegion.mSize );
@@ -184,11 +184,39 @@ namespace Ic3::Cppx
 		return TArrayView<const TPValue>( pArray.data(), pArray.size() );
 	}
 
-	template <typename TPValue, size_t tpSize, typename TOffset, typename TSize>
-	IC3_ATTR_NO_DISCARD inline TArrayView<const TPValue> bindArrayView( const std::array<TPValue, tpSize> & pArray, const TRegion<TSize, TOffset> & pRegion )
+	template <typename TPValue, size_t tpSize, typename TPOffset, typename TPSize>
+	IC3_ATTR_NO_DISCARD inline TArrayView<const TPValue> bindArrayView( const std::array<TPValue, tpSize> & pArray, const TRegion<TPSize, TPOffset> & pRegion )
 	{
 		const auto validRegion = getValidRegion( pRegion, tpSize );
 		return TArrayView<const TPValue>( pArray.data() + validRegion.mOffset, validRegion.mSize );
+	}
+
+	/// @brief Creates ArrayView that wraps
+	template <typename TPValue, typename TPAllocator>
+	IC3_ATTR_NO_DISCARD inline TArrayView<TPValue> bindArrayView( std::vector<TPValue, TPAllocator> & pVector )
+	{
+		return TArrayView<TPValue>( pVector.data(), pVector.size() );
+	}
+
+	template <typename TPValue, typename TPAllocator, typename TPOffset, typename TPSize>
+	IC3_ATTR_NO_DISCARD inline TArrayView<TPValue> bindArrayView( std::vector<TPValue, TPAllocator> & pVector, const TRegion<TPSize, TPOffset> & pRegion )
+	{
+		const auto validRegion = getValidRegion( pRegion, pVector.size() );
+		return TArrayView<TPValue>( pVector.data() + validRegion.mOffset, validRegion.mSize );
+	}
+
+	/// @brief Creates ArrayView that wraps
+	template <typename TPValue, typename TPAllocator>
+	IC3_ATTR_NO_DISCARD inline TArrayView<const TPValue> bindArrayView( const std::vector<TPValue, TPAllocator> & pVector )
+	{
+		return TArrayView<const TPValue>( pVector.data(), pVector.size() );
+	}
+
+	template <typename TPValue, typename TPAllocator, typename TPOffset, typename TPSize>
+	IC3_ATTR_NO_DISCARD inline TArrayView<const TPValue> bindArrayView( const std::vector<TPValue, TPAllocator> & pVector, const TRegion<TPSize, TPOffset> & pRegion )
+	{
+		const auto validRegion = getValidRegion( pRegion, pVector.size() );
+		return TArrayView<const TPValue>( pVector.data() + validRegion.mOffset, validRegion.mSize );
 	}
 
 	template <bool tpIsConst>

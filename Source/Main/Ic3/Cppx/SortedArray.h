@@ -2,6 +2,7 @@
 #ifndef __IC3_CPPX_SORTED_ARRAY_H__
 #define __IC3_CPPX_SORTED_ARRAY_H__
 
+#include "ArrayView.h"
 #include "StaticAlgo.h"
 #include "StaticLimits.h"
 #include <stdexcept>
@@ -41,8 +42,10 @@ namespace Ic3::Cppx
 		{}
 
 		explicit TSortedArray( size_t pCapacity, const TPAllocator & pAllocator = TPAllocator() )
-		: _underlyingContainer( pCapacity, pAllocator )
-		{}
+		: _underlyingContainer( pAllocator )
+		{
+			_underlyingContainer.reserve( pCapacity );
+		}
 
 		TPValue & operator[]( size_t pIndex )
 		{
@@ -328,6 +331,18 @@ namespace Ic3::Cppx
 	inline typename TSortedArray<TPValue, TPComparator, TPAllocator>::ConstIterator end( const TSortedArray<TPValue, TPComparator, TPAllocator> & pContainer )
 	{
 		return pContainer.end();
+	}
+
+	template <typename TPValue, typename TPComparator, typename TPAllocator>
+	IC3_ATTR_NO_DISCARD inline TArrayView<TPValue> bindArrayView( TSortedArray<TPValue, TPComparator, TPAllocator> & pContainer )
+	{
+		return TArrayView<TPValue>( pContainer.data(), pContainer.size() );
+	}
+
+	template <typename TPValue, typename TPComparator, typename TPAllocator>
+	IC3_ATTR_NO_DISCARD inline TArrayView<const TPValue> bindArrayView( const TSortedArray<TPValue, TPComparator, TPAllocator> & pContainer )
+	{
+		return TArrayView<const TPValue>( pContainer.data(), pContainer.size() );
 	}
 
 }

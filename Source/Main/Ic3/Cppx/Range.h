@@ -53,6 +53,16 @@ namespace Ic3::Cppx
 			return pOther.contains( *this );
 		}
 
+		IC3_ATTR_NO_DISCARD static constexpr TRange emptyRange() noexcept
+		{
+			return TRange{ static_cast<TPValue>( 0 ), static_cast<TPValue>( 0 ) };
+		}
+
+		IC3_ATTR_NO_DISCARD static constexpr TRange invalidRange() noexcept
+		{
+			return TRange{ QLimits<TPValue>::sMaxValue, QLimits<TPValue>::sMinValue };
+		}
+
 		IC3_ATTR_NO_DISCARD static constexpr TRange maxRange() noexcept
 		{
 			return TRange{ QLimits<TPValue>::sMinValue, QLimits<TPValue>::sMaxValue };

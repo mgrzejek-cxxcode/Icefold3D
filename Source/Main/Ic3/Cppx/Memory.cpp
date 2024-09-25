@@ -108,17 +108,17 @@ namespace Ic3::Cppx
 		IC3_PCL_FILL_MEMORY( pMemoryPtr, pFillSize, pFillValue );
 	}
 
-	void memMoveChecked( void * pMemoryPtr, size_t pMemorySize, size_t pBaseOffset, size_t pMoveSize, ptrdiff_t pMoveOffset )
+	bool memMoveChecked( void * pMemoryPtr, size_t pMemorySize, size_t pBaseOffset, size_t pMoveSize, ptrdiff_t pMoveOffset )
 	{
 		// Memory is assumed to be a non-null pointer with a pointed area of size greater than zero.
 		if( ( pMemoryPtr == nullptr ) && ( pMemorySize == 0 ) )
 		{
-			throw 0;
+			return false;
 		}
 		// We are moving pCount elements from pBaseOffset by pMoveOffset. Check if the memory block is large enough.
 		if( pBaseOffset + pMoveOffset + pMoveSize > pMemorySize )
 		{
-			throw 0;
+			return false;
 		}
 		// Source pointer: base memory pointer + base offset
 		auto * const srcMemoryPtr = reinterpret_cast<char *>( pMemoryPtr ) + pBaseOffset;
@@ -126,6 +126,8 @@ namespace Ic3::Cppx
 		auto * const dstMemoryPtr = srcMemoryPtr + pMoveOffset;
 		// Do the actual move.
 		IC3_PCL_MOVE_MEMORY( dstMemoryPtr, srcMemoryPtr, pMoveSize );
+
+		return true;
 	}
 
 	void memMoveUnchecked( void * pMemoryPtr, size_t pMemorySize, size_t pBaseOffset, size_t pMoveSize, ptrdiff_t pMoveOffset )

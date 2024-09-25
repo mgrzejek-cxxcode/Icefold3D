@@ -154,7 +154,7 @@ namespace Ic3::Cppx
 	/// @param pBaseOffset
 	/// @param pCount
 	/// @param pMoveOffset
-	void memMoveChecked( void * pMemoryPtr, size_t pMemorySize, size_t pBaseOffset, size_t pMoveSize, ptrdiff_t pMoveOffset );
+	bool memMoveChecked( void * pMemoryPtr, size_t pMemorySize, size_t pBaseOffset, size_t pMoveSize, ptrdiff_t pMoveOffset );
 
 	/// @brief
 	/// @param pMemoryPtr
@@ -174,8 +174,8 @@ namespace Ic3::Cppx
 	template <typename TPDst, typename TPSrc>
 	inline void memCopy( TPDst * pDst, size_t pCapacity, const TPSrc * pSrc, size_t pCopyCount )
 	{
-		const auto dstByteCapacity = MemoryBaseSize<TPDst>::size * pCapacity;
-		const auto copyByteSize = MemoryBaseSize<TPSrc>::size * pCopyCount;
+		const auto dstByteCapacity = MemoryBaseSize<TPDst>::sSize * pCapacity;
+		const auto copyByteSize = MemoryBaseSize<TPSrc>::sSize * pCopyCount;
 	#if( IC3_USE_RUNTIME_CHECKED_MEMORY_ROUTINES )
 		memCopyChecked( pDst, dstByteCapacity, pSrc, copyByteSize );
 	#else
@@ -195,8 +195,8 @@ namespace Ic3::Cppx
 	template <typename TPData>
 	inline void memFill( TPData * pMemory, size_t pCapacity, byte pFillValue, size_t pFillCount )
 	{
-		const auto memoryByteCapacity = MemoryBaseSize<TPData>::size * pCapacity;
-		const auto fillByteSize = MemoryBaseSize<TPData>::size * pFillCount;
+		const auto memoryByteCapacity = MemoryBaseSize<TPData>::sSize * pCapacity;
+		const auto fillByteSize = MemoryBaseSize<TPData>::sSize * pFillCount;
 	#if( IC3_USE_RUNTIME_CHECKED_MEMORY_ROUTINES )
 		memFillChecked( pMemory, memoryByteCapacity, pFillValue, fillByteSize );
 	#else
@@ -208,7 +208,7 @@ namespace Ic3::Cppx
 	template <typename TPData>
 	inline void memMove( TPData * pMemory, size_t pCapacity, size_t pBaseOffset, size_t pCount, ptrdiff_t pMoveOffset )
 	{
-		constexpr auto elemSize = MemoryBaseSize<TPData>::size;
+		constexpr auto elemSize = MemoryBaseSize<TPData>::sSize;
 	#if( IC3_USE_RUNTIME_CHECKED_MEMORY_ROUTINES )
 		memMoveChecked( pMemory, pCapacity * elemSize, pBaseOffset * elemSize, pCount * elemSize, pMoveOffset * elemSize );
 	#else
@@ -220,8 +220,8 @@ namespace Ic3::Cppx
 	template <typename TPData>
 	inline void memZero( TPData * pMemory, size_t pCapacity, size_t pZeroCount )
 	{
-		const auto memoryByteCapacity = MemoryBaseSize<TPData>::size * pCapacity;
-		const auto zeroByteSize = MemoryBaseSize<TPData>::size * pZeroCount;
+		const auto memoryByteCapacity = MemoryBaseSize<TPData>::sSize * pCapacity;
+		const auto zeroByteSize = MemoryBaseSize<TPData>::sSize * pZeroCount;
 	#if( IC3_USE_RUNTIME_CHECKED_MEMORY_ROUTINES )
 		memZeroChecked( pMemory, memoryByteCapacity, zeroByteSize );
 	#else

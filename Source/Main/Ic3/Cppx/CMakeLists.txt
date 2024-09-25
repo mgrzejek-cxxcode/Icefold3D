@@ -2,6 +2,8 @@
 set( IC3_CPPX_SRC_FILES
         "Prerequisites.h"
         "Aligned.h"
+        "ArrayIterator.h"
+        "ArrayView.h"
         "Bitmask.h"
         "BitmaskAtomic.h"
         "ByteArray.h"
@@ -21,6 +23,7 @@ set( IC3_CPPX_SRC_FILES
         "SortedArray.h"
         "StaticAlgo.h"
         "StaticLimits.h"
+        "StaticVector.h"
         "StringExt.h"
         "StringUtils.h"
         "StringView.h"

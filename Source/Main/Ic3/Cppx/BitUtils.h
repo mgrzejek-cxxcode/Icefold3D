@@ -66,8 +66,7 @@ namespace Ic3::Cppx
 	template <size_t tpBitCount>
 	inline constexpr typename QUintTypeByBits<tpBitCount>::Type makeLSFBitmask()
 	{
-		using TPValue = typename QUintTypeByBits<tpBitCount>::Type;
-		return ( tpBitCount < QLimits<TPValue>::sBitCount ) ? static_cast<TPValue>( ( 1u << tpBitCount ) - 1 ) : QLimits<TPValue>::sMaxValue;
+		return makeLSFBitmask<typename QUintTypeByBits<tpBitCount>::Type>( tpBitCount );
 	}
 
 }
