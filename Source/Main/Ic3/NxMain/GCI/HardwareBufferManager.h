@@ -20,9 +20,12 @@ namespace Ic3
 		};
 
 		EHWBufferType baseType = EHWBufferType::HBTUnknown;
-		Bitmask<hardware_buffer_flags_value_t> flags = 0;
+
+		TBitmask<hardware_buffer_flags_value_t> flags = 0;
+
 		Metrics metrics;
-		GCI::GPUBufferInitDataDesc initData;
+
+		GCI::GpuBufferInitDataDesc initData;
 
 		HWBufferCreateInfo()
 		{
@@ -33,18 +36,18 @@ namespace Ic3
 	class HWBufferManager
 	{
 	public:
-		struct GPUBufferState
+		struct GpuBufferState
 		{
 			using HWBufferList = std::list<HWBufferWeakHandle>;
 			gpuapi_buffer_ref_id_t bufferRefID;
-			GCI::GPUBufferHandle gpuBuffer;
+			GCI::GpuBufferHandle gpuBuffer;
 			HWBufferList allocatedHWBufferList;
 			GCI::gpu_memory_size_t availableMemorySize;
 			GCI::gpu_memory_size_t currentAllocOffset;
 		};
 
-		ResultCode allocateGPUBufferExplicit( gpuapi_buffer_ref_id_t pGPUBufferRefID,
-											  const GCI::GPUBufferCreateInfo & pGPUBufferCreateInfo );
+		ResultCode allocateGpuBufferExplicit( gpuapi_buffer_ref_id_t pGpuBufferRefID,
+											  const GCI::GpuBufferCreateInfo & pGpuBufferCreateInfo );
 
 		HWVertexBufferHandle createVertexBuffer( const HWBufferCreateInfo & pHWBCreateInfo );
 
@@ -56,26 +59,26 @@ namespace Ic3
 		HWIndexBufferHandle createIndexBufferEx( gpuapi_buffer_ref_id_t pGBUBufferRefID,
 		                                         const HWBufferCreateInfo & pHWBCreateInfo );
 
-		IC3_ATTR_NO_DISCARD GPUBufferUsageInfo getGPUBufferInfo( gpuapi_buffer_ref_id_t pGPUBufferRefID ) const;
+		IC3_ATTR_NO_DISCARD GpuBufferUsageInfo getGpuBufferInfo( gpuapi_buffer_ref_id_t pGpuBufferRefID ) const;
 
 		static memory_align_t queryAlignmentRequirementsForBuffer( EHWBufferType pBufferType,
 		                                                           GCI::gpu_memory_size_t pBufferSize,
-		                                                           Bitmask<GCI::gpu_memory_flags_value_t> pMemoryFlags = 0 );
+		                                                           TBitmask<GCI::gpu_memory_flags_value_t> pMemoryFlags = 0 );
 
 	private:
-		GCI::GPUBufferHandle _createGPUBuffer( gpuapi_buffer_ref_id_t pGPUBufferRefID,
+		GCI::GpuBufferHandle _createGpuBuffer( gpuapi_buffer_ref_id_t pGpuBufferRefID,
 		                                          const HWBufferCreateInfo & pHWBCreateInfo );
 
-		GPUBufferRef _reserveGPUBufferRegion( gpuapi_buffer_ref_id_t pGPUBufferRefID,
+		GpuBufferRef _reserveGpuBufferRegion( gpuapi_buffer_ref_id_t pGpuBufferRefID,
 		                                      GCI::gpu_memory_size_t pSize,
 		                                      memory_align_t pAlignment = 0 );
 
 		static void _validateBufferCreateInfo( EHWBufferType pBufferType, HWBufferCreateInfo & pHWBCreateInfo );
 
 	private:
-		using GPUBufferMap = std::unordered_map<gpuapi_buffer_ref_id_t, GPUBufferState>;
-		GCI::GPUDeviceHandle _gpuDevice;
-		GPUBufferMap _gpuBufferMap;
+		using GpuBufferMap = std::unordered_map<gpuapi_buffer_ref_id_t, GpuBufferState>;
+		GCI::GpuDeviceHandle _gpuDevice;
+		GpuBufferMap _gpuBufferMap;
 	};
 
 } // namespace Ic3

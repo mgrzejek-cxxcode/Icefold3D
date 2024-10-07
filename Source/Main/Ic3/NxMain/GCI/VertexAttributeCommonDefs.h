@@ -5,151 +5,199 @@
 #define __IC3_NXMAIN_VERTEX_ATTRIBUTE_COMMON_DEFS_H__
 
 #include "ShaderInputSemantics.h"
-#include <Ic3/Graphics/GCI/State/InputAssemblerCommon.h>
 
 namespace Ic3
 {
 
-	struct SVertexAttributeArrayLayoutData;
-	struct SVertexStreamArrayLayoutData;
-
-	class CVertexPipelineConfig;
-	class CVertexPipelineConfigBuilder;
-
-	using SVertexAttributeIndexRange = SRange<uint32>;
-	using SVertexStreamIndexRange = SRange<uint32>;
-
-
-	/// Represents an invalid vertex attribute index.
-	constexpr auto cxGCIVertexAttributeIndexUndefined = GCI::CxDef::IA_VERTEX_ATTRIBUTE_INDEX_UNDEFINED;
-
-	///
-	inline constexpr SVertexAttributeIndexRange cxGCIValidVertexAttributeIndexRange{ 0u, GCM::IA_MAX_VERTEX_ATTRIBUTES_NUM - 1 };
-
-	///
-	inline constexpr SVertexAttributeIndexRange cxGCIValidVertexAttributeComponentsNumberRange{ 1u, GCM::IA_MAX_VERTEX_ATTRIBUTE_COMPONENTS_NUM };
-
-	///
-	inline constexpr SVertexStreamIndexRange cxGCIValidVertexStreamIndexRange{ 0u, GCM::IA_MAX_VERTEX_STREAMS_NUM - 1 };
-
-
-	/// @brief Vertex attribute class. Used to identify the meaning of an attribute definition.
-	enum class EVertexAttributeClass : uint16
+	/**
+	 * Additional attribute flags.
+	 */
+	enum EVertexAttributeKeyFlags : uint32
 	{
-		/// Undefined class. Used to identify uninitialised data.
-		/// @see SGenericVertexAttributeInfo
-		Undefined,
-
-		/// Base attribute. This is used for two types of definitions:
-		/// - Single-component attributes: attributes that occupy a single slot in the IA attribute array
-		/// - Base components of a multi-component attributes: the first, base component of attributes which occupy more
-		///   than one slot in the IA attribute array.
-		/// Generally speaking, this class applies to all attributes with componentIndex set to 0.
-		/// @see SGenericVertexAttributeInfo::componentIndex
-		BaseAttribute,
-
-		/// A sub-component of a multi-component attribute (an attribute that occupies more than one slot in the IA attribute
-		/// array). Corresponding attribute definitions will have a non-zero componentIndex.
-		/// @see SGenericVertexAttributeInfo::componentIndex
-		SubComponent,
+		/// Specifies that the attribute is a per-instance attribute instead of per-vertex.
+		eVertexAttributeKeyFlagPerInstanceBit = 0x80000
 	};
 
-	enum EVertexDataRate : uint32
+	namespace CxDef
 	{
-		PerVertex,
-		PerInstance,
-		Undefined = QLimits<uint32>::maxValue
-	};
 
-	/// @brief Common part of all vertex attribute-related data structures. Contains basic properties of an attribute.
-	struct SCommonVertexAttributeData
-	{
-		/// Base format of an attribute. For multi-component attributes, this describes an individual component.
-		GCI::EVertexAttribFormat baseFormat = GCI::EVertexAttribFormat::Undefined;
-
-		/// Base attribute index. Allowed values are from 0 to (GCM::IA_MAX_VERTEX_ATTRIBUTES_NUM - 1).
-		/// For multi-component attributes, this is the index of the first occupied attribute slot.
-		uint16 baseAttributeIndex = GCI::CxDef::IA_VERTEX_ATTRIBUTE_INDEX_UNDEFINED;
-
-		/// Number of components (semantic sub-attributes) this attribute contains. It equals to the number of slots
-		/// in the attribute array this attribute occupies. For base attributes this will be at least <1>, but no more
-		/// than GCM::IA_MAX_VERTEX_ATTRIBUTE_COMPONENTS_NUM. For non-base attributes this is set to 0.
-		uint16 componentsNum = 1;
-
-		/// Instance rate. A value of 0 means the attribute contains per-vertex data.
-		uint16 instanceRate = 0;
-
-		/// An index of a vertex buffer slot this attribute is fetched from.
-		uint16 vertexStreamIndex = GCI::CxDef::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED;
-
-		/// An offset from the start of the vertex buffer data to the beginning of the attribute's data.
-		/// This is a *relative* offset from the start of the bound range of the buffer, not from it's physical base address.
-		uint32 vertexStreamRelativeOffset = 0;
-
-		/// Semantics of the attribute.
-		SShaderSemantics semantics {};
-
-		/// Returns the base size of the attribute described, i.e. the size of a single component (which equals the total
-		/// attribute size for the most common, single-component attributes).
-		IC3_ATTR_NO_DISCARD uint32 baseSize() const noexcept
+		/**
+		 * Builds a VertexAttributeKey value from the specified attribute properties.
+		 * @param pBaseSlot       Base IS slot of the attribute.
+		 * @param pComponentsNum  Number of attribute components (i.e. number of occupied IA slots).
+		 * @param pBaseFormat     Format of an individual component of the attribute.
+		 * @param pSemanticFlags  Semantic flags of the attribute.
+		 * @param pAttributeFlags Additional attribute flags. @see EVertexAttributeKeyFlags
+		 * @return A VertexAttributeKey value with encoded attribute information.
+		 */
+		IC3_ATTR_NO_DISCARD inline constexpr VertexAttributeKey makeVertexAttributeKey(
+				uint16 pBaseSlot,
+				uint16 pComponentsNum,
+				GCI::EVertexAttribFormat pBaseFormat,
+				TBitmask<EShaderInputSemanticFlags> pSemanticFlags,
+				TBitmask<EVertexAttributeKeyFlags> pAttributeFlags = 0 )
 		{
+			return static_cast<uint64>(
+					( ( ( uint64 )pBaseSlot & 0xF ) << 60 ) |
+					( ( ( uint64 )pComponentsNum & 0xF ) << 56 ) |
+					( ( ( uint64 )pBaseFormat & QLimits<uint32>::sMaxValue ) << 24 ) |
+					( ( uint64 )pSemanticFlags & eShaderInputSemanticMaskAll ) | pAttributeFlags );
+		}
+
+		/**
+		 * Builds a per-vertex VertexAttributeKey value from the specified attribute properties. This function is a more
+		 * specialized version of makeVertexAttributeKey, but assumes single-component attributes with no extra flags.
+		 * @return A VertexAttributeKey value with encoded attribute information.
+		 */
+		IC3_ATTR_NO_DISCARD inline constexpr VertexAttributeKey makeVertexAttributeKeyV(
+				uint16 pBaseSlot,
+				GCI::EVertexAttribFormat pBaseFormat,
+				TBitmask<EShaderInputSemanticFlags> pSemanticFlags )
+		{
+			return makeVertexAttributeKey( pBaseSlot, 1, pBaseFormat, pSemanticFlags, 0u );
+		}
+
+		/**
+		 * Builds a per-instance VertexAttributeKey value from the specified attribute properties. This function is a more
+		 * specialized version of makeVertexAttributeKey, but assumes per-instance attribute flag.
+		 * @return A VertexAttributeKey value with encoded attribute information.
+		 */
+		IC3_ATTR_NO_DISCARD inline constexpr VertexAttributeKey makeVertexAttributeKeyI(
+				uint16 pBaseSlot,
+				uint16 pComponentsNum,
+				GCI::EVertexAttribFormat pBaseFormat,
+				TBitmask<EShaderInputSemanticFlags> pSemanticFlags )
+		{
+			return makeVertexAttributeKey( pBaseSlot, pComponentsNum, pBaseFormat, pSemanticFlags, eVertexAttributeKeyFlagPerInstanceBit );
+		}
+
+	}
+
+	enum EStandardVertexAttributeKeys : VertexAttributeKey
+	{
+		/// Pre-defined vertex position: three 32-bit floats, located at slot 0.
+		eStandardVertexAttributeKeyPosition =
+				CxDef::makeVertexAttributeKeyV( 0, GCI::EVertexAttribFormat::Vec3F32, eShaderInputSemanticFlagPositionBit ),
+
+		/// Pre-defined vertex normal: three 32-bit floats, located at slot 1.
+		eStandardVertexAttributeKeyNormal =
+				CxDef::makeVertexAttributeKeyV( 1, GCI::EVertexAttribFormat::Vec3F32, eShaderInputSemanticFlagNormalBit ),
+
+		/// Pre-defined vertex tangent: three 32-bit floats, located at slot 2.
+		eStandardVertexAttributeKeyTangent =
+				CxDef::makeVertexAttributeKeyV( 2, GCI::EVertexAttribFormat::Vec3F32, eShaderInputSemanticFlagTangentBit ),
+
+		/// Pre-defined vertex bi-tangent: three 32-bit floats, located at slot 3.
+		eStandardVertexAttributeKeyBiTangent =
+				CxDef::makeVertexAttributeKeyV( 3, GCI::EVertexAttribFormat::Vec3F32, eShaderInputSemanticFlagBiTangentBit ),
+
+		/// Pre-defined vertex fixed color: four 8-bit uint values (normalized), located at slot 4.
+		eStandardVertexAttributeKeyFixedColor =
+				CxDef::makeVertexAttributeKeyV( 4, GCI::EVertexAttribFormat::Vec4U8N, eShaderInputSemanticFlagFixedColorBit ),
+
+		/// Pre-defined vertex tex coord 0: two 32-bit floats, located at slot 5.
+		eStandardVertexAttributeKeyTexCoord0 =
+				CxDef::makeVertexAttributeKeyV( 5, GCI::EVertexAttribFormat::Vec2F32, eShaderInputSemanticFlagTexCoord0Bit ),
+
+		/// Pre-defined vertex tex coord 1: two 32-bit floats, located at slot 6.
+		eStandardVertexAttributeKeyTexCoord1 =
+				CxDef::makeVertexAttributeKeyV( 6, GCI::EVertexAttribFormat::Vec2F32, eShaderInputSemanticFlagTexCoord1Bit ),
+
+		/// Pre-defined vertex tex coord 0&1 combined: four 32-bit floats, located at slot 5.
+		eStandardVertexAttributeKeyTexCoord01Combined =
+		CxDef::makeVertexAttributeKeyV( 5, GCI::EVertexAttribFormat::Vec4F32, eShaderInputSemanticFlagTexCoord0Bit | eShaderInputSemanticFlagTexCoord1Bit ),
+
+		/// Pre-defined vertex tex coord 2: two 32-bit floats, located at slot 7.
+		eStandardVertexAttributeKeyTexCoord2 =
+				CxDef::makeVertexAttributeKeyV( 7, GCI::EVertexAttribFormat::Vec2F32, eShaderInputSemanticFlagTexCoord2Bit ),
+
+		/// Pre-defined vertex tex coord 2&3 combined: four 32-bit floats, located at slot 7.
+		eStandardVertexAttributeKeyTexCoord23Combined =
+				CxDef::makeVertexAttributeKeyV( 7, GCI::EVertexAttribFormat::Vec4F32, eShaderInputSemanticFlagTexCoord2Bit | eShaderInputSemanticFlagTexCoord3Bit ),
+
+		/// Pre-defined vertex blend indices
+		eStandardVertexAttributeKeyBlendIndices =
+				CxDef::makeVertexAttributeKeyV( 8, GCI::EVertexAttribFormat::Vec4U32, eShaderInputSemanticFlagBlendIndicesBit ),
+
+		/// Pre-defined vertex blend weights
+		eStandardVertexAttributeKeyBlendWeights =
+				CxDef::makeVertexAttributeKeyV( 9, GCI::EVertexAttribFormat::Vec4F32, eShaderInputSemanticFlagBlendWeightsBit ),
+
+		/// Pre-defined instance matrix
+		eStandardVertexAttributeKeyInstanceMatrix =
+				CxDef::makeVertexAttributeKeyI( 10, 4, GCI::EVertexAttribFormat::Vec4F32, eShaderInputSemanticFlagInstanceMatrixBit ),
+
+		/// Pre-defined instance user data
+		eStandardVertexAttributeKeyInstanceUserData =
+				CxDef::makeVertexAttributeKeyI( 14, 2, GCI::EVertexAttribFormat::Vec2F32, eShaderInputSemanticFlagInstanceUserDataBit ),
+	};
+
+	namespace CxDef
+	{
+
+		inline constexpr GCI::input_assembler_index_t getVertexAttributeKeyBaseIndex( VertexAttributeKey pAttributeKey )
+		{
+			return ( GCI::input_assembler_index_t )( ( ( uint64 )pAttributeKey >> 60 ) & 0xF );
+		}
+
+		inline constexpr uint16 getVertexAttributeKeyComponentsNum( VertexAttributeKey pAttributeKey )
+		{
+			return ( uint16 )( ( ( uint64 )pAttributeKey >> 56 ) & 0xF );
+		}
+
+		inline GCI::EVertexAttribFormat getVertexAttributeKeyBaseFormat( VertexAttributeKey pAttributeKey )
+		{
+			return ( GCI::EVertexAttribFormat )( ( ( uint64 )pAttributeKey >> 24 ) & QLimits<uint32>::sMaxValue );
+		}
+
+		inline uint32 getVertexAttributeKeyComponentByteSize( VertexAttributeKey pAttributeKey )
+		{
+			const auto baseFormat = getVertexAttributeKeyBaseFormat( pAttributeKey );
 			return GCI::CxDef::getVertexAttribFormatByteSize( baseFormat );
 		}
 
-		///
-		IC3_ATTR_NO_DISCARD EVertexDataRate getVertexDataRate() const noexcept
+		inline uint32 getVertexAttributeKeyTotalByteSize( VertexAttributeKey pAttributeKey )
 		{
-			return ( instanceRate == 0 ) ? EVertexDataRate::PerVertex : EVertexDataRate::PerInstance;
-		}
-	};
-
-	/// @brief
-	struct SVertexAttributeDefinition : public SCommonVertexAttributeData
-	{
-		/// Defines an extra padding applied to each of the attribute's subcomponent. Affects the combined data stride.
-		/// @example Consider an attribute which is a 3x3 float matrix. Such attribute would occupy three generic
-		/// attribute slots, each containing a single 3-component float vector. In order to get each attribute aligned
-		/// on a 16-byte boundary, we could place the data like this:
-		/// |-----------------------------------------------------------|
-		/// [M00][M01][M02][PAD][M10][M11][M12][PAD][M20][M21][M22][PAD]
-		/// |-----------------------------------------------------------|
-		/// (PAD being 4 bytes of padding). In this case:
-		/// - baseFormat is GCI::EVertexAttribFormat::Vec3F32
-		/// - dataStride should be 48 (or 0 which will result in 64 computed automatically)
-		/// - subComponentPadding should be 4
-		/// - subComponentsNum should be 3
-		uint16 componentPadding = 0;
-
-		/// If 0, set to baseSize() + componentPadding.
-		uint16 componentStride = 0;
-
-		///
-		IC3_ATTR_NO_DISCARD bool hasAppendAsRelativeOffset() const noexcept
-		{
-			return ( vertexStreamRelativeOffset == GCI::CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND ) ||
-			       ( vertexStreamRelativeOffset == GCI::CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND16 );
+			const auto componentByteSize = getVertexAttributeKeyComponentByteSize( pAttributeKey );
+			const auto componentsNum = getVertexAttributeKeyComponentsNum( pAttributeKey );
+			return componentByteSize * componentsNum;
 		}
 
-		/// Returns true if the attribute specification is valid, i.e. active (SCommonVertexAttributeData::active()
-		/// returns true) and the number of components and their padding have correct values.
-		IC3_ATTR_NO_DISCARD bool valid() const noexcept
+		inline TBitmask<EShaderInputSemanticFlags> getVertexAttributeKeySemanticFlags( VertexAttributeKey pAttributeKey )
 		{
-			return //
-			       ( baseFormat != GCI::EVertexAttribFormat::Undefined ) &&
-			       ( baseAttributeIndex != GCI::CxDef::IA_VERTEX_ATTRIBUTE_INDEX_UNDEFINED ) &&
-			       ( vertexStreamIndex != GCI::CxDef::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED ) &&
-			       // Vertex attribute index should be in the valid range of supported values.
-			       cxGCIValidVertexAttributeIndexRange.contains( baseAttributeIndex ) &&
-			       // Vertex stream index should be in the valid range of supported values.
-			       cxGCIValidVertexStreamIndexRange.contains( vertexStreamIndex ) &&
-			       // Each component has to have at least one component and no more than GCM::IA_MAX_VERTEX_ATTRIBUTE_COMPONENTS_NUM.
-			       cxGCIValidVertexAttributeComponentsNumberRange.contains( componentsNum ) &&
-			       // Attributes can have multiple components (e.g. a 4x4 matrix is a 4-component attribute, with each component
-			       // being a 4-element vector). Even though the base index is valid, we need to check all potential sub-attributes.
-			       cxGCIValidVertexAttributeIndexRange.contains( baseAttributeIndex + componentsNum );
-
+			return ( uint32 )( ( uint64 )pAttributeKey & eShaderInputSemanticMaskAll );
 		}
-	};
+
+		inline EShaderInputSemanticID getVertexAttributeKeySemanticID( VertexAttributeKey pAttributeKey )
+		{
+			return static_cast<EShaderInputSemanticID>( declareShaderInputSemanticID( getVertexAttributeKeySemanticFlags( pAttributeKey ) ) );
+		}
+
+		inline bool isVertexAttributeKeyPerInstance( VertexAttributeKey pAttributeKey )
+		{
+			const auto attributeFlagsAll = Cppx::makeBitmask( pAttributeKey );
+			return attributeFlagsAll.isSet( eVertexAttributeKeyFlagPerInstanceBit );
+		}
+
+		inline bool isStandardShaderInputSemanticID( EShaderInputSemanticID pSemanticID )
+		{
+			const auto semanticsMask = Cppx::makeBitmask( pSemanticID );
+			return semanticsMask.isSetAnyOf( eShaderInputSemanticMaskStandardAttribsAll ) && ( semanticsMask.countBits() == 1 );
+		}
+
+		inline constexpr TBitmask<GCI::EIAVertexAttributeFlags> getVertexAttributeKeyGCIAttributeMask( VertexAttributeKey pAttributeKey )
+		{
+			const auto baseIndex = getVertexAttributeKeyBaseIndex( pAttributeKey );
+			const auto componentsNum = getVertexAttributeKeyComponentsNum( pAttributeKey );
+
+			return GCI::CxDef::makeIAVertexAttributeFlag( baseIndex ) |
+			       ( ( componentsNum > 1 ) ? GCI::CxDef::makeIAVertexAttributeFlag( baseIndex + 1 ) : 0u ) |
+			       ( ( componentsNum > 2 ) ? GCI::CxDef::makeIAVertexAttributeFlag( baseIndex + 2 ) : 0u ) |
+			       ( ( componentsNum > 3 ) ? GCI::CxDef::makeIAVertexAttributeFlag( baseIndex + 3 ) : 0u );
+		}
+
+	}
+
 } // namespace Ic3
 
 #endif // __IC3_NXMAIN_VERTEX_ATTRIBUTE_COMMON_DEFS_H__

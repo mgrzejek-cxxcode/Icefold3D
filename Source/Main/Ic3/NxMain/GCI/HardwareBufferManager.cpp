@@ -1,13 +1,13 @@
 
 #include "HWBufferManager.h"
-#include <Ic3/Graphics/GCI/GPUDevice.h>
-#include <Ic3/Graphics/GCI/Resources/GPUBuffer.h>
+#include <Ic3/Graphics/GCI/GpuDevice.h>
+#include <Ic3/Graphics/GCI/Resources/GpuBuffer.h>
 
 namespace Ic3
 {
 
-	ResultCode HWBufferManager::allocateGPUBufferExplicit( gpuapi_buffer_ref_id_t pGPUBufferRefID,
-														   const GCI::GPUBufferCreateInfo & pGBCreateInfo )
+	ResultCode HWBufferManager::allocateGpuBufferExplicit( gpuapi_buffer_ref_id_t pGpuBufferRefID,
+														   const GCI::GpuBufferCreateInfo & pGBCreateInfo )
 	{
 	    return {};
 	}
@@ -17,7 +17,7 @@ namespace Ic3
 		auto hwBufferCreateInfo = pHWBCreateInfo;
 		_validateBufferCreateInfo( EHWBufferType::HBTVertexBuffer, hwBufferCreateInfo );
 
-		auto gpuBuffer = _createGPUBuffer( 0, hwBufferCreateInfo );
+		auto gpuBuffer = _createGpuBuffer( 0, hwBufferCreateInfo );
 		if( !gpuBuffer )
 		{
 			ic3DebugOutput( "HWB: GPU buffer creation has failed" );
@@ -44,19 +44,19 @@ namespace Ic3
         return nullptr;
 	}
 
-	GPUBufferUsageInfo HWBufferManager::getGPUBufferInfo( gpuapi_buffer_ref_id_t pGPUBufferRefID ) const
+	GpuBufferUsageInfo HWBufferManager::getGpuBufferInfo( gpuapi_buffer_ref_id_t pGpuBufferRefID ) const
 	{
 	    return {};
 	}
 
 	memory_align_t HWBufferManager::queryAlignmentRequirementsForBuffer( EHWBufferType pBufferType,
 	                                                                     GCI::gpu_memory_size_t pBufferSize,
-	                                                                     Bitmask<GCI::gpu_memory_flags_value_t> pMemoryFlags )
+	                                                                     TBitmask<GCI::gpu_memory_flags_value_t> pMemoryFlags )
 	{
-		return Ic3::CxDef::MEMORY_DEFAULT_ALIGNMENT;
+		return cxMemoryCpuDefaultAlignment;
 	}
 
-	GCI::GPUBufferHandle HWBufferManager::_createGPUBuffer( gpuapi_buffer_ref_id_t pGPUBufferRefID,
+	GCI::GpuBufferHandle HWBufferManager::_createGpuBuffer( gpuapi_buffer_ref_id_t pGpuBufferRefID,
 	                                                           const HWBufferCreateInfo & pHWBCreateInfo )
 	{
 		const auto requestedBufferSize = pHWBCreateInfo.metrics.uGeneric.bufferSize;
@@ -67,56 +67,56 @@ namespace Ic3
 
 		// All buffer-related flags at the engine level are combined into a single enum.
 		// Extract MemoryFlags part using the dedicated utility function.
-		const auto memoryFlags = CxDef::getHWBufferUsageGPUMemoryFlags( pHWBCreateInfo.flags );
+		const auto memoryFlags = CxDef::getHWBufferUsageGpuMemoryFlags( pHWBCreateInfo.flags );
 
 		// Compute the alignment using the provided buffer specification.
 		// If this is '0', everything is fine - it means default alignment for the current platform.
 		const auto memoryAlignment = queryAlignmentRequirementsForBuffer( pHWBCreateInfo.baseType, requestedBufferSize, memoryFlags );
 
-		GCI::GPUBufferCreateInfo gpuBufferCreateInfo;
+		GCI::GpuBufferCreateInfo gpuBufferCreateInfo;
 		gpuBufferCreateInfo.bufferSize = requestedBufferSize;
-		gpuBufferCreateInfo.initialTarget = static_cast<GCI::EGPUBufferTarget>( pHWBCreateInfo.baseType );
-		gpuBufferCreateInfo.resourceFlags = CxDef::getHWBufferUsageGPUResourceFlags( pHWBCreateInfo.flags );
+		gpuBufferCreateInfo.initialTarget = static_cast<GCI::EGpuBufferTarget>( pHWBCreateInfo.baseType );
+		gpuBufferCreateInfo.resourceFlags = CxDef::getHWBufferUsageGpuResourceFlags( pHWBCreateInfo.flags );
 		gpuBufferCreateInfo.memoryFlags = memoryFlags;
 		gpuBufferCreateInfo.memoryBaseAlignment = memoryAlignment;
 		gpuBufferCreateInfo.initDataDesc = pHWBCreateInfo.initData;
 
-		auto gpuBuffer = _gpuDevice->createGPUBuffer( gpuBufferCreateInfo );
+		auto gpuBuffer = _gpuDevice->createGpuBuffer( gpuBufferCreateInfo );
 		if( !gpuBuffer )
 		{
 			return nullptr;
 		}
 
-		if( pGPUBufferRefID == 0 )
+		if( pGpuBufferRefID == 0 )
 		{
 			// If no explicit refID was specified, use the GPU buffer's address.
-			pGPUBufferRefID = reinterpret_cast<gpuapi_buffer_ref_id_t>( gpuBuffer.get() );
+			pGpuBufferRefID = reinterpret_cast<gpuapi_buffer_ref_id_t>( gpuBuffer.get() );
 		}
 		else
 		{
-			auto existingBufferState = _gpuBufferMap.find( pGPUBufferRefID );
+			auto existingBufferState = _gpuBufferMap.find( pGpuBufferRefID );
 			if( existingBufferState != _gpuBufferMap.end() )
 			{
-				ic3DebugOutputFmt( "HWB: specified refID for GPUBuffer (0x%x) has been already used!", pGPUBufferRefID );
+				ic3DebugOutputFmt( "HWB: specified refID for GpuBuffer (0x%x) has been already used!", pGpuBufferRefID );
 				ic3DebugInterrupt();
 				return nullptr;
 			}
 		}
 
-		GPUBufferState gpuBufferState;
+		GpuBufferState gpuBufferState;
 		gpuBufferState.gpuBuffer = gpuBuffer;
 		gpuBufferState.currentAllocOffset = 0;
 
-		_gpuBufferMap[pGPUBufferRefID] = std::move( gpuBufferState );
+		_gpuBufferMap[pGpuBufferRefID] = std::move( gpuBufferState );
 
 		return gpuBuffer;
 	}
 
-	GPUBufferRef HWBufferManager::_reserveGPUBufferRegion( gpuapi_buffer_ref_id_t pGPUBufferRefID,
+	GpuBufferRef HWBufferManager::_reserveGpuBufferRegion( gpuapi_buffer_ref_id_t pGpuBufferRefID,
 	                                                       GCI::gpu_memory_size_t pSize,
 	                                                       memory_align_t pAlignment )
 	{
-		auto internalBufferStateIter = _gpuBufferMap.find( pGPUBufferRefID );
+		auto internalBufferStateIter = _gpuBufferMap.find( pGpuBufferRefID );
 		if( internalBufferStateIter == _gpuBufferMap.end() )
 		{
 			return nullptr;
@@ -135,7 +135,7 @@ namespace Ic3
 			return nullptr;
 		}
 
-		// GPUBuffer has some memory allocated for it, described as a heap subregion (an offset and a size).
+		// GpuBuffer has some memory allocated for it, described as a heap subregion (an offset and a size).
 		// Our internal 'currentAllocOffset' is a relative offset from the beginning of that heap subregion
 		// (initially: 0). Compute the "actual" current heap offset by adding those two. We need to work with
 		// the actual address to properly handle alignment: if base heap address was 4-byte aligned and there
@@ -161,7 +161,7 @@ namespace Ic3
 			return nullptr;
 		}
 
-		GPUBufferRef gpuBufferRef;
+		GpuBufferRef gpuBufferRef;
 		gpuBufferRef.buffer = gpuBufferState.gpuBuffer;
 		gpuBufferRef.reservedRegion.offset = baseHeapOffset;
 		gpuBufferRef.reservedRegion.size = allocationSize;
