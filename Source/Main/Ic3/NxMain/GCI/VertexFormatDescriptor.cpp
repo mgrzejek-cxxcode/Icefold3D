@@ -65,27 +65,73 @@ namespace Ic3
 		return true;
 	}
 
-	uint32 VertexFormatDescriptor::resolveAttributeRef( EShaderInputSemanticID pSemanticID, uint32 pSemanticIndex ) const noexcept
+	uint32 VertexFormatDescriptor::getElementStrideForAttribute( native_uint pAttribIASlot ) const noexcept
 	{
-		const auto semanticName = GCU::getShaderInputSemanticNameFromID( pSemanticID );
-		return _resolveAttributeRefImpl( semanticName, pSemanticIndex );
+		const auto * genericAttribute = getAttribute( pAttribIASlot );
+		if( genericAttribute && genericAttribute->isActive() )
+		{
+			const auto * attributeStream = getStream( genericAttribute->streamIASlot );
+			if( attributeStream && attributeStream->isActive() )
+			{
+				return attributeStream->dataStrideInBytes;
+			}
+		}
+
+		return 0;
 	}
 
-	uint32 VertexFormatDescriptor::resolveAttributeRef( VertexAttributeKey pAttributeKey, uint32 pSemanticIndex ) const noexcept
+	uint32 VertexFormatDescriptor::getElementStrideForAttribute( StringView pSemanticName ) const noexcept
 	{
-		const auto semanticID = CxDef::getVertexAttributeKeySemanticID( pAttributeKey );
-		return resolveAttributeRef( semanticID, pSemanticIndex );
+		const auto attributeSlotIndex = _resolveAttributeRefImpl( pSemanticName, 0u );
+		return getElementStrideForAttribute( attributeSlotIndex );
 	}
 
-	uint32 VertexFormatDescriptor::resolveAttributeRef( std::string_view pSemanticName, uint32 pSemanticIndex ) const noexcept
+	uint32 VertexFormatDescriptor::getElementStrideForAttribute( VertexAttributeKey pAttributeKey ) const noexcept
+	{
+		const auto attributeSlotIndex = _resolveAttributeRefImpl( pAttributeKey.getSystemSemanticFlags(), 0u );
+		return getElementStrideForAttribute( attributeSlotIndex );
+	}
+
+	uint32 VertexFormatDescriptor::getElementStrideForAttribute( TBitmask<ESystemAttributeSemanticFlags> pSysSmtFlags ) const noexcept
+	{
+		const auto attributeSlotIndex = _resolveAttributeRefImpl( pSysSmtFlags, 0u );
+		return getElementStrideForAttribute( attributeSlotIndex );
+	}
+
+	uint32 VertexFormatDescriptor::getElementStrideForAttributeUnchecked( native_uint pAttribIASlot ) const noexcept
+	{
+		const auto & genericAttribute = _attribArrayLayout[pAttribIASlot];
+		const auto & attributeStream = _streamArrayConfig[genericAttribute.streamIASlot];
+		return attributeStream.dataStrideInBytes;
+	}
+
+	uint32 VertexFormatDescriptor::getElementStrideForAttributeUnchecked( VertexAttributeKey pAttributeKey ) const noexcept
+	{
+		const auto & genericAttribute = _attribArrayLayout[pAttributeKey.uBaseSlot];
+		const auto & attributeStream = _streamArrayConfig[genericAttribute.streamIASlot];
+		return attributeStream.dataStrideInBytes;
+	}
+
+	uint32 VertexFormatDescriptor::resolveAttributeRef( const ShaderSemantics & pSemantics ) const noexcept
+	{
+		const auto semanticName = pSemantics.empty() ? pSemantics.semanticName.strView() : StringView{};
+		return _resolveAttributeRefImpl( semanticName, pSemantics.semanticIndex );
+	}
+
+	uint32 VertexFormatDescriptor::resolveAttributeRef( StringView pSemanticName, uint32 pSemanticIndex ) const noexcept
 	{
 		return _resolveAttributeRefImpl( pSemanticName, pSemanticIndex );
 	}
 
-	uint32 VertexFormatDescriptor::resolveAttributeRef( const ShaderSemantics & pSemantics, uint32 pSemanticIndex ) const noexcept
+	uint32 VertexFormatDescriptor::resolveAttributeRef( VertexAttributeKey pAttributeKey, uint32 pSemanticIndex ) const noexcept
 	{
-		const auto semanticName = pSemantics.empty() ? pSemantics.smtName : std::string_view{};
-		return _resolveAttributeRefImpl( semanticName, pSemanticIndex );
+		const auto sysSmtFlags = pAttributeKey.getSystemSemanticFlags();
+		return _resolveAttributeRefImpl( sysSmtFlags, pSemanticIndex );
+	}
+
+	uint32 VertexFormatDescriptor::resolveAttributeRef( TBitmask<ESystemAttributeSemanticFlags> pSysSmtFlags, uint32 pSemanticIndex ) const noexcept
+	{
+		return _resolveAttributeRefImpl( pSysSmtFlags, pSemanticIndex );
 	}
 
 	std::string VertexFormatDescriptor::generateVertexFormatStringID() const noexcept
@@ -99,24 +145,23 @@ namespace Ic3
 
 		if( !_attribArrayLayout.empty() )
 		{
-			const auto & activeAttributes = _attribArrayLayout.getActiveAttributes();
-			resultDefinitionArray.reserve( activeAttributes.size() );
+			const auto & attributeArray = _attribArrayLayout.getAttributeArray();
+			resultDefinitionArray.reserve( _attribArrayLayout.getActiveBaseAttributesNum() );
 
-			for( const auto & baseAttributeInfo : activeAttributes )
+			for( const auto & attribute : attributeArray )
 			{
-				if( baseAttributeInfo.isBaseAttribute() )
+				if( attribute.isBaseAttribute() )
 				{
 					auto & attributeDefinition = resultDefinitionArray.emplace_back();
-					attributeDefinition.baseFormat = baseAttributeInfo.baseFormat;
-					attributeDefinition.attributeIASlot = baseAttributeInfo.attributeIASlot;
-					attributeDefinition.semanticComponentsNum = baseAttributeInfo.semanticComponentsNum;
-					attributeDefinition.semanticIndex = 0u;
-					attributeDefinition.componentPadding = baseAttributeInfo.componentPadding;
-					attributeDefinition.vertexStreamIASlot = baseAttributeInfo.vertexStreamIASlot;
-					attributeDefinition.vertexStreamRelativeOffset = baseAttributeInfo.vertexStreamRelativeOffset;
-					attributeDefinition.shaderSemantics = baseAttributeInfo.shaderSemantics;
+					attributeDefinition.attributeIASlot = attribute.attributeIASlot;
+					attributeDefinition.streamIASlot = attribute.streamIASlot;
+					attributeDefinition.dataFormat = attribute.dataFormat;
+					attributeDefinition.dataPadding = attribute.dataPadding;
+					attributeDefinition.semanticGroupSize = attribute.semanticGroupSize;
+					attributeDefinition.vertexStreamRelativeOffset = attribute.vertexStreamRelativeOffset;
+					attributeDefinition.shaderSemantics = attribute.shaderSemantics;
 
-					const auto & attributeStream = _streamArrayConfig[baseAttributeInfo.vertexStreamIASlot];
+					const auto & attributeStream = _streamArrayConfig[attribute.streamIASlot];
 					attributeDefinition.dataRate = attributeStream.streamDataRate;
 				}
 			}
@@ -125,33 +170,45 @@ namespace Ic3
 		return resultDefinitionArray;
 	}
 
-	uint32 VertexFormatDescriptor::_resolveAttributeRefImpl( std::string_view pSemanticName, uint32 pSemanticIndex ) const noexcept
+	uint32 VertexFormatDescriptor::_resolveAttributeRefImpl( StringView pSemanticName, uint32 pSemanticIndex ) const noexcept
 	{
-		const auto baseAttributeSlot = _attribArrayLayout.resolveSemanticName( pSemanticName );
-		if( ( baseAttributeSlot != cxGCIVertexAttributeSlotUndefined ) && ( pSemanticIndex < GCM::cxIAMaxVertexAttributeComponentsNum ) )
+		if( !pSemanticName.empty() && ( pSemanticIndex < GCM::cxIAMaxVertexAttributeSemanticGroupSize ) )
 		{
-			const auto & baseAttributeComponent = _attribArrayLayout[baseAttributeSlot];
-			const auto requestedAttributeComponentSlot = baseAttributeSlot + pSemanticIndex;
-			if( const auto * requestedAttributeComponent = _attribArrayLayout.attributePtr( requestedAttributeComponentSlot ) )
+			// Query the internal AttributeLayout object for the index of a base attribute with the specified semantics.
+			// If such attribute does not exist, an invalid index is returned instead (cxGCIVertexAttributeIndexUndefined).
+			const auto baseAttributeSlotIndex = _attribArrayLayout.queryBaseAttributeBySemantics( pSemanticName );
+
+			if( baseAttributeSlotIndex != cxGCIVertexAttributeIndexUndefined )
 			{
-				if( requestedAttributeComponent->hasSameSemanticsAs( baseAttributeComponent ) )
+				const auto & baseAttribute = _attribArrayLayout[baseAttributeSlotIndex];
+
+				// Attributes can be part of semantic groups, i.e. related attributes with the same semantic name,
+				// occupying adjacent range of IA slots. Calculate the slot index of the requested attribute.
+				const auto requestedAttributeIASlotIndex = baseAttributeSlotIndex + pSemanticIndex;
+
+				// Fetch the requested attribute. In case it is not a valid attribute, a nullptr is returned here.
+				if( const auto * requestedAttributeComponent = _attribArrayLayout.attributePtr( requestedAttributeIASlotIndex ) )
 				{
-					ic3DebugAssert( requestedAttributeComponent->shaderSemantics.smtIndex == pSemanticIndex );
-					return
+					if( requestedAttributeComponent->hasSameSemanticsAs( baseAttribute ) )
+					{
+						ic3DebugAssert( requestedAttributeComponent->shaderSemantics.semanticIndex == pSemanticIndex );
+						return requestedAttributeIASlotIndex;
+					}
 				}
 			}
 		}
-		return cxGCIVertexAttributeSlotUndefined;
+
+		return cxGCIVertexAttributeIndexUndefined;
 	}
 
-	uint32 VertexFormatDescriptor::_resolveAttributeRefImpl( EShaderInputSemanticID pSemanticID, uint32 pSemanticIndex ) const noexcept
+	uint32 VertexFormatDescriptor::_resolveAttributeRefImpl( TBitmask<ESystemAttributeSemanticFlags> pSysSmtFlags, uint32 pSemanticIndex ) const noexcept
 	{
-		if( CxDef::isStandardShaderInputSemanticID( pSemanticID ) )
+		if( GCU::isStandardShaderInputAttribute( pSysSmtFlags ) )
 		{
-			const auto semanticName = GCU::getShaderInputSemanticNameFromID( pSemanticID );
+			const auto semanticName = GCU::getStandardSemanticNameFromSystemFlags( pSysSmtFlags );
 			return _resolveAttributeRefImpl( semanticName, pSemanticIndex );
 		}
-		return cxGCIVertexAttributeSlotUndefined;
+		return cxGCIVertexAttributeIndexUndefined;
 	}
 
 
@@ -164,36 +221,42 @@ namespace Ic3
 		{
 			std::string vertexStreamStrings[GCM::cxIAMaxVertexStreamsNum];
 
-			const auto & attributes = pAttributeLayout.getActiveAttributes();
-			for( const auto & attributeComponent : attributes )
+			const auto & attributeArray = pAttributeLayout.getAttributeArray();
+			for( const auto & genericAttribute : attributeArray )
 			{
-				if( attributeComponent.isBaseAttribute() )
+				if( genericAttribute.isActive() )
 				{
-					const auto attributeFormatStr = generateVertexAttributeFormatString( attributeComponent );
-					if( !vertexStreamStrings[attributeComponent.vertexStreamIASlot].empty() )
+					if( genericAttribute.isBaseAttribute() )
 					{
-						vertexStreamStrings[attributeComponent.vertexStreamIASlot].append( 1, '|' );
+						const auto attributeFormatStr = generateVertexAttributeFormatString( genericAttribute );
+						if( !vertexStreamStrings[genericAttribute.streamIASlot].empty() )
+						{
+							vertexStreamStrings[genericAttribute.streamIASlot].append( 1, '|' );
+						}
+						vertexStreamStrings[genericAttribute.streamIASlot].append( attributeFormatStr );
 					}
-					vertexStreamStrings[attributeComponent.vertexStreamIASlot].append( attributeFormatStr );
 				}
 			}
 
 			std::string resultStringID;
 
-			const auto & streams = pStreamConfig.getActiveStreams();
-			for( const auto & streamComponent : streams )
+			const auto & streamArray = pStreamConfig.getStreamArray();
+			for( const auto & vertexStream : streamArray )
 			{
-				if( !vertexStreamStrings[streamComponent.streamIASlot].empty() )
+				if( vertexStream.isActive() )
 				{
-					resultStringID.append( 1, '#' );
-					resultStringID.append( 1, 'S' );
-					resultStringID.append( std::to_string( streamComponent.streamIASlot ) );
-					resultStringID.append( 1, '(' );
-					resultStringID.append( 1, ( streamComponent.streamDataRate == EVertexDataRate::PerInstance ) ? 'I' : 'V' );
-					resultStringID.append( 1, ')' );
-					resultStringID.append( 1, '<' );
-					resultStringID.append( vertexStreamStrings[streamComponent.streamIASlot] );
-					resultStringID.append( 1, '>' );
+					if( !vertexStreamStrings[vertexStream.streamIASlot].empty() )
+					{
+						resultStringID.append( 1, '#' );
+						resultStringID.append( 1, 'S' );
+						resultStringID.append( std::to_string( vertexStream.streamIASlot ) );
+						resultStringID.append( 1, '(' );
+						resultStringID.append( 1, ( vertexStream.streamDataRate == EVertexDataRate::PerInstance ) ? 'I' : 'V' );
+						resultStringID.append( 1, ')' );
+						resultStringID.append( 1, '<' );
+						resultStringID.append( vertexStreamStrings[vertexStream.streamIASlot] );
+						resultStringID.append( 1, '>' );
+					}
 				}
 			}
 

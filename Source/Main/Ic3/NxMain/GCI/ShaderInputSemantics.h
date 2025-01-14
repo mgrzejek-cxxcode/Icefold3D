@@ -3,122 +3,86 @@
 #define __IC3_NXMAIN_SHADER_INPUT_SEMANTICS_H__
 
 #include "CommonGCIDefs.h"
+#include <Ic3/Cppx/ImmutableString.h>
 #include <Ic3/Graphics/GCI/State/InputAssemblerCommon.h>
 
 namespace Ic3
 {
 
-	using VertexAttributeKey = uint64;
-
-	enum EShaderInputSemanticFlags : uint32
+	enum ESystemAttributeSemanticFlags : uint32
 	{
-		eShaderInputSemanticFlagPositionBit         = 0x00001,
-		eShaderInputSemanticFlagNormalBit           = 0x00002,
-		eShaderInputSemanticFlagTangentBit          = 0x00004,
-		eShaderInputSemanticFlagBiTangentBit        = 0x00008,
+		eSystemAttributeSemanticFlagPositionBit         = 0x00001,
+		eSystemAttributeSemanticFlagNormalBit           = 0x00002,
+		eSystemAttributeSemanticFlagTangentBit          = 0x00004,
+		eSystemAttributeSemanticFlagBiTangentBit        = 0x00008,
+		eSystemAttributeSemanticFlagTexCoord0Bit        = 0x00010,
+		eSystemAttributeSemanticFlagTexCoord1Bit        = 0x00020,
+		eSystemAttributeSemanticFlagTexCoord2Bit        = 0x00040,
+		eSystemAttributeSemanticFlagTexCoord3Bit        = 0x00080,
+		eSystemAttributeSemanticFlagTexCoord4Bit        = 0x00100,
+		eSystemAttributeSemanticFlagTexCoord5Bit        = 0x00200,
+		eSystemAttributeSemanticFlagTexCoord6Bit        = 0x00400,
+		eSystemAttributeSemanticFlagTexCoord7Bit        = 0x00800,
+		eSystemAttributeSemanticMaskTexCoordAll         = 0x00FF0,
+		eSystemAttributeSemanticFlagFixedColorBit       = 0x01000,
+		eSystemAttributeSemanticFlagBlendIndicesBit     = 0x02000,
+		eSystemAttributeSemanticFlagBlendWeightsBit     = 0x04000,
+		eSystemAttributeSemanticMaskSkinDataAll         = 0x06000,
+		eSystemAttributeSemanticFlagInstanceMatrixBit   = 0x10000,
+		eSystemAttributeSemanticFlagInstanceUserDataBit = 0x20000,
+		eSystemAttributeSemanticMaskInstanceDataAll     = 0x30000,
+		eSystemAttributeSemanticMaskStandardAttribsAll  = 0x37FFF,
+		eSystemAttributeSemanticFlagCustomAttributeBit  = 0x40000,
+		eSystemAttributeSemanticMaskAll                 = 0x7FFFF,
 
-		eShaderInputSemanticFlagTexCoord0Bit        = 0x00010,
-		eShaderInputSemanticFlagTexCoord1Bit        = 0x00020,
-		eShaderInputSemanticFlagTexCoord2Bit        = 0x00040,
-		eShaderInputSemanticFlagTexCoord3Bit        = 0x00080,
-		eShaderInputSemanticFlagTexCoord4Bit        = 0x00100,
-		eShaderInputSemanticFlagTexCoord5Bit        = 0x00200,
-		eShaderInputSemanticFlagTexCoord6Bit        = 0x00400,
-		eShaderInputSemanticFlagTexCoord7Bit        = 0x00800,
-		eShaderInputSemanticMaskTexCoordAll         = 0x00FF0,
+		eSystemAttributeSemanticMaskTexCoord01Packed =
+			eSystemAttributeSemanticFlagTexCoord0Bit | eSystemAttributeSemanticFlagTexCoord1Bit,
 
-		eShaderInputSemanticFlagFixedColorBit       = 0x01000,
-
-		eShaderInputSemanticFlagBlendIndicesBit     = 0x02000,
-		eShaderInputSemanticFlagBlendWeightsBit     = 0x04000,
-		eShaderInputSemanticMaskSkinDataAll         = 0x06000,
-
-		eShaderInputSemanticFlagInstanceMatrixBit   = 0x10000,
-		eShaderInputSemanticFlagInstanceUserDataBit = 0x20000,
-		eShaderInputSemanticMaskInstanceDataAll     = 0x30000,
-
-		eShaderInputSemanticMaskStandardAttribsAll  = 0x37FFF,
-
-		eShaderInputSemanticFlagCustomAttributeBit  = 0x40000,
-
-		eShaderInputSemanticMaskAll                 = 0x7FFFF
+		eSystemAttributeSemanticMaskTexCoord23Packed =
+			eSystemAttributeSemanticFlagTexCoord2Bit | eSystemAttributeSemanticFlagTexCoord3Bit,
 	};
-
-	namespace CxDef
-	{
-
-		IC3_ATTR_NO_DISCARD inline constexpr uint32 declareShaderInputSemanticID( EShaderInputSemanticFlags pSemanticFlags )
-		{
-			return static_cast<uint32>( pSemanticFlags );
-		}
-
-	}
-
-	enum class EShaderInputSemanticID : uint32
-	{
-		Undefined        = 0,
-		Position         = CxDef::declareShaderInputSemanticID( eShaderInputSemanticFlagPositionBit   ),
-		Normal           = CxDef::declareShaderInputSemanticID( eShaderInputSemanticFlagNormalBit     ),
-		Tangent          = CxDef::declareShaderInputSemanticID( eShaderInputSemanticFlagTangentBit    ),
-		BiTangent        = CxDef::declareShaderInputSemanticID( eShaderInputSemanticFlagBiTangentBit  ),
-		TexCoord0        = CxDef::declareShaderInputSemanticID( eShaderInputSemanticFlagTexCoord0Bit  ),
-		TexCoord1        = CxDef::declareShaderInputSemanticID( eShaderInputSemanticFlagTexCoord1Bit  ),
-		TexCoord2        = CxDef::declareShaderInputSemanticID( eShaderInputSemanticFlagTexCoord2Bit  ),
-		TexCoord3        = CxDef::declareShaderInputSemanticID( eShaderInputSemanticFlagTexCoord3Bit  ),
-		TexCoord4        = CxDef::declareShaderInputSemanticID( eShaderInputSemanticFlagTexCoord4Bit  ),
-		TexCoord5        = CxDef::declareShaderInputSemanticID( eShaderInputSemanticFlagTexCoord5Bit  ),
-		TexCoord6        = CxDef::declareShaderInputSemanticID( eShaderInputSemanticFlagTexCoord6Bit  ),
-		TexCoord7        = CxDef::declareShaderInputSemanticID( eShaderInputSemanticFlagTexCoord7Bit  ),
-		FixedColor       = CxDef::declareShaderInputSemanticID( eShaderInputSemanticFlagFixedColorBit ),
-		BlendIndices     = CxDef::declareShaderInputSemanticID( eShaderInputSemanticFlagBlendIndicesBit ),
-		BlendWeights     = CxDef::declareShaderInputSemanticID( eShaderInputSemanticFlagBlendWeightsBit ),
-		InstanceMatrix   = CxDef::declareShaderInputSemanticID( eShaderInputSemanticFlagInstanceMatrixBit   ),
-		InstanceUserData = CxDef::declareShaderInputSemanticID( eShaderInputSemanticFlagInstanceUserDataBit ),
-		Custom           = CxDef::declareShaderInputSemanticID( eShaderInputSemanticFlagCustomAttributeBit  ),
-	};
-
-	namespace CxDef
-	{
-
-		inline constexpr EShaderInputSemanticFlags getShaderInputSemanticIDFlags( EShaderInputSemanticID pSemanticID )
-		{
-			return static_cast<EShaderInputSemanticFlags>( pSemanticID );
-		}
-
-	}
 
 	namespace GCU
 	{
 
-		IC3_ATTR_NO_DISCARD EShaderInputSemanticID getShaderInputSemanticIDFromName( const std::string_view & pSemanticName );
+		IC3_ATTR_NO_DISCARD TBitmask<ESystemAttributeSemanticFlags> getAttributeSystemSemanticFlagsFromName(
+				const StringView & pSemanticName );
 
-		IC3_ATTR_NO_DISCARD std::string_view getShaderInputSemanticNameFromID( EShaderInputSemanticID pSemanticID );
+		IC3_ATTR_NO_DISCARD StringView getStandardSemanticNameFromSystemFlags(
+				TBitmask<ESystemAttributeSemanticFlags> pSystemSemanticFlags );
+
+		IC3_ATTR_NO_DISCARD inline bool isStandardShaderInputAttribute( TBitmask<ESystemAttributeSemanticFlags> pSysSmtFlags )
+		{
+			return // Standard attributes, by default are single-slot attributes with unique semantics.
+					( pSysSmtFlags.isSetAnyOf( eSystemAttributeSemanticMaskStandardAttribsAll ) && ( pSysSmtFlags.countBits() == 1 ) ) ||
+					// Exception: packed texture coordinates, where a single attribute holds two set of texture coords.
+					( ( pSysSmtFlags & eSystemAttributeSemanticMaskTexCoordAll ).countBits() == 2 );
+		}
 
 	}
 
 	struct ShaderSemantics
 	{
-		EShaderInputSemanticID smtID = EShaderInputSemanticID::Undefined;
+		Cppx::ImmutableString semanticName {};
 
-		uint32 smtIndex = 0u;
+		uint32 semanticIndex = 0u;
 
-		std::string smtName {};
+		TBitmask<ESystemAttributeSemanticFlags> systemSemanticFlags = 0;
 
 		ShaderSemantics() = default;
 
-		ShaderSemantics( EShaderInputSemanticID pSemanticID )
-		: smtID( pSemanticID )
-		, smtName( GCU::getShaderInputSemanticNameFromID( smtID ) )
+		ShaderSemantics( TBitmask<ESystemAttributeSemanticFlags> pSysSmtFlags )
+		: semanticName( GCU::getStandardSemanticNameFromSystemFlags( pSysSmtFlags ) )
+		, systemSemanticFlags( pSysSmtFlags )
 		{}
 
-		ShaderSemantics( std::string pSemanticName, uint32 pSmtIndex = 0u )
-		: smtID( GCU::getShaderInputSemanticIDFromName( pSemanticName ) )
-		, smtName( std::move( pSemanticName ) )
-		{}
-
-		ShaderSemantics( StringView pSemanticName, uint32 pSmtIndex = 0u )
-		: smtID( GCU::getShaderInputSemanticIDFromName( pSemanticName ) )
-		, smtName( pSemanticName.str(), pSemanticName.length() )
+		ShaderSemantics(
+			Cppx::ImmutableString pSemanticName,
+			uint32 pSemanticGroupIndex = 0u,
+			TBitmask<ESystemAttributeSemanticFlags> pSysSmtFlags = 0 )
+		: semanticName( std::move( pSemanticName ) )
+		, semanticIndex( pSemanticGroupIndex )
+		, systemSemanticFlags( pSysSmtFlags ? pSysSmtFlags : GCU::getAttributeSystemSemanticFlagsFromName( pSemanticName.strView() ) )
 		{}
 
 		IC3_ATTR_NO_DISCARD explicit operator bool() const noexcept
@@ -128,17 +92,17 @@ namespace Ic3
 
 		IC3_ATTR_NO_DISCARD bool operator==( const ShaderSemantics & pRhs ) const noexcept
 		{
-			return ( smtName == pRhs.smtName ) && ( smtIndex == pRhs.smtIndex );
+			return ( semanticName == pRhs.semanticName ) && ( semanticIndex == pRhs.semanticIndex );
 		}
 
 		IC3_ATTR_NO_DISCARD bool operator<( const ShaderSemantics & pRhs ) const noexcept
 		{
-			return ( smtName < pRhs.smtName ) || ( ( smtName == pRhs.smtName ) && ( smtIndex < pRhs.smtIndex ) );
+			return ( semanticName < pRhs.semanticName ) || ( ( semanticName == pRhs.semanticName ) && ( semanticIndex < pRhs.semanticIndex ) );
 		}
 
 		IC3_ATTR_NO_DISCARD bool empty() const noexcept
 		{
-			return ( smtID == EShaderInputSemanticID::Undefined ) || smtName.empty();
+			return systemSemanticFlags.empty() || semanticName.empty();
 		}
 
 		IC3_ATTR_NO_DISCARD bool valid() const noexcept
@@ -148,15 +112,16 @@ namespace Ic3
 
 		void clear()
 		{
-			smtID = EShaderInputSemanticID::Undefined;
-			smtName.clear();
+			semanticName.clear();
+			semanticIndex = 0;
+			systemSemanticFlags = 0;
 		}
 
 		IC3_NXMAIN_API bool resolve() noexcept;
 
 		IC3_NXMAIN_API_NO_DISCARD static ShaderSemantics resolveSemantics( const ShaderSemantics & pSemantics );
 
-		IC3_NXMAIN_API_NO_DISCARD static ShaderSemantics fromVertexAttributeKey( VertexAttributeKey pAttributeKey, uint32 pSmtIndex = 0u );
+		// IC3_NXMAIN_API_NO_DISCARD static ShaderSemantics fromVertexAttributeKey( VertexAttributeKey pAttributeKey, uint32 pSmtIndex = 0u );
 	};
 
 } // namespace Ic3
@@ -169,7 +134,7 @@ namespace std
 	{
 		size_t operator()( const Ic3::ShaderSemantics & pInput ) const noexcept
 		{
-			return hash<std::string>()( pInput.smtName );
+			return hash<std::string>()( pInput.semanticName.str() );
 		}
 	};
 

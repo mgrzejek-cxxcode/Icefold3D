@@ -6,148 +6,64 @@
 namespace Ic3
 {
 
-	inline VertexAttributeComponent::VertexAttributeComponent( size_t pAttribIASlot )
-	{
-		attributeIASlot = pAttribIASlot;
-	}
-
-	inline VertexAttributeComponent::operator bool() const noexcept
-	{
-		return active();
-	}
-
-	inline bool VertexAttributeComponent::operator==( const VertexAttributeComponent & pRhs ) const noexcept
-	{
-		return attributeIASlot == pRhs.attributeIASlot;
-	}
-
-	inline bool VertexAttributeComponent::operator<( const VertexAttributeComponent & pRhs ) const noexcept
-	{
-		return attributeIASlot < pRhs.attributeIASlot;
-	}
-
-	inline bool VertexAttributeComponent::active() const noexcept
-	{
-		return ( baseFormat != GCI::EVertexAttribFormat::Undefined ) &&
-		       ( attributeIASlot != cxGCIVertexAttributeSlotUndefined ) &&
-		       ( vertexStreamIASlot != cxGCIVertexStreamSlotUndefined );
-	}
-
-	inline bool VertexAttributeComponent::isBaseAttribute() const noexcept
-	{
-		return shaderSemantics.smtIndex == 0;
-	}
-
-	inline bool VertexAttributeComponent::isSameAs( const VertexAttributeComponent & pOther ) const noexcept
-	{
-		return ( baseFormat == pOther.baseFormat ) &&
-		       ( attributeIASlot == pOther.attributeIASlot ) &&
-		       ( componentPadding == pOther.componentPadding ) &&
-		       ( vertexStreamIASlot == pOther.vertexStreamIASlot ) &&
-		       ( vertexStreamRelativeOffset == pOther.vertexStreamRelativeOffset ) &&
-		       ( shaderSemantics == pOther.shaderSemantics );
-	}
-
-	inline bool VertexAttributeComponent::hasSameFormatAs( const VertexAttributeComponent & pOther ) const noexcept
-	{
-		return baseFormat == pOther.baseFormat;
-	}
-
-	inline bool VertexAttributeComponent::hasSameSemanticsAs( const VertexAttributeComponent & pOther ) const noexcept
-	{
-		return shaderSemantics.smtName == pOther.shaderSemantics.smtName;
-	}
-
-	inline void VertexAttributeComponent::initBaseAttributeFromDefinition( VertexAttributeDefinition pDefinition )
-	{
-		ic3DebugAssert(
-				( attributeIASlot == cxGCIVertexAttributeSlotUndefined ) ||
-				( attributeIASlot == pDefinition.attributeIASlot ) );
-
-		baseFormat = pDefinition.baseFormat;
-		attributeIASlot = pDefinition.attributeIASlot;
-		componentPadding = pDefinition.componentPadding;
-		vertexStreamIASlot = pDefinition.vertexStreamIASlot;
-		vertexStreamRelativeOffset = pDefinition.vertexStreamRelativeOffset;
-		shaderSemantics = ShaderSemantics( std::move( pDefinition.shaderSemantics ) );
-	}
-
-	inline void VertexAttributeComponent::initSubComponentFromBaseAttribute( const VertexAttributeComponent & pBaseAttribute, uint32 pSubIndex )
-	{
-		ic3DebugAssert(
-				( attributeIASlot == cxGCIVertexAttributeSlotUndefined ) ||
-				( attributeIASlot == pBaseAttribute.attributeIASlot + pSubIndex ) );
-
-		baseFormat = pBaseAttribute.baseFormat;
-		attributeIASlot = pBaseAttribute.attributeIASlot + pSubIndex;
-		componentPadding = pBaseAttribute.componentPadding;
-		vertexStreamIASlot = pBaseAttribute.vertexStreamIASlot;
-		vertexStreamRelativeOffset = pBaseAttribute.vertexStreamRelativeOffset + ( pSubIndex * pBaseAttribute.dataStride() );
-	}
-
-	inline void VertexAttributeComponent::reset()
-	{
-		baseFormat = GCI::EVertexAttribFormat::Undefined;
-		attributeIASlot = cxGCIVertexAttributeSlotUndefined;
-		vertexStreamIASlot = cxGCIVertexStreamSlotUndefined;
-		shaderSemantics.clear();
-	}
-
-
 	inline VertexAttributeArrayLayout::operator bool() const noexcept
 	{
 		return !empty();
 	}
 	
-	inline const VertexAttributeComponent & VertexAttributeArrayLayout::operator[]( gci_input_assembler_slot_t pAttribIASlot ) const noexcept
+	inline const GenericVertexAttribute & VertexAttributeArrayLayout::operator[]( native_uint pAttribIASlot ) const noexcept
 	{
-		const auto attribArrayIndex = findAttributeAtSlot( pAttribIASlot );
-		return _activeAttributes[attribArrayIndex];
+		ic3DebugAssert( cxGCIValidInputAssemblerSlotIndexRange.contains( pAttribIASlot ) );
+		return _attributeArray[pAttribIASlot];
 	}
 
-	inline const VertexAttributeComponent & VertexAttributeArrayLayout::attributeAt( gci_input_assembler_slot_t pAttribIASlot ) const
+	inline const GenericVertexAttribute & VertexAttributeArrayLayout::attributeAt( native_uint pAttribIASlot ) const
 	{
-		const auto attribArrayIndex = findAttributeAtSlot( pAttribIASlot );
-		return _activeAttributes.at( attribArrayIndex );
+		ic3DebugAssert( cxGCIValidInputAssemblerSlotIndexRange.contains( pAttribIASlot ) );
+		return _attributeArray.at( pAttribIASlot );
 	}
 
-	inline const VertexAttributeComponent * VertexAttributeArrayLayout::attributePtr( gci_input_assembler_slot_t pAttribIASlot ) const noexcept
+	inline const GenericVertexAttribute * VertexAttributeArrayLayout::attributePtr( native_uint pAttribIASlot ) const noexcept
 	{
-		const auto attribArrayIndex = findAttributeAtSlot( pAttribIASlot );
-		return ( attribArrayIndex != cxInvalidPosition ) ? &( _activeAttributes[attribArrayIndex] ) : nullptr;
+		return cxGCIValidInputAssemblerSlotIndexRange.contains( pAttribIASlot ) ? &( _attributeArray[pAttribIASlot] ) : nullptr;
 	}
 
-	inline bool VertexAttributeArrayLayout::isAttributeActive( gci_input_assembler_slot_t pAttribIASlot ) const noexcept
+	inline bool VertexAttributeArrayLayout::isAttributeActive( native_uint pAttribIASlot ) const noexcept
 	{
-		const auto attribArrayIndex = findAttributeAtSlot( pAttribIASlot );
-		return attribArrayIndex != cxInvalidPosition;
+		ic3DebugAssert( cxGCIValidInputAssemblerSlotIndexRange.contains( pAttribIASlot ) );
+		return _attributeArray[pAttribIASlot].isActive();
 	}
 
-	inline gci_input_assembler_slot_t VertexAttributeArrayLayout::resolveSemanticID( EShaderInputSemanticID pSemanticID ) const noexcept
+	inline gci_input_assembler_slot_t VertexAttributeArrayLayout::queryBaseAttributeBySemantics( StringView pSemanticName ) const noexcept
 	{
-		const std::string_view semanticName = GCU::getShaderInputSemanticNameFromID( pSemanticID );
-		return resolveSemanticName( semanticName );
-	}
-
-	inline gci_input_assembler_slot_t VertexAttributeArrayLayout::resolveSemanticName( std::string_view pSemanticName ) const noexcept
-	{
-		const auto attributeIndex = Cppx::getMapValueRefOrDefault( _semanticNameMap, pSemanticName, cxGCIVertexAttributeSlotUndefined );
+		const auto attributeIndex = Cppx::getMapValueRefOrDefault( _semanticNameMap, pSemanticName, cxGCIVertexAttributeIndexUndefined );
 		return numeric_cast<gci_input_assembler_slot_t>( attributeIndex );
 	}
 
-	inline const VertexAttributeArray & VertexAttributeArrayLayout::getActiveAttributes() const noexcept
+	inline gci_input_assembler_slot_t VertexAttributeArrayLayout::queryBaseAttributeBySemantics( TBitmask<ESystemAttributeSemanticFlags> pSysSmtFlags ) const noexcept
 	{
-		return _activeAttributes;
+		const auto semanticName = GCU::getStandardSemanticNameFromSystemFlags( pSysSmtFlags );
+		return queryBaseAttributeBySemantics( semanticName );
+	}
+
+	inline const GenericVertexAttributeArray & VertexAttributeArrayLayout::getAttributeArray() const noexcept
+	{
+		return _attributeArray;
+	}
+
+	inline uint32 VertexAttributeArrayLayout::getActiveBaseAttributesNum() const noexcept
+	{
+		return _activeBaseAttributesNum;
+	}
+
+	inline uint32 VertexAttributeArrayLayout::getActiveAttributeSlotsNum() const noexcept
+	{
+		return _activeAttributeSlotsNum;
 	}
 
 	inline TBitmask<GCI::EIAVertexAttributeFlags> VertexAttributeArrayLayout::getActiveAttributesMask() const noexcept
 	{
 		return _activeAttributesMask;
-	}
-
-	inline uint32 VertexAttributeArrayLayout::getActiveAttributesNum() const noexcept
-	{
-		return _activeAttributesNum;
 	}
 
 	inline const InputAssemblerSlotRange & VertexAttributeArrayLayout::getActiveAttributesRange() const noexcept
@@ -162,12 +78,12 @@ namespace Ic3
 
 	inline bool VertexAttributeArrayLayout::isActiveAttributesRangeContinuous() const noexcept
 	{
-		return !empty() && ( _activeAttributesRange.length() == _activeAttributesNum );
+		return !empty() && ( _activeAttributesRange.length() == _activeAttributeSlotsNum );
 	}
 
 	inline bool VertexAttributeArrayLayout::empty() const noexcept
 	{
-		return _activeAttributes.empty();
+		return _activeAttributeSlotsNum == 0;
 	}
 
 } // namespace Ic3

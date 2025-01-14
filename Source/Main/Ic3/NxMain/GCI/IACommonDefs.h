@@ -11,38 +11,46 @@
 namespace Ic3
 {
 
-	struct VertexAttributeComponent;
-	struct VertexStreamComponent;
+	struct GenericVertexAttribute;
+	struct VertexAttributeDefinition;
+	struct VertexInputStream;
 
 	using gci_input_assembler_slot_t = GCI::input_assembler_index_t;
 
 	using InputAssemblerSlotArray = Cppx::TSortedArray<gci_input_assembler_slot_t>;
 	using InputAssemblerSlotRange = TRange<gci_input_assembler_slot_t>;
-	using VertexAttributeArray = Cppx::TSortedArray<VertexAttributeComponent>;
-	using VertexStreamArray = Cppx::TSortedArray<VertexStreamComponent>;
+
+	using GenericVertexAttributeArray = std::array<GenericVertexAttribute, GCM::cxIAMaxVertexAttributesNum>; // Cppx::TSortedArray<VertexAttributeComponent>;
+	using VertexInputStreamArray = std::array<VertexInputStream, GCM::cxIAMaxVertexStreamsNum>; // Cppx::TSortedArray<VertexInputStream>;
 
 	/**
 	 * [Constant] Represents an invalid vertex attribute slot.
 	 */
-	constexpr auto cxGCIVertexAttributeSlotUndefined = GCI::cxIAVertexAttributeIndexUndefined;
+	constexpr auto cxGCIVertexAttributeIndexUndefined = GCI::cxIAVertexAttributeIndexUndefined;
 
 	/**
 	 * [Constant] Represents an invalid vertex stream slot.
 	 */
-	constexpr auto cxGCIVertexStreamSlotUndefined = GCI::cxIAVertexStreamIndexUndefined;
+	constexpr auto cxGCIVertexStreamIndexUndefined = GCI::cxIAVertexStreamIndexUndefined;
 
 	/// Represents an invalid offset value for vertex attribute.
-	constexpr auto cxGCIVertexAttributeRelativeOffsetInvalid = QLimits<uint32>::sMaxValue;
+	constexpr auto cxGCIVertexAttributeOffsetInvalid = QLimits<uint32>::sMaxValue;
 
 	///
-	inline constexpr InputAssemblerSlotRange cxGCIValidVertexAttributeSlotRange{ 0u, GCM::cxIAMaxVertexAttributesNum - 1 };
+	constexpr auto cxGCIVertexAttributeOffsetAppend = GCI::cxIAVertexAttributeOffsetAppend;
 
 	///
-	inline constexpr InputAssemblerSlotRange cxGCIValidVertexAttributeComponentsNumberRange{ 1u, GCM::cxIAMaxVertexAttributeComponentsNum };
+	inline constexpr InputAssemblerSlotRange cxGCIValidInputAssemblerSlotIndexRange{ 0u, GCM::cxIAGenericInputArraySize - 1 };
 
 	///
-	inline constexpr InputAssemblerSlotRange cxGCIValidInputAssemblerSlotRange{ 0u, GCM::cxIAMaxVertexStreamsNum - 1 };
+	inline constexpr InputAssemblerSlotRange cxGCIValidVertexAttributeComponentsNumRange{ 1u, GCM::cxIAMaxVertexAttributeComponentsNum };
 
+	///
+	inline constexpr InputAssemblerSlotRange cxGCIValidVertexAttributeSemanticGroupSizeRange{ 1u, GCM::cxIAMaxVertexAttributeSemanticGroupSize };
+
+	/**
+	 *
+	 */
 	enum EVertexDataRate : uint16
 	{
 		PerVertex,
@@ -51,94 +59,153 @@ namespace Ic3
 	};
 
 	/**
-	 * @brief Common part of all vertex attribute-related data structures. Contains basic properties of an attribute.
+	 *
 	 */
-	struct CommonVertexAttributeData
+	struct VertexAttributeDefinition
+	{
+		gci_input_assembler_slot_t attributeIASlot = cxGCIVertexAttributeIndexUndefined;
+
+		gci_input_assembler_slot_t streamIASlot = cxGCIVertexStreamIndexUndefined;
+
+		GCI::EVertexAttribFormat dataFormat = GCI::EVertexAttribFormat::Undefined;
+
+		uint16 dataPadding = 0;
+
+		uint16 semanticGroupSize = 1;
+
+		uint32 vertexStreamRelativeOffset = 0;
+
+		EVertexDataRate dataRate = EVertexDataRate::Undefined;
+
+		ShaderSemantics shaderSemantics{};
+
+		IC3_ATTR_NO_DISCARD bool isValid() const noexcept;
+
+		IC3_ATTR_NO_DISCARD bool hasAppendAsRelativeOffset() const noexcept;
+	};
+
+	/**
+	 * Represents a generic vertex attribute, i.e. contents of a single IA-level attribute slot.
+	 */
+	struct GenericVertexAttribute
 	{
 		/**
-		 * Base format of an attribute. For multi-component attributes, this describes an individual component.
+		 * Format of the attribute's data.
 		 */
-		GCI::EVertexAttribFormat baseFormat = GCI::EVertexAttribFormat::Undefined;
+		GCI::EVertexAttribFormat dataFormat = GCI::EVertexAttribFormat::Undefined;
+
+		/**
+		 * Data padding placed after the attribute's data in its data stream. The final data stride for an attribute
+		 * is calculated as: (size of dataFormat in bytes) + dataPadding.
+		 */
+		uint16 dataPadding;
+
+		/**
+		 * Size of the semantic group this attribute belongs to. If this is 1, the attribute is a
+		 * single-slot attribute with unique semantic name. If >1, this is one of up to 4 attributes
+		 * that share the same semantic name and occupy adjacent slot range.
+		 * @see semanticGroupIndex
+		 */
+		 uint8 semanticGroupSize;
+
+		/**
+		 * Semantic index of the attribute. Semantic group is a group of 2, 3 or 4 attributes that
+		 * share the same semantic name. Semantic group occupies continuous range of IA slots and
+		 * each of the attributes must have a different semantic index.
+		 * An example could be an 4x4 instance matrix, that would be stored as 4 vertex attributes,
+		 * each of type Vec4 and with semantic indices 0, 1, 2 and 3 (and identical semantic name).
+		 */
+		uint8 semanticIndex;
 
 		/**
 		 * Base attribute index. Allowed values are from 0 to (GCM::IA_MAX_VERTEX_ATTRIBUTES_NUM - 1).
 		 * For multi-component attributes, this is the index of the first occupied attribute slot.
 		 */
-		gci_input_assembler_slot_t attributeIASlot = cxGCIVertexAttributeSlotUndefined;
-
-		/**
-		 * Defines an extra padding (applied to each of the attribute's subcomponent. Affects the combined data stride.
-		 * @example Consider an attribute which is a 3x3 float matrix. Such attribute would occupy three generic
-		 * attribute slots, each containing a single 3-component float vector. In order to get each attribute aligned
-		 * on a 16-byte boundary, we could place the data like this:\n
-		 * [M00][M01][M02][_P_][M10][M11][M12][_P_][M20][M21][M22][_P_] (_P_ being 4 bytes of padding)\n
-		 * In this case:
-		 * - baseFormat should be GCI::EVertexAttribFormat::Vec3F32
-		 * - semanticComponentsNum should be 3
-		 * - padding should be 4
-		 * @see CommonVertexAttributeData
-		 */
-		uint16 componentPadding = 0;
+		gci_input_assembler_slot_t attributeIASlot;
 
 		/**
 		 * An index of a vertex buffer slot this attribute is fetched from.
 		 */
-		gci_input_assembler_slot_t vertexStreamIASlot = cxGCIVertexStreamSlotUndefined;
+		gci_input_assembler_slot_t streamIASlot;
 
 		/**
 		 * An offset from the start of the vertex buffer data to the beginning of the attribute's data.
 		 * This is a *relative* offset from the start of the bound range of the buffer, not from it's physical base address.
 		 */
-		uint32 vertexStreamRelativeOffset = 0;
+		uint32 vertexStreamRelativeOffset;
 
 		/**
 		 * Semantics of the attribute.
 		 */
-		ShaderSemantics shaderSemantics {};
-
-		IC3_ATTR_NO_DISCARD uint32 sizeInBytes() const noexcept;
-
-		IC3_ATTR_NO_DISCARD uint32 dataStride() const noexcept;
-	};
-
-	/**
-	 * @brief
-	 */
-	struct VertexAttributeDefinition : public CommonVertexAttributeData
-	{
-		/**
-		 * Number of components (semantic sub-attributes) this attribute contains. It equals to the number of slots
-		 * in the attribute array this attribute occupies. For base attributes this will be at least <1>, but no more
-		 * than GCM::IA_MAX_VERTEX_ATTRIBUTE_COMPONENTS_NUM. For non-base attributes this is set to 0.
-		 */
-		uint8 semanticComponentsNum = 0;
+		ShaderSemantics shaderSemantics{};
 
 		/**
 		 *
 		 */
-		uint8 semanticIndex = 0;
+		IC3_ATTR_NO_DISCARD explicit operator bool() const noexcept;
 
 		/**
 		 *
 		 */
-		EVertexDataRate dataRate = EVertexDataRate::Undefined;
+		IC3_ATTR_NO_DISCARD bool isActive() const noexcept;
 
 		/**
-		 * @brief Returns true if the attribute definition uses automatic offset calculation or false otherwise.
-		 * @return True if the attribute definition uses automatic offset calculation or false otherwise.
+		 *
 		 */
-		IC3_ATTR_NO_DISCARD bool hasAppendAsRelativeOffset() const noexcept;
-
-		IC3_ATTR_NO_DISCARD bool operator==( const VertexAttributeDefinition & pRhs ) const noexcept;
-		IC3_ATTR_NO_DISCARD bool operator<( const VertexAttributeDefinition & pRhs ) const noexcept;
+		IC3_ATTR_NO_DISCARD bool isBaseAttribute() const noexcept;
 
 		/**
-		 * @brief Returns true if the attribute specification is valid or false otherwise.
-		 * A vertex definition is considered active if it represents an active attribute (active() returns true)
-		 * and the number of components and their paddings have correct values.
-		 * @return True if the attribute specification is valid or false otherwise.
+		 *
 		 */
-		IC3_ATTR_NO_DISCARD bool valid() const noexcept;
+		IC3_ATTR_NO_DISCARD bool isSemanticGroupAttribute() const noexcept;
+
+		/**
+		 *
+		 * @return
+		 */
+		IC3_ATTR_NO_DISCARD bool isSameAs( const GenericVertexAttribute & pOther ) const noexcept;
+
+		/**
+		 *
+		 * @return
+		 */
+		IC3_ATTR_NO_DISCARD bool hasSameFormatAs( const GenericVertexAttribute & pOther ) const noexcept;
+
+		/**
+		 *
+		 * @return
+		 */
+		IC3_ATTR_NO_DISCARD bool hasSameSemanticsAs( const GenericVertexAttribute & pOther ) const noexcept;
+
+		/**
+		 *
+		 */
+		IC3_ATTR_NO_DISCARD GCI::EBaseDataType getBaseDataType() const noexcept;
+
+		/**
+		 *
+		 */
+		IC3_ATTR_NO_DISCARD uint32 getDataSizeInBytes() const noexcept;
+
+		/**
+		 *
+		 */
+		IC3_ATTR_NO_DISCARD uint32 getDataStride() const noexcept;
+
+		/**
+		 *
+		 */
+		void initBaseAttributeFromDefinition( const VertexAttributeDefinition & pDefinition );
+
+		/**
+		 *
+		 */
+		void initSemanticSubAttributeFromBaseAttribute( const GenericVertexAttribute & pBaseAttribute, uint32 pSemanticIndex );
+
+		/**
+		 *
+		 */
+		void reset();
 	};
 
 

@@ -7,7 +7,7 @@ namespace Ic3
 
 	struct VertexStreamIndexCmpEqual
 	{
-		IC3_ATTR_NO_DISCARD bool operator()( const VertexStreamComponent & pLhs, size_t pRhs ) const noexcept
+		IC3_ATTR_NO_DISCARD bool operator()( const VertexInputStream & pLhs, size_t pRhs ) const noexcept
 		{
 			return pLhs.streamIASlot == pRhs;
 		}
@@ -15,24 +15,18 @@ namespace Ic3
 
 	struct VertexStreamIndexCmpLess
 	{
-		IC3_ATTR_NO_DISCARD bool operator()( const VertexStreamComponent & pLhs, size_t pRhs ) const noexcept
+		IC3_ATTR_NO_DISCARD bool operator()( const VertexInputStream & pLhs, size_t pRhs ) const noexcept
 		{
 			return pLhs.streamIASlot < pRhs;
 		}
 	};
 
-	size_t VertexStreamArrayConfig::findStreamAtSlot( gci_input_assembler_slot_t pStreamIASlot ) const noexcept
-	{
-		auto streamIter = _activeStreams.find( pStreamIASlot, VertexStreamIndexCmpLess{}, VertexStreamIndexCmpEqual{} );
-		return ( streamIter != _activeStreams.end() ) ? ( streamIter - _activeStreams.begin() ) : cxInvalidPosition;
-	}
-
 	bool VertexStreamArrayConfig::checkAttributeDefinitionCompatibility(
 			const VertexAttributeDefinition & pAttributeDefinition ) const noexcept
 	{
-		if( const auto * attributeStreamPtr = streamPtr( pAttributeDefinition.vertexStreamIASlot ) )
+		if( const auto & targetAttributeStream = streamAt( pAttributeDefinition.streamIASlot ) )
 		{
-			return attributeStreamPtr->checkAttributeCompatibility( pAttributeDefinition );
+			return targetAttributeStream.checkAttributeCompatibility( pAttributeDefinition );
 		}
 
 		return true;
@@ -59,16 +53,19 @@ namespace Ic3
 
 	bool VertexStreamArrayConfig::appendAttribute(
 			gci_input_assembler_slot_t pStreamIASlot,
-			const VertexAttributeComponent & pAttribute )
+			const GenericVertexAttribute & pAttribute )
 	{
-		const auto streamArrayIndex = findStreamAtSlot( pStreamIASlot );
-
-		if( streamArrayIndex == cxInvalidPosition )
+		if( !cxGCIValidInputAssemblerSlotIndexRange.contains( pStreamIASlot ) )
 		{
 			return false;
 		}
 
-		_appendAttributeImpl( _activeStreams[streamArrayIndex], pAttribute );
+		if( !isStreamActive( pStreamIASlot ) )
+		{
+			return false;
+		}
+
+		_appendAttributeImpl( _streamArray[pStreamIASlot], pAttribute );
 
 		return true;
 	}
@@ -76,30 +73,28 @@ namespace Ic3
 	bool VertexStreamArrayConfig::appendAttributeAuto(
 			gci_input_assembler_slot_t pStreamIASlot,
 			EVertexDataRate pStreamDataRate,
-			const VertexAttributeComponent & pAttribute )
+			const GenericVertexAttribute & pAttribute )
 	{
-		auto streamArrayIndex = findStreamAtSlot( pStreamIASlot );
-
-		if( streamArrayIndex == cxInvalidPosition )
+		if( !cxGCIValidInputAssemblerSlotIndexRange.contains( pStreamIASlot ) )
 		{
-			streamArrayIndex = _addStreamImpl( pStreamIASlot, pStreamDataRate );
+			return false;
 		}
 
-		_appendAttributeImpl( _activeStreams[streamArrayIndex], pAttribute );
+		if( !isStreamActive( pStreamIASlot ) )
+		{
+			_addStreamImpl( pStreamIASlot, pStreamDataRate );
+		}
+
+		_appendAttributeImpl( _streamArray[pStreamIASlot], pAttribute );
 
 		return true;
 	}
 
-	void VertexStreamArrayConfig::reserveAttributeArraySpace( size_t pActiveStreamsNum )
-	{
-		_activeStreams.reserve( pActiveStreamsNum );
-	}
-
 	void VertexStreamArrayConfig::reset()
 	{
-		for( auto & streamComponent : _activeStreams )
+		for( auto & vertexStream : _streamArray )
 		{
-			streamComponent.reset();
+			vertexStream.reset();
 		}
 
 		_activeStreamsNum = 0;
@@ -108,30 +103,26 @@ namespace Ic3
 		_activeStreamsSlots.clear();
 	}
 
-	size_t VertexStreamArrayConfig::_addStreamImpl( gci_input_assembler_slot_t pStreamIASlot, EVertexDataRate pStreamDataRate )
+	void VertexStreamArrayConfig::_addStreamImpl( gci_input_assembler_slot_t pStreamIASlot, EVertexDataRate pStreamDataRate )
 	{
-		auto streamIter = _activeStreams.insert( VertexStreamComponent{ pStreamIASlot } );
-		streamIter->init( pStreamIASlot, pStreamDataRate );
-
-		const auto streamArrayIndex = streamIter - _activeStreams.begin();
+		auto & vertexStream = _streamArray[pStreamIASlot];
+		vertexStream.init( pStreamIASlot, pStreamDataRate );
 
 		_activeStreamsNum += 1;
 		_activeStreamsMask.set( GCI::CxDef::makeIAVertexBufferFlag( pStreamIASlot ) );
 		_activeStreamsRange.add( InputAssemblerSlotRange{ pStreamIASlot, pStreamIASlot } );
 		_activeStreamsSlots.insert( pStreamIASlot );
-
-		return streamArrayIndex;
 	}
 
-	void VertexStreamArrayConfig::_appendAttributeImpl( VertexStreamComponent & pStream, const VertexAttributeComponent & pAttribute )
+	void VertexStreamArrayConfig::_appendAttributeImpl( VertexInputStream & pStream, const GenericVertexAttribute & pAttribute )
 	{
-		for( uint32 nComponent = 0; nComponent < pAttribute.semanticComponentsNum; ++nComponent )
+		for( uint32 nComponent = 0; nComponent < pAttribute.semanticGroupSize; ++nComponent )
 		{
-			const auto attributeComponentSlot = pAttribute.attributeIASlot + nComponent;
+			const auto genericAttributeSlotIndex = pAttribute.attributeIASlot + nComponent;
 
 			pStream.activeAttributesNum += 1;
-			pStream.activeAttributesMask.set( GCI::CxDef::makeIAVertexAttributeFlag( attributeComponentSlot ) );
-			pStream.elementStrideInBytes += pAttribute.dataStride();
+			pStream.activeAttributesMask.set( GCI::CxDef::makeIAVertexAttributeFlag( genericAttributeSlotIndex ) );
+			pStream.dataStrideInBytes += pAttribute.getDataStride();
 		}
 	}
 

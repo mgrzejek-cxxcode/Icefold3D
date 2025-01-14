@@ -6,6 +6,8 @@
 
 #include "IAVertexAttribLayout.h"
 #include "IAVertexStreamLayout.h"
+#include "VertexAttributeCommonDefs.h"
+#include <Ic3/Cppx/Hash.h>
 
 namespace Ic3
 {
@@ -31,7 +33,7 @@ namespace Ic3
 	/// @see VertexStreamArrayConfig
 	/// @see GCI::EIndexDataFormat
 	/// @see GCI::EPrimitiveTopology
-	class IC3_NXMAIN_CLASS VertexFormatDescriptor
+	class IC3_NXMAIN_CLASS VertexFormatDescriptor : public IDynamicObject
 	{
 		friend class VertexFormatDescriptorBuilder;
 		
@@ -71,44 +73,54 @@ namespace Ic3
 		IC3_ATTR_NO_DISCARD bool equals( const VertexFormatDescriptor & pOther ) const noexcept;
 
 		/// @brief Returns true if the layout describes an indexed geometry, or false otherwise.
-		IC3_ATTR_NO_DISCARD bool isIndexedGeometry() const noexcept;
+		IC3_ATTR_NO_DISCARD bool isIndexedVertexFormat() const noexcept;
 
 		/// @brief
 		IC3_ATTR_NO_DISCARD uint32 getIndexDataSize() const noexcept;
 
+		/// @brief
+		IC3_ATTR_NO_DISCARD uint32 getElementStrideForAttribute( native_uint pAttribIASlot ) const noexcept;
+		IC3_ATTR_NO_DISCARD uint32 getElementStrideForAttribute( StringView pSemanticName ) const noexcept;
+		IC3_ATTR_NO_DISCARD uint32 getElementStrideForAttribute( VertexAttributeKey pAttributeKey ) const noexcept;
+		IC3_ATTR_NO_DISCARD uint32 getElementStrideForAttribute( TBitmask<ESystemAttributeSemanticFlags> pSysSmtFlags ) const noexcept;
+
+		/// @brief
+		IC3_ATTR_NO_DISCARD uint32 getElementStrideForAttributeUnchecked( native_uint pAttribIASlot ) const noexcept;
+		IC3_ATTR_NO_DISCARD uint32 getElementStrideForAttributeUnchecked( VertexAttributeKey pAttributeKey ) const noexcept;
+
 		/// @brief Returns true if the specified semantic description refers to an active attribute in the attribute array.
 		/// @param pSemanticID The semantic ID of an attribute.
-		IC3_ATTR_NO_DISCARD bool hasAttributeWithSemantics( EShaderInputSemanticID pSemanticID ) const noexcept;
-		IC3_ATTR_NO_DISCARD bool hasAttributeWithSemantics( std::string_view pSemanticName ) const noexcept;
+		IC3_ATTR_NO_DISCARD bool hasAttributeWithSemantics( StringView pSemanticName ) const noexcept;
 		IC3_ATTR_NO_DISCARD bool hasAttributeWithSemantics( const ShaderSemantics & pSemantics ) const noexcept;
+		IC3_ATTR_NO_DISCARD bool hasAttributeWithSemantics( TBitmask<ESystemAttributeSemanticFlags> pSysSmtFlags ) const noexcept;
 
 		/// @brief Returns a zero-based index in the attribute array that refers to the attribute with the specified properties.
 		/// @param pAttributeKey An encoded key of the requested attribute.
 		/// @param pSemanticIndex An optional index of a sub-component (valid only for multi-component attributes).
+		IC3_ATTR_NO_DISCARD uint32 resolveAttributeRef( const ShaderSemantics & pSemantics ) const noexcept;
+		IC3_ATTR_NO_DISCARD uint32 resolveAttributeRef( StringView pSemanticName, uint32 pSemanticIndex = 0 ) const noexcept;
 		IC3_ATTR_NO_DISCARD uint32 resolveAttributeRef( VertexAttributeKey pAttributeKey, uint32 pSemanticIndex = 0 ) const noexcept;
-		IC3_ATTR_NO_DISCARD uint32 resolveAttributeRef( EShaderInputSemanticID pSemanticID, uint32 pSemanticIndex = 0 ) const noexcept;
-		IC3_ATTR_NO_DISCARD uint32 resolveAttributeRef( std::string_view pSemanticName, uint32 pSemanticIndex = 0 ) const noexcept;
-		IC3_ATTR_NO_DISCARD uint32 resolveAttributeRef( const ShaderSemantics & pSemantics, uint32 pSemanticIndex = 0  ) const noexcept;
+		IC3_ATTR_NO_DISCARD uint32 resolveAttributeRef( TBitmask<ESystemAttributeSemanticFlags> pSysSmtFlags, uint32 pSemanticIndex = 0 ) const noexcept;
 
 		/// @brief Returns the usage info of a vertex stream with the specified index. If the index is not valid, a null pointer is returned.
 		/// @param pAttributeIndex A zero-based index of a vertex attribute to retrieve.
-		IC3_ATTR_NO_DISCARD const VertexAttributeComponent * getAttribute( gci_input_assembler_slot_t pAttribIASlot ) const noexcept;
-		IC3_ATTR_NO_DISCARD const VertexAttributeComponent * getAttribute( VertexAttributeKey pAttributeKey, uint32 pSemanticIndex = 0 ) const noexcept;
-		IC3_ATTR_NO_DISCARD const VertexAttributeComponent * getAttribute( EShaderInputSemanticID pSemanticID, uint32 pSemanticIndex = 0 ) const noexcept;
-		IC3_ATTR_NO_DISCARD const VertexAttributeComponent * getAttribute( std::string_view pSemanticName, uint32 pSemanticIndex = 0 ) const noexcept;
-		IC3_ATTR_NO_DISCARD const VertexAttributeComponent * getAttribute( const ShaderSemantics & pSemantics, uint32 pSemanticIndex = 0 ) const noexcept;
+		IC3_ATTR_NO_DISCARD const GenericVertexAttribute * getAttribute( native_uint pAttribIASlot ) const noexcept;
+		IC3_ATTR_NO_DISCARD const GenericVertexAttribute * getAttribute( const ShaderSemantics & pSemantics ) const noexcept;
+		IC3_ATTR_NO_DISCARD const GenericVertexAttribute * getAttribute( StringView pSemanticName, uint32 pSemanticIndex = 0 ) const noexcept;
+		IC3_ATTR_NO_DISCARD const GenericVertexAttribute * getAttribute( VertexAttributeKey pAttributeKey, uint32 pSemanticIndex = 0 ) const noexcept;
+		IC3_ATTR_NO_DISCARD const GenericVertexAttribute * getAttribute( TBitmask<ESystemAttributeSemanticFlags> pSysSmtFlags, uint32 pSemanticIndex = 0 ) const noexcept;
 
 		/// @brief Returns the usage info of a vertex stream which contains the described vertex attribute.
 		/// @return A pointer to the described attribute's stream or a null pointer if such attribute does not exist.
-		IC3_ATTR_NO_DISCARD const VertexStreamComponent * getStreamForAttribute( gci_input_assembler_slot_t pAttribIASlot ) const noexcept;
-		IC3_ATTR_NO_DISCARD const VertexStreamComponent * getStreamForAttribute( VertexAttributeKey pAttributeKey, uint32 pSemanticIndex = 0 ) const noexcept;
-		IC3_ATTR_NO_DISCARD const VertexStreamComponent * getStreamForAttribute( EShaderInputSemanticID pSemanticID, uint32 pSemanticIndex = 0 ) const noexcept;
-		IC3_ATTR_NO_DISCARD const VertexStreamComponent * getStreamForAttribute( std::string_view pSemanticName, uint32 pSemanticIndex = 0 ) const noexcept;
-		IC3_ATTR_NO_DISCARD const VertexStreamComponent * getStreamForAttribute( const ShaderSemantics & pSemantics, uint32 pSemanticIndex = 0 ) const noexcept;
+		IC3_ATTR_NO_DISCARD const VertexInputStream * getStreamForAttribute( native_uint pAttribIASlot ) const noexcept;
+		IC3_ATTR_NO_DISCARD const VertexInputStream * getStreamForAttribute( const ShaderSemantics & pSemantics ) const noexcept;
+		IC3_ATTR_NO_DISCARD const VertexInputStream * getStreamForAttribute( StringView pSemanticName ) const noexcept;
+		IC3_ATTR_NO_DISCARD const VertexInputStream * getStreamForAttribute( VertexAttributeKey pAttributeKey ) const noexcept;
+		IC3_ATTR_NO_DISCARD const VertexInputStream * getStreamForAttribute( TBitmask<ESystemAttributeSemanticFlags> pSysSmtFlags ) const noexcept;
 
 		/// @brief Returns the usage info of a vertex stream with the specified index. If the index is not valid, a null pointer is returned.
 		/// @param pAttributeIndex A zero-based index of a vertex attribute to retrieve.
-		IC3_ATTR_NO_DISCARD const VertexStreamComponent * getStream( gci_input_assembler_slot_t pStreamIASlot ) const noexcept;
+		IC3_ATTR_NO_DISCARD const VertexInputStream * getStream( native_uint pStreamIASlot ) const noexcept;
 
 		/// @brief
 		IC3_ATTR_NO_DISCARD InputAssemblerSlotArray getActiveAttributesSlots() const noexcept;
@@ -117,10 +129,10 @@ namespace Ic3
 		IC3_ATTR_NO_DISCARD InputAssemblerSlotArray getActiveStreamsSlots() const noexcept;
 
 		/// @brief Returns true if the specified index is an index of an active vertex attribute, or false otherwise.
-		IC3_ATTR_NO_DISCARD bool isAttributeActive( gci_input_assembler_slot_t pAttribIASlot ) const;
+		IC3_ATTR_NO_DISCARD bool isAttributeActive( native_uint pAttribIASlot ) const;
 
 		/// @brief Returns true if the specified index is an index of an active vertex stream, or false otherwise.
-		IC3_ATTR_NO_DISCARD bool isVertexStreamActive( gci_input_assembler_slot_t pStreamIASlot ) const;
+		IC3_ATTR_NO_DISCARD bool isVertexStreamActive( native_uint pStreamIASlot ) const;
 
 		/// @brief Returns the string representation of the attribute layout.
 		IC3_ATTR_NO_DISCARD std::string generateVertexFormatStringID() const noexcept;
@@ -129,13 +141,13 @@ namespace Ic3
 		///
 		/// The returned array is the exact representation of the current layout state. Formally speaking, the behaviour
 		/// of this function is so that:
-		/// - if L is an existing, non-empty VDL (Vertex Data Layout) with an index data format F
+		/// - if L is an existing, non-empty VFD (Vertex Format Descriptor) with an index data format F
 		/// - S is an empty layout with a matching index data format F
 		IC3_ATTR_NO_DISCARD std::vector<VertexAttributeDefinition> generateAttributeDefinitionArray() const noexcept;
 
 	private:
-		uint32 _resolveAttributeRefImpl( std::string_view pSemanticName, uint32 pSemanticIndex ) const noexcept;
-		uint32 _resolveAttributeRefImpl( EShaderInputSemanticID pSemanticID, uint32 pSemanticIndex ) const noexcept;
+		uint32 _resolveAttributeRefImpl( StringView pSemanticName, uint32 pSemanticIndex ) const noexcept;
+		uint32 _resolveAttributeRefImpl( TBitmask<ESystemAttributeSemanticFlags> pSysSmtFlags, uint32 pSemanticIndex ) const noexcept;
 
 	private:
 		/// Format of the index buffer data.
