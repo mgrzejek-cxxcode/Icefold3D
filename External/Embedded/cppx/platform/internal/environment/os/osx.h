@@ -1,0 +1,15 @@
+
+#ifndef  __CPPX_PLATFORM_CONFIG_INTERNAL_OS_MACOS_H__
+#define  __CPPX_PLATFORM_CONFIG_INTERNAL_OS_MACOS_H__
+
+#include <signal.h>
+#include <fcntl.h>
+
+#define PCL_ENV_DEFAULT_PATH_DELIMITER          '/'
+#define PCL_ENV_DEFAULT_PATH_DELIMITER_STR      "/"
+#define PCL_ENV_NON_STANDARD_PATH_DELIMITER     '\\'
+#define PCL_ENV_NON_STANDARD_PATH_DELIMITER_STR "\\"
+#define PCL_ENV_DYNAMIC_LIBRARY_PREFIX          "lib"
+#define PCL_ENV_DYNAMIC_LIBRARY_EXTENSION       ".so"
+
+#endif /*  __CPPX_PLATFORM_CONFIG_INTERNAL_OS_MACOS_H__ */
