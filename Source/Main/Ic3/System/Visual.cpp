@@ -1,7 +1,7 @@
 
 #include "Visual.h"
 #include <unordered_map>
-#include <Ic3/Cppx/STLHelperAlgo.h>
+#include <cppx/stdHelperAlgo.h>
 
 namespace Ic3::System
 {
@@ -34,7 +34,7 @@ namespace Ic3::System
 	static const ColorDesc sColorDescUnknown {
 			Math::RGBAColorU8{ 0, 0, 0, 0 }, 0, EPixelOrder::Unknown, EColorSpace::Unknown };
 
-	const std::string & vsxQueryColorFormatStr( EColorFormat pFormat )
+	const std::string & VisQueryColorFormatStr( EColorFormat pFormat )
 	{
 		static const std::unordered_map<EColorFormat, std::string> colorFormatStrMap =
 		{
@@ -48,10 +48,10 @@ namespace Ic3::System
 			{ EColorFormat::R10G10B10A2  , "R10G10B10A2"  },
 		};
 		static const std::string defaultColorFormatStr = "UNKNOWN";
-		return Cppx::getMapValueRefOrDefault( colorFormatStrMap, pFormat, defaultColorFormatStr );
+		return cppx::get_map_value_ref_or_default( colorFormatStrMap, pFormat, defaultColorFormatStr );
 	}
 
-	const ColorDesc & vsxGetDescForColorFormat( EColorFormat pFormat )
+	const ColorDesc & VisGetDescForColorFormat( EColorFormat pFormat )
 	{
 		static const std::unordered_map<EColorFormat, ColorDesc> colorDescMap =
 		{
@@ -64,7 +64,7 @@ namespace Ic3::System
 			{ EColorFormat::R8G8B8X8     , sColorDescR8G8B8X8     },
 			{ EColorFormat::R10G10B10A2  , sColorDescR10G10B10A2  },
 		};
-		return Cppx::getMapValueRefOrDefault( colorDescMap, pFormat, sColorDescUnknown );
+		return cppx::get_map_value_ref_or_default( colorDescMap, pFormat, sColorDescUnknown );
 	}
 
 	// DepthStencilDesc representation of values in EDepthStencilFormat enumeration.
@@ -75,7 +75,7 @@ namespace Ic3::System
 	static const DepthStencilDesc sDepthStencilDescD32FS8  { 32 , 8 };
 	static const DepthStencilDesc sDepthStencilDescUnknown { 0  , 0 };
 
-	const DepthStencilDesc & vsxGetDescForDepthStencilFormat( EDepthStencilFormat pFormat )
+	const DepthStencilDesc & VisGetDescForDepthStencilFormat( EDepthStencilFormat pFormat )
 	{
 		static const std::unordered_map<EDepthStencilFormat, DepthStencilDesc> depthStencilDescMap =
 		{
@@ -85,7 +85,7 @@ namespace Ic3::System
 			{ EDepthStencilFormat::D32F   , sDepthStencilDescD32F   },
 			{ EDepthStencilFormat::D32FS8 , sDepthStencilDescD32FS8 },
 		};
-		return Cppx::getMapValueRefOrDefault( depthStencilDescMap, pFormat, sDepthStencilDescUnknown );
+		return cppx::get_map_value_ref_or_default( depthStencilDescMap, pFormat, sDepthStencilDescUnknown );
 	}
 
 	// MSAADesc representation of values in EMSAAMode enumeration.
@@ -96,7 +96,7 @@ namespace Ic3::System
 	static const MSAADesc sMSAADescX8   { 1, 8  };
 	static const MSAADesc sMSAADescX16  { 1, 16 };
 
-	const MSAADesc & vsxGetDescForMSAAMode( EMSAAMode pMode )
+	const MSAADesc & VisGetDescForMSAAMode( EMSAAMode pMode )
 	{
 		static const std::unordered_map<EMSAAMode, MSAADesc> msaaModeMap =
 		{
@@ -106,10 +106,10 @@ namespace Ic3::System
 			{ EMSAAMode::X8,  sMSAADescX8  },
 			{ EMSAAMode::X16, sMSAADescX16 }
 		};
-		return Cppx::getMapValueRefOrDefault( msaaModeMap, pMode, sMSAADescNone );
+		return cppx::get_map_value_ref_or_default( msaaModeMap, pMode, sMSAADescNone );
 	}
 
-	const VisualConfig & vsxGetDefaultVisualConfigForSysWindow()
+	const VisualConfig & VisGetDefaultVisualConfigForSysWindow()
 	{
 		// Default VisualConfig for creating a system-level window.
 		static const VisualConfig sVisualConfigWindowDefault
@@ -125,12 +125,12 @@ namespace Ic3::System
 		return sVisualConfigWindowDefault;
 	}
 
-	bool vsxCheckColorFormatCompatibility( EColorFormat pFormat, uint8 pRed, uint8 pGreen, uint8 pBlue, uint8 pAlpha )
+	bool VisCheckColorFormatCompatibility( EColorFormat pFormat, uint8 pRed, uint8 pGreen, uint8 pBlue, uint8 pAlpha )
 	{
-		const auto & colorDesc = vsxGetDescForColorFormat( pFormat );
-		const auto & rgba = colorDesc.mRGBA;
+		const auto & colorDesc = VisGetDescForColorFormat( pFormat );
+		const auto & rgba = colorDesc.rgba;
 		// Format matches with a color spec if all channels have the exact same size.
-		return ( rgba.mU8Red == pRed ) && ( rgba.mU8Green == pGreen ) && ( rgba.mU8Blue == pBlue ) && ( rgba.mU8Alpha == pAlpha );
+		return ( rgba.u8Red == pRed ) && ( rgba.u8Green == pGreen ) && ( rgba.u8Blue == pBlue ) && ( rgba.u8Alpha == pAlpha );
 	}
 
 } // namespace Ic3::System

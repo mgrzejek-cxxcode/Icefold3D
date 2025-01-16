@@ -1,12 +1,12 @@
 
 #include <Ic3/System/PerfCounter.h>
-#include "MSEPerfCounter.h"
+#include "WFAPerfCounter.h"
 
-#if( IC3_PCL_TARGET_OS & IC3_PCL_TARGET_FLAG_OS_MSE )
+#if( PCL_TARGET_OS & PCL_TARGET_FLAG_OS_MSE )
 namespace Ic3::System
 {
 
-	perf_counter_value_t nativePerfCounterQueryValue()
+	perf_counter_value_t NativePerfCounterQueryValue()
 	{
 		LARGE_INTEGER perfCounter;
 		QueryPerformanceCounter( &perfCounter );
@@ -14,7 +14,7 @@ namespace Ic3::System
 		return static_cast<perf_counter_value_t>( perfCounter.QuadPart );
 	}
 
-	perf_counter_res_t nativePerfCounterQueryResolution()
+	perf_counter_res_t NativePerfCounterQueryResolution()
 	{
 		// "The frequency of the performance counter is fixed at system boot and is consistent across all processors.
 		// Therefore, the frequency need only be queried upon application initialization, and the result can be cached."

@@ -11,16 +11,16 @@
 #include <process.h>
 #include <tlhelp32.h>
 
-#if( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_WIN32 )
+#if( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_WIN32 )
 namespace Ic3::System
 {
 
     namespace Platform
     {
 
-        SysContextHandle createSysContext( const SysContextCreateInfo & pCreateInfo )
+        SysContextHandle CreateSysContext( const SysContextCreateInfo & pCreateInfo )
         {
-            return createDynamicObject<Win32SysContext>();
+            return CreateDynamicObject<Win32SysContext>();
         }
 
     }
@@ -28,62 +28,62 @@ namespace Ic3::System
 
 	Win32SysContext::Win32SysContext()
 	{
-		_initializeWin32ContextState();
+		_InitializeWin32ContextState();
 	}
 
 	Win32SysContext::~Win32SysContext() noexcept
 	{
-		_releaseWin32ContextState();
+		_ReleaseWin32ContextState();
 	}
 	
-	AssetLoaderHandle Win32SysContext::createAssetLoader( const AssetLoaderCreateInfo & pCreateInfo )
+	AssetLoaderHandle Win32SysContext::CreateAssetLoader( const AssetLoaderCreateInfo & pCreateInfo )
 	{
-		return Platform::createFileAssetLoader( getHandle<Win32SysContext>(), *pCreateInfo.mNativeParams );
+		return Platform::CreateFileAssetLoader( GetHandle<Win32SysContext>(), *pCreateInfo.nativeParams );
 	}
 
-	DisplayManagerHandle Win32SysContext::createDisplayManager()
+	DisplayManagerHandle Win32SysContext::CreateDisplayManager()
 	{
-		return createSysObject<Win32DisplayManager>( getHandle<Win32SysContext>() );
+		return CreateSysObject<Win32DisplayManager>( GetHandle<Win32SysContext>() );
 	}
 
-	EventControllerHandle Win32SysContext::createEventController()
+	EventControllerHandle Win32SysContext::CreateEventController()
 	{
-		return createSysObject<Win32EventController>( getHandle<Win32SysContext>() );
+		return CreateSysObject<Win32EventController>( GetHandle<Win32SysContext>() );
 	}
 
-	FileManagerHandle Win32SysContext::createFileManager()
+	FileManagerHandle Win32SysContext::CreateFileManager()
 	{
-		return createSysObject<Win32FileManager>( getHandle<Win32SysContext>() );
+		return CreateSysObject<Win32FileManager>( GetHandle<Win32SysContext>() );
 	}
 
-	OpenGLSystemDriverHandle Win32SysContext::createOpenGLSystemDriver( DisplayManagerHandle pDisplayManager )
-	{
-		if( !pDisplayManager )
-		{
-			pDisplayManager = createDisplayManager();
-		}
-
-		return createSysObject<Win32OpenGLSystemDriver>( pDisplayManager->getHandle<Win32DisplayManager>() );
-	}
-
-	WindowManagerHandle Win32SysContext::createWindowManager( DisplayManagerHandle pDisplayManager )
+	OpenGLSystemDriverHandle Win32SysContext::CreateOpenGLSystemDriver( DisplayManagerHandle pDisplayManager )
 	{
 		if( !pDisplayManager )
 		{
-			pDisplayManager = createDisplayManager();
+			pDisplayManager = CreateDisplayManager();
 		}
 
-		return createSysObject<Win32WindowManager>( pDisplayManager->getHandle<Win32DisplayManager>() );
+		return CreateSysObject<Win32OpenGLSystemDriver>( pDisplayManager->GetHandle<Win32DisplayManager>() );
 	}
 
-	std::string Win32SysContext::queryCurrentProcessWorkingDirectory() const
+	WindowManagerHandle Win32SysContext::CreateWindowManager( DisplayManagerHandle pDisplayManager )
+	{
+		if( !pDisplayManager )
+		{
+			pDisplayManager = CreateDisplayManager();
+		}
+
+		return CreateSysObject<Win32WindowManager>( pDisplayManager->GetHandle<Win32DisplayManager>() );
+	}
+
+	std::string Win32SysContext::QueryCurrentProcessWorkingDirectory() const
 	{
 		char workingDirStrBuffer[2048];
 		_getcwd( workingDirStrBuffer, 2048 );
 		return std::string( workingDirStrBuffer );
 	}
 
-	std::string Win32SysContext::queryCurrentProcessExecutableFilePath() const
+	std::string Win32SysContext::QueryCurrentProcessExecutableFilePath() const
 	{
 		std::string executableFilePath;
 
@@ -117,15 +117,15 @@ namespace Ic3::System
 		return executableFilePath;
 	}
 
-	void Win32SysContext::_initializeWin32ContextState()
+	void Win32SysContext::_InitializeWin32ContextState()
 	{
 		mNativeData.appExecModuleHandle = ::GetModuleHandleA( nullptr );
 	}
 
-	void Win32SysContext::_releaseWin32ContextState()
+	void Win32SysContext::_ReleaseWin32ContextState()
 	{
 		mNativeData.appExecModuleHandle = nullptr;
 	}
 
 } // namespace Ic3::System
-#endif // IC3_PCL_TARGET_SYSAPI_WIN32
+#endif // PCL_TARGET_SYSAPI_WIN32

@@ -11,8 +11,8 @@ namespace Ic3::System
 	{
 
 		std::string _commonResolveFileName( FileManager & pFileManager,
-		                                    Cppx::FilePathInfo & pAssetPathInfo,
-		                                    TBitmask<EAssetOpenFlags> pFlags );
+		                                    cppx::file_path_info & pAssetPathInfo,
+		                                    cppx::bitmask<EAssetOpenFlags> pFlags );
 
 	}
 
@@ -24,64 +24,64 @@ namespace Ic3::System
 
 	FileAssetLoader::~FileAssetLoader() noexcept = default;
 
-	void FileAssetLoader::setRootDir( std::string pRootDir )
+	void FileAssetLoader::SetRootDir( std::string pRootDir )
 	{
-		mNativeData.mRootDir = std::move( pRootDir );
+		mNativeData.rootDir = std::move( pRootDir );
 	}
 
-	AssetHandle FileAssetLoader::_nativeOpenSubAsset( Cppx::FilePathInfo pAssetPathInfo, TBitmask<EAssetOpenFlags> pFlags )
+	AssetHandle FileAssetLoader::_NativeOpenSubAsset( cppx::file_path_info pAssetPathInfo, cppx::bitmask<EAssetOpenFlags> pFlags )
 	{
 		TSysHandle<FileAsset> asset = nullptr;
 
-		auto fileDirectoryPath = mNativeData.mRootDir;
-		fileDirectoryPath.append( 1, IC3_PCL_ENV_DEFAULT_PATH_DELIMITER );
-		fileDirectoryPath.append( pAssetPathInfo.mDirectory );
+		auto fileDirectoryPath = mNativeData.rootDir;
+		fileDirectoryPath.append( 1, PCL_ENV_DEFAULT_PATH_DELIMITER );
+		fileDirectoryPath.append( pAssetPathInfo.directory );
 
-		pAssetPathInfo.mDirectory = std::move( fileDirectoryPath );
+		pAssetPathInfo.directory = std::move( fileDirectoryPath );
 
-		if( mFileManager->checkDirectoryExists( pAssetPathInfo.mDirectory ) )
+		if( mFileManager->CheckDirectoryExists( pAssetPathInfo.directory ) )
 		{
 			auto combinedFilePath = Platform::_commonResolveFileName( *mFileManager, pAssetPathInfo, pFlags );
 
-			if( mFileManager->checkFileExists( combinedFilePath ) )
+			if( mFileManager->CheckFileExists( combinedFilePath ) )
 			{
-				auto fileHandle = mFileManager->openFile( combinedFilePath, EFileOpenMode::ReadOnly );
+				auto fileHandle = mFileManager->OpenFile( combinedFilePath, EFileOpenMode::ReadOnly );
 
-				asset = createSysObject<FileAsset>( getHandle<FileAssetLoader>() );
-				asset->setName( std::move( pAssetPathInfo.mFileName ) );
-				asset->mNativeData.mFileHandle = fileHandle;
-				asset->mNativeData.mFilePath = std::move( combinedFilePath );
+				asset = CreateSysObject<FileAsset>( GetHandle<FileAssetLoader>() );
+				asset->SetName( std::move( pAssetPathInfo.file_name ) );
+				asset->mNativeData.fileHandle = fileHandle;
+				asset->mNativeData.filePath = std::move( combinedFilePath );
 			}
 		}
 
 		return asset;
 	}
 
-	AssetDirectoryHandle FileAssetLoader::_nativeOpenDirectory( std::string pDirectoryName )
+	AssetDirectoryHandle FileAssetLoader::_NativeOpenDirectory( std::string pDirectoryName )
 	{
-		auto combinedDirPath = mNativeData.mRootDir;
-		combinedDirPath.append( 1, IC3_PCL_ENV_DEFAULT_PATH_DELIMITER );
+		auto combinedDirPath = mNativeData.rootDir;
+		combinedDirPath.append( 1, PCL_ENV_DEFAULT_PATH_DELIMITER );
 		combinedDirPath.append( pDirectoryName );
 
-		if( !mFileManager->checkDirectoryExists( combinedDirPath ) )
+		if( !mFileManager->CheckDirectoryExists( combinedDirPath ) )
 		{
 			return nullptr;
 		}
 
-		auto assetDirectory = createSysObject<FileAssetDirectory>( getHandle<FileAssetLoader>() );
-		assetDirectory->setDirName( std::move( pDirectoryName ) );
-		assetDirectory->mNativeData.mCombinedDirPath = std::move( combinedDirPath );
+		auto assetDirectory = CreateSysObject<FileAssetDirectory>( GetHandle<FileAssetLoader>() );
+		assetDirectory->SetDirName( std::move( pDirectoryName ) );
+		assetDirectory->mNativeData.combinedDirPath = std::move( combinedDirPath );
 
 		return assetDirectory;
 	}
 
-	bool FileAssetLoader::_nativeCheckDirectoryExists( const std::string & pDirectoryName ) const
+	bool FileAssetLoader::_NativeCheckDirectoryExists( const std::string & pDirectoryName ) const
 	{
-		auto combinedDirPath = mNativeData.mRootDir;
-		combinedDirPath.append( 1, IC3_PCL_ENV_DEFAULT_PATH_DELIMITER );
+		auto combinedDirPath = mNativeData.rootDir;
+		combinedDirPath.append( 1, PCL_ENV_DEFAULT_PATH_DELIMITER );
 		combinedDirPath.append( pDirectoryName );
 
-		return mFileManager->checkDirectoryExists( combinedDirPath );
+		return mFileManager->CheckDirectoryExists( combinedDirPath );
 	}
 
 
@@ -92,43 +92,43 @@ namespace Ic3::System
 
 	FileAssetDirectory::~FileAssetDirectory() noexcept = default;
 
-	void FileAssetDirectory::_nativeRefreshAssetList()
+	void FileAssetDirectory::_NativeRefreshAssetList()
 	{
-		auto assetNameList = mFileManager->enumDirectoryFiles( mNativeData.mCombinedDirPath );
-		setAssetList( std::move( assetNameList ) );
+		auto assetNameList = mFileManager->EnumDirectoryFiles( mNativeData.combinedDirPath );
+		SetAssetList( std::move( assetNameList ) );
 	}
 
-	AssetHandle FileAssetDirectory::_nativeOpenAsset( std::string pAssetName, TBitmask<EAssetOpenFlags> pFlags )
+	AssetHandle FileAssetDirectory::_NativeOpenAsset( std::string pAssetName, cppx::bitmask<EAssetOpenFlags> pFlags )
 	{
 		TSysHandle<FileAsset> asset = nullptr;
 
-		Cppx::FilePathInfo assetPathInfo;
-		assetPathInfo.mDirectory = mNativeData.mCombinedDirPath;
-		assetPathInfo.mFileName = std::move( pAssetName );
+		cppx::file_path_info assetPathInfo;
+		assetPathInfo.directory = mNativeData.combinedDirPath;
+		assetPathInfo.file_name = std::move( pAssetName );
 
-		if( mFileManager->checkDirectoryExists( mNativeData.mCombinedDirPath ) )
+		if( mFileManager->CheckDirectoryExists( mNativeData.combinedDirPath ) )
 		{
 			auto combinedFilePath = Platform::_commonResolveFileName( *mFileManager, assetPathInfo, pFlags );
 
-			if( mFileManager->checkFileExists( combinedFilePath ) )
+			if( mFileManager->CheckFileExists( combinedFilePath ) )
 			{
-				auto fileHandle = mFileManager->openFile( combinedFilePath, EFileOpenMode::ReadOnly );
+				auto fileHandle = mFileManager->OpenFile( combinedFilePath, EFileOpenMode::ReadOnly );
 
-				asset = createSysObject<FileAsset>( getHandle<FileAssetDirectory>() );
-				asset->setName( std::move( assetPathInfo.mFileName ) );
-				asset->mNativeData.mFileHandle = fileHandle;
-				asset->mNativeData.mFilePath = std::move( combinedFilePath );
+				asset = CreateSysObject<FileAsset>( GetHandle<FileAssetDirectory>() );
+				asset->SetName( std::move( assetPathInfo.file_name ) );
+				asset->mNativeData.fileHandle = fileHandle;
+				asset->mNativeData.filePath = std::move( combinedFilePath );
 			}
 		}
 
 		return asset;
 	}
 
-	bool FileAssetDirectory::_nativeCheckAssetExists( const std::string & pAssetName ) const
+	bool FileAssetDirectory::_NativeCheckAssetExists( const std::string & pAssetName ) const
 	{
-		auto combinedFilePath = mNativeData.mCombinedDirPath;
+		auto combinedFilePath = mNativeData.combinedDirPath;
 		combinedFilePath.append( pAssetName );
-		return mFileManager->checkFileExists( combinedFilePath );
+		return mFileManager->CheckFileExists( combinedFilePath );
 	}
 
 
@@ -142,105 +142,106 @@ namespace Ic3::System
 
 	FileAsset::~FileAsset() noexcept = default;
 
-	file_size_t FileAsset::_nativeReadData( void * pTargetBuffer, file_size_t pReadSize )
+	file_size_t FileAsset::_NativeReadData( void * pTargetBuffer, file_size_t pReadSize )
 	{
-		return mNativeData.mFileHandle->read( pTargetBuffer, pReadSize );
+		return mNativeData.fileHandle->Read( pTargetBuffer, pReadSize );
 	}
 
-	file_offset_t FileAsset::_nativeSetReadPointer( file_offset_t pOffset, EFilePointerRefPos pRefPos )
+	file_offset_t FileAsset::_NativeSetReadPointer( file_offset_t pOffset, EFilePointerRefPos pRefPos )
 	{
-		return mNativeData.mFileHandle->setFilePointer( pOffset, pRefPos );
+		return mNativeData.fileHandle->SetFilePointer( pOffset, pRefPos );
 	}
 
-	file_size_t FileAsset::_nativeGetSize() const
+	file_size_t FileAsset::_NativeGetSize() const
 	{
-		return mNativeData.mFileHandle->getSize();
+		return mNativeData.fileHandle->GetSize();
 	}
 
 
 	namespace Platform
 	{
 
-		AssetLoaderHandle createFileAssetLoaderExplicit(
+		AssetLoaderHandle CreateFileAssetLoaderExplicit(
 				SysContextHandle pSysContext,
 				FileManagerHandle pFileManager,
 				const std::string & pAbsoluteAssetDirectory )
 		{
 			if( !pFileManager )
 			{
-				pFileManager = pSysContext->createFileManager();
+				pFileManager = pSysContext->CreateFileManager();
 			}
 
-			auto assetDirectory = Cppx::fsNormalizePath( pAbsoluteAssetDirectory );
-			auto assetLoader = createSysObject<FileAssetLoader>( pFileManager );
-			assetLoader->setRootDir( std::move( assetDirectory ) );
+			auto assetDirectory = cppx::fs_normalize_path( pAbsoluteAssetDirectory );
+			auto assetLoader = CreateSysObject<FileAssetLoader>( pFileManager );
+			assetLoader->SetRootDir( std::move( assetDirectory ) );
 
 			return assetLoader;
 		}
 
-		AssetLoaderHandle createFileAssetLoaderResolve(
+		AssetLoaderHandle CreateFileAssetLoaderResolve(
 				SysContextHandle pSysContext,
 				FileManagerHandle pFileManager,
 				const std::string & pRelativeAssetDirectory )
 		{
 			if( !pFileManager )
 			{
-				pFileManager = pSysContext->createFileManager();
+				pFileManager = pSysContext->CreateFileManager();
 			}
 
-			auto assetDirectory = pSysContext->queryCurrentProcessWorkingDirectory();
+			auto assetDirectory = pSysContext->QueryCurrentProcessWorkingDirectory();
 			// auto assetDirectory = pSysContext->queryCurrentProcessExecutableDirectory();
-			assetDirectory.append( 1, IC3_PCL_ENV_DEFAULT_PATH_DELIMITER );
+			assetDirectory.append( 1, PCL_ENV_DEFAULT_PATH_DELIMITER );
 			assetDirectory.append( pRelativeAssetDirectory );
-			assetDirectory = Cppx::fsNormalizePath( assetDirectory );
+			assetDirectory = cppx::fs_normalize_path( assetDirectory );
 
-			auto assetLoader = createSysObject<FileAssetLoader>( pFileManager );
-			assetLoader->setRootDir( std::move( assetDirectory ) );
+			auto assetLoader = CreateSysObject<FileAssetLoader>( pFileManager );
+			assetLoader->SetRootDir( std::move( assetDirectory ) );
 
 			return assetLoader;
 		}
 
-		AssetLoaderHandle createFileAssetLoader( SysContextHandle pSysContext, const AssetLoaderCreateInfoNativeParams & pCreateParams )
+		AssetLoaderHandle CreateFileAssetLoader( SysContextHandle pSysContext, const AssetLoaderCreateInfoNativeParams & pCreateParams )
 		{
-			const auto & fileManager = pCreateParams.mFileManager;
+			const auto & fileManager = pCreateParams.fileManager;
 
-			if( !pCreateParams.mAbsoluteAssetRootDir.empty() )
+			if( !pCreateParams.absoluteAssetRootDir.empty() )
 			{
-				return createFileAssetLoaderExplicit( std::move( pSysContext ), fileManager, pCreateParams.mAbsoluteAssetRootDir );
+				return CreateFileAssetLoaderExplicit( std::move( pSysContext ), fileManager,
+				                                      pCreateParams.absoluteAssetRootDir );
 			}
 			else
 			{
-				return createFileAssetLoaderResolve( std::move( pSysContext ), fileManager, pCreateParams.mRelativeAssetRootDir );
+				return CreateFileAssetLoaderResolve( std::move( pSysContext ), fileManager, pCreateParams.relativeAssetRootDir );
 			}
 		}
 
 
 		std::string _commonResolveFileName( FileManager & pFileManager,
-		                                    Cppx::FilePathInfo & pAssetPathInfo,
-		                                    TBitmask<EAssetOpenFlags> pFlags )
+		                                    cppx::file_path_info & pAssetPathInfo,
+		                                    cppx::bitmask<EAssetOpenFlags> pFlags )
 		{
-			auto combinedFilePath = pAssetPathInfo.mDirectory;
-			combinedFilePath.append( 1, IC3_PCL_ENV_DEFAULT_PATH_DELIMITER );
-			combinedFilePath.append( pAssetPathInfo.mFileName );
+			auto combinedFilePath = pAssetPathInfo.directory;
+			combinedFilePath.append( 1, PCL_ENV_DEFAULT_PATH_DELIMITER );
+			combinedFilePath.append( pAssetPathInfo.file_name );
 
-			if( !pFileManager.checkFileExists( combinedFilePath ) )
+			if( !pFileManager.CheckFileExists( combinedFilePath ) )
 			{
 				combinedFilePath.clear();
 
-				if( pFlags.isSet( eAssetOpenFlagNoExtensionBit ) )
+				if( pFlags.is_set( eAssetOpenFlagNoExtensionBit ) )
 				{
-					auto fileNameList = pFileManager.enumDirectoryFiles( pAssetPathInfo.mDirectory );
+					auto fileNameList = pFileManager.EnumDirectoryFiles( pAssetPathInfo.directory );
 					if( !fileNameList.empty() )
 					{
 						for( auto & fileName : fileNameList )
 						{
-							auto assetNamePos = fileName.find( pAssetPathInfo.mFileName );
+							auto assetNamePos = fileName.find( pAssetPathInfo.file_name );
 							if( assetNamePos == 0 )
 							{
-								pAssetPathInfo.mFileName = std::move( fileName );
-								combinedFilePath = pAssetPathInfo.mDirectory;
-								combinedFilePath.append( 1, IC3_PCL_ENV_DEFAULT_PATH_DELIMITER );
-								combinedFilePath.append( pAssetPathInfo.mFileName );
+								pAssetPathInfo.file_name = std::move( fileName );
+								combinedFilePath = pAssetPathInfo.directory;
+								combinedFilePath.append( 1, PCL_ENV_DEFAULT_PATH_DELIMITER );
+								combinedFilePath.append( pAssetPathInfo.file_name );
 
 								break;
 							}

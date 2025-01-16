@@ -29,21 +29,24 @@ namespace Ic3::System
 			DWORD mStyle;
 		};
 
-		void win32CreateWindow( Win32WindowNativeData & pWindowNativeData, const WindowCreateInfo & pCreateInfo );
+		void Win32CreateWindow( Win32WindowNativeData & pWindowNativeData, const WindowCreateInfo & pCreateInfo );
 
-		void win32DestroyWindow( Win32WindowNativeData & pWindowNativeData );
+		void Win32DestroyWindow( Win32WindowNativeData & pWindowNativeData );
 
-        void win32ChangeWindowFullscreenState( Win32WindowNativeData & pWindowNativeData, bool pSetFullscreen );
+        void Win32ChangeWindowFullscreenState( Win32WindowNativeData & pWindowNativeData, bool pSetFullscreen );
 
-		void win32UpdateWindowFullscreenState( Win32WindowNativeData & pWindowNativeData, bool pSetFullscreen );
+		void Win32UpdateWindowFullscreenState( Win32WindowNativeData & pWindowNativeData, bool pSetFullscreen );
 
-		void win32SetFrameTitle( HWND pHWND, const std::string & pTitle );
+		void Win32SetFrameTitle( HWND pHWND, const std::string & pTitle );
 
-		void win32UpdateFrameGeometry( HWND pHWND, const FrameGeometry & pFrameGeometry, TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags );
+		void Win32UpdateFrameGeometry(
+				HWND pHWND,
+				const FrameGeometry & pFrameGeometry,
+				cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags );
 
-		IC3_SYSTEM_API_NODISCARD FrameSize win32GetFrameSize( HWND pHWND, EFrameSizeMode pSizeMode );
+		IC3_SYSTEM_API_NODISCARD FrameSize Win32GetFrameSize( HWND pHWND, EFrameSizeMode pSizeMode );
 
-		IC3_SYSTEM_API_NODISCARD bool win32IsFullscreenWindow( const Win32WindowNativeData & pWindowNativeData );
+		IC3_SYSTEM_API_NODISCARD bool Win32IsFullscreenWindow( const Win32WindowNativeData & pWindowNativeData );
 
 	}
 
@@ -54,11 +57,11 @@ namespace Ic3::System
 		virtual ~Win32WindowManager() noexcept;
 
 	private:
-		// @override WindowManager::_nativeCreateWindow
-		virtual WindowHandle _nativeCreateWindow( WindowCreateInfo pCreateInfo ) override final;
+		// @override WindowManager::_NativeCreateWindow
+		virtual WindowHandle _NativeCreateWindow( WindowCreateInfo pCreateInfo ) override final;
 
-        // @override WindowManager::_nativeDestroyWindow
-        virtual void _nativeDestroyWindow( Window & pWindow ) override final;
+        // @override WindowManager::_NativeDestroyWindow
+        virtual void _NativeDestroyWindow( Window & pWindow ) override final;
 	};
 
 	class Win32Window : public Win32NativeObject<Window, Platform::Win32WindowNativeData>
@@ -70,21 +73,22 @@ namespace Ic3::System
 		virtual ~Win32Window() noexcept;
 
 	private:
-		// @override Window::_nativeResize
-		virtual void _nativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode ) override final;
+		// @override Window::_NativeResize
+		virtual void _NativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode ) override final;
 
-		// @override Window::_nativeSetFullscreenMode
-		virtual void _nativeSetFullscreenMode( bool pEnable ) override final;
+		// @override Window::_NativeSetFullscreenMode
+		virtual void _NativeSetFullscreenMode( bool pEnable ) override final;
 
-		// @override Window::_nativeSetTitle
-		virtual void _nativeSetTitle( const std::string & pTitle ) override final;
+		// @override Window::_NativeSetTitle
+		virtual void _NativeSetTitle( const std::string & pTitle ) override final;
 
-		// @override Window::_nativeUpdateGeometry
-		virtual void _nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-		                                    TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
+		// @override Window::_NativeUpdateGeometry
+		virtual void _NativeUpdateGeometry(
+				const FrameGeometry & pFrameGeometry,
+				cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
 
-		// @override Window::_nativeGetSize
-		virtual FrameSize _nativeGetSize( EFrameSizeMode pSizeMode ) const override final;
+		// @override Window::_NativeGetSize
+		virtual FrameSize _NativeGetSize( EFrameSizeMode pSizeMode ) const override final;
 	};
 
 } // namespace Ic3::System

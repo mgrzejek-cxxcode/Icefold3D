@@ -5,25 +5,25 @@
 #include "Visual.h"
 
 #include <Ic3/Math/VectorOps.h>
-#include <Ic3/Cppx/ArrayView.h>
-#include <Ic3/Cppx/Bitmask.h>
-#include <Ic3/Cppx/UUID.h>
+#include <cppx/arrayView.h>
+#include <cppx/bitmask.h>
+#include <cppx/uuid.h>
 #include <functional>
 
-#if( IC3_PCL_COMPILER & IC3_PCL_COMPILER_CLANG )
+#if( PCL_COMPILER & PCL_COMPILER_CLANG )
 #  pragma clang diagnostic push
 #  pragma clang diagnostic ignored "-Wgnu-anonymous-struct"
 #  pragma clang diagnostic ignored "-Wnested-anon-types"
-#elif( IC3_PCL_COMPILER & IC3_PCL_COMPILER_MSVC )
+#elif( PCL_COMPILER & PCL_COMPILER_MSVC )
 #  pragma warning( push )
 #  pragma warning( disable: 4201 )  // 'Nonstandard extension used: nameless struct/union'
-#elif( IC3_PCL_COMPILER & ( IC3_PCL_COMPILER_GCC | IC3_PCL_COMPILER_MINGW64 ) )
+#elif( PCL_COMPILER & ( PCL_COMPILER_GCC | PCL_COMPILER_MINGW64 ) )
 #  pragma GCC diagnostic push
 #  pragma GCC diagnostic ignored "-Wpedantic"
 #endif
 
 #if !defined( IC3_SYSTEM_DSM_DRIVER_TYPE_SUPPORT_DXGI )
-#  if( IC3_PCL_TARGET_OS & IC3_PCL_TARGET_FLAG_OS_MSE )
+#  if( PCL_TARGET_OS & PCL_TARGET_FLAG_OS_MSE )
 #    define IC3_SYSTEM_DSM_DRIVER_TYPE_SUPPORT_DXGI 1
 #  else
 #    define IC3_SYSTEM_DSM_DRIVER_TYPE_SUPPORT_DXGI 0
@@ -63,16 +63,18 @@ namespace Ic3::System
 	using DisplayVideoModePredicate = std::function<bool( const DisplayVideoMode & )>;
 
 	/// @brief Represents invalid display system index (of an adapter or an output, for example).
-	inline constexpr dsm_index_t CX_DSM_INDEX_INVALID = Cppx::QLimits<dsm_index_t>::sMaxValue - 1;
+	inline constexpr dsm_index_t CX_DSM_INDEX_INVALID = cppx::meta::limits<dsm_index_t>::max_value - 1;
+
+	inline constexpr auto kDSMIndexInvalid = cppx::meta::limits<dsm_index_t>::max_value - 1;
 
 	/// @brief
-	inline constexpr dsm_index_t CX_DSM_INDEX_DEFAULT = Cppx::QLimits<dsm_index_t>::sMaxValue;
+	inline constexpr dsm_index_t CX_DSM_INDEX_DEFAULT = cppx::meta::limits<dsm_index_t>::max_value;
 
 	/// @brief
-	inline constexpr dsm_output_id_t CX_DSM_OUTPUT_ID_DEFAULT = Cppx::QLimits<dsm_output_id_t>::sMaxValue;
+	inline constexpr dsm_output_id_t CX_DSM_OUTPUT_ID_DEFAULT = cppx::meta::limits<dsm_output_id_t>::max_value;
 
 	/// @brief Represents invalid display settings hash. Used to identify/report invalid and/or empty configurations.
-	inline constexpr dsm_video_settings_hash_t CX_DSM_VIDEO_SETTINGS_HASH_INVALID = Cppx::QLimits<dsm_video_settings_hash_t>::sMaxValue;
+	inline constexpr dsm_video_settings_hash_t CX_DSM_VIDEO_SETTINGS_HASH_INVALID = cppx::meta::limits<dsm_video_settings_hash_t>::max_value;
 
 	/// @brief Specifies supported types of drivers available through a DisplayManager.
 	/// Driver support is platform-specific and some of them may not be available on some systems.
@@ -123,7 +125,7 @@ namespace Ic3::System
 	enum EDisplayAdapterFlags : uint32
 	{
 		// Adapter is active. The meaning of this flag is driver-specific - do not assume an active adapter
-		// to have, for example, any active outputs. Use DisplayAdapter::hasActiveOutputs() to check that.
+		// to have, for example, any active outputs. Use DisplayAdapter::HasActiveOutputs() to check that.
 		eDisplayAdapterFlagActiveBit = 0x1,
 		// Adapter is a primary/default adapter in the system.
 		eDisplayAdapterFlagPrimaryBit = 0x2,
@@ -168,27 +170,28 @@ namespace Ic3::System
 
 	struct ScreenRect
 	{
-		DisplayOffset mOffset;
-		DisplaySize mSize;
+		DisplayOffset offset;
+		DisplaySize size;
 	};
 
 	/// @brief
 	struct DisplayVideoSettings
 	{
-		DisplaySize mResolution;
+		DisplaySize resolution;
 
-		uint16 mRefreshRate = 0u;
+		uint16 refreshRate = 0u;
 
-		TBitmask<EDisplayVideoSettingsFlags> mFlags = 0u;
+		cppx::bitmask<EDisplayVideoSettingsFlags> flags = 0u;
 
-		IC3_ATTR_NO_DISCARD bool equals( const DisplayVideoSettings & pOther ) const
+		CPPX_ATTR_NO_DISCARD bool equals( const DisplayVideoSettings & pOther ) const
 		{
-			return ( mResolution == pOther.mResolution ) && (mRefreshRate == pOther.mRefreshRate ) && ( mFlags == pOther.mFlags );
+			return ( resolution == pOther.resolution ) && ( refreshRate == pOther.refreshRate ) && ( flags == pOther.flags );
 		}
 
-		IC3_ATTR_NO_DISCARD bool matches( const DisplayVideoSettings & pOther ) const
+		CPPX_ATTR_NO_DISCARD bool matches( const DisplayVideoSettings & pOther ) const
 		{
-			return ( mResolution == pOther.mResolution ) && (mRefreshRate == pOther.mRefreshRate ) && mFlags.isSet( pOther.mFlags );
+			return ( resolution == pOther.resolution ) && ( refreshRate == pOther.refreshRate ) &&
+					flags.is_set( pOther.flags );
 		}
 	};
 
@@ -214,79 +217,69 @@ namespace Ic3::System
 		// Each property can be ignored by using its respective IGNORE flag. Also, "greater than
 		// or equal" condition can be changed to "equal" for a given property by setting MATCH_EXACT
 		// flag for that property.
-		DisplayVideoSettings mRefSettings;
+		DisplayVideoSettings refSettings;
 
 		// Filter flags used to control the process. Flags set by default: none.
-		TBitmask<EDisplayVideoSettingsFilterFlags> mFlags = 0;
+		cppx::bitmask<EDisplayVideoSettingsFilterFlags> flags = 0;
 	};
 
 	inline bool operator==( const DisplayVideoSettingsFilter & pLhs, const DisplayVideoSettingsFilter & pRhs )
 	{
-		return ( pLhs.mRefSettings == pRhs.mRefSettings ) && ( pLhs.mFlags == pRhs.mFlags );
+		return ( pLhs.refSettings == pRhs.refSettings ) && ( pLhs.flags == pRhs.flags );
 	}
 
 	inline bool operator!=( const DisplayVideoSettingsFilter & pLhs, const DisplayVideoSettingsFilter & pRhs )
 	{
-		return ( pLhs.mRefSettings != pRhs.mRefSettings ) || ( pLhs.mFlags != pRhs.mFlags );
+		return ( pLhs.refSettings != pRhs.refSettings ) || ( pLhs.flags != pRhs.flags );
 	}
 
 	inline constexpr DisplayVideoSettingsFilter cvDisplayVideoSettingsFilterNone { cvDisplayVideoSettingsEmpty, 0U };
 
 	struct DisplayAdapterDesc
 	{
-		EDisplayDriverType mDriverType = EDisplayDriverType::Unknown;
-		dsm_index_t mAdapterIndex = CX_DSM_INDEX_INVALID;
-		EDisplayAdapterVendorID mVendorID = EDisplayAdapterVendorID::Unknown;
-		TBitmask<EDisplayAdapterFlags> mFlags = 0u;
-		std::string mName;
+		EDisplayDriverType driverType = EDisplayDriverType::Unknown;
+		dsm_index_t adapterIndex = CX_DSM_INDEX_INVALID;
+		EDisplayAdapterVendorID vendorID = EDisplayAdapterVendorID::Unknown;
+		cppx::bitmask<EDisplayAdapterFlags> flags = 0u;
+		std::string name;
 
 		std::string toString() const;
 	};
 
 	struct DisplayOutputDesc
 	{
-		EDisplayDriverType mDriverType = EDisplayDriverType::Unknown;
-		dsm_index_t mOutputIndex = CX_DSM_INDEX_INVALID;
-		dsm_output_id_t mOutputID = 0u;
-		TBitmask<EDisplayOutputFlags> mFlags = 0u;
-		std::string mName;
-		ScreenRect mScreenRect;
+		EDisplayDriverType driverType = EDisplayDriverType::Unknown;
+		dsm_index_t outputIndex = CX_DSM_INDEX_INVALID;
+		dsm_output_id_t outputID = 0u;
+		cppx::bitmask<EDisplayOutputFlags> flags = 0u;
+		std::string name;
+		ScreenRect screenRect;
 
 		std::string toString() const;
 	};
 
 	struct DisplayVideoModeDesc
 	{
-		EDisplayDriverType mDriverType = EDisplayDriverType::Unknown;
-		dsm_index_t mVideoModeIndex = CX_DSM_INDEX_INVALID;
-		dsm_video_mode_id_t mVideoModeID = 0u;
-		dsm_video_settings_hash_t mSettingsHash = 0u;
-		EColorFormat mColorFormat = EColorFormat::Unknown;
-		DisplayVideoSettings mSettings;
+		EDisplayDriverType driverType = EDisplayDriverType::Unknown;
+		dsm_index_t videoModeIndex = CX_DSM_INDEX_INVALID;
+		dsm_video_mode_id_t videoModeID = 0u;
+		dsm_video_settings_hash_t settingsHash = 0u;
+		EColorFormat colorFormat = EColorFormat::Unknown;
+		DisplayVideoSettings settings;
 
 		std::string toString() const;
 	};
-
-	IC3_ATTR_NO_DISCARD dsm_output_id_t dsmCreateDisplayOutputID( dsm_index_t pAdapterIndex, dsm_index_t pOutputIndex );
-
-	IC3_ATTR_NO_DISCARD dsm_video_settings_hash_t dsmComputeVideoSettingsHash( EColorFormat pFormat, const DisplayVideoSettings & pSettings );
-
-	IC3_ATTR_NO_DISCARD std::string dsmGetVideoSettingsString( EColorFormat pFormat, const DisplayVideoSettings & pSettings );
-
-	IC3_ATTR_NO_DISCARD EDisplayAdapterVendorID dsmResolveAdapterVendorID( const std::string & pAdapterName );
-
-	IC3_ATTR_NO_DISCARD bool dsmCheckSettingsFilterMatch( const DisplayVideoSettingsFilter & pFilter, const DisplayVideoSettings & pSettings );
 
 
 } // namespace Ic3::System
 
 #pragma pop
 
-#if( IC3_PCL_COMPILER & IC3_PCL_COMPILER_CLANG )
+#if( PCL_COMPILER & PCL_COMPILER_CLANG )
 #  pragma clang diagnostic pop
-#elif( IC3_PCL_COMPILER & IC3_PCL_COMPILER_MSVC )
+#elif( PCL_COMPILER & PCL_COMPILER_MSVC )
 #  pragma warning( pop )
-#elif( IC3_PCL_COMPILER & ( IC3_PCL_COMPILER_GCC | IC3_PCL_COMPILER_MINGW64 ) )
+#elif( PCL_COMPILER & ( PCL_COMPILER_GCC | PCL_COMPILER_MINGW64 ) )
 #  pragma GCC diagnostic pop
 #endif
 

@@ -101,7 +101,7 @@
           change:( NSDictionary * ) pChange
           context:( void * ) pContext
 {
-	if( (  pObject == mNSWindow ) && [pKeyPath isEqualToString:@"visible"] )
+	if( (  pObject == mNSWindow ) && [pKeyPath IsEqualToString:@"visible"] )
 	{
 		int newVisibility = [[pChange objectForKey:@"new"] intValue];
 		if( newVisibility != 0 )

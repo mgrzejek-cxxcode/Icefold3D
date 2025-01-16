@@ -10,7 +10,7 @@ namespace Ic3::System
 	using MouseCursorPos = Math::Vec2i32;
 
 	// Represents invalid mouse position. Used as a default value for last position registered.
-	inline constexpr MouseCursorPos CX_EVENT_MOUSE_POS_INVALID {Cppx::cxInt32Max, Cppx::cxInt32Max };
+	inline constexpr MouseCursorPos CX_EVENT_MOUSE_POS_INVALID {cppx::cve::int32_max, cppx::cve::int32_max };
 
 	enum EMouseButtonFlagBits : uint32
 	{
@@ -49,60 +49,60 @@ namespace Ic3::System
 	struct EvtSharedInputMouseState
 	{
 		// Last cursor position registered by the event system.
-		MouseCursorPos mLastCursorPos = CX_EVENT_MOUSE_POS_INVALID;
+		MouseCursorPos lastCursorPos = CX_EVENT_MOUSE_POS_INVALID;
 
 		// Last mouse button pressed. Used to detect multi-click sequences.
-		EMouseButtonID mLastPressButtonID = EMouseButtonID::Unknown;
+		EMouseButtonID lastPressButtonID = EMouseButtonID::Unknown;
 
 		// Timestamp of last registered mouse button press.
-		perf_counter_value_t mLastPressTimestamp = 0u;
+		perf_counter_value_t lastPressTimestamp = 0u;
 
 		// Current sequence length, i.e. number of clicks of the same button in a row.
-		uint32 mCurrentMultiClickSequenceLength = 1;
+		uint32 currentMultiClickSequenceLength = 1;
 
-        TBitmask<EMouseButtonFlagBits> mButtonStateMask = 0;
+        cppx::bitmask<EMouseButtonFlagBits> buttonStateMask = 0;
 	};
 
 	struct EvtInputMouse : public EvtInput
 	{
-		TBitmask<EMouseButtonFlagBits> mButtonStateMask;
+		cppx::bitmask<EMouseButtonFlagBits> buttonStateMask;
 
-		Math::Vec2i32 mCursorPos;
+		Math::Vec2i32 cursorPos;
 
-		Math::Vec2i32 mCursorPosWindowRelative;
+		Math::Vec2i32 cursorPosWindowRelative;
 
-		const EvtSharedInputMouseState * mInputMouseState;
+		const EvtSharedInputMouseState * inputMouseState;
 	};
 
 	struct EvtInputMouseButton : public EvtInputMouse
 	{
 		//
-		EMouseButtonActionType mButtonAction;
+		EMouseButtonActionType buttonAction;
 
 		//
-		EMouseButtonID mButtonID;
+		EMouseButtonID buttonID;
 	};
 
 	struct EvtInputMouseMove : public EvtInputMouse
 	{
 		//
-		Math::Vec2i32 mMovementDelta;
+		Math::Vec2i32 movementDelta;
 	};
 
 	struct EvtInputMouseScroll : public EvtInputMouse
 	{
 		//
-		Math::Vec2d mScrollDelta;
+		Math::Vec2d scrollDelta;
 
 		//
-		EMouseScrollDirection mScrollDirection;
+		EMouseScrollDirection scrollDirection;
 	};
 
 
 	namespace CxDef
 	{
 
-		inline constexpr EMouseButtonFlagBits getMouseButtonFlagFromButtonID( EMouseButtonID pButtonID )
+		inline constexpr EMouseButtonFlagBits GetMouseButtonFlagFromButtonID( EMouseButtonID pButtonID )
 		{
 			return static_cast<EMouseButtonFlagBits>( static_cast<uint32>( pButtonID ) & eMouseButtonMaskAll );
 		}

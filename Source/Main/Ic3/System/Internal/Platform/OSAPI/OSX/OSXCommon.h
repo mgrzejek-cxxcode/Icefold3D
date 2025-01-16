@@ -3,7 +3,7 @@
 #define __IC3_SYSTEM_PLATFORM_OSAPI_OSX_COMMON_H__
 
 #include <Ic3/System/Prerequisites.h>
-#include <Ic3/Cppx/BitmaskAtomic.h>
+#include <cppx/bitmaskAtomic.h>
 
 #import <AppKit/NSApplication.h>
 #import <CoreGraphics/CGError.h>
@@ -24,25 +24,25 @@ namespace Ic3::System
 
 		struct OSXSharedData
 		{
-			Cppx::TAtomicBitmask<EOSXCommonStateFlags> mStateFlags = 0u;
+			cppx::atomic_bitmask<EOSXCommonStateFlags> stateFlags = 0u;
 		};
 
 		struct OSXNativeDataCommon
 		{
 		public:
-			void setSharedData( OSXSharedData & pSharedData )
+			void SetSharedData( OSXSharedData & pSharedData )
 			{
 				ic3DebugAssert( _osxSharedDataPtr == nullptr );
 				_osxSharedDataPtr = &pSharedData;
 			}
 
-			void resetSharedData()
+			void ResetSharedData()
 			{
 				ic3DebugAssert( _osxSharedDataPtr != nullptr );
 				_osxSharedDataPtr = nullptr;
 			}
 
-			IC3_ATTR_NO_DISCARD OSXSharedData & getSharedData() const
+			CPPX_ATTR_NO_DISCARD OSXSharedData & GetSharedData() const
 			{
 				ic3DebugAssert( _osxSharedDataPtr != nullptr );
 				return *_osxSharedDataPtr;
@@ -52,28 +52,28 @@ namespace Ic3::System
 			OSXSharedData * _osxSharedDataPtr = nullptr;
 		};
 
-		IC3_SYSTEM_API_NODISCARD OSXSharedData & osxGetOSXSharedData( SysContext & pSysContext );
+		IC3_SYSTEM_API_NODISCARD OSXSharedData & OSXGetOSXSharedData( SysContext & pSysContext );
 
-		IC3_SYSTEM_API_NODISCARD OSXSharedData & osxGetOSXSharedData( OSXSysContext & pSysContext );
+		IC3_SYSTEM_API_NODISCARD OSXSharedData & OSXGetOSXSharedData( OSXSysContext & pSysContext );
 
-		IC3_SYSTEM_API_NODISCARD inline OSXSharedData & osxGetOSXSharedData( const OSXNativeDataCommon & pNativeData )
+		IC3_SYSTEM_API_NODISCARD inline OSXSharedData & OSXGetOSXSharedData( const OSXNativeDataCommon & pNativeData )
 		{
-			return pNativeData.getSharedData();
+			return pNativeData.GetSharedData();
 		}
 
 		template <typename TBaseType, typename TNativeData>
-		IC3_SYSTEM_API_NODISCARD inline OSXSharedData & osxGetOSXSharedData( const NativeObject<TBaseType, TNativeData> & pNativeObject )
+		IC3_SYSTEM_API_NODISCARD inline OSXSharedData & OSXGetOSXSharedData( const NativeObject<TBaseType, TNativeData> & pNativeObject )
 		{
-			return osxGetOSXSharedData( static_cast<OSXNativeDataCommon>( pNativeObject.mNativeData ) );
+			return OSXGetOSXSharedData( static_cast<OSXNativeDataCommon>( pNativeObject.mNativeData ) );
 		}
 
-		IC3_SYSTEM_API_NODISCARD bool osxCheckAppKitFrameworkVersion( NSAppKitVersion pRequiredVersion );
+		IC3_SYSTEM_API_NODISCARD bool OSXCheckAppKitFrameworkVersion( NSAppKitVersion pRequiredVersion );
 
-		IC3_SYSTEM_API_NODISCARD const char * osxQueryCGErrorMessage( CGError pCGError );
+		IC3_SYSTEM_API_NODISCARD const char * OSXQueryCGErrorMessage( CGError pCGError );
 
-		bool osxNibLoadMenuNibFile();
+		bool OSXNibLoadMenuNibFile();
 
-		void osxNibCreateDefaultApplicationMenu();
+		void OSXNibCreateDefaultApplicationMenu();
 
 	}
 
@@ -86,26 +86,26 @@ namespace Ic3::System
 		explicit OSXNativeObject( SysContextHandle pSysContext, TBaseTypeArgs && ...pBaseTypeArgs )
 		: NativeObject<TBaseType, TNativeData>( pSysContext, std::forward<TBaseTypeArgs>( pBaseTypeArgs )... )
 		{
-			this->mNativeData.setSharedData( Platform::osxGetOSXSharedData( *pSysContext ) );
+			this->mNativeData.SetSharedData( Platform::OSXGetOSXSharedData( *pSysContext ) );
 		}
 
 		template <typename TParentSysObject, typename... TBaseTypeArgs>
 		explicit OSXNativeObject( TParentSysObject & pParentSysObject, TBaseTypeArgs && ...pBaseTypeArgs )
 		: NativeObject<TBaseType, TNativeData>( pParentSysObject, std::forward<TBaseTypeArgs>( pBaseTypeArgs )... )
 		{
-			this->mNativeData.setSharedData( Platform::osxGetOSXSharedData( pParentSysObject ) );
+			this->mNativeData.SetSharedData( Platform::OSXGetOSXSharedData( pParentSysObject ) );
 		}
 
 		template <typename TParentSysObject, typename... TBaseTypeArgs>
 		explicit OSXNativeObject( TSysHandle<TParentSysObject> pParentSysObject, TBaseTypeArgs && ...pBaseTypeArgs )
 		: NativeObject<TBaseType, TNativeData>( pParentSysObject, std::forward<TBaseTypeArgs>( pBaseTypeArgs )... )
 		{
-			this->mNativeData.setSharedData( Platform::osxGetOSXSharedData( *pParentSysObject ) );
+			this->mNativeData.SetSharedData( Platform::OSXGetOSXSharedData( *pParentSysObject ) );
 		}
 
 		virtual ~OSXNativeObject()
 		{
-			this->mNativeData.resetSharedData();
+			this->mNativeData.ResetSharedData();
 		}
 	};
 

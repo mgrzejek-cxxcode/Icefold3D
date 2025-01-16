@@ -7,9 +7,9 @@ namespace Ic3::System
     namespace Platform
     {
 
-        MTLPixelFormat mtlChoosePixelFormatForVisualConfig( const VisualConfig & pVisualConfig )
+        MTLPixelFormat MTAChoosePixelFormatForVisualConfig( const VisualConfig & pVisualConfig )
         {
-            switch( pVisualConfig.mColorFormat )
+            switch( pVisualConfig.colorFormat )
             {
                 ic3CaseReturn( EColorFormat::B8G8R8,       MTLPixelFormatBGRA8Unorm );
                 ic3CaseReturn( EColorFormat::B8G8R8A8,     MTLPixelFormatBGRA8Unorm );

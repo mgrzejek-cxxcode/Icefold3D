@@ -2,22 +2,22 @@
 #include "OSXDisplaySystem.h"
 #include <CoreGraphics/CGDisplayConfiguration.h>
 
-#if( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_OSX )
+#if( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_OSX )
 namespace Ic3::System
 {
 
 	OSXDisplayManager::OSXDisplayManager( SysContextHandle pSysContext )
 	: OSXNativeObject( std::move( pSysContext ) )
 	{
-		_initializeOSXDisplayManagerState();
+		_InitializeOSXDisplayManagerState();
 	}
 
 	OSXDisplayManager::~OSXDisplayManager() noexcept
 	{
-		_releaseOSXDisplayManagerState();
+		_ReleaseOSXDisplayManagerState();
 	}
 
-	void OSXDisplayManager::_initializeOSXDisplayManagerState()
+	void OSXDisplayManager::_InitializeOSXDisplayManagerState()
 	{
 		CGDisplayCount activeDisplaysNum = 0u;
 		auto cgResult = ::CGGetActiveDisplayList( 0, nullptr, &activeDisplaysNum );
@@ -63,37 +63,37 @@ namespace Ic3::System
 		mNativeData.mCGMainDisplayID = mainDisplayID;
 	}
 	
-	void OSXDisplayManager::_releaseOSXDisplayManagerState()
+	void OSXDisplayManager::_ReleaseOSXDisplayManagerState()
 	{}
 
-	DisplayDriverHandle OSXDisplayManager::_nativeCreateDisplayDriver()
+	DisplayDriverHandle OSXDisplayManager::_NativeCreateDisplayDriver()
 	{
-		return createSysObject<OSXDisplayDriver>( getHandle<OSXDisplayManager>() );
+		return CreateSysObject<OSXDisplayDriver>( GetHandle<OSXDisplayManager>() );
 	}
 
-	void OSXDisplayManager::_nativeQueryDefaultDisplayOffset( DisplayOffset & pOutOffset ) const
-	{
-		if( mNativeData.mCGMainDisplayID == kCGNullDirectDisplay )
-		{
-			throw 0;
-		}
-
-		const auto screenBounds = Platform::osxQueryDisplayRect( mNativeData.mCGMainDisplayID );
-
-		pOutOffset = screenBounds.mOffset;
-	}
-
-	void OSXDisplayManager::_nativeQueryDefaultDisplaySize( DisplaySize & pOutSize ) const
+	void OSXDisplayManager::_NativeQueryDefaultDisplayOffset( DisplayOffset & pOutOffset ) const
 	{
 		if( mNativeData.mCGMainDisplayID == kCGNullDirectDisplay )
 		{
 			throw 0;
 		}
 
-		pOutSize = Platform::osxQueryDisplaySize( mNativeData.mCGMainDisplayID );
+		const auto screenBounds = Platform::OSXQueryDisplayRect( mNativeData.mCGMainDisplayID );
+
+		pOutOffset = screenBounds.offset;
 	}
 
-	void OSXDisplayManager::_nativeQueryMinWindowSize( DisplaySize & pOutSize ) const
+	void OSXDisplayManager::_NativeQueryDefaultDisplaySize( DisplaySize & pOutSize ) const
+	{
+		if( mNativeData.mCGMainDisplayID == kCGNullDirectDisplay )
+		{
+			throw 0;
+		}
+
+		pOutSize = Platform::OSXQueryDisplaySize( mNativeData.mCGMainDisplayID );
+	}
+
+	void OSXDisplayManager::_NativeQueryMinWindowSize( DisplaySize & pOutSize ) const
 	{
 		pOutSize.x = 1;
 		pOutSize.y = 1;
@@ -106,13 +106,13 @@ namespace Ic3::System
 
 	OSXDisplayDriver::~OSXDisplayDriver() noexcept = default;
 
-	void OSXDisplayDriver::_nativeEnumDisplayDevices()
+	void OSXDisplayDriver::_NativeEnumDisplayDevices()
 	{}
 
-	void OSXDisplayDriver::_nativeEnumVideoModes( DisplayOutput & pOutput, EColorFormat pColorFormat )
+	void OSXDisplayDriver::_NativeEnumVideoModes( DisplayOutput & pOutput, EColorFormat pColorFormat )
 	{}
 
-	EColorFormat OSXDisplayDriver::_nativeQueryDefaultSystemColorFormat() const
+	EColorFormat OSXDisplayDriver::_NativeQueryDefaultSystemColorFormat() const
 	{
 		return EColorFormat::B8G8R8A8;
 	}
@@ -121,22 +121,22 @@ namespace Ic3::System
 	namespace Platform
 	{
 
-		ScreenRect osxQueryDisplayRect( CGDirectDisplayID pCGDisplayID )
+		ScreenRect OSXQueryDisplayRect( CGDirectDisplayID pCGDisplayID )
 		{
 			ic3DebugAssert( pCGDisplayID != kCGNullDirectDisplay );
 
 			const auto cgDisplayRect = ::CGDisplayBounds( pCGDisplayID );
 
 			ScreenRect displayRect{};
-			displayRect.mOffset.x = static_cast<int32>( cgDisplayRect.origin.x );
-			displayRect.mOffset.y = static_cast<int32>( cgDisplayRect.origin.y );
-			displayRect.mSize.x = static_cast<int32>( cgDisplayRect.size.width );
-			displayRect.mSize.y = static_cast<int32>( cgDisplayRect.size.height );
+			displayRect.offset.x = static_cast<int32>( cgDisplayRect.origin.x );
+			displayRect.offset.y = static_cast<int32>( cgDisplayRect.origin.y );
+			displayRect.size.x = static_cast<int32>( cgDisplayRect.size.width );
+			displayRect.size.y = static_cast<int32>( cgDisplayRect.size.height );
 
 			return displayRect;
 		}
 
-		DisplaySize osxQueryDisplaySize( CGDirectDisplayID pCGDisplayID )
+		DisplaySize OSXQueryDisplaySize( CGDirectDisplayID pCGDisplayID )
 		{
 			ic3DebugAssert( pCGDisplayID != kCGNullDirectDisplay );
 
@@ -152,4 +152,4 @@ namespace Ic3::System
 	}
 
 } // namespace Ic3::System
-#endif // IC3_PCL_TARGET_SYSAPI_OSX
+#endif // PCL_TARGET_SYSAPI_OSX

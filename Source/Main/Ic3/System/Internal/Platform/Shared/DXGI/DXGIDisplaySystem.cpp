@@ -1,8 +1,8 @@
 
 #include "DXGIDisplaySystem.h"
 #include <Ic3/System/Internal/DisplaySystemPrivate.h>
-#include <Ic3/Cppx/STLHelperAlgo.h>
-#include <Ic3/Cppx/StringUtils.h>
+#include <cppx/stdHelperAlgo.h>
+#include <cppx/stringUtils.h>
 
 #if( IC3_SYSTEM_DSM_DRIVER_TYPE_SUPPORT_DXGI )
 namespace Ic3::System
@@ -19,19 +19,19 @@ namespace Ic3::System
 	DisplayDriverDXGI::DisplayDriverDXGI( DisplayManagerHandle pDisplayManager )
 	: NativeObject( std::move( pDisplayManager ), EDisplayDriverType::DXGI )
 	{
-		_initializeDXGIDriverState();
+		_InitializeDXGIDriverState();
 	}
 
 	DisplayDriverDXGI::~DisplayDriverDXGI() noexcept
 	{
-		_releaseDXGIDriverState();
+		_ReleaseDXGIDriverState();
 	}
 
-	void DisplayDriverDXGI::_initializeDXGIDriverState()
+	void DisplayDriverDXGI::_InitializeDXGIDriverState()
 	{
 		if( mNativeData.dxgiFactory == nullptr )
 		{
-			TBitmask<UINT> dxgiFactoryCreateFlags = 0;
+			cppx::bitmask<UINT> dxgiFactoryCreateFlags = 0;
 		#if( IC3_DEBUG )
 			dxgiFactoryCreateFlags.set( DXGI_CREATE_FACTORY_DEBUG );
 		#endif
@@ -50,7 +50,7 @@ namespace Ic3::System
 
 				if( FAILED( hResult ) )
 				{
-					ic3Throw( E_EXC_DEBUG_PLACEHOLDER );
+					ic3Throw( eExcCodeDebugPlaceholder );
 				}
 
 				mNativeData.dxgiFactory = dxgiFactory1;
@@ -58,12 +58,12 @@ namespace Ic3::System
 		}
 	}
 
-	void DisplayDriverDXGI::_releaseDXGIDriverState() noexcept
+	void DisplayDriverDXGI::_ReleaseDXGIDriverState() noexcept
 	{}
 
-	void DisplayDriverDXGI::_enumAdapterOutputs( DisplayAdapter & pAdapter )
+	void DisplayDriverDXGI::_EnumAdapterOutputs( DisplayAdapter & pAdapter )
 	{
-		auto * adapterDXGI = pAdapter.queryInterface<DisplayAdapterDXGI>();
+		auto * adapterDXGI = pAdapter.QueryInterface<DisplayAdapterDXGI>();
 
 		auto * dxgiAdapterInterface = adapterDXGI->mNativeData.dxgiAdapter.Get();
 
@@ -83,7 +83,7 @@ namespace Ic3::System
 			// https://docs.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgiadapter-enumoutputs
 			if( FAILED( hResult ) )
 			{
-				ic3Throw( E_EXC_DEBUG_PLACEHOLDER );
+				ic3Throw( eExcCodeDebugPlaceholder );
 			}
 
 			ComPtr<IDXGIOutput1> dxgiOutput1;
@@ -92,7 +92,7 @@ namespace Ic3::System
 			// We require support for the DXGI version 1.1 (Windows 7 and newer). Required for DXGI_ADAPTER_FLAG member.
 			if( FAILED( hResult ) )
 			{
-				ic3Throw( E_EXC_DEBUG_PLACEHOLDER );
+				ic3Throw( eExcCodeDebugPlaceholder );
 			}
 
 			DXGI_OUTPUT_DESC dxgiOutputDesc;
@@ -100,15 +100,15 @@ namespace Ic3::System
 
 			if( FAILED( hResult ) )
 			{
-				ic3Throw( E_EXC_DEBUG_PLACEHOLDER );
+				ic3Throw( eExcCodeDebugPlaceholder );
 			}
 
-			auto outputObject = createOutput<DisplayOutputDXGI>( *adapterDXGI );
+			auto outputObject = CreateOutput<DisplayOutputDXGI>( *adapterDXGI );
 			outputObject->mNativeData.dxgiOutput = dxgiOutput1;
 			outputObject->mNativeData.dxgiOutputDesc = dxgiOutputDesc;
 			
-			auto & outputDesc = getOutputDescInternal( *outputObject );
-			outputDesc.name = strUtils::convertStringRepresentation<char>( dxgiOutputDesc.DeviceName );
+			auto & outputDesc = GetOutputDescInternal( *outputObject );
+			outputDesc.name = strutil::convert_string_representation<char>( dxgiOutputDesc.DeviceName );
 			outputDesc.screenRect.offset.x = dxgiOutputDesc.DesktopCoordinates.left;
 			outputDesc.screenRect.offset.y = dxgiOutputDesc.DesktopCoordinates.top;
 			outputDesc.screenRect.size.x = dxgiOutputDesc.DesktopCoordinates.right - dxgiOutputDesc.DesktopCoordinates.left;
@@ -116,7 +116,7 @@ namespace Ic3::System
 
 			if( dxgiOutputDesc.AttachedToDesktop )
 			{
-				outputDesc.flags.set( E_DISPLAY_OUTPUT_FLAG_ACTIVEBit );
+				outputDesc.flags.set( E_DISPLAY_OUTPUT_FLAG_ACTIVE_BIT );
 			}
 
 			if( dxgiOutputDesc.Monitor )
@@ -129,16 +129,16 @@ namespace Ic3::System
 
 				if( ::GetMonitorInfoA( dxgiOutputDesc.Monitor, &gdiMonitorInfo ) != FALSE )
 				{
-					if( makeBitmask( gdiMonitorInfo.dwFlags ).isSet( MONITORINFOF_PRIMARY ) )
+					if( make_bitmask( gdiMonitorInfo.dwFlags ).is_set( MONITORINFOF_PRIMARY ) )
 					{
-						outputDesc.flags.set( E_DISPLAY_OUTPUT_FLAG_PRIMARYBit );
+						outputDesc.flags.set( E_DISPLAY_OUTPUT_FLAG_PRIMARY_BIT );
 					}
 				}
 			}
 		}
 	}
 
-	void DisplayDriverDXGI::_nativeEnumDisplayDevices()
+	void DisplayDriverDXGI::_NativeEnumDisplayDevices()
 	{
 		auto * dxgiFactory =  mNativeData.dxgiFactory.Get();
 
@@ -159,7 +159,7 @@ namespace Ic3::System
 			// https://docs.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgifactory1-enumadapters1
 			if( FAILED( hResult ) )
 			{
-				ic3Throw( E_EXC_DEBUG_PLACEHOLDER );
+				ic3Throw( eExcCodeDebugPlaceholder );
 			}
 
 			DXGI_ADAPTER_DESC1 dxgiAdapterDesc;
@@ -169,39 +169,39 @@ namespace Ic3::System
 			// https://docs.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgiadapter1-getdesc1
 			if( FAILED( hResult ) )
 			{
-				ic3Throw( E_EXC_DEBUG_PLACEHOLDER );
+				ic3Throw( eExcCodeDebugPlaceholder );
 			}
 
-			auto adapterObject = createAdapter<DisplayAdapterDXGI>( *this );
+			auto adapterObject = CreateAdapter<DisplayAdapterDXGI>( *this );
 			adapterObject->mNativeData.dxgiAdapter = dxgiAdapter;
 			adapterObject->mNativeData.dxgiAdapterDesc = dxgiAdapterDesc;
 			
-			auto & adapterDesc = getAdapterDescInternal( *adapterObject );
-			adapterDesc.name = strUtils::convertStringRepresentation<char>( dxgiAdapterDesc.Description );
-			adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_ACTIVEBit );
+			auto & adapterDesc = GetAdapterDescInternal( *adapterObject );
+			adapterDesc.name = strutil::convert_string_representation<char>( dxgiAdapterDesc.Description );
+			adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_ACTIVE_BIT );
 
 			if( adapterIndex == 0 )
 			{
-				adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_PRIMARYBit );
+				adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_PRIMARY_BIT );
 			}
 
-			auto dxgiAdapterFlags = makeBitmask( dxgiAdapterDesc.Flags );
-			if( dxgiAdapterFlags.isSet( DXGI_ADAPTER_FLAG_SOFTWARE ) )
+			auto dxgiAdapterFlags = make_bitmask( dxgiAdapterDesc.Flags );
+			if( dxgiAdapterFlags.is_set( DXGI_ADAPTER_FLAG_SOFTWARE ) )
 			{
-				adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_SOFTWAREBit );
+				adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_SOFTWARE_BIT );
 			}
-			else if( !dxgiAdapterFlags.isSet( DXGI_ADAPTER_FLAG_REMOTE ) )
+			else if( !dxgiAdapterFlags.is_set( DXGI_ADAPTER_FLAG_REMOTE ) )
 			{
-				adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_HARDWAREBit );
+				adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_HARDWARE_BIT );
 			}
 
-			_enumAdapterOutputs( *adapterObject );
+			_EnumAdapterOutputs( *adapterObject );
 		}
 	}
 
-	void DisplayDriverDXGI::_nativeEnumVideoModes( DisplayOutput & pOutput, EColorFormat pColorFormat )
+	void DisplayDriverDXGI::_NativeEnumVideoModes( DisplayOutput & pOutput, EColorFormat pColorFormat )
 	{
-		auto * outputDXGI = pOutput.queryInterface<DisplayOutputDXGI>();
+		auto * outputDXGI = pOutput.QueryInterface<DisplayOutputDXGI>();
 
 		auto * dxgiOutputInterface = outputDXGI->mNativeData.dxgiOutput.Get();
 
@@ -209,12 +209,12 @@ namespace Ic3::System
 		// is known to the DXGI translation function. We had an issue with 'SystemNative' format,
 		// but this has been resolved by proxy function inside DisplayOutput::PrivateData struct.
 		// If there is a case the call below fails, make sure this function is ALWAYS called with
-		// a "resolved" color format (look for 'dsmResolveSystemColorFormat').
+		// a "resolved" color format (look for 'DSMResolveSystemColorFormat').
 		auto dxgiFormat = Platform::_dxgiTranslateColorFormatToDXGIFormat( pColorFormat );
 
 		if( dxgiFormat == DXGI_FORMAT_UNKNOWN )
 		{
-			ic3Throw( E_EXC_DEBUG_PLACEHOLDER );
+			ic3Throw( eExcCodeDebugPlaceholder );
 		}
 
 		UINT displayModesNum = 0;
@@ -223,7 +223,7 @@ namespace Ic3::System
 
 		if( FAILED( hResult ) )
 		{
-			ic3Throw( E_EXC_DEBUG_PLACEHOLDER );
+			ic3Throw( eExcCodeDebugPlaceholder );
 		}
 
 		std::vector<DXGI_MODE_DESC> dxgiModeList;
@@ -235,7 +235,7 @@ namespace Ic3::System
 
 		if( FAILED( hResult ) )
 		{
-			ic3Throw( E_EXC_DEBUG_PLACEHOLDER );
+			ic3Throw( eExcCodeDebugPlaceholder );
 		}
 
 		// We use hash-based comparison to filter out the same modes - at our level, we are only interested
@@ -252,27 +252,27 @@ namespace Ic3::System
 
 			if( dxgiDisplayModeDesc.ScanlineOrdering == DXGI_MODE_SCANLINE_ORDER_PROGRESSIVE )
 			{
-				videoSettings.flags.set( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_PROGRESSIVEBit );
+				videoSettings.flags.set( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_PROGRESSIVE_BIT );
 			}
 			else if( dxgiDisplayModeDesc.ScanlineOrdering == DXGI_MODE_SCANLINE_ORDER_LOWER_FIELD_FIRST )
 			{
-				videoSettings.flags.set( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_INTERLACEDBit );
+				videoSettings.flags.set( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_INTERLACED_BIT );
 			}
 			else if( dxgiDisplayModeDesc.ScanlineOrdering == DXGI_MODE_SCANLINE_ORDER_UPPER_FIELD_FIRST )
 			{
-				videoSettings.flags.set( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_INTERLACEDBit );
+				videoSettings.flags.set( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_INTERLACED_BIT );
 			}
 
-			auto settingsHash = dsmComputeVideoSettingsHash( pColorFormat, videoSettings );
+			auto settingsHash = DSMComputeVideoSettingsHash( pColorFormat, videoSettings );
 			if( settingsHash == lastSettingsHash )
 			{
 				continue;
 			}
 
-			auto videoModeObject = createVideoMode<DisplayVideoModeDXGI>( *outputDXGI, pColorFormat );
+			auto videoModeObject = CreateVideoMode<DisplayVideoModeDXGI>( *outputDXGI, pColorFormat );
 			videoModeObject->mNativeData.dxgiModeDesc = dxgiDisplayModeDesc;
 			
-			auto & videoModeDesc = getVideoModeDescInternal( *videoModeObject );
+			auto & videoModeDesc = GetVideoModeDescInternal( *videoModeObject );
 			videoModeDesc.settings = videoSettings;
 			videoModeDesc.settingsHash = settingsHash;
 
@@ -280,7 +280,7 @@ namespace Ic3::System
 		}
 	}
 
-	EColorFormat DisplayDriverDXGI::_nativeQueryDefaultSystemColorFormat() const
+	EColorFormat DisplayDriverDXGI::_NativeQueryDefaultSystemColorFormat() const
 	{
 		return EColorFormat::B8G8R8A8;
 	}
@@ -301,7 +301,7 @@ namespace Ic3::System
 				{ EColorFormat::R8G8B8X8	 , DXGI_FORMAT_UNKNOWN			 },
 				{ EColorFormat::R10G10B10A2  , DXGI_FORMAT_R10G10B10A2_UNORM   },
 			};
-			return Cppx::getMapValueRefOrDefault( colorDescMap, pColorFormat, DXGI_FORMAT_UNKNOWN );
+			return cppx::get_map_value_ref_or_default( colorDescMap, pColorFormat, DXGI_FORMAT_UNKNOWN );
 		}
 
 	}

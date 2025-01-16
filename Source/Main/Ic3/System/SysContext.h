@@ -28,12 +28,12 @@ namespace Ic3::System
 
 	struct AssetLoaderCreateInfo
 	{
-		Platform::AssetLoaderCreateInfoNativeParams * mNativeParams = nullptr;
+		Platform::AssetLoaderCreateInfoNativeParams * nativeParams = nullptr;
 	};
 
 	struct SysContextCreateInfo
 	{
-		Platform::SysContextCreateInfoNativeParams * mNativeParams = nullptr;
+		Platform::SysContextCreateInfoNativeParams * nativeParams = nullptr;
 	};
 
 	/// @brief
@@ -43,26 +43,27 @@ namespace Ic3::System
 		SysContext();
 		virtual ~SysContext() noexcept;
 
-		virtual AssetLoaderHandle createAssetLoader( const AssetLoaderCreateInfo & pCreateInfo ) = 0;
+		virtual AssetLoaderHandle CreateAssetLoader( const AssetLoaderCreateInfo & pCreateInfo ) = 0;
 
-		virtual DisplayManagerHandle createDisplayManager() = 0;
+		virtual DisplayManagerHandle CreateDisplayManager() = 0;
 
-		virtual EventControllerHandle createEventController() = 0;
+		virtual EventControllerHandle CreateEventController() = 0;
 
-		virtual FileManagerHandle createFileManager() = 0;
+		virtual FileManagerHandle CreateFileManager() = 0;
 
-		virtual MetalSystemDriverHandle createMetalSystemDriver( DisplayManagerHandle pDisplayManager,
-																 const MetalSystemDriverCreateInfo & pCreateInfo );
+		virtual MetalSystemDriverHandle CreateMetalSystemDriver(
+				DisplayManagerHandle pDisplayManager,
+				const MetalSystemDriverCreateInfo & pCreateInfo );
 
-		virtual OpenGLSystemDriverHandle createOpenGLSystemDriver( DisplayManagerHandle pDisplayManager );
+		virtual OpenGLSystemDriverHandle CreateOpenGLSystemDriver( DisplayManagerHandle pDisplayManager );
 
-		virtual WindowManagerHandle createWindowManager( DisplayManagerHandle pDisplayManager ) = 0;
+		virtual WindowManagerHandle CreateWindowManager( DisplayManagerHandle pDisplayManager ) = 0;
 
-		virtual std::string queryCurrentProcessWorkingDirectory() const = 0;
+		virtual std::string QueryCurrentProcessWorkingDirectory() const = 0;
 
-		virtual std::string queryCurrentProcessExecutableFilePath() const = 0;
+		virtual std::string QueryCurrentProcessExecutableFilePath() const = 0;
 
-		std::string queryCurrentProcessExecutableDirectory() const;
+		std::string QueryCurrentProcessExecutableDirectory() const;
 	};
 
 	namespace Platform
@@ -70,7 +71,7 @@ namespace Ic3::System
 
 		/// @brief Creates a new SysContext instance and returns the handle.
 		/// @param pCreateInfo
-		IC3_SYSTEM_API_NODISCARD SysContextHandle createSysContext( const SysContextCreateInfo & pCreateInfo );
+		IC3_SYSTEM_API_NODISCARD SysContextHandle CreateSysContext( const SysContextCreateInfo & pCreateInfo );
 
 	}
 

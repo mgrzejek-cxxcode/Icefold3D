@@ -10,20 +10,20 @@ namespace Ic3::System
 
 	SysObject::~SysObject() = default;
 
-	bool SysObject::destroySystemObject()
+	bool SysObject::DestroySystemObject()
 	{
-		if( setDestroyRequestFlag() )
+		if( SetDestroyRequestFlag() )
 		{
-			onDestroySystemObjectRequested();
+			OnDestroySystemObjectRequested();
 
-			setStateFlags( true, eSysObjectStateFlagDestroyRequestProcessedBit );
+			SetStateFlags( true, eSysObjectStateFlagDestroyRequestProcessedBit );
 
 			return true;
 		}
 		return false;
 	}
 
-	void SysObject::onDestroySystemObjectRequested()
+	void SysObject::OnDestroySystemObjectRequested()
 	{}
 
 } // namespace Ic3::System

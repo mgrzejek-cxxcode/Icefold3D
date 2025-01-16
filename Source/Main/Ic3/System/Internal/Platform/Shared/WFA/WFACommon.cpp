@@ -3,14 +3,14 @@
 #include "MSECommon.h"
 #include <comdef.h>
 
-#if( IC3_PCL_TARGET_OS & IC3_PCL_TARGET_FLAG_OS_MSE )
+#if( PCL_TARGET_OS & PCL_TARGET_FLAG_OS_MSE )
 namespace Ic3::System
 {
 
 	namespace Platform
 	{
 
-		std::string mseQueryCOMErrorMessage( HRESULT pHResult )
+		std::string WFAQueryComErrorMessage( HRESULT pHResult )
 		{
 			_com_error comError{ pHResult };
 			_bstr_t comErrorString{ comError.ErrorMessage() };
@@ -25,7 +25,7 @@ namespace Ic3::System
 			return errorMessage;
 		}
 
-		std::string mseQuerySystemErrorMessage( DWORD pErrorCode )
+		std::string WFAQuerySystemErrorMessage( DWORD pErrorCode )
 		{
 			char * messagePtr = nullptr;
 

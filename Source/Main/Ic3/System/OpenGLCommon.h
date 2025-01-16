@@ -14,7 +14,7 @@
 /// @def IC3_SYSTEM_GL_PLATFORM_TYPE
 /// @brief Defined as either IC3_SYSTEM_GL_PLATFORM_TYPE_DESKTOP or IC3_SYSTEM_GL_PLATFORM_TYPE_ES, depending on the target platform.
 
-#if( IC3_PCL_TARGET_OS & IC3_PCL_TARGET_FLAG_OS_DESKTOP )
+#if( PCL_TARGET_OS & PCL_TARGET_FLAG_OS_DESKTOP )
 #  define IC3_SYSTEM_GL_PLATFORM_TYPE IC3_SYSTEM_GL_PLATFORM_TYPE_DESKTOP
 #  include <GL/glew.h>
 #else
@@ -100,22 +100,22 @@ namespace Ic3::System
 		eEXCSystemOpenGLAPIProfileNotSupported = Ic3::CxDef::declareExceptionCode( eExceptionCategorySystemOpenGL, 0x04 ),
 	};
 
-	inline constexpr Version cxGLVersionBestSupported{Cppx::cxUint16Max, Cppx::cxUint16Max };
+	inline constexpr cppx::version cxGLVersionBestSupported{cppx::cve::uint16_max, cppx::cve::uint16_max };
 
-	inline constexpr Version cxGLVersionUnknown{0, 0 };
+	inline constexpr cppx::version cxGLVersionUnknown{0, 0 };
 
-	inline constexpr Version cxGLVersionMaxDesktop{4, 6 };
+	inline constexpr cppx::version cxGLVersionMaxDesktop{4, 6 };
 
-	inline constexpr Version cxGLVersionMaxES{3, 2 };
+	inline constexpr cppx::version cxGLVersionMaxES{3, 2 };
 
 	/// @brief
 	struct OpenGLVersionSupportInfo
 	{
-		EOpenGLAPIClass mAPIClass;
+		EOpenGLAPIClass apiClass;
 
-		EOpenGLAPIProfile mAPIProfile;
+		EOpenGLAPIProfile apiProfile;
 
-		Version mAPIVersion;
+		cppx::version apiVersion;
 	};
 
 	/// @brief Represents combined info about the current OpenGL subsystem version.
@@ -124,22 +124,22 @@ namespace Ic3::System
 	{
 	public:
 		// Numeric version of the GL (GL_VERSION_MAJOR.GL_VERSION_MINOR)
-		Version mAPIVersion;
+		cppx::version apiVersion;
 
 		// Text version of the GL (GL_VERSION)
-		std::string mAPIVersionStr;
+		std::string apiVersionStr;
 
 		// Text version of the GLSL (GL_SHADING_LANGUAGE_VERSION)
-		std::string mGLSLVersionStr;
+		std::string glslVersionStr;
 
 		// Name of the renderer (GL_RENDERER_NAME)
-		std::string mRendererName;
+		std::string rendererName;
 
 		// Name of the vendor (GL_VENDOR_NAME)
-		std::string mVendorName;
+		std::string vendorName;
 
 	public:
-		IC3_ATTR_NO_DISCARD	std::string toString() const;
+		CPPX_ATTR_NO_DISCARD	std::string toString() const;
 	};
 
 	struct OpenGLErrorInfo
@@ -147,22 +147,22 @@ namespace Ic3::System
 	public:
 		// The error identifier. It will contain either a common OpenGL error
 		// code (GLenum) or one of the subsystem-specific ones (AGL/EGL/GLX/WGL).
-		uint32 mErrorCode;
+		uint32 errorCode;
 
 		// Message describing the error, if provided. Some errors do not have
 		// descriptions attached, so this can be an empty string in some cases.
-		const char * mErrorString;
+		const char * errorString;
 
 	public:
 		constexpr OpenGLErrorInfo( bool pStatus )
-		: mErrorCode( pStatus ? 0u : Cppx::QLimits<uint32>::sMaxValue )
-		, mErrorString( Ic3::CxDef::STR_CHAR_EMPTY )
+		: errorCode( pStatus ? 0u : cppx::meta::limits<uint32>::max_value )
+		, errorString( Ic3::kStrCharEmpty )
 		{}
 
 		template <typename TGLErrorCode>
 		constexpr OpenGLErrorInfo( TGLErrorCode pErrorCode, const char * pErrorMessage = nullptr )
-		: mErrorCode( numeric_cast<uint32>( pErrorCode ) )
-		, mErrorString( pErrorMessage ? Ic3::CxDef::STR_CHAR_EMPTY : pErrorMessage )
+		: errorCode( numeric_cast<uint32>( pErrorCode ) )
+		, errorString( pErrorMessage ? Ic3::kStrCharEmpty : pErrorMessage )
 		{}
 	};
 
@@ -188,15 +188,15 @@ namespace Ic3::System
 	class OpenGLCoreAPI
 	{
 	public:
-		static Version queryRuntimeVersion();
+		static cppx::version QueryRuntimeVersion();
 
-		static bool checkLastResult();
+		static bool CheckLastResult();
 
-		static bool checkLastError( GLenum pErrorCode );
+		static bool CheckLastError( GLenum pErrorCode );
 
-		static void handleLastError();
+		static void HandleLastError();
 
-		static void resetErrorQueue();
+		static void ResetErrorQueue();
 
 		static const char * translateErrorCode( GLenum pError );
 	};
@@ -204,30 +204,30 @@ namespace Ic3::System
 } // namespace Ic3::System
 
 /// @def ic3OpenGLCheckLastResult
-/// @brief A configuration-dependent macro which expands to either OpenGLCoreAPI::checkLastResult() or an empty statement.
+/// @brief A configuration-dependent macro which expands to either OpenGLCoreAPI::CheckLastResult() or an empty statement.
 /// @see IC3_SYSTEM_GL_ENABLE_ERROR_CHECKS
-/// @see Ic3::System::OpenGLCoreAPI::checkLastResult
+/// @see Ic3::System::OpenGLCoreAPI::CheckLastResult
 
 /// @def ic3OpenGLCheckLastError
-/// @brief A configuration-dependent macro which expands to either OpenGLCoreAPI::checkLastError() or an empty statement.
+/// @brief A configuration-dependent macro which expands to either OpenGLCoreAPI::CheckLastError() or an empty statement.
 /// @see IC3_SYSTEM_GL_ENABLE_ERROR_CHECKS
-/// @see Ic3::System::OpenGLCoreAPI::checkLastError
+/// @see Ic3::System::OpenGLCoreAPI::CheckLastError
 
 /// @def ic3OpenGLHandleLastError
-/// @brief A configuration-dependent macro which expands to either OpenGLCoreAPI::handleLastError() or an empty statement.
+/// @brief A configuration-dependent macro which expands to either OpenGLCoreAPI::HandleLastError() or an empty statement.
 /// @see IC3_SYSTEM_GL_ENABLE_ERROR_CHECKS
-/// @see Ic3::System::OpenGLCoreAPI::handleLastError
+/// @see Ic3::System::OpenGLCoreAPI::HandleLastError
 
 /// @def ic3OpenGLResetErrorQueue
-/// @brief A configuration-dependent macro which expands to either OpenGLCoreAPI::resetErrorQueue() or an empty statement.
+/// @brief A configuration-dependent macro which expands to either OpenGLCoreAPI::ResetErrorQueue() or an empty statement.
 /// @see IC3_SYSTEM_GL_ENABLE_ERROR_CHECKS
-/// @see Ic3::System::OpenGLCoreAPI::resetErrorQueue()
+/// @see Ic3::System::OpenGLCoreAPI::ResetErrorQueue()
 
 #if( IC3_SYSTEM_GL_ENABLE_ERROR_CHECKS )
-#  define ic3OpenGLCheckLastResult()            ::Ic3::System::OpenGLCoreAPI::checkLastResult()
-#  define ic3OpenGLCheckLastError( pErrorCode ) ::Ic3::System::OpenGLCoreAPI::checkLastError( pErrorCode )
-#  define ic3OpenGLHandleLastError()            ::Ic3::System::OpenGLCoreAPI::handleLastError()
-#  define ic3OpenGLResetErrorQueue()            ::Ic3::System::OpenGLCoreAPI::resetErrorQueue()
+#  define ic3OpenGLCheckLastResult()            ::Ic3::System::OpenGLCoreAPI::CheckLastResult()
+#  define ic3OpenGLCheckLastError( pErrorCode ) ::Ic3::System::OpenGLCoreAPI::CheckLastError( pErrorCode )
+#  define ic3OpenGLHandleLastError()            ::Ic3::System::OpenGLCoreAPI::HandleLastError()
+#  define ic3OpenGLResetErrorQueue()            ::Ic3::System::OpenGLCoreAPI::ResetErrorQueue()
 #else
 #  define ic3OpenGLCheckLastResult()
 #  define ic3OpenGLCheckLastError( pErrorCode )

@@ -27,16 +27,16 @@ namespace Ic3::System
 		eOSXModifierKeyMapMaskShiftAny = eOSXModifierKeyFlagShiftLeftBit | eOSXModifierKeyFlagShiftRightBit,
 	};
 
-	TBitmask<EKeyModifierFlags> osxTranslateModifierKeyFlags( TBitmask<NSEventModifierFlags> pModifierFlags )
+	cppx::bitmask<EKeyModifierFlags> OSXTranslateModifierKeyFlags( cppx::bitmask<NSEventModifierFlags> pModifierFlags )
 	{
-		TBitmask<EKeyModifierFlags> resultMask = 0;
+		cppx::bitmask<EKeyModifierFlags> resultMask = 0;
 
-		const auto deviceIndependentFlags = makeBitmask<uint32>( pModifierFlags & NSEventModifierFlagDeviceIndependentFlagsMask );
-		const auto deviceSpecificFlags = makeBitmask<uint32>( pModifierFlags & ( 0xFFFF ) );
+		const auto deviceIndependentFlags = make_bitmask<uint32>( pModifierFlags & NSEventModifierFlagDeviceIndependentFlagsMask );
+		const auto deviceSpecificFlags = make_bitmask<uint32>( pModifierFlags & ( 0xFFFF ) );
 
-		if( deviceIndependentFlags.isSet( NSEventModifierFlagCommand ) )
+		if( deviceIndependentFlags.is_set( NSEventModifierFlagCommand ) )
 		{
-			if( deviceSpecificFlags.isSetAnyOf( eOSXModifierKeyFlagCommandRightBit ) )
+			if( deviceSpecificFlags.is_set_any_of( eOSXModifierKeyFlagCommandRightBit ) )
 			{
 				resultMask.set( eKeyModifierFlagAltRightBit );
 			}
@@ -46,9 +46,9 @@ namespace Ic3::System
 			}
 		}
 
-		if( deviceIndependentFlags.isSet( NSEventModifierFlagControl ) )
+		if( deviceIndependentFlags.is_set( NSEventModifierFlagControl ) )
 		{
-			if( deviceSpecificFlags.isSetAnyOf( eOSXModifierKeyFlagControlRightBit ) )
+			if( deviceSpecificFlags.is_set_any_of( eOSXModifierKeyFlagControlRightBit ) )
 			{
 				resultMask.set( eKeyModifierFlagControlRightBit );
 			}
@@ -58,9 +58,9 @@ namespace Ic3::System
 			}
 		}
 
-		if( deviceIndependentFlags.isSet( NSEventModifierFlagShift ) )
+		if( deviceIndependentFlags.is_set( NSEventModifierFlagShift ) )
 		{
-			if( deviceSpecificFlags.isSetAnyOf( eOSXModifierKeyFlagShiftRightBit ) )
+			if( deviceSpecificFlags.is_set_any_of( eOSXModifierKeyFlagShiftRightBit ) )
 			{
 				resultMask.set( eKeyModifierFlagShiftRightBit );
 			}
@@ -70,9 +70,9 @@ namespace Ic3::System
 			}
 		}
 
-		if( deviceIndependentFlags.isSet( NSEventModifierFlagOption ) )
+		if( deviceIndependentFlags.is_set( NSEventModifierFlagOption ) )
 		{
-			if( deviceSpecificFlags.isSetAnyOf( eOSXModifierKeyFlagOptionRightBit ) )
+			if( deviceSpecificFlags.is_set_any_of( eOSXModifierKeyFlagOptionRightBit ) )
 			{
 				resultMask.set( eKeyModifierFlagGUIRightBit );
 			}

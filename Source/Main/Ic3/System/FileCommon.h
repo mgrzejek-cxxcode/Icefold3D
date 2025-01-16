@@ -4,7 +4,7 @@
 
 #include "Prerequisites.h"
 #include <Ic3/CoreLib/Exception.h>
-#include <Ic3/Cppx/FSUtils.h>
+#include <cppx/fsUtils.h>
 
 namespace Ic3::System
 {
@@ -20,7 +20,7 @@ namespace Ic3::System
 	using file_offset_t = native_int;
 	using file_size_t = native_uint;
 
-	inline constexpr auto cxFileSizeMax = Cppx::QLimits<file_size_t>::sMaxValue;
+	inline constexpr auto cxFileSizeMax = cppx::meta::limits<file_size_t>::max_value;
 
 	/// @brief
 	enum : exception_code_value_t

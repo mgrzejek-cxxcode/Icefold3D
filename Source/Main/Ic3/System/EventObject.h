@@ -47,7 +47,7 @@ namespace Ic3::System
 			EvtWindowUpdateVisibility  uEvtWindowUpdateVisibility;
 		};
 
-		EventSystemSharedState * mEventSystemSharedState = nullptr;
+		EventSystemSharedState * eventSystemSharedState = nullptr;
 
 		constexpr EventObject()
 		: uCode{ eEventCodeUndefined }
@@ -66,9 +66,9 @@ namespace Ic3::System
 			return ( uCode != eEventCodeUndefined ) && CxDef::validateEventCode( uCode );
 		}
 
-		 IC3_ATTR_NO_DISCARD constexpr EEventCategory category() const
+		 CPPX_ATTR_NO_DISCARD constexpr EEventCategory category() const
 		{
-			return CxDef::getEventCodeCategory( uCode );
+			return CxDef::GetEventCodeCategory( uCode );
 		}
 	};
 

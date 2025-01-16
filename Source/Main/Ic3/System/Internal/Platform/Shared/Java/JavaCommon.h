@@ -1,6 +1,6 @@
 
-#ifndef __IC3_SYSTEM_JAVA_COMMON_H__
-#define __IC3_SYSTEM_JAVA_COMMON_H__
+#ifndef __IC3_SYSTEM_PLATFORM_SHARED_JAVA_COMMON_H__
+#define __IC3_SYSTEM_PLATFORM_SHARED_JAVA_COMMON_H__
 
 #include <Ic3/System/Prerequisites.h>
 #include <jni.h>
@@ -24,4 +24,4 @@ namespace Ic3::System
 
 } // namespace Ic3::System
 
-#endif // __IC3_SYSTEM_JAVA_COMMON_H__
+#endif // __IC3_SYSTEM_PLATFORM_SHARED_JAVA_COMMON_H__

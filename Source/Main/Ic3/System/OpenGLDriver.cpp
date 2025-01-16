@@ -14,163 +14,165 @@ namespace Ic3::System
 
 	OpenGLVersionSupportInfo OpenGLSystemDriver::initializePlatform()
 	{
-		_nativeInitializePlatform();
+		_NativeInitializePlatform();
 
-		_versionSupportInfo = _nativeQueryVersionSupportInfo();
+		_versionSupportInfo = _NativeQueryVersionSupportInfo();
 
 		return _versionSupportInfo;
 	}
 
-	const OpenGLVersionSupportInfo & OpenGLSystemDriver::getVersionSupportInfo() const
+	const OpenGLVersionSupportInfo & OpenGLSystemDriver::GetVersionSupportInfo() const
 	{
 		return _versionSupportInfo;
 	}
 
-	void OpenGLSystemDriver::releaseInitState( OpenGLRenderContext & /* pGLRenderContext */ )
+	void OpenGLSystemDriver::ReleaseInitState( OpenGLRenderContext & /* pGLRenderContext */ )
 	{
-		_nativeReleaseInitState();
+		_NativeReleaseInitState();
 	}
 
-	OpenGLDisplaySurfaceHandle OpenGLSystemDriver::createDisplaySurface( const OpenGLDisplaySurfaceCreateInfo & pCreateInfo )
+	OpenGLDisplaySurfaceHandle OpenGLSystemDriver::CreateDisplaySurface( const OpenGLDisplaySurfaceCreateInfo & pCreateInfo )
 	{
 		OpenGLDisplaySurfaceCreateInfo surfaceCreateInfo = pCreateInfo;
 
-		if( pCreateInfo.mFlags.isSet( eOpenGLDisplaySurfaceCreateFlagFullscreenBit ) )
+		if( pCreateInfo.flags.is_set( eOpenGLDisplaySurfaceCreateFlagFullscreenBit ) )
 		{
-			surfaceCreateInfo.mFrameGeometry.mSize = cxFrameSizeMax;
-			surfaceCreateInfo.mFrameGeometry.mStyle = EFrameStyle::Overlay;
+			surfaceCreateInfo.frameGeometry.size = cxFrameSizeMax;
+			surfaceCreateInfo.frameGeometry.mStyle = EFrameStyle::Overlay;
 		}
 		else
 		{
-			surfaceCreateInfo.mFrameGeometry.mPosition = pCreateInfo.mFrameGeometry.mPosition;
-			surfaceCreateInfo.mFrameGeometry.mSize = pCreateInfo.mFrameGeometry.mSize;
-			surfaceCreateInfo.mFrameGeometry.mStyle = pCreateInfo.mFrameGeometry.mStyle;
+			surfaceCreateInfo.frameGeometry.mPosition = pCreateInfo.frameGeometry.mPosition;
+			surfaceCreateInfo.frameGeometry.size = pCreateInfo.frameGeometry.size;
+			surfaceCreateInfo.frameGeometry.mStyle = pCreateInfo.frameGeometry.mStyle;
 		}
 
-		if( pCreateInfo.mMinimumAPIVersion == cxGLVersionBestSupported )
+		if( pCreateInfo.minimumAPIVersion == cxGLVersionBestSupported )
 		{
-			const auto versionSupportInfo = _nativeQueryVersionSupportInfo();
-			surfaceCreateInfo.mMinimumAPIVersion = versionSupportInfo.mAPIVersion;
+			const auto versionSupportInfo = _NativeQueryVersionSupportInfo();
+			surfaceCreateInfo.minimumAPIVersion = versionSupportInfo.apiVersion;
 		}
 
-		surfaceCreateInfo.mFrameGeometry = mDisplayManager->validateFrameGeometry( surfaceCreateInfo.mFrameGeometry );
+		surfaceCreateInfo.frameGeometry = mDisplayManager->ValidateFrameGeometry( surfaceCreateInfo.frameGeometry );
 
-		auto displaySurface = _nativeCreateDisplaySurface( surfaceCreateInfo );
-		displaySurface->setInternalOwnershipFlag( true );
+		auto displaySurface = _NativeCreateDisplaySurface( surfaceCreateInfo );
+		displaySurface->SetInternalOwnershipFlag( true );
 
 		return displaySurface;
 	}
 
-	OpenGLDisplaySurfaceHandle OpenGLSystemDriver::createDisplaySurfaceForCurrentThread()
+	OpenGLDisplaySurfaceHandle OpenGLSystemDriver::CreateDisplaySurfaceForCurrentThread()
 	{
-		auto displaySurface = _nativeCreateDisplaySurfaceForCurrentThread();
-		displaySurface->setInternalOwnershipFlag( false );
+		auto displaySurface = _NativeCreateDisplaySurfaceForCurrentThread();
+		displaySurface->SetInternalOwnershipFlag( false );
 
 		return displaySurface;
 	}
 
-	OpenGLRenderContextHandle OpenGLSystemDriver::createRenderContext( OpenGLDisplaySurface & pSurface,
-                                                                       const OpenGLRenderContextCreateInfo & pCreateInfo )
+	OpenGLRenderContextHandle OpenGLSystemDriver::CreateRenderContext(
+			OpenGLDisplaySurface & pSurface,
+			const OpenGLRenderContextCreateInfo & pCreateInfo )
 	{
 		OpenGLRenderContextCreateInfo contextCreateInfo = pCreateInfo;
 
-		if( contextCreateInfo.mRequestedAPIVersion == CX_VERSION_UNKNOWN  )
+		if( contextCreateInfo.requestedAPIVersion == cppx::cve::version_unknown  )
 		{
-			contextCreateInfo.mRequestedAPIVersion = Version{1, 0 };
+			contextCreateInfo.requestedAPIVersion = cppx::version{1, 0 };
 		}
-		else if( contextCreateInfo.mRequestedAPIVersion == cxGLVersionBestSupported )
+		else if( contextCreateInfo.requestedAPIVersion == cxGLVersionBestSupported )
 		{
-			contextCreateInfo.mRequestedAPIVersion = _versionSupportInfo.mAPIVersion;
+			contextCreateInfo.requestedAPIVersion = _versionSupportInfo.apiVersion;
 		}
 
-		const auto surfaceAPIClass = pSurface.querySupportedAPIClass();
+		const auto surfaceAPIClass = pSurface.QuerySupportedAPIClass();
 		if( surfaceAPIClass == EOpenGLAPIClass::GLES )
 		{
-			if( contextCreateInfo.mRequestedAPIVersion > cxGLVersionMaxES )
+			if( contextCreateInfo.requestedAPIVersion > cxGLVersionMaxES )
 			{
 				return nullptr;
 			}
 		}
 		else
 		{
-			if( contextCreateInfo.mRequestedAPIVersion > cxGLVersionMaxDesktop )
+			if( contextCreateInfo.requestedAPIVersion > cxGLVersionMaxDesktop )
 			{
 				return nullptr;
 			}
 		}
 
-		if( contextCreateInfo.mRequestedAPIVersion == Version{3, 1 } )
+		if( contextCreateInfo.requestedAPIVersion == cppx::version{3, 1 } )
 		{
-			if((contextCreateInfo.mContextAPIProfile == EOpenGLAPIProfile::Auto ) || (contextCreateInfo.mContextAPIProfile == EOpenGLAPIProfile::Core ) )
+			if((contextCreateInfo.contextAPIProfile == EOpenGLAPIProfile::Auto ) || (contextCreateInfo.contextAPIProfile == EOpenGLAPIProfile::Core ) )
 			{
-				contextCreateInfo.mFlags.set( eOpenGLRenderContextCreateFlagForwardCompatibleBit );
+				contextCreateInfo.flags.set( eOpenGLRenderContextCreateFlagForwardCompatibleBit );
 			}
 			else
 			{
-				contextCreateInfo.mFlags.unset( eOpenGLRenderContextCreateFlagForwardCompatibleBit );
+				contextCreateInfo.flags.unset( eOpenGLRenderContextCreateFlagForwardCompatibleBit );
 			}
 		}
 
-		if( contextCreateInfo.mRequestedAPIVersion >= Version{3, 2 } )
+		if( contextCreateInfo.requestedAPIVersion >= cppx::version{3, 2 } )
 		{
-			if( contextCreateInfo.mContextAPIProfile == EOpenGLAPIProfile::Auto )
+			if( contextCreateInfo.contextAPIProfile == EOpenGLAPIProfile::Auto )
 			{
-				contextCreateInfo.mContextAPIProfile = EOpenGLAPIProfile::Core;
+				contextCreateInfo.contextAPIProfile = EOpenGLAPIProfile::Core;
 			}
 		}
 
-		auto renderContext = _nativeCreateRenderContext( pSurface, contextCreateInfo );
-		renderContext->setInternalOwnershipFlag( true );
+		auto renderContext = _NativeCreateRenderContext( pSurface, contextCreateInfo );
+		renderContext->SetInternalOwnershipFlag( true );
 
 		return renderContext;
 	}
 
-	OpenGLRenderContextHandle OpenGLSystemDriver::createRenderContextForCurrentThread()
+	OpenGLRenderContextHandle OpenGLSystemDriver::CreateRenderContextForCurrentThread()
 	{
-		auto renderContext = _nativeCreateRenderContextForCurrentThread();
-		renderContext->setInternalOwnershipFlag( false );
+		auto renderContext = _NativeCreateRenderContextForCurrentThread();
+		renderContext->SetInternalOwnershipFlag( false );
 
 		return renderContext;
 	}
 
-	std::vector<EDepthStencilFormat> OpenGLSystemDriver::querySupportedDepthStencilFormats( EColorFormat pColorFormat ) const
+	std::vector<EDepthStencilFormat> OpenGLSystemDriver::QuerySupportedDepthStencilFormats( EColorFormat pColorFormat ) const
 	{
-		return _nativeQuerySupportedDepthStencilFormats( pColorFormat);
+		return _NativeQuerySupportedDepthStencilFormats( pColorFormat);
 	}
 
-	std::vector<EMSAAMode> OpenGLSystemDriver::querySupportedMSAAModes( EColorFormat pColorFormat,
-	                                                                     EDepthStencilFormat pDepthStencilFormat ) const
+	std::vector<EMSAAMode> OpenGLSystemDriver::QuerySupportedMSAAModes(
+			EColorFormat pColorFormat,
+			EDepthStencilFormat pDepthStencilFormat ) const
 	{
-		return _nativeQuerySupportedMSAAModes( pColorFormat, pDepthStencilFormat );
+		return _NativeQuerySupportedMSAAModes( pColorFormat, pDepthStencilFormat );
 	}
 
-	void OpenGLSystemDriver::resetContextBinding()
+	void OpenGLSystemDriver::ResetContextBinding()
 	{
-		_nativeResetContextBinding();
+		_NativeResetContextBinding();
 	}
 
-	bool OpenGLSystemDriver::isAPIClassSupported( EOpenGLAPIClass pAPIClass ) const
+	bool OpenGLSystemDriver::IsAPIClassSupported( EOpenGLAPIClass pAPIClass ) const
 	{
-		return _nativeIsAPIClassSupported( pAPIClass );
+		return _NativeIsAPIClassSupported( pAPIClass );
 	}
 
-	bool OpenGLSystemDriver::isRenderContextBound() const
+	bool OpenGLSystemDriver::IsRenderContextBound() const
 	{
-		return _nativeIsRenderContextBound();
+		return _NativeIsRenderContextBound();
 	}
 
-	void OpenGLSystemDriver::releaseSystemDisplaySurface( OpenGLDisplaySurface & pDisplaySurface ) noexcept
+	void OpenGLSystemDriver::ReleaseSystemDisplaySurface( OpenGLDisplaySurface & pDisplaySurface ) noexcept
 	{
 		try
 		{
-			if( pDisplaySurface.hasInternalOwnershipFlag() )
+			if( pDisplaySurface.HasInternalOwnershipFlag() )
 			{
-				if( pDisplaySurface.sysValidate() )
+				if( pDisplaySurface.SysValidate() )
 				{
-					_nativeDestroyDisplaySurface( pDisplaySurface );
+					_NativeDestroyDisplaySurface( pDisplaySurface );
 				}
 
-				pDisplaySurface.setInternalOwnershipFlag( false );
+				pDisplaySurface.SetInternalOwnershipFlag( false );
 			}
 		}
 		catch( const Exception & pException )
@@ -184,18 +186,18 @@ namespace Ic3::System
 		}
 	}
 
-	void OpenGLSystemDriver::releaseSystemRenderContext( OpenGLRenderContext & pRenderContext ) noexcept
+	void OpenGLSystemDriver::ReleaseSystemRenderContext( OpenGLRenderContext & pRenderContext ) noexcept
 	{
 		try
 		{
-			if( pRenderContext.hasInternalOwnershipFlag() )
+			if( pRenderContext.HasInternalOwnershipFlag() )
 			{
-				if( pRenderContext.sysValidate() )
+				if( pRenderContext.SysValidate() )
 				{
-					_nativeDestroyRenderContext( pRenderContext );
+					_NativeDestroyRenderContext( pRenderContext );
 				}
 
-				pRenderContext.setInternalOwnershipFlag( false );
+				pRenderContext.SetInternalOwnershipFlag( false );
 			}
 		}
 		catch( const Exception & pException )
@@ -209,18 +211,18 @@ namespace Ic3::System
 		}
 	}
 
-	OpenGLVersionSupportInfo OpenGLSystemDriver::_nativeQueryVersionSupportInfo() const noexcept
+	OpenGLVersionSupportInfo OpenGLSystemDriver::_NativeQueryVersionSupportInfo() const noexcept
 	{
 		OpenGLVersionSupportInfo openGLVersionSupportInfo{};
 
-		openGLVersionSupportInfo.mAPIVersion = OpenGLCoreAPI::queryRuntimeVersion();
-		openGLVersionSupportInfo.mAPIClass = EOpenGLAPIClass::Desktop;
-		openGLVersionSupportInfo.mAPIProfile = EOpenGLAPIProfile::Legacy;
+		openGLVersionSupportInfo.apiVersion = OpenGLCoreAPI::QueryRuntimeVersion();
+		openGLVersionSupportInfo.apiClass = EOpenGLAPIClass::Desktop;
+		openGLVersionSupportInfo.apiProfile = EOpenGLAPIProfile::Legacy;
 
-		if( openGLVersionSupportInfo.mAPIVersion.mNumMajor == 0 )
+		if( openGLVersionSupportInfo.apiVersion.num_major == 0 )
 		{
-			openGLVersionSupportInfo.mAPIVersion.mNumMajor = 1;
-			openGLVersionSupportInfo.mAPIVersion.mNumMinor = 0;
+			openGLVersionSupportInfo.apiVersion.num_major = 1;
+			openGLVersionSupportInfo.apiVersion.num_minor = 0;
 		}
 
 		return openGLVersionSupportInfo;
@@ -231,15 +233,15 @@ namespace Ic3::System
 	: Frame( pGLSystemDriver->mSysContext )
 	, mGLSystemDriver( std::move( pGLSystemDriver ) )
 	{
-		setEventSourceNativeData( pNativeData );
+		SetEventSourceNativeData( pNativeData );
 	}
 
 	OpenGLDisplaySurface::~OpenGLDisplaySurface() noexcept
 	{
-		resetEventSourceNativeData();
+		ResetEventSourceNativeData();
 	}
 
-	void OpenGLDisplaySurface::clearColorBuffer()
+	void OpenGLDisplaySurface::ClearColorBuffer()
 	{
 		glClearColor( 0.24f, 0.72f, 0.4f, 1.0f );
 		ic3OpenGLHandleLastError();
@@ -248,101 +250,102 @@ namespace Ic3::System
 		ic3OpenGLHandleLastError();
 	}
 
-	void OpenGLDisplaySurface::swapBuffers()
+	void OpenGLDisplaySurface::SwapBuffers()
 	{
-		_nativeSwapBuffers();
+		_NativeSwapBuffers();
 	}
 
-	EOpenGLAPIClass OpenGLDisplaySurface::querySupportedAPIClass() const
+	EOpenGLAPIClass OpenGLDisplaySurface::QuerySupportedAPIClass() const
 	{
-		return _nativeQuerySupportedAPIClass();
+		return _NativeQuerySupportedAPIClass();
 	}
 
-	VisualConfig OpenGLDisplaySurface::queryVisualConfig() const
+	VisualConfig OpenGLDisplaySurface::QueryVisualConfig() const
 	{
-		return _nativeQueryVisualConfig();
+		return _NativeQueryVisualConfig();
 	}
 
-	FrameSize OpenGLDisplaySurface::queryRenderAreaSize() const
+	FrameSize OpenGLDisplaySurface::QueryRenderAreaSize() const
 	{
-		return _nativeQueryRenderAreaSize();
+		return _NativeQueryRenderAreaSize();
 	}
 
-	bool OpenGLDisplaySurface::sysValidate() const
+	bool OpenGLDisplaySurface::SysValidate() const
 	{
-		return _nativeSysValidate();
+		return _NativeSysValidate();
 	}
 
-	void OpenGLDisplaySurface::resizeClientArea( const FrameSize & pSize )
+	void OpenGLDisplaySurface::ResizeClientArea( const FrameSize & pSize )
 	{
 		FrameGeometry newFrameGeometry{};
 		newFrameGeometry.mPosition = cxFramePosAuto;
-		newFrameGeometry.mSize = pSize;
+		newFrameGeometry.size = pSize;
 		newFrameGeometry.mStyle = EFrameStyle::Unspecified;
 
-		newFrameGeometry = mGLSystemDriver->mDisplayManager->validateFrameGeometry( newFrameGeometry );
+		newFrameGeometry = mGLSystemDriver->mDisplayManager->ValidateFrameGeometry( newFrameGeometry );
 
 		const auto updateFlags = eFrameGeometryUpdateFlagPositionBit | eFrameGeometryUpdateFlagSizeClientAreaBit;
-		_nativeUpdateGeometry( newFrameGeometry, updateFlags );
+		_NativeUpdateGeometry( newFrameGeometry, updateFlags );
 	}
 
-	void OpenGLDisplaySurface::resizeFrame( const FrameSize & pSize )
+	void OpenGLDisplaySurface::ResizeFrame( const FrameSize & pSize )
 	{
 		FrameGeometry newFrameGeometry{};
 		newFrameGeometry.mPosition = cxFramePosAuto;
-		newFrameGeometry.mSize = pSize;
+		newFrameGeometry.size = pSize;
 		newFrameGeometry.mStyle = EFrameStyle::Unspecified;
 
-		newFrameGeometry = mGLSystemDriver->mDisplayManager->validateFrameGeometry( newFrameGeometry );
+		newFrameGeometry = mGLSystemDriver->mDisplayManager->ValidateFrameGeometry( newFrameGeometry );
 
 		const auto updateFlags = eFrameGeometryUpdateFlagPositionBit | eFrameGeometryUpdateFlagSizeOuterRectBit;
-		_nativeUpdateGeometry( newFrameGeometry, updateFlags );
+		_NativeUpdateGeometry( newFrameGeometry, updateFlags );
 	}
 
-	void OpenGLDisplaySurface::setFullscreenMode( bool pEnable )
+	void OpenGLDisplaySurface::SetFullscreenMode( bool pEnable )
 	{
-		_nativeSetFullscreenMode( pEnable );
+		_NativeSetFullscreenMode( pEnable );
 	}
 
-	void OpenGLDisplaySurface::setTitle( const std::string & pTitleText )
+	void OpenGLDisplaySurface::SetTitle( const std::string & pTitleText )
 	{
-		_nativeSetTitle( pTitleText );
+		_NativeSetTitle( pTitleText );
 	}
 
-	void OpenGLDisplaySurface::updateGeometry( const FrameGeometry & pFrameGeometry,
-	                                           TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
+	void OpenGLDisplaySurface::UpdateGeometry(
+			const FrameGeometry & pFrameGeometry,
+			cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
 	{
-		_nativeUpdateGeometry( pFrameGeometry, pUpdateFlags );
+		_NativeUpdateGeometry( pFrameGeometry, pUpdateFlags );
 	}
 
-	FrameSize OpenGLDisplaySurface::getClientAreaSize() const
+	FrameSize OpenGLDisplaySurface::GetClientAreaSize() const
 	{
-		return _nativeGetSize( EFrameSizeMode::ClientArea );
+		return _NativeGetSize( EFrameSizeMode::ClientArea );
 	}
 
-	FrameSize OpenGLDisplaySurface::getFrameSize() const
+	FrameSize OpenGLDisplaySurface::GetFrameSize() const
 	{
-		return _nativeGetSize( EFrameSizeMode::OuterRect );
+		return _NativeGetSize( EFrameSizeMode::OuterRect );
 	}
 
-	bool OpenGLDisplaySurface::isFullscreen() const
+	bool OpenGLDisplaySurface::IsFullscreen() const
 	{
-		return _nativeIsFullscreen();
+		return _NativeIsFullscreen();
 	}
 
-	void OpenGLDisplaySurface::onDestroySystemObjectRequested()
+	void OpenGLDisplaySurface::OnDestroySystemObjectRequested()
 	{
-		EventSource::onDestroySystemObjectRequested();
+		EventSource::OnDestroySystemObjectRequested();
 
-		mGLSystemDriver->releaseSystemDisplaySurface( *this );
+		mGLSystemDriver->ReleaseSystemDisplaySurface( *this );
 	}
 
-	void OpenGLDisplaySurface::setInternalOwnershipFlag( bool pOwnershipFlag )
+	void OpenGLDisplaySurface::SetInternalOwnershipFlag( bool pOwnershipFlag )
 	{
 		_internalOwnershipFlag = pOwnershipFlag;
 	}
 
-	bool OpenGLDisplaySurface::hasInternalOwnershipFlag() const
+	bool OpenGLDisplaySurface::HasInternalOwnershipFlag() const
 	{
 		return _internalOwnershipFlag;
 	}
@@ -355,46 +358,46 @@ namespace Ic3::System
 
 	OpenGLRenderContext::~OpenGLRenderContext() noexcept = default;
 
-	void OpenGLRenderContext::bindForCurrentThread( const OpenGLDisplaySurface & pTargetSurface )
+	void OpenGLRenderContext::BindForCurrentThread( const OpenGLDisplaySurface & pTargetSurface )
 	{
-		_nativeBindForCurrentThread( pTargetSurface );
+		_NativeBindForCurrentThread( pTargetSurface );
 	}
 
-	bool OpenGLRenderContext::sysCheckIsCurrent() const
+	bool OpenGLRenderContext::SysCheckIsCurrent() const
 	{
-		return _nativeSysCheckIsCurrent();
+		return _NativeSysCheckIsCurrent();
 	}
 
-	bool OpenGLRenderContext::sysValidate() const
+	bool OpenGLRenderContext::SysValidate() const
 	{
-		return _nativeSysValidate();
+		return _NativeSysValidate();
 	}
 
-	OpenGLSystemVersionInfo OpenGLRenderContext::querySystemVersionInfo() const
+	OpenGLSystemVersionInfo OpenGLRenderContext::QuerySystemVersionInfo() const
 	{
-		if( !sysValidate() )
+		if( !SysValidate() )
 		{
-			ic3Throw( E_EXC_DEBUG_PLACEHOLDER );
+			ic3Throw( eExcCodeDebugPlaceholder );
 		}
 
 		OpenGLSystemVersionInfo systemVersionInfo;
-		systemVersionInfo.mAPIVersion = OpenGLCoreAPI::queryRuntimeVersion();
+		systemVersionInfo.apiVersion = OpenGLCoreAPI::QueryRuntimeVersion();
 
 		if( const auto * versionStr = glGetString( GL_VERSION ) )
 		{
-			systemVersionInfo.mAPIVersionStr.assign( reinterpret_cast<const char *>( versionStr ) );
+			systemVersionInfo.apiVersionStr.assign( reinterpret_cast<const char *>( versionStr ) );
 		}
 		if( const auto * glslVersionStr = glGetString( GL_SHADING_LANGUAGE_VERSION ) )
 		{
-			systemVersionInfo.mGLSLVersionStr.assign( reinterpret_cast<const char *>( glslVersionStr ) );
+			systemVersionInfo.glslVersionStr.assign( reinterpret_cast<const char *>( glslVersionStr ) );
 		}
 		if( const auto * rendererNameStr = glGetString( GL_RENDERER ) )
 		{
-			systemVersionInfo.mRendererName.assign( reinterpret_cast<const char *>( rendererNameStr ) );
+			systemVersionInfo.rendererName.assign( reinterpret_cast<const char *>( rendererNameStr ) );
 		}
 		if( const auto * vendorNameStr = glGetString( GL_VENDOR ) )
 		{
-			systemVersionInfo.mVendorName.assign( reinterpret_cast<const char *>( vendorNameStr ) );
+			systemVersionInfo.vendorName.assign( reinterpret_cast<const char *>( vendorNameStr ) );
 		}
 
 		ic3OpenGLResetErrorQueue();
@@ -402,17 +405,17 @@ namespace Ic3::System
 		return systemVersionInfo;
 	}
 
-	void OpenGLRenderContext::onDestroySystemObjectRequested()
+	void OpenGLRenderContext::OnDestroySystemObjectRequested()
 	{
-		mGLSystemDriver->releaseSystemRenderContext( *this );
+		mGLSystemDriver->ReleaseSystemRenderContext( *this );
 	}
 
-	void OpenGLRenderContext::setInternalOwnershipFlag( bool pOwnershipFlag )
+	void OpenGLRenderContext::SetInternalOwnershipFlag( bool pOwnershipFlag )
 	{
 		_internalOwnershipFlag = pOwnershipFlag;
 	}
 
-	bool OpenGLRenderContext::hasInternalOwnershipFlag() const
+	bool OpenGLRenderContext::HasInternalOwnershipFlag() const
 	{
 		return _internalOwnershipFlag;
 	}

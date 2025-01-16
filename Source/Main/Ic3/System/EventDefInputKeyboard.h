@@ -37,7 +37,7 @@ namespace Ic3::System
 
 	enum class EKeyCode : uint32
 	{
-		Unknown = Cppx::cxUint32Max,
+		Unknown = cppx::cve::uint32_max,
 
 		Num0 = 0, // 0x00
 		Num1 = 1, // 0x01
@@ -140,37 +140,37 @@ namespace Ic3::System
 	struct KeyStateMap
 	{
 	public:
-		bool mStateArray[CX_ENUM_KEY_CODE_COUNT];
+		bool stateArray[CX_ENUM_KEY_CODE_COUNT];
 
 	public:
 		KeyStateMap()
 		{
-			reset();
+			Reset();
 		}
 
 		bool & operator[]( size_t pIndex )
 		{
-			return Cppx::staticArrayElement( mStateArray, pIndex );
+			return cppx::static_array_element( stateArray, pIndex );
 		}
 
 		bool operator[]( size_t pIndex ) const
 		{
-			return Cppx::staticArrayElement( mStateArray, pIndex );
+			return cppx::static_array_element( stateArray, pIndex );
 		}
 
 		bool & operator[]( EKeyCode pKeyCode )
 		{
-			return Cppx::staticArrayElement( mStateArray, pKeyCode );
+			return cppx::static_array_element( stateArray, pKeyCode );
 		}
 
 		bool operator[]( EKeyCode pKeyCode ) const
 		{
-			return Cppx::staticArrayElement( mStateArray, pKeyCode );
+			return cppx::static_array_element( stateArray, pKeyCode );
 		}
 
-		void reset()
+		void Reset()
 		{
-			for( auto & state : mStateArray )
+			for( auto & state : stateArray )
 			{
 				state = false;
 			}
@@ -181,7 +181,7 @@ namespace Ic3::System
 	{
 		KeyStateMap mKeyStateMap;
 
-		TBitmask<EKeyModifierFlags> mActiveModifiersMask = 0;
+		cppx::bitmask<EKeyModifierFlags> mActiveModifiersMask = 0;
 	};
 
 	struct EvtInputKeyboard : public EvtInput
@@ -196,13 +196,13 @@ namespace Ic3::System
 		const EvtSharedInputKeyboardState * mInputKeyboardState;
 	};
 
-	namespace evt
+	namespace Evt
 	{
 
-		inline EKeyCode getModifierKeyCodeFromModifierFlags( TBitmask<EKeyModifierFlags> pModifierFlags )
+		inline EKeyCode GetModifierKeyCodeFromModifierFlags( cppx::bitmask<EKeyModifierFlags> pModifierFlags )
 		{
 			const auto maskValue = static_cast<uint32>( pModifierFlags & eKeyModifierMaskAll );
-			const auto setBitsNum = Cppx::popCount( maskValue );
+			const auto setBitsNum = cppx::pop_count( maskValue );
 
 			ic3DebugAssert( setBitsNum <= 1 );
 

@@ -11,83 +11,83 @@ namespace Ic3::System
 
 	File::~File() noexcept = default;
 
-	file_size_t File::read( void * pTargetBuffer, file_size_t pTargetBufferSize, file_size_t pReadSize )
+	file_size_t File::Read( void * pTargetBuffer, file_size_t pTargetBufferSize, file_size_t pReadSize )
 	{
 		if( !pTargetBuffer || ( pTargetBufferSize == 0 ) || ( pReadSize == 0 ) )
 		{
 			return 0;
 		}
 
-		const auto readSize = Cppx::getMinOf( pTargetBufferSize, pReadSize );
+		const auto readSize = cppx::get_min_of( pTargetBufferSize, pReadSize );
 
-		return _nativeReadData( pTargetBuffer, readSize );
+		return _NativeReadData( pTargetBuffer, readSize );
 	}
 
-	file_size_t File::read( const Cppx::ReadWriteMemoryView & pTarget, file_size_t pReadSize )
+	file_size_t File::Read( const cppx::read_write_memory_view & pTarget, file_size_t pReadSize )
 	{
-		return read( pTarget.data(), pTarget.size(), pReadSize );
+		return Read( pTarget.data(), pTarget.size(), pReadSize );
 	}
 
-	file_size_t File::readAuto( Cppx::DynamicMemoryBuffer & pTarget, file_size_t pReadSize )
+	file_size_t File::ReadAuto( cppx::dynamic_memory_buffer & pTarget, file_size_t pReadSize )
 	{
-		return _readAuto( pTarget, pReadSize );
+		return _ReadAuto( pTarget, pReadSize );
 	}
 
-	file_size_t File::readAuto( Cppx::DynamicByteArray & pTarget, file_size_t pReadSize )
+	file_size_t File::ReadAuto( cppx::dynamic_byte_array & pTarget, file_size_t pReadSize )
 	{
-		return _readAuto( pTarget, pReadSize );
+		return _ReadAuto( pTarget, pReadSize );
 	}
 
-	file_size_t File::write( const void * pData, file_size_t pDataSize, file_size_t pWriteSize )
+	file_size_t File::Write( const void * pData, file_size_t pDataSize, file_size_t pWriteSize )
 	{
 		if( !pData || ( pDataSize == 0 ) || ( pWriteSize == 0 ) )
 		{
 			return 0;
 		}
 
-		const auto writeSize = Cppx::getMinOf( pDataSize, pWriteSize );
+		const auto writeSize = cppx::get_min_of( pDataSize, pWriteSize );
 
-		return _nativeWriteData( pData, writeSize );
+		return _NativeWriteData( pData, writeSize );
 	}
 	
-	file_size_t File::write( const Cppx::MemoryBuffer & pSource, file_size_t pWriteSize )
+	file_size_t File::Write( const cppx::memory_buffer & pSource, file_size_t pWriteSize )
 	{
-		return _write( pSource, pWriteSize );
+		return _Write( pSource, pWriteSize );
 	}
 
-	file_size_t File::write( const Cppx::ByteArray & pSource, file_size_t pWriteSize )
+	file_size_t File::Write( const cppx::byte_array & pSource, file_size_t pWriteSize )
 	{
-		return _write( pSource, pWriteSize );
+		return _Write( pSource, pWriteSize );
 	}
 
-	file_offset_t File::setFilePointer( file_offset_t pOffset, EFilePointerRefPos pRefPos )
+	file_offset_t File::SetFilePointer( file_offset_t pOffset, EFilePointerRefPos pRefPos )
 	{
-		return _nativeSetFilePointer( pOffset, pRefPos );
+		return _NativeSetFilePointer( pOffset, pRefPos );
 	}
 
-	file_offset_t File::getFilePointer() const
+	file_offset_t File::GetFilePointer() const
 	{
-		return _nativeGetFilePointer();
+		return _NativeGetFilePointer();
 	}
 
-	file_size_t File::getSize() const
+	file_size_t File::GetSize() const
 	{
-		return _nativeGetSize();
+		return _NativeGetSize();
 	}
 
-	file_size_t File::getRemainingBytes() const
+	file_size_t File::GetRemainingBytes() const
 	{
-		return _nativeGetRemainingBytes();
+		return _NativeGetRemainingBytes();
 	}
 
-	bool File::checkEOF() const
+	bool File::CheckEOF() const
 	{
-		return _nativeCheckEOF();
+		return _NativeCheckEOF();
 	}
 
-	bool File::isGood() const
+	bool File::IsGood() const
 	{
-		return _nativeIsGood();
+		return _NativeIsGood();
 	}
 
 
@@ -97,26 +97,26 @@ namespace Ic3::System
 
 	FileManager::~FileManager() noexcept = default;
 
-	FileHandle FileManager::openFile( std::string pFilePath, EFileOpenMode pOpenMode )
+	FileHandle FileManager::OpenFile( std::string pFilePath, EFileOpenMode pOpenMode )
 	{
-		return _nativeOpenFile( std::move( pFilePath ), pOpenMode );
+		return _NativeOpenFile( std::move( pFilePath ), pOpenMode );
 	}
 
-	FileHandle FileManager::createFile( std::string pFilePath )
+	FileHandle FileManager::CreateFile( std::string pFilePath )
 	{
-		return _nativeCreateFile( std::move( pFilePath ) );
+		return _NativeCreateFile( std::move( pFilePath ) );
 	}
 
-	FileHandle FileManager::createTemporaryFile()
+	FileHandle FileManager::CreateTemporaryFile()
 	{
-		return _nativeCreateTemporaryFile();
+		return _NativeCreateTemporaryFile();
 	}
 
-	FileList FileManager::openDirectoryFiles( const std::string & pDirectory )
+	FileList FileManager::OpenDirectoryFiles( const std::string & pDirectory )
 	{
 		FileList resultFileList;
 
-		auto fileNameList = enumDirectoryFiles( pDirectory );
+		auto fileNameList = EnumDirectoryFiles( pDirectory );
 
 		if( !fileNameList.empty() )
 		{
@@ -124,7 +124,7 @@ namespace Ic3::System
 
 			for( auto & fileName : fileNameList )
 			{
-				auto fileHandle = openFile( std::move( fileName ), EFileOpenMode::ReadOnly );
+				auto fileHandle = OpenFile( std::move( fileName ), EFileOpenMode::ReadOnly );
 				resultFileList.push_back( std::move( fileHandle ) );
 			}
 		}
@@ -132,36 +132,36 @@ namespace Ic3::System
 		return resultFileList;
 	}
 
-	FileNameList FileManager::enumDirectoryFiles( const std::string & pDirectory )
+	FileNameList FileManager::EnumDirectoryFiles( const std::string & pDirectory )
 	{
 		if( pDirectory.empty() )
 		{
 			return {};
 		}
-		return _nativeEnumDirectoryFileNameList( pDirectory );
+		return _NativeEnumDirectoryFileNameList( pDirectory );
 	}
 
-	std::string FileManager::generateTemporaryFileName()
+	std::string FileManager::GenerateTemporaryFileName()
 	{
-		return _nativeGenerateTemporaryFileName();
+		return _NativeGenerateTemporaryFileName();
 	}
 
-	bool FileManager::checkDirectoryExists( const std::string & pDirPath )
+	bool FileManager::CheckDirectoryExists( const std::string & pDirPath )
 	{
 		if( pDirPath.empty() )
 		{
 			return false;
 		}
-		return _nativeCheckDirectoryExists( pDirPath );
+		return _NativeCheckDirectoryExists( pDirPath );
 	}
 
-	bool FileManager::checkFileExists( const std::string & pFilePath )
+	bool FileManager::CheckFileExists( const std::string & pFilePath )
 	{
 		if( pFilePath.empty() )
 		{
 			return false;
 		}
-		return _nativeCheckFileExists( pFilePath );
+		return _NativeCheckFileExists( pFilePath );
 	}
 
 }

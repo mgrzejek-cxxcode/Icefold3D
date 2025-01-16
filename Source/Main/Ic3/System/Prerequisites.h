@@ -3,9 +3,9 @@
 #define __IC3_SYSTEM_PREREQUISITES_H__
 
 #include <Ic3/CoreLib/Exception.h>
-#include <Ic3/Cppx/Bitmask.h>
-#include <Ic3/Cppx/Utilities.h>
-#include <Ic3/Cppx/Version.h>
+#include <cppx/bitmask.h>
+#include <cppx/utilities.h>
+#include <cppx/version.h>
 
 #include <memory>
 #include <string>
@@ -17,17 +17,17 @@
 #  define IC3_SYSTEM_OBJ extern __cdecl
 #else
 #  if( IC3_SYSTEM_BUILD )
-#	define IC3_SYSTEM_API   IC3_PCL_ATTR_DLL_EXPORT
-#	define IC3_SYSTEM_CLASS IC3_PCL_ATTR_DLL_EXPORT
-#	define IC3_SYSTEM_OBJ   IC3_PCL_ATTR_DLL_EXPORT
+#	define IC3_SYSTEM_API   PCL_ATTR_DLL_EXPORT
+#	define IC3_SYSTEM_CLASS PCL_ATTR_DLL_EXPORT
+#	define IC3_SYSTEM_OBJ   PCL_ATTR_DLL_EXPORT
 #  else
-#	define IC3_SYSTEM_API   IC3_PCL_ATTR_DLL_IMPORT
-#	define IC3_SYSTEM_CLASS IC3_PCL_ATTR_DLL_IMPORT
-#	define IC3_SYSTEM_OBJ   IC3_PCL_ATTR_DLL_IMPORT
+#	define IC3_SYSTEM_API   PCL_ATTR_DLL_IMPORT
+#	define IC3_SYSTEM_CLASS PCL_ATTR_DLL_IMPORT
+#	define IC3_SYSTEM_OBJ   PCL_ATTR_DLL_IMPORT
 #  endif
 #endif
 
-#define IC3_SYSTEM_API_NODISCARD IC3_SYSTEM_API IC3_ATTR_NO_DISCARD
+#define IC3_SYSTEM_API_NODISCARD IC3_SYSTEM_API CPPX_ATTR_NO_DISCARD
 
 namespace Ic3::System
 {
@@ -50,13 +50,13 @@ namespace Ic3::System
 
 	enum : exception_category_value_t
 	{
-		eExceptionCategorySystemCore    = CxDef::declareExceptionCategory( EExceptionBaseType::SYSTEM, 0x01 ),
-		eExceptionCategorySystemDisplay = CxDef::declareExceptionCategory( EExceptionBaseType::SYSTEM, 0x02 ),
-		eExceptionCategorySystemEvent   = CxDef::declareExceptionCategory( EExceptionBaseType::SYSTEM, 0x03 ),
-		eExceptionCategorySystemFile    = CxDef::declareExceptionCategory( EExceptionBaseType::SYSTEM, 0x04 ),
-		eExceptionCategorySystemMetal   = CxDef::declareExceptionCategory( EExceptionBaseType::SYSTEM, 0x05 ),
-		eExceptionCategorySystemOpenGL  = CxDef::declareExceptionCategory( EExceptionBaseType::SYSTEM, 0x07 ),
-		eExceptionCategorySystemWindow  = CxDef::declareExceptionCategory( EExceptionBaseType::SYSTEM, 0x09 ),
+		eExceptionCategorySystemCore    = CxDef::declareExceptionCategory( EExceptionBaseType::System, 0x01 ),
+		eExceptionCategorySystemDisplay = CxDef::declareExceptionCategory( EExceptionBaseType::System, 0x02 ),
+		eExceptionCategorySystemEvent   = CxDef::declareExceptionCategory( EExceptionBaseType::System, 0x03 ),
+		eExceptionCategorySystemFile    = CxDef::declareExceptionCategory( EExceptionBaseType::System, 0x04 ),
+		eExceptionCategorySystemMetal   = CxDef::declareExceptionCategory( EExceptionBaseType::System, 0x05 ),
+		eExceptionCategorySystemOpenGL  = CxDef::declareExceptionCategory( EExceptionBaseType::System, 0x07 ),
+		eExceptionCategorySystemWindow  = CxDef::declareExceptionCategory( EExceptionBaseType::System, 0x09 ),
 	};
 
 	enum : exception_code_value_t

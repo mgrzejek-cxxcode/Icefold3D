@@ -2,15 +2,15 @@
 #ifndef __IC3_SYSTEM_INTERNAL_DISPLAY_SYSTEM_NATIVE_H__
 #define __IC3_SYSTEM_INTERNAL_DISPLAY_SYSTEM_NATIVE_H__
 
-#include <Ic3/System/DisplayCommon.h>
+#include "DisplaySystem.h"
 
-#if( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_ANDROID )
+#if( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_ANDROID )
 #  include "Internal/Platform/OSAPI/Android/AndroidDisplaySystem.h"
-#elif( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_OSX )
+#elif( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_OSX )
 #  include "Internal/Platform/OSAPI/OSX/OSXDisplaySystem.h"
-#elif( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_WIN32 )
+#elif( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_WIN32 )
 #  include "Internal/Platform/OSAPI/Win32/Win32DisplaySystem.h"
-#elif( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_X11 )
+#elif( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_X11 )
 #  include "Internal/Platform/OSAPI/X11/X11DisplaySystem.h"
 #endif
 

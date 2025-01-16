@@ -2,138 +2,143 @@
 #include "AndroidOpenGLDriver.h"
 #include "AndroidDisplaySystem.h"
 
-#if( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_ANDROID )
+#if( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_ANDROID )
 namespace Ic3::System
 {
 
 	AndroidOpenGLSystemDriver::AndroidOpenGLSystemDriver( AndroidDisplayManagerHandle pDisplayManager )
 	: AndroidNativeObject( std::move( pDisplayManager ) )
 	{
-		_initializeAndroidDriverState();
+		_InitializeAndroidDriverState();
 	}
 
 	AndroidOpenGLSystemDriver::~AndroidOpenGLSystemDriver() noexcept
 	{
-		_releaseAndroidDriverState();
+		_ReleaseAndroidDriverState();
 	}
 
-	void AndroidOpenGLSystemDriver::_initializeAndroidDriverState()
+	void AndroidOpenGLSystemDriver::_InitializeAndroidDriverState()
 	{
-		auto & aSessionData = Platform::androidGetASessionData( *this );
+		auto & aSessionData = Platform::AndroidGetASessionData( *this );
 
-		Platform::eglInitializeGLDriver( mNativeData );
+		Platform::EAInitializeGLDriver( mNativeData );
 
-		mNativeData.mEGLNativeWindowHandle = aSessionData.aNativeWindow;
+		mNativeData.eglNativeWindowHandle = aSessionData.aNativeWindow;
 	}
 
-	void AndroidOpenGLSystemDriver::_releaseAndroidDriverState()
+	void AndroidOpenGLSystemDriver::_ReleaseAndroidDriverState()
 	{
-		Platform::eglReleaseGLDriver( mNativeData );
+		Platform::EAReleaseGLDriver( mNativeData );
 
-		mNativeData.mEGLNativeWindowHandle = nullptr;
+		mNativeData.eglNativeWindowHandle = nullptr;
 	}
 
-	void AndroidOpenGLSystemDriver::_nativeInitializePlatform()
+	void AndroidOpenGLSystemDriver::_NativeInitializePlatform()
 	{}
 
-	void AndroidOpenGLSystemDriver::_nativeReleaseInitState() noexcept
+	void AndroidOpenGLSystemDriver::_NativeReleaseInitState() noexcept
 	{}
 
-	OpenGLDisplaySurfaceHandle AndroidOpenGLSystemDriver::_nativeCreateDisplaySurface( const OpenGLDisplaySurfaceCreateInfo & pCreateInfo )
+	OpenGLDisplaySurfaceHandle AndroidOpenGLSystemDriver::_NativeCreateDisplaySurface(
+			const OpenGLDisplaySurfaceCreateInfo & pCreateInfo )
 	{
-		auto & aSessionData = Platform::androidGetASessionData( *this );
+		auto & aSessionData = Platform::AndroidGetASessionData( *this );
 
-		// Choose an EGLConfig that matches the specified requirements (pCreateInfo.mVisualConfig)
-		// and version. Version is required to properly query configs with the correct API level
-		// support (EGL_OPENGL_ESBit/EGL_OPENGL_ES2Bit/EGL_OPENGL_ES3Bit).
-		EGLConfig fbConfig = Platform::eglChooseCoreFBConfig( mNativeData.mEGLDisplay,
-		                                                      pCreateInfo.mVisualConfig,
+		// Choose an EGLConfig that matches the specified requirements (pCreateInfo.visualConfig)
+		// and version. cppx::version is required to properly query configs with the correct API level
+		// support (EGL_OPENGL_ES_BIT/EGL_OPENGL_ES2_BIT/EGL_OPENGL_ES3_BIT).
+		EGLConfig fbConfig = Platform::EAChooseCoreFBConfig( mNativeData.eglDisplay,
+		                                                      pCreateInfo.visualConfig,
 		                                                      pCreateInfo.runtimeVersionDesc.apiVersion );
 
 		// EGL_NATIVE_VISUAL_ID is an attribute of the EGLConfig that is guaranteed to be
 		// accepted by ANativeWindow_setBuffersGeometry(). As soon as we retrieve an EGLConfig,
 		// we can reconfigure the ANativeWindow buffers using the value of EGL_NATIVE_VISUAL_ID.
-		EGLint fbConfigNativeVisualID = Platform::eglQueryFBConfigAttribute( mNativeData.mEGLDisplay,
+		EGLint fbConfigNativeVisualID = Platform::EAQueryFBConfigAttribute( mNativeData.eglDisplay,
 		                                                                     fbConfig,
 		                                                                     EGL_NATIVE_VISUAL_ID );
 
-		auto aNativeResult = ANativeWindow_setBuffersGeometry( mNativeData.mEGLNativeWindowHandle,
+		auto aNativeResult = ANativeWindow_setBuffersGeometry( mNativeData.eglNativeWindowHandle,
 		                                                       0,
 		                                                       0,
 		                                                       fbConfigNativeVisualID );
 		if( aNativeResult < 0 )
 		{
-			ic3Throw( E_EXC_DEBUG_PLACEHOLDER );
+			ic3Throw( eExcCodeDebugPlaceholder );
 		}
 
-		auto displaySurface = createSysObject<AndroidOpenGLDisplaySurface>( getHandle<AndroidOpenGLSystemDriver>() );
+		auto displaySurface = CreateSysObject<AndroidOpenGLDisplaySurface>( GetHandle<AndroidOpenGLSystemDriver>() );
 
-		Platform::eglCreateSurface( displaySurface->mNativeData,
-		                            mNativeData.mEGLDisplay,
-		                            mNativeData.mEGLNativeWindowHandle,
-		                            fbConfig,
-		                            pCreateInfo.mVisualConfig );
+		Platform::EACreateSurface(
+				displaySurface->mNativeData,
+				mNativeData.eglDisplay,
+				mNativeData.eglNativeWindowHandle,
+				fbConfig,
+				pCreateInfo.visualConfig );
 
 		return displaySurface;
 	}
 
-	OpenGLDisplaySurfaceHandle AndroidOpenGLSystemDriver::_nativeCreateDisplaySurfaceForCurrentThread()
+	OpenGLDisplaySurfaceHandle AndroidOpenGLSystemDriver::_NativeCreateDisplaySurfaceForCurrentThread()
 	{
-		auto displaySurface = createSysObject<AndroidOpenGLDisplaySurface>( getHandle<AndroidOpenGLSystemDriver>() );
-		Platform::eglCreateSurfaceForCurrentThread( displaySurface->mNativeData );
+		auto displaySurface = CreateSysObject<AndroidOpenGLDisplaySurface>( GetHandle<AndroidOpenGLSystemDriver>() );
+		Platform::EACreateSurfaceForCurrentThread( displaySurface->mNativeData );
 		return displaySurface;
 	}
 
-	void AndroidOpenGLSystemDriver::_nativeDestroyDisplaySurface( OpenGLDisplaySurface & pDisplaySurface )
+	void AndroidOpenGLSystemDriver::_NativeDestroyDisplaySurface( OpenGLDisplaySurface & pDisplaySurface )
 	{
-		auto * androidDisplaySurface = pDisplaySurface.queryInterface<AndroidOpenGLDisplaySurface>();
-		Platform::eglDestroySurface( androidDisplaySurface->mNativeData );
+		auto * androidDisplaySurface = pDisplaySurface.QueryInterface<AndroidOpenGLDisplaySurface>();
+		Platform::EADestroySurface( androidDisplaySurface->mNativeData );
 	}
 
-	OpenGLRenderContextHandle AndroidOpenGLSystemDriver::_nativeCreateRenderContext( OpenGLDisplaySurface & pDisplaySurface,
-	                                                                                 const OpenGLRenderContextCreateInfo & pCreateInfo )
+	OpenGLRenderContextHandle AndroidOpenGLSystemDriver::_NativeCreateRenderContext(
+			OpenGLDisplaySurface & pDisplaySurface,
+			const OpenGLRenderContextCreateInfo & pCreateInfo )
 	{
-		auto * androidDisplaySurface = pDisplaySurface.queryInterface<AndroidOpenGLDisplaySurface>();
+		auto * androidDisplaySurface = pDisplaySurface.QueryInterface<AndroidOpenGLDisplaySurface>();
 
-		auto renderContext = createSysObject<AndroidOpenGLRenderContext>( getHandle<AndroidOpenGLSystemDriver>() );
+		auto renderContext = CreateSysObject<AndroidOpenGLRenderContext>( GetHandle<AndroidOpenGLSystemDriver>() );
 
-		Platform::eglCreateCoreContext( renderContext->mNativeData,
+		Platform::EACreateCoreContext( renderContext->mNativeData,
 		                                androidDisplaySurface->mNativeData,
 		                                pCreateInfo );
 
 		return renderContext;
 	}
 
-	OpenGLRenderContextHandle AndroidOpenGLSystemDriver::_nativeCreateRenderContextForCurrentThread()
+	OpenGLRenderContextHandle AndroidOpenGLSystemDriver::_NativeCreateRenderContextForCurrentThread()
 	{
-		auto renderContext = createSysObject<AndroidOpenGLRenderContext>( getHandle<AndroidOpenGLSystemDriver>() );
-		Platform::eglCreateCoreContextForCurrentThread( renderContext->mNativeData );
+		auto renderContext = CreateSysObject<AndroidOpenGLRenderContext>( GetHandle<AndroidOpenGLSystemDriver>() );
+		Platform::EACreateCoreContextForCurrentThread( renderContext->mNativeData );
 		return renderContext;
 	}
 
-	void AndroidOpenGLSystemDriver::_nativeDestroyRenderContext( OpenGLRenderContext & pRenderContext )
+	void AndroidOpenGLSystemDriver::_NativeDestroyRenderContext( OpenGLRenderContext & pRenderContext )
 	{
-		auto * androidRenderContext = pRenderContext.queryInterface<AndroidOpenGLRenderContext>();
-		Platform::eglDestroyRenderContext( androidRenderContext->mNativeData );
+		auto * androidRenderContext = pRenderContext.QueryInterface<AndroidOpenGLRenderContext>();
+		Platform::EADestroyRenderContext( androidRenderContext->mNativeData );
 	}
 
-	void AndroidOpenGLSystemDriver::_nativeResetContextBinding()
+	void AndroidOpenGLSystemDriver::_NativeResetContextBinding()
 	{
-		::eglMakeCurrent( mNativeData.mEGLDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT );
+		::eglMakeCurrent( mNativeData.eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT );
 	}
 
-	std::vector<EDepthStencilFormat> AndroidOpenGLSystemDriver::_nativeQuerySupportedDepthStencilFormats( EColorFormat pColorFormat ) const
-	{
-		return {};
-	}
-
-	std::vector<EMSAAMode> AndroidOpenGLSystemDriver::_nativeQuerySupportedMSAAModes( EColorFormat pColorFormat,
-	                                                                                  EDepthStencilFormat pDepthStencilFormat ) const
+	std::vector<EDepthStencilFormat> AndroidOpenGLSystemDriver::_NativeQuerySupportedDepthStencilFormats(
+			EColorFormat pColorFormat ) const
 	{
 		return {};
 	}
 
-	bool AndroidOpenGLSystemDriver::_nativeIsAPIClassSupported( EOpenGLAPIClass pAPIClass ) const
+	std::vector<EMSAAMode> AndroidOpenGLSystemDriver::_NativeQuerySupportedMSAAModes(
+			EColorFormat pColorFormat,
+			EDepthStencilFormat pDepthStencilFormat ) const
+	{
+		return {};
+	}
+
+	bool AndroidOpenGLSystemDriver::_NativeIsAPIClassSupported( EOpenGLAPIClass pAPIClass ) const
 	{
 		if( pAPIClass == EOpenGLAPIClass::OpenGLES )
 		{
@@ -142,7 +147,7 @@ namespace Ic3::System
 		return false;
 	}
 
-	bool AndroidOpenGLSystemDriver::_nativeIsRenderContextBound() const
+	bool AndroidOpenGLSystemDriver::_NativeIsRenderContextBound() const
 	{
 		auto currentContext = ::eglGetCurrentContext();
 		return currentContext != EGL_NO_CONTEXT;
@@ -155,30 +160,30 @@ namespace Ic3::System
 
 	AndroidOpenGLDisplaySurface::~AndroidOpenGLDisplaySurface() noexcept
 	{
-		_releaseAndroidSurfaceState();
+		_ReleaseAndroidSurfaceState();
 	}
 
-	void AndroidOpenGLDisplaySurface::_releaseAndroidSurfaceState()
+	void AndroidOpenGLDisplaySurface::_ReleaseAndroidSurfaceState()
 	{
 	}
 
-	void AndroidOpenGLDisplaySurface::_nativeSwapBuffers()
+	void AndroidOpenGLDisplaySurface::_NativeSwapBuffers()
 	{
-		::eglSwapBuffers( mNativeData.mEGLDisplay, mNativeData.mEGLSurfaceHandle );
+		::eglSwapBuffers( mNativeData.eglDisplay, mNativeData.eglSurfaceHandle );
 	}
 
-	FrameSize AndroidOpenGLDisplaySurface::_nativeQueryRenderAreaSize() const
+	FrameSize AndroidOpenGLDisplaySurface::_NativeQueryRenderAreaSize() const
 	{
 		EGLint surfaceWidth = 0;
 		EGLint surfaceHeight = 0;
 
-		auto queryResult = ::eglQuerySurface( mNativeData.mEGLDisplay, mNativeData.mEGLSurfaceHandle, EGL_WIDTH, &surfaceWidth );
+		auto queryResult = ::eglQuerySurface( mNativeData.eglDisplay, mNativeData.eglSurfaceHandle, EGL_WIDTH, &surfaceWidth );
 		if( queryResult == EGL_FALSE )
 		{
 			ic3EGLHandleLastError();
 		}
 
-		queryResult = ::eglQuerySurface( mNativeData.mEGLDisplay, mNativeData.mEGLSurfaceHandle, EGL_HEIGHT, &surfaceHeight );
+		queryResult = ::eglQuerySurface( mNativeData.eglDisplay, mNativeData.eglSurfaceHandle, EGL_HEIGHT, &surfaceHeight );
 		if( queryResult == EGL_FALSE )
 		{
 			ic3EGLHandleLastError();
@@ -191,28 +196,29 @@ namespace Ic3::System
 		return result;
 	}
 
-	bool AndroidOpenGLDisplaySurface::_nativeSysValidate() const
+	bool AndroidOpenGLDisplaySurface::_NativeSysValidate() const
 	{
-		return ( mNativeData.mEGLSurfaceHandle != EGL_NO_SURFACE ) && mNativeData.mEGLNativeWindowHandle;
+		return ( mNativeData.eglSurfaceHandle != EGL_NO_SURFACE ) && mNativeData.eglNativeWindowHandle;
 	}
 
-	void AndroidOpenGLDisplaySurface::_nativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode )
+	void AndroidOpenGLDisplaySurface::_NativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode )
 	{}
 
-	void AndroidOpenGLDisplaySurface::_nativeSetFullscreenMode( bool pEnable )
+	void AndroidOpenGLDisplaySurface::_NativeSetFullscreenMode( bool pEnable )
 	{}
 
-	void AndroidOpenGLDisplaySurface::_nativeSetTitle( const std::string & pTitle )
+	void AndroidOpenGLDisplaySurface::_NativeSetTitle( const std::string & pTitle )
 	{
 
 	}
 
-	void AndroidOpenGLDisplaySurface::_nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-	                                                         TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
+	void AndroidOpenGLDisplaySurface::_NativeUpdateGeometry(
+			const FrameGeometry & pFrameGeometry,
+			cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
 	{
 	}
 
-	FrameSize AndroidOpenGLDisplaySurface::_nativeGetSize( EFrameSizeMode pSizeMode ) const
+	FrameSize AndroidOpenGLDisplaySurface::_NativeGetSize( EFrameSizeMode pSizeMode ) const
 	{
 		return {};
 	}
@@ -224,29 +230,29 @@ namespace Ic3::System
 
 	AndroidOpenGLRenderContext::~AndroidOpenGLRenderContext() noexcept
 	{
-		_releaseAndroidContextState();
+		_ReleaseAndroidContextState();
 	}
 
-	void AndroidOpenGLRenderContext::_releaseAndroidContextState()
+	void AndroidOpenGLRenderContext::_ReleaseAndroidContextState()
 	{
 	}
 
-	void AndroidOpenGLRenderContext::_nativeBindForCurrentThread( const OpenGLDisplaySurface & pTargetSurface )
+	void AndroidOpenGLRenderContext::_NativeBindForCurrentThread( const OpenGLDisplaySurface & pTargetSurface )
 	{
-		const auto * androidDisplaySurface = pTargetSurface.queryInterface<AndroidOpenGLDisplaySurface>();
-		Platform::eglBindContextForCurrentThread( mNativeData, androidDisplaySurface->mNativeData );
+		const auto * androidDisplaySurface = pTargetSurface.QueryInterface<AndroidOpenGLDisplaySurface>();
+		Platform::EABindContextForCurrentThread( mNativeData, androidDisplaySurface->mNativeData );
 	}
 
-	bool AndroidOpenGLRenderContext::_nativeIsCurrent() const
+	bool AndroidOpenGLRenderContext::_NativeIsCurrent() const
 	{
 		auto currentContext = ::eglGetCurrentContext();
 		return mNativeData.eContextHandle == currentContext;
 	}
 
-	bool AndroidOpenGLRenderContext::_nativeSysValidate() const
+	bool AndroidOpenGLRenderContext::_NativeSysValidate() const
 	{
 		return mNativeData.eContextHandle != EGL_NO_CONTEXT;
 	}
 
 } // namespace Ic3::System
-#endif // IC3_PCL_TARGET_SYSAPI_ANDROID
+#endif // PCL_TARGET_SYSAPI_ANDROID

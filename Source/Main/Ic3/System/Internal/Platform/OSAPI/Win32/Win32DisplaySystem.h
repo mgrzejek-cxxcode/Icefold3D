@@ -31,7 +31,7 @@ namespace Ic3::System
 		{
 			HMONITOR mGDIMonitorHandle;
 			std::string mDisplayDeviceName;
-			std::string mOutputID;
+			std::string outputID;
 		};
 
 		struct Win32DisplayVideoModeNativeData
@@ -54,13 +54,13 @@ namespace Ic3::System
 		virtual ~Win32DisplayManager() noexcept;
 
 	private:
-		virtual DisplayDriverHandle _nativeCreateDisplayDriver() override final;
+		virtual DisplayDriverHandle _NativeCreateDisplayDriver() override final;
 
-        virtual void _nativeQueryDefaultDisplayOffset( DisplayOffset & pOutOffset ) const override final;
+        virtual void _NativeQueryDefaultDisplayOffset( DisplayOffset & pOutOffset ) const override final;
 
-		virtual void _nativeQueryDefaultDisplaySize( DisplaySize & pOutSize ) const override final;
+		virtual void _NativeQueryDefaultDisplaySize( DisplaySize & pOutSize ) const override final;
 
-		virtual void _nativeQueryMinWindowSize( DisplaySize & pOutSize ) const override final;
+		virtual void _NativeQueryMinWindowSize( DisplaySize & pOutSize ) const override final;
 	};
 
 	/// @brief
@@ -71,20 +71,22 @@ namespace Ic3::System
 		virtual ~Win32DisplayDriver() noexcept;
 
 	private:
-		virtual void _nativeEnumDisplayDevices() override final;
+		virtual void _NativeEnumDisplayDevices() override final;
 
-		virtual void _nativeEnumVideoModes( DisplayOutput & pOutput, EColorFormat pColorFormat ) override final;
+		virtual void _NativeEnumVideoModes( DisplayOutput & pOutput, EColorFormat pColorFormat ) override final;
 
-		virtual EColorFormat _nativeQueryDefaultSystemColorFormat() const override final;
+		virtual EColorFormat _NativeQueryDefaultSystemColorFormat() const override final;
 
 		// Returns a handle to an existing adapter with a specified UUID (DeviceKey).
-		TSysHandle<Win32DisplayAdapter> _findAdapterByUUID( const std::string & pUUID );
+		TSysHandle<Win32DisplayAdapter> _FindAdapterByUUID( const std::string & pUUID );
 
 		// Returns a handle to an existing output of a specified adapter with a given output name (DeviceID);
-		TSysHandle<Win32DisplayOutput> _findAdapterOutputForDisplayDeviceName( DisplayAdapter & pAdapter, const char * pDeviceName );
+		TSysHandle<Win32DisplayOutput> _FindAdapterOutputForDisplayDeviceName(
+				DisplayAdapter & pAdapter,
+				const char * pDeviceName );
 
 		// Returns a handle to an existing output of an existing adapter with a given output name (DeviceID);
-		TSysHandle<Win32DisplayOutput> _findAnyOutputForDisplayDeviceName( const char * pDeviceName );
+		TSysHandle<Win32DisplayOutput> _FindAnyOutputForDisplayDeviceName( const char * pDeviceName );
 
 		//
 		static BOOL CALLBACK _win32MonitorEnumProc( HMONITOR pMonitorHandle, HDC pHDC, LPRECT pMonitorRect, LPARAM pUserParam );

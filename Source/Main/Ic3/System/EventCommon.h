@@ -89,10 +89,10 @@ namespace Ic3::System
 	struct EvtBase
 	{
 		//
-		event_code_value_t mEventCode;
+		event_code_value_t eventCode;
 
 		//
-		perf_counter_value_t mTimeStamp;
+		perf_counter_value_t timeStamp;
 	};
 
 
@@ -105,7 +105,7 @@ namespace Ic3::System
 		/// @brief
 		inline constexpr event_code_value_t declareEventCode( EEventBaseType pEventBaseType, EEventCategory pEventCategory, EEventCodeIndex pEventCodeIndex )
 		{
-			return ( ( (uint32)VBM_EVENT_CODE_CONTROL_KEY << 24 ) | ( (uint32)pEventBaseType << 16 ) | ( (uint32)pEventCategory << 8 ) | (uint32)pEventCodeIndex );
+			return ( ( ( uint32 )VBM_EVENT_CODE_CONTROL_KEY << 24 ) | ( ( uint32 )pEventBaseType << 16 ) | ( ( uint32 )pEventCategory << 8 ) | ( uint32 )pEventCodeIndex );
 		}
 
 		inline constexpr event_code_value_t declareEventCodeAppActivity( EEventCodeIndex pEventCodeIndex )
@@ -138,32 +138,32 @@ namespace Ic3::System
 			return declareEventCode( EEventBaseType::Window, EEventCategory::WindowUpdate, pEventCodeIndex );
 		}
 
-		inline constexpr uint8 getEventCodeControlKey( event_code_value_t pEventCode )
+		inline constexpr uint8 GetEventCodeControlKey( event_code_value_t pEventCode )
 		{
 			return static_cast<uint8>( ( pEventCode >> 24 ) & 0xFF );
 		}
 
-		inline constexpr EEventBaseType getEventCodeBaseType( event_code_value_t pEventCode )
+		inline constexpr EEventBaseType GetEventCodeBaseType( event_code_value_t pEventCode )
 		{
 			return static_cast<EEventBaseType>( ( pEventCode >> 16 ) & 0xFF );
 		}
 
-		inline constexpr EEventCategory getEventCodeCategory( event_code_value_t pEventCode )
+		inline constexpr EEventCategory GetEventCodeCategory( event_code_value_t pEventCode )
 		{
 			return static_cast<EEventCategory>( ( pEventCode >> 8 ) & 0xFF );
 		}
 
-		inline constexpr EEventCodeIndex getEventCodeCodeIndex( event_code_value_t pEventCode )
+		inline constexpr EEventCodeIndex GetEventCodeCodeIndex( event_code_value_t pEventCode )
 		{
 			return static_cast<EEventCodeIndex>( pEventCode & 0xFF );
 		}
 
 		inline constexpr bool validateEventCode( event_code_value_t pEventCode )
 		{
-			return ( getEventCodeControlKey( pEventCode ) == VBM_EVENT_CODE_CONTROL_KEY ) &&
-			       ( getEventCodeBaseType( pEventCode ) < EEventBaseType::_Reserved ) &&
-			       ( getEventCodeCategory( pEventCode ) < EEventCategory::_Reserved ) &&
-			       ( getEventCodeCodeIndex( pEventCode ) < EEventCodeIndex::_Reserved );
+			return ( GetEventCodeControlKey( pEventCode ) == VBM_EVENT_CODE_CONTROL_KEY ) &&
+			       ( GetEventCodeBaseType( pEventCode ) < EEventBaseType::_Reserved ) &&
+			       ( GetEventCodeCategory( pEventCode ) < EEventCategory::_Reserved ) &&
+			       ( GetEventCodeCodeIndex( pEventCode ) < EEventCodeIndex::_Reserved );
 		}
 
 	}

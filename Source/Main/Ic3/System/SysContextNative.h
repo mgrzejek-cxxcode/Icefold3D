@@ -4,13 +4,13 @@
 
 #include "Prerequisites.h"
 
-#if( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_ANDROID )
+#if( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_ANDROID )
 #  include "Internal/Platform/OSAPI/Android/AndroidSysContext.h"
-#elif( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_OSX )
+#elif( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_OSX )
 #  include "Internal/Platform/OSAPI/OSX/OSXSysContext.h"
-#elif( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_WIN32 )
+#elif( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_WIN32 )
 #  include "Internal/Platform/OSAPI/Win32/Win32SysContext.h"
-#elif( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_X11 )
+#elif( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_X11 )
 #  include "Internal/Platform/OSAPI/X11/X11SysContext.h"
 #endif
 

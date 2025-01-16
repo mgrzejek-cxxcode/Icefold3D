@@ -12,35 +12,35 @@ namespace Ic3::System
 
 	WindowManager::~WindowManager() noexcept = default;
 
-	WindowHandle WindowManager::createWindow( WindowCreateInfo pCreateInfo )
+	WindowHandle WindowManager::CreateWindow( WindowCreateInfo pCreateInfo )
 	{
 		auto createInfo = std::move( pCreateInfo );
 
-		createInfo.mFrameGeometry = validateFrameGeometry( createInfo.mFrameGeometry );
+		createInfo.frameGeometry = ValidateFrameGeometry( createInfo.frameGeometry );
 
-		if( createInfo.mTitle.empty() )
+		if( createInfo.title.empty() )
 		{
-			createInfo.mTitle = "Tessline-3DX / Native Window";
+			createInfo.title = "Tessline-3DX / Native Window";
 		}
 
-		return _nativeCreateWindow( std::move( createInfo ) );
+		return _NativeCreateWindow( std::move( createInfo ) );
 	}
 
-	bool WindowManager::checkFrameGeometry( const FrameGeometry & pFrameGeometry ) const
+	bool WindowManager::CheckFrameGeometry( const FrameGeometry & pFrameGeometry ) const
 	{
-		return mDisplayManager->checkFrameGeometry( pFrameGeometry );
+		return mDisplayManager->CheckFrameGeometry( pFrameGeometry );
 	}
 
-	FrameGeometry WindowManager::validateFrameGeometry( const FrameGeometry & pFrameGeometry ) const
+	FrameGeometry WindowManager::ValidateFrameGeometry( const FrameGeometry & pFrameGeometry ) const
 	{
-		return mDisplayManager->validateFrameGeometry( pFrameGeometry );
+		return mDisplayManager->ValidateFrameGeometry( pFrameGeometry );
 	}
 
-	void WindowManager::releaseSystemWindow( Window & pWindow ) noexcept
+	void WindowManager::ReleaseSystemWindow( Window & pWindow ) noexcept
 	{
 		try
 		{
-			_nativeDestroyWindow( pWindow );
+			_NativeDestroyWindow( pWindow );
 		}
 		catch( const Exception & pException )
 		{
@@ -58,81 +58,82 @@ namespace Ic3::System
 	: Frame( pWindowManager->mSysContext )
 	, mWindowManager( std::move( pWindowManager ) )
 	{
-		setEventSourceNativeData( pNativeData );
+		SetEventSourceNativeData( pNativeData );
 	}
 
 	Window::~Window() noexcept
 	{
-		resetEventSourceNativeData();
+		ResetEventSourceNativeData();
 	}
 
-	void Window::resizeClientArea( const FrameSize & pSize )
+	void Window::ResizeClientArea( const FrameSize & pSize )
 	{
 		FrameGeometry newFrameGeometry{};
 		newFrameGeometry.mPosition = cxFramePosAuto;
-		newFrameGeometry.mSize = pSize;
+		newFrameGeometry.size = pSize;
 		newFrameGeometry.mStyle = EFrameStyle::Unspecified;
 
-		newFrameGeometry = mWindowManager->validateFrameGeometry( newFrameGeometry );
+		newFrameGeometry = mWindowManager->ValidateFrameGeometry( newFrameGeometry );
 
 		const auto updateFlags = eFrameGeometryUpdateFlagPositionBit | eFrameGeometryUpdateFlagSizeClientAreaBit;
-		_nativeUpdateGeometry( newFrameGeometry, updateFlags );
+		_NativeUpdateGeometry( newFrameGeometry, updateFlags );
 	}
 
-	void Window::resizeFrame( const FrameSize & pSize )
+	void Window::ResizeFrame( const FrameSize & pSize )
 	{
 		FrameGeometry newFrameGeometry{};
 		newFrameGeometry.mPosition = cxFramePosAuto;
-		newFrameGeometry.mSize = pSize;
+		newFrameGeometry.size = pSize;
 		newFrameGeometry.mStyle = EFrameStyle::Unspecified;
 
-		newFrameGeometry = mWindowManager->validateFrameGeometry( newFrameGeometry );
+		newFrameGeometry = mWindowManager->ValidateFrameGeometry( newFrameGeometry );
 
 		const auto updateFlags = eFrameGeometryUpdateFlagPositionBit | eFrameGeometryUpdateFlagSizeOuterRectBit;
-		_nativeUpdateGeometry( newFrameGeometry, updateFlags );
+		_NativeUpdateGeometry( newFrameGeometry, updateFlags );
 	}
 
-	void Window::setFullscreenMode( bool pEnable )
+	void Window::SetFullscreenMode( bool pEnable )
 	{
-		_nativeSetFullscreenMode( pEnable );
+		_NativeSetFullscreenMode( pEnable );
 	}
 
-	void Window::setTitle( const std::string & pTitleText )
+	void Window::SetTitle( const std::string & pTitleText )
 	{
-		_nativeSetTitle( pTitleText );
+		_NativeSetTitle( pTitleText );
 	}
 
-	void Window::updateGeometry( const FrameGeometry & pFrameGeometry,
-	                             TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
+	void Window::UpdateGeometry(
+			const FrameGeometry & pFrameGeometry,
+			cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
 	{
-		auto newFrameGeometry = mWindowManager->validateFrameGeometry( pFrameGeometry );
-		_nativeUpdateGeometry( newFrameGeometry, pUpdateFlags );
+		auto newFrameGeometry = mWindowManager->ValidateFrameGeometry( pFrameGeometry );
+		_NativeUpdateGeometry( newFrameGeometry, pUpdateFlags );
 	}
 
-	FrameSize Window::getClientAreaSize() const
+	FrameSize Window::GetClientAreaSize() const
 	{
-		return _nativeGetSize( EFrameSizeMode::ClientArea );
+		return _NativeGetSize( EFrameSizeMode::ClientArea );
 	}
 
-	FrameSize Window::getFrameSize() const
+	FrameSize Window::GetFrameSize() const
 	{
-		return _nativeGetSize( EFrameSizeMode::OuterRect );
+		return _NativeGetSize( EFrameSizeMode::OuterRect );
 	}
 
-	bool Window::isFullscreen() const
+	bool Window::IsFullscreen() const
 	{
 		return false;
 	}
 
-	void Window::onDestroySystemObjectRequested()
+	void Window::OnDestroySystemObjectRequested()
 	{
-		EventSource::onDestroySystemObjectRequested();
+		EventSource::OnDestroySystemObjectRequested();
 
 		// Window itself must be destroyed at the very end - it can still be an active event source!
 		// Destroying it first would make it impossible to handle the event source removal (e.g. in
-		// case of Win32, HWND would be already invalid inside EventSource::onDestroySystemObjectRequested()).
+		// case of Win32, HWND would be already invalid inside EventSource::OnDestroySystemObjectRequested()).
 
-		mWindowManager->releaseSystemWindow( *this );
+		mWindowManager->ReleaseSystemWindow( *this );
 	}
 
 } // namespace Ic3::System

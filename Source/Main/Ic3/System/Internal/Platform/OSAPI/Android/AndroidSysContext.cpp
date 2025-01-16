@@ -10,74 +10,74 @@
 #include <android/asset_manager.h>
 #include <android/asset_manager_jni.h>
 
-#if( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_ANDROID )
+#if( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_ANDROID )
 namespace Ic3::System
 {
 
-	SysContextHandle createSysContext( const SysContextCreateInfo & pCreateInfo )
+	SysContextHandle CreateSysContext( const SysContextCreateInfo & pCreateInfo )
 	{
-		if( !pCreateInfo.mNativeParams.aCommonAppState )
+		if( !pCreateInfo.nativeParams.aCommonAppState )
 		{
 			return nullptr;
 		}
-		return createDynamicObject<AndroidSysContext>( pCreateInfo.mNativeParams.aCommonAppState );
+		return CreateDynamicObject<AndroidSysContext>( pCreateInfo.nativeParams.aCommonAppState );
 	}
 
 
 	AndroidSysContext::AndroidSysContext( AndroidAppState * pAppState )
 	: mJVMInstance( std::make_unique<JavaVMInstance>( pAppState->activity->vm ) )
-	, mSysThreadJNIObject( mJVMInstance->acquireJNIForCurrentThread() )
+	, mSysThreadJNIObject( mJVMInstance->AcquireJNIForCurrentThread() )
 	{
-		_initializeAndroidContextState( pAppState );
+		_InitializeAndroidContextState( pAppState );
 	}
 
 	AndroidSysContext::~AndroidSysContext() noexcept
 	{
-		_releaseAndroidContextState();
+		_ReleaseAndroidContextState();
 	}
 
-	AssetLoaderHandle AndroidSysContext::createAssetLoader( const AssetLoaderCreateInfo & pCreateInfo )
+	AssetLoaderHandle AndroidSysContext::CreateAssetLoader( const AssetLoaderCreateInfo & pCreateInfo )
 	{
-		return createSysObject<AndroidAssetLoader>( getHandle<AndroidSysContext>() );
+		return CreateSysObject<AndroidAssetLoader>( GetHandle<AndroidSysContext>() );
 	}
 
-	DisplayManagerHandle AndroidSysContext::createDisplayManager()
+	DisplayManagerHandle AndroidSysContext::CreateDisplayManager()
 	{
-		return createSysObject<AndroidDisplayManager>( getHandle<AndroidSysContext>() );
+		return CreateSysObject<AndroidDisplayManager>( GetHandle<AndroidSysContext>() );
 	}
 
-	EventControllerHandle AndroidSysContext::createEventController()
+	EventControllerHandle AndroidSysContext::CreateEventController()
 	{
-		return createSysObject<AndroidEventController>( getHandle<AndroidSysContext>() );
+		return CreateSysObject<AndroidEventController>( GetHandle<AndroidSysContext>() );
 	}
 
-	FileManagerHandle AndroidSysContext::createFileManager()
+	FileManagerHandle AndroidSysContext::CreateFileManager()
 	{
-		return createSysObject<PosixFileManager>( getHandle<AndroidSysContext>() );
+		return CreateSysObject<PosixFileManager>( GetHandle<AndroidSysContext>() );
 	}
 
-	OpenGLSystemDriverHandle AndroidSysContext::createOpenGLSystemDriver( DisplayManagerHandle pDisplayManager )
-	{
-		if( !pDisplayManager )
-		{
-			pDisplayManager = createDisplayManager();
-		}
-
-		auto androidDisplayManager = pDisplayManager->queryHandle<AndroidDisplayManager>();
-		return createSysObject<AndroidOpenGLSystemDriver>( androidDisplayManager );
-	}
-
-	WindowManagerHandle AndroidSysContext::createWindowManager( DisplayManagerHandle pDisplayManager )
+	OpenGLSystemDriverHandle AndroidSysContext::CreateOpenGLSystemDriver( DisplayManagerHandle pDisplayManager )
 	{
 		if( !pDisplayManager )
 		{
-			pDisplayManager = createDisplayManager();
+			pDisplayManager = CreateDisplayManager();
 		}
 
-		return createSysObject<AndroidWindowManager>( pDisplayManager );
+		auto androidDisplayManager = pDisplayManager->QueryHandle<AndroidDisplayManager>();
+		return CreateSysObject<AndroidOpenGLSystemDriver>( androidDisplayManager );
 	}
 
-	std::string AndroidSysContext::queryCurrentProcessExecutableFilePath() const
+	WindowManagerHandle AndroidSysContext::CreateWindowManager( DisplayManagerHandle pDisplayManager )
+	{
+		if( !pDisplayManager )
+		{
+			pDisplayManager = CreateDisplayManager();
+		}
+
+		return CreateSysObject<AndroidWindowManager>( pDisplayManager );
+	}
+
+	std::string AndroidSysContext::QueryCurrentProcessExecutableFilePath() const
 	{
 		pid_t currentProcessID = getpid();
 
@@ -93,42 +93,42 @@ namespace Ic3::System
 		return executableFilePath;
 	}
 
-	void AndroidSysContext::_initializeAndroidContextState( AndroidAppState * pAppState )
+	void AndroidSysContext::_InitializeAndroidContextState( AndroidAppState * pAppState )
 	{
 		mNativeData.aSessionData.aCommonAppState = pAppState;
 		mNativeData.aSessionData.aCommonAppState->ic3SetUserData(
-			Platform::E_ANDROID_APP_STATE_USER_DATA_INDEX_SYS_CONTEXT, this );
+			Platform::eAndroidAppStateUserDataIndexSysContext, this );
 	}
 
-	void AndroidSysContext::_releaseAndroidContextState()
+	void AndroidSysContext::_ReleaseAndroidContextState()
 	{
 		mNativeData.aSessionData.aCommonAppState->ic3SetUserData(
-			Platform::E_ANDROID_APP_STATE_USER_DATA_INDEX_SYS_CONTEXT, nullptr );
+			Platform::eAndroidAppStateUserDataIndexSysContext, nullptr );
 		mNativeData.aSessionData.aCommonAppState = nullptr;
 	}
 
-	void AndroidSysContext::updateANativeWindowReference( ANativeWindow * pANativeWindow )
+	void AndroidSysContext::UpdateANativeWindowReference( ANativeWindow * pANativeWindow )
 	{
 		if( pANativeWindow != mNativeData.aSessionData.aNativeWindow )
 		{
 			ANativeWindow_acquire( pANativeWindow );
 			if( mNativeData.aSessionData.aNativeWindow )
 			{
-				ANativeWindow_release( mNativeData.aSessionData.aNativeWindow );
+				ANativeWindow_Release( mNativeData.aSessionData.aNativeWindow );
 			}
 			mNativeData.aSessionData.aNativeWindow = pANativeWindow;
 		}
 	}
 
-	Platform::ASessionData & AndroidSysContext::getASessionData()
+	Platform::ASessionData & AndroidSysContext::GetASessionData()
 	{
 		return mNativeData.aSessionData;
 	}
 
-	const Platform::ASessionData & AndroidSysContext::getASessionData() const
+	const Platform::ASessionData & AndroidSysContext::GetASessionData() const
 	{
 		return mNativeData.aSessionData;
 	}
 
 } // namespace Ic3::System
-#endif // IC3_PCL_TARGET_SYSAPI_ANDROID
+#endif // PCL_TARGET_SYSAPI_ANDROID

@@ -95,66 +95,66 @@ namespace Ic3::System
 
 	struct ColorDesc
 	{
-		Math::RGBAColorU8 mRGBA;
-		uint32 mSize = 0;
-		EPixelOrder mPixelOrder = EPixelOrder::Unknown;
-		EColorSpace mColorSpace = EColorSpace::Unknown;
+		Math::RGBAColorU8 rgba;
+		uint32 size = 0;
+		EPixelOrder pixelOrder = EPixelOrder::Unknown;
+		EColorSpace colorSpace = EColorSpace::Unknown;
 	};
 
 	struct DepthStencilDesc
 	{
-		uint8 mDepthBufferSize;
-		uint8 mStencilBufferSize;
+		uint8 depthBufferSize;
+		uint8 stencilBufferSize;
 	};
 
 	struct MSAADesc
 	{
-		uint8 mBufferCount;
-		uint8 mQuality;
+		uint8 bufferCount;
+		uint8 quality;
 	};
 
 	/// @brief
 	struct VisualConfig
 	{
 		// Struct representation of the color format.
-		ColorDesc mColorDesc;
+		ColorDesc colorDesc;
 
 		// Enum ID of the color format.
-		EColorFormat mColorFormat;
+		EColorFormat colorFormat;
 
 		// Struct representation of a depth/stencil buffer description.
-		DepthStencilDesc mDepthStencilDesc;
+		DepthStencilDesc depthStencilDesc;
 
 		// Enum ID of the depth/stencil buffer format.
-		EDepthStencilFormat mDepthStencilFormat;
+		EDepthStencilFormat depthStencilFormat;
 
 		// Struct representation of the MSAA mode.
-		MSAADesc mMSAADesc;
+		MSAADesc msaaDesc;
 
 		// Enum ID of the MSAA mode.
-		EMSAAMode mMSAAMode;
+		EMSAAMode msaaMode;
 
 		// Additional visual config flags.
-		TBitmask<EVisualAttribFlags> mFlags;
+		cppx::bitmask<EVisualAttribFlags> flags;
 	};
 
 	/// @brief Returns a ColorDesc structure representation of a specified EColorFormat.
-	IC3_SYSTEM_API const std::string & vsxQueryColorFormatStr( EColorFormat pFormat );
+	IC3_SYSTEM_API const std::string & VisQueryColorFormatStr( EColorFormat pFormat );
 
 	/// @brief Returns a ColorDesc structure representation of a specified EColorFormat.
-	IC3_SYSTEM_API const ColorDesc & vsxGetDescForColorFormat( EColorFormat pFormat );
+	IC3_SYSTEM_API const ColorDesc & VisGetDescForColorFormat( EColorFormat pFormat );
 
 	/// @brief Returns a DepthStencilDesc structure representation of a specified EDepthStencilFormat.
-	IC3_SYSTEM_API const DepthStencilDesc & vsxGetDescForDepthStencilFormat( EDepthStencilFormat pFormat );
+	IC3_SYSTEM_API const DepthStencilDesc & VisGetDescForDepthStencilFormat( EDepthStencilFormat pFormat );
 
 	/// @brief Returns an MSAADesc structure representation of a specified EMSAAMode.
-	IC3_SYSTEM_API const MSAADesc & vsxGetDescForMSAAMode( EMSAAMode pMode );
+	IC3_SYSTEM_API const MSAADesc & VisGetDescForMSAAMode( EMSAAMode pMode );
 
 	/// @brief Returns a ColorDesc structure representation of a specified EColorFormat.
-	IC3_SYSTEM_API const VisualConfig & vsxGetDefaultVisualConfigForSysWindow();
+	IC3_SYSTEM_API const VisualConfig & VisGetDefaultVisualConfigForSysWindow();
 
 	///
-	IC3_SYSTEM_API bool vsxCheckColorFormatCompatibility( EColorFormat pFormat, uint8 pRed, uint8 pGreen, uint8 pBlue, uint8 pAlpha );
+	IC3_SYSTEM_API bool VisCheckColorFormatCompatibility( EColorFormat pFormat, uint8 pRed, uint8 pGreen, uint8 pBlue, uint8 pAlpha );
 
 } // namespace Ic3::System
 

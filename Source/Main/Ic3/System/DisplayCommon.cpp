@@ -1,6 +1,6 @@
 
 #include "Internal/DisplaySystemPrivate.h"
-#include <Ic3/Cppx/StringUtils.h>
+#include <cppx/stringUtils.h>
 #include <sstream>
 
 namespace Ic3::System
@@ -9,23 +9,23 @@ namespace Ic3::System
 	std::string DisplayAdapterDesc::toString() const
 	{
 		std::stringstream strStream;
-		strStream << "Adapter <" << mAdapterIndex << "> (" << mName << ")";
+		strStream << "Adapter <" << adapterIndex << "> (" << name << ")";
 
-		if( mFlags.isSet( eDisplayAdapterFlagActiveBit ) )
+		if( flags.is_set( eDisplayAdapterFlagActiveBit ) )
 		{
 			strStream << ", Active";
 		}
 
-		if( mFlags.isSet( eDisplayAdapterFlagPrimaryBit ) )
+		if( flags.is_set( eDisplayAdapterFlagPrimaryBit ) )
 		{
 			strStream << ", Primary";
 		}
 
-		if( mFlags.isSet( eDisplayAdapterFlagHardwareBit ) )
+		if( flags.is_set( eDisplayAdapterFlagHardwareBit ) )
 		{
 			strStream << ", Hardware";
 		}
-		else if( mFlags.isSet( eDisplayAdapterFlagSoftwareBit ) )
+		else if( flags.is_set( eDisplayAdapterFlagSoftwareBit ) )
 		{
 			strStream << ", Software";
 		}
@@ -36,20 +36,20 @@ namespace Ic3::System
 	std::string DisplayOutputDesc::toString() const
 	{
 		std::stringstream strStream;
-		strStream << "Output <" << mOutputIndex << "> (" << mName << ")";
+		strStream << "Output <" << outputIndex << "> (" << name << ")";
 
-		if( mFlags.isSet( eDisplayOutputFlagActiveBit ) )
+		if( flags.is_set( eDisplayOutputFlagActiveBit ) )
 		{
 			strStream << ", Active";
 		}
 
-		if( mFlags.isSet( eDisplayOutputFlagPrimaryBit ) )
+		if( flags.is_set( eDisplayOutputFlagPrimaryBit ) )
 		{
 			strStream << ", Primary";
 		}
 
-		strStream << ", Origin:[" << mScreenRect.mOffset.x << "x" << mScreenRect.mOffset.y << "]";
-		strStream << ", Size:[" << mScreenRect.mSize.x << "x" << mScreenRect.mSize.y << "]";
+		strStream << ", Origin:[" << screenRect.offset.x << "x" << screenRect.offset.y << "]";
+		strStream << ", Size:[" << screenRect.size.x << "x" << screenRect.size.y << "]";
 
 		return strStream.str();
 	}
@@ -57,60 +57,75 @@ namespace Ic3::System
 	std::string DisplayVideoModeDesc::toString() const
 	{
 		std::stringstream strStream;
-		strStream << "DisplayMode <" << mVideoModeIndex << "> ";
+		strStream << "DisplayMode <" << videoModeIndex << "> ";
 
-		const auto settingsText = dsmGetVideoSettingsString( mColorFormat, mSettings );
+		const auto settingsText = DSMGetVideoSettingsString( colorFormat, settings );
 		strStream << settingsText;
 
 		return strStream.str();
 	}
 
-	dsm_output_id_t dsmCreateDisplayOutputID( dsm_index_t pAdapterIndex, dsm_index_t pOutputIndex )
+
+	dsm_index_t DSMExtractOutputIDAdapterIndex( dsm_output_id_t pOutputID )
+	{
+		DisplayOutputIDGen outputIDGen;
+		outputIDGen.outputID = pOutputID;
+		return outputIDGen.uAdapterIndex;
+	}
+
+	dsm_index_t DSMExtractOutputIDOutputIndex( dsm_output_id_t pOutputID )
+	{
+		DisplayOutputIDGen outputIDGen;
+		outputIDGen.outputID = pOutputID;
+		return outputIDGen.uOutputIndex;
+	}
+
+	dsm_output_id_t DSMCreateDisplayOutputID( dsm_index_t pAdapterIndex, dsm_index_t pOutputIndex )
 	{
 		DisplayOutputIDGen outputIDGen;
 		outputIDGen.uAdapterIndex = pAdapterIndex;
 		outputIDGen.uOutputIndex = pOutputIndex;
-		return outputIDGen.mOutputID;
+		return outputIDGen.outputID;
 	}
 
-	dsm_video_settings_hash_t dsmComputeVideoSettingsHash( EColorFormat pFormat, const DisplayVideoSettings & pSettings )
+	inline dsm_video_settings_hash_t DSMComputeVideoSettingsHash( EColorFormat pFormat, const DisplayVideoSettings & pSettings )
 	{
 		DisplayVideoSettingsHashGen hashValueGen;
-		hashValueGen.uResWidth = static_cast<uint16>( pSettings.mResolution.x );
-		hashValueGen.uResHeight = static_cast<uint16>( pSettings.mResolution.x );
-		hashValueGen.uRefreshRate = static_cast<uint16>( pSettings.mRefreshRate );
-		hashValueGen.uFlags = static_cast<uint8>( pSettings.mFlags );
+		hashValueGen.uResWidth = static_cast<uint16>( pSettings.resolution.x );
+		hashValueGen.uResHeight = static_cast<uint16>( pSettings.resolution.x );
+		hashValueGen.uRefreshRate = static_cast<uint16>( pSettings.refreshRate );
+		hashValueGen.uFlags = static_cast<uint8>( pSettings.flags );
 		hashValueGen.uColorFormatIndex = static_cast<uint8>( pFormat );
-		return hashValueGen.mHashValue;
+		return hashValueGen.hashValue;
 	}
 
-	std::string dsmGetVideoSettingsString( EColorFormat pFormat, const DisplayVideoSettings & pSettings )
+	std::string DSMGetVideoSettingsString( EColorFormat pFormat, const DisplayVideoSettings & pSettings )
 	{
-		auto & colorFormatDesc = vsxGetDescForColorFormat( pFormat );
-		auto settingsHash = dsmComputeVideoSettingsHash( pFormat, pSettings );
+		auto & colorFormatDesc = VisGetDescForColorFormat( pFormat );
+		auto settingsHash = DSMComputeVideoSettingsHash( pFormat, pSettings );
 
 		std::stringstream strStream;
-		strStream << pSettings.mResolution.x << 'x' << pSettings.mResolution.y;
+		strStream << pSettings.resolution.x << 'x' << pSettings.resolution.y;
 
-		if( pSettings.mFlags.isSet( eDisplayVideoSettingsFlagScanProgressiveBit ) )
+		if( pSettings.flags.is_set( eDisplayVideoSettingsFlagScanProgressiveBit ) )
 		{
 			strStream << "p";
 		}
-		else if( pSettings.mFlags.isSet( eDisplayVideoSettingsFlagScanInterlacedBit ) )
+		else if( pSettings.flags.is_set( eDisplayVideoSettingsFlagScanInterlacedBit ) )
 		{
 			strStream << "i";
 		}
 
-		strStream << ", " << colorFormatDesc.mSize << "bit, " << pSettings.mRefreshRate << "Hz";
+		strStream << ", " << colorFormatDesc.size << "bit, " << pSettings.refreshRate << "Hz";
 		strStream << ", //0x" << std::hex << settingsHash << std::dec;
 
 		return strStream.str();
 	}
 
-	EDisplayAdapterVendorID dsmResolveAdapterVendorID( const std::string & pAdapterName )
+	EDisplayAdapterVendorID DSMResolveAdapterVendorID( const std::string & pAdapterName )
 	{
 		auto adapterVendorID = EDisplayAdapterVendorID::Unknown;
-		auto adapterString = Cppx::strUtils::makeUpper( pAdapterName );
+		auto adapterString = cppx::strutil::make_upper( pAdapterName );
 
 		if( ( adapterString.find( "AMD" ) != std::string::npos ) || ( adapterString.find( "ATI" ) != std::string::npos ) )
 		{
@@ -144,7 +159,7 @@ namespace Ic3::System
 		return adapterVendorID;
 	}
 
-	bool dsmCheckSettingsFilterMatch( const DisplayVideoSettingsFilter & pFilter, const DisplayVideoSettings & pSettings )
+	bool DSMCheckSettingsFilterMatch( const DisplayVideoSettingsFilter & pFilter, const DisplayVideoSettings & pSettings )
 	{
 		return true;
 	}

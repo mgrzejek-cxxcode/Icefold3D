@@ -27,31 +27,31 @@ namespace Ic3::System
 
 		virtual ~DisplayAdapter() noexcept;
 
-		IC3_ATTR_NO_DISCARD DisplayOutput * findOutput( DisplayOutputPredicate pPredicate ) const;
-		IC3_ATTR_NO_DISCARD DisplayOutputList findOutputs( DisplayOutputPredicate pPredicate ) const;
+		CPPX_ATTR_NO_DISCARD DisplayOutput * FindOutput( DisplayOutputPredicate pPredicate ) const;
+		CPPX_ATTR_NO_DISCARD DisplayOutputList FindOutputs( DisplayOutputPredicate pPredicate ) const;
 
-		IC3_ATTR_NO_DISCARD DisplayOutput * getOutput( dsm_index_t pOutputIndex ) const;
-		IC3_ATTR_NO_DISCARD DisplayOutput * getDefaultOutput() const;
+		CPPX_ATTR_NO_DISCARD DisplayOutput * GetOutput( dsm_index_t pOutputIndex ) const;
+		CPPX_ATTR_NO_DISCARD DisplayOutput * GetDefaultOutput() const;
 
-		IC3_ATTR_NO_DISCARD const DisplayAdapterDesc & getAdapterDesc() const;
-		IC3_ATTR_NO_DISCARD const DisplayOutputList & getOutputList() const;
+		CPPX_ATTR_NO_DISCARD const DisplayAdapterDesc & GetAdapterDesc() const;
+		CPPX_ATTR_NO_DISCARD const DisplayOutputList & GetOutputList() const;
 
-		IC3_ATTR_NO_DISCARD bool isActiveAdapter() const;
-		IC3_ATTR_NO_DISCARD bool isPrimaryAdapter() const;
-		IC3_ATTR_NO_DISCARD bool hasActiveOutputs() const;
-		IC3_ATTR_NO_DISCARD bool hasAnyOutputs() const;
+		CPPX_ATTR_NO_DISCARD bool IsActiveAdapter() const;
+		CPPX_ATTR_NO_DISCARD bool IsPrimaryAdapter() const;
+		CPPX_ATTR_NO_DISCARD bool HasActiveOutputs() const;
+		CPPX_ATTR_NO_DISCARD bool HasAnyOutputs() const;
 
 	private:
 		// Registers an output of this adapter. Adds it to the list and fills internal info.
 		// Called by the display driver when the display configuration is initialized.
-		void registerOutput( DisplayOutputHandle pOutput );
+		void RegisterOutput( DisplayOutputHandle pOutput );
 
 		// Validates the list of outputs, checks and updates flags, fills the additional pointer-based list.
-		// Internally it also calls validateVideoModesConfiguration() for each output and supported color format.
-		uint32 validateOutputsConfiguration();
+		// Internally it also calls ValidateVideoModesConfiguration() for each output and supported color format.
+		uint32 ValidateOutputsConfiguration();
 
 		// Returns a writable adapter desc. Used by the driver to fill the info about this adapter.
-		DisplayAdapterDesc & getAdapterDescInternal();
+		DisplayAdapterDesc & GetAdapterDescInternal();
 
 	protected:
 		struct DisplayAdapterPrivateData;
@@ -73,32 +73,33 @@ namespace Ic3::System
 		explicit DisplayOutput( DisplayAdapter & pDisplayAdapter );
 		virtual ~DisplayOutput() noexcept;
 
-		IC3_ATTR_NO_DISCARD TArrayView<const EColorFormat> getSupportedColorFormatList() const;
+		CPPX_ATTR_NO_DISCARD cppx::array_view<const EColorFormat> GetSupportedColorFormatList() const;
 
-		IC3_ATTR_NO_DISCARD bool checkVideoSettingsSupport( const DisplayVideoSettings & pVideoSettings,
-		                                                    EColorFormat pColorFormat = EColorFormat::Unknown ) const;
+		CPPX_ATTR_NO_DISCARD bool CheckVideoSettingsSupport(
+				const DisplayVideoSettings & pVideoSettings,
+				EColorFormat pColorFormat = EColorFormat::Unknown ) const;
 
-		IC3_ATTR_NO_DISCARD DisplayVideoMode * findVideoMode( EColorFormat pColorFormat, DisplayVideoModePredicate pPredicate ) const;
-		IC3_ATTR_NO_DISCARD DisplayVideoModeList findVideoModes( EColorFormat pColorFormat, DisplayVideoModePredicate pPredicate ) const;
+		CPPX_ATTR_NO_DISCARD DisplayVideoMode * FindVideoMode( EColorFormat pColorFormat, DisplayVideoModePredicate pPredicate ) const;
+		CPPX_ATTR_NO_DISCARD DisplayVideoModeList FindVideoModes( EColorFormat pColorFormat, DisplayVideoModePredicate pPredicate ) const;
 
-		IC3_ATTR_NO_DISCARD const DisplayOutputDesc & getOutputDesc() const;
-		IC3_ATTR_NO_DISCARD const DisplayVideoModeList & getVideoModeList() const;
-		IC3_ATTR_NO_DISCARD const DisplayVideoModeList & getVideoModeList( EColorFormat pColorFormat ) const;
+		CPPX_ATTR_NO_DISCARD const DisplayOutputDesc & GetOutputDesc() const;
+		CPPX_ATTR_NO_DISCARD const DisplayVideoModeList & GetVideoModeList() const;
+		CPPX_ATTR_NO_DISCARD const DisplayVideoModeList & GetVideoModeList( EColorFormat pColorFormat ) const;
 
-		IC3_ATTR_NO_DISCARD bool isActiveOutput() const;
-		IC3_ATTR_NO_DISCARD bool isPrimaryOutput() const;
+		CPPX_ATTR_NO_DISCARD bool IsActiveOutput() const;
+		CPPX_ATTR_NO_DISCARD bool IsPrimaryOutput() const;
 
-		IC3_ATTR_NO_DISCARD bool isColorFormatSupported( EColorFormat pColorFormat ) const;
+		CPPX_ATTR_NO_DISCARD bool IsColorFormatSupported( EColorFormat pColorFormat ) const;
 
 	private:
 		// Registers a supported video mode for this output. Adds it to the list and fills internal info.
 		// Called by the display driver when the display configuration is initialized.
-		void registerVideoMode( EColorFormat pColorFormat, DisplayVideoModeHandle pVideoMode );
+		void RegisterVideoMode( EColorFormat pColorFormat, DisplayVideoModeHandle pVideoMode );
 
-		uint32 validateVideoModesConfiguration( EColorFormat pColorFormat );
+		uint32 ValidateVideoModesConfiguration( EColorFormat pColorFormat );
 
 		// Returns a writable output desc. Used by the driver and parent adapter to fill the info about this output.
-		DisplayOutputDesc & getOutputDescInternal();
+		DisplayOutputDesc & GetOutputDescInternal();
 
 	protected:
 		struct DisplayOutputPrivateData;
@@ -120,11 +121,11 @@ namespace Ic3::System
 		explicit DisplayVideoMode( DisplayOutput & pDisplayOutput );
 		virtual ~DisplayVideoMode() noexcept;
 
-		IC3_ATTR_NO_DISCARD const DisplayVideoModeDesc & getModeDesc() const;
+		CPPX_ATTR_NO_DISCARD const DisplayVideoModeDesc & GetModeDesc() const;
 
 	private:
 		// Returns a writable video mode desc. Used by the driver and parent output to fill the info about this video mode.
-		DisplayVideoModeDesc & getModeDescInternal();
+		DisplayVideoModeDesc & GetModeDescInternal();
 
 	protected:
 		struct DisplayVideoModePrivateData;

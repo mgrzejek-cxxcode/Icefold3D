@@ -1,7 +1,7 @@
 
 #include "AndroidWindowSystem.h"
 
-#if( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_ANDROID )
+#if( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_ANDROID )
 namespace Ic3::System
 {
 
@@ -11,7 +11,7 @@ namespace Ic3::System
 
 	AndroidWindowManager::~AndroidWindowManager() noexcept = default;
 
-	WindowHandle AndroidWindowManager::_nativeCreateWindow( WindowCreateInfo pCreateInfo )
+	WindowHandle AndroidWindowManager::_NativeCreateWindow( WindowCreateInfo pCreateInfo )
 	{
 		return nullptr;
 	}
@@ -23,30 +23,31 @@ namespace Ic3::System
 
 	AndroidWindow::~AndroidWindow() noexcept = default;
 
-	void AndroidWindow::_nativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode )
+	void AndroidWindow::_NativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode )
 	{}
 
-	void AndroidWindow::_nativeSetFullscreenMode( bool pEnable )
+	void AndroidWindow::_NativeSetFullscreenMode( bool pEnable )
 	{}
 
-	void AndroidWindow::_nativeSetTitle( const std::string & pTitle )
+	void AndroidWindow::_NativeSetTitle( const std::string & pTitle )
 	{}
 
-	void AndroidWindow::_nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-	                                           TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
+	void AndroidWindow::_NativeUpdateGeometry(
+			const FrameGeometry & pFrameGeometry,
+			cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
 	{}
 
-	FrameSize AndroidWindow::_nativeGetSize( EFrameSizeMode /* pSizeMode */ ) const
+	FrameSize AndroidWindow::_NativeGetSize( EFrameSizeMode /* pSizeMode */ ) const
 	{
-		auto & aSessionData = Platform::androidGetASessionData( *this );
-		return Platform::androidQueryNativeWindowSize( aSessionData.aNativeWindow );
+		auto & aSessionData = Platform::AndroidGetASessionData( *this );
+		return Platform::AndroidQueryNativeWindowSize( aSessionData.aNativeWindow );
 	}
 
 
 	namespace Platform
 	{
 
-		Math::Size2u androidQueryNativeWindowSize( ANativeWindow * pANativeWindow )
+		Math::Size2u AndroidQueryNativeWindowSize( ANativeWindow * pANativeWindow )
 		{
 			Math::Size2u resultSize{};
 
@@ -62,4 +63,4 @@ namespace Ic3::System
 	}
 
 } // namespace Ic3::System
-#endif // IC3_PCL_TARGET_SYSAPI_ANDROID
+#endif // PCL_TARGET_SYSAPI_ANDROID

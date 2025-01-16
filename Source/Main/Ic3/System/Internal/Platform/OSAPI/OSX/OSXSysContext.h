@@ -4,7 +4,7 @@
 
 #include "OSXCommon.h"
 #include <Ic3/System/SysContext.h>
-#include <Ic3/Cppx/BitmaskAtomic.h>
+#include <cppx/bitmaskAtomic.h>
 
 namespace Ic3::System
 {
@@ -33,38 +33,39 @@ namespace Ic3::System
 		OSXSysContext();
 		virtual ~OSXSysContext() noexcept;
 
-		/// @copybrief SysContext::createAssetLoader
-		virtual AssetLoaderHandle createAssetLoader( const AssetLoaderCreateInfo & pCreateInfo ) override final;
+		/// @copybrief SysContext::CreateAssetLoader
+		virtual AssetLoaderHandle CreateAssetLoader( const AssetLoaderCreateInfo & pCreateInfo ) override final;
 
-		/// @copybrief SysContext::createDisplayManager
-		virtual DisplayManagerHandle createDisplayManager() override final;
+		/// @copybrief SysContext::CreateDisplayManager
+		virtual DisplayManagerHandle CreateDisplayManager() override final;
 
-		/// @copybrief SysContext::createEventController
-		virtual EventControllerHandle createEventController() override final;
+		/// @copybrief SysContext::CreateEventController
+		virtual EventControllerHandle CreateEventController() override final;
 
-		/// @copybrief SysContext::createFileManager
-		virtual FileManagerHandle createFileManager() override final;
+		/// @copybrief SysContext::CreateFileManager
+		virtual FileManagerHandle CreateFileManager() override final;
 
-		virtual MetalSystemDriverHandle createMetalSystemDriver( DisplayManagerHandle pDisplayManager,
-		                                                         const MetalSystemDriverCreateInfo & pCreateInfo ) override final;
+		virtual MetalSystemDriverHandle CreateMetalSystemDriver(
+				DisplayManagerHandle pDisplayManager,
+				const MetalSystemDriverCreateInfo & pCreateInfo ) override final;
 
-		/// @copybrief SysContext::createOpenGLSystemDriver
-		virtual OpenGLSystemDriverHandle createOpenGLSystemDriver( DisplayManagerHandle pDisplayManager ) override final;
+		/// @copybrief SysContext::CreateOpenGLSystemDriver
+		virtual OpenGLSystemDriverHandle CreateOpenGLSystemDriver( DisplayManagerHandle pDisplayManager ) override final;
 
-		/// @copybrief SysContext::createWindowManager
-		virtual WindowManagerHandle createWindowManager( DisplayManagerHandle pDisplayManager ) override final;
+		/// @copybrief SysContext::CreateWindowManager
+		virtual WindowManagerHandle CreateWindowManager( DisplayManagerHandle pDisplayManager ) override final;
 
-		/// @copybrief SysContext::queryCurrentProcessWorkingDirectory
-		virtual std::string queryCurrentProcessWorkingDirectory() const override final;
+		/// @copybrief SysContext::QueryCurrentProcessWorkingDirectory
+		virtual std::string QueryCurrentProcessWorkingDirectory() const override final;
 
-		/// @copybrief SysContext::queryCurrentProcessExecutableFilePath
-		virtual std::string queryCurrentProcessExecutableFilePath() const override final;
+		/// @copybrief SysContext::QueryCurrentProcessExecutableFilePath
+		virtual std::string QueryCurrentProcessExecutableFilePath() const override final;
 
-		bool isNSAppProxyRegistered() const;
+		bool IsNSAppProxyRegistered() const;
 
 	private:
-		void _initializeOSXContextState();
-		void _releaseOSXContextState();
+		void _InitializeOSXContextState();
+		void _ReleaseOSXContextState();
 
 		void _registerNSAppProxy();
 
@@ -74,7 +75,7 @@ namespace Ic3::System
 			E_STATE_NS_APP_PROXY_REGISTERED = 0x1000,
 		};
 
-		Cppx::TAtomicBitmask<uint32> _stateMask;
+		cppx::atomic_bitmask<uint32> _stateMask;
 	};
 
 } // namespace Ic3::System

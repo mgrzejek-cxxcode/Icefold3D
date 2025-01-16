@@ -1,6 +1,6 @@
 
 #include "OpenGLCommon.h"
-#include <Ic3/Cppx/STLHelperAlgo.h>
+#include <cppx/stdHelperAlgo.h>
 #include <sstream>
 #include <unordered_map>
 
@@ -11,42 +11,42 @@ namespace Ic3::System
 	{
 		std::ostringstream strStream;
 		strStream << "[OpenGL Rendering Context Information]\n";
-		strStream << "> API Version: " << mAPIVersion.mNumMajor << "." << mAPIVersion.mNumMinor << "\n";
-		strStream << "> Runtime Version: " << mAPIVersionStr << "\n";
-		strStream << "> GLSL Version: " << mGLSLVersionStr << "\n";
-		strStream << "> Renderer ID: " << mRendererName << "\n";
-		strStream << "> Vendor Name: " << mVendorName;
+		strStream << "> API cppx::version: " << apiVersion.num_major << "." << apiVersion.num_minor << "\n";
+		strStream << "> Runtime cppx::version: " << apiVersionStr << "\n";
+		strStream << "> GLSL cppx::version: " << glslVersionStr << "\n";
+		strStream << "> Renderer ID: " << rendererName << "\n";
+		strStream << "> Vendor Name: " << vendorName;
 		return strStream.str();
 	}
 
-	Version OpenGLCoreAPI::queryRuntimeVersion()
+	cppx::version OpenGLCoreAPI::QueryRuntimeVersion()
 	{
-		Version resultVersion;
+		cppx::version resultVersion;
 
 		int majorVersion = 0;
 		glGetIntegerv( GL_MAJOR_VERSION, &majorVersion );
-		resultVersion.mNumMajor = static_cast<uint16>( majorVersion );
+		resultVersion.num_major = static_cast<uint16>( majorVersion );
 
 		int minorVersion = 0;
 		glGetIntegerv( GL_MINOR_VERSION, &minorVersion );
-		resultVersion.mNumMinor = static_cast<uint16>( minorVersion );
+		resultVersion.num_minor = static_cast<uint16>( minorVersion );
 
 		return resultVersion;
 	}
 
-	bool OpenGLCoreAPI::checkLastResult()
+	bool OpenGLCoreAPI::CheckLastResult()
 	{
 		GLenum errorCode = glGetError();
 		return errorCode == GL_NO_ERROR;
 	}
 
-	bool OpenGLCoreAPI::checkLastError( GLenum pErrorCode )
+	bool OpenGLCoreAPI::CheckLastError( GLenum pErrorCode )
 	{
 		GLenum errorCode = glGetError();
 		return ( pErrorCode != GL_NO_ERROR ) && ( errorCode == pErrorCode );
 	}
 
-	void OpenGLCoreAPI::handleLastError()
+	void OpenGLCoreAPI::HandleLastError()
 	{
 		GLenum errorCode = glGetError();
 		if( errorCode != GL_NO_ERROR )
@@ -57,7 +57,7 @@ namespace Ic3::System
 		}
 	}
 
-	void OpenGLCoreAPI::resetErrorQueue()
+	void OpenGLCoreAPI::ResetErrorQueue()
 	{
 		size_t errorsNum = 0;
 		while( true )
@@ -87,7 +87,7 @@ namespace Ic3::System
 			{ GL_INVALID_FRAMEBUFFER_OPERATION , "GL_INVALID_FRAMEBUFFER_OPERATION" },
 			{ GL_OUT_OF_MEMORY				 , "GL_OUT_OF_MEMORY"				 },
 		};
-		return Cppx::getMapValueRefOrDefault( errorStringMap, pError, "UNKNOWN_ERROR" );
+		return cppx::get_map_value_ref_or_default( errorStringMap, pError, "UNKNOWN_ERROR" );
 	}
 
 } // namespace Ic3::System

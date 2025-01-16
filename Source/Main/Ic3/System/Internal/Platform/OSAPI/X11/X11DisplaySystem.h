@@ -6,7 +6,7 @@
 #include <Ic3/System/DisplayConfiguration.h>
 #include <Ic3/System/DisplaySystem.h>
 #include <X11/extensions/Xrandr.h>
-#include <Ic3/Cppx/Version.h>
+#include <cppx/version.h>
 #include <unordered_map>
 
 namespace Ic3::System
@@ -21,7 +21,7 @@ namespace Ic3::System
 		struct X11DisplayManagerNativeData : public X11NativeDataCommon
 		{
 			uint32 mScreenDepth = 0;
-			Version mXRRVersion = CX_VERSION_UNKNOWN;
+			cppx::version mXRRVersion = CX_VERSION_UNKNOWN;
 			XRRMonitorInfo mXRRDefaultMonitorInfo;
 		};
 
@@ -65,16 +65,16 @@ namespace Ic3::System
 		virtual ~X11DisplayManager() noexcept;
 
 	private:
-		void _initializeX11DisplayManagerState();
-		void _releaseX11DisplayManagerState();
+		void _InitializeX11DisplayManagerState();
+		void _ReleaseX11DisplayManagerState();
 
-		virtual DisplayDriverHandle _nativeCreateDisplayDriver() override final;
+		virtual DisplayDriverHandle _NativeCreateDisplayDriver() override final;
 
-		virtual void _nativeQueryDefaultDisplayOffset( DisplayOffset & pOutOffset ) const override final;
+		virtual void _NativeQueryDefaultDisplayOffset( DisplayOffset & pOutOffset ) const override final;
 
-		virtual void _nativeQueryDefaultDisplaySize( DisplaySize & pOutSize ) const override final;
+		virtual void _NativeQueryDefaultDisplaySize( DisplaySize & pOutSize ) const override final;
 
-		virtual void _nativeQueryMinWindowSize( DisplaySize & pOutSize ) const override final;
+		virtual void _NativeQueryMinWindowSize( DisplaySize & pOutSize ) const override final;
 	};
 
 	/// @brief Implementation of DisplayDriver for the X11 subsystem.
@@ -85,14 +85,14 @@ namespace Ic3::System
 		virtual ~X11DisplayDriver() noexcept;
 
 	private:
-		void _initializeX11DisplayDriverState();
-		void _releaseX11DisplayDriverState();
+		void _InitializeX11DisplayDriverState();
+		void _ReleaseX11DisplayDriverState();
 
-		virtual void _nativeEnumDisplayDevices() override final;
+		virtual void _NativeEnumDisplayDevices() override final;
 
-		virtual void _nativeEnumVideoModes( DisplayOutput & pOutput, EColorFormat pColorFormat ) override final;
+		virtual void _NativeEnumVideoModes( DisplayOutput & pOutput, EColorFormat pColorFormat ) override final;
 
-		virtual EColorFormat _nativeQueryDefaultSystemColorFormat() const override final;
+		virtual EColorFormat _NativeQueryDefaultSystemColorFormat() const override final;
 	};
 
 } // namespace Ic3::System

@@ -1,6 +1,6 @@
 
-#ifndef __IC3_SYSTEM_PLATFORM_OSAPI_EGL_OPENGL_DRIVER_H__
-#define __IC3_SYSTEM_PLATFORM_OSAPI_EGL_OPENGL_DRIVER_H__
+#ifndef __IC3_SYSTEM_PLATFORM_SHARED_EGL_OPENGL_DRIVER_H__
+#define __IC3_SYSTEM_PLATFORM_SHARED_EGL_OPENGL_DRIVER_H__
 
 #include <Ic3/System/OpenGLCommon.h>
 #include <EGL/egl.h>
@@ -19,58 +19,62 @@ namespace Ic3::System
 
 		struct EGLDisplaySurfaceNativeData
 		{
-			EGLDisplay mEGLDisplay = EGL_NO_DISPLAY;
-			EGLNativeWindowType mEGLNativeWindowHandle = nullptr;
-			EGLConfig mEGLFBConfig = nullptr;
-			EGLSurface mEGLSurfaceHandle = nullptr;
+			EGLDisplay eglDisplay = EGL_NO_DISPLAY;
+			EGLNativeWindowType eglNativeWindowHandle = nullptr;
+			EGLConfig eglFBConfig = nullptr;
+			EGLSurface eglSurfaceHandle = nullptr;
 		};
 
 		struct EGLRenderContextNativeData
 		{
-			EGLDisplay mEGLDisplay = EGL_NO_DISPLAY;
-			EGLContext mEGLContextHandle = nullptr;
+			EGLDisplay eglDisplay = EGL_NO_DISPLAY;
+			EGLContext eglContextHandle = nullptr;
 		};
 
 		struct EGLDriverNativeData
 		{
-			EGLDisplay mEGLDisplay = EGL_NO_DISPLAY;
-			EGLNativeWindowType mEGLNativeWindowHandle = nullptr;
-			Version mEGLVersion;
+			EGLDisplay eglDisplay = EGL_NO_DISPLAY;
+			EGLNativeWindowType eglNativeWindowHandle = nullptr;
+			cppx::version eglVersion;
 		};
 
-		void eglInitializeGLDriver( EGLDriverNativeData & pEGLDriverNativeData );
+		void EAInitializeGLDriver( EGLDriverNativeData & pEGLDriverNativeData );
 
-		void eglReleaseGLDriver( EGLDriverNativeData & pEGLDriverNativeData );
+		void EAReleaseGLDriver( EGLDriverNativeData & pEGLDriverNativeData );
 
-		EGLConfig eglChooseCoreFBConfig( EGLDisplay pDisplay,
-		                                 const VisualConfig & pVisualConfig,
-		                                 const Version & pTargetAPIVersion );
+		EGLConfig EAChooseCoreFBConfig(
+				EGLDisplay pDisplay,
+				const VisualConfig & pVisualConfig,
+				const cppx::version & pTargetAPIVersion );
 
-		EGLint eglQueryFBConfigAttribute( EGLDisplay pEGLDisplay, EGLConfig pEGLConfig, EGLenum pAttribute );
+		EGLint EAQueryFBConfigAttribute( EGLDisplay pEGLDisplay, EGLConfig pEGLConfig, EGLenum pAttribute );
 
-		void eglCreateSurface( EGLDisplaySurfaceNativeData & pEGLSurfaceNativeData,
-		                       EGLDisplay pEGLDisplay,
-		                       EGLNativeWindowType pWindow,
-		                       EGLConfig pEGLConfig,
-		                       const VisualConfig & pVisualConfig );
+		void EACreateSurface(
+				EGLDisplaySurfaceNativeData & pEGLSurfaceNativeData,
+				EGLDisplay pEGLDisplay,
+				EGLNativeWindowType pWindow,
+				EGLConfig pEGLConfig,
+				const VisualConfig & pVisualConfig );
 
-		void eglCreateSurfaceForCurrentThread( EGLDisplaySurfaceNativeData & pEGLSurfaceNativeData );
+		void EACreateSurfaceForCurrentThread( EGLDisplaySurfaceNativeData & pEGLSurfaceNativeData );
 
-		void eglDestroySurface( EGLDisplaySurfaceNativeData & pEGLSurfaceNativeData );
+		void EADestroySurface( EGLDisplaySurfaceNativeData & pEGLSurfaceNativeData );
 
-		void eglCreateCoreContext( EGLRenderContextNativeData & pEGLContextNativeData,
-		                           const EGLDisplaySurfaceNativeData & pEGLSurfaceNativeData,
-		                           const OpenGLRenderContextCreateInfo & pCreateInfo );
+		void EACreateCoreContext(
+				EGLRenderContextNativeData & pEGLContextNativeData,
+				const EGLDisplaySurfaceNativeData & pEGLSurfaceNativeData,
+				const OpenGLRenderContextCreateInfo & pCreateInfo );
 
-		void eglCreateCoreContextForCurrentThread( EGLRenderContextNativeData & pEGLContextNativeData );
+		void EACreateCoreContextForCurrentThread( EGLRenderContextNativeData & pEGLContextNativeData );
 
-		void eglDestroyRenderContext( EGLRenderContextNativeData & pEGLContextNativeData );
+		void EADestroyRenderContext( EGLRenderContextNativeData & pEGLContextNativeData );
 
-		void eglBindContextForCurrentThread( const EGLRenderContextNativeData & pEGLContextNativeData,
-		                                     const EGLDisplaySurfaceNativeData & pEGLSurfaceNativeData );
+		void EABindContextForCurrentThread(
+				const EGLRenderContextNativeData & pEGLContextNativeData,
+				const EGLDisplaySurfaceNativeData & pEGLSurfaceNativeData );
 
 	}
 
 } // namespace Ic3::System
 
-#endif // __IC3_SYSTEM_PLATFORM_OSAPI_EGL_OPENGL_DRIVER_H__
+#endif // __IC3_SYSTEM_PLATFORM_SHARED_EGL_OPENGL_DRIVER_H__

@@ -22,7 +22,7 @@ namespace Ic3::System
 
 	/// @brief Predefined frame size: max. When used, frame size is the maximum size allowed by the system.
 	/// Max size usually means the current size of the screen, but selected frame style may affect this (Win32).
-	inline constexpr FrameSize cxFrameSizeMax {Cppx::cxUint32Max, Cppx::cxUint32Max };
+	inline constexpr FrameSize cxFrameSizeMax {cppx::cve::uint32_max, cppx::cve::uint32_max };
 
 	/// @brief Window styles supported by the system.
 	enum class EFrameStyle : enum_default_value_t
@@ -53,9 +53,10 @@ namespace Ic3::System
 
 		eFrameGeometryUpdateFlagSizeOuterRectBit = 0x20 | eFrameGeometryUpdateFlagSizeBit,
 
-		eFrameGeometryUpdateMaskAllDefault = eFrameGeometryUpdateFlagPositionBit |
-		                                     eFrameGeometryUpdateFlagSizeOuterRectBit |
-		                                     eFrameGeometryUpdateFlagStyleBit
+		eFrameGeometryUpdateMaskAllDefault =
+				eFrameGeometryUpdateFlagPositionBit |
+				eFrameGeometryUpdateFlagSizeOuterRectBit |
+				eFrameGeometryUpdateFlagStyleBit
 	};
 
 	/// @brief
@@ -69,7 +70,7 @@ namespace Ic3::System
 	struct FrameGeometry
 	{
 		FramePos mPosition;
-		FrameSize mSize;
+		FrameSize size;
 		EFrameStyle mStyle;
 	};
 
@@ -81,22 +82,23 @@ namespace Ic3::System
 		explicit Frame( SysContextHandle pSysContext );
 		virtual ~Frame() noexcept;
 
-		virtual void resizeClientArea( const FrameSize & pSize ) = 0;
+		virtual void ResizeClientArea( const FrameSize & pSize ) = 0;
 
-		virtual void resizeFrame( const FrameSize & pSize ) = 0;
+		virtual void ResizeFrame( const FrameSize & pSize ) = 0;
 
-		virtual void setFullscreenMode( bool pEnable ) = 0;
+		virtual void SetFullscreenMode( bool pEnable ) = 0;
 
-		virtual void setTitle( const std::string & pTitleText ) = 0;
+		virtual void SetTitle( const std::string & pTitleText ) = 0;
 
-		virtual void updateGeometry( const FrameGeometry & pFrameGeometry,
-		                             TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) = 0;
+		virtual void UpdateGeometry(
+				const FrameGeometry & pFrameGeometry,
+				cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) = 0;
 
-		IC3_SYSTEM_API_NODISCARD virtual FrameSize getClientAreaSize() const = 0;
+		IC3_SYSTEM_API_NODISCARD virtual FrameSize GetClientAreaSize() const = 0;
 
-		IC3_SYSTEM_API_NODISCARD virtual FrameSize getFrameSize() const = 0;
+		IC3_SYSTEM_API_NODISCARD virtual FrameSize GetFrameSize() const = 0;
 
-		IC3_SYSTEM_API_NODISCARD virtual bool isFullscreen() const = 0;
+		IC3_SYSTEM_API_NODISCARD virtual bool IsFullscreen() const = 0;
 	};
 
 } // namespace Ic3::System

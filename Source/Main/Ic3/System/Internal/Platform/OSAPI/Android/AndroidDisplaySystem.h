@@ -61,11 +61,11 @@ namespace Ic3::System
 		virtual ~AndroidDisplayManager() noexcept;
 
 	private:
-		virtual DisplayDriverHandle _nativeCreateDisplayDriver() override final;
+		virtual DisplayDriverHandle _NativeCreateDisplayDriver() override final;
 
-		virtual void _nativeQueryDefaultDisplaySize( DisplaySize & pOutSize ) const override final;
+		virtual void _NativeQueryDefaultDisplaySize( DisplaySize & pOutSize ) const override final;
 
-		virtual void _nativeQueryMinWindowSize( DisplaySize & pOutSize ) const override final;
+		virtual void _NativeQueryMinWindowSize( DisplaySize & pOutSize ) const override final;
 	};
 
 	/// @brief
@@ -76,11 +76,11 @@ namespace Ic3::System
 		virtual ~AndroidDisplayDriver() noexcept;
 
 	private:
-		virtual void _nativeEnumDisplayDevices() override final;
+		virtual void _NativeEnumDisplayDevices() override final;
 
-		virtual void _nativeEnumVideoModes( DisplayOutput & pOutput, EColorFormat pColorFormat ) override final;
+		virtual void _NativeEnumVideoModes( DisplayOutput & pOutput, EColorFormat pColorFormat ) override final;
 
-		virtual EColorFormat _nativeQueryDefaultSystemColorFormat() const override final;
+		virtual EColorFormat _NativeQueryDefaultSystemColorFormat() const override final;
 	};
 
 } // namespace Ic3::System

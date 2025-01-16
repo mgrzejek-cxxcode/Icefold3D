@@ -42,9 +42,9 @@ namespace Ic3::System
 		{
 		};
 
-		IC3_SYSTEM_API_NODISCARD ScreenRect osxQueryDisplayRect( CGDirectDisplayID pCGDisplayID );
+		IC3_SYSTEM_API_NODISCARD ScreenRect OSXQueryDisplayRect( CGDirectDisplayID pCGDisplayID );
 
-		IC3_SYSTEM_API_NODISCARD DisplaySize osxQueryDisplaySize( CGDirectDisplayID pCGDisplayID );
+		IC3_SYSTEM_API_NODISCARD DisplaySize OSXQueryDisplaySize( CGDirectDisplayID pCGDisplayID );
 
 	}
 
@@ -60,16 +60,16 @@ namespace Ic3::System
 		virtual ~OSXDisplayManager() noexcept;
 
 	private:
-		void _initializeOSXDisplayManagerState();
-		void _releaseOSXDisplayManagerState();
+		void _InitializeOSXDisplayManagerState();
+		void _ReleaseOSXDisplayManagerState();
 		
-		virtual DisplayDriverHandle _nativeCreateDisplayDriver() override final;
+		virtual DisplayDriverHandle _NativeCreateDisplayDriver() override final;
 
-		virtual void _nativeQueryDefaultDisplayOffset( DisplayOffset & pOutOffset ) const override final;
+		virtual void _NativeQueryDefaultDisplayOffset( DisplayOffset & pOutOffset ) const override final;
 
-		virtual void _nativeQueryDefaultDisplaySize( DisplaySize & pOutSize ) const override final;
+		virtual void _NativeQueryDefaultDisplaySize( DisplaySize & pOutSize ) const override final;
 
-		virtual void _nativeQueryMinWindowSize( DisplaySize & pOutSize ) const override final;
+		virtual void _NativeQueryMinWindowSize( DisplaySize & pOutSize ) const override final;
 	};
 
 	/// @brief
@@ -80,11 +80,11 @@ namespace Ic3::System
 		virtual ~OSXDisplayDriver() noexcept;
 
 	private:
-		virtual void _nativeEnumDisplayDevices() override final;
+		virtual void _NativeEnumDisplayDevices() override final;
 
-		virtual void _nativeEnumVideoModes( DisplayOutput & pOutput, EColorFormat pColorFormat ) override final;
+		virtual void _NativeEnumVideoModes( DisplayOutput & pOutput, EColorFormat pColorFormat ) override final;
 
-		virtual EColorFormat _nativeQueryDefaultSystemColorFormat() const override final;
+		virtual EColorFormat _NativeQueryDefaultSystemColorFormat() const override final;
 	};
 
 } // namespace Ic3::System

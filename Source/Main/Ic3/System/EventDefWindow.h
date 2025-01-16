@@ -18,13 +18,13 @@ namespace Ic3::System
 	struct EvtWindow : public EvtBase
 	{
 	public:
-		EventSource * mEventSource = nullptr;
+		EventSource * eventSource = nullptr;
 
 	public:
 		template <typename TObject>
-		bool checkEventSource( const TObject * pSource ) const
+		bool CheckEventSource( const TObject * pSource ) const
 		{
-			return static_cast<const void *>( pSource ) == mEventSource;
+			return static_cast<const void *>( pSource ) == eventSource;
 		}
 	};
 
@@ -38,17 +38,17 @@ namespace Ic3::System
 
 	struct EvtWindowUpdateFullscreen : public EvtWindow
 	{
-		EActiveState mFullscreenState = EActiveState::UNKNOWN;
+		EActiveState fullscreenState = EActiveState::Unknown;
 	};
 
 	struct EvtWindowUpdateResize : public EvtWindow
 	{
-		FrameSize mNewSize;
+		FrameSize newSize;
 	};
 
 	struct EvtWindowUpdateVisibility : public EvtWindow
 	{
-		EWindowVisibilityState mNewVisibilityState = EWindowVisibilityState::Unknown;
+		EWindowVisibilityState newVisibilityState = EWindowVisibilityState::Unknown;
 	};
 
 } // namespace Ic3::System

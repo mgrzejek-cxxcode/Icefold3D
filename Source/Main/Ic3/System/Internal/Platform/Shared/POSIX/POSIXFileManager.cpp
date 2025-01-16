@@ -9,13 +9,15 @@ namespace Ic3::System
 	namespace Platform
 	{
 
-		FILE * _posixOpenFileGeneric( const char * pFilePath, const char * pOpenMode );
+		FILE * _PAOpenFileGeneric( const char * pFilePath, const char * pOpenMode );
 
-		const char * _posixTranslateFileOpenMode( EFileOpenMode pOpenMode );
+		const char * _PATranslateFileOpenMode( EFileOpenMode pOpenMode );
 
-		int _posixTranslateFilePointerRefPos( EFilePointerRefPos pFileRefPos );
+		bool _PACheckIsFile( const char * pFilePath );
 
-		std::string _posixGenerateTempFileName();
+		int _PATranslateFilePointerRefPos( EFilePointerRefPos pFileRefPos );
+
+		std::string _PAGenerateTempFileName();
 
 	}
 	
@@ -25,37 +27,37 @@ namespace Ic3::System
 
 	PosixFileManager::~PosixFileManager() noexcept = default;
 
-	FileHandle PosixFileManager::_nativeOpenFile( std::string pFilePath, EFileOpenMode pOpenMode )
+	FileHandle PosixFileManager::_NativeOpenFile( std::string pFilePath, EFileOpenMode pOpenMode )
 	{
-		auto openMode = Platform::_posixTranslateFileOpenMode( pOpenMode );
-		auto filePtr = Platform::_posixOpenFileGeneric( pFilePath.c_str(), openMode );
-		auto fileObject = createSysObject<PosixFile>( getHandle<PosixFileManager>() );
+		auto openMode = Platform::_PATranslateFileOpenMode( pOpenMode );
+		auto filePtr = Platform::_PAOpenFileGeneric( pFilePath.c_str(), openMode );
+		auto fileObject = CreateSysObject<PosixFile>( GetHandle<PosixFileManager>() );
 		fileObject->setInternalFilePtr( filePtr );
 
 		return fileObject;
 	}
 
-	FileHandle PosixFileManager::_nativeCreateFile( std::string pFilePath )
+	FileHandle PosixFileManager::_NativeCreateFile( std::string pFilePath )
 	{
-		auto filePtr = Platform::_posixOpenFileGeneric( pFilePath.c_str(), "w+" );
-		auto fileObject = createSysObject<PosixFile>( getHandle<PosixFileManager>() );
+		auto filePtr = Platform::_PAOpenFileGeneric( pFilePath.c_str(), "w+" );
+		auto fileObject = CreateSysObject<PosixFile>( GetHandle<PosixFileManager>() );
 		fileObject->setInternalFilePtr( filePtr );
 
 		return fileObject;
 	}
 
-	FileHandle PosixFileManager::_nativeCreateTemporaryFile()
+	FileHandle PosixFileManager::_NativeCreateTemporaryFile()
 	{
-		auto tempFilePath = Platform::_posixGenerateTempFileName();
+		auto tempFilePath = Platform::_PAGenerateTempFileName();
 
-		auto filePtr = Platform::_posixOpenFileGeneric( tempFilePath.c_str(), "w+" );
-		auto fileObject = createSysObject<PosixFile>( getHandle<PosixFileManager>() );
+		auto filePtr = Platform::_PAOpenFileGeneric( tempFilePath.c_str(), "w+" );
+		auto fileObject = CreateSysObject<PosixFile>( GetHandle<PosixFileManager>() );
 		fileObject->setInternalFilePtr( filePtr );
 
 		return fileObject;
 	}
 
-	FileNameList PosixFileManager::_nativeEnumDirectoryFileNameList( const std::string & pDirectory )
+	FileNameList PosixFileManager::_NativeEnumDirectoryFileNameList( const std::string & pDirectory )
 	{
 		FileNameList resultList;
 
@@ -74,7 +76,7 @@ namespace Ic3::System
 					}
 					else
 					{
-						const std::string filePath = pDirectory + IC3_PCL_ENV_DEFAULT_PATH_DELIMITER + dirEntry->d_name;
+						const std::string filePath = pDirectory + PCL_ENV_DEFAULT_PATH_DELIMITER + dirEntry->d_name;
 
 						struct stat statInfo;
 						auto statResult = ::stat( filePath.c_str(), &statInfo );
@@ -97,19 +99,19 @@ namespace Ic3::System
 		return resultList;
 	}
 
-	std::string PosixFileManager::_nativeGenerateTemporaryFileName()
+	std::string PosixFileManager::_NativeGenerateTemporaryFileName()
 	{
-		return Platform::_posixGenerateTempFileName();
+		return Platform::_PAGenerateTempFileName();
 	}
 
-	bool PosixFileManager::_nativeCheckDirectoryExists( const std::string & pDirPath )
+	bool PosixFileManager::_NativeCheckDirectoryExists( const std::string & pDirPath )
 	{
 		struct stat statInfo;
 		auto statResult = ::stat( pDirPath.c_str(), &statInfo );
 		return ( statResult == 0 ) && ( ( statInfo.st_mode & S_IFMT ) == S_IFDIR );
 	}
 
-	bool PosixFileManager::_nativeCheckFileExists( const std::string & pFilePath )
+	bool PosixFileManager::_NativeCheckFileExists( const std::string & pFilePath )
 	{
 		struct stat statInfo;
 		auto statResult = ::stat( pFilePath.c_str(), &statInfo );
@@ -123,7 +125,7 @@ namespace Ic3::System
 
 	PosixFile::~PosixFile() noexcept
 	{
-		_releasePosixFileHandle();
+		_ReleasePosixFileHandle();
 	}
 
 	void PosixFile::setInternalFilePtr( FILE * pFilePtr )
@@ -132,7 +134,7 @@ namespace Ic3::System
 		mNativeData.mFilePtr = pFilePtr;
 	}
 
-	void PosixFile::_releasePosixFileHandle()
+	void PosixFile::_ReleasePosixFileHandle()
 	{
 		if( mNativeData.mFilePtr )
 		{
@@ -141,40 +143,40 @@ namespace Ic3::System
 		}
 	}
 
-	file_size_t PosixFile::_nativeReadData( void * pTargetBuffer, file_size_t pReadSize )
+	file_size_t PosixFile::_NativeReadData( void * pTargetBuffer, file_size_t pReadSize )
 	{
 		auto readBytesNum = ::fread( pTargetBuffer, 1, pReadSize, mNativeData.mFilePtr );
-		return numeric_cast<file_size_t>( readBytesNum );
+		return cppx::numeric_cast<file_size_t>( readBytesNum );
 	}
 
-	file_size_t PosixFile::_nativeWriteData( const void * pData, file_size_t pWriteSize )
+	file_size_t PosixFile::_NativeWriteData( const void * pData, file_size_t pWriteSize )
 	{
 		auto writtenBytesNum = ::fwrite( pData, 1, pWriteSize, mNativeData.mFilePtr );
-		return numeric_cast<file_size_t>( writtenBytesNum );
+		return cppx::numeric_cast<file_size_t>( writtenBytesNum );
 	}
 
-	file_offset_t PosixFile::_nativeSetFilePointer( file_offset_t pOffset, EFilePointerRefPos pRefPos )
+	file_offset_t PosixFile::_NativeSetFilePointer( file_offset_t pOffset, EFilePointerRefPos pRefPos )
 	{
-		auto fileSeekPos = Platform::_posixTranslateFilePointerRefPos( pRefPos );
+		auto fileSeekPos = Platform::_PATranslateFilePointerRefPos( pRefPos );
 		auto seekResult = ::fseek( mNativeData.mFilePtr, static_cast<long>( pOffset ), fileSeekPos );
 
 		if( seekResult != 0 )
 		{
-			auto errnoString = Platform::posixQueryErrnoStringByCode( errno );
-			ic3ThrowDesc( E_EXC_DEBUG_PLACEHOLDER, std::move( errnoString ) );
+			auto errnoString = Platform::PXAQueryErrnoStringByCode( errno );
+			ic3ThrowDesc( eExcCodeDebugPlaceholder, std::move( errnoString ) );
 		}
 
 		auto currentFilePointer = ::ftell( mNativeData.mFilePtr );
 		return static_cast<file_offset_t>( currentFilePointer );
 	}
 
-	file_offset_t PosixFile::_nativeGetFilePointer() const
+	file_offset_t PosixFile::_NativeGetFilePointer() const
 	{
 		auto currentFilePointer = ::ftell( mNativeData.mFilePtr );
 		return static_cast<file_offset_t>( currentFilePointer );
 	}
 
-	file_size_t PosixFile::_nativeGetSize() const
+	file_size_t PosixFile::_NativeGetSize() const
 	{
 		auto savedFilePointer = ::ftell( mNativeData.mFilePtr );
 		::fseek( mNativeData.mFilePtr, 0u, SEEK_END );
@@ -185,7 +187,7 @@ namespace Ic3::System
 		return static_cast<file_size_t>( fileSize );
 	}
 
-	file_size_t PosixFile::_nativeGetRemainingBytes() const
+	file_size_t PosixFile::_NativeGetRemainingBytes() const
 	{
 		auto currentFilePointer = ::ftell( mNativeData.mFilePtr );
 		::fseek( mNativeData.mFilePtr, 0u, SEEK_END );
@@ -196,12 +198,12 @@ namespace Ic3::System
 		return static_cast<file_size_t>( fileSize - currentFilePointer );
 	}
 
-	bool PosixFile::_nativeCheckEOF() const
+	bool PosixFile::_NativeCheckEOF() const
 	{
 		return ::feof( mNativeData.mFilePtr ) != 0;
 	}
 
-	bool PosixFile::_nativeIsGood() const
+	bool PosixFile::_NativeIsGood() const
 	{
 		return !::feof( mNativeData.mFilePtr ) && !::ferror( mNativeData.mFilePtr );
 	}
@@ -210,20 +212,20 @@ namespace Ic3::System
 	namespace Platform
 	{
 
-		FILE * _posixOpenFileGeneric( const char * pFilePath, const char * pOpenMode )
+		FILE * _PAOpenFileGeneric( const char * pFilePath, const char * pOpenMode )
 		{
 			FILE * filePtr = fopen( pFilePath, pOpenMode );
 
 			if( !filePtr )
 			{
-				auto errnoString = Platform::posixQueryErrnoStringByCode( errno );
+				auto errnoString = Platform::PXAQueryErrnoStringByCode( errno );
 				ic3ThrowDesc( eEXCSystemFileOpenError, std::move( errnoString ) );
 			}
 
 			return filePtr;
 		}
 
-		const char * _posixTranslateFileOpenMode( EFileOpenMode pOpenMode )
+		const char * _PATranslateFileOpenMode( EFileOpenMode pOpenMode )
 		{
 			switch( pOpenMode )
 			{
@@ -235,14 +237,14 @@ namespace Ic3::System
 			return "r";
 		}
 
-		bool _posixIsFile( const char * pFilePath )
+		bool _PACheckIsFile( const char * pFilePath )
 		{
 			struct stat statInfo;
 			auto statResult = ::stat( pFilePath, &statInfo );
 			return ( statResult == 0 ) && ( ( statInfo.st_mode & S_IFMT ) == S_IFREG ) && ( ( statInfo.st_mode & S_IFMT ) == S_IFLNK );
 		}
 
-		int _posixTranslateFilePointerRefPos( EFilePointerRefPos pFileRefPos )
+		int _PATranslateFilePointerRefPos( EFilePointerRefPos pFileRefPos )
 		{
 			int fileSeekPos = 0;
 
@@ -268,7 +270,7 @@ namespace Ic3::System
 			return fileSeekPos;
 		}
 
-		std::string _posixGenerateTempFileName()
+		std::string _PAGenerateTempFileName()
 		{
 			return tmpnam( nullptr );
 		}

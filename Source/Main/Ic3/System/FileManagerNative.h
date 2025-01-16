@@ -4,11 +4,11 @@
 
 #include "FileCommon.h"
 
-#if( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_ANDROID )
+#if( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_ANDROID )
 #  include "Internal/Platform/OSAPI/Android/AndroidFileManager.h"
-#elif( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_WIN32 )
+#elif( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_WIN32 )
 #  include "Internal/Platform/OSAPI/Win32/Win32FileManager.h"
-#elif( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_X11 )
+#elif( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_X11 )
 #  include "Internal/Platform/OSAPI/X11/X11FileManager.h"
 #endif
 

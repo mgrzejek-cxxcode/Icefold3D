@@ -1,6 +1,6 @@
 
-#ifndef __IC3_SYSTEM_PLATFORM_OSAPI_EGL_CORE_UTILS_H__
-#define __IC3_SYSTEM_PLATFORM_OSAPI_EGL_CORE_UTILS_H__
+#ifndef __IC3_SYSTEM_PLATFORM_SHARED_EGL_CORE_UTILS_H__
+#define __IC3_SYSTEM_PLATFORM_SHARED_EGL_CORE_UTILS_H__
 
 #include <Ic3/System/OpenGLCommon.h>
 #include <EGL/egl.h>
@@ -9,39 +9,40 @@
 namespace Ic3::System
 {
 
-	struct EGLError
+	namespace Platform
 	{
-	public:
-		EGLenum mErrorCode;
 
-	public:
-		EGLError( EGLenum pErrorCode )
-		: mErrorCode( pErrorCode )
-		{}
-
-		constexpr explicit operator bool() const
+		struct EGLError
 		{
-			return mErrorCode != EGL_SUCCESS;
-		}
-	};
+		public:
+			EGLenum errorCode;
 
-	class EGLCoreAPI
-	{
-	public:
-		static Version queryRuntimeVersion();
+		public:
+			EGLError( EGLenum pErrorCode )
+					: errorCode( pErrorCode )
+			{}
 
-		static bool checkLastResult();
+			constexpr explicit operator bool() const
+			{
+				return errorCode != EGL_SUCCESS;
+			}
+		};
 
-		static bool checkLastError( EGLenum pErrorCode );
+		cppx::version EAQueryRuntimeVersion();
 
-		static EGLError getLastError();
+		bool EACheckLastResult();
 
-		static void handleLastError();
+		bool EACheckLastError( EGLenum pErrorCode );
 
-		static void resetErrorQueue();
+		EGLError EAGetLastError();
 
-		static const char * translateErrorCode( EGLenum pError );
-	};
+		void EAHandleLastError();
+
+		void EAResetErrorQueue();
+
+		const char * EATranslateErrorCode( EGLenum pError );
+
+	}
 
 #define ic3EGLMakeErrorInfo( pEGLError ) \
 	OpenGLErrorInfo( pEGLError, EGLCoreAPI::translateErrorCode( pEGLError ) )
@@ -58,11 +59,11 @@ namespace Ic3::System
 } // namespace Ic3::System
 
 #if( IC3_SYSTEM_GL_ENABLE_ERROR_CHECKS )
-#  define ic3EGLCheckLastResult()             EGLCoreAPI::checkLastResult()
-#  define ic3EGLCheckLastError( pErrorCode )  EGLCoreAPI::checkLastError( pErrorCode )
-#  define ic3EGLHandleLastError()             EGLCoreAPI::handleLastError()
-#  define ic3EGLHandleLastError()             EGLCoreAPI::handleLastError()
-#  define ic3EGLResetErrorQueue()             EGLCoreAPI::resetErrorQueue()
+#  define ic3EGLCheckLastResult()             Platform::EACheckLastResult()
+#  define ic3EGLCheckLastError( pErrorCode )  Platform::EACheckLastError( pErrorCode )
+#  define ic3EGLHandleLastError()             Platform::EAHandleLastError()
+#  define ic3EGLHandleLastError()             Platform::EAHandleLastError()
+#  define ic3EGLResetErrorQueue()             Platform::EAResetErrorQueue()
 #else
 #  define ic3EGLCheckLastResult()
 #  define ic3EGLCheckLastError( pErrorCode )
@@ -70,4 +71,4 @@ namespace Ic3::System
 #  define ic3EGLResetErrorQueue()
 #endif
 
-#endif // __IC3_SYSTEM_PLATFORM_OSAPI_EGL_CORE_UTILS_H__
+#endif // __IC3_SYSTEM_PLATFORM_SHARED_EGL_CORE_UTILS_H__

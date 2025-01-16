@@ -8,11 +8,11 @@ namespace Ic3::System
 	namespace Platform
 	{
 
-		const char * posixQueryErrnoStringByCode( int pErrno )
+		const char * PXAQueryErrnoStringByCode( int pErrno )
 		{
 			switch( pErrno )
 			{
-			#if( IC3_PCL_TARGET_OS & IC3_PCL_TARGET_FLAG_OS_APPLE )
+			#if( PCL_TARGET_OS & PCL_TARGET_FLAG_OS_APPLE )
 				ic3CaseReturn( EPERM           , "Operation not permitted" );
 				ic3CaseReturn( ENOENT          , "No such file or directory" );
 				ic3CaseReturn( ESRCH           , "No such process" );
@@ -119,7 +119,7 @@ namespace Ic3::System
 				ic3CaseReturn( ENOTRECOVERABLE , "State not recoverable */" );
 				ic3CaseReturn( EOWNERDEAD      , "Previous owner died */" );
 				ic3CaseReturn( EQFULL          , "Interface output queue is full */" );
-			#elif( IC3_PCL_TARGET_OS & ( IC3_PCL_TARGET_PLATFORM_ANDROID | IC3_PCL_TARGET_PLATFORM_LINUX ) )
+			#elif( PCL_TARGET_OS & ( PCL_TARGET_PLATFORM_ANDROID | PCL_TARGET_PLATFORM_LINUX ) )
 				ic3CaseReturn( EPERM           , "Operation not permitted" );
 				ic3CaseReturn( ENOENT          , "No such file or directory" );
 				ic3CaseReturn( ESRCH           , "No such process" );

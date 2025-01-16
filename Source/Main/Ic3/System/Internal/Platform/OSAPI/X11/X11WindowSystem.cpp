@@ -2,7 +2,7 @@
 #include "X11WindowSystem.h"
 #include "X11DisplaySystem.h"
 
-#if( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_X11 )
+#if( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_X11 )
 namespace Ic3::System
 {
 
@@ -11,11 +11,11 @@ namespace Ic3::System
 
 		// Returns an array of _NET_WM_ACTION_xxx atoms for the specified frame style.
 		// This array is then used to set the ALLOWED_ACTIONS atom, which enables/disables certain window actions.
-		std::vector<Atom> _x11QueryActionTableForFrameStyle( XDisplay pDisplay, EFrameStyle pFrameStyle );
+		std::vector<Atom> _X11QueryActionTableForFrameStyle( XDisplay pDisplay, EFrameStyle pFrameStyle );
 
 		// Returns an XSizeHints structure, configured based on the specified frame style and geometry.
 		// XSizeHints enables Window Manager to properly style the window and enable/disable geometry changes.
-		XSizeHints _x11QuerySizeHintsForFrameStyle( XDisplay pDisplay, EFrameStyle pFrameStyle, const FrameGeometry & pFrameGeometry );
+		XSizeHints _X11QuerySizeHintsForFrameStyle( XDisplay pDisplay, EFrameStyle pFrameStyle, const FrameGeometry & pFrameGeometry );
 
 	}
 	
@@ -25,30 +25,30 @@ namespace Ic3::System
 
 	X11WindowManager::~X11WindowManager() noexcept = default;
 
-	WindowHandle X11WindowManager::_nativeCreateWindow( WindowCreateInfo pCreateInfo )
+	WindowHandle X11WindowManager::_NativeCreateWindow( WindowCreateInfo pCreateInfo )
 	{
-		auto & xSessionData = Platform::x11GetXSessionData( *this );
+		auto & xSessionData = Platform::X11GetXSessionData( *this );
 
-		auto windowObject = createSysObject<X11Window>( getHandle<X11WindowManager>() );
+		auto windowObject = CreateSysObject<X11Window>( GetHandle<X11WindowManager>() );
 
 		Platform::X11WindowCreateInfo x11CreateInfo;
-		x11CreateInfo.mFrameGeometry = pCreateInfo.mFrameGeometry;
-		x11CreateInfo.mTitle = std::move( pCreateInfo.mTitle );
-		x11CreateInfo.mColorDepth = XDefaultDepth( xSessionData.mDisplay, xSessionData.mScreenIndex );
-		x11CreateInfo.mWindowVisual = XDefaultVisual( xSessionData.mDisplay, xSessionData.mScreenIndex );
+		x11CreateInfo.frameGeometry = pCreateInfo.frameGeometry;
+		x11CreateInfo.title = std::move( pCreateInfo.title );
+		x11CreateInfo.colorDepth = XDefaultDepth( xSessionData.displayHandle, xSessionData.screenIndex );
+		x11CreateInfo.windowVisual = XDefaultVisual( xSessionData.displayHandle, xSessionData.screenIndex );
 
-		Platform::x11CreateWindow( windowObject->mNativeData, x11CreateInfo );
+		Platform::X11CreateWindow( windowObject->mNativeData, x11CreateInfo );
 
-		Platform::x11WindowPostCreateUpdate( windowObject->mNativeData, x11CreateInfo );
+		Platform::X11WindowPostCreateUpdate( windowObject->mNativeData, x11CreateInfo );
 
 		return windowObject;
 	}
 
-	void X11WindowManager::_nativeDestroyWindow( Window & pWindow )
+	void X11WindowManager::_NativeDestroyWindow( Window & pWindow )
 	{
-		auto * x11Window = pWindow.queryInterface<X11Window>();
+		auto * x11Window = pWindow.QueryInterface<X11Window>();
 
-		Platform::x11DestroyWindow( x11Window->mNativeData );
+		Platform::X11DestroyWindow( x11Window->mNativeData );
 	}
 	
 
@@ -58,42 +58,43 @@ namespace Ic3::System
 
 	X11Window::~X11Window() noexcept = default;
 
-	void X11Window::_nativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode )
+	void X11Window::_NativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode )
 	{}
 
-	void X11Window::_nativeSetFullscreenMode( bool pEnable )
+	void X11Window::_NativeSetFullscreenMode( bool pEnable )
 	{
-		Platform::x11SetWindowFullscreenState( mNativeData, pEnable );
+		Platform::X11SetWindowFullscreenState( mNativeData, pEnable );
 	}
 
-	void X11Window::_nativeSetTitle( const std::string & pTitle )
+	void X11Window::_NativeSetTitle( const std::string & pTitle )
 	{
-		return Platform::x11SetFrameTitle( mNativeData, pTitle );
+		return Platform::X11SetFrameTitle( mNativeData, pTitle );
 	}
 
-	void X11Window::_nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-	                                       TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
+	void X11Window::_NativeUpdateGeometry(
+			const FrameGeometry & pFrameGeometry,
+			cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
 	{
-		return Platform::x11UpdateFrameGeometry( mNativeData, pFrameGeometry, pUpdateFlags );
+		return Platform::X11UpdateFrameGeometry( mNativeData, pFrameGeometry, pUpdateFlags );
 	}
 
-	FrameSize X11Window::_nativeGetSize( EFrameSizeMode pSizeMode ) const
+	FrameSize X11Window::_NativeGetSize( EFrameSizeMode pSizeMode ) const
 	{
-		return Platform::x11GetFrameSize( mNativeData, pSizeMode );
+		return Platform::X11GetFrameSize( mNativeData, pSizeMode );
 	}
 
 
 	namespace Platform
 	{
 
-		void x11CreateWindow( X11WindowNativeData & pWindowNativeData, const X11WindowCreateInfo & pCreateInfo )
+		void X11CreateWindow( X11WindowNativeData & pWindowNativeData, const X11WindowCreateInfo & pCreateInfo )
 		{
-			auto & xSessionData = Platform::x11GetXSessionData( pWindowNativeData );
+			auto & xSessionData = Platform::X11GetXSessionData( pWindowNativeData );
 
 			// Colormap for our window.
-			Colormap colormap = XCreateColormap( xSessionData.mDisplay,
-			                                     xSessionData.mRootWindowXID,
-			                                     pCreateInfo.mWindowVisual,
+			Colormap colormap = XCreateColormap( xSessionData.displayHandle,
+			                                     xSessionData.rootWindowXID,
+			                                     pCreateInfo.windowVisual,
 			                                     AllocNone );
 
 			// Mask of all event types we want to register for and handle.
@@ -113,42 +114,42 @@ namespace Ic3::System
 
 			// We pass initial position as (0,0) instead of the specified one, because window managers tend to do some
 			// weird stuff and this is ignored in most cases. XMoveWindow() together with XSetNormalHints() do the thing.
-			auto windowXID = XCreateWindow( xSessionData.mDisplay,
-			                                xSessionData.mRootWindowXID,
+			auto windowXID = XCreateWindow( xSessionData.displayHandle,
+			                                xSessionData.rootWindowXID,
 			                                0, 0,
-			                                pCreateInfo.mFrameGeometry.mSize.x,
-			                                pCreateInfo.mFrameGeometry.mSize.y,
+			                                pCreateInfo.frameGeometry.size.x,
+			                                pCreateInfo.frameGeometry.size.y,
 			                                0u,
-			                                pCreateInfo.mColorDepth,
+			                                pCreateInfo.colorDepth,
 			                                InputOutput,
-			                                pCreateInfo.mWindowVisual,
+			                                pCreateInfo.windowVisual,
 			                                windowSetAttributesMask,
 			                                &windowSetAttributes );
 
 			if( windowXID == eXIDNone )
 			{
-				ic3Throw( E_EXC_DEBUG_PLACEHOLDER );
+				ic3Throw( eExcCodeDebugPlaceholder );
 			}
 
 			pWindowNativeData.mWindowXID = windowXID;
-			pWindowNativeData.mXColormap = colormap;
+			pWindowNativeData.xColormap = colormap;
 
 			// Window style requested for the window. There is no real "X11-equivalent" (like we have
 			// on other OSes), because of the separation between X Server and the actual Window Manager.
-			const auto windowStyle = pCreateInfo.mFrameGeometry.mStyle;
+			const auto windowStyle = pCreateInfo.frameGeometry.mStyle;
 
 			// First thing to enforce requested window behaviour: action table. It defines what kind of actions
 			// (like moving, resizing, entering fullscreen) are allowed for a given window. Based on the style,
 			// we query the table and set it for our newly created window.
-			auto windowActionTable = Platform::_x11QueryActionTableForFrameStyle( xSessionData.mDisplay, windowStyle );
+			auto windowActionTable = Platform::_X11QueryActionTableForFrameStyle( xSessionData.displayHandle, windowStyle );
 
 			// This could happen only if we added/changed something and forgot to adjust this code.
 			ic3DebugAssert( !windowActionTable.empty() );
 
 			// The atom used to set this table is named "_NET_WM_ALLOWED_ACTIONS".
-			Atom wmAllowedActions = XInternAtom( xSessionData.mDisplay, "_NET_WM_ALLOWED_ACTIONS", true );
+			Atom wmAllowedActions = XInternAtom( xSessionData.displayHandle, "_NET_WM_ALLOWED_ACTIONS", true );
 
-			XChangeProperty( xSessionData.mDisplay,
+			XChangeProperty( xSessionData.displayHandle,
 			                 windowXID,
 			                 wmAllowedActions,
 			                 XA_ATOM,
@@ -157,136 +158,136 @@ namespace Ic3::System
 			                 ( unsigned char * )windowActionTable.data(),
 			                 ( int )windowActionTable.size() );
 
-			auto windowSizeHints = Platform::_x11QuerySizeHintsForFrameStyle( xSessionData.mDisplay, windowStyle, pCreateInfo.mFrameGeometry );
+			auto windowSizeHints = Platform::_X11QuerySizeHintsForFrameStyle( xSessionData.displayHandle, windowStyle, pCreateInfo.frameGeometry );
 
 			// Note, that this call must be done before the window is mapped to the screen. Otherwise, most WMs
 			// will not recognize PMinSize/PMaxSize hints, making non-resizable windows very much resizable ones.
-			XSetNormalHints( xSessionData.mDisplay, windowXID, &windowSizeHints );
+			XSetNormalHints( xSessionData.displayHandle, windowXID, &windowSizeHints );
 		}
 
-		void x11WindowPostCreateUpdate( X11WindowNativeData & pWindowNativeData, const X11WindowCreateInfo & pCreateInfo )
+		void X11WindowPostCreateUpdate( X11WindowNativeData & pWindowNativeData, const X11WindowCreateInfo & pCreateInfo )
 		{
-			auto & xSessionData = Platform::x11GetXSessionData( pWindowNativeData );
+			auto & xSessionData = Platform::X11GetXSessionData( pWindowNativeData );
 			
-			XMoveWindow( xSessionData.mDisplay,
+			XMoveWindow( xSessionData.displayHandle,
 			             pWindowNativeData.mWindowXID,
-			             static_cast<int>( pCreateInfo.mFrameGeometry.mPosition.x ),
-			             static_cast<int>( pCreateInfo.mFrameGeometry.mPosition.y ) );
+			             static_cast<int>( pCreateInfo.frameGeometry.mPosition.x ),
+			             static_cast<int>( pCreateInfo.frameGeometry.mPosition.y ) );
 
 			// Another observation: if this gets called before the initial XMoveWindow(), fullscreen windows
 			// appear at a wrong position (and, thus, usually - on the wrong screen as well). Confirmed at least
 			// on Kubuntu 20.04 and Mint. Non-fullscreen windows seem to work regardless of the call order.
-			XMapWindow( xSessionData.mDisplay, pWindowNativeData.mWindowXID );
+			XMapWindow( xSessionData.displayHandle, pWindowNativeData.mWindowXID );
 
-			if( pCreateInfo.mFullscreenMode )
+			if( pCreateInfo.fullscreenMode )
 			{
 				// This works by sending a _NET_WM_STATE update event to the window.
 				// It strictly requires the window to be mapped already, so make sure
 				// this always called after XMapWindow().
-				x11SetWindowFullscreenState( pWindowNativeData, true );
+				X11SetWindowFullscreenState( pWindowNativeData, true );
 			}
 
 			Atom registeredWMProtocolArray[] =
 			{
-				xSessionData.mAtomCache.wmProtocolDelete,
-				xSessionData.mAtomCache.wmProtocolDestroy
+				xSessionData.atomCache.wmProtocolDelete,
+				xSessionData.atomCache.wmProtocolDestroy
 			};
-			const auto registeredWMProtocolsNum = Cppx::staticArraySize( registeredWMProtocolArray );
+			const auto registeredWMProtocolsNum = cppx::static_array_size( registeredWMProtocolArray );
 
-			XSetWMProtocols( xSessionData.mDisplay,
+			XSetWMProtocols( xSessionData.displayHandle,
 			                 pWindowNativeData.mWindowXID,
 			                 &( registeredWMProtocolArray[0] ),
 			                 numeric_cast<int>( registeredWMProtocolsNum ) );
 
-			XStoreName( xSessionData.mDisplay, pWindowNativeData.mWindowXID, pCreateInfo.mTitle.c_str() );
-			XFlush( xSessionData.mDisplay );
+			XStoreName( xSessionData.displayHandle, pWindowNativeData.mWindowXID, pCreateInfo.title.c_str() );
+			XFlush( xSessionData.displayHandle );
 		}
 
-		void x11DestroyWindow( X11WindowNativeData & pWindowNativeData )
+		void X11DestroyWindow( X11WindowNativeData & pWindowNativeData )
 		{
-			auto & xSessionData = Platform::x11GetXSessionData( pWindowNativeData );
+			auto & xSessionData = Platform::X11GetXSessionData( pWindowNativeData );
 
-			XUnmapWindow( xSessionData.mDisplay, pWindowNativeData.mWindowXID );
+			XUnmapWindow( xSessionData.displayHandle, pWindowNativeData.mWindowXID );
 
-			XDestroyWindow( xSessionData.mDisplay, pWindowNativeData.mWindowXID );
+			XDestroyWindow( xSessionData.displayHandle, pWindowNativeData.mWindowXID );
 			pWindowNativeData.mWindowXID = eXIDNone;
 
-			XFreeColormap( xSessionData.mDisplay, pWindowNativeData.mXColormap );
-			pWindowNativeData.mXColormap = eXIDNone;
+			XFreeColormap( xSessionData.displayHandle, pWindowNativeData.xColormap );
+			pWindowNativeData.xColormap = eXIDNone;
 
-			XFlush( xSessionData.mDisplay );
+			XFlush( xSessionData.displayHandle );
 		}
 
-		void x11SetWindowFullscreenState( X11WindowNativeData & pWindowNativeData, bool pSetFullscreen )
+		void X11SetWindowFullscreenState( X11WindowNativeData & pWindowNativeData, bool pSetFullscreen )
 		{
-			const auto isWindowFullscreen = x11IsFullscreenWindow( pWindowNativeData );
+			const auto IsWindowFullscreen = X11IsFullscreenWindow( pWindowNativeData );
 
-			if( isWindowFullscreen == pSetFullscreen )
+			if( IsWindowFullscreen == pSetFullscreen )
 			{
 				return;
 			}
 
-			auto & xSessionData = Platform::x11GetXSessionData( pWindowNativeData );
+			auto & xSessionData = Platform::X11GetXSessionData( pWindowNativeData );
 
 			XEvent wmEvent;
 			memset( &wmEvent, 0, sizeof( wmEvent ) );
 			wmEvent.type = ClientMessage;
 			wmEvent.xclient.window = pWindowNativeData.mWindowXID;
-			wmEvent.xclient.message_type = xSessionData.mAtomCache.wmState;
+			wmEvent.xclient.message_type = xSessionData.atomCache.wmState;
 			wmEvent.xclient.format = 32;
 			wmEvent.xclient.data.l[0] = pSetFullscreen ? 1 : 0;
-			wmEvent.xclient.data.l[1] = numeric_cast<long>( xSessionData.mAtomCache.wmStateFullscreen );
+			wmEvent.xclient.data.l[1] = numeric_cast<long>( xSessionData.atomCache.wmStateFullscreen );
 			wmEvent.xclient.data.l[2] = 0;
 
-			XSendEvent( xSessionData.mDisplay,
-			            xSessionData.mRootWindowXID,
+			XSendEvent( xSessionData.displayHandle,
+			            xSessionData.rootWindowXID,
 			            False,
 			            SubstructureRedirectMask | SubstructureNotifyMask,
 			            &wmEvent );
 
-			XFlush( xSessionData.mDisplay );
+			XFlush( xSessionData.displayHandle );
 		}
 
-		void x11SetFrameTitle( const X11WindowNativeData & pWindowNativeData, const std::string & pTitle )
+		void X11SetFrameTitle( const X11WindowNativeData & pWindowNativeData, const std::string & pTitle )
 		{
-			auto & xSessionData = Platform::x11GetXSessionData( pWindowNativeData );
+			auto & xSessionData = Platform::X11GetXSessionData( pWindowNativeData );
 
-			XStoreName( xSessionData.mDisplay, pWindowNativeData.mWindowXID, pTitle.c_str() );
+			XStoreName( xSessionData.displayHandle, pWindowNativeData.mWindowXID, pTitle.c_str() );
 
-			XFlush( xSessionData.mDisplay );
+			XFlush( xSessionData.displayHandle );
 		}
 
-		void x11UpdateFrameGeometry( const X11WindowNativeData & pWindowNativeData,
+		void X11UpdateFrameGeometry( const X11WindowNativeData & pWindowNativeData,
 		                             const FrameGeometry & pFrameGeometry,
-		                             TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
+		                             cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
 		{
-			auto & xSessionData = Platform::x11GetXSessionData( pWindowNativeData );
+			auto & xSessionData = Platform::X11GetXSessionData( pWindowNativeData );
 
-			if( pUpdateFlags.isSet( eFrameGeometryUpdateFlagPositionBit ) )
+			if( pUpdateFlags.is_set( eFrameGeometryUpdateFlagPositionBit ) )
 			{
-				XMoveWindow( xSessionData.mDisplay,
+				XMoveWindow( xSessionData.displayHandle,
 				             pWindowNativeData.mWindowXID,
 				             pFrameGeometry.mPosition.x,
 				             pFrameGeometry.mPosition.y );
 			}
 
-			if( pUpdateFlags.isSet( eFrameGeometryUpdateFlagSizeBit ) )
+			if( pUpdateFlags.is_set( eFrameGeometryUpdateFlagSizeBit ) )
 			{
-				XResizeWindow( xSessionData.mDisplay,
+				XResizeWindow( xSessionData.displayHandle,
 				               pWindowNativeData.mWindowXID,
-				               pFrameGeometry.mSize.x,
-				               pFrameGeometry.mSize.y );
+				               pFrameGeometry.size.x,
+				               pFrameGeometry.size.y );
 			}
 
-			XFlush( xSessionData.mDisplay );
+			XFlush( xSessionData.displayHandle );
 		}
 
-		FrameSize x11GetFrameSize( const X11WindowNativeData & pWindowNativeData, EFrameSizeMode pSizeMode )
+		FrameSize X11GetFrameSize( const X11WindowNativeData & pWindowNativeData, EFrameSizeMode pSizeMode )
 		{
-			auto & xSessionData = Platform::x11GetXSessionData( pWindowNativeData );
+			auto & xSessionData = Platform::X11GetXSessionData( pWindowNativeData );
 
 			XWindowAttributes windowAttributes;
-			XGetWindowAttributes( xSessionData.mDisplay,
+			XGetWindowAttributes( xSessionData.displayHandle,
 			                      pWindowNativeData.mWindowXID,
 			                      &windowAttributes );
 
@@ -305,18 +306,18 @@ namespace Ic3::System
 			return resultFrameSize;
 		}
 
-		bool x11IsFullscreenWindow( XDisplay pDisplay, XWindow pWindow )
+		bool X11IsFullscreenWindow( XDisplay pDisplay, XWindow pWindow )
 		{
-			return x11CheckWindowPropertyValueSet( pDisplay, pWindow, "_NET_WM_STATE", "_NET_WM_STATE_FULLSCREEN" );
+			return X11CheckWindowPropertyValueSet( pDisplay, pWindow, "_NET_WM_STATE", "_NET_WM_STATE_FULLSCREEN" );
 		}
 
-		bool x11IsFullscreenWindow( const X11WindowNativeData & pWindowNativeData )
+		bool X11IsFullscreenWindow( const X11WindowNativeData & pWindowNativeData )
 		{
-			auto & xSessionData = x11GetXSessionData( pWindowNativeData );
-			return x11IsFullscreenWindow( xSessionData.mDisplay, pWindowNativeData.mWindowXID );
+			auto & xSessionData = X11GetXSessionData( pWindowNativeData );
+			return X11IsFullscreenWindow( xSessionData.displayHandle, pWindowNativeData.mWindowXID );
 		}
 
-		std::vector<Atom> x11QueryWindowPropertyValueArray( XDisplay pDisplay, XWindow pWindow, const char * pPropertyName )
+		std::vector<Atom> X11QueryWindowPropertyValueArray( XDisplay pDisplay, XWindow pWindow, const char * pPropertyName )
 		{
 			std::vector<Atom> wmPropertyValueArray;
 
@@ -370,7 +371,7 @@ namespace Ic3::System
 			return wmPropertyValueArray;
 		}
 
-		bool x11CheckWindowPropertyValueSet( XDisplay pDisplay, XWindow pWindow, const char * pPropertyName, const char * pValueID )
+		bool X11CheckWindowPropertyValueSet( XDisplay pDisplay, XWindow pWindow, const char * pPropertyName, const char * pValueID )
 		{
 			Atom wmPropertyValueType = 0;
 			int wmPropertyValueFormat = 0;
@@ -482,7 +483,7 @@ namespace Ic3::System
 			"_NET_WM_ACTION_SHADE"
 		};
 
-		std::vector<Atom> _x11QueryActionTableForFrameStyle( XDisplay pDisplay, EFrameStyle pFrameStyle )
+		std::vector<Atom> _X11QueryActionTableForFrameStyle( XDisplay pDisplay, EFrameStyle pFrameStyle )
 		{
 			const char ** windowActionTablePtr = nullptr;
 			size_t windowActionTableSize = 0u;
@@ -491,22 +492,22 @@ namespace Ic3::System
 			{
 				case EFrameStyle::Caption:
 					windowActionTablePtr = &( sX11WindowActionTableCaption[0] );
-					windowActionTableSize = Cppx::staticArraySize( sX11WindowActionTableCaption );
+					windowActionTableSize = cppx::static_array_size( sX11WindowActionTableCaption );
 					break;
 
 				case EFrameStyle::Fixed:
 					windowActionTablePtr = &( sX11WindowActionTableFixed[0] );
-					windowActionTableSize = Cppx::staticArraySize( sX11WindowActionTableFixed );
+					windowActionTableSize = cppx::static_array_size( sX11WindowActionTableFixed );
 					break;
 
 				case EFrameStyle::Overlay:
 					windowActionTablePtr = &( sX11WindowActionTableOverlay[0] );
-					windowActionTableSize = Cppx::staticArraySize( sX11WindowActionTableOverlay );
+					windowActionTableSize = cppx::static_array_size( sX11WindowActionTableOverlay );
 					break;
 
 				case EFrameStyle::Resizeable:
 					windowActionTablePtr = &( sX11WindowActionTableResizeable[0] );
-					windowActionTableSize = Cppx::staticArraySize( sX11WindowActionTableResizeable );
+					windowActionTableSize = cppx::static_array_size( sX11WindowActionTableResizeable );
 					break;
 			}
 
@@ -526,15 +527,15 @@ namespace Ic3::System
 			return resultAtomTable;
 		}
 
-		XSizeHints _x11QuerySizeHintsForFrameStyle( XDisplay pDisplay, EFrameStyle pFrameStyle, const FrameGeometry & pFrameGeometry )
+		XSizeHints _X11QuerySizeHintsForFrameStyle( XDisplay pDisplay, EFrameStyle pFrameStyle, const FrameGeometry & pFrameGeometry )
 		{
 			XSizeHints windowSizeHints;
 
 			windowSizeHints.flags = PPosition | PSize;
 			windowSizeHints.x = static_cast<int>( pFrameGeometry.mPosition.x );
 			windowSizeHints.y = static_cast<int>( pFrameGeometry.mPosition.y );
-			windowSizeHints.width = static_cast<int>( pFrameGeometry.mSize.x );
-			windowSizeHints.height = static_cast<int>( pFrameGeometry.mSize.y );
+			windowSizeHints.width = static_cast<int>( pFrameGeometry.size.x );
+			windowSizeHints.height = static_cast<int>( pFrameGeometry.size.y );
 
 			// "Resizeable" style is the only style which has the dynamic resizing enabled.
 			if( pFrameStyle != EFrameStyle::Resizeable )
@@ -560,4 +561,4 @@ namespace Ic3::System
 	}
 
 } // namespace Ic3::System
-#endif // IC3_PCL_TARGET_SYSAPI_X11
+#endif // PCL_TARGET_SYSAPI_X11

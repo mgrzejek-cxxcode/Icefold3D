@@ -24,23 +24,23 @@ namespace Ic3::System
 		explicit WindowManager( DisplayManagerHandle pDisplayManager );
 		virtual ~WindowManager() noexcept;
 
-		IC3_ATTR_NO_DISCARD WindowHandle createWindow( WindowCreateInfo pCreateInfo );
+		CPPX_ATTR_NO_DISCARD WindowHandle CreateWindow( WindowCreateInfo pCreateInfo );
 
-		IC3_ATTR_NO_DISCARD bool checkFrameGeometry( const FrameGeometry & pFrameGeometry ) const;
+		CPPX_ATTR_NO_DISCARD bool CheckFrameGeometry( const FrameGeometry & pFrameGeometry ) const;
 
-		IC3_ATTR_NO_DISCARD FrameGeometry validateFrameGeometry( const FrameGeometry & pFrameGeometry ) const;
+		CPPX_ATTR_NO_DISCARD FrameGeometry ValidateFrameGeometry( const FrameGeometry & pFrameGeometry ) const;
 
-		IC3_ATTR_NO_DISCARD uint32 getActiveWindowsNum() const;
+		CPPX_ATTR_NO_DISCARD uint32 GetActiveWindowsNum() const;
 
 	friendapi:
 		// Used by the Window class.
 		// Destroys system-level window internals without invalidating 'pWindow' itself.
-		virtual void releaseSystemWindow( Window & pWindow ) noexcept;
+		virtual void ReleaseSystemWindow( Window & pWindow ) noexcept;
 
 	private:
-		virtual WindowHandle _nativeCreateWindow( WindowCreateInfo pCreateInfo ) = 0;
+		virtual WindowHandle _NativeCreateWindow( WindowCreateInfo pCreateInfo ) = 0;
 
-		virtual void _nativeDestroyWindow( Window & pWindow ) = 0;
+		virtual void _NativeDestroyWindow( Window & pWindow ) = 0;
 	};
 
 	/// @brief
@@ -55,36 +55,38 @@ namespace Ic3::System
 		explicit Window( WindowManagerHandle pWindowManager, void * pNativeData );
 		virtual ~Window() noexcept;
 
-		virtual void resizeClientArea( const FrameSize & pSize ) override final;
+		virtual void ResizeClientArea( const FrameSize & pSize ) override final;
 
-		virtual void resizeFrame( const FrameSize & pSize ) override final;
+		virtual void ResizeFrame( const FrameSize & pSize ) override final;
 
-		virtual void setFullscreenMode( bool pEnable ) override final;
+		virtual void SetFullscreenMode( bool pEnable ) override final;
 
-		virtual void setTitle( const std::string & pTitleText ) override final;
+		virtual void SetTitle( const std::string & pTitleText ) override final;
 
-		virtual void updateGeometry( const FrameGeometry & pFrameGeometry,
-		                             TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
+		virtual void UpdateGeometry(
+				const FrameGeometry & pFrameGeometry,
+				cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
 
-		IC3_ATTR_NO_DISCARD virtual FrameSize getClientAreaSize() const override final;
+		CPPX_ATTR_NO_DISCARD virtual FrameSize GetClientAreaSize() const override final;
 
-		IC3_ATTR_NO_DISCARD virtual FrameSize getFrameSize() const override final;
+		CPPX_ATTR_NO_DISCARD virtual FrameSize GetFrameSize() const override final;
 
-		IC3_ATTR_NO_DISCARD virtual bool isFullscreen() const override final;
+		CPPX_ATTR_NO_DISCARD virtual bool IsFullscreen() const override final;
 
 	private:
-		virtual void onDestroySystemObjectRequested() override final;
+		virtual void OnDestroySystemObjectRequested() override final;
 
-		virtual void _nativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode ) = 0;
+		virtual void _NativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode ) = 0;
 
-		virtual void _nativeSetFullscreenMode( bool pEnable ) = 0;
+		virtual void _NativeSetFullscreenMode( bool pEnable ) = 0;
 
-		virtual void _nativeSetTitle( const std::string & pTitle ) = 0;
+		virtual void _NativeSetTitle( const std::string & pTitle ) = 0;
 
-		virtual void _nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-		                                    TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) = 0;
+		virtual void _NativeUpdateGeometry(
+				const FrameGeometry & pFrameGeometry,
+				cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) = 0;
 
-		virtual FrameSize _nativeGetSize( EFrameSizeMode pSizeMode ) const = 0;
+		virtual FrameSize _NativeGetSize( EFrameSizeMode pSizeMode ) const = 0;
 	};
 
 } // namespace Ic3::System

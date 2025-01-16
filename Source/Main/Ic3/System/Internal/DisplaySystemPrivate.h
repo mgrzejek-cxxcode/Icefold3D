@@ -25,7 +25,7 @@ namespace Ic3::System
 		EColorFormat::R10G10B10A2,
 	};
 
-	static_assert( Cppx::staticArraySize( cvColorFormatArray ) == CX_ENUM_COLOR_FORMAT_COUNT );
+	static_assert( cppx::static_array_size( cvColorFormatArray ) == CX_ENUM_COLOR_FORMAT_COUNT );
 
 	union DisplayOutputIDGen
 	{
@@ -35,7 +35,7 @@ namespace Ic3::System
 			dsm_index_t uOutputIndex;
 		};
 
-		dsm_output_id_t mOutputID = 0;
+		dsm_output_id_t outputID = 0;
 	};
 
 	union DisplayVideoModeIDGen
@@ -61,29 +61,15 @@ namespace Ic3::System
 			uint8 uColorFormatIndex;
 		};
 
-		dsm_video_settings_hash_t mHashValue = 0u;
+		dsm_video_settings_hash_t hashValue = 0u;
 	};
-
-	inline dsm_index_t dsmExtractOutputIDAdapterIndex( dsm_output_id_t pOutputID )
-	{
-		DisplayOutputIDGen outputIDGen;
-		outputIDGen.mOutputID = pOutputID;
-		return outputIDGen.uAdapterIndex;
-	}
-
-	inline dsm_index_t dsmExtractOutputIDOutputIndex( dsm_output_id_t pOutputID )
-	{
-		DisplayOutputIDGen outputIDGen;
-		outputIDGen.mOutputID = pOutputID;
-		return outputIDGen.uOutputIndex;
-	}
 
 	using DisplayDriverFactoryCallback = std::function<DisplayDriverHandle()>;
 	using DisplayDriverFactoryMap = std::map<EDisplayDriverType, DisplayDriverFactoryCallback>;
 
 	struct DisplayManager::DisplayManagerPrivateData
 	{
-		DisplayDriverFactoryMap mDriverFactoryMap;
+		DisplayDriverFactoryMap driverFactoryMap;
 	};
 
 
@@ -91,35 +77,35 @@ namespace Ic3::System
 	struct DisplayDriver::DisplayDriverPrivateData
 	{
 		// Storage for holding all adapters. We use deque to guarantee pointer persistence.
-		std::deque<DisplayAdapterHandle> mAdapterInstanceList;
+		std::deque<DisplayAdapterHandle> adapterInstanceList;
 
 		// Additional helper list, with all adapters stored as handles/pointers.
 		// This is returned directly via the public accessor and allows us to avoid building it on the fly each time.
-		DisplayAdapterList mAdapterList;
+		DisplayAdapterList adapterList;
 
 		// Number of active adapters in the system. Equals adapterList.size() (and, thus, adapterInternalStorage.size() too).
-		uint32 mActiveAdaptersNum = 0;
+		uint32 activeAdaptersNum = 0;
 
 		// Number of all active outputs in the system, i.e. sum of all active outputs for each adapter present in the system.
-		uint32 mCombinedActiveOutputsNum = 0;
+		uint32 combinedActiveOutputsNum = 0;
 
 		// Points to the default/primary adapter in the system. Usually this will be adapterList[0];
-		DisplayAdapter * mPrimaryAdapter = nullptr;
+		DisplayAdapter * primaryAdapter = nullptr;
 	};
 
 	/// @brief Private, implementation-specific data of the DisplayAdapter class.
 	struct DisplayAdapter::DisplayAdapterPrivateData
 	{
 		//
-		DisplayAdapterDesc mAdapterDesc;
+		DisplayAdapterDesc adapterDesc;
 
-		std::deque<DisplayOutputHandle> mOutputInstanceList;
+		std::deque<DisplayOutputHandle> outputInstanceList;
 
-		DisplayOutputList mOutputList;
+		DisplayOutputList outputList;
 
-		uint32 mActiveOutputsNum = 0;
+		uint32 activeOutputsNum = 0;
 
-		DisplayOutput * mPrimaryOutput = nullptr;
+		DisplayOutput * primaryOutput = nullptr;
 	};
 
 	/// @brief Private, implementation-specific data of the DisplayOutput class.
@@ -132,30 +118,45 @@ namespace Ic3::System
 		struct ColorFormatData
 		{
 			// The color format this data refers to.
-			EColorFormat mColorFormat = EColorFormat::Unknown;
+			EColorFormat colorFormat = EColorFormat::Unknown;
 
 			// List of video modes supported for this EColorFormat. Stored as queue - as usual.
-			std::deque<DisplayVideoModeHandle> mVideoModeInstanceList;
+			std::deque<DisplayVideoModeHandle> videoModeInstanceList;
 
 			// Helper list with handles/pointers.
-			DisplayVideoModeList mVideoModeList;
+			DisplayVideoModeList videoModeList;
 		};
 
 		//
-		DisplayOutputDesc mOutputDesc;
+		DisplayOutputDesc outputDesc;
 
 		// The main data. Stores a ColorFormatData struct for each EColorFormat supported/enumerated.
-		std::map<EColorFormat, ColorFormatData> mColorFormatMap;
+		std::map<EColorFormat, ColorFormatData> colorFormatMap;
 
 		//
-		std::vector<EColorFormat> mSupportedColorFormatList;
+		std::vector<EColorFormat> supportedColorFormatList;
 	};
 
 	/// @brief Private, implementation-specific data of the DisplayOutput class.
 	struct DisplayVideoMode::DisplayVideoModePrivateData
 	{
-		DisplayVideoModeDesc mModeDesc;
+		DisplayVideoModeDesc modeDesc;
 	};
+
+
+	CPPX_ATTR_NO_DISCARD dsm_index_t DSMExtractOutputIDAdapterIndex( dsm_output_id_t pOutputID );
+
+	CPPX_ATTR_NO_DISCARD dsm_index_t DSMExtractOutputIDOutputIndex( dsm_output_id_t pOutputID );
+
+	CPPX_ATTR_NO_DISCARD dsm_output_id_t DSMCreateDisplayOutputID( dsm_index_t pAdapterIndex, dsm_index_t pOutputIndex );
+
+	CPPX_ATTR_NO_DISCARD dsm_video_settings_hash_t DSMComputeVideoSettingsHash( EColorFormat pFormat, const DisplayVideoSettings & pSettings );
+
+	CPPX_ATTR_NO_DISCARD std::string DSMGetVideoSettingsString( EColorFormat pFormat, const DisplayVideoSettings & pSettings );
+
+	CPPX_ATTR_NO_DISCARD EDisplayAdapterVendorID DSMResolveAdapterVendorID( const std::string & pAdapterName );
+
+	CPPX_ATTR_NO_DISCARD bool DSMCheckSettingsFilterMatch( const DisplayVideoSettingsFilter & pFilter, const DisplayVideoSettings & pSettings );
 
 } // namespace Ic3::System
 

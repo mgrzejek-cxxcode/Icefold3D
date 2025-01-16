@@ -26,17 +26,17 @@ namespace Ic3::System
 
 		struct X11OpenGLRenderContextNativeData : public X11NativeDataCommon
 		{
-			GLXContext mContextHandle = nullptr;
+			GLXContext contextHandle = nullptr;
 		};
 
 		struct X11OpenGLSystemDriverNativeData : public X11NativeDataCommon
 		{
 			struct InitState
 			{
-				X11OpenGLDisplaySurfaceNativeData mSurfaceData;
-				X11OpenGLRenderContextNativeData mContextData;
+				X11OpenGLDisplaySurfaceNativeData surfaceData;
+				X11OpenGLRenderContextNativeData contextData;
 			};
-			std::unique_ptr<InitState> mInitState = nullptr;
+			std::unique_ptr<InitState> initState = nullptr;
 		};
 
 		struct X11OpenGLVisualConfig
@@ -64,46 +64,50 @@ namespace Ic3::System
 		virtual ~X11OpenGLSystemDriver() noexcept;
 
 	private:
-		/// @copybrief OpenGLSystemDriver::_nativeInitializePlatform
-		virtual void _nativeInitializePlatform() override final;
+		/// @copybrief OpenGLSystemDriver::_NativeInitializePlatform
+		virtual void _NativeInitializePlatform() override final;
 
-		/// @copybrief OpenGLSystemDriver::_nativeReleaseInitState
-		virtual void _nativeReleaseInitState() noexcept override final;
+		/// @copybrief OpenGLSystemDriver::_NativeReleaseInitState
+		virtual void _NativeReleaseInitState() noexcept override final;
 
-		/// @copybrief OpenGLSystemDriver::_nativeCreateDisplaySurface
-		virtual OpenGLDisplaySurfaceHandle _nativeCreateDisplaySurface( const OpenGLDisplaySurfaceCreateInfo & pCreateInfo ) override final;
+		/// @copybrief OpenGLSystemDriver::_NativeCreateDisplaySurface
+		virtual OpenGLDisplaySurfaceHandle _NativeCreateDisplaySurface(
+				const OpenGLDisplaySurfaceCreateInfo & pCreateInfo ) override final;
 
-		/// @copybrief OpenGLSystemDriver::_nativeCreateDisplaySurfaceForCurrentThread
-		virtual OpenGLDisplaySurfaceHandle _nativeCreateDisplaySurfaceForCurrentThread() override final;
+		/// @copybrief OpenGLSystemDriver::_NativeCreateDisplaySurfaceForCurrentThread
+		virtual OpenGLDisplaySurfaceHandle _NativeCreateDisplaySurfaceForCurrentThread() override final;
 
-		/// @copybrief OpenGLSystemDriver::_nativeDestroyDisplaySurface
-		virtual void _nativeDestroyDisplaySurface( OpenGLDisplaySurface & pDisplaySurface ) override final;
+		/// @copybrief OpenGLSystemDriver::_NativeDestroyDisplaySurface
+		virtual void _NativeDestroyDisplaySurface( OpenGLDisplaySurface & pDisplaySurface ) override final;
 
-		/// @copybrief OpenGLSystemDriver::_nativeCreateRenderContext
-		virtual OpenGLRenderContextHandle _nativeCreateRenderContext( OpenGLDisplaySurface & pDisplaySurface,
-		                                                              const OpenGLRenderContextCreateInfo & pCreateInfo ) override final;
+		/// @copybrief OpenGLSystemDriver::_NativeCreateRenderContext
+		virtual OpenGLRenderContextHandle _NativeCreateRenderContext(
+				OpenGLDisplaySurface & pDisplaySurface,
+				const OpenGLRenderContextCreateInfo & pCreateInfo ) override final;
 
-		/// @copybrief OpenGLSystemDriver::_nativeCreateRenderContextForCurrentThread
-		virtual OpenGLRenderContextHandle _nativeCreateRenderContextForCurrentThread() override final;
+		/// @copybrief OpenGLSystemDriver::_NativeCreateRenderContextForCurrentThread
+		virtual OpenGLRenderContextHandle _NativeCreateRenderContextForCurrentThread() override final;
 
-		/// @copybrief OpenGLSystemDriver::_nativeDestroyDisplaySurface
-		virtual void _nativeDestroyRenderContext( OpenGLRenderContext & pRenderContext ) override final;
+		/// @copybrief OpenGLSystemDriver::_NativeDestroyDisplaySurface
+		virtual void _NativeDestroyRenderContext( OpenGLRenderContext & pRenderContext ) override final;
 
-		/// @copybrief OpenGLSystemDriver::_nativeResetContextBinding
-		virtual void _nativeResetContextBinding() override final;
+		/// @copybrief OpenGLSystemDriver::_NativeResetContextBinding
+		virtual void _NativeResetContextBinding() override final;
 
-		/// @copybrief OpenGLSystemDriver::_nativeQuerySupportedDepthStencilFormats
-		virtual std::vector<EDepthStencilFormat> _nativeQuerySupportedDepthStencilFormats( EColorFormat pColorFormat ) const override final;
+		/// @copybrief OpenGLSystemDriver::_NativeQuerySupportedDepthStencilFormats
+		virtual std::vector<EDepthStencilFormat> _NativeQuerySupportedDepthStencilFormats(
+				EColorFormat pColorFormat ) const override final;
 
-		/// @copybrief OpenGLSystemDriver::_nativeQuerySupportedMSAAModes
-		virtual std::vector<EMSAAMode> _nativeQuerySupportedMSAAModes( EColorFormat pColorFormat,
-                                                                       EDepthStencilFormat pDepthStencilFormat ) const override final;
+		/// @copybrief OpenGLSystemDriver::_NativeQuerySupportedMSAAModes
+		virtual std::vector<EMSAAMode> _NativeQuerySupportedMSAAModes(
+				EColorFormat pColorFormat,
+				EDepthStencilFormat pDepthStencilFormat ) const override final;
 
-		/// @copybrief OpenGLSystemDriver::_nativeIssAPIClassSupported
-		virtual bool _nativeIsAPIClassSupported( EOpenGLAPIClass pAPIClass ) const override final;;
+		/// @copybrief OpenGLSystemDriver::_NativeIssAPIClassSupported
+		virtual bool _NativeIsAPIClassSupported( EOpenGLAPIClass pAPIClass ) const override final;;
 
-		/// @copybrief OpenGLSystemDriver::_nativeIsRenderContextBound
-		virtual bool _nativeIsRenderContextBound() const override final;
+		/// @copybrief OpenGLSystemDriver::_NativeIsRenderContextBound
+		virtual bool _NativeIsRenderContextBound() const override final;
 	};
 
 	/// @brief X11-specific implementation of the OpenGLDisplaySurface class.
@@ -114,40 +118,41 @@ namespace Ic3::System
 		virtual ~X11OpenGLDisplaySurface() noexcept;
 
 	private:
-		void _releaseX11SurfaceState();
+		void _ReleaseX11SurfaceState();
 
-		/// @copybrief OpenGLDisplaySurface::_nativeSwapBuffers
-		virtual void _nativeSwapBuffers() override final;
+		/// @copybrief OpenGLDisplaySurface::_NativeSwapBuffers
+		virtual void _NativeSwapBuffers() override final;
 
-        virtual EOpenGLAPIClass _nativeQuerySupportedAPIClass() const noexcept override final;
+        virtual EOpenGLAPIClass _NativeQuerySupportedAPIClass() const noexcept override final;
 
-		/// @copybrief OpenGLDisplaySurface::_nativeQueryRenderAreaSize
-		virtual VisualConfig _nativeQueryVisualConfig() const override final;
+		/// @copybrief OpenGLDisplaySurface::_NativeQueryRenderAreaSize
+		virtual VisualConfig _NativeQueryVisualConfig() const override final;
 
-		/// @copybrief OpenGLDisplaySurface::_nativeQueryRenderAreaSize
-		virtual FrameSize _nativeQueryRenderAreaSize() const override final;
+		/// @copybrief OpenGLDisplaySurface::_NativeQueryRenderAreaSize
+		virtual FrameSize _NativeQueryRenderAreaSize() const override final;
 
-		/// @copybrief OpenGLDisplaySurface::_nativeSysValidate
-		virtual bool _nativeSysValidate() const override final;
+		/// @copybrief OpenGLDisplaySurface::_NativeSysValidate
+		virtual bool _NativeSysValidate() const override final;
 
-		/// @copybrief OpenGLDisplaySurface::_nativeResize
-		virtual void _nativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode ) override final;
+		/// @copybrief OpenGLDisplaySurface::_NativeResize
+		virtual void _NativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode ) override final;
 
-		/// @copybrief OpenGLDisplaySurface::_nativeSetFullscreenMode
-		virtual void _nativeSetFullscreenMode( bool pEnable ) override final;
+		/// @copybrief OpenGLDisplaySurface::_NativeSetFullscreenMode
+		virtual void _NativeSetFullscreenMode( bool pEnable ) override final;
 
-		/// @copybrief OpenGLDisplaySurface::_nativeSetTitle
-		virtual void _nativeSetTitle( const std::string & pTitle ) override final;
+		/// @copybrief OpenGLDisplaySurface::_NativeSetTitle
+		virtual void _NativeSetTitle( const std::string & pTitle ) override final;
 
-		/// @copybrief OpenGLDisplaySurface::_nativeUpdateGeometry
-		virtual void _nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-		                                    TBitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
+		/// @copybrief OpenGLDisplaySurface::_NativeUpdateGeometry
+		virtual void _NativeUpdateGeometry(
+				const FrameGeometry & pFrameGeometry,
+				cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
 
-		/// @copybrief OpenGLDisplaySurface::_nativeGetSize
-		virtual FrameSize _nativeGetSize( EFrameSizeMode pSizeMode ) const override final;
+		/// @copybrief OpenGLDisplaySurface::_NativeGetSize
+		virtual FrameSize _NativeGetSize( EFrameSizeMode pSizeMode ) const override final;
 
-		/// @copybrief OpenGLDisplaySurface::_nativeIsFullscreen
-		virtual bool _nativeIsFullscreen() const override final;
+		/// @copybrief OpenGLDisplaySurface::_NativeIsFullscreen
+		virtual bool _NativeIsFullscreen() const override final;
 	};
 
 	/// @brief X11-specific implementation of the OpenGLRenderContext class.
@@ -158,16 +163,16 @@ namespace Ic3::System
 		virtual ~X11OpenGLRenderContext() noexcept;
 
 	private:
-		void _releaseX11ContextState();
+		void _ReleaseX11ContextState();
 
-		/// @copybrief OpenGLRenderContext::_nativeBindForCurrentThread
-		virtual void _nativeBindForCurrentThread( const OpenGLDisplaySurface & pTargetSurface ) override final;
+		/// @copybrief OpenGLRenderContext::_NativeBindForCurrentThread
+		virtual void _NativeBindForCurrentThread( const OpenGLDisplaySurface & pTargetSurface ) override final;
 
-		/// @copybrief OpenGLRenderContext::_nativeIsCurrent
-		virtual bool _nativeSysCheckIsCurrent() const override final;
+		/// @copybrief OpenGLRenderContext::_NativeIsCurrent
+		virtual bool _NativeSysCheckIsCurrent() const override final;
 
-		/// @copybrief OpenGLRenderContext::_nativeSysValidate
-		virtual bool _nativeSysValidate() const override final;
+		/// @copybrief OpenGLRenderContext::_NativeSysValidate
+		virtual bool _NativeSysValidate() const override final;
 	};
 
 } // namespace Ic3::System

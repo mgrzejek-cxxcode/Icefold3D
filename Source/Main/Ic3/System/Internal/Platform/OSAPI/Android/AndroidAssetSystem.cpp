@@ -2,7 +2,7 @@
 #include <Ic3/System/AssetSystemNative.h>
 #include <Ic3/System/FileCommon.h>
 
-#if( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_ANDROID )
+#if( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_ANDROID )
 namespace Ic3::System
 {
 
@@ -11,10 +11,11 @@ namespace Ic3::System
 
 		int _androidTranslateFilePointerRefPos( EFilePointerRefPos pFileRefPos );
 
-		AAsset * _androidResolveAsset( AAssetManager * pAAssetManager,
-		                               AAssetDir * pAAssetDir,
-		                               Cppx::FilePathInfo & pAssetPathInfo,
-		                               TBitmask<EAssetOpenFlags> pFlags );
+		AAsset * _androidResolveAsset(
+				AAssetManager * pAAssetManager,
+				AAssetDir * pAAssetDir,
+				cppx::file_path_info & pAssetPathInfo,
+				cppx::bitmask<EAssetOpenFlags> pFlags );
 
 	}
 
@@ -22,26 +23,26 @@ namespace Ic3::System
 	AndroidAssetLoader::AndroidAssetLoader( SysContextHandle pSysContext )
 	: AndroidNativeObject( std::move( pSysContext ) )
 	{
-		_initializeAndroidAssetLoaderData();
+		_InitializeAndroidAssetLoaderData();
 	}
 
 	AndroidAssetLoader::~AndroidAssetLoader() noexcept
 	{
-		_releaseAndroidAssetLoaderData();
+		_ReleaseAndroidAssetLoaderData();
 	}
 
-	void AndroidAssetLoader::_initializeAndroidAssetLoaderData()
+	void AndroidAssetLoader::_InitializeAndroidAssetLoaderData()
 	{
-		auto & aSessionData = Platform::androidGetASessionData( *this );
+		auto & aSessionData = Platform::AndroidGetASessionData( *this );
 		mNativeData.mAndrAssetManager = aSessionData.aCommonAppState->activity->assetManager;
 	}
 
-	void AndroidAssetLoader::_releaseAndroidAssetLoaderData()
+	void AndroidAssetLoader::_ReleaseAndroidAssetLoaderData()
 	{
 		mNativeData.mAndrAssetManager = nullptr;
 	}
 
-	AssetHandle AndroidAssetLoader::_nativeOpenSubAsset( Cppx::FilePathInfo pAssetPathInfo, TBitmask<EAssetOpenFlags> pFlags )
+	AssetHandle AndroidAssetLoader::_NativeOpenSubAsset( cppx::file_path_info pAssetPathInfo, cppx::bitmask<EAssetOpenFlags> pFlags )
 	{
 		TSysHandle<AndroidAsset> asset = nullptr;
 
@@ -49,8 +50,8 @@ namespace Ic3::System
 
 		if( auto * aAsset = Platform::_androidResolveAsset( aAssetManager, nullptr, pAssetPathInfo, pFlags ) )
 		{
-			asset = createSysObject<AndroidAsset>( getHandle<AndroidAssetLoader>() );
-			asset->setName( std::move( pAssetPathInfo.mFileName ) );
+			asset = CreateSysObject<AndroidAsset>( GetHandle<AndroidAssetLoader>() );
+			asset->SetName( std::move( pAssetPathInfo.mFileName ) );
 			asset->mNativeData.mAndrAsset = aAsset;
 			asset->mNativeData.mAndrAssetManager = mNativeData.mAndrAssetManager;
 		}
@@ -58,28 +59,28 @@ namespace Ic3::System
 		return asset;
 	}
 
-	AssetDirectoryHandle AndroidAssetLoader::_nativeOpenDirectory( std::string pDirectoryName )
+	AssetDirectoryHandle AndroidAssetLoader::_NativeOpenDirectory( std::string pDirectoryName )
 	{
 		std::string assetDirRefName = "assets";
-		assetDirRefName.append( 1, IC3_PCL_ENV_DEFAULT_PATH_DELIMITER );
+		assetDirRefName.append( 1, PCL_ENV_DEFAULT_PATH_DELIMITER );
 		assetDirRefName.append( pDirectoryName );
 
 		TSysHandle<AndroidAssetDirectory> assetDirectory = nullptr;
 
 		if( auto * aAssetDir = AAssetManager_openDir( mNativeData.mAndrAssetManager, pDirectoryName.c_str() ) )
 		{
-			assetDirectory = createSysObject<AndroidAssetDirectory>( getHandle<AndroidAssetLoader>() );
-			assetDirectory->setDirName( std::move( pDirectoryName ) );
+			assetDirectory = CreateSysObject<AndroidAssetDirectory>( GetHandle<AndroidAssetLoader>() );
+			assetDirectory->SetDirName( std::move( pDirectoryName ) );
 			assetDirectory->mNativeData.mAndrAssetDir = aAssetDir;
 		}
 
 		return assetDirectory;
 	}
 
-	bool AndroidAssetLoader::_nativeCheckDirectoryExists( const std::string & pDirectoryName ) const
+	bool AndroidAssetLoader::_NativeCheckDirectoryExists( const std::string & pDirectoryName ) const
 	{
 		std::string assetDirRefName = "assets";
-		assetDirRefName.append( 1, IC3_PCL_ENV_DEFAULT_PATH_DELIMITER );
+		assetDirRefName.append( 1, PCL_ENV_DEFAULT_PATH_DELIMITER );
 		assetDirRefName.append( pDirectoryName );
 
 		auto * aAssetDir = AAssetManager_openDir( mNativeData.mAndrAssetManager, assetDirRefName.c_str() );
@@ -96,20 +97,20 @@ namespace Ic3::System
 	AndroidAssetDirectory::AndroidAssetDirectory( AndroidAssetLoaderHandle pAssetLoader )
 	: AndroidNativeObject( pAssetLoader )
 	{
-		_initializeAndroidAssetDirectoryData( pAssetLoader->mNativeData.mAndrAssetManager );
+		_InitializeAndroidAssetDirectoryData( pAssetLoader->mNativeData.mAndrAssetManager );
 	}
 
 	AndroidAssetDirectory::~AndroidAssetDirectory() noexcept
 	{
-		_releaseAndroidAssetDirectoryData();
+		_ReleaseAndroidAssetDirectoryData();
 	}
 
-	void AndroidAssetDirectory::_initializeAndroidAssetDirectoryData( AAssetManager * pAssetManager )
+	void AndroidAssetDirectory::_InitializeAndroidAssetDirectoryData( AAssetManager * pAssetManager )
 	{
 		mNativeData.mAndrAssetManager = pAssetManager;
 	}
 
-	void AndroidAssetDirectory::_releaseAndroidAssetDirectoryData()
+	void AndroidAssetDirectory::_ReleaseAndroidAssetDirectoryData()
 	{
 		if( mNativeData.mAndrAssetDir )
 		{
@@ -118,7 +119,7 @@ namespace Ic3::System
 		}
 	}
 
-	void AndroidAssetDirectory::_nativeRefreshAssetList()
+	void AndroidAssetDirectory::_NativeRefreshAssetList()
 	{
 		FileNameList assetNameList;
 		while( auto * aAssetName = AAssetDir_getNextFileName( mNativeData.mAndrAssetDir ) )
@@ -128,15 +129,15 @@ namespace Ic3::System
 
 		AAssetDir_rewind( mNativeData.mAndrAssetDir );
 
-		setAssetList( std::move( assetNameList ) );
+		SetAssetList( std::move( assetNameList ) );
 	}
 
-	AssetHandle AndroidAssetDirectory::_nativeOpenAsset( std::string pAssetName, TBitmask<EAssetOpenFlags> pFlags )
+	AssetHandle AndroidAssetDirectory::_NativeOpenAsset( std::string pAssetName, cppx::bitmask<EAssetOpenFlags> pFlags )
 	{
 		TSysHandle<AndroidAsset> asset = nullptr;
 
-		Cppx::FilePathInfo assetPathInfo;
-		assetPathInfo.mDirectory = getDirName();
+		cppx::file_path_info assetPathInfo;
+		assetPathInfo.mDirectory = GetDirName();
 		assetPathInfo.mFileName = std::move( pAssetName );
 
 		auto * aAssetManager = mNativeData.mAndrAssetManager;
@@ -144,8 +145,8 @@ namespace Ic3::System
 
 		if( auto * aAsset = Platform::_androidResolveAsset( aAssetManager, aAssetDir, assetPathInfo, pFlags ) )
 		{
-			asset = createSysObject<AndroidAsset>( getHandle<AndroidAssetLoader>() );
-			asset->setName( std::move( assetPathInfo.mFileName ) );
+			asset = CreateSysObject<AndroidAsset>( GetHandle<AndroidAssetLoader>() );
+			asset->SetName( std::move( assetPathInfo.mFileName ) );
 			asset->mNativeData.mAndrAsset = aAsset;
 			asset->mNativeData.mAndrAssetManager = mNativeData.mAndrAssetManager;
 		}
@@ -153,7 +154,7 @@ namespace Ic3::System
 		return asset;
 	}
 
-	bool AndroidAssetDirectory::_nativeCheckAssetExists( const std::string & pAssetName ) const
+	bool AndroidAssetDirectory::_NativeCheckAssetExists( const std::string & pAssetName ) const
 	{
 		if( auto * aAsset = AAssetManager_open( mNativeData.mAndrAssetManager, pAssetName.c_str(), AASSET_MODE_BUFFER ) )
 		{
@@ -174,10 +175,10 @@ namespace Ic3::System
 
 	AndroidAsset::~AndroidAsset() noexcept
 	{
-		_releaseAndroidAssetData();
+		_ReleaseAndroidAssetData();
 	}
 
-	void AndroidAsset::_releaseAndroidAssetData()
+	void AndroidAsset::_ReleaseAndroidAssetData()
 	{
 		if( mNativeData.mAndrAsset )
 		{
@@ -186,20 +187,20 @@ namespace Ic3::System
 		}
 	}
 
-	file_size_t AndroidAsset::_nativeReadData( void * pTargetBuffer, file_size_t pReadSize )
+	file_size_t AndroidAsset::_NativeReadData( void * pTargetBuffer, file_size_t pReadSize )
 	{
 		int readResult = AAsset_read( mNativeData.mAndrAsset, pTargetBuffer, pReadSize );
 		return numeric_cast<file_size_t>( readResult );
 	}
 
-	file_offset_t AndroidAsset::_nativeSetReadPointer( file_offset_t pOffset, EFilePointerRefPos pRefPos )
+	file_offset_t AndroidAsset::_NativeSetReadPointer( file_offset_t pOffset, EFilePointerRefPos pRefPos )
 	{
 		auto seekOrigin = Platform::_androidTranslateFilePointerRefPos( pRefPos );
 		auto seekResult = AAsset_seek64( mNativeData.mAndrAsset, pOffset, seekOrigin );
 		return numeric_cast<file_offset_t>( seekResult );
 	}
 
-	file_size_t AndroidAsset::_nativeGetSize() const
+	file_size_t AndroidAsset::_NativeGetSize() const
 	{
 		auto assetSize = AAsset_getLength64( mNativeData.mAndrAsset );
 		return numeric_cast<file_offset_t>( assetSize );
@@ -235,10 +236,11 @@ namespace Ic3::System
 			return seekOrigin;
 		}
 
-		AAsset * _androidResolveAsset( AAssetManager * pAAssetManager,
-		                               AAssetDir * pAAssetDir,
-		                               Cppx::FilePathInfo & pAssetPathInfo,
-		                               TBitmask<EAssetOpenFlags> pFlags )
+		AAsset * _androidResolveAsset(
+				AAssetManager * pAAssetManager,
+				AAssetDir * pAAssetDir,
+				cppx::file_path_info & pAssetPathInfo,
+				cppx::bitmask<EAssetOpenFlags> pFlags )
 		{
 			AAsset * aAsset = nullptr;
 			bool aAssetDirOwnershipFlag = false;
@@ -253,7 +255,7 @@ namespace Ic3::System
 			{
 				aAsset = AAssetManager_open( pAAssetManager, pAssetPathInfo.mFileName.c_str(), AASSET_MODE_RANDOM );
 
-				if( !aAsset && pFlags.isSet( eAssetOpenFlagNoExtensionBit ) )
+				if( !aAsset && pFlags.is_set( eAssetOpenFlagNoExtensionBit ) )
 				{
 					while( auto * assetFilename = AAssetDir_getNextFileName( pAAssetDir ) )
 					{
@@ -285,4 +287,4 @@ namespace Ic3::System
 	}
 
 } // namespace Ic3::System
-#endif // IC3_PCL_TARGET_SYSAPI_ANDROID
+#endif // PCL_TARGET_SYSAPI_ANDROID

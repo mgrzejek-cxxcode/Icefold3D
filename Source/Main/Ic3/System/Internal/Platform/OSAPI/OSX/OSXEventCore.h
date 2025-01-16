@@ -5,7 +5,7 @@
 #include "OSXCommon.h"
 #include <Ic3/System/EventCore.h>
 #include <Ic3/System/EventObject.h>
-#include <Ic3/Cppx/BitUtils.h>
+#include <cppx/bitUtils.h>
 
 #import <AppKit/NSEvent.h>
 
@@ -96,7 +96,7 @@ namespace Ic3::System
 
 		struct OSXEventControllerNativeData : public OSXNativeDataCommon
 		{
-			CGPoint mLastCursorPosReal;
+			CGPoint lastCursorPosReal;
 		};
 
 		struct NativeEventType
@@ -130,7 +130,7 @@ namespace Ic3::System
 
 		EventSource * osxFindEventSourceByNSWindow( OSXEventController & pEventController, NSWindow * pNSWindow );
 
-		void osxCreateEventListener( OSXEventSourceNativeData & pEventSourceNativeData );
+		void OSXCreateEventListener( OSXEventSourceNativeData & pEventSourceNativeData );
 
 		bool osxTranslateEvent( EventController & pEventController, EventSource & pEventSource, const NativeEventType & pNativeEvent, EventObject & pOutEvent );
 
@@ -142,11 +142,11 @@ namespace Ic3::System
 
 		IC3_SYSTEM_API_NODISCARD bool osxIsEventTypeWindow( EOSXEventID pEventID );
 
-		IC3_SYSTEM_API_NODISCARD EMouseButtonID osxQueryMouseButtonID( NSEvent * pNSEvent );
+		IC3_SYSTEM_API_NODISCARD EMouseButtonID OSXQueryMouseButtonID( NSEvent * pNSEvent );
 
-		IC3_SYSTEM_API_NODISCARD Math::Vec2i32 osxQueryMouseRelativePosition( NSEvent * pNSEvent );
+		IC3_SYSTEM_API_NODISCARD Math::Vec2i32 OSXQueryMouseRelativePosition( NSEvent * pNSEvent );
 
-		IC3_SYSTEM_API_NODISCARD TBitmask<EOSXMouseScrollEventFlags> osxQueryMouseScrollEventFlags( const NativeEventType & pNativeEvent );
+		IC3_SYSTEM_API_NODISCARD cppx::bitmask<EOSXMouseScrollEventFlags> OSXQueryMouseScrollEventFlags( const NativeEventType & pNativeEvent );
 
 	}
 
@@ -157,17 +157,17 @@ namespace Ic3::System
 		virtual ~OSXEventController() noexcept;
 
 	private:
-		/// @copybrief EventController::_nativeRegisterEventSource
-		virtual void _nativeRegisterEventSource( EventSource & pEventSource ) override final;
+		/// @copybrief EventController::_NativeRegisterEventSource
+		virtual void _NativeRegisterEventSource( EventSource & pEventSource ) override final;
 
-		/// @copybrief EventController::_nativeUnregisterEventSource
-		virtual void _nativeUnregisterEventSource( EventSource & pEventSource ) override final;
+		/// @copybrief EventController::_NativeUnRegisterEventSource
+		virtual void _NativeUnRegisterEventSource( EventSource & pEventSource ) override final;
 
-		/// @copybrief EventController::_nativeDispatchPendingEvents
-		virtual bool _nativeDispatchPendingEvents() override final;
+		/// @copybrief EventController::_NativeDispatchPendingEvents
+		virtual bool _NativeDispatchPendingEvents() override final;
 
-		/// @copybrief EventController::_nativeDispatchPendingEventsWait
-		virtual bool _nativeDispatchPendingEventsWait() override final;
+		/// @copybrief EventController::_NativeDispatchPendingEventsWait
+		virtual bool _NativeDispatchPendingEventsWait() override final;
 	};
 
 } // namespace Ic3::System
