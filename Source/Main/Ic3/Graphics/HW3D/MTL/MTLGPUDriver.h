@@ -5,24 +5,24 @@
 #define __IC3_GRAPHICS_HW3D_MTLCOMMON_GPU_DRIVER_H__
 
 #include "MTLPrerequisites.h"
-#include <Ic3/Graphics/GCI/GpuDriver.h>
+#include <Ic3/Graphics/GCI/GPUDriver.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	struct MTLGpuDriverCreateInfo : public GpuDriverCreateInfo
+	struct MTLGPUDriverCreateInfo : public GPUDriverCreateInfo
 	{
 	};
 
 	/// @brief Middle-layer OpenMTL driver class. Implements features which are common for all MTL drivers (core, ES).
-	class MetalGpuDriver : public GpuDriver
+	class MetalGPUDriver : public GPUDriver
 	{
 	public:
 		System::MetalSystemDriverHandle const mSysMetalDriver;
 
 	public:
-		explicit MetalGpuDriver( System::MetalSystemDriverHandle pSysMetalDriver );
-		virtual ~MetalGpuDriver();
+		explicit MetalGPUDriver( System::MetalSystemDriverHandle pSysMetalDriver );
+		virtual ~MetalGPUDriver();
 
 	protected:
 		/// @brief Helper method. Initializes EXF OpenMTL driver component.

@@ -11,10 +11,10 @@ namespace Ic3::Graphics::GCI
 	class MetalPipelineImmutableStateFactory : public PipelineImmutableStateFactory
 	{
 	public:
-		MetalGpuDevice & mMetalGpuDevice;
+		MetalGPUDevice & mMetalGPUDevice;
 
 	public:
-		MetalPipelineImmutableStateFactory( MetalGpuDevice & pMetalGpuDevice );
+		MetalPipelineImmutableStateFactory( MetalGPUDevice & pMetalGPUDevice );
 		virtual ~MetalPipelineImmutableStateFactory();
 
 		virtual BlendImmutableStateHandle CreateBlendState( const BlendConfig & pConfig ) override final;

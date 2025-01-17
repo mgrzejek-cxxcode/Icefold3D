@@ -2,7 +2,7 @@
 #include "VK_commandList.h"
 #include "VK_commandSystem.h"
 #include <Ic3/Graphics/GCI/CommandContext.h>
-#include <Ic3/Graphics/GCI/Resources/GpuBuffer.h>
+#include <Ic3/Graphics/GCI/Resources/GPUBuffer.h>
 #include <Ic3/Graphics/GCI/Resources/Shader.h>
 #include <Ic3/Graphics/GCI/Resources/Texture.h>
 
@@ -11,7 +11,7 @@ namespace Ic3::Graphics::GCI
 
 	VKCommandList::VKCommandList( VKCommandSystem & pVKCommandSystem, ECommandListType pListType )
 	: CommandList( pVKCommandSystem, pListType )
-	, _stateController( *this, mGpuDevice.QueryInterface<VKGpuDevice>()->GetDescriptorCache() )
+	, _stateController( *this, mGPUDevice.QueryInterface<VKGPUDevice>()->GetDescriptorCache() )
 	{ }
 
 	VKCommandList::~VKCommandList() = default;
@@ -53,7 +53,7 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	bool VKCommandList::SetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GpuBuffer & pConstantBuffer )
+	bool VKCommandList::SetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer )
 	{
 		return true;
 	}

@@ -9,7 +9,7 @@
 #include "../Objects/GLFramebufferObject.h"
 #include "../Objects/GLShaderPipelineObject.h"
 #include "../Objects/GLVertexArrayObject.h"
-#include "../Resources/GLGpuBuffer.h"
+#include "../Resources/GLGPUBuffer.h"
 #include "../Resources/GLSampler.h"
 #include "../Resources/GLShader.h"
 #include "../Resources/GLTexture.h"
@@ -199,7 +199,7 @@ namespace Ic3::Graphics::GCI
 		return baseResult;
 	}
 
-	bool GLGraphicsPipelineStateController::SetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GpuBuffer & pConstantBuffer )
+	bool GLGraphicsPipelineStateController::SetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer )
 	{
 		bool baseResult = GraphicsPipelineStateController::SetShaderConstantBuffer( pParamRefID, pConstantBuffer );
 
@@ -214,7 +214,7 @@ namespace Ic3::Graphics::GCI
 
 				if( descriptorInfo.dShaderVisibilityMask != 0 )
 				{
-					auto * openglBuffer = pConstantBuffer.QueryInterface<GLGpuBuffer>();
+					auto * openglBuffer = pConstantBuffer.QueryInterface<GLGPUBuffer>();
 
 					glBindBufferBase( GL_UNIFORM_BUFFER, descriptorInfo.uResourceInfo.resourceBaseRegisterIndex, openglBuffer->mGLBufferObject->mGLHandle );
 					Ic3OpenGLHandleLastError();

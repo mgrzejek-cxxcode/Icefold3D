@@ -4,7 +4,7 @@
 #ifndef __IC3_GRAPHICS_HW3D_VK13_PREREQUISITES_H__
 #define __IC3_GRAPHICS_HW3D_VK13_PREREQUISITES_H__
 
-#include <Ic3/GpuapiVK/VKPrerequisites.h>
+#include <Ic3/GPUapiVK/VKPrerequisites.h>
 
 #if( IC3_BUILD_STATIC )
 #  define IC3_GX_VK10_API
@@ -26,9 +26,9 @@ namespace Ic3::Graphics::GCI
 {
 
 	// Ic3DeclareClassHandle( VK10CommandContext );
-	// Ic3DeclareClassHandle( VK10GpuCmdManager );
-	// Ic3DeclareClassHandle( VK10GpuDevice );
-	// Ic3DeclareClassHandle( VK10GpuDriver );
+	// Ic3DeclareClassHandle( VK10GPUCmdManager );
+	// Ic3DeclareClassHandle( VK10GPUDevice );
+	// Ic3DeclareClassHandle( VK10GPUDriver );
 	// Ic3DeclareClassHandle( VK10PresentationLayer );
 
 } // namespace Ic3::Graphics::GCI

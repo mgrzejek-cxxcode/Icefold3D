@@ -4,19 +4,19 @@
 #ifndef __IC3_GRAPHICS_GCI_GPU_DEVICE_NULL_H__
 #define __IC3_GRAPHICS_GCI_GPU_DEVICE_NULL_H__
 
-#include "GpuDevice.h"
+#include "GPUDevice.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	class GpuDeviceNull : public GpuDevice
+	class GPUDeviceNull : public GPUDevice
 	{
 	public:
-		explicit GpuDeviceNull( GpuDriver & pDriver )
-		: GpuDevice( pDriver )
+		explicit GPUDeviceNull( GPUDriver & pDriver )
+		: GPUDevice( pDriver )
 		{}
 
-		virtual ~GpuDeviceNull() = default;
+		virtual ~GPUDeviceNull() = default;
 
 		CPPX_ATTR_NO_DISCARD virtual bool IsNullDevice() const noexcept override final
 		{
@@ -27,7 +27,7 @@ namespace Ic3::Graphics::GCI
 		{}
 
 	protected:
-		virtual bool OnGpuResourceActiveRefsZero( GpuResource & pGpuResource ) override final
+		virtual bool OnGPUResourceActiveRefsZero( GPUResource & pGPUResource ) override final
 		{
 			return false;
 		}
@@ -41,7 +41,7 @@ namespace Ic3::Graphics::GCI
 			return false;
 		}
 
-		virtual GpuBufferHandle _DrvCreateGpuBuffer( const GpuBufferCreateInfo & pCreateInfo ) override final
+		virtual GPUBufferHandle _DrvCreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo ) override final
 		{
 			return nullptr;
 		}

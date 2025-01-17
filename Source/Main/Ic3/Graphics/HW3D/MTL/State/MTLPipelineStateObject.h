@@ -17,7 +17,7 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		MetalGraphicsPipelineStateObject(
-				MetalGpuDevice & pGpuDevice,
+				MetalGPUDevice & pGPUDevice,
 				RenderTargetLayout pRenderTargetLayout,
 				ShaderInputSignature pShaderInputSignature,
 				id<MTLRenderPipelineState> pMTLPipelineState );
@@ -25,7 +25,7 @@ namespace Ic3::Graphics::GCI
 		virtual ~MetalGraphicsPipelineStateObject();
 
 		static GpaHandle<MetalGraphicsPipelineStateObject> Create(
-				MetalGpuDevice & pGpuDevice,
+				MetalGPUDevice & pGPUDevice,
 				const GraphicsPipelineStateObjectCreateInfo & pCreateInfo );
 	};
 

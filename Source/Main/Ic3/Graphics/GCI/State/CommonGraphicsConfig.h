@@ -4,7 +4,7 @@
 #ifndef __IC3_GRAPHICS_GCI_COMMON_GRAPHICS_CONFIG_H__
 #define __IC3_GRAPHICS_GCI_COMMON_GRAPHICS_CONFIG_H__
 
-#include "CommonGpuStateDefs.h"
+#include "CommonGPUStateDefs.h"
 
 namespace Ic3::Graphics::GCI
 {

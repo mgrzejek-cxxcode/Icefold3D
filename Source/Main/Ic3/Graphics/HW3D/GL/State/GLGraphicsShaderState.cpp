@@ -1,6 +1,6 @@
 
 #include "GLGraphicsShaderState.h"
-#include <Ic3/Graphics/HW3D/GL/GLGpuDevice.h>
+#include <Ic3/Graphics/HW3D/GL/GLGPUDevice.h>
 #include <Ic3/Graphics/HW3D/GL/Resources/GLShader.h>
 #include <Ic3/Graphics/HW3D/GL/Objects/GLShaderPipelineObject.h>
 
@@ -8,26 +8,26 @@ namespace Ic3::Graphics::GCI
 {
 
 	GLGraphicsShaderLinkageImmutableState::GLGraphicsShaderLinkageImmutableState(
-			GLGpuDevice & pGpuDevice,
+			GLGPUDevice & pGPUDevice,
 			const GraphicsShaderLinkageCommonProperties & pCommonProperties )
-	: GraphicsShaderLinkageImmutableState( pGpuDevice, pCommonProperties )
+	: GraphicsShaderLinkageImmutableState( pGPUDevice, pCommonProperties )
 	{}
 
 	GLGraphicsShaderLinkageImmutableState::~GLGraphicsShaderLinkageImmutableState() = default;
 
 
 	GLGraphicsShaderLinkageImmutableStateCore::GLGraphicsShaderLinkageImmutableStateCore(
-			GLGpuDevice & pGpuDevice,
+			GLGPUDevice & pGPUDevice,
 			const GraphicsShaderLinkageCommonProperties & pCommonProperties,
 			GLShaderPipelineObjectHandle pGLShaderPipelineObject )
-	: GLGraphicsShaderLinkageImmutableState( pGpuDevice, pCommonProperties )
+	: GLGraphicsShaderLinkageImmutableState( pGPUDevice, pCommonProperties )
 	, mGLShaderPipelineObject( std::move( pGLShaderPipelineObject ) )
 	{}
 
 	GLGraphicsShaderLinkageImmutableStateCore::~GLGraphicsShaderLinkageImmutableStateCore() = default;
 
 	TGfxHandle<GLGraphicsShaderLinkageImmutableStateCore> GLGraphicsShaderLinkageImmutableStateCore::CreateInstance(
-			GLGpuDevice & pGpuDevice,
+			GLGPUDevice & pGPUDevice,
 			const GraphicsShaderSet & pShaderSet )
 	{
 		const auto & commonProperties = SMU::GetGraphicsShaderLinkageCommonPropertiesForShaderSet( pShaderSet );
@@ -39,7 +39,7 @@ namespace Ic3::Graphics::GCI
 		}
 
 		auto immutableState = CreateGfxObject<GLGraphicsShaderLinkageImmutableStateCore>(
-				pGpuDevice,
+				pGPUDevice,
 				commonProperties,
 				std::move( shaderPipelineObject ) );
 
@@ -48,17 +48,17 @@ namespace Ic3::Graphics::GCI
 
 
 	GLGraphicsShaderLinkageImmutableStateCompat::GLGraphicsShaderLinkageImmutableStateCompat(
-			GLGpuDevice & pGpuDevice,
+			GLGPUDevice & pGPUDevice,
 			const GraphicsShaderLinkageCommonProperties & pCommonProperties,
 			GLShaderProgramObjectHandle pGLShaderProgramObject )
-	: GLGraphicsShaderLinkageImmutableState( pGpuDevice, pCommonProperties )
+	: GLGraphicsShaderLinkageImmutableState( pGPUDevice, pCommonProperties )
 	, mGLShaderProgramObject( std::move( pGLShaderProgramObject ) )
 	{}
 
 	GLGraphicsShaderLinkageImmutableStateCompat::~GLGraphicsShaderLinkageImmutableStateCompat() = default;
 
 	TGfxHandle<GLGraphicsShaderLinkageImmutableStateCompat> GLGraphicsShaderLinkageImmutableStateCompat::CreateInstance(
-			GLGpuDevice & pGpuDevice,
+			GLGPUDevice & pGPUDevice,
 			const GraphicsShaderSet & pShaderSet )
 	{
 		const auto & commonProperties = SMU::GetGraphicsShaderLinkageCommonPropertiesForShaderSet( pShaderSet );
@@ -70,7 +70,7 @@ namespace Ic3::Graphics::GCI
 		}
 
 		auto immutableState = CreateGfxObject<GLGraphicsShaderLinkageImmutableStateCompat>(
-				pGpuDevice,
+				pGPUDevice,
 				commonProperties,
 				std::move( shaderProgramObject ) );
 

@@ -29,7 +29,7 @@ namespace Ic3::Graphics::GCI
 		GraphicsShaderLinkageImmutableState & operator=( const GraphicsShaderLinkageImmutableState & ) = delete;
 
 		GraphicsShaderLinkageImmutableState(
-				GpuDevice & pGpuDevice,
+				GPUDevice & pGPUDevice,
 				const GraphicsShaderLinkageCommonProperties & pCommonProperties );
 
 		virtual ~GraphicsShaderLinkageImmutableState();
@@ -65,7 +65,7 @@ namespace Ic3::Graphics::GCI
 		GraphicsShaderLinkageImmutableStateSeparable & operator=( const GraphicsShaderLinkageImmutableStateSeparable & ) = delete;
 
 		GraphicsShaderLinkageImmutableStateSeparable(
-				GpuDevice & pGpuDevice,
+				GPUDevice & pGPUDevice,
 				const GraphicsShaderLinkageCommonProperties & pCommonProperties,
 				const GraphicsShaderSet & pShaderSet );
 

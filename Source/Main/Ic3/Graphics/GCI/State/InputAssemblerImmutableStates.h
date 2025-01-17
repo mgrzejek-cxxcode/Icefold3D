@@ -37,7 +37,7 @@ namespace Ic3::Graphics::GCI
 		IAInputLayoutImmutableState( const IAInputLayoutImmutableState & ) = delete;
 		IAInputLayoutImmutableState & operator=( const IAInputLayoutImmutableState & ) = delete;
 
-		IAInputLayoutImmutableState( GpuDevice & pGpuDevice, const IAInputLayoutStateCommonProperties & pCommonProperties );
+		IAInputLayoutImmutableState( GPUDevice & pGPUDevice, const IAInputLayoutStateCommonProperties & pCommonProperties );
 		virtual ~IAInputLayoutImmutableState();
 
 		CPPX_ATTR_NO_DISCARD virtual EGraphicsPipelineImmutableStateType QueryStateType() const noexcept override final;
@@ -53,7 +53,7 @@ namespace Ic3::Graphics::GCI
 		IAVertexStreamImmutableState( const IAVertexStreamImmutableState & ) = delete;
 		IAVertexStreamImmutableState & operator=( const IAVertexStreamImmutableState & ) = delete;
 
-		IAVertexStreamImmutableState( GpuDevice & pGpuDevice, const IAVertexStreamStateCommonProperties & pCommonProperties );
+		IAVertexStreamImmutableState( GPUDevice & pGPUDevice, const IAVertexStreamStateCommonProperties & pCommonProperties );
 		virtual ~IAVertexStreamImmutableState();
 
 		CPPX_ATTR_NO_DISCARD virtual EGraphicsPipelineImmutableStateType QueryStateType() const noexcept override final;

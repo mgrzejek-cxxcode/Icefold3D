@@ -5,16 +5,16 @@
 #define __IC3_GRAPHICS_HW3D_DX11_GPU_DRIVER_API_H__
 
 #include "DX11Prerequisites.h"
-#include <Ic3/Graphics/GCI/GpuDriverAPI.h>
+#include <Ic3/Graphics/GCI/GPUDriverAPI.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	class DX11GpuDriverInterface : public GpuDriverInterface
+	class DX11GPUDriverInterface : public GPUDriverInterface
 	{
 	public:
-		virtual GpuDriverHandle CreateDriver( const GpuDriverCreateInfo & pCreateInfo ) override final;
-		virtual PresentationLayerHandle CreateScreenPresentationLayer( GpuDevice & pDevice, const PresentationLayerCreateInfo & pCreateInfo ) override final;
+		virtual GPUDriverHandle CreateDriver( const GPUDriverCreateInfo & pCreateInfo ) override final;
+		virtual PresentationLayerHandle CreateScreenPresentationLayer( GPUDevice & pDevice, const PresentationLayerCreateInfo & pCreateInfo ) override final;
 	};
 
 } // namespace Ic3::Graphics::GCI

@@ -102,7 +102,7 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		GraphicsPipelineStateObjectSeparable(
-				GpuDevice & pGpuDevice,
+				GPUDevice & pGPUDevice,
 				RenderTargetLayout pRenderTargetLayout,
 				ShaderInputSignature pShaderInputSignature,
 				const SeparablePSOStateSet & pSeparableStates );
@@ -118,7 +118,7 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		GraphicsPipelineStateObjectSeparableShader(
-				GpuDevice & pGpuDevice,
+				GPUDevice & pGPUDevice,
 				RenderTargetLayout pRenderTargetLayout,
 				ShaderInputSignature pShaderInputSignature,
 				const SeparablePSOStateSet & pSeparableStates,

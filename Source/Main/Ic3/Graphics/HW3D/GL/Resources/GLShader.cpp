@@ -1,41 +1,41 @@
 
 #include "GLShader.h"
-#include "../GLGpuDevice.h"
+#include "../GLGPUDevice.h"
 #include "../Objects/GLShaderObject.h"
 #include "../Objects/GLShaderProgramObject.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	GLShader::GLShader( GLGpuDevice & pGpuDevice, EShaderType pShaderType, GLShaderObjectHandle pGLShaderObject )
-	: Shader( pGpuDevice, pShaderType )
+	GLShader::GLShader( GLGPUDevice & pGPUDevice, EShaderType pShaderType, GLShaderObjectHandle pGLShaderObject )
+	: Shader( pGPUDevice, pShaderType )
 	, mGLShaderObject( std::move( pGLShaderObject ) )
 	{}
 
-	GLShader::GLShader( GLGpuDevice & pGpuDevice, EShaderType pShaderType, GLShaderProgramObjectHandle pGLShaderProgramObject )
-	: Shader( pGpuDevice, pShaderType )
+	GLShader::GLShader( GLGPUDevice & pGPUDevice, EShaderType pShaderType, GLShaderProgramObjectHandle pGLShaderProgramObject )
+	: Shader( pGPUDevice, pShaderType )
 	, mGLShaderProgramObject( std::move( pGLShaderProgramObject ) )
 	{}
 
 	GLShader::~GLShader() = default;
 
-	GLShaderHandle GLShader::CreateInstance( GLGpuDevice & pGpuDevice, const ShaderCreateInfo & pCreateInfo )
+	GLShaderHandle GLShader::CreateInstance( GLGPUDevice & pGPUDevice, const ShaderCreateInfo & pCreateInfo )
 	{
 		return CreateInstanceFromSource(
-			pGpuDevice,
+			pGPUDevice,
 			pCreateInfo.shaderType,
 			pCreateInfo.shaderSourceView.data(),
 			pCreateInfo.shaderSourceView.size() );
 	}
 
-	GLShaderHandle GLShader::CreateInstanceFromSource( GLGpuDevice & pGpuDevice, EShaderType pShaderType, const void * pSource, size_t pSourceLength )
+	GLShaderHandle GLShader::CreateInstanceFromSource( GLGPUDevice & pGPUDevice, EShaderType pShaderType, const void * pSource, size_t pSourceLength )
 	{
 		const auto openglShaderType = ATL::translateShaderType( pShaderType );
-		const auto runtimeVersion = pGpuDevice.mSysGLSupportInfo.apiVersion;
+		const auto runtimeVersion = pGPUDevice.mSysGLSupportInfo.apiVersion;
 
 		GLShaderHandle shaderObject = nullptr;
 
-		if( pGpuDevice.IsCompatibilityDevice() )
+		if( pGPUDevice.IsCompatibilityDevice() )
 		{
 			GLShaderDataLayoutMap shaderLayoutMap{};
 			std::string shaderSource{ reinterpret_cast<const char *>( pSource ), pSourceLength };
@@ -50,7 +50,7 @@ namespace Ic3::Graphics::GCI
 
 			openglShaderObject->SetDataLayoutMap( std::move( shaderLayoutMap ) );
 
-			shaderObject = std::make_unique<GLShader>( pGpuDevice, pShaderType, std::move( openglShaderObject ) );
+			shaderObject = std::make_unique<GLShader>( pGPUDevice, pShaderType, std::move( openglShaderObject ) );
 		}
 		else
 		{
@@ -66,7 +66,7 @@ namespace Ic3::Graphics::GCI
 				return nullptr;
 			}
 
-			shaderObject = std::make_unique<GLShader>( pGpuDevice, pShaderType, std::move( openglProgramObject ) );
+			shaderObject = std::make_unique<GLShader>( pGPUDevice, pShaderType, std::move( openglProgramObject ) );
 		}
 
 		return shaderObject;

@@ -9,25 +9,25 @@ namespace Ic3::Graphics::GCI
 {
 
 	DX11RenderTargetBindingImmutableState::DX11RenderTargetBindingImmutableState(
-			DX11GpuDevice & pGpuDevice,
+			DX11GPUDevice & pGPUDevice,
 			const RenderTargetLayout & pRenderTargetLayout,
 			DX11RenderTargetBindingData pDX11RTBindingData )
-	: RenderTargetBindingImmutableState( pGpuDevice, pRenderTargetLayout )
+	: RenderTargetBindingImmutableState( pGPUDevice, pRenderTargetLayout )
 	, mDX11RTBindingData( std::move( pDX11RTBindingData ) )
 	{}
 
 	DX11RenderTargetBindingImmutableState::~DX11RenderTargetBindingImmutableState() = default;
 
 	GpaHandle<DX11RenderTargetBindingImmutableState> DX11RenderTargetBindingImmutableState::CreateInstance(
-			DX11GpuDevice & pGpuDevice,
+			DX11GPUDevice & pGPUDevice,
 			const RenderTargetBindingDefinition & pBindingDefinition )
 	{
 		const auto renderTargetLayout = SMU::GetRenderTargetLayoutForBindingDefinition( pBindingDefinition );
 
-		auto dx11RTBindingData = SMU::CreateRenderTargetBindingDataDX11( pGpuDevice, pBindingDefinition );
+		auto dx11RTBindingData = SMU::CreateRenderTargetBindingDataDX11( pGPUDevice, pBindingDefinition );
 
 		auto immutableState = CreateGfxObject<DX11RenderTargetBindingImmutableState>(
-				pGpuDevice,
+				pGPUDevice,
 				renderTargetLayout,
 				std::move( dx11RTBindingData ) );
 
@@ -35,21 +35,21 @@ namespace Ic3::Graphics::GCI
 	}
 
 	GpaHandle<DX11RenderTargetBindingImmutableState> DX11RenderTargetBindingImmutableState::CreateForScreen(
-			DX11GpuDevice & pGpuDevice,
+			DX11GPUDevice & pGPUDevice,
 			ComPtr<ID3D11Texture2D> pColorBuffer,
 			ComPtr<ID3D11Texture2D> pDepthStencilBuffer )
 	{
 		const auto renderTargetLayout = SMU::GetRenderTargetLayoutForScreenDX11( pColorBuffer.Get(), pDepthStencilBuffer.Get() );
 
 		ComPtr<ID3D11RenderTargetView> colorBufferRTView;
-		auto hResult = pGpuDevice.mD3D11Device1->CreateRenderTargetView( pColorBuffer.Get(), nullptr, colorBufferRTView.GetAddressOf() );
+		auto hResult = pGPUDevice.mD3D11Device1->CreateRenderTargetView( pColorBuffer.Get(), nullptr, colorBufferRTView.GetAddressOf() );
 		if( FAILED( hResult ) )
 		{
 			return nullptr;
 		}
 
 		ComPtr<ID3D11DepthStencilView> depthStencilBufferDSView;
-		hResult = pGpuDevice.mD3D11Device1->CreateDepthStencilView( pDepthStencilBuffer.Get(), nullptr, depthStencilBufferDSView.GetAddressOf() );
+		hResult = pGPUDevice.mD3D11Device1->CreateDepthStencilView( pDepthStencilBuffer.Get(), nullptr, depthStencilBufferDSView.GetAddressOf() );
 		if( FAILED( hResult ) )
 		{
 			return nullptr;
@@ -68,7 +68,7 @@ namespace Ic3::Graphics::GCI
 		dx11RTBindingData.d3d11DepthStencilAttachmentDSView = depthStencilBufferDSView.Get();
 
 		auto immutableState = CreateGfxObject<DX11RenderTargetBindingImmutableState>(
-				pGpuDevice,
+				pGPUDevice,
 				renderTargetLayout,
 				std::move( dx11RTBindingData ) );
 
@@ -101,7 +101,7 @@ namespace Ic3::Graphics::GCI
 		}
 
 		DX11RenderTargetColorAttachment CreateRenderTargetColorAttachmentDX11(
-				DX11GpuDevice & pGpuDevice,
+				DX11GPUDevice & pGPUDevice,
 				const TextureReference & pAttachmentTextureRef )
 		{
 			auto * dx11Texture = pAttachmentTextureRef->QueryInterface<DX11Texture>();
@@ -196,7 +196,7 @@ namespace Ic3::Graphics::GCI
 			}
 
 			ComPtr<ID3D11RenderTargetView> d3d11ResourceRTView;
-			auto hResult = pGpuDevice.mD3D11Device1->CreateRenderTargetView( d3d11AttachmentResource, &d3d11RTViewDesc, d3d11ResourceRTView.GetAddressOf() );
+			auto hResult = pGPUDevice.mD3D11Device1->CreateRenderTargetView( d3d11AttachmentResource, &d3d11RTViewDesc, d3d11ResourceRTView.GetAddressOf() );
 
 			if( FAILED( hResult ) )
 			{
@@ -213,7 +213,7 @@ namespace Ic3::Graphics::GCI
 		}
 
 		DX11RenderTargetDepthStencilAttachment CreateRenderTargetDepthStencilAttachmentDX11(
-				DX11GpuDevice & pGpuDevice,
+				DX11GPUDevice & pGPUDevice,
 				const TextureReference & pAttachmentTextureRef )
 		{
 			auto * dx11Texture = pAttachmentTextureRef->QueryInterface<DX11Texture>();
@@ -289,7 +289,7 @@ namespace Ic3::Graphics::GCI
 			}
 
 			ComPtr<ID3D11DepthStencilView> d3d11ResourceDSView;
-			auto hResult = pGpuDevice.mD3D11Device1->CreateDepthStencilView(
+			auto hResult = pGPUDevice.mD3D11Device1->CreateDepthStencilView(
 					d3d11AttachmentResource,
 					&d3d11DSViewDesc,
 					d3d11ResourceDSView.GetAddressOf() );
@@ -389,7 +389,7 @@ namespace Ic3::Graphics::GCI
 		}
 
 		DX11RenderTargetBindingData CreateRenderTargetBindingDataDX11(
-				DX11GpuDevice & pGpuDevice,
+				DX11GPUDevice & pGPUDevice,
 				const RenderTargetBindingDefinition & pBindingDefinition )
 		{
 			DX11RenderTargetBindingData dx11RenderTargetBindingData;
@@ -402,7 +402,7 @@ namespace Ic3::Graphics::GCI
 					if( const auto & attachmentBinding = pBindingDefinition.colorAttachments[caIndex] )
 					{
 						auto & colorAttachmentTextureRef = attachmentBinding.attachmentTexture->mTargetTexture;
-						auto dx11ColorAttachment = SMU::CreateRenderTargetColorAttachmentDX11( pGpuDevice, colorAttachmentTextureRef );
+						auto dx11ColorAttachment = SMU::CreateRenderTargetColorAttachmentDX11( pGPUDevice, colorAttachmentTextureRef );
 
 						dx11RenderTargetBindingData.colorAttachments[caIndex] = dx11ColorAttachment;
 						dx11RenderTargetBindingData.d3d11ColorAttachmentRTViewArray[caIndex] = dx11ColorAttachment.d3d11RTView.Get();
@@ -428,7 +428,7 @@ namespace Ic3::Graphics::GCI
 				if( const auto & attachmentBinding = pBindingDefinition.depthStencilAttachment )
 				{
 					auto & dsAttachmentTextureRef = attachmentBinding.attachmentTexture->mTargetTexture;
-					auto dx11DepthStencilAttachment = SMU::CreateRenderTargetDepthStencilAttachmentDX11( pGpuDevice, dsAttachmentTextureRef );
+					auto dx11DepthStencilAttachment = SMU::CreateRenderTargetDepthStencilAttachmentDX11( pGPUDevice, dsAttachmentTextureRef );
 
 					dx11RenderTargetBindingData.depthStencilAttachment = dx11DepthStencilAttachment;
 					dx11RenderTargetBindingData.d3d11DepthStencilAttachmentDSView = dx11DepthStencilAttachment.d3d11DSView.Get();

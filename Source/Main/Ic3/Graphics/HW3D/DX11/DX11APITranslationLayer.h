@@ -19,9 +19,9 @@ namespace Ic3::Graphics::GCI
 
 		ComPtr<IDXGIFactory2> QueryDXGIFactoryForD3D11Device( const ComPtr<ID3D11Device1> & pD3D11Device1 );
 
-		ComPtr<IDXGISwapChain1> CreateD3D11SwapChainForSystemWindow( DX11GpuDevice & pDX11GpuDevice, void * pSysWindow /* It must be a Ic3::System::Window */ );
+		ComPtr<IDXGISwapChain1> CreateD3D11SwapChainForSystemWindow( DX11GPUDevice & pDX11GPUDevice, void * pSysWindow /* It must be a Ic3::System::Window */ );
 
-		UINT TranslateDX11GpuDeviceCreateFlags( cppx::bitmask<EGpuDriverConfigFlags> pDriverConfigFlags );
+		UINT TranslateDX11GPUDeviceCreateFlags( cppx::bitmask<EGPUDriverConfigFlags> pDriverConfigFlags );
 
 		D3D11_BLEND TranslateDX11BlendFactor( EBlendFactor pBlendFactor );
 
@@ -41,7 +41,7 @@ namespace Ic3::Graphics::GCI
 
 		UINT TranslateDX11BufferBindFlags( cppx::bitmask<resource_flags_value_t> pBufferFlags );
 
-		D3D11_MAP TranslateDX11BufferMapFlags( EGpuMemoryMapMode pMapMode, cppx::bitmask<EGpuMemoryFlags> pMemoryFlags );
+		D3D11_MAP TranslateDX11BufferMapFlags( EGPUMemoryMapMode pMapMode, cppx::bitmask<EGPUMemoryFlags> pMemoryFlags );
 
 		D3D11_FILL_MODE TranslateDX11PrimitiveFillMode( EPrimitiveFillMode pFillMode );
 

@@ -1,10 +1,10 @@
 
-#include "MTLGpuDriver.h"
+#include "MTLGPUDriver.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	System::MetalSystemDriverHandle MetalGpuDriver::initializeSysMTLDriver( System::SysContextHandle pSysContext )
+	System::MetalSystemDriverHandle MetalGPUDriver::initializeSysMTLDriver( System::SysContextHandle pSysContext )
 	{
 		try
 		{

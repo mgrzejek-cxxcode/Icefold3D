@@ -6,7 +6,7 @@
 
 #include "GLPrerequisites.h"
 #include <Ic3/Graphics/GCI/PresentationLayer.h>
-#include <Ic3/Graphics/GCI/State/CommonGpuStateDefs.h>
+#include <Ic3/Graphics/GCI/State/CommonGPUStateDefs.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -25,7 +25,7 @@ namespace Ic3::Graphics::GCI
 		System::OpenGLDisplaySurfaceHandle const mSysGLDisplaySurface;
 
 	public:
-	    GLPresentationLayer( GLGpuDevice & pGpuDevice, System::OpenGLDisplaySurfaceHandle pSysGLDisplaySurface );
+	    GLPresentationLayer( GLGPUDevice & pGPUDevice, System::OpenGLDisplaySurfaceHandle pSysGLDisplaySurface );
 		virtual ~GLPresentationLayer();
 
 		virtual System::EventSource * GetInternalSystemEventSource() const noexcept override;
@@ -33,14 +33,14 @@ namespace Ic3::Graphics::GCI
 
 	class GLScreenPresentationLayer final : public GLPresentationLayer
 	{
-		friend GLGpuDevice;
+		friend GLGPUDevice;
 
 	public:
 		RenderTargetBindingImmutableStateHandle const mScreenRenderTargetBindingState;
 
 	public:
 	    GLScreenPresentationLayer(
-			GLGpuDevice & pGpuDevice,
+			GLGPUDevice & pGPUDevice,
 			System::OpenGLDisplaySurfaceHandle pSysGLDisplaySurface,
 			RenderTargetBindingImmutableStateHandle pScreenRenderTargetBindingState );
 
@@ -59,7 +59,7 @@ namespace Ic3::Graphics::GCI
 		virtual Ic3::Math::Vec2u32 QueryRenderTargetSize() const override;
 
 		/// @brief Creates new swap chain using provided Create params.
-		static GLScreenPresentationLayerHandle Create( GLGpuDevice & pDevice, const GLPresentationLayerCreateInfo & pCreateInfo );
+		static GLScreenPresentationLayerHandle Create( GLGPUDevice & pDevice, const GLPresentationLayerCreateInfo & pCreateInfo );
 	};
 
 } // namespace Ic3::Graphics::GCI

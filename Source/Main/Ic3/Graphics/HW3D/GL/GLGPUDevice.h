@@ -6,7 +6,7 @@
 
 #include "GLApiTranslationLayer.h"
 #include "State/GLPipelineImmutableStateFactory.h"
-#include <Ic3/Graphics/GCI/GpuDevice.h>
+#include <Ic3/Graphics/GCI/GPUDevice.h>
 #include <Ic3/Graphics/GCI/State/PipelineImmutableStateCache.h>
 
 namespace Ic3::Graphics::GCI
@@ -18,7 +18,7 @@ namespace Ic3::Graphics::GCI
 	class GLVertexStreamStateObject;
 
 	/// @brief
-	class GLGpuDevice : public GpuDevice
+	class GLGPUDevice : public GPUDevice
 	{
 		friend class GLCommandContext;
 		friend class GLCommandList;
@@ -32,8 +32,8 @@ namespace Ic3::Graphics::GCI
 		cppx::bitmask<EGLRuntimeSupportFlags> const mGLRuntimeSupportFlags;
 
 	public:
-		explicit GLGpuDevice( GLGpuDriver & pGpuDriver, GLPipelineImmutableStateFactory & pImmutableStateFactory );
-		virtual ~GLGpuDevice();
+		explicit GLGPUDevice( GLGPUDriver & pGPUDriver, GLPipelineImmutableStateFactory & pImmutableStateFactory );
+		virtual ~GLGPUDevice();
 
 		CPPX_ATTR_NO_DISCARD virtual bool IsCompatibilityDevice() const noexcept = 0;
 
@@ -49,7 +49,7 @@ namespace Ic3::Graphics::GCI
 	private:
 	    virtual bool _DrvOnSetPresentationLayer( PresentationLayerHandle pPresentationLayer ) override;
 
-		virtual GpuBufferHandle _DrvCreateGpuBuffer( const GpuBufferCreateInfo & pCreateInfo ) override final;
+		virtual GPUBufferHandle _DrvCreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo ) override final;
 	    virtual SamplerHandle _DrvCreateSampler( const SamplerCreateInfo & pCreateInfo ) override final;
 		virtual ShaderHandle _DrvCreateShader( const ShaderCreateInfo & pCreateInfo ) override final;
 		virtual TextureHandle _DrvCreateTexture( const TextureCreateInfo & pCreateInfo ) override final;
@@ -66,11 +66,11 @@ namespace Ic3::Graphics::GCI
 		std::unique_ptr<GLDebugOutput> _glDebugOutput;
 	};
 
-	class GLGpuDeviceCore : public GLGpuDevice
+	class GLGPUDeviceCore : public GLGPUDevice
 	{
 	public:
-		explicit GLGpuDeviceCore( GLGpuDriver & pGpuDriver );
-		virtual ~GLGpuDeviceCore();
+		explicit GLGPUDeviceCore( GLGPUDriver & pGPUDriver );
+		virtual ~GLGPUDeviceCore();
 
 		virtual bool IsCompatibilityDevice() const noexcept override final;
 
@@ -78,11 +78,11 @@ namespace Ic3::Graphics::GCI
 		GLPipelineImmutableStateFactoryCore _immutableStateFactoryCore;
 	};
 
-	class GLGpuDeviceCompat : public GLGpuDevice
+	class GLGPUDeviceCompat : public GLGPUDevice
 	{
 	public:
-		explicit GLGpuDeviceCompat( GLGpuDriver & pGpuDriver );
-		virtual ~GLGpuDeviceCompat();
+		explicit GLGPUDeviceCompat( GLGPUDriver & pGPUDriver );
+		virtual ~GLGPUDeviceCompat();
 
 		virtual bool IsCompatibilityDevice() const noexcept override final;
 

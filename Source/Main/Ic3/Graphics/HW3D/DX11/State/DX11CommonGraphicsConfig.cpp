@@ -8,23 +8,23 @@ namespace Ic3::Graphics::GCI
 {
 
 	DX11BlendImmutableState::DX11BlendImmutableState(
-			DX11GpuDevice & pGpuDevice,
+			DX11GPUDevice & pGPUDevice,
 			cppx::bitmask<EBlendConfigFlags> pBlendFlags,
 			ComPtr<ID3D11BlendState> pD3D11BlendState )
-	: BlendImmutableState( pGpuDevice, pBlendFlags )
+	: BlendImmutableState( pGPUDevice, pBlendFlags )
 	, mD3D11BlendState( pD3D11BlendState )
 	{}
 
 	DX11BlendImmutableState::~DX11BlendImmutableState() = default;
 
 	GpaHandle<DX11BlendImmutableState> DX11BlendImmutableState::CreateInstance(
-			DX11GpuDevice & pGpuDevice,
+			DX11GPUDevice & pGPUDevice,
 			const BlendConfig & pBlendConfig )
 	{
 		const auto dx11BlendConfig = SMU::TranslateDX11BlendConfig( pBlendConfig );
 
 		ComPtr<ID3D11BlendState> d3d11BlendState;
-		const auto hResult = pGpuDevice.mD3D11Device1->CreateBlendState( &dx11BlendConfig, d3d11BlendState.GetAddressOf() );
+		const auto hResult = pGPUDevice.mD3D11Device1->CreateBlendState( &dx11BlendConfig, d3d11BlendState.GetAddressOf() );
 
 		if( FAILED( hResult ) )
 		{
@@ -33,7 +33,7 @@ namespace Ic3::Graphics::GCI
 		}
 
 		auto immutableState = CreateGfxObject<DX11BlendImmutableState>(
-				pGpuDevice,
+				pGPUDevice,
 				pBlendConfig.flags,
 				d3d11BlendState );
 
@@ -42,23 +42,23 @@ namespace Ic3::Graphics::GCI
 
 
 	DX11DepthStencilImmutableState::DX11DepthStencilImmutableState(
-			DX11GpuDevice & pGpuDevice,
+			DX11GPUDevice & pGPUDevice,
 			cppx::bitmask<EDepthStencilConfigFlags> pDepthStencilFlags,
 			ComPtr<ID3D11DepthStencilState> pD3D11DepthStencilState )
-	: DepthStencilImmutableState( pGpuDevice, pDepthStencilFlags )
+	: DepthStencilImmutableState( pGPUDevice, pDepthStencilFlags )
 	, mD3D11DepthStencilState( pD3D11DepthStencilState )
 	{}
 
 	DX11DepthStencilImmutableState::~DX11DepthStencilImmutableState() = default;
 
 	GpaHandle<DX11DepthStencilImmutableState> DX11DepthStencilImmutableState::CreateInstance(
-			DX11GpuDevice & pGpuDevice,
+			DX11GPUDevice & pGPUDevice,
 			const DepthStencilConfig & pDepthStencilConfig )
 	{
 		const auto dx11DepthStencilConfig = SMU::TranslateDX11DepthStencilConfig( pDepthStencilConfig );
 
 		ComPtr<ID3D11DepthStencilState> d3d11DepthStencilState;
-		const auto hResult = pGpuDevice.mD3D11Device1->CreateDepthStencilState( &dx11DepthStencilConfig, d3d11DepthStencilState.GetAddressOf() );
+		const auto hResult = pGPUDevice.mD3D11Device1->CreateDepthStencilState( &dx11DepthStencilConfig, d3d11DepthStencilState.GetAddressOf() );
 
 		if( FAILED( hResult ) )
 		{
@@ -67,7 +67,7 @@ namespace Ic3::Graphics::GCI
 		}
 
 		auto immutableState = CreateGfxObject<DX11DepthStencilImmutableState>(
-				pGpuDevice,
+				pGPUDevice,
 				pDepthStencilConfig.commonFlags,
 				d3d11DepthStencilState );
 
@@ -76,24 +76,24 @@ namespace Ic3::Graphics::GCI
 
 
 	DX11RasterizerImmutableState::DX11RasterizerImmutableState(
-			DX11GpuDevice & pGpuDevice,
+			DX11GPUDevice & pGPUDevice,
 			cppx::bitmask<ERasterizerConfigFlags> pRasterizerFlags,
 			ComPtr<ID3D11RasterizerState> pD3D11RasterizerState )
-	: RasterizerImmutableState( pGpuDevice, pRasterizerFlags )
+	: RasterizerImmutableState( pGPUDevice, pRasterizerFlags )
 	, mD3D11RasterizerState( pD3D11RasterizerState )
 	{}
 
 	DX11RasterizerImmutableState::~DX11RasterizerImmutableState() = default;
 
 	GpaHandle<DX11RasterizerImmutableState> DX11RasterizerImmutableState::CreateInstance(
-			DX11GpuDevice & pGpuDevice,
+			DX11GPUDevice & pGPUDevice,
 			const RasterizerConfig & pRasterizerConfig )
 	{
 
 		const auto dx11RasterizerConfig = SMU::TranslateDX11RasterizerConfig( pRasterizerConfig );
 
 		ComPtr<ID3D11RasterizerState> d3d11RasterizerState;
-		const auto hResult = pGpuDevice.mD3D11Device1->CreateRasterizerState( &dx11RasterizerConfig, d3d11RasterizerState.GetAddressOf() );
+		const auto hResult = pGPUDevice.mD3D11Device1->CreateRasterizerState( &dx11RasterizerConfig, d3d11RasterizerState.GetAddressOf() );
 
 		if( FAILED( hResult ) )
 		{
@@ -102,7 +102,7 @@ namespace Ic3::Graphics::GCI
 		}
 
 		auto immutableState = CreateGfxObject<DX11RasterizerImmutableState>(
-				pGpuDevice,
+				pGPUDevice,
 				pRasterizerConfig.flags,
 				d3d11RasterizerState );
 

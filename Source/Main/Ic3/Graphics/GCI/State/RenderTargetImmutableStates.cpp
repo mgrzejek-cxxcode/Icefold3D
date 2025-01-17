@@ -1,6 +1,6 @@
 
 #include "RenderTargetImmutableStates.h"
-#include <Ic3/Graphics/GCI/GpuDevice.h>
+#include <Ic3/Graphics/GCI/GPUDevice.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -9,7 +9,7 @@ namespace Ic3::Graphics::GCI
 	{
 	public:
 		RenderTargetBindingImmutableStateDynamicOverride()
-		: RenderTargetBindingImmutableState( GpuDevice::nullDevice(), {} )
+		: RenderTargetBindingImmutableState( GPUDevice::nullDevice(), {} )
 		{}
 
 		virtual ~RenderTargetBindingImmutableStateDynamicOverride() = default;
@@ -22,9 +22,9 @@ namespace Ic3::Graphics::GCI
 
 
 	RenderTargetBindingImmutableState::RenderTargetBindingImmutableState(
-			GpuDevice & pGpuDevice,
+			GPUDevice & pGPUDevice,
 			const RenderTargetLayout & pRenderTargetLayout )
-	: GraphicsPipelineImmutableState( pGpuDevice )
+	: GraphicsPipelineImmutableState( pGPUDevice )
 	, mRenderTargetLayout( pRenderTargetLayout )
 	{}
 
@@ -37,8 +37,8 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	RenderPassConfigurationImmutableState::RenderPassConfigurationImmutableState( GpuDevice & pGpuDevice )
-	: GraphicsPipelineImmutableState( pGpuDevice )
+	RenderPassConfigurationImmutableState::RenderPassConfigurationImmutableState( GPUDevice & pGPUDevice )
+	: GraphicsPipelineImmutableState( pGPUDevice )
 	{}
 
 	RenderPassConfigurationImmutableState::~RenderPassConfigurationImmutableState() = default;
@@ -46,20 +46,20 @@ namespace Ic3::Graphics::GCI
 
 
 	RenderPassConfigurationImmutableStateDefault::RenderPassConfigurationImmutableStateDefault(
-			GpuDevice & pGpuDevice,
+			GPUDevice & pGPUDevice,
 			const RenderPassConfiguration & pRenderPassConfiguration )
-	: RenderPassConfigurationImmutableState( pGpuDevice )
+	: RenderPassConfigurationImmutableState( pGPUDevice )
 	, mRenderPassConfiguration( pRenderPassConfiguration )
 	{}
 
 	RenderPassConfigurationImmutableStateDefault::~RenderPassConfigurationImmutableStateDefault() = default;
 
 	TGfxHandle<RenderPassConfigurationImmutableStateDefault> RenderPassConfigurationImmutableStateDefault::CreateInstance(
-			GpuDevice & pGpuDevice,
+			GPUDevice & pGPUDevice,
 			const RenderPassConfiguration & pConfiguration )
 	{
 		auto immutableState = CreateGfxObject<RenderPassConfigurationImmutableStateDefault>(
-				pGpuDevice,
+				pGPUDevice,
 				pConfiguration );
 
 		return immutableState;

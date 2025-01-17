@@ -1,16 +1,16 @@
 
-#include "DX12GpuCmdContext.h"
-#include "DX12GpuCmdManager.h"
-#include "DX12GpuDevice.h"
+#include "DX12GPUCmdContext.h"
+#include "DX12GPUCmdManager.h"
+#include "DX12GPUDevice.h"
 #include "DX12coreAPIProxy.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	DX12CommandContext::DX12CommandContext( DX12GpuCmdManager & pDX12GpuCmdManager,
+	DX12CommandContext::DX12CommandContext( DX12GPUCmdManager & pDX12GPUCmdManager,
 	                                      ComPtr<ID3D12CommandAllocator> pD3D12CommandAllocator,
 	                                      ComPtr<ID3D12GraphicsCommandList> pD3D12GraphicsCommandList )
-	: CommandContext( pDX12GpuCmdManager )
+	: CommandContext( pDX12GPUCmdManager )
 	, mD3D12CommandAllocator( std::move( pD3D12CommandAllocator ) )
 	, mD3D12GraphicsCommandList( std::move( pD3D12GraphicsCommandList ) )
 	, mD3D12CommandListType( mD3D12GraphicsCommandList->GetType() )

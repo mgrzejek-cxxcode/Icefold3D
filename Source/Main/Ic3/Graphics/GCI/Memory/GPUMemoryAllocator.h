@@ -4,12 +4,12 @@
 #ifndef __IC3_GRAPHICS_GCI_GPU_MEMORY_ALLOCATOR_H__
 #define __IC3_GRAPHICS_GCI_GPU_MEMORY_ALLOCATOR_H__
 
-#include "CommonGpuMemoryDefs.h"
+#include "CommonGPUMemoryDefs.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	class GpuMemoryAllocator
+	class GPUMemoryAllocator
 	{
 	};
 

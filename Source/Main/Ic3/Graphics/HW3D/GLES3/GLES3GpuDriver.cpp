@@ -1,20 +1,20 @@
 
-#include "GLES3GpuDriver.h"
-#include "GLES3GpuDevice.h"
+#include "GLES3GPUDriver.h"
+#include "GLES3GPUDevice.h"
 #include <Ic3/Graphics/HW3D/GL/GLPresentationLayer.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	GLES3GpuDriver::GLES3GpuDriver( System::OpenGLSystemDriverHandle pSysGLDriver )
-	: GLGpuDriver( pSysGLDriver )
+	GLES3GPUDriver::GLES3GPUDriver( System::OpenGLSystemDriverHandle pSysGLDriver )
+	: GLGPUDriver( pSysGLDriver )
 	{ }
 
-	GLES3GpuDriver::~GLES3GpuDriver() = default;
+	GLES3GPUDriver::~GLES3GPUDriver() = default;
 
-	GLES3GpuDriverHandle GLES3GpuDriver::Create( const GLES3GpuDriverCreateInfo & pCreateInfo )
+	GLES3GPUDriverHandle GLES3GPUDriver::Create( const GLES3GPUDriverCreateInfo & pCreateInfo )
 	{
-		constexpr auto gles3SupportedGpuConfigFlags =
+		constexpr auto gles3SupportedGPUConfigFlags =
 				E_GPU_DRIVER_CONFIG_FLAG_ENABLE_DEBUG_LAYER_BIT |
 				E_GPU_DRIVER_CONFIG_FLAG_ENABLE_SHADER_DEBUG_INFO_BIT |
 				E_GPU_DRIVER_CONFIG_FLAG_FORCE_COMPATIBILITY_BIT |
@@ -36,29 +36,29 @@ namespace Ic3::Graphics::GCI
 			return nullptr;
 		}
 
-		auto gles3Driver = CreateGfxObject<GLES3GpuDriver>( sysGLDriver );
-		gles3Driver->SetConfigFlags( pCreateInfo.configFlags & gles3SupportedGpuConfigFlags );
+		auto gles3Driver = CreateGfxObject<GLES3GPUDriver>( sysGLDriver );
+		gles3Driver->SetConfigFlags( pCreateInfo.configFlags & gles3SupportedGPUConfigFlags );
 
 		return gles3Driver;
 	}
 
-	DisplayManagerHandle GLES3GpuDriver::CreateDefaultDisplayManager()
+	DisplayManagerHandle GLES3GPUDriver::CreateDefaultDisplayManager()
 	{
 		return nullptr;
 	}
 
-	GpuDeviceHandle GLES3GpuDriver::CreateDevice( const GpuDeviceCreateInfo & pCreateInfo )
+	GPUDeviceHandle GLES3GPUDriver::CreateDevice( const GPUDeviceCreateInfo & pCreateInfo )
 	{
-		GLES3GpuDeviceCreateInfo createInfo;
+		GLES3GPUDeviceCreateInfo createInfo;
 		createInfo.adapterID = pCreateInfo.adapterID;
 		createInfo.flags = pCreateInfo.flags;
 
-		return GLES3GpuDevice::Create( *this, createInfo );
+		return GLES3GPUDevice::Create( *this, createInfo );
 	}
 
-	EGpuDriverID GLES3GpuDriver::QueryGpuDriverID() const
+	EGPUDriverID GLES3GPUDriver::QueryGPUDriverID() const
 	{
-		return EGpuDriverID::GDIDGLES3;
+		return EGPUDriverID::GDIDGLES3;
 	}
 
 } // namespace Ic3::Graphics::GCI

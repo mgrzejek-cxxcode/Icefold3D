@@ -25,7 +25,7 @@ namespace Ic3::Graphics::GCI
 	public:
 		ComPtr<ID3D11Device1> const mD3D11Device1 = nullptr;
 
-		explicit DX11CommandSystem( DX11GpuDevice & pDX11GpuDevice );
+		explicit DX11CommandSystem( DX11GPUDevice & pDX11GPUDevice );
 		virtual ~DX11CommandSystem();
 
 		virtual std::unique_ptr<CommandContext> AcquireCommandContext( ECommandContextType pContextType ) override;

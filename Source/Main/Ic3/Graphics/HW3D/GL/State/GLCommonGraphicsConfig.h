@@ -86,13 +86,13 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		GLBlendImmutableState(
-				GLGpuDevice & pGpuDevice,
+				GLGPUDevice & pGPUDevice,
 				cppx::bitmask<EBlendConfigFlags> pBlendFlags,
 				const GLBlendConfig & pGLBlendConfig );
 
 		virtual ~GLBlendImmutableState();
 
-		static TGfxHandle<GLBlendImmutableState> CreateInstance( GLGpuDevice & pGpuDevice, const BlendConfig & pBlendConfig );
+		static TGfxHandle<GLBlendImmutableState> CreateInstance( GLGPUDevice & pGPUDevice, const BlendConfig & pBlendConfig );
 	};
 
 	///
@@ -103,13 +103,13 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		GLDepthStencilImmutableState(
-				GLGpuDevice & pGpuDevice,
+				GLGPUDevice & pGPUDevice,
 				cppx::bitmask<EDepthStencilConfigFlags> pDepthStencilFlags,
 				const GLDepthStencilConfig & pGLDepthStencilConfig );
 
 		virtual ~GLDepthStencilImmutableState();
 
-		static TGfxHandle<GLDepthStencilImmutableState> CreateInstance( GLGpuDevice & pGpuDevice, const DepthStencilConfig & pDepthStencilConfig );
+		static TGfxHandle<GLDepthStencilImmutableState> CreateInstance( GLGPUDevice & pGPUDevice, const DepthStencilConfig & pDepthStencilConfig );
 	};
 
 	///
@@ -120,13 +120,13 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		GLRasterizerImmutableState(
-				GLGpuDevice & pGpuDevice,
+				GLGPUDevice & pGPUDevice,
 				cppx::bitmask<ERasterizerConfigFlags> pRasterizerFlags,
 				const GLRasterizerConfig & pGLRasterizerConfig );
 
 		virtual ~GLRasterizerImmutableState();
 
-		static TGfxHandle<GLRasterizerImmutableState> CreateInstance( GLGpuDevice & pGpuDevice, const RasterizerConfig & pRasterizerConfig );
+		static TGfxHandle<GLRasterizerImmutableState> CreateInstance( GLGPUDevice & pGPUDevice, const RasterizerConfig & pRasterizerConfig );
 	};
 
 

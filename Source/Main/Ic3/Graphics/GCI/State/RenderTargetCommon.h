@@ -4,7 +4,7 @@
 #ifndef __IC3_GRAPHICS_GCI_RENDER_TARGET_COMMON_H__
 #define __IC3_GRAPHICS_GCI_RENDER_TARGET_COMMON_H__
 
-#include "CommonGpuStateDefs.h"
+#include "CommonGPUStateDefs.h"
 #include "../Resources/TextureCommon.h"
 #include <cppx/bitUtils.h>
 
@@ -53,8 +53,8 @@ namespace Ic3::Graphics::GCI
 		{
 			return
 					( pAttachmentIndex < GCM::cxRTMaxColorAttachmentsNum ) ?
-					eGpuResourceUsageFlagRenderTargetColorBit :
-					eGpuResourceUsageMaskRenderTargetDepthStencil;
+					eGPUResourceUsageFlagRenderTargetColorBit :
+					eGPUResourceUsageMaskRenderTargetDepthStencil;
 		}
 
 	}

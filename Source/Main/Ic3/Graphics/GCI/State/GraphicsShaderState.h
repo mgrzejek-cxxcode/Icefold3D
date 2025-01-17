@@ -4,7 +4,7 @@
 #ifndef __IC3_GRAPHICS_GCI_GRAPHICS_SHADER_STATE_H__
 #define __IC3_GRAPHICS_GCI_GRAPHICS_SHADER_STATE_H__
 
-#include "CommonGpuStateDefs.h"
+#include "CommonGPUStateDefs.h"
 #include "../Resources/ShaderCommon.h"
 
 namespace Ic3::Graphics::GCI

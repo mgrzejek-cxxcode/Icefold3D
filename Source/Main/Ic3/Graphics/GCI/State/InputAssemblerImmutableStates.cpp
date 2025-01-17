@@ -1,6 +1,6 @@
 
 #include "InputAssemblerImmutableStates.h"
-#include <Ic3/Graphics/GCI/GpuDevice.h>
+#include <Ic3/Graphics/GCI/GPUDevice.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -9,7 +9,7 @@ namespace Ic3::Graphics::GCI
 	{
 	public:
 		IAVertexStreamImmutableStateDynamicOverride()
-		: IAVertexStreamImmutableState( GpuDevice::nullDevice(), {} )
+		: IAVertexStreamImmutableState( GPUDevice::nullDevice(), {} )
 		{}
 
 		virtual ~IAVertexStreamImmutableStateDynamicOverride() = default;
@@ -22,9 +22,9 @@ namespace Ic3::Graphics::GCI
 
 
 	IAInputLayoutImmutableState::IAInputLayoutImmutableState(
-			GpuDevice & pGpuDevice,
+			GPUDevice & pGPUDevice,
 			const IAInputLayoutStateCommonProperties & pCommonProperties )
-	: GraphicsPipelineImmutableState( pGpuDevice )
+	: GraphicsPipelineImmutableState( pGPUDevice )
 	, mCommonProperties( pCommonProperties )
 	{}
 
@@ -37,9 +37,9 @@ namespace Ic3::Graphics::GCI
 
 
 	IAVertexStreamImmutableState::IAVertexStreamImmutableState(
-			GpuDevice & pGpuDevice,
+			GPUDevice & pGPUDevice,
 			const IAVertexStreamStateCommonProperties & pCommonProperties )
-	: GraphicsPipelineImmutableState( pGpuDevice )
+	: GraphicsPipelineImmutableState( pGPUDevice )
 	, mCommonProperties( pCommonProperties )
 	{}
 

@@ -4,32 +4,32 @@
 #ifndef __IC3_GRAPHICS_GCI_GPU_MEMORY_POOL_H__
 #define __IC3_GRAPHICS_GCI_GPU_MEMORY_POOL_H__
 
-#include "CommonGpuMemoryDefs.h"
+#include "CommonGPUMemoryDefs.h"
 #include <cppx/sync/spinLock.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	class GpuMemoryAllocator;
-	class GpuMemoryHeap;
-	class GpuMemoryRef;
+	class GPUMemoryAllocator;
+	class GPUMemoryHeap;
+	class GPUMemoryRef;
 
-	class GpuMemoryPool
+	class GPUMemoryPool
 	{
-		friend class GpuMemoryAllocator;
-		friend class GpuMemoryRef;
+		friend class GPUMemoryAllocator;
+		friend class GPUMemoryRef;
 
 	public:
 		using MemoryLock = cppx::sync::shared_spin_lock;
 
 		gpu_memory_pool_id_t const mPoolID;
 		gpu_memory_size_t const mPoolSize;
-		GpuMemoryHeap * const mSourceHeap;
+		GPUMemoryHeap * const mSourceHeap;
 		gpu_memory_heap_id_t const mSourceHeapID;
 
 	public:
-		GpuMemoryPool();
-		virtual ~GpuMemoryPool();
+		GPUMemoryPool();
+		virtual ~GPUMemoryPool();
 
 		CPPX_ATTR_NO_DISCARD gpu_memory_size_t GetCurrentUsage() const;
 
@@ -39,7 +39,7 @@ namespace Ic3::Graphics::GCI
 		MemoryLock & GetMemoryLock();
 
 	private:
-		GpuMemoryRegion _sourceHeapRegion;
+		GPUMemoryRegion _sourceHeapRegion;
 		std::atomic<gpu_memory_size_t> _currentUsage;
 		MemoryLock _memoryLock;
 	};

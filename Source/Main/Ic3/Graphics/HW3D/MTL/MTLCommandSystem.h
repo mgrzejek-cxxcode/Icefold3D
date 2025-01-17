@@ -14,7 +14,7 @@ namespace Ic3::Graphics::GCI
 	class MetalCommandSystem : public CommandSystem
 	{
 	public:
-		explicit MetalCommandSystem( MetalGpuDevice & pMetalGpuDevice );
+		explicit MetalCommandSystem( MetalGPUDevice & pMetalGPUDevice );
 		virtual ~MetalCommandSystem();
 
 		virtual std::unique_ptr<CommandContext> AcquireCommandContext( ECommandContextType pContextType ) override;

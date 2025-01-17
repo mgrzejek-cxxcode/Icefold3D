@@ -3,7 +3,7 @@
 #include "GLCommonGraphicsConfig.h"
 #include "GLInputAssembler.h"
 #include "GLGraphicsShaderState.h"
-#include <Ic3/Graphics/HW3D/GL/GLGpuDevice.h>
+#include <Ic3/Graphics/HW3D/GL/GLGPUDevice.h>
 #include <Ic3/Graphics/HW3D/GL/Objects/GLVertexArrayObject.h>
 #include <Ic3/Graphics/HW3D/GL/Resources/GLShader.h>
 #include <Ic3/Graphics/GCI/Resources/Shader.h>
@@ -12,12 +12,12 @@ namespace Ic3::Graphics::GCI
 {
 
 	GLGraphicsPipelineStateObject::GLGraphicsPipelineStateObject(
-			GLGpuDevice & pGpuDevice,
+			GLGPUDevice & pGPUDevice,
 			RenderTargetLayout pRenderTargetLayout,
 			ShaderInputSignature pShaderInputSignature,
 			const SeparablePSOStateSet & pPSOImmutableStates )
 	: GraphicsPipelineStateObjectSeparable(
-		pGpuDevice,
+		pGPUDevice,
 		std::move( pRenderTargetLayout ),
 		std::move( pShaderInputSignature ),
 		pPSOImmutableStates )
@@ -56,7 +56,7 @@ namespace Ic3::Graphics::GCI
 	}
 
 	TGfxHandle<GLGraphicsPipelineStateObject> GLGraphicsPipelineStateObject::Create(
-			GLGpuDevice & pGpuDevice,
+			GLGPUDevice & pGPUDevice,
 			const GraphicsPipelineStateObjectCreateInfo & pCreateInfo )
 	{
 		SeparablePSOStateSet separableStates{};
@@ -70,7 +70,7 @@ namespace Ic3::Graphics::GCI
 		auto & shaderInputSignature = pCreateInfo.shaderInputSignature;
 
 		auto graphicsPSO = CreateGfxObject<GLGraphicsPipelineStateObject>(
-				pGpuDevice,
+				pGPUDevice,
 				std::move( renderTargetLayout ),
 				std::move( shaderInputSignature ),
 				separableStates );

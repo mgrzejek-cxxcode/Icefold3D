@@ -15,10 +15,10 @@ namespace Ic3::Graphics::GCI
 	class DX11PipelineImmutableStateFactory : public PipelineImmutableStateFactorySeparableShader
 	{
 	public:
-		DX11GpuDevice & mDX11GpuDevice;
+		DX11GPUDevice & mDX11GPUDevice;
 
 	public:
-		DX11PipelineImmutableStateFactory( DX11GpuDevice & pGpuDevice );
+		DX11PipelineImmutableStateFactory( DX11GPUDevice & pGPUDevice );
 		virtual ~DX11PipelineImmutableStateFactory();
 
 		virtual BlendImmutableStateHandle CreateBlendState( const BlendConfig & pConfig ) override final;

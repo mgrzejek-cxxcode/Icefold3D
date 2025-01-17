@@ -11,7 +11,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	class GLInternalRenderBuffer : public GpuDeviceChildObject
+	class GLInternalRenderBuffer : public GPUDeviceChildObject
 	{
 	public:
 		GLRenderbufferObjectHandle const mGLRenderbufferObject;
@@ -19,15 +19,15 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		GLInternalRenderBuffer(
-				GLGpuDevice & pGpuDevice,
+				GLGPUDevice & pGPUDevice,
 				GLRenderbufferObjectHandle pGLRenderbufferObject );
 
 		GLInternalRenderBuffer(
-				GLGpuDevice & pGpuDevice,
+				GLGPUDevice & pGPUDevice,
 				GLTextureObjectHandle pGLTextureObject );
 
 		static TGfxHandle<GLInternalRenderBuffer> CreateInstance(
-				GLGpuDevice & pGpuDevice,
+				GLGPUDevice & pGPUDevice,
 				const RenderTargetTextureCreateInfo & pCreateInfo );
 	};
 

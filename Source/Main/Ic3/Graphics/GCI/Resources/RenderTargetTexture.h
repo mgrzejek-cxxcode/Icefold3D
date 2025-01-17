@@ -4,7 +4,7 @@
 #ifndef __IC3_GRAPHICS_GCI_RENDER_TARGET_TEXTURE_H__
 #define __IC3_GRAPHICS_GCI_RENDER_TARGET_TEXTURE_H__
 
-#include "GpuResource.h"
+#include "GPUResource.h"
 #include "TextureReference.h"
 #include "../State/RenderTargetCommon.h"
 
@@ -22,9 +22,9 @@ namespace Ic3::Graphics::GCI
 	};
 
 	/// @brief
-	class RenderTargetTexture : public GpuResourceView
+	class RenderTargetTexture : public GPUResourceView
 	{
-		friend class GpuDevice;
+		friend class GPUDevice;
 		friend class Texture;
 
 	public:
@@ -41,16 +41,16 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		RenderTargetTexture(
-			GpuDevice & pGpuDevice,
+			GPUDevice & pGPUDevice,
 			ERenderTargetTextureType pRTTextureType,
 			const RenderTargetTextureLayout & pRTTextureLayout,
 			TextureReference pTargetTexture );
 
 		RenderTargetTexture(
-			GpuDevice & pGpuDevice,
+			GPUDevice & pGPUDevice,
 			ERenderTargetTextureType pRTTextureType,
 			const RenderTargetTextureLayout & pRTTextureLayout,
-			TGfxHandle<GpuDeviceChildObject> pInternalRenderBuffer,
+			TGfxHandle<GPUDeviceChildObject> pInternalRenderBuffer,
 			cppx::bitmask<resource_flags_value_t> pRenderBufferFlags );
 
 		virtual ~RenderTargetTexture();
@@ -73,7 +73,7 @@ namespace Ic3::Graphics::GCI
 
 	private:
 		///
-		TGfxHandle<GpuDeviceChildObject> _internalRenderBuffer;
+		TGfxHandle<GPUDeviceChildObject> _internalRenderBuffer;
 	};
 
 	namespace RCU

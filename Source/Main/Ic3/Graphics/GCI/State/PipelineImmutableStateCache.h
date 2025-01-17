@@ -30,7 +30,7 @@ namespace Ic3::Graphics::GCI
 	struct PipelineImmutableStateCreateInfo
 	{
 		/// A unique ID given to an immutable state object.
-		GfxObjectID uniqueID = cxGpuObjectIDInvalid;
+		GfxObjectID uniqueID = cxGPUObjectIDInvalid;
 
 		/// A unique name given to an immutable state object.
 		cppx::ref<const GfxObjectName> uniqueName;
@@ -77,7 +77,7 @@ namespace Ic3::Graphics::GCI
 		{
 			const auto controlInputHash = cppx::hash_compute<cppx::hash_algo::fnv1a64>( pCreateInfo.inputDesc.get() );
 
-			if(( pCreateInfo.uniqueID == cxGpuObjectIDAuto ) && !pCreateInfo.uniqueName->empty() )
+			if(( pCreateInfo.uniqueID == cxGPUObjectIDAuto ) && !pCreateInfo.uniqueName->empty() )
 			{
 				pCreateInfo.uniqueID = GenerateGfxObjectID( pCreateInfo.uniqueName );
 			}

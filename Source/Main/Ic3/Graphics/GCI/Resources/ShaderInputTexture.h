@@ -4,7 +4,7 @@
 #ifndef __IC3_GRAPHICS_GCI_SHADER_INPUT_TEXTURE_H__
 #define __IC3_GRAPHICS_GCI_SHADER_INPUT_TEXTURE_H__
 
-#include "GpuResource.h"
+#include "GPUResource.h"
 #include "TextureReference.h"
 
 namespace Ic3::Graphics::GCI
@@ -21,9 +21,9 @@ namespace Ic3::Graphics::GCI
 	};
 
 	/// @brief
-	class ShaderInputTexture : public GpuResourceView
+	class ShaderInputTexture : public GPUResourceView
 	{
-		friend class GpuDevice;
+		friend class GPUDevice;
 		friend class Texture;
 
 	public:
@@ -34,7 +34,7 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		ShaderInputTexture(
-				GpuDevice & pGpuDevice,
+				GPUDevice & pGPUDevice,
 				const ShaderInputTextureLayout & pSITextureLayout,
 				TextureReference pTargetTexture );
 

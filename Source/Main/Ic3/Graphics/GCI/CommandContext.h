@@ -5,7 +5,7 @@
 #define __IC3_GRAPHICS_GCI_COMMAND_CONTEXT_H__
 
 #include "CommonCommandDefs.h"
-#include "Resources/GpuBufferCommon.h"
+#include "Resources/GPUBufferCommon.h"
 
 namespace Ic3::Graphics::GCI
 {
@@ -15,7 +15,7 @@ namespace Ic3::Graphics::GCI
 
 	enum ECommandListActionFlags : uint32;
 
-	class CommandContext : public GpuDeviceChildObject
+	class CommandContext : public GPUDeviceChildObject
 	{
 	public:
 		CommandList * const mCommandList;
@@ -36,11 +36,11 @@ namespace Ic3::Graphics::GCI
 		void BeginCommandSequence();
 		void EndCommandSequence();
 
-		bool MapBuffer( GpuBuffer & pBuffer, EGpuMemoryMapMode pMapMode );
-		bool MapBufferRegion( GpuBuffer & pBuffer, const GpuMemoryRegion & pRegion, EGpuMemoryMapMode pMapMode );
-		bool UnmapBuffer( GpuBuffer & pBuffer );
-		bool FlushMappedBuffer( GpuBuffer & pBuffer );
-		bool FlushMappedBufferRegion( GpuBuffer & pBuffer, const GpuMemoryRegion & pRegion );
+		bool MapBuffer( GPUBuffer & pBuffer, EGPUMemoryMapMode pMapMode );
+		bool MapBufferRegion( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion, EGPUMemoryMapMode pMapMode );
+		bool UnmapBuffer( GPUBuffer & pBuffer );
+		bool FlushMappedBuffer( GPUBuffer & pBuffer );
+		bool FlushMappedBufferRegion( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion );
 
 	protected:
 		CommandContext( CommandList & pCommandList, ECommandContextType pContextType );
@@ -59,8 +59,8 @@ namespace Ic3::Graphics::GCI
 
 		void CmdExecuteDeferredContext( CommandContextDeferred & pDeferredContext );
 
-		bool InvalidateBuffer( GpuBuffer & pBuffer );
-		bool InvalidateBufferRegion( GpuBuffer & pBuffer, const GpuMemoryRegion & pRegion );
+		bool InvalidateBuffer( GPUBuffer & pBuffer );
+		bool InvalidateBufferRegion( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion );
 
 	protected:
 		CommandContextDirect( CommandList & pCommandList, ECommandContextType pContextType )
@@ -79,16 +79,16 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~CommandContextDirectTransfer() = default;
 
-		bool UpdateBufferDataCopy( GpuBuffer & pBuffer, GpuBuffer & pSourceBuffer, const GpuBufferDataCopyDesc & pCopyDesc );
-		bool UpdateBufferSubDataCopy( GpuBuffer & pBuffer, GpuBuffer & pSourceBuffer, const GpuBufferSubDataCopyDesc & pCopyDesc );
-		bool UpdateBufferDataUpload( GpuBuffer & pBuffer, const GpuBufferDataUploadDesc & pUploadDesc );
-		bool UpdateBufferSubDataUpload( GpuBuffer & pBuffer, const GpuBufferSubDataUploadDesc & pUploadDesc );
+		bool UpdateBufferDataCopy( GPUBuffer & pBuffer, GPUBuffer & pSourceBuffer, const GPUBufferDataCopyDesc & pCopyDesc );
+		bool UpdateBufferSubDataCopy( GPUBuffer & pBuffer, GPUBuffer & pSourceBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc );
+		bool UpdateBufferDataUpload( GPUBuffer & pBuffer, const GPUBufferDataUploadDesc & pUploadDesc );
+		bool UpdateBufferSubDataUpload( GPUBuffer & pBuffer, const GPUBufferSubDataUploadDesc & pUploadDesc );
 
 		template <typename TData>
-		void UpdateBufferDataUpload( GpuBuffer & pBuffer, const TData & pData )
+		void UpdateBufferDataUpload( GPUBuffer & pBuffer, const TData & pData )
 		{
-			GpuBufferDataUploadDesc dataUploadDesc;
-			dataUploadDesc.flags = eGpuBufferDataCopyFlagModeInvalidateBit;
+			GPUBufferDataUploadDesc dataUploadDesc;
+			dataUploadDesc.flags = eGPUBufferDataCopyFlagModeInvalidateBit;
 			dataUploadDesc.inputDataDesc.pointer = &pData;
 			dataUploadDesc.inputDataDesc.size = sizeof( TData );
 
@@ -96,10 +96,10 @@ namespace Ic3::Graphics::GCI
 		}
 
 		template <typename TData>
-		void UpdateBufferSubDataUpload( GpuBuffer & pBuffer, const TData & pData, gpu_memory_size_t pOffset )
+		void UpdateBufferSubDataUpload( GPUBuffer & pBuffer, const TData & pData, gpu_memory_size_t pOffset )
 		{
-			GpuBufferSubDataUploadDesc subDataUploadDesc;
-			subDataUploadDesc.flags = eGpuBufferDataCopyFlagModeInvalidateBit;
+			GPUBufferSubDataUploadDesc subDataUploadDesc;
+			subDataUploadDesc.flags = eGPUBufferDataCopyFlagModeInvalidateBit;
 			subDataUploadDesc.inputDataDesc.pointer = &pData;
 			subDataUploadDesc.inputDataDesc.size = sizeof( pData );
 			subDataUploadDesc.bufferRegion.offset = pOffset;
@@ -163,7 +163,7 @@ namespace Ic3::Graphics::GCI
 
 		bool CmdSetViewport( const ViewportDesc & pViewportDesc );
 		bool CmdSetShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData );
-		bool CmdSetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GpuBuffer & pConstantBuffer );
+		bool CmdSetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer );
 		bool CmdSetShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture );
 		bool CmdSetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler );
 
@@ -178,9 +178,9 @@ namespace Ic3::Graphics::GCI
 	public:
 		virtual ~CommandContextDeferred() = default;
 
-		bool MapBufferDeferred( GpuBuffer & pBuffer );
-		bool MapBufferRegionDeferred( GpuBuffer & pBuffer, const GpuMemoryRegion & pRegion );
-		bool UnmapBufferDeferred( GpuBuffer & pBuffer );
+		bool MapBufferDeferred( GPUBuffer & pBuffer );
+		bool MapBufferRegionDeferred( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion );
+		bool UnmapBufferDeferred( GPUBuffer & pBuffer );
 
 	protected:
 		CommandContextDeferred( CommandList & pCommandList, ECommandContextType pContextType )
@@ -218,7 +218,7 @@ namespace Ic3::Graphics::GCI
 
 		bool CmdSetViewport( const ViewportDesc & pViewportDesc );
 		bool CmdSetShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData );
-		bool CmdSetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GpuBuffer & pConstantBuffer );
+		bool CmdSetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer );
 		bool CmdSetShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture );
 		bool CmdSetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler );
 

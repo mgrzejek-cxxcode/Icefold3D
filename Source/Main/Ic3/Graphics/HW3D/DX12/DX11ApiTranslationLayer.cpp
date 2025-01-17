@@ -5,7 +5,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ComPtr<ID3D12Debug> DX12CoreAPIProxy::InitializeD3D12DebugInterface( cppx::bitmask<EGpuDriverConfigFlags> pDriverConfigFlags )
+	ComPtr<ID3D12Debug> DX12CoreAPIProxy::InitializeD3D12DebugInterface( cppx::bitmask<EGPUDriverConfigFlags> pDriverConfigFlags )
 	{
 		if( !pDriverConfigFlags.is_set( E_GPU_DRIVER_CONFIG_FLAG_ENABLE_DEBUG_LAYER_BIT ) )
 		{
@@ -179,7 +179,7 @@ namespace Ic3::Graphics::GCI
 	}
 
 	D3D12_COMMAND_LIST_TYPE DX12CoreAPIProxy::TranslateD3D12CommandListType( ECommandContextType pContextType,
-	                                                            cppx::bitmask<GpuCmdCommandClassFlags> pCommandClassFlags )
+	                                                            cppx::bitmask<GPUCmdCommandClassFlags> pCommandClassFlags )
 	{
 		auto commandListType = cvD3D12CommandListTypeInvalid;
 		if( pContextType == ECommandContextType::Secondary )

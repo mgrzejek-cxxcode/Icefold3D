@@ -4,8 +4,8 @@
 namespace Ic3::Graphics::GCI
 {
 
-	Sampler::Sampler( GpuDevice & pGpuDevice )
-	: GpuDeviceChildObject( pGpuDevice )
+	Sampler::Sampler( GPUDevice & pGPUDevice )
+	: GPUDeviceChildObject( pGPUDevice )
 	{}
 
 	Sampler::~Sampler() = default;

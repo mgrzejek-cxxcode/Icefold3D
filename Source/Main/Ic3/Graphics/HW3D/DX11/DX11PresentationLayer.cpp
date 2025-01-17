@@ -2,7 +2,7 @@
 #include "DX11presentationLayer.h"
 #include "DX11CommandList.h"
 #include "DX11ApiTranslationLayer.h"
-#include "DX11GpuDevice.h"
+#include "DX11GPUDevice.h"
 #include "State/DX11RenderTarget.h"
 #include <Ic3/Graphics/GCI/CommandContext.h>
 
@@ -10,7 +10,7 @@ namespace Ic3::Graphics::GCI
 {
 
 	DX11ScreenPresentationLayer::DX11ScreenPresentationLayer(
-			DX11GpuDevice & pDevice,
+			DX11GPUDevice & pDevice,
 			System::WindowHandle pSysWindow,
 			ComPtr<IDXGISwapChain1> pDXGISwapChain1,
 			RenderTargetBindingImmutableStateHandle pScreenRenderTargetBindingState )
@@ -21,7 +21,7 @@ namespace Ic3::Graphics::GCI
 
 	DX11ScreenPresentationLayer::~DX11ScreenPresentationLayer() = default;
 
-	DX11ScreenPresentationLayerHandle DX11ScreenPresentationLayer::Create( DX11GpuDevice & pDevice, const DX11PresentationLayerCreateInfo & pCreateInfo )
+	DX11ScreenPresentationLayerHandle DX11ScreenPresentationLayer::Create( DX11GPUDevice & pDevice, const DX11PresentationLayerCreateInfo & pCreateInfo )
 	{
 		auto sysWindow = createSysWindow( pDevice, pCreateInfo );
 		Ic3DebugAssert( sysWindow );

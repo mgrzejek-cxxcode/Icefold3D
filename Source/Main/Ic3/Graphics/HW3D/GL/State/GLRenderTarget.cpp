@@ -1,6 +1,6 @@
 
 #include "GLRenderTarget.h"
-#include <Ic3/Graphics/HW3D/GL/GLGpuDevice.h>
+#include <Ic3/Graphics/HW3D/GL/GLGPUDevice.h>
 #include <Ic3/Graphics/HW3D/GL/Objects/GLFramebufferObject.h>
 #include <Ic3/Graphics/HW3D/GL/Objects/GLRenderbufferObject.h>
 #include <Ic3/Graphics/HW3D/GL/Resources/GLRenderBuffer.h>
@@ -10,10 +10,10 @@ namespace Ic3::Graphics::GCI
 {
 
 	GLRenderTargetBindingImmutableState::GLRenderTargetBindingImmutableState(
-			GLGpuDevice & pGpuDevice,
+			GLGPUDevice & pGPUDevice,
 			const RenderTargetLayout & pRenderTargetLayout,
 			GLRenderTargetBindingFBOData pGLFBOData )
-	: RenderTargetBindingImmutableState( pGpuDevice, pRenderTargetLayout )
+	: RenderTargetBindingImmutableState( pGPUDevice, pRenderTargetLayout )
 	, mGLFBOData( std::move( pGLFBOData ) )
 	{}
 
@@ -29,7 +29,7 @@ namespace Ic3::Graphics::GCI
 	}
 
 	TGfxHandle<GLRenderTargetBindingImmutableState> GLRenderTargetBindingImmutableState::CreateInstance(
-			GLGpuDevice & pGpuDevice,
+			GLGPUDevice & pGPUDevice,
 			const RenderTargetBindingDefinition & pBindingDefinition )
 	{
 		if( !SMU::ValidateRenderTargetBindingDefinition( pBindingDefinition ) )
@@ -40,7 +40,7 @@ namespace Ic3::Graphics::GCI
 		auto glcRenderTargetBindingDefinition = SMU::TranslateRenderTargetBindingDefinition( pBindingDefinition );
 
 		auto immutableState = CreateGfxObject<GLRenderTargetBindingImmutableState>(
-				pGpuDevice,
+				pGPUDevice,
 				glcRenderTargetBindingDefinition.rtLayout,
 				std::move( glcRenderTargetBindingDefinition.fboData ) );
 
@@ -48,7 +48,7 @@ namespace Ic3::Graphics::GCI
 	}
 
 	TGfxHandle<GLRenderTargetBindingImmutableState> GLRenderTargetBindingImmutableState::CreateForScreen(
-			GLGpuDevice & pGpuDevice,
+			GLGPUDevice & pGPUDevice,
 			const RenderTargetLayout & pRenderTargetLayout )
 	{
 		GLRenderTargetBindingDefinition glcRenderTargetBindingDefinition;
@@ -57,7 +57,7 @@ namespace Ic3::Graphics::GCI
 		glcRenderTargetBindingDefinition.rtLayout = pRenderTargetLayout;
 
 		auto immutableState = CreateGfxObject<GLRenderTargetBindingImmutableState>(
-			pGpuDevice,
+			pGPUDevice,
 			glcRenderTargetBindingDefinition.rtLayout,
 			std::move( glcRenderTargetBindingDefinition.fboData ) );
 

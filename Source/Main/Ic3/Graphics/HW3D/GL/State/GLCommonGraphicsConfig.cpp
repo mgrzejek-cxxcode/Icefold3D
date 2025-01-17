@@ -1,29 +1,29 @@
 
 #include "GLCommonGraphicsConfig.h"
 #include <Ic3/Graphics/HW3D/GL/GLApiTranslationLayer.h>
-#include <Ic3/Graphics/HW3D/GL/GLGpuDevice.h>
+#include <Ic3/Graphics/HW3D/GL/GLGPUDevice.h>
 
 namespace Ic3::Graphics::GCI
 {
 
 	GLBlendImmutableState::GLBlendImmutableState(
-			GLGpuDevice & pGpuDevice,
+			GLGPUDevice & pGPUDevice,
 			cppx::bitmask<EBlendConfigFlags> pBlendFlags,
 			const GLBlendConfig & pGLBlendConfig )
-	: BlendImmutableState( pGpuDevice, pBlendFlags )
+	: BlendImmutableState( pGPUDevice, pBlendFlags )
 	, mGLBlendConfig( pGLBlendConfig )
 	{}
 
 	GLBlendImmutableState::~GLBlendImmutableState() = default;
 
 	TGfxHandle<GLBlendImmutableState> GLBlendImmutableState::CreateInstance(
-			GLGpuDevice & pGpuDevice,
+			GLGPUDevice & pGPUDevice,
 			const BlendConfig & pBlendConfig )
 	{
 		const auto glcBlendConfig = SMU::TranslateBlendConfigGL( pBlendConfig );
 
 		auto immutableState = CreateGfxObject<GLBlendImmutableState>(
-				pGpuDevice,
+				pGPUDevice,
 				pBlendConfig.flags,
 				glcBlendConfig );
 
@@ -32,23 +32,23 @@ namespace Ic3::Graphics::GCI
 
 
 	GLDepthStencilImmutableState::GLDepthStencilImmutableState(
-			GLGpuDevice & pGpuDevice,
+			GLGPUDevice & pGPUDevice,
 			cppx::bitmask<EDepthStencilConfigFlags> pDepthStencilFlags,
 			const GLDepthStencilConfig & pGLDepthStencilConfig  )
-	: DepthStencilImmutableState( pGpuDevice, pDepthStencilFlags )
+	: DepthStencilImmutableState( pGPUDevice, pDepthStencilFlags )
 	, mGLDepthStencilConfig( pGLDepthStencilConfig )
 	{}
 
 	GLDepthStencilImmutableState::~GLDepthStencilImmutableState() = default;
 
 	TGfxHandle<GLDepthStencilImmutableState> GLDepthStencilImmutableState::CreateInstance(
-			GLGpuDevice & pGpuDevice,
+			GLGPUDevice & pGPUDevice,
 			const DepthStencilConfig & pDepthStencilConfig  )
 	{
 		const auto glcDepthStencilConfig = SMU::TranslateDepthStencilConfigGL( pDepthStencilConfig );
 
 		auto immutableState = CreateGfxObject<GLDepthStencilImmutableState>(
-				pGpuDevice,
+				pGPUDevice,
 				pDepthStencilConfig.commonFlags,
 				glcDepthStencilConfig );
 
@@ -57,23 +57,23 @@ namespace Ic3::Graphics::GCI
 
 
 	GLRasterizerImmutableState::GLRasterizerImmutableState(
-			GLGpuDevice & pGpuDevice,
+			GLGPUDevice & pGPUDevice,
 			cppx::bitmask<ERasterizerConfigFlags> pRasterizerFlags,
 			const GLRasterizerConfig & pGLRasterizerConfig )
-	: RasterizerImmutableState( pGpuDevice, pRasterizerFlags )
+	: RasterizerImmutableState( pGPUDevice, pRasterizerFlags )
 	, mGLRasterizerConfig( pGLRasterizerConfig )
 	{}
 
 	GLRasterizerImmutableState::~GLRasterizerImmutableState() = default;
 
 	TGfxHandle<GLRasterizerImmutableState> GLRasterizerImmutableState::CreateInstance(
-			GLGpuDevice & pGpuDevice,
+			GLGPUDevice & pGPUDevice,
 			const RasterizerConfig & pRasterizerConfig )
 	{
 		const auto glcRasterizerConfig = SMU::TranslateRasterizerConfigGL( pRasterizerConfig );
 
 		auto immutableState = CreateGfxObject<GLRasterizerImmutableState>(
-				pGpuDevice,
+				pGPUDevice,
 				pRasterizerConfig.flags,
 				glcRasterizerConfig );
 

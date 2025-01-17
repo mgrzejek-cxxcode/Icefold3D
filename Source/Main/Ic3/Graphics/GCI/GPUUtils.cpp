@@ -1,6 +1,6 @@
 
-#include "GpuUtils.h"
-#include "GpuDevice.h"
+#include "GPUUtils.h"
+#include "GPUDevice.h"
 #include <fstream>
 
 namespace Ic3::Graphics::GCI
@@ -9,13 +9,13 @@ namespace Ic3::Graphics::GCI
     namespace utils
     {
 
-        ShaderHandle CreateShaderFromSource( GpuDevice & pGpuDevice, EShaderType pShaderType, const void * pSource, size_t pSourceLength )
+        ShaderHandle CreateShaderFromSource( GPUDevice & pGPUDevice, EShaderType pShaderType, const void * pSource, size_t pSourceLength )
         {
             ShaderCreateInfo shaderCreateInfo;
             shaderCreateInfo.shaderType = pShaderType;
             shaderCreateInfo.shaderSourceView = cppx::bind_memory_view( pSource, pSourceLength );
 
-            if( pGpuDevice.IsDebugDevice() )
+            if( pGPUDevice.IsDebugDevice() )
             {
                 shaderCreateInfo.createFlags = eShaderCreateFlagDebugBit;
             }
@@ -24,11 +24,11 @@ namespace Ic3::Graphics::GCI
                 shaderCreateInfo.createFlags = eShaderCreateFlagOptimizationL1Bit;
             }
 
-            auto shader = pGpuDevice.CreateShader( shaderCreateInfo );
+            auto shader = pGPUDevice.CreateShader( shaderCreateInfo );
             return shader;
         }
 
-        ShaderHandle CreateShaderFromFile( GpuDevice & pGpuDevice, EShaderType pShaderType, const char * pFilename )
+        ShaderHandle CreateShaderFromFile( GPUDevice & pGPUDevice, EShaderType pShaderType, const char * pFilename )
 	    {
             std::ifstream inputFile{ pFilename, std::ios::in };
             if( !inputFile )
@@ -51,7 +51,7 @@ namespace Ic3::Graphics::GCI
             inputFile.read( fileContent.data(), fileSize );
             fileContent[fileSize] = 0;
 
-            return CreateShaderFromSource( pGpuDevice, pShaderType, fileContent.data(), fileContent.size() );
+            return CreateShaderFromSource( pGPUDevice, pShaderType, fileContent.data(), fileContent.size() );
         }
 
     }

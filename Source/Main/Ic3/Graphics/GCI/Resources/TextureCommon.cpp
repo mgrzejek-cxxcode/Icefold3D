@@ -155,18 +155,18 @@ namespace Ic3::Graphics::GCI
 				ETextureFormat pTextureFormat,
 				cppx::bitmask<resource_flags_value_t> pBindFlags )
 		{
-			if( pBindFlags.is_set( eGpuResourceUsageMaskRenderTargetDepthStencil ) )
+			if( pBindFlags.is_set( eGPUResourceUsageMaskRenderTargetDepthStencil ) )
 			{
 				return ( pTextureFormat == ETextureFormat::D24UNS8U );
 			}
-			else if( pBindFlags.is_set( eGpuResourceUsageFlagRenderTargetDepthBit ) )
+			else if( pBindFlags.is_set( eGPUResourceUsageFlagRenderTargetDepthBit ) )
 			{
 				return
 					( pTextureFormat == ETextureFormat::D16UN ) ||
 					( pTextureFormat == ETextureFormat::D24UNX8 ) ||
 					( pTextureFormat == ETextureFormat::D32F );
 			}
-			else if( pBindFlags.is_set( eGpuResourceUsageFlagRenderTargetStencilBit ) )
+			else if( pBindFlags.is_set( eGPUResourceUsageFlagRenderTargetStencilBit ) )
 			{
 				return ( pTextureFormat == ETextureFormat::X24S8U );
 			}

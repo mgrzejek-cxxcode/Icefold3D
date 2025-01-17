@@ -43,8 +43,8 @@
 namespace Ic3::Graphics::GCI
 {
 
-	Ic3DeclareClassHandle( GL4GpuDevice );
-	Ic3DeclareClassHandle( GL4GpuDriver );
+	Ic3DeclareClassHandle( GL4GPUDevice );
+	Ic3DeclareClassHandle( GL4GPUDriver );
 
 } // namespace Ic3::Graphics::GCI
 

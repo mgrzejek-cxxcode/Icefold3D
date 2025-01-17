@@ -6,7 +6,7 @@
 #include "DX11graphicsShaderState.h"
 #include "DX11RenderTarget.h"
 #include "../DX11CommandList.h"
-#include "../Resources/DX11GpuBuffer.h"
+#include "../Resources/DX11GPUBuffer.h"
 #include "../Resources/DX11Sampler.h"
 #include "../Resources/DX11Shader.h"
 #include "../Resources/DX11Texture.h"
@@ -19,7 +19,7 @@ namespace Ic3::Graphics::GCI
 
 	DX11GraphicsPipelineStateController::DX11GraphicsPipelineStateController( DX11CommandList & pDX11CommandList )
 	: GraphicsPipelineStateControllerSeparableShader()
-	, mGpuDevice( pDX11CommandList.mGpuDevice )
+	, mGPUDevice( pDX11CommandList.mGPUDevice )
 	, mDX11CommandList( &pDX11CommandList )
 	, mD3D11DeviceContext1( pDX11CommandList.mD3D11DeviceContext1.Get() )
 	{}
@@ -132,7 +132,7 @@ namespace Ic3::Graphics::GCI
 		if( updateResult )
 		{
 			auto dx11RenderTargetBinding =
-					SMU::CreateRenderTargetBindingDataDX11( *mGpuDevice.QueryInterface<DX11GpuDevice>(), pRenderTargetBindingState.GetBindingDefinition() );
+					SMU::CreateRenderTargetBindingDataDX11( *mGPUDevice.QueryInterface<DX11GPUDevice>(), pRenderTargetBindingState.GetBindingDefinition() );
 
 			_dynamicRenderTargetBindingDataDX11 = dx11RenderTargetBinding;
 		}
@@ -170,7 +170,7 @@ namespace Ic3::Graphics::GCI
 		return false;
 	}
 
-	bool DX11GraphicsPipelineStateController::SetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GpuBuffer & pConstantBuffer )
+	bool DX11GraphicsPipelineStateController::SetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer )
 	{
 		const auto & shaderInputSignature = GetShaderInputSignature();
 		const auto & descriptorInfo = shaderInputSignature.GetDescriptorInfo( pParamRefID );
@@ -182,7 +182,7 @@ namespace Ic3::Graphics::GCI
 
 		if( descriptorInfo.dShaderVisibilityMask != 0 )
 		{
-			auto * dx11Buffer = pConstantBuffer.QueryInterface<DX11GpuBuffer>();
+			auto * dx11Buffer = pConstantBuffer.QueryInterface<DX11GPUBuffer>();
 			auto * d3d11Buffer = dx11Buffer->mD3D11Buffer.Get();
 
 			if( descriptorInfo.dShaderVisibilityMask.is_set( E_SHADER_STAGE_FLAG_GRAPHICS_VERTEX_BIT ) )

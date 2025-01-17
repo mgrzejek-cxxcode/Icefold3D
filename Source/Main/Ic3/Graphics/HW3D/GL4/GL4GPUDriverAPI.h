@@ -5,16 +5,16 @@
 #define __IC3_GRAPHICS_HW3D_GL4_GRAPHICS_DRIVER_API_H__
 
 #include "GL4Prerequisites.h"
-#include <Ic3/Graphics/GCI/GpuDriverAPI.h>
+#include <Ic3/Graphics/GCI/GPUDriverAPI.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	class GL4GpuDriverInterface : public GpuDriverInterface
+	class GL4GPUDriverInterface : public GPUDriverInterface
 	{
 	public:
-		virtual GpuDriverHandle CreateDriver( const GpuDriverCreateInfo & pCreateInfo ) override final;
-		virtual PresentationLayerHandle CreateScreenPresentationLayer( GpuDevice & pDevice, const PresentationLayerCreateInfo & pCreateInfo ) override final;
+		virtual GPUDriverHandle CreateDriver( const GPUDriverCreateInfo & pCreateInfo ) override final;
+		virtual PresentationLayerHandle CreateScreenPresentationLayer( GPUDevice & pDevice, const PresentationLayerCreateInfo & pCreateInfo ) override final;
 	};
 
 } // namespace Ic3::Graphics::GCI

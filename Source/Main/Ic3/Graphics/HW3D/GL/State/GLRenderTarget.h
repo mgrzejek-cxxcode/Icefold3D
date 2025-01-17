@@ -39,7 +39,7 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		GLRenderTargetBindingImmutableState(
-				GLGpuDevice & pGpuDevice,
+				GLGPUDevice & pGPUDevice,
 				const RenderTargetLayout & pRenderTargetLayout,
 				GLRenderTargetBindingFBOData pGLFBOData );
 
@@ -48,11 +48,11 @@ namespace Ic3::Graphics::GCI
 		CPPX_ATTR_NO_DISCARD GLRenderTargetBindingInfo GetGLRenderTargetBindingInfo() const;
 
 		static TGfxHandle<GLRenderTargetBindingImmutableState> CreateInstance(
-			GLGpuDevice & pGpuDevice,
+			GLGPUDevice & pGPUDevice,
 			const RenderTargetBindingDefinition & pBindingDefinition );
 
 		static TGfxHandle<GLRenderTargetBindingImmutableState> CreateForScreen(
-			GLGpuDevice & pGpuDevice,
+			GLGPUDevice & pGPUDevice,
 			const RenderTargetLayout & pRenderTargetLayout );
 	};
 

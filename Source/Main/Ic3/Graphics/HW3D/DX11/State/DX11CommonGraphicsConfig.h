@@ -28,13 +28,13 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		DX11BlendImmutableState(
-				DX11GpuDevice & pGpuDevice,
+				DX11GPUDevice & pGPUDevice,
 				cppx::bitmask<EBlendConfigFlags> pBlendFlags,
 				ComPtr<ID3D11BlendState> pD3D11BlendState );
 
 		virtual ~DX11BlendImmutableState();
 
-		static GpaHandle<DX11BlendImmutableState> CreateInstance( DX11GpuDevice & pGpuDevice, const BlendConfig & pBlendConfig );
+		static GpaHandle<DX11BlendImmutableState> CreateInstance( DX11GPUDevice & pGPUDevice, const BlendConfig & pBlendConfig );
 	};
 
 	///
@@ -45,13 +45,13 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		DX11DepthStencilImmutableState(
-				DX11GpuDevice & pGpuDevice,
+				DX11GPUDevice & pGPUDevice,
 				cppx::bitmask<EDepthStencilConfigFlags> pDepthStencilFlags,
 				ComPtr<ID3D11DepthStencilState> pD3D11DepthStencilState );
 
 		virtual ~DX11DepthStencilImmutableState();
 
-		static GpaHandle<DX11DepthStencilImmutableState> CreateInstance( DX11GpuDevice & pGpuDevice, const DepthStencilConfig & pDepthStencilConfig );
+		static GpaHandle<DX11DepthStencilImmutableState> CreateInstance( DX11GPUDevice & pGPUDevice, const DepthStencilConfig & pDepthStencilConfig );
 	};
 
 	///
@@ -62,13 +62,13 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		DX11RasterizerImmutableState(
-				DX11GpuDevice & pGpuDevice,
+				DX11GPUDevice & pGPUDevice,
 				cppx::bitmask<ERasterizerConfigFlags> pRasterizerFlags,
 				ComPtr<ID3D11RasterizerState> pD3D11RasterizerState );
 
 		virtual ~DX11RasterizerImmutableState();
 
-		static GpaHandle<DX11RasterizerImmutableState> CreateInstance( DX11GpuDevice & pGpuDevice, const RasterizerConfig & pRasterizerConfig );
+		static GpaHandle<DX11RasterizerImmutableState> CreateInstance( DX11GPUDevice & pGPUDevice, const RasterizerConfig & pRasterizerConfig );
 	};
 
 

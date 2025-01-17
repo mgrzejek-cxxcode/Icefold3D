@@ -20,7 +20,7 @@ namespace Ic3::Graphics::GCI
 		RenderTargetBindingImmutableState & operator=( const RenderTargetBindingImmutableState & ) = delete;
 
 		RenderTargetBindingImmutableState(
-				GpuDevice & pGpuDevice,
+				GPUDevice & pGPUDevice,
 				const RenderTargetLayout & pRenderTargetLayout );
 
 		virtual ~RenderTargetBindingImmutableState();
@@ -34,7 +34,7 @@ namespace Ic3::Graphics::GCI
 		RenderPassConfigurationImmutableState( const RenderPassConfigurationImmutableState & ) = delete;
 		RenderPassConfigurationImmutableState & operator=( const RenderPassConfigurationImmutableState & ) = delete;
 
-		RenderPassConfigurationImmutableState( GpuDevice & pGpuDevice );
+		RenderPassConfigurationImmutableState( GPUDevice & pGPUDevice );
 		virtual ~RenderPassConfigurationImmutableState();
 	};
 
@@ -45,13 +45,13 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		RenderPassConfigurationImmutableStateDefault(
-				GpuDevice & pGpuDevice,
+				GPUDevice & pGPUDevice,
 				const RenderPassConfiguration & pRenderPassConfiguration );
 
 		virtual ~RenderPassConfigurationImmutableStateDefault();
 
 		static TGfxHandle<RenderPassConfigurationImmutableStateDefault> CreateInstance(
-				GpuDevice & pGpuDevice,
+				GPUDevice & pGPUDevice,
 				const RenderPassConfiguration & pConfiguration );
 	};
 

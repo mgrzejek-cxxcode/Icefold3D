@@ -6,14 +6,14 @@
 
 #include "MTLPrerequisites.h"
 #include "State/MTL_pipelineImmutableStateFactory.h"
-#include <Ic3/Graphics/GCI/GpuDevice.h>
+#include <Ic3/Graphics/GCI/GPUDevice.h>
 #include <Ic3/Graphics/GCI/State/PipelineImmutableStateCache.h>
 
 namespace Ic3::Graphics::GCI
 {
 
 	/// @brief
-	class MetalGpuDevice : public GpuDevice
+	class MetalGPUDevice : public GPUDevice
 	{
 	public:
 		System::MetalDeviceHandle const mSysMetalDevice;
@@ -21,8 +21,8 @@ namespace Ic3::Graphics::GCI
 		id<MTLDevice> const mMTLDevice;
 
 	public:
-		explicit MetalGpuDevice( MetalGpuDriver & pGpuDriver, System::MetalDeviceHandle pSysMetalDevice );
-		virtual ~MetalGpuDevice();
+		explicit MetalGPUDevice( MetalGPUDriver & pGPUDriver, System::MetalDeviceHandle pSysMetalDevice );
+		virtual ~MetalGPUDevice();
 
 		virtual void WaitForCommandSync( CommandSync & pCommandSync ) override;
 
@@ -32,7 +32,7 @@ namespace Ic3::Graphics::GCI
 	private:
 	    virtual bool _DrvOnSetPresentationLayer( PresentationLayerHandle pPresentationLayer ) override;
 
-	    virtual GpuBufferHandle _DrvCreateGpuBuffer( const GpuBufferCreateInfo & pCreateInfo ) override final;
+	    virtual GPUBufferHandle _DrvCreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo ) override final;
 	    virtual SamplerHandle _DrvCreateSampler( const SamplerCreateInfo & pCreateInfo ) override final;
 	    virtual ShaderHandle _DrvCreateShader( const ShaderCreateInfo & pCreateInfo ) override final;
 	    virtual TextureHandle _DrvCreateTexture( const TextureCreateInfo & pCreateInfo ) override final;

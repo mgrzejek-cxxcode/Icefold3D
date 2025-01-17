@@ -2,25 +2,25 @@
 #include "GLTexture.h"
 #include "GLRenderBuffer.h"
 #include <Ic3/Graphics/HW3D/GL/GLApiTranslationLayer.h>
-#include <Ic3/Graphics/HW3D/GL/GLGpuDevice.h>
+#include <Ic3/Graphics/HW3D/GL/GLGPUDevice.h>
 #include <Ic3/Graphics/GCI/Resources/RenderTargetTexture.h>
 
 namespace Ic3::Graphics::GCI
 {
 
 	GLTexture::GLTexture(
-			GLGpuDevice & pGpuDevice,
+			GLGPUDevice & pGPUDevice,
 			const ResourceMemoryInfo & pResourceMemory,
 			const TextureProperties & pTextureProperties,
 			const TextureLayout & pTextureLayout,
 			GLTextureObjectHandle pGLTextureObject )
-	: Texture( pGpuDevice, pResourceMemory, pTextureProperties, pTextureLayout )
+	: Texture( pGPUDevice, pResourceMemory, pTextureProperties, pTextureLayout )
 	, mGLTextureObject( std::move( pGLTextureObject ) )
 	{ }
 
 	GLTexture::~GLTexture() = default;
 
-	GLTextureHandle GLTexture::CreateDefault( GLGpuDevice & pGpuDevice, const TextureCreateInfo & pCreateInfo )
+	GLTextureHandle GLTexture::CreateDefault( GLGPUDevice & pGPUDevice, const TextureCreateInfo & pCreateInfo )
 	{
 		GLTextureCreateInfo openglCreateInfo;
 		openglCreateInfo.bindTarget = ATL::TranslateGLTextureBindTarget( pCreateInfo.texClass );
@@ -34,7 +34,7 @@ namespace Ic3::Graphics::GCI
 		openglCreateInfo.openglInitDataDesc.openglPixelDataType = ATL::TranslateGLBaseDataType( textureInitDataBaseType );
 
 		GLTextureObjectHandle openglTextureObject = nullptr;
-		if( pGpuDevice.IsCompatibilityDevice() )
+		if( pGPUDevice.IsCompatibilityDevice() )
 		{
 			openglTextureObject = GLTextureObject::CreateCompat( openglCreateInfo );
 			Ic3DebugAssert( openglTextureObject );
@@ -66,7 +66,7 @@ namespace Ic3::Graphics::GCI
 		textureLayout.bitsPerPixel = ATL::QueryGLTextureInternalFormatBPP( glcTextureInternalFormat );
 
 		auto openglTexture = CreateDynamicObject<GLTexture>(
-			pGpuDevice,
+			pGPUDevice,
 			textureMemoryInfo,
 			textureProperties,
 			textureLayout,
@@ -75,48 +75,48 @@ namespace Ic3::Graphics::GCI
 		return openglTexture;
 	}
 
-	GLTextureHandle GLTexture::CreateForRenderTarget( GLGpuDevice & pGpuDevice, const RenderTargetTextureCreateInfo & pCreateInfo )
+	GLTextureHandle GLTexture::CreateForRenderTarget( GLGPUDevice & pGPUDevice, const RenderTargetTextureCreateInfo & pCreateInfo )
 	{
 		TextureCreateInfo textureCreateInfo;
 		textureCreateInfo.texClass = ETextureClass::T2D;
 		textureCreateInfo.dimensions.width = pCreateInfo.rtTextureLayout.imageRect.width;
 		textureCreateInfo.dimensions.height = pCreateInfo.rtTextureLayout.imageRect.height;
-		textureCreateInfo.memoryFlags = eGpuMemoryAccessFlagGpuReadBit;
-		textureCreateInfo.resourceFlags = ( pCreateInfo.bindFlags & eGpuResourceUsageMaskAll );
+		textureCreateInfo.memoryFlags = eGPUMemoryAccessFlagGPUReadBit;
+		textureCreateInfo.resourceFlags = ( pCreateInfo.bindFlags & eGPUResourceUsageMaskAll );
 		textureCreateInfo.internalFormat = pCreateInfo.rtTextureLayout.internalFormat;
 		textureCreateInfo.dimensions.arraySize = 1;
 		textureCreateInfo.dimensions.depth = 1;
 		textureCreateInfo.dimensions.mipLevelsNum = 1;
 
-		auto glcTexture = GLTexture::CreateDefault( pGpuDevice, textureCreateInfo );
+		auto glcTexture = GLTexture::CreateDefault( pGPUDevice, textureCreateInfo );
 
 		return glcTexture;
 	}
 
-	RenderTargetTextureHandle GLTexture::CreateRenderTargetTextureView( GLGpuDevice & pGpuDevice, const RenderTargetTextureCreateInfo & pCreateInfo )
+	RenderTargetTextureHandle GLTexture::CreateRenderTargetTextureView( GLGPUDevice & pGPUDevice, const RenderTargetTextureCreateInfo & pCreateInfo )
 	{
 		if( pCreateInfo.targetTexture )
 		{
-			return CreateDefaultRenderTargetTextureView( pGpuDevice, pCreateInfo );
+			return CreateDefaultRenderTargetTextureView( pGPUDevice, pCreateInfo );
 		}
 
 		const auto renderBufferIncompatibleBindFlags =
-				eGpuResourceUsageFlagShaderInputBit |
-				eGpuResourceUsageFlagRenderTargetColorBit |
-				eGpuResourceUsageFlagTransferTargetBit;
+				eGPUResourceUsageFlagShaderInputBit |
+				eGPUResourceUsageFlagRenderTargetColorBit |
+				eGPUResourceUsageFlagTransferTargetBit;
 
 		const auto rtTextureType = RCU::QueryRenderTargetTextureType( pCreateInfo.targetTexture->mTextureLayout.internalFormat );
 
 		if( pCreateInfo.bindFlags.is_set_any_of( renderBufferIncompatibleBindFlags ) )
 		{
-			auto glcTexture = CreateForRenderTarget( pGpuDevice, pCreateInfo );
+			auto glcTexture = CreateForRenderTarget( pGPUDevice, pCreateInfo );
 			if( !glcTexture )
 			{
 				return nullptr;
 			}
 
 			auto textureRTView = CreateGfxObject<RenderTargetTexture>(
-					pGpuDevice,
+					pGPUDevice,
 					rtTextureType,
 					pCreateInfo.rtTextureLayout,
 					TextureReference{ glcTexture } );
@@ -125,14 +125,14 @@ namespace Ic3::Graphics::GCI
 		}
 		else
 		{
-			auto glcRenderBuffer = GLInternalRenderBuffer::CreateInstance( pGpuDevice, pCreateInfo );
+			auto glcRenderBuffer = GLInternalRenderBuffer::CreateInstance( pGPUDevice, pCreateInfo );
 			if( !glcRenderBuffer )
 			{
 				return nullptr;
 			}
 
 			auto renderBufferRTView = CreateGfxObject<RenderTargetTexture>(
-					pGpuDevice,
+					pGPUDevice,
 					rtTextureType,
 					pCreateInfo.rtTextureLayout,
 					glcRenderBuffer,

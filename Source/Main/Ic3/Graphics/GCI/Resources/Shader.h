@@ -4,13 +4,13 @@
 #ifndef __IC3_GRAPHICS_GCI_SHADER_H__
 #define __IC3_GRAPHICS_GCI_SHADER_H__
 
-#include "CommonGpuResourceDefs.h"
+#include "CommonGPUResourceDefs.h"
 #include "ShaderCommon.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	class IC3_GRAPHICS_GCI_CLASS Shader : public GpuDeviceChildObject
+	class IC3_GRAPHICS_GCI_CLASS Shader : public GPUDeviceChildObject
 	{
 	public:
 		EShaderType const mShaderType;
@@ -18,8 +18,8 @@ namespace Ic3::Graphics::GCI
 		std::unique_ptr<ShaderBinary> const mShaderBinary;
 
 	public:
-		Shader( GpuDevice & pGpuDevice, EShaderType pShaderType );
-		Shader( GpuDevice & pGpuDevice, EShaderType pShaderType, std::unique_ptr<ShaderBinary> pShaderBinary );
+		Shader( GPUDevice & pGPUDevice, EShaderType pShaderType );
+		Shader( GPUDevice & pGPUDevice, EShaderType pShaderType, std::unique_ptr<ShaderBinary> pShaderBinary );
 		virtual ~Shader();
 
 //		virtual ResultCode compileFromSource( const void * pSource, size_t pSourceLength ) = 0;

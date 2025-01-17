@@ -1,30 +1,30 @@
 
-#include "GpuBuffer.h"
+#include "GPUBuffer.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	GpuBuffer::GpuBuffer(
-			GpuDevice & pGpuDevice,
+	GPUBuffer::GPUBuffer(
+			GPUDevice & pGPUDevice,
 			const ResourceMemoryInfo & pResourceMemory,
-			const GpuBufferProperties & pBufferProperties )
-	: GpuResource( pGpuDevice, EGpuResourceBaseType::Buffer, pResourceMemory )
+			const GPUBufferProperties & pBufferProperties )
+	: GPUResource( pGPUDevice, EGPUResourceBaseType::Buffer, pResourceMemory )
 	, mBufferProperties( pBufferProperties )
 	{}
 
-	GpuBuffer::~GpuBuffer() = default;
+	GPUBuffer::~GPUBuffer() = default;
 
-	const GpuResourceProperties & GpuBuffer::GetProperties() const
+	const GPUResourceProperties & GPUBuffer::GetProperties() const
 	{
 		return mBufferProperties;
 	}
 
-	GpuMemoryRegion GpuBuffer::GetWholeBufferRegion() const
+	GPUMemoryRegion GPUBuffer::GetWholeBufferRegion() const
 	{
-		return GpuMemoryRegion{ 0, mBufferProperties.byteSize };
+		return GPUMemoryRegion{ 0, mBufferProperties.byteSize };
 	}
 
-	bool GpuBuffer::ValidateMapRequest( const GpuMemoryRegion & pRegion, const EGpuMemoryMapMode & pMapMode )
+	bool GPUBuffer::ValidateMapRequest( const GPUMemoryRegion & pRegion, const EGPUMemoryMapMode & pMapMode )
 	{
 		if( IsMapped() )
 		{
@@ -36,7 +36,7 @@ namespace Ic3::Graphics::GCI
 			return false;
 		}
 
-		const GpuMemoryRegion bufferDataRegion{ 0, mBufferProperties.byteSize };
+		const GPUMemoryRegion bufferDataRegion{ 0, mBufferProperties.byteSize };
 		if( !cppx::range_is_sub_range_of( pRegion.as_range(), bufferDataRegion.as_range() ) )
 		{
 			return false;
@@ -45,7 +45,7 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	bool GpuBuffer::ValidateBufferCreateInfo( GpuBufferCreateInfo & pCreateInfo )
+	bool GPUBuffer::ValidateBufferCreateInfo( GPUBufferCreateInfo & pCreateInfo )
 	{
 		if( pCreateInfo.memoryBaseAlignment == 0 )
 		{

@@ -9,7 +9,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	enum EGpuDeviceFeatureFlags : uint32
+	enum EGPUDeviceFeatureFlags : uint32
 	{
 		E_GPU_DEVICE_FEATURE_FLAG_MULTI_THREADED_COMMAND_EXECUTION_BIT      = 1 << 0,
 		E_GPU_DEVICE_FEATURE_FLAG_MULTI_THREADED_RESOURCE_CREATION_BIT      = 1 << 1,
@@ -22,7 +22,7 @@ namespace Ic3::Graphics::GCI
 		E_GPU_DEVICE_FEATURE_FLAG_VIEWPORT_ARRAY_BIT                        = 1 << 5,
 	};
 
-	enum class EGraphicsCapFeatureID : std::underlying_type_t<EGpuDeviceFeatureFlags>
+	enum class EGraphicsCapFeatureID : std::underlying_type_t<EGPUDeviceFeatureFlags>
 	{
 		MultiThreadedCommandExecution,
 		MultiThreadedResourceCreation,

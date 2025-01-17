@@ -10,29 +10,29 @@
 namespace Ic3::Graphics::GCI
 {
 
-	struct DX12GpuDeviceCreateInfo : public GpuDeviceCreateInfo
+	struct DX12GPUDeviceCreateInfo : public GPUDeviceCreateInfo
 	{
 	};
 
 	/// @brief
-	class IC3_GX_DX12_CLASS DX12GpuDevice final : public DXGpuDevice
+	class IC3_GX_DX12_CLASS DX12GPUDevice final : public DXGPUDevice
 	{
 	public:
 		ComPtr<IDXGIFactory3> const mDXGIFactory3;
 		ComPtr<ID3D12Debug> const mD3D12DebugInterface;
 		ComPtr<ID3D12Device> const mD3D12Device;
 
-		explicit DX12GpuDevice(
-				DX12GpuDriver & pDriver,
+		explicit DX12GPUDevice(
+				DX12GPUDriver & pDriver,
 				ComPtr<IDXGIFactory3> pDXGIFactory3,
 				ComPtr<ID3D12Device> pD3D12Device,
 				ComPtr<ID3D12Debug> pD3D12DebugInterface );
 
-		virtual ~DX12GpuDevice();
+		virtual ~DX12GPUDevice();
 
 		ID3D12CommandQueue * GetD3D12DeviceQueue( gpu_cmd_device_queue_id_t pQueueID ) const;
 
-		static DX12GpuDeviceHandle Create( DX12GpuDriver & pDX12Driver, const DX12GpuDeviceCreateInfo & pCreateInfo );
+		static DX12GPUDeviceHandle Create( DX12GPUDriver & pDX12Driver, const DX12GPUDeviceCreateInfo & pCreateInfo );
 
 	private:
 		virtual void InitializeCommandSystem() override;

@@ -5,23 +5,23 @@
 #define __IC3_GRAPHICS_HW3D_GLES3_GRAPHICS_DEVICE_H__
 
 #include "GLES3Prerequisites.h"
-#include <Ic3/Graphics/HW3D/GL/GLGpuDevice.h>
+#include <Ic3/Graphics/HW3D/GL/GLGPUDevice.h>
 #include <Ic3/Graphics/HW3D/GL/State/GLPipelineStateObject.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	struct GLES3GpuDeviceCreateInfo : public GpuDeviceCreateInfo
+	struct GLES3GPUDeviceCreateInfo : public GPUDeviceCreateInfo
 	{
 	};
 
-	class IC3_GX_GLES3_CLASS GLES3GpuDevice final : public GLGpuDevice
+	class IC3_GX_GLES3_CLASS GLES3GPUDevice final : public GLGPUDevice
 	{
 	public:
-		explicit GLES3GpuDevice( GLES3GpuDriver & pDriver );
-		virtual ~GLES3GpuDevice();
+		explicit GLES3GPUDevice( GLES3GPUDriver & pDriver );
+		virtual ~GLES3GPUDevice();
 
-		static GLES3GpuDeviceHandle Create( GLES3GpuDriver & pDriver, const GLES3GpuDeviceCreateInfo & pCreateInfo );
+		static GLES3GPUDeviceHandle Create( GLES3GPUDriver & pDriver, const GLES3GPUDeviceCreateInfo & pCreateInfo );
 	};
 
 } // namespace Ic3::Graphics::GCI

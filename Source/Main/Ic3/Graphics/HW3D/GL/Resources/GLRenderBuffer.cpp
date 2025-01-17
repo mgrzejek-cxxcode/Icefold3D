@@ -1,27 +1,27 @@
 
 #include "GLRenderBuffer.h"
 #include <Ic3/Graphics/HW3D/GL/GLApiTranslationLayer.h>
-#include <Ic3/Graphics/HW3D/GL/GLGpuDevice.h>
+#include <Ic3/Graphics/HW3D/GL/GLGPUDevice.h>
 
 namespace Ic3::Graphics::GCI
 {
 
 	GLInternalRenderBuffer::GLInternalRenderBuffer(
-			GLGpuDevice & pGpuDevice,
+			GLGPUDevice & pGPUDevice,
 			GLRenderbufferObjectHandle pGLRenderbufferObject )
-	: GpuDeviceChildObject( pGpuDevice )
+	: GPUDeviceChildObject( pGPUDevice )
 	, mGLRenderbufferObject( std::move( pGLRenderbufferObject ) )
 	{}
 
 	GLInternalRenderBuffer::GLInternalRenderBuffer(
-			GLGpuDevice & pGpuDevice,
+			GLGPUDevice & pGPUDevice,
 			GLTextureObjectHandle pGLTextureObject )
-	: GpuDeviceChildObject( pGpuDevice )
+	: GPUDeviceChildObject( pGPUDevice )
 	, mGLTextureObject( std::move( pGLTextureObject ) )
 	{}
 
 	TGfxHandle<GLInternalRenderBuffer> GLInternalRenderBuffer::CreateInstance(
-			GLGpuDevice & pGpuDevice,
+			GLGPUDevice & pGPUDevice,
 			const RenderTargetTextureCreateInfo & pCreateInfo )
 	{
 		GLRenderbufferCreateInfo openglRenderbufferCreateInfo;
@@ -37,7 +37,7 @@ namespace Ic3::Graphics::GCI
 			return nullptr;
 		}
 
-		auto renderBuffer = CreateGfxObject<GLInternalRenderBuffer>( pGpuDevice, std::move( openglRenderbuffer ) );
+		auto renderBuffer = CreateGfxObject<GLInternalRenderBuffer>( pGPUDevice, std::move( openglRenderbuffer ) );
 
 		return renderBuffer;
 	}

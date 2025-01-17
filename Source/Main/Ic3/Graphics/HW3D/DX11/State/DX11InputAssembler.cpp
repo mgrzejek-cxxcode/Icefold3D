@@ -2,18 +2,18 @@
 #include "DX11inputAssembler.h"
 #include "../DX11ApiTranslationLayer.h"
 #include "../DX11gpuDevice.h"
-#include "../Resources/DX11GpuBuffer.h"
+#include "../Resources/DX11GPUBuffer.h"
 #include "../Resources/DX11Shader.h"
 
 namespace Ic3::Graphics::GCI
 {
 
 	DX11IAInputLayoutImmutableState::DX11IAInputLayoutImmutableState(
-			DX11GpuDevice & pGpuDevice,
+			DX11GPUDevice & pGPUDevice,
 			const IAInputLayoutStateCommonProperties & pCommonProperties,
 			ComPtr<ID3D11InputLayout> pD3D11InputLayout,
 			D3D11_PRIMITIVE_TOPOLOGY pD3D11PrimitiveTopology )
-	: IAInputLayoutImmutableState( pGpuDevice, pCommonProperties )
+	: IAInputLayoutImmutableState( pGPUDevice, pCommonProperties )
 	, mD3D11InputLayout( pD3D11InputLayout )
 	, mD3D11PrimitiveTopology( pD3D11PrimitiveTopology )
 	{}
@@ -21,7 +21,7 @@ namespace Ic3::Graphics::GCI
 	DX11IAInputLayoutImmutableState::~DX11IAInputLayoutImmutableState() = default;
 
 	GpaHandle<DX11IAInputLayoutImmutableState> DX11IAInputLayoutImmutableState::CreateInstance(
-			DX11GpuDevice & pGpuDevice,
+			DX11GPUDevice & pGPUDevice,
 			const IAInputLayoutDefinition & pInputLayoutDefinition,
 			const ShaderBinary & pVertexShaderBinary )
 	{
@@ -29,7 +29,7 @@ namespace Ic3::Graphics::GCI
 		const auto dx11InputLayoutDefinition = SMU::TranslateDX11IAInputLayoutDefinition( pInputLayoutDefinition );
 
 		ComPtr<ID3D11InputLayout> d3d11InputLayout;
-		const auto hResult = pGpuDevice.mD3D11Device1->CreateInputLayout(
+		const auto hResult = pGPUDevice.mD3D11Device1->CreateInputLayout(
 				dx11InputLayoutDefinition.attributeArray.data(),
 				dx11InputLayoutDefinition.mActiveAttributesNum,
 				pVertexShaderBinary.dataBuffer,
@@ -43,7 +43,7 @@ namespace Ic3::Graphics::GCI
 		}
 
 		auto immutableState = CreateGfxObject<DX11IAInputLayoutImmutableState>(
-				pGpuDevice,
+				pGPUDevice,
 				inputLayoutCommonProperties,
 				d3d11InputLayout,
 				dx11InputLayoutDefinition.primitiveTopology );
@@ -53,24 +53,24 @@ namespace Ic3::Graphics::GCI
 
 
 	DX11IAVertexStreamImmutableState::DX11IAVertexStreamImmutableState(
-			DX11GpuDevice & pGpuDevice,
+			DX11GPUDevice & pGPUDevice,
 			const IAVertexStreamStateCommonProperties & pCommonProperties,
 			const DX11IAVertexStreamDefinition & pDX11VertexStreamDefinition )
-	: IAVertexStreamImmutableState( pGpuDevice, pCommonProperties )
+	: IAVertexStreamImmutableState( pGPUDevice, pCommonProperties )
 	, mDX11VertexStreamDefinition( pDX11VertexStreamDefinition )
 	{}
 
 	DX11IAVertexStreamImmutableState::~DX11IAVertexStreamImmutableState() = default;
 
 	GpaHandle<DX11IAVertexStreamImmutableState> DX11IAVertexStreamImmutableState::CreateInstance(
-			DX11GpuDevice & pGpuDevice,
+			DX11GPUDevice & pGPUDevice,
 			const IAVertexStreamDefinition & pVertexStreamDefinition )
 	{
 		const auto vertexStreamCommonProperties = SMU::GetIAVertexStreamStateCommonProperties( pVertexStreamDefinition );
 		const auto dx11VertexStreamDefinition = SMU::TranslateDX11IAVertexStreamDefinition( pVertexStreamDefinition );
 
 		auto immutableState = CreateGfxObject<DX11IAVertexStreamImmutableState>(
-				pGpuDevice,
+				pGPUDevice,
 				vertexStreamCommonProperties,
 				dx11VertexStreamDefinition );
 
@@ -155,7 +155,7 @@ namespace Ic3::Graphics::GCI
 
 			if( pDefinition.indexBufferReference )
 			{
-				auto * dx11IndexBuffer = pDefinition.indexBufferReference.sourceBuffer->QueryInterface<DX11GpuBuffer>();
+				auto * dx11IndexBuffer = pDefinition.indexBufferReference.sourceBuffer->QueryInterface<DX11GPUBuffer>();
 
 				dx11IAVertexStreamDefinition.indexBufferBinding.buffer = dx11IndexBuffer->mD3D11Buffer.Get();
 
@@ -170,7 +170,7 @@ namespace Ic3::Graphics::GCI
 			{
 				if( const auto & vertexBufferReference = pDefinition.vertexBufferReferences[vertexInputStreamIndex] )
 				{
-					auto * dx11VertexBuffer = vertexBufferReference.sourceBuffer->QueryInterface<DX11GpuBuffer>();
+					auto * dx11VertexBuffer = vertexBufferReference.sourceBuffer->QueryInterface<DX11GPUBuffer>();
 
 					dx11IAVertexStreamDefinition.vertexBufferBindings.bindingData.bufferArray[vertexInputStreamIndex] =
 							dx11VertexBuffer->mD3D11Buffer.Get();

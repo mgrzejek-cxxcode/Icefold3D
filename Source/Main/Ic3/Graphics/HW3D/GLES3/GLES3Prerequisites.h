@@ -27,8 +27,8 @@ namespace Ic3::Graphics::GCI
 
 	Ic3DeclareClassHandle( GLES3CommandContext );
 	Ic3DeclareClassHandle( GLES3CommandSystem );
-	Ic3DeclareClassHandle( GLES3GpuDevice );
-	Ic3DeclareClassHandle( GLES3GpuDriver );
+	Ic3DeclareClassHandle( GLES3GPUDevice );
+	Ic3DeclareClassHandle( GLES3GPUDriver );
 	Ic3DeclareClassHandle( GLPresentationLayer );
 
 } // namespace Ic3::Graphics::GCI

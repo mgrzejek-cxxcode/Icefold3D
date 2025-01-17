@@ -13,7 +13,7 @@ namespace Ic3::Graphics::GCI
 	namespace ATL
 	{
 
-		GLenum ChooseGLBufferStorageFlags( GLenum pBindTarget, cppx::bitmask<resource_flags_value_t> pBufferFlags, cppx::bitmask<EGpuMemoryFlags> pMemoryFlags );
+		GLenum ChooseGLBufferStorageFlags( GLenum pBindTarget, cppx::bitmask<resource_flags_value_t> pBufferFlags, cppx::bitmask<EGPUMemoryFlags> pMemoryFlags );
 
 		GLenum ChooseGLBufferUsagePolicy( GLenum pBindTarget, cppx::bitmask<resource_flags_value_t> pBufferFlags );
 
@@ -29,9 +29,9 @@ namespace Ic3::Graphics::GCI
 
 		GLenum TranslateGLBlendOp( EBlendOp pBlendOp );
 
-		GLenum TranslateGLBufferBindTarget( EGpuBufferTarget pBufferTarget );
+		GLenum TranslateGLBufferBindTarget( EGPUBufferTarget pBufferTarget );
 
-		GLenum TranslateGLBufferMapFlags( EGpuMemoryMapMode pMapMode, cppx::bitmask<EGpuMemoryFlags> pMemoryFlags );
+		GLenum TranslateGLBufferMapFlags( EGPUMemoryMapMode pMapMode, cppx::bitmask<EGPUMemoryFlags> pMemoryFlags );
 
 		GLenum TranslateGLCompFunc( ECompFunc pCompFunc );
 

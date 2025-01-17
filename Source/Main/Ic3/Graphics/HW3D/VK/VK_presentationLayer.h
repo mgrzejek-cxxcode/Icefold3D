@@ -15,14 +15,14 @@ namespace Ic3::Graphics::GCI
 	class IC3_GX_VKCOMMON_CLASS VKPresentationLayer : public PresentationLayer
 	{
 	public:
-		VKPresentationLayer( GpuDevice & pDevice );
+		VKPresentationLayer( GPUDevice & pDevice );
 		virtual ~VKPresentationLayer();
 	};
 
 	class IC3_GX_VKCOMMON_CLASS VKScreenPresentationLayer : public VKPresentationLayer
 	{
 	public:
-		VKScreenPresentationLayer( GpuDevice & pDevice );
+		VKScreenPresentationLayer( GPUDevice & pDevice );
 		virtual ~VKScreenPresentationLayer();
 
 		virtual void BindRenderTarget( CommandContext * pCmdContext ) override;

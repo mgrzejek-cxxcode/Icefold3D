@@ -20,7 +20,7 @@ namespace Ic3::Graphics::GCI
 	/// @brief
 	class IC3_GRAPHICS_GCI_CLASS SystemDisplayManager final : public DisplayManager
 	{
-		friend class GpuDriver;
+		friend class GPUDriver;
 
 	public:
 		System::DisplayDriver * const mExfDisplayDriver = nullptr;

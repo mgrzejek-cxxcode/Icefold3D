@@ -1,7 +1,7 @@
 
 #include "GLPresentationLayer.h"
 #include "GLCommandList.h"
-#include "GLGpuDevice.h"
+#include "GLGPUDevice.h"
 #include <Ic3/Graphics/GCI/CommandContext.h>
 
 namespace Ic3::Graphics::GCI
@@ -57,8 +57,8 @@ namespace Ic3::Graphics::GCI
 		return nullptr;
 	}
 
-	GLPresentationLayer::GLPresentationLayer( GLGpuDevice & pGpuDevice, System::OpenGLDisplaySurfaceHandle pSysGLDisplaySurface )
-	: PresentationLayer( pGpuDevice )
+	GLPresentationLayer::GLPresentationLayer( GLGPUDevice & pGPUDevice, System::OpenGLDisplaySurfaceHandle pSysGLDisplaySurface )
+	: PresentationLayer( pGPUDevice )
 	, mSysGLDisplaySurface( pSysGLDisplaySurface )
 	{ }
 
@@ -71,16 +71,16 @@ namespace Ic3::Graphics::GCI
 
 
 	GLScreenPresentationLayer::GLScreenPresentationLayer(
-		GLGpuDevice & pGpuDevice,
+		GLGPUDevice & pGPUDevice,
 		System::OpenGLDisplaySurfaceHandle pSysGLDisplaySurface,
 		RenderTargetBindingImmutableStateHandle pScreenRenderTargetBindingState )
-	: GLPresentationLayer( pGpuDevice, pSysGLDisplaySurface )
+	: GLPresentationLayer( pGPUDevice, pSysGLDisplaySurface )
 	, mScreenRenderTargetBindingState( pScreenRenderTargetBindingState )
 	{ }
 
 	GLScreenPresentationLayer::~GLScreenPresentationLayer() = default;
 
-	GLScreenPresentationLayerHandle GLScreenPresentationLayer::Create( GLGpuDevice & pDevice, const GLPresentationLayerCreateInfo & pCreateInfo )
+	GLScreenPresentationLayerHandle GLScreenPresentationLayer::Create( GLGPUDevice & pDevice, const GLPresentationLayerCreateInfo & pCreateInfo )
 	{
 		auto sysGLSurface = createSysGLSurface( pDevice.mSysGLDriver, pCreateInfo );
 		Ic3DebugAssert( sysGLSurface );

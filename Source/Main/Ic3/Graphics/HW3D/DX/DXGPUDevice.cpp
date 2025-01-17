@@ -1,18 +1,18 @@
 
-#include "DXGpuDevice.h"
-#include "DXGpuDriver.h"
+#include "DXGPUDevice.h"
+#include "DXGPUDriver.h"
 #include "DXApiTranslationLayer.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	DXGpuDevice::DXGpuDevice( DXGpuDriver & pDXGpuDriver, ComPtr<IDXGIFactory2> pDXGIFactory2 )
-	: GpuDevice( pDXGpuDriver )
+	DXGPUDevice::DXGPUDevice( DXGPUDriver & pDXGPUDriver, ComPtr<IDXGIFactory2> pDXGIFactory2 )
+	: GPUDevice( pDXGPUDriver )
 	, mDXGIFactory2( std::move( pDXGIFactory2 ) )
-	, mDXGIDebug( ATL::QueryDXGIDebugInterface( pDXGpuDriver.GetConfigFlags() ) )
-	, mDXGIInfoQueue( ATL::QueryDXGIDebugInfoQueue( pDXGpuDriver.GetConfigFlags() ) )
+	, mDXGIDebug( ATL::QueryDXGIDebugInterface( pDXGPUDriver.GetConfigFlags() ) )
+	, mDXGIInfoQueue( ATL::QueryDXGIDebugInfoQueue( pDXGPUDriver.GetConfigFlags() ) )
 	{}
 
-	DXGpuDevice::~DXGpuDevice() = default;
+	DXGPUDevice::~DXGPUDevice() = default;
 
 } // namespace Ic3::Graphics::GCI

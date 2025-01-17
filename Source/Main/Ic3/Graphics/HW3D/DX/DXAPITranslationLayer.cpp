@@ -25,7 +25,7 @@ namespace Ic3::Graphics::GCI
 		return reinterpret_cast<DXGIGetDebugInterfaceType>( dxgiProcAddress );
 	}
 
-	ComPtr<IDXGIDebug> ATL::QueryDXGIDebugInterface( cppx::bitmask<EGpuDriverConfigFlags> pDriverConfigFlags )
+	ComPtr<IDXGIDebug> ATL::QueryDXGIDebugInterface( cppx::bitmask<EGPUDriverConfigFlags> pDriverConfigFlags )
 	{
 		if( !pDriverConfigFlags.is_set( E_GPU_DRIVER_CONFIG_FLAG_ENABLE_DEBUG_LAYER_BIT ) )
 		{
@@ -54,7 +54,7 @@ namespace Ic3::Graphics::GCI
 		return dxgiDebugInterface;
 	}
 
-	ComPtr<IDXGIInfoQueue> ATL::QueryDXGIDebugInfoQueue( cppx::bitmask<EGpuDriverConfigFlags> pDriverConfigFlags )
+	ComPtr<IDXGIInfoQueue> ATL::QueryDXGIDebugInfoQueue( cppx::bitmask<EGPUDriverConfigFlags> pDriverConfigFlags )
 	{
 		if( !pDriverConfigFlags.is_set( E_GPU_DRIVER_CONFIG_FLAG_ENABLE_DEBUG_LAYER_BIT ) )
 		{

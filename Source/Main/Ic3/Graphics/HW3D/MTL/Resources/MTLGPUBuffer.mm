@@ -1,5 +1,5 @@
 
-#include "MTLGpuBuffer.h"
+#include "MTLGPUBuffer.h"
 #include "../MTL_commandList.h"
 #include "../MTLUDevice.h"
 
@@ -8,22 +8,22 @@
 namespace Ic3::Graphics::GCI
 {
 
-	MetalGpuBuffer::MetalGpuBuffer(
-			MetalGpuDevice & pGpuDevice,
+	MetalGPUBuffer::MetalGPUBuffer(
+			MetalGPUDevice & pGPUDevice,
 			const ResourceMemoryInfo & pResourceMemory,
-			const GpuBufferProperties & pBufferProperties,
+			const GPUBufferProperties & pBufferProperties,
 			id<MTLBuffer> pMTLBuffer )
-	: GpuBuffer( pGpuDevice, pResourceMemory, pBufferProperties )
+	: GPUBuffer( pGPUDevice, pResourceMemory, pBufferProperties )
 	, mMTLDevice( [pMTLBuffer device] )
 	, mMTLBuffer( pMTLBuffer )
 	{}
 
-	MetalGpuBuffer::~MetalGpuBuffer() = default;
+	MetalGPUBuffer::~MetalGPUBuffer() = default;
 
-	MetalGpuBufferHandle MetalGpuBuffer::Create( MetalGpuDevice & pGpuDevice, const GpuBufferCreateInfo & pCreateInfo )
+	MetalGPUBufferHandle MetalGPUBuffer::Create( MetalGPUDevice & pGPUDevice, const GPUBufferCreateInfo & pCreateInfo )
 	{}
 
-	bool MetalGpuBuffer::MapRegion( void *, const GpuMemoryRegion & pRegion, EGpuMemoryMapMode pMapMode )
+	bool MetalGPUBuffer::MapRegion( void *, const GPUMemoryRegion & pRegion, EGPUMemoryMapMode pMapMode )
 	{
 		auto * baseBufferPointer = [mMTLBuffer contents];
 		if( !baseBufferPointer )
@@ -34,13 +34,13 @@ namespace Ic3::Graphics::GCI
 		ResourceMappedMemory mappedMemoryInfo;
 		mappedMemoryInfo.pointer = baseBufferPointer;
 		mappedMemoryInfo.mappedRegion = pRegion;
-		mappedMemoryInfo.memoryMapFlags = static_cast<EGpuMemoryMapFlags>( pMapMode );
+		mappedMemoryInfo.memoryMapFlags = static_cast<EGPUMemoryMapFlags>( pMapMode );
 		SetMappedMemory( mappedMemoryInfo );
 
 		return true;
 	}
 
-	void MetalGpuBuffer::Unmap( void * )
+	void MetalGPUBuffer::Unmap( void * )
 	{
 		if( const auto & mappedMemory = GetMappedMemory() )
 		{
@@ -54,7 +54,7 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	void MetalGpuBuffer::FlushMappedRegion( void *, const GpuMemoryRegion & pRegion )
+	void MetalGPUBuffer::FlushMappedRegion( void *, const GPUMemoryRegion & pRegion )
 	{
 		if( const auto & mappedMemory = GetMappedMemory() )
 		{
@@ -66,11 +66,11 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	void MetalGpuBuffer::InvalidateRegion( void * pCommandObject, const GpuMemoryRegion & pRegion )
+	void MetalGPUBuffer::InvalidateRegion( void * pCommandObject, const GPUMemoryRegion & pRegion )
 	{
 	}
 
-	void MetalGpuBuffer::UpdateSubDataCopy( void * pCommandObject, GpuBuffer & pSrcBuffer, const GpuBufferSubDataCopyDesc & pCopyDesc )
+	void MetalGPUBuffer::UpdateSubDataCopy( void * pCommandObject, GPUBuffer & pSrcBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc )
 	{
 		auto * metalCommandList = reinterpret_cast<MetalCommandList *>( pCommandObject );
 		if( !metalCommandList->CheckCommandClassSupport( ECommandQueueClass::Transfer ) )
@@ -78,7 +78,7 @@ namespace Ic3::Graphics::GCI
 			throw 0;
 		}
 
-		auto * sourceMTLBuffer = pSrcBuffer.QueryInterface<MetalGpuBuffer>()->mMTLBuffer;
+		auto * sourceMTLBuffer = pSrcBuffer.QueryInterface<MetalGPUBuffer>()->mMTLBuffer;
 
 		id<MTLBlitCommandEncoder> blitCommandEncoder = [metalCommandList->mMTLCommandBuffer blitCommandEncoder];
 
@@ -92,7 +92,7 @@ namespace Ic3::Graphics::GCI
 
 	}
 
-	void MetalGpuBuffer::UpdateSubDataUpload( void * pCommandObject, const GpuBufferSubDataUploadDesc & pUploadDesc )
+	void MetalGPUBuffer::UpdateSubDataUpload( void * pCommandObject, const GPUBufferSubDataUploadDesc & pUploadDesc )
 	{
 		auto * metalCommandList = reinterpret_cast<MetalCommandList *>( pCommandObject );
 		if( !metalCommandList->CheckCommandClassSupport( ECommandQueueClass::Transfer ) )
@@ -115,12 +115,12 @@ namespace Ic3::Graphics::GCI
 		[blitCommandEncoder endEncoding];
 	}
 
-	bool MetalGpuBuffer::ValidateMapRequest( const GpuMemoryRegion & pRegion, const EGpuMemoryMapMode & pMapMode )
+	bool MetalGPUBuffer::ValidateMapRequest( const GPUMemoryRegion & pRegion, const EGPUMemoryMapMode & pMapMode )
 	{
 		return true;
 	}
 
-	id<MTLCommandBuffer> MetalGpuBuffer::GetMTLCommandBuffer( void * pCommandObject )
+	id<MTLCommandBuffer> MetalGPUBuffer::GetMTLCommandBuffer( void * pCommandObject )
 	{
 		return reinterpret_cast<MetalCommandList *>( pCommandObject )->mMTLCommandBuffer;
 	}

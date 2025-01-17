@@ -14,7 +14,7 @@ namespace Ic3::Graphics::GCI
 	class IC3_GX_VKCOMMON_CLASS VKCommandSystem : public CommandSystem
 	{
 	public:
-		explicit VKCommandSystem( VKGpuDevice & pVKGpuDevice );
+		explicit VKCommandSystem( VKGPUDevice & pVKGPUDevice );
 		virtual ~VKCommandSystem();
 
 		virtual std::unique_ptr<CommandContext> AcquireCommandContext( ECommandContextType pContextType ) override;

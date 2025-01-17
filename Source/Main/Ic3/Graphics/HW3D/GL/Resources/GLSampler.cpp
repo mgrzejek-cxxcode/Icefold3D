@@ -1,19 +1,19 @@
 
 #include "GLSampler.h"
 #include "../GLApiTranslationLayer.h"
-#include "../GLGpuDevice.h"
+#include "../GLGPUDevice.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	GLSampler::GLSampler( GLGpuDevice & pGpuDevice, GLSamplerObjectHandle pGLSamplerObject )
-	: Sampler( pGpuDevice )
+	GLSampler::GLSampler( GLGPUDevice & pGPUDevice, GLSamplerObjectHandle pGLSamplerObject )
+	: Sampler( pGPUDevice )
 	, mGLSamplerObject( std::move( pGLSamplerObject ) )
 	{ }
 
 	GLSampler::~GLSampler() = default;
 
-	GLSamplerHandle GLSampler::CreateSampler( GLGpuDevice & pGpuDevice, const SamplerCreateInfo & pCreateInfo )
+	GLSamplerHandle GLSampler::CreateSampler( GLGPUDevice & pGPUDevice, const SamplerCreateInfo & pCreateInfo )
 	{
 		GLSamplerState openglSamplerState;
 		if( !TranslateSamplerConfig( pCreateInfo.samplerConfig, openglSamplerState ) )
@@ -27,7 +27,7 @@ namespace Ic3::Graphics::GCI
 			return nullptr;
 		}
 
-		auto sampler = CreateGfxObject<GLSampler>( pGpuDevice, std::move( openglSamplerObject ) );
+		auto sampler = CreateGfxObject<GLSampler>( pGPUDevice, std::move( openglSamplerObject ) );
 
 		return sampler;
 	}

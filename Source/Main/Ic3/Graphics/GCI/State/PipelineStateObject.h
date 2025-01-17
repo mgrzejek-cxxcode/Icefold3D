@@ -46,10 +46,10 @@ namespace Ic3::Graphics::GCI
 	/// - Compute PSO for the async compute pipeline. Required for executing Dispatch*() calls.
 	/// - Graphics PSO for the graphics/Rendering pipeline. Required for executing all kind of Draw*() calls.
 	/// Both have their dedicated classes: ComputePipelineStateObject and GraphicsPipelineStateObject, respectively.
-	class IC3_GRAPHICS_GCI_CLASS PipelineStateObject : public GpuDeviceChildObject
+	class IC3_GRAPHICS_GCI_CLASS PipelineStateObject : public GPUDeviceChildObject
 	{
 	public:
-		PipelineStateObject( GpuDevice & pGpuDevice );
+		PipelineStateObject( GPUDevice & pGPUDevice );
 		virtual ~PipelineStateObject();
 	};
 
@@ -57,7 +57,7 @@ namespace Ic3::Graphics::GCI
 	class IC3_GRAPHICS_GCI_CLASS ComputePipelineStateObject : public PipelineStateObject
 	{
 	public:
-		ComputePipelineStateObject( GpuDevice & pGpuDevice );
+		ComputePipelineStateObject( GPUDevice & pGPUDevice );
 		virtual ~ComputePipelineStateObject();
 	};
 
@@ -80,7 +80,7 @@ namespace Ic3::Graphics::GCI
 		ShaderInputSignature const mShaderInputSignature;
 
 		GraphicsPipelineStateObject(
-			GpuDevice & pGpuDevice,
+			GPUDevice & pGPUDevice,
 			RenderTargetLayout pRenderTargetLayout,
 			ShaderInputSignature pShaderInputSignature );
 

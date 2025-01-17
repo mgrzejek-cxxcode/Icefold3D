@@ -7,8 +7,8 @@
 namespace Ic3::Graphics::GCI
 {
 
-	class GpuDriver;
-	class GpuDevice;
+	class GPUDriver;
+	class GPUDevice;
 
 	/// @brief
     class GfxObject : public IDynamicObject
@@ -16,25 +16,25 @@ namespace Ic3::Graphics::GCI
     };
 
 	/// @brief
-    class IC3_GRAPHICS_GCI_API GpuDriverChildObject : public GfxObject
+    class IC3_GRAPHICS_GCI_API GPUDriverChildObject : public GfxObject
     {
     public:
-	    GpuDriver & mGpuDriver;
+	    GPUDriver & mGPUDriver;
 
-	    explicit GpuDriverChildObject( GpuDriver & pGpuDriver );
-	    virtual ~GpuDriverChildObject();
+	    explicit GPUDriverChildObject( GPUDriver & pGPUDriver );
+	    virtual ~GPUDriverChildObject();
     };
 
 	/// @brief
-	class IC3_GRAPHICS_GCI_API GpuDeviceChildObject : public GfxObject
+	class IC3_GRAPHICS_GCI_API GPUDeviceChildObject : public GfxObject
 	{
 	public:
-        GpuDriver & mGpuDriver;
-		GpuDevice & mGpuDevice;
+        GPUDriver & mGPUDriver;
+		GPUDevice & mGPUDevice;
 
 	public:
-		explicit GpuDeviceChildObject( GpuDevice & pGpuDevice );
-		virtual ~GpuDeviceChildObject();
+		explicit GPUDeviceChildObject( GPUDevice & pGPUDevice );
+		virtual ~GPUDeviceChildObject();
 
 		virtual GfxObjectID QueryObjectID() const;
 	};

@@ -44,8 +44,8 @@ namespace Ic3::Graphics::GCI
 
 	Ic3GCIDeclareClassHandle( DX11CommandList );
 	Ic3GCIDeclareClassHandle( DX11CommandSystem );
-	Ic3GCIDeclareClassHandle( DX11GpuDevice );
-	Ic3GCIDeclareClassHandle( DX11GpuDriver );
+	Ic3GCIDeclareClassHandle( DX11GPUDevice );
+	Ic3GCIDeclareClassHandle( DX11GPUDriver );
 	Ic3GCIDeclareClassHandle( DX11PresentationLayer );
 
 	Ic3GCIDeclareTypedefHandle( DX11GraphicsShaderLinkageImmutableState, GraphicsShaderLinkageImmutableStateSeparable );

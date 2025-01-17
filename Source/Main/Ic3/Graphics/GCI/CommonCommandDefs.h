@@ -4,7 +4,7 @@
 #ifndef __IC3_GRAPHICS_GCI_COMMON_COMMAND_DEFS_H__
 #define __IC3_GRAPHICS_GCI_COMMON_COMMAND_DEFS_H__
 
-#include "State/CommonGpuStateDefs.h"
+#include "State/CommonGPUStateDefs.h"
 #include "State/RenderTargetCommon.h"
 #include <atomic>
 

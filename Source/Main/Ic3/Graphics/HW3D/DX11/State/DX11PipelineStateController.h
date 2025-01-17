@@ -19,7 +19,7 @@ namespace Ic3::Graphics::GCI
 		friend class DX11CommandList;
 
 	public:
-		GpuDevice & mGpuDevice;
+		GPUDevice & mGPUDevice;
 		DX11CommandList * const mDX11CommandList = nullptr;
 		ID3D11DeviceContext1 * const mD3D11DeviceContext1 = nullptr;
 
@@ -46,7 +46,7 @@ namespace Ic3::Graphics::GCI
 
 		virtual bool SetViewport( const ViewportDesc & pViewportDesc ) override;
 		virtual bool SetShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData ) override;
-		virtual bool SetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GpuBuffer & pConstantBuffer ) override;
+		virtual bool SetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer ) override;
 		virtual bool SetShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture ) override;
 		virtual bool SetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler ) override;
 

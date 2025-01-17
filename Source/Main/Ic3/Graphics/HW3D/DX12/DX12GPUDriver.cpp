@@ -1,33 +1,33 @@
 
-#include "DX12GpuDriver.h"
-#include "DX12GpuDevice.h"
+#include "DX12GPUDriver.h"
+#include "DX12GPUDevice.h"
 #include <Ic3/System/DisplayDriverNative.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	DX12GpuDriver::DX12GpuDriver( System::SysContext * pExfSystemContext )
-	: DXGpuDriver( pExfSystemContext )
+	DX12GPUDriver::DX12GPUDriver( System::SysContext * pExfSystemContext )
+	: DXGPUDriver( pExfSystemContext )
 	{}
 
-	DX12GpuDriver::~DX12GpuDriver()
+	DX12GPUDriver::~DX12GPUDriver()
 	{}
 
-	DX12GpuDriverHandle DX12GpuDriver::Create( const DX12GpuDriverCreateInfo & pCreateInfo )
+	DX12GPUDriverHandle DX12GPUDriver::Create( const DX12GPUDriverCreateInfo & pCreateInfo )
 	{
-		constexpr auto dx12SupportedGpuConfigFlags =
+		constexpr auto dx12SupportedGPUConfigFlags =
 			E_GPU_DRIVER_CONFIG_FLAG_ENABLE_DEBUG_LAYER_BIT |
 			E_GPU_DRIVER_CONFIG_FLAG_ENABLE_SHADER_DEBUG_INFO_BIT |
 			E_GPU_DRIVER_CONFIG_FLAG_DISABLE_MULTI_THREAD_ACCESS_BIT |
 			E_GPU_DRIVER_CONFIG_FLAG_USE_REFERENCE_DRIVER_BIT;
 
-		auto dx12GpuDriver = CreateGfxObject<DX12GpuDriver>( pCreateInfo.exfSystemContext );
-		dx12GpuDriver->SetConfigFlags( pCreateInfo.configFlags & dx12SupportedGpuConfigFlags );
+		auto dx12GPUDriver = CreateGfxObject<DX12GPUDriver>( pCreateInfo.exfSystemContext );
+		dx12GPUDriver->SetConfigFlags( pCreateInfo.configFlags & dx12SupportedGPUConfigFlags );
 
-		return dx12GpuDriver;
+		return dx12GPUDriver;
 	}
 
-	DisplayManagerHandle DX12GpuDriver::CreateDefaultDisplayManager()
+	DisplayManagerHandle DX12GPUDriver::CreateDefaultDisplayManager()
 	{
 		auto * exfDisplayManager = mExfSystemContext->GetDisplayManager();
 
@@ -36,12 +36,12 @@ namespace Ic3::Graphics::GCI
 		return nullptr;
 	}
 
-	GpuDeviceHandle DX12GpuDriver::CreateDevice( const GpuDeviceCreateInfo & pCreateInfo )
+	GPUDeviceHandle DX12GPUDriver::CreateDevice( const GPUDeviceCreateInfo & pCreateInfo )
 	{
-		DX12GpuDeviceCreateInfo createInfo;
+		DX12GPUDeviceCreateInfo createInfo;
 		createInfo.adapterID = pCreateInfo.adapterID;
 		createInfo.flags = pCreateInfo.flags;
-		return DX12GpuDevice::Create( *this, createInfo );
+		return DX12GPUDevice::Create( *this, createInfo );
 	}
 
 } // namespace Ic3::Graphics::GCI

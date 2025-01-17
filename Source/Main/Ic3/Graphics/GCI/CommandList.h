@@ -5,7 +5,7 @@
 #define __IC3_GRAPHICS_GCI_COMMAND_LIST_H__
 
 #include "CommonCommandDefs.h"
-#include "Resources/GpuBufferCommon.h"
+#include "Resources/GPUBufferCommon.h"
 #include "State/SamplerCommon.h"
 #include "State/RenderPassCommon.h"
 
@@ -14,7 +14,7 @@ namespace Ic3::Graphics::GCI
 
 	class GraphicsPipelineStateController;
 
-	class IC3_GRAPHICS_GCI_CLASS CommandList : public GpuDeviceChildObject
+	class IC3_GRAPHICS_GCI_CLASS CommandList : public GPUDeviceChildObject
 	{
 	public:
 		CommandSystem * const mCommandSystem;
@@ -46,17 +46,17 @@ namespace Ic3::Graphics::GCI
 		virtual void BeginCommandSequence();
 		virtual void EndCommandSequence();
 
-		bool MapBuffer( GpuBuffer & pBuffer, EGpuMemoryMapMode pMapMode );
-		bool MapBufferRegion( GpuBuffer & pBuffer, const GpuMemoryRegion & pRegion, EGpuMemoryMapMode pMapMode );
-		bool UnmapBuffer( GpuBuffer & pBuffer );
-		bool FlushMappedBuffer( GpuBuffer & pBuffer );
-		bool FlushMappedBufferRegion( GpuBuffer & pBuffer, const GpuMemoryRegion & pRegion );
-		bool InvalidateBuffer( GpuBuffer & pBuffer );
-		bool InvalidateBufferRegion( GpuBuffer & pBuffer, const GpuMemoryRegion & pRegion );
-		bool UpdateBufferDataCopy( GpuBuffer & pBuffer, GpuBuffer & pSourceBuffer, const GpuBufferDataCopyDesc & pCopyDesc );
-		bool UpdateBufferSubDataCopy( GpuBuffer & pBuffer, GpuBuffer & pSourceBuffer, const GpuBufferSubDataCopyDesc & pCopyDesc );
-		bool UpdateBufferDataUpload( GpuBuffer & pBuffer, const GpuBufferDataUploadDesc & pUploadDesc );
-		bool UpdateBufferSubDataUpload( GpuBuffer & pBuffer, const GpuBufferSubDataUploadDesc & pUploadDesc );
+		bool MapBuffer( GPUBuffer & pBuffer, EGPUMemoryMapMode pMapMode );
+		bool MapBufferRegion( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion, EGPUMemoryMapMode pMapMode );
+		bool UnmapBuffer( GPUBuffer & pBuffer );
+		bool FlushMappedBuffer( GPUBuffer & pBuffer );
+		bool FlushMappedBufferRegion( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion );
+		bool InvalidateBuffer( GPUBuffer & pBuffer );
+		bool InvalidateBufferRegion( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion );
+		bool UpdateBufferDataCopy( GPUBuffer & pBuffer, GPUBuffer & pSourceBuffer, const GPUBufferDataCopyDesc & pCopyDesc );
+		bool UpdateBufferSubDataCopy( GPUBuffer & pBuffer, GPUBuffer & pSourceBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc );
+		bool UpdateBufferDataUpload( GPUBuffer & pBuffer, const GPUBufferDataUploadDesc & pUploadDesc );
+		bool UpdateBufferSubDataUpload( GPUBuffer & pBuffer, const GPUBufferSubDataUploadDesc & pUploadDesc );
 
 		virtual bool BeginRenderPass(
 				const RenderPassConfigurationImmutableState & pRenderPassState,
@@ -79,7 +79,7 @@ namespace Ic3::Graphics::GCI
 
 		bool CmdSetViewport( const ViewportDesc & pViewportDesc );
 		bool CmdSetShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData );
-		bool CmdSetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GpuBuffer & pConstantBuffer );
+		bool CmdSetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer );
 		bool CmdSetShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture );
 		bool CmdSetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler );
 

@@ -25,13 +25,13 @@ namespace Ic3::Graphics::GCI
 		Unknown
 	};
 
-	class GraphicsPipelineImmutableState : public GpuDeviceChildObject
+	class GraphicsPipelineImmutableState : public GPUDeviceChildObject
 	{
 	public:
 		GraphicsPipelineImmutableState( const GraphicsPipelineImmutableState & ) = delete;
 		GraphicsPipelineImmutableState & operator=( const GraphicsPipelineImmutableState & ) = delete;
 
-		GraphicsPipelineImmutableState( GpuDevice & pGpuDevice );
+		GraphicsPipelineImmutableState( GPUDevice & pGPUDevice );
 		virtual ~GraphicsPipelineImmutableState();
 
 		CPPX_ATTR_NO_DISCARD virtual EGraphicsPipelineImmutableStateType QueryStateType() const noexcept;
@@ -57,7 +57,7 @@ namespace Ic3::Graphics::GCI
 
 	protected:
 		virtual RenderPassConfigurationImmutableStateHandle CreateRenderPassStateDefault(
-				GpuDevice & pGpuDevice,
+				GPUDevice & pGPUDevice,
 				const RenderPassConfiguration & pConfiguration );
 	};
 
@@ -82,10 +82,10 @@ namespace Ic3::Graphics::GCI
 	class PipelineImmutableStateFactorySeparableShader : public PipelineImmutableStateFactory
 	{
 	public:
-		GpuDevice & mGpuDevice;
+		GPUDevice & mGPUDevice;
 
 	public:
-		PipelineImmutableStateFactorySeparableShader( GpuDevice & pGpuDevice );
+		PipelineImmutableStateFactorySeparableShader( GPUDevice & pGPUDevice );
 		virtual ~PipelineImmutableStateFactorySeparableShader();
 
 		virtual GraphicsShaderLinkageImmutableStateHandle CreateGraphicsShaderLinkageState( const GraphicsShaderSet & pShaderSet ) override;

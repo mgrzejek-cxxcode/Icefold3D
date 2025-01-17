@@ -5,25 +5,25 @@
 #define __IC3_GRAPHICS_HW3D_VKCOMMON_GPU_DEVICE_H__
 
 #include "VKPrerequisites.h"
-#include <Ic3/Graphics/GCI/GpuDevice.h>
+#include <Ic3/Graphics/GCI/GPUDevice.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	struct VKGpuDeviceCreateInfo : public GpuDeviceCreateInfo
+	struct VKGPUDeviceCreateInfo : public GPUDeviceCreateInfo
 	{
 	};
 
 	/// @brief
-	class IC3_GX_VKCOMMON_CLASS VKGpuDevice : public GpuDevice
+	class IC3_GX_VKCOMMON_CLASS VKGPUDevice : public GPUDevice
 	{
 	public:
 		VkDevice const mVkDevice = nullptr;
 
-		VKGpuDevice( VKGpuDriver * pDriver, VkDevice pVkDevice );
-		virtual ~VKGpuDevice();
+		VKGPUDevice( VKGPUDriver * pDriver, VkDevice pVkDevice );
+		virtual ~VKGPUDevice();
 
-		static VKGpuDeviceHandle Create( VKGpuDriver * pDriver, const VKGpuDeviceCreateInfo & pCreateInfo );
+		static VKGPUDeviceHandle Create( VKGPUDriver * pDriver, const VKGPUDeviceCreateInfo & pCreateInfo );
 
 	private:
 		virtual void InitializeCommandSystem() override;

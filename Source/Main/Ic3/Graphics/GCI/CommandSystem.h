@@ -10,12 +10,12 @@
 namespace Ic3::Graphics::GCI
 {
 
-	class IC3_GRAPHICS_GCI_CLASS CommandSystem : public GpuDeviceChildObject
+	class IC3_GRAPHICS_GCI_CLASS CommandSystem : public GPUDeviceChildObject
 	{
 		friend class CommandContextDirect;
 
 	public:
-		explicit CommandSystem( GpuDevice & pGpuDevice );
+		explicit CommandSystem( GPUDevice & pGPUDevice );
 		virtual ~CommandSystem();
 
 		virtual std::unique_ptr<CommandContext> AcquireCommandContext( ECommandContextType pContextType ) = 0;

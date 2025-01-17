@@ -19,7 +19,7 @@ namespace Ic3::Graphics::GCI
 	{
 	public:
 		GLGraphicsShaderLinkageImmutableState(
-				GLGpuDevice & pGpuDevice,
+				GLGPUDevice & pGPUDevice,
 				const GraphicsShaderLinkageCommonProperties & pCommonProperties );
 
 		virtual ~GLGraphicsShaderLinkageImmutableState();
@@ -33,14 +33,14 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		GLGraphicsShaderLinkageImmutableStateCore(
-				GLGpuDevice & pGpuDevice,
+				GLGPUDevice & pGPUDevice,
 				const GraphicsShaderLinkageCommonProperties & pCommonProperties,
 				GLShaderPipelineObjectHandle pGLShaderPipelineObject );
 
 		virtual ~GLGraphicsShaderLinkageImmutableStateCore();
 
 		CPPX_ATTR_NO_DISCARD static TGfxHandle<GLGraphicsShaderLinkageImmutableStateCore> CreateInstance(
-				GLGpuDevice & pGpuDevice,
+				GLGPUDevice & pGPUDevice,
 				const GraphicsShaderSet & pShaderSet );
 	};
 
@@ -52,14 +52,14 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		GLGraphicsShaderLinkageImmutableStateCompat(
-				GLGpuDevice & pGpuDevice,
+				GLGPUDevice & pGPUDevice,
 				const GraphicsShaderLinkageCommonProperties & pCommonProperties,
 				GLShaderProgramObjectHandle pGLShaderProgramObject );
 
 		virtual ~GLGraphicsShaderLinkageImmutableStateCompat();
 
 		CPPX_ATTR_NO_DISCARD static TGfxHandle<GLGraphicsShaderLinkageImmutableStateCompat> CreateInstance(
-				GLGpuDevice & pGpuDevice,
+				GLGPUDevice & pGPUDevice,
 				const GraphicsShaderSet & pShaderSet );
 	};
 

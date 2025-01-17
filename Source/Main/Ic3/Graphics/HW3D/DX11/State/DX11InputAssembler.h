@@ -73,7 +73,7 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		DX11IAInputLayoutImmutableState(
-				DX11GpuDevice & pGpuDevice,
+				DX11GPUDevice & pGPUDevice,
 				const IAInputLayoutStateCommonProperties & pCommonProperties,
 				ComPtr<ID3D11InputLayout> pD3D11InputLayout,
 				D3D11_PRIMITIVE_TOPOLOGY pD3D11PrimitiveTopology );
@@ -81,7 +81,7 @@ namespace Ic3::Graphics::GCI
 		virtual ~DX11IAInputLayoutImmutableState();
 
 		static GpaHandle<DX11IAInputLayoutImmutableState> CreateInstance(
-				DX11GpuDevice & pGpuDevice,
+				DX11GPUDevice & pGPUDevice,
 				const IAInputLayoutDefinition & pInputLayoutDefinition,
 				const ShaderBinary & pVertexShaderBinary );
 	};
@@ -94,14 +94,14 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		DX11IAVertexStreamImmutableState(
-				DX11GpuDevice & pGpuDevice,
+				DX11GPUDevice & pGPUDevice,
 				const IAVertexStreamStateCommonProperties & pCommonProperties,
 				const DX11IAVertexStreamDefinition & pDX11VertexStreamDefinition );
 
 		virtual ~DX11IAVertexStreamImmutableState();
 
 		static GpaHandle<DX11IAVertexStreamImmutableState> CreateInstance(
-				DX11GpuDevice & pGpuDevice,
+				DX11GPUDevice & pGPUDevice,
 				const IAVertexStreamDefinition & pVertexStreamDefinition );
 	};
 	

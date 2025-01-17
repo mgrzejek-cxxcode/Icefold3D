@@ -11,13 +11,13 @@ namespace Ic3::Graphics::GCI
 {
 
 	/// @brief
-	class IC3_GX_DX12_CLASS DX12GpuCmdManager final : public GpuCmdManager
+	class IC3_GX_DX12_CLASS DX12GPUCmdManager final : public GPUCmdManager
 	{
 	public:
 		ComPtr<ID3D12Device> const mD3D12Device = nullptr;
 
-		explicit DX12GpuCmdManager( DX12GpuDevice & pGpuDevice );
-		virtual ~DX12GpuCmdManager();
+		explicit DX12GPUCmdManager( DX12GPUDevice & pGPUDevice );
+		virtual ~DX12GPUCmdManager();
 
 		virtual bool Initialize() override;
 

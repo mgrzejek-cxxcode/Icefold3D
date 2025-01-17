@@ -1,13 +1,13 @@
 
 #include "PresentationLayer.h"
-#include "GpuDevice.h"
+#include "GPUDevice.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	PresentationLayer::PresentationLayer( GpuDevice & pGpuDevice )
-	: GpuDriverChildObject( pGpuDevice.mGpuDriver )
-	, mGpuDevice( pGpuDevice )
+	PresentationLayer::PresentationLayer( GPUDevice & pGPUDevice )
+	: GPUDriverChildObject( pGPUDevice.mGPUDriver )
+	, mGPUDevice( pGPUDevice )
 	{}
 
 	PresentationLayer::~PresentationLayer() = default;

@@ -1,7 +1,7 @@
 
 #include "GLCommandList.h"
 #include "GLCommandSystem.h"
-#include "GLGpuDevice.h"
+#include "GLGPUDevice.h"
 #include "Objects/GLFramebufferObject.h"
 #include "Objects/GLShaderProgramObject.h"
 #include "Objects/GLVertexArrayObject.h"

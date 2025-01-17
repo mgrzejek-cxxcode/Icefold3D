@@ -1,5 +1,5 @@
 
-#include "CommonGpuMemoryDefs.h"
+#include "CommonGPUMemoryDefs.h"
 
 namespace Ic3::Graphics::GCI
 {
@@ -7,9 +7,9 @@ namespace Ic3::Graphics::GCI
 	namespace memutil
 	{
 
-		bool checkMemoryMapAccess( EGpuMemoryMapMode pRequestedMapMode, cppx::bitmask<EGpuMemoryFlags> pMemoryFlags )
+		bool checkMemoryMapAccess( EGPUMemoryMapMode pRequestedMapMode, cppx::bitmask<EGPUMemoryFlags> pMemoryFlags )
 		{
-			auto mapRequestedAccessFlags = static_cast<uint32>( pRequestedMapMode ) & eGpuMemoryMapFlagAccessReadWriteBit;
+			auto mapRequestedAccessFlags = static_cast<uint32>( pRequestedMapMode ) & eGPUMemoryMapFlagAccessReadWriteBit;
 			return pMemoryFlags.is_set( mapRequestedAccessFlags );
 		}
 

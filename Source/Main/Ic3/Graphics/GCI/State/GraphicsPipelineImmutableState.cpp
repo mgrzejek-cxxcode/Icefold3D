@@ -6,8 +6,8 @@
 namespace Ic3::Graphics::GCI
 {
 
-	GraphicsPipelineImmutableState::GraphicsPipelineImmutableState( GpuDevice & pGpuDevice )
-	: GpuDeviceChildObject( pGpuDevice )
+	GraphicsPipelineImmutableState::GraphicsPipelineImmutableState( GPUDevice & pGPUDevice )
+	: GPUDeviceChildObject( pGPUDevice )
 	{}
 
 	GraphicsPipelineImmutableState::~GraphicsPipelineImmutableState() = default;
@@ -23,8 +23,8 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	PipelineImmutableStateFactorySeparableShader::PipelineImmutableStateFactorySeparableShader( GpuDevice & pGpuDevice )
-	: mGpuDevice( pGpuDevice )
+	PipelineImmutableStateFactorySeparableShader::PipelineImmutableStateFactorySeparableShader( GPUDevice & pGPUDevice )
+	: mGPUDevice( pGPUDevice )
 	{}
 
 	PipelineImmutableStateFactorySeparableShader::~PipelineImmutableStateFactorySeparableShader() = default;
@@ -45,7 +45,7 @@ namespace Ic3::Graphics::GCI
 		const auto commonProperties = SMU::GetGraphicsShaderLinkageCommonPropertiesForShaderSet( pShaderSet );
 
 		const auto shaderImmutableState = CreateGfxObject<GraphicsShaderLinkageImmutableStateSeparable>(
-				mGpuDevice,
+				mGPUDevice,
 				commonProperties,
 				pShaderSet );
 
@@ -54,10 +54,10 @@ namespace Ic3::Graphics::GCI
 
 
 	RenderPassConfigurationImmutableStateHandle PipelineImmutableStateFactory::CreateRenderPassStateDefault(
-			GpuDevice & pGpuDevice,
+			GPUDevice & pGPUDevice,
 			const RenderPassConfiguration & pConfiguration )
 	{
-		return RenderPassConfigurationImmutableStateDefault::CreateInstance( pGpuDevice, pConfiguration );
+		return RenderPassConfigurationImmutableStateDefault::CreateInstance( pGPUDevice, pConfiguration );
 	}
 
 

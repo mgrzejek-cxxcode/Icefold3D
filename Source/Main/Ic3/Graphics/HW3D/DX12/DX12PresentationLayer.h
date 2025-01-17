@@ -26,7 +26,7 @@ namespace Ic3::Graphics::GCI
 		ComPtr<ID3D12Device> const mD3D12Device = nullptr;
 		ComPtr<ID3D12CommandQueue> const mD3D12PresentQueue = nullptr;
 
-		DX12ScreenPresentationLayer( DX12GpuDevice & pDevice, ComPtr<IDXGISwapChain3> pDXGISwapChain3, uint32 pFrameQueueSize = sMinFrameQueueSize );
+		DX12ScreenPresentationLayer( DX12GPUDevice & pDevice, ComPtr<IDXGISwapChain3> pDXGISwapChain3, uint32 pFrameQueueSize = sMinFrameQueueSize );
 		virtual ~DX12ScreenPresentationLayer();
 
 		virtual void BindRenderTarget( CommandContext * pCmdContext ) override;
@@ -35,7 +35,7 @@ namespace Ic3::Graphics::GCI
 
 		virtual void Present() override;
 
-		static DX12ScreenPresentationLayerHandle Create( DX12GpuDevice & pDX12Device, const DX12PresentationLayerCreateInfo & pCreateInfo );
+		static DX12ScreenPresentationLayerHandle Create( DX12GPUDevice & pDX12Device, const DX12PresentationLayerCreateInfo & pCreateInfo );
 
 	private:
 		bool _InitializeRTVDescriptorHeap();

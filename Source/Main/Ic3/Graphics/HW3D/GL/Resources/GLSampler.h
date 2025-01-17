@@ -18,10 +18,10 @@ namespace Ic3::Graphics::GCI
 		GLSamplerObjectHandle const mGLSamplerObject;
 
 	public:
-		GLSampler( GLGpuDevice & pGpuDevice, GLSamplerObjectHandle pGLSamplerObject );
+		GLSampler( GLGPUDevice & pGPUDevice, GLSamplerObjectHandle pGLSamplerObject );
 		virtual ~GLSampler();
 
-		static GLSamplerHandle CreateSampler( GLGpuDevice & pGpuDevice, const SamplerCreateInfo & pCreateInfo );
+		static GLSamplerHandle CreateSampler( GLGPUDevice & pGPUDevice, const SamplerCreateInfo & pCreateInfo );
 
 	private:
 		static bool TranslateSamplerConfig( const SamplerConfig & pSamplerConfig, GLSamplerState & pOutSamplerState );

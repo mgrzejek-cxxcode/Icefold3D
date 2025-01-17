@@ -11,13 +11,13 @@ namespace Ic3::Graphics::GCI
 {
 
 	DX11GraphicsPipelineStateObject::DX11GraphicsPipelineStateObject(
-			DX11GpuDevice & pGpuDevice,
+			DX11GPUDevice & pGPUDevice,
 			RenderTargetLayout pRenderTargetLayout,
 			ShaderInputSignature pShaderInputSignature,
 			const SeparablePSOStateSet & pPSOImmutableStates,
 			const GraphicsShaderSet & pSeparableShaders )
 	: GraphicsPipelineStateObjectSeparableShader(
-			pGpuDevice,
+			pGPUDevice,
 			std::move( pRenderTargetLayout ),
 			std::move( pShaderInputSignature ),
 			pPSOImmutableStates,
@@ -57,7 +57,7 @@ namespace Ic3::Graphics::GCI
 	}
 
 	GpaHandle<DX11GraphicsPipelineStateObject> DX11GraphicsPipelineStateObject::Create(
-			DX11GpuDevice & pGpuDevice,
+			DX11GPUDevice & pGPUDevice,
 			const GraphicsPipelineStateObjectCreateInfo & pCreateInfo )
 	{
 		if( pCreateInfo.shaderSet.empty() && !pCreateInfo.shaderLinkageState )
@@ -77,7 +77,7 @@ namespace Ic3::Graphics::GCI
 		auto * separableShaderState = pCreateInfo.shaderLinkageState->QueryInterface<GraphicsShaderLinkageImmutableStateSeparable>();
 
 		auto pipelineStateObject = CreateDynamicObject<DX11GraphicsPipelineStateObject>(
-				pGpuDevice,
+				pGPUDevice,
 				std::move( renderTargetLayout ),
 				std::move( shaderInputSignature ),
 				separableStates,

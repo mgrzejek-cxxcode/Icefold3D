@@ -68,18 +68,18 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		DX11RenderTargetBindingImmutableState(
-				DX11GpuDevice & pGpuDevice,
+				DX11GPUDevice & pGPUDevice,
 				const RenderTargetLayout & pRenderTargetLayout,
 				DX11RenderTargetBindingData pDX11RTBindingData );
 
 		virtual ~DX11RenderTargetBindingImmutableState();
 
 		static GpaHandle<DX11RenderTargetBindingImmutableState> CreateInstance(
-				DX11GpuDevice & pGpuDevice,
+				DX11GPUDevice & pGPUDevice,
 				const RenderTargetBindingDefinition & pBindingDefinition );
 
 		static GpaHandle<DX11RenderTargetBindingImmutableState> CreateForScreen(
-				DX11GpuDevice & pGpuDevice,
+				DX11GPUDevice & pGPUDevice,
 				ComPtr<ID3D11Texture2D> pColorBuffer,
 				ComPtr<ID3D11Texture2D> pDepthStencilBuffer );
 	};
@@ -93,18 +93,18 @@ namespace Ic3::Graphics::GCI
 				ID3D11Texture2D * pDepthStencilBuffer );
 
 		CPPX_ATTR_NO_DISCARD DX11RenderTargetColorAttachment CreateRenderTargetColorAttachmentDX11(
-				DX11GpuDevice & pGpuDevice,
+				DX11GPUDevice & pGPUDevice,
 				const TextureReference & pAttachmentTextureRef );
 
 		CPPX_ATTR_NO_DISCARD DX11RenderTargetDepthStencilAttachment CreateRenderTargetDepthStencilAttachmentDX11(
-				DX11GpuDevice & pGpuDevice,
+				DX11GPUDevice & pGPUDevice,
 				const TextureReference & pAttachmentTextureRef );
 
 		CPPX_ATTR_NO_DISCARD DX11RenderTargetResolveAttachment CreateRenderTargetResolveAttachmentDX11(
 				const TextureReference & pAttachmentTextureRef );
 
 		CPPX_ATTR_NO_DISCARD DX11RenderTargetBindingData CreateRenderTargetBindingDataDX11(
-				DX11GpuDevice & pGpuDevice,
+				DX11GPUDevice & pGPUDevice,
 				const RenderTargetBindingDefinition & pBindingDefinition );
 
 		void RenderPassClearRenderTargetDX11(

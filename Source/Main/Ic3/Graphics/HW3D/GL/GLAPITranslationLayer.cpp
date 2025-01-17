@@ -1,6 +1,6 @@
 
 #include "GLApiTranslationLayer.h"
-#include <Ic3/Graphics/GCI/Resources/GpuBufferCommon.h>
+#include <Ic3/Graphics/GCI/Resources/GPUBufferCommon.h>
 #include <Ic3/Graphics/GCI/Resources/ShaderCommon.h>
 #include <Ic3/Graphics/GCI/Resources/TextureCommon.h>
 #include <Ic3/Graphics/GCI/State/SamplerCommon.h>
@@ -10,38 +10,38 @@
 namespace Ic3::Graphics::GCI
 {
 #if( IC3_GX_GL_TARGET == IC3_GX_GL_TARGET_GL43 )
-	GLenum ATL::ChooseGLBufferStorageFlags( GLenum pBindTarget, cppx::bitmask<resource_flags_value_t> pBufferFlags, cppx::bitmask<EGpuMemoryFlags> pMemoryFlags )
+	GLenum ATL::ChooseGLBufferStorageFlags( GLenum pBindTarget, cppx::bitmask<resource_flags_value_t> pBufferFlags, cppx::bitmask<EGPUMemoryFlags> pMemoryFlags )
 	{
 		cppx::bitmask<GLenum> storageFlags = 0;
 
-		if( !pBufferFlags.is_set( eGpuResourceContentFlagImmutableBit ) )
+		if( !pBufferFlags.is_set( eGPUResourceContentFlagImmutableBit ) )
 		{
 			// DYNAMIC_STORAGE is required in order to perform *ANY* kind of buffer data update.
 			// Without this flag, it is impossible to change the buffer's content even via glBufferSubData.
 			// Because of that, we Apply this to every buffer, except those specified explicitly as IMMUTABLE.
 			storageFlags.set( GL_DYNAMIC_STORAGE_BIT );
 		}
-		if( pBufferFlags.is_set( eGpuResourceContentFlagTemporaryBit ) )
+		if( pBufferFlags.is_set( eGPUResourceContentFlagTemporaryBit ) )
 		{
 			storageFlags.set( GL_CLIENT_STORAGE_BIT );
 		}
-		if( pMemoryFlags.is_set( eGpuMemoryAccessFlagCpuReadBit ) )
+		if( pMemoryFlags.is_set( eGPUMemoryAccessFlagCpuReadBit ) )
 		{
 			storageFlags.set( GL_MAP_READ_BIT );
 		}
-		if( pMemoryFlags.is_set( eGpuMemoryAccessFlagCpuWriteBit ) )
+		if( pMemoryFlags.is_set( eGPUMemoryAccessFlagCpuWriteBit ) )
 		{
 			storageFlags.set( GL_MAP_WRITE_BIT );
 		}
-		if( pMemoryFlags.is_set( eGpuMemoryHeapPropertyFlagCpuCachedBit ) )
+		if( pMemoryFlags.is_set( eGPUMemoryHeapPropertyFlagCpuCachedBit ) )
 		{
 			storageFlags.set( GL_CLIENT_STORAGE_BIT );
 		}
-		if( pMemoryFlags.is_set( eGpuMemoryHeapPropertyFlagPersistentMapBit ) )
+		if( pMemoryFlags.is_set( eGPUMemoryHeapPropertyFlagPersistentMapBit ) )
 		{
 			storageFlags.set( GL_MAP_PERSISTENT_BIT );
 			if( pMemoryFlags.is_set_any_of(
-					eGpuMemoryHeapPropertyFlagCpuCoherentBit | eGpuMemoryHeapPropertyFlagGpuCoherentBit ) )
+					eGPUMemoryHeapPropertyFlagCpuCoherentBit | eGPUMemoryHeapPropertyFlagGPUCoherentBit ) )
 			{
 				storageFlags.set( GL_MAP_COHERENT_BIT );
 			}
@@ -70,12 +70,12 @@ namespace Ic3::Graphics::GCI
 		GLenum usagePolicy = 0;
 
 		// The nature of the data has been explicitly specified as dynamic.
-		if( pBufferFlags.is_set( eGpuResourceContentFlagDynamicBit ) )
+		if( pBufferFlags.is_set( eGPUResourceContentFlagDynamicBit ) )
 		{
 			usagePolicy = GL_DYNAMIC_DRAW;
 		}
 		// Temporary buffers, updated once and used few times. That fits with STREAM policy.
-		else if( pBufferFlags.is_set( eGpuResourceContentFlagTemporaryBit ) )
+		else if( pBufferFlags.is_set( eGPUResourceContentFlagTemporaryBit ) )
 		{
 			usagePolicy = GL_STREAM_DRAW;
 		}
@@ -298,49 +298,49 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::TranslateGLBufferBindTarget( EGpuBufferTarget pBufferTarget )
+	GLenum ATL::TranslateGLBufferBindTarget( EGPUBufferTarget pBufferTarget )
 	{
 		switch( pBufferTarget )
 		{
-			Ic3CaseReturn( EGpuBufferTarget::Unknown                , GL_INVALID_ENUM              );
-			Ic3CaseReturn( EGpuBufferTarget::ConstantBuffer         , GL_UNIFORM_BUFFER            );
-			Ic3CaseReturn( EGpuBufferTarget::VertexBuffer           , GL_ARRAY_BUFFER              );
-			Ic3CaseReturn( EGpuBufferTarget::IndexBuffer            , GL_ELEMENT_ARRAY_BUFFER      );
-			Ic3CaseReturn( EGpuBufferTarget::ShaderInputBuffer      , GL_SHADER_STORAGE_BUFFER     );
-			Ic3CaseReturn( EGpuBufferTarget::ShaderUAVBuffer        , GL_SHADER_STORAGE_BUFFER     );
-			Ic3CaseReturn( EGpuBufferTarget::StreamOutputBuffer     , GL_TRANSFORM_FEEDBACK_BUFFER );
-			Ic3CaseReturn( EGpuBufferTarget::IndirectDispatchBuffer , GL_DISPATCH_INDIRECT_BUFFER  );
-			Ic3CaseReturn( EGpuBufferTarget::IndirectDrawBuffer     , GL_DRAW_INDIRECT_BUFFER      );
-			Ic3CaseReturn( EGpuBufferTarget::TransferSourceBuffer   , GL_COPY_READ_BUFFER          );
-			Ic3CaseReturn( EGpuBufferTarget::TransferTargetBuffer   , GL_COPY_WRITE_BUFFER         );
+			Ic3CaseReturn( EGPUBufferTarget::Unknown                , GL_INVALID_ENUM              );
+			Ic3CaseReturn( EGPUBufferTarget::ConstantBuffer         , GL_UNIFORM_BUFFER            );
+			Ic3CaseReturn( EGPUBufferTarget::VertexBuffer           , GL_ARRAY_BUFFER              );
+			Ic3CaseReturn( EGPUBufferTarget::IndexBuffer            , GL_ELEMENT_ARRAY_BUFFER      );
+			Ic3CaseReturn( EGPUBufferTarget::ShaderInputBuffer      , GL_SHADER_STORAGE_BUFFER     );
+			Ic3CaseReturn( EGPUBufferTarget::ShaderUAVBuffer        , GL_SHADER_STORAGE_BUFFER     );
+			Ic3CaseReturn( EGPUBufferTarget::StreamOutputBuffer     , GL_TRANSFORM_FEEDBACK_BUFFER );
+			Ic3CaseReturn( EGPUBufferTarget::IndirectDispatchBuffer , GL_DISPATCH_INDIRECT_BUFFER  );
+			Ic3CaseReturn( EGPUBufferTarget::IndirectDrawBuffer     , GL_DRAW_INDIRECT_BUFFER      );
+			Ic3CaseReturn( EGPUBufferTarget::TransferSourceBuffer   , GL_COPY_READ_BUFFER          );
+			Ic3CaseReturn( EGPUBufferTarget::TransferTargetBuffer   , GL_COPY_WRITE_BUFFER         );
 		};
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::TranslateGLBufferMapFlags( EGpuMemoryMapMode pMapMode, cppx::bitmask<EGpuMemoryFlags> pMemoryFlags )
+	GLenum ATL::TranslateGLBufferMapFlags( EGPUMemoryMapMode pMapMode, cppx::bitmask<EGPUMemoryFlags> pMemoryFlags )
 	{
 		cppx::bitmask<uint32> resourceMapFlags = static_cast<uint32>( pMapMode );
 		cppx::bitmask<GLenum> openglMapFlags = 0;
 
-		if( resourceMapFlags.is_set( eGpuMemoryMapFlagAccessReadBit ) )
+		if( resourceMapFlags.is_set( eGPUMemoryMapFlagAccessReadBit ) )
 		{
 			openglMapFlags.set( GL_MAP_READ_BIT );
 		}
-		if( resourceMapFlags.is_set( eGpuMemoryMapFlagAccessWriteBit ) )
+		if( resourceMapFlags.is_set( eGPUMemoryMapFlagAccessWriteBit ) )
 		{
 			openglMapFlags.set( GL_MAP_WRITE_BIT );
 		}
-		if( resourceMapFlags.is_set( eGpuMemoryMapFlagWriteInvalidateBit ) )
+		if( resourceMapFlags.is_set( eGPUMemoryMapFlagWriteInvalidateBit ) )
 		{
 			openglMapFlags.set( GL_MAP_INVALIDATE_BUFFER_BIT );
 		}
 
 	#if( IC3_GX_GL_FEATURE_SUPPORT_BUFFER_PERSISTENT_MAP )
-		if( pMemoryFlags.is_set( eGpuMemoryHeapPropertyFlagPersistentMapBit ) )
+		if( pMemoryFlags.is_set( eGPUMemoryHeapPropertyFlagPersistentMapBit ) )
 		{
 			openglMapFlags.set( GL_MAP_PERSISTENT_BIT );
 		}
-		if( pMemoryFlags.is_set( eGpuMemoryHeapPropertyFlagCpuCoherentBit ) )
+		if( pMemoryFlags.is_set( eGPUMemoryHeapPropertyFlagCpuCoherentBit ) )
 		{
 			openglMapFlags.set( GL_MAP_COHERENT_BIT );
 		}

@@ -5,7 +5,7 @@
 #define __IC3_GRAPHICS_HW3D_DX11_PRESENTATION_LAYER_H__
 
 #include "DX11Prerequisites.h"
-#include <Ic3/Graphics/GCI/State/CommonGpuStateDefs.h>
+#include <Ic3/Graphics/GCI/State/CommonGPUStateDefs.h>
 #include <Ic3/Graphics/HW3D/DX/DXPresentationLayer.h>
 
 namespace Ic3::Graphics::GCI
@@ -27,7 +27,7 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		DX11ScreenPresentationLayer(
-				DX11GpuDevice & pDevice,
+				DX11GPUDevice & pDevice,
 				System::WindowHandle pSysWindow,
 				ComPtr<IDXGISwapChain1> pDXGISwapChain,
 				RenderTargetBindingImmutableStateHandle pScreenRenderTargetBindingState );
@@ -40,7 +40,7 @@ namespace Ic3::Graphics::GCI
 
 		virtual void Present() override;
 
-		static DX11ScreenPresentationLayerHandle Create( DX11GpuDevice & pDX11Device, const DX11PresentationLayerCreateInfo & pCreateInfo );
+		static DX11ScreenPresentationLayerHandle Create( DX11GPUDevice & pDX11Device, const DX11PresentationLayerCreateInfo & pCreateInfo );
 
 	private:
 		ID3D11RenderTargetView * GetBackBufferRTView();

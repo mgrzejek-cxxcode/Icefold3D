@@ -1,15 +1,15 @@
 
 #include "DX11CommandSystem.h"
 #include "DX11CommandList.h"
-#include "DX11GpuDevice.h"
+#include "DX11GPUDevice.h"
 #include <Ic3/Graphics/GCI/CommandContext.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	DX11CommandSystem::DX11CommandSystem( DX11GpuDevice & pDX11GpuDevice )
-	: CommandSystem( pDX11GpuDevice )
-	, mD3D11Device1( pDX11GpuDevice.mD3D11Device1 )
+	DX11CommandSystem::DX11CommandSystem( DX11GPUDevice & pDX11GPUDevice )
+	: CommandSystem( pDX11GPUDevice )
+	, mD3D11Device1( pDX11GPUDevice.mD3D11Device1 )
 	{ }
 
 	DX11CommandSystem::~DX11CommandSystem() = default;

@@ -1,13 +1,13 @@
 
 #include "CommandSystem.h"
-#include "GpuDevice.h"
+#include "GPUDevice.h"
 #include <cppx/stdHelperAlgo.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	CommandSystem::CommandSystem( GpuDevice & pGpuDevice )
-	: GpuDeviceChildObject( pGpuDevice )
+	CommandSystem::CommandSystem( GPUDevice & pGPUDevice )
+	: GPUDeviceChildObject( pGPUDevice )
 	{}
 
 	CommandSystem::~CommandSystem() = default;

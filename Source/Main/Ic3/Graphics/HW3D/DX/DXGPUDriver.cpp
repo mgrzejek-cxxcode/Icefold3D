@@ -1,14 +1,14 @@
 
 
-#include "DXGpuDriver.h"
+#include "DXGPUDriver.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	DXGpuDriver::DXGpuDriver( System::SysContextHandle pSysContext ) noexcept
-	: GpuDriver( pSysContext )
+	DXGPUDriver::DXGPUDriver( System::SysContextHandle pSysContext ) noexcept
+	: GPUDriver( pSysContext )
 	{}
 
-	DXGpuDriver::~DXGpuDriver() noexcept = default;
+	DXGPUDriver::~DXGPUDriver() noexcept = default;
 
 } // namespace Ic3::Graphics::GCI

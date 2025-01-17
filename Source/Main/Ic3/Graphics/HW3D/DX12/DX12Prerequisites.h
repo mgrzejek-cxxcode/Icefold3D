@@ -35,9 +35,9 @@ namespace Ic3::Graphics::GCI
 {
 
 	Ic3DeclareClassHandle( DX12CommandContext );
-	Ic3DeclareClassHandle( DX12GpuCmdManager );
-	Ic3DeclareClassHandle( DX12GpuDevice );
-	Ic3DeclareClassHandle( DX12GpuDriver );
+	Ic3DeclareClassHandle( DX12GPUCmdManager );
+	Ic3DeclareClassHandle( DX12GPUDevice );
+	Ic3DeclareClassHandle( DX12GPUDriver );
 	Ic3DeclareClassHandle( DX12PresentationLayer );
 
 } // namespace Ic3::Graphics::GCI

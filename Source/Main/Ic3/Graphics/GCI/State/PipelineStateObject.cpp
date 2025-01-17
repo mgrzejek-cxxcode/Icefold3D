@@ -5,25 +5,25 @@
 namespace Ic3::Graphics::GCI
 {
 
-	PipelineStateObject::PipelineStateObject( GpuDevice & pGpuDevice )
-	: GpuDeviceChildObject( pGpuDevice )
+	PipelineStateObject::PipelineStateObject( GPUDevice & pGPUDevice )
+	: GPUDeviceChildObject( pGPUDevice )
 	{}
 
 	PipelineStateObject::~PipelineStateObject() = default;
 
 
-	ComputePipelineStateObject::ComputePipelineStateObject( GpuDevice & pGpuDevice )
-	: PipelineStateObject( pGpuDevice )
+	ComputePipelineStateObject::ComputePipelineStateObject( GPUDevice & pGPUDevice )
+	: PipelineStateObject( pGPUDevice )
 	{}
 
 	ComputePipelineStateObject::~ComputePipelineStateObject() = default;
 
 
 	GraphicsPipelineStateObject::GraphicsPipelineStateObject(
-			GpuDevice & pGpuDevice,
+			GPUDevice & pGPUDevice,
 			RenderTargetLayout pRenderTargetLayout,
 			ShaderInputSignature pShaderInputSignature )
-	: PipelineStateObject( pGpuDevice )
+	: PipelineStateObject( pGPUDevice )
 	, mRenderTargetLayout( std::move( pRenderTargetLayout ) )
 	, mShaderInputSignature( std::move( pShaderInputSignature ) )
 	{}

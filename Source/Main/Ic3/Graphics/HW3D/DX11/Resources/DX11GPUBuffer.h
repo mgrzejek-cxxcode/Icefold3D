@@ -5,14 +5,14 @@
 #define __IC3_GRAPHICS_HW3D_DX11_GPU_BUFFER_H__
 
 #include "../DX11Prerequisites.h"
-#include <Ic3/Graphics/GCI/Resources/GpuBuffer.h>
+#include <Ic3/Graphics/GCI/Resources/GPUBuffer.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	Ic3DeclareClassHandle( DX11GpuBuffer );
+	Ic3DeclareClassHandle( DX11GPUBuffer );
 
-	struct DX11GpuBufferDesc
+	struct DX11GPUBufferDesc
 	{
 		cppx::bitmask<D3D11_BIND_FLAG> bindFlags;
 		cppx::bitmask<D3D11_CPU_ACCESS_FLAG> cpuAccessFlags;
@@ -20,39 +20,39 @@ namespace Ic3::Graphics::GCI
 		D3D11_USAGE usage;
 	};
 
-	class DX11GpuBuffer : public GpuBuffer
+	class DX11GPUBuffer : public GPUBuffer
 	{
 	public:
 		ComPtr<ID3D11Buffer> const mD3D11Buffer;
 
-		DX11GpuBuffer(
-			DX11GpuDevice & pDX11GpuDevice,
+		DX11GPUBuffer(
+			DX11GPUDevice & pDX11GPUDevice,
 			const ResourceMemoryInfo & pResourceMemory,
-			const GpuBufferProperties & pBufferProperties,
+			const GPUBufferProperties & pBufferProperties,
 			ComPtr<ID3D11Buffer> pD3D11Buffer );
 
-		virtual ~DX11GpuBuffer();
+		virtual ~DX11GPUBuffer();
 
-		static DX11GpuBufferHandle Create( DX11GpuDevice & pDX11GpuDevice, const GpuBufferCreateInfo & pCreateInfo );
+		static DX11GPUBufferHandle Create( DX11GPUDevice & pDX11GPUDevice, const GPUBufferCreateInfo & pCreateInfo );
 
 	private:
-		static bool ValidateBufferCreateInfo( GpuBufferCreateInfo & pCreateInfo );
+		static bool ValidateBufferCreateInfo( GPUBufferCreateInfo & pCreateInfo );
 
-		static DX11GpuBufferDesc TranslateBufferDesc( const GpuBufferCreateInfo & pCreateInfo );
+		static DX11GPUBufferDesc TranslateBufferDesc( const GPUBufferCreateInfo & pCreateInfo );
 
-	    virtual bool MapRegion( void * pCommandObject, const GpuMemoryRegion & pRegion, EGpuMemoryMapMode pMapMode ) override;
+	    virtual bool MapRegion( void * pCommandObject, const GPUMemoryRegion & pRegion, EGPUMemoryMapMode pMapMode ) override;
 
 		virtual void Unmap( void * pCommandObject ) override;
 
-		virtual void FlushMappedRegion( void * pCommandObject, const GpuMemoryRegion & pRegion ) override;
+		virtual void FlushMappedRegion( void * pCommandObject, const GPUMemoryRegion & pRegion ) override;
 
-		virtual void InvalidateRegion( void * pCommandObject, const GpuMemoryRegion & pRegion ) override;
+		virtual void InvalidateRegion( void * pCommandObject, const GPUMemoryRegion & pRegion ) override;
 
-		virtual void UpdateSubDataCopy( void * pCommandObject, GpuBuffer & pSource, const GpuBufferSubDataCopyDesc & pCopyDesc ) override;
+		virtual void UpdateSubDataCopy( void * pCommandObject, GPUBuffer & pSource, const GPUBufferSubDataCopyDesc & pCopyDesc ) override;
 
-		virtual void UpdateSubDataUpload( void * pCommandObject, const GpuBufferSubDataUploadDesc & pUploadDesc ) override;
+		virtual void UpdateSubDataUpload( void * pCommandObject, const GPUBufferSubDataUploadDesc & pUploadDesc ) override;
 
-		virtual bool ValidateMapRequest( const GpuMemoryRegion & pRegion, const EGpuMemoryMapMode & pMapMode ) override;
+		virtual bool ValidateMapRequest( const GPUMemoryRegion & pRegion, const EGPUMemoryMapMode & pMapMode ) override;
 
 	private:
 		struct DX11BufferMapInfo

@@ -4,14 +4,14 @@
 #ifndef __IC3_GRAPHICS_GCI_INPUT_ASSEMBLER_COMMON_H__
 #define __IC3_GRAPHICS_GCI_INPUT_ASSEMBLER_COMMON_H__
 
-#include "CommonGpuStateDefs.h"
+#include "CommonGPUStateDefs.h"
 #include "../Resources/ShaderCommon.h"
-#include "../Resources/GpuBufferReference.h"
+#include "../Resources/GPUBufferReference.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	Ic3GCIDeclareClassHandle( GpuBuffer );
+	Ic3GCIDeclareClassHandle( GPUBuffer );
 
 	/// @brief
 	using input_assembler_index_t = uint8;
@@ -177,7 +177,7 @@ namespace Ic3::Graphics::GCI
 
 	struct IAVertexStreamBufferReference
 	{
-		GpuBufferReference sourceBuffer;
+		GPUBufferReference sourceBuffer;
 		gpu_memory_size_t relativeOffset;
 
 		bool IsEmpty() const noexcept

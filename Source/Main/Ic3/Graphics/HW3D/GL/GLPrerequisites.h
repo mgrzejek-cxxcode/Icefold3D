@@ -4,7 +4,7 @@
 #ifndef __IC3_GRAPHICS_HW3D_GLCOMMON_PREREQUISITES_H__
 #define __IC3_GRAPHICS_HW3D_GLCOMMON_PREREQUISITES_H__
 
-#include <Ic3/Graphics/GCI/Memory/CommonGpuMemoryDefs.h>
+#include <Ic3/Graphics/GCI/Memory/CommonGPUMemoryDefs.h>
 #include <Ic3/System/OpenGLDriver.h>
 
 #define IC3_GX_GL_PLATFORM_TYPE_DESKTOP 0x7100
@@ -118,8 +118,8 @@ namespace Ic3::Graphics::GCI
 
 	Ic3GCIDeclareClassHandle( GLCommandList );
 	Ic3GCIDeclareClassHandle( GLCommandSystem );
-	Ic3GCIDeclareClassHandle( GLGpuDevice );
-	Ic3GCIDeclareClassHandle( GLGpuDriver );
+	Ic3GCIDeclareClassHandle( GLGPUDevice );
+	Ic3GCIDeclareClassHandle( GLGPUDriver );
 	Ic3GCIDeclareClassHandle( GLPresentationLayer );
 
 	Ic3GCIDeclareTypedefHandle( GLRenderPassConfigurationImmutableState, RenderPassConfigurationImmutableStateDefault );

@@ -1,8 +1,8 @@
 
 #include "CommandList.h"
 #include "CommandSystem.h"
-#include "GpuDevice.h"
-#include "Resources/GpuBuffer.h"
+#include "GPUDevice.h"
+#include "Resources/GPUBuffer.h"
 #include "State/GraphicsPipelineStateController.h"
 #include "State/RenderTargetDynamicStates.h"
 #include "State/RenderTargetImmutableStates.h"
@@ -19,7 +19,7 @@ namespace Ic3::Graphics::GCI
 			CommandSystem & pCommandSystem,
 			ECommandListType pListType,
 			GraphicsPipelineStateController & pPipelineStateController )
-	: GpuDeviceChildObject( pCommandSystem.mGpuDevice )
+	: GPUDeviceChildObject( pCommandSystem.mGPUDevice )
 	, mCommandSystem( &pCommandSystem )
 	, mListType( pListType )
 	, _graphicsPipelineStateController( &pPipelineStateController )
@@ -79,12 +79,12 @@ namespace Ic3::Graphics::GCI
 	void CommandList::EndCommandSequence()
 	{}
 
-	bool CommandList::MapBuffer( GpuBuffer & pBuffer, EGpuMemoryMapMode pMapMode )
+	bool CommandList::MapBuffer( GPUBuffer & pBuffer, EGPUMemoryMapMode pMapMode )
 	{
-		return MapBufferRegion( pBuffer, GpuMemoryRegion{ 0, pBuffer.mBufferProperties.byteSize }, pMapMode );
+		return MapBufferRegion( pBuffer, GPUMemoryRegion{ 0, pBuffer.mBufferProperties.byteSize }, pMapMode );
 	}
 
-	bool CommandList::MapBufferRegion( GpuBuffer & pBuffer, const GpuMemoryRegion & pRegion, EGpuMemoryMapMode pMapMode )
+	bool CommandList::MapBufferRegion( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion, EGPUMemoryMapMode pMapMode )
 	{
 		if( !pBuffer.ValidateMapRequest( pRegion, pMapMode ) )
 		{
@@ -95,7 +95,7 @@ namespace Ic3::Graphics::GCI
 		return pBuffer.MapRegion( this, pRegion, pMapMode );
 	}
 
-	bool CommandList::UnmapBuffer( GpuBuffer & pBuffer )
+	bool CommandList::UnmapBuffer( GPUBuffer & pBuffer )
 	{
 		if( !pBuffer.IsMapped() )
 		{
@@ -108,16 +108,16 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	bool CommandList::FlushMappedBuffer( GpuBuffer & pBuffer )
+	bool CommandList::FlushMappedBuffer( GPUBuffer & pBuffer )
 	{
-		GpuMemoryRegion flushRegion;
+		GPUMemoryRegion flushRegion;
 		flushRegion.offset = 0;
 		flushRegion.size = pBuffer.mBufferProperties.byteSize;
 
 		return FlushMappedBufferRegion( pBuffer, flushRegion );
 	}
 
-	bool CommandList::FlushMappedBufferRegion( GpuBuffer & pBuffer, const GpuMemoryRegion & pRegion )
+	bool CommandList::FlushMappedBufferRegion( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion )
 	{
 		if( !pBuffer.IsMapped() )
 		{
@@ -130,27 +130,27 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	bool CommandList::InvalidateBuffer( GpuBuffer & pBuffer )
+	bool CommandList::InvalidateBuffer( GPUBuffer & pBuffer )
 	{
-		GpuMemoryRegion InvalidateRegion;
+		GPUMemoryRegion InvalidateRegion;
 		InvalidateRegion.offset = 0;
 		InvalidateRegion.size = pBuffer.mBufferProperties.byteSize;
 
 		return InvalidateBufferRegion( pBuffer, InvalidateRegion );
 	}
 
-	bool CommandList::InvalidateBufferRegion( GpuBuffer & pBuffer, const GpuMemoryRegion & pRegion )
+	bool CommandList::InvalidateBufferRegion( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion )
 	{
 		pBuffer.InvalidateRegion( this, pRegion );
 		return true;
 	}
 
-	bool CommandList::UpdateBufferDataCopy( GpuBuffer & pBuffer, GpuBuffer & pSourceBuffer, const GpuBufferDataCopyDesc & pCopyDesc )
+	bool CommandList::UpdateBufferDataCopy( GPUBuffer & pBuffer, GPUBuffer & pSourceBuffer, const GPUBufferDataCopyDesc & pCopyDesc )
 	{
-		GpuBufferSubDataCopyDesc subDataCopyDesc;
+		GPUBufferSubDataCopyDesc subDataCopyDesc;
 		subDataCopyDesc.flags = pCopyDesc.flags;
-		subDataCopyDesc.flags.set( eGpuBufferDataCopyFlagModeInvalidateBit );
-		subDataCopyDesc.flags.unset( eGpuBufferDataCopyFlagModeAppendBit );
+		subDataCopyDesc.flags.set( eGPUBufferDataCopyFlagModeInvalidateBit );
+		subDataCopyDesc.flags.unset( eGPUBufferDataCopyFlagModeAppendBit );
 		subDataCopyDesc.sourceBufferRegion.offset = 0;
 		subDataCopyDesc.sourceBufferRegion.size = pSourceBuffer.mBufferProperties.byteSize;
 		subDataCopyDesc.targetBufferOffset = 0;
@@ -158,7 +158,7 @@ namespace Ic3::Graphics::GCI
 		return UpdateBufferSubDataCopy( pBuffer, pSourceBuffer, subDataCopyDesc );
 	}
 
-	bool CommandList::UpdateBufferSubDataCopy( GpuBuffer & pBuffer, GpuBuffer & pSourceBuffer, const GpuBufferSubDataCopyDesc & pCopyDesc )
+	bool CommandList::UpdateBufferSubDataCopy( GPUBuffer & pBuffer, GPUBuffer & pSourceBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc )
 	{
 		if( pBuffer.IsMapped() || pSourceBuffer.IsMapped() )
 		{
@@ -177,12 +177,12 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	bool CommandList::UpdateBufferDataUpload( GpuBuffer & pBuffer, const GpuBufferDataUploadDesc & pUploadDesc )
+	bool CommandList::UpdateBufferDataUpload( GPUBuffer & pBuffer, const GPUBufferDataUploadDesc & pUploadDesc )
 	{
-		GpuBufferSubDataUploadDesc subDataUploadDesc;
+		GPUBufferSubDataUploadDesc subDataUploadDesc;
 		subDataUploadDesc.flags = pUploadDesc.flags;
-		subDataUploadDesc.flags.set( eGpuBufferDataCopyFlagModeInvalidateBit );
-		subDataUploadDesc.flags.unset( eGpuBufferDataCopyFlagModeAppendBit );
+		subDataUploadDesc.flags.set( eGPUBufferDataCopyFlagModeInvalidateBit );
+		subDataUploadDesc.flags.unset( eGPUBufferDataCopyFlagModeAppendBit );
 		subDataUploadDesc.bufferRegion.offset = 0;
 		subDataUploadDesc.bufferRegion.size = cppx::get_min_of( pUploadDesc.inputDataDesc.size, pBuffer.mBufferProperties.byteSize );
 		subDataUploadDesc.inputDataDesc = pUploadDesc.inputDataDesc;
@@ -190,7 +190,7 @@ namespace Ic3::Graphics::GCI
 		return UpdateBufferSubDataUpload( pBuffer, subDataUploadDesc );
 	}
 
-	bool CommandList::UpdateBufferSubDataUpload( GpuBuffer & pBuffer, const GpuBufferSubDataUploadDesc & pUploadDesc )
+	bool CommandList::UpdateBufferSubDataUpload( GPUBuffer & pBuffer, const GPUBufferSubDataUploadDesc & pUploadDesc )
 	{
 		if( !pUploadDesc.inputDataDesc )
 		{
@@ -285,7 +285,7 @@ namespace Ic3::Graphics::GCI
 		return _graphicsPipelineStateController->SetShaderConstant( pParamRefID, pData );
 	}
 
-	bool CommandList::CmdSetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GpuBuffer & pConstantBuffer )
+	bool CommandList::CmdSetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer )
 	{
 		if( !IsRenderPassActive() )
 		{

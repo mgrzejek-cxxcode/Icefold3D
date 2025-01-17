@@ -1,7 +1,7 @@
 
 #include "CommandSystem.h"
-#include "GpuDeviceNull.h"
-#include "GpuDriver.h"
+#include "GPUDeviceNull.h"
+#include "GPUDriver.h"
 #include "PresentationLayer.h"
 #include "Resources/Texture.h"
 #include "Resources/RenderTargetTexture.h"
@@ -20,7 +20,7 @@ namespace Ic3::Graphics::GCI
 	static const Math::RGBAColorU8 sDefaultClearColorDriverGLES3 { 0x7A, 0x00, 0x4D, 0xFF };
 	static const Math::RGBAColorU8 sDefaultClearColorDriverVK1   { 0x8F, 0x0F, 0x1F, 0xFF };
 
-	enum EGpuDeviceInternalStateFlags : uint32
+	enum EGPUDeviceInternalStateFlags : uint32
 	{
 		E_GPU_DEVICE_INTERNAL_STATE_FLAG_DEBUG_DEVICE_BIT = 0x0001,
 		E_GPU_DEVICE_INTERNAL_STATE_FLAG_MULTI_THREAD_ACCESS_BIT = 0x0002,
@@ -28,9 +28,9 @@ namespace Ic3::Graphics::GCI
 	};
 
 	
-	GpuDevice::GpuDevice( GpuDriver & pDriver )
-	: GpuDriverChildObject( pDriver )
-	, mGpuDriverID( pDriver.QueryGpuDriverID() )
+	GPUDevice::GPUDevice( GPUDriver & pDriver )
+	: GPUDriverChildObject( pDriver )
+	, mGPUDriverID( pDriver.QueryGPUDriverID() )
 	, mSysContext( pDriver.mSysContext )
 	{
 		if( pDriver.IsDebugFunctionalityRequested() )
@@ -39,63 +39,63 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	GpuDevice::~GpuDevice() = default;
+	GPUDevice::~GPUDevice() = default;
 
-	bool GpuDevice::IsNullDevice() const noexcept
+	bool GPUDevice::IsNullDevice() const noexcept
 	{
 		return false;
 	}
 
-	bool GpuDevice::IsDebugDevice() const noexcept
+	bool GPUDevice::IsDebugDevice() const noexcept
 	{
 		return _internalStateFlags.is_set( E_GPU_DEVICE_INTERNAL_STATE_FLAG_DEBUG_DEVICE_BIT );
 	}
 
-	bool GpuDevice::IsMultiThreadAccessSupported() const noexcept
+	bool GPUDevice::IsMultiThreadAccessSupported() const noexcept
 	{
 		return _internalStateFlags.is_set( E_GPU_DEVICE_INTERNAL_STATE_FLAG_MULTI_THREAD_ACCESS_BIT );
 	}
 
-	bool GpuDevice::IsResourceActiveRefsTrackingEnabled() const noexcept
+	bool GPUDevice::IsResourceActiveRefsTrackingEnabled() const noexcept
 	{
 		return _internalStateFlags.is_set( E_GPU_DEVICE_INTERNAL_STATE_FLAG_ENABLE_RESOURCE_ACTIVE_REFS_TRACKING_BIT );
 	}
 
-	CommandSystem & GpuDevice::GetCommandSystem() const noexcept
+	CommandSystem & GPUDevice::GetCommandSystem() const noexcept
 	{
 		return *_commandSystem;
 	}
 
-	PipelineImmutableStateFactory & GpuDevice::GetPipelineStateFactory() const noexcept
+	PipelineImmutableStateFactory & GPUDevice::GetPipelineStateFactory() const noexcept
 	{
 		return *_immutableStateFactoryBase;
 	}
 
-	PresentationLayer * GpuDevice::GetPresentationLayer() const noexcept
+	PresentationLayer * GPUDevice::GetPresentationLayer() const noexcept
 	{
 		return _presentationLayer.get();
 	}
 
-	const Math::RGBAColorU8 & GpuDevice::GetDefaultClearColor() const noexcept
+	const Math::RGBAColorU8 & GPUDevice::GetDefaultClearColor() const noexcept
 	{
-		switch( mGpuDriverID )
+		switch( mGPUDriverID )
 		{
-			case EGpuDriverID::GDIDirectX11:
+			case EGPUDriverID::GDIDirectX11:
 				return sDefaultClearColorDriverDX11;
 
-			case EGpuDriverID::GDIDirectX12:
+			case EGPUDriverID::GDIDirectX12:
 				return sDefaultClearColorDriverDX12;
 
-			case EGpuDriverID::GDIMetal1:
+			case EGPUDriverID::GDIMetal1:
 				return sDefaultClearColorDriverMTL2;
 
-			case EGpuDriverID::GDIOpenGLDesktop4:
+			case EGPUDriverID::GDIOpenGLDesktop4:
 				return sDefaultClearColorDriverGL4;
 
-			case EGpuDriverID::GDIOpenGLES3:
+			case EGPUDriverID::GDIOpenGLES3:
 				return sDefaultClearColorDriverGLES3;
 
-			case EGpuDriverID::GDIVulkan10:
+			case EGPUDriverID::GDIVulkan10:
 				return sDefaultClearColorDriverVK1;
 
 			default:
@@ -104,7 +104,7 @@ namespace Ic3::Graphics::GCI
 		return sDefaultClearColorDriver0;
 	}
 
-	const RenderTargetAttachmentClearConfig & GpuDevice::GetDefaultClearConfig() const noexcept
+	const RenderTargetAttachmentClearConfig & GPUDevice::GetDefaultClearConfig() const noexcept
 	{
 		static const RenderTargetAttachmentClearConfig sDefaultClearConfig =
 		{
@@ -115,30 +115,30 @@ namespace Ic3::Graphics::GCI
 		return sDefaultClearConfig;
 	}
 
-	GpuBufferHandle GpuDevice::CreateGpuBuffer( const GpuBufferCreateInfo & pCreateInfo )
+	GPUBufferHandle GPUDevice::CreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo )
 	{
-	    return _DrvCreateGpuBuffer( pCreateInfo );
+	    return _DrvCreateGPUBuffer( pCreateInfo );
 	}
 
-	SamplerHandle GpuDevice::CreateSampler( const SamplerCreateInfo & pCreateInfo )
+	SamplerHandle GPUDevice::CreateSampler( const SamplerCreateInfo & pCreateInfo )
 	{
 	    return _DrvCreateSampler( pCreateInfo );
 	}
 
-	ShaderHandle GpuDevice::CreateShader( const ShaderCreateInfo & pCreateInfo )
+	ShaderHandle GPUDevice::CreateShader( const ShaderCreateInfo & pCreateInfo )
 	{
 	    return _DrvCreateShader( pCreateInfo );
 	}
 
-	TextureHandle GpuDevice::CreateTexture( const TextureCreateInfo & pCreateInfo )
+	TextureHandle GPUDevice::CreateTexture( const TextureCreateInfo & pCreateInfo )
 	{
 	    return _DrvCreateTexture( pCreateInfo );
 	}
 
-	RenderTargetTextureHandle GpuDevice::CreateRenderTargetTexture( const RenderTargetTextureCreateInfo & pCreateInfo )
+	RenderTargetTextureHandle GPUDevice::CreateRenderTargetTexture( const RenderTargetTextureCreateInfo & pCreateInfo )
 	{
 		if( !pCreateInfo.bindFlags.is_set_any_of(
-				eGpuResourceUsageFlagRenderTargetColorBit | eGpuResourceUsageMaskRenderTargetDepthStencil ) )
+				eGPUResourceUsageFlagRenderTargetColorBit | eGPUResourceUsageMaskRenderTargetDepthStencil ) )
 		{
 			Ic3DebugOutput( "No RT attachment bind flags specified for the RT texture (E_GPU_RESOURCE_USAGE_xxx_RENDER_TARGET_yyy)." );
 			return nullptr;
@@ -147,7 +147,7 @@ namespace Ic3::Graphics::GCI
 		if( pCreateInfo.targetTexture )
 		{
 			const auto & targetTextureResourceFlags = pCreateInfo.targetTexture->mTextureProperties.resourceFlags;
-			if( !targetTextureResourceFlags.is_set( pCreateInfo.bindFlags & eGpuResourceUsageMaskAll ) )
+			if( !targetTextureResourceFlags.is_set( pCreateInfo.bindFlags & eGPUResourceUsageMaskAll ) )
 			{
 				Ic3DebugOutput( "Target texture for Render Target is not compatible with specified bind flags (E_GPU_RESOURCE_USAGE_xxx)." );
 				return nullptr;
@@ -157,7 +157,7 @@ namespace Ic3::Graphics::GCI
 		return _DrvCreateRenderTargetTexture( pCreateInfo );
 	}
 
-	GraphicsPipelineStateObjectHandle GpuDevice::CreateGraphicsPipelineStateObject( const GraphicsPipelineStateObjectCreateInfo & pCreateInfo )
+	GraphicsPipelineStateObjectHandle GPUDevice::CreateGraphicsPipelineStateObject( const GraphicsPipelineStateObjectCreateInfo & pCreateInfo )
 	{
 		if( pCreateInfo.renderTargetLayout.IsEmpty() )
 		{
@@ -198,61 +198,61 @@ namespace Ic3::Graphics::GCI
 		return _DrvCreateGraphicsPipelineStateObject( pCreateInfo );
 	}
 
-	BlendImmutableStateHandle GpuDevice::CreateBlendImmutableState( const BlendConfig & pConfig )
+	BlendImmutableStateHandle GPUDevice::CreateBlendImmutableState( const BlendConfig & pConfig )
 	{
 		Ic3DebugAssert( _immutableStateFactoryBase );
 		return _immutableStateFactoryBase->CreateBlendState( pConfig );
 	}
 
-	DepthStencilImmutableStateHandle GpuDevice::CreateDepthStencilImmutableState( const DepthStencilConfig & pConfig )
+	DepthStencilImmutableStateHandle GPUDevice::CreateDepthStencilImmutableState( const DepthStencilConfig & pConfig )
 	{
 		Ic3DebugAssert( _immutableStateFactoryBase );
 		return _immutableStateFactoryBase->CreateDepthStencilState( pConfig );
 	}
 
-	GraphicsShaderLinkageImmutableStateHandle GpuDevice::CreateGraphicsShaderLinkageImmutableState( const GraphicsShaderSet & pShaderSet )
+	GraphicsShaderLinkageImmutableStateHandle GPUDevice::CreateGraphicsShaderLinkageImmutableState( const GraphicsShaderSet & pShaderSet )
 	{
 		Ic3DebugAssert( _immutableStateFactoryBase );
 		return _immutableStateFactoryBase->CreateGraphicsShaderLinkageState( pShaderSet );
 	}
 
-	IAInputLayoutImmutableStateHandle GpuDevice::CreateIAInputLayoutImmutableState( const IAInputLayoutDefinition & pDefinition, Shader & pVertexShaderWithBinary )
+	IAInputLayoutImmutableStateHandle GPUDevice::CreateIAInputLayoutImmutableState( const IAInputLayoutDefinition & pDefinition, Shader & pVertexShaderWithBinary )
 	{
 		Ic3DebugAssert( _immutableStateFactoryBase );
 		return _immutableStateFactoryBase->CreateIAInputLayoutState( pDefinition, pVertexShaderWithBinary );
 	}
 
-	IAVertexStreamImmutableStateHandle GpuDevice::CreateIAVertexStreamImmutableState( const IAVertexStreamDefinition & pDefinition )
+	IAVertexStreamImmutableStateHandle GPUDevice::CreateIAVertexStreamImmutableState( const IAVertexStreamDefinition & pDefinition )
 	{
 		Ic3DebugAssert( _immutableStateFactoryBase );
 		return _immutableStateFactoryBase->CreateIAVertexStreamState( pDefinition );
 	}
 
-	RasterizerImmutableStateHandle GpuDevice::CreateRasterizerImmutableState( const RasterizerConfig & pConfig )
+	RasterizerImmutableStateHandle GPUDevice::CreateRasterizerImmutableState( const RasterizerConfig & pConfig )
 	{
 		Ic3DebugAssert( _immutableStateFactoryBase );
 		return _immutableStateFactoryBase->CreateRasterizerState( pConfig );
 	}
 
-	RenderTargetBindingImmutableStateHandle GpuDevice::CreateRenderTargetBindingImmutableState( const RenderTargetBindingDefinition & pDefinition )
+	RenderTargetBindingImmutableStateHandle GPUDevice::CreateRenderTargetBindingImmutableState( const RenderTargetBindingDefinition & pDefinition )
 	{
 		Ic3DebugAssert( _immutableStateFactoryBase );
 		return _immutableStateFactoryBase->CreateRenderTargetBindingState( pDefinition );
 	}
 
-	RenderPassConfigurationImmutableStateHandle GpuDevice::CreateRenderPassConfigurationImmutableState( const RenderPassConfiguration & pConfiguration )
+	RenderPassConfigurationImmutableStateHandle GPUDevice::CreateRenderPassConfigurationImmutableState( const RenderPassConfiguration & pConfiguration )
 	{
 		Ic3DebugAssert( _immutableStateFactoryBase );
 		return _immutableStateFactoryBase->CreateRenderPassState( pConfiguration.GetValidated() );
 	}
 
-	void GpuDevice::ResetImmutableStateCache( cppx::bitmask<EPipelineImmutableStateTypeFlags> pResetMask )
+	void GPUDevice::ResetImmutableStateCache( cppx::bitmask<EPipelineImmutableStateTypeFlags> pResetMask )
 	{
 		Ic3DebugAssert( _immutableStateCachePtr );
 		_immutableStateCachePtr->Reset( pResetMask );
 	}
 
-	void GpuDevice::SetPresentationLayer( PresentationLayerHandle pPresentationLayer )
+	void GPUDevice::SetPresentationLayer( PresentationLayerHandle pPresentationLayer )
 	{
 		if( !_DrvOnSetPresentationLayer( pPresentationLayer ) )
 		{
@@ -261,54 +261,54 @@ namespace Ic3::Graphics::GCI
 		_presentationLayer = pPresentationLayer;
 	}
 
-	GpuDevice & GpuDevice::nullDevice()
+	GPUDevice & GPUDevice::GetNullDevice()
 	{
-		static const GpuDeviceHandle sNullDeviceInstance = CreateGfxObject<GpuDeviceNull>( GpuDriver::GetNullDriver() );
+		static const GPUDeviceHandle sNullDeviceInstance = CreateGfxObject<GPUDeviceNull>( GPUDriver::GetNullDriver() );
 		return *sNullDeviceInstance;
 	}
 
-	bool GpuDevice::OnGpuResourceActiveRefsZero( GpuResource & pGpuResource )
+	bool GPUDevice::OnGPUResourceActiveRefsZero( GPUResource & pGPUResource )
 	{
 		return true;
 	}
 
-	void GpuDevice::SetImmutableStateCache( PipelineImmutableStateCache & pStateCache )
+	void GPUDevice::SetImmutableStateCache( PipelineImmutableStateCache & pStateCache )
 	{
 		_immutableStateCachePtr = &pStateCache;
 		_immutableStateFactoryBase = &( pStateCache.mStateFactory );
 	}
 
-	bool GpuDevice::_DrvOnSetPresentationLayer( PresentationLayerHandle pPresentationLayer )
+	bool GPUDevice::_DrvOnSetPresentationLayer( PresentationLayerHandle pPresentationLayer )
 	{
 		return true;
 	}
 
-	GpuBufferHandle GpuDevice::_DrvCreateGpuBuffer( const GpuBufferCreateInfo & pCreateInfo )
+	GPUBufferHandle GPUDevice::_DrvCreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo )
 	{
 		return nullptr;
 	}
 
-	SamplerHandle GpuDevice::_DrvCreateSampler( const SamplerCreateInfo & pCreateInfo )
+	SamplerHandle GPUDevice::_DrvCreateSampler( const SamplerCreateInfo & pCreateInfo )
 	{
 		return nullptr;
 	}
 
-	ShaderHandle GpuDevice::_DrvCreateShader( const ShaderCreateInfo & pCreateInfo )
+	ShaderHandle GPUDevice::_DrvCreateShader( const ShaderCreateInfo & pCreateInfo )
 	{
 		return nullptr;
 	}
 
-	TextureHandle GpuDevice::_DrvCreateTexture( const TextureCreateInfo & pCreateInfo )
+	TextureHandle GPUDevice::_DrvCreateTexture( const TextureCreateInfo & pCreateInfo )
 	{
 		return nullptr;
 	}
 
-	RenderTargetTextureHandle GpuDevice::_DrvCreateRenderTargetTexture( const RenderTargetTextureCreateInfo & pCreateInfo )
+	RenderTargetTextureHandle GPUDevice::_DrvCreateRenderTargetTexture( const RenderTargetTextureCreateInfo & pCreateInfo )
 	{
 		return nullptr;
 	}
 
-	GraphicsPipelineStateObjectHandle GpuDevice::_DrvCreateGraphicsPipelineStateObject( const GraphicsPipelineStateObjectCreateInfo & pCreateInfo )
+	GraphicsPipelineStateObjectHandle GPUDevice::_DrvCreateGraphicsPipelineStateObject( const GraphicsPipelineStateObjectCreateInfo & pCreateInfo )
 	{
 		return nullptr;
 	}

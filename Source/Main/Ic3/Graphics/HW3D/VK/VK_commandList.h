@@ -29,7 +29,7 @@ namespace Ic3::Graphics::GCI
 		virtual bool SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPipelineSO ) override;
 		virtual bool SetVertexStreamStateObject( const VertexStreamStateObject & pVertexStreamSO ) override;
 		virtual bool SetShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData ) override;
-		virtual bool SetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GpuBuffer & pConstantBuffer ) override;
+		virtual bool SetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer ) override;
 		virtual bool SetShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture ) override;
 		virtual bool SetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler ) override;
 		virtual void drawDirectIndexed( native_uint pIndicesNum, native_uint pIndicesOffset ) override;

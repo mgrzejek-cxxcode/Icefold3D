@@ -4,17 +4,17 @@
 namespace Ic3::Graphics::GCI
 {
 
-	Shader::Shader( GpuDevice & pGpuDevice, EShaderType pShaderType )
-	: GpuDeviceChildObject( pGpuDevice )
+	Shader::Shader( GPUDevice & pGPUDevice, EShaderType pShaderType )
+	: GPUDeviceChildObject( pGPUDevice )
 	, mShaderType( pShaderType )
 	, mShaderBinary()
 	{}
 
 	Shader::Shader(
-			GpuDevice & pGpuDevice,
+			GPUDevice & pGPUDevice,
 			EShaderType pShaderType,
 			std::unique_ptr<ShaderBinary> pShaderBinary )
-	: GpuDeviceChildObject( pGpuDevice )
+	: GPUDeviceChildObject( pGPUDevice )
 	, mShaderType( pShaderType )
 	, mShaderBinary( std::move( pShaderBinary ) )
 	{}

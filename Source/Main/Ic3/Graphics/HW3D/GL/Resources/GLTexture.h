@@ -20,7 +20,7 @@ namespace Ic3::Graphics::GCI
 		GLTextureObjectHandle const mGLTextureObject = nullptr;
 
 	public:
-		GLTexture( GLGpuDevice & pGpuDevice,
+		GLTexture( GLGPUDevice & pGPUDevice,
 		           const ResourceMemoryInfo & pResourceMemory,
 		           const TextureProperties & pTextureProperties,
 		           const TextureLayout & pTextureLayout,
@@ -28,11 +28,11 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~GLTexture();
 
-		static GLTextureHandle CreateDefault( GLGpuDevice & pGpuDevice, const TextureCreateInfo & pCreateInfo );
+		static GLTextureHandle CreateDefault( GLGPUDevice & pGPUDevice, const TextureCreateInfo & pCreateInfo );
 
-		static GLTextureHandle CreateForRenderTarget( GLGpuDevice & pGpuDevice, const RenderTargetTextureCreateInfo & pCreateInfo );
+		static GLTextureHandle CreateForRenderTarget( GLGPUDevice & pGPUDevice, const RenderTargetTextureCreateInfo & pCreateInfo );
 
-		static RenderTargetTextureHandle CreateRenderTargetTextureView( GLGpuDevice & pGpuDevice, const RenderTargetTextureCreateInfo & pCreateInfo );
+		static RenderTargetTextureHandle CreateRenderTargetTextureView( GLGPUDevice & pGPUDevice, const RenderTargetTextureCreateInfo & pCreateInfo );
 	};
 
 } // namespace Ic3::Graphics::GCI

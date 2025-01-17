@@ -22,12 +22,12 @@ namespace Ic3::Graphics::GCI
 		GLShaderProgramObjectHandle const mGLShaderProgramObject;
 
 	public:
-		GLShader( GLGpuDevice & pGpuDevice, EShaderType pShaderType, GLShaderObjectHandle pGLShaderObject );
-		GLShader( GLGpuDevice & pGpuDevice, EShaderType pShaderType, GLShaderProgramObjectHandle pGLShaderProgramObject );
+		GLShader( GLGPUDevice & pGPUDevice, EShaderType pShaderType, GLShaderObjectHandle pGLShaderObject );
+		GLShader( GLGPUDevice & pGPUDevice, EShaderType pShaderType, GLShaderProgramObjectHandle pGLShaderProgramObject );
 		virtual ~GLShader();
 
-		static GLShaderHandle CreateInstance( GLGpuDevice & pGpuDevice, const ShaderCreateInfo & pCreateInfo );
-		static GLShaderHandle CreateInstanceFromSource( GLGpuDevice & pGpuDevice, EShaderType pShaderType, const void * pSource, size_t pSourceLength );
+		static GLShaderHandle CreateInstance( GLGPUDevice & pGPUDevice, const ShaderCreateInfo & pCreateInfo );
+		static GLShaderHandle CreateInstanceFromSource( GLGPUDevice & pGPUDevice, EShaderType pShaderType, const void * pSource, size_t pSourceLength );
 	};
 
 } // namespace Ic3::Graphics::GCI

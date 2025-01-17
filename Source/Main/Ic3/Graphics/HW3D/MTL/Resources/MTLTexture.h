@@ -20,7 +20,7 @@ namespace Ic3::Graphics::GCI
 		MetalTextureObjectHandle const mMetalTextureObject = nullptr;
 
 	public:
-		MetalTexture( MetalGpuDevice & pGpuDevice,
+		MetalTexture( MetalGPUDevice & pGPUDevice,
 		           const ResourceMemoryInfo & pResourceMemory,
 		           const TextureProperties & pTextureProperties,
 		           const TextureLayout & pTextureLayout,
@@ -28,9 +28,9 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~MetalTexture();
 
-		static MetalTextureHandle Create( MetalGpuDevice & pGpuDevice, const TextureCreateInfo & pCreateInfo );
+		static MetalTextureHandle Create( MetalGPUDevice & pGPUDevice, const TextureCreateInfo & pCreateInfo );
 
-		static RenderTargetTextureHandle CreateForRenderTarget( MetalGpuDevice & pGpuDevice, const RenderTargetTextureCreateInfo & pCreateInfo );
+		static RenderTargetTextureHandle CreateForRenderTarget( MetalGPUDevice & pGPUDevice, const RenderTargetTextureCreateInfo & pCreateInfo );
 	};
 
 } // namespace Ic3::Graphics::GCI

@@ -13,10 +13,10 @@ namespace Ic3::Graphics::GCI
 	class GLPipelineImmutableStateFactory : public PipelineImmutableStateFactory
 	{
 	public:
-		GLGpuDevice & mGLGpuDevice;
+		GLGPUDevice & mGLGPUDevice;
 
 	public:
-		GLPipelineImmutableStateFactory( GLGpuDevice & pGpuDevice );
+		GLPipelineImmutableStateFactory( GLGPUDevice & pGPUDevice );
 		virtual ~GLPipelineImmutableStateFactory();
 
 		virtual BlendImmutableStateHandle CreateBlendState( const BlendConfig & pConfig ) override final;
@@ -30,7 +30,7 @@ namespace Ic3::Graphics::GCI
 	class GLPipelineImmutableStateFactoryCore : public GLPipelineImmutableStateFactory
 	{
 	public:
-		GLPipelineImmutableStateFactoryCore( GLGpuDevice & pGpuDevice );
+		GLPipelineImmutableStateFactoryCore( GLGPUDevice & pGPUDevice );
 		virtual ~GLPipelineImmutableStateFactoryCore();
 
 		virtual GraphicsShaderLinkageImmutableStateHandle CreateGraphicsShaderLinkageState( const GraphicsShaderSet & pShaderSet ) override final;
@@ -40,7 +40,7 @@ namespace Ic3::Graphics::GCI
 	class GLPipelineImmutableStateFactoryCompat : public GLPipelineImmutableStateFactory
 	{
 	public:
-		GLPipelineImmutableStateFactoryCompat( GLGpuDevice & pGpuDevice );
+		GLPipelineImmutableStateFactoryCompat( GLGPUDevice & pGPUDevice );
 		virtual ~GLPipelineImmutableStateFactoryCompat();
 
 		virtual GraphicsShaderLinkageImmutableStateHandle CreateGraphicsShaderLinkageState( const GraphicsShaderSet & pShaderSet ) override final;

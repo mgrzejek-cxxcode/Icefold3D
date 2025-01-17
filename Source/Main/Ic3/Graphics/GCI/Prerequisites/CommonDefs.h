@@ -15,14 +15,14 @@ namespace Ic3::Graphics::GCI
 
 	/// A special constant which can be used for object IDs to indicate that ID should be assigned automatically.
 	/// In most cases it is safe to assume that object address will be used as the ID (unless stated otherwise).
-	inline constexpr GfxObjectID cxGpuObjectIDAuto { cppx::meta::limits<uint64>::max_value };
+	inline constexpr GfxObjectID cxGPUObjectIDAuto { cppx::meta::limits<uint64>::max_value };
 
 	/// An invalid object ID. Such IDs may refer to objects which are either uninitialised, marked for deletion,
 	/// or do not yet exist in the object management system. This ID also means "not found" in case of queries.
-	inline constexpr GfxObjectID cxGpuObjectIDInvalid { cppx::meta::limits<uint64>::max_value - 1 };
+	inline constexpr GfxObjectID cxGPUObjectIDInvalid { cppx::meta::limits<uint64>::max_value - 1 };
 
 	///
-	inline constexpr GfxObjectID cxGpuObjectIDEmpty { 0 };
+	inline constexpr GfxObjectID cxGPUObjectIDEmpty { 0 };
 
 	namespace CxDef
 	{
@@ -43,22 +43,22 @@ namespace Ic3::Graphics::GCI
 		///
 		inline constexpr bool IsGfxObjectIDValid( GfxObjectID pUniqueID ) noexcept
 		{
-			return ( pUniqueID != cxGpuObjectIDInvalid ) && ( pUniqueID != cxGpuObjectIDEmpty );
+			return ( pUniqueID != cxGPUObjectIDInvalid ) && ( pUniqueID != cxGPUObjectIDEmpty );
 		}
 
 	}
 
-	enum EGpuDriverConfigFlags : uint32
+	enum EGPUDriverConfigFlags : uint32
 	{
-		eGpuDriverConfigFlagEnableDebugLayerBit         = 0x0001,
-		eGpuDriverConfigFlagEnableShaderDebugInfoBit    = 0x0002 | eGpuDriverConfigFlagEnableDebugLayerBit,
-		eGpuDriverConfigFlagDisableMultiThreadAccessBit = 0x0010,
-		eGpuDriverConfigFlagForceCompatibilityBit       = 0x0100,
-		eGpuDriverConfigFlagForceCoreProfileBit         = 0x0200,
-		eGpuDriverConfigFlagUseReferenceDriverBit       = 0x8000,
-		eGpuDriverConfigMaskDefault                     = 0,
+		eGPUDriverConfigFlagEnableDebugLayerBit         = 0x0001,
+		eGPUDriverConfigFlagEnableShaderDebugInfoBit    = 0x0002 | eGPUDriverConfigFlagEnableDebugLayerBit,
+		eGPUDriverConfigFlagDisableMultiThreadAccessBit = 0x0010,
+		eGPUDriverConfigFlagForceCompatibilityBit       = 0x0100,
+		eGPUDriverConfigFlagForceCoreProfileBit         = 0x0200,
+		eGPUDriverConfigFlagUseReferenceDriverBit       = 0x8000,
+		eGPUDriverConfigMaskDefault                     = 0,
 		
-		eGpu_DRIVER_CONFIG_MASK_DEFAULT
+		eGPU_DRIVER_CONFIG_MASK_DEFAULT
 	};
 
 	/// @brief A set of index values for supported shader stages.

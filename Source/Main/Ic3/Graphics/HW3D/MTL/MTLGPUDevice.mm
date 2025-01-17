@@ -1,46 +1,46 @@
 
-#include "MTLGpuDevice.h"
-#include "MTLGpuDriver.h"
+#include "MTLGPUDevice.h"
+#include "MTLGPUDriver.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	MetalGpuDevice::MetalGpuDevice( MetalGpuDriver & pGpuDriver, System::MetalDeviceHandle pSysMetalDevice )
-	: GpuDevice( pGpuDriver )
+	MetalGPUDevice::MetalGPUDevice( MetalGPUDriver & pGPUDriver, System::MetalDeviceHandle pSysMetalDevice )
+	: GPUDevice( pGPUDriver )
 	, mSysMetalDevice( std::move( pSysMetalDevice ) )
 	, mMTLDevice( mSysMetalDevice->mDeviceData->mtlDevice )
 	, _immutableStateFactoryGL( *this )
 	, _immutableStateCache( _immutableStateFactoryGL )
 	{}
 
-	MetalGpuDevice::~MetalGpuDevice() = default;
+	MetalGPUDevice::~MetalGPUDevice() = default;
 
-	void MetalGpuDevice::WaitForCommandSync( CommandSync & pCommandSync )
+	void MetalGPUDevice::WaitForCommandSync( CommandSync & pCommandSync )
 	{}
 
-	void MetalGpuDevice::InitializeCommandSystem()
+	void MetalGPUDevice::InitializeCommandSystem()
 	{}
 
-	bool MetalGpuDevice::_DrvOnSetPresentationLayer( PresentationLayerHandle pPresentationLayer )
+	bool MetalGPUDevice::_DrvOnSetPresentationLayer( PresentationLayerHandle pPresentationLayer )
 	{}
 
-	GpuBufferHandle MetalGpuDevice::_DrvCreateGpuBuffer( const GpuBufferCreateInfo & pCreateInfo )
+	GPUBufferHandle MetalGPUDevice::_DrvCreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo )
 	{}
 
-	SamplerHandle MetalGpuDevice::_DrvCreateSampler( const SamplerCreateInfo & pCreateInfo )
+	SamplerHandle MetalGPUDevice::_DrvCreateSampler( const SamplerCreateInfo & pCreateInfo )
 	{}
 
-	ShaderHandle MetalGpuDevice::_DrvCreateShader( const ShaderCreateInfo & pCreateInfo )
+	ShaderHandle MetalGPUDevice::_DrvCreateShader( const ShaderCreateInfo & pCreateInfo )
 	{}
 
-	TextureHandle MetalGpuDevice::_DrvCreateTexture( const TextureCreateInfo & pCreateInfo )
+	TextureHandle MetalGPUDevice::_DrvCreateTexture( const TextureCreateInfo & pCreateInfo )
 	{}
 
-	RenderTargetTextureHandle MetalGpuDevice::_DrvCreateRenderTargetTexture(
+	RenderTargetTextureHandle MetalGPUDevice::_DrvCreateRenderTargetTexture(
 			const RenderTargetTextureCreateInfo & pCreateInfo )
 	{}
 
-	GraphicsPipelineStateObjectHandle MetalGpuDevice::_DrvCreateGraphicsPipelineStateObject(
+	GraphicsPipelineStateObjectHandle MetalGPUDevice::_DrvCreateGraphicsPipelineStateObject(
 			const GraphicsPipelineStateObjectCreateInfo & pCreateInfo )
 	{}
 	

@@ -5,7 +5,7 @@
 #define __IC3_GRAPHICS_HW3D_GLCOMMON_BUFFER_OBJECT_H__
 
 #include "../GLPrerequisites.h"
-#include <Ic3/Graphics/GCI/Resources/GpuBufferCommon.h>
+#include <Ic3/Graphics/GCI/Resources/GPUBufferCommon.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -17,8 +17,8 @@ namespace Ic3::Graphics::GCI
 		GLenum bindTarget = 0;
 		GLuint size = 0;
 		cppx::bitmask<resource_flags_value_t> resourceFlags = 0;
-		cppx::bitmask<EGpuMemoryFlags> memoryFlags = 0;
-		GpuBufferInitDataDesc initDataDesc;
+		cppx::bitmask<EGPUMemoryFlags> memoryFlags = 0;
+		GPUBufferInitDataDesc initDataDesc;
 	};
 
 	class GLBufferObject : public GLObject
@@ -52,11 +52,11 @@ namespace Ic3::Graphics::GCI
 		void FlushMappedRegion( gpu_memory_size_t pOffset, gpu_memory_size_t pLength, GLenum pActiveBindTarget = 0 );
 		void InvalidateRegion( gpu_memory_size_t pOffset, gpu_memory_size_t pLength, GLenum pActiveBindTarget = 0 );
 
-		void UpdateCopyInvalidate( GLBufferObject & pSrcBuffer, const GpuBufferSubDataCopyDesc & pCopyDesc, GLenum pActiveBindTarget = 0 );
-		void UpdateCopyOrphan( GLBufferObject & pSrcBuffer, const GpuBufferSubDataCopyDesc & pCopyDesc, GLenum pActiveBindTarget = 0 );
+		void UpdateCopyInvalidate( GLBufferObject & pSrcBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc, GLenum pActiveBindTarget = 0 );
+		void UpdateCopyOrphan( GLBufferObject & pSrcBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc, GLenum pActiveBindTarget = 0 );
 
-		void UpdateUploadInvalidate( const GpuBufferSubDataUploadDesc & pUploadDesc, GLenum pActiveBindTarget = 0 );
-		void UpdateUploadOrphan( const GpuBufferSubDataUploadDesc & pUploadDesc, GLenum pActiveBindTarget = 0 );
+		void UpdateUploadInvalidate( const GPUBufferSubDataUploadDesc & pUploadDesc, GLenum pActiveBindTarget = 0 );
+		void UpdateUploadOrphan( const GPUBufferSubDataUploadDesc & pUploadDesc, GLenum pActiveBindTarget = 0 );
 
 		static GLBufferObjectHandle CreateCore( const GLBufferCreateInfo & pGLCreateInfo );
 		static GLBufferObjectHandle CreateCompat( const GLBufferCreateInfo & pGLCreateInfo );

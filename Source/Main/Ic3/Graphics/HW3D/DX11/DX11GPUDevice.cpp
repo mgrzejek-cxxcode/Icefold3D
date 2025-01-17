@@ -1,10 +1,10 @@
 
-#include "DX11GpuDevice.h"
-#include "DX11GpuDriver.h"
+#include "DX11GPUDevice.h"
+#include "DX11GPUDriver.h"
 #include "DX11ApiTranslationLayer.h"
 #include "DX11CommandList.h"
 #include "DX11CommandSystem.h"
-#include "Resources/DX11GpuBuffer.h"
+#include "Resources/DX11GPUBuffer.h"
 #include "Resources/DX11Sampler.h"
 #include "Resources/DX11Shader.h"
 #include "Resources/DX11Texture.h"
@@ -13,11 +13,11 @@
 namespace Ic3::Graphics::GCI
 {
 
-	DX11GpuDevice::DX11GpuDevice(
-			DX11GpuDriver & pDriver,
+	DX11GPUDevice::DX11GPUDevice(
+			DX11GPUDriver & pDriver,
 			ComPtr<ID3D11Device1> pD3D11Device1,
 			ComPtr<ID3D11Debug> pD3D11Debug )
-	: DXGpuDevice( pDriver, ATL::QueryDXGIFactoryForD3D11Device( pD3D11Device1 ) )
+	: DXGPUDevice( pDriver, ATL::QueryDXGIFactoryForD3D11Device( pD3D11Device1 ) )
 	, mD3D11Device1( std::move( pD3D11Device1 ) )
 	, mD3D11DebugInterface( std::move( pD3D11Debug ) )
 	, _immutableStateFactoryDX11( *this )
@@ -26,12 +26,12 @@ namespace Ic3::Graphics::GCI
 		SetImmutableStateCache( _immutableStateCache );
 	}
 
-	DX11GpuDevice::~DX11GpuDevice() = default;
+	DX11GPUDevice::~DX11GPUDevice() = default;
 
-	DX11GpuDeviceHandle DX11GpuDevice::Create( DX11GpuDriver & pDriver, const DX11GpuDeviceCreateInfo & pCreateInfo )
+	DX11GPUDeviceHandle DX11GPUDevice::Create( DX11GPUDriver & pDriver, const DX11GPUDeviceCreateInfo & pCreateInfo )
 	{
 		auto driverConfigFlags = pDriver.GetConfigFlags();
-		auto deviceCreateFlags = ATL::TranslateDX11GpuDeviceCreateFlags( driverConfigFlags );
+		auto deviceCreateFlags = ATL::TranslateDX11GPUDeviceCreateFlags( driverConfigFlags );
 
 		D3D_DRIVER_TYPE deviceDriverType = D3D_DRIVER_TYPE_HARDWARE;
 		if( driverConfigFlags.is_set( E_GPU_DRIVER_CONFIG_FLAG_USE_REFERENCE_DRIVER_BIT ) )
@@ -45,12 +45,12 @@ namespace Ic3::Graphics::GCI
 		auto d3d11DebugInterface = ATL::QueryD3D11DebugInterfaceForD3D11Device( d3d11Device1 );
 		Ic3DebugAssert( d3d11DebugInterface );
 
-		auto dx11GpuDevice = CreateGfxObject<DX11GpuDevice>( pDriver, d3d11Device1, d3d11DebugInterface );
+		auto dx11GPUDevice = CreateGfxObject<DX11GPUDevice>( pDriver, d3d11Device1, d3d11DebugInterface );
 
-		return dx11GpuDevice;
+		return dx11GPUDevice;
 	}
 
-	void DX11GpuDevice::WaitForCommandSync( CommandSync & pCommandSync )
+	void DX11GPUDevice::WaitForCommandSync( CommandSync & pCommandSync )
 	{
 		if( pCommandSync )
 		{
@@ -70,41 +70,41 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	void DX11GpuDevice::InitializeCommandSystem()
+	void DX11GPUDevice::InitializeCommandSystem()
 	{
 	    Ic3DebugAssert( !_commandSystem );
 	    _commandSystem = CreateGfxObject<DX11CommandSystem>( *this );
 	}
 
-	GpuBufferHandle DX11GpuDevice::_DrvCreateGpuBuffer( const GpuBufferCreateInfo & pCreateInfo )
+	GPUBufferHandle DX11GPUDevice::_DrvCreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo )
 	{
-	    auto dx11Buffer = DX11GpuBuffer::Create( *this, pCreateInfo );
+	    auto dx11Buffer = DX11GPUBuffer::Create( *this, pCreateInfo );
 	    Ic3DebugAssert( dx11Buffer );
 	    return dx11Buffer;
 	}
 
-	SamplerHandle DX11GpuDevice::_DrvCreateSampler( const SamplerCreateInfo & pCreateInfo )
+	SamplerHandle DX11GPUDevice::_DrvCreateSampler( const SamplerCreateInfo & pCreateInfo )
 	{
 	    auto dx11Sampler = DX11Sampler::Create( *this, pCreateInfo );
 	    Ic3DebugAssert( dx11Sampler );
 	    return dx11Sampler;
 	}
 
-	ShaderHandle DX11GpuDevice::_DrvCreateShader( const ShaderCreateInfo & pCreateInfo )
+	ShaderHandle DX11GPUDevice::_DrvCreateShader( const ShaderCreateInfo & pCreateInfo )
 	{
 	    auto dx11Shader = DX11Shader::Create( *this, pCreateInfo );
 	    Ic3DebugAssert( dx11Shader );
 	    return dx11Shader;
 	}
 
-	TextureHandle DX11GpuDevice::_DrvCreateTexture( const TextureCreateInfo & pCreateInfo )
+	TextureHandle DX11GPUDevice::_DrvCreateTexture( const TextureCreateInfo & pCreateInfo )
 	{
 	    auto dx11Texture = DX11Texture::CreateDefault( *this, pCreateInfo );
 	    Ic3DebugAssert( dx11Texture );
 	    return dx11Texture;
 	}
 
-	RenderTargetTextureHandle DX11GpuDevice::_DrvCreateRenderTargetTexture(
+	RenderTargetTextureHandle DX11GPUDevice::_DrvCreateRenderTargetTexture(
 			const RenderTargetTextureCreateInfo & pCreateInfo )
 	{
 		auto dx11RTTextureView = DX11Texture::CreateRenderTargetTextureView( *this, pCreateInfo );
@@ -112,7 +112,7 @@ namespace Ic3::Graphics::GCI
 		return dx11RTTextureView;
 	}
 
-	GraphicsPipelineStateObjectHandle DX11GpuDevice::_DrvCreateGraphicsPipelineStateObject(
+	GraphicsPipelineStateObjectHandle DX11GPUDevice::_DrvCreateGraphicsPipelineStateObject(
 			const GraphicsPipelineStateObjectCreateInfo & pCreateInfo )
 	{
 		auto dx11GraphicsPSO = DX11GraphicsPipelineStateObject::Create( *this, pCreateInfo );

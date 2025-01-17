@@ -4,7 +4,7 @@
 #ifndef __IC3_GRAPHICS_GCI_TEXTURE_DIMENSIONS_H__
 #define __IC3_GRAPHICS_GCI_TEXTURE_DIMENSIONS_H__
 
-#include "CommonGpuResourceDefs.h"
+#include "CommonGPUResourceDefs.h"
 
 namespace Ic3::Graphics::GCI
 {

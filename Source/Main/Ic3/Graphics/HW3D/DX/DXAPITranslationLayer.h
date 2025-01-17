@@ -13,7 +13,7 @@ namespace Ic3::Graphics::GCI
 
     using resource_flags_value_t = uint32;
 
-    enum EGpuDriverConfigFlags : uint32;
+    enum EGPUDriverConfigFlags : uint32;
     enum ERenderTargetAttachmentFlags : uint32;
     enum ETextureCubeMapFace : uint32;
 
@@ -24,9 +24,9 @@ namespace Ic3::Graphics::GCI
 
 		DXGIGetDebugInterfaceType LoadDXGIDebugLegacyLoader();
 
-		ComPtr<IDXGIDebug> QueryDXGIDebugInterface( cppx::bitmask<EGpuDriverConfigFlags> pDriverConfigFlags );
+		ComPtr<IDXGIDebug> QueryDXGIDebugInterface( cppx::bitmask<EGPUDriverConfigFlags> pDriverConfigFlags );
 
-		ComPtr<IDXGIInfoQueue> QueryDXGIDebugInfoQueue( cppx::bitmask<EGpuDriverConfigFlags> pDriverConfigFlags );
+		ComPtr<IDXGIInfoQueue> QueryDXGIDebugInfoQueue( cppx::bitmask<EGPUDriverConfigFlags> pDriverConfigFlags );
 
 		uint32 GetDXGITextureFormatBPP( DXGI_FORMAT pDXGIFormat );
 

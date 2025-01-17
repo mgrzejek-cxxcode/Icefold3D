@@ -24,7 +24,7 @@ namespace Ic3::Graphics::GCI
 	/// @brief
 	class IC3_GX_DX12_CLASS DX12CommandContext final : public CommandContext
 	{
-		friend class DX12GpuCmdManager;
+		friend class DX12GPUCmdManager;
 		friend class DX12ScreenPresentationLayer;
 
 	public:
@@ -32,7 +32,7 @@ namespace Ic3::Graphics::GCI
 		ComPtr<ID3D12GraphicsCommandList> const mD3D12GraphicsCommandList;
 		D3D12_COMMAND_LIST_TYPE const mD3D12CommandListType;
 
-		DX12CommandContext( DX12GpuCmdManager & pDX12GpuCmdManager,
+		DX12CommandContext( DX12GPUCmdManager & pDX12GPUCmdManager,
 		                   ComPtr<ID3D12CommandAllocator> pD3D12CommandAllocator,
 		                   ComPtr<ID3D12GraphicsCommandList> pD3D12GraphicsCommandList );
 

@@ -20,7 +20,7 @@ namespace Ic3::Graphics::GCI
 		BlendImmutableState( const BlendImmutableState & ) = delete;
 		BlendImmutableState & operator=( const BlendImmutableState & ) = delete;
 
-		BlendImmutableState( GpuDevice & pGpuDevice, cppx::bitmask<EBlendConfigFlags> pBlendFlags );
+		BlendImmutableState( GPUDevice & pGPUDevice, cppx::bitmask<EBlendConfigFlags> pBlendFlags );
 		virtual ~BlendImmutableState();
 	};
 
@@ -34,7 +34,7 @@ namespace Ic3::Graphics::GCI
 		DepthStencilImmutableState( const DepthStencilImmutableState & ) = delete;
 		DepthStencilImmutableState & operator=( const DepthStencilImmutableState & ) = delete;
 
-		DepthStencilImmutableState( GpuDevice & pGpuDevice, cppx::bitmask<EDepthStencilConfigFlags> pDepthStencilFlags );
+		DepthStencilImmutableState( GPUDevice & pGPUDevice, cppx::bitmask<EDepthStencilConfigFlags> pDepthStencilFlags );
 		virtual ~DepthStencilImmutableState();
 	};
 
@@ -48,7 +48,7 @@ namespace Ic3::Graphics::GCI
 		RasterizerImmutableState( const RasterizerImmutableState & ) = delete;
 		RasterizerImmutableState & operator=( const RasterizerImmutableState & ) = delete;
 
-		RasterizerImmutableState( GpuDevice & pGpuDevice, cppx::bitmask<ERasterizerConfigFlags> pRasterizerFlags );
+		RasterizerImmutableState( GPUDevice & pGPUDevice, cppx::bitmask<ERasterizerConfigFlags> pRasterizerFlags );
 		virtual ~RasterizerImmutableState();
 	};
 

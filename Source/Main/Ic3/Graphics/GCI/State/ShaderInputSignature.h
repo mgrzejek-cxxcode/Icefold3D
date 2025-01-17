@@ -4,7 +4,7 @@
 #ifndef __IC3_GRAPHICS_GCI_IS_H__
 #define __IC3_GRAPHICS_GCI_IS_H__
 
-#include "CommonGpuStateDefs.h"
+#include "CommonGPUStateDefs.h"
 #include "../Resources/ShaderCommon.h"
 #include <unordered_map>
 

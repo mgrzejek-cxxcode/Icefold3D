@@ -4,18 +4,18 @@
 #ifndef __IC3_GRAPHICS_GCI_GPU_MEMORY_POOL_H__
 #define __IC3_GRAPHICS_GCI_GPU_MEMORY_POOL_H__
 
-#include "CommonGpuMemoryDefs.h"
+#include "CommonGPUMemoryDefs.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	class GpuMemoryRef
+	class GPUMemoryRef
 	{
 	public:
-		GpuMemoryPool * const mSourcePool;
+		GPUMemoryPool * const mSourcePool;
 
-		GpuMemoryRef( GpuMemoryPool & pSourcePool, const GpuMemoryRegion & pPoolSubRegion );
-		~GpuMemoryRef();
+		GPUMemoryRef( GPUMemoryPool & pSourcePool, const GPUMemoryRegion & pPoolSubRegion );
+		~GPUMemoryRef();
 
 		CPPX_ATTR_NO_DISCARD bool empty() const;
 
@@ -28,7 +28,7 @@ namespace Ic3::Graphics::GCI
 		void unlockMemory();
 
 	private:
-		GpuMemoryRegion _poolSubRegion;
+		GPUMemoryRegion _poolSubRegion;
 		//Sync::TAutoSharedLock<Sync::SharedSpinLock> _poolMemoryLock;
 		std::atomic<uint32_t> _poolMemoryLockStatus;
 	};

@@ -1,20 +1,20 @@
 
-#include "DX12GpuCmdManager.h"
-#include "DX12GpuCmdContext.h"
-#include "DX12GpuDevice.h"
+#include "DX12GPUCmdManager.h"
+#include "DX12GPUCmdContext.h"
+#include "DX12GPUDevice.h"
 #include "DX12coreAPIProxy.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	DX12GpuCmdManager::DX12GpuCmdManager( DX12GpuDevice & pGpuDevice )
-	: GpuCmdManager( pGpuDevice )
-	, mD3D12Device( pGpuDevice.mD3D12Device )
+	DX12GPUCmdManager::DX12GPUCmdManager( DX12GPUDevice & pGPUDevice )
+	: GPUCmdManager( pGPUDevice )
+	, mD3D12Device( pGPUDevice.mD3D12Device )
 	{}
 
-	DX12GpuCmdManager::~DX12GpuCmdManager() = default;
+	DX12GPUCmdManager::~DX12GPUCmdManager() = default;
 
-	bool DX12GpuCmdManager::Initialize()
+	bool DX12GPUCmdManager::Initialize()
 	{
 		// TODO: Vendor-/GPU Family-specific checks:
 		//  if(INTEL) DEFAULT_TRANSFER = DEFAULT_GRAPHICS; (UMA architecture)
@@ -43,7 +43,7 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	CommandContext * DX12GpuCmdManager::AcquireContext( const CommandContextProperties & pContextProperties )
+	CommandContext * DX12GPUCmdManager::AcquireContext( const CommandContextProperties & pContextProperties )
 	{
 		DX12CommandContext * dx12CmdContext = nullptr;
 
@@ -69,7 +69,7 @@ namespace Ic3::Graphics::GCI
 		return dx12CmdContext;
 	}
 
-	bool DX12GpuCmdManager::ExecuteContext( gpu_cmd_device_queue_id_t pQueueID, CommandContext & pContext )
+	bool DX12GPUCmdManager::ExecuteContext( gpu_cmd_device_queue_id_t pQueueID, CommandContext & pContext )
 	{
 		auto * deviceQueueData = Ic3::get_map_value_ptr_or_null( _deviceQueueMap, pQueueID );
 		if( !deviceQueueData )
@@ -84,7 +84,7 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	bool DX12GpuCmdManager::InitializeDeviceQueue( gpu_cmd_device_queue_id_t pQueueID, const DeviceCommandQueueProperties & pQueueProperties )
+	bool DX12GPUCmdManager::InitializeDeviceQueue( gpu_cmd_device_queue_id_t pQueueID, const DeviceCommandQueueProperties & pQueueProperties )
 	{
 		if( CheckQueueAlias( pQueueID ) )
 		{
@@ -110,21 +110,21 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	bool DX12GpuCmdManager::IsQueueAvailable( gpu_cmd_device_queue_id_t pQueueID ) const
+	bool DX12GPUCmdManager::IsQueueAvailable( gpu_cmd_device_queue_id_t pQueueID ) const
 	{
 		pQueueID = resolveQueueAlias( pQueueID );
 		auto * deviceQueueData = Ic3::get_map_value_ptr_or_null( _deviceQueueMap, pQueueID );
 		return deviceQueueData != nullptr;
 	}
 
-	ID3D12CommandQueue * DX12GpuCmdManager::GetD3D12DeviceQueue( gpu_cmd_device_queue_id_t pQueueID ) const
+	ID3D12CommandQueue * DX12GPUCmdManager::GetD3D12DeviceQueue( gpu_cmd_device_queue_id_t pQueueID ) const
 	{
 		pQueueID = resolveQueueAlias( pQueueID );
 		auto * deviceQueueData = Ic3::get_map_value_ptr_or_null( _deviceQueueMap, pQueueID );
 		return deviceQueueData ? deviceQueueData->d3d12CommandQueue.Get() : nullptr;
 	}
 
-	DX12CommandContext * DX12GpuCmdManager::CreateCmdContext( D3D12_COMMAND_LIST_TYPE pD3D12CommandListType, bool pAutoAcquire )
+	DX12CommandContext * DX12GPUCmdManager::CreateCmdContext( D3D12_COMMAND_LIST_TYPE pD3D12CommandListType, bool pAutoAcquire )
 	{
 		auto d3d12CommandListData = DX12CoreAPIProxy::CreateD3D12CommandList( mD3D12Device, pD3D12CommandListType );
 		if( !d3d12CommandListData )

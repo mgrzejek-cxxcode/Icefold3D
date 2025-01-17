@@ -14,7 +14,7 @@ namespace Ic3::Graphics::GCI
 	{
 	public:
 		DX11GraphicsPipelineStateObject(
-				DX11GpuDevice & pGpuDevice,
+				DX11GPUDevice & pGPUDevice,
 				RenderTargetLayout pRenderTargetLayout,
 				ShaderInputSignature pShaderInputSignature,
 				const SeparablePSOStateSet & pPSOImmutableStates,
@@ -33,7 +33,7 @@ namespace Ic3::Graphics::GCI
 		CPPX_ATTR_NO_DISCARD const DX11IAInputLayoutImmutableState & GetIAInputLayoutState() const noexcept;
 
 		static GpaHandle<DX11GraphicsPipelineStateObject> Create(
-				DX11GpuDevice & pGpuDevice,
+				DX11GPUDevice & pGPUDevice,
 				const GraphicsPipelineStateObjectCreateInfo & pCreateInfo );
 	};
 

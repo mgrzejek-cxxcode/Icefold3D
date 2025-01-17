@@ -1,24 +1,24 @@
 
-#include "DX11GpuBuffer.h"
+#include "DX11GPUBuffer.h"
 #include <Ic3/Graphics/HW3D/DX11/DX11ApiTranslationLayer.h>
-#include <Ic3/Graphics/HW3D/DX11/DX11GpuDevice.h>
+#include <Ic3/Graphics/HW3D/DX11/DX11GPUDevice.h>
 #include <Ic3/Graphics/HW3D/DX11/DX11CommandList.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	DX11GpuBuffer::DX11GpuBuffer(
-		DX11GpuDevice & pDX11GpuDevice,
+	DX11GPUBuffer::DX11GPUBuffer(
+		DX11GPUDevice & pDX11GPUDevice,
 		const ResourceMemoryInfo & pResourceMemory,
-		const GpuBufferProperties & pBufferProperties,
+		const GPUBufferProperties & pBufferProperties,
 		ComPtr<ID3D11Buffer> pD3D11Buffer )
-    : GpuBuffer( pDX11GpuDevice, pResourceMemory, pBufferProperties )
+    : GPUBuffer( pDX11GPUDevice, pResourceMemory, pBufferProperties )
     , mD3D11Buffer( std::move( pD3D11Buffer ) )
 	{ }
 
-	DX11GpuBuffer::~DX11GpuBuffer() = default;
+	DX11GPUBuffer::~DX11GPUBuffer() = default;
 
-	DX11GpuBufferHandle DX11GpuBuffer::Create( DX11GpuDevice & pDX11GpuDevice, const GpuBufferCreateInfo & pCreateInfo )
+	DX11GPUBufferHandle DX11GPUBuffer::Create( DX11GPUDevice & pDX11GPUDevice, const GPUBufferCreateInfo & pCreateInfo )
 	{
 		auto createInfo = pCreateInfo;
 		if( !ValidateBufferCreateInfo( createInfo ) )
@@ -26,14 +26,14 @@ namespace Ic3::Graphics::GCI
 			return nullptr;
 		}
 
-		auto dx11GpuBufferDesc = TranslateBufferDesc( createInfo );
+		auto dx11GPUBufferDesc = TranslateBufferDesc( createInfo );
 
 		D3D11_BUFFER_DESC d3d11BufferDesc;
 		d3d11BufferDesc.ByteWidth = cppx::numeric_cast<UINT>( createInfo.bufferSize );
-		d3d11BufferDesc.BindFlags = dx11GpuBufferDesc.bindFlags;
-		d3d11BufferDesc.CpuAccessFlags = dx11GpuBufferDesc.cpuAccessFlags;
-		d3d11BufferDesc.MiscFlags = dx11GpuBufferDesc.resourceMiscFlags;
-		d3d11BufferDesc.Usage = dx11GpuBufferDesc.usage;
+		d3d11BufferDesc.BindFlags = dx11GPUBufferDesc.bindFlags;
+		d3d11BufferDesc.CpuAccessFlags = dx11GPUBufferDesc.cpuAccessFlags;
+		d3d11BufferDesc.MiscFlags = dx11GPUBufferDesc.resourceMiscFlags;
+		d3d11BufferDesc.Usage = dx11GPUBufferDesc.usage;
 		d3d11BufferDesc.StructureByteStride = 0;
 
 		const void * initDataPtr = nullptr;
@@ -56,7 +56,7 @@ namespace Ic3::Graphics::GCI
 
 		if( !initDataPtr )
 		{
-			hResult = pDX11GpuDevice.mD3D11Device1->CreateBuffer( &d3d11BufferDesc, nullptr, d3d11Buffer.GetAddressOf() );
+			hResult = pDX11GPUDevice.mD3D11Device1->CreateBuffer( &d3d11BufferDesc, nullptr, d3d11Buffer.GetAddressOf() );
 		}
 		else
 		{
@@ -65,7 +65,7 @@ namespace Ic3::Graphics::GCI
 			d3d11BufferInitData.SysMemPitch = 0;
 			d3d11BufferInitData.SysMemSlicePitch = 0;
 
-			hResult = pDX11GpuDevice.mD3D11Device1->CreateBuffer( &d3d11BufferDesc, &d3d11BufferInitData, d3d11Buffer.GetAddressOf() );
+			hResult = pDX11GPUDevice.mD3D11Device1->CreateBuffer( &d3d11BufferDesc, &d3d11BufferInitData, d3d11Buffer.GetAddressOf() );
 		}
 
 		if( FAILED( hResult ) )
@@ -75,7 +75,7 @@ namespace Ic3::Graphics::GCI
 
 		d3d11Buffer->GetDesc( &d3d11BufferDesc );
 
-		GpuBufferProperties bufferProperties;
+		GPUBufferProperties bufferProperties;
 		bufferProperties.byteSize = d3d11BufferDesc.ByteWidth;
 		bufferProperties.resourceFlags = createInfo.resourceFlags;
 
@@ -85,70 +85,70 @@ namespace Ic3::Graphics::GCI
 		bufferMemoryInfo.baseAlignment = createInfo.memoryBaseAlignment;
 		bufferMemoryInfo.memoryFlags = createInfo.memoryFlags;
 
-		auto dx11Buffer = CreateDynamicObject<DX11GpuBuffer>( pDX11GpuDevice, bufferMemoryInfo, bufferProperties, d3d11Buffer );
+		auto dx11Buffer = CreateDynamicObject<DX11GPUBuffer>( pDX11GPUDevice, bufferMemoryInfo, bufferProperties, d3d11Buffer );
 
 		return dx11Buffer;
 	}
 
-	bool DX11GpuBuffer::ValidateBufferCreateInfo( GpuBufferCreateInfo & pCreateInfo )
+	bool DX11GPUBuffer::ValidateBufferCreateInfo( GPUBufferCreateInfo & pCreateInfo )
 	{
-		if( !GpuBuffer::ValidateBufferCreateInfo( pCreateInfo ) )
+		if( !GPUBuffer::ValidateBufferCreateInfo( pCreateInfo ) )
 		{
 			return false;
 		}
 
-		constexpr uint32 cxDX11GpuBufferMemorySupportedFlags = E_GPU_MEMORY_MAP_FLAG_ACCESS_READ_WRITE_BIT;
-		pCreateInfo.memoryFlags = pCreateInfo.memoryFlags & cxDX11GpuBufferMemorySupportedFlags;
+		constexpr uint32 cxDX11GPUBufferMemorySupportedFlags = E_GPU_MEMORY_MAP_FLAG_ACCESS_READ_WRITE_BIT;
+		pCreateInfo.memoryFlags = pCreateInfo.memoryFlags & cxDX11GPUBufferMemorySupportedFlags;
 
 		return true;
 	}
 
-	DX11GpuBufferDesc DX11GpuBuffer::TranslateBufferDesc( const GpuBufferCreateInfo & pCreateInfo )
+	DX11GPUBufferDesc DX11GPUBuffer::TranslateBufferDesc( const GPUBufferCreateInfo & pCreateInfo )
 	{
-		DX11GpuBufferDesc dx11GpuBufferDesc;
-		dx11GpuBufferDesc.bindFlags = ATL::TranslateDX11BufferBindFlags( pCreateInfo.resourceFlags );
-		dx11GpuBufferDesc.cpuAccessFlags = 0;
-		dx11GpuBufferDesc.resourceMiscFlags = 0;
-		dx11GpuBufferDesc.usage = D3D11_USAGE_DEFAULT;
+		DX11GPUBufferDesc dx11GPUBufferDesc;
+		dx11GPUBufferDesc.bindFlags = ATL::TranslateDX11BufferBindFlags( pCreateInfo.resourceFlags );
+		dx11GPUBufferDesc.cpuAccessFlags = 0;
+		dx11GPUBufferDesc.resourceMiscFlags = 0;
+		dx11GPUBufferDesc.usage = D3D11_USAGE_DEFAULT;
 
 		if( pCreateInfo.resourceFlags.is_set( E_GPU_RESOURCE_CONTENT_FLAG_IMMUTABLE_BIT ) )
 		{
-			dx11GpuBufferDesc.usage = D3D11_USAGE_IMMUTABLE;
+			dx11GPUBufferDesc.usage = D3D11_USAGE_IMMUTABLE;
 		}
 		if( pCreateInfo.resourceFlags.is_set_any_of( E_GPU_RESOURCE_USAGE_FLAG_TRANSFER_SOURCE_BIT ) )
 		{
-			dx11GpuBufferDesc.usage = D3D11_USAGE_STAGING;
+			dx11GPUBufferDesc.usage = D3D11_USAGE_STAGING;
 		}
-		if( pCreateInfo.resourceFlags.is_set( E_GPU_RESOURCE_CONTENT_FLAG_DYNAMIC_BIT ) && ( dx11GpuBufferDesc.usage != D3D11_USAGE_DYNAMIC ) )
+		if( pCreateInfo.resourceFlags.is_set( E_GPU_RESOURCE_CONTENT_FLAG_DYNAMIC_BIT ) && ( dx11GPUBufferDesc.usage != D3D11_USAGE_DYNAMIC ) )
 		{
-			dx11GpuBufferDesc.usage = D3D11_USAGE_DYNAMIC;
-			dx11GpuBufferDesc.cpuAccessFlags.set( D3D11_CPU_ACCESS_WRITE );
+			dx11GPUBufferDesc.usage = D3D11_USAGE_DYNAMIC;
+			dx11GPUBufferDesc.cpuAccessFlags.set( D3D11_CPU_ACCESS_WRITE );
 		}
 
 		if( pCreateInfo.memoryFlags.is_set( E_GPU_MEMORY_MAP_FLAG_ACCESS_READ_BIT ) )
 		{
-			dx11GpuBufferDesc.cpuAccessFlags.set( D3D11_CPU_ACCESS_READ );
+			dx11GPUBufferDesc.cpuAccessFlags.set( D3D11_CPU_ACCESS_READ );
 		}
 		if( pCreateInfo.memoryFlags.is_set( E_GPU_MEMORY_MAP_FLAG_ACCESS_WRITE_BIT ) )
 		{
-			dx11GpuBufferDesc.cpuAccessFlags.set( D3D11_CPU_ACCESS_WRITE );
+			dx11GPUBufferDesc.cpuAccessFlags.set( D3D11_CPU_ACCESS_WRITE );
 		}
 
 		auto indirectBufferFlags = E_GPU_BUFFER_BIND_FLAG_INDIRECT_DISPATCH_BUFFER_BIT | E_GPU_BUFFER_BIND_FLAG_INDIRECT_DRAW_BUFFER_BIT;
 		if( pCreateInfo.resourceFlags.is_set_any_of( indirectBufferFlags ) )
 		{
-			dx11GpuBufferDesc.resourceMiscFlags.set( D3D11_RESOURCE_MISC_DRAWINDIRECT_ARGS );
+			dx11GPUBufferDesc.resourceMiscFlags.set( D3D11_RESOURCE_MISC_DRAWINDIRECT_ARGS );
 		}
 
 		if( pCreateInfo.resourceFlags.is_set_any_of( E_GPU_BUFFER_BIND_FLAG_SHADER_UAV_BUFFER_BIT ) )
 		{
-			dx11GpuBufferDesc.resourceMiscFlags.set( D3D11_RESOURCE_MISC_BUFFER_STRUCTURED );
+			dx11GPUBufferDesc.resourceMiscFlags.set( D3D11_RESOURCE_MISC_BUFFER_STRUCTURED );
 		}
 
-		return dx11GpuBufferDesc;
+		return dx11GPUBufferDesc;
 	}
 
-	bool DX11GpuBuffer::MapRegion( void * pCommandObject, const GpuMemoryRegion & pRegion, EGpuMemoryMapMode pMapMode )
+	bool DX11GPUBuffer::MapRegion( void * pCommandObject, const GPUMemoryRegion & pRegion, EGPUMemoryMapMode pMapMode )
 	{
 		auto * d3d11DeviceContext1 = SMU::GetD3D11DeviceContextFromCommandList( pCommandObject );
 
@@ -165,7 +165,7 @@ namespace Ic3::Graphics::GCI
 		ResourceMappedMemory mappedMemoryInfo;
 		mappedMemoryInfo.pointer = mappedBufferInfo.pData;
 		mappedMemoryInfo.mappedRegion = pRegion;
-		mappedMemoryInfo.memoryMapFlags = static_cast<EGpuMemoryMapFlags>( pMapMode );
+		mappedMemoryInfo.memoryMapFlags = static_cast<EGPUMemoryMapFlags>( pMapMode );
 
 		_dx11MapInfo.mappedSubresource = mappedBufferInfo;
 		_dx11MapInfo.requestedMapMode = d3d11MapMode;
@@ -175,7 +175,7 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	void DX11GpuBuffer::Unmap( void * pCommandObject )
+	void DX11GPUBuffer::Unmap( void * pCommandObject )
 	{
 		auto * d3d11DeviceContext1 = SMU::GetD3D11DeviceContextFromCommandList( pCommandObject );
 
@@ -184,7 +184,7 @@ namespace Ic3::Graphics::GCI
 		ResetMappedMemory();
 	}
 
-	void DX11GpuBuffer::FlushMappedRegion( void * pCommandObject, const GpuMemoryRegion & pRegion )
+	void DX11GPUBuffer::FlushMappedRegion( void * pCommandObject, const GPUMemoryRegion & pRegion )
 	{
 		auto * d3d11DeviceContext1 = SMU::GetD3D11DeviceContextFromCommandList( pCommandObject );
 
@@ -197,7 +197,7 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	void DX11GpuBuffer::InvalidateRegion( void * pCommandObject, const GpuMemoryRegion & pRegion )
+	void DX11GPUBuffer::InvalidateRegion( void * pCommandObject, const GPUMemoryRegion & pRegion )
 	{
 		if( pRegion.size == mBufferProperties.byteSize )
 		{
@@ -206,7 +206,7 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	void DX11GpuBuffer::UpdateSubDataCopy( void * pCommandObject, GpuBuffer & pSource, const GpuBufferSubDataCopyDesc & pCopyDesc )
+	void DX11GPUBuffer::UpdateSubDataCopy( void * pCommandObject, GPUBuffer & pSource, const GPUBufferSubDataCopyDesc & pCopyDesc )
 	{
 		auto * dx11CommandList = reinterpret_cast<DX11CommandList *>( pCommandObject );
 		if( !dx11CommandList->CheckCommandClassSupport( ECommandQueueClass::Transfer ) )
@@ -232,12 +232,12 @@ namespace Ic3::Graphics::GCI
 
 		auto * targetBuffer = mD3D11Buffer.Get();
 		auto targetBufferOffset = cppx::numeric_cast<UINT>( pCopyDesc.targetBufferOffset );
-		auto * sourceBuffer = pSource.QueryInterface<DX11GpuBuffer>()->mD3D11Buffer.Get();
+		auto * sourceBuffer = pSource.QueryInterface<DX11GPUBuffer>()->mD3D11Buffer.Get();
 
 		d3d11DeviceContext1->CopySubresourceRegion1( targetBuffer, 0, targetBufferOffset, 0, 0, sourceBuffer, 0, &sourceBufferBox, copyFlags );
 	}
 
-	void DX11GpuBuffer::UpdateSubDataUpload( void * pCommandObject, const GpuBufferSubDataUploadDesc & pUploadDesc )
+	void DX11GPUBuffer::UpdateSubDataUpload( void * pCommandObject, const GPUBufferSubDataUploadDesc & pUploadDesc )
 	{
 		auto * dx11CommandList = reinterpret_cast<DX11CommandList *>( pCommandObject );
 		if( !dx11CommandList->CheckCommandClassSupport( ECommandQueueClass::Transfer ) )
@@ -271,9 +271,9 @@ namespace Ic3::Graphics::GCI
         }
 	}
 
-	bool DX11GpuBuffer::ValidateMapRequest( const GpuMemoryRegion & pRegion, const EGpuMemoryMapMode & pMapMode )
+	bool DX11GPUBuffer::ValidateMapRequest( const GPUMemoryRegion & pRegion, const EGPUMemoryMapMode & pMapMode )
 	{
-		return GpuBuffer::ValidateMapRequest( pRegion, pMapMode );
+		return GPUBuffer::ValidateMapRequest( pRegion, pMapMode );
 	}
 
 } // namespace Ic3::Graphics::GCI

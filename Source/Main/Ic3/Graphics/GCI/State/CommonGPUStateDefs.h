@@ -4,8 +4,8 @@
 #ifndef __IC3_GRAPHICS_GCI_COMMON_STATE_DEFS_H__
 #define __IC3_GRAPHICS_GCI_COMMON_STATE_DEFS_H__
 
-#include "../Memory/CommonGpuMemoryDefs.h"
-#include "../Resources/CommonGpuResourceDefs.h"
+#include "../Memory/CommonGPUMemoryDefs.h"
+#include "../Resources/CommonGPUResourceDefs.h"
 #include <cppx/hash.h>
 
 namespace Ic3::Graphics::GCI
@@ -28,7 +28,7 @@ namespace Ic3::Graphics::GCI
 	class RenderTargetBindingDynamicState;
 	class RenderPassConfigurationDynamicState;
 
-	Ic3GCIDeclareClassHandle( GpuDeviceChildObject );
+	Ic3GCIDeclareClassHandle( GPUDeviceChildObject );
 	Ic3GCIDeclareClassHandle( PipelineStateObject );
 	Ic3GCIDeclareClassHandle( ComputePipelineStateObject );
 	Ic3GCIDeclareClassHandle( GraphicsPipelineStateObject );

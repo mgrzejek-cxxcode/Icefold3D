@@ -27,14 +27,14 @@ namespace Ic3::Graphics::GCI
 	/// @brief
 	enum ETextureDataCopyFlags : uint32
 	{
-		eTextureDataCopyFlagModeInvalidateBit = eGpuMemoryMapFlagWriteInvalidateBit,
+		eTextureDataCopyFlagModeInvalidateBit = eGPUMemoryMapFlagWriteInvalidateBit,
 		eTextureDataCopyFlagsDefault = 0,
 	};
 
 	/// @brief Bind flags for texture resources. Used to specify how textures are bound to the pipeline.
 	///
 	/// Note:
-	/// Just like in case of EGpuBufferBindFlags, these flags contain required E_GPU_RESOURCE_USAGE_FLAG bits as well.
+	/// Just like in case of EGPUBufferBindFlags, these flags contain required E_GPU_RESOURCE_USAGE_FLAG bits as well.
 	enum ETextureBindFlags : resource_flags_value_t
 	{
 		//
@@ -45,35 +45,35 @@ namespace Ic3::Graphics::GCI
 		// Implies SHADER_INPUT usage bit.
 		eTextureBindFlagShaderInputSampledImageBit =
 			eTextureBindFlagCommonTextureBit |
-			eGpuResourceUsageFlagShaderInputBit,
+			eGPUResourceUsageFlagShaderInputBit,
 
 		// Bind flag for using a texture as a color attachment image, modified as part of the FBO rendering.
 		// Implies RENDER_TARGET_COLOR usage bit.
 		eTextureBindFlagRenderTargetColorAttachmentBit =
 			eTextureBindFlagCommonTextureBit |
-			eGpuResourceUsageFlagRenderTargetColorBit,
+			eGPUResourceUsageFlagRenderTargetColorBit,
 
 		//
 		eTextureBindFlagRenderTargetDepthAttachmentBit =
 			eTextureBindFlagCommonTextureBit |
-			eGpuResourceUsageFlagRenderTargetDepthBit,
+			eGPUResourceUsageFlagRenderTargetDepthBit,
 
 		// Bind flag for using a texture as a depth/stencil attachment image, modified as part of the FBO rendering
 		// (target storage for depth/stencil values) or read/modified during the depth and/or stencil tests.
 		// Implies RENDER_TARGET_DEPTH_STENCIL usage bit.
 		eTextureBindFlagRenderTargetDepthStencilAttachmentBit =
 			eTextureBindFlagCommonTextureBit |
-			eGpuResourceUsageMaskRenderTargetDepthStencil,
+			eGPUResourceUsageMaskRenderTargetDepthStencil,
 
 		// Bind flag for using a texture as a source in transfer operations. @See E_GPU_RESOURCE_USAGE_FLAG_TRANSFER_SOURCE_BIT.
 		eTextureBindFlagTransferSourceImageBit =
 			eTextureBindFlagCommonTextureBit |
-			eGpuResourceUsageFlagTransferSourceBit,
+			eGPUResourceUsageFlagTransferSourceBit,
 
 		// Bind flag for using a texture as a target in transfer operations. @See E_GPU_RESOURCE_USAGE_FLAG_TRANSFER_TARGET_BIT.
 		eTextureBindFlagTransferTargetImageBit =
 			eTextureBindFlagCommonTextureBit |
-			eGpuResourceUsageFlagTransferTargetBit,
+			eGPUResourceUsageFlagTransferTargetBit,
 	};
 	
 	enum ETextureInitFlags : uint32

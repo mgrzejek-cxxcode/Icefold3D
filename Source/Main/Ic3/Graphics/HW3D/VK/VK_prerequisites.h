@@ -30,8 +30,8 @@
 namespace Ic3::Graphics::GCI
 {
 
-	Ic3DeclareClassHandle( VKGpuDevice );
-	Ic3DeclareClassHandle( VKGpuDriver );
+	Ic3DeclareClassHandle( VKGPUDevice );
+	Ic3DeclareClassHandle( VKGPUDriver );
 	Ic3DeclareClassHandle( VKPresentationLayer );
 
 } // namespace Ic3::Graphics::GCI

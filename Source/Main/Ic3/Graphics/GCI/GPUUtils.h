@@ -12,18 +12,18 @@ namespace Ic3::Graphics::GCI
     namespace utils
     {
 
-        IC3_GRAPHICS_GCI_API ShaderHandle CreateShaderFromSource( GpuDevice & pGpuDevice, EShaderType pShaderType, const void * pSource, size_t pSourceLength );
+        IC3_GRAPHICS_GCI_API ShaderHandle CreateShaderFromSource( GPUDevice & pGPUDevice, EShaderType pShaderType, const void * pSource, size_t pSourceLength );
 
-        inline ShaderHandle CreateShaderFromSource( GpuDevice & pGpuDevice, EShaderType pShaderType, const std::string & pSource )
+        inline ShaderHandle CreateShaderFromSource( GPUDevice & pGPUDevice, EShaderType pShaderType, const std::string & pSource )
         {
-            return CreateShaderFromSource( pGpuDevice, pShaderType, pSource.c_str(), pSource.length() );
+            return CreateShaderFromSource( pGPUDevice, pShaderType, pSource.c_str(), pSource.length() );
         }
 
-        IC3_GRAPHICS_GCI_API ShaderHandle CreateShaderFromFile( GpuDevice & pGpuDevice, EShaderType pShaderType, const char * pFilename );
+        IC3_GRAPHICS_GCI_API ShaderHandle CreateShaderFromFile( GPUDevice & pGPUDevice, EShaderType pShaderType, const char * pFilename );
 
-        inline ShaderHandle CreateShaderFromFile( GpuDevice & pGpuDevice, EShaderType pShaderType, const std::string & pFilename )
+        inline ShaderHandle CreateShaderFromFile( GPUDevice & pGPUDevice, EShaderType pShaderType, const std::string & pFilename )
         {
-            return CreateShaderFromFile( pGpuDevice, pShaderType, pFilename.c_str() );
+            return CreateShaderFromFile( pGPUDevice, pShaderType, pFilename.c_str() );
         }
 
     }

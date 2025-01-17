@@ -16,7 +16,7 @@ namespace Ic3::Graphics::GCI
 	class IC3_GX_DXCOMMON_CLASS DXPresentationLayer : public PresentationLayer
 	{
 	public:
-		DXPresentationLayer( GpuDevice & pDevice );
+		DXPresentationLayer( GPUDevice & pDevice );
 		virtual ~DXPresentationLayer();
 	};
 
@@ -26,7 +26,7 @@ namespace Ic3::Graphics::GCI
 		System::WindowHandle const mSysWindow;
 		ComPtr<IDXGISwapChain1> const mDXGISwapChain1;
 
-		DXScreenPresentationLayer( GpuDevice & pDevice, System::WindowHandle pSysWindow, ComPtr<IDXGISwapChain1> pDXGISwapChain1 ) noexcept;
+		DXScreenPresentationLayer( GPUDevice & pDevice, System::WindowHandle pSysWindow, ComPtr<IDXGISwapChain1> pDXGISwapChain1 ) noexcept;
 		virtual ~DXScreenPresentationLayer() noexcept;
 
 		virtual System::EventSource * GetInternalSystemEventSource() const noexcept override;
@@ -38,7 +38,7 @@ namespace Ic3::Graphics::GCI
 		virtual Ic3::Math::Vec2u32 QueryRenderTargetSize() const override;
 
 	protected:
-	    static System::WindowHandle createSysWindow( DXGpuDevice & pGpuDevice, const PresentationLayerCreateInfo & pCreateInfo );
+	    static System::WindowHandle createSysWindow( DXGPUDevice & pGPUDevice, const PresentationLayerCreateInfo & pCreateInfo );
 	};
 
 } // namespace Ic3::Graphics::GCI

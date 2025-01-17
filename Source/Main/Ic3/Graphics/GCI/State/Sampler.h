@@ -9,10 +9,10 @@
 namespace Ic3::Graphics::GCI
 {
 
-	class IC3_GRAPHICS_GCI_CLASS Sampler : public GpuDeviceChildObject
+	class IC3_GRAPHICS_GCI_CLASS Sampler : public GPUDeviceChildObject
 	{
 	public:
-		Sampler( GpuDevice & pGpuDevice );
+		Sampler( GPUDevice & pGPUDevice );
 		virtual ~Sampler();
 	};
 

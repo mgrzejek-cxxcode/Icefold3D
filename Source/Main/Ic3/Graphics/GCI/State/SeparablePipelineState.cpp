@@ -6,12 +6,12 @@ namespace Ic3::Graphics::GCI
 {
 
 	GraphicsPipelineStateObjectSeparable::GraphicsPipelineStateObjectSeparable(
-			GpuDevice & pGpuDevice,
+			GPUDevice & pGPUDevice,
 			RenderTargetLayout pRenderTargetLayout,
 			ShaderInputSignature pShaderInputSignature,
 			const SeparablePSOStateSet & pSeparableStates )
 	: GraphicsPipelineStateObject(
-			pGpuDevice,
+			pGPUDevice,
 			std::move( pRenderTargetLayout ),
 			std::move( pShaderInputSignature ) )
 	, mSeparableStates( pSeparableStates )
@@ -21,13 +21,13 @@ namespace Ic3::Graphics::GCI
 
 
 	GraphicsPipelineStateObjectSeparableShader::GraphicsPipelineStateObjectSeparableShader(
-			GpuDevice & pGpuDevice,
+			GPUDevice & pGPUDevice,
 			RenderTargetLayout pRenderTargetLayout,
 			ShaderInputSignature pShaderInputSignature,
 			const SeparablePSOStateSet & pSeparableStates,
 			const GraphicsShaderSet & pSeparableShaders )
 	: GraphicsPipelineStateObjectSeparable(
-			pGpuDevice,
+			pGPUDevice,
 			std::move( pRenderTargetLayout ),
 			std::move( pShaderInputSignature ),
 			pSeparableStates )

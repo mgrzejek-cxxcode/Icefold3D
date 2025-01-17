@@ -7,8 +7,8 @@
 namespace Ic3::Graphics::GCI
 {
 
-	VKCommandSystem::VKCommandSystem( VKGpuDevice & pVKGpuDevice )
-	: CommandSystem( pVKGpuDevice )
+	VKCommandSystem::VKCommandSystem( VKGPUDevice & pVKGPUDevice )
+	: CommandSystem( pVKGPUDevice )
 	{ }
 
 	VKCommandSystem::~VKCommandSystem() = default;

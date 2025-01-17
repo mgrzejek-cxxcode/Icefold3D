@@ -12,12 +12,12 @@
 namespace Ic3::Graphics::GCI
 {
 
-	struct DX11GpuDeviceCreateInfo : public GpuDeviceCreateInfo
+	struct DX11GPUDeviceCreateInfo : public GPUDeviceCreateInfo
 	{
 	};
 
 	/// @brief
-	class IC3_GX_DX11_CLASS DX11GpuDevice : public DXGpuDevice
+	class IC3_GX_DX11_CLASS DX11GPUDevice : public DXGPUDevice
 	{
 		friend class DX11CommandList;
 		friend class DX11GraphicsPipelineStateObject;
@@ -26,21 +26,21 @@ namespace Ic3::Graphics::GCI
 		ComPtr<ID3D11Device1> const mD3D11Device1;
 		ComPtr<ID3D11Debug> const mD3D11DebugInterface;
 
-		explicit DX11GpuDevice(
-				DX11GpuDriver & pDriver,
+		explicit DX11GPUDevice(
+				DX11GPUDriver & pDriver,
 				ComPtr<ID3D11Device1> pD3D11Device1,
 				ComPtr<ID3D11Debug> pD3D11Debug );
 
-		virtual ~DX11GpuDevice();
+		virtual ~DX11GPUDevice();
 
 		void WaitForCommandSync( CommandSync & pCommandSync ) override final;
 
-		static DX11GpuDeviceHandle Create( DX11GpuDriver & pDX11Driver, const DX11GpuDeviceCreateInfo & pCreateInfo );
+		static DX11GPUDeviceHandle Create( DX11GPUDriver & pDX11Driver, const DX11GPUDeviceCreateInfo & pCreateInfo );
 
 	private:
 		virtual void InitializeCommandSystem() override;
 
-		virtual GpuBufferHandle _DrvCreateGpuBuffer( const GpuBufferCreateInfo & pCreateInfo ) override final;
+		virtual GPUBufferHandle _DrvCreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo ) override final;
 		virtual SamplerHandle _DrvCreateSampler( const SamplerCreateInfo & pCreateInfo ) override final;
 		virtual ShaderHandle _DrvCreateShader( const ShaderCreateInfo & pCreateInfo ) override final;
 		virtual TextureHandle _DrvCreateTexture( const TextureCreateInfo & pCreateInfo ) override final;

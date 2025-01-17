@@ -5,14 +5,14 @@
 #define __IC3_GRAPHICS_HW3D_GLCOMMON_GPU_BUFFER_H__
 
 #include "../Objects/GLBufferObject.h"
-#include <Ic3/Graphics/GCI/Resources/GpuBuffer.h>
+#include <Ic3/Graphics/GCI/Resources/GPUBuffer.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	Ic3DeclareClassHandle( GLGpuBuffer );
+	Ic3DeclareClassHandle( GLGPUBuffer );
 
-	class GLGpuBuffer : public GpuBuffer
+	class GLGPUBuffer : public GPUBuffer
 	{
 		friend class GLCommandContext;
 
@@ -20,32 +20,32 @@ namespace Ic3::Graphics::GCI
 		GLBufferObjectHandle const mGLBufferObject;
 
 	public:
-		GLGpuBuffer(
-			GLGpuDevice & pGpuDevice,
+		GLGPUBuffer(
+			GLGPUDevice & pGPUDevice,
 			const ResourceMemoryInfo & pResourceMemory,
-			const GpuBufferProperties & pBufferProperties,
+			const GPUBufferProperties & pBufferProperties,
 			GLBufferObjectHandle pGLBufferObject );
 
-		virtual ~GLGpuBuffer();
+		virtual ~GLGPUBuffer();
 
-		static GLGpuBufferHandle CreateInstance( GLGpuDevice & pGpuDevice, const GpuBufferCreateInfo & pCreateInfo );
+		static GLGPUBufferHandle CreateInstance( GLGPUDevice & pGPUDevice, const GPUBufferCreateInfo & pCreateInfo );
 
 	protected:
-		static bool ValidateBufferCreateInfo( GpuBufferCreateInfo & pCreateInfo );
+		static bool ValidateBufferCreateInfo( GPUBufferCreateInfo & pCreateInfo );
 
-		virtual bool MapRegion( void * pCommandObject, const GpuMemoryRegion & pRegion, EGpuMemoryMapMode pMapMode ) override;
+		virtual bool MapRegion( void * pCommandObject, const GPUMemoryRegion & pRegion, EGPUMemoryMapMode pMapMode ) override;
 
 		virtual void Unmap( void * pCommandObject ) override;
 
-		virtual void FlushMappedRegion( void * pCommandObject, const GpuMemoryRegion & pRegion ) override;
+		virtual void FlushMappedRegion( void * pCommandObject, const GPUMemoryRegion & pRegion ) override;
 
-		virtual void InvalidateRegion( void * pCommandObject, const GpuMemoryRegion & pRegion ) override;
+		virtual void InvalidateRegion( void * pCommandObject, const GPUMemoryRegion & pRegion ) override;
 
-		virtual void UpdateSubDataCopy( void * pCommandObject, GpuBuffer & pSrcBuffer, const GpuBufferSubDataCopyDesc & pCopyDesc ) override;
+		virtual void UpdateSubDataCopy( void * pCommandObject, GPUBuffer & pSrcBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc ) override;
 
-		virtual void UpdateSubDataUpload( void * pCommandObject, const GpuBufferSubDataUploadDesc & pUploadDesc ) override;
+		virtual void UpdateSubDataUpload( void * pCommandObject, const GPUBufferSubDataUploadDesc & pUploadDesc ) override;
 		
-		virtual bool ValidateMapRequest( const GpuMemoryRegion & pRegion, const EGpuMemoryMapMode & pMapMode ) override;
+		virtual bool ValidateMapRequest( const GPUMemoryRegion & pRegion, const EGPUMemoryMapMode & pMapMode ) override;
 	};
 
 } // namespace Ic3::Graphics::GCI

@@ -6,14 +6,14 @@
 namespace Ic3::Graphics::GCI
 {
 
-	DX11Sampler::DX11Sampler( DX11GpuDevice & pGpuDevice, ComPtr<ID3D11SamplerState> pD3D11SamplerState )
-	: Sampler( pGpuDevice )
+	DX11Sampler::DX11Sampler( DX11GPUDevice & pGPUDevice, ComPtr<ID3D11SamplerState> pD3D11SamplerState )
+	: Sampler( pGPUDevice )
 	, mD3D11SamplerState( std::move( pD3D11SamplerState ) )
 	{ }
 
 	DX11Sampler::~DX11Sampler() = default;
 
-	DX11SamplerHandle DX11Sampler::Create( DX11GpuDevice & pDX11GpuDevice, const SamplerCreateInfo & pCreateInfo )
+	DX11SamplerHandle DX11Sampler::Create( DX11GPUDevice & pDX11GPUDevice, const SamplerCreateInfo & pCreateInfo )
 	{
 		D3D11_SAMPLER_DESC d3d11SamplerConfig;
 		if( !TranslateSamplerConfig( pCreateInfo.samplerConfig, d3d11SamplerConfig ) )
@@ -22,14 +22,14 @@ namespace Ic3::Graphics::GCI
 		}
 
 		ComPtr<ID3D11SamplerState> d3d11SamplerState;
-		auto hResult = pDX11GpuDevice.mD3D11Device1->CreateSamplerState( &d3d11SamplerConfig, d3d11SamplerState.GetAddressOf() );
+		auto hResult = pDX11GPUDevice.mD3D11Device1->CreateSamplerState( &d3d11SamplerConfig, d3d11SamplerState.GetAddressOf() );
 
 		if( FAILED( hResult ) )
 		{
 			return nullptr;
 		}
 
-		auto sampler = CreateGfxObject<DX11Sampler>( pDX11GpuDevice, d3d11SamplerState );
+		auto sampler = CreateGfxObject<DX11Sampler>( pDX11GPUDevice, d3d11SamplerState );
 
 		return sampler;
 	}

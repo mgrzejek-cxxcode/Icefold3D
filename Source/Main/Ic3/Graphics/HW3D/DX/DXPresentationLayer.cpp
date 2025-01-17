@@ -1,6 +1,6 @@
 
 #include "DXPresentationLayer.h"
-#include "DXGpuDevice.h"
+#include "DXGPUDevice.h"
 #include <Ic3/System/DisplaySystem.h>
 #include <Ic3/System/WindowSystem.h>
 #include <Ic3/System/WindowNative.h>
@@ -8,15 +8,15 @@
 namespace Ic3::Graphics::GCI
 {
 
-	DXPresentationLayer::DXPresentationLayer( GpuDevice & pGpuDevice )
-	: PresentationLayer( pGpuDevice )
+	DXPresentationLayer::DXPresentationLayer( GPUDevice & pGPUDevice )
+	: PresentationLayer( pGPUDevice )
 	{}
 
 	DXPresentationLayer::~DXPresentationLayer() = default;
 
 
-	DXScreenPresentationLayer::DXScreenPresentationLayer( GpuDevice & pGpuDevice, System::WindowHandle pSysWindow, ComPtr<IDXGISwapChain1> pDXGISwapChain1 ) noexcept
-	: DXPresentationLayer( pGpuDevice )
+	DXScreenPresentationLayer::DXScreenPresentationLayer( GPUDevice & pGPUDevice, System::WindowHandle pSysWindow, ComPtr<IDXGISwapChain1> pDXGISwapChain1 ) noexcept
+	: DXPresentationLayer( pGPUDevice )
 	, mSysWindow( pSysWindow )
 	, mDXGISwapChain1( std::move( pDXGISwapChain1 ) )
 	{}
@@ -41,7 +41,7 @@ namespace Ic3::Graphics::GCI
 		return mSysWindow->GetClientAreaSize();
 	}
 
-	System::WindowHandle DXScreenPresentationLayer::createSysWindow( DXGpuDevice & pGpuDevice, const PresentationLayerCreateInfo & pCreateInfo )
+	System::WindowHandle DXScreenPresentationLayer::createSysWindow( DXGPUDevice & pGPUDevice, const PresentationLayerCreateInfo & pCreateInfo )
 	{
 		try
 		{
@@ -51,11 +51,11 @@ namespace Ic3::Graphics::GCI
 			    auto sysDisplayManager = pCreateInfo.sysDisplayManager;
 			    if( !sysDisplayManager )
 			    {
-			        Ic3DebugAssert( pGpuDevice.mSysContext );
-			        sysDisplayManager = pGpuDevice.mSysContext->CreateDisplayManager();
+			        Ic3DebugAssert( pGPUDevice.mSysContext );
+			        sysDisplayManager = pGPUDevice.mSysContext->CreateDisplayManager();
 			    }
-			    Ic3DebugAssert( pGpuDevice.mSysContext );
-			    sysWindowManager = pGpuDevice.mSysContext->CreateWindowManager( sysDisplayManager );
+			    Ic3DebugAssert( pGPUDevice.mSysContext );
+			    sysWindowManager = pGPUDevice.mSysContext->CreateWindowManager( sysDisplayManager );
 			}
 
 			System::WindowCreateInfo windowCreateInfo;

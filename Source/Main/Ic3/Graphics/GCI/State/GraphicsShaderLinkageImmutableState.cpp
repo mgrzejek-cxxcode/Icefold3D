@@ -5,9 +5,9 @@ namespace Ic3::Graphics::GCI
 {
 
 	GraphicsShaderLinkageImmutableState::GraphicsShaderLinkageImmutableState(
-			GpuDevice & pGpuDevice,
+			GPUDevice & pGPUDevice,
 			const GraphicsShaderLinkageCommonProperties & pCommonProperties )
-	: GraphicsPipelineImmutableState( pGpuDevice )
+	: GraphicsPipelineImmutableState( pGPUDevice )
 	, mCommonProperties( pCommonProperties )
 	{}
 
@@ -25,10 +25,10 @@ namespace Ic3::Graphics::GCI
 
 
 	GraphicsShaderLinkageImmutableStateSeparable::GraphicsShaderLinkageImmutableStateSeparable(
-			GpuDevice & pGpuDevice,
+			GPUDevice & pGPUDevice,
 			const GraphicsShaderLinkageCommonProperties & pCommonProperties,
 			const GraphicsShaderSet & pShaderSet )
-	: GraphicsShaderLinkageImmutableState( pGpuDevice, pCommonProperties )
+	: GraphicsShaderLinkageImmutableState( pGPUDevice, pCommonProperties )
 	, mShaderSet( pShaderSet )
 	{}
 

@@ -4,17 +4,17 @@
 #ifndef __IC3_GRAPHICS_GCI_TEXTURE_H__
 #define __IC3_GRAPHICS_GCI_TEXTURE_H__
 
-#include "GpuResource.h"
+#include "GPUResource.h"
 #include "TextureReference.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	struct TextureProperties : public GpuResourceProperties
+	struct TextureProperties : public GPUResourceProperties
 	{
 	};
 
-	class Texture : public GpuResource
+	class Texture : public GPUResource
 	{
 		friend class CommandList;
 		friend class TextureReference;
@@ -24,21 +24,21 @@ namespace Ic3::Graphics::GCI
 		TextureLayout const mTextureLayout;
 
 		Texture(
-			GpuDevice & pGpuDevice,
+			GPUDevice & pGPUDevice,
 			const ResourceMemoryInfo & pResourceMemory,
 			const TextureProperties & pTextureProperties,
 			const TextureLayout & pTextureLayout );
 
 		virtual ~Texture();
 
-		CPPX_ATTR_NO_DISCARD virtual const GpuResourceProperties & GetProperties() const override final;
+		CPPX_ATTR_NO_DISCARD virtual const GPUResourceProperties & GetProperties() const override final;
 
 		CPPX_ATTR_NO_DISCARD TextureSubResource GetAllSubResourcesRef() const;
 
 		CPPX_ATTR_NO_DISCARD TextureSubResource GetDefaultSubResourceRef() const;
 
 		static RenderTargetTextureHandle CreateDefaultRenderTargetTextureView(
-				GpuDevice & pGpuDevice,
+				GPUDevice & pGPUDevice,
 				const RenderTargetTextureCreateInfo & pCreateInfo );
 	};
 

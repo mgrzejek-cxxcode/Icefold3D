@@ -6,21 +6,21 @@
 namespace Ic3::Graphics::GCI
 {
 
-	MetalSampler::MetalSampler( MetalGpuDevice & pGpuDevice, id<MTLSamplerState> pMTLSamplerState )
-	: Sampler( pGpuDevice )
+	MetalSampler::MetalSampler( MetalGPUDevice & pGPUDevice, id<MTLSamplerState> pMTLSamplerState )
+	: Sampler( pGPUDevice )
 	, mMTLSamplerState( pMTLSamplerState )
 	{}
 
 	MetalSampler::~MetalSampler() = default;
 
-	MetalSamplerHandle MetalSampler::CreateSampler( MetalGpuDevice & pGpuDevice, const SamplerCreateInfo & pCreateInfo )
+	MetalSamplerHandle MetalSampler::CreateSampler( MetalGPUDevice & pGPUDevice, const SamplerCreateInfo & pCreateInfo )
 	{
 		auto * mtlSamplerDescriptor = TranslateSamplerConfig( pCreateInfo.samplerConfig );
-		auto * mtlSamplerState = [pGpuDevice.mMTLDevice newSamplerStateWithDescriptor:mtlSamplerDescriptor];
+		auto * mtlSamplerState = [pGPUDevice.mMTLDevice newSamplerStateWithDescriptor:mtlSamplerDescriptor];
 
 		[mtlSamplerDescriptor dealloc];
 
-		auto metalSampler = CreateGfxObject<MetalSampler>( pGpuDevice, mtlSamplerState );
+		auto metalSampler = CreateGfxObject<MetalSampler>( pGPUDevice, mtlSamplerState );
 
 		return metalSampler;
 	}

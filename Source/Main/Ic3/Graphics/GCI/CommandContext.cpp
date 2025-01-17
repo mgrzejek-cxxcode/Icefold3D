@@ -2,13 +2,13 @@
 #include "CommandContext.h"
 #include "CommandList.h"
 #include "CommandSystem.h"
-#include "GpuDevice.h"
+#include "GPUDevice.h"
 
 namespace Ic3::Graphics::GCI
 {
 
 	CommandContext::CommandContext( CommandList & pCommandList, ECommandContextType pContextType )
-	: GpuDeviceChildObject( pCommandList.mGpuDevice )
+	: GPUDeviceChildObject( pCommandList.mGPUDevice )
 	, mCommandList( &pCommandList )
 	, mCommandSystem( mCommandList->mCommandSystem )
 	, mContextType( pContextType )
@@ -37,27 +37,27 @@ namespace Ic3::Graphics::GCI
 		return mCommandList->EndCommandSequence();
 	}
 
-	bool CommandContext::MapBuffer( GpuBuffer & pBuffer, EGpuMemoryMapMode pMapMode )
+	bool CommandContext::MapBuffer( GPUBuffer & pBuffer, EGPUMemoryMapMode pMapMode )
 	{
 		return mCommandList->MapBuffer( pBuffer, pMapMode );
 	}
 
-	bool CommandContext::MapBufferRegion( GpuBuffer & pBuffer, const GpuMemoryRegion & pRegion, EGpuMemoryMapMode pMapMode )
+	bool CommandContext::MapBufferRegion( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion, EGPUMemoryMapMode pMapMode )
 	{
 		return mCommandList->MapBufferRegion( pBuffer, pRegion, pMapMode );
 	}
 
-	bool CommandContext::UnmapBuffer( GpuBuffer & pBuffer )
+	bool CommandContext::UnmapBuffer( GPUBuffer & pBuffer )
 	{
 		return mCommandList->UnmapBuffer( pBuffer );
 	}
 
-	bool CommandContext::FlushMappedBuffer( GpuBuffer & pBuffer )
+	bool CommandContext::FlushMappedBuffer( GPUBuffer & pBuffer )
 	{
 		return mCommandList->FlushMappedBuffer( pBuffer );
 	}
 
-	bool CommandContext::FlushMappedBufferRegion( GpuBuffer & pBuffer, const GpuMemoryRegion & pRegion )
+	bool CommandContext::FlushMappedBufferRegion( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion )
 	{
 		return mCommandList->FlushMappedBufferRegion( pBuffer, pRegion );
 	}
@@ -86,38 +86,38 @@ namespace Ic3::Graphics::GCI
 		return mCommandList->CmdExecuteDeferredContext( pDeferredContext );
 	}
 
-	bool CommandContextDirect::InvalidateBuffer( GpuBuffer & pBuffer )
+	bool CommandContextDirect::InvalidateBuffer( GPUBuffer & pBuffer )
 	{
 		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirect ) );
 		return mCommandList->InvalidateBuffer( pBuffer );
 	}
 
-	bool CommandContextDirect::InvalidateBufferRegion( GpuBuffer & pBuffer, const GpuMemoryRegion & pRegion )
+	bool CommandContextDirect::InvalidateBufferRegion( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion )
 	{
 		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirect ) );
 		return mCommandList->InvalidateBufferRegion( pBuffer, pRegion );
 	}
 
 
-	bool CommandContextDirectTransfer::UpdateBufferDataCopy( GpuBuffer & pBuffer, GpuBuffer & pSourceBuffer, const GpuBufferDataCopyDesc & pCopyDesc )
+	bool CommandContextDirectTransfer::UpdateBufferDataCopy( GPUBuffer & pBuffer, GPUBuffer & pSourceBuffer, const GPUBufferDataCopyDesc & pCopyDesc )
 	{
 		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirectTransfer ) );
 		return mCommandList->UpdateBufferDataCopy( pBuffer, pSourceBuffer, pCopyDesc );
 	}
 
-	bool CommandContextDirectTransfer::UpdateBufferSubDataCopy( GpuBuffer & pBuffer, GpuBuffer & pSourceBuffer, const GpuBufferSubDataCopyDesc & pCopyDesc )
+	bool CommandContextDirectTransfer::UpdateBufferSubDataCopy( GPUBuffer & pBuffer, GPUBuffer & pSourceBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc )
 	{
 		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirectTransfer ) );
 		return mCommandList->UpdateBufferSubDataCopy( pBuffer, pSourceBuffer, pCopyDesc );
 	}
 
-	bool CommandContextDirectTransfer::UpdateBufferDataUpload( GpuBuffer & pBuffer, const GpuBufferDataUploadDesc & pUploadDesc )
+	bool CommandContextDirectTransfer::UpdateBufferDataUpload( GPUBuffer & pBuffer, const GPUBufferDataUploadDesc & pUploadDesc )
 	{
 		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirectTransfer ) );
 		return mCommandList->UpdateBufferDataUpload( pBuffer, pUploadDesc );
 	}
 
-	bool CommandContextDirectTransfer::UpdateBufferSubDataUpload( GpuBuffer & pBuffer, const GpuBufferSubDataUploadDesc & pUploadDesc )
+	bool CommandContextDirectTransfer::UpdateBufferSubDataUpload( GPUBuffer & pBuffer, const GPUBufferSubDataUploadDesc & pUploadDesc )
 	{
 		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirectTransfer ) );
 		return mCommandList->UpdateBufferSubDataUpload( pBuffer, pUploadDesc );
@@ -201,7 +201,7 @@ namespace Ic3::Graphics::GCI
 		return mCommandList->CmdSetShaderConstant( pParamRefID, pData );
 	}
 
-	bool CommandContextDirectGraphics::CmdSetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GpuBuffer & pConstantBuffer )
+	bool CommandContextDirectGraphics::CmdSetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer )
 	{
 		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirectGraphics ) );
 		return mCommandList->CmdSetShaderConstantBuffer( pParamRefID, pConstantBuffer );
@@ -244,19 +244,19 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	bool CommandContextDeferred::MapBufferDeferred( GpuBuffer & pBuffer )
+	bool CommandContextDeferred::MapBufferDeferred( GPUBuffer & pBuffer )
 	{
 		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDeferred ) );
-		return mCommandList->MapBuffer( pBuffer, EGpuMemoryMapMode::WriteAppend );
+		return mCommandList->MapBuffer( pBuffer, EGPUMemoryMapMode::WriteAppend );
 	}
 
-	bool CommandContextDeferred::MapBufferRegionDeferred( GpuBuffer & pBuffer, const GpuMemoryRegion & pRegion )
+	bool CommandContextDeferred::MapBufferRegionDeferred( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion )
 	{
 		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDeferred ) );
-		return mCommandList->MapBufferRegion( pBuffer, pRegion, EGpuMemoryMapMode::WriteAppend );
+		return mCommandList->MapBufferRegion( pBuffer, pRegion, EGPUMemoryMapMode::WriteAppend );
 	}
 
-	bool CommandContextDeferred::UnmapBufferDeferred( GpuBuffer & pBuffer )
+	bool CommandContextDeferred::UnmapBufferDeferred( GPUBuffer & pBuffer )
 	{
 		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDeferred ) );
 		return mCommandList->UnmapBuffer( pBuffer );
@@ -303,7 +303,7 @@ namespace Ic3::Graphics::GCI
 		return mCommandList->CmdSetShaderConstant( pParamRefID, pData );
 	}
 
-	bool CommandContextDeferredGraphics::CmdSetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GpuBuffer & pConstantBuffer )
+	bool CommandContextDeferredGraphics::CmdSetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer )
 	{
 		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDeferredGraphics ) );
 		return mCommandList->CmdSetShaderConstantBuffer( pParamRefID, pConstantBuffer );

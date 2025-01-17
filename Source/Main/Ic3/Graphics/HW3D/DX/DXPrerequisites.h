@@ -4,7 +4,7 @@
 #ifndef __IC3_GRAPHICS_HW3D_DXCOMMON_PREREQUISITES_H__
 #define __IC3_GRAPHICS_HW3D_DXCOMMON_PREREQUISITES_H__
 
-#include <Ic3/Graphics/GCI/Memory/CommonGpuMemoryDefs.h>
+#include <Ic3/Graphics/GCI/Memory/CommonGPUMemoryDefs.h>
 
 #include <dxgi.h>
 #include <dxgi1_2.h>
@@ -39,8 +39,8 @@
 namespace Ic3::Graphics::GCI
 {
 
-	Ic3DeclareClassHandle( DXGpuDevice );
-	Ic3DeclareClassHandle( DXGpuDriver );
+	Ic3DeclareClassHandle( DXGPUDevice );
+	Ic3DeclareClassHandle( DXGPUDriver );
 	Ic3DeclareClassHandle( DXPresentationLayer );
 
 } // namespace Ic3::Graphics::GCI

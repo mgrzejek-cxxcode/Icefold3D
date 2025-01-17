@@ -1,7 +1,7 @@
 
 #include "DX11Texture.h"
 #include <Ic3/Graphics/HW3D/DX11/DX11ApiTranslationLayer.h>
-#include <Ic3/Graphics/HW3D/DX11/DX11GpuDevice.h>
+#include <Ic3/Graphics/HW3D/DX11/DX11GPUDevice.h>
 #include <Ic3/Graphics/HW3D/DX11/DX11CommandList.h>
 #include <Ic3/Graphics/GCI/Resources/RenderTargetTexture.h>
 
@@ -11,31 +11,31 @@ namespace Ic3::Graphics::GCI
 {
 
 	DX11Texture::DX11Texture(
-			DX11GpuDevice & pDX11GpuDevice,
+			DX11GPUDevice & pDX11GPUDevice,
 			const ResourceMemoryInfo & pResourceMemory,
 			const TextureProperties & pTextureProperties,
 			const TextureLayout & pTextureLayout,
 			DXGI_FORMAT pDXGIInternalFormat,
 			ComPtr<ID3D11Texture2D> pD3D11Texture2D,
 			ComPtr<ID3D11ShaderResourceView> pD3D11DefaultSRV )
-	: Texture( pDX11GpuDevice, pResourceMemory, pTextureProperties, pTextureLayout )
+	: Texture( pDX11GPUDevice, pResourceMemory, pTextureProperties, pTextureLayout )
 	, mDXGIInternalFormat( pDXGIInternalFormat )
-	, mD3D11Device1( pDX11GpuDevice.mD3D11Device1 )
+	, mD3D11Device1( pDX11GPUDevice.mD3D11Device1 )
 	, mD3D11Texture2D( pD3D11Texture2D )
 	, mD3D11DefaultSRV( pD3D11DefaultSRV )
 	{}
 
 	DX11Texture::DX11Texture(
-			DX11GpuDevice & pDX11GpuDevice,
+			DX11GPUDevice & pDX11GPUDevice,
 			const ResourceMemoryInfo & pResourceMemory,
 			const TextureProperties & pTextureProperties,
 			const TextureLayout & pTextureLayout,
 			DXGI_FORMAT pDXGIInternalFormat,
 			ComPtr<ID3D11Texture3D> pD3D11Texture3D,
 			ComPtr<ID3D11ShaderResourceView> pD3D11DefaultSRV )
-	: Texture( pDX11GpuDevice, pResourceMemory, pTextureProperties, pTextureLayout )
+	: Texture( pDX11GPUDevice, pResourceMemory, pTextureProperties, pTextureLayout )
 	, mDXGIInternalFormat( pDXGIInternalFormat )
-	, mD3D11Device1( pDX11GpuDevice.mD3D11Device1 )
+	, mD3D11Device1( pDX11GPUDevice.mD3D11Device1 )
 	, mD3D11Texture3D( pD3D11Texture3D )
 	, mD3D11DefaultSRV( pD3D11DefaultSRV )
 	{}
@@ -43,7 +43,7 @@ namespace Ic3::Graphics::GCI
 	DX11Texture::~DX11Texture() = default;
 
 	DX11TextureHandle DX11Texture::CreateDefault(
-			DX11GpuDevice & pDX11GpuDevice,
+			DX11GPUDevice & pDX11GPUDevice,
 			const TextureCreateInfo & pCreateInfo )
 	{
 		auto dxgiTextureFormat = ATL::TranslateDXTextureFormat( pCreateInfo.internalFormat );
@@ -61,7 +61,7 @@ namespace Ic3::Graphics::GCI
 		dx11CreateInfo.dx11UsageDesc = RCU::translateTextureUsageDescDX11( pCreateInfo );
 		dx11CreateInfo.dx11InitDataDesc = RCU::translateTextureInitDataDescDX11( pCreateInfo );
 
-		auto dx11TextureData = RCU::CreateTextureResourceDX11( pDX11GpuDevice, dx11CreateInfo );
+		auto dx11TextureData = RCU::CreateTextureResourceDX11( pDX11GPUDevice, dx11CreateInfo );
 		if( !dx11TextureData )
 		{
 			return nullptr;
@@ -97,7 +97,7 @@ namespace Ic3::Graphics::GCI
 			}
 
 			dx11Texture = CreateDynamicObject<DX11Texture>(
-					pDX11GpuDevice,
+					pDX11GPUDevice,
 					textureMemoryInfo,
 					textureProperties,
 					textureLayout,
@@ -114,7 +114,7 @@ namespace Ic3::Graphics::GCI
 			}
 
 			dx11Texture = CreateDynamicObject<DX11Texture>(
-					pDX11GpuDevice,
+					pDX11GPUDevice,
 					textureMemoryInfo,
 					textureProperties,
 					textureLayout,
@@ -127,7 +127,7 @@ namespace Ic3::Graphics::GCI
 	}
 
 	DX11TextureHandle DX11Texture::CreateForRenderTarget(
-			DX11GpuDevice & pDX11GpuDevice,
+			DX11GPUDevice & pDX11GPUDevice,
 			const RenderTargetTextureCreateInfo & pCreateInfo )
 	{
 		TextureCreateInfo textureCreateInfo;
@@ -139,29 +139,29 @@ namespace Ic3::Graphics::GCI
 		textureCreateInfo.dimensions.width = pCreateInfo.rtTextureLayout.imageRect.width;
 		textureCreateInfo.dimensions.height = pCreateInfo.rtTextureLayout.imageRect.height;
 
-		auto dx11Texture = CreateDefault( pDX11GpuDevice, textureCreateInfo );
+		auto dx11Texture = CreateDefault( pDX11GPUDevice, textureCreateInfo );
 
 		return dx11Texture;
 
 	}
 
 	RenderTargetTextureHandle DX11Texture::CreateRenderTargetTextureView(
-			DX11GpuDevice & pDX11GpuDevice,
+			DX11GPUDevice & pDX11GPUDevice,
 			const RenderTargetTextureCreateInfo & pCreateInfo )
 	{
 		if( pCreateInfo.targetTexture )
 		{
-			return CreateDefaultRenderTargetTextureView( pDX11GpuDevice, pCreateInfo );
+			return CreateDefaultRenderTargetTextureView( pDX11GPUDevice, pCreateInfo );
 		}
 		else
 		{
-			auto dx11Texture = CreateForRenderTarget( pDX11GpuDevice, pCreateInfo );
+			auto dx11Texture = CreateForRenderTarget( pDX11GPUDevice, pCreateInfo );
 
 			const auto rtTextureType = RCU::QueryRenderTargetTextureType( dx11Texture->mTextureLayout.internalFormat );
 			const auto rtTextureLayout = RCU::QueryRenderTargetTextureLayout( dx11Texture->mTextureLayout );
 
 			auto renderTargetTexture = CreateGfxObject<RenderTargetTexture>(
-					pDX11GpuDevice,
+					pDX11GPUDevice,
 					rtTextureType,
 					rtTextureLayout,
 					TextureReference{ dx11Texture } );
@@ -175,37 +175,37 @@ namespace Ic3::Graphics::GCI
 	{
 
 		DX11TextureData CreateTextureResourceDX11(
-				DX11GpuDevice & pDX11GpuDevice,
+				DX11GPUDevice & pDX11GPUDevice,
 				const DX11TextureCreateInfo & pCreateInfo )
 		{
 			DX11TextureData dx11TextureData = nullptr;
 
 			if( pCreateInfo.texClass == ETextureClass::T2D )
 			{
-				dx11TextureData = create2DTextureResourceDX11( pDX11GpuDevice, pCreateInfo );
+				dx11TextureData = create2DTextureResourceDX11( pDX11GPUDevice, pCreateInfo );
 			}
 			else if( pCreateInfo.texClass == ETextureClass::T2DArray )
 			{
-				dx11TextureData = create2DTextureResourceDX11( pDX11GpuDevice, pCreateInfo );
+				dx11TextureData = create2DTextureResourceDX11( pDX11GPUDevice, pCreateInfo );
 			}
 			else if( pCreateInfo.texClass == ETextureClass::T2DMS )
 			{
-				dx11TextureData = create2DMSTextureResourceDX11( pDX11GpuDevice, pCreateInfo );
+				dx11TextureData = create2DMSTextureResourceDX11( pDX11GPUDevice, pCreateInfo );
 			}
 			else if( pCreateInfo.texClass == ETextureClass::T3D )
 			{
-				dx11TextureData = create3DTextureResourceDX11( pDX11GpuDevice, pCreateInfo );
+				dx11TextureData = create3DTextureResourceDX11( pDX11GPUDevice, pCreateInfo );
 			}
 			else if( pCreateInfo.texClass == ETextureClass::TCubeMap )
 			{
-				dx11TextureData = create2DTextureResourceDX11( pDX11GpuDevice, pCreateInfo );
+				dx11TextureData = create2DTextureResourceDX11( pDX11GPUDevice, pCreateInfo );
 			}
 
 			return dx11TextureData;
 		}
 
 		DX11TextureData create2DTextureResourceDX11(
-				DX11GpuDevice & pDX11GpuDevice,
+				DX11GPUDevice & pDX11GPUDevice,
 				const DX11TextureCreateInfo & pCreateInfo )
 		{
 			D3D11_TEXTURE2D_DESC d3d11Texture2DDesc;
@@ -240,7 +240,7 @@ namespace Ic3::Graphics::GCI
 			}
 
 			ComPtr<ID3D11Texture2D> d3d11Texture2D;
-			auto hResult = pDX11GpuDevice.mD3D11Device1->CreateTexture2D(
+			auto hResult = pDX11GPUDevice.mD3D11Device1->CreateTexture2D(
 					&d3d11Texture2DDesc,
 					d3d11TextureInitData,
 					d3d11Texture2D.GetAddressOf() );
@@ -256,14 +256,14 @@ namespace Ic3::Graphics::GCI
 		}
 
 		DX11TextureData create2DMSTextureResourceDX11(
-				DX11GpuDevice & pDX11GpuDevice,
+				DX11GPUDevice & pDX11GPUDevice,
 				const DX11TextureCreateInfo & pCreateInfo )
 		{
 			return nullptr;
 		}
 
 		DX11TextureData create3DTextureResourceDX11(
-				DX11GpuDevice & pDX11GpuDevice,
+				DX11GPUDevice & pDX11GPUDevice,
 				const DX11TextureCreateInfo & pCreateInfo )
 		{
 			return nullptr;

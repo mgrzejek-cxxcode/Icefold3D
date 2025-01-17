@@ -17,7 +17,7 @@ namespace Ic3::Graphics::GCI
 	{
 	public:
 		GLGraphicsPipelineStateObject(
-				GLGpuDevice & pGpuDevice,
+				GLGPUDevice & pGPUDevice,
 				RenderTargetLayout pRenderTargetLayout,
 				ShaderInputSignature pShaderInputSignature,
 				const SeparablePSOStateSet & pPSOImmutableStates );
@@ -35,7 +35,7 @@ namespace Ic3::Graphics::GCI
 		CPPX_ATTR_NO_DISCARD const GLIAInputLayoutImmutableState & GetIAInputLayoutState() const noexcept;
 
 		static TGfxHandle<GLGraphicsPipelineStateObject> Create(
-				GLGpuDevice & pGpuDevice,
+				GLGPUDevice & pGPUDevice,
 				const GraphicsPipelineStateObjectCreateInfo & pCreateInfo );
 	};
 

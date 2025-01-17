@@ -19,22 +19,22 @@ namespace Ic3::Graphics::GCI
 		MetalShaderProgramObjectHandle const mMetalShaderProgramObject;
 
 	public:
-		MetalShader( MetalGpuDevice & pGpuDevice, EShaderType pShaderType, MetalShaderObjectHandle pMetalShaderObject );
-		MetalShader( MetalGpuDevice & pGpuDevice, EShaderType pShaderType, MetalShaderProgramObjectHandle pMetalShaderProgramObject );
+		MetalShader( MetalGPUDevice & pGPUDevice, EShaderType pShaderType, MetalShaderObjectHandle pMetalShaderObject );
+		MetalShader( MetalGPUDevice & pGPUDevice, EShaderType pShaderType, MetalShaderProgramObjectHandle pMetalShaderProgramObject );
 		virtual ~MetalShader();
 
-		static MetalShaderHandle CreateShaderObjectWithBinary( MetalGpuDevice & pGpuDevice, EShaderType pShaderType, const ShaderBinary & pShaderBinary );
-		static MetalShaderHandle CreateShaderObjectWithSource( MetalGpuDevice & pGpuDevice, EShaderType pShaderType, const void * pSource, size_t pSourceLength );
-		static MetalShaderHandle CreateShaderSeparableStageWithBinary( MetalGpuDevice & pGpuDevice, EShaderType pShaderType, const ShaderBinary & pShaderBinary );
-		static MetalShaderHandle CreateShaderSeparableStageWithSource( MetalGpuDevice & pGpuDevice, EShaderType pShaderType, const void * pSource, size_t pSourceLength );
+		static MetalShaderHandle CreateShaderObjectWithBinary( MetalGPUDevice & pGPUDevice, EShaderType pShaderType, const ShaderBinary & pShaderBinary );
+		static MetalShaderHandle CreateShaderObjectWithSource( MetalGPUDevice & pGPUDevice, EShaderType pShaderType, const void * pSource, size_t pSourceLength );
+		static MetalShaderHandle CreateShaderSeparableStageWithBinary( MetalGPUDevice & pGPUDevice, EShaderType pShaderType, const ShaderBinary & pShaderBinary );
+		static MetalShaderHandle CreateShaderSeparableStageWithSource( MetalGPUDevice & pGPUDevice, EShaderType pShaderType, const void * pSource, size_t pSourceLength );
 	};
 
 	namespace RCU
 	{
 
-		MetalShaderHandle CreateShaderObject( MetalGpuDevice & pGpuDevice, const ShaderCreateInfo & pCreateInfo );
+		MetalShaderHandle CreateShaderObject( MetalGPUDevice & pGPUDevice, const ShaderCreateInfo & pCreateInfo );
 
-		MetalShaderHandle CreateShaderSeparableStage( MetalGpuDevice & pGpuDevice, const ShaderCreateInfo & pCreateInfo );
+		MetalShaderHandle CreateShaderSeparableStage( MetalGPUDevice & pGPUDevice, const ShaderCreateInfo & pCreateInfo );
 
 	}
 

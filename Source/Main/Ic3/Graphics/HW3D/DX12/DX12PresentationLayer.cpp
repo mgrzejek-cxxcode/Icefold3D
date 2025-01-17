@@ -8,7 +8,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	DX12ScreenPresentationLayer::DX12ScreenPresentationLayer( DX12GpuDevice & pDevice, ComPtr<IDXGISwapChain3> pDXGISwapChain3, uint32 pFrameQueueSize )
+	DX12ScreenPresentationLayer::DX12ScreenPresentationLayer( DX12GPUDevice & pDevice, ComPtr<IDXGISwapChain3> pDXGISwapChain3, uint32 pFrameQueueSize )
 	: DXScreenPresentationLayer( pDevice, pDXGISwapChain3 )
 	, mDXGISwapChain3( std::move( pDXGISwapChain3 ) )
 	, mD3D12Device( pDevice.mD3D12Device )
@@ -29,7 +29,7 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	DX12ScreenPresentationLayerHandle DX12ScreenPresentationLayer::Create( DX12GpuDevice & pDX12Device, const DX12PresentationLayerCreateInfo & pCreateInfo )
+	DX12ScreenPresentationLayerHandle DX12ScreenPresentationLayer::Create( DX12GPUDevice & pDX12Device, const DX12PresentationLayerCreateInfo & pCreateInfo )
 	{
 		auto * d3d12PresentQueue = pDX12Device.GetD3D12DeviceQueue( E_DEVICE_COMMAND_QUEUE_ID_PRESENT );
 		Ic3DebugAssert( d3d12PresentQueue );

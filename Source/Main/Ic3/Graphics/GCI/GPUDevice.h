@@ -17,22 +17,22 @@ namespace Ic3::Graphics::GCI
 	struct PresentationLayerCreateInfo;
 	struct RenderTargetTextureCreateInfo;
 
-	enum EGpuDeviceCreateFlags : uint32
+	enum EGPUDeviceCreateFlags : uint32
 	{
 		E_GPU_DEVICE_CREATE_FLAG_INIT_DEFAULT_PRESENT_QUEUE_BIT = 0x0004,
 		E_GPU_DEVICE_CREATE_FLAGS_DEFAULT = E_GPU_DEVICE_CREATE_FLAG_INIT_DEFAULT_PRESENT_QUEUE_BIT
 	};
 
-	enum EGpuDeviceStateFlags : uint32
+	enum EGPUDeviceStateFlags : uint32
 	{
 	};
 
-	struct GpuDeviceCreateInfo
+	struct GPUDeviceCreateInfo
 	{
 		// DisplayManager * displayManager = nullptr;
 		// display_system_id_t adapterOutputID = cvDisplaySystemIDDefault;
 		display_system_id_t adapterID = cvDisplaySystemIDDefault;
-		cppx::bitmask<EGpuDeviceCreateFlags> flags = E_GPU_DEVICE_CREATE_FLAGS_DEFAULT;
+		cppx::bitmask<EGPUDeviceCreateFlags> flags = E_GPU_DEVICE_CREATE_FLAGS_DEFAULT;
 	};
 
 	struct DepthStencilState;
@@ -46,7 +46,7 @@ namespace Ic3::Graphics::GCI
 		virtual void ReleaseCommandList( ICommandList * pList ) const = 0;
 	};
 
-	class IGpuDevice
+	class IGPUDevice
 	{
 	public:
 		CPPX_ATTR_NO_DISCARD virtual ICommandList * AcquireCommandList() const = 0;
@@ -56,7 +56,7 @@ namespace Ic3::Graphics::GCI
 		CPPX_ATTR_NO_DISCARD bool IsDebugDevice() const noexcept;
 		CPPX_ATTR_NO_DISCARD bool IsMultiThreadAccessSupported() const noexcept;
 
-		CPPX_ATTR_NO_DISCARD GpuBuffer * CreateGpuBuffer( const GpuBufferCreateInfo & pCreateInfo );
+		CPPX_ATTR_NO_DISCARD GPUBuffer * CreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo );
 		CPPX_ATTR_NO_DISCARD Sampler * CreateSampler( const SamplerCreateInfo & pCreateInfo );
 		CPPX_ATTR_NO_DISCARD Shader * CreateShader( const ShaderCreateInfo & pCreateInfo );
 		CPPX_ATTR_NO_DISCARD Texture * CreateTexture( const TextureCreateInfo & pCreateInfo );
@@ -67,17 +67,17 @@ namespace Ic3::Graphics::GCI
 	};
 
 
-	class IC3_GRAPHICS_GCI_CLASS GpuDevice : public GpuDriverChildObject
+	class IC3_GRAPHICS_GCI_CLASS GPUDevice : public GPUDriverChildObject
 	{
-		friend class GpuDriver;
-		friend class GpuResource;
+		friend class GPUDriver;
+		friend class GPUResource;
 
 	public:
-		EGpuDriverID const mGpuDriverID;
+		EGPUDriverID const mGPUDriverID;
 		System::SysContextHandle const mSysContext;
 
-		explicit GpuDevice( GpuDriver & pDriver );
-		virtual ~GpuDevice();
+		explicit GPUDevice( GPUDriver & pDriver );
+		virtual ~GPUDevice();
 
 		CPPX_ATTR_NO_DISCARD virtual bool IsNullDevice() const noexcept;
 
@@ -103,7 +103,7 @@ namespace Ic3::Graphics::GCI
 		template <typename TPState>
 		CPPX_ATTR_NO_DISCARD TGfxHandle<TPState> GetCachedImmutableState( const GfxObjectName & pStateObjectName ) const noexcept;
 
-		CPPX_ATTR_NO_DISCARD GpuBufferHandle CreateGpuBuffer( const GpuBufferCreateInfo & pCreateInfo );
+		CPPX_ATTR_NO_DISCARD GPUBufferHandle CreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo );
 		CPPX_ATTR_NO_DISCARD SamplerHandle CreateSampler( const SamplerCreateInfo & pCreateInfo );
 		CPPX_ATTR_NO_DISCARD ShaderHandle CreateShader( const ShaderCreateInfo & pCreateInfo );
 		CPPX_ATTR_NO_DISCARD TextureHandle CreateTexture( const TextureCreateInfo & pCreateInfo );
@@ -138,10 +138,10 @@ namespace Ic3::Graphics::GCI
 
 		virtual void WaitForCommandSync( CommandSync & pCommandSync ) = 0;
 
-		CPPX_ATTR_NO_DISCARD static GpuDevice & nullDevice();
+		CPPX_ATTR_NO_DISCARD static GPUDevice & GetNullDevice();
 
 	protected:
-		virtual bool OnGpuResourceActiveRefsZero( GpuResource & pGpuResource );
+		virtual bool OnGPUResourceActiveRefsZero( GPUResource & pGPUResource );
 
 		void SetImmutableStateCache( PipelineImmutableStateCache & pStateCache );
 
@@ -152,7 +152,7 @@ namespace Ic3::Graphics::GCI
 	Ic3driverApi( private ):
 		virtual bool _DrvOnSetPresentationLayer( PresentationLayerHandle pPresentationLayer );
 
-		virtual GpuBufferHandle _DrvCreateGpuBuffer( const GpuBufferCreateInfo & pCreateInfo );
+		virtual GPUBufferHandle _DrvCreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo );
 		virtual SamplerHandle _DrvCreateSampler( const SamplerCreateInfo & pCreateInfo );
 		virtual ShaderHandle _DrvCreateShader( const ShaderCreateInfo & pCreateInfo );
 		virtual TextureHandle _DrvCreateTexture( const TextureCreateInfo & pCreateInfo );
@@ -166,7 +166,7 @@ namespace Ic3::Graphics::GCI
 		PresentationLayerHandle _presentationLayer;
 
 		/// Factory used to Create immutable states. Set by the actual driver class during initialization.
-		/// This decouples the state creation from the GpuDevice class so it's easier to manage and extend.
+		/// This decouples the state creation from the GPUDevice class so it's easier to manage and extend.
 		PipelineImmutableStateFactory * _immutableStateFactoryBase = nullptr;
 
 		/// Immutable state cache. Holds created states and enables re-using them across all APIs.
@@ -177,25 +177,25 @@ namespace Ic3::Graphics::GCI
 	};
 
 	template <typename TPState>
-	inline TGfxHandle<TPState> GpuDevice::GetCachedImmutableState( GfxObjectID pUniqueID ) const noexcept
+	inline TGfxHandle<TPState> GPUDevice::GetCachedImmutableState( GfxObjectID pUniqueID ) const noexcept
 	{
 		return _immutableStateCachePtr->template GetState<TPState>( pUniqueID );
 	}
 
 	template <typename TPState>
-	inline TGfxHandle<TPState> GpuDevice::GetCachedImmutableState( const GfxObjectName & pUniqueName ) const noexcept
+	inline TGfxHandle<TPState> GPUDevice::GetCachedImmutableState( const GfxObjectName & pUniqueName ) const noexcept
 	{
 		return _immutableStateCachePtr->template GetState<TPState>( pUniqueName );
 	}
 
 	template <typename TPState, typename TPInputDesc, typename... TArgs>
-	inline TGfxHandle<TPState> GpuDevice::CreateCachedImmutableState( GfxObjectID pUniqueID, const TPInputDesc & pInputDesc, TArgs && ...pArgs )
+	inline TGfxHandle<TPState> GPUDevice::CreateCachedImmutableState( GfxObjectID pUniqueID, const TPInputDesc & pInputDesc, TArgs && ...pArgs )
 	{
 		return _immutableStateCachePtr->template CreateState<TPState>( pUniqueID, pInputDesc, std::forward<TArgs>( pArgs )... );
 	}
 
 	template <typename TPState, typename TPInputDesc, typename... TArgs>
-	inline TGfxHandle<TPState> GpuDevice::CreateCachedImmutableState( const GfxObjectName & pUniqueName, const TPInputDesc & pInputDesc, TArgs && ...pArgs )
+	inline TGfxHandle<TPState> GPUDevice::CreateCachedImmutableState( const GfxObjectName & pUniqueName, const TPInputDesc & pInputDesc, TArgs && ...pArgs )
 	{
 		return _immutableStateCachePtr->template CreateState<TPState>( pUniqueName, pInputDesc, std::forward<TArgs>( pArgs )... );
 	}

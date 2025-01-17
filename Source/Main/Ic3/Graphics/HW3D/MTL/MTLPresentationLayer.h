@@ -24,7 +24,7 @@ namespace Ic3::Graphics::GCI
 		System::MetalDisplaySurfaceHandle const mSysMetalDisplaySurface;
 
 	public:
-		MetalPresentationLayer( MetalGpuDevice & pGpuDevice, System::MetalDisplaySurfaceHandle pSysMetalDisplaySurface );
+		MetalPresentationLayer( MetalGPUDevice & pGPUDevice, System::MetalDisplaySurfaceHandle pSysMetalDisplaySurface );
 		virtual ~MetalPresentationLayer();
 
 		virtual System::EventSource * GetInternalSystemEventSource() const noexcept override;
@@ -33,7 +33,7 @@ namespace Ic3::Graphics::GCI
 	class GLScreenPresentationLayer final : public MetalPresentationLayer
 	{
 	public:
-		GLScreenPresentationLayer( MetalGpuDevice & pGpuDevice, System::MetalDisplaySurfaceHandle pSysMetalDisplaySurface );
+		GLScreenPresentationLayer( MetalGPUDevice & pGPUDevice, System::MetalDisplaySurfaceHandle pSysMetalDisplaySurface );
 		virtual ~GLScreenPresentationLayer();
 
 		virtual void BindRenderTarget( CommandContext * pCmdContext ) override;
@@ -49,7 +49,7 @@ namespace Ic3::Graphics::GCI
 		virtual Ic3::Math::Vec2u32 QueryRenderTargetSize() const override;
 
 		/// @brief Creates new swap chain using provided create params.
-		static GLScreenPresentationLayerHandle Create( GLGpuDevice & pDevice, const MetalPresentationLayerCreateInfo & pCreateInfo );
+		static GLScreenPresentationLayerHandle Create( GLGPUDevice & pDevice, const MetalPresentationLayerCreateInfo & pCreateInfo );
 	};
 
 } // namespace Ic3::Graphics::GCI

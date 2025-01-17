@@ -4,23 +4,23 @@
 #ifndef __IC3_GRAPHICS_GCI_GPU_DRIVER_NULL_H__
 #define __IC3_GRAPHICS_GCI_GPU_DRIVER_NULL_H__
 
-#include "GpuDriver.h"
+#include "GPUDriver.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	class GpuDriverNull : public GpuDriver
+	class GPUDriverNull : public GPUDriver
 	{
 	public:
-		explicit GpuDriverNull() noexcept
-		: GpuDriver( nullptr )
+		explicit GPUDriverNull() noexcept
+		: GPUDriver( nullptr )
 		{}
 
-		virtual ~GpuDriverNull() noexcept = default;
+		virtual ~GPUDriverNull() noexcept = default;
 
-		CPPX_ATTR_NO_DISCARD virtual EGpuDriverID QueryGpuDriverID() const noexcept override final
+		CPPX_ATTR_NO_DISCARD virtual EGPUDriverID QueryGPUDriverID() const noexcept override final
 		{
-			return EGpuDriverID::GDINull;
+			return EGPUDriverID::GDINull;
 		}
 
 		CPPX_ATTR_NO_DISCARD virtual bool IsNullDriver() const noexcept override final
@@ -34,7 +34,7 @@ namespace Ic3::Graphics::GCI
 			return nullptr;
 		}
 
-		virtual GpuDeviceHandle _DrvCreateDevice( const GpuDeviceCreateInfo & pCreateInfo ) override final
+		virtual GPUDeviceHandle _DrvCreateDevice( const GPUDeviceCreateInfo & pCreateInfo ) override final
 		{
 			return nullptr;
 		}

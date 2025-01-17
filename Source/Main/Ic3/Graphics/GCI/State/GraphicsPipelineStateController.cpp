@@ -4,7 +4,7 @@
 #include "InputAssemblerImmutableStates.h"
 #include "RenderTargetImmutableStates.h"
 
-#include <Ic3/Graphics/GCI/GpuDevice.h>
+#include <Ic3/Graphics/GCI/GPUDevice.h>
 #include <cppx/memory.h>
 
 namespace Ic3::Graphics::GCI
@@ -127,7 +127,7 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	bool GraphicsPipelineStateController::SetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GpuBuffer & pConstantBuffer )
+	bool GraphicsPipelineStateController::SetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer )
 	{
 		return true;
 	}

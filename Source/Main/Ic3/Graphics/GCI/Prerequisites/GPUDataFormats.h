@@ -15,21 +15,21 @@ namespace Ic3::Graphics::GCI
 
 	enum class EBaseDataType : base_data_type_value_t;
 
-	enum EGpuDataFormatFlags : uint8
+	enum EGPUDataFormatFlags : uint8
 	{
-		eGpuDataFormatFlagNormalizedBit   = 0x01,
-		eGpuDataFormatFlagTypeSignedBit   = 0x02,
-		eGpuDataFormatFlagTypeUnsignedBit = 0x04,
-		eGpuDataFormatFlagSRGBBit         = 0x08,
-		eGpuDataFormatFlagDepthBit        = 0x10,
-		eGpuDataFormatFlagStencilBit      = 0x20,
-		eGpuDataFormatFlagDepthStencilBit = eGpuDataFormatFlagDepthBit | eGpuDataFormatFlagStencilBit,
-		eGpuDataFormatFlagCompressedBit   = 0x80,
-		eGpuDataFormatMaskDepthNorm       = eGpuDataFormatFlagDepthBit | eGpuDataFormatFlagNormalizedBit,
-		eGpuDataFormatMaskSNorm           = eGpuDataFormatFlagNormalizedBit | eGpuDataFormatFlagTypeSignedBit,
-		eGpuDataFormatMaskUNorm           = eGpuDataFormatFlagNormalizedBit | eGpuDataFormatFlagTypeUnsignedBit,
-		eGpuDataFormatMaskCompressedSRGB  = eGpuDataFormatFlagCompressedBit | eGpuDataFormatFlagSRGBBit,
-		eGpuDataFormatMaskAll             = 0xFF
+		eGPUDataFormatFlagNormalizedBit   = 0x01,
+		eGPUDataFormatFlagTypeSignedBit   = 0x02,
+		eGPUDataFormatFlagTypeUnsignedBit = 0x04,
+		eGPUDataFormatFlagSRGBBit         = 0x08,
+		eGPUDataFormatFlagDepthBit        = 0x10,
+		eGPUDataFormatFlagStencilBit      = 0x20,
+		eGPUDataFormatFlagDepthStencilBit = eGPUDataFormatFlagDepthBit | eGPUDataFormatFlagStencilBit,
+		eGPUDataFormatFlagCompressedBit   = 0x80,
+		eGPUDataFormatMaskDepthNorm       = eGPUDataFormatFlagDepthBit | eGPUDataFormatFlagNormalizedBit,
+		eGPUDataFormatMaskSNorm           = eGPUDataFormatFlagNormalizedBit | eGPUDataFormatFlagTypeSignedBit,
+		eGPUDataFormatMaskUNorm           = eGPUDataFormatFlagNormalizedBit | eGPUDataFormatFlagTypeUnsignedBit,
+		eGPUDataFormatMaskCompressedSRGB  = eGPUDataFormatFlagCompressedBit | eGPUDataFormatFlagSRGBBit,
+		eGPUDataFormatMaskAll             = 0xFF
 	};
 
 	namespace CxDef
@@ -50,7 +50,7 @@ namespace Ic3::Graphics::GCI
 		{
 			// Note: EVertexAttribFormat (and related functionality) relies on the fact that last 8 bits are flags (this
 			// is shared with other enums to fit into certain size limits). Plan carefully before changing the bit layout.
-			return ( ( ( uint16 )pBsz & 0xF ) << 12 ) | ( ( ( uint16 )pIdx & 0xF ) << 8 ) | ( pFlg & eGpuDataFormatMaskAll );
+			return ( ( ( uint16 )pBsz & 0xF ) << 12 ) | ( ( ( uint16 )pIdx & 0xF ) << 8 ) | ( pFlg & eGPUDataFormatMaskAll );
 		}
 
 		/**
@@ -65,7 +65,7 @@ namespace Ic3::Graphics::GCI
 		CPPX_ATTR_NO_DISCARD inline constexpr texture_format_value_t makeTextureDataFormatEnumValue(
 				uint8 pIdx, EPixelDataLayout pPix, EBaseDataType pBdt, uint8 pBsz, uint8 pFlg = 0 ) noexcept
 		{
-			return ( ( ( uint64 )pPix ) << 32 ) | ( ( ( uint64 )pBsz ) << 24 ) | ( ( ( uint64 )pBdt ) << 8 ) | ( ( ( uint64 )pFlg  & eGpuDataFormatMaskAll ) << 8 ) | ( pIdx );
+			return ( ( ( uint64 )pPix ) << 32 ) | ( ( ( uint64 )pBsz ) << 24 ) | ( ( ( uint64 )pBdt ) << 8 ) | ( ( ( uint64 )pFlg  & eGPUDataFormatMaskAll ) << 8 ) | ( pIdx );
 		}
 
 		/**
@@ -78,7 +78,7 @@ namespace Ic3::Graphics::GCI
 		CPPX_ATTR_NO_DISCARD inline constexpr vertex_attrib_format_value_t makeVertexAttribFormatEnumValue(
 				uint8 pBcn, EBaseDataType pBdt, uint8 pFlg = 0 ) noexcept
 		{
-			return ( ( uint32 )VBM_ATTRIB_FMT_CONTROL_KEY << 24 ) | ( ( ( uint32 )pBcn ) << 16 ) | ( ( uint32 )pBdt ) | ( ( uint32 )pFlg & eGpuDataFormatMaskAll );
+			return ( ( uint32 )VBM_ATTRIB_FMT_CONTROL_KEY << 24 ) | ( ( ( uint32 )pBcn ) << 16 ) | ( ( uint32 )pBdt ) | ( ( uint32 )pFlg & eGPUDataFormatMaskAll );
 		}
 
 	}
@@ -86,15 +86,15 @@ namespace Ic3::Graphics::GCI
 	enum class EBaseDataType : base_data_type_value_t
 	{
 		Undefined    = CxDef::makeBaseDataTypeEnumValue( 0 , 0 , 0 ),
-		Byte         = CxDef::makeBaseDataTypeEnumValue( 1 , 1 , eGpuDataFormatFlagTypeSignedBit   ),
-		Ubyte        = CxDef::makeBaseDataTypeEnumValue( 2 , 1 , eGpuDataFormatFlagTypeUnsignedBit ),
-		Int16        = CxDef::makeBaseDataTypeEnumValue( 3 , 2 , eGpuDataFormatFlagTypeSignedBit   ),
-		Uint16       = CxDef::makeBaseDataTypeEnumValue( 4 , 2 , eGpuDataFormatFlagTypeUnsignedBit ),
-		Int32        = CxDef::makeBaseDataTypeEnumValue( 5 , 4 , eGpuDataFormatFlagTypeSignedBit   ),
-		Uint32       = CxDef::makeBaseDataTypeEnumValue( 6 , 4 , eGpuDataFormatFlagTypeUnsignedBit ),
-		Float16      = CxDef::makeBaseDataTypeEnumValue( 7 , 2 , eGpuDataFormatFlagTypeSignedBit   ),
-		Float32      = CxDef::makeBaseDataTypeEnumValue( 8 , 4 , eGpuDataFormatFlagTypeSignedBit   ),
-		Uint24S8     = CxDef::makeBaseDataTypeEnumValue( 9 , 4 , eGpuDataFormatFlagTypeUnsignedBit ),
+		Byte         = CxDef::makeBaseDataTypeEnumValue( 1 , 1 , eGPUDataFormatFlagTypeSignedBit   ),
+		Ubyte        = CxDef::makeBaseDataTypeEnumValue( 2 , 1 , eGPUDataFormatFlagTypeUnsignedBit ),
+		Int16        = CxDef::makeBaseDataTypeEnumValue( 3 , 2 , eGPUDataFormatFlagTypeSignedBit   ),
+		Uint16       = CxDef::makeBaseDataTypeEnumValue( 4 , 2 , eGPUDataFormatFlagTypeUnsignedBit ),
+		Int32        = CxDef::makeBaseDataTypeEnumValue( 5 , 4 , eGPUDataFormatFlagTypeSignedBit   ),
+		Uint32       = CxDef::makeBaseDataTypeEnumValue( 6 , 4 , eGPUDataFormatFlagTypeUnsignedBit ),
+		Float16      = CxDef::makeBaseDataTypeEnumValue( 7 , 2 , eGPUDataFormatFlagTypeSignedBit   ),
+		Float32      = CxDef::makeBaseDataTypeEnumValue( 8 , 4 , eGPUDataFormatFlagTypeSignedBit   ),
+		Uint24S8     = CxDef::makeBaseDataTypeEnumValue( 9 , 4 , eGPUDataFormatFlagTypeUnsignedBit ),
 	};
 
 	enum class EIndexDataFormat : base_data_type_value_t
@@ -132,49 +132,49 @@ namespace Ic3::Graphics::GCI
 
 		R8I        = CxDef::makeTextureDataFormatEnumValue( 21 , EPixelDataLayout::Red  , EBaseDataType::Byte  , 1 ),
 		R8U        = CxDef::makeTextureDataFormatEnumValue( 22 , EPixelDataLayout::Red  , EBaseDataType::Ubyte , 1 ),
-		R8IN       = CxDef::makeTextureDataFormatEnumValue( 23 , EPixelDataLayout::Red  , EBaseDataType::Byte  , 1 , eGpuDataFormatFlagNormalizedBit ),
-		R8UN       = CxDef::makeTextureDataFormatEnumValue( 24 , EPixelDataLayout::Red  , EBaseDataType::Ubyte , 1 , eGpuDataFormatFlagNormalizedBit ),
+		R8IN       = CxDef::makeTextureDataFormatEnumValue( 23 , EPixelDataLayout::Red  , EBaseDataType::Byte  , 1 , eGPUDataFormatFlagNormalizedBit ),
+		R8UN       = CxDef::makeTextureDataFormatEnumValue( 24 , EPixelDataLayout::Red  , EBaseDataType::Ubyte , 1 , eGPUDataFormatFlagNormalizedBit ),
 		RG8I       = CxDef::makeTextureDataFormatEnumValue( 25 , EPixelDataLayout::RG   , EBaseDataType::Byte  , 2 ),
 		RG8U       = CxDef::makeTextureDataFormatEnumValue( 26 , EPixelDataLayout::RG   , EBaseDataType::Ubyte , 2 ),
-		RG8IN      = CxDef::makeTextureDataFormatEnumValue( 27 , EPixelDataLayout::RG   , EBaseDataType::Byte  , 2 , eGpuDataFormatFlagNormalizedBit ),
-		RG8UN      = CxDef::makeTextureDataFormatEnumValue( 28 , EPixelDataLayout::RG   , EBaseDataType::Ubyte , 2 , eGpuDataFormatFlagNormalizedBit ),
-		BGRX8UN    = CxDef::makeTextureDataFormatEnumValue( 29 , EPixelDataLayout::RGBA , EBaseDataType::Ubyte , 4 , eGpuDataFormatFlagNormalizedBit ),
-		BGRX8SRGB  = CxDef::makeTextureDataFormatEnumValue( 30 , EPixelDataLayout::RGBA , EBaseDataType::Ubyte , 4 , eGpuDataFormatFlagSRGBBit       ),
-		BGRA8UN    = CxDef::makeTextureDataFormatEnumValue( 31 , EPixelDataLayout::RGBA , EBaseDataType::Ubyte , 4 , eGpuDataFormatFlagNormalizedBit ),
-		BGRA8SRGB  = CxDef::makeTextureDataFormatEnumValue( 32 , EPixelDataLayout::RGBA , EBaseDataType::Ubyte , 4 , eGpuDataFormatFlagSRGBBit       ),
+		RG8IN      = CxDef::makeTextureDataFormatEnumValue( 27 , EPixelDataLayout::RG   , EBaseDataType::Byte  , 2 , eGPUDataFormatFlagNormalizedBit ),
+		RG8UN      = CxDef::makeTextureDataFormatEnumValue( 28 , EPixelDataLayout::RG   , EBaseDataType::Ubyte , 2 , eGPUDataFormatFlagNormalizedBit ),
+		BGRX8UN    = CxDef::makeTextureDataFormatEnumValue( 29 , EPixelDataLayout::RGBA , EBaseDataType::Ubyte , 4 , eGPUDataFormatFlagNormalizedBit ),
+		BGRX8SRGB  = CxDef::makeTextureDataFormatEnumValue( 30 , EPixelDataLayout::RGBA , EBaseDataType::Ubyte , 4 , eGPUDataFormatFlagSRGBBit       ),
+		BGRA8UN    = CxDef::makeTextureDataFormatEnumValue( 31 , EPixelDataLayout::RGBA , EBaseDataType::Ubyte , 4 , eGPUDataFormatFlagNormalizedBit ),
+		BGRA8SRGB  = CxDef::makeTextureDataFormatEnumValue( 32 , EPixelDataLayout::RGBA , EBaseDataType::Ubyte , 4 , eGPUDataFormatFlagSRGBBit       ),
 		RGBA8I     = CxDef::makeTextureDataFormatEnumValue( 33 , EPixelDataLayout::RGBA , EBaseDataType::Byte  , 4 ),
 		RGBA8U     = CxDef::makeTextureDataFormatEnumValue( 34 , EPixelDataLayout::RGBA , EBaseDataType::Ubyte , 4 ),
-		RGBA8IN    = CxDef::makeTextureDataFormatEnumValue( 35 , EPixelDataLayout::RGBA , EBaseDataType::Byte  , 4 , eGpuDataFormatFlagNormalizedBit ),
-		RGBA8UN    = CxDef::makeTextureDataFormatEnumValue( 36 , EPixelDataLayout::RGBA , EBaseDataType::Ubyte , 4 , eGpuDataFormatFlagNormalizedBit ),
-		RGBA8SRGB  = CxDef::makeTextureDataFormatEnumValue( 37 , EPixelDataLayout::RGBA , EBaseDataType::Ubyte , 4 , eGpuDataFormatFlagSRGBBit ),
+		RGBA8IN    = CxDef::makeTextureDataFormatEnumValue( 35 , EPixelDataLayout::RGBA , EBaseDataType::Byte  , 4 , eGPUDataFormatFlagNormalizedBit ),
+		RGBA8UN    = CxDef::makeTextureDataFormatEnumValue( 36 , EPixelDataLayout::RGBA , EBaseDataType::Ubyte , 4 , eGPUDataFormatFlagNormalizedBit ),
+		RGBA8SRGB  = CxDef::makeTextureDataFormatEnumValue( 37 , EPixelDataLayout::RGBA , EBaseDataType::Ubyte , 4 , eGPUDataFormatFlagSRGBBit ),
 
 		R5G5B5A1   = CxDef::makeTextureDataFormatEnumValue( 38 , EPixelDataLayout::RGBA , EBaseDataType::Ubyte   , 2 ),
 		R5G6B5     = CxDef::makeTextureDataFormatEnumValue( 39 , EPixelDataLayout::RGB  , EBaseDataType::Ubyte   , 2 ),
 		R9G9B9E5   = CxDef::makeTextureDataFormatEnumValue( 40 , EPixelDataLayout::RGBA , EBaseDataType::Uint32  , 4 ),
 		RGB10A2U   = CxDef::makeTextureDataFormatEnumValue( 41 , EPixelDataLayout::RGBA , EBaseDataType::Uint32  , 4 ),
-		RGB10A2UN  = CxDef::makeTextureDataFormatEnumValue( 42 , EPixelDataLayout::RGBA , EBaseDataType::Float32 , 4 , eGpuDataFormatFlagNormalizedBit ),
+		RGB10A2UN  = CxDef::makeTextureDataFormatEnumValue( 42 , EPixelDataLayout::RGBA , EBaseDataType::Float32 , 4 , eGPUDataFormatFlagNormalizedBit ),
 		R11G11B10F = CxDef::makeTextureDataFormatEnumValue( 43 , EPixelDataLayout::RGB  , EBaseDataType::Float32 , 4 ),
 
-		D16UN      = CxDef::makeTextureDataFormatEnumValue( 44 , EPixelDataLayout::Depth , EBaseDataType::Uint16   , 2 , eGpuDataFormatMaskDepthNorm       ),
-		D24UNS8U   = CxDef::makeTextureDataFormatEnumValue( 45 , EPixelDataLayout::DS    , EBaseDataType::Uint24S8 , 4 , eGpuDataFormatFlagDepthStencilBit ),
-		D24UNX8    = CxDef::makeTextureDataFormatEnumValue( 46 , EPixelDataLayout::DS    , EBaseDataType::Uint24S8 , 4 , eGpuDataFormatFlagDepthBit        ),
-		X24S8U     = CxDef::makeTextureDataFormatEnumValue( 47 , EPixelDataLayout::DS    , EBaseDataType::Uint24S8 , 4 , eGpuDataFormatFlagStencilBit      ),
-		D32F       = CxDef::makeTextureDataFormatEnumValue( 48 , EPixelDataLayout::DS    , EBaseDataType::Float32  , 4 , eGpuDataFormatFlagDepthBit        ),
+		D16UN      = CxDef::makeTextureDataFormatEnumValue( 44 , EPixelDataLayout::Depth , EBaseDataType::Uint16   , 2 , eGPUDataFormatMaskDepthNorm       ),
+		D24UNS8U   = CxDef::makeTextureDataFormatEnumValue( 45 , EPixelDataLayout::DS    , EBaseDataType::Uint24S8 , 4 , eGPUDataFormatFlagDepthStencilBit ),
+		D24UNX8    = CxDef::makeTextureDataFormatEnumValue( 46 , EPixelDataLayout::DS    , EBaseDataType::Uint24S8 , 4 , eGPUDataFormatFlagDepthBit        ),
+		X24S8U     = CxDef::makeTextureDataFormatEnumValue( 47 , EPixelDataLayout::DS    , EBaseDataType::Uint24S8 , 4 , eGPUDataFormatFlagStencilBit      ),
+		D32F       = CxDef::makeTextureDataFormatEnumValue( 48 , EPixelDataLayout::DS    , EBaseDataType::Float32  , 4 , eGPUDataFormatFlagDepthBit        ),
 
-		BC1        = CxDef::makeTextureDataFormatEnumValue( 49 , EPixelDataLayout::S3TC ,  EBaseDataType::Undefined , 0 , eGpuDataFormatFlagCompressedBit  ),
-		BC1SRGB    = CxDef::makeTextureDataFormatEnumValue( 50 , EPixelDataLayout::S3TC ,  EBaseDataType::Undefined , 0 , eGpuDataFormatMaskCompressedSRGB ),
-		BC2        = CxDef::makeTextureDataFormatEnumValue( 51 , EPixelDataLayout::S3TC ,  EBaseDataType::Undefined , 0 , eGpuDataFormatFlagCompressedBit  ),
-		BC2SRGB    = CxDef::makeTextureDataFormatEnumValue( 52 , EPixelDataLayout::S3TC ,  EBaseDataType::Undefined , 0 , eGpuDataFormatMaskCompressedSRGB ),
-		BC3        = CxDef::makeTextureDataFormatEnumValue( 53 , EPixelDataLayout::S3TC ,  EBaseDataType::Undefined , 0 , eGpuDataFormatFlagCompressedBit  ),
-		BC3SRGB    = CxDef::makeTextureDataFormatEnumValue( 54 , EPixelDataLayout::S3TC ,  EBaseDataType::Undefined , 0 , eGpuDataFormatMaskCompressedSRGB ),
-		BC4IN      = CxDef::makeTextureDataFormatEnumValue( 55 , EPixelDataLayout::S3TC ,  EBaseDataType::Undefined , 0 , eGpuDataFormatFlagCompressedBit  ),
-		BC4UN      = CxDef::makeTextureDataFormatEnumValue( 56 , EPixelDataLayout::S3TC ,  EBaseDataType::Undefined , 0 , eGpuDataFormatFlagCompressedBit  ),
-		BC5IN      = CxDef::makeTextureDataFormatEnumValue( 57 , EPixelDataLayout::S3TC ,  EBaseDataType::Undefined , 0 , eGpuDataFormatFlagCompressedBit  ),
-		BC5UN      = CxDef::makeTextureDataFormatEnumValue( 58 , EPixelDataLayout::S3TC ,  EBaseDataType::Undefined , 0 , eGpuDataFormatFlagCompressedBit  ),
-		BC6HSF     = CxDef::makeTextureDataFormatEnumValue( 59 , EPixelDataLayout::S3TC ,  EBaseDataType::Undefined , 0 , eGpuDataFormatFlagCompressedBit  ),
-		BC6HUF     = CxDef::makeTextureDataFormatEnumValue( 60 , EPixelDataLayout::S3TC ,  EBaseDataType::Undefined , 0 , eGpuDataFormatFlagCompressedBit  ),
-		BC7        = CxDef::makeTextureDataFormatEnumValue( 61 , EPixelDataLayout::S3TC ,  EBaseDataType::Undefined , 0 , eGpuDataFormatFlagCompressedBit  ),
-		BC7SRGB    = CxDef::makeTextureDataFormatEnumValue( 62 , EPixelDataLayout::S3TC ,  EBaseDataType::Undefined , 0 , eGpuDataFormatMaskCompressedSRGB ),
+		BC1        = CxDef::makeTextureDataFormatEnumValue( 49 , EPixelDataLayout::S3TC ,  EBaseDataType::Undefined , 0 , eGPUDataFormatFlagCompressedBit  ),
+		BC1SRGB    = CxDef::makeTextureDataFormatEnumValue( 50 , EPixelDataLayout::S3TC ,  EBaseDataType::Undefined , 0 , eGPUDataFormatMaskCompressedSRGB ),
+		BC2        = CxDef::makeTextureDataFormatEnumValue( 51 , EPixelDataLayout::S3TC ,  EBaseDataType::Undefined , 0 , eGPUDataFormatFlagCompressedBit  ),
+		BC2SRGB    = CxDef::makeTextureDataFormatEnumValue( 52 , EPixelDataLayout::S3TC ,  EBaseDataType::Undefined , 0 , eGPUDataFormatMaskCompressedSRGB ),
+		BC3        = CxDef::makeTextureDataFormatEnumValue( 53 , EPixelDataLayout::S3TC ,  EBaseDataType::Undefined , 0 , eGPUDataFormatFlagCompressedBit  ),
+		BC3SRGB    = CxDef::makeTextureDataFormatEnumValue( 54 , EPixelDataLayout::S3TC ,  EBaseDataType::Undefined , 0 , eGPUDataFormatMaskCompressedSRGB ),
+		BC4IN      = CxDef::makeTextureDataFormatEnumValue( 55 , EPixelDataLayout::S3TC ,  EBaseDataType::Undefined , 0 , eGPUDataFormatFlagCompressedBit  ),
+		BC4UN      = CxDef::makeTextureDataFormatEnumValue( 56 , EPixelDataLayout::S3TC ,  EBaseDataType::Undefined , 0 , eGPUDataFormatFlagCompressedBit  ),
+		BC5IN      = CxDef::makeTextureDataFormatEnumValue( 57 , EPixelDataLayout::S3TC ,  EBaseDataType::Undefined , 0 , eGPUDataFormatFlagCompressedBit  ),
+		BC5UN      = CxDef::makeTextureDataFormatEnumValue( 58 , EPixelDataLayout::S3TC ,  EBaseDataType::Undefined , 0 , eGPUDataFormatFlagCompressedBit  ),
+		BC6HSF     = CxDef::makeTextureDataFormatEnumValue( 59 , EPixelDataLayout::S3TC ,  EBaseDataType::Undefined , 0 , eGPUDataFormatFlagCompressedBit  ),
+		BC6HUF     = CxDef::makeTextureDataFormatEnumValue( 60 , EPixelDataLayout::S3TC ,  EBaseDataType::Undefined , 0 , eGPUDataFormatFlagCompressedBit  ),
+		BC7        = CxDef::makeTextureDataFormatEnumValue( 61 , EPixelDataLayout::S3TC ,  EBaseDataType::Undefined , 0 , eGPUDataFormatFlagCompressedBit  ),
+		BC7SRGB    = CxDef::makeTextureDataFormatEnumValue( 62 , EPixelDataLayout::S3TC ,  EBaseDataType::Undefined , 0 , eGPUDataFormatMaskCompressedSRGB ),
 	};
 
 	enum class EVertexAttribFormat : vertex_attrib_format_value_t
@@ -189,10 +189,10 @@ namespace Ic3::Graphics::GCI
 		U8        = CxDef::makeVertexAttribFormatEnumValue( 1 , EBaseDataType::Ubyte   ),
 		U16       = CxDef::makeVertexAttribFormatEnumValue( 1 , EBaseDataType::Uint16  ),
 		U32       = CxDef::makeVertexAttribFormatEnumValue( 1 , EBaseDataType::Uint32  ),
-		I8N       = CxDef::makeVertexAttribFormatEnumValue( 1 , EBaseDataType::Byte    , eGpuDataFormatFlagNormalizedBit ),
-		I16N      = CxDef::makeVertexAttribFormatEnumValue( 1 , EBaseDataType::Int16   , eGpuDataFormatFlagNormalizedBit ),
-		U8N       = CxDef::makeVertexAttribFormatEnumValue( 1 , EBaseDataType::Ubyte   , eGpuDataFormatFlagNormalizedBit ),
-		U16N      = CxDef::makeVertexAttribFormatEnumValue( 1 , EBaseDataType::Uint16  , eGpuDataFormatFlagNormalizedBit ),
+		I8N       = CxDef::makeVertexAttribFormatEnumValue( 1 , EBaseDataType::Byte    , eGPUDataFormatFlagNormalizedBit ),
+		I16N      = CxDef::makeVertexAttribFormatEnumValue( 1 , EBaseDataType::Int16   , eGPUDataFormatFlagNormalizedBit ),
+		U8N       = CxDef::makeVertexAttribFormatEnumValue( 1 , EBaseDataType::Ubyte   , eGPUDataFormatFlagNormalizedBit ),
+		U16N      = CxDef::makeVertexAttribFormatEnumValue( 1 , EBaseDataType::Uint16  , eGPUDataFormatFlagNormalizedBit ),
 		Vec2F16   = CxDef::makeVertexAttribFormatEnumValue( 2 , EBaseDataType::Float16 ),
 		Vec2F32   = CxDef::makeVertexAttribFormatEnumValue( 2 , EBaseDataType::Float32 ),
 		Vec2I8    = CxDef::makeVertexAttribFormatEnumValue( 2 , EBaseDataType::Byte    ),
@@ -201,10 +201,10 @@ namespace Ic3::Graphics::GCI
 		Vec2U8    = CxDef::makeVertexAttribFormatEnumValue( 2 , EBaseDataType::Ubyte   ),
 		Vec2U16   = CxDef::makeVertexAttribFormatEnumValue( 2 , EBaseDataType::Uint16  ),
 		Vec2U32   = CxDef::makeVertexAttribFormatEnumValue( 2 , EBaseDataType::Uint32  ),
-		Vec2I8N   = CxDef::makeVertexAttribFormatEnumValue( 2 , EBaseDataType::Byte    , eGpuDataFormatFlagNormalizedBit ),
-		Vec2I16N  = CxDef::makeVertexAttribFormatEnumValue( 2 , EBaseDataType::Int16   , eGpuDataFormatFlagNormalizedBit ),
-		Vec2U8N   = CxDef::makeVertexAttribFormatEnumValue( 2 , EBaseDataType::Ubyte   , eGpuDataFormatFlagNormalizedBit ),
-		Vec2U16N  = CxDef::makeVertexAttribFormatEnumValue( 2 , EBaseDataType::Uint16  , eGpuDataFormatFlagNormalizedBit ),
+		Vec2I8N   = CxDef::makeVertexAttribFormatEnumValue( 2 , EBaseDataType::Byte    , eGPUDataFormatFlagNormalizedBit ),
+		Vec2I16N  = CxDef::makeVertexAttribFormatEnumValue( 2 , EBaseDataType::Int16   , eGPUDataFormatFlagNormalizedBit ),
+		Vec2U8N   = CxDef::makeVertexAttribFormatEnumValue( 2 , EBaseDataType::Ubyte   , eGPUDataFormatFlagNormalizedBit ),
+		Vec2U16N  = CxDef::makeVertexAttribFormatEnumValue( 2 , EBaseDataType::Uint16  , eGPUDataFormatFlagNormalizedBit ),
 		Vec3F32   = CxDef::makeVertexAttribFormatEnumValue( 3 , EBaseDataType::Float32 ),
 		Vec3I32   = CxDef::makeVertexAttribFormatEnumValue( 3 , EBaseDataType::Int32   ),
 		Vec3U32   = CxDef::makeVertexAttribFormatEnumValue( 3 , EBaseDataType::Uint32  ),
@@ -216,10 +216,10 @@ namespace Ic3::Graphics::GCI
 		Vec4U8    = CxDef::makeVertexAttribFormatEnumValue( 4 , EBaseDataType::Ubyte   ),
 		Vec4U16   = CxDef::makeVertexAttribFormatEnumValue( 4 , EBaseDataType::Uint16  ),
 		Vec4U32   = CxDef::makeVertexAttribFormatEnumValue( 4 , EBaseDataType::Uint32  ),
-		Vec4I8N   = CxDef::makeVertexAttribFormatEnumValue( 4 , EBaseDataType::Byte    , eGpuDataFormatFlagNormalizedBit ),
-		Vec4I16N  = CxDef::makeVertexAttribFormatEnumValue( 4 , EBaseDataType::Int16   , eGpuDataFormatFlagNormalizedBit ),
-		Vec4U8N   = CxDef::makeVertexAttribFormatEnumValue( 4 , EBaseDataType::Ubyte   , eGpuDataFormatFlagNormalizedBit ),
-		Vec4U16N  = CxDef::makeVertexAttribFormatEnumValue( 4 , EBaseDataType::Uint16  , eGpuDataFormatFlagNormalizedBit ),
+		Vec4I8N   = CxDef::makeVertexAttribFormatEnumValue( 4 , EBaseDataType::Byte    , eGPUDataFormatFlagNormalizedBit ),
+		Vec4I16N  = CxDef::makeVertexAttribFormatEnumValue( 4 , EBaseDataType::Int16   , eGPUDataFormatFlagNormalizedBit ),
+		Vec4U8N   = CxDef::makeVertexAttribFormatEnumValue( 4 , EBaseDataType::Ubyte   , eGPUDataFormatFlagNormalizedBit ),
+		Vec4U16N  = CxDef::makeVertexAttribFormatEnumValue( 4 , EBaseDataType::Uint16  , eGPUDataFormatFlagNormalizedBit ),
 	};
 
 	using EShaderInputConstantFormat = EVertexAttribFormat;
@@ -232,7 +232,7 @@ namespace Ic3::Graphics::GCI
 			return ( uint16 )( ( ( base_data_type_value_t )pBaseType >> 12 ) & 0xF );
 		}
 
-		CPPX_ATTR_NO_DISCARD inline constexpr cppx::bitmask<EGpuDataFormatFlags> GetBaseDataTypeFlags( EBaseDataType pBaseType ) noexcept
+		CPPX_ATTR_NO_DISCARD inline constexpr cppx::bitmask<EGPUDataFormatFlags> GetBaseDataTypeFlags( EBaseDataType pBaseType ) noexcept
 		{
 			return cppx::make_bitmask<uint8>( ( base_data_type_value_t )pBaseType & 0xF );
 		}
@@ -257,7 +257,7 @@ namespace Ic3::Graphics::GCI
 			return ( EBaseDataType )( ( ( texture_format_value_t )pFormat >> 8 ) & 0xFFFF );
 		}
 
-		CPPX_ATTR_NO_DISCARD inline constexpr cppx::bitmask<EGpuDataFormatFlags> GetTextureFormatFlags( ETextureFormat pFormat ) noexcept
+		CPPX_ATTR_NO_DISCARD inline constexpr cppx::bitmask<EGPUDataFormatFlags> GetTextureFormatFlags( ETextureFormat pFormat ) noexcept
 		{
 			return cppx::make_bitmask<uint8>( ( ( texture_format_value_t )pFormat >> 8 ) & 0xFF );
 		}
@@ -272,7 +272,7 @@ namespace Ic3::Graphics::GCI
 			return ( EBaseDataType )( ( vertex_attrib_format_value_t )pFormat & 0xFFFF );
 		}
 
-		CPPX_ATTR_NO_DISCARD inline constexpr cppx::bitmask<EGpuDataFormatFlags> GetVertexAttribFormatFlags( EVertexAttribFormat pFormat )
+		CPPX_ATTR_NO_DISCARD inline constexpr cppx::bitmask<EGPUDataFormatFlags> GetVertexAttribFormatFlags( EVertexAttribFormat pFormat )
 		{
 			return cppx::make_bitmask<uint8>( ( vertex_attrib_format_value_t )pFormat & 0xFF );
 		}
@@ -280,13 +280,13 @@ namespace Ic3::Graphics::GCI
 		CPPX_ATTR_NO_DISCARD inline constexpr bool IsTextureFormatSRGB( ETextureFormat pFormat ) noexcept
 		{
 			const auto formatFlags = GetTextureFormatFlags( pFormat );
-			return formatFlags.is_set( eGpuDataFormatFlagSRGBBit );
+			return formatFlags.is_set( eGPUDataFormatFlagSRGBBit );
 		}
 
 		CPPX_ATTR_NO_DISCARD inline constexpr bool IsVertexAttribFormatNormalized( EVertexAttribFormat pFormat ) noexcept
 		{
 			const auto formatFlags = GetVertexAttribFormatFlags( pFormat );
-			return formatFlags.is_set( eGpuDataFormatFlagNormalizedBit );
+			return formatFlags.is_set( eGPUDataFormatFlagNormalizedBit );
 		}
 
 		CPPX_ATTR_NO_DISCARD inline constexpr bool IsVertexAttribFormatValid( EVertexAttribFormat pFormat ) noexcept

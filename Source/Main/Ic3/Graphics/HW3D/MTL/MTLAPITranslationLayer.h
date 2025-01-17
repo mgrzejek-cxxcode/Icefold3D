@@ -15,8 +15,8 @@ namespace Ic3::Graphics::GCI
 		// GLenum TranslateGLBaseDataType( EBaseDataType pBaseDataType );
 		// GLenum TranslateGLBlendFactor( EBlendFactor pBlendFactor );
 		// GLenum TranslateGLBlendOp( EBlendOp pBlendOp );
-		// GLenum TranslateGLBufferBindTarget( EGpuBufferTarget pBufferTarget );
-		// GLenum TranslateGLBufferMapFlags( EGpuMemoryMapMode pMapMode, cppx::bitmask<EGpuMemoryFlags> pMemoryFlags );
+		// GLenum TranslateGLBufferBindTarget( EGPUBufferTarget pBufferTarget );
+		// GLenum TranslateGLBufferMapFlags( EGPUMemoryMapMode pMapMode, cppx::bitmask<EGPUMemoryFlags> pMemoryFlags );
 		MTLCompareFunction translateMTLCompFunc( ECompFunc pCompFunc );
 		// GLenum TranslateGLCullMode( ECullMode pCullMode );
 		// GLenum TranslateGLIndexDataFormat( EIndexDataFormat pIndexDataFormat );

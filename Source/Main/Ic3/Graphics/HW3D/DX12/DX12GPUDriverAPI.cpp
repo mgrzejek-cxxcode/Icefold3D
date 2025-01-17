@@ -1,22 +1,22 @@
 
-#include "DX12GpuDriverAPI.h"
-#include "DX12GpuDriver.h"
-#include "DX12GpuDevice.h"
+#include "DX12GPUDriverAPI.h"
+#include "DX12GPUDriver.h"
+#include "DX12GPUDevice.h"
 #include <Ic3/Graphics/HW3D/DX12/system/DX12_presentationLayer.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	GpuDriverHandle DX12GpuDriverInterface::CreateDriver( const GpuDriverCreateInfo & pCreateInfo )
+	GPUDriverHandle DX12GPUDriverInterface::CreateDriver( const GPUDriverCreateInfo & pCreateInfo )
 	{
-		DX12GpuDriverCreateInfo dx12CreateInfo;
+		DX12GPUDriverCreateInfo dx12CreateInfo;
 		dx12CreateInfo.exfSystemContext = pCreateInfo.exfSystemContext;
 		dx12CreateInfo.configFlags = pCreateInfo.configFlags;
 
-		return DX12GpuDriver::Create( dx12CreateInfo );
+		return DX12GPUDriver::Create( dx12CreateInfo );
 	}
 
-	PresentationLayerHandle DX12GpuDriverInterface::CreateScreenPresentationLayer( GpuDevice & pDevice, const PresentationLayerCreateInfo & pCreateInfo )
+	PresentationLayerHandle DX12GPUDriverInterface::CreateScreenPresentationLayer( GPUDevice & pDevice, const PresentationLayerCreateInfo & pCreateInfo )
 	{
 		DX12PresentationLayerCreateInfo dx12CreateInfo;
 		dx12CreateInfo.coreEngineState = pCreateInfo.coreEngineState;
@@ -29,7 +29,7 @@ namespace Ic3::Graphics::GCI
 			dx12CreateInfo.dxgiFlags.set( DXGI_CREATE_FACTORY_DEBUG );
 		}
 
-		auto * deviceDX12 = pDevice.QueryInterface<DX12GpuDevice>();
+		auto * deviceDX12 = pDevice.QueryInterface<DX12GPUDevice>();
 		return DX12ScreenPresentationLayer::Create( *deviceDX12, dx12CreateInfo );
 	}
 

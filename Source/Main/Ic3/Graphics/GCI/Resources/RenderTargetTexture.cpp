@@ -6,11 +6,11 @@ namespace Ic3::Graphics::GCI
 {
 
 	RenderTargetTexture::RenderTargetTexture(
-			GpuDevice & pGpuDevice,
+			GPUDevice & pGPUDevice,
 			ERenderTargetTextureType pRTTextureType,
 			const RenderTargetTextureLayout & pRTTextureLayout,
 			TextureReference pTargetTexture )
-	: GpuResourceView( pGpuDevice, EGpuResourceBaseType::Texture, pTargetTexture->mTextureProperties.resourceFlags )
+	: GPUResourceView( pGPUDevice, EGPUResourceBaseType::Texture, pTargetTexture->mTextureProperties.resourceFlags )
 	, mRTTextureType( pRTTextureType )
 	, mRTBufferMask( CxDef::GetRTBufferMaskForRenderTargetTextureType( pRTTextureType ) )
 	, mRTTextureLayout( pRTTextureLayout )
@@ -18,12 +18,12 @@ namespace Ic3::Graphics::GCI
 	{}
 
 	RenderTargetTexture::RenderTargetTexture(
-			GpuDevice & pGpuDevice,
+			GPUDevice & pGPUDevice,
 			ERenderTargetTextureType pRTTextureType,
 			const RenderTargetTextureLayout & pRTTextureLayout,
-			TGfxHandle<GpuDeviceChildObject> pInternalRenderBuffer,
+			TGfxHandle<GPUDeviceChildObject> pInternalRenderBuffer,
 			cppx::bitmask<resource_flags_value_t> pRenderBufferFlags )
-	: GpuResourceView( pGpuDevice, EGpuResourceBaseType::Texture, pRenderBufferFlags )
+	: GPUResourceView( pGPUDevice, EGPUResourceBaseType::Texture, pRenderBufferFlags )
 	, mRTTextureType( pRTTextureType )
 	, mRTBufferMask( CxDef::GetRTBufferMaskForRenderTargetTextureType( pRTTextureType ) )
 	, mRTTextureLayout( pRTTextureLayout )
@@ -55,19 +55,19 @@ namespace Ic3::Graphics::GCI
 		{
 			const cppx::bitmask<uint8> pixelFormatFlags = CxDef::GetTextureFormatFlags( pFormat );
 
-			if( pixelFormatFlags.is_set( eGpuDataFormatFlagCompressedBit ) )
+			if( pixelFormatFlags.is_set( eGPUDataFormatFlagCompressedBit ) )
 			{
 				return ERenderTargetTextureType::Unknown;
 			}
-			else if( pixelFormatFlags.is_set( eGpuDataFormatFlagDepthStencilBit ) )
+			else if( pixelFormatFlags.is_set( eGPUDataFormatFlagDepthStencilBit ) )
 			{
 				return ERenderTargetTextureType::RTDepthStencil;
 			}
-			else if( pixelFormatFlags.is_set( eGpuDataFormatFlagDepthBit ) )
+			else if( pixelFormatFlags.is_set( eGPUDataFormatFlagDepthBit ) )
 			{
 				return ERenderTargetTextureType::RTDepthOnly;
 			}
-			else if( pixelFormatFlags.is_set( eGpuDataFormatFlagStencilBit ) )
+			else if( pixelFormatFlags.is_set( eGPUDataFormatFlagStencilBit ) )
 			{
 				return ERenderTargetTextureType::RTStencilOnly;
 			}

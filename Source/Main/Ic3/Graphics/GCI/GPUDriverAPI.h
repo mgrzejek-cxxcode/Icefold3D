@@ -10,26 +10,26 @@
 namespace Ic3::Graphics::GCI
 {
 
-	struct GpuDriverCreateInfo;
+	struct GPUDriverCreateInfo;
 	struct PresentationLayerCreateInfo;
 
-	struct GpuDriverAPI
+	struct GPUDriverAPI
 	{
-		using CreateDriverFuncType = std::function<GpuDriverHandle( const GpuDriverCreateInfo & )>;
-		using CreateScreenPresentationLayerFuncType = std::function<PresentationLayerHandle( GpuDevice &, const PresentationLayerCreateInfo & )>;
+		using CreateDriverFuncType = std::function<GPUDriverHandle( const GPUDriverCreateInfo & )>;
+		using CreateScreenPresentationLayerFuncType = std::function<PresentationLayerHandle( GPUDevice &, const PresentationLayerCreateInfo & )>;
 
 		CreateDriverFuncType CreateDriver;
 		CreateScreenPresentationLayerFuncType CreateScreenPresentationLayer;
 	};
 
-	class GpuDriverInterface
+	class GPUDriverInterface
 	{
 	public:
-		GpuDriverInterface() = default;
-		virtual ~GpuDriverInterface() = default;
+		GPUDriverInterface() = default;
+		virtual ~GPUDriverInterface() = default;
 
-		virtual GpuDriverHandle CreateDriver( const GpuDriverCreateInfo & pCreateInfo ) = 0;
-		virtual PresentationLayerHandle CreateScreenPresentationLayer( GpuDevice & pDevice, const PresentationLayerCreateInfo & pCreateInfo ) = 0;
+		virtual GPUDriverHandle CreateDriver( const GPUDriverCreateInfo & pCreateInfo ) = 0;
+		virtual PresentationLayerHandle CreateScreenPresentationLayer( GPUDevice & pDevice, const PresentationLayerCreateInfo & pCreateInfo ) = 0;
 	};
 
 } // namespace Ic3::Graphics::GCI

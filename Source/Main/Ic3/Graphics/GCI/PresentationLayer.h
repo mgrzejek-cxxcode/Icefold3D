@@ -23,12 +23,12 @@ namespace Ic3::Graphics::GCI
 	};
 
 	/// @brief
-	class IC3_GRAPHICS_GCI_CLASS PresentationLayer : public GpuDriverChildObject
+	class IC3_GRAPHICS_GCI_CLASS PresentationLayer : public GPUDriverChildObject
 	{
 	public:
-		GpuDevice & mGpuDevice;
+		GPUDevice & mGPUDevice;
 
-		explicit PresentationLayer( GpuDevice & pGpuDevice );
+		explicit PresentationLayer( GPUDevice & pGPUDevice );
 		virtual ~PresentationLayer();
 
 		virtual System::EventSource * GetInternalSystemEventSource() const noexcept;

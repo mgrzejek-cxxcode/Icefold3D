@@ -1,32 +1,32 @@
 
-#include "GpuDriverNull.h"
-#include "GpuDeviceNull.h"
+#include "GPUDriverNull.h"
+#include "GPUDeviceNull.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	GpuDriver::GpuDriver( System::SysContextHandle pSysContext ) noexcept
+	GPUDriver::GPUDriver( System::SysContextHandle pSysContext ) noexcept
 	: mSysContext( pSysContext )
 	{}
 
-	GpuDriver::~GpuDriver() noexcept = default;
+	GPUDriver::~GPUDriver() noexcept = default;
 
-	EGpuDriverID GpuDriver::QueryGpuDriverID() const noexcept
+	EGPUDriverID GPUDriver::QueryGPUDriverID() const noexcept
 	{
-		return EGpuDriverID::GDIUnknown;
+		return EGPUDriverID::GDIUnknown;
 	}
 
-	bool GpuDriver::IsNullDriver() const noexcept
+	bool GPUDriver::IsNullDriver() const noexcept
 	{
 		return false;
 	}
 
-	DisplayManagerHandle GpuDriver::CreateDefaultDisplayManager()
+	DisplayManagerHandle GPUDriver::CreateDefaultDisplayManager()
 	{
 		return nullptr;
 	}
 
-	GpuDeviceHandle GpuDriver::CreateDevice( const GpuDeviceCreateInfo & pCreateInfo )
+	GPUDeviceHandle GPUDriver::CreateDevice( const GPUDeviceCreateInfo & pCreateInfo )
 	{
 		auto gpuDevice = _DrvCreateDevice( pCreateInfo );
 		if( !gpuDevice )
@@ -39,13 +39,13 @@ namespace Ic3::Graphics::GCI
 		return gpuDevice;
 	}
 
-	GpuDriver & GpuDriver::GetNullDriver()
+	GPUDriver & GPUDriver::GetNullDriver()
 	{
-		static const GpuDriverHandle sNullDriverInstance = CreateGfxObject<GpuDriverNull>();
+		static const GPUDriverHandle sNullDriverInstance = CreateGfxObject<GPUDriverNull>();
 		return *sNullDriverInstance;
 	}
 
-	void GpuDriver::SetConfigFlags( cppx::bitmask<EGpuDriverConfigFlags> pConfigFlags )
+	void GPUDriver::SetConfigFlags( cppx::bitmask<EGPUDriverConfigFlags> pConfigFlags )
 	{
 		_configFlags = pConfigFlags;
 	}

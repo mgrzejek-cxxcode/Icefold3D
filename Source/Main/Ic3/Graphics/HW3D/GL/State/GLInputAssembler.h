@@ -138,14 +138,14 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		GLIAVertexStreamImmutableState(
-				GLGpuDevice & pGpuDevice,
+				GLGPUDevice & pGPUDevice,
 				const IAVertexStreamStateCommonProperties & pCommonProperties,
 				const GLIAVertexStreamDefinition & pGLVertexStreamDefinition );
 
 		virtual ~GLIAVertexStreamImmutableState();
 
 		static TGfxHandle<GLIAVertexStreamImmutableState> CreateInstance(
-				GLGpuDevice & pGpuDevice,
+				GLGPUDevice & pGPUDevice,
 				const IAVertexStreamDefinition & pVertexStreamDefinition );
 	};
 
@@ -154,7 +154,7 @@ namespace Ic3::Graphics::GCI
 	{
 	public:
 		GLIAInputLayoutImmutableState(
-				GLGpuDevice & pGpuDevice,
+				GLGPUDevice & pGPUDevice,
 				const IAInputLayoutStateCommonProperties & pCommonProperties );
 
 		virtual ~GLIAInputLayoutImmutableState();
@@ -169,7 +169,7 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		GLIAInputLayoutImmutableStateCore(
-				GLGpuDevice & pGpuDevice,
+				GLGPUDevice & pGPUDevice,
 				const IAInputLayoutStateCommonProperties & pCommonProperties,
 				GLVertexArrayObjectHandle pVertexArrayObject,
 				GLenum pGLPrimitiveTopology );
@@ -177,7 +177,7 @@ namespace Ic3::Graphics::GCI
 		virtual ~GLIAInputLayoutImmutableStateCore();
 
 		static TGfxHandle<GLIAInputLayoutImmutableStateCore> CreateInstance(
-				GLGpuDevice & pGpuDevice,
+				GLGPUDevice & pGPUDevice,
 				const IAInputLayoutDefinition & pInputLayoutDefinition );
 	};
 
@@ -189,14 +189,14 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		GLIAInputLayoutImmutableStateCompat(
-				GLGpuDevice & pGpuDevice,
+				GLGPUDevice & pGPUDevice,
 				const IAInputLayoutStateCommonProperties & pCommonProperties,
 				const GLIAInputLayoutDefinition & pGLInputLayoutDefinition );
 
 		virtual ~GLIAInputLayoutImmutableStateCompat();
 
 		static TGfxHandle<GLIAInputLayoutImmutableStateCompat> CreateInstance(
-				GLGpuDevice & pGpuDevice,
+				GLGPUDevice & pGPUDevice,
 				const IAInputLayoutDefinition & pInputLayoutDefinition );
 	};
 

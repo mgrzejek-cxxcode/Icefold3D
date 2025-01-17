@@ -1,7 +1,7 @@
 
 #include "GLCommandSystem.h"
 #include "GLCommandList.h"
-#include "GLGpuDevice.h"
+#include "GLGPUDevice.h"
 #include <Ic3/Graphics/GCI/CommandContext.h>
 #include <mutex>
 
@@ -18,8 +18,8 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	GLCommandSystem::GLCommandSystem( GLGpuDevice & pGpuDevice )
-	: CommandSystem( pGpuDevice )
+	GLCommandSystem::GLCommandSystem( GLGPUDevice & pGPUDevice )
+	: CommandSystem( pGPUDevice )
 	, _targetSysGLSurface( nullptr )
 	{}
 
@@ -44,8 +44,8 @@ namespace Ic3::Graphics::GCI
 
 		if( commandContext )
 		{
-			auto * openglGpuDevice = mGpuDevice.QueryInterface<GLGpuDevice>();
-			auto * openglDebugOutput = openglGpuDevice->GetDebugOutputInterface();
+			auto * openglGPUDevice = mGPUDevice.QueryInterface<GLGPUDevice>();
+			auto * openglDebugOutput = openglGPUDevice->GetDebugOutputInterface();
 
 			const auto EnableDebugOutput = false;
 
@@ -114,13 +114,13 @@ namespace Ic3::Graphics::GCI
 	{
 		Ic3DebugAssert( !_mainCommandList );
 
-		auto * openglGpuDevice = mGpuDevice.QueryInterface<GLGpuDevice>();
-		Ic3DebugAssert( openglGpuDevice );
+		auto * openglGPUDevice = mGPUDevice.QueryInterface<GLGPUDevice>();
+		Ic3DebugAssert( openglGPUDevice );
 
-		auto sysGLRenderContext = GLCommandSystem::CreateSysGLRenderContext( *openglGpuDevice, _targetSysGLSurface );
+		auto sysGLRenderContext = GLCommandSystem::CreateSysGLRenderContext( *openglGPUDevice, _targetSysGLSurface );
 		Ic3DebugAssert( sysGLRenderContext );
 
-		if( openglGpuDevice->IsCompatibilityDevice() )
+		if( openglGPUDevice->IsCompatibilityDevice() )
 		{
 			_mainCommandList = CreateGfxObject<GLCommandListCompat>( *this, ECommandListType::DirectGraphics, sysGLRenderContext );
 		}
@@ -132,7 +132,7 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	System::OpenGLRenderContextHandle GLCommandSystem::CreateSysGLRenderContext( GLGpuDevice & pGpuDevice, System::OpenGLDisplaySurfaceHandle pSysGLDisplaySurface )
+	System::OpenGLRenderContextHandle GLCommandSystem::CreateSysGLRenderContext( GLGPUDevice & pGPUDevice, System::OpenGLDisplaySurfaceHandle pSysGLDisplaySurface )
 	{
 		System::OpenGLRenderContextHandle sysGLRenderContext = nullptr;
 
@@ -151,7 +151,7 @@ namespace Ic3::Graphics::GCI
 			contextCreateInfo.runtimeVersionDesc.apiProfile = System::EGLAPIProfile::OpenGLES;
 		#endif
 
-			if( pGpuDevice.IsDebugDevice() )
+			if( pGPUDevice.IsDebugDevice() )
 			{
 				contextCreateInfo.flags.set( System::eOpenGLRenderContextCreateFlagEnableDebugBit );
 			}

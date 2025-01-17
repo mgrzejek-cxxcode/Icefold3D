@@ -1,20 +1,20 @@
 
 #include "VK_presentationLayer.h"
-#include <Ic3/GpuapiVK/VKUDevice.h>
-#include <Ic3/GpuapiVK/VK_commandList.h>
-#include <Ic3/GpuapiVK/VK_commandSystem.h>
+#include <Ic3/GPUapiVK/VKUDevice.h>
+#include <Ic3/GPUapiVK/VK_commandList.h>
+#include <Ic3/GPUapiVK/VK_commandSystem.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	VKPresentationLayer::VKPresentationLayer( GpuDevice & pDevice )
+	VKPresentationLayer::VKPresentationLayer( GPUDevice & pDevice )
 	: PresentationLayer( pDevice )
 	{}
 
 	VKPresentationLayer::~VKPresentationLayer() = default;
 
 
-	VKScreenPresentationLayer::VKScreenPresentationLayer( GpuDevice & pDevice )
+	VKScreenPresentationLayer::VKScreenPresentationLayer( GPUDevice & pDevice )
 	: VKPresentationLayer( pDevice )
 	{}
 

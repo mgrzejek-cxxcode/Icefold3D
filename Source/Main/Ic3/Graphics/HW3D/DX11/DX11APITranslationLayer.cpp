@@ -1,7 +1,7 @@
 
 #include "DX11ApiTranslationLayer.h"
-#include <Ic3/Graphics/HW3D/DX11/DX11GpuDevice.h>
-#include <Ic3/Graphics/GCI/Resources/GpuBufferCommon.h>
+#include <Ic3/Graphics/HW3D/DX11/DX11GPUDevice.h>
+#include <Ic3/Graphics/GCI/Resources/GPUBufferCommon.h>
 #include <Ic3/Graphics/GCI/State/SamplerCommon.h>
 #include <Ic3/Graphics/GCI/Resources/ShaderCommon.h>
 #include <Ic3/Graphics/GCI/Resources/TextureCommon.h>
@@ -152,7 +152,7 @@ namespace Ic3::Graphics::GCI
 		return dxgiFactory2;
 	}
 
-	ComPtr<IDXGISwapChain1> ATL::CreateD3D11SwapChainForSystemWindow( DX11GpuDevice & pDX11GpuDevice, void * pSysWindow )
+	ComPtr<IDXGISwapChain1> ATL::CreateD3D11SwapChainForSystemWindow( DX11GPUDevice & pDX11GPUDevice, void * pSysWindow )
 	{
 	    auto * sysWindowPtr = static_cast<System::Window *>( pSysWindow )->QueryInterface<System::Win32Window>();
 		auto presentationLayerSize = sysWindowPtr->GetClientAreaSize();
@@ -168,9 +168,9 @@ namespace Ic3::Graphics::GCI
 		swapChainDesc.BufferCount = 1;
 		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 
-		auto & dxgiFactory = pDX11GpuDevice.mDXGIFactory2;
+		auto & dxgiFactory = pDX11GPUDevice.mDXGIFactory2;
 		ComPtr<IDXGISwapChain1> dxgiSwapChain1;
-		auto hResult = dxgiFactory->CreateSwapChainForHwnd( pDX11GpuDevice.mD3D11Device1.Get(),
+		auto hResult = dxgiFactory->CreateSwapChainForHwnd( pDX11GPUDevice.mD3D11Device1.Get(),
 		                                                    sysWindowPtr->mNativeData.mHWND,
 		                                                    &swapChainDesc,
 		                                                    nullptr,
@@ -184,7 +184,7 @@ namespace Ic3::Graphics::GCI
 		return dxgiSwapChain1;
 	}
 
-	UINT ATL::TranslateDX11GpuDeviceCreateFlags( cppx::bitmask<EGpuDriverConfigFlags> pDriverConfigFlags )
+	UINT ATL::TranslateDX11GPUDeviceCreateFlags( cppx::bitmask<EGPUDriverConfigFlags> pDriverConfigFlags )
 	{
 		cppx::bitmask<UINT> deviceCreateFlags = 0;
 		if( pDriverConfigFlags.is_set( E_GPU_DRIVER_CONFIG_FLAG_ENABLE_DEBUG_LAYER_BIT ) )
@@ -305,15 +305,15 @@ namespace Ic3::Graphics::GCI
 		return d3d11BindFlags;
 	}
 
-	D3D11_MAP ATL::TranslateDX11BufferMapFlags( EGpuMemoryMapMode pMapMode, cppx::bitmask<EGpuMemoryFlags> /* pMemoryFlags */ )
+	D3D11_MAP ATL::TranslateDX11BufferMapFlags( EGPUMemoryMapMode pMapMode, cppx::bitmask<EGPUMemoryFlags> /* pMemoryFlags */ )
 	{
 		switch( pMapMode )
 		{
-			Ic3CaseReturn( EGpuMemoryMapMode::ReadOnly        , D3D11_MAP_READ               );
-			Ic3CaseReturn( EGpuMemoryMapMode::ReadWrite       , D3D11_MAP_READ_WRITE         );
-			Ic3CaseReturn( EGpuMemoryMapMode::WriteDefault    , D3D11_MAP_WRITE              );
-			Ic3CaseReturn( EGpuMemoryMapMode::WriteInvalidate , D3D11_MAP_WRITE_DISCARD      );
-			Ic3CaseReturn( EGpuMemoryMapMode::WriteAppend     , D3D11_MAP_WRITE_NO_OVERWRITE );
+			Ic3CaseReturn( EGPUMemoryMapMode::ReadOnly        , D3D11_MAP_READ               );
+			Ic3CaseReturn( EGPUMemoryMapMode::ReadWrite       , D3D11_MAP_READ_WRITE         );
+			Ic3CaseReturn( EGPUMemoryMapMode::WriteDefault    , D3D11_MAP_WRITE              );
+			Ic3CaseReturn( EGPUMemoryMapMode::WriteInvalidate , D3D11_MAP_WRITE_DISCARD      );
+			Ic3CaseReturn( EGPUMemoryMapMode::WriteAppend     , D3D11_MAP_WRITE_NO_OVERWRITE );
 		};
 		return static_cast<D3D11_MAP>( 0 );
 	}

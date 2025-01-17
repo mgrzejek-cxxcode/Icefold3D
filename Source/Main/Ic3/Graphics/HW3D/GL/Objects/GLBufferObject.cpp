@@ -207,13 +207,13 @@ namespace Ic3::Graphics::GCI
 	#endif
 	}
 
-	void GLBufferObject::UpdateCopyInvalidate( GLBufferObject & pSrcBuffer, const GpuBufferSubDataCopyDesc & pCopyDesc, GLenum pActiveBindTarget )
+	void GLBufferObject::UpdateCopyInvalidate( GLBufferObject & pSrcBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc, GLenum pActiveBindTarget )
 	{
 		auto bufferBindTarget = CheckActiveBindTarget( pActiveBindTarget );
 
 		// If we copy data into the whole buffer, give driver a hint to invalidate the storage.
 		// For ES, use storage orphaning since glInvalidateBuffer() is not available there.
-		if( pCopyDesc.flags.is_set( eGpuBufferDataCopyFlagModeInvalidateBit ) )
+		if( pCopyDesc.flags.is_set( eGPUBufferDataCopyFlagModeInvalidateBit ) )
 		{
 			if( pCopyDesc.sourceBufferRegion.size == size )
 			{
@@ -245,13 +245,13 @@ namespace Ic3::Graphics::GCI
 		Ic3OpenGLHandleLastError();
 	}
 
-	void GLBufferObject::UpdateCopyOrphan( GLBufferObject & pSrcBuffer, const GpuBufferSubDataCopyDesc & pCopyDesc, GLenum pActiveBindTarget )
+	void GLBufferObject::UpdateCopyOrphan( GLBufferObject & pSrcBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc, GLenum pActiveBindTarget )
 	{
 		auto bufferBindTarget = CheckActiveBindTarget( pActiveBindTarget );
 
 		// If we copy data into the whole buffer, give driver a hint to invalidate the storage.
 		// For ES, use storage orphaning since glInvalidateBuffer() is not available there.
-		if( pCopyDesc.flags.is_set( eGpuBufferDataCopyFlagModeInvalidateBit ) && ( pCopyDesc.sourceBufferRegion.size == size ) )
+		if( pCopyDesc.flags.is_set( eGPUBufferDataCopyFlagModeInvalidateBit ) && ( pCopyDesc.sourceBufferRegion.size == size ) )
 		{
 			GLint bufferUsage = 0;
 			glGetBufferParameteriv( bufferBindTarget, GL_BUFFER_USAGE, &bufferUsage );
@@ -276,11 +276,11 @@ namespace Ic3::Graphics::GCI
 		Ic3OpenGLHandleLastError();
 	}
 
-	void GLBufferObject::UpdateUploadInvalidate( const GpuBufferSubDataUploadDesc & pUploadDesc, GLenum pActiveBindTarget )
+	void GLBufferObject::UpdateUploadInvalidate( const GPUBufferSubDataUploadDesc & pUploadDesc, GLenum pActiveBindTarget )
 	{
 		auto bufferBindTarget = CheckActiveBindTarget( pActiveBindTarget );
 
-		if( pUploadDesc.flags.is_set( eGpuBufferDataCopyFlagModeInvalidateBit ) )
+		if( pUploadDesc.flags.is_set( eGPUBufferDataCopyFlagModeInvalidateBit ) )
 		{
 			if( pUploadDesc.bufferRegion.size == size )
 			{
@@ -305,13 +305,13 @@ namespace Ic3::Graphics::GCI
 		Ic3OpenGLHandleLastError();
 	}
 
-	void GLBufferObject::UpdateUploadOrphan( const GpuBufferSubDataUploadDesc & pUploadDesc, GLenum pActiveBindTarget )
+	void GLBufferObject::UpdateUploadOrphan( const GPUBufferSubDataUploadDesc & pUploadDesc, GLenum pActiveBindTarget )
 	{
 		auto bufferBindTarget = CheckActiveBindTarget( pActiveBindTarget );
 
 		// If we copy data into the whole buffer, give driver a hint to invalidate the storage.
 		// For ES, use storage orphaning since glInvalidateBuffer() is not available there.
-		if( pUploadDesc.flags.is_set( eGpuBufferDataCopyFlagModeInvalidateBit ) && ( pUploadDesc.bufferRegion.size == size ) )
+		if( pUploadDesc.flags.is_set( eGPUBufferDataCopyFlagModeInvalidateBit ) && ( pUploadDesc.bufferRegion.size == size ) )
 		{
 			GLint bufferUsage = 0;
 			glGetBufferParameteriv( bufferBindTarget, GL_BUFFER_USAGE, &bufferUsage );
@@ -356,11 +356,11 @@ namespace Ic3::Graphics::GCI
 			Ic3OpenGLHandleLastError();
 		}
 
-		if( pGLCreateInfo.memoryFlags.is_set( eGpuMemoryHeapPropertyFlagPersistentMapBit ) )
+		if( pGLCreateInfo.memoryFlags.is_set( eGPUMemoryHeapPropertyFlagPersistentMapBit ) )
 		{
 			// Map with the access specified for the buffer storage.
 			const auto mapMode =
-		        static_cast<EGpuMemoryMapMode>( static_cast<uint32>( pGLCreateInfo.memoryFlags & eGpuMemoryAccessMaskCpuAll ) );
+		        static_cast<EGPUMemoryMapMode>( static_cast<uint32>( pGLCreateInfo.memoryFlags & eGPUMemoryAccessMaskCpuAll ) );
 
 			auto openglMapFlags = ATL::TranslateGLBufferMapFlags( mapMode, pGLCreateInfo.memoryFlags );
 			if( MapPersistent( openglMapFlags ) )

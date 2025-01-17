@@ -30,7 +30,7 @@ namespace Ic3::Graphics::GCI
 			return pDescriptor.ptr == cvD3D12CpuDescriptorPtrInvalid;
 		}
 
-		ComPtr<ID3D12Debug> InitializeD3D12DebugInterface( cppx::bitmask<EGpuDriverConfigFlags> pDriverConfigFlags );
+		ComPtr<ID3D12Debug> InitializeD3D12DebugInterface( cppx::bitmask<EGPUDriverConfigFlags> pDriverConfigFlags );
 
 		ComPtr<ID3D12Device> CreateD3D12Device();
 
@@ -53,7 +53,7 @@ namespace Ic3::Graphics::GCI
 
 		D3D12_COMMAND_LIST_TYPE TranslateD3D12CommandListType(
 				ECommandContextType pContextType,
-				cppx::bitmask<GpuCmdCommandClassFlags> pCommandClassFlags );
+				cppx::bitmask<GPUCmdCommandClassFlags> pCommandClassFlags );
 
 	}
 

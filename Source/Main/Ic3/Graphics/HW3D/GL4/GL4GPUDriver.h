@@ -5,29 +5,29 @@
 #define __IC3_GRAPHICS_HW3D_GL4_GPU_DRIVER__
 
 #include "GL4Prerequisites.h"
-#include <Ic3/Graphics/HW3D/GL/GLGpuDriver.h>
+#include <Ic3/Graphics/HW3D/GL/GLGPUDriver.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	struct GL4GpuDriverCreateInfo : public GLGpuDriverCreateInfo
+	struct GL4GPUDriverCreateInfo : public GLGPUDriverCreateInfo
 	{
 	};
 
-	class IC3_GX_GL4_CLASS GL4GpuDriver final : public GLGpuDriver
+	class IC3_GX_GL4_CLASS GL4GPUDriver final : public GLGPUDriver
 	{
 	public:
-		explicit GL4GpuDriver( System::OpenGLSystemDriverHandle pSysGLDriver );
-		virtual ~GL4GpuDriver();
+		explicit GL4GPUDriver( System::OpenGLSystemDriverHandle pSysGLDriver );
+		virtual ~GL4GPUDriver();
 
-		virtual EGpuDriverID QueryGpuDriverID() const noexcept override;
+		virtual EGPUDriverID QueryGPUDriverID() const noexcept override;
 
-		static GL4GpuDriverHandle Create( const GL4GpuDriverCreateInfo & pCreateInfo );
+		static GL4GPUDriverHandle Create( const GL4GPUDriverCreateInfo & pCreateInfo );
 
 	private:
 		virtual DisplayManagerHandle _DrvCreateDefaultDisplayManager() override;
 
-		virtual GpuDeviceHandle _DrvCreateDevice( const GpuDeviceCreateInfo & pCreateInfo ) override;
+		virtual GPUDeviceHandle _DrvCreateDevice( const GPUDeviceCreateInfo & pCreateInfo ) override;
 	};
 
 } // namespace Ic3::Graphics::GCI

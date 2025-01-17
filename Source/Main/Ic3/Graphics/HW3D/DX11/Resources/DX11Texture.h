@@ -59,7 +59,7 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		DX11Texture(
-				DX11GpuDevice & pDX11GpuDevice,
+				DX11GPUDevice & pDX11GPUDevice,
 				const ResourceMemoryInfo & pResourceMemory,
 				const TextureProperties & pTextureProperties,
 				const TextureLayout & pTextureLayout,
@@ -68,7 +68,7 @@ namespace Ic3::Graphics::GCI
 				ComPtr<ID3D11ShaderResourceView> pD3D11DefaultSRV );
 
 		DX11Texture(
-				DX11GpuDevice & pDX11GpuDevice,
+				DX11GPUDevice & pDX11GPUDevice,
 				const ResourceMemoryInfo & pResourceMemory,
 				const TextureProperties & pTextureProperties,
 				const TextureLayout & pTextureLayout,
@@ -79,15 +79,15 @@ namespace Ic3::Graphics::GCI
 		virtual ~DX11Texture();
 
 		static DX11TextureHandle CreateDefault(
-				DX11GpuDevice & pDX11GpuDevice,
+				DX11GPUDevice & pDX11GPUDevice,
 				const TextureCreateInfo & pCreateInfo );
 
 		static DX11TextureHandle CreateForRenderTarget(
-				DX11GpuDevice & pDX11GpuDevice,
+				DX11GPUDevice & pDX11GPUDevice,
 				const RenderTargetTextureCreateInfo & pCreateInfo );
 
 		static RenderTargetTextureHandle CreateRenderTargetTextureView(
-				DX11GpuDevice & pDX11GpuDevice,
+				DX11GPUDevice & pDX11GPUDevice,
 				const RenderTargetTextureCreateInfo & pCreateInfo );
 	};
 
@@ -118,19 +118,19 @@ namespace Ic3::Graphics::GCI
 		};
 
 		CPPX_ATTR_NO_DISCARD DX11TextureData CreateTextureResourceDX11(
-				DX11GpuDevice & pDX11GpuDevice,
+				DX11GPUDevice & pDX11GPUDevice,
 				const DX11TextureCreateInfo & pCreateInfo );
 
 		CPPX_ATTR_NO_DISCARD DX11TextureData create2DTextureResourceDX11(
-				DX11GpuDevice & pDX11GpuDevice,
+				DX11GPUDevice & pDX11GPUDevice,
 				const DX11TextureCreateInfo & pCreateInfo );
 
 		CPPX_ATTR_NO_DISCARD DX11TextureData create2DMSTextureResourceDX11(
-				DX11GpuDevice & pDX11GpuDevice,
+				DX11GPUDevice & pDX11GPUDevice,
 				const DX11TextureCreateInfo & pCreateInfo );
 
 		CPPX_ATTR_NO_DISCARD DX11TextureData create3DTextureResourceDX11(
-				DX11GpuDevice & pDX11GpuDevice,
+				DX11GPUDevice & pDX11GPUDevice,
 				const DX11TextureCreateInfo & pCreateInfo );
 
 		CPPX_ATTR_NO_DISCARD ComPtr<ID3D11ShaderResourceView> create2DTextureDefaultShaderResourceViewDX11(

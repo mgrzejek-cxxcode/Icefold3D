@@ -6,18 +6,18 @@ namespace Ic3::Graphics::GCI
 {
 
 	Texture::Texture(
-			GpuDevice & pGpuDevice,
+			GPUDevice & pGPUDevice,
 			const ResourceMemoryInfo & pResourceMemory,
 			const TextureProperties & pTextureProperties,
 			const TextureLayout & pTextureLayout )
-	: GpuResource( pGpuDevice, EGpuResourceBaseType::Texture, pResourceMemory )
+	: GPUResource( pGPUDevice, EGPUResourceBaseType::Texture, pResourceMemory )
 	, mTextureProperties( pTextureProperties )
 	, mTextureLayout( pTextureLayout )
 	{}
 
 	Texture::~Texture() = default;
 
-	const GpuResourceProperties & Texture::GetProperties() const
+	const GPUResourceProperties & Texture::GetProperties() const
 	{
 		return mTextureProperties;
 	}
@@ -125,7 +125,7 @@ namespace Ic3::Graphics::GCI
 	}
 
 	RenderTargetTextureHandle Texture::CreateDefaultRenderTargetTextureView(
-			GpuDevice & pGpuDevice,
+			GPUDevice & pGPUDevice,
 			const RenderTargetTextureCreateInfo & pCreateInfo )
 	{
 		if( pCreateInfo.targetTexture )
@@ -133,7 +133,7 @@ namespace Ic3::Graphics::GCI
 			const auto rttType = RCU::QueryRenderTargetTextureType( pCreateInfo.targetTexture->mTextureLayout.internalFormat );
 			const auto rttLayout = RCU::QueryRenderTargetTextureLayout( pCreateInfo.targetTexture->mTextureLayout );
 
-			auto existingTextureRTT = CreateGfxObject<RenderTargetTexture>( pGpuDevice, rttType, rttLayout, pCreateInfo.targetTexture );
+			auto existingTextureRTT = CreateGfxObject<RenderTargetTexture>( pGPUDevice, rttType, rttLayout, pCreateInfo.targetTexture );
 
 			return existingTextureRTT;
 		}
