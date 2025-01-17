@@ -10,7 +10,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( GLGpuBuffer );
+	Ic3DeclareClassHandle( GLGpuBuffer );
 
 	class GLGpuBuffer : public GpuBuffer
 	{

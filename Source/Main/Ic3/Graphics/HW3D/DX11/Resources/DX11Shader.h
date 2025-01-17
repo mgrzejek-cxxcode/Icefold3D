@@ -10,7 +10,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( DX11Shader );
+	Ic3DeclareClassHandle( DX11Shader );
 
 	class  DX11Shader : public Shader
 	{

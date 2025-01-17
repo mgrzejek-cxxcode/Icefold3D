@@ -34,7 +34,7 @@ namespace Ic3::Graphics::GCI
 		}
 		catch ( ... )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 		}
 
 		return adapterList;
@@ -56,7 +56,7 @@ namespace Ic3::Graphics::GCI
 		}
 		catch ( ... )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 		}
 
 		return adapterDesc;
@@ -81,7 +81,7 @@ namespace Ic3::Graphics::GCI
 		}
 		catch ( ... )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 		}
 
 		return outputList;
@@ -105,7 +105,7 @@ namespace Ic3::Graphics::GCI
 		}
 		catch ( ... )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 		}
 
 		return outputDesc;
@@ -131,7 +131,7 @@ namespace Ic3::Graphics::GCI
 		}
 		catch ( ... )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 		}
 
 		return videoModeList;

@@ -25,11 +25,11 @@
 namespace Ic3::Graphics::GCI
 {
 
-	// ic3DeclareClassHandle( VK10CommandContext );
-	// ic3DeclareClassHandle( VK10GpuCmdManager );
-	// ic3DeclareClassHandle( VK10GpuDevice );
-	// ic3DeclareClassHandle( VK10GpuDriver );
-	// ic3DeclareClassHandle( VK10PresentationLayer );
+	// Ic3DeclareClassHandle( VK10CommandContext );
+	// Ic3DeclareClassHandle( VK10GpuCmdManager );
+	// Ic3DeclareClassHandle( VK10GpuDevice );
+	// Ic3DeclareClassHandle( VK10GpuDriver );
+	// Ic3DeclareClassHandle( VK10PresentationLayer );
 
 } // namespace Ic3::Graphics::GCI
 

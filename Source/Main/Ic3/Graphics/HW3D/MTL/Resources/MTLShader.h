@@ -10,7 +10,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( MetalShader );
+	Ic3DeclareClassHandle( MetalShader );
 
 	class  MetalShader : public Shader
 	{

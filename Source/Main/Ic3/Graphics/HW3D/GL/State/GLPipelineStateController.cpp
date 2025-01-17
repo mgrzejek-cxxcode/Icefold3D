@@ -164,10 +164,10 @@ namespace Ic3::Graphics::GCI
 		        cppx::numeric_cast<GLsizei>( pViewportDesc.origin.y ),
 	        cppx::numeric_cast<GLsizei>( pViewportDesc.size.x ),
 	        cppx::numeric_cast<GLsizei>( pViewportDesc.size.y ) );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 
 			glDepthRangef( pViewportDesc.depthRange.zNear, pViewportDesc.depthRange.zFar );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 
 		return baseResult;
@@ -209,15 +209,15 @@ namespace Ic3::Graphics::GCI
 			if( const auto & inputSignature = glcGraphicsPSO.mShaderInputSignature )
 			{
 				const auto & descriptorInfo = inputSignature.GetDescriptorInfo( pParamRefID );
-				ic3DebugAssert( descriptorInfo.dDescriptorType == EShaderInputDescriptorType::Resource );
-				ic3DebugAssert( descriptorInfo.uResourceInfo.resourceType == EShaderInputResourceType::CBVConstantBuffer );
+				Ic3DebugAssert( descriptorInfo.dDescriptorType == EShaderInputDescriptorType::Resource );
+				Ic3DebugAssert( descriptorInfo.uResourceInfo.resourceType == EShaderInputResourceType::CBVConstantBuffer );
 
 				if( descriptorInfo.dShaderVisibilityMask != 0 )
 				{
 					auto * openglBuffer = pConstantBuffer.QueryInterface<GLGpuBuffer>();
 
 					glBindBufferBase( GL_UNIFORM_BUFFER, descriptorInfo.uResourceInfo.resourceBaseRegisterIndex, openglBuffer->mGLBufferObject->mGLHandle );
-					ic3OpenGLHandleLastError();
+					Ic3OpenGLHandleLastError();
 
 					return true;
 				}
@@ -237,16 +237,16 @@ namespace Ic3::Graphics::GCI
 			if( const auto & inputSignature = glcGraphicsPSO.mShaderInputSignature )
 			{
 				const auto & descriptorInfo = inputSignature.GetDescriptorInfo( pParamRefID );
-				ic3DebugAssert( descriptorInfo.dDescriptorType == EShaderInputDescriptorType::Resource );
-				ic3DebugAssert( descriptorInfo.uResourceInfo.resourceType == EShaderInputResourceType::SRVTextureImage );
+				Ic3DebugAssert( descriptorInfo.dDescriptorType == EShaderInputDescriptorType::Resource );
+				Ic3DebugAssert( descriptorInfo.uResourceInfo.resourceType == EShaderInputResourceType::SRVTextureImage );
 
 				auto * openglTexture = pTexture.QueryInterface<GLTexture>();
 
 				glActiveTexture( GL_TEXTURE0 + descriptorInfo.uResourceInfo.resourceBaseRegisterIndex );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 
 				glBindTexture( openglTexture->mGLTextureObject->mGLTextureBindTarget, openglTexture->mGLTextureObject->mGLHandle );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 
 				return true;
 			}
@@ -265,14 +265,14 @@ namespace Ic3::Graphics::GCI
 			if( const auto & inputSignature = glcGraphicsPSO.mShaderInputSignature )
 			{
 				const auto & descriptorInfo = inputSignature.GetDescriptorInfo( pParamRefID );
-				ic3DebugAssert( descriptorInfo.dDescriptorType == EShaderInputDescriptorType::Sampler );
+				Ic3DebugAssert( descriptorInfo.dDescriptorType == EShaderInputDescriptorType::Sampler );
 
 				if( descriptorInfo.dShaderVisibilityMask != 0 )
 				{
 					auto * openglSampler = pSampler.QueryInterface<GLSampler>();
 
 					glBindSampler( descriptorInfo.uSamplerInfo.samplerBindingIndex, openglSampler->mGLSamplerObject->mGLHandle );
-					ic3OpenGLHandleLastError();
+					Ic3OpenGLHandleLastError();
 
 					return true;
 				}
@@ -330,14 +330,14 @@ namespace Ic3::Graphics::GCI
 					pDynamicState.blendConstantColor.fpGreen,
 					pDynamicState.blendConstantColor.fpBlue,
 					pDynamicState.blendConstantColor.fpAlpha );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 	}
 
 	void GLGraphicsPipelineStateController::ApplyGLRenderTargetBinding( const GLRenderTargetBindingInfo & pGLRenderTargetBinding )
 	{
 		glBindFramebuffer( GL_FRAMEBUFFER, pGLRenderTargetBinding.renderFBO->mGLHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
 
@@ -410,7 +410,7 @@ namespace Ic3::Graphics::GCI
 				const auto & vbBinding = pVertexBufferBindings.interleavedBindings[activeVBRange.firstIndex + entryOffset];
 
 				glBindVertexBuffer( streamIndex, vbBinding.handle, vbBinding.offset, vbBinding.stride );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 			}
 		}
 	#else
@@ -423,7 +423,7 @@ namespace Ic3::Graphics::GCI
 		// 	&( pVertexBufferBindings.separateBindings.handleArray[0] ),
 		// 	&( pVertexBufferBindings.separateBindings.offsetArray[0] ),
 		// 	&( pVertexBufferBindings.separateBindings.strideArray[0] ) );
-		// ic3OpenGLHandleLastError();
+		// Ic3OpenGLHandleLastError();
 
 		for( const auto & activeVBRange : pVertexBufferBindings.activeRanges )
 		{
@@ -433,7 +433,7 @@ namespace Ic3::Graphics::GCI
 				&( pVertexBufferBindings.separateBindings.handleArray[activeVBRange.firstIndex] ),
 				&( pVertexBufferBindings.separateBindings.offsetArray[activeVBRange.firstIndex] ),
 				&( pVertexBufferBindings.separateBindings.strideArray[activeVBRange.firstIndex] ) );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 	#endif
 	}

@@ -4,7 +4,7 @@
 #ifndef __IC3_GRAPHICS_HW3D_VK13_GPU_DRIVER_API_H__
 #define __IC3_GRAPHICS_HW3D_VK13_GPU_DRIVER_API_H__
 
-#include "ic3/GpuapiVK/VKPrerequisites.h"
+#include "Ic3/GpuapiVK/VKPrerequisites.h"
 #include <Ic3/Graphics/GCI/GpuDriverAPI.h>
 
 namespace Ic3::Graphics::GCI

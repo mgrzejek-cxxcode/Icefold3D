@@ -15,7 +15,7 @@ namespace Ic3::Graphics::GCI
 		GLuint vertexArrayHandle = 0;
 
 		glGenVertexArrays( 1, &vertexArrayHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return CreateGLObject<GLVertexArrayObject>( vertexArrayHandle );
 	}
@@ -23,7 +23,7 @@ namespace Ic3::Graphics::GCI
 	bool GLVertexArrayObject::Release()
 	{
 		glDeleteVertexArrays( 1, &mGLHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return true;
 	}
@@ -31,7 +31,7 @@ namespace Ic3::Graphics::GCI
 	bool GLVertexArrayObject::ValidateHandle() const
 	{
 		auto isProgram = glIsVertexArray( mGLHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return isProgram != GL_FALSE;
 	}

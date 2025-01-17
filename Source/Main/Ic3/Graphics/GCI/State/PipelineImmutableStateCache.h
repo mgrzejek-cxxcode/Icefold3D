@@ -39,7 +39,7 @@ namespace Ic3::Graphics::GCI
 		cppx::ref<const TPInputDesc> inputDesc;
 	};
 
-#define ic3GCIMakeStateCreateInfo( pUniqueID, pInputDesc ) \
+#define Ic3GCIMakeStateCreateInfo( pUniqueID, pInputDesc ) \
 	PipelineImmutableStateCreateInfo<typename std::decay<decltype( pInputDesc )>::type>{ pUniqueID, #pUniqueID, pInputDesc }
 
 	/// @brief A "sub-cache" used by the actual cache. Manages single state type.
@@ -55,7 +55,7 @@ namespace Ic3::Graphics::GCI
 
 		CPPX_ATTR_NO_DISCARD TGfxHandle<TPState> GetState( GfxObjectID pStateObjectID ) const noexcept
 		{
-			const auto existingStateRef = _cachedStates.find( pStateObjectID.asValue() );
+			const auto existingStateRef = _cachedStates.find( pStateObjectID.AsValue() );
 
 			if( existingStateRef != _cachedStates.end() )
 			{
@@ -92,7 +92,7 @@ namespace Ic3::Graphics::GCI
 					if( cachedStateData.controlInputHash != controlInputHash )
 					{
 						// The same ID has been generated for another immutable state of the same type. Fix it.
-						ic3Throw( 0 );
+						Ic3Throw( 0 );
 					}
 
 					const auto & stateHandle = cachedStateData.immutableStateObject;

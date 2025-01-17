@@ -175,8 +175,8 @@ namespace Ic3::Graphics::GCI
 		const auto & shaderInputSignature = GetShaderInputSignature();
 		const auto & descriptorInfo = shaderInputSignature.GetDescriptorInfo( pParamRefID );
 
-		ic3DebugAssert( descriptorInfo.dDescriptorType == EShaderInputDescriptorType::Resource );
-		ic3DebugAssert( descriptorInfo.uResourceInfo.resourceType == EShaderInputResourceType::CBVConstantBuffer );
+		Ic3DebugAssert( descriptorInfo.dDescriptorType == EShaderInputDescriptorType::Resource );
+		Ic3DebugAssert( descriptorInfo.uResourceInfo.resourceType == EShaderInputResourceType::CBVConstantBuffer );
 
 		auto updatedStagesMask = make_bitmask<EShaderStageFlags>();
 
@@ -224,8 +224,8 @@ namespace Ic3::Graphics::GCI
 		const auto & shaderInputSignature = GetShaderInputSignature();
 		const auto & descriptorInfo = shaderInputSignature.GetDescriptorInfo( pParamRefID );
 
-		ic3DebugAssert( descriptorInfo.dDescriptorType == EShaderInputDescriptorType::Resource );
-		ic3DebugAssert( descriptorInfo.uResourceInfo.resourceType == EShaderInputResourceType::SRVTextureImage );
+		Ic3DebugAssert( descriptorInfo.dDescriptorType == EShaderInputDescriptorType::Resource );
+		Ic3DebugAssert( descriptorInfo.uResourceInfo.resourceType == EShaderInputResourceType::SRVTextureImage );
 
 		auto updatedStagesMask = make_bitmask<EShaderStageFlags>();
 
@@ -273,7 +273,7 @@ namespace Ic3::Graphics::GCI
 		const auto & shaderInputSignature = GetShaderInputSignature();
 		const auto & descriptorInfo = shaderInputSignature.GetDescriptorInfo( pParamRefID );
 
-		ic3DebugAssert( descriptorInfo.dDescriptorType == EShaderInputDescriptorType::Sampler );
+		Ic3DebugAssert( descriptorInfo.dDescriptorType == EShaderInputDescriptorType::Sampler );
 
 		auto updatedStagesMask = make_bitmask<EShaderStageFlags>();
 

@@ -16,7 +16,7 @@ namespace Ic3::Graphics::GCI
 		GLint shaderPipelineHandle = 0;
 
 		glGetIntegerv( GL_PROGRAM_PIPELINE_BINDING, &shaderPipelineHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return static_cast<GLuint>( shaderPipelineHandle );
 	}
@@ -26,7 +26,7 @@ namespace Ic3::Graphics::GCI
 		GLuint shaderPipelineHandle = 0;
 
 		glGenProgramPipelines( 1, &shaderPipelineHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return CreateGLObject<GLShaderPipelineObject>( shaderPipelineHandle );
 	}
@@ -34,7 +34,7 @@ namespace Ic3::Graphics::GCI
 	bool GLShaderPipelineObject::Release()
 	{
 		glDeleteProgramPipelines( 1, &mGLHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return true;
 	}
@@ -42,7 +42,7 @@ namespace Ic3::Graphics::GCI
 	bool GLShaderPipelineObject::ValidateHandle() const
 	{
 		auto isProgram = glIsProgramPipeline( mGLHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return isProgram != GL_FALSE;
 	}
@@ -56,7 +56,7 @@ namespace Ic3::Graphics::GCI
 		}
 
 		glUseProgramStages( mGLHandle, programStageMask, pProgram.mGLHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
 	void GLShaderPipelineObject::AttachProgram( GLShaderProgramObject & pProgram, cppx::bitmask<GLenum> pStageMask )
@@ -74,19 +74,19 @@ namespace Ic3::Graphics::GCI
 		}
 
 		glUseProgramStages( mGLHandle, pStageMask, pProgram.mGLHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
 	void GLShaderPipelineObject::SetActiveProgram( GLShaderProgramObject & pProgram )
 	{
 		glActiveShaderProgram( mGLHandle, pProgram.mGLHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
 	void GLShaderPipelineObject::ResetActiveProgram()
 	{
 		glActiveShaderProgram( mGLHandle, 0 );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
 } // namespace Ic3::Graphics::GCI

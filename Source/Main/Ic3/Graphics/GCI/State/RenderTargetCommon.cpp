@@ -259,7 +259,7 @@ namespace Ic3::Graphics::GCI
 //				auto attachmentIndex = static_cast<uint32>( attachmentResourceBindingDesc.attachmentID );
 //				if( attachmentIndex >= GCM::RT_MAX_COMBINED_ATTACHMENTS_NUM )
 //				{
-//					ic3DebugInterrupt();
+//					Ic3DebugInterrupt();
 //					return false;
 //				}
 //

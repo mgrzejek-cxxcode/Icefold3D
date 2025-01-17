@@ -296,7 +296,7 @@ namespace Ic3::Graphics::GCI
 
 		CPPX_ATTR_NO_DISCARD inline constexpr uint32 GetVertexAttribFormatByteSize( EVertexAttribFormat pFormat ) noexcept
 		{
-			ic3DebugAssert( pFormat != EVertexAttribFormat::Undefined );
+			Ic3DebugAssert( pFormat != EVertexAttribFormat::Undefined );
 			return GetBaseDataTypeByteSize( GetVertexAttribFormatBaseDataType( pFormat ) ) * GetVertexAttribFormatComponentsNum( pFormat );
 		}
 
@@ -309,17 +309,17 @@ namespace Ic3::Graphics::GCI
 		{
 			switch( pPixelLayout )
 			{
-				ic3CaseReturn( EPixelDataLayout::Undefined , ETextureFormat::Undefined );
-				ic3CaseReturn( EPixelDataLayout::Alpha     , ETextureFormat::R8UN );
-				ic3CaseReturn( EPixelDataLayout::Depth     , ETextureFormat::R8UN );
-				ic3CaseReturn( EPixelDataLayout::DS        , ETextureFormat::RG8UN );
-				ic3CaseReturn( EPixelDataLayout::BGR       , ETextureFormat::BGRX8UN );
-				ic3CaseReturn( EPixelDataLayout::BGRA      , ETextureFormat::BGRA8UN );
-				ic3CaseReturn( EPixelDataLayout::Red       , ETextureFormat::R8UN );
-				ic3CaseReturn( EPixelDataLayout::RG        , ETextureFormat::RG8UN );
-				ic3CaseReturn( EPixelDataLayout::RGB       , ETextureFormat::BGRX8UN );
-				ic3CaseReturn( EPixelDataLayout::RGBA      , ETextureFormat::RGBA8UN );
-				ic3CaseReturn( EPixelDataLayout::S3TC      , ETextureFormat::BC3 );
+				Ic3CaseReturn( EPixelDataLayout::Undefined , ETextureFormat::Undefined );
+				Ic3CaseReturn( EPixelDataLayout::Alpha     , ETextureFormat::R8UN );
+				Ic3CaseReturn( EPixelDataLayout::Depth     , ETextureFormat::R8UN );
+				Ic3CaseReturn( EPixelDataLayout::DS        , ETextureFormat::RG8UN );
+				Ic3CaseReturn( EPixelDataLayout::BGR       , ETextureFormat::BGRX8UN );
+				Ic3CaseReturn( EPixelDataLayout::BGRA      , ETextureFormat::BGRA8UN );
+				Ic3CaseReturn( EPixelDataLayout::Red       , ETextureFormat::R8UN );
+				Ic3CaseReturn( EPixelDataLayout::RG        , ETextureFormat::RG8UN );
+				Ic3CaseReturn( EPixelDataLayout::RGB       , ETextureFormat::BGRX8UN );
+				Ic3CaseReturn( EPixelDataLayout::RGBA      , ETextureFormat::RGBA8UN );
+				Ic3CaseReturn( EPixelDataLayout::S3TC      , ETextureFormat::BC3 );
 			}
 
 			return ETextureFormat::Undefined;

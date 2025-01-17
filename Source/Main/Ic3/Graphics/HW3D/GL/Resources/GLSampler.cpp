@@ -61,7 +61,7 @@ namespace Ic3::Graphics::GCI
 			GLint maxAnisotropy = 0;
 
 			glGetIntegerv( GL_MAX_TEXTURE_MAX_ANISOTROPY, &maxAnisotropy );
-			ic3OpenGLCheckLastResult();
+			Ic3OpenGLCheckLastResult();
 
 			if( pOutSamplerState.anisotropyLevel > maxAnisotropy )
 			{

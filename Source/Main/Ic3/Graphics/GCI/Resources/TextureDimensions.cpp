@@ -92,7 +92,7 @@ namespace Ic3::Graphics::GCI
 			}
 			else
 			{
-				ic3DebugInterrupt();
+				Ic3DebugInterrupt();
 			}
 
 			return false;
@@ -202,7 +202,7 @@ namespace Ic3::Graphics::GCI
 			}
 			else
 			{
-				ic3DebugInterrupt();
+				Ic3DebugInterrupt();
 			}
 
 			return false;

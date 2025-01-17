@@ -230,8 +230,8 @@ namespace Ic3::Graphics::GCI
 
 				if( initDataEntriesNum != textureSubResourcesNum )
 				{
-					ic3DebugInterrupt();
-					ic3DebugOutput( "Warn: init data must fill the whole resource. Texture will be created with default content." );
+					Ic3DebugInterrupt();
+					Ic3DebugOutput( "Warn: init data must fill the whole resource. Texture will be created with default content." );
 				}
 				else
 				{
@@ -248,7 +248,7 @@ namespace Ic3::Graphics::GCI
 			if( FAILED( hResult ) )
 			{
 				const auto errStr = System::Platform::WFAQueryComErrorMessage(hResult);
-				ic3DebugInterrupt();
+				Ic3DebugInterrupt();
 				return nullptr;
 			}
 
@@ -316,7 +316,7 @@ namespace Ic3::Graphics::GCI
 
 			if( FAILED( hResult ) )
 			{
-				ic3DebugInterrupt();
+				Ic3DebugInterrupt();
 				return nullptr;
 			}
 
@@ -351,7 +351,7 @@ namespace Ic3::Graphics::GCI
 
 			if( FAILED( hResult ) )
 			{
-				ic3DebugInterrupt();
+				Ic3DebugInterrupt();
 				return nullptr;
 			}
 
@@ -389,9 +389,9 @@ namespace Ic3::Graphics::GCI
 		{
 			switch( pDXGIFormat )
 			{
-				ic3CaseReturn( DXGI_FORMAT_D32_FLOAT            , DXGI_FORMAT_R32_TYPELESS );
-				ic3CaseReturn( DXGI_FORMAT_D24_UNORM_S8_UINT    , DXGI_FORMAT_R24G8_TYPELESS );
-				ic3CaseReturn( DXGI_FORMAT_D16_UNORM            , DXGI_FORMAT_R16_TYPELESS );
+				Ic3CaseReturn( DXGI_FORMAT_D32_FLOAT            , DXGI_FORMAT_R32_TYPELESS );
+				Ic3CaseReturn( DXGI_FORMAT_D24_UNORM_S8_UINT    , DXGI_FORMAT_R24G8_TYPELESS );
+				Ic3CaseReturn( DXGI_FORMAT_D16_UNORM            , DXGI_FORMAT_R16_TYPELESS );
 			}
 
 			return DXGI_FORMAT_UNKNOWN;

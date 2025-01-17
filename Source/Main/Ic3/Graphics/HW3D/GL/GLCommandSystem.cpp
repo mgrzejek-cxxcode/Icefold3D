@@ -32,7 +32,7 @@ namespace Ic3::Graphics::GCI
 		auto contextExecutionMode = CxDef::GetCommandObjectExecutionMode( pContextType );
 		if( auto * commandList = AcquireCommandList( contextExecutionMode ) )
 		{
-			ic3DebugAssert( contextExecutionMode == ECommandExecutionMode::Direct );
+			Ic3DebugAssert( contextExecutionMode == ECommandExecutionMode::Direct );
 			commandContext = std::make_unique<CommandContextDirectGraphics>( *commandList );
 			commandList->mSysGLRenderContext->BindForCurrentThread( *_targetSysGLSurface );
 
@@ -71,10 +71,10 @@ namespace Ic3::Graphics::GCI
 			cmdSyncObject.syncDataReleaseFunc = releaseGLCommandSyncData;
 
 			auto syncFence = glFenceSync( GL_SYNC_GPU_COMMANDS_COMPLETE, 0 );
-			ic3OpenGLCheckLastResult();
+			Ic3OpenGLCheckLastResult();
 
 			glFlush();
-			ic3OpenGLCheckLastResult();
+			Ic3OpenGLCheckLastResult();
 
 			openglCommandSyncData->openglSyncFence = syncFence;
 		}
@@ -112,13 +112,13 @@ namespace Ic3::Graphics::GCI
 
 	bool GLCommandSystem::InitializeMainCommandList()
 	{
-		ic3DebugAssert( !_mainCommandList );
+		Ic3DebugAssert( !_mainCommandList );
 
 		auto * openglGpuDevice = mGpuDevice.QueryInterface<GLGpuDevice>();
-		ic3DebugAssert( openglGpuDevice );
+		Ic3DebugAssert( openglGpuDevice );
 
 		auto sysGLRenderContext = GLCommandSystem::CreateSysGLRenderContext( *openglGpuDevice, _targetSysGLSurface );
-		ic3DebugAssert( sysGLRenderContext );
+		Ic3DebugAssert( sysGLRenderContext );
 
 		if( openglGpuDevice->IsCompatibilityDevice() )
 		{
@@ -161,11 +161,11 @@ namespace Ic3::Graphics::GCI
 
 			auto sysVersionInfo = sysGLRenderContext->QuerySystemVersionInfo();
 			auto sysVersionInfoStr = sysVersionInfo.toString();
-			ic3DebugOutputFmt( "%s\n", sysVersionInfoStr.c_str() );
+			Ic3DebugOutputFmt( "%s\n", sysVersionInfoStr.c_str() );
 		}
 		catch ( ... )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 		}
 
 		return sysGLRenderContext;

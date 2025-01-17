@@ -93,7 +93,7 @@ namespace Ic3::Graphics::GCI
 			{
 				return *stateObject;
 			}
-			ic3Throw( 0 );
+			Ic3Throw( 0 );
 		}
 
 		template <typename TIAVertexStreamState = IAVertexStreamImmutableState>
@@ -114,7 +114,7 @@ namespace Ic3::Graphics::GCI
 			{
 				return *stateObject;
 			}
-			ic3Throw( 0 );
+			Ic3Throw( 0 );
 		}
 
 		template <typename TRenderTargetBindingState = RenderTargetBindingImmutableState>
@@ -135,7 +135,7 @@ namespace Ic3::Graphics::GCI
 			{
 				return *stateObject;
 			}
-			ic3Throw( 0 );
+			Ic3Throw( 0 );
 		}
 
 	protected:

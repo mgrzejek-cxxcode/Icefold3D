@@ -38,7 +38,7 @@ namespace Ic3::Graphics::GCI
 			auto * glcCommandSyncData = static_cast<GLCommandSyncData *>( pCommandSync.syncData );
 
 			glClientWaitSync( glcCommandSyncData->openglSyncFence, 0, cppx::meta::limits<GLuint64>::max_value );
-			ic3OpenGLCheckLastResult();
+			Ic3OpenGLCheckLastResult();
 
 			releaseGLCommandSyncData( pCommandSync.syncData );
 			pCommandSync.syncData = nullptr;
@@ -60,7 +60,7 @@ namespace Ic3::Graphics::GCI
 
 	void GLGpuDevice::InitializeCommandSystem()
 	{
-		ic3DebugAssert( !_commandSystem );
+		Ic3DebugAssert( !_commandSystem );
 		_commandSystem = CreateGfxObject<GLCommandSystem>( *this );
 	}
 
@@ -81,14 +81,14 @@ namespace Ic3::Graphics::GCI
 	GpuBufferHandle GLGpuDevice::_DrvCreateGpuBuffer( const GpuBufferCreateInfo & pCreateInfo )
 	{
 	    auto glcBuffer = GLGpuBuffer::CreateInstance( *this, pCreateInfo );
-	    ic3DebugAssert( glcBuffer );
+	    Ic3DebugAssert( glcBuffer );
 	    return glcBuffer;
 	}
 
 	SamplerHandle GLGpuDevice::_DrvCreateSampler( const SamplerCreateInfo & pCreateInfo )
 	{
 	    auto glcSampler = GLSampler::CreateSampler( *this, pCreateInfo );
-	    ic3DebugAssert( glcSampler );
+	    Ic3DebugAssert( glcSampler );
 	    return glcSampler;
 	}
 
@@ -102,7 +102,7 @@ namespace Ic3::Graphics::GCI
 	TextureHandle GLGpuDevice::_DrvCreateTexture( const TextureCreateInfo & pCreateInfo )
 	{
 	    auto glcTexture = GLTexture::CreateDefault( *this, pCreateInfo );
-	    ic3DebugAssert( glcTexture );
+	    Ic3DebugAssert( glcTexture );
 	    return glcTexture;
 	}
 
@@ -110,7 +110,7 @@ namespace Ic3::Graphics::GCI
 			const RenderTargetTextureCreateInfo & pCreateInfo )
 	{
 		auto glcRTTextureView = GLTexture::CreateRenderTargetTextureView( *this, pCreateInfo );
-		ic3DebugAssert( glcRTTextureView );
+		Ic3DebugAssert( glcRTTextureView );
 		return glcRTTextureView;
 	}
 
@@ -123,7 +123,7 @@ namespace Ic3::Graphics::GCI
 		}
 
 		auto glcGraphicsPSO = GLGraphicsPipelineStateObject::Create( *this, pCreateInfo );
-		ic3DebugAssert( glcGraphicsPSO );
+		Ic3DebugAssert( glcGraphicsPSO );
 
 		return glcGraphicsPSO;
 	}

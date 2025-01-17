@@ -18,10 +18,10 @@ namespace Ic3::Graphics::GCI
 		GLuint bufferHandle = 0;
 
 		glGenBuffers( 1, &bufferHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		glBindBuffer( pGLCreateInfo.bindTarget, bufferHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		GLBufferObjectHandle openglBufferObject{ new GLBufferObject( bufferHandle, pGLCreateInfo ) };
 		if( !openglBufferObject->InitializeCore( pGLCreateInfo ) )
@@ -37,10 +37,10 @@ namespace Ic3::Graphics::GCI
 		GLuint bufferHandle = 0;
 
 		glGenBuffers( 1, &bufferHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		glBindBuffer( pGLCreateInfo.bindTarget, bufferHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		GLBufferObjectHandle openglBufferObject{ new GLBufferObject( bufferHandle, pGLCreateInfo ) };
 		if( !openglBufferObject->InitializeCompat( pGLCreateInfo ) )
@@ -54,7 +54,7 @@ namespace Ic3::Graphics::GCI
 	bool GLBufferObject::Release()
 	{
 		glDeleteBuffers( 1, &mGLHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return true;
 	}
@@ -62,7 +62,7 @@ namespace Ic3::Graphics::GCI
 	bool GLBufferObject::ValidateHandle() const
 	{
 		auto isBuffer = glIsBuffer( mGLHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return isBuffer != GL_FALSE;
 	}
@@ -73,7 +73,7 @@ namespace Ic3::Graphics::GCI
 
 		GLint64 mappedState = 0;
 		glGetBufferParameteri64v( bufferBindTarget, GL_BUFFER_MAPPED, &mappedState );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return mappedState != GL_FALSE;
 	}
@@ -84,7 +84,7 @@ namespace Ic3::Graphics::GCI
 
 		void * mappedMemoryPtr = nullptr;
 		glGetBufferPointerv( bufferBindTarget, GL_BUFFER_MAP_POINTER, &mappedMemoryPtr );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return reinterpret_cast<byte *>( mappedMemoryPtr );
 	}
@@ -95,11 +95,11 @@ namespace Ic3::Graphics::GCI
 
 		GLint64 mapOffset = 0;
 		glGetBufferParameteri64v( bufferBindTarget, GL_BUFFER_MAP_OFFSET, &mapOffset );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		GLint64 mapLength = 0;
 		glGetBufferParameteri64v( bufferBindTarget, GL_BUFFER_MAP_LENGTH, &mapLength );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		MemoryRegion mappedRegion;
 		mappedRegion.offset = static_cast<memory_size_t>( mapOffset );
@@ -114,7 +114,7 @@ namespace Ic3::Graphics::GCI
 
 		GLint64 bufferSize = 0;
 		glGetBufferParameteri64v( bufferBindTarget, GL_BUFFER_SIZE, &bufferSize );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return static_cast<memory_size_t>( bufferSize );
 	}
@@ -135,11 +135,11 @@ namespace Ic3::Graphics::GCI
 
 		void * mapPointer = nullptr;
 		glGetBufferPointerv( bufferBindTarget, GL_BUFFER_MAP_POINTER, &mapPointer );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		if( mapPointer != nullptr )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 		}
 
 		glMapBufferRange(
@@ -147,7 +147,7 @@ namespace Ic3::Graphics::GCI
 			cppx::numeric_cast<GLintptr>( pOffset ),
 			cppx::numeric_cast<GLsizeiptr>( pLength ),
 			pFlags );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return QueryIsMapped();
 	}
@@ -171,7 +171,7 @@ namespace Ic3::Graphics::GCI
 		auto bufferBindTarget = CheckActiveBindTarget( pActiveBindTarget );
 
 		glUnmapBuffer( bufferBindTarget );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
 	void GLBufferObject::FlushMappedRegion( gpu_memory_size_t pOffset, gpu_memory_size_t pLength, GLenum pActiveBindTarget )
@@ -180,15 +180,15 @@ namespace Ic3::Graphics::GCI
 
 		void * mapPointer = nullptr;
 		glGetBufferPointerv( bufferBindTarget, GL_BUFFER_MAP_POINTER, &mapPointer );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
-		ic3DebugAssert( mapPointer );
+		Ic3DebugAssert( mapPointer );
 
 		glFlushMappedBufferRange(
 			bufferBindTarget,
 			cppx::numeric_cast<GLintptr>( pOffset ),
 			cppx::numeric_cast<GLsizeiptr>( pLength ) );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
 	void GLBufferObject::InvalidateRegion( gpu_memory_size_t pOffset, gpu_memory_size_t pLength, GLenum pActiveBindTarget )
@@ -197,13 +197,13 @@ namespace Ic3::Graphics::GCI
 		auto bufferBindTarget = CheckActiveBindTarget( pActiveBindTarget );
 
 		glBufferSubData( bufferBindTarget, pOffset, pLength, nullptr );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	#else
 		glInvalidateBufferSubData(
 			mGLHandle,
 			cppx::numeric_cast<GLintptr>( pOffset ),
 			cppx::numeric_cast<GLsizeiptr>( pLength ) );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	#endif
 	}
 
@@ -218,7 +218,7 @@ namespace Ic3::Graphics::GCI
 			if( pCopyDesc.sourceBufferRegion.size == size )
 			{
 				glInvalidateBufferData( mGLHandle );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 			}
 			else
 			{
@@ -226,12 +226,12 @@ namespace Ic3::Graphics::GCI
 					mGLHandle,
 					cppx::numeric_cast<GLintptr>( pCopyDesc.sourceBufferRegion.offset ),
 			        cppx::numeric_cast<GLsizeiptr>( pCopyDesc.sourceBufferRegion.size ) );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 			}
 		}
 
 		glBindBuffer( GL_COPY_READ_BUFFER, pSrcBuffer.mGLHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		glCopyBufferSubData(
 			GL_COPY_READ_BUFFER,
@@ -239,10 +239,10 @@ namespace Ic3::Graphics::GCI
 			cppx::numeric_cast<GLintptr>( pCopyDesc.sourceBufferRegion.offset ),
 			cppx::numeric_cast<GLintptr>( pCopyDesc.targetBufferOffset ),
 			cppx::numeric_cast<GLsizeiptr>( pCopyDesc.sourceBufferRegion.size ) );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		glBindBuffer( GL_COPY_READ_BUFFER, 0 );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
 	void GLBufferObject::UpdateCopyOrphan( GLBufferObject & pSrcBuffer, const GpuBufferSubDataCopyDesc & pCopyDesc, GLenum pActiveBindTarget )
@@ -255,14 +255,14 @@ namespace Ic3::Graphics::GCI
 		{
 			GLint bufferUsage = 0;
 			glGetBufferParameteriv( bufferBindTarget, GL_BUFFER_USAGE, &bufferUsage );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 
 			glBufferData( bufferBindTarget, cppx::numeric_cast<GLsizeiptr>( size ), nullptr, bufferUsage );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 
 		glBindBuffer( GL_COPY_READ_BUFFER, pSrcBuffer.mGLHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		glCopyBufferSubData(
 			GL_COPY_READ_BUFFER,
@@ -270,10 +270,10 @@ namespace Ic3::Graphics::GCI
 			cppx::numeric_cast<GLintptr>( pCopyDesc.sourceBufferRegion.offset ),
 			cppx::numeric_cast<GLintptr>( pCopyDesc.targetBufferOffset ),
 			cppx::numeric_cast<GLsizeiptr>( pCopyDesc.sourceBufferRegion.size ) );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		glBindBuffer( GL_COPY_READ_BUFFER, 0 );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
 	void GLBufferObject::UpdateUploadInvalidate( const GpuBufferSubDataUploadDesc & pUploadDesc, GLenum pActiveBindTarget )
@@ -285,7 +285,7 @@ namespace Ic3::Graphics::GCI
 			if( pUploadDesc.bufferRegion.size == size )
 			{
 				glInvalidateBufferData( mGLHandle );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 			}
 			else
 			{
@@ -293,7 +293,7 @@ namespace Ic3::Graphics::GCI
 					mGLHandle,
 					cppx::numeric_cast<GLintptr>( pUploadDesc.bufferRegion.offset ),
 					cppx::numeric_cast<GLsizeiptr>( pUploadDesc.bufferRegion.size ) );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 			}
 		}
 
@@ -302,7 +302,7 @@ namespace Ic3::Graphics::GCI
 			cppx::numeric_cast<GLintptr>( pUploadDesc.bufferRegion.offset ),
 			cppx::numeric_cast<GLsizeiptr>( pUploadDesc.inputDataDesc.size ),
 			pUploadDesc.inputDataDesc.pointer );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
 	void GLBufferObject::UpdateUploadOrphan( const GpuBufferSubDataUploadDesc & pUploadDesc, GLenum pActiveBindTarget )
@@ -315,10 +315,10 @@ namespace Ic3::Graphics::GCI
 		{
 			GLint bufferUsage = 0;
 			glGetBufferParameteriv( bufferBindTarget, GL_BUFFER_USAGE, &bufferUsage );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 
 			glBufferData( bufferBindTarget, cppx::numeric_cast<GLsizeiptr>( size ), pUploadDesc.inputDataDesc.pointer, bufferUsage );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 
 		glBufferSubData(
@@ -326,7 +326,7 @@ namespace Ic3::Graphics::GCI
 			cppx::numeric_cast<GLintptr>( pUploadDesc.bufferRegion.offset ),
 			cppx::numeric_cast<GLsizeiptr>( pUploadDesc.inputDataDesc.size ),
 			pUploadDesc.inputDataDesc.pointer );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
 	bool GLBufferObject::InitializeCore( const GLBufferCreateInfo & pGLCreateInfo )
@@ -342,7 +342,7 @@ namespace Ic3::Graphics::GCI
 			cppx::numeric_cast<GLsizeiptr>( pGLCreateInfo.size ),
 			storageInitDataPtr,
 			storageInitFlags );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		if( !copyDataOnInit && nonEmptyInitData )
 		{
@@ -353,7 +353,7 @@ namespace Ic3::Graphics::GCI
 				0,
 				cppx::numeric_cast<GLsizeiptr>( initDataSize ),
 		        pGLCreateInfo.initDataDesc.pointer );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 
 		if( pGLCreateInfo.memoryFlags.is_set( eGpuMemoryHeapPropertyFlagPersistentMapBit ) )
@@ -384,7 +384,7 @@ namespace Ic3::Graphics::GCI
 			cppx::numeric_cast<GLsizeiptr>( pGLCreateInfo.size ),
 			copyDataOnInit ? pGLCreateInfo.initDataDesc.pointer : nullptr,
 			usagePolicy );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		if( !copyDataOnInit && nonEmptyInitData )
 		{
@@ -395,7 +395,7 @@ namespace Ic3::Graphics::GCI
 				0,
 				cppx::numeric_cast<GLsizeiptr>( initDataSize ),
 				pGLCreateInfo.initDataDesc.pointer );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 
 		return true;
@@ -408,7 +408,7 @@ namespace Ic3::Graphics::GCI
 			pBindTarget = mGLBufferBindTarget;
 
 			glBindBuffer( pBindTarget, mGLHandle );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 
 		return pBindTarget;

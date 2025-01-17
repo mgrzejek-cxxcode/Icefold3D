@@ -51,7 +51,7 @@ namespace Ic3::Graphics::GCI
 		}
 		catch ( ... )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 		}
 
 		return nullptr;
@@ -83,7 +83,7 @@ namespace Ic3::Graphics::GCI
 	GLScreenPresentationLayerHandle GLScreenPresentationLayer::Create( GLGpuDevice & pDevice, const GLPresentationLayerCreateInfo & pCreateInfo )
 	{
 		auto sysGLSurface = createSysGLSurface( pDevice.mSysGLDriver, pCreateInfo );
-		ic3DebugAssert( sysGLSurface );
+		Ic3DebugAssert( sysGLSurface );
 
 		const auto surfaceVisualConfig = sysGLSurface->QueryVisualConfig();
 		const auto surfaceSize = sysGLSurface->GetClientAreaSize();
@@ -92,7 +92,7 @@ namespace Ic3::Graphics::GCI
 		screenRTLayout.sharedImageRect = { surfaceSize.x, surfaceSize.y };
 
 		auto renderTargetState = GLRenderTargetBindingImmutableState::CreateForScreen( pDevice, screenRTLayout );
-		ic3DebugAssert( renderTargetState );
+		Ic3DebugAssert( renderTargetState );
 		
 		auto presentationLayer = CreateGfxObject<GLScreenPresentationLayer>( pDevice, sysGLSurface, renderTargetState );
 
@@ -105,10 +105,10 @@ namespace Ic3::Graphics::GCI
 		directGraphicsContext->SetRenderTargetBindingState( *mScreenRenderTargetBindingState );
 
 		glBindFramebuffer( GL_DRAW_FRAMEBUFFER, 0 );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		glDrawBuffer( GL_BACK );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
 	void GLScreenPresentationLayer::InvalidateRenderTarget( CommandContext * pCmdContext )

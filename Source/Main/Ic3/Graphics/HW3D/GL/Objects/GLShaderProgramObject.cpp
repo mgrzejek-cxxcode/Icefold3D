@@ -18,7 +18,7 @@ namespace Ic3::Graphics::GCI
 		GLint shaderProgramHandle = 0;
 
 		glGetIntegerv( GL_CURRENT_PROGRAM, &shaderProgramHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return static_cast<GLuint>( shaderProgramHandle );
 	}
@@ -26,12 +26,12 @@ namespace Ic3::Graphics::GCI
 	GLShaderProgramObjectHandle GLShaderProgramObject::Create( GLShaderProgramType pProgramType )
 	{
 		auto programHandle = glCreateProgram();
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		if( pProgramType == GLShaderProgramType::Separable )
 		{
 			glProgramParameteri( programHandle, GL_PROGRAM_SEPARABLE, GL_TRUE );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 
 		GLShaderProgramObjectHandle openglProgramObject{ new GLShaderProgramObject( programHandle, pProgramType ) };
@@ -64,13 +64,13 @@ namespace Ic3::Graphics::GCI
 		for( const auto & attributeLocation : pLayoutMap.attributeLocations )
 		{
 			glBindAttribLocation( pProgram.mGLHandle, attributeLocation.second, attributeLocation.first.data() );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 
 		for( const auto & fragDataLocation : pLayoutMap.fragDataLocations )
 		{
 			glBindFragDataLocation( pProgram.mGLHandle, fragDataLocation.second, fragDataLocation.first.data() );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 	}
 
@@ -79,24 +79,24 @@ namespace Ic3::Graphics::GCI
 		for( const auto & samplerBinding : pLayoutMap.samplerBindings )
 		{
 			GLint samplerVariableLocation = glGetUniformLocation( pProgram.mGLHandle, samplerBinding.first.data() );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 
 			if( samplerVariableLocation != -1 )
 			{
 				glProgramUniform1i( pProgram.mGLHandle, samplerVariableLocation, samplerBinding.second );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 			}
 		}
 
 		for( const auto & uniformBlockBinding : pLayoutMap.uniformBlockBindings )
 		{
 			GLint blockIndex = glGetUniformBlockIndex( pProgram.mGLHandle, uniformBlockBinding.first.data() );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 
 			if( blockIndex != -1 )
 			{
 				glUniformBlockBinding( pProgram.mGLHandle, blockIndex, uniformBlockBinding.second );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 			}
 		}
 	}
@@ -107,7 +107,7 @@ namespace Ic3::Graphics::GCI
 		if( deleteStatus == GL_FALSE )
 		{
 			glDeleteProgram( mGLHandle );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 
 			return true;
 		}
@@ -118,7 +118,7 @@ namespace Ic3::Graphics::GCI
 	bool GLShaderProgramObject::ValidateHandle() const
 	{
 		auto isProgram = glIsProgram( mGLHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return isProgram != GL_FALSE;
 	}
@@ -126,13 +126,13 @@ namespace Ic3::Graphics::GCI
 	void GLShaderProgramObject::AttachShader( GLuint pShaderHandle )
 	{
 		glAttachShader( mGLHandle, pShaderHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
 	void GLShaderProgramObject::AttachShader( const GLShaderObject & pShader )
 	{
 		glAttachShader( mGLHandle, pShader.mGLHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
 	void GLShaderProgramObject::DetachAllShaders()
@@ -141,20 +141,20 @@ namespace Ic3::Graphics::GCI
 		for( auto & shaderHandle : attachedShaders )
 		{
 			glDetachShader( mGLHandle, shaderHandle );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 	}
 
 	void GLShaderProgramObject::DetachShader( GLuint pShaderHandle )
 	{
 		glDetachShader( mGLHandle, pShaderHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
 	void GLShaderProgramObject::DetachShader( const GLShaderObject & pShader )
 	{
 		glDetachShader( mGLHandle, pShader.mGLHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
 	bool GLShaderProgramObject::Link()
@@ -162,14 +162,14 @@ namespace Ic3::Graphics::GCI
 		auto attachedShadersStageMask = queryShaderStageMask();
 
 		glLinkProgram( mGLHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		auto linkStatus = QueryParameter( GL_LINK_STATUS );
 		if( linkStatus == GL_FALSE )
 		{
 			auto infoLog = GetInfoLog();
-			ic3DebugOutput( infoLog.data() );
-			ic3DebugInterrupt();
+			Ic3DebugOutput( infoLog.data() );
+			Ic3DebugInterrupt();
 			return false;
 		}
 
@@ -181,14 +181,14 @@ namespace Ic3::Graphics::GCI
 	bool GLShaderProgramObject::Validate()
 	{
 		glValidateProgram( mGLHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		auto validateStatus = QueryParameter( GL_VALIDATE_STATUS );
 		if( validateStatus == GL_FALSE )
 		{
 			auto infoLog = GetInfoLog();
-			ic3DebugOutput( infoLog.data() );
-			ic3DebugInterrupt();
+			Ic3DebugOutput( infoLog.data() );
+			Ic3DebugInterrupt();
 			return false;
 		}
 
@@ -199,39 +199,39 @@ namespace Ic3::Graphics::GCI
 	{
 		IC3_DEBUG_CODE({
            auto linkResult = QueryParameter( GL_LINK_STATUS );
-           ic3DebugAssert( linkResult == GL_FALSE );
+           Ic3DebugAssert( linkResult == GL_FALSE );
 		});
 
 		glBindAttribLocation( mGLHandle, pLocation, pAttribName );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
 	void GLShaderProgramObject::SetSamplerTextureUnit( const char * pSamplerName, GLuint pTextureIndex )
 	{
 		IC3_DEBUG_CODE({
 			auto linkResult = QueryParameter( GL_LINK_STATUS );
-			ic3DebugAssert( linkResult == GL_FALSE );
+			Ic3DebugAssert( linkResult == GL_FALSE );
 		});
 
 		GLint samplerLocation = glGetUniformLocation( mGLHandle, pSamplerName );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		glProgramUniform1i( mGLHandle, samplerLocation, pTextureIndex );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
 	void GLShaderProgramObject::SetUniformBlockBinding( const char * pBlockName, GLuint pBinding )
 	{
 		IC3_DEBUG_CODE({
 			auto linkResult = QueryParameter( GL_LINK_STATUS );
-			ic3DebugAssert( linkResult == GL_FALSE );
+			Ic3DebugAssert( linkResult == GL_FALSE );
 		});
 
 		GLint uniformBlockIndex = glGetUniformBlockIndex( mGLHandle, pBlockName );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		glUniformBlockBinding( mGLHandle, uniformBlockIndex, pBinding );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
 	GLint GLShaderProgramObject::QueryParameter( GLenum pParameter ) const
@@ -239,7 +239,7 @@ namespace Ic3::Graphics::GCI
 		GLint parameterValue = GL_INVALID_VALUE;
 
 		glGetProgramiv( mGLHandle, pParameter, &parameterValue );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return parameterValue;
 	}
@@ -247,7 +247,7 @@ namespace Ic3::Graphics::GCI
 	GLuint GLShaderProgramObject::QueryVertexAttributeLocation( const char * pAttribName ) const
 	{
 		auto attribLocation = glGetAttribLocation( mGLHandle, reinterpret_cast<const GLchar *>( pAttribName ) );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		if( attribLocation == -1 )
 		{
@@ -267,7 +267,7 @@ namespace Ic3::Graphics::GCI
 		{
 			GLint shaderType = 0;
 			glGetShaderiv( shaderHandle, GL_SHADER_TYPE, &shaderType );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 
 			auto shaderStageBit = GLShaderObject::GetStageMaskForEShaderType( shaderType );
 			shaderStageMask.set( shaderStageBit );
@@ -287,7 +287,7 @@ namespace Ic3::Graphics::GCI
 			infoLogBuffer.resize( infoLogLength );
 
 			glGetProgramInfoLog( mGLHandle, static_cast<GLsizei>( infoLogLength ), nullptr, infoLogBuffer.dataAs<GLchar>() );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 
 			// Note: length returned by the GL includes null terminator!
 			infoLog.assign( infoLogBuffer.dataAs<GLchar>(), infoLogLength - 1 );
@@ -307,9 +307,9 @@ namespace Ic3::Graphics::GCI
 
 			GLsizei returnedShadersNum = 0;
 			glGetAttachedShaders( mGLHandle, 64, &returnedShadersNum, shaderArray.data() );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 
-			ic3DebugAssert( returnedShadersNum == attachedShadersNum );
+			Ic3DebugAssert( returnedShadersNum == attachedShadersNum );
 		}
 
 		return shaderArray;

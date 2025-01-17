@@ -50,7 +50,7 @@ namespace Ic3::Graphics::GCI
 			drawTopologyProperties.indexBufferDataType,
 			baseIndexDataOffset,
 			static_cast<GLint>( pBaseVertexIndex ) );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
 	void GLCommandList::CmdDrawDirectIndexedInstanced( native_uint pIndicesNumPerInstance, native_uint pInstancesNum, native_uint pIndicesOffset )
@@ -67,7 +67,7 @@ namespace Ic3::Graphics::GCI
 			drawTopologyProperties.primitiveTopology,
 			static_cast< GLint >( pVerticesOffset ),
 			static_cast< GLsizei >( pVerticesNum ) );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
 	void GLCommandList::CmdDrawDirectNonIndexedInstanced( native_uint pVerticesNumPerInstance, native_uint pInstancesNum, native_uint pVerticesOffset )
@@ -76,7 +76,7 @@ namespace Ic3::Graphics::GCI
 
 	void GLCommandList::CmdExecuteDeferredContext( CommandContextDeferred & pDeferredContext )
 	{
-		ic3DebugInterrupt();
+		Ic3DebugInterrupt();
 	}
 
 	void GLCommandList::ExecuteRenderPassLoadActions(

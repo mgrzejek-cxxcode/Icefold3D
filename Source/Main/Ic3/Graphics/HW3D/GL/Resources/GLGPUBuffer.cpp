@@ -57,12 +57,12 @@ namespace Ic3::Graphics::GCI
 		if( pGpuDevice.IsCompatibilityDevice() )
 		{
 			openglBufferObject = GLBufferObject::CreateCompat( openglCreateInfo );
-			ic3DebugAssert( openglBufferObject );
+			Ic3DebugAssert( openglBufferObject );
 		}
 		else
 		{
 			openglBufferObject = GLBufferObject::CreateCore( openglCreateInfo );
-			ic3DebugAssert( openglBufferObject );
+			Ic3DebugAssert( openglBufferObject );
 		}
 
 		GpuBufferProperties bufferProperties;
@@ -106,7 +106,7 @@ namespace Ic3::Graphics::GCI
 			if( !mResourceMemory.memoryFlags.is_set( eGpuMemoryHeapPropertyFlagCpuCoherentBit ) )
 			{
 				glMemoryBarrier( GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 			}
 			mappedMemoryPtr = mGLBufferObject->GetPersistentMapPtr();
 		}

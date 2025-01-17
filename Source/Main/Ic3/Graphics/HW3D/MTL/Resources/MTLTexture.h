@@ -10,7 +10,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( MetalTexture );
+	Ic3DeclareClassHandle( MetalTexture );
 
 	class MetalTexture : public Texture
 	{

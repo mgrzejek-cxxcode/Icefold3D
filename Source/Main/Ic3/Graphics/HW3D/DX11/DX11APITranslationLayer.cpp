@@ -206,19 +206,19 @@ namespace Ic3::Graphics::GCI
 	{
 		switch( pBlendFactor )
 		{
-			ic3CaseReturn( EBlendFactor::Undefined   , D3D11_UNDEFINED<D3D11_BLEND> );
-			ic3CaseReturn( EBlendFactor::Zero        , D3D11_BLEND_ZERO );
-			ic3CaseReturn( EBlendFactor::One         , D3D11_BLEND_ONE );
-			ic3CaseReturn( EBlendFactor::Const       , D3D11_BLEND_BLEND_FACTOR );
-			ic3CaseReturn( EBlendFactor::ConstInv    , D3D11_BLEND_INV_BLEND_FACTOR );
-			ic3CaseReturn( EBlendFactor::SrcColor    , D3D11_BLEND_SRC_COLOR );
-			ic3CaseReturn( EBlendFactor::SrcAlpha    , D3D11_BLEND_SRC_ALPHA );
-			ic3CaseReturn( EBlendFactor::DstColor    , D3D11_BLEND_DEST_COLOR );
-			ic3CaseReturn( EBlendFactor::DstAlpha    , D3D11_BLEND_DEST_ALPHA );
-			ic3CaseReturn( EBlendFactor::SrcColorInv , D3D11_BLEND_INV_SRC_COLOR );
-			ic3CaseReturn( EBlendFactor::SrcAlphaInv , D3D11_BLEND_INV_SRC_ALPHA );
-			ic3CaseReturn( EBlendFactor::DstColorInv , D3D11_BLEND_INV_DEST_COLOR );
-			ic3CaseReturn( EBlendFactor::DstAlphaInv , D3D11_BLEND_INV_DEST_ALPHA );
+			Ic3CaseReturn( EBlendFactor::Undefined   , D3D11_UNDEFINED<D3D11_BLEND> );
+			Ic3CaseReturn( EBlendFactor::Zero        , D3D11_BLEND_ZERO );
+			Ic3CaseReturn( EBlendFactor::One         , D3D11_BLEND_ONE );
+			Ic3CaseReturn( EBlendFactor::Const       , D3D11_BLEND_BLEND_FACTOR );
+			Ic3CaseReturn( EBlendFactor::ConstInv    , D3D11_BLEND_INV_BLEND_FACTOR );
+			Ic3CaseReturn( EBlendFactor::SrcColor    , D3D11_BLEND_SRC_COLOR );
+			Ic3CaseReturn( EBlendFactor::SrcAlpha    , D3D11_BLEND_SRC_ALPHA );
+			Ic3CaseReturn( EBlendFactor::DstColor    , D3D11_BLEND_DEST_COLOR );
+			Ic3CaseReturn( EBlendFactor::DstAlpha    , D3D11_BLEND_DEST_ALPHA );
+			Ic3CaseReturn( EBlendFactor::SrcColorInv , D3D11_BLEND_INV_SRC_COLOR );
+			Ic3CaseReturn( EBlendFactor::SrcAlphaInv , D3D11_BLEND_INV_SRC_ALPHA );
+			Ic3CaseReturn( EBlendFactor::DstColorInv , D3D11_BLEND_INV_DEST_COLOR );
+			Ic3CaseReturn( EBlendFactor::DstAlphaInv , D3D11_BLEND_INV_DEST_ALPHA );
 		};
 		return D3D11_INVALID<D3D11_BLEND>;
 	}
@@ -227,12 +227,12 @@ namespace Ic3::Graphics::GCI
 	{
 		switch( pBlendOp )
 		{
-			ic3CaseReturn( EBlendOp::Undefined   , D3D11_UNDEFINED<D3D11_BLEND_OP> );
-			ic3CaseReturn( EBlendOp::Add         , D3D11_BLEND_OP_ADD );
-			ic3CaseReturn( EBlendOp::Min         , D3D11_BLEND_OP_MIN );
-			ic3CaseReturn( EBlendOp::Max         , D3D11_BLEND_OP_MAX );
-			ic3CaseReturn( EBlendOp::Subtract    , D3D11_BLEND_OP_SUBTRACT );
-			ic3CaseReturn( EBlendOp::SubtractRev , D3D11_BLEND_OP_REV_SUBTRACT );
+			Ic3CaseReturn( EBlendOp::Undefined   , D3D11_UNDEFINED<D3D11_BLEND_OP> );
+			Ic3CaseReturn( EBlendOp::Add         , D3D11_BLEND_OP_ADD );
+			Ic3CaseReturn( EBlendOp::Min         , D3D11_BLEND_OP_MIN );
+			Ic3CaseReturn( EBlendOp::Max         , D3D11_BLEND_OP_MAX );
+			Ic3CaseReturn( EBlendOp::Subtract    , D3D11_BLEND_OP_SUBTRACT );
+			Ic3CaseReturn( EBlendOp::SubtractRev , D3D11_BLEND_OP_REV_SUBTRACT );
 		};
 		return D3D11_INVALID<D3D11_BLEND_OP>;
 	}
@@ -309,11 +309,11 @@ namespace Ic3::Graphics::GCI
 	{
 		switch( pMapMode )
 		{
-			ic3CaseReturn( EGpuMemoryMapMode::ReadOnly        , D3D11_MAP_READ               );
-			ic3CaseReturn( EGpuMemoryMapMode::ReadWrite       , D3D11_MAP_READ_WRITE         );
-			ic3CaseReturn( EGpuMemoryMapMode::WriteDefault    , D3D11_MAP_WRITE              );
-			ic3CaseReturn( EGpuMemoryMapMode::WriteInvalidate , D3D11_MAP_WRITE_DISCARD      );
-			ic3CaseReturn( EGpuMemoryMapMode::WriteAppend     , D3D11_MAP_WRITE_NO_OVERWRITE );
+			Ic3CaseReturn( EGpuMemoryMapMode::ReadOnly        , D3D11_MAP_READ               );
+			Ic3CaseReturn( EGpuMemoryMapMode::ReadWrite       , D3D11_MAP_READ_WRITE         );
+			Ic3CaseReturn( EGpuMemoryMapMode::WriteDefault    , D3D11_MAP_WRITE              );
+			Ic3CaseReturn( EGpuMemoryMapMode::WriteInvalidate , D3D11_MAP_WRITE_DISCARD      );
+			Ic3CaseReturn( EGpuMemoryMapMode::WriteAppend     , D3D11_MAP_WRITE_NO_OVERWRITE );
 		};
 		return static_cast<D3D11_MAP>( 0 );
 	}
@@ -322,15 +322,15 @@ namespace Ic3::Graphics::GCI
 	{
 		switch( pCompFunc )
 		{
-			ic3CaseReturn( ECompFunc::Undefined    , D3D11_UNDEFINED<D3D11_COMPARISON_FUNC> );
-			ic3CaseReturn( ECompFunc::Never        , D3D11_COMPARISON_NEVER );
-			ic3CaseReturn( ECompFunc::Always       , D3D11_COMPARISON_ALWAYS );
-			ic3CaseReturn( ECompFunc::Equal        , D3D11_COMPARISON_EQUAL );
-			ic3CaseReturn( ECompFunc::NotEqual     , D3D11_COMPARISON_NOT_EQUAL );
-			ic3CaseReturn( ECompFunc::Greater      , D3D11_COMPARISON_GREATER );
-			ic3CaseReturn( ECompFunc::GreaterEqual , D3D11_COMPARISON_GREATER_EQUAL );
-			ic3CaseReturn( ECompFunc::Less         , D3D11_COMPARISON_LESS );
-			ic3CaseReturn( ECompFunc::LessEqual    , D3D11_COMPARISON_LESS_EQUAL );
+			Ic3CaseReturn( ECompFunc::Undefined    , D3D11_UNDEFINED<D3D11_COMPARISON_FUNC> );
+			Ic3CaseReturn( ECompFunc::Never        , D3D11_COMPARISON_NEVER );
+			Ic3CaseReturn( ECompFunc::Always       , D3D11_COMPARISON_ALWAYS );
+			Ic3CaseReturn( ECompFunc::Equal        , D3D11_COMPARISON_EQUAL );
+			Ic3CaseReturn( ECompFunc::NotEqual     , D3D11_COMPARISON_NOT_EQUAL );
+			Ic3CaseReturn( ECompFunc::Greater      , D3D11_COMPARISON_GREATER );
+			Ic3CaseReturn( ECompFunc::GreaterEqual , D3D11_COMPARISON_GREATER_EQUAL );
+			Ic3CaseReturn( ECompFunc::Less         , D3D11_COMPARISON_LESS );
+			Ic3CaseReturn( ECompFunc::LessEqual    , D3D11_COMPARISON_LESS_EQUAL );
 		};
 		return D3D11_INVALID<D3D11_COMPARISON_FUNC>;
 	}
@@ -339,10 +339,10 @@ namespace Ic3::Graphics::GCI
 	{
 		switch( pCullMode )
 		{
-			ic3CaseReturn( ECullMode::Undefined  , D3D11_UNDEFINED<D3D11_CULL_MODE> );
-			ic3CaseReturn( ECullMode::None       , D3D11_CULL_NONE );
-			ic3CaseReturn( ECullMode::Back       , D3D11_CULL_BACK );
-			ic3CaseReturn( ECullMode::Front      , D3D11_CULL_FRONT );
+			Ic3CaseReturn( ECullMode::Undefined  , D3D11_UNDEFINED<D3D11_CULL_MODE> );
+			Ic3CaseReturn( ECullMode::None       , D3D11_CULL_NONE );
+			Ic3CaseReturn( ECullMode::Back       , D3D11_CULL_BACK );
+			Ic3CaseReturn( ECullMode::Front      , D3D11_CULL_FRONT );
 		};
 		return D3D11_INVALID<D3D11_CULL_MODE>;
 	}
@@ -363,9 +363,9 @@ namespace Ic3::Graphics::GCI
 	{
 		switch( pFillMode )
 		{
-			ic3CaseReturn( EPrimitiveFillMode::Undefined , D3D11_UNDEFINED<D3D11_FILL_MODE> );
-			ic3CaseReturn( EPrimitiveFillMode::Solid     , D3D11_FILL_SOLID );
-			ic3CaseReturn( EPrimitiveFillMode::Wireframe , D3D11_FILL_WIREFRAME );
+			Ic3CaseReturn( EPrimitiveFillMode::Undefined , D3D11_UNDEFINED<D3D11_FILL_MODE> );
+			Ic3CaseReturn( EPrimitiveFillMode::Solid     , D3D11_FILL_SOLID );
+			Ic3CaseReturn( EPrimitiveFillMode::Wireframe , D3D11_FILL_WIREFRAME );
 		};
 		return D3D11_INVALID<D3D11_FILL_MODE>;
 	}
@@ -374,17 +374,17 @@ namespace Ic3::Graphics::GCI
 	{
 		switch( pTopology )
 		{
-			ic3CaseReturn( EPrimitiveTopology::Undefined        , D3D11_PRIMITIVE_TOPOLOGY_UNDEFINED );
-			ic3CaseReturn( EPrimitiveTopology::PointList        , D3D11_PRIMITIVE_TOPOLOGY_POINTLIST );
-			ic3CaseReturn( EPrimitiveTopology::LineList         , D3D11_PRIMITIVE_TOPOLOGY_LINELIST );
-			ic3CaseReturn( EPrimitiveTopology::LineListAdj      , D3D11_PRIMITIVE_TOPOLOGY_LINELIST_ADJ );
-			ic3CaseReturn( EPrimitiveTopology::LineStrip        , D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP );
-			ic3CaseReturn( EPrimitiveTopology::LineStripAdj     , D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP_ADJ );
-			ic3CaseReturn( EPrimitiveTopology::TriangleList     , D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
-			ic3CaseReturn( EPrimitiveTopology::TriangleListAdj  , D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST_ADJ );
-			ic3CaseReturn( EPrimitiveTopology::TriangleStrip    , D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP );
-			ic3CaseReturn( EPrimitiveTopology::TriangleStripAdj , D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP_ADJ );
-			ic3CaseReturn( EPrimitiveTopology::TesselationPatch , D3D11_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST );
+			Ic3CaseReturn( EPrimitiveTopology::Undefined        , D3D11_PRIMITIVE_TOPOLOGY_UNDEFINED );
+			Ic3CaseReturn( EPrimitiveTopology::PointList        , D3D11_PRIMITIVE_TOPOLOGY_POINTLIST );
+			Ic3CaseReturn( EPrimitiveTopology::LineList         , D3D11_PRIMITIVE_TOPOLOGY_LINELIST );
+			Ic3CaseReturn( EPrimitiveTopology::LineListAdj      , D3D11_PRIMITIVE_TOPOLOGY_LINELIST_ADJ );
+			Ic3CaseReturn( EPrimitiveTopology::LineStrip        , D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP );
+			Ic3CaseReturn( EPrimitiveTopology::LineStripAdj     , D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP_ADJ );
+			Ic3CaseReturn( EPrimitiveTopology::TriangleList     , D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
+			Ic3CaseReturn( EPrimitiveTopology::TriangleListAdj  , D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST_ADJ );
+			Ic3CaseReturn( EPrimitiveTopology::TriangleStrip    , D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP );
+			Ic3CaseReturn( EPrimitiveTopology::TriangleStripAdj , D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP_ADJ );
+			Ic3CaseReturn( EPrimitiveTopology::TesselationPatch , D3D11_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST );
 		};
 		return D3D11_INVALID<D3D11_PRIMITIVE_TOPOLOGY>;
 	}
@@ -393,13 +393,13 @@ namespace Ic3::Graphics::GCI
 	{
 		switch( pShaderType )
 		{
-			ic3CaseReturn( EShaderType::Unknown    , D3D11_UNDEFINED<D3D11_SHADER_TYPE> );
-			ic3CaseReturn( EShaderType::GSVertex   , D3D11_VERTEX_SHADER );
-			ic3CaseReturn( EShaderType::GSHull     , D3D11_HULL_SHADER );
-			ic3CaseReturn( EShaderType::GSDomain   , D3D11_DOMAIN_SHADER );
-			ic3CaseReturn( EShaderType::GSGeometry , D3D11_GEOMETRY_SHADER );
-			ic3CaseReturn( EShaderType::GSPixel    , D3D11_PIXEL_SHADER );
-			ic3CaseReturn( EShaderType::CSCompute  , D3D11_COMPUTE_SHADER );
+			Ic3CaseReturn( EShaderType::Unknown    , D3D11_UNDEFINED<D3D11_SHADER_TYPE> );
+			Ic3CaseReturn( EShaderType::GSVertex   , D3D11_VERTEX_SHADER );
+			Ic3CaseReturn( EShaderType::GSHull     , D3D11_HULL_SHADER );
+			Ic3CaseReturn( EShaderType::GSDomain   , D3D11_DOMAIN_SHADER );
+			Ic3CaseReturn( EShaderType::GSGeometry , D3D11_GEOMETRY_SHADER );
+			Ic3CaseReturn( EShaderType::GSPixel    , D3D11_PIXEL_SHADER );
+			Ic3CaseReturn( EShaderType::CSCompute  , D3D11_COMPUTE_SHADER );
 		}
 		return D3D11_INVALID<D3D11_SHADER_TYPE>;
 	}
@@ -408,15 +408,15 @@ namespace Ic3::Graphics::GCI
 	{
 		switch( pStencilOp )
 		{
-			ic3CaseReturn( EStencilOp::Undefined , D3D11_UNDEFINED<D3D11_STENCIL_OP> );
-			ic3CaseReturn( EStencilOp::Zero      , D3D11_STENCIL_OP_ZERO );
-			ic3CaseReturn( EStencilOp::Keep      , D3D11_STENCIL_OP_KEEP );
-			ic3CaseReturn( EStencilOp::Replace   , D3D11_STENCIL_OP_REPLACE );
-			ic3CaseReturn( EStencilOp::IncrClamp , D3D11_STENCIL_OP_INCR );
-			ic3CaseReturn( EStencilOp::IncrWrap  , D3D11_STENCIL_OP_INCR_SAT );
-			ic3CaseReturn( EStencilOp::DecrClamp , D3D11_STENCIL_OP_DECR );
-			ic3CaseReturn( EStencilOp::DecrWrap  , D3D11_STENCIL_OP_DECR_SAT );
-			ic3CaseReturn( EStencilOp::Invert    , D3D11_STENCIL_OP_INVERT );
+			Ic3CaseReturn( EStencilOp::Undefined , D3D11_UNDEFINED<D3D11_STENCIL_OP> );
+			Ic3CaseReturn( EStencilOp::Zero      , D3D11_STENCIL_OP_ZERO );
+			Ic3CaseReturn( EStencilOp::Keep      , D3D11_STENCIL_OP_KEEP );
+			Ic3CaseReturn( EStencilOp::Replace   , D3D11_STENCIL_OP_REPLACE );
+			Ic3CaseReturn( EStencilOp::IncrClamp , D3D11_STENCIL_OP_INCR );
+			Ic3CaseReturn( EStencilOp::IncrWrap  , D3D11_STENCIL_OP_INCR_SAT );
+			Ic3CaseReturn( EStencilOp::DecrClamp , D3D11_STENCIL_OP_DECR );
+			Ic3CaseReturn( EStencilOp::DecrWrap  , D3D11_STENCIL_OP_DECR_SAT );
+			Ic3CaseReturn( EStencilOp::Invert    , D3D11_STENCIL_OP_INVERT );
 		};
 		return D3D11_INVALID<D3D11_STENCIL_OP>;
 	}
@@ -425,12 +425,12 @@ namespace Ic3::Graphics::GCI
 	{
 		switch( pAddressMode )
 		{
-			ic3CaseReturn( ETextureAddressMode::Undefined         , D3D11_UNDEFINED<D3D11_TEXTURE_ADDRESS_MODE> );
-			ic3CaseReturn( ETextureAddressMode::ClampToEdge       , D3D11_TEXTURE_ADDRESS_CLAMP );
-			ic3CaseReturn( ETextureAddressMode::MirrorRepeat      , D3D11_TEXTURE_ADDRESS_MIRROR );
-			ic3CaseReturn( ETextureAddressMode::Repeat            , D3D11_TEXTURE_ADDRESS_WRAP );
-			ic3CaseReturn( ETextureAddressMode::ClampToColor      , D3D11_TEXTURE_ADDRESS_BORDER );
-			ic3CaseReturn( ETextureAddressMode::MirrorClampToEdge , D3D11_TEXTURE_ADDRESS_MIRROR_ONCE );
+			Ic3CaseReturn( ETextureAddressMode::Undefined         , D3D11_UNDEFINED<D3D11_TEXTURE_ADDRESS_MODE> );
+			Ic3CaseReturn( ETextureAddressMode::ClampToEdge       , D3D11_TEXTURE_ADDRESS_CLAMP );
+			Ic3CaseReturn( ETextureAddressMode::MirrorRepeat      , D3D11_TEXTURE_ADDRESS_MIRROR );
+			Ic3CaseReturn( ETextureAddressMode::Repeat            , D3D11_TEXTURE_ADDRESS_WRAP );
+			Ic3CaseReturn( ETextureAddressMode::ClampToColor      , D3D11_TEXTURE_ADDRESS_BORDER );
+			Ic3CaseReturn( ETextureAddressMode::MirrorClampToEdge , D3D11_TEXTURE_ADDRESS_MIRROR_ONCE );
 		};
 		return D3D11_UNDEFINED<D3D11_TEXTURE_ADDRESS_MODE>;
 	}

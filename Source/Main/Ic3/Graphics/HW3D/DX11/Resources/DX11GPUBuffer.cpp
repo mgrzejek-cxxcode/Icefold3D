@@ -42,8 +42,8 @@ namespace Ic3::Graphics::GCI
 		{
 			if( createInfo.initDataDesc.size < createInfo.bufferSize )
 			{
-				ic3DebugInterrupt();
-				ic3DebugOutput( "Warn: init data must fill the whole resource. Buffer will be created with default content." );
+				Ic3DebugInterrupt();
+				Ic3DebugOutput( "Warn: init data must fill the whole resource. Buffer will be created with default content." );
 			}
 			else
 			{
@@ -153,7 +153,7 @@ namespace Ic3::Graphics::GCI
 		auto * d3d11DeviceContext1 = SMU::GetD3D11DeviceContextFromCommandList( pCommandObject );
 
 		auto d3d11MapMode = ATL::TranslateDX11BufferMapFlags( pMapMode, mResourceMemory.memoryFlags );
-		ic3DebugAssert( d3d11MapMode != 0 );
+		Ic3DebugAssert( d3d11MapMode != 0 );
 
 		D3D11_MAPPED_SUBRESOURCE mappedBufferInfo;
 		auto hResult = d3d11DeviceContext1->Map( mD3D11Buffer.Get(), 0, d3d11MapMode, 0, &mappedBufferInfo );
@@ -193,7 +193,7 @@ namespace Ic3::Graphics::GCI
 		auto hResult = d3d11DeviceContext1->Map( mD3D11Buffer.Get(), 0, _dx11MapInfo.requestedMapMode, 0, &( _dx11MapInfo.mappedSubresource ) );
 		if( FAILED( hResult ) )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 		}
 	}
 
@@ -211,7 +211,7 @@ namespace Ic3::Graphics::GCI
 		auto * dx11CommandList = reinterpret_cast<DX11CommandList *>( pCommandObject );
 		if( !dx11CommandList->CheckCommandClassSupport( ECommandQueueClass::Transfer ) )
 		{
-			ic3Throw( 0 );
+			Ic3Throw( 0 );
 		}
 
 		auto * d3d11DeviceContext1 = dx11CommandList->mD3D11DeviceContext1.Get();
@@ -242,7 +242,7 @@ namespace Ic3::Graphics::GCI
 		auto * dx11CommandList = reinterpret_cast<DX11CommandList *>( pCommandObject );
 		if( !dx11CommandList->CheckCommandClassSupport( ECommandQueueClass::Transfer ) )
 		{
-			ic3Throw( 0 );
+			Ic3Throw( 0 );
 		}
 
 		auto * d3d11DeviceContext1 = dx11CommandList->mD3D11DeviceContext1.Get();

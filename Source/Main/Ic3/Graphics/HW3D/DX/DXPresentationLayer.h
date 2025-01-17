@@ -11,7 +11,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( DXPresentationLayer );
+	Ic3DeclareClassHandle( DXPresentationLayer );
 
 	class IC3_GX_DXCOMMON_CLASS DXPresentationLayer : public PresentationLayer
 	{

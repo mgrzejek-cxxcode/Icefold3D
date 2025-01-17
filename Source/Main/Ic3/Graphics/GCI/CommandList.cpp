@@ -88,7 +88,7 @@ namespace Ic3::Graphics::GCI
 	{
 		if( !pBuffer.ValidateMapRequest( pRegion, pMapMode ) )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
@@ -99,7 +99,7 @@ namespace Ic3::Graphics::GCI
 	{
 		if( !pBuffer.IsMapped() )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
@@ -121,7 +121,7 @@ namespace Ic3::Graphics::GCI
 	{
 		if( !pBuffer.IsMapped() )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
@@ -162,13 +162,13 @@ namespace Ic3::Graphics::GCI
 	{
 		if( pBuffer.IsMapped() || pSourceBuffer.IsMapped() )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
 		if( pBuffer.mBufferProperties.byteSize != pSourceBuffer.mBufferProperties.byteSize )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
@@ -194,13 +194,13 @@ namespace Ic3::Graphics::GCI
 	{
 		if( !pUploadDesc.inputDataDesc )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
 		if( pBuffer.IsMapped() )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
@@ -267,7 +267,7 @@ namespace Ic3::Graphics::GCI
 	{
 		if( !IsRenderPassActive() )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
@@ -278,7 +278,7 @@ namespace Ic3::Graphics::GCI
 	{
 		if( !IsRenderPassActive() )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
@@ -289,7 +289,7 @@ namespace Ic3::Graphics::GCI
 	{
 		if( !IsRenderPassActive() )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
@@ -300,7 +300,7 @@ namespace Ic3::Graphics::GCI
 	{
 		if( !IsRenderPassActive() )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
@@ -311,7 +311,7 @@ namespace Ic3::Graphics::GCI
 	{
 		if( !IsRenderPassActive() )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
@@ -341,7 +341,7 @@ namespace Ic3::Graphics::GCI
 
 	void CommandList::OnEndRenderPass()
 	{
-		ic3DebugAssert( IsRenderPassActive() );
+		Ic3DebugAssert( IsRenderPassActive() );
 
 		if( !_internalStateMask.is_set( eCommandListActionFlagRenderPassPreserveDynamicStateBit ) )
 		{

@@ -11,7 +11,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( DX11Texture );
+	Ic3DeclareClassHandle( DX11Texture );
 
 	class DX11RenderBuffer;
 

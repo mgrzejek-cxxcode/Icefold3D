@@ -28,7 +28,7 @@ namespace Ic3::Graphics::GCI
 
 		if( FAILED( hResult ) )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return nullptr;
 		}
 
@@ -62,7 +62,7 @@ namespace Ic3::Graphics::GCI
 
 		if( FAILED( hResult ) )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return nullptr;
 		}
 
@@ -97,7 +97,7 @@ namespace Ic3::Graphics::GCI
 
 		if( FAILED( hResult ) )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return nullptr;
 		}
 

@@ -10,7 +10,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( DX11Sampler );
+	Ic3DeclareClassHandle( DX11Sampler );
 
 	class DX11Sampler : public Sampler
 	{

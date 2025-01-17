@@ -10,7 +10,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( VKPresentationLayer );
+	Ic3DeclareClassHandle( VKPresentationLayer );
 
 	class IC3_GX_VKCOMMON_CLASS VKPresentationLayer : public PresentationLayer
 	{

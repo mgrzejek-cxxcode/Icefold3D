@@ -39,9 +39,9 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( DXGpuDevice );
-	ic3DeclareClassHandle( DXGpuDriver );
-	ic3DeclareClassHandle( DXPresentationLayer );
+	Ic3DeclareClassHandle( DXGpuDevice );
+	Ic3DeclareClassHandle( DXGpuDriver );
+	Ic3DeclareClassHandle( DXPresentationLayer );
 
 } // namespace Ic3::Graphics::GCI
 

@@ -211,7 +211,7 @@ namespace Ic3::Graphics::GCI
 
 		if( pInputSignatureDesc.constantGroupsNum > GCM::cxShaderCombinedStagesNum + 1 )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
@@ -224,7 +224,7 @@ namespace Ic3::Graphics::GCI
 
 			if( !pInputSignatureDesc.activeShaderStagesMask.is_set( groupShaderStageMask ) )
 			{
-				ic3DebugInterrupt();
+				Ic3DebugInterrupt();
 				return false;
 			}
 
@@ -238,7 +238,7 @@ namespace Ic3::Graphics::GCI
 
 				if( totalDwordSize > GCM::cxISMaxDwordSize )
 				{
-					ic3DebugInterrupt();
+					Ic3DebugInterrupt();
 					return false;
 				}
 			}
@@ -258,7 +258,7 @@ namespace Ic3::Graphics::GCI
 
 		if( descriptorSetsNum > GCM::cxISMaxDescriptorSetsNum )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
@@ -272,7 +272,7 @@ namespace Ic3::Graphics::GCI
 				const auto & descriptorDesc = descriptorSetDesc.descriptorList[inputDescriptorIndex];
 				if( descriptorDesc.descriptorType != descriptorSetDesc.descriptorType )
 				{
-					ic3DebugInterrupt();
+					Ic3DebugInterrupt();
 					return false;
 				}
 			}

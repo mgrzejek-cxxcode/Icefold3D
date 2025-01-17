@@ -40,10 +40,10 @@ namespace Ic3::Graphics::GCI
 		}
 
 		auto d3d11Device1 = ATL::CreateD3D11Device( deviceDriverType, deviceCreateFlags );
-		ic3DebugAssert( d3d11Device1 );
+		Ic3DebugAssert( d3d11Device1 );
 
 		auto d3d11DebugInterface = ATL::QueryD3D11DebugInterfaceForD3D11Device( d3d11Device1 );
-		ic3DebugAssert( d3d11DebugInterface );
+		Ic3DebugAssert( d3d11DebugInterface );
 
 		auto dx11GpuDevice = CreateGfxObject<DX11GpuDevice>( pDriver, d3d11Device1, d3d11DebugInterface );
 
@@ -72,35 +72,35 @@ namespace Ic3::Graphics::GCI
 
 	void DX11GpuDevice::InitializeCommandSystem()
 	{
-	    ic3DebugAssert( !_commandSystem );
+	    Ic3DebugAssert( !_commandSystem );
 	    _commandSystem = CreateGfxObject<DX11CommandSystem>( *this );
 	}
 
 	GpuBufferHandle DX11GpuDevice::_DrvCreateGpuBuffer( const GpuBufferCreateInfo & pCreateInfo )
 	{
 	    auto dx11Buffer = DX11GpuBuffer::Create( *this, pCreateInfo );
-	    ic3DebugAssert( dx11Buffer );
+	    Ic3DebugAssert( dx11Buffer );
 	    return dx11Buffer;
 	}
 
 	SamplerHandle DX11GpuDevice::_DrvCreateSampler( const SamplerCreateInfo & pCreateInfo )
 	{
 	    auto dx11Sampler = DX11Sampler::Create( *this, pCreateInfo );
-	    ic3DebugAssert( dx11Sampler );
+	    Ic3DebugAssert( dx11Sampler );
 	    return dx11Sampler;
 	}
 
 	ShaderHandle DX11GpuDevice::_DrvCreateShader( const ShaderCreateInfo & pCreateInfo )
 	{
 	    auto dx11Shader = DX11Shader::Create( *this, pCreateInfo );
-	    ic3DebugAssert( dx11Shader );
+	    Ic3DebugAssert( dx11Shader );
 	    return dx11Shader;
 	}
 
 	TextureHandle DX11GpuDevice::_DrvCreateTexture( const TextureCreateInfo & pCreateInfo )
 	{
 	    auto dx11Texture = DX11Texture::CreateDefault( *this, pCreateInfo );
-	    ic3DebugAssert( dx11Texture );
+	    Ic3DebugAssert( dx11Texture );
 	    return dx11Texture;
 	}
 
@@ -108,7 +108,7 @@ namespace Ic3::Graphics::GCI
 			const RenderTargetTextureCreateInfo & pCreateInfo )
 	{
 		auto dx11RTTextureView = DX11Texture::CreateRenderTargetTextureView( *this, pCreateInfo );
-		ic3DebugAssert( dx11RTTextureView );
+		Ic3DebugAssert( dx11RTTextureView );
 		return dx11RTTextureView;
 	}
 
@@ -116,7 +116,7 @@ namespace Ic3::Graphics::GCI
 			const GraphicsPipelineStateObjectCreateInfo & pCreateInfo )
 	{
 		auto dx11GraphicsPSO = DX11GraphicsPipelineStateObject::Create( *this, pCreateInfo );
-		ic3DebugAssert( dx11GraphicsPSO );
+		Ic3DebugAssert( dx11GraphicsPSO );
 		return dx11GraphicsPSO;
 	}
 

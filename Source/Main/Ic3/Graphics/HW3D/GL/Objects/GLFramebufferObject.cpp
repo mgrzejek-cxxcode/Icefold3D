@@ -18,7 +18,7 @@ namespace Ic3::Graphics::GCI
 		GLuint framebufferHandle = 0;
 
 		glGenFramebuffers( 1, &framebufferHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		GLFramebufferObjectHandle openglFramebufferObject{ new GLFramebufferObject( framebufferHandle ) };
 
@@ -35,7 +35,7 @@ namespace Ic3::Graphics::GCI
 		if( mGLHandle != 0 )
 		{
 			glDeleteFramebuffers( 1, &mGLHandle );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 
 		return true;
@@ -44,7 +44,7 @@ namespace Ic3::Graphics::GCI
 	bool GLFramebufferObject::ValidateHandle() const
 	{
 		auto isBuffer = glIsFramebuffer( mGLHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return isBuffer != GL_FALSE;
 	}
@@ -61,7 +61,7 @@ namespace Ic3::Graphics::GCI
 				GL_COLOR_ATTACHMENT0 + pColorAttachmentIndex,
 				GL_RENDERBUFFER,
 				pGLRenderbuffer.mGLHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
 	void GLFramebufferObject::BindDepthStencilRenderbuffer(
@@ -77,7 +77,7 @@ namespace Ic3::Graphics::GCI
 				fboAttachmentID,
 				GL_RENDERBUFFER,
 				pGLRenderbuffer.mGLHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
 	void GLFramebufferObject::BindColorTexture(
@@ -98,7 +98,7 @@ namespace Ic3::Graphics::GCI
 						GL_TEXTURE_2D,
 						pGLTexture.mGLHandle,
 						cppx::numeric_cast<GLint>( pSubResource.uSubRes2D.mipLevel ) );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 				break;
 			}
 			case GL_TEXTURE_2D_ARRAY:
@@ -109,7 +109,7 @@ namespace Ic3::Graphics::GCI
 						pGLTexture.mGLHandle,
 						cppx::numeric_cast<GLint>( pSubResource.uSubRes2D.mipLevel ),
 						cppx::numeric_cast<GLint>( pSubResource.uSubRes2DArray.arrayIndex ) );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 				break;
 			}
 			case GL_TEXTURE_2D_MULTISAMPLE:
@@ -120,7 +120,7 @@ namespace Ic3::Graphics::GCI
 						GL_TEXTURE_2D_MULTISAMPLE,
 						pGLTexture.mGLHandle,
 						cppx::numeric_cast<GLint>( pSubResource.uSubRes2D.mipLevel ) );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 				break;
 			}
 			case GL_TEXTURE_3D:
@@ -131,7 +131,7 @@ namespace Ic3::Graphics::GCI
 						pGLTexture.mGLHandle,
 						cppx::numeric_cast<GLint>( pSubResource.uSubRes3D.mipLevel ),
 						cppx::numeric_cast<GLint>( pSubResource.uSubRes3D.depthLayerIndex ) );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 				break;
 			}
 			case GL_TEXTURE_CUBE_MAP:
@@ -142,7 +142,7 @@ namespace Ic3::Graphics::GCI
 						GL_TEXTURE_2D,
 						pGLTexture.mGLHandle,
 						cppx::numeric_cast<GLint>( pSubResource.uSubResCubeMap.mipLevel ) );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 				break;
 			}
 		}
@@ -167,7 +167,7 @@ namespace Ic3::Graphics::GCI
 						GL_TEXTURE_2D,
 						pGLTexture.mGLHandle,
 						cppx::numeric_cast<GLint>( pSubResource.uSubRes2D.mipLevel ) );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 				break;
 			}
 			case GL_TEXTURE_2D_ARRAY:
@@ -178,7 +178,7 @@ namespace Ic3::Graphics::GCI
 						pGLTexture.mGLHandle,
 						cppx::numeric_cast<GLint>( pSubResource.uSubRes2DArray.mipLevel ),
 						cppx::numeric_cast<GLint>( pSubResource.uSubRes2DArray.arrayIndex ) );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 				break;
 			}
 			case GL_TEXTURE_2D_MULTISAMPLE:
@@ -189,7 +189,7 @@ namespace Ic3::Graphics::GCI
 						GL_TEXTURE_2D_MULTISAMPLE,
 						pGLTexture.mGLHandle,
 						cppx::numeric_cast<GLint>( pSubResource.uSubRes2D.mipLevel ) );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 				break;
 			}
 			case GL_TEXTURE_3D:
@@ -200,7 +200,7 @@ namespace Ic3::Graphics::GCI
 						pGLTexture.mGLHandle,
 						cppx::numeric_cast<GLint>( pSubResource.uSubRes3D.mipLevel ),
 						cppx::numeric_cast<GLint>( pSubResource.uSubRes3D.depthLayerIndex ) );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 				break;
 			}
 			case GL_TEXTURE_CUBE_MAP:
@@ -211,7 +211,7 @@ namespace Ic3::Graphics::GCI
 						GL_TEXTURE_2D,
 						pGLTexture.mGLHandle,
 						cppx::numeric_cast<GLint>( pSubResource.uSubResCubeMap.mipLevel ) );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 				break;
 			}
 		}
@@ -222,30 +222,30 @@ namespace Ic3::Graphics::GCI
 		auto framebufferBindTarget = CheckActiveBindTarget( pActiveBindTarget );
 
 		GLenum framebufferStatus = glCheckFramebufferStatus( framebufferBindTarget );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		if( framebufferStatus != GL_FRAMEBUFFER_COMPLETE )
 		{
 			switch( framebufferStatus )
 			{
 				case GL_FRAMEBUFFER_UNDEFINED:
-					ic3DebugInterrupt();
+					Ic3DebugInterrupt();
 					break;
 
 				case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-					ic3DebugInterrupt();
+					Ic3DebugInterrupt();
 					break;
 
 				case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-					ic3DebugInterrupt();
+					Ic3DebugInterrupt();
 					break;
 
 				case GL_FRAMEBUFFER_UNSUPPORTED:
-					ic3DebugInterrupt();
+					Ic3DebugInterrupt();
 					break;
 
 				case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
-					ic3DebugInterrupt();
+					Ic3DebugInterrupt();
 					break;
 			}
 
@@ -262,7 +262,7 @@ namespace Ic3::Graphics::GCI
 			pBindTarget = GL_FRAMEBUFFER;
 
 			glBindFramebuffer( GL_FRAMEBUFFER, mGLHandle );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 
 		return pBindTarget;

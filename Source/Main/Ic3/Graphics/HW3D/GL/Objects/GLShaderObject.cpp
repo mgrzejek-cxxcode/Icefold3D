@@ -23,7 +23,7 @@ namespace Ic3::Graphics::GCI
 		}
 
 		auto shaderHandle = glCreateShader( pGLShaderType );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		GLShaderObjectHandle openglShaderObject{ new GLShaderObject( shaderHandle, pGLShaderType, shaderStageMaskBit ) };
 
@@ -57,7 +57,7 @@ namespace Ic3::Graphics::GCI
 		if( deleteStatus == GL_FALSE )
 		{
 			glDeleteShader( mGLHandle );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 
 			return true;
 		}
@@ -77,17 +77,17 @@ namespace Ic3::Graphics::GCI
 		const auto sourceLength = static_cast<GLint>( pSourceLength );
 
 		glShaderSource( mGLHandle, 1, &sourceBuffer, &sourceLength );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		glCompileShader( mGLHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		auto compileStatus = QueryParameter( GL_COMPILE_STATUS );
 		if ( compileStatus != GL_TRUE )
 		{
 			auto infoLog = GetInfoLog();
-			ic3DebugOutput( infoLog.data() );
-			ic3DebugInterrupt();
+			Ic3DebugOutput( infoLog.data() );
+			Ic3DebugInterrupt();
 			return false;
 		}
 
@@ -102,7 +102,7 @@ namespace Ic3::Graphics::GCI
 		}
 
 		glShaderBinary( 1, &mGLHandle, pFormat, pBinary, static_cast<GLsizei>( pBinarySize ) );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return true;
 	}
@@ -122,7 +122,7 @@ namespace Ic3::Graphics::GCI
 		GLint parameterValue = GL_INVALID_VALUE;
 
 		glGetShaderiv( mGLHandle, pParameter, &parameterValue );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return parameterValue;
 	}
@@ -138,7 +138,7 @@ namespace Ic3::Graphics::GCI
 			infoLogBuffer.resize( infoLogLength );
 
 			glGetShaderInfoLog( mGLHandle, static_cast<GLsizei>( infoLogLength ), nullptr, infoLogBuffer.dataAs<GLchar>() );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 
 			// Note: length returned by the GL includes null terminator!
 			infoLog.assign( infoLogBuffer.dataAs<GLchar>(), infoLogLength - 1 );
@@ -158,7 +158,7 @@ namespace Ic3::Graphics::GCI
 			sourceBuffer.resize( sourceLength );
 
 			glGetShaderSource( mGLHandle, static_cast<GLsizei>( sourceLength ), nullptr, sourceBuffer.dataAs<GLchar>() );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 
 			// Note: length returned by the GL includes null terminator!
 			source.assign( sourceBuffer.dataAs<GLchar>(), sourceLength - 1 );
@@ -195,7 +195,7 @@ namespace Ic3::Graphics::GCI
 	{
 		GLint shaderBinaryFormatsNum = 0;
 		glGetIntegerv( GL_NUM_SHADER_BINARY_FORMATS, &shaderBinaryFormatsNum );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return shaderBinaryFormatsNum > 0;
 	}
@@ -204,7 +204,7 @@ namespace Ic3::Graphics::GCI
 	{
 		GLint shaderBinaryFormatsNum = 0;
 		glGetIntegerv( GL_NUM_SHADER_BINARY_FORMATS, &shaderBinaryFormatsNum );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return shaderBinaryFormatsNum > 0;
 	}
@@ -213,17 +213,17 @@ namespace Ic3::Graphics::GCI
 	{
 		switch( pGLShaderType )
 		{
-			ic3CaseReturn( GL_VERTEX_SHADER   , GL_VERTEX_SHADER_BIT   );
-			ic3CaseReturn( GL_FRAGMENT_SHADER , GL_FRAGMENT_SHADER_BIT );
+			Ic3CaseReturn( GL_VERTEX_SHADER   , GL_VERTEX_SHADER_BIT   );
+			Ic3CaseReturn( GL_FRAGMENT_SHADER , GL_FRAGMENT_SHADER_BIT );
 		#if( IC3_GX_GL_FEATURE_SUPPORT_SHADER_TYPE_GEOMETRY )
-			ic3CaseReturn( GL_GEOMETRY_SHADER , GL_GEOMETRY_SHADER_BIT );
+			Ic3CaseReturn( GL_GEOMETRY_SHADER , GL_GEOMETRY_SHADER_BIT );
 		#endif
 		#if( IC3_GX_GL_FEATURE_SUPPORT_SHADER_TYPE_TESSELATION )
-			ic3CaseReturn( GL_TESS_CONTROL_SHADER    , GL_TESS_CONTROL_SHADER_BIT    );
-			ic3CaseReturn( GL_TESS_EVALUATION_SHADER , GL_TESS_EVALUATION_SHADER_BIT );
+			Ic3CaseReturn( GL_TESS_CONTROL_SHADER    , GL_TESS_CONTROL_SHADER_BIT    );
+			Ic3CaseReturn( GL_TESS_EVALUATION_SHADER , GL_TESS_EVALUATION_SHADER_BIT );
 		#endif
 		#if( IC3_GX_GL_FEATURE_SUPPORT_SHADER_TYPE_COMPUTE )
-			ic3CaseReturn( GL_COMPUTE_SHADER , GL_COMPUTE_SHADER_BIT );
+			Ic3CaseReturn( GL_COMPUTE_SHADER , GL_COMPUTE_SHADER_BIT );
 		#endif
 		};
 		return GL_IC3_ERR_INVALID_PARAM;

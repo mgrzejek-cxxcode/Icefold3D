@@ -149,7 +149,7 @@ namespace Ic3::Graphics::GCI
 		/// @brief API-level initialization of the command system. Called by the parent driver when a device is created.
 		virtual void InitializeCommandSystem() = 0;
 
-	ic3driverApi( private ):
+	Ic3driverApi( private ):
 		virtual bool _DrvOnSetPresentationLayer( PresentationLayerHandle pPresentationLayer );
 
 		virtual GpuBufferHandle _DrvCreateGpuBuffer( const GpuBufferCreateInfo & pCreateInfo );

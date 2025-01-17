@@ -13,7 +13,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( GLShader );
+	Ic3DeclareClassHandle( GLShader );
 
 	class GLShader : public GCI::Shader
 	{

@@ -25,13 +25,13 @@ namespace Ic3::Graphics::GCI
 		auto d3d12DebugInterface = DX12CoreAPIProxy::InitializeD3D12DebugInterface( pDX12Driver.GetConfigFlags() );
 
 		auto d3d12Device = DX12CoreAPIProxy::CreateD3D12Device();
-		ic3DebugAssert( d3d12Device );
+		Ic3DebugAssert( d3d12Device );
 
 		auto dxgiFactory3 = DX12CoreAPIProxy::createDXGIFactoryForD3D12Device( d3d12Device, d3d12DebugInterface );
-		ic3DebugAssert( dxgiFactory3 );
+		Ic3DebugAssert( dxgiFactory3 );
 
 		auto dx12GpuDevice = CreateGfxObject<DX12GpuDevice>( pDX12Driver, dxgiFactory3, d3d12Device, d3d12DebugInterface );
-		ic3DebugAssert( dx12GpuDevice );
+		Ic3DebugAssert( dx12GpuDevice );
 
 		dx12GpuDevice->InitializeCommandSystem();
 
@@ -50,7 +50,7 @@ namespace Ic3::Graphics::GCI
 
 	void DX12GpuDevice::InitializeCommandSystem()
 	{
-		ic3DebugAssert( !_cmdManager );
+		Ic3DebugAssert( !_cmdManager );
 		auto cmdManager = CreateGfxObject<DX12GpuCmdManager>( *this );
 		auto initResult = cmdManager->Initialize();
 		if( initResult )
@@ -63,7 +63,7 @@ namespace Ic3::Graphics::GCI
 	{
 		if( !_cmdManager->IsQueueAvailable( E_DEVICE_COMMAND_QUEUE_ID_PRESENT ) )
 		{
-			ic3DebugAssert( _cmdManager->IsQueueAvailable( E_DEVICE_COMMAND_QUEUE_ID_DEFAULT_GRAPHICS ) );
+			Ic3DebugAssert( _cmdManager->IsQueueAvailable( E_DEVICE_COMMAND_QUEUE_ID_DEFAULT_GRAPHICS ) );
 			_cmdManager->SetQueueAlias( E_DEVICE_COMMAND_QUEUE_ID_PRESENT, E_DEVICE_COMMAND_QUEUE_ID_DEFAULT_GRAPHICS );
 		}
 	}

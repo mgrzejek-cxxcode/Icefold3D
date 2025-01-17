@@ -7,8 +7,8 @@
 #include "DX12Prerequisites.h"
 #include <Ic3/Graphics/GCI/cmds/CommandContext.h>
 
-#define ic3DX12CmdContextVerifyGraphics( pDX12CmdContext ) \
-	ic3DebugAssert( pDX12CmdContext->mD3D12GraphicsCommandList )
+#define Ic3DX12CmdContextVerifyGraphics( pDX12CmdContext ) \
+	Ic3DebugAssert( pDX12CmdContext->mD3D12GraphicsCommandList )
 
 namespace Ic3::Graphics::GCI
 {

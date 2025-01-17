@@ -386,7 +386,7 @@ namespace Ic3::Graphics::GCI
 			}
 
 			glBindVertexArray( pVertexArrayObject.mGLHandle );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 
 			for( uint32 attributeIndex = 0; attributeIndex < GCM::cxIAMaxVertexAttributesNum; ++attributeIndex )
 			{
@@ -396,7 +396,7 @@ namespace Ic3::Graphics::GCI
 					const auto & glcAttribute = pInputLayoutDefinition.attributeArray[attributeIndex];
 
 					glEnableVertexAttribArray( attributeIndex );
-					ic3OpenGLHandleLastError();
+					Ic3OpenGLHandleLastError();
 
 					glVertexAttribFormat(
 						attributeIndex,
@@ -404,7 +404,7 @@ namespace Ic3::Graphics::GCI
 						glcAttribute.baseType,
 						glcAttribute.normalized,
 						glcAttribute.relativeOffset );
-					ic3OpenGLHandleLastError();
+					Ic3OpenGLHandleLastError();
 
 					// NOTE: glVertexAttribDivisor modifies the binding between attribute index and its vertex stream slot.
 					// Internally, it does the equivalent of:
@@ -414,17 +414,17 @@ namespace Ic3::Graphics::GCI
 					// For this reason, we use glVertexBindingDivisor() instead.
 
 					glVertexBindingDivisor( attributeIndex, glcAttribute.instanceRate );
-					ic3OpenGLHandleLastError();
+					Ic3OpenGLHandleLastError();
 
 					// This call has to be executed after any call that implicitly modifies vertex attribute binding.
 					// One of the example is glVertexAttribDivisor() above (the actual reason of the old reported crash).
 					glVertexAttribBinding( attributeIndex, glcAttribute.streamIndex );
-					ic3OpenGLHandleLastError();
+					Ic3OpenGLHandleLastError();
 				}
 			}
 
 			glBindVertexArray( 0 );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 
 			return true;
 		}
@@ -455,7 +455,7 @@ namespace Ic3::Graphics::GCI
 			}
 
 			glBindVertexArray( pVertexArrayObject.mGLHandle );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 
 			GLuint currentVBBinding = 0;
 
@@ -467,21 +467,21 @@ namespace Ic3::Graphics::GCI
 					const auto & glcAttribute = pInputLayoutDefinition.attributeArray[attributeIndex];
 					const auto & glcVertexBufferBinding = pVertexStreamDefinition.vertexBufferBindings.GetBinding( glcAttribute.streamIndex );
 
-					ic3DebugAssert( glcVertexBufferBinding );
+					Ic3DebugAssert( glcVertexBufferBinding );
 
 					if( currentVBBinding != glcVertexBufferBinding.handle )
 					{
 						glBindBuffer( GL_ARRAY_BUFFER, glcVertexBufferBinding.handle );
-						ic3OpenGLHandleLastError();
+						Ic3OpenGLHandleLastError();
 
 						currentVBBinding = glcVertexBufferBinding.handle;
 					}
 
 					glEnableVertexAttribArray( attributeIndex );
-					ic3OpenGLHandleLastError();
+					Ic3OpenGLHandleLastError();
 
 					glVertexAttribDivisor( attributeIndex, glcAttribute.instanceRate );
-					ic3OpenGLHandleLastError();
+					Ic3OpenGLHandleLastError();
 
 					glVertexAttribPointer(
 						attributeIndex,
@@ -490,15 +490,15 @@ namespace Ic3::Graphics::GCI
 						glcAttribute.normalized,
 						glcVertexBufferBinding.stride,
 						reinterpret_cast<const void *>( glcVertexBufferBinding.offset + glcAttribute.relativeOffset ) );
-					ic3OpenGLHandleLastError();
+					Ic3OpenGLHandleLastError();
 				}
 			}
 
 			glBindBuffer( GL_ARRAY_BUFFER, 0u );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 
 			glBindVertexArray( 0 );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 
 			return true;
 		}

@@ -51,10 +51,10 @@ namespace Ic3::Graphics::GCI
 			    auto sysDisplayManager = pCreateInfo.sysDisplayManager;
 			    if( !sysDisplayManager )
 			    {
-			        ic3DebugAssert( pGpuDevice.mSysContext );
+			        Ic3DebugAssert( pGpuDevice.mSysContext );
 			        sysDisplayManager = pGpuDevice.mSysContext->CreateDisplayManager();
 			    }
-			    ic3DebugAssert( pGpuDevice.mSysContext );
+			    Ic3DebugAssert( pGpuDevice.mSysContext );
 			    sysWindowManager = pGpuDevice.mSysContext->CreateWindowManager( sysDisplayManager );
 			}
 
@@ -88,7 +88,7 @@ namespace Ic3::Graphics::GCI
 		}
 		catch ( ... )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 		}
 
 		return nullptr;

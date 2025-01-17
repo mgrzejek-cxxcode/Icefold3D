@@ -11,7 +11,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( RenderTargetTexture );
+	Ic3DeclareClassHandle( RenderTargetTexture );
 
 	enum ERenderTargetBufferFlags : uint32
 	{

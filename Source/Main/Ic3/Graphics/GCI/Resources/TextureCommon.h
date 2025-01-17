@@ -12,8 +12,8 @@ namespace Ic3::Graphics::GCI
 	struct TextureCreateInfo;
 	struct RenderTargetTextureCreateInfo;
 
-	ic3DeclareClassHandle( Texture );
-	ic3DeclareClassHandle( RenderTargetTexture );
+	Ic3DeclareClassHandle( Texture );
+	Ic3DeclareClassHandle( RenderTargetTexture );
 
 	/// @brief Identifies all mip levels available in a texture resource. Can be used for all resource accesses.
 	constexpr uint32 cxTextureMipLevelAll = cppx::meta::limits<uint32>::max_value;

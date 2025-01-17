@@ -12,7 +12,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( MetalSampler );
+	Ic3DeclareClassHandle( MetalSampler );
 
 	class  MetalSampler : public Sampler
 	{

@@ -37,12 +37,12 @@ namespace Ic3::Graphics::GCI
 		if( pGpuDevice.IsCompatibilityDevice() )
 		{
 			openglTextureObject = GLTextureObject::CreateCompat( openglCreateInfo );
-			ic3DebugAssert( openglTextureObject );
+			Ic3DebugAssert( openglTextureObject );
 		}
 		else
 		{
 			openglTextureObject = GLTextureObject::CreateCore( openglCreateInfo );
-			ic3DebugAssert( openglTextureObject );
+			Ic3DebugAssert( openglTextureObject );
 		}
 
 		const auto glcTextureInternalFormat = openglTextureObject->QueryInternalFormat();

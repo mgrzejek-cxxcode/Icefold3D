@@ -116,7 +116,7 @@ namespace Ic3::Graphics::GCI
 			if( dx11Texture->mTextureLayout.texClass == ETextureClass::T3D )
 			{
 				auto * d3d11Texture3D = dx11Texture->mD3D11Texture3D.Get();
-				ic3DebugAssert( d3d11Texture3D );
+				Ic3DebugAssert( d3d11Texture3D );
 
 				D3D11_TEXTURE3D_DESC texture3DDesc;
 				d3d11Texture3D->GetDesc( &texture3DDesc );
@@ -135,7 +135,7 @@ namespace Ic3::Graphics::GCI
 			else
 			{
 				auto * d3d11Texture2D = dx11Texture->mD3D11Texture2D.Get();
-				ic3DebugAssert( d3d11Texture2D );
+				Ic3DebugAssert( d3d11Texture2D );
 
 				D3D11_TEXTURE2D_DESC texture2DDesc;
 				d3d11Texture2D->GetDesc( &texture2DDesc );
@@ -188,7 +188,7 @@ namespace Ic3::Graphics::GCI
 				}
 				else
 				{
-					ic3DebugInterrupt();
+					Ic3DebugInterrupt();
 					return {};
 				}
 
@@ -200,7 +200,7 @@ namespace Ic3::Graphics::GCI
 
 			if( FAILED( hResult ) )
 			{
-				ic3DebugInterrupt();
+				Ic3DebugInterrupt();
 				return {};
 			}
 
@@ -220,7 +220,7 @@ namespace Ic3::Graphics::GCI
 			const auto & textureSubResource = pAttachmentTextureRef.GetRefSubResource();
 
 			auto * d3d11Texture2D = dx11Texture->mD3D11Texture2D.Get();
-			ic3DebugAssert( d3d11Texture2D );
+			Ic3DebugAssert( d3d11Texture2D );
 
 			ID3D11Resource * d3d11AttachmentResource = d3d11Texture2D;
 			UINT d3d11AttachmentSubResourceIndex = 0;
@@ -284,7 +284,7 @@ namespace Ic3::Graphics::GCI
 			}
 			else
 			{
-				ic3DebugInterrupt();
+				Ic3DebugInterrupt();
 				return {};
 			}
 
@@ -296,7 +296,7 @@ namespace Ic3::Graphics::GCI
 
 			if( FAILED( hResult ) )
 			{
-				ic3DebugInterrupt();
+				Ic3DebugInterrupt();
 				return {};
 			}
 
@@ -321,7 +321,7 @@ namespace Ic3::Graphics::GCI
 			if( dx11Texture->mTextureLayout.texClass == ETextureClass::T3D )
 			{
 				auto * d3d11Texture3D = dx11Texture->mD3D11Texture3D.Get();
-				ic3DebugAssert( d3d11Texture3D );
+				Ic3DebugAssert( d3d11Texture3D );
 
 				D3D11_TEXTURE3D_DESC texture3DDesc;
 				d3d11Texture3D->GetDesc( &texture3DDesc );
@@ -336,7 +336,7 @@ namespace Ic3::Graphics::GCI
 			else
 			{
 				auto * d3d11Texture2D = dx11Texture->mD3D11Texture2D.Get();
-				ic3DebugAssert( d3d11Texture2D );
+				Ic3DebugAssert( d3d11Texture2D );
 
 				D3D11_TEXTURE2D_DESC texture2DDesc;
 				d3d11Texture2D->GetDesc( &texture2DDesc );
@@ -376,7 +376,7 @@ namespace Ic3::Graphics::GCI
 				}
 				else
 				{
-					ic3DebugInterrupt();
+					Ic3DebugInterrupt();
 					return {};
 				}
 			}
@@ -410,7 +410,7 @@ namespace Ic3::Graphics::GCI
 
 						if( pBindingDefinition.attachmentsActionResolveMask.is_set( attachmentBit ) )
 						{
-							ic3DebugAssert( attachmentBinding.resolveTexture );
+							Ic3DebugAssert( attachmentBinding.resolveTexture );
 
 							auto dx11ResolveAttachmentTexture = CreateRenderTargetResolveAttachmentDX11( attachmentBinding.resolveTexture->mTargetTexture );
 							dx11RenderTargetBindingData.resolveAttachments[caIndex] = dx11ResolveAttachmentTexture;
@@ -436,7 +436,7 @@ namespace Ic3::Graphics::GCI
 
 					if( pBindingDefinition.attachmentsActionResolveMask.is_set( E_RT_ATTACHMENT_FLAG_DEPTH_STENCIL_BIT ) )
 					{
-						ic3DebugAssert( attachmentBinding.resolveTexture );
+						Ic3DebugAssert( attachmentBinding.resolveTexture );
 
 						auto dx11ResolveAttachmentTexture = CreateRenderTargetResolveAttachmentDX11( attachmentBinding.resolveTexture->mTargetTexture );
 						dx11RenderTargetBindingData.resolveAttachments[eRTAttachmentIndexDepthStencil] = dx11ResolveAttachmentTexture;

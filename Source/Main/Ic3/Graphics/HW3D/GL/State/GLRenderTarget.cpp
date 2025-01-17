@@ -154,12 +154,12 @@ namespace Ic3::Graphics::GCI
 			if( !pAttachmentMask.is_set_any_of( eRTAttachmentMaskColorAll ) )
 			{
 				glDrawBuffer( GL_NONE );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 			}
 
 			if( !framebufferObject->CheckStatus() )
 			{
-				ic3DebugInterrupt();
+				Ic3DebugInterrupt();
 				return nullptr;
 			}
 
@@ -203,7 +203,7 @@ namespace Ic3::Graphics::GCI
 							};
 
 							glClearBufferfv( GL_COLOR, caIndex, clearArray );
-							ic3OpenGLHandleLastError();
+							Ic3OpenGLHandleLastError();
 						}
 						colorAttachmentsClearMask.unset( attachmentBit );
 					}
@@ -223,14 +223,14 @@ namespace Ic3::Graphics::GCI
 					{
 						const GLfloat depthValue = clearConfig->depthValue;
 						glClearBufferfv( GL_DEPTH, 0, &depthValue );
-						ic3OpenGLHandleLastError();
+						Ic3OpenGLHandleLastError();
 					}
 
 					if( attachmentConfig.clearMask.is_set( E_RENDER_TARGET_BUFFER_FLAG_STENCIL_BIT ) )
 					{
 						const GLint stencilValue = clearConfig->stencilValue;
 						glClearBufferiv( GL_STENCIL, 0, &stencilValue );
-						ic3OpenGLHandleLastError();
+						Ic3OpenGLHandleLastError();
 					}
 				}
 			}
@@ -242,23 +242,23 @@ namespace Ic3::Graphics::GCI
 		{
 			if( pRenderPassConfiguration.attachmentsActionResolveMask != 0 )
 			{
-				ic3DebugAssert( pRTBindingInfo.resolveFBO );
+				Ic3DebugAssert( pRTBindingInfo.resolveFBO );
 
 				GLint drawFramebufferHandle = -1;
 				glGetIntegerv( GL_DRAW_FRAMEBUFFER_BINDING, &drawFramebufferHandle );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 
 				GLint readFramebufferHandle = -1;
 				glGetIntegerv( GL_READ_FRAMEBUFFER_BINDING, &readFramebufferHandle );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 
 				const auto & fboImageSize = pRTBindingInfo.rtLayout->sharedImageRect;
 
 				glBindFramebuffer( GL_READ_FRAMEBUFFER, drawFramebufferHandle );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 
 				glBindFramebuffer( GL_DRAW_FRAMEBUFFER, pRTBindingInfo.renderFBO->mGLHandle );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 
 				auto colorAttachmentsResolveMask = pRenderPassConfiguration.attachmentsActionResolveMask;
 				for( uint32 caIndex = 0; CxDef::IsRTColorAttachmentIndexValid( caIndex ); ++caIndex )
@@ -267,10 +267,10 @@ namespace Ic3::Graphics::GCI
 					if( colorAttachmentsResolveMask.is_set( attachmentBit ) )
 					{
 						glReadBuffer( GL_COLOR_ATTACHMENT0 + caIndex );
-						ic3OpenGLHandleLastError();
+						Ic3OpenGLHandleLastError();
 
 						glDrawBuffer( GL_COLOR_ATTACHMENT0 + caIndex );
-						ic3OpenGLHandleLastError();
+						Ic3OpenGLHandleLastError();
 
 						glBlitFramebuffer(
 								0,
@@ -283,7 +283,7 @@ namespace Ic3::Graphics::GCI
 								fboImageSize.height,
 								GL_COLOR_BUFFER_BIT,
 								GL_LINEAR );
-						ic3OpenGLHandleLastError();
+						Ic3OpenGLHandleLastError();
 
 						colorAttachmentsResolveMask.unset( attachmentBit );
 
@@ -294,10 +294,10 @@ namespace Ic3::Graphics::GCI
 					}
 
 					glBindFramebuffer( GL_READ_FRAMEBUFFER, readFramebufferHandle );
-					ic3OpenGLHandleLastError();
+					Ic3OpenGLHandleLastError();
 
 					glBindFramebuffer( GL_DRAW_FRAMEBUFFER, drawFramebufferHandle );
-					ic3OpenGLHandleLastError();
+					Ic3OpenGLHandleLastError();
 				}
 			}
 		}

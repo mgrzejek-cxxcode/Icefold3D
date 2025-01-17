@@ -7,11 +7,11 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3EnableCustomExceptionSupport();
-	ic3EnableEnumTypeInfoSupport();
+	Ic3EnableCustomExceptionSupport();
+	Ic3EnableEnumTypeInfoSupport();
 
-#define Ic3GCIDeclareClassHandle( pClassName ) ic3DeclareClassHandle( pClassName )
-#define Ic3GCIDeclareTypedefHandle( pAliasName, pTypeName ) ic3DeclareTypedefHandle( pAliasName, pTypeName )
+#define Ic3GCIDeclareClassHandle( pClassName ) Ic3DeclareClassHandle( pClassName )
+#define Ic3GCIDeclareTypedefHandle( pAliasName, pTypeName ) Ic3DeclareTypedefHandle( pAliasName, pTypeName )
 
 	/// A special constant which can be used for object IDs to indicate that ID should be assigned automatically.
 	/// In most cases it is safe to assume that object address will be used as the ID (unless stated otherwise).

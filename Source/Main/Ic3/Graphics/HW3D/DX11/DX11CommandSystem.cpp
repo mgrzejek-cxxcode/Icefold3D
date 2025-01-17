@@ -82,7 +82,7 @@ namespace Ic3::Graphics::GCI
 
 	bool DX11CommandSystem::InitializeDirectCommandList()
 	{
-		ic3DebugAssert( !_directCommandList );
+		Ic3DebugAssert( !_directCommandList );
 
 		ComPtr<ID3D11DeviceContext1> d3d11ImmediateContext;
 		mD3D11Device1->GetImmediateContext1( &d3d11ImmediateContext );

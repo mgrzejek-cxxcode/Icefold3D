@@ -9,11 +9,11 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( GpuResource );
-	ic3DeclareClassHandle( GpuBuffer );
-	ic3DeclareClassHandle( Sampler );
-	ic3DeclareClassHandle( Shader );
-	ic3DeclareClassHandle( Texture );
+	Ic3DeclareClassHandle( GpuResource );
+	Ic3DeclareClassHandle( GpuBuffer );
+	Ic3DeclareClassHandle( Sampler );
+	Ic3DeclareClassHandle( Shader );
+	Ic3DeclareClassHandle( Texture );
 
 	struct GpuBufferCreateInfo;
 	struct SamplerCreateInfo;

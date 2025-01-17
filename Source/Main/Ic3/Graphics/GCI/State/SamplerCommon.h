@@ -9,7 +9,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( Sampler );
+	Ic3DeclareClassHandle( Sampler );
 
 	enum class ETextureAddressMode : enum_default_value_t
 	{

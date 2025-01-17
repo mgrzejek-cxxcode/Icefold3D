@@ -11,8 +11,8 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( GLPresentationLayer );
-	ic3DeclareClassHandle( GLScreenPresentationLayer );
+	Ic3DeclareClassHandle( GLPresentationLayer );
+	Ic3DeclareClassHandle( GLScreenPresentationLayer );
 
 	struct GLPresentationLayerCreateInfo : public PresentationLayerCreateInfo
 	{

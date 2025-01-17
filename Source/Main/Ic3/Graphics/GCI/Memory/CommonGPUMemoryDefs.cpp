@@ -45,7 +45,7 @@ namespace Ic3::Graphics::GCI
 				const void * pData,
 				const StructuredResourceAlignedMemoryMetrics & pMetrics )
 		{
-			ic3DebugAssert( pMetrics.elementSizeAligned >= pMetrics.elementSize );
+			Ic3DebugAssert( pMetrics.elementSizeAligned >= pMetrics.elementSize );
 
 			const auto paddingSize = pMetrics.elementSizeAligned - pMetrics.elementSize;
 

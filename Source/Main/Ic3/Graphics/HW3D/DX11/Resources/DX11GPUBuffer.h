@@ -10,7 +10,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( DX11GpuBuffer );
+	Ic3DeclareClassHandle( DX11GpuBuffer );
 
 	struct DX11GpuBufferDesc
 	{

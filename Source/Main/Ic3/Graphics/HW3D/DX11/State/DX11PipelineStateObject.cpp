@@ -28,31 +28,31 @@ namespace Ic3::Graphics::GCI
 
 	const DX11BlendImmutableState & DX11GraphicsPipelineStateObject::GetBlendState() const noexcept
 	{
-		ic3DebugAssert( mSeparableStates.blendState );
+		Ic3DebugAssert( mSeparableStates.blendState );
 		return *( mSeparableStates.blendState->QueryInterface<DX11BlendImmutableState>() );
 	}
 
 	const DX11DepthStencilImmutableState & DX11GraphicsPipelineStateObject::GetDepthStencilState() const noexcept
 	{
-		ic3DebugAssert( mSeparableStates.depthStencilState );
+		Ic3DebugAssert( mSeparableStates.depthStencilState );
 		return *( mSeparableStates.depthStencilState->QueryInterface<DX11DepthStencilImmutableState>() );
 	}
 
 	const DX11RasterizerImmutableState & DX11GraphicsPipelineStateObject::GetRasterizerState() const noexcept
 	{
-		ic3DebugAssert( mSeparableStates.rasterizerState );
+		Ic3DebugAssert( mSeparableStates.rasterizerState );
 		return *( mSeparableStates.rasterizerState->QueryInterface<DX11RasterizerImmutableState>() );
 	}
 
 	const DX11GraphicsShaderLinkageImmutableState & DX11GraphicsPipelineStateObject::GetGraphicsShaderLinkageState() const noexcept
 	{
-		ic3DebugAssert( mSeparableStates.shaderLinkageState );
+		Ic3DebugAssert( mSeparableStates.shaderLinkageState );
 		return *( mSeparableStates.shaderLinkageState->QueryInterface<DX11GraphicsShaderLinkageImmutableState>() );
 	}
 
 	const DX11IAInputLayoutImmutableState & DX11GraphicsPipelineStateObject::GetIAInputLayoutState() const noexcept
 	{
-		ic3DebugAssert( mSeparableStates.iaInputLayoutState );
+		Ic3DebugAssert( mSeparableStates.iaInputLayoutState );
 		return *( mSeparableStates.iaInputLayoutState->QueryInterface<DX11IAInputLayoutImmutableState>() );
 	}
 

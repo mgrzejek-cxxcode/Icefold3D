@@ -140,7 +140,7 @@ namespace Ic3::Graphics::GCI
 		if( !pCreateInfo.bindFlags.is_set_any_of(
 				eGpuResourceUsageFlagRenderTargetColorBit | eGpuResourceUsageMaskRenderTargetDepthStencil ) )
 		{
-			ic3DebugOutput( "No RT attachment bind flags specified for the RT texture (E_GPU_RESOURCE_USAGE_xxx_RENDER_TARGET_yyy)." );
+			Ic3DebugOutput( "No RT attachment bind flags specified for the RT texture (E_GPU_RESOURCE_USAGE_xxx_RENDER_TARGET_yyy)." );
 			return nullptr;
 		}
 
@@ -149,7 +149,7 @@ namespace Ic3::Graphics::GCI
 			const auto & targetTextureResourceFlags = pCreateInfo.targetTexture->mTextureProperties.resourceFlags;
 			if( !targetTextureResourceFlags.is_set( pCreateInfo.bindFlags & eGpuResourceUsageMaskAll ) )
 			{
-				ic3DebugOutput( "Target texture for Render Target is not compatible with specified bind flags (E_GPU_RESOURCE_USAGE_xxx)." );
+				Ic3DebugOutput( "Target texture for Render Target is not compatible with specified bind flags (E_GPU_RESOURCE_USAGE_xxx)." );
 				return nullptr;
 			}
 		}
@@ -200,55 +200,55 @@ namespace Ic3::Graphics::GCI
 
 	BlendImmutableStateHandle GpuDevice::CreateBlendImmutableState( const BlendConfig & pConfig )
 	{
-		ic3DebugAssert( _immutableStateFactoryBase );
+		Ic3DebugAssert( _immutableStateFactoryBase );
 		return _immutableStateFactoryBase->CreateBlendState( pConfig );
 	}
 
 	DepthStencilImmutableStateHandle GpuDevice::CreateDepthStencilImmutableState( const DepthStencilConfig & pConfig )
 	{
-		ic3DebugAssert( _immutableStateFactoryBase );
+		Ic3DebugAssert( _immutableStateFactoryBase );
 		return _immutableStateFactoryBase->CreateDepthStencilState( pConfig );
 	}
 
 	GraphicsShaderLinkageImmutableStateHandle GpuDevice::CreateGraphicsShaderLinkageImmutableState( const GraphicsShaderSet & pShaderSet )
 	{
-		ic3DebugAssert( _immutableStateFactoryBase );
+		Ic3DebugAssert( _immutableStateFactoryBase );
 		return _immutableStateFactoryBase->CreateGraphicsShaderLinkageState( pShaderSet );
 	}
 
 	IAInputLayoutImmutableStateHandle GpuDevice::CreateIAInputLayoutImmutableState( const IAInputLayoutDefinition & pDefinition, Shader & pVertexShaderWithBinary )
 	{
-		ic3DebugAssert( _immutableStateFactoryBase );
+		Ic3DebugAssert( _immutableStateFactoryBase );
 		return _immutableStateFactoryBase->CreateIAInputLayoutState( pDefinition, pVertexShaderWithBinary );
 	}
 
 	IAVertexStreamImmutableStateHandle GpuDevice::CreateIAVertexStreamImmutableState( const IAVertexStreamDefinition & pDefinition )
 	{
-		ic3DebugAssert( _immutableStateFactoryBase );
+		Ic3DebugAssert( _immutableStateFactoryBase );
 		return _immutableStateFactoryBase->CreateIAVertexStreamState( pDefinition );
 	}
 
 	RasterizerImmutableStateHandle GpuDevice::CreateRasterizerImmutableState( const RasterizerConfig & pConfig )
 	{
-		ic3DebugAssert( _immutableStateFactoryBase );
+		Ic3DebugAssert( _immutableStateFactoryBase );
 		return _immutableStateFactoryBase->CreateRasterizerState( pConfig );
 	}
 
 	RenderTargetBindingImmutableStateHandle GpuDevice::CreateRenderTargetBindingImmutableState( const RenderTargetBindingDefinition & pDefinition )
 	{
-		ic3DebugAssert( _immutableStateFactoryBase );
+		Ic3DebugAssert( _immutableStateFactoryBase );
 		return _immutableStateFactoryBase->CreateRenderTargetBindingState( pDefinition );
 	}
 
 	RenderPassConfigurationImmutableStateHandle GpuDevice::CreateRenderPassConfigurationImmutableState( const RenderPassConfiguration & pConfiguration )
 	{
-		ic3DebugAssert( _immutableStateFactoryBase );
+		Ic3DebugAssert( _immutableStateFactoryBase );
 		return _immutableStateFactoryBase->CreateRenderPassState( pConfiguration.GetValidated() );
 	}
 
 	void GpuDevice::ResetImmutableStateCache( cppx::bitmask<EPipelineImmutableStateTypeFlags> pResetMask )
 	{
-		ic3DebugAssert( _immutableStateCachePtr );
+		Ic3DebugAssert( _immutableStateCachePtr );
 		_immutableStateCachePtr->Reset( pResetMask );
 	}
 

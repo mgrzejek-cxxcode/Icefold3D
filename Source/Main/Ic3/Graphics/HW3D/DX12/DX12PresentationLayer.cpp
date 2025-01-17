@@ -32,13 +32,13 @@ namespace Ic3::Graphics::GCI
 	DX12ScreenPresentationLayerHandle DX12ScreenPresentationLayer::Create( DX12GpuDevice & pDX12Device, const DX12PresentationLayerCreateInfo & pCreateInfo )
 	{
 		auto * d3d12PresentQueue = pDX12Device.GetD3D12DeviceQueue( E_DEVICE_COMMAND_QUEUE_ID_PRESENT );
-		ic3DebugAssert( d3d12PresentQueue );
+		Ic3DebugAssert( d3d12PresentQueue );
 
 		auto * exfWindow = createSysWindow( pDX12Device, pCreateInfo );
-		ic3DebugAssert( exfWindow );
+		Ic3DebugAssert( exfWindow );
 
 		auto dxgiSwapChain3 = DX12CoreAPIProxy::CreateD3D12SwapChainForExfWindow( d3d12PresentQueue, exfWindow, pCreateInfo.dxgiFlags );
-		ic3DebugAssert( dxgiSwapChain3 );
+		Ic3DebugAssert( dxgiSwapChain3 );
 
 		auto presentationLayer = CreateGfxObject<DX12ScreenPresentationLayer>( pDX12Device, std::move( dxgiSwapChain3 ) );
 		presentationLayer->_initializeRTVDescriptorHeap();
@@ -50,7 +50,7 @@ namespace Ic3::Graphics::GCI
 	void DX12ScreenPresentationLayer::BindRenderTarget( CommandContext * pCmdContext )
 	{
 		auto * dx12CmdContext = pCmdContext->GetInterface<DX12CommandContext>();
-		ic3DebugAssert( dx12CmdContext->mD3D12GraphicsCommandList );
+		Ic3DebugAssert( dx12CmdContext->mD3D12GraphicsCommandList );
 
 		auto & currentFrameResource = _frameResourceArray.at( _currentFrameIndex );
 
@@ -73,7 +73,7 @@ namespace Ic3::Graphics::GCI
 	void DX12ScreenPresentationLayer::InvalidateRenderTarget( CommandContext * pCmdContext )
 	{
 		auto * dx12CmdContext = pCmdContext->GetInterface<DX12CommandContext>();
-		ic3DebugAssert( dx12CmdContext->mD3D12GraphicsCommandList );
+		Ic3DebugAssert( dx12CmdContext->mD3D12GraphicsCommandList );
 
 		auto & currentFrameResource = _frameResourceArray.at( _currentFrameIndex );
 
@@ -105,7 +105,7 @@ namespace Ic3::Graphics::GCI
 		_currentFrameIndex = mDXGISwapChain3->GetCurrentBackBufferIndex();
 	#else
 		auto * dx12CmdDeviceQueue = pCmdDeviceQueue->getAs<DX12DeviceCommandQueue>();
-		ic3DebugAssert( dx12CmdDeviceQueue->mD3D12CommandQueue );
+		Ic3DebugAssert( dx12CmdDeviceQueue->mD3D12CommandQueue );
 
 		mDXGISwapChain3->Present( 1, 0 );
 
@@ -156,7 +156,7 @@ namespace Ic3::Graphics::GCI
 
 	bool DX12ScreenPresentationLayer::_initializeRTVResources()
 	{
-		ic3DebugAssert( _rtvDescriptorHeap && ( _rtvDescriptorSize > 0 ) );
+		Ic3DebugAssert( _rtvDescriptorHeap && ( _rtvDescriptorSize > 0 ) );
 
 		// Get the CPU handle for our previously created descriptor heap. Using the base pointer and the size of a
 		// single descriptor (_rtvDescriptorSize) we can then manually compute offsets for all pdesc (see below).

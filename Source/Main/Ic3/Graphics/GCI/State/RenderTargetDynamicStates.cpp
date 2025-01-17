@@ -35,7 +35,7 @@ namespace Ic3::Graphics::GCI
 
 	RenderTargetAttachmentBinding & RenderTargetBindingDynamicState::SetColorAttachmentBinding( native_uint pIndex )
 	{
-		ic3DebugAssert( CxDef::IsRTAttachmentIndexValid( pIndex ) );
+		Ic3DebugAssert( CxDef::IsRTAttachmentIndexValid( pIndex ) );
 		_renderTargetBindingDefinition.activeAttachmentsMask.set( CxDef::makeRTAttachmentFlag( pIndex ) );
 		return _renderTargetBindingDefinition.colorAttachments[pIndex];
 	}
@@ -161,7 +161,7 @@ namespace Ic3::Graphics::GCI
 
 	RenderPassAttachmentConfig & RenderPassConfigurationDynamicState::SetColorAttachmentUsage( native_uint pIndex )
 	{
-		ic3DebugAssert( CxDef::IsRTAttachmentIndexValid( pIndex ) );
+		Ic3DebugAssert( CxDef::IsRTAttachmentIndexValid( pIndex ) );
 		_renderPassConfiguration.activeAttachmentsMask.set( CxDef::makeRTAttachmentFlag( pIndex ) );
 		return _renderPassConfiguration.colorAttachments[pIndex];
 	}

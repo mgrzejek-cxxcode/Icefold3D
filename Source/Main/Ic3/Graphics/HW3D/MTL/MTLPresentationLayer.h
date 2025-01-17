@@ -10,8 +10,8 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( MetalPresentationLayer );
-	ic3DeclareClassHandle( MetalScreenPresentationLayer );
+	Ic3DeclareClassHandle( MetalPresentationLayer );
+	Ic3DeclareClassHandle( MetalScreenPresentationLayer );
 
 	struct MetalPresentationLayerCreateInfo : public PresentationLayerCreateInfo
 	{

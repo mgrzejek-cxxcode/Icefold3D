@@ -31,7 +31,7 @@ namespace Ic3::Graphics::GCI
 
 	const ShaderInputSignature & GraphicsPipelineStateController::GetShaderInputSignature() const noexcept
 	{
-		ic3DebugAssert( _currentCommonState.graphicsPSO );
+		Ic3DebugAssert( _currentCommonState.graphicsPSO );
 		return _currentCommonState.graphicsPSO->mShaderInputSignature;
 	}
 

@@ -142,5 +142,4 @@ target_include_directories( Ic3.Graphics.GCI PUBLIC
 target_link_libraries( Ic3.Graphics.GCI PUBLIC
         Ic3.CoreLib
         Ic3.Math
-        Ic3.Cppx
         )

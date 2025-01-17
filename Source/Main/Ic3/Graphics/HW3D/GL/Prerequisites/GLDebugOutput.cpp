@@ -23,16 +23,16 @@ namespace Ic3::Graphics::GCI
 		if( pEnable )
 		{
 			glEnable( GL_DEBUG_OUTPUT );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 		else
 		{
 			glDisable( GL_DEBUG_OUTPUT );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 
 		SetCallbackActive( pEnable );
-		ic3DebugOutputFmt( "Debug output has been %s.", pEnable ? "enabled" : "disabled" );
+		Ic3DebugOutputFmt( "Debug output has been %s.", pEnable ? "enabled" : "disabled" );
 	}
 
 	void GLDebugOutput::EnableSync( bool pEnable )
@@ -149,7 +149,7 @@ namespace Ic3::Graphics::GCI
 			auto apiVersion = debugOutputInterface->GetVersion();
 			const char * extensionName = debugOutputInterface->GetExtensionName();
 
-			ic3DebugOutputFmt( "GLDebugOutput object has been initialized (version %u: %s)", apiVersion, extensionName );
+			Ic3DebugOutputFmt( "GLDebugOutput object has been initialized (version %u: %s)", apiVersion, extensionName );
 
 		}
 
@@ -160,11 +160,11 @@ namespace Ic3::Graphics::GCI
 	{
 		++_processedEventsNum;
 
-		ic3DebugOutput( pEventInfo );
+		Ic3DebugOutput( pEventInfo );
 
 		if( ( pEventSeverity == GL_DEBUG_SEVERITY_HIGH_ARB ) && _stateFlags.is_set( eStateFlagEnableBreakOnEvent ) )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 		}
 	}
 
@@ -249,12 +249,12 @@ namespace Ic3::Graphics::GCI
 		if( pEnable )
 		{
 			glEnable( GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 		else
 		{
 			glDisable( GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 	}
 
@@ -323,12 +323,12 @@ namespace Ic3::Graphics::GCI
 		if( pEnable )
 		{
 			glEnable( GL_DEBUG_OUTPUT_SYNCHRONOUS );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 		else
 		{
 			glDisable( GL_DEBUG_OUTPUT_SYNCHRONOUS );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 	}
 

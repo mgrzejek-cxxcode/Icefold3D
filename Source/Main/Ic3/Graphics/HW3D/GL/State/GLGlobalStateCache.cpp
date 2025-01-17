@@ -21,7 +21,7 @@ namespace Ic3::Graphics::GCI
 		if( pShaderPipelineHandle != _cachedState.shaderPipelineBinding )
 		{
 			glBindProgramPipeline( pShaderPipelineHandle );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 			_cachedState.shaderPipelineBinding = pShaderPipelineHandle;
 		}
 	}
@@ -31,7 +31,7 @@ namespace Ic3::Graphics::GCI
 		if( pShaderProgramHandle != _cachedState.shaderProgramBinding )
 		{
 			glUseProgram( pShaderProgramHandle );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 			_cachedState.shaderProgramBinding = pShaderProgramHandle;
 		}
 	}
@@ -41,7 +41,7 @@ namespace Ic3::Graphics::GCI
 		if( pIndexBufferObjectHandle != _cachedState.indexBufferBinding )
 		{
 			glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, pIndexBufferObjectHandle );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 			_cachedState.indexBufferBinding = pIndexBufferObjectHandle;
 		}
 	}
@@ -51,7 +51,7 @@ namespace Ic3::Graphics::GCI
 		if( pVertexArrayObjectHandle != _cachedState.vertexArrayObjectBinding )
 		{
 			glBindVertexArray( pVertexArrayObjectHandle );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 			_cachedState.vertexArrayObjectBinding = pVertexArrayObjectHandle;
 			_cachedState.indexBufferBinding = 0;
 		}
@@ -66,7 +66,7 @@ namespace Ic3::Graphics::GCI
 			if( cachedBlendConfig.blendActiveGlobal )
 			{
 				glDisable( GL_BLEND );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 
 				cachedBlendConfig.blendActiveGlobal = false;
 			}
@@ -92,7 +92,7 @@ namespace Ic3::Graphics::GCI
 						if( !compareCurrentState || cachedBlendProps.blendActive )
 						{
 							glDisablei( GL_BLEND, caIndex );
-							ic3OpenGLHandleLastError();
+							Ic3OpenGLHandleLastError();
 							cachedBlendProps.blendActive = 0;
 						}
 					}
@@ -101,21 +101,21 @@ namespace Ic3::Graphics::GCI
 						if( !compareCurrentState || !cachedBlendProps.blendActive )
 						{
 							glEnablei( GL_BLEND, caIndex );
-							ic3OpenGLHandleLastError();
+							Ic3OpenGLHandleLastError();
 							cachedBlendProps.blendActive = 1;
 						}
 
 						if( !compareCurrentState || cppx::mem_cmp_not_equal( blendProps.equation, cachedBlendProps.equation ) )
 						{
 							glBlendEquationSeparatei( caIndex, blendProps.equation.rgb, blendProps.equation.alpha );
-							ic3OpenGLHandleLastError();
+							Ic3OpenGLHandleLastError();
 							cachedBlendProps.equation = blendProps.equation;
 						}
 
 						if( !compareCurrentState || cppx::mem_cmp_not_equal( blendProps.factor, cachedBlendProps.factor ) )
 						{
 							glBlendFuncSeparatei( caIndex, blendProps.factor.rgbSrc, blendProps.factor.rgbDst, blendProps.factor.alphaSrc, blendProps.factor.alphaDst );
-							ic3OpenGLHandleLastError();
+							Ic3OpenGLHandleLastError();
 							cachedBlendProps.factor = blendProps.factor;
 						}
 					}
@@ -128,7 +128,7 @@ namespace Ic3::Graphics::GCI
 				if( !compareCurrentState || !cachedBlendConfig.blendActiveGlobal  )
 				{
 					glEnable( GL_BLEND );
-					ic3OpenGLHandleLastError();
+					Ic3OpenGLHandleLastError();
 					cachedBlendConfig.blendActiveGlobal = true;
 				}
 
@@ -138,14 +138,14 @@ namespace Ic3::Graphics::GCI
 				if( !compareCurrentState || cppx::mem_cmp_not_equal( blendProps.equation, cachedBlendProps.equation ) )
 				{
 					glBlendEquationSeparate( blendProps.equation.rgb, blendProps.equation.alpha );
-					ic3OpenGLHandleLastError();
+					Ic3OpenGLHandleLastError();
 					cachedBlendProps.equation = blendProps.equation;
 				}
 
 				if( !compareCurrentState || cppx::mem_cmp_not_equal( blendProps.factor, cachedBlendProps.factor ) )
 				{
 					glBlendFuncSeparate( blendProps.factor.rgbSrc, blendProps.factor.rgbDst, blendProps.factor.alphaSrc, blendProps.factor.alphaDst );
-					ic3OpenGLHandleLastError();
+					Ic3OpenGLHandleLastError();
 					cachedBlendProps.factor = blendProps.factor;
 				}
 			}
@@ -157,7 +157,7 @@ namespace Ic3::Graphics::GCI
 				if( cppx::mem_cmp_not_equal( blendConstantColor, cachedBlendConfig.constantColor ) )
 				{
 					glBlendColor( blendConstantColor.fpRed, blendConstantColor.fpGreen, blendConstantColor.fpBlue, blendConstantColor.fpAlpha );
-					ic3OpenGLHandleLastError();
+					Ic3OpenGLHandleLastError();
 					cachedBlendConfig.constantColor = pBlendConfig.constantColor;
 				}
 			}
@@ -175,7 +175,7 @@ namespace Ic3::Graphics::GCI
 			if( cachedDepthStencilConfig.depthTestActive )
 			{
 				glDisable( GL_DEPTH_TEST );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 				cachedDepthStencilConfig.depthTestActive = false;
 			}
 		}
@@ -184,21 +184,21 @@ namespace Ic3::Graphics::GCI
 			if( !cachedDepthStencilConfig.depthTestActive )
 			{
 				glEnable( GL_DEPTH_TEST );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 				cachedDepthStencilConfig.depthTestActive = true;
 			}
 
 			if( cachedDepthSettings.depthCompFunc != pDepthStencilConfig.depthSettings.depthCompFunc )
 			{
 				glDepthFunc( pDepthStencilConfig.depthSettings.depthCompFunc );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 				cachedDepthSettings.depthCompFunc = pDepthStencilConfig.depthSettings.depthCompFunc;
 			}
 
 			if( cachedDepthSettings.writeMask != pDepthStencilConfig.depthSettings.writeMask )
 			{
 				glDepthMask( pDepthStencilConfig.depthSettings.writeMask ? GL_TRUE : GL_FALSE );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 				cachedDepthSettings.writeMask = pDepthStencilConfig.depthSettings.writeMask;
 			}
 		}
@@ -208,7 +208,7 @@ namespace Ic3::Graphics::GCI
 			if( cachedDepthStencilConfig.stencilTestActive )
 			{
 				glDisable( GL_STENCIL_TEST );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 				cachedDepthStencilConfig.stencilTestActive = false;
 			}
 		}
@@ -217,7 +217,7 @@ namespace Ic3::Graphics::GCI
 			if( !cachedDepthStencilConfig.stencilTestActive )
 			{
 				glEnable( GL_STENCIL_TEST );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 				cachedDepthStencilConfig.stencilTestActive = true;
 			}
 
@@ -225,13 +225,13 @@ namespace Ic3::Graphics::GCI
 			if( !cppx::mem_cmp_equal( frontFace, cachedStencilSettings.frontFace ) )
 			{
 				glStencilFuncSeparate( GL_FRONT, frontFace.compFunc, pStencilRefValue, frontFace.readMask );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 
 				glStencilOpSeparate( GL_FRONT, frontFace.opFail, frontFace.opPassDepthFail, frontFace.opPassDepthPass );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 
 				glStencilMaskSeparate( GL_FRONT, frontFace.writeMask );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 
 				cppx::mem_copy( cachedStencilSettings.frontFace, frontFace );
 			}
@@ -240,13 +240,13 @@ namespace Ic3::Graphics::GCI
 			if( !cppx::mem_cmp_equal( backFace, cachedStencilSettings.backFace ) )
 			{
 				glStencilFuncSeparate( GL_FRONT, backFace.compFunc, pStencilRefValue, backFace.readMask );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 
 				glStencilOpSeparate( GL_FRONT, backFace.opFail, backFace.opPassDepthFail, backFace.opPassDepthPass );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 
 				glStencilMaskSeparate( GL_FRONT, backFace.writeMask );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 
 				cppx::mem_copy( cachedStencilSettings.backFace, backFace );
 			}
@@ -262,13 +262,13 @@ namespace Ic3::Graphics::GCI
 			if( pRasterizerConfig.scissorTestActive )
 			{
 				glEnable( GL_SCISSOR_TEST );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 				cachedRasterizerConfig.scissorTestActive = true;
 			}
 			else
 			{
 				glDisable( GL_SCISSOR_TEST );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 				cachedRasterizerConfig.scissorTestActive = false;
 			}
 		}
@@ -278,17 +278,17 @@ namespace Ic3::Graphics::GCI
 			if( pRasterizerConfig.cullMode != GL_NONE )
 			{
 				glEnable( GL_CULL_FACE );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 
 				glCullFace( pRasterizerConfig.cullMode );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 
 				cachedRasterizerConfig.cullMode = pRasterizerConfig.cullMode;
 			}
 			else
 			{
 				glDisable( GL_CULL_FACE );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 
 				cachedRasterizerConfig.cullMode = GL_NONE;
 			}
@@ -297,7 +297,7 @@ namespace Ic3::Graphics::GCI
 		if( pRasterizerConfig.frontFaceVerticesOrder != cachedRasterizerConfig.frontFaceVerticesOrder )
 		{
 			glFrontFace( pRasterizerConfig.frontFaceVerticesOrder );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 
 			cachedRasterizerConfig.frontFaceVerticesOrder = pRasterizerConfig.frontFaceVerticesOrder;
 		}
@@ -306,7 +306,7 @@ namespace Ic3::Graphics::GCI
 		if( pRasterizerConfig.primitiveFillMode != cachedRasterizerConfig.primitiveFillMode )
 		{
 			glPolygonMode( GL_FRONT_AND_BACK, pRasterizerConfig.primitiveFillMode );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 
 			cachedRasterizerConfig.frontFaceVerticesOrder = pRasterizerConfig.frontFaceVerticesOrder;
 		}

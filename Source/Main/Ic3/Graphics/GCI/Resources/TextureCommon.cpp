@@ -54,8 +54,8 @@ namespace Ic3::Graphics::GCI
 
 	void TextureInitDataDesc::Initialize( const TextureDimensions & pDimensions )
 	{
-		ic3DebugAssert( pDimensions.arraySize > 0 );
-		ic3DebugAssert( pDimensions.mipLevelsNum > 0 );
+		Ic3DebugAssert( pDimensions.arraySize > 0 );
+		Ic3DebugAssert( pDimensions.mipLevelsNum > 0 );
 
 		if( pDimensions.arraySize == 1 )
 		{
@@ -92,7 +92,7 @@ namespace Ic3::Graphics::GCI
 			if( pDimensions.mipLevelsNum > 1 )
 			{
 				const auto & sMipLevel = subTextureInitData.mipLevelInitDataArray[pDimensions.mipLevelsNum - 2];
-				ic3DebugAssert((sMipLevel.mipWidth != 1 ) || (sMipLevel.mipHeight != 1 ) || (sMipLevel.mipDepth != 1 ) );
+				Ic3DebugAssert((sMipLevel.mipWidth != 1 ) || (sMipLevel.mipHeight != 1 ) || (sMipLevel.mipDepth != 1 ) );
 			}
 		}
 	}

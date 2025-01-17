@@ -35,7 +35,7 @@ namespace Ic3::Graphics::GCI
 
 	IAVertexBufferReference & IAVertexStreamDynamicState::SetVertexBufferRef( native_uint pIndex )
 	{
-		ic3DebugAssert( CxDef::IsIAVertexBufferIndexValid( pIndex ) );
+		Ic3DebugAssert( CxDef::IsIAVertexBufferIndexValid( pIndex ) );
 		_vertexStreamDefinition.activeBindingsMask.set( CxDef::makeIAVertexBufferFlag( pIndex ) );
 		return _vertexStreamDefinition.vertexBufferReferences[pIndex];
 

@@ -10,7 +10,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( GLTexture );
+	Ic3DeclareClassHandle( GLTexture );
 
 	class GLTexture : public Texture
 	{

@@ -24,16 +24,16 @@ namespace Ic3::Graphics::GCI
 	DX11ScreenPresentationLayerHandle DX11ScreenPresentationLayer::Create( DX11GpuDevice & pDevice, const DX11PresentationLayerCreateInfo & pCreateInfo )
 	{
 		auto sysWindow = createSysWindow( pDevice, pCreateInfo );
-		ic3DebugAssert( sysWindow );
+		Ic3DebugAssert( sysWindow );
 
 		auto dxgiSwapChain = ATL::CreateD3D11SwapChainForSystemWindow( pDevice, sysWindow.get() );
-		ic3DebugAssert( dxgiSwapChain );
+		Ic3DebugAssert( dxgiSwapChain );
 
 		ComPtr<ID3D11Texture2D> backBufferRTTexture;
 		auto hResult = dxgiSwapChain->GetBuffer( 0, IID_PPV_ARGS( &backBufferRTTexture ) );
 		if( FAILED( hResult ) )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return nullptr;
 		}
 
@@ -47,12 +47,12 @@ namespace Ic3::Graphics::GCI
 		hResult = pDevice.mD3D11Device1->CreateTexture2D( &backBufferDSTextureDesc, nullptr, backBufferDSTexture.GetAddressOf() );
 		if( FAILED( hResult ) )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
 		auto renderTargetState = DX11RenderTargetBindingImmutableState::CreateForScreen( pDevice, backBufferRTTexture, backBufferDSTexture );
-		ic3DebugAssert( renderTargetState );
+		Ic3DebugAssert( renderTargetState );
 
 		auto presentationLayer = CreateGfxObject<DX11ScreenPresentationLayer>( pDevice, sysWindow, std::move( dxgiSwapChain ), renderTargetState );
 

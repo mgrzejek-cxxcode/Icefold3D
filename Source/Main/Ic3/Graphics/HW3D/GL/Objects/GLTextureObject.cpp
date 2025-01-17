@@ -20,10 +20,10 @@ namespace Ic3::Graphics::GCI
 		GLuint textureHandle = 0;
 
 		glGenTextures( 1, &textureHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		glBindTexture( pGLCreateInfo.bindTarget, textureHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		GLTextureObjectHandle openglTextureObject{ new GLTextureObject( textureHandle, pGLCreateInfo ) };
 		if( !openglTextureObject->InitializeCore( pGLCreateInfo ) )
@@ -39,16 +39,16 @@ namespace Ic3::Graphics::GCI
 		GLuint textureHandle = 0;
 
 		glGenTextures( 1, &textureHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		glBindTexture( pGLCreateInfo.bindTarget, textureHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0 );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, pGLCreateInfo.dimensions.mipLevelsNum - 1 );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		GLTextureObjectHandle openglTextureObject{ new GLTextureObject( textureHandle, pGLCreateInfo ) };
 		if( !openglTextureObject->InitializeCompat( pGLCreateInfo ) )
@@ -62,7 +62,7 @@ namespace Ic3::Graphics::GCI
 			openglTextureObject->SetAutoMipGeneration( true );
 
 			glGenerateMipmap( GL_TEXTURE_2D );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 
 		return openglTextureObject;
@@ -79,7 +79,7 @@ namespace Ic3::Graphics::GCI
 
 		GLint textureInternalFormat = 0;
 		glGetTexLevelParameteriv( textureBindTarget, 0, GL_TEXTURE_INTERNAL_FORMAT, &textureInternalFormat );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return textureInternalFormat;
 	}
@@ -93,7 +93,7 @@ namespace Ic3::Graphics::GCI
 
 	#if( IC3_GX_GL_FEATURE_SUPPORT_TEXTURE_FORMAT_COMPRESSED_BCX )
 		glGetTexLevelParameteriv( textureBindTarget, 0, GL_TEXTURE_COMPRESSED, &textureCompressedFlag );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	#endif
 
 		if( textureCompressedFlag )
@@ -101,7 +101,7 @@ namespace Ic3::Graphics::GCI
 		#if( IC3_GX_GL_FEATURE_SUPPORT_TEXTURE_FORMAT_COMPRESSED_BCX )
 			GLint textureCompressedImageSize = 0;
 			glGetTexLevelParameteriv( textureBindTarget, 0, GL_TEXTURE_COMPRESSED_IMAGE_SIZE, &textureCompressedImageSize );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 
 			textureImageSize = textureCompressedImageSize;
 		#endif
@@ -110,19 +110,19 @@ namespace Ic3::Graphics::GCI
 		{
 			GLint textureWidth = 0;
 			glGetTexLevelParameteriv( textureBindTarget, 0, GL_TEXTURE_WIDTH, &textureWidth );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 
 			GLint textureHeight = 0;
 			glGetTexLevelParameteriv( textureBindTarget, 0, GL_TEXTURE_HEIGHT, &textureHeight );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 
 			GLint textureDepth = 0;
 			glGetTexLevelParameteriv( textureBindTarget, 0, GL_TEXTURE_DEPTH, &textureDepth );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 
 			GLint textureInternalFormat = 0;
 			glGetTexLevelParameteriv( textureBindTarget, 0, GL_TEXTURE_INTERNAL_FORMAT, &textureInternalFormat );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 
 			auto internalFormatBPP = ATL::QueryGLTextureInternalFormatBPP( textureInternalFormat );
 			auto texturePixelCount = textureWidth * textureHeight * textureDepth;
@@ -136,7 +136,7 @@ namespace Ic3::Graphics::GCI
 	bool GLTextureObject::Release()
 	{
 		glDeleteTextures( 1, &mGLHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return true;
 	}
@@ -144,7 +144,7 @@ namespace Ic3::Graphics::GCI
 	bool GLTextureObject::ValidateHandle() const
 	{
 		auto isBuffer = glIsTexture( mGLHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return isBuffer != GL_FALSE;
 	}
@@ -167,8 +167,8 @@ namespace Ic3::Graphics::GCI
 
 	void GLTextureObject::UpdateUpload2D( const GLTextureSubDataUploadDesc & pGLUploadDesc, GLenum pActiveBindTarget )
 	{
-		ic3DebugAssert( pGLUploadDesc.openglDimensionClass == GL_TEXTURE_2D );
-		ic3DebugAssert( ( pActiveBindTarget == 0 ) || ( pActiveBindTarget == GL_TEXTURE_2D ) );
+		Ic3DebugAssert( pGLUploadDesc.openglDimensionClass == GL_TEXTURE_2D );
+		Ic3DebugAssert( ( pActiveBindTarget == 0 ) || ( pActiveBindTarget == GL_TEXTURE_2D ) );
 
 		auto textureBindTarget = CheckActiveBindTarget( pActiveBindTarget );
 
@@ -182,13 +182,13 @@ namespace Ic3::Graphics::GCI
 			pGLUploadDesc.openglInputDataDesc.openglPixelDataLayout,
 			pGLUploadDesc.openglInputDataDesc.openglPixelDataType,
 			pGLUploadDesc.openglInputDataDesc.pointer );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
 	void GLTextureObject::UpdateUpload2DArray( const GLTextureSubDataUploadDesc & pGLUploadDesc, GLenum pActiveBindTarget )
 	{
-		ic3DebugAssert( pGLUploadDesc.openglDimensionClass == GL_TEXTURE_2D_ARRAY );
-		ic3DebugAssert( ( pActiveBindTarget == 0 ) || ( pActiveBindTarget == GL_TEXTURE_2D_ARRAY ) );
+		Ic3DebugAssert( pGLUploadDesc.openglDimensionClass == GL_TEXTURE_2D_ARRAY );
+		Ic3DebugAssert( ( pActiveBindTarget == 0 ) || ( pActiveBindTarget == GL_TEXTURE_2D_ARRAY ) );
 
 		auto textureBindTarget = CheckActiveBindTarget( pActiveBindTarget );
 
@@ -204,13 +204,13 @@ namespace Ic3::Graphics::GCI
 			pGLUploadDesc.openglInputDataDesc.openglPixelDataLayout,
 			pGLUploadDesc.openglInputDataDesc.openglPixelDataType,
 			pGLUploadDesc.openglInputDataDesc.pointer );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
 	void GLTextureObject::UpdateUpload3D( const GLTextureSubDataUploadDesc & pGLUploadDesc, GLenum pActiveBindTarget )
 	{
-		ic3DebugAssert( pGLUploadDesc.openglDimensionClass == GL_TEXTURE_3D );
-		ic3DebugAssert( ( pActiveBindTarget == 0 ) || ( pActiveBindTarget == GL_TEXTURE_3D ) );
+		Ic3DebugAssert( pGLUploadDesc.openglDimensionClass == GL_TEXTURE_3D );
+		Ic3DebugAssert( ( pActiveBindTarget == 0 ) || ( pActiveBindTarget == GL_TEXTURE_3D ) );
 
 		auto textureBindTarget = CheckActiveBindTarget( pActiveBindTarget );
 
@@ -226,13 +226,13 @@ namespace Ic3::Graphics::GCI
 			pGLUploadDesc.openglInputDataDesc.openglPixelDataLayout,
 			pGLUploadDesc.openglInputDataDesc.openglPixelDataType,
 			pGLUploadDesc.openglInputDataDesc.pointer );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
 	void GLTextureObject::UpdateUploadCubeMap( const GLTextureSubDataUploadDesc & pGLUploadDesc, GLenum pActiveBindTarget )
 	{
-		ic3DebugAssert( pGLUploadDesc.openglDimensionClass == GL_TEXTURE_CUBE_MAP );
-		ic3DebugAssert( ( pActiveBindTarget == 0 ) || ( pActiveBindTarget == GL_TEXTURE_CUBE_MAP ) );
+		Ic3DebugAssert( pGLUploadDesc.openglDimensionClass == GL_TEXTURE_CUBE_MAP );
+		Ic3DebugAssert( ( pActiveBindTarget == 0 ) || ( pActiveBindTarget == GL_TEXTURE_CUBE_MAP ) );
 
 		CheckActiveBindTarget( pActiveBindTarget );
 
@@ -246,7 +246,7 @@ namespace Ic3::Graphics::GCI
 			pGLUploadDesc.openglInputDataDesc.openglPixelDataLayout,
 			pGLUploadDesc.openglInputDataDesc.openglPixelDataType,
 			pGLUploadDesc.openglInputDataDesc.pointer );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
 	void GLTextureObject::SetAutoMipGeneration( bool pEnable )
@@ -270,7 +270,7 @@ namespace Ic3::Graphics::GCI
 				return InitializeCoreCubeMap( pGLCreateInfo );
 		}
 
-		ic3DebugInterrupt();
+		Ic3DebugInterrupt();
 
 		return false;
 	}
@@ -283,7 +283,7 @@ namespace Ic3::Graphics::GCI
 			pGLCreateInfo.internalFormat,
 			pGLCreateInfo.dimensions.width,
 			pGLCreateInfo.dimensions.height );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		InitializeData2D( pGLCreateInfo );
 
@@ -299,7 +299,7 @@ namespace Ic3::Graphics::GCI
 			pGLCreateInfo.dimensions.width,
 			pGLCreateInfo.dimensions.height,
 			pGLCreateInfo.dimensions.arraySize );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		InitializeData2DArray( pGLCreateInfo );
 
@@ -315,7 +315,7 @@ namespace Ic3::Graphics::GCI
 			pGLCreateInfo.dimensions.width,
 			pGLCreateInfo.dimensions.height,
 			GL_FALSE );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return true;
 	}
@@ -329,7 +329,7 @@ namespace Ic3::Graphics::GCI
             pGLCreateInfo.dimensions.width,
             pGLCreateInfo.dimensions.height,
             pGLCreateInfo.dimensions.depth );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		InitializeData3D( pGLCreateInfo );
 
@@ -338,7 +338,7 @@ namespace Ic3::Graphics::GCI
 
 	bool GLTextureObject::InitializeCoreCubeMap( const GLTextureCreateInfo & pGLCreateInfo )
 	{
-		ic3DebugAssert( pGLCreateInfo.dimensions.arraySize == 6 );
+		Ic3DebugAssert( pGLCreateInfo.dimensions.arraySize == 6 );
 
 		glTexStorage2D(
 			GL_TEXTURE_CUBE_MAP,
@@ -346,7 +346,7 @@ namespace Ic3::Graphics::GCI
 			pGLCreateInfo.internalFormat,
 			pGLCreateInfo.dimensions.width,
 			pGLCreateInfo.dimensions.height );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		InitializeDataCubeMap( pGLCreateInfo );
 
@@ -369,7 +369,7 @@ namespace Ic3::Graphics::GCI
 				return InitializeCompatCubeMap( pGLCreateInfo );
 		}
 
-		ic3DebugInterrupt();
+		Ic3DebugInterrupt();
 
 		return false;
 	}
@@ -386,7 +386,7 @@ namespace Ic3::Graphics::GCI
 			pGLCreateInfo.openglInitDataDesc.openglPixelDataLayout,
 			pGLCreateInfo.openglInitDataDesc.openglPixelDataType,
 			nullptr );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		InitializeData2D( pGLCreateInfo, true );
 
@@ -406,7 +406,7 @@ namespace Ic3::Graphics::GCI
 			pGLCreateInfo.openglInitDataDesc.openglPixelDataLayout,
 			pGLCreateInfo.openglInitDataDesc.openglPixelDataType,
 			nullptr );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		InitializeData2D( pGLCreateInfo, true );
 
@@ -422,7 +422,7 @@ namespace Ic3::Graphics::GCI
 			pGLCreateInfo.dimensions.width,
 			pGLCreateInfo.dimensions.height,
 			GL_FALSE );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return true;
 	}
@@ -440,7 +440,7 @@ namespace Ic3::Graphics::GCI
 			pGLCreateInfo.openglInitDataDesc.openglPixelDataLayout,
 			pGLCreateInfo.openglInitDataDesc.openglPixelDataType,
 			nullptr );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		InitializeData2D( pGLCreateInfo, true );
 
@@ -461,7 +461,7 @@ namespace Ic3::Graphics::GCI
 				pGLCreateInfo.openglInitDataDesc.openglPixelDataLayout,
 				pGLCreateInfo.openglInitDataDesc.openglPixelDataType,
 				nullptr );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 
 		InitializeDataCubeMap( pGLCreateInfo, true );
@@ -499,7 +499,7 @@ namespace Ic3::Graphics::GCI
 						pGLCreateInfo.openglInitDataDesc.openglPixelDataLayout,
 						pGLCreateInfo.openglInitDataDesc.openglPixelDataType,
 						nullptr );
-					ic3OpenGLHandleLastError();
+					Ic3OpenGLHandleLastError();
 				}
 
 				subDataUploadDesc.textureSubRegion.uSubReg2D.offset.mipLevel = mipLevelInitData.mipLevelIndex;
@@ -546,7 +546,7 @@ namespace Ic3::Graphics::GCI
 							pGLCreateInfo.openglInitDataDesc.openglPixelDataLayout,
 							pGLCreateInfo.openglInitDataDesc.openglPixelDataType,
 							nullptr );
-						ic3OpenGLHandleLastError();
+						Ic3OpenGLHandleLastError();
 					}
 
 					subDataUploadDesc.textureSubRegion.uSubReg2DArray.offset.mipLevel = mipLevelInitData.mipLevelIndex;
@@ -592,7 +592,7 @@ namespace Ic3::Graphics::GCI
 						pGLCreateInfo.openglInitDataDesc.openglPixelDataLayout,
 						pGLCreateInfo.openglInitDataDesc.openglPixelDataType,
 						nullptr );
-					ic3OpenGLHandleLastError();
+					Ic3OpenGLHandleLastError();
 				}
 
 				subDataUploadDesc.textureSubRegion.uSubReg3D.offset.mipLevel = mipLevelInitData.mipLevelIndex;
@@ -639,7 +639,7 @@ namespace Ic3::Graphics::GCI
 							pGLCreateInfo.openglInitDataDesc.openglPixelDataLayout,
 							pGLCreateInfo.openglInitDataDesc.openglPixelDataType,
 							nullptr );
-						ic3OpenGLHandleLastError();
+						Ic3OpenGLHandleLastError();
 					}
 
 
@@ -662,7 +662,7 @@ namespace Ic3::Graphics::GCI
 			pBindTarget = mGLTextureBindTarget;
 
 			glBindTexture( mGLTextureBindTarget, mGLHandle );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 
 		return pBindTarget;

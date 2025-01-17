@@ -16,11 +16,11 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( MetalCommandList );
-	ic3DeclareClassHandle( MetalCommandSystem );
-	ic3DeclareClassHandle( MetalGpuDevice );
-	ic3DeclareClassHandle( MetalGpuDriver );
-	ic3DeclareClassHandle( MetalPresentationLayer );
+	Ic3DeclareClassHandle( MetalCommandList );
+	Ic3DeclareClassHandle( MetalCommandSystem );
+	Ic3DeclareClassHandle( MetalGpuDevice );
+	Ic3DeclareClassHandle( MetalGpuDriver );
+	Ic3DeclareClassHandle( MetalPresentationLayer );
 	
 } // namespace Ic3::Graphics::GCI
 

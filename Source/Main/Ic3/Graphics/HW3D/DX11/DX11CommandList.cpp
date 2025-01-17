@@ -123,7 +123,7 @@ namespace Ic3::Graphics::GCI
 		auto hResult = pD3D11Device->CreateQuery( &syncQueryDesc, d3d11Query.GetAddressOf() );
 		if( FAILED( hResult ) || !d3d11Query )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 		}
 
 		return d3d11Query;

@@ -10,7 +10,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( DX12ScreenPresentationLayer );
+	Ic3DeclareClassHandle( DX12ScreenPresentationLayer );
 
 	struct DX12PresentationLayerCreateInfo : public PresentationLayerCreateInfo
 	{

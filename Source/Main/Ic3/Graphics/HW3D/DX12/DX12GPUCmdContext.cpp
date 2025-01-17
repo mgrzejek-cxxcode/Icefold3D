@@ -20,14 +20,14 @@ namespace Ic3::Graphics::GCI
 
 	void DX12CommandContext::BeginCommandSequence( const CommandContextCommandSequenceBeginInfo & pInfo )
 	{
-		ic3DX12CmdContextVerifyGraphics( this );
+		Ic3DX12CmdContextVerifyGraphics( this );
 		mD3D12CommandAllocator->Reset();
 		mD3D12GraphicsCommandList->Reset( mD3D12CommandAllocator.Get(), nullptr );
 	}
 
 	void DX12CommandContext::EndCommandSequence( const CommandContextCommandSequenceEndInfo & pInfo )
 	{
-		ic3DX12CmdContextVerifyGraphics( this );
+		Ic3DX12CmdContextVerifyGraphics( this );
 		mD3D12GraphicsCommandList->Close();
 	}
 
@@ -39,7 +39,7 @@ namespace Ic3::Graphics::GCI
 
 	void DX12CommandContext::ClearColorTarget( const Math::RGBAColorR32Norm & pColor )
 	{
-		ic3DX12CmdContextVerifyGraphics( this );
+		Ic3DX12CmdContextVerifyGraphics( this );
 
 		const FLOAT clearColor[] = { pColor.fpRed, pColor.fpGreen, pColor.fpBlue, pColor.fpAlpha };
 		for( uint32 rtIndex = 0; rtIndex < _renderTargetState.rtvDescriptorsNum; ++rtIndex )

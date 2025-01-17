@@ -25,7 +25,7 @@ namespace Ic3::Graphics::GCI
 		template <typename TContext>
 		std::unique_ptr<TContext> AcquireCommandContext()
 		{
-			return moveInterfaceUniquePtr<TContext>( AcquireCommandContext( TContext::sContextType ) );
+			return MoveInterfaceUniquePtr<TContext>( AcquireCommandContext( TContext::sContextType ) );
 		}
 		
 		bool SetQueueAlias( gpu_cmd_device_queue_id_t pAliasID, gpu_cmd_device_queue_id_t pMappedID );
