@@ -28,7 +28,7 @@ namespace Ic3::Script
 
 		[[nodiscard]] virtual const void * getContext() const noexcept override;
 
-		virtual bool compileSource( const char * pName, const void * pSource, size_t pLength, Cppx::DynamicByteArray & pOutput ) noexcept override;
+		virtual bool compileSource( const char * pName, const void * pSource, size_t pLength, cppx::dynamic_byte_array & pOutput ) noexcept override;
 
 		virtual bool executeCompiledScript( const char * pName, const void * pBinary, size_t pLength ) noexcept override;
 

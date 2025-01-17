@@ -22,37 +22,37 @@ namespace Ic3::Script
 		using Type = T*;
 	};
 
-#define ic3LuaDefineValueDataTypeMapping( pType, pValue ) \
+#define Ic3LuaDefineValueDataTypeMapping( pType, pValue ) \
 	template <> \
 	struct LuaDataType<pType> \
 	{ \
 		using Type = pValue; \
 	};
 
-#define ic3LuaDefineValueDataTypeMappingAuto( pType ) \
+#define Ic3LuaDefineValueDataTypeMappingAuto( pType ) \
 	template <> \
 	struct LuaDataType<pType> \
 	{ \
 		using Type = pType; \
 	};
 
-	ic3LuaDefineValueDataTypeMappingAuto( void * );
-	ic3LuaDefineValueDataTypeMappingAuto( const char * );
-	ic3LuaDefineValueDataTypeMappingAuto( bool );
-	ic3LuaDefineValueDataTypeMappingAuto( char );
-	ic3LuaDefineValueDataTypeMappingAuto( short );
-	ic3LuaDefineValueDataTypeMappingAuto( unsigned short );
-	ic3LuaDefineValueDataTypeMappingAuto( int );
-	ic3LuaDefineValueDataTypeMappingAuto( unsigned int );
-	ic3LuaDefineValueDataTypeMappingAuto( long );
-	ic3LuaDefineValueDataTypeMappingAuto( unsigned long );
-	ic3LuaDefineValueDataTypeMappingAuto( long long );
-	ic3LuaDefineValueDataTypeMappingAuto( unsigned long long );
-	ic3LuaDefineValueDataTypeMappingAuto( float );
-	ic3LuaDefineValueDataTypeMappingAuto( double );
-	ic3LuaDefineValueDataTypeMappingAuto( long double );
+	Ic3LuaDefineValueDataTypeMappingAuto( void * );
+	Ic3LuaDefineValueDataTypeMappingAuto( const char * );
+	Ic3LuaDefineValueDataTypeMappingAuto( bool );
+	Ic3LuaDefineValueDataTypeMappingAuto( char );
+	Ic3LuaDefineValueDataTypeMappingAuto( short );
+	Ic3LuaDefineValueDataTypeMappingAuto( unsigned short );
+	Ic3LuaDefineValueDataTypeMappingAuto( int );
+	Ic3LuaDefineValueDataTypeMappingAuto( unsigned int );
+	Ic3LuaDefineValueDataTypeMappingAuto( long );
+	Ic3LuaDefineValueDataTypeMappingAuto( unsigned long );
+	Ic3LuaDefineValueDataTypeMappingAuto( long long );
+	Ic3LuaDefineValueDataTypeMappingAuto( unsigned long long );
+	Ic3LuaDefineValueDataTypeMappingAuto( float );
+	Ic3LuaDefineValueDataTypeMappingAuto( double );
+	Ic3LuaDefineValueDataTypeMappingAuto( long double );
 	
-	ic3LuaDefineValueDataTypeMapping( std::string, const std::string & );
+	Ic3LuaDefineValueDataTypeMapping( std::string, const std::string & );
 
 	namespace LuaCore
 	{

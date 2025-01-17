@@ -7,8 +7,8 @@
 namespace Ic3::Script
 {
 
-	ic3EnableCustomExceptionSupport();
-	ic3EnableEnumTypeInfoSupport();
+	Ic3EnableCustomExceptionSupport();
+	Ic3EnableEnumTypeInfoSupport();
 
 } // namespace Ic3::Script
 

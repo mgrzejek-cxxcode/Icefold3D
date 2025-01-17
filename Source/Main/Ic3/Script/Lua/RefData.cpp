@@ -163,41 +163,41 @@ namespace Ic3::Script
 	{
 		const luaL_Reg reg_spec_fstatic[] =
 		{
-			{ "new", ic3ScriptConstructor( NewRefData ) },
-			{ "getCnt", ic3ScriptFunction( RefData::getCnt ) },
+			{ "new", Ic3ScriptConstructor( NewRefData ) },
+			{ "getCnt", Ic3ScriptFunction( RefData::getCnt ) },
 			{ nullptr, nullptr }
 		};
 
 		const luaL_Reg reg_spec_fmember[] =
 		{
-			{ "add", ic3ScriptFunction( &RefData::add ) },
-			{ "addTwo", ic3ScriptFunction( &RefData::addTwo ) },
-			{ "print", ic3ScriptFunction( &RefData::print ) },
-			{ "getSize", ic3ScriptFunction( &RefData::getSize ) },
-			{ "getName", ic3ScriptFunction( &RefData::getName ) },
-			//{ "equals", ic3ScriptFunction( &RefData::equals ) },
+			{ "add", Ic3ScriptFunction( &RefData::add ) },
+			{ "addTwo", Ic3ScriptFunction( &RefData::addTwo ) },
+			{ "print", Ic3ScriptFunction( &RefData::print ) },
+			{ "getSize", Ic3ScriptFunction( &RefData::getSize ) },
+			{ "getName", Ic3ScriptFunction( &RefData::getName ) },
+			//{ "equals", Ic3ScriptFunction( &RefData::equals ) },
 			{ nullptr, nullptr }
 		};
 
 		const luaL_Reg reg_spec_vget[] =
 		{
-			//{ "name", ic3ScriptMemberVariableGetter(&RefData::name) },
-			{ "uid", ic3ScriptMemberVariableGetter( &RefData::uid ) },
-			{ "value", ic3ScriptMemberVariableGetter( &RefData::value ) },
-			{ "multiplier", ic3ScriptMemberVariableGetter( &RefData::multiplier ) },
+			//{ "name", Ic3ScriptMemberVariableGetter(&RefData::name) },
+			{ "uid", Ic3ScriptMemberVariableGetter( &RefData::uid ) },
+			{ "value", Ic3ScriptMemberVariableGetter( &RefData::value ) },
+			{ "multiplier", Ic3ScriptMemberVariableGetter( &RefData::multiplier ) },
 			{ nullptr, nullptr }
 		};
 
 		const luaL_Reg reg_spec_vset[] =
 		{
-			{ "value", ic3ScriptMemberVariableSetter(&RefData::value) },
-			{ "multiplier", ic3ScriptMemberVariableSetter(&RefData::multiplier) },
+			{ "value", Ic3ScriptMemberVariableSetter(&RefData::value) },
+			{ "multiplier", Ic3ScriptMemberVariableSetter(&RefData::multiplier) },
 			{ nullptr, nullptr }
 		};
 
 		const luaL_Reg reg_meta[] =
 		{
-			{ "__gc", ic3ScriptDestructor(DeleteRefData) },
+			{ "__gc", Ic3ScriptDestructor(DeleteRefData) },
 			{ nullptr, nullptr }
 		};
 
@@ -270,7 +270,7 @@ namespace Ic3::Script
 		LuaCore::dumpStack(lua_state);
 
 		lua_pushliteral(lua_state, "__call");
-		lua_pushcfunction(lua_state, ic3ScriptConstructor( NewRefData ));
+		lua_pushcfunction(lua_state, Ic3ScriptConstructor( NewRefData ));
 		lua_rawset(lua_state, fmeta_table);
 		LuaCore::dumpStack(lua_state);
 		

@@ -59,6 +59,7 @@ namespace Ic3::Script
 
 				return false;
 			}
+
 			return true;
 		}
 
@@ -112,7 +113,7 @@ namespace Ic3::Script
 			{
 				if( iElem > 1 )
 				{
-					printf( "," );
+					printf( ", " );
 				}
 				
 				int elementType = lua_type( pLuaState, iElem );
@@ -134,7 +135,6 @@ namespace Ic3::Script
 					printf( "%s", lua_typename( pLuaState, elementType ) );
 					break;
 				}
-				printf("  ");
 			}
 			printf("\n");
 		}
@@ -198,7 +198,7 @@ namespace Ic3::Script
 			const auto type = lua_type( pLuaState, pIndex );
 			if( !isStringValue )
 			{
-				ic3DebugInterrupt();
+				Ic3DebugInterrupt();
 			}
 
 			size_t strLength = 0;
@@ -213,7 +213,7 @@ namespace Ic3::Script
 		}
 
 
-		void * getUserData( lua_State * pLuaState, int pIndex, const char * pMetatableName )
+		void * getUserData2( lua_State * pLuaState, int pIndex, const char * pMetatableName )
 		{
 			void * userDataPtr = lua_touserdata( pLuaState, pIndex );
 
@@ -280,27 +280,16 @@ namespace Ic3::Script
 
 		bool pushUserData( lua_State * pLuaState, void * pUserData, const char * pMetatableName )
 		{
-			bool metatableValid = queryMetatable( pLuaState, pMetatableName );
-			if( metatableValid )
+			const auto userDataOk = pushUserDataForObject( pLuaState, pUserData, pMetatableName );
+			// Stack: [..., userDataOrNothing]
+
+			if( !userDataOk )
 			{
-				// Stack: [..., metatable]
-
-				lua_pushlightuserdata( pLuaState, pUserData );
-				// Stack: [..., metatable, userdata]
-
-				lua_insert( pLuaState, -2 );
-				// Stack: [..., userdata, metatable]
-
-				lua_setmetatable( pLuaState, -2 );
-				// Stack: [..., userdata]
-
-				//luaL_ref( pLuaState, 0 );
-				return true;
+				lua_pushnil( pLuaState );
+				// Stack: [..., nil]
 			}
 
-			lua_pushnil( pLuaState );
-
-			return false;
+			return userDataOk;
 		}
 
 	} // namespace LuaCore

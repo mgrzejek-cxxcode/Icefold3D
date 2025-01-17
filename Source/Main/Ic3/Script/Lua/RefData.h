@@ -67,7 +67,7 @@ namespace Ic3::Script
 	}
 
 
-	ic3DeclareScriptTypeExt( RefData, "Ic3.NxMain" );
+	Ic3DeclareScriptTypeExt( RefData, "Ic3.NxMain" );
 
 }
 

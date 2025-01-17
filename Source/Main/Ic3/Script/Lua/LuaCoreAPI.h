@@ -9,6 +9,57 @@
 namespace Ic3::Script
 {
 
+	struct LuaUserDataWrapper
+	{
+		uintptr_t objectPtrValue;
+
+		bool bConst;
+
+		bool bRef;
+	};
+
+
+	template <typename T>
+	void pushValue( lua_State * pLuaState, T && pValue )
+	{
+	}
+
+	template <typename T>
+	void pushValue( lua_State * pLuaState, T * pValue )
+	{
+	}
+
+	template <typename T>
+	void pushValue( lua_State * pLuaState, const T * pValue )
+	{
+	}
+
+	template <typename T>
+	void pushValue( lua_State * pLuaState, T & pValue )
+	{
+	}
+
+	template <typename T>
+	void pushValue( lua_State * pLuaState, const T & pValue )
+	{
+	}
+
+	template <typename T>
+	void pushValue( lua_State * pLuaState, cppx::ref<T> pValue )
+	{
+	}
+
+	template <typename T>
+	void pushValue( lua_State * pLuaState, cppx::cref<T> pValue )
+	{
+	}
+
+	template <class T>
+	inline T getClassObject( lua_State * pLuaState, int pIndex )
+	{
+		const auto argumentIndex = static_cast<int>( pIndex );
+	}
+
 	namespace LuaCore
 	{
 
@@ -21,13 +72,13 @@ namespace Ic3::Script
 		/// @brief
 		IC3_SCRIPT_API void printError( lua_State * pLuaState, int pResult );
 
-		/// @brief Queries metatable with the given name. Returns true if it has been found or false otherwise.
+		/// @brief Queries metaTable with the given name. Returns true if it has been found or false otherwise.
 		IC3_SCRIPT_API bool queryMetatable( lua_State * pLuaState, const char * pMetatableName );
 
 		/// @brief Raises type error caused by value at index <c>index</c>.
 		IC3_SCRIPT_API void typeError( lua_State * pLuaState, int pIndex, const char * pExpectedStr );
 
-		/// @brief Allocates new userdata of specified size and sets metatable of given name.
+		/// @brief Allocates new userData of specified size and sets metaTable of given name.
 		IC3_SCRIPT_API void * newObject( lua_State * pLuaState, size_t pSize, const char* pMetatableName, bool pBalanced = true );
 
 		/// @brief Prints on the screen all values currently residing on the stack.
@@ -52,7 +103,7 @@ namespace Ic3::Script
 		IC3_SCRIPT_API const char * getString( lua_State * pLuaState, int pIndex );
 
 		/// @brief Retrieves value from the top of the stack as user data. Performs basic type checking. Does not remove value from the stack.
-		IC3_SCRIPT_API void * getUserData( lua_State * pLuaState, int pIndex, const char * pMetatableName );
+		IC3_SCRIPT_API void * getUserData2( lua_State * pLuaState, int pIndex, const char * pMetatableName );
 
 		/// @brief pushes boolean value to the top of the stack.
 		IC3_SCRIPT_API void pushBoolean( lua_State * pLuaState, bool pBooleanValue );
@@ -67,10 +118,151 @@ namespace Ic3::Script
 		IC3_SCRIPT_API void pushPointer( lua_State * pLuaState, void * pPointer );
 
 		/// @brief pushes string literal to the top of the stack.
-		IC3_SCRIPT_API void pushString( lua_State * pLuaState, const char * pString, size_t pLength = CxDef::INVALID_LENGTH );
+		IC3_SCRIPT_API void pushString( lua_State * pLuaState, const char * pString, size_t pLength = cppx::cve::invalid_length );
 
 		/// @brief pushes user data to the top of the stack.
 		IC3_SCRIPT_API bool pushUserData( lua_State * pLuaState, void * pUserData, const char * pMetatableName = nullptr );
+
+		const char cxLuaRegTableInstances[] = "IC3_LUA_REG_INSTANCES";
+
+		template <size_t tpTableNameLength>
+		inline bool pushLuaRegTable( lua_State * pLuaState, const char( & pTableName )[tpTableNameLength] )
+		{
+			lua_pushlstring( pLuaState, pTableName, tpTableNameLength );
+			// Stack: [..., cxLuaRegTableInstances]
+			dumpStack( pLuaState );
+
+			lua_rawget( pLuaState, LUA_REGISTRYINDEX );
+			// Fetches LUA_REGISTRY[cxLuaRegTableInstances]
+			// Stack: [..., RegTableInstancesOrNil]
+			dumpStack( pLuaState );
+
+			if( !lua_istable( pLuaState, -1 ) )
+			{
+				if( lua_isnil( pLuaState, -1 ) )
+				{
+					lua_pop( pLuaState, 1 );
+					// Stack: [...]
+
+					lua_newtable( pLuaState );
+					// Stack: [..., NewRegTableInstances]
+				}
+				else
+				{
+					// Error
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		inline bool pushUserDataForObject( lua_State * pLuaState, const void * pObject, const char * pMetatableName )
+		{
+			const auto regTableOk = pushLuaRegTable( pLuaState, cxLuaRegTableInstances );
+			// Stack: [..., RegTableInstancesOrNothing]
+			dumpStack( pLuaState );
+
+			if( !regTableOk )
+			{
+				return false;
+			}
+
+			lua_pushlightuserdata( pLuaState, const_cast<void *>( pObject ) );
+			// Stack: [..., RegTableInstances, pObject]
+			dumpStack( pLuaState );
+
+			lua_rawget( pLuaState, -2 );
+			// Fetches RegTableInstances[pObject]
+			// Stack: [..., RegTableInstances, userDataOrNil]
+			dumpStack( pLuaState );
+
+			if( !lua_isuserdata( pLuaState, -1 ) )
+			{
+				if( lua_isnil( pLuaState, -1 ) )
+				{
+					lua_pop( pLuaState, 1 );
+					// Stack: [..., RegTableInstances]
+					
+					bool metatableValid = queryMetatable( pLuaState, pMetatableName );
+					// Stack: [..., RegTableInstances, metaTableOrNothing]
+					dumpStack( pLuaState );
+
+					if( !metatableValid )
+					{
+						lua_pop( pLuaState, 1 );
+						// Stack: [...]
+
+						return false;
+					}
+
+					auto * userDataPtr = lua_newuserdata( pLuaState, sizeof( LuaUserDataWrapper ) );
+					// Stack: [..., RegTableInstances, metaTable, userData]
+					dumpStack( pLuaState );
+
+					auto * userDataWrapper = reinterpret_cast<LuaUserDataWrapper *>( userDataPtr );
+					userDataWrapper->objectPtrValue = reinterpret_cast<uintptr_t>( pObject );
+					userDataWrapper->bConst = false;
+					userDataWrapper->bRef = false;
+
+					lua_insert( pLuaState, -2);
+					// Stack: [..., RegTableInstances, userData, metaTable]
+					dumpStack( pLuaState );
+
+					lua_setmetatable( pLuaState, -2 );
+					// Stack: [..., RegTableInstances, userData]
+					dumpStack( pLuaState );
+
+					lua_pushvalue( pLuaState, -1 );
+					// Stack: [..., RegTableInstances, userData, userData]
+					dumpStack( pLuaState );
+
+					lua_insert( pLuaState, -3);
+					// Stack: [..., userData, RegTableInstances, userData]
+					dumpStack( pLuaState );
+
+					lua_pushinteger( pLuaState, userDataWrapper->objectPtrValue );
+					// Stack: [..., userData, RegTableInstances, userData, objectAddress]
+					dumpStack( pLuaState );
+
+					lua_insert( pLuaState, -2);
+					// Stack: [..., userData, RegTableInstances, objectAddress, userData]
+					dumpStack( pLuaState );
+
+					lua_rawset( pLuaState, -3 );
+					// Sets: RegTableInstances[objectAddress] = userData. Pops (2).
+					// Stack: [..., userData, RegTableInstances]
+					dumpStack( pLuaState );
+
+					lua_pop( pLuaState, 1 );
+					// Remove RegTableInstances
+					// Stack: [..., userData]
+					dumpStack( pLuaState );
+				}
+				else
+				{
+					// Error
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		inline void * getUserData( lua_State * pLuaState, int pIndex, const char * pMetatableName )
+		{
+			if( !lua_isuserdata( pLuaState, pIndex ) )
+			{
+				return nullptr;
+			}
+
+			void * userDataPtr = lua_touserdata( pLuaState, pIndex );
+			// Stack: [..., userData]
+
+			auto * userDataWrapper = reinterpret_cast<LuaUserDataWrapper *>( userDataPtr );
+
+			return reinterpret_cast<void *>( userDataWrapper->objectPtrValue );
+		}
 
 		inline bool retrieveExistingUserDataForObject( lua_State * pLuaState, const void * pObject, bool pKeepNil = false )
 		{
@@ -120,6 +312,17 @@ namespace Ic3::Script
 			lua_rawget( pLuaState, LUA_REGISTRYINDEX );
 		}
 
+
+//		template <class T>
+//		inline T getValue( lua_State * pLuaState, int pIndex )
+//		{
+//			typedef typename LuaDataType<T>::Type ResultType;
+//
+//			int argumentIndex = static_cast<int>( pIndex );
+//			void * argument_ptr = getUserData( pLuaState, argumentIndex, getTypeMetatableName<T>() );
+//
+//			return reinterpret_cast<ResultType>(argument_ptr);
+//		}
 
 		/// @brief QQQ
 		template <class T>

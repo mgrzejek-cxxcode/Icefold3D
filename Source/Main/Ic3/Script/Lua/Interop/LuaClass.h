@@ -105,10 +105,10 @@ namespace Ic3::Script
 			}
 		};
 
-#define ic3ScriptConstructor( pConstructor ) \
+#define Ic3ScriptConstructor( pConstructor ) \
 	LuaWrappers::ConstructorWrapper<decltype( pConstructor ), pConstructor>::proxyCall
 
-#define ic3ScriptDestructor( pDestructor ) \
+#define Ic3ScriptDestructor( pDestructor ) \
 	LuaWrappers::DestructorWrapper<decltype( pDestructor ), pDestructor>::proxyCall
 
 	}
