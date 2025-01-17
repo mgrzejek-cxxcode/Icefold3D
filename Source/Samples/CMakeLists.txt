@@ -22,3 +22,4 @@ if( TARGET Ic3.Graphics.HW3D.GLES3 )
 endif()
 
 add_subdirectory( "Render01" )
+add_subdirectory( "Script01" )
