@@ -126,15 +126,15 @@ namespace Ic3
 	// 	pEmitter.disconnect( pReceiver );
 	// }
 
-#define ic3AddEvent( pEventType, pVariableName ) \
+#define Ic3AddEvent( pEventType, pVariableName ) \
 	private: \
 		EventEmitter<pEventType> _evt##pVariableName; \
 	public: \
-		const EventEmitter<pEventType> & mEvt##pVariableName = _evt##pVariableName;
+		const EventEmitter<pEventType> & evt##pVariableName = _evt##pVariableName;
 
 #define slots
 
-#define ic3DeclareEvents( pEvents ) \
+#define Ic3DeclareEvents( pEvents ) \
 	public: \
 		struct Events \
 		{ \

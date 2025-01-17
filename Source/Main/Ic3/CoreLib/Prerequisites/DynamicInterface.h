@@ -22,7 +22,7 @@ namespace Ic3
 		virtual ~IDynamicObject() = default;
 
 		template <typename TPInterfaceSubClass>
-		IC3_ATTR_NO_DISCARD TPInterfaceSubClass * getInterface()
+		CPPX_ATTR_NO_DISCARD TPInterfaceSubClass * GetInterface()
 		{
 		#if( IC3_DEBUG )
 			return dynamic_cast_check<TPInterfaceSubClass *>( this );
@@ -32,7 +32,7 @@ namespace Ic3
 		}
 
 		template <typename TPInterfaceSubClass>
-		IC3_ATTR_NO_DISCARD const TPInterfaceSubClass * getInterface() const
+		CPPX_ATTR_NO_DISCARD const TPInterfaceSubClass * GetInterface() const
 		{
 		#if( IC3_DEBUG )
 		    return dynamic_cast_check<const TPInterfaceSubClass *>( this );
@@ -42,7 +42,7 @@ namespace Ic3
 		}
 
 		template <typename TPInterfaceSubClass>
-		IC3_ATTR_NO_DISCARD TPInterfaceSubClass * queryInterface()
+		CPPX_ATTR_NO_DISCARD TPInterfaceSubClass * QueryInterface()
 		{
 		#if( IC3_DEBUG )
 			return dynamic_cast_check<TPInterfaceSubClass *>( this );
@@ -52,7 +52,7 @@ namespace Ic3
 		}
 
 		template <typename TPInterfaceSubClass>
-		IC3_ATTR_NO_DISCARD const TPInterfaceSubClass * queryInterface() const
+		CPPX_ATTR_NO_DISCARD const TPInterfaceSubClass * QueryInterface() const
 		{
 		#if( IC3_DEBUG )
 			return dynamic_cast_check<const TPInterfaceSubClass *>( this );
@@ -62,7 +62,7 @@ namespace Ic3
 		}
 
 		template <typename TPInterfaceSubClass>
-		IC3_ATTR_NO_DISCARD TSharedHandle<TPInterfaceSubClass> getHandle()
+		CPPX_ATTR_NO_DISCARD TSharedHandle<TPInterfaceSubClass> GetHandle()
 		{
 		#if( IC3_DEBUG )
 			return dynamic_ptr_cast_check<TPInterfaceSubClass>( shared_from_this() );
@@ -72,7 +72,7 @@ namespace Ic3
 		}
 
 		template <typename TPInterfaceSubClass>
-		IC3_ATTR_NO_DISCARD TSharedHandle<TPInterfaceSubClass> queryHandle()
+		CPPX_ATTR_NO_DISCARD TSharedHandle<TPInterfaceSubClass> QueryHandle()
 		{
 		#if( IC3_DEBUG )
 			return dynamic_ptr_cast_throw<TPInterfaceSubClass>( shared_from_this() );
@@ -87,7 +87,7 @@ namespace Ic3
 	};
 
 	template <typename TPClass, typename... TPArgs>
-	IC3_ATTR_NO_DISCARD inline TSharedHandle<TPClass> createDynamicObject( TPArgs && ...pArgs )
+	CPPX_ATTR_NO_DISCARD inline TSharedHandle<TPClass> CreateDynamicObject( TPArgs && ...pArgs )
 	{
 		auto objectHandle = std::make_shared<TPClass>( std::forward<TPArgs>( pArgs )... );
 	#if( IC3_DEBUG )
@@ -98,7 +98,7 @@ namespace Ic3
 	}
 
     template <typename TPClass, typename TPDeleter, typename... TPArgs>
-    IC3_ATTR_NO_DISCARD inline TSharedHandle<TPClass> createDynamicObjectWithDeleter( TPDeleter pDeleter, TPArgs && ...pArgs )
+    CPPX_ATTR_NO_DISCARD inline TSharedHandle<TPClass> CreateDynamicObjectWithDeleter( TPDeleter pDeleter, TPArgs && ...pArgs )
     {
         auto objectHandle = std::shared_ptr<TPClass>{ new TPClass( std::forward<TPArgs>( pArgs )... ), std::forward<TPDeleter>( pDeleter ) };
     #if( IC3_DEBUG )
@@ -109,12 +109,12 @@ namespace Ic3
     }
 
 	template <typename TPResultType, typename TPInputType>
-	IC3_ATTR_NO_DISCARD inline std::unique_ptr<TPResultType> moveInterfaceUniquePtr( std::unique_ptr<TPInputType> pUPtr )
+	CPPX_ATTR_NO_DISCARD inline std::unique_ptr<TPResultType> MoveInterfaceUniquePtr( std::unique_ptr<TPInputType> pUPtr )
 	{
 		std::unique_ptr<TPResultType> result;
 		if( pUPtr )
 		{
-			if( TPResultType * targetPtr = pUPtr->template queryInterface<TPResultType>() )
+			if( TPResultType * targetPtr = pUPtr->template QueryInterface<TPResultType>() )
 			{
 				result = std::unique_ptr<TPResultType>{ targetPtr };
 				pUPtr.release();
@@ -124,40 +124,40 @@ namespace Ic3
 	}
 
 	template <typename TPInterfaceSubClass, typename TPInputType>
-	IC3_ATTR_NO_DISCARD inline TPInterfaceSubClass * dynamic_interface_cast_get( TPInputType * pInterfacePtr )
+	CPPX_ATTR_NO_DISCARD inline TPInterfaceSubClass * dynamic_interface_cast_get( TPInputType * pInterfacePtr )
 	{
-		return reinterpret_cast<IDynamicObject *>( pInterfacePtr )->template getInterface<TPInterfaceSubClass>();
+		return reinterpret_cast<IDynamicObject *>( pInterfacePtr )->template GetInterface<TPInterfaceSubClass>();
 	}
 
 	template <typename TPInterfaceSubClass, typename TPInputType>
-	IC3_ATTR_NO_DISCARD inline const TPInterfaceSubClass * dynamic_interface_cast_get( const TPInputType * pInterfacePtr )
+	CPPX_ATTR_NO_DISCARD inline const TPInterfaceSubClass * dynamic_interface_cast_get( const TPInputType * pInterfacePtr )
 	{
-		return reinterpret_cast<const IDynamicObject *>( pInterfacePtr )->template getInterface<TPInterfaceSubClass>();
+		return reinterpret_cast<const IDynamicObject *>( pInterfacePtr )->template GetInterface<TPInterfaceSubClass>();
 	}
 
 	template <typename TPInterfaceSubClass, typename TPInputType>
-	IC3_ATTR_NO_DISCARD inline TPInterfaceSubClass * dynamic_interface_cast_query( TPInputType * pInterfacePtr )
+	CPPX_ATTR_NO_DISCARD inline TPInterfaceSubClass * dynamic_interface_cast_query( TPInputType * pInterfacePtr )
 	{
-		return reinterpret_cast<IDynamicObject *>( pInterfacePtr )->template queryInterface<TPInterfaceSubClass>();
+		return reinterpret_cast<IDynamicObject *>( pInterfacePtr )->template QueryInterface<TPInterfaceSubClass>();
 	}
 
 	template <typename TPInterfaceSubClass, typename TPInputType>
-	IC3_ATTR_NO_DISCARD inline const TPInterfaceSubClass * dynamic_interface_cast_query( const TPInputType * pInterfacePtr )
+	CPPX_ATTR_NO_DISCARD inline const TPInterfaceSubClass * dynamic_interface_cast_query( const TPInputType * pInterfacePtr )
 	{
-		return reinterpret_cast<const IDynamicObject *>( pInterfacePtr )->template queryInterface<TPInterfaceSubClass>();
+		return reinterpret_cast<const IDynamicObject *>( pInterfacePtr )->template QueryInterface<TPInterfaceSubClass>();
 	}
 
-#define ic3DeclareClassHandle( pClassName ) \
+#define Ic3DeclareClassHandle( pClassName ) \
     class pClassName; \
     using pClassName##Handle = TSharedHandle<pClassName>; \
     using pClassName##TWeakHandle = TWeakHandle<pClassName>
 
-#define ic3DeclareInterfaceHandle( pInterfaceName ) \
+#define Ic3DeclareInterfaceHandle( pInterfaceName ) \
     class pInterfaceName; \
     using pInterfaceName##Handle = TSharedHandle<pInterfaceName>; \
     using pInterfaceName##TWeakHandle = TWeakHandle<pInterfaceName>
 
-#define ic3DeclareTypedefHandle( pAliasName, pTypeName ) \
+#define Ic3DeclareTypedefHandle( pAliasName, pTypeName ) \
     using pAliasName = pTypeName; \
     using pAliasName##Handle = TSharedHandle<pAliasName>; \
     using pAliasName##TWeakHandle = TWeakHandle<pAliasName>

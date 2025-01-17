@@ -23,10 +23,10 @@ namespace Ic3
 		TPValue code = 0u;
 
 		// A string identifying the result code. Usually - name of the code used across sources.
-		const char * codeStr = CxDef::STR_CHAR_EMPTY;
+		const char * codeStr = kStrCharEmpty;
 
 		// Additional info string, optional.
-		const char * infoStr = CxDef::STR_CHAR_EMPTY;
+		const char * infoStr = kStrCharEmpty;
 
 	public:
 		ResultInfo( const ResultInfo & ) = default;
@@ -40,8 +40,8 @@ namespace Ic3
 		template <typename TOtherValue>
 		explicit ResultInfo( TOtherValue pCode )
 		: code( static_cast<TPValue>( pCode ) )
-		, codeStr( CxDef::STR_CHAR_EMPTY )
-		, infoStr( CxDef::STR_CHAR_EMPTY )
+		, codeStr( kStrCharEmpty )
+		, infoStr( kStrCharEmpty )
 		{}
 
 		/// @brief Initializes result object with specified content.
@@ -51,8 +51,8 @@ namespace Ic3
 		template <typename TOtherValue>
 		ResultInfo( TOtherValue pCode, const char * pCodeStr, const char * pInfoStr = nullptr )
 		: code( static_cast<TPValue>( pCode ) )
-		, codeStr( pCodeStr ? pCodeStr : CxDef::STR_CHAR_EMPTY )
-		, infoStr( pInfoStr ? pCodeStr : CxDef::STR_CHAR_EMPTY )
+		, codeStr( pCodeStr ? pCodeStr : kStrCharEmpty )
+		, infoStr( pInfoStr ? pCodeStr : kStrCharEmpty )
 		{}
 
 		constexpr explicit operator bool() const
@@ -62,7 +62,7 @@ namespace Ic3
 
 		/// @brief Swaps two results.
 		/// @param other Result object to swap with.
-		void swap( ResultInfo & pOther )
+		void Swap( ResultInfo & pOther )
 		{
 			std::swap( code, pOther.code );
 			std::swap( codeStr, pOther.codeStr );
@@ -71,7 +71,7 @@ namespace Ic3
 
 		/// @brief Returns whether the result object is empty (i.e. has no explicit code set or code is zero).
 		/// @return True if result object is empty or false otherwise.
-		IC3_ATTR_NO_DISCARD bool empty() const
+		CPPX_ATTR_NO_DISCARD bool IsEmpty() const
 		{
 			return code == 0;
 		}
@@ -80,69 +80,69 @@ namespace Ic3
 	/// @brief
 	enum class EResultCodeType : uint8
 	{
-		SUCCESS,
-		WARNING,
-		ERROR
+		Success,
+		Warning,
+		Error
 	};
 
-	namespace CxDef
+	namespace Vbm
 	{
 
 		// Value BitMasks for result codes.
 
 		/// @brief Control Key required for a valid result code value.
-		constexpr auto VBM_RESULT_CODE_CONTROL_KEY   = static_cast<result_code_value_t>( 0x18000000 );
+		constexpr auto kVbmResultCodeControlKey   = static_cast<result_code_value_t>( 0x18000000 );
 
 		/// @brief Bitmask for the 'Type' component of a result code value.
-		constexpr auto VBM_RESULT_CODE_TYPE_MASK     = static_cast<result_code_value_t>( 0x00FF0000 );
+		constexpr auto kVbmResultCodeTypeMask     = static_cast<result_code_value_t>( 0x00FF0000 );
 
 		/// @brief Bitmask for the 'Category' component of a result code value.
-		constexpr auto VBM_RESULT_CODE_CATEGORY_MASK = static_cast<result_code_value_t>( 0x0000FF00 );
+		constexpr auto kVbmResultCodeCategoryMask = static_cast<result_code_value_t>( 0x0000FF00 );
 
 		/// @brief Bitmask for the 'IID' (Internal ID) component of a result code value.
-		constexpr auto VBM_RESULT_CODE_IID_MASK      = static_cast<result_code_value_t>( 0x000000FF );
+		constexpr auto kVbmResultCodeIIDMask      = static_cast<result_code_value_t>( 0x000000FF );
 
 		///
-		inline constexpr result_code_value_t declareResultCode( EResultCodeType pType, uint8 pCategory, uint8 pIID )
+		inline constexpr result_code_value_t DeclareResultCode( EResultCodeType pType, uint8 pCategory, uint8 pIID )
 		{
-			return ( VBM_RESULT_CODE_CONTROL_KEY | ( ( result_code_value_t )( pType ) << 16 ) | ( ( result_code_value_t )( pCategory ) << 8 ) | pIID );
+			return ( kVbmResultCodeControlKey | ( ( result_code_value_t )( pType ) << 16 ) | ( ( result_code_value_t )( pCategory ) << 8 ) | pIID );
 		}
 
 		///
-		inline constexpr EResultCodeType getResultCodeType( result_code_value_t pResultCode )
+		inline constexpr EResultCodeType GetResultCodeType( result_code_value_t pResultCode )
 		{
-			return ( EResultCodeType )( ( pResultCode & VBM_RESULT_CODE_TYPE_MASK ) >> 16 );
+			return ( EResultCodeType )( ( pResultCode & kVbmResultCodeTypeMask ) >> 16 );
 		}
 
 		///
-		inline constexpr uint8 getResultCodeCategory( result_code_value_t pResultCode )
+		inline constexpr uint8 GetResultCodeCategory( result_code_value_t pResultCode )
 		{
-			return ( uint8 )( ( pResultCode & VBM_RESULT_CODE_CATEGORY_MASK ) >> 8 );
+			return ( uint8 )( ( pResultCode & kVbmResultCodeCategoryMask ) >> 8 );
 		}
 
 		///
-		inline constexpr bool validateResultCode( result_code_value_t pResultCode )
+		inline constexpr bool ValidateResultCode( result_code_value_t pResultCode )
 		{
-			return ( pResultCode & VBM_RESULT_CODE_CONTROL_KEY ) == VBM_RESULT_CODE_CONTROL_KEY;
+			return ( pResultCode & kVbmResultCodeControlKey ) == kVbmResultCodeControlKey;
 		}
 
 	}
 
 	enum : uint8
 	{
-		E_RESULT_CATEGORY_GENERIC = 0,
+		eResultCategoryGeneric = 0,
 	};
 	
 	enum : result_code_value_t
 	{
-		E_RESULT_CODE_GENERIC_SUCCESS = CxDef::declareResultCode( EResultCodeType::SUCCESS, E_RESULT_CATEGORY_GENERIC, 0 )
+		eResultCodeGenericSuccess = Vbm::DeclareResultCode( EResultCodeType::Success, eResultCategoryGeneric, 0 )
 	};
 
 	struct ResultCodeErrorPredicate
 	{
 		constexpr bool operator()( result_code_value_t pResultCode ) const
 		{
-			return CxDef::getResultCodeType( pResultCode ) == EResultCodeType::ERROR;
+			return Vbm::GetResultCodeType( pResultCode ) == EResultCodeType::Error;
 		}
 	};
 
@@ -151,19 +151,19 @@ namespace Ic3
 	using ResultCode = ResultInfo<result_code_value_t, ResultCodeErrorPredicate>;
 
 	/// @brief Creates result from code.
-	#define ic3MakeResult( pCode ) ::Ic3::ResultCode( pCode, #pCode )
+	#define Ic3MakeResult( pCode ) ::Ic3::ResultCode( pCode, #pCode )
 
 	/// @brief Creates result from code and additional info string.
-	#define ic3MakeResultEx( pCode, pInfo ) ::Ic3::ResultCode( pCode, #pCode, pInfo )
+	#define Ic3MakeResultEx( pCode, pInfo ) ::Ic3::ResultCode( pCode, #pCode, pInfo )
 
 	/// @brief
-	#define ic3ResultGetCode( pResult ) ( pResult.code )
+	#define Ic3ResultGetCode( pResult ) ( pResult.code )
 
 	/// @brief
-	#define ic3ResultGetCodeStr( pResult ) ( pResult.codeStr )
+	#define Ic3ResultGetCodeStr( pResult ) ( pResult.codeStr )
 
 	/// @brief
-	#define ic3ResultGetInfoStr( pResult ) ( pResult.infoStr )
+	#define Ic3ResultGetInfoStr( pResult ) ( pResult.infoStr )
 
 #else
 
@@ -171,25 +171,26 @@ namespace Ic3
 	using ResultCode = result_code_value_t;
 
 	/// @brief Creates result from code.
-	#define ic3MakeResult( pCode ) ( pCode )
+	#define Ic3MakeResult( pCode ) ( pCode )
 
 	/// @brief Creates result from code and additional info string.
-	#define ic3MakeResultEx( pCode, pInfo ) ( pCode )
+	#define Ic3MakeResultEx( pCode, pInfo ) ( pCode )
 
 	/// @brief
-	#define ic3ResultGetCode( pResult ) ( pResult )
+	#define Ic3ResultGetCode( pResult ) ( pResult )
 
 	/// @brief
-	#define ic3ResultGetCodeStr( pResult ) CxDef::STR_CHAR_EMPTY
+	#define Ic3ResultGetCodeStr( pResult ) CxDef::STR_CHAR_EMPTY
 
 	/// @brief
-	#define ic3ResultGetInfoStr( pResult ) CxDef::STR_CHAR_EMPTY
+	#define Ic3ResultGetInfoStr( pResult ) CxDef::STR_CHAR_EMPTY
 
 #endif
 
 	template <typename TPValue, typename TPErrorPredicate>
-	inline constexpr bool operator==( const ResultInfo<TPValue, TPErrorPredicate> & pLhs,
-									  const ResultInfo<TPValue, TPErrorPredicate> & pRhs )
+	inline constexpr bool operator==(
+			const ResultInfo<TPValue, TPErrorPredicate> & pLhs,
+			const ResultInfo<TPValue, TPErrorPredicate> & pRhs )
 	{
 		return pLhs.code == pRhs.code;
 	}
@@ -207,8 +208,9 @@ namespace Ic3
 	}
 
 	template <typename TPValue, typename TPErrorPredicate>
-	inline constexpr bool operator!=( const ResultInfo<TPValue, TPErrorPredicate> & pLhs,
-									  const ResultInfo<TPValue, TPErrorPredicate> & pRhs )
+	inline constexpr bool operator!=(
+			const ResultInfo<TPValue, TPErrorPredicate> & pLhs,
+			const ResultInfo<TPValue, TPErrorPredicate> & pRhs )
 	{
 		return pLhs.code != pRhs.code;
 	}
@@ -226,8 +228,9 @@ namespace Ic3
 	}
 
 	template <typename TPValue, typename TPErrorPredicate>
-	inline constexpr bool operator<( const ResultInfo<TPValue, TPErrorPredicate> & pLhs,
-									 const ResultInfo<TPValue, TPErrorPredicate> & pRhs )
+	inline constexpr bool operator<(
+			const ResultInfo<TPValue, TPErrorPredicate> & pLhs,
+			const ResultInfo<TPValue, TPErrorPredicate> & pRhs )
 	{
 		return pLhs.code < pRhs.code;
 	}
@@ -245,8 +248,9 @@ namespace Ic3
 	}
 
 	template <typename TPValue, typename TPErrorPredicate>
-	inline constexpr bool operator<=( const ResultInfo<TPValue, TPErrorPredicate> & pLhs,
-									  const ResultInfo<TPValue, TPErrorPredicate> & pRhs )
+	inline constexpr bool operator<=(
+			const ResultInfo<TPValue, TPErrorPredicate> & pLhs,
+			const ResultInfo<TPValue, TPErrorPredicate> & pRhs )
 	{
 		return pLhs.code <= pRhs.code;
 	}
@@ -264,8 +268,9 @@ namespace Ic3
 	}
 
 	template <typename TPValue, typename TPErrorPredicate>
-	inline constexpr bool operator>( const ResultInfo<TPValue, TPErrorPredicate> & pLhs,
-									 const ResultInfo<TPValue, TPErrorPredicate> & pRhs )
+	inline constexpr bool operator>(
+			const ResultInfo<TPValue, TPErrorPredicate> & pLhs,
+			const ResultInfo<TPValue, TPErrorPredicate> & pRhs )
 	{
 		return pLhs.code > pRhs.code;
 	}
@@ -283,8 +288,9 @@ namespace Ic3
 	}
 
 	template <typename TPValue, typename TPErrorPredicate>
-	inline constexpr bool operator>=( const ResultInfo<TPValue, TPErrorPredicate> & pLhs,
-									  const ResultInfo<TPValue, TPErrorPredicate> & pRhs )
+	inline constexpr bool operator>=(
+			const ResultInfo<TPValue, TPErrorPredicate> & pLhs,
+			const ResultInfo<TPValue, TPErrorPredicate> & pRhs )
 	{
 		return pLhs.code >= pRhs.code;
 	}

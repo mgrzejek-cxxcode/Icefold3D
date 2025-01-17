@@ -9,23 +9,23 @@ namespace Ic3
 
 	enum class EActiveState : uint16
 	{
-		DISABLED = 0,
-		ENABLED = 1,
-		UNKNOWN = 2
+		Disabled = 0,
+		Enabled = 1,
+		Unknown = 2
 	};
 
 	enum EAccessModeFlags : uint32
 	{
-		E_ACCESS_MODE_FLAG_READBit = 0x0001,
-		E_ACCESS_MODE_FLAG_WRITEBit = 0x0002,
-		E_ACCESS_MODE_FLAGS_FULL_ACCESS = E_ACCESS_MODE_FLAG_READBit | E_ACCESS_MODE_FLAG_WRITEBit,
-		E_ACCESS_MODE_FLAGS_NONE = 0
+		eAccessModeFlagReadBit = 0x0001,
+		eAccessModeFlagWriteBit = 0x0002,
+		eAccessModeFlagsFullAccess = eAccessModeFlagReadBit | eAccessModeFlagWriteBit,
+		eAccessModeFlagsNone = 0
 	};
 
 	/// @brief Declares a namespace-scope function template for querying Ic3::EnumTypeInfo for enum types.
-	#define ic3EnableEnumTypeInfoSupport() \
+	#define Ic3EnableEnumTypeInfoSupport() \
         /* Template function used to retrieve an EnumTypeInfo object for an enum type. */ \
-        /* Not implemented, specialized for every enum using ic3TypeInfoEnumDeclare. */  \
+        /* Not implemented, specialized for every enum using Ic3TypeInfoEnumDeclare. */  \
         template <typename TEnum> const ::Ic3::EnumTypeInfo<TEnum> & queryEnumTypeInfo();
 
 	/// @brief Declares an enum for which an Ic3::EnumTypeInfo object can be queried.
@@ -34,30 +34,30 @@ namespace Ic3
 	/// Usage: call it once after an enum definition (in a header file), passing enum type as an argument.
 	/// Example:
 	/// enum class Color { Red, Green, Blue, Unknown };
-	/// ic3TypeInfoEnumDeclare( Color );
-	#define ic3TypeInfoEnumDeclare( TEnum, ... ) \
+	/// Ic3TypeInfoEnumDeclare( Color );
+	#define Ic3TypeInfoEnumDeclare( TEnum, ... ) \
         namespace _typeinfo {                                                                              \
             /* Forward declaration of an enum-specific query function, e.g. queryEnumTypeInfoColor() */    \
             ::Ic3::EnumTypeInfo<TEnum> & queryEnumTypeInfo##TEnum();                                       \
             const std::string & toString##TEnum( TEnum );                                                  \
-        } /* namespace _typeinfo */                                                                        \
+        } // namespace _typeinfo                                                                           \
         /* Implementation of queryEnumTypeInfo<TEnum> template function specialization. */                 \
         template <> inline const ::Ic3::EnumTypeInfo<TEnum> & queryEnumTypeInfo<TEnum>()                   \
         {                                                                                                  \
             /* Just call the enum-specific function. This allows moving the definition code to .cpp. */    \
             return _typeinfo::queryEnumTypeInfo##TEnum();                                                  \
         }                                                                                                  \
-        IC3_ATTR_NO_DISCARD inline const std::string & toString( TEnum pValue )                            \
+        CPPX_ATTR_NO_DISCARD inline const std::string & toString( TEnum pValue )                           \
         {                                                                                                  \
         	/* Just call the enum-specific function. This allows moving the definition code to .cpp. */    \
         	return _typeinfo::toString##TEnum( pValue );                                                   \
         }
 
 	// Enable support for enum type info for the whole Ic3:: namespace.
-	ic3EnableEnumTypeInfoSupport();
+	Ic3EnableEnumTypeInfoSupport();
 
-	ic3TypeInfoEnumDeclare( EActiveState );
-	ic3TypeInfoEnumDeclare( EAccessModeFlags );
+	Ic3TypeInfoEnumDeclare( EActiveState );
+	Ic3TypeInfoEnumDeclare( EAccessModeFlags );
 
 }
 

@@ -27,11 +27,11 @@ namespace Ic3
 		catch( const rapidxml::parse_error & pException )
 		{
 			( pException );
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 		}
 		catch( ... )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 		}
 
 		return nullptr;

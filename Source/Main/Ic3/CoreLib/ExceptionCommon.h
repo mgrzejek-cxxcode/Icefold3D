@@ -6,8 +6,8 @@
 
 #include "Prerequisites.h"
 
-#define ic3ExcCategoryIID( pIID ) ( pIID )
-#define ic3ExcCodeIID( pIID ) ( pIID )
+#define Ic3ExcCategoryIID( pIID ) ( pIID )
+#define Ic3ExcCodeIID( pIID ) ( pIID )
 
 namespace Ic3
 {
@@ -29,59 +29,59 @@ namespace Ic3
     enum class EExceptionBaseType : exception_base_type_value_t
     {
         // Unknown type. Not used directly by any exception class.
-        UNKNOWN,
+        Unknown,
 
         // For debug-specific errors and messages, debug-only assertions etc.
         // Exception codes prefix: E_EXC_DEBUG
-        DEBUG,
+        Debug,
 
         // Dedicated exception type for top-level engine components (graphics, scripting, etc).
         // Usually each component provides its own base class which derives from EngineSubModuleException class.
         // Exception codes prefix: E_EXC_ESM_%SubmoduleName%
-        ENGINE_SUBMODULE,
+        EngineSubmodule,
 
         // For all normal, error-like exceptions, intended to be used by lower-level components of the engine
         // (hence the 'framework' keyword). Defined primarily in the common ::Core component of the project.
         // Exception codes prefix: E_EXC_CORE
-        FRAMEWORK_CORE,
+        FrameworkCore,
 
         // Internal, implementation-details exception used by the framework. Used primarily for signalling errors
         // between parts of the framework, without exposing them to the user. Those exceptions should never leave
         // the "implementation detail" level of the project.
         // Exception codes prefix: E_EXC_INTERNAL
-        INTERNAL,
+        Internal,
 
         // For exceptions used as an interrupts (for example in thread proc).
         // Exception codes prefix: E_EXC_INTERRUPT
-        INTERRUPT,
+        Interrupt,
 
         // Defined primarily within the ::Math component.
         // Exception codes prefix: E_EXC_MATH
-        MATH,
+        Math,
 
         // Dedicated type for exceptions carrying ResultInfo as an error indicator.
         // Exception codes prefix: E_EXC_RESULT
-        RESULT,
+        Result,
 
         // System-specific exceptions, extended in platform-specific manner. Defined within the ::System component.
         // Exception codes prefix: E_EXC_SYSTEM
-        SYSTEM,
+        System,
 
         // All exceptions defined by the client libraries and frameworks.
         // Exception codes prefix: E_EXC_USREXT
-        USER_EXTERNAL,
+        UserExternal,
 
         // Reserved value, used to count all enumerators. Must always be defined as the last one.
-        RESERVED
+        Reserved
     };
 
-	ic3TypeInfoEnumDeclare( EExceptionBaseType );
+	Ic3TypeInfoEnumDeclare( EExceptionBaseType );
 
 	namespace CxDef
 	{
 
 		/// Number of total enum values. Used for validation.
-		constexpr auto ENUM_EXCEPTION_BASE_TYPE_COUNT = static_cast<exception_base_type_value_t>( EExceptionBaseType::RESERVED );
+		constexpr auto ENUM_EXCEPTION_BASE_TYPE_COUNT = static_cast<exception_base_type_value_t>( EExceptionBaseType::Reserved );
 
 		/// Exception code: control key for validation.
 		constexpr auto VBM_EXCEPTION_CODE_CONTROL_KEY = static_cast<exception_code_value_t>( 0xE7000000u );

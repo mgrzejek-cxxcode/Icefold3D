@@ -46,15 +46,15 @@ namespace Ic3
 
 		const EnumConstant<TPEnum> & operator[]( const std::string & pName ) const
 		{
-			return getByName( pName );
+			return GetByName( pName );
 		}
 
 		const EnumConstant<TPEnum> & operator[]( TPEnum pValue ) const
 		{
-			return getByValue( pValue );
+			return GetByValue( pValue );
 		}
 
-		const EnumConstant<TPEnum> * findByName( const std::string & pName ) const
+		const EnumConstant<TPEnum> * FindByName( const std::string & pName ) const
 		{
 			auto constantIter = _constantsByName.find( pName );
 			if( constantIter != _constantsByName.end() )
@@ -65,7 +65,7 @@ namespace Ic3
 			return nullptr;
 		}
 
-		const EnumConstant<TPEnum> * findByValue( TPEnum pValue ) const
+		const EnumConstant<TPEnum> * FindByValue( TPEnum pValue ) const
 		{
 			auto constantIter = _constantsByValue.find( pValue );
 			if( constantIter != _constantsByValue.end() )
@@ -76,35 +76,35 @@ namespace Ic3
 			return nullptr;
 		}
 
-		const EnumConstant<TPEnum> & getByName( const std::string & pName ) const
+		const EnumConstant<TPEnum> & GetByName( const std::string & pName ) const
 		{
 			auto constantIndex = _constantsByName.at( pName );
 			return _constants[constantIndex];
 		}
 
-		const EnumConstant<TPEnum> & getByValue( TPEnum pValue ) const
+		const EnumConstant<TPEnum> & GetByValue( TPEnum pValue ) const
 		{
 			auto constantIndex = _constantsByValue.at( pValue );
 			return _constants[constantIndex];
 		}
 
-		const EnumConstantList<TPEnum> & list() const
+		const EnumConstantList<TPEnum> & List() const
 		{
 			return _constants;
 		}
 
-		IC3_ATTR_NO_DISCARD size_t size() const
+		CPPX_ATTR_NO_DISCARD size_t GetSize() const
 		{
 			return _constants.size();
 		}
 
-		IC3_ATTR_NO_DISCARD bool empty() const
+		CPPX_ATTR_NO_DISCARD bool IsEmpty() const
 		{
 			return _constants.empty();
 		}
 
 	private:
-		EnumConstantMap & add( TPEnum pValue, std::string pName )
+		EnumConstantMap & Add( TPEnum pValue, std::string pName )
 		{
 			auto constantIndex = _constants.size();
 			auto & constantDef = _constants.emplace_back();
@@ -132,13 +132,13 @@ namespace Ic3
 	template <typename TPEnum>
 	inline typename EnumConstantList<TPEnum>::const_iterator begin( const EnumConstantMap<TPEnum> & pEnumConstantMap )
 	{
-		return pEnumConstantMap.list().begin();
+		return pEnumConstantMap.List().begin();
 	}
 
 	template <typename TPEnum>
 	inline typename EnumConstantList<TPEnum>::const_iterator end( const EnumConstantMap<TPEnum> & pEnumConstantMap )
 	{
-		return pEnumConstantMap.list().end();
+		return pEnumConstantMap.List().end();
 	}
 
 
@@ -161,23 +161,23 @@ namespace Ic3
 			pInitFunction( *this );
 		}
 
-		IC3_ATTR_NO_DISCARD const EnumConstantMap<TPEnum> & getConstantMap() const
+		CPPX_ATTR_NO_DISCARD const EnumConstantMap<TPEnum> & GetConstantMap() const
 		{
 			return _constantMap;
 		}
 
-		IC3_ATTR_NO_DISCARD const std::string & getConstantName( TPEnum pValue ) const
+		CPPX_ATTR_NO_DISCARD const std::string & GetConstantName( TPEnum pValue ) const
 		{
-			if( auto * constantDef = _constantMap.findByValue( pValue ) )
+			if( auto * constantDef = _constantMap.FindByValue( pValue ) )
 			{
 				return constantDef->name;
 			}
 			return EMPTY_CONSTANT_NAME;
 		}
 
-		IC3_ATTR_NO_DISCARD TPEnum getConstantValue( const std::string & pName ) const
+		CPPX_ATTR_NO_DISCARD TPEnum GetConstantValue( const std::string & pName ) const
 		{
-			if( auto * constantDef = _constantMap.findByName( pName ) )
+			if( auto * constantDef = _constantMap.FindByName( pName ) )
 			{
 				return constantDef->value;
 			}
@@ -185,39 +185,39 @@ namespace Ic3
 			return static_cast<TPEnum>( 0u );
 		}
 
-		IC3_ATTR_NO_DISCARD const std::string & getConstantNameOrDefault( TPEnum pValue, const std::string & pDefault = "" ) const
+		CPPX_ATTR_NO_DISCARD const std::string & GetConstantNameOrDefault( TPEnum pValue, const std::string & pDefault = "" ) const
 		{
-			if( auto * constantDef = _constantMap.findByValue( pValue ) )
+			if( auto * constantDef = _constantMap.FindByValue( pValue ) )
 			{
 				return constantDef->name;
 			}
 			return pDefault;
 		}
 
-		IC3_ATTR_NO_DISCARD TPEnum getConstantValueOrDefault( const std::string & pName, TPEnum pDefault = static_cast<TPEnum>( 0u ) ) const
+		CPPX_ATTR_NO_DISCARD TPEnum GetConstantValueOrDefault( const std::string & pName, TPEnum pDefault = static_cast<TPEnum>( 0u ) ) const
 		{
-			if( auto * constantDef = _constantMap.findByName( pName ) )
+			if( auto * constantDef = _constantMap.FindByName( pName ) )
 			{
 				return constantDef->value;
 			}
 			return pDefault;
 		}
 
-		IC3_ATTR_NO_DISCARD bool isValid() const
+		CPPX_ATTR_NO_DISCARD bool IsValid() const
 		{
 			return !_constantMap.empty();
 		}
 
 	private:
-		EnumTypeInfo & initialize( EnumProperties pProperties )
+		EnumTypeInfo & Initialize( EnumProperties pProperties )
 		{
 			_properties = std::move( pProperties );
 			return *this;
 		}
 
-		EnumTypeInfo & registerConstant( TPEnum pValue, std::string pName )
+		EnumTypeInfo & RegisterConstant( TPEnum pValue, std::string pName )
 		{
-			_constantMap.add( pValue, std::move( pName ) );
+			_constantMap.Add( pValue, std::move( pName ) );
 			return *this;
 		}
 
@@ -233,24 +233,24 @@ namespace Ic3
 	class EnumTypeInfoInitializer
 	{
 	public:
-		static EnumTypeInfo<TPEnum> & initialize( EnumTypeInfo<TPEnum> & pEnumTypeInfo, EnumProperties pProperties )
+		static EnumTypeInfo<TPEnum> & Initialize( EnumTypeInfo<TPEnum> & pEnumTypeInfo, EnumProperties pProperties )
 		{
-			return pEnumTypeInfo.initialize( std::move( pProperties ) );
+			return pEnumTypeInfo.Initialize( std::move( pProperties ) );
 		}
 
-		static EnumTypeInfo<TPEnum> & registerConstant( EnumTypeInfo<TPEnum> & pEnumTypeInfo, TPEnum pValue, std::string pName )
+		static EnumTypeInfo<TPEnum> & RegisterConstant( EnumTypeInfo<TPEnum> & pEnumTypeInfo, TPEnum pValue, std::string pName )
 		{
-			return pEnumTypeInfo.registerConstant( pValue, std::move( pName ) );
+			return pEnumTypeInfo.RegisterConstant( pValue, std::move( pName ) );
 		}
 	};
 
 
 	/// @brief Implements an enum's definition/initialization procedure.
 	/// Usage and example: see below.
-	#define ic3TypeInfoEnumDefine( TPEnum ) \
+	#define Ic3TypeInfoEnumDefine( TPEnum ) \
 		/* Forward declaration of an enum-specific init method which registers all constants. */ \
 		void initializeEnumTypeInfo##TPEnum( ::Ic3::EnumTypeInfo<TPEnum> & ); \
-		/* Here, we implement the method declared with ic3TypeInfoEnumDeclare. */ \
+		/* Here, we implement the method declared with Ic3TypeInfoEnumDeclare. */ \
 		::Ic3::EnumTypeInfo<TPEnum> & _typeinfo::queryEnumTypeInfo##TPEnum() \
 		{ \
 			/* Create static EnumTypeInfo object and pass initializeEnumTypeInfoXXX function declared above. */ \
@@ -260,14 +260,14 @@ namespace Ic3
 		} \
 		const std::string & _typeinfo::toString##TPEnum( TPEnum pValue ) \
 		{ \
-			return queryEnumTypeInfo##TPEnum().getConstantName( pValue ); \
+			return queryEnumTypeInfo##TPEnum().GetConstantName( pValue ); \
 		} \
 		void initializeEnumTypeInfo##TPEnum( Ic3::EnumTypeInfo<TPEnum> & pEnumTypeInfo )
 
 	/// @brief This is a basic initialization of the EnumTypeInfo object (pEnumTypeInfo).
 	/// This is a continuation of initializeEnumTypeInfo##TPEnum function.
 	/// Usage and example: see below.
-	#define ic3TypeInfoEnumBegin( TPEnum ) \
+	#define Ic3TypeInfoEnumBegin( TPEnum ) \
         using EnumInitializer = Ic3::EnumTypeInfoInitializer<TPEnum>; \
 		/* Create basic definition of an enum - currently only its name. */ \
 		Ic3::EnumProperties enumProperties; \
@@ -275,20 +275,20 @@ namespace Ic3
 		/* This is used for scoped enum constants (e.g. Color::Red). Prefix is the length of enum type name plus '::'. */ \
 		const size_t enumNamePrefixLength = enumProperties.enumName.length() + 2; ( enumNamePrefixLength ); \
 		/* Initialize the EnumTypeInfo object. */ \
-		EnumInitializer::initialize( pEnumTypeInfo, std::move( enumProperties ) )
+		EnumInitializer::Initialize( pEnumTypeInfo, std::move( enumProperties ) )
 
 	/// @brief Registers a single enumerator of a scoped enum (enum class/struct) within the EnumTypeInfo object.
-	#define ic3TypeInfoEnumRegisterClassConstant( pConstant ) \
+	#define Ic3TypeInfoEnumRegisterClassConstant( pConstant ) \
 		{ \
 			/* Preprocessor does the job for us here. */ \
 			const char * constantName = #pConstant; \
 			/* Register the constant, but do not include the prefix (e.g. 'Color::' in case of 'Color::RED'). */ \
-			EnumInitializer::registerConstant( pEnumTypeInfo, pConstant, constantName + enumNamePrefixLength ); \
+			EnumInitializer::RegisterConstant( pEnumTypeInfo, pConstant, constantName + enumNamePrefixLength ); \
 		}
 
 	/// @brief Registers a single enumerator of an unscoped enum within the EnumTypeInfo object.
-	#define ic3TypeInfoEnumRegisterUnscopedConstant( pConstant ) \
-		EnumInitializer::registerConstant( pEnumTypeInfo, pConstant, #pConstant )
+	#define Ic3TypeInfoEnumRegisterUnscopedConstant( pConstant ) \
+		EnumInitializer::RegisterConstant( pEnumTypeInfo, pConstant, #pConstant )
 
 	/*
 	 * Above macros should be used together to form a definition of an EnumTypeInfo.
@@ -300,25 +300,25 @@ namespace Ic3
 	 *   RED, GREEN, BLUE
 	 * };
 	 * enum EDeviceFlags : uint32 {
-	 *   E_DEVICE_FLAG_ACTIVEBit = 1, E_DEVICE_FLAG_PRIMARYBit = 2
+	 *   E_DEVICE_FLAG_ACTIVE_BIT = 1, E_DEVICE_FLAG_PRIMARY_BIT = 2
 	 * };
-	 * ic3TypeInfoEnumDeclare( EColor );
-	 * ic3TypeInfoEnumDeclare( EDeviceFlags );
+	 * Ic3TypeInfoEnumDeclare( EColor );
+	 * Ic3TypeInfoEnumDeclare( EDeviceFlags );
 	 *
 	 * MySourceFile.cpp:
 	 *
-	 * ic3TypeInfoEnumDefine( EColor )
+	 * Ic3TypeInfoEnumDefine( EColor )
 	 * {
-	 *   ic3TypeInfoEnumBegin( EColor );
-	 *   ic3TypeInfoEnumRegisterClassConstant( EColor::RED );
-	 *   ic3TypeInfoEnumRegisterClassConstant( EColor::GREEN );
-	 *   ic3TypeInfoEnumRegisterClassConstant( EColor::BLUE );
+	 *   Ic3TypeInfoEnumBegin( EColor );
+	 *   Ic3TypeInfoEnumRegisterClassConstant( EColor::RED );
+	 *   Ic3TypeInfoEnumRegisterClassConstant( EColor::GREEN );
+	 *   Ic3TypeInfoEnumRegisterClassConstant( EColor::BLUE );
 	 * }
-	 * ic3TypeInfoEnumDefine( EDeviceFlags )
+	 * Ic3TypeInfoEnumDefine( EDeviceFlags )
 	 * {
-	 *   ic3TypeInfoEnumBegin( EDeviceFlags );
-	 *   ic3TypeInfoEnumRegisterUnscopedConstant( E_DEVICE_FLAG_ACTIVEBit );
-	 *   ic3TypeInfoEnumRegisterUnscopedConstant( E_DEVICE_FLAG_PRIMARYBit );
+	 *   Ic3TypeInfoEnumBegin( EDeviceFlags );
+	 *   Ic3TypeInfoEnumRegisterUnscopedConstant( E_DEVICE_FLAG_ACTIVE_BIT );
+	 *   Ic3TypeInfoEnumRegisterUnscopedConstant( E_DEVICE_FLAG_PRIMARY_BIT );
 	 * }
 	 *
 	 */

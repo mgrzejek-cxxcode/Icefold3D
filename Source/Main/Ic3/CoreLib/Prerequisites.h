@@ -2,14 +2,13 @@
 #ifndef __IC3_CORELIB_PREREQUISITES_H__
 #define __IC3_CORELIB_PREREQUISITES_H__
 
-#include <Ic3/Platform/Debug.h>
-#include <Ic3/Cppx/ArrayView.h>
-#include <Ic3/Cppx/Bitmask.h>
-#include <Ic3/Cppx/BitUtils.h>
-#include <Ic3/Cppx/Range.h>
-#include <Ic3/Cppx/RefWrapper.h>
-#include <Ic3/Cppx/StaticLimits.h>
-#include <Ic3/Cppx/StringView.h>
+#include <cppx/arrayView.h>
+#include <cppx/bitmask.h>
+#include <cppx/bitUtils.h>
+#include <cppx/range.h>
+#include <cppx/refWrapper.h>
+#include <cppx/staticLimits.h>
+#include <cppx/stringView.h>
 
 #if( IC3_BUILD_STATIC )
 #  define IC3_CORELIB_API
@@ -17,13 +16,13 @@
 #  define IC3_CORELIB_OBJ    extern
 #else
 #  if( IC3_CORELIB_BUILD )
-#    define IC3_CORELIB_API    IC3_PCL_ATTR_DLL_EXPORT
-#    define IC3_CORELIB_CLASS  IC3_PCL_ATTR_DLL_EXPORT
-#    define IC3_CORELIB_OBJ    IC3_PCL_ATTR_DLL_EXPORT
+#    define IC3_CORELIB_API    PCL_ATTR_DLL_EXPORT
+#    define IC3_CORELIB_CLASS  PCL_ATTR_DLL_EXPORT
+#    define IC3_CORELIB_OBJ    PCL_ATTR_DLL_EXPORT
 #  else
-#    define IC3_CORELIB_API    IC3_PCL_ATTR_DLL_IMPORT
-#    define IC3_CORELIB_CLASS  IC3_PCL_ATTR_DLL_IMPORT
-#    define IC3_CORELIB_OBJ    IC3_PCL_ATTR_DLL_IMPORT
+#    define IC3_CORELIB_API    PCL_ATTR_DLL_IMPORT
+#    define IC3_CORELIB_CLASS  PCL_ATTR_DLL_IMPORT
+#    define IC3_CORELIB_OBJ    PCL_ATTR_DLL_IMPORT
 #  endif
 #endif
 
@@ -41,39 +40,14 @@
 
 #define friendapi protected
 
-namespace Ic3
-{
-
-	using Cppx::QLimits;
-	using Cppx::TArrayView;
-	using Cppx::TBitmask;
-	using Cppx::TConstRef;
-	using Cppx::TRange;
-	using Cppx::TRegion;
-	using Cppx::TRef;
-	using Cppx::TRefWrapper;
-	using Cppx::TStringView;
-
-}
-
 #include "Prerequisites/CoreDefs.h"
 #include "Prerequisites/CoreEnums.h"
+#include "Prerequisites/DebugLayer.h"
 #include "Prerequisites/ResultCode.h"
 #include "Prerequisites/DynamicInterface.h"
 
 namespace Ic3
 {
-
-	// Naming Convention
-	// E -> Enum
-	// S -> Struct
-	// C -> Class
-	// I -> Interface
-	// T -> Templates and template type parameters
-	// Q -> Queries/Traits -> compile-time!
-	// F -> Functors
-	// P -> Proxies
-	// R -> Aliases/Typedefs
 
 	/// @brief Helper struct for triggering a "empty-init" ctor. Used whenever default initialization has a different meaning.
 	struct InitEmptyTag
@@ -81,7 +55,7 @@ namespace Ic3
 	};
 
 	/// @brief A dedicated instance of InitEmptyTag
-	inline constexpr InitEmptyTag CX_INIT_EMPTY {};
+	inline constexpr InitEmptyTag cxInitEmpty {};
 
 } // namespace Ic3
 

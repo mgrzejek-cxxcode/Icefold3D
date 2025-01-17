@@ -18,13 +18,13 @@ namespace Ic3
 		virtual ~SignalProxy()
 		{}
 
-		virtual void onConnect( signal_code_value_t pSignalCode, void * pReceiver ) = 0;
+		virtual void onConnect( event_code_value_t pSignalCode, void * pReceiver ) = 0;
 
-		virtual void onDisconnect( signal_code_value_t pSignalCode, void * pReceiver, bool pResult ) = 0;
+		virtual void onDisconnect( event_code_value_t pSignalCode, void * pReceiver, bool pResult ) = 0;
 
-		virtual void onEmit( signal_code_value_t pSignalCode ) = 0;
+		virtual void onEmit( event_code_value_t pSignalCode ) = 0;
 
-		virtual void onHandler( signal_code_value_t pSignalCode, void * pReceiver ) = 0;
+		virtual void onHandler( event_code_value_t pSignalCode, void * pReceiver ) = 0;
 	};
 
 }

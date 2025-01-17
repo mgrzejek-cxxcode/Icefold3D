@@ -7,14 +7,14 @@
 namespace Ic3
 {
 
-	struct SMemoryBlockMovementInfo
+	struct MemoryBlockMovementInfo
 	{
-		uintptr_t currentAddress;
-		uintptr_t newAddress;
-		size_t regionSize;
+		uintptr_t mCurrentAddress;
+		uintptr_t mNewAddress;
+		size_t mRegionSize;
 	};
 
-	class CLinearMemoryAllocator
+	class LinearMemoryAllocator
 	{
 	private:
 		uintptr_t _baseAddress;

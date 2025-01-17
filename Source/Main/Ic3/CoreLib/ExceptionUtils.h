@@ -6,11 +6,11 @@
 
 #include "Exception.h"
 
-#define ic3ThrowIfNull( pPointer, pExceptionCode ) \
-	if( !pPointer ) { ic3Throw( pExceptionCode ); }
+#define Ic3ThrowIfNull( pPointer, pExceptionCode ) \
+	if( !pPointer ) { Ic3Throw( pExceptionCode ); }
 
-#define ic3ThrowDescIfNull( pPointer, pExceptionCode, pDesc ) \
-	if( !pPointer ) { ic3ThrowDesc( pExceptionCode, pDesc ); }
+#define Ic3ThrowDescIfNull( pPointer, pExceptionCode, pDesc ) \
+	if( !pPointer ) { Ic3ThrowDesc( pExceptionCode, pDesc ); }
 
 namespace Ic3
 {

@@ -6,7 +6,7 @@
 
 #include "CommonSyncDefs.h"
 
-namespace Ic3::Sync
+namespace Ic3
 {
 
     struct MutexInterfaceProxyDefault

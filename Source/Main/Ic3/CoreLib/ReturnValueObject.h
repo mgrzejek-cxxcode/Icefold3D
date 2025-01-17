@@ -12,7 +12,7 @@ namespace Ic3
 	template <bool tpIncludeExceptionPtr>
 	struct TPResultExceptionWrapper
 	{
-		IC3_ATTR_NO_DISCARD constexpr bool hasException() const noexcept
+		CPPX_ATTR_NO_DISCARD constexpr bool hasException() const noexcept
 		{
 			return false;
 		}
@@ -23,29 +23,29 @@ namespace Ic3
 	{
 	public:
 		//
-		std::exception_ptr mException;
+		std::exception_ptr exceptionPtr;
 
 	public:
 		void setException( std::exception_ptr pExceptionPtr )
 		{
-			mException = std::move( pExceptionPtr );
+			exceptionPtr = std::move( pExceptionPtr );
 		}
 
 		void saveCurrentException()
 		{
-			mException = std::current_exception();
+			exceptionPtr = std::current_exception();
 		}
 
 		void rethrowException()
 		{
 			auto localException = std::exception_ptr();
-			std::swap( mException, localException );
+			std::swap( exceptionPtr, localException );
 			std::rethrow_exception( localException );
 		}
 
-		IC3_ATTR_NO_DISCARD constexpr bool hasException() const noexcept
+		CPPX_ATTR_NO_DISCARD constexpr bool hasException() const noexcept
 		{
-			return mException ? true : false;
+			return exceptionPtr ? true : false;
 		}
 	};
 
@@ -55,13 +55,13 @@ namespace Ic3
     {
     public:
         //
-        ResultCode mResultCode;
+        ResultCode resultCode;
 
     public:
 	    TPResultWrapper() = default;
 
 	    TPResultWrapper( ResultCode pResultCode )
-		: mResultCode( pResultCode )
+		: resultCode( pResultCode )
 	    {}
 
         explicit operator bool() const
@@ -71,17 +71,17 @@ namespace Ic3
 
         void setResult( ResultCode pResultCode )
         {
-            mResultCode = pResultCode;
+            resultCode = pResultCode;
         }
 
-        IC3_ATTR_NO_DISCARD bool hasResult() const
+        CPPX_ATTR_NO_DISCARD bool hasResult() const
         {
-            return !mResultCode.empty();
+            return !resultCode.empty();
         }
 
-        IC3_ATTR_NO_DISCARD bool isError() const
+        CPPX_ATTR_NO_DISCARD bool isError() const
         {
-            return !mResultCode || this->hasException();
+            return !resultCode || this->hasException();
         }
     };
 
@@ -93,7 +93,7 @@ namespace Ic3
 		using ResultWrapperType = TPResultWrapper<tpIncludeExceptionPtr>;
 		
         //
-        mutable TPValue mValue;
+        mutable TPValue value;
 
     public:
         TReturnValueObject() = default;
@@ -104,12 +104,12 @@ namespace Ic3
 
         TPValue & operator*() const
         {
-            return mValue;
+            return value;
         }
 
         TPValue * operator->() const
         {
-            return &( mValue );
+            return &( value );
         }
     };
 

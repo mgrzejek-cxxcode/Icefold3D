@@ -10,26 +10,26 @@ namespace Ic3
 	{
 		std::ostringstream strStream;
 		strStream << "[Exception]\n";
-		strStream << "- Code: 0x" << std::hex << mCode << "\n";
-		strStream << "- Desc: " << mDescription << "\n";
-		strStream << "- Source: " << mFileLocationInfo.toString();
+		strStream << "- Code: 0x" << std::hex << code << "\n";
+		strStream << "- Desc: " << description << "\n";
+		strStream << "- Source: " << fileLocationInfo.to_string();
 
 		return strStream.str();
 	}
 
-	ic3TypeInfoEnumDefine( EExceptionBaseType )
+	Ic3TypeInfoEnumDefine( EExceptionBaseType )
 	{
-		ic3TypeInfoEnumBegin( EExceptionBaseType );
-		ic3TypeInfoEnumRegisterClassConstant( EExceptionBaseType::UNKNOWN );
-		ic3TypeInfoEnumRegisterClassConstant( EExceptionBaseType::DEBUG ) ;
-		ic3TypeInfoEnumRegisterClassConstant( EExceptionBaseType::ENGINE_SUBMODULE  );
-		ic3TypeInfoEnumRegisterClassConstant( EExceptionBaseType::FRAMEWORK_CORE  );
-		ic3TypeInfoEnumRegisterClassConstant( EExceptionBaseType::INTERNAL  );
-		ic3TypeInfoEnumRegisterClassConstant( EExceptionBaseType::INTERRUPT  );
-		ic3TypeInfoEnumRegisterClassConstant( EExceptionBaseType::MATH  );
-		ic3TypeInfoEnumRegisterClassConstant( EExceptionBaseType::RESULT  );
-		ic3TypeInfoEnumRegisterClassConstant( EExceptionBaseType::SYSTEM  );
-		ic3TypeInfoEnumRegisterClassConstant( EExceptionBaseType::USER_EXTERNAL  );
+		Ic3TypeInfoEnumBegin( EExceptionBaseType );
+		Ic3TypeInfoEnumRegisterClassConstant( EExceptionBaseType::Unknown );
+		Ic3TypeInfoEnumRegisterClassConstant( EExceptionBaseType::Debug ) ;
+		Ic3TypeInfoEnumRegisterClassConstant( EExceptionBaseType::EngineSubmodule  );
+		Ic3TypeInfoEnumRegisterClassConstant( EExceptionBaseType::FrameworkCore  );
+		Ic3TypeInfoEnumRegisterClassConstant( EExceptionBaseType::Internal  );
+		Ic3TypeInfoEnumRegisterClassConstant( EExceptionBaseType::Interrupt  );
+		Ic3TypeInfoEnumRegisterClassConstant( EExceptionBaseType::Math  );
+		Ic3TypeInfoEnumRegisterClassConstant( EExceptionBaseType::Result  );
+		Ic3TypeInfoEnumRegisterClassConstant( EExceptionBaseType::System  );
+		Ic3TypeInfoEnumRegisterClassConstant( EExceptionBaseType::UserExternal  );
 	}
 
 }

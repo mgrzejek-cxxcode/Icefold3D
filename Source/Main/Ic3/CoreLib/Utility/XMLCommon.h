@@ -5,8 +5,8 @@
 #define __IC3_CORELIB_XML_COMMON_H__
 
 #include "../Prerequisites.h"
-#include <Ic3/Cppx/StringView.h>
-#include <Ic3/Cppx/Utilities.h>
+#include <cppx/stringView.h>
+#include <cppx/utilities.h>
 #include <XML/rapidxml.hpp>
 
 namespace Ic3

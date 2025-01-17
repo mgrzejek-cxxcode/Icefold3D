@@ -4,8 +4,8 @@
 #ifndef __IC3_CORELIB_SHARED_HANDLE_H__
 #define __IC3_CORELIB_SHARED_HANDLE_H__
 
-#include <Ic3/Cppx/Aligned.h>
-#include <Ic3/Cppx/RefCounter.h>
+#include <cppx/aligned.h>
+#include <cppx/refCounter.h>
 
 namespace Ic3
 {
@@ -13,11 +13,11 @@ namespace Ic3
 	struct SharedHandleRefCounterData
 	{
 	public:
-		using ref_counter_value_t = Cppx::ref_counter_value_t;
+		using ref_counter_value_t = cppx::ref_counter_default_value_t;
 
-		Cppx::AtomicRefCounter activeRefs;
+		cppx::atomic_ref_counter<ref_counter_value_t> activeRefs;
 
-		Cppx::AtomicRefCounter weakRefs;
+		cppx::atomic_ref_counter<ref_counter_value_t> weakRefs;
 
 	public:
 		ref_counter_value_t addActiveRef();
@@ -40,7 +40,7 @@ namespace Ic3
 	struct SharedHandleControlBlockWithStorage : public SharedHandleControlBlock<TPClass>
 	{
 	public:
-		using Storage = typename Cppx::TAlignedStorage<TPClass>;
+		using Storage = typename cppx::aligned_storage<TPClass>;
 		Storage storage;
 
 	public:

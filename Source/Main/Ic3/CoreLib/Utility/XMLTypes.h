@@ -27,9 +27,9 @@ namespace Ic3
 
 		std::string value() const;
 
-		bool empty() const;
+		bool IsEmpty() const;
 
-		bool valid() const;
+		bool IsValid() const;
 
 	private:
 		RxmlAttribute * _rxmlAttribute;
@@ -47,19 +47,19 @@ namespace Ic3
 
 		explicit operator bool() const;
 
-		XMLAttribute attribute( const TStringView<char> & pAttribName ) const;
+		XMLAttribute attribute( const cppx::string_view & pAttribName ) const;
 
 		XMLNode firstSubNode() const;
 
-		XMLNode firstSubNode( const TStringView<char> & pNodeName ) const;
+		XMLNode firstSubNode( const cppx::string_view & pNodeName ) const;
 
 		size_t countSubNodes() const;
 
-		size_t countSubNodes( const TStringView<char> & pNodeName ) const;
+		size_t countSubNodes( const cppx::string_view & pNodeName ) const;
 
 		XMLNode nextSibling() const;
 
-		XMLNode nextSibling( const TStringView<char> & pNodeName ) const;
+		XMLNode nextSibling( const cppx::string_view & pNodeName ) const;
 
 		XMLNode parent() const;
 
@@ -67,17 +67,17 @@ namespace Ic3
 
 		std::string value() const;
 
-		bool hasAttribute( const TStringView<char> & pAttribName ) const;
+		bool hasAttribute( const cppx::string_view & pAttribName ) const;
 
-		bool hasSubNode( const TStringView<char> & pNodeName ) const;
+		bool hasSubNode( const cppx::string_view & pNodeName ) const;
 
 		bool hasSubNodes() const;
 
 		bool hasValue() const;
 
-		bool empty() const;
+		bool IsEmpty() const;
 
-		bool valid() const;
+		bool IsValid() const;
 
 	private:
 		RxmlNode * _rxmlNode;
@@ -97,9 +97,9 @@ namespace Ic3
 
 		XMLNode rootNode() const;
 
-		bool empty() const;
+		bool IsEmpty() const;
 
-		bool valid() const;
+		bool IsValid() const;
 
 	private:
 		RxmlData _rxmlData;
