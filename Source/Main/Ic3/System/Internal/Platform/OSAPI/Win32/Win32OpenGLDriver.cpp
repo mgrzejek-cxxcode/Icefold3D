@@ -62,7 +62,7 @@ namespace Ic3::System
 		
 	void Win32OpenGLSystemDriver::_NativeInitializePlatform()
 	{
-		ic3DebugAssert( !mNativeData.initState );
+		Ic3DebugAssert( !mNativeData.initState );
 		// Init state should be first created here and destroyed as soon as proper GL
 		// contexts are created (this is not enforce, though, and controlled explicitly
 		// by the user and done by calling ReleaseInitState() method od the driver).
@@ -92,26 +92,26 @@ namespace Ic3::System
 		tmpContextNativeData.contextHandle = ::wglCreateContext( tmpSurfaceNativeData.hdc );
 		if( tmpContextNativeData.contextHandle == nullptr )
 		{
-			ic3Throw( eExcCodeDebugPlaceholder );
+			Ic3Throw( eExcCodeDebugPlaceholder );
 		}
 
 		// Bind context as current, so GL calls may be used normally.
 		BOOL makeCurrentResult = ::wglMakeCurrent( tmpSurfaceNativeData.hdc, tmpContextNativeData.contextHandle );
 		if( makeCurrentResult == FALSE )
 		{
-			ic3Throw( eExcCodeDebugPlaceholder );
+			Ic3Throw( eExcCodeDebugPlaceholder );
 		}
 
 		auto glewResult = glewInit();
 		if( glewResult != GLEW_OK )
 		{
-			ic3Throw( eExcCodeDebugPlaceholder );
+			Ic3Throw( eExcCodeDebugPlaceholder );
 		}
 
 		glewResult = wglewInit();
 		if( glewResult != GLEW_OK )
 		{
-			ic3Throw( eExcCodeDebugPlaceholder );
+			Ic3Throw( eExcCodeDebugPlaceholder );
 		}
 	}
 
@@ -264,7 +264,7 @@ namespace Ic3::System
 
 		if( !contextHandle )
 		{
-			ic3Throw( eExcCodeDebugPlaceholder );
+			Ic3Throw( eExcCodeDebugPlaceholder );
 		}
 
 		auto renderContext = CreateSysObject<Win32OpenGLRenderContext>( GetHandle<Win32OpenGLSystemDriver>() );
@@ -497,7 +497,7 @@ namespace Ic3::System
 			BOOL spfResult = ::SetPixelFormat( hdc, pGLSurfaceNativeData.pixelFormatIndex, &pixelFormatDescriptor );
 			if( spfResult == FALSE )
 			{
-				ic3Throw( eExcCodeDebugPlaceholder );
+				Ic3Throw( eExcCodeDebugPlaceholder );
 			}
 		}
 
@@ -596,7 +596,7 @@ namespace Ic3::System
 
 			if( ( enumResult == FALSE ) || ( returnedPixelFormatsNum == 0 ) )
 			{
-				ic3Throw( eExcCodeDebugPlaceholder );
+				Ic3Throw( eExcCodeDebugPlaceholder );
 			}
 
 			std::vector<int> result;

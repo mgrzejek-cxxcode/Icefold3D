@@ -83,13 +83,13 @@ namespace Ic3::System
 		// int thrInitStatus = ::XInitThreads();
 		// if( thrInitStatus == False )
 		// {
-		// 	ic3Throw( eExcCodeDebugPlaceholder );
+		// 	Ic3Throw( eExcCodeDebugPlaceholder );
 		// }
 
 		auto * displayHandle = ::XOpenDisplay( nullptr );
 		if( displayHandle == nullptr )
 		{
-			ic3Throw( eExcCodeDebugPlaceholder );
+			Ic3Throw( eExcCodeDebugPlaceholder );
 		}
 
 		mNativeData.mXSessionData.displayHandle = displayHandle;

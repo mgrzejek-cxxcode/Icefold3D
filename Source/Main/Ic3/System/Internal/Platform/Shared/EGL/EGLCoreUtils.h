@@ -44,31 +44,31 @@ namespace Ic3::System
 
 	}
 
-#define ic3EGLMakeErrorInfo( pEGLError ) \
+#define Ic3EGLMakeErrorInfo( pEGLError ) \
 	OpenGLErrorInfo( pEGLError, EGLCoreAPI::translateErrorCode( pEGLError ) )
 
-#define ic3EGLGetLastErrorInfo() \
-	ic3EGLMakeErrorInfo( ::eglGetError() )
+#define Ic3EGLGetLastErrorInfo() \
+	Ic3EGLMakeErrorInfo( ::eglGetError() )
 
-#define ic3EGLThrowError( pErrorDesc ) \
-	ic3ThrowDesc( E_EXC_SYSTEM_OPENGL_SUBSYS_EGL_ERROR, pErrorDesc )
+#define Ic3EGLThrowError( pErrorDesc ) \
+	Ic3ThrowDesc( E_EXC_SYSTEM_OPENGL_SUBSYS_EGL_ERROR, pErrorDesc )
 
-#define ic3EGLThrowLastError() \
-	ic3ThrowEx( E_EXC_SYSTEM_OPENGL_SUBSYS_EGL_ERROR, ic3EGLGetLastErrorInfo() )
+#define Ic3EGLThrowLastError() \
+	Ic3ThrowEx( E_EXC_SYSTEM_OPENGL_SUBSYS_EGL_ERROR, Ic3EGLGetLastErrorInfo() )
 
 } // namespace Ic3::System
 
 #if( IC3_SYSTEM_GL_ENABLE_ERROR_CHECKS )
-#  define ic3EGLCheckLastResult()             Platform::EACheckLastResult()
-#  define ic3EGLCheckLastError( pErrorCode )  Platform::EACheckLastError( pErrorCode )
-#  define ic3EGLHandleLastError()             Platform::EAHandleLastError()
-#  define ic3EGLHandleLastError()             Platform::EAHandleLastError()
-#  define ic3EGLResetErrorQueue()             Platform::EAResetErrorQueue()
+#  define Ic3EGLCheckLastResult()             Platform::EACheckLastResult()
+#  define Ic3EGLCheckLastError( pErrorCode )  Platform::EACheckLastError( pErrorCode )
+#  define Ic3EGLHandleLastError()             Platform::EAHandleLastError()
+#  define Ic3EGLHandleLastError()             Platform::EAHandleLastError()
+#  define Ic3EGLResetErrorQueue()             Platform::EAResetErrorQueue()
 #else
-#  define ic3EGLCheckLastResult()
-#  define ic3EGLCheckLastError( pErrorCode )
-#  define ic3EGLHandleLastError()
-#  define ic3EGLResetErrorQueue()
+#  define Ic3EGLCheckLastResult()
+#  define Ic3EGLCheckLastError( pErrorCode )
+#  define Ic3EGLHandleLastError()
+#  define Ic3EGLResetErrorQueue()
 #endif
 
 #endif // __IC3_SYSTEM_PLATFORM_SHARED_EGL_CORE_UTILS_H__

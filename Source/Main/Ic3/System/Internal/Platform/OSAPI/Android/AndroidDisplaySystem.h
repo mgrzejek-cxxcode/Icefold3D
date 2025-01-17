@@ -9,8 +9,8 @@
 namespace Ic3::System
 {
 
-	ic3SysDeclareHandle( AndroidDisplayManager );
-	ic3SysDeclareHandle( AndroidDisplayDriver );
+	Ic3SysDeclareHandle( AndroidDisplayManager );
+	Ic3SysDeclareHandle( AndroidDisplayDriver );
 
 	namespace Platform
 	{

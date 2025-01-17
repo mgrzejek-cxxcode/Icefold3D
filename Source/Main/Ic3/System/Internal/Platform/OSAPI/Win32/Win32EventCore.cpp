@@ -51,7 +51,7 @@ namespace Ic3::System
 	void Win32EventController::_NativeRegisterEventSource( EventSource & pEventSource )
 	{
 		auto * eventSourceNativeData = pEventSource.getEventSourceNativeDataAs<Platform::Win32EventSourceNativeData>();
-		ic3DebugAssert( eventSourceNativeData != nullptr );
+		Ic3DebugAssert( eventSourceNativeData != nullptr );
 
 		auto * win32EventSourceState = new Platform::Win32EventSourceState();
 		win32EventSourceState->eventController = this;
@@ -71,7 +71,7 @@ namespace Ic3::System
 	void Win32EventController::_NativeUnRegisterEventSource( EventSource & pEventSource )
 	{
         auto * eventSourceNativeData = pEventSource.getEventSourceNativeDataAs<Platform::Win32EventSourceNativeData>();
-        ic3DebugAssert( eventSourceNativeData != nullptr );
+        Ic3DebugAssert( eventSourceNativeData != nullptr );
 
 		LONG_PTR windowUserData = ::GetWindowLongPtrA( eventSourceNativeData->hwnd, GWLP_USERDATA );
 
@@ -166,7 +166,7 @@ namespace Ic3::System
 					if( windowUserData != 0 )
 					{
 						// TODO: Log this!
-						ic3DebugInterrupt();
+						Ic3DebugInterrupt();
 					}
 					auto * win32EventSourceState = new Platform::Win32EventSourceState();
 					auto win32EventSourceStateAddress = reinterpret_cast<LONG_PTR>( win32EventSourceState );

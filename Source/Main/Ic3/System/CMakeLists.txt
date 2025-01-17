@@ -242,7 +242,6 @@ target_compile_definitions( Ic3.System PUBLIC
         )
 
 target_link_libraries( Ic3.System PUBLIC
-        ${IC3_LINK_INPUT}
         Ic3.CoreLib
         )
 

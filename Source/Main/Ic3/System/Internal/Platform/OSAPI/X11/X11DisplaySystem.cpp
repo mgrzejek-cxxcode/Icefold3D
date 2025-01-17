@@ -150,7 +150,7 @@ namespace Ic3::System
 		mNativeData.mXRRScreenResources = XRRGetScreenResources( xSessionData.displayHandle, xSessionData.rootWindowXID );
 		if( mNativeData.mXRRScreenResources == nullptr )
 		{
-			ic3Throw( eExcCodeDebugPlaceholder );
+			Ic3Throw( eExcCodeDebugPlaceholder );
 		}
 
 		//
@@ -161,7 +161,7 @@ namespace Ic3::System
 
 		if( ( mNativeData.mXRRMonitorList == nullptr ) || ( mNativeData.mXRRMonitorsNum <= 0 ) )
 		{
-			ic3Throw( eExcCodeDebugPlaceholder ); // ExsThrowException( EXC_Internal_Error );
+			Ic3Throw( eExcCodeDebugPlaceholder ); // ExsThrowException( EXC_Internal_Error );
 		}
 
         mNativeData.mXRRDefaultMonitorInfo = &( mNativeData.mXRRMonitorList[0] );
@@ -278,7 +278,7 @@ namespace Ic3::System
 		                                      outputX11->mNativeData.mXRROutputID );
 		if( outputInfo == nullptr )
 		{
-			ic3Throw( eExcCodeDebugPlaceholder );
+			Ic3Throw( eExcCodeDebugPlaceholder );
 		}
 
 		if( outputInfo->modes != nullptr )

@@ -65,19 +65,19 @@ namespace Ic3::System
 		public:
 			void SetSessionData( X11SessionData & pSessionData )
 			{
-				ic3DebugAssert( _xSessionDataPtr == nullptr );
+				Ic3DebugAssert( _xSessionDataPtr == nullptr );
 				_xSessionDataPtr = &pSessionData;
 			}
 
 			void ResetSessionData()
 			{
-				ic3DebugAssert( _xSessionDataPtr != nullptr );
+				Ic3DebugAssert( _xSessionDataPtr != nullptr );
 				_xSessionDataPtr = nullptr;
 			}
 
 			CPPX_ATTR_NO_DISCARD X11SessionData & GetSessionData() const
 			{
-				ic3DebugAssert( _xSessionDataPtr != nullptr );
+				Ic3DebugAssert( _xSessionDataPtr != nullptr );
 				return *_xSessionDataPtr;
 			}
 

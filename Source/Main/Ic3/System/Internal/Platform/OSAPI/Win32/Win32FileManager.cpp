@@ -82,7 +82,7 @@ namespace Ic3::System
 		{
 			auto lastError = ::GetLastError();
 			auto lastErrorMessage = Platform::WFAQuerySystemErrorMessage( lastError );
-			ic3ThrowDesc( eExcCodeDebugPlaceholder, std::move( lastErrorMessage ) );
+			Ic3ThrowDesc( eExcCodeDebugPlaceholder, std::move( lastErrorMessage ) );
 		}
 
 		while( win32FindFileHandle )
@@ -108,7 +108,7 @@ namespace Ic3::System
 				else
 				{
 					auto lastErrorMessage = Platform::WFAQuerySystemErrorMessage( lastError );
-					ic3ThrowDesc( eExcCodeDebugPlaceholder, std::move( lastErrorMessage ) );
+					Ic3ThrowDesc( eExcCodeDebugPlaceholder, std::move( lastErrorMessage ) );
 				}
 			}
 		}
@@ -145,7 +145,7 @@ namespace Ic3::System
 
 	void Win32File::SetInternalWin32FileHandle( HANDLE pFileHandle )
 	{
-		ic3DebugAssert( !mNativeData.mFileHandle );
+		Ic3DebugAssert( !mNativeData.mFileHandle );
 		mNativeData.mFileHandle = pFileHandle;
 	}
 
@@ -178,11 +178,11 @@ namespace Ic3::System
 			else
 			{
 				auto errorMessage = Platform::WFAQuerySystemErrorMessage( errorCode );
-				ic3ThrowDesc( eExcCodeDebugPlaceholder, std::move( errorMessage ) );
+				Ic3ThrowDesc( eExcCodeDebugPlaceholder, std::move( errorMessage ) );
 			}
 		}
 
-		return numeric_cast<file_size_t>( readBytesNum );
+		return cppx::numeric_cast<file_size_t>( readBytesNum );
 	}
 
 	file_size_t Win32File::_NativeWriteData( const void * pData, file_size_t pWriteSize )
@@ -194,10 +194,10 @@ namespace Ic3::System
 		{
 			auto errorCode = ::GetLastError();
 			auto errorMessage = Platform::WFAQuerySystemErrorMessage( errorCode );
-			ic3ThrowDesc( eExcCodeDebugPlaceholder, std::move( errorMessage ) );
+			Ic3ThrowDesc( eExcCodeDebugPlaceholder, std::move( errorMessage ) );
 		}
 
-		return numeric_cast<file_size_t>( writtenBytesNum );
+		return cppx::numeric_cast<file_size_t>( writtenBytesNum );
 	}
 
 	file_offset_t Win32File::_NativeSetFilePointer( file_offset_t pOffset, EFilePointerRefPos pRefPos )
@@ -218,11 +218,11 @@ namespace Ic3::System
 			if( lastError != NO_ERROR )
 			{
 				auto errorMessage = Platform::WFAQuerySystemErrorMessage( lastError );
-				ic3ThrowDesc( eExcCodeDebugPlaceholder, std::move( errorMessage ) );
+				Ic3ThrowDesc( eExcCodeDebugPlaceholder, std::move( errorMessage ) );
 			}
 		}
 
-		return numeric_cast<file_offset_t>( u64FileOffset.QuadPart );
+		return cppx::numeric_cast<file_offset_t>( u64FileOffset.QuadPart );
 	}
 
 	file_offset_t Win32File::_NativeGetFilePointer() const
@@ -235,7 +235,7 @@ namespace Ic3::System
 
 		::SetFilePointerEx( mNativeData.mFileHandle, u64SetFileOffset, &u64GetFilePosition, FILE_CURRENT );
 
-		return numeric_cast<file_offset_t>( u64GetFilePosition.QuadPart );
+		return cppx::numeric_cast<file_offset_t>( u64GetFilePosition.QuadPart );
 	}
 
 	file_size_t Win32File::_NativeGetSize() const
@@ -245,7 +245,7 @@ namespace Ic3::System
 
 		::GetFileSizeEx( mNativeData.mFileHandle, &u64FileSize );
 
-		return numeric_cast<file_size_t>( u64FileSize.QuadPart );
+		return cppx::numeric_cast<file_size_t>( u64FileSize.QuadPart );
 	}
 
 	file_size_t Win32File::_NativeGetRemainingBytes() const
@@ -266,7 +266,7 @@ namespace Ic3::System
 
 		::SetFilePointerEx( mNativeData.mFileHandle, u64SetFileOffset, nullptr, FILE_BEGIN );
 
-		return numeric_cast<file_offset_t>( endFilePosition - previousFilePointer );
+		return cppx::numeric_cast<file_offset_t>( endFilePosition - previousFilePointer );
 	}
 
 	bool Win32File::_NativeCheckEOF() const
@@ -291,7 +291,7 @@ namespace Ic3::System
 			{
 				auto lastErrorCode = ::GetLastError();
 				auto errorMessage = Platform::WFAQuerySystemErrorMessage( lastErrorCode );
-				ic3ThrowDesc( E_EXC_SYSTEM_FILE_OPEN_ERROR, std::move( errorMessage ) );
+				Ic3ThrowDesc( E_EXC_SYSTEM_FILE_OPEN_ERROR, std::move( errorMessage ) );
 			}
 
 			return fileHandle;
@@ -305,7 +305,7 @@ namespace Ic3::System
 			{
 				auto lastErrorCode = ::GetLastError();
 				auto errorMessage = Platform::WFAQuerySystemErrorMessage( lastErrorCode );
-				ic3DebugInterrupt();
+				Ic3DebugInterrupt();
 			}
 		}
 

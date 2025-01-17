@@ -9,10 +9,10 @@
 namespace Ic3::System
 {
 
-	ic3SysDeclareHandle( DisplayManager );
-	ic3SysDeclareHandle( MetalDevice );
-	ic3SysDeclareHandle( MetalDisplaySurface );
-	ic3SysDeclareHandle( MetalSystemDriver );
+	Ic3SysDeclareHandle( DisplayManager );
+	Ic3SysDeclareHandle( MetalDevice );
+	Ic3SysDeclareHandle( MetalDisplaySurface );
+	Ic3SysDeclareHandle( MetalSystemDriver );
 
 	/// @brief
 	enum EMetalSurfaceCreateFlags : uint32

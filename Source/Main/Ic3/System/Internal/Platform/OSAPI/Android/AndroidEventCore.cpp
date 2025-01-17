@@ -34,7 +34,7 @@ namespace Ic3::System
 		auto & aSessionData = Platform::AndroidGetASessionData( *this );
 		aSessionData.aCommonAppState->onAppCmd = Platform::_androidOnAppCommand;
 		aSessionData.aCommonAppState->onInputEvent = Platform::_androidOnInputEvent;
-		aSessionData.aCommonAppState->ic3SetUserData( Platform::eAndroidAppStateUserDataIndexEventController, this );
+		aSessionData.aCommonAppState->Ic3SetUserData( Platform::eAndroidAppStateUserDataIndexEventController, this );
 	}
 
 	AndroidEventController::~AndroidEventController() noexcept
@@ -42,7 +42,7 @@ namespace Ic3::System
 		auto & aSessionData = Platform::AndroidGetASessionData( *this );
 		aSessionData.aCommonAppState->onAppCmd = nullptr;
 		aSessionData.aCommonAppState->onInputEvent = nullptr;
-		aSessionData.aCommonAppState->ic3SetUserData( Platform::eAndroidAppStateUserDataIndexEventController, nullptr );
+		aSessionData.aCommonAppState->Ic3SetUserData( Platform::eAndroidAppStateUserDataIndexEventController, nullptr );
 	}
 
 	void AndroidEventController::_NativeRegisterEventSource( EventSource & pEventSource )
@@ -140,7 +140,7 @@ namespace Ic3::System
 			// Event controller is always accessible through the user data within AndroidAppState.
 			// We set it inside nativeInitializeEventController(). Events may be emitted after the
 			// framework state is released, so the null-check is necessary.
-			if( auto * eventController = pAppState->ic3GetUserDataAs<EventController>( eAndroidAppStateUserDataIndexEventController ) )
+			if( auto * eventController = pAppState->Ic3GetUserDataAs<EventController>( eAndroidAppStateUserDataIndexEventController ) )
 			{
 				nativeEventDispatch( *eventController, androidEvent );
 			}
@@ -152,7 +152,7 @@ namespace Ic3::System
 			androidEvent.type = AndroidNativeEventType::Input;
 			androidEvent.eInputEvent = pInputEvent;
 
-			if( auto * eventController = pAppState->ic3GetUserDataAs<EventController>( eAndroidAppStateUserDataIndexEventController ) )
+			if( auto * eventController = pAppState->Ic3GetUserDataAs<EventController>( eAndroidAppStateUserDataIndexEventController ) )
 			{
 				if( nativeEventDispatch( *eventController, androidEvent ) )
 				{
@@ -200,7 +200,7 @@ namespace Ic3::System
 				{
 					if( pAppState->window != nullptr )
 					{
-						auto * sysContext = pAppState->ic3GetUserDataAs<AndroidSysContext>( eAndroidAppStateUserDataIndexSysContext );
+						auto * sysContext = pAppState->Ic3GetUserDataAs<AndroidSysContext>( eAndroidAppStateUserDataIndexSysContext );
 						sysContext->UpdateANativeWindowReference( pAppState->window );
 						sysContext->mSysThreadJNIObject->NASetRequestedOrientation(
 							pAppState->activity->clazz, eAndroidScreenOrientationLandscape );
@@ -313,7 +313,7 @@ namespace Ic3::System
 
 		bool _androidTranslateInputEventTouch( AndroidAppState * pAppState, AInputEvent * pInputEvent, EventObject & pOutEvent )
 		{
-			auto * eventController = pAppState->ic3GetUserDataAs<AndroidEventController>( eAndroidAppStateUserDataIndexEventController );
+			auto * eventController = pAppState->Ic3GetUserDataAs<AndroidEventController>( eAndroidAppStateUserDataIndexEventController );
 
 			int32_t eventType = AInputEvent_getType( pInputEvent );
 			switch( eventType )

@@ -53,7 +53,7 @@ namespace Ic3::System
 			EGLDisplay eglDisplay = ::eglGetDisplay( EGL_DEFAULT_DISPLAY );
 			if( eglDisplay == EGL_NO_DISPLAY )
 			{
-				ic3EGLThrowLastError();
+				Ic3EGLThrowLastError();
 			}
 
 			EGLint eglVersionMajor = 0;
@@ -61,7 +61,7 @@ namespace Ic3::System
 			auto initResult = ::eglInitialize( eglDisplay, &eglVersionMajor, &eglVersionMinor );
 			if( initResult == EGL_FALSE )
 			{
-				ic3EGLThrowLastError();
+				Ic3EGLThrowLastError();
 			}
 
 			auto eglQueriedVersion = EGLCoreAPI::QueryRuntimeVersion();
@@ -110,7 +110,7 @@ namespace Ic3::System
 			auto eglResult = ::eglGetConfigAttrib( pEGLDisplay, pEGLConfig, pAttribute, &fbConfigAttribute );
 			if( eglResult == EGL_FALSE )
 			{
-				ic3EGLThrowLastError();
+				Ic3EGLThrowLastError();
 			}
 
 			return fbConfigAttribute;
@@ -135,7 +135,7 @@ namespace Ic3::System
 			auto surfaceHandle = ::eglCreateWindowSurface( pEGLDisplay, pEGLConfig, pWindow, surfaceAttributeList );
 			if( surfaceHandle == EGL_NO_SURFACE )
 			{
-				ic3EGLThrowLastError();
+				Ic3EGLThrowLastError();
 			}
 
 			pEGLSurfaceNativeData.eglDisplay = pEGLDisplay;
@@ -154,7 +154,7 @@ namespace Ic3::System
 			auto eglResult = ::eglQuerySurface( eDisplay, eSurfaceHandle, EGL_CONFIG_ID, &surfaceConfigID );
 			if( eglResult == EGL_FALSE )
 			{
-				ic3EGLThrowLastError();
+				Ic3EGLThrowLastError();
 			}
 
 			EGLConfig surfaceConfig;
@@ -164,7 +164,7 @@ namespace Ic3::System
 			eglResult = ::eglChooseConfig( eDisplay, &( scAttributeList[0] ), &surfaceConfig, 1, &resultConfigsNum );
 			if( eglResult == EGL_FALSE )
 			{
-				ic3EGLThrowLastError();
+				Ic3EGLThrowLastError();
 			}
 
 			pEGLSurfaceNativeData.eglDisplay = eDisplay;
@@ -231,7 +231,7 @@ namespace Ic3::System
 
 			if( !contextHandle )
 			{
-				ic3EGLThrowError( "Failed to create EGL context" );
+				Ic3EGLThrowError( "Failed to create EGL context" );
 			}
 
 			pEGLContextNativeData.eglDisplay = pEGLSurfaceNativeData.eglDisplay;
@@ -301,12 +301,12 @@ namespace Ic3::System
 
 			if( enumResult == EGL_FALSE )
 			{
-				ic3EGLThrowLastError();
+				Ic3EGLThrowLastError();
 			}
 
 			if( returnedEGLConfigsNum <= 0 )
 			{
-				ic3EGLThrowError( "No matching EGLConfigs found." );
+				Ic3EGLThrowError( "No matching EGLConfigs found." );
 			}
 
 			result.reserve( static_cast<size_t>( returnedEGLConfigsNum ) );
@@ -321,15 +321,15 @@ namespace Ic3::System
 			int EGLConfigAttribValue = 0;
 
 			::eglGetConfigAttrib( pDisplay, pEGLConfig, EGL_DEPTH_SIZE, &EGLConfigAttribValue );
-			ic3EGLHandleLastError();
+			Ic3EGLHandleLastError();
 			matchRate += ( EGLConfigAttribValue == pVisualConfig.depthStencilDesc.depthBufferSize );
 
 			::eglGetConfigAttrib( pDisplay, pEGLConfig, EGL_STENCIL_SIZE, &EGLConfigAttribValue );
-			ic3EGLHandleLastError();
+			Ic3EGLHandleLastError();
 			matchRate += ( EGLConfigAttribValue == pVisualConfig.depthStencilDesc.stencilBufferSize );
 
 			::eglGetConfigAttrib( pDisplay, pEGLConfig, EGL_SAMPLES, &EGLConfigAttribValue );
-			ic3EGLHandleLastError();
+			Ic3EGLHandleLastError();
 			matchRate += ( EGLConfigAttribValue == pVisualConfig.msaaDesc.quality );
 
 			return matchRate;
@@ -413,7 +413,7 @@ namespace Ic3::System
 				auto eglBindResult = ::eglBindAPI( EGL_OPENGL_API );
 				if( eglBindResult == EGL_FALSE )
 				{
-					ic3EGLThrowLastError();
+					Ic3EGLThrowLastError();
 				}
 			}
 
@@ -463,7 +463,7 @@ namespace Ic3::System
 
 			if( contextHandle == EGL_NO_CONTEXT )
 			{
-				ic3EGLThrowLastError();
+				Ic3EGLThrowLastError();
 			}
 
 			return contextHandle;
@@ -481,7 +481,7 @@ namespace Ic3::System
 				auto eglBindResult = ::eglBindAPI( EGL_OPENGL_ES_API );
 				if( eglBindResult == EGL_FALSE )
 				{
-					ic3EGLThrowLastError();
+					Ic3EGLThrowLastError();
 				}
 			}
 
@@ -501,7 +501,7 @@ namespace Ic3::System
 
 			if( contextHandle == EGL_NO_CONTEXT )
 			{
-				ic3EGLThrowLastError();
+				Ic3EGLThrowLastError();
 			}
 
 			return contextHandle;

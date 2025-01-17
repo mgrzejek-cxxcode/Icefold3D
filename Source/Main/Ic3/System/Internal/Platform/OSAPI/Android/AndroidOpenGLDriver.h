@@ -10,10 +10,10 @@
 namespace Ic3::System
 {
 
-	ic3SysDeclareHandle( AndroidDisplayManager );
-	ic3SysDeclareHandle( AndroidOpenGLSystemDriver );
-	ic3SysDeclareHandle( AndroidOpenGLRenderContext );
-	ic3SysDeclareHandle( AndroidOpenGLRenderContext );
+	Ic3SysDeclareHandle( AndroidDisplayManager );
+	Ic3SysDeclareHandle( AndroidOpenGLSystemDriver );
+	Ic3SysDeclareHandle( AndroidOpenGLRenderContext );
+	Ic3SysDeclareHandle( AndroidOpenGLRenderContext );
 
 	namespace Platform
 	{

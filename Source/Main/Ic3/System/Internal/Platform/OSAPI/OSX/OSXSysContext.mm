@@ -39,7 +39,7 @@ namespace Ic3::System
     
     AssetLoaderHandle OSXSysContext::CreateAssetLoader( const AssetLoaderCreateInfo & pCreateInfo )
     {
-		ic3DebugAssert( pCreateInfo.nativeParams );
+		Ic3DebugAssert( pCreateInfo.nativeParams );
         return Platform::CreateFileAssetLoader( GetHandle<SysContext>(), *pCreateInfo.nativeParams );
     }
 
@@ -132,7 +132,7 @@ namespace Ic3::System
 		if( !NSApp )
 		{
 			[NSOSXApplicationProxy sharedApplication];
-			ic3DebugAssert( NSApp );
+			Ic3DebugAssert( NSApp );
 
 			if( ![NSApp delegate] )
 			{

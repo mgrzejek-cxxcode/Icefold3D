@@ -40,8 +40,8 @@
 namespace Ic3::System
 {
 
-	ic3SysDeclareHandle( DisplayManager );
-	ic3SysDeclareHandle( DisplayDriver );
+	Ic3SysDeclareHandle( DisplayManager );
+	Ic3SysDeclareHandle( DisplayDriver );
 
 	class DisplayAdapter;
 	class DisplayOutput;

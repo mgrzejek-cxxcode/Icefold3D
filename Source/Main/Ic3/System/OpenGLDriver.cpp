@@ -178,11 +178,11 @@ namespace Ic3::System
 		catch( const Exception & pException )
 		{
 			( pException );
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 		}
 		catch( ... )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 		}
 	}
 
@@ -203,11 +203,11 @@ namespace Ic3::System
 		catch( const Exception & pException )
 		{
 			( pException );
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 		}
 		catch( ... )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 		}
 	}
 
@@ -244,10 +244,10 @@ namespace Ic3::System
 	void OpenGLDisplaySurface::ClearColorBuffer()
 	{
 		glClearColor( 0.24f, 0.72f, 0.4f, 1.0f );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
 	void OpenGLDisplaySurface::SwapBuffers()
@@ -377,7 +377,7 @@ namespace Ic3::System
 	{
 		if( !SysValidate() )
 		{
-			ic3Throw( eExcCodeDebugPlaceholder );
+			Ic3Throw( eExcCodeDebugPlaceholder );
 		}
 
 		OpenGLSystemVersionInfo systemVersionInfo;
@@ -400,7 +400,7 @@ namespace Ic3::System
 			systemVersionInfo.vendorName.assign( reinterpret_cast<const char *>( vendorNameStr ) );
 		}
 
-		ic3OpenGLResetErrorQueue();
+		Ic3OpenGLResetErrorQueue();
 
 		return systemVersionInfo;
 	}

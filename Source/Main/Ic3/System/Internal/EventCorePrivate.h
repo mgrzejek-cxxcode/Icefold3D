@@ -46,7 +46,7 @@ namespace Ic3::System
 
 		CPPX_ATTR_NO_DISCARD const EventSystemConfig & GetEventSystemConfig() const
 		{
-			ic3DebugAssert( currentEventSystemConfig );
+			Ic3DebugAssert( currentEventSystemConfig );
 			return *currentEventSystemConfig;
 		}
 	};

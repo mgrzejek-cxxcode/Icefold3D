@@ -501,18 +501,18 @@ namespace Ic3::System
 		// Adapters are not added to the helper list at this point.
 		// This is done as a post-process step later in DisplayDriver::_enumAdapters().
 		// Assertion added to prevent problems in case of refactoring.
-		ic3DebugAssert( _privateData->adapterList.empty() );
+		Ic3DebugAssert( _privateData->adapterList.empty() );
 	}
 
 	void DisplayDriver::_RegisterOutput( DisplayAdapter & pAdapter, DisplayOutputHandle pOutput )
 	{
-		ic3DebugAssert( _privateData->adapterList.empty() );
+		Ic3DebugAssert( _privateData->adapterList.empty() );
 		pAdapter.RegisterOutput( std::move( pOutput ) );
 	}
 
 	void DisplayDriver::_RegisterVideoMode( DisplayOutput & pOutput, EColorFormat pColorFormat, DisplayVideoModeHandle pVideoMode )
 	{
-		ic3DebugAssert( _privateData->adapterList.empty() );
+		Ic3DebugAssert( _privateData->adapterList.empty() );
 		pOutput.RegisterVideoMode( pColorFormat, std::move( pVideoMode ) );
 	}
 
@@ -562,7 +562,7 @@ namespace Ic3::System
 				auto & adapterDesc = _privateData->primaryAdapter->GetAdapterDescInternal();
 				if( !adapterDesc.flags.is_set( eDisplayAdapterFlagPrimaryBit ) )
 				{
-					ic3DebugOutput(
+					Ic3DebugOutput(
 						"Primary/Default adapter selected by the driver does not have "\
 						"E_DISPLAY_ADAPTER_FLAG_PRIMARY_BIT set. Is that intentional?" );
 				}

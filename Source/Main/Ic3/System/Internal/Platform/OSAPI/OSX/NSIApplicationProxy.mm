@@ -89,8 +89,8 @@
 	if( NSWindow * nsAppKeyWindow = [NSApp keyWindow] )
 	{
 		// Idea:
-		// auto * ic3Window = mSysContext->FindWindowByNSWindow( nsAppKeyWindow );
-		// if( !ic3Window )
+		// auto * Ic3Window = mSysContext->FindWindowByNSWindow( nsAppKeyWindow );
+		// if( !Ic3Window )
 		// {
 		//   return;
 		// }
@@ -167,7 +167,7 @@
 -( void ) applicationWillFinishLaunching: (NSNotification *)pNotification
 {
 	auto & osxSharedData = Ic3::System::Platform::OSXGetOSXSharedData( *mOSXSysContext );
-	ic3DebugAssert( !osxSharedData.stateFlags.is_set( Ic3::System::Platform::eOSXCommonStateAppFinishedLaunchingBit ) );
+	Ic3DebugAssert( !osxSharedData.stateFlags.is_set( Ic3::System::Platform::eOSXCommonStateAppFinishedLaunchingBit ) );
 
 	if( ![NSApp mainMenu] )
 	{

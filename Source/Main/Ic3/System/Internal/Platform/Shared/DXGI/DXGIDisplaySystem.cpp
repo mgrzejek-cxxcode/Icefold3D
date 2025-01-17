@@ -50,7 +50,7 @@ namespace Ic3::System
 
 				if( FAILED( hResult ) )
 				{
-					ic3Throw( eExcCodeDebugPlaceholder );
+					Ic3Throw( eExcCodeDebugPlaceholder );
 				}
 
 				mNativeData.dxgiFactory = dxgiFactory1;
@@ -83,7 +83,7 @@ namespace Ic3::System
 			// https://docs.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgiadapter-enumoutputs
 			if( FAILED( hResult ) )
 			{
-				ic3Throw( eExcCodeDebugPlaceholder );
+				Ic3Throw( eExcCodeDebugPlaceholder );
 			}
 
 			ComPtr<IDXGIOutput1> dxgiOutput1;
@@ -92,7 +92,7 @@ namespace Ic3::System
 			// We require support for the DXGI version 1.1 (Windows 7 and newer). Required for DXGI_ADAPTER_FLAG member.
 			if( FAILED( hResult ) )
 			{
-				ic3Throw( eExcCodeDebugPlaceholder );
+				Ic3Throw( eExcCodeDebugPlaceholder );
 			}
 
 			DXGI_OUTPUT_DESC dxgiOutputDesc;
@@ -100,7 +100,7 @@ namespace Ic3::System
 
 			if( FAILED( hResult ) )
 			{
-				ic3Throw( eExcCodeDebugPlaceholder );
+				Ic3Throw( eExcCodeDebugPlaceholder );
 			}
 
 			auto outputObject = CreateOutput<DisplayOutputDXGI>( *adapterDXGI );
@@ -159,7 +159,7 @@ namespace Ic3::System
 			// https://docs.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgifactory1-enumadapters1
 			if( FAILED( hResult ) )
 			{
-				ic3Throw( eExcCodeDebugPlaceholder );
+				Ic3Throw( eExcCodeDebugPlaceholder );
 			}
 
 			DXGI_ADAPTER_DESC1 dxgiAdapterDesc;
@@ -169,7 +169,7 @@ namespace Ic3::System
 			// https://docs.microsoft.com/en-us/windows/win32/api/dxgi/nf-dxgi-idxgiadapter1-getdesc1
 			if( FAILED( hResult ) )
 			{
-				ic3Throw( eExcCodeDebugPlaceholder );
+				Ic3Throw( eExcCodeDebugPlaceholder );
 			}
 
 			auto adapterObject = CreateAdapter<DisplayAdapterDXGI>( *this );
@@ -214,7 +214,7 @@ namespace Ic3::System
 
 		if( dxgiFormat == DXGI_FORMAT_UNKNOWN )
 		{
-			ic3Throw( eExcCodeDebugPlaceholder );
+			Ic3Throw( eExcCodeDebugPlaceholder );
 		}
 
 		UINT displayModesNum = 0;
@@ -223,7 +223,7 @@ namespace Ic3::System
 
 		if( FAILED( hResult ) )
 		{
-			ic3Throw( eExcCodeDebugPlaceholder );
+			Ic3Throw( eExcCodeDebugPlaceholder );
 		}
 
 		std::vector<DXGI_MODE_DESC> dxgiModeList;
@@ -235,7 +235,7 @@ namespace Ic3::System
 
 		if( FAILED( hResult ) )
 		{
-			ic3Throw( eExcCodeDebugPlaceholder );
+			Ic3Throw( eExcCodeDebugPlaceholder );
 		}
 
 		// We use hash-based comparison to filter out the same modes - at our level, we are only interested

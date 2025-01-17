@@ -10,8 +10,8 @@
 #  pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #endif
 
-#define ic3OSXOpenGLContextAttribAppend( pArray, pIndex, pAttrib ) \
-	ic3DebugAssert( pIndex < CX_OSX_MAX_NSGL_FBCONFIG_ATTRIBUTES_NUM ); \
+#define Ic3OSXOpenGLContextAttribAppend( pArray, pIndex, pAttrib ) \
+	Ic3DebugAssert( pIndex < CX_OSX_MAX_NSGL_FBCONFIG_ATTRIBUTES_NUM ); \
 	pArray[pIndex++] = pAttrib
 
 namespace Ic3::System
@@ -217,7 +217,7 @@ namespace Ic3::System
 	@autoreleasepool
 	{
 		auto * nsThreadLocalStorage = [NSThread currentThread].threadDictionary;
-		auto * nsContextHandle = ( NSOSXOpenGLContext * )nsThreadLocalStorage[@"ic3OpenGLContext"];
+		auto * nsContextHandle = ( NSOSXOpenGLContext * )nsThreadLocalStorage[@"Ic3OpenGLContext"];
 
 		[nsContextHandle flushBuffer];
 		[nsContextHandle updateConditional];
@@ -305,7 +305,7 @@ namespace Ic3::System
 		auto * nsTargetView = static_cast<NSView *>( osxDisplaySurface->mNativeData.mNSView );
 
 		auto * nsThreadLocalStorage = [NSThread currentThread].threadDictionary;
-		nsThreadLocalStorage[@"ic3OpenGLContext"] = mNativeData.mNSContextHandle;
+		nsThreadLocalStorage[@"Ic3OpenGLContext"] = mNativeData.mNSContextHandle;
 
 		[mNativeData.mNSContextHandle setView:nsTargetView];
 		[mNativeData.mNSContextHandle makeCurrentContext];
@@ -360,48 +360,48 @@ namespace Ic3::System
 		{
 			int attribIndex = 0;
 
-			ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFAAccelerated );
-			ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFAAllowOfflineRenderers );
+			Ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFAAccelerated );
+			Ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFAAllowOfflineRenderers );
 
-			ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFAColorSize );
-			ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, pVisualConfig.colorDesc.size );
+			Ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFAColorSize );
+			Ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, pVisualConfig.colorDesc.size );
 
 			if( pVisualConfig.flags.is_set( eVisualAttribFlagTripleBufferBit ) )
 			{
-				ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFATripleBuffer );
+				Ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFATripleBuffer );
 			}
 			else if( pVisualConfig.flags.is_set( eVisualAttribFlagDoubleBufferBit ) )
 			{
-				ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFADoubleBuffer );
+				Ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFADoubleBuffer );
 			}
 
 			if( pVisualConfig.flags.is_set( eVisualAttribFlagStereoDisplayBit ) )
 			{
-				ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFAStereo );
+				Ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFAStereo );
 			}
 
 			if(( pVisualConfig.msaaDesc.bufferCount != 0 ) && ( pVisualConfig.msaaDesc.quality != 0 ) )
 			{
-				ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFASampleBuffers );
-				ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, pVisualConfig.msaaDesc.bufferCount );
-				ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFASamples );
-				ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, pVisualConfig.msaaDesc.quality );
-				ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFANoRecovery );
+				Ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFASampleBuffers );
+				Ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, pVisualConfig.msaaDesc.bufferCount );
+				Ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFASamples );
+				Ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, pVisualConfig.msaaDesc.quality );
+				Ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFANoRecovery );
 			}
 
 			if( pVisualConfig.depthStencilDesc.depthBufferSize != 0 )
 			{
-				ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFADepthSize );
-				ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, pVisualConfig.depthStencilDesc.depthBufferSize );
+				Ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFADepthSize );
+				Ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, pVisualConfig.depthStencilDesc.depthBufferSize );
 			}
 
 			if( pVisualConfig.depthStencilDesc.stencilBufferSize != 0 )
 			{
-				ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFAStencilSize );
-				ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, pVisualConfig.depthStencilDesc.stencilBufferSize );
+				Ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFAStencilSize );
+				Ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, pVisualConfig.depthStencilDesc.stencilBufferSize );
 			}
 
-			ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, 0 );
+			Ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, 0 );
 		}
 
 	}

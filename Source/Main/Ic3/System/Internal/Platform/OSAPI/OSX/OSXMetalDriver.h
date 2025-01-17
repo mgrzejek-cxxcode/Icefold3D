@@ -11,8 +11,8 @@
 namespace Ic3::System
 {
 
-	ic3SysDeclareHandle( OSXMetalSystemDriver );
-	ic3SysDeclareHandle( OSXMetalRenderContext );
+	Ic3SysDeclareHandle( OSXMetalSystemDriver );
+	Ic3SysDeclareHandle( OSXMetalRenderContext );
 
 	namespace Platform
 	{

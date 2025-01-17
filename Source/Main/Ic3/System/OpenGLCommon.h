@@ -28,10 +28,10 @@
 
 /// @def IC3_SYSTEM_GL_ENABLE_ERROR_CHECKS
 /// @brief Controls the GL error-checking macros. If TRUE, they are replaced with appropriate calls. Otherwise, all calls are no-ops.
-/// @see ic3OpenGLCheckLastResult
-/// @see ic3OpenGLCheckLastError
-/// @see ic3OpenGLHandleLastError
-/// @see ic3OpenGLResetErrorQueue
+/// @see Ic3OpenGLCheckLastResult
+/// @see Ic3OpenGLCheckLastError
+/// @see Ic3OpenGLHandleLastError
+/// @see Ic3OpenGLResetErrorQueue
 #if !defined( IC3_SYSTEM_GL_ENABLE_ERROR_CHECKS )
 #  if( IC3_RELEASE_OPT_MAX )
 #    define IC3_SYSTEM_GL_ENABLE_ERROR_CHECKS 0
@@ -43,9 +43,9 @@
 namespace Ic3::System
 {
 
-	ic3SysDeclareHandle( OpenGLSystemDriver );
-	ic3SysDeclareHandle( OpenGLDisplaySurface );
-	ic3SysDeclareHandle( OpenGLRenderContext );
+	Ic3SysDeclareHandle( OpenGLSystemDriver );
+	Ic3SysDeclareHandle( OpenGLDisplaySurface );
+	Ic3SysDeclareHandle( OpenGLRenderContext );
 
 	struct OpenGLDisplaySurfaceCreateInfo;
 	struct OpenGLRenderContextCreateInfo;
@@ -161,7 +161,7 @@ namespace Ic3::System
 
 		template <typename TGLErrorCode>
 		constexpr OpenGLErrorInfo( TGLErrorCode pErrorCode, const char * pErrorMessage = nullptr )
-		: errorCode( numeric_cast<uint32>( pErrorCode ) )
+		: errorCode( cppx::numeric_cast<uint32>( pErrorCode ) )
 		, errorString( pErrorMessage ? Ic3::kStrCharEmpty : pErrorMessage )
 		{}
 	};
@@ -183,7 +183,7 @@ namespace Ic3::System
 		{}
 	};
 
-	ic3SetExceptionCategoryType( eExceptionCategorySystemOpenGL, GLSystemException );
+	Ic3SetExceptionCategoryType( eExceptionCategorySystemOpenGL, GLSystemException );
 
 	class OpenGLCoreAPI
 	{
@@ -203,36 +203,36 @@ namespace Ic3::System
 
 } // namespace Ic3::System
 
-/// @def ic3OpenGLCheckLastResult
+/// @def Ic3OpenGLCheckLastResult
 /// @brief A configuration-dependent macro which expands to either OpenGLCoreAPI::CheckLastResult() or an empty statement.
 /// @see IC3_SYSTEM_GL_ENABLE_ERROR_CHECKS
 /// @see Ic3::System::OpenGLCoreAPI::CheckLastResult
 
-/// @def ic3OpenGLCheckLastError
+/// @def Ic3OpenGLCheckLastError
 /// @brief A configuration-dependent macro which expands to either OpenGLCoreAPI::CheckLastError() or an empty statement.
 /// @see IC3_SYSTEM_GL_ENABLE_ERROR_CHECKS
 /// @see Ic3::System::OpenGLCoreAPI::CheckLastError
 
-/// @def ic3OpenGLHandleLastError
+/// @def Ic3OpenGLHandleLastError
 /// @brief A configuration-dependent macro which expands to either OpenGLCoreAPI::HandleLastError() or an empty statement.
 /// @see IC3_SYSTEM_GL_ENABLE_ERROR_CHECKS
 /// @see Ic3::System::OpenGLCoreAPI::HandleLastError
 
-/// @def ic3OpenGLResetErrorQueue
+/// @def Ic3OpenGLResetErrorQueue
 /// @brief A configuration-dependent macro which expands to either OpenGLCoreAPI::ResetErrorQueue() or an empty statement.
 /// @see IC3_SYSTEM_GL_ENABLE_ERROR_CHECKS
 /// @see Ic3::System::OpenGLCoreAPI::ResetErrorQueue()
 
 #if( IC3_SYSTEM_GL_ENABLE_ERROR_CHECKS )
-#  define ic3OpenGLCheckLastResult()            ::Ic3::System::OpenGLCoreAPI::CheckLastResult()
-#  define ic3OpenGLCheckLastError( pErrorCode ) ::Ic3::System::OpenGLCoreAPI::CheckLastError( pErrorCode )
-#  define ic3OpenGLHandleLastError()            ::Ic3::System::OpenGLCoreAPI::HandleLastError()
-#  define ic3OpenGLResetErrorQueue()            ::Ic3::System::OpenGLCoreAPI::ResetErrorQueue()
+#  define Ic3OpenGLCheckLastResult()            ::Ic3::System::OpenGLCoreAPI::CheckLastResult()
+#  define Ic3OpenGLCheckLastError( pErrorCode ) ::Ic3::System::OpenGLCoreAPI::CheckLastError( pErrorCode )
+#  define Ic3OpenGLHandleLastError()            ::Ic3::System::OpenGLCoreAPI::HandleLastError()
+#  define Ic3OpenGLResetErrorQueue()            ::Ic3::System::OpenGLCoreAPI::ResetErrorQueue()
 #else
-#  define ic3OpenGLCheckLastResult()
-#  define ic3OpenGLCheckLastError( pErrorCode )
-#  define ic3OpenGLHandleLastError()
-#  define ic3OpenGLResetErrorQueue()
+#  define Ic3OpenGLCheckLastResult()
+#  define Ic3OpenGLCheckLastError( pErrorCode )
+#  define Ic3OpenGLHandleLastError()
+#  define Ic3OpenGLResetErrorQueue()
 #endif
 
 #endif // __IC3_SYSTEM_GFX_OPENGL_COMMON_H__

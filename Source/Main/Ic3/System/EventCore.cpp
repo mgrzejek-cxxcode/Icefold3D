@@ -28,7 +28,7 @@ namespace Ic3::System
 		auto eventSourceRef = _privateData->FindEventSourceInternal( &pEventSource );
 		if( eventSourceRef.first )
 		{
-			ic3Throw( eExcCodeDebugPlaceholder );
+			Ic3Throw( eExcCodeDebugPlaceholder );
 		}
 
 		_privateData->eventSourceList.push_back( &pEventSource );
@@ -57,7 +57,7 @@ namespace Ic3::System
 		auto eventSourceRef = _privateData->FindEventSourceInternal( &pEventSource );
 		if( !eventSourceRef.first )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return;
 		}
 
@@ -84,7 +84,7 @@ namespace Ic3::System
 			if( !eventSourceRef.first )
 			{
 				// Unknown event source. Most likely it has not been registered yet.
-				ic3Throw( eExcCodeDebugPlaceholder );
+				Ic3Throw( eExcCodeDebugPlaceholder );
 			}
 		}
 
@@ -248,7 +248,7 @@ namespace Ic3::System
 	{
 		if( !IsActiveDispatcherSet() )
 		{
-			ic3Throw( eExcCodeDebugPlaceholder );
+			Ic3Throw( eExcCodeDebugPlaceholder );
 		}
 	}
 
@@ -353,7 +353,7 @@ namespace Ic3::System
 
 		if( !eventDispatcherRef.first )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return;
 		}
 
@@ -471,7 +471,7 @@ namespace Ic3::System
 			}
 			else
 			{
-				ic3DebugInterrupt();
+				Ic3DebugInterrupt();
 			}
 		}
 
@@ -521,7 +521,7 @@ namespace Ic3::System
 		// Check for possible violation attempt.
 		if( baseTypeValue >= cxEnumEventBaseTypeCount )
 		{
-			ic3Throw( eExcCodeDebugPlaceholder );
+			Ic3Throw( eExcCodeDebugPlaceholder );
 		}
 		_privateData->handlerMapByBaseType[baseTypeValue] = std::move( pHandler );
 	}
@@ -533,7 +533,7 @@ namespace Ic3::System
 		// Check for possible violation attempt.
 		if( categoryValue >= cxEnumEventCategoryCount )
 		{
-			ic3Throw( eExcCodeDebugPlaceholder );
+			Ic3Throw( eExcCodeDebugPlaceholder );
 		}
 		_privateData->handlerMapByCategory[categoryValue] = std::move( pHandler );
 	}
@@ -545,7 +545,7 @@ namespace Ic3::System
 		// Check for possible violation attempt.
 		if( codeIndexValue >= cxEnumEventCodeIndexCount )
 		{
-			ic3Throw( eExcCodeDebugPlaceholder );
+			Ic3Throw( eExcCodeDebugPlaceholder );
 		}
 		_privateData->handlerMapByCodeIndex[codeIndexValue] = std::move( pHandler );
 	}
@@ -578,7 +578,7 @@ namespace Ic3::System
 	void EventDispatcher::SetEventSystemConfigFlags( cppx::bitmask<EEventSystemConfigFlags> pFlags, bool pSetOrUnset )
 	{
 		const auto configFlagsOnly = (pFlags & eEventSystemConfigMaskAll );
-		ic3DebugAssert( configFlagsOnly == pFlags );
+		Ic3DebugAssert( configFlagsOnly == pFlags );
 		_privateData->currentEventSystemConfig.configFlags.set_or_unset( pFlags, pSetOrUnset );
 	}
 
@@ -651,7 +651,7 @@ namespace Ic3::System
 	bool EventDispatcher::CheckEventSystemConfigFlags( cppx::bitmask<EEventSystemConfigFlags> pFlags ) const
 	{
 		const auto configFlagsOnly = (pFlags & eEventSystemConfigMaskAll );
-		ic3DebugAssert( configFlagsOnly == pFlags );
+		Ic3DebugAssert( configFlagsOnly == pFlags );
 		return _privateData->currentEventSystemConfig.configFlags.is_set( configFlagsOnly );
 	}
 

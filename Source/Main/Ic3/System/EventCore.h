@@ -8,8 +8,8 @@
 namespace Ic3::System
 {
 
-	ic3SysDeclareHandle( EventController );
-	ic3SysDeclareHandle( EventDispatcher );
+	Ic3SysDeclareHandle( EventController );
+	Ic3SysDeclareHandle( EventDispatcher );
 
 	struct EventSystemConfig;
 	struct EventSystemSharedState;

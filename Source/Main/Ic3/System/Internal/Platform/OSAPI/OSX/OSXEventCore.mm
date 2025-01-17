@@ -140,7 +140,7 @@ namespace Ic3::System
 			@catch( NSException * pException )
 			{
 				const auto message = [[pException reason] UTF8String];
-				ic3DebugInterrupt();
+				Ic3DebugInterrupt();
 			}
 		}
 		}
@@ -273,7 +273,7 @@ namespace Ic3::System
 		cppx::bitmask<EMouseButtonFlagBits> QueryMouseButtonsActiveMask( NSEvent * pNSEvent )
 		{
 			const auto nsButtonMask = [NSEvent pressedMouseButtons];
-			ic3DebugOutputFmt( "MouseButtonMask: %d", nsButtonMask );
+			Ic3DebugOutputFmt( "MouseButtonMask: %d", nsButtonMask );
 			return nsButtonMask;
 		}
 
@@ -363,7 +363,7 @@ namespace Ic3::System
 				}
 				default:
 				{
-					ic3DebugInterrupt();
+					Ic3DebugInterrupt();
 				}
 			}
 		}
@@ -555,7 +555,7 @@ namespace Ic3::System
 				}
 				default:
 				{
-					ic3DebugInterrupt();
+					Ic3DebugInterrupt();
 				}
 			}
 		}
@@ -575,7 +575,7 @@ namespace Ic3::System
 				}
 				default:
 				{
-					ic3DebugInterrupt();
+					Ic3DebugInterrupt();
 				}
 			}
 		}
@@ -609,7 +609,7 @@ namespace Ic3::System
 				}
 				default:
 				{
-					ic3DebugInterrupt();
+					Ic3DebugInterrupt();
 				}
 			}
 		}

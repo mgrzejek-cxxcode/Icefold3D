@@ -9,7 +9,7 @@
 namespace Ic3::System
 {
 
-	ic3SysDeclareHandle( FileManager );
+	Ic3SysDeclareHandle( FileManager );
 
 	using FileHandle = std::shared_ptr<class File>;
 	using FileList = std::vector<FileHandle>;
@@ -73,7 +73,7 @@ namespace Ic3::System
 		{}
 	};
 
-	ic3SetExceptionCategoryType( eExceptionCategorySystemFile, FileException );
+	Ic3SetExceptionCategoryType( eExceptionCategorySystemFile, FileException );
 
 }
 

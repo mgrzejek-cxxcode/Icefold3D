@@ -32,19 +32,19 @@ namespace Ic3::System
 		public:
 			void SetSharedData( OSXSharedData & pSharedData )
 			{
-				ic3DebugAssert( _osxSharedDataPtr == nullptr );
+				Ic3DebugAssert( _osxSharedDataPtr == nullptr );
 				_osxSharedDataPtr = &pSharedData;
 			}
 
 			void ResetSharedData()
 			{
-				ic3DebugAssert( _osxSharedDataPtr != nullptr );
+				Ic3DebugAssert( _osxSharedDataPtr != nullptr );
 				_osxSharedDataPtr = nullptr;
 			}
 
 			CPPX_ATTR_NO_DISCARD OSXSharedData & GetSharedData() const
 			{
-				ic3DebugAssert( _osxSharedDataPtr != nullptr );
+				Ic3DebugAssert( _osxSharedDataPtr != nullptr );
 				return *_osxSharedDataPtr;
 			}
 

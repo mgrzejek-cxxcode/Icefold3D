@@ -17,14 +17,14 @@ namespace Ic3::System
 
 	struct MetalSystemDriverCreateInfo;
 
-	ic3SysDeclareHandle( SysContext );
-	ic3SysDeclareHandle( AssetLoader );
-	ic3SysDeclareHandle( DisplayManager );
-	ic3SysDeclareHandle( EventController );
-	ic3SysDeclareHandle( FileManager );
-	ic3SysDeclareHandle( MetalSystemDriver );
-	ic3SysDeclareHandle( OpenGLSystemDriver );
-	ic3SysDeclareHandle( WindowManager );
+	Ic3SysDeclareHandle( SysContext );
+	Ic3SysDeclareHandle( AssetLoader );
+	Ic3SysDeclareHandle( DisplayManager );
+	Ic3SysDeclareHandle( EventController );
+	Ic3SysDeclareHandle( FileManager );
+	Ic3SysDeclareHandle( MetalSystemDriver );
+	Ic3SysDeclareHandle( OpenGLSystemDriver );
+	Ic3SysDeclareHandle( WindowManager );
 
 	struct AssetLoaderCreateInfo
 	{

@@ -190,20 +190,20 @@ namespace Ic3::System
 	file_size_t AndroidAsset::_NativeReadData( void * pTargetBuffer, file_size_t pReadSize )
 	{
 		int readResult = AAsset_read( mNativeData.mAndrAsset, pTargetBuffer, pReadSize );
-		return numeric_cast<file_size_t>( readResult );
+		return cppx::numeric_cast<file_size_t>( readResult );
 	}
 
 	file_offset_t AndroidAsset::_NativeSetReadPointer( file_offset_t pOffset, EFilePointerRefPos pRefPos )
 	{
 		auto seekOrigin = Platform::_androidTranslateFilePointerRefPos( pRefPos );
 		auto seekResult = AAsset_seek64( mNativeData.mAndrAsset, pOffset, seekOrigin );
-		return numeric_cast<file_offset_t>( seekResult );
+		return cppx::numeric_cast<file_offset_t>( seekResult );
 	}
 
 	file_size_t AndroidAsset::_NativeGetSize() const
 	{
 		auto assetSize = AAsset_getLength64( mNativeData.mAndrAsset );
-		return numeric_cast<file_offset_t>( assetSize );
+		return cppx::numeric_cast<file_offset_t>( assetSize );
 	}
 
 

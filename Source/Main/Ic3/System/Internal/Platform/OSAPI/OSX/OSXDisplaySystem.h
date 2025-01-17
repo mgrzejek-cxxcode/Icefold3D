@@ -11,8 +11,8 @@
 namespace Ic3::System
 {
 
-	ic3SysDeclareHandle( OSXDisplayManager );
-	ic3SysDeclareHandle( OSXDisplayDriver );
+	Ic3SysDeclareHandle( OSXDisplayManager );
+	Ic3SysDeclareHandle( OSXDisplayDriver );
 
 	namespace Platform
 	{

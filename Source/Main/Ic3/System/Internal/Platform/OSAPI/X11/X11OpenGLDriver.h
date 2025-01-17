@@ -9,9 +9,9 @@
 namespace Ic3::System
 {
 
-	ic3SysDeclareHandle( X11OpenGLSystemDriver );
-	ic3SysDeclareHandle( X11OpenGLRenderContext );
-	ic3SysDeclareHandle( X11OpenGLRenderContext );
+	Ic3SysDeclareHandle( X11OpenGLSystemDriver );
+	Ic3SysDeclareHandle( X11OpenGLRenderContext );
+	Ic3SysDeclareHandle( X11OpenGLRenderContext );
 
 	namespace Platform
 	{

@@ -8,8 +8,8 @@
 namespace Ic3::System
 {
 
-	ic3SysDeclareHandle( AndroidWindow );
-	ic3SysDeclareHandle( AndroidWindowManager );
+	Ic3SysDeclareHandle( AndroidWindow );
+	Ic3SysDeclareHandle( AndroidWindowManager );
 
 	namespace Platform
 	{

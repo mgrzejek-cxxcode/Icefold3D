@@ -13,9 +13,9 @@
 namespace Ic3::System
 {
 
-	ic3SysDeclareHandle( Asset );
-	ic3SysDeclareHandle( AssetDirectory );
-	ic3SysDeclareHandle( AssetLoader );
+	Ic3SysDeclareHandle( Asset );
+	Ic3SysDeclareHandle( AssetDirectory );
+	Ic3SysDeclareHandle( AssetLoader );
 
 } // namespace Ic3::System
 

@@ -30,7 +30,7 @@ namespace Ic3::System
 
     EventController & EventSource::GetEventControllerRef() const
     {
-        ic3DebugAssert( _eventControllerActiveRef );
+        Ic3DebugAssert( _eventControllerActiveRef );
         return *_eventControllerActiveRef;
     }
 
@@ -53,7 +53,7 @@ namespace Ic3::System
 
 			// This is veeery weird. If this source has a controller set (which means it is a registered event source),
 			// it definitely should be present on that controller's event source list. Investigate if this gets triggered.
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 		}
 
 		return false;

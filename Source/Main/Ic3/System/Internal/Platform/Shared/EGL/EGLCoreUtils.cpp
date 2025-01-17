@@ -54,8 +54,8 @@ namespace Ic3::System
 			if( errorCode != EGL_SUCCESS )
 			{
 				auto * errorMessageStr = EATranslateErrorCode( errorCode );
-				ic3DebugOutputFmt( "OpenGL API error: %s.", errorMessageStr );
-				 ic3DebugInterrupt();
+				Ic3DebugOutputFmt( "OpenGL API error: %s.", errorMessageStr );
+				 Ic3DebugInterrupt();
 			}
 		}
 
@@ -70,7 +70,7 @@ namespace Ic3::System
 					break;
 				}
 				auto * errorMessageStr = EATranslateErrorCode( errorCode );
-				ic3DebugOutputFmt( "OpenGL API error: %s.", errorMessageStr );
+				Ic3DebugOutputFmt( "OpenGL API error: %s.", errorMessageStr );
 				++errorsNum;
 			}
 		}

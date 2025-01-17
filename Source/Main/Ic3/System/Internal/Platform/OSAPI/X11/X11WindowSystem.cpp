@@ -128,7 +128,7 @@ namespace Ic3::System
 
 			if( windowXID == eXIDNone )
 			{
-				ic3Throw( eExcCodeDebugPlaceholder );
+				Ic3Throw( eExcCodeDebugPlaceholder );
 			}
 
 			pWindowNativeData.mWindowXID = windowXID;
@@ -144,7 +144,7 @@ namespace Ic3::System
 			auto windowActionTable = Platform::_X11QueryActionTableForFrameStyle( xSessionData.displayHandle, windowStyle );
 
 			// This could happen only if we added/changed something and forgot to adjust this code.
-			ic3DebugAssert( !windowActionTable.empty() );
+			Ic3DebugAssert( !windowActionTable.empty() );
 
 			// The atom used to set this table is named "_NET_WM_ALLOWED_ACTIONS".
 			Atom wmAllowedActions = XInternAtom( xSessionData.displayHandle, "_NET_WM_ALLOWED_ACTIONS", true );
@@ -197,7 +197,7 @@ namespace Ic3::System
 			XSetWMProtocols( xSessionData.displayHandle,
 			                 pWindowNativeData.mWindowXID,
 			                 &( registeredWMProtocolArray[0] ),
-			                 numeric_cast<int>( registeredWMProtocolsNum ) );
+			                 cppx::numeric_cast<int>( registeredWMProtocolsNum ) );
 
 			XStoreName( xSessionData.displayHandle, pWindowNativeData.mWindowXID, pCreateInfo.title.c_str() );
 			XFlush( xSessionData.displayHandle );
@@ -236,7 +236,7 @@ namespace Ic3::System
 			wmEvent.xclient.message_type = xSessionData.atomCache.wmState;
 			wmEvent.xclient.format = 32;
 			wmEvent.xclient.data.l[0] = pSetFullscreen ? 1 : 0;
-			wmEvent.xclient.data.l[1] = numeric_cast<long>( xSessionData.atomCache.wmStateFullscreen );
+			wmEvent.xclient.data.l[1] = cppx::numeric_cast<long>( xSessionData.atomCache.wmStateFullscreen );
 			wmEvent.xclient.data.l[2] = 0;
 
 			XSendEvent( xSessionData.displayHandle,
@@ -342,7 +342,7 @@ namespace Ic3::System
 			                    &wmPropertyValueBytesNum,
 			                    &wmPropertyValueData8 );
 
-			const long wmPropertyValuesNum = numeric_cast<long>( wmPropertyValueBytesNum ) / 4;
+			const long wmPropertyValuesNum = cppx::numeric_cast<long>( wmPropertyValueBytesNum ) / 4;
 
 			XGetWindowProperty( pDisplay,
 			                    pWindow,
@@ -394,7 +394,7 @@ namespace Ic3::System
 			                    &wmPropertyValueBytesNum,
 			                    &wmPropertyValueData8 );
 
-			const long wmPropertyValuesNum = numeric_cast<long>( wmPropertyValueBytesNum ) / 4;
+			const long wmPropertyValuesNum = cppx::numeric_cast<long>( wmPropertyValueBytesNum ) / 4;
 
 			XGetWindowProperty( pDisplay,
 			                    pWindow,

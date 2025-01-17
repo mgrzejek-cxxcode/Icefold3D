@@ -7,9 +7,9 @@
 namespace Ic3::System
 {
 
-	ic3SysDeclareHandle( DisplayManager );
-	ic3SysDeclareHandle( OpenGLDisplaySurface );
-	ic3SysDeclareHandle( OpenGLRenderContext );
+	Ic3SysDeclareHandle( DisplayManager );
+	Ic3SysDeclareHandle( OpenGLDisplaySurface );
+	Ic3SysDeclareHandle( OpenGLRenderContext );
 
 	/// @brief Contains parameters used to specify how a GL display surface should be created.
 	struct OpenGLDisplaySurfaceCreateInfo : public WindowCreateInfo
@@ -75,7 +75,7 @@ namespace Ic3::System
 		/// This function creates a logical surface object without creating an actual (system-level) surface. It enables
 		/// usage of the library API in environments where low-level GL stuff is created externally (a good example is
 		/// the editor, where wxWidgets manages underlying GL surface/context). Important note: on some environments there
-		/// might be no way to obtain all data required to create a wrapper around surface. If that is the case, this
+		/// might be no way to obtain all data required to Create a wrapper around surface. If that is the case, this
 		/// method will throw an exception with EXC_NOT_SUPPORTED code.
 		///
 		/// @return A handle to an object representing currently bound OpenGL surface. If no surface is bound, a null is returned.

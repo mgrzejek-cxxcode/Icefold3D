@@ -96,13 +96,13 @@ namespace Ic3::System
 	void AndroidSysContext::_InitializeAndroidContextState( AndroidAppState * pAppState )
 	{
 		mNativeData.aSessionData.aCommonAppState = pAppState;
-		mNativeData.aSessionData.aCommonAppState->ic3SetUserData(
+		mNativeData.aSessionData.aCommonAppState->Ic3SetUserData(
 			Platform::eAndroidAppStateUserDataIndexSysContext, this );
 	}
 
 	void AndroidSysContext::_ReleaseAndroidContextState()
 	{
-		mNativeData.aSessionData.aCommonAppState->ic3SetUserData(
+		mNativeData.aSessionData.aCommonAppState->Ic3SetUserData(
 			Platform::eAndroidAppStateUserDataIndexSysContext, nullptr );
 		mNativeData.aSessionData.aCommonAppState = nullptr;
 	}

@@ -8,7 +8,7 @@
 namespace Ic3::System
 {
 
-	ic3SysDeclareHandle( EventController );
+	Ic3SysDeclareHandle( EventController );
 
 	class EventSource : public SysObject
 	{

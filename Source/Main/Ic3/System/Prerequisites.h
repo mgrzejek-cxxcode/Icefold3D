@@ -32,21 +32,21 @@
 namespace Ic3::System
 {
 
-	ic3EnableCustomExceptionSupport();
-	ic3EnableEnumTypeInfoSupport();
+	Ic3EnableCustomExceptionSupport();
+	Ic3EnableEnumTypeInfoSupport();
 
 	template <typename TPClass>
 	using TSysHandle = ::Ic3::TSharedHandle<TPClass>;
 
 	/// @brief Declares the handle type for a given system class.
 	/// The handle's type name is created by appending 'Handle' suffix to a given class name.
-	/// For example: ic3SysDeclareHandle( MyType ) will produce a declaration for 'MyTypeHandle'.
-	#define ic3SysDeclareHandle( pType ) \
+	/// For example: Ic3SysDeclareHandle( MyType ) will produce a declaration for 'MyTypeHandle'.
+	#define Ic3SysDeclareHandle( pType ) \
 		class pType; using pType##Handle = TSysHandle<::Ic3::System::pType>
 
 	// These two types need to be visible everywhere.
-	ic3SysDeclareHandle( SysContext );
-	ic3SysDeclareHandle( SysObject );
+	Ic3SysDeclareHandle( SysContext );
+	Ic3SysDeclareHandle( SysObject );
 
 	enum : exception_category_value_t
 	{

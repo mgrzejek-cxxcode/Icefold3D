@@ -103,7 +103,7 @@ namespace Ic3::System
 		// Outputs are not added to the helper list at this point.
 		// This is done as a post-process step later in DisplayDriver::_enumOutputs().
 		// Assertion added to prevent problems in case of refactoring.
-		ic3DebugAssert( _privateData->outputList.empty() );
+		Ic3DebugAssert( _privateData->outputList.empty() );
 	}
 
 	uint32 DisplayAdapter::ValidateOutputsConfiguration()
@@ -141,7 +141,7 @@ namespace Ic3::System
 				auto & outputDesc = _privateData->primaryOutput->GetOutputDescInternal();
 				if( !outputDesc.flags.is_set( eDisplayOutputFlagPrimaryBit ) )
 				{
-					ic3DebugOutputFmt(
+					Ic3DebugOutputFmt(
 						"Primary/Default output of [%s] selected by the driver does not have "\
 						"E_DISPLAY_ADAPTER_FLAG_PRIMARY_BIT set. Is that intentional?",
 						_privateData->adapterDesc.name.c_str() );
@@ -293,7 +293,7 @@ namespace Ic3::System
 		// Video modes are not added to the helper list at this point.
 		// This is done as a post-process step later in DisplayDriver::_enumVideoModes().
 		// Assertion added to prevent problems in case of refactoring.
-		ic3DebugAssert( colorFormatData.videoModeList.empty() );
+		Ic3DebugAssert( colorFormatData.videoModeList.empty() );
 	}
 
 	uint32 DisplayOutput::ValidateVideoModesConfiguration( EColorFormat pColorFormat )

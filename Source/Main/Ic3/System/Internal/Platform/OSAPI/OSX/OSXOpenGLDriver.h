@@ -17,9 +17,9 @@
 namespace Ic3::System
 {
 
-	ic3SysDeclareHandle( OSXOpenGLSystemDriver );
-	ic3SysDeclareHandle( OSXOpenGLDisplaySurface );
-	ic3SysDeclareHandle( OSXOpenGLRenderContext );
+	Ic3SysDeclareHandle( OSXOpenGLSystemDriver );
+	Ic3SysDeclareHandle( OSXOpenGLDisplaySurface );
+	Ic3SysDeclareHandle( OSXOpenGLRenderContext );
 
 	namespace Platform
 	{

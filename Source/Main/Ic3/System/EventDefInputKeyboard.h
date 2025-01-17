@@ -204,18 +204,18 @@ namespace Ic3::System
 			const auto maskValue = static_cast<uint32>( pModifierFlags & eKeyModifierMaskAll );
 			const auto setBitsNum = cppx::pop_count( maskValue );
 
-			ic3DebugAssert( setBitsNum <= 1 );
+			Ic3DebugAssert( setBitsNum <= 1 );
 
 			switch( maskValue )
 			{
-				ic3CaseReturn( eKeyModifierFlagControlLeftBit, EKeyCode::CtrlLeft );
-				ic3CaseReturn( eKeyModifierFlagControlRightBit, EKeyCode::CtrlRight );
-				ic3CaseReturn( eKeyModifierFlagAltLeftBit, EKeyCode::AltLeft );
-				ic3CaseReturn( eKeyModifierFlagAltRightBit, EKeyCode::AltRight );
-				ic3CaseReturn( eKeyModifierFlagShiftLeftBit, EKeyCode::ShiftLeft );
-				ic3CaseReturn( eKeyModifierFlagShiftRightBit, EKeyCode::ShiftRight );
-				ic3CaseReturn( eKeyModifierFlagGUILeftBit, EKeyCode::GUILeft );
-				ic3CaseReturn( eKeyModifierFlagGUIRightBit, EKeyCode::GUIRight );
+				Ic3CaseReturn( eKeyModifierFlagControlLeftBit, EKeyCode::CtrlLeft );
+				Ic3CaseReturn( eKeyModifierFlagControlRightBit, EKeyCode::CtrlRight );
+				Ic3CaseReturn( eKeyModifierFlagAltLeftBit, EKeyCode::AltLeft );
+				Ic3CaseReturn( eKeyModifierFlagAltRightBit, EKeyCode::AltRight );
+				Ic3CaseReturn( eKeyModifierFlagShiftLeftBit, EKeyCode::ShiftLeft );
+				Ic3CaseReturn( eKeyModifierFlagShiftRightBit, EKeyCode::ShiftRight );
+				Ic3CaseReturn( eKeyModifierFlagGUILeftBit, EKeyCode::GUILeft );
+				Ic3CaseReturn( eKeyModifierFlagGUIRightBit, EKeyCode::GUIRight );
 			}
 
 			return EKeyCode::Unknown;

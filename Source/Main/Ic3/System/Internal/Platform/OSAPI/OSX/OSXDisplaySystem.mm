@@ -24,7 +24,7 @@ namespace Ic3::System
 
 		if( cgResult != kCGErrorSuccess )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return;
 		}
 
@@ -38,7 +38,7 @@ namespace Ic3::System
 
 		if( cgResult != kCGErrorSuccess )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return;
 		}
 
@@ -123,7 +123,7 @@ namespace Ic3::System
 
 		ScreenRect OSXQueryDisplayRect( CGDirectDisplayID pCGDisplayID )
 		{
-			ic3DebugAssert( pCGDisplayID != kCGNullDirectDisplay );
+			Ic3DebugAssert( pCGDisplayID != kCGNullDirectDisplay );
 
 			const auto cgDisplayRect = ::CGDisplayBounds( pCGDisplayID );
 
@@ -138,7 +138,7 @@ namespace Ic3::System
 
 		DisplaySize OSXQueryDisplaySize( CGDirectDisplayID pCGDisplayID )
 		{
-			ic3DebugAssert( pCGDisplayID != kCGNullDirectDisplay );
+			Ic3DebugAssert( pCGDisplayID != kCGNullDirectDisplay );
 
 			const auto cgDisplayRect = ::CGDisplayBounds( pCGDisplayID );
 

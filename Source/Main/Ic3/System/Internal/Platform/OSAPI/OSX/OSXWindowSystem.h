@@ -10,9 +10,9 @@
 namespace Ic3::System
 {
 
-	ic3SysDeclareHandle( OSXDisplayManager );
-	ic3SysDeclareHandle( OSXWindow );
-	ic3SysDeclareHandle( OSXWindowManager );
+	Ic3SysDeclareHandle( OSXDisplayManager );
+	Ic3SysDeclareHandle( OSXWindow );
+	Ic3SysDeclareHandle( OSXWindowManager );
 
 	namespace Platform
 	{

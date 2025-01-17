@@ -130,7 +130,7 @@ namespace Ic3::System
 
 	void PosixFile::setInternalFilePtr( FILE * pFilePtr )
 	{
-		ic3DebugAssert( !mNativeData.mFilePtr );
+		Ic3DebugAssert( !mNativeData.mFilePtr );
 		mNativeData.mFilePtr = pFilePtr;
 	}
 
@@ -163,7 +163,7 @@ namespace Ic3::System
 		if( seekResult != 0 )
 		{
 			auto errnoString = Platform::PXAQueryErrnoStringByCode( errno );
-			ic3ThrowDesc( eExcCodeDebugPlaceholder, std::move( errnoString ) );
+			Ic3ThrowDesc( eExcCodeDebugPlaceholder, std::move( errnoString ) );
 		}
 
 		auto currentFilePointer = ::ftell( mNativeData.mFilePtr );
@@ -219,7 +219,7 @@ namespace Ic3::System
 			if( !filePtr )
 			{
 				auto errnoString = Platform::PXAQueryErrnoStringByCode( errno );
-				ic3ThrowDesc( eEXCSystemFileOpenError, std::move( errnoString ) );
+				Ic3ThrowDesc( eEXCSystemFileOpenError, std::move( errnoString ) );
 			}
 
 			return filePtr;

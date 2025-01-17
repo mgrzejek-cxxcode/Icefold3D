@@ -8,9 +8,9 @@
 namespace Ic3::System
 {
 
-	ic3DeclareClassHandle( DisplayManager );
-	ic3DeclareClassHandle( Window );
-	ic3DeclareClassHandle( WindowManager );
+	Ic3DeclareClassHandle( DisplayManager );
+	Ic3DeclareClassHandle( Window );
+	Ic3DeclareClassHandle( WindowManager );
 
 	/// @brief
 	class WindowManager : public SysObject

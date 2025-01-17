@@ -74,7 +74,7 @@ namespace Ic3::System
 		// Retrieve the thread state using JNI's thread id. This should never return nullptr,
 		// because there is at least one remaining JNI instance (the one being currently destroyed).
 		auto * jniThreadState = _GetJNIThreadState( pJNI->jniThreadID, false );
-		ic3DebugAssert( jniThreadState != nullptr );
+		Ic3DebugAssert( jniThreadState != nullptr );
 
 		auto refCounter = jniThreadState->jniRefCounter.fetch_sub( 1, std::memory_order_acq_rel );
 		if( refCounter == 1 )
@@ -110,7 +110,7 @@ namespace Ic3::System
 			auto currentThreadID = std::this_thread::get_id();
 			if( pJNIThreadID != currentThreadID )
 			{
-				ic3ThrowDesc( eExcCodeDebugPlaceholder,
+				Ic3ThrowDesc( eExcCodeDebugPlaceholder,
 				              "AcquireJNIEnv(): JNIThreadState can be only initialized by the thread itself" );
 			}
 
@@ -120,7 +120,7 @@ namespace Ic3::System
 			auto threadAttachResult = mJavaVM->AttachCurrentThread( &jniEnv, nullptr );
 			if( threadAttachResult != JNI_OK )
 			{
-				ic3ThrowDesc( eExcCodeDebugPlaceholder,
+				Ic3ThrowDesc( eExcCodeDebugPlaceholder,
 				              "JavaVM::AttachCurrentThread() has failed" );
 			}
 
@@ -136,7 +136,7 @@ namespace Ic3::System
 
 		if( jniThreadStateIter != _privateData->jniThreadStateMap.end() )
 		{
-			ic3DebugAssert( jniThreadStateIter->second->jniObject != nullptr );
+			Ic3DebugAssert( jniThreadStateIter->second->jniObject != nullptr );
 			jniThreadState = jniThreadStateIter->second;
 		}
 
@@ -148,14 +148,14 @@ namespace Ic3::System
 		auto jniThreadStateIter = _privateData->jniThreadStateMap.find( pJNIThreadID );
 		if( jniThreadStateIter != _privateData->jniThreadStateMap.end() )
 		{
-			ic3DebugAssert( pJNIThreadID == std::this_thread::get_id() );
+			Ic3DebugAssert( pJNIThreadID == std::this_thread::get_id() );
 
 			auto * jniThreadState = jniThreadStateIter->second;
 			auto refCounter = jniThreadState->jniRefCounter.load( std::memory_order_acquire );
 
 			if( refCounter > 0 )
 			{
-				ic3ThrowDesc( eExcCodeDebugPlaceholder,
+				Ic3ThrowDesc( eExcCodeDebugPlaceholder,
 				              "_OnJNIThreadStateDestroyRequest(): refCounter > 0" );
 			}
 

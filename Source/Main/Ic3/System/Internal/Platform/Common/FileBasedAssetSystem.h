@@ -9,7 +9,7 @@
 namespace Ic3::System
 {
 
-	ic3SysDeclareHandle( FileAssetLoader );
+	Ic3SysDeclareHandle( FileAssetLoader );
 
 	namespace Platform
 	{

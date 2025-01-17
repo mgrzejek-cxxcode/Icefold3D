@@ -21,14 +21,14 @@ namespace Ic3::System
 		id<MTLDevice> defaultMTLDevice = MTLCreateSystemDefaultDevice();
 		if( defaultMTLDevice == nil )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return nullptr;
 		}
 
 		id<MTLCommandQueue> mainMTLCommandQueue = [defaultMTLDevice newCommandQueue];
 		if( mainMTLCommandQueue == nil )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return nullptr;
 		}
 
@@ -51,7 +51,7 @@ namespace Ic3::System
 
 	MetalDevice & MetalSystemDriver::InitializeDefaultDevice()
 	{
-		ic3DebugAssert( !_defaultMetalDevice );
+		Ic3DebugAssert( !_defaultMetalDevice );
 		_defaultMetalDevice = MetalDevice::CreateDefault( mSysContext );
 		return *_defaultMetalDevice;
 	}
@@ -70,7 +70,7 @@ namespace Ic3::System
 	{
 		if( !_defaultMetalDevice )
 		{
-			ic3Throw( 0 );
+			Ic3Throw( 0 );
 		}
 		return *_defaultMetalDevice;
 	}
@@ -98,7 +98,7 @@ namespace Ic3::System
 		auto displaySurface = _NativeCreateDisplaySurface( pMetalDevice, surfaceCreateInfo );
 
 		auto * caMetalLayer = displaySurface->surfaceData->caMetalLayer;
-		ic3DebugAssert( caMetalLayer != nil );
+		Ic3DebugAssert( caMetalLayer != nil );
 
 		auto mtlDevice = pMetalDevice.mDeviceData->mtlDevice;
 		[caMetalLayer setDevice:mtlDevice];

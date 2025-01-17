@@ -8,8 +8,8 @@
 namespace Ic3::System
 {
 
-    ic3SysDeclareHandle( Window );
-    ic3SysDeclareHandle( WindowManager );
+    Ic3SysDeclareHandle( Window );
+    Ic3SysDeclareHandle( WindowManager );
 
 	struct WindowCreateInfo
 	{

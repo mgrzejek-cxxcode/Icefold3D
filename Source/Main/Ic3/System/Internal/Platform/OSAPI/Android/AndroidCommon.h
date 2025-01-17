@@ -33,19 +33,19 @@ namespace Ic3::System
 		public:
 			void SetSessionData( ASessionData & pSessionData )
 			{
-				ic3DebugAssert( _aSessionDataPtr == nullptr );
+				Ic3DebugAssert( _aSessionDataPtr == nullptr );
 				_aSessionDataPtr = &pSessionData;
 			}
 
 			void ResetSessionData()
 			{
-				ic3DebugAssert( _aSessionDataPtr != nullptr );
+				Ic3DebugAssert( _aSessionDataPtr != nullptr );
 				_aSessionDataPtr = nullptr;
 			}
 
 			ASessionData & GetSessionData() const
 			{
-				ic3DebugAssert( _aSessionDataPtr != nullptr );
+				Ic3DebugAssert( _aSessionDataPtr != nullptr );
 				return *_aSessionDataPtr;
 			}
 

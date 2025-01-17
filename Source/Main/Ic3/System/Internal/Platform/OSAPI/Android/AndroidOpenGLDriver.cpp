@@ -64,7 +64,7 @@ namespace Ic3::System
 		                                                       fbConfigNativeVisualID );
 		if( aNativeResult < 0 )
 		{
-			ic3Throw( eExcCodeDebugPlaceholder );
+			Ic3Throw( eExcCodeDebugPlaceholder );
 		}
 
 		auto displaySurface = CreateSysObject<AndroidOpenGLDisplaySurface>( GetHandle<AndroidOpenGLSystemDriver>() );
@@ -180,13 +180,13 @@ namespace Ic3::System
 		auto queryResult = ::eglQuerySurface( mNativeData.eglDisplay, mNativeData.eglSurfaceHandle, EGL_WIDTH, &surfaceWidth );
 		if( queryResult == EGL_FALSE )
 		{
-			ic3EGLHandleLastError();
+			Ic3EGLHandleLastError();
 		}
 
 		queryResult = ::eglQuerySurface( mNativeData.eglDisplay, mNativeData.eglSurfaceHandle, EGL_HEIGHT, &surfaceHeight );
 		if( queryResult == EGL_FALSE )
 		{
-			ic3EGLHandleLastError();
+			Ic3EGLHandleLastError();
 		}
 
 		FrameSize result;

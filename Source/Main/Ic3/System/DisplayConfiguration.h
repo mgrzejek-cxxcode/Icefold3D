@@ -9,9 +9,9 @@
 namespace Ic3::System
 {
 
-	ic3SysDeclareHandle( DisplayAdapter );
-	ic3SysDeclareHandle( DisplayOutput );
-	ic3SysDeclareHandle( DisplayVideoMode );
+	Ic3SysDeclareHandle( DisplayAdapter );
+	Ic3SysDeclareHandle( DisplayOutput );
+	Ic3SysDeclareHandle( DisplayVideoMode );
 
 	/// @brief
 	class DisplayAdapter : public SysObject

@@ -54,8 +54,8 @@ namespace Ic3::System
 			auto width = ANativeWindow_getWidth( pANativeWindow );
 			auto height = ANativeWindow_getHeight( pANativeWindow );
 
-			resultSize.x = numeric_cast<decltype( resultSize.x )>( width );
-			resultSize.y = numeric_cast<decltype( resultSize.x )>( height );
+			resultSize.x = cppx::numeric_cast<decltype( resultSize.x )>( width );
+			resultSize.y = cppx::numeric_cast<decltype( resultSize.x )>( height );
 
 			return resultSize;
 		}

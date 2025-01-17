@@ -8,9 +8,9 @@
 namespace Ic3::System
 {
 
-	ic3SysDeclareHandle( X11DisplayManager );
-	ic3SysDeclareHandle( X11Window );
-	ic3SysDeclareHandle( X11WindowManager );
+	Ic3SysDeclareHandle( X11DisplayManager );
+	Ic3SysDeclareHandle( X11Window );
+	Ic3SysDeclareHandle( X11WindowManager );
 
 	namespace Platform
 	{

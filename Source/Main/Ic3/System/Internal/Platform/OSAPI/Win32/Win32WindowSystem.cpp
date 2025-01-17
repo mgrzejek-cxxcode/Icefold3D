@@ -116,7 +116,7 @@ namespace Ic3::System
 
 			if( windowHwnd == nullptr )
 			{
-				ic3Throw( eExcCodeDebugPlaceholder );
+				Ic3Throw( eExcCodeDebugPlaceholder );
 			}
 
 			::SetWindowPos( windowHwnd,
@@ -301,7 +301,7 @@ namespace Ic3::System
 				auto wndClassID = ::RegisterClassExA( &windowClass );
 				if( wndClassID == 0 )
 				{
-					ic3Throw( eExcCodeDebugPlaceholder );
+					Ic3Throw( eExcCodeDebugPlaceholder );
 				}
 
 				pWindowNativeData.wndClsID = wndClassID;

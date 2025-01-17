@@ -112,7 +112,7 @@ namespace Ic3::System
 			@catch( NSException * pException )
 			{
 				const auto message = [[pException reason] UTF8String];
-				ic3DebugInterrupt();
+				Ic3DebugInterrupt();
 			}
 		}
 		}
@@ -136,7 +136,7 @@ namespace Ic3::System
 			@catch( NSException * pException )
 			{
 				const auto message = [[pException reason] UTF8String];
-				ic3DebugInterrupt();
+				Ic3DebugInterrupt();
 			}
 		}
 		}

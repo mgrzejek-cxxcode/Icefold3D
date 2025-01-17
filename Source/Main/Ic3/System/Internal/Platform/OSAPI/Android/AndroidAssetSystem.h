@@ -9,9 +9,9 @@
 namespace Ic3::System
 {
 
-	ic3DeclareClassHandle( AndroidAssetLoader );
-	ic3DeclareClassHandle( AndroidAssetDirectory );
-	ic3DeclareClassHandle( AndroidAsset );
+	Ic3DeclareClassHandle( AndroidAssetLoader );
+	Ic3DeclareClassHandle( AndroidAssetDirectory );
+	Ic3DeclareClassHandle( AndroidAsset );
 
 	namespace Platform
 	{

@@ -2,8 +2,8 @@
 #include "X11OpenGLDriver.h"
 #include "X11DisplaySystem.h"
 
-#define ic3X11OpenGLContextAttribAppend( pArray, pIndex, pAttrib ) \
-	ic3DebugAssert( pIndex < CX_X11_MAX_GLX_FBCONFIG_ATTRIBUTES_NUM ); \
+#define Ic3X11OpenGLContextAttribAppend( pArray, pIndex, pAttrib ) \
+	Ic3DebugAssert( pIndex < CX_X11_MAX_GLX_FBCONFIG_ATTRIBUTES_NUM ); \
 	pArray[pIndex++] = pAttrib
 
 #if( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_X11 )
@@ -64,7 +64,7 @@ namespace Ic3::System
 
 	void X11OpenGLSystemDriver::_NativeInitializePlatform()
 	{
-		ic3DebugAssert( !mNativeData.initState );
+		Ic3DebugAssert( !mNativeData.initState );
 		// Init state should be first created here and destroyed as soon as proper GL
 		// contexts are created (this is not enforce, though, and controlled explicitly
 		// by the user and done by calling ReleaseInitState() method od the driver).
@@ -79,7 +79,7 @@ namespace Ic3::System
 		// We need at least version 1.3 of the GLX runtime (that's rather a pretty old one...).
 		if( ( glxVersionMajor <= 0 ) || ( ( glxVersionMajor == 1 ) && ( glxVersionMinor < 3 ) ) )
 		{
-			ic3Throw( eExcCodeDebugPlaceholder );
+			Ic3Throw( eExcCodeDebugPlaceholder );
 		}
 
 		VisualConfig legacyVisualConfig;
@@ -264,7 +264,7 @@ namespace Ic3::System
 
 		if( !contextHandle )
 		{
-			ic3Throw( eExcCodeDebugPlaceholder );
+			Ic3Throw( eExcCodeDebugPlaceholder );
 		}
 
 		auto renderContext = CreateSysObject<X11OpenGLRenderContext>( GetHandle<X11OpenGLSystemDriver>() );
@@ -278,7 +278,7 @@ namespace Ic3::System
 		auto contextHandle = ::glXGetCurrentContext();
 		if( contextHandle == nullptr )
 		{
-			ic3Throw( eExcCodeDebugPlaceholder );
+			Ic3Throw( eExcCodeDebugPlaceholder );
 		}
 
 		auto renderContext = CreateSysObject<X11OpenGLRenderContext>( GetHandle<X11OpenGLSystemDriver>() );
@@ -529,7 +529,7 @@ namespace Ic3::System
 
 			if( !x11GLVisualConfig )
 			{
-				ic3Throw( eExcCodeDebugPlaceholder );
+				Ic3Throw( eExcCodeDebugPlaceholder );
 			}
 
 			pGLSurfaceNativeData.mFBConfig = x11GLVisualConfig.mFBConfig;
@@ -570,7 +570,7 @@ namespace Ic3::System
 			auto tempContextHandle = ::glXCreateContext( xSessionData.displayHandle, pGLSurfaceNativeData.mVisualInfo, nullptr, True );
 			if( !tempContextHandle )
 			{
-				ic3Throw( eExcCodeDebugPlaceholder );
+				Ic3Throw( eExcCodeDebugPlaceholder );
 			}
 
 			pGLContextNativeData.contextHandle = tempContextHandle;
@@ -578,7 +578,7 @@ namespace Ic3::System
 			auto makeCurrentResult = ::glXMakeCurrent( xSessionData.displayHandle, pGLSurfaceNativeData.mWindowXID, tempContextHandle );
 			if( makeCurrentResult == False )
 			{
-				ic3Throw( eExcCodeDebugPlaceholder );
+				Ic3Throw( eExcCodeDebugPlaceholder );
 			}
 		}
 
@@ -622,7 +622,7 @@ namespace Ic3::System
 				fbConfigList = glXChooseFBConfig( pDisplay, pScreenIndex, cvDefaultVisualAttribsNoDepthStencil, &fbConfigListSize );
 				if( ( fbConfigList == nullptr ) || ( fbConfigListSize == 0 ) )
 				{
-					ic3Throw( eExcCodeDebugPlaceholder );
+					Ic3Throw( eExcCodeDebugPlaceholder );
 				}
 			}
 
@@ -699,7 +699,7 @@ namespace Ic3::System
 
 			if( ( fbConfigList == nullptr ) || ( fbConfigListSize == 0 ) )
 			{
-				ic3Throw( eExcCodeDebugPlaceholder );
+				Ic3Throw( eExcCodeDebugPlaceholder );
 			}
 
 			for( int pFBConfigIndex = 0; pFBConfigIndex < fbConfigListSize; ++pFBConfigIndex )
@@ -775,17 +775,17 @@ namespace Ic3::System
 		{
 			int attribIndex = 0;
 
-			ic3X11OpenGLContextAttribAppend( pAttribArray, attribIndex, GLX_DRAWABLE_TYPE );
-			ic3X11OpenGLContextAttribAppend( pAttribArray, attribIndex, GLX_WINDOW_BIT );
+			Ic3X11OpenGLContextAttribAppend( pAttribArray, attribIndex, GLX_DRAWABLE_TYPE );
+			Ic3X11OpenGLContextAttribAppend( pAttribArray, attribIndex, GLX_WINDOW_BIT );
 
-			ic3X11OpenGLContextAttribAppend( pAttribArray, attribIndex, GLX_RENDER_TYPE );
-			ic3X11OpenGLContextAttribAppend( pAttribArray, attribIndex, GLX_RGBA_BIT );
+			Ic3X11OpenGLContextAttribAppend( pAttribArray, attribIndex, GLX_RENDER_TYPE );
+			Ic3X11OpenGLContextAttribAppend( pAttribArray, attribIndex, GLX_RGBA_BIT );
 
-			ic3X11OpenGLContextAttribAppend( pAttribArray, attribIndex, GLX_X_RENDERABLE );
-			ic3X11OpenGLContextAttribAppend( pAttribArray, attribIndex, True );
+			Ic3X11OpenGLContextAttribAppend( pAttribArray, attribIndex, GLX_X_RENDERABLE );
+			Ic3X11OpenGLContextAttribAppend( pAttribArray, attribIndex, True );
 
-			ic3X11OpenGLContextAttribAppend( pAttribArray, attribIndex, GLX_X_VISUAL_TYPE );
-			ic3X11OpenGLContextAttribAppend( pAttribArray, attribIndex, GLX_TRUE_COLOR );
+			Ic3X11OpenGLContextAttribAppend( pAttribArray, attribIndex, GLX_X_VISUAL_TYPE );
+			Ic3X11OpenGLContextAttribAppend( pAttribArray, attribIndex, GLX_TRUE_COLOR );
 
 			if( pVisualConfig.flags.is_set( eVisualAttribFlagDoubleBufferBit ) )
 			{

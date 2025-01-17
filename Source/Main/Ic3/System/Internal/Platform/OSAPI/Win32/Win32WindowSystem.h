@@ -8,9 +8,9 @@
 namespace Ic3::System
 {
 
-	ic3SysDeclareHandle( Win32DisplayManager );
-	ic3SysDeclareHandle( Win32Window );
-	ic3SysDeclareHandle( Win32WindowManager );
+	Ic3SysDeclareHandle( Win32DisplayManager );
+	Ic3SysDeclareHandle( Win32Window );
+	Ic3SysDeclareHandle( Win32WindowManager );
 
 	namespace Platform
 	{
