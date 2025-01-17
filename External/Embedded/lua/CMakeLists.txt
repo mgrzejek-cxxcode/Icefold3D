@@ -59,11 +59,11 @@ set( IC3_EXTLIB_LUA_SCR_FILES
 	lzio.c
 	lzio.h )
 
-add_library( ExtLib.Lua STATIC
+add_library( ext-lua STATIC
         ${IC3_EXTLIB_LUA_SCR_FILES} )
 
-set_target_properties( ExtLib.Lua PROPERTIES
+set_target_properties( ext-lua PROPERTIES
         OUTPUT_NAME "lua" )
 
-target_include_directories( ExtLib.Lua PUBLIC
+target_include_directories( ext-lua PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR} )

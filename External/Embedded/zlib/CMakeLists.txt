@@ -27,22 +27,22 @@ set( IC3_EXTLIB_ZLIB_SCR_FILES
         zutil.c
         )
 
-add_library( ExtLib.Zlib STATIC
+add_library( ext-zlib STATIC
         ${IC3_EXTLIB_ZLIB_SCR_FILES} )
 
-set_target_properties( ExtLib.Zlib PROPERTIES
+set_target_properties( ext-zlib PROPERTIES
         OUTPUT_NAME "zlib" )
 
-target_include_directories( ExtLib.Zlib PUBLIC
+target_include_directories( ext-zlib PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR} )
 
-target_compile_definitions( ExtLib.Zlib PRIVATE
+target_compile_definitions( ext-zlib PRIVATE
         _CRT_SECURE_NO_WARNINGS=1
         _CRT_SECURE_NO_DEPRECATED=1
 )
 
 if( "${CM_EBS_SYSCONF_HOST_COMPILER}" MATCHES "Clang|GCC" )
-    target_compile_options( ExtLib.Zlib PRIVATE
+    target_compile_options( ext-zlib PRIVATE
             -Wno-implicit-function-declaration
     )
 endif()

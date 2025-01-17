@@ -2,7 +2,7 @@
 #ifndef __CPPX_HASH_OBJECT_H__
 #define __CPPX_HASH_OBJECT_H__
 
-#include "ArrayView.h"
+#include "arrayView.h"
 #include <string>
 
 namespace cppx

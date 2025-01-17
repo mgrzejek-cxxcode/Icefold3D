@@ -214,13 +214,13 @@ namespace cppx
 			return range_is_sub_range_of( as_range(), pOther.as_range() );
 		}
 
-		void setEmpty()
+		void set_empty()
 		{
 			offset = static_cast<TPOffset>( 0 );
 			size = static_cast<TPSize>( 0 );
 		}
 
-		void setMax()
+		void set_max()
 		{
 			offset = static_cast<TPOffset>( 0 );
 			size = meta::limits<TPSize>::max_value;

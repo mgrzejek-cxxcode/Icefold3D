@@ -28,7 +28,7 @@ namespace cppx
 	template <typename TPValue>
 	struct array_view
 	{
-		static_assert( !std::is_void<TPValue>::value, "Cannot create an ArrayView for void data. Use ArrayView<byte> for that." );
+		static_assert( !std::is_void<TPValue>::value, "Cannot Create an ArrayView for void data. Use ArrayView<byte> for that." );
 
 	public:
 		using byte_type = typename array_view_byte_type<std::is_const<TPValue>::value>::type;
@@ -140,7 +140,7 @@ namespace cppx
 	/// @brief Creates ArrayView that wraps specified compile time-sized array.
 	/// @tparam TPValue type of the data referenced by the view.
 	/// @tparam tpSize Size of the array.
-	/// @param pArray Array to create view for.
+	/// @param pArray Array to Create view for.
 	/// @return ArrayView referencing specified data.
 	template <typename TPValue, size_t tpSize>
 	CPPX_ATTR_NO_DISCARD inline array_view<TPValue> bind_array_view( TPValue( &pArray )[tpSize] )
@@ -158,7 +158,7 @@ namespace cppx
 	/// @brief Creates ArrayView that wraps specified compile time-sized array.
 	/// @tparam TPValue type of the data referenced by the view.
 	/// @tparam tpSize Size of the array.
-	/// @param pArray Array to create view for.
+	/// @param pArray Array to Create view for.
 	/// @return ArrayView referencing specified data.
 	template <typename TPValue, size_t tpSize>
 	CPPX_ATTR_NO_DISCARD inline array_view<TPValue> bind_array_view( std::array<TPValue, tpSize> & pArray )
@@ -176,7 +176,7 @@ namespace cppx
 	/// @brief Creates ArrayView that wraps specified compile time-sized array.
 	/// @tparam TPValue type of the data referenced by the view.
 	/// @tparam tpSize Size of the array.
-	/// @param pArray Array to create view for.
+	/// @param pArray Array to Create view for.
 	/// @return ArrayView referencing specified data.
 	template <typename TPValue, size_t tpSize>
 	CPPX_ATTR_NO_DISCARD inline array_view<const TPValue> bind_array_view( const std::array<TPValue, tpSize> & pArray )

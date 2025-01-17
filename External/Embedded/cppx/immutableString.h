@@ -2,9 +2,9 @@
 #ifndef __CPPX_IMMUTABLE_STRING_H__
 #define __CPPX_IMMUTABLE_STRING_H__
 
-#include "IntrusivePtr.h"
-#include "StringView.h"
-#include "StringUtils.h"
+#include "intrusivePtr.h"
+#include "stringView.h"
+#include "stringUtils.h"
 
 #define CPPX_ENABLE_IMMUTABLE_STRING_DEBUG_VIEW 1
 
@@ -65,27 +65,27 @@ namespace cppx
 
 		immutable_string( const TPChar * pStr, size_t pLength = cppx::cve::max_size )
 		{
-			_initStr( pStr, pLength );
+			_init_str( pStr, pLength );
 		}
 
 		immutable_string( const TPChar pCh, size_t pCount = 1 )
 		{
-			_initStr( pCh, pCount );
+			_init_str( pCh, pCount );
 		}
 
 		immutable_string( const string_base_view<TPChar> & pStrView )
 		{
-			_initStr( pStrView.str(), pStrView.length() );
+			_init_str( pStrView.str(), pStrView.length() );
 		}
 
 		immutable_string( const std::basic_string_view<TPChar> & pStdStrView )
 		{
-			_initStr( pStdStrView.data(), pStdStrView.length() );
+			_init_str( pStdStrView.data(), pStdStrView.length() );
 		}
 
 		immutable_string( const std::basic_string<TPChar> & pStdString )
 		{
-			_initStr( std::move( pStdString ) );
+			_init_str( std::move( pStdString ) );
 		}
 
 		immutable_string & operator=( std::nullptr_t )
@@ -98,7 +98,7 @@ namespace cppx
 		{
 			if( !_stringData || ( _stringData->internal_str != pRhs ) )
 			{
-				_initStr( pRhs );
+				_init_str( pRhs );
 			}
 			return *this;
 		}
@@ -107,7 +107,7 @@ namespace cppx
 		{
 			if( !_stringData || ( _stringData->internal_str != pRhs ) )
 			{
-				_initStr( pRhs.str(), pRhs.length() );
+				_init_str( pRhs.str(), pRhs.length() );
 			}
 			return *this;
 		}
@@ -116,7 +116,7 @@ namespace cppx
 		{
 			if( !_stringData || ( _stringData->internal_str != pRhs ) )
 			{
-				_initStr( pRhs.data(), pRhs.length() );
+				_init_str( pRhs.data(), pRhs.length() );
 			}
 			return *this;
 		}
@@ -125,7 +125,7 @@ namespace cppx
 		{
 			if( !_stringData || ( _stringData->internal_str != pRhs ) )
 			{
-				_initStr( pRhs.c_str(), pRhs.length() );
+				_init_str( pRhs.c_str(), pRhs.length() );
 			}
 			return *this;
 		}
@@ -189,7 +189,7 @@ namespace cppx
 	private:
 		using StringDataType = shared_immutable_string_data<TPChar>;
 
-		void _initStr( std::basic_string<TPChar> pString )
+		void _init_str( std::basic_string<TPChar> pString )
 		{
 			_stringData = make_intrusive<StringDataType>( std::move( pString ) );
 		#if( PCL_DEBUG && CPPX_ENABLE_IMMUTABLE_STRING_DEBUG_VIEW )
@@ -197,7 +197,7 @@ namespace cppx
 		#endif
 		}
 
-		void _initStr( const TPChar * pStr, size_t pLength )
+		void _init_str( const TPChar * pStr, size_t pLength )
 		{
 			if( pLength == cve::max_size )
 			{
@@ -210,7 +210,7 @@ namespace cppx
 		#endif
 		}
 
-		void _initStr( const TPChar pCh, size_t pCount )
+		void _init_str( const TPChar pCh, size_t pCount )
 		{
 			_stringData = make_intrusive<StringDataType>( std::basic_string<TPChar>{ pCount, pCh } );
 		#if( PCL_DEBUG && CPPX_ENABLE_IMMUTABLE_STRING_DEBUG_VIEW )

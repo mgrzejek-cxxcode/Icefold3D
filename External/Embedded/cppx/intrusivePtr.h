@@ -2,7 +2,7 @@
 #ifndef __CPPX_INTRUSIVE_PTR_H__
 #define __CPPX_INTRUSIVE_PTR_H__
 
-#include "RefCounter.h"
+#include "refCounter.h"
 #include <cassert>
 #include <functional>
 
@@ -230,7 +230,7 @@ namespace cppx
 		{
 			if( _ptr != nullptr )
 			{
-				_releasePtr( _ptr );
+				_release_ptr( _ptr );
 				_ptr = nullptr;
 			}
 		}
@@ -261,7 +261,7 @@ namespace cppx
 				_set_no_release( pPointer );
 				if( prevPtr != nullptr )
 				{
-					_releasePtr( prevPtr );
+					_release_ptr( prevPtr );
 				}
 			}
 		}

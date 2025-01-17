@@ -1,6 +1,6 @@
 
-#include "Hash.h"
-#include "StaticLimits.h"
+#include "hash.h"
+#include "staticLimits.h"
 #include <zlib/zlib.h>
 
 namespace cppx
@@ -93,7 +93,7 @@ namespace cppx
 
 
 	constexpr uint64 sFNV64PrimeValue = 0x100000001B3;
-	constexpr uint64 sU64Mask = limits<uint64>::max_value << 8;
+	constexpr uint64 sU64Mask = meta::limits<uint64>::max_value << 8;
 
 	uint64 hash_traits<hash_algo::fnv1a64>::compute( const void * pInput, size_t pInputSize )
 	{

@@ -89,6 +89,10 @@ set_target_properties( ext-cppx PROPERTIES
         OUTPUT_NAME ext-cppx
 )
 
+target_include_directories( ext-cppx PUBLIC
+        "${EXT_INCLUDE_DIR}"
+)
+
 target_link_libraries( ext-cppx PUBLIC
         ext-zlib
 )

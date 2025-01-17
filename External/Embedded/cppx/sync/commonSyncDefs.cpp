@@ -1,5 +1,5 @@
 
-#include "syncCommon.h"
+#include "commonSyncDefs.h"
 #include <thread>
 
 namespace cppx::sync

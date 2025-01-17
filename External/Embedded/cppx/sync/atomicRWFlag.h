@@ -4,7 +4,7 @@
 #ifndef __CPPX_ATOMIC_RW_FLAG_H__
 #define __CPPX_ATOMIC_RW_FLAG_H__
 
-#include "syncCommon.h"
+#include "commonSyncDefs.h"
 #include <atomic>
 
 namespace cppx::sync
@@ -26,22 +26,22 @@ namespace cppx::sync
 		: _internalState{ atomic_rw_flag_state::unset }
 		{}
 
-		bool test( std::memory_order pMemoryOrder = std::memory_order_acquire ) const volatile noexcept
+		bool test( std::memory_order pMemoryOrder = std::memory_order_acquire ) const noexcept
 		{
 			return _internalState.load( pMemoryOrder ) == atomic_rw_flag_state::set;
 		}
 
-		bool test_and_set( std::memory_order pMemoryOrder = std::memory_order_acq_rel ) volatile noexcept
+		bool test_and_set( std::memory_order pMemoryOrder = std::memory_order_acq_rel ) noexcept
 		{
 			return _internalState.exchange( atomic_rw_flag_state::set, pMemoryOrder ) == atomic_rw_flag_state::set;
 		}
 
-		void set( std::memory_order pMemoryOrder = std::memory_order_release ) volatile noexcept
+		void set( std::memory_order pMemoryOrder = std::memory_order_release ) noexcept
 		{
 			_internalState.store( atomic_rw_flag_state::set, pMemoryOrder );
 		}
 
-		void clear( std::memory_order pMemoryOrder = std::memory_order_release ) volatile noexcept
+		void clear( std::memory_order pMemoryOrder = std::memory_order_release ) noexcept
 		{
 			_internalState.store( atomic_rw_flag_state::unset, pMemoryOrder );
 		}

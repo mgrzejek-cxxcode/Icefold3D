@@ -2,16 +2,16 @@
 #ifndef __CPPX_PLATFORM_GDS_H__
 #define __CPPX_PLATFORM_GDS_H__
 
-#include "Platform.h"
+#include "platform.h"
 #include <cmath>
 
-namespace Ic3
+namespace cppx
 {
 
 	using gds_size_t = uint64;
 	using gds_type_id_t = uint64;
 	
-	namespace GDS
+	namespace gds
 	{
 
 		/// @brief Precision of the decimal part used for 'float' (de)serialization.
@@ -139,7 +139,7 @@ namespace Ic3
 			template <typename TVal>
 			static inline void serializeIntegral( byte_order pByteOrder, byte * pOutputBuffer, const TVal pValue )
 			{
-				if( pByteOrder == byte_order::PlatformNative )
+				if( pByteOrder == byte_order::platform_native )
 				{
 					*( reinterpret_cast<TVal *>( pOutputBuffer ) ) = pValue;
 				}
@@ -153,7 +153,7 @@ namespace Ic3
 			template <typename TVal>
 			static inline TVal deserializeIntegral( byte_order pByteOrder, const byte * pInputData )
 			{
-				if( pByteOrder == byte_order::PlatformNative )
+				if( pByteOrder == byte_order::platform_native )
 				{
 					return *( reinterpret_cast<const TVal *>( pInputData ) );
 				}
@@ -171,7 +171,7 @@ namespace Ic3
 			template <typename TVal>
 			static inline void serializeIntegral( byte_order pByteOrder, byte * pOutputBuffer, const TVal pValue )
 			{
-				if( pByteOrder == byte_order::PlatformNative )
+				if( pByteOrder == byte_order::platform_native )
 				{
 					*( reinterpret_cast<TVal *>( pOutputBuffer ) ) = pValue;
 				}
@@ -184,7 +184,7 @@ namespace Ic3
 			template <typename TVal>
 			static inline TVal deserializeIntegral( byte_order pByteOrder, const byte * pInputData )
 			{
-				if( pByteOrder == byte_order::PlatformNative )
+				if( pByteOrder == byte_order::platform_native )
 				{
 					return *( reinterpret_cast<const TVal *>( pInputData ) );
 				}
@@ -202,7 +202,7 @@ namespace Ic3
 			template <typename TVal>
 			static inline void serializeIntegral( byte_order pByteOrder, byte * pOutputBuffer, const TVal pValue )
 			{
-				if( pByteOrder == byte_order::PlatformNative )
+				if( pByteOrder == byte_order::platform_native )
 				{
 					*( reinterpret_cast<TVal *>( pOutputBuffer ) ) = pValue;
 				}
@@ -215,7 +215,7 @@ namespace Ic3
 			template <typename TVal>
 			static inline TVal deserializeIntegral( byte_order pByteOrder, const byte * pInputData )
 			{
-				if( pByteOrder == byte_order::PlatformNative )
+				if( pByteOrder == byte_order::platform_native )
 				{
 					return *( reinterpret_cast<const TVal *>( pInputData ) );
 				}

@@ -46,7 +46,7 @@
 cmake_minimum_required( VERSION 3.10 )
 SET( HEADER_PATH ../include/assimp )
 
-SET(IC3_EXTLIB_ASSIMP_TARGET_NAME "ExtLib.Assimp")
+SET(IC3_EXTLIB_ASSIMP_TARGET_NAME "ext-assimp")
 
 if(NOT ANDROID AND ASSIMP_ANDROID_JNIIOSYSTEM)
     message(WARNING "Requesting Android JNI I/O-System in non-Android toolchain. Resetting ASSIMP_ANDROID_JNIIOSYSTEM to OFF.")
