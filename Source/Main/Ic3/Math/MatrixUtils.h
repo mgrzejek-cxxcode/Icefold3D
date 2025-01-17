@@ -221,7 +221,7 @@ namespace Ic3::Math
 		const TPValue zAxisEyeDot = dot( zAxis, pEyePos );
 
 		return Matrix4x4<TPValue> {
-				xAxis.mPX, xAxis.mPY, xAxis.mPZ, -xAxisEyeDot,
+				xAxis.x, xAxis.y, xAxis.z, -xAxisEyeDot,
 				yAxis.x, yAxis.y, yAxis.z, -yAxisEyeDot,
 				zAxis.x, zAxis.y, zAxis.z, -zAxisEyeDot,
 				0, 0, 0, 1
@@ -240,7 +240,7 @@ namespace Ic3::Math
 		const TPValue zAxisEyeDot = dot( zAxis, pEyePos );
 
 		return Matrix4x4<TPValue> {
-				xAxis.mPX, xAxis.mPY, xAxis.mPZ, -xAxisEyeDot,
+				xAxis.x, xAxis.y, xAxis.z, -xAxisEyeDot,
 				yAxis.x, yAxis.y, yAxis.z, -yAxisEyeDot,
 				-zAxis.x, -zAxis.y, -zAxis.z, zAxisEyeDot,
 				0, 0, 0, 1
@@ -438,17 +438,17 @@ namespace Ic3::Math
 		const auto icnAxis = normalizedAxis * ( static_cast<TPValue>( 1 ) - angleCos );
 
 		Matrix3x3<TPValue> rMat;
-		rMat[0][0] = pAxis.x * icnAxis.mPX + angleCos;
-		rMat[0][1] = pAxis.x * icnAxis.mPY - pAxis.z * angleSin;
-		rMat[0][2] = pAxis.x * icnAxis.mPZ + pAxis.y * angleSin;
+		rMat[0][0] = pAxis.x * icnAxis.x + angleCos;
+		rMat[0][1] = pAxis.x * icnAxis.y - pAxis.z * angleSin;
+		rMat[0][2] = pAxis.x * icnAxis.z + pAxis.y * angleSin;
 
-		rMat[1][0] = pAxis.y * icnAxis.mPX + pAxis.z * angleSin;
-		rMat[1][1] = pAxis.y * icnAxis.mPY + angleCos;
-		rMat[1][2] = pAxis.y * icnAxis.mPZ - pAxis.x * angleSin;
+		rMat[1][0] = pAxis.y * icnAxis.x + pAxis.z * angleSin;
+		rMat[1][1] = pAxis.y * icnAxis.y + angleCos;
+		rMat[1][2] = pAxis.y * icnAxis.z - pAxis.x * angleSin;
 
-		rMat[2][0] = pAxis.z * icnAxis.mPX - pAxis.y * angleSin;
-		rMat[2][1] = pAxis.z * icnAxis.mPY + pAxis.y * angleSin;
-		rMat[2][2] = pAxis.z * icnAxis.mPZ + angleCos;
+		rMat[2][0] = pAxis.z * icnAxis.x - pAxis.y * angleSin;
+		rMat[2][1] = pAxis.z * icnAxis.y + pAxis.y * angleSin;
+		rMat[2][2] = pAxis.z * icnAxis.z + angleCos;
 
 		return Matrix4x4<TPValue> {
 			rMat.row0.x, rMat.row0.y, rMat.row0.z, 0,
@@ -483,7 +483,7 @@ namespace Ic3::Math
 }
 
 #if( IC3_MATH_SIMD_ENABLE )
-#  include "matrixUtilsSIMD.inl"
+#  include "MatrixUtilsSIMD.inl"
 #endif
 
 #endif // __IC3_MATH_MATRIX_UTILS_H__

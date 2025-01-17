@@ -12,7 +12,7 @@ namespace Ic3::Math
 
 #if( IC3_MATH_SIMD_USE_VX128F )
 
-	IC3_PCL_ATTR_ALWAYS_INLINE void _mm_transpose_mat4_128f( __m128 pM0, __m128 pM1, __m128 pM2, __m128 pM3, __m128 pResult[4] )
+	PCL_ATTR_ALWAYS_INLINE void _mm_transpose_mat4_128f( __m128 pM0, __m128 pM1, __m128 pM2, __m128 pM3, __m128 pResult[4] )
 	{
 		// M0: [ M00, M01, M02, M03 ]
 		// M1: [ M10, M11, M12, M13 ]
@@ -42,14 +42,14 @@ namespace Ic3::Math
 	#endif
 	}
 
-	IC3_PCL_ATTR_ALWAYS_INLINE Matrix4x4<float> transpose( const Matrix4x4<float> & pMatrix )
+	PCL_ATTR_ALWAYS_INLINE Matrix4x4<float> transpose( const Matrix4x4<float> & pMatrix )
 	{
 		Matrix4x4<float> result;
 		_mm_transpose_mat4_128f( pMatrix.mm0, pMatrix.mm1, pMatrix.mm2, pMatrix.mm3, result.simdPtr() );
 		return result;
 	}
 
-	IC3_PCL_ATTR_ALWAYS_INLINE void transposeInplace( Matrix4x4<float> & pMatrix )
+	PCL_ATTR_ALWAYS_INLINE void transposeInplace( Matrix4x4<float> & pMatrix )
 	{
 		_mm_transpose_mat4_128f( pMatrix.mm0, pMatrix.mm1, pMatrix.mm2, pMatrix.mm3, pMatrix.simdPtr() );
 	}

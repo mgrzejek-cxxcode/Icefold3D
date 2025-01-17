@@ -4,14 +4,14 @@
 
 #include "Vector.h"
 
-#if( IC3_PCL_COMPILER & IC3_PCL_COMPILER_CLANG )
+#if( PCL_COMPILER & PCL_COMPILER_CLANG )
 #  pragma clang diagnostic push
 #  pragma clang diagnostic ignored "-Wgnu-anonymous-struct"
 #  pragma clang diagnostic ignored "-Wnested-anon-types"
-#elif( IC3_PCL_COMPILER & IC3_PCL_COMPILER_GCC )
+#elif( PCL_COMPILER & PCL_COMPILER_GCC )
 #  pragma GCC diagnostic push
 #  pragma GCC diagnostic ignored "-Wpedantic"
-#elif( IC3_PCL_COMPILER & IC3_PCL_COMPILER_MSVC )
+#elif( PCL_COMPILER & PCL_COMPILER_MSVC )
 #  pragma warning( push )
 #  pragma warning( disable: 4201 )  // 'Nonstandard extension used: nameless struct/union'
 #endif
@@ -106,57 +106,57 @@ namespace Ic3::Math
 		: row0( pData.begin() )
 		, row1( pData.begin() + tpColumns )
 		{
-			ic3DebugAssert( pData.size() == sMatrixSize );
+			Ic3DebugAssert( pData.size() == sMatrixSize );
 		}
 
-		IC3_ATTR_NO_DISCARD Vector<TPValue, tpColumns> & operator[]( size_t pIndex ) noexcept
+		CPPX_ATTR_NO_DISCARD Vector<TPValue, tpColumns> & operator[]( size_t pIndex ) noexcept
 		{
-			ic3DebugAssert( pIndex < sRowsNum );
+			Ic3DebugAssert( pIndex < sRowsNum );
 			return static_cast<RowVector *>( &row0 )[pIndex];
 		}
 
-		IC3_ATTR_NO_DISCARD const Vector<TPValue, tpColumns> & operator[]( size_t pIndex ) const noexcept
+		CPPX_ATTR_NO_DISCARD const Vector<TPValue, tpColumns> & operator[]( size_t pIndex ) const noexcept
 		{
-			ic3DebugAssert( pIndex < sRowsNum );
+			Ic3DebugAssert( pIndex < sRowsNum );
 			return static_cast<const RowVector *>( &row0 )[pIndex];
 		}
 
-		IC3_ATTR_NO_DISCARD ColumnVector column( size_t pColumnIndex ) const noexcept
+		CPPX_ATTR_NO_DISCARD ColumnVector column( size_t pColumnIndex ) const noexcept
 		{
 			return { row0[pColumnIndex], row1[pColumnIndex] };
 		}
 
-		IC3_ATTR_NO_DISCARD TPValue * data() noexcept
+		CPPX_ATTR_NO_DISCARD TPValue * data() noexcept
 		{
 			return &( values[0] );
 		}
 
-		IC3_ATTR_NO_DISCARD const TPValue * data() const noexcept
+		CPPX_ATTR_NO_DISCARD const TPValue * data() const noexcept
 		{
 			return &( values[0] );
 		}
 
-		IC3_ATTR_NO_DISCARD RowVector * rowPtr( size_t pIndex = 0 ) noexcept
+		CPPX_ATTR_NO_DISCARD RowVector * rowPtr( size_t pIndex = 0 ) noexcept
 		{
-			ic3DebugAssert( pIndex < sRowsNum );
+			Ic3DebugAssert( pIndex < sRowsNum );
 			return static_cast<RowVector *>( &row0 ) + pIndex;
 		}
 
-		IC3_ATTR_NO_DISCARD const RowVector * rowPtr( size_t pIndex = 0 ) const noexcept
+		CPPX_ATTR_NO_DISCARD const RowVector * rowPtr( size_t pIndex = 0 ) const noexcept
 		{
-			ic3DebugAssert( pIndex < sRowsNum );
+			Ic3DebugAssert( pIndex < sRowsNum );
 			return static_cast<const RowVector *>( &row0 ) + pIndex;
 		}
 
-		IC3_ATTR_NO_DISCARD RowSIMDDataType * simdPtr( size_t pIndex = 0 ) noexcept
+		CPPX_ATTR_NO_DISCARD RowSIMDDataType * simdPtr( size_t pIndex = 0 ) noexcept
 		{
-			ic3DebugAssert( pIndex < sRowsNum );
+			Ic3DebugAssert( pIndex < sRowsNum );
 			return static_cast<RowSIMDDataType *>( &mm0 ) + pIndex;
 		}
 
-		IC3_ATTR_NO_DISCARD const RowSIMDDataType * simdPtr( size_t pIndex = 0 ) const noexcept
+		CPPX_ATTR_NO_DISCARD const RowSIMDDataType * simdPtr( size_t pIndex = 0 ) const noexcept
 		{
-			ic3DebugAssert( pIndex < sRowsNum );
+			Ic3DebugAssert( pIndex < sRowsNum );
 			return static_cast<const RowSIMDDataType *>( &mm0 ) + pIndex;
 		}
 	};
@@ -220,57 +220,57 @@ namespace Ic3::Math
 		, row1( pData.begin() + tpColumns )
 		, row2( pData.begin() + 2*tpColumns )
 		{
-			ic3DebugAssert( pData.size() == sMatrixSize );
+			Ic3DebugAssert( pData.size() == sMatrixSize );
 		}
 
-		IC3_ATTR_NO_DISCARD Vector<TPValue, tpColumns> & operator[]( size_t pIndex ) noexcept
+		CPPX_ATTR_NO_DISCARD Vector<TPValue, tpColumns> & operator[]( size_t pIndex ) noexcept
 		{
-			ic3DebugAssert( pIndex < sRowsNum );
+			Ic3DebugAssert( pIndex < sRowsNum );
 			return static_cast<RowVector *>( &row0 )[pIndex];
 		}
 
-		IC3_ATTR_NO_DISCARD const Vector<TPValue, tpColumns> & operator[]( size_t pIndex ) const noexcept
+		CPPX_ATTR_NO_DISCARD const Vector<TPValue, tpColumns> & operator[]( size_t pIndex ) const noexcept
 		{
-			ic3DebugAssert( pIndex < sRowsNum );
+			Ic3DebugAssert( pIndex < sRowsNum );
 			return static_cast<const RowVector *>( &row0 )[pIndex];
 		}
 
-		IC3_ATTR_NO_DISCARD ColumnVector column( size_t pColumnIndex ) const noexcept
+		CPPX_ATTR_NO_DISCARD ColumnVector column( size_t pColumnIndex ) const noexcept
 		{
 			return { row0[pColumnIndex], row1[pColumnIndex], row2[pColumnIndex] };
 		}
 
-		IC3_ATTR_NO_DISCARD TPValue * data() noexcept
+		CPPX_ATTR_NO_DISCARD TPValue * data() noexcept
 		{
 			return &( values[0] );
 		}
 
-		IC3_ATTR_NO_DISCARD const TPValue * data() const noexcept
+		CPPX_ATTR_NO_DISCARD const TPValue * data() const noexcept
 		{
 			return &( values[0] );
 		}
 
-		IC3_ATTR_NO_DISCARD RowVector * rowPtr( size_t pIndex = 0 ) noexcept
+		CPPX_ATTR_NO_DISCARD RowVector * rowPtr( size_t pIndex = 0 ) noexcept
 		{
-			ic3DebugAssert( pIndex < sRowsNum );
+			Ic3DebugAssert( pIndex < sRowsNum );
 			return static_cast<RowVector *>( &row0 ) + pIndex;
 		}
 
-		IC3_ATTR_NO_DISCARD const RowVector * rowPtr( size_t pIndex = 0 ) const noexcept
+		CPPX_ATTR_NO_DISCARD const RowVector * rowPtr( size_t pIndex = 0 ) const noexcept
 		{
-			ic3DebugAssert( pIndex < sRowsNum );
+			Ic3DebugAssert( pIndex < sRowsNum );
 			return static_cast<const RowVector *>( &row0 ) + pIndex;
 		}
 
-		IC3_ATTR_NO_DISCARD RowSIMDDataType * simdPtr( size_t pIndex = 0 ) noexcept
+		CPPX_ATTR_NO_DISCARD RowSIMDDataType * simdPtr( size_t pIndex = 0 ) noexcept
 		{
-			ic3DebugAssert( pIndex < sRowsNum );
+			Ic3DebugAssert( pIndex < sRowsNum );
 			return static_cast<RowSIMDDataType *>( &mm0 ) + pIndex;
 		}
 
-		IC3_ATTR_NO_DISCARD const RowSIMDDataType * simdPtr( size_t pIndex = 0 ) const noexcept
+		CPPX_ATTR_NO_DISCARD const RowSIMDDataType * simdPtr( size_t pIndex = 0 ) const noexcept
 		{
-			ic3DebugAssert( pIndex < sRowsNum );
+			Ic3DebugAssert( pIndex < sRowsNum );
 			return static_cast<const RowSIMDDataType *>( &mm0 ) + pIndex;
 		}
 	};
@@ -284,6 +284,7 @@ namespace Ic3::Math
 		static constexpr size_t sColumnsNum = tpColumns;
 		static constexpr size_t sMatrixSize = sRowsNum * tpColumns;
 		static constexpr size_t sAlignment = alignof( TPValue );
+		
 		using RowSIMDDataType = typename MatrixRowSIMDData<TPValue, sRowsNum, tpColumns>::Type;
 
 		using Traits = MatrixTraits<TPValue, sRowsNum, tpColumns>;
@@ -339,62 +340,62 @@ namespace Ic3::Math
 		, row2( pData.begin() + 2*tpColumns )
 		, row3( pData.begin() + 3*tpColumns )
 		{
-			ic3DebugAssert( pData.size() == sMatrixSize );
+			Ic3DebugAssert( pData.size() == sMatrixSize );
 		}
 
-		IC3_ATTR_NO_DISCARD Vector<TPValue, tpColumns> & operator[]( size_t pIndex ) noexcept
+		CPPX_ATTR_NO_DISCARD Vector<TPValue, tpColumns> & operator[]( size_t pIndex ) noexcept
 		{
-			ic3DebugAssert( pIndex < sRowsNum );
+			Ic3DebugAssert( pIndex < sRowsNum );
 			return static_cast<RowVector *>( &row0 )[pIndex];
 		}
 
-		IC3_ATTR_NO_DISCARD const Vector<TPValue, tpColumns> & operator[]( size_t pIndex ) const noexcept
+		CPPX_ATTR_NO_DISCARD const Vector<TPValue, tpColumns> & operator[]( size_t pIndex ) const noexcept
 		{
-			ic3DebugAssert( pIndex < sRowsNum );
+			Ic3DebugAssert( pIndex < sRowsNum );
 			return static_cast<const RowVector *>( &row0 )[pIndex];
 		}
 
-		IC3_ATTR_NO_DISCARD ColumnVector column( size_t pColumnIndex ) const noexcept
+		CPPX_ATTR_NO_DISCARD ColumnVector column( size_t pColumnIndex ) const noexcept
 		{
 			return { row0[pColumnIndex], row1[pColumnIndex], row2[pColumnIndex], row3[pColumnIndex] };
 		}
 
-		IC3_ATTR_NO_DISCARD Matrix<TPValue, 2, tpColumns> asMat2() const noexcept
+		CPPX_ATTR_NO_DISCARD Matrix<TPValue, 2, tpColumns> asMat2() const noexcept
 		{
 
 		}
 
-		IC3_ATTR_NO_DISCARD TPValue * data() noexcept
+		CPPX_ATTR_NO_DISCARD TPValue * data() noexcept
 		{
 			return &( values[0] );
 		}
 
-		IC3_ATTR_NO_DISCARD const TPValue * data() const noexcept
+		CPPX_ATTR_NO_DISCARD const TPValue * data() const noexcept
 		{
 			return &( values[0] );
 		}
 
-		IC3_ATTR_NO_DISCARD RowVector * rowPtr( size_t pIndex = 0 ) noexcept
+		CPPX_ATTR_NO_DISCARD RowVector * rowPtr( size_t pIndex = 0 ) noexcept
 		{
-			ic3DebugAssert( pIndex < sRowsNum );
+			Ic3DebugAssert( pIndex < sRowsNum );
 			return static_cast<RowVector *>( &row0 ) + pIndex;
 		}
 
-		IC3_ATTR_NO_DISCARD const RowVector * rowPtr( size_t pIndex = 0 ) const noexcept
+		CPPX_ATTR_NO_DISCARD const RowVector * rowPtr( size_t pIndex = 0 ) const noexcept
 		{
-			ic3DebugAssert( pIndex < sRowsNum );
+			Ic3DebugAssert( pIndex < sRowsNum );
 			return static_cast<const RowVector *>( &row0 ) + pIndex;
 		}
 
-		IC3_ATTR_NO_DISCARD RowSIMDDataType * simdPtr( size_t pIndex = 0 ) noexcept
+		CPPX_ATTR_NO_DISCARD RowSIMDDataType * simdPtr( size_t pIndex = 0 ) noexcept
 		{
-			ic3DebugAssert( pIndex < sRowsNum );
+			Ic3DebugAssert( pIndex < sRowsNum );
 			return static_cast<RowSIMDDataType *>( &mm0 ) + pIndex;
 		}
 
-		IC3_ATTR_NO_DISCARD const RowSIMDDataType * simdPtr( size_t pIndex = 0 ) const noexcept
+		CPPX_ATTR_NO_DISCARD const RowSIMDDataType * simdPtr( size_t pIndex = 0 ) const noexcept
 		{
-			ic3DebugAssert( pIndex < sRowsNum );
+			Ic3DebugAssert( pIndex < sRowsNum );
 			return static_cast<const RowSIMDDataType *>( &mm0 ) + pIndex;
 		}
 	};
@@ -505,11 +506,11 @@ namespace Ic3::Math
 
 } // namespace Ic3::Math
 
-#if( IC3_PCL_COMPILER & IC3_PCL_COMPILER_CLANG )
+#if( PCL_COMPILER & PCL_COMPILER_CLANG )
 #  pragma clang diagnostic pop
-#elif( IC3_PCL_COMPILER & IC3_PCL_COMPILER_GCC )
+#elif( PCL_COMPILER & PCL_COMPILER_GCC )
 #  pragma GCC diagnostic pop
-#elif( IC3_PCL_COMPILER & IC3_PCL_COMPILER_MSVC )
+#elif( PCL_COMPILER & PCL_COMPILER_MSVC )
 #  pragma warning( pop )
 #endif
 

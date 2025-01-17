@@ -3,12 +3,12 @@
 #  error ""
 #endif
 
-#if( IC3_PCL_COMPILER & IC3_PCL_COMPILER_CLANG )
+#if( PCL_COMPILER & PCL_COMPILER_CLANG )
 #  pragma clang diagnostic push
 #  pragma clang diagnostic ignored "-Wignored-attributes"
 #endif
 
-#if( IC3_PCL_COMPILER & IC3_PCL_COMPILER_GCC )
+#if( PCL_COMPILER & PCL_COMPILER_GCC )
 #  pragma GCC diagnostic push
 #  pragma GCC diagnostic ignored "-Wignored-attributes"
 #endif
@@ -102,10 +102,10 @@ namespace Ic3::Math
 
 } // namespace Ic3::Math
 
-#if( IC3_PCL_COMPILER & IC3_PCL_COMPILER_GCC )
+#if( PCL_COMPILER & PCL_COMPILER_GCC )
 #  pragma GCC diagnostic pop
 #endif
 
-#if( IC3_PCL_COMPILER & IC3_PCL_COMPILER_CLANG )
+#if( PCL_COMPILER & PCL_COMPILER_CLANG )
 #  pragma clang diagnostic pop
 #endif

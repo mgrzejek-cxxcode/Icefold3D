@@ -3,16 +3,16 @@
 #define __IC3_MATH_COLOR_H__
 
 #include "Vector.h"
-#include <Ic3/Cppx/StaticLimits.h>
+#include <cppx/staticLimits.h>
 
-#if( IC3_PCL_COMPILER & IC3_PCL_COMPILER_CLANG )
+#if( PCL_COMPILER & PCL_COMPILER_CLANG )
 #  pragma clang diagnostic push
 #  pragma clang diagnostic ignored "-Wgnu-anonymous-struct"
 #  pragma clang diagnostic ignored "-Wnested-anon-types"
-#elif( IC3_PCL_COMPILER & IC3_PCL_COMPILER_GCC )
+#elif( PCL_COMPILER & PCL_COMPILER_GCC )
 #  pragma GCC diagnostic push
 #  pragma GCC diagnostic ignored "-Wpedantic"
-#elif( IC3_PCL_COMPILER & IC3_PCL_COMPILER_MSVC )
+#elif( PCL_COMPILER & PCL_COMPILER_MSVC )
 #  pragma warning( push )
 #  pragma warning( disable: 4201 )  // 'Nonstandard extension used: nameless struct/union'
 #endif
@@ -25,31 +25,31 @@ namespace Ic3::Math
 	public:
 		struct
 		{
-			uint8 mU8Red;
-			uint8 mU8Green;
-			uint8 mU8Blue;
-			uint8 mU8Alpha;
+			uint8 u8Red;
+			uint8 u8Green;
+			uint8 u8Blue;
+			uint8 u8Alpha;
 		};
 
-		uint32 mU32Code = 0xFF;
+		uint32 u32Code = 0xFF;
 
 	public:
 		constexpr RGBAColor() noexcept
-		: mU8Red( 0u )
-		, mU8Green( 0u )
-		, mU8Blue( 0u )
-		, mU8Alpha( 255u )
+		: u8Red( 0u )
+		, u8Green( 0u )
+		, u8Blue( 0u )
+		, u8Alpha( 255u )
 		{}
 
 		constexpr RGBAColor( uint32 pU32Code ) noexcept
-		: mU32Code( pU32Code )
+		: u32Code( pU32Code )
 		{}
 
 		constexpr RGBAColor( uint8 pRed, uint8 pGreen, uint8 pBlue, uint8 pAlpha = 0xFF ) noexcept
-		: mU8Red( pRed )
-		, mU8Green( pGreen )
-		, mU8Blue( pBlue )
-		, mU8Alpha( pAlpha )
+		: u8Red( pRed )
+		, u8Green( pGreen )
+		, u8Blue( pBlue )
+		, u8Alpha( pAlpha )
 		{}
 	};
 
@@ -61,43 +61,43 @@ namespace Ic3::Math
 
 		struct
 		{
-			TReal mFpRed;
-			TReal mFpGreen;
-			TReal mFpBlue;
-			TReal mFpAlpha;
+			TReal fpRed;
+			TReal fpGreen;
+			TReal fpBlue;
+			TReal fpAlpha;
 		};
 
 		TReal mRGBA[4];
 
 	public:
 		constexpr RGBAColorNorm() noexcept
-		: mFpRed( static_cast<TReal>( 0 ) )
-		, mFpGreen( static_cast<TReal>( 0 ) )
-		, mFpBlue( static_cast<TReal>( 0 ) )
-		, mFpAlpha( static_cast<TReal>( 1 ) )
+		: fpRed( static_cast<TReal>( 0 ) )
+		, fpGreen( static_cast<TReal>( 0 ) )
+		, fpBlue( static_cast<TReal>( 0 ) )
+		, fpAlpha( static_cast<TReal>( 1 ) )
 		{}
 
 		constexpr RGBAColorNorm( TReal pRed, TReal pGreen, TReal pBlue, TReal pAlpha = static_cast<TReal>( 1 ) ) noexcept
-		: mFpRed( pRed )
-		, mFpGreen( pGreen )
-		, mFpBlue( pBlue )
-		, mFpAlpha( pAlpha )
+		: fpRed( pRed )
+		, fpGreen( pGreen )
+		, fpBlue( pBlue )
+		, fpAlpha( pAlpha )
 		{}
 
 		constexpr RGBAColorNorm( RGBAColor pColor )
-		: mFpRed( static_cast<TReal>( pColor.mU8Red ) / static_cast<TReal>( Cppx::QLimits<uint8>::sMaxValue ) )
-		, mFpGreen( static_cast<TReal>( pColor.mU8Green ) / static_cast<TReal>( Cppx::QLimits<uint8>::sMaxValue ) )
-		, mFpBlue( static_cast<TReal>( pColor.mU8Blue ) / static_cast<TReal>( Cppx::QLimits<uint8>::sMaxValue ) )
-		, mFpAlpha( static_cast<TReal>( pColor.mU8Alpha ) / static_cast<TReal>( Cppx::QLimits<uint8>::sMaxValue ) )
+		: fpRed( static_cast<TReal>( pColor.u8Red ) / static_cast<TReal>( cppx::meta::limits<uint8>::max_value ) )
+		, fpGreen( static_cast<TReal>( pColor.u8Green ) / static_cast<TReal>( cppx::meta::limits<uint8>::max_value ) )
+		, fpBlue( static_cast<TReal>( pColor.u8Blue ) / static_cast<TReal>( cppx::meta::limits<uint8>::max_value ) )
+		, fpAlpha( static_cast<TReal>( pColor.u8Alpha ) / static_cast<TReal>( cppx::meta::limits<uint8>::max_value ) )
 		{}
 
 		constexpr RGBAColor toU8Color() const
 		{
 			return RGBAColor(
-				static_cast<uint8>( mFpRed * Cppx::QLimits<uint8>::sMaxValue  ),
-				static_cast<uint8>( mFpGreen * Cppx::QLimits<uint8>::sMaxValue  ),
-				static_cast<uint8>( mFpBlue * Cppx::QLimits<uint8>::sMaxValue  ),
-				static_cast<uint8>( mFpAlpha * Cppx::QLimits<uint8>::sMaxValue  ) );
+				static_cast<uint8>( fpRed * cppx::meta::limits<uint8>::max_value  ),
+				static_cast<uint8>( fpGreen * cppx::meta::limits<uint8>::max_value  ),
+				static_cast<uint8>( fpBlue * cppx::meta::limits<uint8>::max_value  ),
+				static_cast<uint8>( fpAlpha * cppx::meta::limits<uint8>::max_value  ) );
 		}
 	};
 
@@ -107,30 +107,30 @@ namespace Ic3::Math
 
 	inline bool operator==( const RGBAColor & pLhs, const RGBAColor & pRhs )
 	{
-		return pLhs.mU32Code == pRhs.mU32Code;
+		return pLhs.u32Code == pRhs.u32Code;
 	}
 
 	inline bool operator!=( const RGBAColor & pLhs, const RGBAColor & pRhs )
 	{
-		return pLhs.mU32Code != pRhs.mU32Code;
+		return pLhs.u32Code != pRhs.u32Code;
 	}
 
 	template <typename TReal>
 	inline bool operator==( const RGBAColorNorm<TReal> & pLhs, const RGBAColorNorm<TReal> & pRhs )
 	{
-		return ( pLhs.mFpRed == pRhs.mFpRed ) && ( pLhs.mFpGreen == pRhs.mFpGreen ) && ( pLhs.mFpBlue == pRhs.mFpBlue ) && ( pLhs.mFpAlpha == pRhs.mFpAlpha );
+		return ( pLhs.fpRed == pRhs.fpRed ) && ( pLhs.fpGreen == pRhs.fpGreen ) && ( pLhs.fpBlue == pRhs.fpBlue ) && ( pLhs.fpAlpha == pRhs.fpAlpha );
 	}
 
 	template <typename TReal>
 	inline bool operator!=( const RGBAColorNorm<TReal> & pLhs, const RGBAColorNorm<TReal> & pRhs )
 	{
-		return ( pLhs.mFpRed != pRhs.mFpRed ) || ( pLhs.mFpGreen != pRhs.mFpGreen ) || ( pLhs.mFpBlue != pRhs.mFpBlue ) || ( pLhs.mFpAlpha != pRhs.mFpAlpha );
+		return ( pLhs.fpRed != pRhs.fpRed ) || ( pLhs.fpGreen != pRhs.fpGreen ) || ( pLhs.fpBlue != pRhs.fpBlue ) || ( pLhs.fpAlpha != pRhs.fpAlpha );
 	}
 
 	template <typename TReal>
 	inline Vec4f colorVector( const RGBAColorNorm<TReal> & pColor )
 	{
-		return { pColor.mFpRed, pColor.mFpGreen, pColor.mFpBlue, pColor.mFpAlpha };
+		return { pColor.fpRed, pColor.fpGreen, pColor.fpBlue, pColor.fpAlpha };
 	}
 
 	inline Vec4f colorVector( const RGBAColorU8 & pColor )
@@ -160,11 +160,11 @@ namespace Ic3::Math
 
 } // namespace Ic3::Math
 
-#if( IC3_PCL_COMPILER & IC3_PCL_COMPILER_CLANG )
+#if( PCL_COMPILER & PCL_COMPILER_CLANG )
 #  pragma clang diagnostic pop
-#elif( IC3_PCL_COMPILER & IC3_PCL_COMPILER_GCC )
+#elif( PCL_COMPILER & PCL_COMPILER_GCC )
 #  pragma GCC diagnostic pop
-#elif( IC3_PCL_COMPILER & IC3_PCL_COMPILER_MSVC )
+#elif( PCL_COMPILER & PCL_COMPILER_MSVC )
 #  pragma warning( pop )
 #endif
 
