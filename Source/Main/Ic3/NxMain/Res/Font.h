@@ -4,9 +4,9 @@
 #ifndef __IC3_NXMAIN_RES_FONT_H__
 #define __IC3_NXMAIN_RES_FONT_H__
 
-#include "fontMetrics.h"
-#include "fontTexture.h"
-#include <Ic3/Cppx/sortedArray.h>
+#include "FontMetrics.h"
+#include "FontTexture.h"
+#include <cppx/sortedArray.h>
 #include <unordered_map>
 
 namespace Ic3
@@ -18,8 +18,8 @@ namespace Ic3
 		std::string fontID;
 		font_size_t fontSize = 0;
 		Math::Vec2u32 textureDimensions = { 0, 0 };
-		GCI::ETextureFormat textureFormat = GCI::ETextureFormat::UNKNOWN;
-		Bitmask<EFontPropertyFlags> propertyFlags = 0;
+		GCI::ETextureFormat textureFormat = GCI::ETextureFormat::Undefined;
+		cppx::bitmask<EFontPropertyFlags> propertyFlags = 0;
 
 	};
 
@@ -44,7 +44,7 @@ namespace Ic3
 
 	protected:
 		using GlyphMap = std::unordered_map<char_code_point_t, FontGlyph>;
-		using KerningInfoArray = SortedArray<CharKerningInfo>;
+		using KerningInfoArray = cppx::sorted_array<CharKerningInfo>;
 
 		void addGlyph( const FontGlyph & pGlyph );
 

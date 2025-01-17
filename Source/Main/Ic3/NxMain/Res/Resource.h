@@ -9,7 +9,7 @@
 namespace Ic3
 {
 
-	class Resource : public DynamicInterface
+	class Resource : public IDynamicObject
 	{
 	public:
 		Resource() = default;

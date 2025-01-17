@@ -2,7 +2,7 @@
 #ifndef __IC3_NXMAIN_PNG_COMMON_H__
 #define __IC3_NXMAIN_PNG_COMMON_H__
 
-#include <Ic3/NxMain/res/imageCommon.h>
+#include <Ic3/NxMain/Res/ImageCommon.h>
 
 #include <png/png.h>
 #include <png/pngdebug.h>

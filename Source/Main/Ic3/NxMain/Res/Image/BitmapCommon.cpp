@@ -1,5 +1,5 @@
 
-#include "bitmapCommon.h"
+#include "BitmapCommon.h"
 
 namespace Ic3
 {
@@ -48,7 +48,7 @@ namespace Ic3
 			const auto * sourceData = imagePixelDataPtr + ( rowIndex * imagePixelRowPitch );
 			const auto targetRowIndex = imageData.formatInfo.dimensions.y - rowIndex - 1;
 			auto * targetBuffer = imageData.pixelBuffer.data() + ( targetRowIndex * imagePixelRowPitch );
-			memCopy( targetBuffer, imagePixelRowPitch, sourceData, imagePixelRowPitch );
+			cppx::mem_copy( targetBuffer, imagePixelRowPitch, sourceData, imagePixelRowPitch );
 		}
 
 		return imageData;
@@ -56,7 +56,7 @@ namespace Ic3
 
 	bool readBitmapMetadata( const void * pData, size_t pDataSize, BitmapMetadata * pOutMetadata )
 	{
-		ic3DebugAssert( pData );
+		Ic3DebugAssert( pData );
 
 		if( pDataSize < BITMAP_METADATA_SIZE_V1 )
 		{
@@ -70,7 +70,7 @@ namespace Ic3
 		metadata.metadataSize = 0;
 		metadata.formatVersion = BitmapImageFormatVersion::Unknown;
 
-		memCopy( &( metadata.coreFileHeader ), sizeof( metadata.coreFileHeader ), imageData, BITMAP_FMTH_CORE_FILE_HEADER_SIZE );
+		cppx::mem_copy( &( metadata.coreFileHeader ), sizeof( metadata.coreFileHeader ), imageData, BITMAP_FMTH_CORE_FILE_HEADER_SIZE );
 		imageData += BITMAP_FMTH_CORE_FILE_HEADER_SIZE;
 
 		if( ( metadata.coreFileHeader.controlSig[0] != 'B' ) || ( metadata.coreFileHeader.controlSig[1] != 'M' ) )
@@ -90,35 +90,35 @@ namespace Ic3
 		switch( dibInfoHeaderSize )
 		{
 			case BITMAP_FMTH_DIB_INFO_HEADER_SIZE_V1:
-				memCopy( &( metadata.dibInfoHeader.uVersion1 ), sizeof( metadata.dibInfoHeader.uVersion1 ), imageData, BITMAP_FMTH_DIB_INFO_HEADER_SIZE_V1 );
+				cppx::mem_copy( &( metadata.dibInfoHeader.uVersion1 ), sizeof( metadata.dibInfoHeader.uVersion1 ), imageData, BITMAP_FMTH_DIB_INFO_HEADER_SIZE_V1 );
 				metadata.dibInfoHeaderSize = BITMAP_FMTH_DIB_INFO_HEADER_SIZE_V1;
 				metadata.metadataSize = BITMAP_METADATA_SIZE_V1;
 				metadata.formatVersion = BitmapImageFormatVersion::BMPV1;
 				break;
 
 			case BITMAP_FMTH_DIB_INFO_HEADER_SIZE_V2:
-				memCopy( &( metadata.dibInfoHeader.uVersion2 ), sizeof( metadata.dibInfoHeader.uVersion2 ), imageData, BITMAP_FMTH_DIB_INFO_HEADER_SIZE_V2 );
+				cppx::mem_copy( &( metadata.dibInfoHeader.uVersion2 ), sizeof( metadata.dibInfoHeader.uVersion2 ), imageData, BITMAP_FMTH_DIB_INFO_HEADER_SIZE_V2 );
 				metadata.dibInfoHeaderSize = BITMAP_FMTH_DIB_INFO_HEADER_SIZE_V2;
 				metadata.metadataSize = BITMAP_METADATA_SIZE_V2;
 				metadata.formatVersion = BitmapImageFormatVersion::BMPV2;
 				break;
 
 			case BITMAP_FMTH_DIB_INFO_HEADER_SIZE_V3:
-				memCopy( &( metadata.dibInfoHeader.uVersion3 ), sizeof( metadata.dibInfoHeader.uVersion3 ), imageData, BITMAP_FMTH_DIB_INFO_HEADER_SIZE_V3 );
+				cppx::mem_copy( &( metadata.dibInfoHeader.uVersion3 ), sizeof( metadata.dibInfoHeader.uVersion3 ), imageData, BITMAP_FMTH_DIB_INFO_HEADER_SIZE_V3 );
 				metadata.dibInfoHeaderSize = BITMAP_FMTH_DIB_INFO_HEADER_SIZE_V3;
 				metadata.metadataSize = BITMAP_METADATA_SIZE_V3;
 				metadata.formatVersion = BitmapImageFormatVersion::BMPV3;
 				break;
 
 			case BITMAP_FMTH_DIB_INFO_HEADER_SIZE_V4:
-				memCopy( &( metadata.dibInfoHeader.uVersion4 ), sizeof( metadata.dibInfoHeader.uVersion4 ), imageData, BITMAP_FMTH_DIB_INFO_HEADER_SIZE_V4 );
+				cppx::mem_copy( &( metadata.dibInfoHeader.uVersion4 ), sizeof( metadata.dibInfoHeader.uVersion4 ), imageData, BITMAP_FMTH_DIB_INFO_HEADER_SIZE_V4 );
 				metadata.dibInfoHeaderSize = BITMAP_FMTH_DIB_INFO_HEADER_SIZE_V4;
 				metadata.metadataSize = BITMAP_METADATA_SIZE_V4;
 				metadata.formatVersion = BitmapImageFormatVersion::BMPV4;
 				break;
 
 			case BITMAP_FMTH_DIB_INFO_HEADER_SIZE_V5:
-				memCopy( &( metadata.dibInfoHeader.uVersion5 ), sizeof( metadata.dibInfoHeader.uVersion5 ), imageData, BITMAP_FMTH_DIB_INFO_HEADER_SIZE_V5 );
+				cppx::mem_copy( &( metadata.dibInfoHeader.uVersion5 ), sizeof( metadata.dibInfoHeader.uVersion5 ), imageData, BITMAP_FMTH_DIB_INFO_HEADER_SIZE_V5 );
 				metadata.dibInfoHeaderSize = BITMAP_FMTH_DIB_INFO_HEADER_SIZE_V5;
 				metadata.metadataSize = BITMAP_METADATA_SIZE_V5;
 				metadata.formatVersion = BitmapImageFormatVersion::BMPV5;
@@ -144,7 +144,7 @@ namespace Ic3
 
 		if( ( v1DIBInfoHeader.bcColorDepth != 24 ) && ( v1DIBInfoHeader.bcColorDepth != 32 ) )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
@@ -155,7 +155,7 @@ namespace Ic3
 				v1DIBInfoHeader.bcDataSize = v1DIBInfoHeader.bcWidth * v1DIBInfoHeader.bcHeight * ( v1DIBInfoHeader.bcColorDepth / 8 );
 			}
 
-			memCopy( *pOutMetadata, metadata );
+			cppx::mem_copy( *pOutMetadata, metadata );
 		}
 
 		return true;

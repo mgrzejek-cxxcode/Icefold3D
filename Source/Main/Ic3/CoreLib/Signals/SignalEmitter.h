@@ -30,7 +30,7 @@ namespace Ic3
 		: _sourceObjectRef( pSourceObjectRef )
 		{}
 
-		void emit( TPEventArgs &&... pArgs )
+		void Emit( TPEventArgs &&... pArgs )
 		{
 			for( auto & handlerRef : _handlerOrderedRefList )
 			{
@@ -39,7 +39,7 @@ namespace Ic3
 		}
 
 		template <typename TRet, typename TReceiver>
-		void connect( uintptr_t pRefID, std::function<TRet( TPClass &, TPEventArgs... )> pHandler ) const
+		void Connect( uintptr_t pRefID, std::function<TRet( TPClass &, TPEventArgs... )> pHandler ) const
 		{
 			auto & handlerList = _handlerMap[pRefID];
 
@@ -48,7 +48,7 @@ namespace Ic3
 		}
 
 		template <typename TRet, typename TReceiver>
-		void connect( TReceiver * pReceiver, TRet( TReceiver:: * pSlot )( TPClass &, TPEventArgs... ) ) const
+		void Connect( TReceiver * pReceiver, TRet( TReceiver:: * pSlot )( TPClass &, TPEventArgs... ) ) const
 		{
 			auto refID = reinterpret_cast<uintptr_t>( pReceiver );
 			auto & handlerList = _handlerMap[refID];
@@ -62,7 +62,7 @@ namespace Ic3
 		}
 
 		template <typename TRet, typename TReceiver>
-		bool connectUnique( uintptr_t pRefID, std::function<TRet( TPClass &, TPEventArgs... )> pHandler ) const
+		bool ConnectUnique( uintptr_t pRefID, std::function<TRet( TPClass &, TPEventArgs... )> pHandler ) const
 		{
 			auto & handlerList = _handlerMap[pRefID];
 			if( !handlerList.empty() )
@@ -77,7 +77,7 @@ namespace Ic3
 		}
 
 		template <typename TRet, typename TReceiver>
-		bool connectUnique( TReceiver * pReceiver, TRet( TReceiver:: * pSlot )( TPClass &, TPEventArgs... ) ) const
+		bool ConnectUnique( TReceiver * pReceiver, TRet( TReceiver:: * pSlot )( TPClass &, TPEventArgs... ) ) const
 		{
 			auto refID = reinterpret_cast<uintptr_t>( pReceiver );
 			auto & handlerList = _handlerMap[refID];
@@ -97,13 +97,13 @@ namespace Ic3
 		}
 
 		template <typename TRet, typename TReceiver>
-		bool disconnectSlot( TReceiver * pReceiver, TRet( TReceiver:: * pSlot )( TPClass &, TPEventArgs... ) ) const
+		bool Disconnect( TReceiver * pReceiver, TRet( TReceiver:: * pSlot )( TPClass &, TPEventArgs... ) ) const
 		{
 			return false;
 		}
 
 	private:
-		HandlerList * _getHandlersForReceiver( uintptr_t pReceiverRefID ) const
+		HandlerList * _GetHandlersForReceiver( uintptr_t pReceiverRefID ) const
 		{
 			const auto handlerMapIter = _handlerMap.find( pReceiverRefID );
 			return ( handlerMapIter != _handlerMap.end() ) ? &( handlerMapIter->second ) : nullptr;

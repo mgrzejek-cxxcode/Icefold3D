@@ -15,23 +15,23 @@ namespace Ic3
 	namespace CxDef
 	{
 
-		constexpr GpaUniqueObjectID GPA_RESOURCE_ID_SHADER_PASSTHROUGH_IA_DEFAULT_VS { 0xFF007001 };
-		constexpr GpaUniqueObjectID GPA_RESOURCE_ID_SHADER_PASSTHROUGH_IA_DEFAULT_PS { 0xFF007002 };
+		constexpr GfxObjectID GPA_RESOURCE_ID_SHADER_PASSTHROUGH_IA_DEFAULT_VS { 0xFF007001 };
+		constexpr GfxObjectID GPA_RESOURCE_ID_SHADER_PASSTHROUGH_IA_DEFAULT_PS { 0xFF007002 };
 
-		constexpr GpaUniqueObjectID GPA_STATE_ID_BLEND_DEFAULT { 0xFF00BB01 };
+		constexpr GfxObjectID GPA_STATE_ID_BLEND_DEFAULT { 0xFF00BB01 };
 
-		constexpr GpaUniqueObjectID GPA_STATE_ID_DEPTH_STENCIL_DEFAULT { 0xFF00DD01 };
-		constexpr GpaUniqueObjectID GPA_STATE_ID_DEPTH_STENCIL_DEPTH_TEST_ENABLE { 0xFF00DD02 };
+		constexpr GfxObjectID GPA_STATE_ID_DEPTH_STENCIL_DEFAULT { 0xFF00DD01 };
+		constexpr GfxObjectID GPA_STATE_ID_DEPTH_STENCIL_DEPTH_TEST_ENABLE { 0xFF00DD02 };
 
-		constexpr GpaUniqueObjectID GPA_STATE_ID_RASTERIZER_DEFAULT_CULL_BACK_CCW { 0xFF00CC01 };
-		constexpr GpaUniqueObjectID GPA_STATE_ID_RASTERIZER_DEFAULT_CULL_BACK_CW { 0xFF00CC02 };
-		constexpr GpaUniqueObjectID GPA_STATE_ID_RASTERIZER_DEFAULT_CULL_FRONT_CCW { 0xFF00CC03 };
-		constexpr GpaUniqueObjectID GPA_STATE_ID_RASTERIZER_DEFAULT_CULL_FRONT_CW { 0xFF00CC04 };
+		constexpr GfxObjectID GPA_STATE_ID_RASTERIZER_DEFAULT_CULL_BACK_CCW { 0xFF00CC01 };
+		constexpr GfxObjectID GPA_STATE_ID_RASTERIZER_DEFAULT_CULL_BACK_CW { 0xFF00CC02 };
+		constexpr GfxObjectID GPA_STATE_ID_RASTERIZER_DEFAULT_CULL_FRONT_CCW { 0xFF00CC03 };
+		constexpr GfxObjectID GPA_STATE_ID_RASTERIZER_DEFAULT_CULL_FRONT_CW { 0xFF00CC04 };
 
-		constexpr GpaUniqueObjectID GPA_STATE_ID_IA_INPUT_LAYOUT_DEFAULT { 0xFF00AA01 };
-		constexpr GpaUniqueObjectID GPA_STATE_ID_IA_INPUT_LAYOUT_DEFAULT_16B { 0xFF00AA02 };
+		constexpr GfxObjectID GPA_STATE_ID_IA_INPUT_LAYOUT_DEFAULT { 0xFF00AA01 };
+		constexpr GfxObjectID GPA_STATE_ID_IA_INPUT_LAYOUT_DEFAULT_16B { 0xFF00AA02 };
 
-		constexpr GpaUniqueObjectID GPA_STATE_ID_GRAPHICS_SHADER_LINKAGE_PASSTHROUGH_IA_DEFAULT { 0xFF00EE01 };
+		constexpr GfxObjectID GPA_STATE_ID_GRAPHICS_SHADER_LINKAGE_PASSTHROUGH_IA_DEFAULT { 0xFF00EE01 };
 
 	}
 
@@ -44,13 +44,13 @@ namespace Ic3
 		explicit GpaSharedStateLibrary( const CoreEngineState & pCES, ShaderLibraryHandle pShaderLibrary = nullptr );
 		~GpaSharedStateLibrary();
 
-		IC3_ATTR_NO_DISCARD GCI::ShaderHandle getShader( GpaUniqueObjectID pShaderID ) const noexcept;
-		IC3_ATTR_NO_DISCARD GCI::ShaderHandle getShader( const GpaUniqueObjectName & pShaderName ) const noexcept;
+		CPPX_ATTR_NO_DISCARD GCI::ShaderHandle getShader( GfxObjectID pShaderID ) const noexcept;
+		CPPX_ATTR_NO_DISCARD GCI::ShaderHandle getShader( const GpaUniqueObjectName & pShaderName ) const noexcept;
 
 		void initialize();
 
 	private:
-		void createDefaultShaders();
+		void CreateDefaultShaders();
 		void initializeDefaultImmutableBlendStates();
 		void initializeDefaultImmutableDepthStencilStates();
 		void initializeDefaultImmutableRasterizerStates();

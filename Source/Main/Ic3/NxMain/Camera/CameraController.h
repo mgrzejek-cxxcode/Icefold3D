@@ -4,7 +4,7 @@
 #ifndef __IC3_NXMAIN_CAMERA_CAMERA_CONTROLLER_H__
 #define __IC3_NXMAIN_CAMERA_CAMERA_CONTROLLER_H__
 
-#include "cameraCommonDefs.h"
+#include "CameraCommonDefs.h"
 
 namespace Ic3
 {
@@ -12,29 +12,34 @@ namespace Ic3
 	class IC3_NXMAIN_CLASS CameraController
 	{
 	public:
-		CameraState mCameraState;
+		const CameraState & mCameraState;
 
-		void initialize( const Math::Vec3f & pOrigin, const Math::Vec3f & pTarget, float pFOVAngle );
+		CameraController();
 
-		void setTarget( const Math::Vec2f & pTarget );
+		void Initialize( const Math::Vec3f & pOrigin, const Math::Vec3f & pTarget, float pFOVAngle );
 
-		void move( float pFactor = 1.0f );
-		void moveFlat( float pFactor = 1.0f );
-		void moveSide( float pFactor = 1.0f );
-		void moveSideFlat( float pFactor = 1.0f );
-		void moveUpDown( float pFactor = 1.0f );
-		void roll( float pRoll );
-		void rotateAroundOrigin( float pYaw, float pPitch );
-		void rotateAroundTarget( float pYaw, float pPitch );
-		void zoom( int32 pZoomFactor );
+		void SetTarget( const Math::Vec2f & pTarget );
 
-		Math::Mat4f computeViewMatrixLH();
-		Math::Mat4f computeViewMatrixRH();
+		void Move( float pFactor = 1.0f );
+		void MoveFlat( float pFactor = 1.0f );
+		void MoveSide( float pFactor = 1.0f );
+		void MoveSideFlat( float pFactor = 1.0f );
+		void MoveUpDown( float pFactor = 1.0f );
+		void Roll( float pRoll );
+		void RotateAroundOrigin( float pYaw, float pPitch );
+		void RotateAroundTarget( float pYaw, float pPitch );
+		void Zoom( int32 pZoomFactor );
 
-		float getPerspectiveFOVAngle() const;
+		Math::Mat4f ComputeViewMatrixLH();
+		Math::Mat4f ComputeViewMatrixRH();
+
+		float GetPerspectiveFOVAngle() const;
 
 	private:
-		void updateRotation();
+		void UpdateRotation();
+
+	private:
+		CameraState _cameraState;
 	};
 
 } // namespace Ic3

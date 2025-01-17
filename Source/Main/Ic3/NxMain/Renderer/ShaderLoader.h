@@ -11,8 +11,8 @@
 namespace Ic3
 {
 
-	using ShaderFileLoadCallback = std::function<DynamicMemoryBuffer( const std::string & )>;
-	using ShaderInputReadCallback = std::function<DynamicMemoryBuffer()>;
+	using ShaderFileLoadCallback = std::function<dynamic_memory_buffer( const std::string & )>;
+	using ShaderInputReadCallback = std::function<dynamic_memory_buffer()>;
 
 	struct ShaderFileDefinition
 	{
@@ -86,7 +86,7 @@ namespace Ic3
 				System::AssetLoaderHandle pAssetLoader,
 				std::string pShaderBaseSubDirectory );
 
-		static DynamicMemoryBuffer loadShaderFile( System::AssetLoader & pAssetLoader, const std::string & pFilename );
+		static dynamic_memory_buffer loadShaderFile( System::AssetLoader & pAssetLoader, const std::string & pFilename );
 
 	private:
 		ShaderFileLoadCallback _fileLoadCallback;

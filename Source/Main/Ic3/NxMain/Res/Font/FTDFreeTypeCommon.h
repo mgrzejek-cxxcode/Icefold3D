@@ -4,7 +4,7 @@
 #ifndef __IC3_NXMAIN_RES_FTD_FREETYPE_FONT_COMMON_H__
 #define __IC3_NXMAIN_RES_FTD_FREETYPE_FONT_COMMON_H__
 
-#include "../fontMetrics.h"
+#include "../FontMetrics.h"
 
 namespace Ic3
 {

@@ -5,7 +5,7 @@
 #define __IC3_NXMAIN_SCF_IO_SUPPORT_H__
 
 #include "scfCommon.h"
-#include <Ic3/Cppx/ByteArray.h>
+#include <cppx/byteArray.h>
 #include <Ic3/System/FileCommon.h>
 
 namespace Ic3
@@ -32,17 +32,17 @@ namespace Ic3
 
 		void writeFolderData( System::FileHandle pSysFile,
 		                      const SCFVirtualFolderTemplate & pFolder,
-		                      DynamicByteArray & pGdsCache,
+		                      Dynamicbyte_array & pGdsCache,
 		                      const InternalFileWriteCallback & pFileWriteCallback );
 
 		void writeResourceData( System::FileHandle pSysFile,
 		                        const SCFResourceTemplate & pResource,
-		                        DynamicByteArray & pGdsCache,
+		                        Dynamicbyte_array & pGdsCache,
 		                        const InternalFileWriteCallback & pFileWriteCallback );
 
 		void readFolder( System::FileHandle pSysFile,
 		                 SCFVirtualFolder & pFolder,
-		                 DynamicByteArray & pGdsCache,
+		                 Dynamicbyte_array & pGdsCache,
 		                 const InternalFileReadCallback & pFileReadCallback );
 
 	private:

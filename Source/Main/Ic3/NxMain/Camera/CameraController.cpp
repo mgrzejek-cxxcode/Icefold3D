@@ -1,113 +1,117 @@
 
-#include "cameraController.h"
+#include "CameraController.h"
 
 namespace Ic3
 {
 
-	void CameraController::initialize( const Math::Vec3f & pOrigin, const Math::Vec3f & pTarget, float pFOVAngle )
+	CameraController::CameraController()
+	: mCameraState( _cameraState )
+	{}
+
+	void CameraController::Initialize( const Math::Vec3f & pOrigin, const Math::Vec3f & pTarget, float pFOVAngle )
 	{
 		auto vForward = pTarget - pOrigin;
-		mCameraState.configuration.movementSensitivity = 1.0f;
-		mCameraState.configuration.rollSensitivity = 0.0975f;
-		mCameraState.configuration.rotationSensitivity = 0.0075f;
-		mCameraState.orientation.origin = pOrigin;
-		mCameraState.orientation.target = pTarget;
-		mCameraState.orientation.originTargetDistance = Math::length( vForward );
-		mCameraState.orientation.vForward = Math::normalize( vForward );
-		mCameraState.orientation.vRight = Math::normalize( Math::cross( Math::Vec3f( 0, 1, 0 ), mCameraState.orientation.vForward ) );
-		mCameraState.orientation.vUp = Math::normalize( Math::cross( mCameraState.orientation.vForward, mCameraState.orientation.vRight ) );
-		mCameraState.rotation.roll = 0.0f;
+		_cameraState.configuration.movementSensitivity = 1.0f;
+		_cameraState.configuration.rollSensitivity = 0.0975f;
+		_cameraState.configuration.rotationSensitivity = 0.0075f;
+		_cameraState.orientation.origin = pOrigin;
+		_cameraState.orientation.target = pTarget;
+		_cameraState.orientation.originTargetDistance = Math::length( vForward );
+		_cameraState.orientation.vForward = Math::normalize( vForward );
+		_cameraState.orientation.vRight = Math::normalize( Math::cross( Math::Vec3f( 0, 1, 0 ), _cameraState.orientation.vForward ) );
+		_cameraState.orientation.vUp = Math::normalize( Math::cross( _cameraState.orientation.vForward, _cameraState.orientation.vRight ) );
+		_cameraState.rotation.roll = 0.0f;
 
-		auto xzLength = Math::length( Math::Vec2f( mCameraState.orientation.vForward.x, mCameraState.orientation.vForward.z ) );
-		auto xzSin = mCameraState.orientation.vForward.x / xzLength;
-		auto xzCos = mCameraState.orientation.vForward.z / xzLength;
-		mCameraState.rotation.yaw = static_cast<float>( atan2( xzSin, xzCos ) );
+		auto xzLength = Math::length( Math::Vec2f( _cameraState.orientation.vForward.x, _cameraState.orientation.vForward.z ) );
+		auto xzSin = _cameraState.orientation.vForward.x / xzLength;
+		auto xzCos = _cameraState.orientation.vForward.z / xzLength;
+		_cameraState.rotation.yaw = static_cast<float>( atan2( xzSin, xzCos ) );
 
-		auto yzLength = Math::length( Math::Vec2f( mCameraState.orientation.vForward.y, mCameraState.orientation.vForward.z ) );
-		auto yzSin = mCameraState.orientation.vForward.y / yzLength;
-		auto yzCos = mCameraState.orientation.vForward.z / yzLength;
-		mCameraState.rotation.pitch = static_cast<float>( atan2( yzSin, yzCos ) );
+		auto yzLength = Math::length( Math::Vec2f( _cameraState.orientation.vForward.y, _cameraState.orientation.vForward.z ) );
+		auto yzSin = _cameraState.orientation.vForward.y / yzLength;
+		auto yzCos = _cameraState.orientation.vForward.z / yzLength;
+		_cameraState.rotation.pitch = static_cast<float>( atan2( yzSin, yzCos ) );
 
-		mCameraState.projection.fovAngleDiff = 0.0f;
-		mCameraState.projection.fovAngle = pFOVAngle;
+		_cameraState.projection.fovAngleDiff = 0.0f;
+		_cameraState.projection.fovAngle = pFOVAngle;
 	}
 
-	void CameraController::setTarget( const Math::Vec2f & pTarget )
+	void CameraController::SetTarget( const Math::Vec2f & pTarget )
 	{
-		auto target = Math::Vec3f( pTarget.x, pTarget.y, mCameraState.orientation.target.z );
-		auto vForward = target - mCameraState.orientation.origin;
+		auto target = Math::Vec3f( pTarget.x, pTarget.y, _cameraState.orientation.target.z );
+		auto vForward = target - _cameraState.orientation.origin;
 
-		mCameraState.orientation.target = target;
-		mCameraState.orientation.originTargetDistance = Math::length( vForward );
-		mCameraState.orientation.vForward = Math::normalize( vForward );
+		_cameraState.orientation.target = target;
+		_cameraState.orientation.originTargetDistance = Math::length( vForward );
+		_cameraState.orientation.vForward = Math::normalize( vForward );
 
-		updateRotation();
+		UpdateRotation();
 	}
 
-	void CameraController::move( float pFactor )
+	void CameraController::Move( float pFactor )
 	{
-		mCameraState.orientation.origin += pFactor * mCameraState.orientation.vForward;
-		mCameraState.orientation.target = mCameraState.orientation.origin + ( mCameraState.orientation.vForward * mCameraState.orientation.originTargetDistance );
+		_cameraState.orientation.origin += pFactor * _cameraState.orientation.vForward;
+		_cameraState.orientation.target = _cameraState.orientation.origin + ( _cameraState.orientation.vForward * _cameraState.orientation.originTargetDistance );
 	}
 
-	void CameraController::moveFlat( float pFactor )
+	void CameraController::MoveFlat( float pFactor )
 	{
-		mCameraState.orientation.origin += pFactor * Math::Vec3f( mCameraState.orientation.vForward.x, 0.0f, mCameraState.orientation.vForward.z );
-		mCameraState.orientation.target = mCameraState.orientation.origin + ( mCameraState.orientation.vForward * mCameraState.orientation.originTargetDistance );
+		_cameraState.orientation.origin += pFactor * Math::Vec3f( _cameraState.orientation.vForward.x, 0.0f, _cameraState.orientation.vForward.z );
+		_cameraState.orientation.target = _cameraState.orientation.origin + ( _cameraState.orientation.vForward * _cameraState.orientation.originTargetDistance );
 	}
 
-	void CameraController::moveSide( float pFactor )
+	void CameraController::MoveSide( float pFactor )
 	{
-		mCameraState.orientation.origin += pFactor * mCameraState.orientation.vRight;
-		mCameraState.orientation.target = mCameraState.orientation.origin + ( mCameraState.orientation.vForward * mCameraState.orientation.originTargetDistance );
+		_cameraState.orientation.origin += pFactor * _cameraState.orientation.vRight;
+		_cameraState.orientation.target = _cameraState.orientation.origin + ( _cameraState.orientation.vForward * _cameraState.orientation.originTargetDistance );
 	}
 
-	void CameraController::moveSideFlat( float pFactor )
+	void CameraController::MoveSideFlat( float pFactor )
 	{
-		mCameraState.orientation.origin += pFactor * Math::Vec3f( mCameraState.orientation.vRight.x, 0.0f, mCameraState.orientation.vRight.z );
-		mCameraState.orientation.target = mCameraState.orientation.origin + ( mCameraState.orientation.vForward * mCameraState.orientation.originTargetDistance );
+		_cameraState.orientation.origin += pFactor * Math::Vec3f( _cameraState.orientation.vRight.x, 0.0f, _cameraState.orientation.vRight.z );
+		_cameraState.orientation.target = _cameraState.orientation.origin + ( _cameraState.orientation.vForward * _cameraState.orientation.originTargetDistance );
 	}
 
-	void CameraController::moveUpDown( float pFactor )
+	void CameraController::MoveUpDown( float pFactor )
 	{
-		mCameraState.orientation.origin += pFactor * Math::Vec3f( 0, 1, 0 );
-		mCameraState.orientation.target = mCameraState.orientation.origin + ( mCameraState.orientation.vForward * mCameraState.orientation.originTargetDistance );
+		_cameraState.orientation.origin += pFactor * Math::Vec3f( 0, 1, 0 );
+		_cameraState.orientation.target = _cameraState.orientation.origin + ( _cameraState.orientation.vForward * _cameraState.orientation.originTargetDistance );
 	}
 
-	void CameraController::roll( float pRoll )
+	void CameraController::Roll( float pRoll )
 	{
-		mCameraState.rotation.roll += ( pRoll * mCameraState.configuration.rollSensitivity );
+		_cameraState.rotation.roll += ( pRoll * _cameraState.configuration.rollSensitivity );
 
-		updateRotation();
+		UpdateRotation();
 	}
 
-	void CameraController::rotateAroundOrigin( float pYaw, float pPitch )
+	void CameraController::RotateAroundOrigin( float pYaw, float pPitch )
 	{
-		mCameraState.rotation.yaw += ( pYaw * mCameraState.configuration.rotationSensitivity );
-		mCameraState.rotation.pitch -= ( pPitch * mCameraState.configuration.rotationSensitivity );
+		_cameraState.rotation.yaw += ( pYaw * _cameraState.configuration.rotationSensitivity );
+		_cameraState.rotation.pitch -= ( pPitch * _cameraState.configuration.rotationSensitivity );
 
-		updateRotation();
+		UpdateRotation();
 
-		mCameraState.orientation.target = mCameraState.orientation.origin + ( mCameraState.orientation.vForward * mCameraState.orientation.originTargetDistance );
+		_cameraState.orientation.target = _cameraState.orientation.origin + ( _cameraState.orientation.vForward * _cameraState.orientation.originTargetDistance );
 	}
 
-	void CameraController::rotateAroundTarget( float pYaw, float pPitch )
+	void CameraController::RotateAroundTarget( float pYaw, float pPitch )
 	{
-		mCameraState.rotation.yaw += ( pYaw * mCameraState.configuration.rotationSensitivity );
-		mCameraState.rotation.pitch -= ( pPitch * mCameraState.configuration.rotationSensitivity );
+		_cameraState.rotation.yaw += ( pYaw * _cameraState.configuration.rotationSensitivity );
+		_cameraState.rotation.pitch -= ( pPitch * _cameraState.configuration.rotationSensitivity );
 
-		updateRotation();
+		UpdateRotation();
 
-		mCameraState.orientation.origin = mCameraState.orientation.target - ( mCameraState.orientation.vForward * mCameraState.orientation.originTargetDistance );
+		_cameraState.orientation.origin = _cameraState.orientation.target - ( _cameraState.orientation.vForward * _cameraState.orientation.originTargetDistance );
 	}
 
-	void CameraController::zoom( int32 pZoomFactor )
+	void CameraController::Zoom( int32 pZoomFactor )
 	{
-		if( ( pZoomFactor > 0 ) && ( mCameraState.projection.zoomLevel == mCameraState.configuration.maxZoomLevel ) )
+		if( ( pZoomFactor > 0 ) && ( _cameraState.projection.zoomLevel == _cameraState.configuration.maxZoomLevel ) )
 		{
 			return;
 		}
-		if( ( pZoomFactor < 0 ) && ( mCameraState.projection.zoomLevel == 1 ) )
+		if( ( pZoomFactor < 0 ) && ( _cameraState.projection.zoomLevel == 1 ) )
 		{
 			return;
 		}
@@ -124,73 +128,75 @@ namespace Ic3
 			pZoomFactor = -1;
 		}
 
-		mCameraState.projection.zoomLevel += pZoomFactor;
+		_cameraState.projection.zoomLevel += pZoomFactor;
 
-		const auto zoomLevel = mCameraState.projection.zoomLevel - 1;
-		const auto fovModifier = mCameraState.configuration.zoomBaseFactor * zoomLevel;//( 2.0f - 1.0f / static_cast<float>( ( zoomLevel == 1 ) ? 1 : ( 2 << ( zoomLevel - 1 ) ) ) );
+		const auto zoomLevel = _cameraState.projection.zoomLevel - 1;
+		const auto fovModifier = _cameraState.configuration.zoomBaseFactor * zoomLevel;//( 2.0f - 1.0f / static_cast<float>( ( zoomLevel == 1 ) ? 1 : ( 2 << ( zoomLevel - 1 ) ) ) );
 
-		mCameraState.projection.fovAngleDiff = fovModifier;
+		_cameraState.projection.fovAngleDiff = fovModifier;
 	}
 
-	Math::Mat4f CameraController::computeViewMatrixLH()
+	Math::Mat4f CameraController::ComputeViewMatrixLH()
 	{
-		auto viewMatrix = Math::lookAtLH( mCameraState.orientation.origin,
-		                                  mCameraState.orientation.target,
-		                                  mCameraState.orientation.vUp );
+		auto viewMatrix = Math::lookAtLH(
+				_cameraState.orientation.origin,
+				_cameraState.orientation.target,
+				_cameraState.orientation.vUp );
 		return viewMatrix;
 	}
 
-	Math::Mat4f CameraController::computeViewMatrixRH()
+	Math::Mat4f CameraController::ComputeViewMatrixRH()
 	{
-		auto viewMatrix = Math::lookAtRH( mCameraState.orientation.origin,
-		                                  mCameraState.orientation.target,
-		                                  mCameraState.orientation.vUp );
+		auto viewMatrix = Math::lookAtRH(
+				_cameraState.orientation.origin,
+				_cameraState.orientation.target,
+				_cameraState.orientation.vUp );
 		return viewMatrix;
 	}
 
-	float CameraController::getPerspectiveFOVAngle() const
+	float CameraController::GetPerspectiveFOVAngle() const
 	{
-		auto fovAngle = mCameraState.projection.fovAngle - mCameraState.projection.fovAngleDiff;
+		auto fovAngle = _cameraState.projection.fovAngle - _cameraState.projection.fovAngleDiff;
 		return fovAngle * Math::Constants::FLT_RAD_1DEG;
 	}
 
-	void CameraController::updateRotation()
+	void CameraController::UpdateRotation()
 	{
 		constexpr auto cxFullAngle = Math::Constants::FLT_RAD_360DEG;
 		
-		if( mCameraState.rotation.yaw > cxFullAngle )
+		if( _cameraState.rotation.yaw > cxFullAngle )
 		{
-			mCameraState.rotation.yaw -= cxFullAngle;
+			_cameraState.rotation.yaw -= cxFullAngle;
 		}
-		else if( mCameraState.rotation.yaw < -cxFullAngle )
+		else if( _cameraState.rotation.yaw < -cxFullAngle )
 		{
-			mCameraState.rotation.yaw += cxFullAngle;
-		}
-		
-		if( mCameraState.rotation.pitch > cxFullAngle )
-		{
-			mCameraState.rotation.pitch -= cxFullAngle;
-		}
-		else if( mCameraState.rotation.pitch < -cxFullAngle )
-		{
-			mCameraState.rotation.pitch += cxFullAngle;
+			_cameraState.rotation.yaw += cxFullAngle;
 		}
 		
-		if( mCameraState.rotation.roll > cxFullAngle )
+		if( _cameraState.rotation.pitch > cxFullAngle )
 		{
-			mCameraState.rotation.roll -= cxFullAngle;
+			_cameraState.rotation.pitch -= cxFullAngle;
 		}
-		else if( mCameraState.rotation.roll < -cxFullAngle )
+		else if( _cameraState.rotation.pitch < -cxFullAngle )
 		{
-			mCameraState.rotation.roll += cxFullAngle;
+			_cameraState.rotation.pitch += cxFullAngle;
+		}
+		
+		if( _cameraState.rotation.roll > cxFullAngle )
+		{
+			_cameraState.rotation.roll -= cxFullAngle;
+		}
+		else if( _cameraState.rotation.roll < -cxFullAngle )
+		{
+			_cameraState.rotation.roll += cxFullAngle;
 		}
 
-		auto sinPitch = std::sin( mCameraState.rotation.pitch );
-		auto cosPitch = std::cos( mCameraState.rotation.pitch );
-		auto sinYaw = std::sin( mCameraState.rotation.yaw );
-		auto cosYaw = std::cos( mCameraState.rotation.yaw );
-		auto sinRoll = std::sin( mCameraState.rotation.roll );
-		auto cosRoll = std::cos( mCameraState.rotation.roll );
+		auto sinPitch = std::sin( _cameraState.rotation.pitch );
+		auto cosPitch = std::cos( _cameraState.rotation.pitch );
+		auto sinYaw = std::sin( _cameraState.rotation.yaw );
+		auto cosYaw = std::cos( _cameraState.rotation.yaw );
+		auto sinRoll = std::sin( _cameraState.rotation.roll );
+		auto cosRoll = std::cos( _cameraState.rotation.roll );
 
 		Math::Vec3f vcForward;
 		vcForward.x = cosPitch * sinYaw;
@@ -202,9 +208,9 @@ namespace Ic3
 		vcUp.y =  cosRoll * cosPitch;
 		vcUp.z =  sinRoll * sinYaw - cosRoll * sinPitch * cosYaw;
 
-		mCameraState.orientation.vForward = vcForward;
-		mCameraState.orientation.vUp = vcUp;
-		mCameraState.orientation.vRight = Math::normalize( Math::cross( mCameraState.orientation.vUp, mCameraState.orientation.vForward ) );
+		_cameraState.orientation.vForward = vcForward;
+		_cameraState.orientation.vUp = vcUp;
+		_cameraState.orientation.vRight = Math::normalize( Math::cross( _cameraState.orientation.vUp, _cameraState.orientation.vForward ) );
 	}
 
 } // namespace Ic3

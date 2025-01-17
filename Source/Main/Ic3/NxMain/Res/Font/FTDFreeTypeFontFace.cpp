@@ -1,7 +1,7 @@
 
-#include "ftdFreeTypeFontFace.h"
-#include "ftdFreeTypeFontObject.h"
-#include <Ic3/Cppx/STLHelperAlgo.h>
+#include "FTDFreeTypeFontFace.h"
+#include "FTDFreeTypeFontObject.h"
+#include <cppx/stdHelperAlgo.h>
 
 namespace Ic3
 {
@@ -81,8 +81,8 @@ namespace Ic3
 
 	bool FreeTypeFontFace::loadGlyphImage( char_code_point_t pCodePoint, FT_BitmapGlyph * pOutGlyphBitmap )
 	{
-		auto glyphBitmapIter = _glyphBitmapCache.find( pCodePoint );
-		if( glyphBitmapIter == _glyphBitmapCache.end() )
+		auto glyphBitmapIter = _glyph_BITmapCache.find( pCodePoint );
+		if( glyphBitmapIter == _glyph_BITmapCache.end() )
 		{
 			auto * ftGlyph = getGlyph( pCodePoint );
 			if( !ftGlyph )
@@ -147,7 +147,7 @@ namespace Ic3
 			CachedGlyphBitmap glyphBitmap;
 			glyphBitmap.ftBitmapGlyph = bitmapGlyph;
 
-			auto insertIter = _glyphBitmapCache.insert( { pCodePoint, glyphBitmap } );
+			auto insertIter = _glyph_BITmapCache.insert( { pCodePoint, glyphBitmap } );
 			glyphBitmapIter = insertIter.first;
 		}
 
@@ -214,12 +214,12 @@ namespace Ic3
 		}
 
 		_glyphDataCache.clear();
-		_glyphBitmapCache.clear();
+		_glyph_BITmapCache.clear();
 	}
 
 	FT_Glyph FreeTypeFontFace::getGlyph( char_code_point_t pCodePoint ) const
 	{
-		if( auto * cachedGlyphData = Cppx::getMapValuePtrOrNull( _glyphDataCache, pCodePoint ) )
+		if( auto * cachedGlyphData = cppx::get_map_value_ptr_or_null( _glyphDataCache, pCodePoint ) )
 		{
 			return cachedGlyphData->ftGlyph;
 		}
@@ -228,7 +228,7 @@ namespace Ic3
 
 	FT_BitmapGlyph FreeTypeFontFace::getGlyphBitmap( char_code_point_t pCodePoint ) const
 	{
-		if( auto * cachedGlyphBitmap = Cppx::getMapValuePtrOrNull( _glyphBitmapCache, pCodePoint ) )
+		if( auto * cachedGlyphBitmap = cppx::get_map_value_ptr_or_null( _glyph_BITmapCache, pCodePoint ) )
 		{
 			return cachedGlyphBitmap->ftBitmapGlyph;
 		}
@@ -237,7 +237,7 @@ namespace Ic3
 
 	const FT_Glyph_Metrics * FreeTypeFontFace::getGlyphMetrics( char_code_point_t pCodePoint ) const
 	{
-		if( auto * cachedGlyphData = Cppx::getMapValuePtrOrNull( _glyphDataCache, pCodePoint ) )
+		if( auto * cachedGlyphData = cppx::get_map_value_ptr_or_null( _glyphDataCache, pCodePoint ) )
 		{
 			return &( cachedGlyphData->ftGlyphMetrics );
 		}

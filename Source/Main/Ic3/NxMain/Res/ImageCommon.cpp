@@ -1,5 +1,5 @@
 
-#include "imageCommon.h"
+#include "ImageCommon.h"
 
 namespace Ic3
 {
@@ -23,10 +23,10 @@ namespace Ic3
 		imageDataClone.formatInfo = formatInfo;
 		imageDataClone.sizeInBytes = sizeInBytes;
 
-		memCopy( imageDataClone.pixelBuffer.data(),
-		         imageDataClone.pixelBuffer.size(),
-		         pixelBuffer.data(),
-		         pixelBuffer.size() );
+		cppx::mem_copy( imageDataClone.pixelBuffer.data(),
+		               imageDataClone.pixelBuffer.size(),
+		               pixelBuffer.data(),
+		               pixelBuffer.size() );
 
 		return imageDataClone;
 	}

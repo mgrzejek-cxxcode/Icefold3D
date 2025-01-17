@@ -1,6 +1,6 @@
 
-#include "font.h"
-#include <Ic3/Cppx/STLHelperAlgo.h>
+#include "Font.h"
+#include <cppx/stdHelperAlgo.h>
 
 namespace Ic3
 {

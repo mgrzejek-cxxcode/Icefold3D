@@ -31,7 +31,7 @@ namespace Ic3
 	inline constexpr uint32 cxMemoryCpuDefaultAlignment = PCL_MEMORY_BASE_ALIGNMENT;
 
 	/// @brief Default alignment value for GPU-side (VideoRAM) memory allocation.
-	inline constexpr uint32 cxMemoryGpuDefaultAlignment = 64;
+	inline constexpr uint32 cxMemoryGPUDefaultAlignment = 64;
 
 	/// @brief
 	struct AllocNewSizeExplicitTag

@@ -22,11 +22,11 @@ namespace Ic3
 
 		InternalFileWriteCallback fileWriteCallback =
 			[file]( const void * pInputData, uint64 pWriteSize ) -> uint64 {
-				const auto writeSize = numeric_cast<System::file_size_t>( pWriteSize );
+				const auto writeSize = cppx::numeric_cast<System::file_size_t>( pWriteSize );
 				return file->write( pInputData, writeSize, writeSize );
 			};
 
-		DynamicByteArray sharedBuffer;
+		Dynamicbyte_array sharedBuffer;
 
 		const auto & rootFolder = pBuilder.getRootVirtualFolder();
 
@@ -43,11 +43,11 @@ namespace Ic3
 
 		InternalFileReadCallback fileReadCallback =
 			[file]( void * pOutputBuffer, uint64 pReadSize ) -> uint64 {
-				const auto readSize = numeric_cast<System::file_size_t>( pReadSize );
+				const auto readSize = cppx::numeric_cast<System::file_size_t>( pReadSize );
 				return file->read( pOutputBuffer, readSize, readSize );
 			};
 
-		DynamicByteArray sharedBuffer;
+		Dynamicbyte_array sharedBuffer;
 
 		SCFVirtualFolderInfo scfRootFolderInfo {};
 		GDSCore::deserializeExternal( scfRootFolderInfo, fileReadCallback, sharedBuffer );
@@ -58,8 +58,8 @@ namespace Ic3
 
 		SCFIndex::ResourceDataReadCallback resourceDataReadCallback =
 			[file]( void * pOutputBuffer, uint64 pReadSize, uint64 pBaseOffset ) -> uint64 {
-				const auto readSize = numeric_cast<System::file_size_t>( pReadSize );
-				file->setFilePointer( numeric_cast<System::file_offset_t>( pBaseOffset ) );
+				const auto readSize = cppx::numeric_cast<System::file_size_t>( pReadSize );
+				file->setFilePointer( cppx::numeric_cast<System::file_offset_t>( pBaseOffset ) );
 				return file->read( pOutputBuffer, readSize, readSize );
 		};
 
@@ -68,7 +68,7 @@ namespace Ic3
 
 	void SCFIOProxy::writeFolderData( System::FileHandle pSysFile,
 									  const SCFVirtualFolderTemplate & pFolder,
-									  DynamicByteArray & pGdsCache,
+									  Dynamicbyte_array & pGdsCache,
 									  const InternalFileWriteCallback & pFileWriteCallback )
 	{
 		SCFVirtualFolderInfo scfFolderInfo;
@@ -94,7 +94,7 @@ namespace Ic3
 
 	void SCFIOProxy::writeResourceData( System::FileHandle pSysFile,
 										const SCFResourceTemplate & pResource,
-										DynamicByteArray & pGdsCache,
+										Dynamicbyte_array & pGdsCache,
 										const InternalFileWriteCallback & pFileWriteCallback )
 	{
 		SCFResourceInfo scfResourceInfo;
@@ -116,7 +116,7 @@ namespace Ic3
 		for( uint64 currentReadPtr = 0; currentReadPtr < scfResourceInfo.dataSize; )
 		{
 			const auto readSize = pResource.dataSource.readCallback( currentReadPtr, sMaxSingleDataWriteSize, pGdsCache );
-			ic3DebugAssert( readSize > 0 );
+			Ic3DebugAssert( readSize > 0 );
 
 			pSysFile->write( pGdsCache.data(), pGdsCache.size() );
 
@@ -126,7 +126,7 @@ namespace Ic3
 
 	void SCFIOProxy::readFolder( System::FileHandle pSysFile,
 								 SCFVirtualFolder & pFolder,
-								 DynamicByteArray & pGdsCache,
+								 Dynamicbyte_array & pGdsCache,
 								 const InternalFileReadCallback & pFileReadCallback )
 	{
 		for( uint32 resourceIndex = 0; resourceIndex < pFolder.mFolderInfo.resourcesNum; ++resourceIndex )

@@ -1,6 +1,6 @@
 
 #include "scfXMLCommon.h"
-#include <Ic3/Cppx/STLHelperAlgo.h>
+#include <cppx/stdHelperAlgo.h>
 #include <Ic3/CoreLib/Exception.h>
 #include <Ic3/NxMain/exception.h>
 
@@ -45,17 +45,17 @@ namespace Ic3
 		return _type;
 	}
 
-	XMLAttribute SCFXMLResourceNode::attribute( const StringView<char> & pAttribName ) const
+	XMLAttribute SCFXMLResourceNode::attribute( const cppx::string_view<char> & pAttribName ) const
 	{
 		return _xmlNode.attribute( pAttribName );
 	}
 
-	XMLNode SCFXMLResourceNode::dataNode( const StringView<char> & pNodeName ) const
+	XMLNode SCFXMLResourceNode::dataNode( const cppx::string_view<char> & pNodeName ) const
 	{
 		return _xmlNode.firstSubNode( pNodeName );
 	}
 
-	bool SCFXMLResourceNode::hasDataNode( const StringView<char> & pNodeName ) const
+	bool SCFXMLResourceNode::hasDataNode( const cppx::string_view<char> & pNodeName ) const
 	{
 		return _xmlNode.hasSubNode( pNodeName );
 	}
@@ -73,7 +73,7 @@ namespace Ic3
 
 		if( xmlNodeName != "resource" )
 		{
-			ic3ThrowDesc( E_EXC_DEBUG_PLACEHOLDER, "SCFXML node is not valid resource node: <" + xmlNodeName + ">" );
+			Ic3ThrowDesc( eExcCodeDebugPlaceholder, "SCFXML node is not valid resource node: <" + xmlNodeName + ">" );
 		}
 
 		const auto idAttribute = pXMLNode.attribute( "id" );
@@ -81,7 +81,7 @@ namespace Ic3
 
 		if( idAttribute.empty() || typeAttribute.empty() )
 		{
-			ic3ThrowDesc( E_EXC_DEBUG_PLACEHOLDER, "SCFXML resource node without 'id' and/or 'type' attribute(s)" );
+			Ic3ThrowDesc( eExcCodeDebugPlaceholder, "SCFXML resource node without 'id' and/or 'type' attribute(s)" );
 		}
 
 		pInitNode._xmlNode = pXMLNode;
@@ -101,14 +101,14 @@ namespace Ic3
 		return _folderName;
 	}
 
-	const SCFXMLResourceNode * SCFXMLFolderNode::resource( const StringView<char> & pResourceID ) const
+	const SCFXMLResourceNode * SCFXMLFolderNode::resource( const cppx::string_view<char> & pResourceID ) const
 	{
-		return Cppx::getMapValueRefOrDefault( _resourceNodeMap, pResourceID, nullptr );
+		return cppx::get_map_value_ref_or_default( _resourceNodeMap, pResourceID, nullptr );
 	}
 
-	const SCFXMLFolderNode * SCFXMLFolderNode::subFolder( const StringView<char> & pSubFolderName ) const
+	const SCFXMLFolderNode * SCFXMLFolderNode::subFolder( const cppx::string_view<char> & pSubFolderName ) const
 	{
-		return Cppx::getMapValueRefOrDefault( _subFolderNodeMap, pSubFolderName, nullptr );
+		return cppx::get_map_value_ref_or_default( _subFolderNodeMap, pSubFolderName, nullptr );
 	}
 
 	SCFXMLNodeList SCFXMLFolderNode::getNodeList( bool pRecursive ) const
@@ -155,12 +155,12 @@ namespace Ic3
 		return _subFolderNodeList;
 	}
 
-	bool SCFXMLFolderNode::hasResource( const StringView<char> & pResourceID ) const
+	bool SCFXMLFolderNode::hasResource( const cppx::string_view<char> & pResourceID ) const
 	{
 		return _resourceNodeMap.find( pResourceID ) != _resourceNodeMap.end();
 	}
 
-	bool SCFXMLFolderNode::hasSubFolder( const StringView<char> & pSubFolderName ) const
+	bool SCFXMLFolderNode::hasSubFolder( const cppx::string_view<char> & pSubFolderName ) const
 	{
 		return _subFolderNodeMap.find( pSubFolderName ) != _subFolderNodeMap.end();
 	}
@@ -178,14 +178,14 @@ namespace Ic3
 
 		if( xmlNodeName != "folder" )
 		{
-			ic3ThrowDesc( E_EXC_DEBUG_PLACEHOLDER, "SCFXML node is not valid folder node: <" + xmlNodeName + ">" );
+			Ic3ThrowDesc( eExcCodeDebugPlaceholder, "SCFXML node is not valid folder node: <" + xmlNodeName + ">" );
 		}
 
 		const auto nameAttribute = pXMLNode.attribute( "name" );
 
 		if( nameAttribute.empty() )
 		{
-			ic3ThrowDesc( E_EXC_DEBUG_PLACEHOLDER, "SCFXML folder node without 'name' attribute" );
+			Ic3ThrowDesc( eExcCodeDebugPlaceholder, "SCFXML folder node without 'name' attribute" );
 		}
 
 		pInitNode._xmlNode = pXMLNode;
@@ -203,10 +203,10 @@ namespace Ic3
 		if( resourceNodesNum > 0 )
 		{
 			auto resourceNodes = _readResources( pXMLNode, resourceNodesNum );
-			ic3DebugAssert( !resourceNodes.empty() );
+			Ic3DebugAssert( !resourceNodes.empty() );
 
 			auto resourceMap = _buildResourceNodeMap( resourceNodes );
-			ic3DebugAssert( !resourceMap.empty() );
+			Ic3DebugAssert( !resourceMap.empty() );
 
 			pInitNode._resourceNodeList = std::move( resourceNodes );
 			pInitNode._resourceNodeMap = std::move( resourceMap );
@@ -216,10 +216,10 @@ namespace Ic3
 		if( subFolderNodesNum > 0 )
 		{
 			auto subFolderNodes = _readSubFolders( pXMLNode, subFolderNodesNum );
-			ic3DebugAssert( !subFolderNodes.empty() );
+			Ic3DebugAssert( !subFolderNodes.empty() );
 
 			auto subFolderMap = _buildSubFolderNodeMap( subFolderNodes );
-			ic3DebugAssert( !subFolderNodes.empty() );
+			Ic3DebugAssert( !subFolderNodes.empty() );
 
 			pInitNode._subFolderNodeList = std::move( subFolderNodes );
 			pInitNode._subFolderNodeMap = std::move( subFolderMap );
@@ -228,7 +228,7 @@ namespace Ic3
 
 	SCFXMLFolderNode::ResourceNodeList SCFXMLFolderNode::_readResources( const XMLNode & pXMLNode, size_t pResourceNodesNum )
 	{
-		ic3DebugAssert( pResourceNodesNum > 0 );
+		Ic3DebugAssert( pResourceNodesNum > 0 );
 
 		ResourceNodeList resourceNodes{};
 		resourceNodes.reserve( pResourceNodesNum );
@@ -245,7 +245,7 @@ namespace Ic3
 
 	SCFXMLFolderNode::ResourceNodeMap SCFXMLFolderNode::_buildResourceNodeMap( ResourceNodeList & pResourceNodes )
 	{
-		ic3DebugAssert( !pResourceNodes.empty() );
+		Ic3DebugAssert( !pResourceNodes.empty() );
 
 		ResourceNodeMap resourceMap{};
 		for( auto & resourceNode : pResourceNodes )
@@ -258,7 +258,7 @@ namespace Ic3
 
 	SCFXMLFolderNode::SubFolderNodeList SCFXMLFolderNode::_readSubFolders( const XMLNode & pXMLNode, size_t pSubFolderNodesNum )
 	{
-		ic3DebugAssert( pSubFolderNodesNum > 0 );
+		Ic3DebugAssert( pSubFolderNodesNum > 0 );
 
 		SubFolderNodeList subFolderNodes{};
 		subFolderNodes.reserve( pSubFolderNodesNum );
@@ -275,7 +275,7 @@ namespace Ic3
 
 	SCFXMLFolderNode::SubFolderNodeMap SCFXMLFolderNode::_buildSubFolderNodeMap( SubFolderNodeList & pSubFolderNodes )
 	{
-		ic3DebugAssert( !pSubFolderNodes.empty() );
+		Ic3DebugAssert( !pSubFolderNodes.empty() );
 
 		SubFolderNodeMap subFolderMap{};
 		for( auto & subFolderNode : pSubFolderNodes )
@@ -303,13 +303,13 @@ namespace Ic3
 		const auto scfNode = pXMLTree.rootNode();
 		if( scfNode.name() != "scf" )
 		{
-			ic3Throw( E_EXC_ESM_MAIN_SCF_ERROR );
+			Ic3Throw( E_EXC_ESM_MAIN_SCF_ERROR );
 		}
 
 		const auto rootNode = scfNode.firstSubNode();
 		if( rootNode.name() != "root" )
 		{
-			ic3Throw( E_EXC_ESM_MAIN_SCF_ERROR );
+			Ic3Throw( E_EXC_ESM_MAIN_SCF_ERROR );
 		}
 
 		pInitNode._xmlNode = rootNode;

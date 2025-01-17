@@ -10,7 +10,7 @@ namespace Ic3
 
 	GpaSharedStateLibrary::GpaSharedStateLibrary( const CoreEngineState & pCES, ShaderLibraryHandle pShaderLibrary )
 	: CoreEngineObject( pCES )
-	, mShaderLibrary( pShaderLibrary ? pShaderLibrary : createDynamicInterfaceObject<ShaderLibrary>( pCES ) )
+	, mShaderLibrary( pShaderLibrary ? pShaderLibrary : CreateDynamicObject<ShaderLibrary>( pCES ) )
 	{}
 
 	GpaSharedStateLibrary::~GpaSharedStateLibrary() = default;
@@ -83,11 +83,11 @@ namespace Ic3
 		{
 			GCI::IAInputLayoutDefinition inputLayoutDefinition;
 			inputLayoutDefinition.primitiveTopology = GCI::EPrimitiveTopology::TriangleList;
-			inputLayoutDefinition.activeAttributesMask =
-					GCI::E_IA_VERTEX_ATTRIBUTE_FLAG_ATTR_0_BIT |
-					GCI::E_IA_VERTEX_ATTRIBUTE_FLAG_ATTR_1_BIT |
-					GCI::E_IA_VERTEX_ATTRIBUTE_FLAG_ATTR_2_BIT |
-					GCI::E_IA_VERTEX_ATTRIBUTE_FLAG_ATTR_3_BIT;
+			inputLayoutDefinition.mActiveAttributesMask =
+					GCI::eIAVertexAttributeFlagAttr0Bit |
+					GCI::eIAVertexAttributeFlagAttr1Bit |
+					GCI::eIAVertexAttributeFlagAttr2Bit |
+					GCI::eIAVertexAttributeFlagAttr3Bit;
 			inputLayoutDefinition.attributeArray[0] = { 0, "POSITION", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec3F32, 0 };
 			inputLayoutDefinition.attributeArray[1] = { 0, "COLOR", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec4F32, Ic3::Graphics::GCI::CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND };
 			inputLayoutDefinition.attributeArray[2] = { 0, "NORMAL", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec3F32, Ic3::Graphics::GCI::CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND };
@@ -103,11 +103,11 @@ namespace Ic3
 		{
 			GCI::IAInputLayoutDefinition inputLayoutDefinition;
 			inputLayoutDefinition.primitiveTopology = GCI::EPrimitiveTopology::TriangleList;
-			inputLayoutDefinition.activeAttributesMask =
-					GCI::E_IA_VERTEX_ATTRIBUTE_FLAG_ATTR_0_BIT |
-					GCI::E_IA_VERTEX_ATTRIBUTE_FLAG_ATTR_1_BIT |
-					GCI::E_IA_VERTEX_ATTRIBUTE_FLAG_ATTR_2_BIT |
-					GCI::E_IA_VERTEX_ATTRIBUTE_FLAG_ATTR_3_BIT;
+			inputLayoutDefinition.mActiveAttributesMask =
+					GCI::eIAVertexAttributeFlagAttr0Bit |
+					GCI::eIAVertexAttributeFlagAttr1Bit |
+					GCI::eIAVertexAttributeFlagAttr2Bit |
+					GCI::eIAVertexAttributeFlagAttr3Bit;
 			inputLayoutDefinition.attributeArray[0] = { 0, "POSITION", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec3F32, 0 };
 			inputLayoutDefinition.attributeArray[1] = { 0, "COLOR", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec4F32, Ic3::Graphics::GCI::CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND16 };
 			inputLayoutDefinition.attributeArray[2] = { 0, "NORMAL", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec3F32, Ic3::Graphics::GCI::CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND16 };

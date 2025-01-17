@@ -4,7 +4,7 @@
 #ifndef __IC3_NXMAIN_RES_FTD_FREETYPE_FONT_FACE_H__
 #define __IC3_NXMAIN_RES_FTD_FREETYPE_FONT_FACE_H__
 
-#include "ftdFreeTypeCommon.h"
+#include "FTDFreeTypeCommon.h"
 #include <unordered_map>
 
 #include <ft2build.h>
@@ -90,7 +90,7 @@ namespace Ic3
 		uint32 _fontSize;
 		Math::Vec2u32 _fontResolution;
 		FTGlyphDataCache _glyphDataCache;
-		FTGlyphBitmapCache _glyphBitmapCache;
+		FTGlyphBitmapCache _glyph_BITmapCache;
 	};
 
 } // namespace Ic3
