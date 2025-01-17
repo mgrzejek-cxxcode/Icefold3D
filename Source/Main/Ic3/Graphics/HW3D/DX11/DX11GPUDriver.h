@@ -10,24 +10,24 @@
 namespace Ic3::Graphics::GCI
 {
 
-	struct DX11GPUDriverCreateInfo : public GPUDriverCreateInfo
+	struct DX11GpuDriverCreateInfo : public GpuDriverCreateInfo
 	{
 	};
 
-	class ICFGX_DX11_CLASS DX11GPUDriver final : public DXGPUDriver
+	class IC3_GX_DX11_CLASS DX11GpuDriver final : public DXGpuDriver
 	{
 	public:
-		explicit DX11GPUDriver( System::SysContextHandle pSysContext ) noexcept;
-		virtual ~DX11GPUDriver() noexcept;
+		explicit DX11GpuDriver( System::SysContextHandle pSysContext ) noexcept;
+		virtual ~DX11GpuDriver() noexcept;
 
-		virtual EGPUDriverID queryGPUDriverID() const noexcept override final;
+		virtual EGpuDriverID QueryGpuDriverID() const noexcept override final;
 
-		static DX11GPUDriverHandle create( const DX11GPUDriverCreateInfo & pCreateInfo );
+		static DX11GpuDriverHandle Create( const DX11GpuDriverCreateInfo & pCreateInfo );
 
 	private:
-		virtual DisplayManagerHandle _drvCreateDefaultDisplayManager() override;
+		virtual DisplayManagerHandle _DrvCreateDefaultDisplayManager() override;
 
-		virtual GPUDeviceHandle _drvCreateDevice( const GPUDeviceCreateInfo & pCreateInfo ) override;
+		virtual GpuDeviceHandle _DrvCreateDevice( const GpuDeviceCreateInfo & pCreateInfo ) override;
 	};
 
 } // namespace Ic3::Graphics::GCI

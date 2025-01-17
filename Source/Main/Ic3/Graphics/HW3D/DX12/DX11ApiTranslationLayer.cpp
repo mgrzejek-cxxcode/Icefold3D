@@ -5,9 +5,9 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ComPtr<ID3D12Debug> DX12CoreAPIProxy::initializeD3D12DebugInterface( Bitmask<EGPUDriverConfigFlags> pDriverConfigFlags )
+	ComPtr<ID3D12Debug> DX12CoreAPIProxy::InitializeD3D12DebugInterface( cppx::bitmask<EGpuDriverConfigFlags> pDriverConfigFlags )
 	{
-		if( !pDriverConfigFlags.isSet( E_GPU_DRIVER_CONFIG_FLAG_ENABLE_DEBUG_LAYER_BIT ) )
+		if( !pDriverConfigFlags.is_set( E_GPU_DRIVER_CONFIG_FLAG_ENABLE_DEBUG_LAYER_BIT ) )
 		{
 			return nullptr;
 		}
@@ -24,7 +24,7 @@ namespace Ic3::Graphics::GCI
 		return d3d12DebugInterface;
 	}
 
-	ComPtr<ID3D12Device> DX12CoreAPIProxy::createD3D12Device()
+	ComPtr<ID3D12Device> DX12CoreAPIProxy::CreateD3D12Device()
 	{
 
 		ComPtr<ID3D12Device> d3d12Device;
@@ -72,7 +72,7 @@ namespace Ic3::Graphics::GCI
 		return dxgiFactory3;
 	}
 
-	ComPtr<ID3D12CommandQueue> DX12CoreAPIProxy::createD3D12CommandQueue( const ComPtr<ID3D12Device> & pD3D12Device,
+	ComPtr<ID3D12CommandQueue> DX12CoreAPIProxy::CreateD3D12CommandQueue( const ComPtr<ID3D12Device> & pD3D12Device,
 	                                                              D3D12_COMMAND_LIST_TYPE pD3D12CommandListType )
 	{
 		D3D12_COMMAND_QUEUE_DESC commandQueueDesc;
@@ -91,12 +91,12 @@ namespace Ic3::Graphics::GCI
 		return commandQueue;
 	}
 
-	ComPtr<IDXGISwapChain3> DX12CoreAPIProxy::createD3D12SwapChainForExfWindow( const ComPtr<ID3D12CommandQueue> & pD3D12PresentCommandQueue,
+	ComPtr<IDXGISwapChain3> DX12CoreAPIProxy::CreateD3D12SwapChainForExfWindow( const ComPtr<ID3D12CommandQueue> & pD3D12PresentCommandQueue,
 	                                                                    void * pExfSysWindow, /* It must be an System::Window */
-	                                                                    Bitmask<UINT> pDXGIFlags )
+	                                                                    cppx::bitmask<UINT> pDXGIFlags )
 	{
 		UINT dxgiFactoryCreateFlags = 0;
-		if( pDXGIFlags.isSet( DXGI_CREATE_FACTORY_DEBUG ) )
+		if( pDXGIFlags.is_set( DXGI_CREATE_FACTORY_DEBUG ) )
 		{
 			dxgiFactoryCreateFlags |= DXGI_CREATE_FACTORY_DEBUG;
 		}
@@ -109,8 +109,8 @@ namespace Ic3::Graphics::GCI
 		}
 
 		auto * exfWindowPtr = static_cast<System::Window *>( pExfSysWindow );
-		auto windowHWND = reinterpret_cast<HWND>( exfWindowPtr->getNativeHandle() );
-		auto presentationLayerSize = exfWindowPtr->getClientSize();
+		auto windowHWND = reinterpret_cast<HWND>( exfWindowPtr->GetNativeHandle() );
+		auto presentationLayerSize = exfWindowPtr->GetClientSize();
 
 		DXGI_SWAP_CHAIN_DESC1 swapChainDesc;
 		ZeroMemory( &swapChainDesc, sizeof( DXGI_SWAP_CHAIN_DESC1 ) );
@@ -149,7 +149,7 @@ namespace Ic3::Graphics::GCI
 		return dxgiSwapChain3;
 	}
 
-	D3D12CommandListData DX12CoreAPIProxy::createD3D12CommandList( const ComPtr<ID3D12Device> & pD3D12Device,
+	D3D12CommandListData DX12CoreAPIProxy::CreateD3D12CommandList( const ComPtr<ID3D12Device> & pD3D12Device,
 	                                                       D3D12_COMMAND_LIST_TYPE pD3D12CommandListType )
 	{
 		ComPtr<ID3D12CommandAllocator> d3d12CommandAllocator;
@@ -178,8 +178,8 @@ namespace Ic3::Graphics::GCI
 		return d3d12CommandListData;
 	}
 
-	D3D12_COMMAND_LIST_TYPE DX12CoreAPIProxy::translateCommandListType( ECommandContextType pContextType,
-	                                                            Bitmask<GPUCmdCommandClassFlags> pCommandClassFlags )
+	D3D12_COMMAND_LIST_TYPE DX12CoreAPIProxy::TranslateD3D12CommandListType( ECommandContextType pContextType,
+	                                                            cppx::bitmask<GpuCmdCommandClassFlags> pCommandClassFlags )
 	{
 		auto commandListType = cvD3D12CommandListTypeInvalid;
 		if( pContextType == ECommandContextType::Secondary )
@@ -188,15 +188,15 @@ namespace Ic3::Graphics::GCI
 		}
 		else if( pContextType == ECommandContextType::Direct )
 		{
-			if( pCommandClassFlags.isSet( GPU_CMD_COMMAND_CLASS_GRAPHICS_BIT ) )
+			if( pCommandClassFlags.is_set( GPU_CMD_COMMAND_CLASS_GRAPHICS_BIT ) )
 			{
 				commandListType = D3D12_COMMAND_LIST_TYPE_DIRECT;
 			}
-			else if( pCommandClassFlags.isSet( GPU_CMD_COMMAND_CLASS_COMPUTE_BIT ) )
+			else if( pCommandClassFlags.is_set( GPU_CMD_COMMAND_CLASS_COMPUTE_BIT ) )
 			{
 				commandListType = D3D12_COMMAND_LIST_TYPE_COMPUTE;
 			}
-			else if( pCommandClassFlags.isSet( GPU_CMD_COMMAND_CLASS_TRANSFER_BIT ) )
+			else if( pCommandClassFlags.is_set( GPU_CMD_COMMAND_CLASS_TRANSFER_BIT ) )
 			{
 				commandListType = D3D12_COMMAND_LIST_TYPE_COPY;
 			}

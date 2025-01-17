@@ -8,12 +8,12 @@
 namespace Ic3::Graphics::GCI
 {
 
-	DX12ScreenPresentationLayer::DX12ScreenPresentationLayer( DX12GPUDevice & pDevice, ComPtr<IDXGISwapChain3> pDXGISwapChain3, uint32 pFrameQueueSize )
+	DX12ScreenPresentationLayer::DX12ScreenPresentationLayer( DX12GpuDevice & pDevice, ComPtr<IDXGISwapChain3> pDXGISwapChain3, uint32 pFrameQueueSize )
 	: DXScreenPresentationLayer( pDevice, pDXGISwapChain3 )
 	, mDXGISwapChain3( std::move( pDXGISwapChain3 ) )
 	, mD3D12Device( pDevice.mD3D12Device )
-	, mD3D12PresentQueue( pDevice.getD3D12DeviceQueue( E_DEVICE_COMMAND_QUEUE_ID_PRESENT ) )
-	, _frameQueueSize( getMaxOf( pFrameQueueSize, sMinFrameQueueSize ) )
+	, mD3D12PresentQueue( pDevice.GetD3D12DeviceQueue( E_DEVICE_COMMAND_QUEUE_ID_PRESENT ) )
+	, _frameQueueSize( get_max_of( pFrameQueueSize, sMinFrameQueueSize ) )
 	, _currentFrameIndex( 0 )
 	, _rtvDescriptorSize( 0 )
 	, _frameSyncFenceEvent( nullptr )
@@ -29,27 +29,27 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	DX12ScreenPresentationLayerHandle DX12ScreenPresentationLayer::create( DX12GPUDevice & pDX12Device, const DX12PresentationLayerCreateInfo & pCreateInfo )
+	DX12ScreenPresentationLayerHandle DX12ScreenPresentationLayer::Create( DX12GpuDevice & pDX12Device, const DX12PresentationLayerCreateInfo & pCreateInfo )
 	{
-		auto * d3d12PresentQueue = pDX12Device.getD3D12DeviceQueue( E_DEVICE_COMMAND_QUEUE_ID_PRESENT );
+		auto * d3d12PresentQueue = pDX12Device.GetD3D12DeviceQueue( E_DEVICE_COMMAND_QUEUE_ID_PRESENT );
 		ic3DebugAssert( d3d12PresentQueue );
 
 		auto * exfWindow = createSysWindow( pDX12Device, pCreateInfo );
 		ic3DebugAssert( exfWindow );
 
-		auto dxgiSwapChain3 = DX12CoreAPIProxy::createD3D12SwapChainForExfWindow( d3d12PresentQueue, exfWindow, pCreateInfo.dxgiFlags );
+		auto dxgiSwapChain3 = DX12CoreAPIProxy::CreateD3D12SwapChainForExfWindow( d3d12PresentQueue, exfWindow, pCreateInfo.dxgiFlags );
 		ic3DebugAssert( dxgiSwapChain3 );
 
-		auto presentationLayer = createGPUAPIObject<DX12ScreenPresentationLayer>( pDX12Device, std::move( dxgiSwapChain3 ) );
+		auto presentationLayer = CreateGfxObject<DX12ScreenPresentationLayer>( pDX12Device, std::move( dxgiSwapChain3 ) );
 		presentationLayer->_initializeRTVDescriptorHeap();
 		presentationLayer->_initializeRTVResources();
 
 		return presentationLayer;
 	}
 
-	void DX12ScreenPresentationLayer::bindRenderTarget( CommandContext * pCmdContext )
+	void DX12ScreenPresentationLayer::BindRenderTarget( CommandContext * pCmdContext )
 	{
-		auto * dx12CmdContext = pCmdContext->getInterface<DX12CommandContext>();
+		auto * dx12CmdContext = pCmdContext->GetInterface<DX12CommandContext>();
 		ic3DebugAssert( dx12CmdContext->mD3D12GraphicsCommandList );
 
 		auto & currentFrameResource = _frameResourceArray.at( _currentFrameIndex );
@@ -66,13 +66,13 @@ namespace Ic3::Graphics::GCI
 		DX12RenderTargetState renderTargetState;
 		renderTargetState.rtvDescriptorArray[0] = currentFrameResource.backBufferTextureRTVDescriptor;
 		renderTargetState.rtvDescriptorsNum = 1;
-		renderTargetState.dsvDescriptor = cvD3D12CPUDescriptorEmpty;
-		dx12CmdContext->setRenderTargetState( renderTargetState );
+		renderTargetState.dsvDescriptor = cvD3D12CpuDescriptorEmpty;
+		dx12CmdContext->SetRenderTargetState( renderTargetState );
 	}
 
-	void DX12ScreenPresentationLayer::invalidateRenderTarget( CommandContext * pCmdContext )
+	void DX12ScreenPresentationLayer::InvalidateRenderTarget( CommandContext * pCmdContext )
 	{
-		auto * dx12CmdContext = pCmdContext->getInterface<DX12CommandContext>();
+		auto * dx12CmdContext = pCmdContext->GetInterface<DX12CommandContext>();
 		ic3DebugAssert( dx12CmdContext->mD3D12GraphicsCommandList );
 
 		auto & currentFrameResource = _frameResourceArray.at( _currentFrameIndex );
@@ -87,7 +87,7 @@ namespace Ic3::Graphics::GCI
 		dx12CmdContext->mD3D12GraphicsCommandList->ResourceBarrier( 1, &rtStateTransition );
 	}
 
-	void DX12ScreenPresentationLayer::present()
+	void DX12ScreenPresentationLayer::Present()
 	{
 	#if ( 1 )
 		mDXGISwapChain3->Present( 1, 0 );
@@ -160,7 +160,7 @@ namespace Ic3::Graphics::GCI
 
 		// Get the CPU handle for our previously created descriptor heap. Using the base pointer and the size of a
 		// single descriptor (_rtvDescriptorSize) we can then manually compute offsets for all pdesc (see below).
-		D3D12_CPU_DESCRIPTOR_HANDLE rtvDescriptorHandle = _rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+		D3D12_CPU_DESCRIPTOR_HANDLE rtvDescriptorHandle = _rtvDescriptorHeap->GetCpuDescriptorHandleForHeapStart();
 
 		_frameResourceArray.resize( _frameQueueSize );
 

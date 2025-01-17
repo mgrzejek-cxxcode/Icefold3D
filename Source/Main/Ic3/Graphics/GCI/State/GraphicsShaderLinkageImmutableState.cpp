@@ -5,41 +5,41 @@ namespace Ic3::Graphics::GCI
 {
 
 	GraphicsShaderLinkageImmutableState::GraphicsShaderLinkageImmutableState(
-			GPUDevice & pGPUDevice,
+			GpuDevice & pGpuDevice,
 			const GraphicsShaderLinkageCommonProperties & pCommonProperties )
-	: GraphicsPipelineImmutableState( pGPUDevice )
+	: GraphicsPipelineImmutableState( pGpuDevice )
 	, mCommonProperties( pCommonProperties )
 	{}
 
 	GraphicsShaderLinkageImmutableState::~GraphicsShaderLinkageImmutableState() = default;
 
-	Shader * GraphicsShaderLinkageImmutableState::getShader( size_t pIndex ) const noexcept
+	Shader * GraphicsShaderLinkageImmutableState::GetShader( size_t pIndex ) const noexcept
 	{
 		return nullptr;
 	}
 
-	Shader * GraphicsShaderLinkageImmutableState::getShader( EShaderType pShaderType ) const noexcept
+	Shader * GraphicsShaderLinkageImmutableState::GetShader( EShaderType pShaderType ) const noexcept
 	{
 		return nullptr;
 	}
 
 
 	GraphicsShaderLinkageImmutableStateSeparable::GraphicsShaderLinkageImmutableStateSeparable(
-			GPUDevice & pGPUDevice,
+			GpuDevice & pGpuDevice,
 			const GraphicsShaderLinkageCommonProperties & pCommonProperties,
 			const GraphicsShaderSet & pShaderSet )
-	: GraphicsShaderLinkageImmutableState( pGPUDevice, pCommonProperties )
+	: GraphicsShaderLinkageImmutableState( pGpuDevice, pCommonProperties )
 	, mShaderSet( pShaderSet )
 	{}
 
 	GraphicsShaderLinkageImmutableStateSeparable::~GraphicsShaderLinkageImmutableStateSeparable() = default;
 
-	Shader * GraphicsShaderLinkageImmutableStateSeparable::getShader( size_t pIndex ) const noexcept
+	Shader * GraphicsShaderLinkageImmutableStateSeparable::GetShader( size_t pIndex ) const noexcept
 	{
 		return mShaderSet[pIndex];
 	}
 
-	Shader * GraphicsShaderLinkageImmutableStateSeparable::getShader( EShaderType pShaderType ) const noexcept
+	Shader * GraphicsShaderLinkageImmutableStateSeparable::GetShader( EShaderType pShaderType ) const noexcept
 	{
 		return mShaderSet[pShaderType];
 	}
@@ -48,12 +48,12 @@ namespace Ic3::Graphics::GCI
 	namespace SMU
 	{
 
-		GraphicsShaderLinkageCommonProperties getGraphicsShaderLinkageCommonPropertiesForShaderSet(
+		GraphicsShaderLinkageCommonProperties GetGraphicsShaderLinkageCommonPropertiesForShaderSet(
 				const GraphicsShaderSet & pShaderSet ) noexcept
 		{
 			GraphicsShaderLinkageCommonProperties commonProperties{};
-			commonProperties.mActiveStagesMask = pShaderSet.getActiveShaderStagesMask();
-			commonProperties.mActiveStagesNum = pShaderSet.getActiveShaderStagesNum();
+			commonProperties.mActiveStagesMask = pShaderSet.GetActiveShaderStagesMask();
+			commonProperties.mActiveStagesNum = pShaderSet.GetActiveShaderStagesNum();
 			return commonProperties;
 		}
 

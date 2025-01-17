@@ -5,19 +5,19 @@
 namespace Ic3::Graphics::GCI
 {
 
-	VKGPUDevice::VKGPUDevice( VKGPUDriver * pDriver, VkDevice pVkDevice )
-	: GPUDevice( pDriver )
+	VKGpuDevice::VKGpuDevice( VKGpuDriver * pDriver, VkDevice pVkDevice )
+	: GpuDevice( pDriver )
 	, mVkDevice( pVkDevice )
 	{ }
 
-	VKGPUDevice::~VKGPUDevice() = default;
+	VKGpuDevice::~VKGpuDevice() = default;
 
-	VKGPUDeviceHandle VKGPUDevice::create( VKGPUDriver * pDriver, const VKGPUDeviceCreateInfo & pCreateInfo )
+	VKGpuDeviceHandle VKGpuDevice::Create( VKGpuDriver * pDriver, const VKGpuDeviceCreateInfo & pCreateInfo )
 	{
 		return nullptr;
 	}
 
-	void VKGPUDevice::initializeCommandSystem()
+	void VKGpuDevice::InitializeCommandSystem()
 	{
 	}
 

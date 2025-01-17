@@ -5,7 +5,7 @@
 #define __IC3_GRAPHICS_GCI_COMMAND_CONTEXT_H__
 
 #include "CommonCommandDefs.h"
-#include "Resources/GPUBufferCommon.h"
+#include "Resources/GpuBufferCommon.h"
 
 namespace Ic3::Graphics::GCI
 {
@@ -15,7 +15,7 @@ namespace Ic3::Graphics::GCI
 
 	enum ECommandListActionFlags : uint32;
 
-	class CommandContext : public GPUDeviceChildObject
+	class CommandContext : public GpuDeviceChildObject
 	{
 	public:
 		CommandList * const mCommandList;
@@ -24,28 +24,28 @@ namespace Ic3::Graphics::GCI
 
 		ECommandContextType const mContextType;
 
-		TBitmask<ECommandObjectPropertyFlags> const mCommandFlags;
+		cppx::bitmask<ECommandObjectPropertyFlags> const mCommandFlags;
 
 	public:
 		virtual ~CommandContext();
 
-		IC3_ATTR_NO_DISCARD bool checkCommandClassSupport( ECommandQueueClass pQueueClass ) const;
+		CPPX_ATTR_NO_DISCARD bool CheckCommandClassSupport( ECommandQueueClass pQueueClass ) const;
 
-		IC3_ATTR_NO_DISCARD bool checkFeatureSupport( TBitmask<ECommandObjectPropertyFlags> pCommandContextFlags ) const;
+		CPPX_ATTR_NO_DISCARD bool CheckFeatureSupport( cppx::bitmask<ECommandObjectPropertyFlags> pCommandContextFlags ) const;
 
-		void beginCommandSequence();
-		void endCommandSequence();
+		void BeginCommandSequence();
+		void EndCommandSequence();
 
-		bool mapBuffer( GPUBuffer & pBuffer, EGPUMemoryMapMode pMapMode );
-		bool mapBufferRegion( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion, EGPUMemoryMapMode pMapMode );
-		bool unmapBuffer( GPUBuffer & pBuffer );
-		bool flushMappedBuffer( GPUBuffer & pBuffer );
-		bool flushMappedBufferRegion( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion );
+		bool MapBuffer( GpuBuffer & pBuffer, EGpuMemoryMapMode pMapMode );
+		bool MapBufferRegion( GpuBuffer & pBuffer, const GpuMemoryRegion & pRegion, EGpuMemoryMapMode pMapMode );
+		bool UnmapBuffer( GpuBuffer & pBuffer );
+		bool FlushMappedBuffer( GpuBuffer & pBuffer );
+		bool FlushMappedBufferRegion( GpuBuffer & pBuffer, const GpuMemoryRegion & pRegion );
 
 	protected:
 		CommandContext( CommandList & pCommandList, ECommandContextType pContextType );
 
-		bool checkCommandListSupport( TBitmask<ECommandObjectPropertyFlags> pCmdListFlags );
+		bool CheckCommandListSupport( cppx::bitmask<ECommandObjectPropertyFlags> pCmdListFlags );
 	};
 
 	class CommandContextDirect : public CommandContext
@@ -53,14 +53,14 @@ namespace Ic3::Graphics::GCI
 	public:
 		virtual ~CommandContextDirect() = default;
 
-		void submit();
+		void Submit();
 
-		CommandSync submit( const CommandContextSubmitInfo & pSubmitInfo );
+		CommandSync Submit( const CommandContextSubmitInfo & pSubmitInfo );
 
-		void cmdExecuteDeferredContext( CommandContextDeferred & pDeferredContext );
+		void CmdExecuteDeferredContext( CommandContextDeferred & pDeferredContext );
 
-		bool invalidateBuffer( GPUBuffer & pBuffer );
-		bool invalidateBufferRegion( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion );
+		bool InvalidateBuffer( GpuBuffer & pBuffer );
+		bool InvalidateBufferRegion( GpuBuffer & pBuffer, const GpuMemoryRegion & pRegion );
 
 	protected:
 		CommandContextDirect( CommandList & pCommandList, ECommandContextType pContextType )
@@ -79,33 +79,33 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~CommandContextDirectTransfer() = default;
 
-		bool updateBufferDataCopy( GPUBuffer & pBuffer, GPUBuffer & pSourceBuffer, const GPUBufferDataCopyDesc & pCopyDesc );
-		bool updateBufferSubDataCopy( GPUBuffer & pBuffer, GPUBuffer & pSourceBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc );
-		bool updateBufferDataUpload( GPUBuffer & pBuffer, const GPUBufferDataUploadDesc & pUploadDesc );
-		bool updateBufferSubDataUpload( GPUBuffer & pBuffer, const GPUBufferSubDataUploadDesc & pUploadDesc );
+		bool UpdateBufferDataCopy( GpuBuffer & pBuffer, GpuBuffer & pSourceBuffer, const GpuBufferDataCopyDesc & pCopyDesc );
+		bool UpdateBufferSubDataCopy( GpuBuffer & pBuffer, GpuBuffer & pSourceBuffer, const GpuBufferSubDataCopyDesc & pCopyDesc );
+		bool UpdateBufferDataUpload( GpuBuffer & pBuffer, const GpuBufferDataUploadDesc & pUploadDesc );
+		bool UpdateBufferSubDataUpload( GpuBuffer & pBuffer, const GpuBufferSubDataUploadDesc & pUploadDesc );
 
 		template <typename TData>
-		void updateBufferDataUpload( GPUBuffer & pBuffer, const TData & pData )
+		void UpdateBufferDataUpload( GpuBuffer & pBuffer, const TData & pData )
 		{
-			GPUBufferDataUploadDesc dataUploadDesc;
-			dataUploadDesc.flags = eGPUBufferDataCopyFlagModeInvalidateBit;
-			dataUploadDesc.inputDataDesc.mPointer = &pData;
+			GpuBufferDataUploadDesc dataUploadDesc;
+			dataUploadDesc.flags = eGpuBufferDataCopyFlagModeInvalidateBit;
+			dataUploadDesc.inputDataDesc.pointer = &pData;
 			dataUploadDesc.inputDataDesc.size = sizeof( TData );
 
-			updateBufferDataUpload( pBuffer, dataUploadDesc );
+			UpdateBufferDataUpload( pBuffer, dataUploadDesc );
 		}
 
 		template <typename TData>
-		void updateBufferSubDataUpload( GPUBuffer & pBuffer, const TData & pData, gpu_memory_size_t pOffset )
+		void UpdateBufferSubDataUpload( GpuBuffer & pBuffer, const TData & pData, gpu_memory_size_t pOffset )
 		{
-			GPUBufferSubDataUploadDesc subDataUploadDesc;
-			subDataUploadDesc.flags = eGPUBufferDataCopyFlagModeInvalidateBit;
-			subDataUploadDesc.inputDataDesc.mPointer = &pData;
+			GpuBufferSubDataUploadDesc subDataUploadDesc;
+			subDataUploadDesc.flags = eGpuBufferDataCopyFlagModeInvalidateBit;
+			subDataUploadDesc.inputDataDesc.pointer = &pData;
 			subDataUploadDesc.inputDataDesc.size = sizeof( pData );
 			subDataUploadDesc.bufferRegion.offset = pOffset;
 			subDataUploadDesc.bufferRegion.size = sizeof( TData );
 
-			updateBufferSubDataUpload( pBuffer, subDataUploadDesc );
+			UpdateBufferSubDataUpload( pBuffer, subDataUploadDesc );
 		}
 
 	protected:
@@ -125,8 +125,8 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~CommandContextDirectCompute() = default;
 
-		void cmdDispatchCompute( uint32 pThrGroupSizeX, uint32 pThrGroupSizeY, uint32 pThrGroupSizeZ );
-		void cmdDispatchComputeIndirect( uint32 pIndirectBufferOffset );
+		void CmdDispatchCompute( uint32 pThrGroupSizeX, uint32 pThrGroupSizeY, uint32 pThrGroupSizeZ );
+		void CmdDispatchComputeIndirect( uint32 pIndirectBufferOffset );
 
 	protected:
 		CommandContextDirectCompute( CommandList & pCommandList, ECommandContextType pContextType )
@@ -145,32 +145,32 @@ namespace Ic3::Graphics::GCI
 
 		~CommandContextDirectGraphics() = default;
 		
-		bool beginRenderPass(
+		bool BeginRenderPass(
 				const RenderPassConfigurationImmutableState & pRenderPassState,
-				TBitmask<ECommandListActionFlags> pFlags = eCommandListActionFlagsDefault );
+				cppx::bitmask<ECommandListActionFlags> pFlags = eCommandListActionFlagsDefault );
 
-		bool beginRenderPass(
+		bool BeginRenderPass(
 				const RenderPassConfigurationDynamicState & pRenderPassState,
-				TBitmask<ECommandListActionFlags> pFlags = eCommandListActionFlagsDefault );
+				cppx::bitmask<ECommandListActionFlags> pFlags = eCommandListActionFlagsDefault );
 
-		void endRenderPass();
+		void EndRenderPass();
 
-		bool setGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO );
-		bool setIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState );
-		bool setIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState );
-		bool setRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState );
-		bool setRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState );
+		bool SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO );
+		bool SetIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState );
+		bool SetIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState );
+		bool SetRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState );
+		bool SetRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState );
 
-		bool cmdSetViewport( const ViewportDesc & pViewportDesc );
-		bool cmdSetShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData );
-		bool cmdSetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer );
-		bool cmdSetShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture );
-		bool cmdSetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler );
+		bool CmdSetViewport( const ViewportDesc & pViewportDesc );
+		bool CmdSetShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData );
+		bool CmdSetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GpuBuffer & pConstantBuffer );
+		bool CmdSetShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture );
+		bool CmdSetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler );
 
-		void cmdDrawDirectIndexed( native_uint pIndicesNum, native_uint pIndicesOffset, native_uint pBaseVertexIndex = 0 );
-		void cmdDrawDirectIndexedInstanced( native_uint pIndicesNumPerInstance, native_uint pInstancesNum, native_uint pIndicesOffset );
-		void cmdDrawDirectNonIndexed( native_uint pVerticesNum, native_uint pVerticesOffset );
-		void cmdDrawDirectNonIndexedInstanced( native_uint pVerticesNumPerInstance, native_uint pInstancesNum, native_uint pVerticesOffset );
+		void CmdDrawDirectIndexed( native_uint pIndicesNum, native_uint pIndicesOffset, native_uint pBaseVertexIndex = 0 );
+		void CmdDrawDirectIndexedInstanced( native_uint pIndicesNumPerInstance, native_uint pInstancesNum, native_uint pIndicesOffset );
+		void CmdDrawDirectNonIndexed( native_uint pVerticesNum, native_uint pVerticesOffset );
+		void CmdDrawDirectNonIndexedInstanced( native_uint pVerticesNumPerInstance, native_uint pInstancesNum, native_uint pVerticesOffset );
 	};
 
 	class CommandContextDeferred : public CommandContext
@@ -178,9 +178,9 @@ namespace Ic3::Graphics::GCI
 	public:
 		virtual ~CommandContextDeferred() = default;
 
-		bool mapBufferDeferred( GPUBuffer & pBuffer );
-		bool mapBufferRegionDeferred( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion );
-		bool unmapBufferDeferred( GPUBuffer & pBuffer );
+		bool MapBufferDeferred( GpuBuffer & pBuffer );
+		bool MapBufferRegionDeferred( GpuBuffer & pBuffer, const GpuMemoryRegion & pRegion );
+		bool UnmapBufferDeferred( GpuBuffer & pBuffer );
 
 	protected:
 		CommandContextDeferred( CommandList & pCommandList, ECommandContextType pContextType )
@@ -200,32 +200,32 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~CommandContextDeferredGraphics() = default;
 
-		bool beginRenderPass(
+		bool BeginRenderPass(
 				const RenderPassConfigurationImmutableState & pRenderPassState,
-				TBitmask<ECommandListActionFlags> pFlags = eCommandListActionFlagsDefault );
+				cppx::bitmask<ECommandListActionFlags> pFlags = eCommandListActionFlagsDefault );
 
-		bool beginRenderPass(
+		bool BeginRenderPass(
 				const RenderPassConfigurationDynamicState & pRenderPassState,
-				TBitmask<ECommandListActionFlags> pFlags = eCommandListActionFlagsDefault );
+				cppx::bitmask<ECommandListActionFlags> pFlags = eCommandListActionFlagsDefault );
 
-		void endRenderPass();
+		void EndRenderPass();
 
-		bool setGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO );
-		bool setIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState );
-		bool setIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState );
-		bool setRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState );
-		bool setRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState );
+		bool SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO );
+		bool SetIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState );
+		bool SetIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState );
+		bool SetRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState );
+		bool SetRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState );
 
-		bool cmdSetViewport( const ViewportDesc & pViewportDesc );
-		bool cmdSetShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData );
-		bool cmdSetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer );
-		bool cmdSetShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture );
-		bool cmdSetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler );
+		bool CmdSetViewport( const ViewportDesc & pViewportDesc );
+		bool CmdSetShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData );
+		bool CmdSetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GpuBuffer & pConstantBuffer );
+		bool CmdSetShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture );
+		bool CmdSetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler );
 
-		void cmdDrawDirectIndexed( native_uint pIndicesNum, native_uint pIndicesOffset, native_uint pBaseVertexIndex = 0 );
-		void cmdDrawDirectIndexedInstanced( native_uint pIndicesNumPerInstance, native_uint pInstancesNum, native_uint pIndicesOffset, EIndexDataFormat pIndexFormat );
-		void cmdDrawDirectNonIndexed( native_uint pVerticesNum, native_uint pVerticesOffset );
-		void cmdDrawDirectNonIndexedInstanced( native_uint pVerticesNumPerInstance, native_uint pInstancesNum, native_uint pVerticesOffset );
+		void CmdDrawDirectIndexed( native_uint pIndicesNum, native_uint pIndicesOffset, native_uint pBaseVertexIndex = 0 );
+		void CmdDrawDirectIndexedInstanced( native_uint pIndicesNumPerInstance, native_uint pInstancesNum, native_uint pIndicesOffset, EIndexDataFormat pIndexFormat );
+		void CmdDrawDirectNonIndexed( native_uint pVerticesNum, native_uint pVerticesOffset );
+		void CmdDrawDirectNonIndexedInstanced( native_uint pVerticesNumPerInstance, native_uint pInstancesNum, native_uint pVerticesOffset );
 	};
 
 } // namespace Ic3::Graphics::GCI

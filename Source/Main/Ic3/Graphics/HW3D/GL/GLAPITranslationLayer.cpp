@@ -1,46 +1,47 @@
 
-#include "GLAPITranslationLayer.h"
-#include <Ic3/Graphics/GCI/Resources/GPUBufferCommon.h>
+#include "GLApiTranslationLayer.h"
+#include <Ic3/Graphics/GCI/Resources/GpuBufferCommon.h>
 #include <Ic3/Graphics/GCI/Resources/ShaderCommon.h>
 #include <Ic3/Graphics/GCI/Resources/TextureCommon.h>
 #include <Ic3/Graphics/GCI/State/SamplerCommon.h>
-#include <Ic3/Cppx/STLHelperAlgo.h>
+#include <cppx/stdHelperAlgo.h>
 #include <unordered_map>
 
 namespace Ic3::Graphics::GCI
 {
-#if( ICFGX_GL_TARGET == ICFGX_GL_TARGET_GL43 )
-	GLenum ATL::chooseGLBufferStorageFlags( GLenum pBindTarget, Bitmask<resource_flags_value_t> pBufferFlags, Bitmask<EGPUMemoryFlags> pMemoryFlags )
+#if( IC3_GX_GL_TARGET == IC3_GX_GL_TARGET_GL43 )
+	GLenum ATL::ChooseGLBufferStorageFlags( GLenum pBindTarget, cppx::bitmask<resource_flags_value_t> pBufferFlags, cppx::bitmask<EGpuMemoryFlags> pMemoryFlags )
 	{
-		Bitmask<GLenum> storageFlags = 0;
+		cppx::bitmask<GLenum> storageFlags = 0;
 
-		if( !pBufferFlags.isSet( E_GPU_RESOURCE_CONTENT_FLAG_IMMUTABLE_BIT ) )
+		if( !pBufferFlags.is_set( eGpuResourceContentFlagImmutableBit ) )
 		{
 			// DYNAMIC_STORAGE is required in order to perform *ANY* kind of buffer data update.
 			// Without this flag, it is impossible to change the buffer's content even via glBufferSubData.
-			// Because of that, we apply this to every buffer, except those specified explicitly as IMMUTABLE.
+			// Because of that, we Apply this to every buffer, except those specified explicitly as IMMUTABLE.
 			storageFlags.set( GL_DYNAMIC_STORAGE_BIT );
 		}
-		if( pBufferFlags.isSet( E_GPU_RESOURCE_CONTENT_FLAG_TEMPORARY_BIT ) )
+		if( pBufferFlags.is_set( eGpuResourceContentFlagTemporaryBit ) )
 		{
 			storageFlags.set( GL_CLIENT_STORAGE_BIT );
 		}
-		if( pMemoryFlags.isSet( E_GPU_MEMORY_ACCESS_FLAG_CPU_READ_BIT ) )
+		if( pMemoryFlags.is_set( eGpuMemoryAccessFlagCpuReadBit ) )
 		{
 			storageFlags.set( GL_MAP_READ_BIT );
 		}
-		if( pMemoryFlags.isSet( E_GPU_MEMORY_ACCESS_FLAG_CPU_WRITE_BIT ) )
+		if( pMemoryFlags.is_set( eGpuMemoryAccessFlagCpuWriteBit ) )
 		{
 			storageFlags.set( GL_MAP_WRITE_BIT );
 		}
-		if( pMemoryFlags.isSet( E_GPU_MEMORY_HEAP_PROPERTY_FLAG_CPU_CACHED_BIT ) )
+		if( pMemoryFlags.is_set( eGpuMemoryHeapPropertyFlagCpuCachedBit ) )
 		{
 			storageFlags.set( GL_CLIENT_STORAGE_BIT );
 		}
-		if( pMemoryFlags.isSet( E_GPU_MEMORY_HEAP_PROPERTY_FLAG_PERSISTENT_MAP_BIT ) )
+		if( pMemoryFlags.is_set( eGpuMemoryHeapPropertyFlagPersistentMapBit ) )
 		{
 			storageFlags.set( GL_MAP_PERSISTENT_BIT );
-			if( pMemoryFlags.isSetAnyOf( E_GPU_MEMORY_HEAP_PROPERTY_FLAG_CPU_COHERENT_BIT | E_GPU_MEMORY_HEAP_PROPERTY_FLAG_GPU_COHERENT_BIT ) )
+			if( pMemoryFlags.is_set_any_of(
+					eGpuMemoryHeapPropertyFlagCpuCoherentBit | eGpuMemoryHeapPropertyFlagGpuCoherentBit ) )
 			{
 				storageFlags.set( GL_MAP_COHERENT_BIT );
 			}
@@ -50,7 +51,7 @@ namespace Ic3::Graphics::GCI
 	}
 #endif
 
-	GLenum ATL::chooseGLBufferUsagePolicy( GLenum pBindTarget, Bitmask<resource_flags_value_t> pBufferFlags )
+	GLenum ATL::ChooseGLBufferUsagePolicy( GLenum pBindTarget, cppx::bitmask<resource_flags_value_t> pBufferFlags )
 	{
 		// Usage constants have standard values. Use that fact to avoid huge if-else.
 		// Basically, we first select between DYNAMIC, STREAM and STATIC and then advance
@@ -69,12 +70,12 @@ namespace Ic3::Graphics::GCI
 		GLenum usagePolicy = 0;
 
 		// The nature of the data has been explicitly specified as dynamic.
-		if( pBufferFlags.isSet( E_GPU_RESOURCE_CONTENT_FLAG_DYNAMIC_BIT ) )
+		if( pBufferFlags.is_set( eGpuResourceContentFlagDynamicBit ) )
 		{
 			usagePolicy = GL_DYNAMIC_DRAW;
 		}
 		// Temporary buffers, updated once and used few times. That fits with STREAM policy.
-		else if( pBufferFlags.isSet( E_GPU_RESOURCE_CONTENT_FLAG_TEMPORARY_BIT ) )
+		else if( pBufferFlags.is_set( eGpuResourceContentFlagTemporaryBit ) )
 		{
 			usagePolicy = GL_STREAM_DRAW;
 		}
@@ -98,7 +99,7 @@ namespace Ic3::Graphics::GCI
 		return usagePolicy;
 	}
 
-	GLenum ATL::chooseGLTextureMagFilter( ETextureFilter pMagFilter, ETextureMipMode pMipMode )
+	GLenum ATL::ChooseGLTextureMagFilter( ETextureFilter pMagFilter, ETextureMipMode pMipMode )
 	{
 		GLenum magFilter = GL_INVALID_VALUE;
 
@@ -118,7 +119,7 @@ namespace Ic3::Graphics::GCI
 		return magFilter;
 	}
 
-	GLenum ATL::chooseGLTextureMinFilter( ETextureFilter pMinFilter, ETextureMipMode pMipMode )
+	GLenum ATL::ChooseGLTextureMinFilter( ETextureFilter pMinFilter, ETextureMipMode pMipMode )
 	{
 		GLenum minFilter = GL_INVALID_VALUE;
 
@@ -171,7 +172,7 @@ namespace Ic3::Graphics::GCI
 		return minFilter;
 	}
 
-	GLsizei ATL::queryGLTextureInternalFormatBPP( GLenum pGLInternalFormat )
+	GLsizei ATL::QueryGLTextureInternalFormatBPP( GLenum pGLInternalFormat )
 	{
 		switch( pGLInternalFormat )
 		{
@@ -224,7 +225,7 @@ namespace Ic3::Graphics::GCI
 			ic3CaseReturn( GL_DEPTH_COMPONENT32F , 32 );
 			ic3CaseReturn( GL_DEPTH32F_STENCIL8  , 64 );
 
-		#if( ICFGX_GL_PLATFORM_TYPE == ICFGX_GL_PLATFORM_TYPE_DESKTOP )
+		#if( IC3_GX_GL_PLATFORM_TYPE == IC3_GX_GL_PLATFORM_TYPE_DESKTOP )
 			ic3CaseReturn( GL_TEX_FORMAT_COMPRESSED_BC1        , 4 );
 			ic3CaseReturn( GL_TEX_FORMAT_COMPRESSED_BC1_SRGBA  , 4 );
 			ic3CaseReturn( GL_TEX_FORMAT_COMPRESSED_BC2        , 4 );
@@ -244,7 +245,7 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::translateGLBaseDataType( EBaseDataType pBaseDataType )
+	GLenum ATL::TranslateGLBaseDataType( EBaseDataType pBaseDataType )
 	{
 		switch( pBaseDataType )
 		{
@@ -262,7 +263,7 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::translateGLBlendFactor( EBlendFactor pBlendFactor )
+	GLenum ATL::TranslateGLBlendFactor( EBlendFactor pBlendFactor )
 	{
 		switch( pBlendFactor )
 		{
@@ -283,7 +284,7 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::translateGLBlendOp( EBlendOp pBlendOp )
+	GLenum ATL::TranslateGLBlendOp( EBlendOp pBlendOp )
 	{
 		switch( pBlendOp )
 		{
@@ -297,53 +298,53 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::translateGLBufferBindTarget( EGPUBufferTarget pBufferTarget )
+	GLenum ATL::TranslateGLBufferBindTarget( EGpuBufferTarget pBufferTarget )
 	{
 		switch( pBufferTarget )
 		{
-			ic3CaseReturn( EGPUBufferTarget::Unknown                , GL_INVALID_ENUM              );
-			ic3CaseReturn( EGPUBufferTarget::ConstantBuffer         , GL_UNIFORM_BUFFER            );
-			ic3CaseReturn( EGPUBufferTarget::VertexBuffer           , GL_ARRAY_BUFFER              );
-			ic3CaseReturn( EGPUBufferTarget::IndexBuffer            , GL_ELEMENT_ARRAY_BUFFER      );
-			ic3CaseReturn( EGPUBufferTarget::ShaderInputBuffer      , GL_SHADER_STORAGE_BUFFER     );
-			ic3CaseReturn( EGPUBufferTarget::ShaderUAVBuffer        , GL_SHADER_STORAGE_BUFFER     );
-			ic3CaseReturn( EGPUBufferTarget::StreamOutputBuffer     , GL_TRANSFORM_FEEDBACK_BUFFER );
-			ic3CaseReturn( EGPUBufferTarget::IndirectDispatchBuffer , GL_DISPATCH_INDIRECT_BUFFER  );
-			ic3CaseReturn( EGPUBufferTarget::IndirectDrawBuffer     , GL_DRAW_INDIRECT_BUFFER      );
-			ic3CaseReturn( EGPUBufferTarget::TransferSourceBuffer   , GL_COPY_READ_BUFFER          );
-			ic3CaseReturn( EGPUBufferTarget::TransferTargetBuffer   , GL_COPY_WRITE_BUFFER         );
+			ic3CaseReturn( EGpuBufferTarget::Unknown                , GL_INVALID_ENUM              );
+			ic3CaseReturn( EGpuBufferTarget::ConstantBuffer         , GL_UNIFORM_BUFFER            );
+			ic3CaseReturn( EGpuBufferTarget::VertexBuffer           , GL_ARRAY_BUFFER              );
+			ic3CaseReturn( EGpuBufferTarget::IndexBuffer            , GL_ELEMENT_ARRAY_BUFFER      );
+			ic3CaseReturn( EGpuBufferTarget::ShaderInputBuffer      , GL_SHADER_STORAGE_BUFFER     );
+			ic3CaseReturn( EGpuBufferTarget::ShaderUAVBuffer        , GL_SHADER_STORAGE_BUFFER     );
+			ic3CaseReturn( EGpuBufferTarget::StreamOutputBuffer     , GL_TRANSFORM_FEEDBACK_BUFFER );
+			ic3CaseReturn( EGpuBufferTarget::IndirectDispatchBuffer , GL_DISPATCH_INDIRECT_BUFFER  );
+			ic3CaseReturn( EGpuBufferTarget::IndirectDrawBuffer     , GL_DRAW_INDIRECT_BUFFER      );
+			ic3CaseReturn( EGpuBufferTarget::TransferSourceBuffer   , GL_COPY_READ_BUFFER          );
+			ic3CaseReturn( EGpuBufferTarget::TransferTargetBuffer   , GL_COPY_WRITE_BUFFER         );
 		};
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::translateGLBufferMapFlags( EGPUMemoryMapMode pMapMode, Bitmask<EGPUMemoryFlags> pMemoryFlags )
+	GLenum ATL::TranslateGLBufferMapFlags( EGpuMemoryMapMode pMapMode, cppx::bitmask<EGpuMemoryFlags> pMemoryFlags )
 	{
-		Bitmask<uint32> resourceMapFlags = static_cast<uint32>( pMapMode );
-		Bitmask<GLenum> openglMapFlags = 0;
+		cppx::bitmask<uint32> resourceMapFlags = static_cast<uint32>( pMapMode );
+		cppx::bitmask<GLenum> openglMapFlags = 0;
 
-		if( resourceMapFlags.isSet( E_GPU_MEMORY_MAP_FLAG_ACCESS_READ_BIT ) )
+		if( resourceMapFlags.is_set( eGpuMemoryMapFlagAccessReadBit ) )
 		{
 			openglMapFlags.set( GL_MAP_READ_BIT );
 		}
-		if( resourceMapFlags.isSet( E_GPU_MEMORY_MAP_FLAG_ACCESS_WRITE_BIT ) )
+		if( resourceMapFlags.is_set( eGpuMemoryMapFlagAccessWriteBit ) )
 		{
 			openglMapFlags.set( GL_MAP_WRITE_BIT );
 		}
-		if( resourceMapFlags.isSet( E_GPU_MEMORY_MAP_FLAG_WRITE_INVALIDATE_BIT ) )
+		if( resourceMapFlags.is_set( eGpuMemoryMapFlagWriteInvalidateBit ) )
 		{
 			openglMapFlags.set( GL_MAP_INVALIDATE_BUFFER_BIT );
 		}
 
-	#if( ICFGX_GL_FEATURE_SUPPORT_BUFFER_PERSISTENT_MAP )
-		if( pMemoryFlags.isSet( E_GPU_MEMORY_HEAP_PROPERTY_FLAG_PERSISTENT_MAP_BIT ) )
+	#if( IC3_GX_GL_FEATURE_SUPPORT_BUFFER_PERSISTENT_MAP )
+		if( pMemoryFlags.is_set( eGpuMemoryHeapPropertyFlagPersistentMapBit ) )
 		{
 			openglMapFlags.set( GL_MAP_PERSISTENT_BIT );
 		}
-		if( pMemoryFlags.isSet( E_GPU_MEMORY_HEAP_PROPERTY_FLAG_CPU_COHERENT_BIT ) )
+		if( pMemoryFlags.is_set( eGpuMemoryHeapPropertyFlagCpuCoherentBit ) )
 		{
 			openglMapFlags.set( GL_MAP_COHERENT_BIT );
 		}
-		if( openglMapFlags.isSet( GL_MAP_PERSISTENT_BIT ) && !openglMapFlags.isSet( GL_MAP_COHERENT_BIT ) )
+		if( openglMapFlags.is_set( GL_MAP_PERSISTENT_BIT ) && !openglMapFlags.is_set( GL_MAP_COHERENT_BIT ) )
 		{
 			openglMapFlags.set( GL_MAP_FLUSH_EXPLICIT_BIT );
 		}
@@ -352,7 +353,7 @@ namespace Ic3::Graphics::GCI
 		return openglMapFlags;
 	}
 
-	GLenum ATL::translateGLCompFunc( ECompFunc pCompFunc )
+	GLenum ATL::TranslateGLCompFunc( ECompFunc pCompFunc )
 	{
 		switch( pCompFunc )
 		{
@@ -369,7 +370,7 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::translateGLCullMode( ECullMode pCullMode )
+	GLenum ATL::TranslateGLCullMode( ECullMode pCullMode )
 	{
 		switch( pCullMode )
 		{
@@ -381,7 +382,7 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::translateGLIndexDataFormat( EIndexDataFormat pIndexDataFormat )
+	GLenum ATL::TranslateGLIndexDataFormat( EIndexDataFormat pIndexDataFormat )
 	{
 		switch( pIndexDataFormat )
 		{
@@ -392,9 +393,9 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::translateGLPrimitiveFillMode( EPrimitiveFillMode pFillMode )
+	GLenum ATL::TranslateGLPrimitiveFillMode( EPrimitiveFillMode pFillMode )
 	{
-	#if( ICFGX_GL_FEATURE_SUPPORT_PRIMITIVE_FILL_MODE )
+	#if( IC3_GX_GL_FEATURE_SUPPORT_PRIMITIVE_FILL_MODE )
 		switch( pFillMode )
 		{
 			ic3CaseReturn( EPrimitiveFillMode::Undefined , GL_INVALID_ENUM );
@@ -405,7 +406,7 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::translateGLPrimitiveTopology( EPrimitiveTopology pTopology )
+	GLenum ATL::TranslateGLPrimitiveTopology( EPrimitiveTopology pTopology )
 	{
 		switch( pTopology )
 		{
@@ -415,13 +416,13 @@ namespace Ic3::Graphics::GCI
 			ic3CaseReturn( EPrimitiveTopology::LineStrip        , GL_LINE_STRIP );
 			ic3CaseReturn( EPrimitiveTopology::TriangleList     , GL_TRIANGLES );
 			ic3CaseReturn( EPrimitiveTopology::TriangleStrip    , GL_TRIANGLE_STRIP );
-		#if( ICFGX_GL_FEATURE_SUPPORT_PRIMITIVE_TYPE_ADJACENCY )
+		#if( IC3_GX_GL_FEATURE_SUPPORT_PRIMITIVE_TYPE_ADJACENCY )
 			ic3CaseReturn( EPrimitiveTopology::LineListAdj      , GL_LINES_ADJACENCY );
 			ic3CaseReturn( EPrimitiveTopology::LineStripAdj     , GL_LINE_STRIP_ADJACENCY );
 			ic3CaseReturn( EPrimitiveTopology::TriangleListAdj  , GL_TRIANGLES_ADJACENCY );
 			ic3CaseReturn( EPrimitiveTopology::TriangleStripAdj , GL_TRIANGLE_STRIP_ADJACENCY );
         #endif
-		#if( ICFGX_GL_FEATURE_SUPPORT_PRIMITIVE_TYPE_PATCHES )
+		#if( IC3_GX_GL_FEATURE_SUPPORT_PRIMITIVE_TYPE_PATCHES )
 			ic3CaseReturn( EPrimitiveTopology::TesselationPatch , GL_PATCHES );
 		#endif
 		};
@@ -435,21 +436,21 @@ namespace Ic3::Graphics::GCI
 			ic3CaseReturn( EShaderType::Unknown    , GL_INVALID_ENUM );
 			ic3CaseReturn( EShaderType::GSVertex   , GL_VERTEX_SHADER );
 			ic3CaseReturn( EShaderType::GSPixel    , GL_FRAGMENT_SHADER );
-		#if( ICFGX_GL_FEATURE_SUPPORT_SHADER_TYPE_GEOMETRY )
+		#if( IC3_GX_GL_FEATURE_SUPPORT_SHADER_TYPE_GEOMETRY )
 			ic3CaseReturn( EShaderType::GSGeometry , GL_GEOMETRY_SHADER );
         #endif
-		#if( ICFGX_GL_FEATURE_SUPPORT_SHADER_TYPE_TESSELATION )
+		#if( IC3_GX_GL_FEATURE_SUPPORT_SHADER_TYPE_TESSELATION )
 			ic3CaseReturn( EShaderType::GSHull   , GL_TESS_CONTROL_SHADER );
 			ic3CaseReturn( EShaderType::GSDomain , GL_TESS_EVALUATION_SHADER );
         #endif
-		#if( ICFGX_GL_FEATURE_SUPPORT_SHADER_TYPE_COMPUTE )
+		#if( IC3_GX_GL_FEATURE_SUPPORT_SHADER_TYPE_COMPUTE )
 			ic3CaseReturn( EShaderType::CSCompute , GL_COMPUTE_SHADER );
 		#endif
 		};
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::translateGLStencilOp( EStencilOp pStencilOp )
+	GLenum ATL::TranslateGLStencilOp( EStencilOp pStencilOp )
 	{
 		switch( pStencilOp )
 		{
@@ -466,7 +467,7 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::translateGLTextureAddressMode( ETextureAddressMode pAddressMode )
+	GLenum ATL::TranslateGLTextureAddressMode( ETextureAddressMode pAddressMode )
 	{
 		switch( pAddressMode )
 		{
@@ -475,7 +476,7 @@ namespace Ic3::Graphics::GCI
 			ic3CaseReturn( ETextureAddressMode::MirrorRepeat , GL_MIRRORED_REPEAT );
 			ic3CaseReturn( ETextureAddressMode::Repeat       , GL_REPEAT          );
 
-		#if( ICFGX_GL_FEATURE_SUPPORT_TEXTURE_EXTENDED_ADDRESS_MODE )
+		#if( IC3_GX_GL_FEATURE_SUPPORT_TEXTURE_EXTENDED_ADDRESS_MODE )
 			ic3CaseReturn( ETextureAddressMode::ClampToColor      , GL_CLAMP_TO_BORDER      );
 			ic3CaseReturn( ETextureAddressMode::MirrorClampToEdge , GL_MIRROR_CLAMP_TO_EDGE );
 		#endif
@@ -483,7 +484,7 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::translateGLTextureBindTarget( ETextureClass pTextureDimensionClass )
+	GLenum ATL::TranslateGLTextureBindTarget( ETextureClass pTextureDimensionClass )
 	{
 		switch( pTextureDimensionClass )
 		{
@@ -498,11 +499,11 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::translateGLTextureInternalFormat( ETextureFormat pTextureFormat )
+	GLenum ATL::TranslateGLTextureInternalFormat( ETextureFormat pTextureFormat )
 	{
 		switch( pTextureFormat )
 		{
-			ic3CaseReturn( ETextureFormat::UNKNOWN    , GL_INVALID_ENUM );
+			ic3CaseReturn( ETextureFormat::Undefined    , GL_INVALID_ENUM );
 			ic3CaseReturn( ETextureFormat::R32F       , GL_R32F         );
 			ic3CaseReturn( ETextureFormat::R32I       , GL_R32I         );
 			ic3CaseReturn( ETextureFormat::R32U       , GL_R32UI        );
@@ -532,7 +533,7 @@ namespace Ic3::Graphics::GCI
 			ic3CaseReturn( ETextureFormat::RG8U       , GL_RG8UI        );
 			ic3CaseReturn( ETextureFormat::RG8IN      , GL_RG8_SNORM    );
 			ic3CaseReturn( ETextureFormat::RG8UN      , GL_RG8          );
-		#if( ICFGX_GL_FEATURE_SUPPORT_TEXTURE_FORMAT_BGR )
+		#if( IC3_GX_GL_FEATURE_SUPPORT_TEXTURE_FORMAT_BGR )
 			ic3CaseReturn( ETextureFormat::BGRX8UN    , GL_RGB8         );
 			ic3CaseReturn( ETextureFormat::BGRX8SRGB  , GL_SRGB8        );
 			ic3CaseReturn( ETextureFormat::BGRA8UN    , GL_RGBA8        );
@@ -555,7 +556,7 @@ namespace Ic3::Graphics::GCI
 			ic3CaseReturn( ETextureFormat::D24UNX8    , GL_DEPTH_COMPONENT24  );
 			ic3CaseReturn( ETextureFormat::X24S8U     , GL_DEPTH24_STENCIL8   );
 			ic3CaseReturn( ETextureFormat::D32F       , GL_DEPTH_COMPONENT32F );
-		#if( ICFGX_GL_FEATURE_SUPPORT_TEXTURE_FORMAT_COMPRESSED_BCX )
+		#if( IC3_GX_GL_FEATURE_SUPPORT_TEXTURE_FORMAT_COMPRESSED_BCX )
 			ic3CaseReturn( ETextureFormat::BC1        , GL_TEX_FORMAT_COMPRESSED_BC1         );
 			ic3CaseReturn( ETextureFormat::BC1SRGB    , GL_TEX_FORMAT_COMPRESSED_BC1_SRGBA   );
 			ic3CaseReturn( ETextureFormat::BC2        , GL_TEX_FORMAT_COMPRESSED_BC2         );
@@ -575,11 +576,11 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::translateGLTexturePixelDataLayout( ETextureFormat pTextureFormat )
+	GLenum ATL::TranslateGLTexturePixelDataLayout( ETextureFormat pTextureFormat )
 	{
 		switch( pTextureFormat )
 		{
-			ic3CaseReturn( ETextureFormat::UNKNOWN    , GL_INVALID_ENUM );
+			ic3CaseReturn( ETextureFormat::Undefined    , GL_INVALID_ENUM );
 			ic3CaseReturn( ETextureFormat::R32F       , GL_RED  );
 			ic3CaseReturn( ETextureFormat::R32I       , GL_RED  );
 			ic3CaseReturn( ETextureFormat::R32U       , GL_RED  );
@@ -609,7 +610,7 @@ namespace Ic3::Graphics::GCI
 			ic3CaseReturn( ETextureFormat::RG8U       , GL_RG   );
 			ic3CaseReturn( ETextureFormat::RG8IN      , GL_RG   );
 			ic3CaseReturn( ETextureFormat::RG8UN      , GL_RG   );
-		#if( ICFGX_GL_FEATURE_SUPPORT_TEXTURE_FORMAT_BGR )
+		#if( IC3_GX_GL_FEATURE_SUPPORT_TEXTURE_FORMAT_BGR )
 			ic3CaseReturn( ETextureFormat::BGRX8UN    , GL_BGR  );
 			ic3CaseReturn( ETextureFormat::BGRX8SRGB  , GL_BGR  );
 			ic3CaseReturn( ETextureFormat::BGRA8UN    , GL_BGRA );
@@ -631,7 +632,7 @@ namespace Ic3::Graphics::GCI
 			ic3CaseReturn( ETextureFormat::D24UNX8    , GL_DEPTH_STENCIL      );
 			ic3CaseReturn( ETextureFormat::X24S8U     , GL_DEPTH_STENCIL      );
 			ic3CaseReturn( ETextureFormat::D32F       , GL_DEPTH_COMPONENT    );
-		#if( ICFGX_GL_FEATURE_SUPPORT_TEXTURE_FORMAT_COMPRESSED_BCX )
+		#if( IC3_GX_GL_FEATURE_SUPPORT_TEXTURE_FORMAT_COMPRESSED_BCX )
 			ic3CaseReturn( ETextureFormat::BC1        , GL_TEX_FORMAT_COMPRESSED_BC1         );
 			ic3CaseReturn( ETextureFormat::BC1SRGB    , GL_TEX_FORMAT_COMPRESSED_BC1_SRGBA   );
 			ic3CaseReturn( ETextureFormat::BC2        , GL_TEX_FORMAT_COMPRESSED_BC2         );
@@ -651,7 +652,7 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::translateGLTriangleVerticesOrder( ETriangleVerticesOrder pVerticesOrder )
+	GLenum ATL::TranslateGLTriangleVerticesOrder( ETriangleVerticesOrder pVerticesOrder )
 	{
 		switch( pVerticesOrder )
 		{
@@ -661,7 +662,7 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	const char * ATL::translateGLDebugOutputExtensionName( GLDebugOutputVersion pDebugOutputVersion )
+	const char * ATL::TranslateGLDebugOutputExtensionName( GLDebugOutputVersion pDebugOutputVersion )
 	{
 		switch( pDebugOutputVersion )
 		{
@@ -673,9 +674,9 @@ namespace Ic3::Graphics::GCI
 		return "Unknown";
 	}
 
-	const char * ATL::translateGLDebugEventCategoryStrAMD( GLenum pEventCategory )
+	const char * ATL::TranslateGLDebugEventCategoryStrAMD( GLenum pEventCategory )
 	{
-	#if( ICFGX_GL_FEATURE_SUPPORT_DEBUG_OUTPUT )
+	#if( IC3_GX_GL_FEATURE_SUPPORT_DEBUG_OUTPUT )
 		switch( pEventCategory )
 		{
 			ic3CaseReturn( GL_DEBUG_CATEGORY_API_ERROR_AMD          , "API error"          );
@@ -691,9 +692,9 @@ namespace Ic3::Graphics::GCI
 		return "Unknown";
 	}
 
-	const char * ATL::translateGLDebugEventSeverityStr( GLenum pEventSeverity )
+	const char * ATL::TranslateGLDebugEventSeverityStr( GLenum pEventSeverity )
 	{
-	#if( ICFGX_GL_FEATURE_SUPPORT_DEBUG_OUTPUT )
+	#if( IC3_GX_GL_FEATURE_SUPPORT_DEBUG_OUTPUT )
 	    switch( pEventSeverity )
 		{
 			ic3CaseReturn( GL_DEBUG_SEVERITY_HIGH_ARB     , "High"         );
@@ -705,9 +706,9 @@ namespace Ic3::Graphics::GCI
 		return "Unknown";
 	}
 
-	const char * ATL::translateGLDebugEventSourceStr( GLenum pEventSource )
+	const char * ATL::TranslateGLDebugEventSourceStr( GLenum pEventSource )
 	{
-	#if( ICFGX_GL_FEATURE_SUPPORT_DEBUG_OUTPUT )
+	#if( IC3_GX_GL_FEATURE_SUPPORT_DEBUG_OUTPUT )
 	    switch( pEventSource )
 		{
 			ic3CaseReturn( GL_DEBUG_SOURCE_API_ARB             , "GL API"          );
@@ -721,9 +722,9 @@ namespace Ic3::Graphics::GCI
 		return "Unknown";
 	}
 
-	const char * ATL::translateGLDebugEventTypeStr( GLenum pEventType )
+	const char * ATL::TranslateGLDebugEventTypeStr( GLenum pEventType )
 	{
-	#if( ICFGX_GL_FEATURE_SUPPORT_DEBUG_OUTPUT )
+	#if( IC3_GX_GL_FEATURE_SUPPORT_DEBUG_OUTPUT )
 	    switch( pEventType )
 		{
 			ic3CaseReturn( GL_DEBUG_TYPE_ERROR_ARB               , "GL API"          );

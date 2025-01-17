@@ -2,7 +2,7 @@
 #ifndef __IC3_GRAPHICS_HW3D_MTLCOMMON_PREREQUISITES_H__
 #define __IC3_GRAPHICS_HW3D_MTLCOMMON_PREREQUISITES_H__
 
-#include <Ic3/Graphics/GCI/Memory/CommonGPUMemoryDefs.h>
+#include <Ic3/Graphics/GCI/Memory/CommonGpuMemoryDefs.h>
 #include <Ic3/System/MetalDriver.h>
 #include <Ic3/System/MetalNative.h>
 
@@ -18,8 +18,8 @@ namespace Ic3::Graphics::GCI
 
 	ic3DeclareClassHandle( MetalCommandList );
 	ic3DeclareClassHandle( MetalCommandSystem );
-	ic3DeclareClassHandle( MetalGPUDevice );
-	ic3DeclareClassHandle( MetalGPUDriver );
+	ic3DeclareClassHandle( MetalGpuDevice );
+	ic3DeclareClassHandle( MetalGpuDriver );
 	ic3DeclareClassHandle( MetalPresentationLayer );
 	
 } // namespace Ic3::Graphics::GCI

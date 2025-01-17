@@ -10,59 +10,59 @@
 namespace Ic3::Graphics::GCI
 {
 
-	struct GPUDeviceCreateInfo;
+	struct GpuDeviceCreateInfo;
 
-	struct GPUDriverCreateInfo
+	struct GpuDriverCreateInfo
 	{
 		System::SysContextHandle sysContext = nullptr;
 		System::SysContextCreateInfo sysContextCreateInfo;
-		TBitmask<EGPUDriverConfigFlags> configFlags = eGPUDriverConfigMaskDefault;
+		cppx::bitmask<EGpuDriverConfigFlags> configFlags = eGpuDriverConfigMaskDefault;
 	};
 
-	class IC3_GRAPHICS_GCI_CLASS GPUDriver : public IDynamicObject
+	class IC3_GRAPHICS_GCI_CLASS GpuDriver : public IDynamicObject
 	{
 	public:
 		System::SysContextHandle const mSysContext;
 
 	public:
-		explicit GPUDriver( System::SysContextHandle pSysContext ) noexcept;
-		virtual ~GPUDriver() noexcept;
+		explicit GpuDriver( System::SysContextHandle pSysContext ) noexcept;
+		virtual ~GpuDriver() noexcept;
 
-		IC3_ATTR_NO_DISCARD virtual EGPUDriverID queryGPUDriverID() const noexcept = 0;
+		CPPX_ATTR_NO_DISCARD virtual EGpuDriverID QueryGpuDriverID() const noexcept = 0;
 
-		IC3_ATTR_NO_DISCARD virtual bool isNullDriver() const noexcept;
+		CPPX_ATTR_NO_DISCARD virtual bool IsNullDriver() const noexcept;
 
-		TBitmask<EGPUDriverConfigFlags> getConfigFlags() const;
+		cppx::bitmask<EGpuDriverConfigFlags> GetConfigFlags() const;
 
-		bool isDebugFunctionalityRequested() const;
+		bool IsDebugFunctionalityRequested() const;
 
-		DisplayManagerHandle createDefaultDisplayManager();
+		DisplayManagerHandle CreateDefaultDisplayManager();
 
-		GPUDeviceHandle createDevice( const GPUDeviceCreateInfo & pCreateInfo );
+		GpuDeviceHandle CreateDevice( const GpuDeviceCreateInfo & pCreateInfo );
 
-		static GPUDriver & nullDriver();
+		static GpuDriver & GetNullDriver();
 
 	protected:
-		void setConfigFlags( TBitmask<EGPUDriverConfigFlags> pConfigFlags );
+		void SetConfigFlags( cppx::bitmask<EGpuDriverConfigFlags> pConfigFlags );
 
 	private:
-		virtual DisplayManagerHandle _drvCreateDefaultDisplayManager() = 0;
+		virtual DisplayManagerHandle _DrvCreateDefaultDisplayManager() = 0;
 
-		virtual GPUDeviceHandle _drvCreateDevice( const GPUDeviceCreateInfo & pCreateInfo ) = 0;
+		virtual GpuDeviceHandle _DrvCreateDevice( const GpuDeviceCreateInfo & pCreateInfo ) = 0;
 
 
 	private:
-		TBitmask<EGPUDriverConfigFlags> _configFlags;
+		cppx::bitmask<EGpuDriverConfigFlags> _configFlags;
 	};
 
-	inline TBitmask<EGPUDriverConfigFlags> GPUDriver::getConfigFlags() const
+	inline cppx::bitmask<EGpuDriverConfigFlags> GpuDriver::GetConfigFlags() const
 	{
 		return _configFlags;
 	}
 
-	inline bool GPUDriver::isDebugFunctionalityRequested() const
+	inline bool GpuDriver::IsDebugFunctionalityRequested() const
 	{
-		return _configFlags.isSet( eGPUDriverConfigFlagEnableDebugLayerBit );
+		return _configFlags.is_set( eGpuDriverConfigFlagEnableDebugLayerBit );
 	}
 
 } // namespace Ic3::Graphics::GCI

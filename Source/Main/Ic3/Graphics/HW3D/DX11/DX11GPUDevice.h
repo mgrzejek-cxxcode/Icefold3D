@@ -12,12 +12,12 @@
 namespace Ic3::Graphics::GCI
 {
 
-	struct DX11GPUDeviceCreateInfo : public GPUDeviceCreateInfo
+	struct DX11GpuDeviceCreateInfo : public GpuDeviceCreateInfo
 	{
 	};
 
 	/// @brief
-	class ICFGX_DX11_CLASS DX11GPUDevice : public DXGPUDevice
+	class IC3_GX_DX11_CLASS DX11GpuDevice : public DXGpuDevice
 	{
 		friend class DX11CommandList;
 		friend class DX11GraphicsPipelineStateObject;
@@ -26,29 +26,29 @@ namespace Ic3::Graphics::GCI
 		ComPtr<ID3D11Device1> const mD3D11Device1;
 		ComPtr<ID3D11Debug> const mD3D11DebugInterface;
 
-		explicit DX11GPUDevice(
-				DX11GPUDriver & pDriver,
+		explicit DX11GpuDevice(
+				DX11GpuDriver & pDriver,
 				ComPtr<ID3D11Device1> pD3D11Device1,
 				ComPtr<ID3D11Debug> pD3D11Debug );
 
-		virtual ~DX11GPUDevice();
+		virtual ~DX11GpuDevice();
 
-		void waitForCommandSync( CommandSync & pCommandSync ) override final;
+		void WaitForCommandSync( CommandSync & pCommandSync ) override final;
 
-		static DX11GPUDeviceHandle create( DX11GPUDriver & pDX11Driver, const DX11GPUDeviceCreateInfo & pCreateInfo );
+		static DX11GpuDeviceHandle Create( DX11GpuDriver & pDX11Driver, const DX11GpuDeviceCreateInfo & pCreateInfo );
 
 	private:
-		virtual void initializeCommandSystem() override;
+		virtual void InitializeCommandSystem() override;
 
-		virtual GPUBufferHandle _drvCreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo ) override final;
-		virtual SamplerHandle _drvCreateSampler( const SamplerCreateInfo & pCreateInfo ) override final;
-		virtual ShaderHandle _drvCreateShader( const ShaderCreateInfo & pCreateInfo ) override final;
-		virtual TextureHandle _drvCreateTexture( const TextureCreateInfo & pCreateInfo ) override final;
+		virtual GpuBufferHandle _DrvCreateGpuBuffer( const GpuBufferCreateInfo & pCreateInfo ) override final;
+		virtual SamplerHandle _DrvCreateSampler( const SamplerCreateInfo & pCreateInfo ) override final;
+		virtual ShaderHandle _DrvCreateShader( const ShaderCreateInfo & pCreateInfo ) override final;
+		virtual TextureHandle _DrvCreateTexture( const TextureCreateInfo & pCreateInfo ) override final;
 
-		virtual RenderTargetTextureHandle _drvCreateRenderTargetTexture(
+		virtual RenderTargetTextureHandle _DrvCreateRenderTargetTexture(
 				const RenderTargetTextureCreateInfo & pCreateInfo ) override final;
 
-		virtual GraphicsPipelineStateObjectHandle _drvCreateGraphicsPipelineStateObject(
+		virtual GraphicsPipelineStateObjectHandle _DrvCreateGraphicsPipelineStateObject(
 				const GraphicsPipelineStateObjectCreateInfo & pCreateInfo ) override final;
 
 	private:

@@ -1,6 +1,6 @@
 
 #include "GLBufferObject.h"
-#include "../GLAPITranslationLayer.h"
+#include "../GLApiTranslationLayer.h"
 
 namespace Ic3::Graphics::GCI
 {
@@ -8,12 +8,12 @@ namespace Ic3::Graphics::GCI
 	GLBufferObject::GLBufferObject( GLuint pHandle, const GLBufferCreateInfo & pGLCreateInfo )
 	: GLObject( GLObjectBaseType::Buffer, pHandle )
 	, mGLBufferBindTarget( pGLCreateInfo.bindTarget )
-	, mSize( pGLCreateInfo.size )
+	, size( pGLCreateInfo.size )
 	{}
 
 	GLBufferObject::~GLBufferObject() = default;
 
-	GLBufferObjectHandle GLBufferObject::createCore( const GLBufferCreateInfo & pGLCreateInfo )
+	GLBufferObjectHandle GLBufferObject::CreateCore( const GLBufferCreateInfo & pGLCreateInfo )
 	{
 		GLuint bufferHandle = 0;
 
@@ -24,7 +24,7 @@ namespace Ic3::Graphics::GCI
 		ic3OpenGLHandleLastError();
 
 		GLBufferObjectHandle openglBufferObject{ new GLBufferObject( bufferHandle, pGLCreateInfo ) };
-		if( !openglBufferObject->initializeCore( pGLCreateInfo ) )
+		if( !openglBufferObject->InitializeCore( pGLCreateInfo ) )
 		{
 			return nullptr;
 		}
@@ -32,7 +32,7 @@ namespace Ic3::Graphics::GCI
 		return openglBufferObject;
 	}
 
-	GLBufferObjectHandle GLBufferObject::createCompat( const GLBufferCreateInfo & pGLCreateInfo )
+	GLBufferObjectHandle GLBufferObject::CreateCompat( const GLBufferCreateInfo & pGLCreateInfo )
 	{
 		GLuint bufferHandle = 0;
 
@@ -43,7 +43,7 @@ namespace Ic3::Graphics::GCI
 		ic3OpenGLHandleLastError();
 
 		GLBufferObjectHandle openglBufferObject{ new GLBufferObject( bufferHandle, pGLCreateInfo ) };
-		if( !openglBufferObject->initializeCompat( pGLCreateInfo ) )
+		if( !openglBufferObject->InitializeCompat( pGLCreateInfo ) )
 		{
 			return nullptr;
 		}
@@ -51,7 +51,7 @@ namespace Ic3::Graphics::GCI
 		return openglBufferObject;
 	}
 
-	bool GLBufferObject::release()
+	bool GLBufferObject::Release()
 	{
 		glDeleteBuffers( 1, &mGLHandle );
 		ic3OpenGLHandleLastError();
@@ -59,7 +59,7 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	bool GLBufferObject::validateHandle() const
+	bool GLBufferObject::ValidateHandle() const
 	{
 		auto isBuffer = glIsBuffer( mGLHandle );
 		ic3OpenGLHandleLastError();
@@ -67,9 +67,9 @@ namespace Ic3::Graphics::GCI
 		return isBuffer != GL_FALSE;
 	}
 
-	bool GLBufferObject::queryIsMapped( GLenum pActiveBindTarget ) const
+	bool GLBufferObject::QueryIsMapped( GLenum pActiveBindTarget ) const
 	{
-		auto bufferBindTarget = checkActiveBindTarget( pActiveBindTarget );
+		auto bufferBindTarget = CheckActiveBindTarget( pActiveBindTarget );
 
 		GLint64 mappedState = 0;
 		glGetBufferParameteri64v( bufferBindTarget, GL_BUFFER_MAPPED, &mappedState );
@@ -78,9 +78,9 @@ namespace Ic3::Graphics::GCI
 		return mappedState != GL_FALSE;
 	}
 
-	byte * GLBufferObject::queryMappedPtr( GLenum pActiveBindTarget ) const
+	byte * GLBufferObject::QueryMappedPtr( GLenum pActiveBindTarget ) const
 	{
-		auto bufferBindTarget = checkActiveBindTarget( pActiveBindTarget );
+		auto bufferBindTarget = CheckActiveBindTarget( pActiveBindTarget );
 
 		void * mappedMemoryPtr = nullptr;
 		glGetBufferPointerv( bufferBindTarget, GL_BUFFER_MAP_POINTER, &mappedMemoryPtr );
@@ -89,9 +89,9 @@ namespace Ic3::Graphics::GCI
 		return reinterpret_cast<byte *>( mappedMemoryPtr );
 	}
 
-	SMemoryRegion GLBufferObject::queryMappedRegion( GLenum pActiveBindTarget ) const
+	MemoryRegion GLBufferObject::QueryMappedRegion( GLenum pActiveBindTarget ) const
 	{
-		auto bufferBindTarget = checkActiveBindTarget( pActiveBindTarget );
+		auto bufferBindTarget = CheckActiveBindTarget( pActiveBindTarget );
 
 		GLint64 mapOffset = 0;
 		glGetBufferParameteri64v( bufferBindTarget, GL_BUFFER_MAP_OFFSET, &mapOffset );
@@ -101,16 +101,16 @@ namespace Ic3::Graphics::GCI
 		glGetBufferParameteri64v( bufferBindTarget, GL_BUFFER_MAP_LENGTH, &mapLength );
 		ic3OpenGLHandleLastError();
 
-		SMemoryRegion mappedRegion;
+		MemoryRegion mappedRegion;
 		mappedRegion.offset = static_cast<memory_size_t>( mapOffset );
 		mappedRegion.size = static_cast<memory_size_t>( mapLength );
 
 		return mappedRegion;
 	}
 
-	memory_size_t GLBufferObject::querySize( GLenum pActiveBindTarget ) const
+	memory_size_t GLBufferObject::QuerySize( GLenum pActiveBindTarget ) const
 	{
-		auto bufferBindTarget = checkActiveBindTarget( pActiveBindTarget );
+		auto bufferBindTarget = CheckActiveBindTarget( pActiveBindTarget );
 
 		GLint64 bufferSize = 0;
 		glGetBufferParameteri64v( bufferBindTarget, GL_BUFFER_SIZE, &bufferSize );
@@ -119,19 +119,19 @@ namespace Ic3::Graphics::GCI
 		return static_cast<memory_size_t>( bufferSize );
 	}
 
-	bool GLBufferObject::isMappedPersistent() const
+	bool GLBufferObject::IsMappedPersistent() const
 	{
 		return _persistentMapPointer != nullptr;
 	}
 
-	void * GLBufferObject::getPersistentMapPtr() const
+	void * GLBufferObject::GetPersistentMapPtr() const
 	{
 		return _persistentMapPointer;
 	}
 
-	bool GLBufferObject::map( gpu_memory_size_t pOffset, gpu_memory_size_t pLength, GLenum pFlags, GLenum pActiveBindTarget )
+	bool GLBufferObject::Map( gpu_memory_size_t pOffset, gpu_memory_size_t pLength, GLenum pFlags, GLenum pActiveBindTarget )
 	{
-		auto bufferBindTarget = checkActiveBindTarget( pActiveBindTarget );
+		auto bufferBindTarget = CheckActiveBindTarget( pActiveBindTarget );
 
 		void * mapPointer = nullptr;
 		glGetBufferPointerv( bufferBindTarget, GL_BUFFER_MAP_POINTER, &mapPointer );
@@ -144,39 +144,39 @@ namespace Ic3::Graphics::GCI
 
 		glMapBufferRange(
 			bufferBindTarget,
-			numeric_cast<GLintptr>( pOffset ),
-			numeric_cast<GLsizeiptr>( pLength ),
+			cppx::numeric_cast<GLintptr>( pOffset ),
+			cppx::numeric_cast<GLsizeiptr>( pLength ),
 			pFlags );
 		ic3OpenGLHandleLastError();
 
-		return queryIsMapped();
+		return QueryIsMapped();
 	}
 
-	bool GLBufferObject::mapPersistent( GLenum pFlags, GLenum pActiveBindTarget )
+	bool GLBufferObject::MapPersistent( GLenum pFlags, GLenum pActiveBindTarget )
 	{
-	#if( ICFGX_GL_FEATURE_SUPPORT_BUFFER_PERSISTENT_MAP )
+	#if( IC3_GX_GL_FEATURE_SUPPORT_BUFFER_PERSISTENT_MAP )
 		// Unset all flags which may be redundant and/or invalid (like INVALIDATE_BUFFER_RANGE or UNSYNCHRONIZED).
 		pFlags &= ( GL_MAP_READ_BIT | GL_MAP_WRITE_BIT | GL_MAP_COHERENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT );
 		// Make sure a persistent version of the mapping will be requested.
 		pFlags |= GL_MAP_PERSISTENT_BIT;
 		// Map the buffer persistently
-		return map( 0, mSize, pFlags );
+		return Map( 0, size, pFlags );
     #else
 		return false;
     #endif
 	}
 
-	void GLBufferObject::unmap( GLenum pActiveBindTarget )
+	void GLBufferObject::Unmap( GLenum pActiveBindTarget )
 	{
-		auto bufferBindTarget = checkActiveBindTarget( pActiveBindTarget );
+		auto bufferBindTarget = CheckActiveBindTarget( pActiveBindTarget );
 
 		glUnmapBuffer( bufferBindTarget );
 		ic3OpenGLHandleLastError();
 	}
 
-	void GLBufferObject::flushMappedRegion( gpu_memory_size_t pOffset, gpu_memory_size_t pLength, GLenum pActiveBindTarget )
+	void GLBufferObject::FlushMappedRegion( gpu_memory_size_t pOffset, gpu_memory_size_t pLength, GLenum pActiveBindTarget )
 	{
-		auto bufferBindTarget = checkActiveBindTarget( pActiveBindTarget );
+		auto bufferBindTarget = CheckActiveBindTarget( pActiveBindTarget );
 
 		void * mapPointer = nullptr;
 		glGetBufferPointerv( bufferBindTarget, GL_BUFFER_MAP_POINTER, &mapPointer );
@@ -186,36 +186,36 @@ namespace Ic3::Graphics::GCI
 
 		glFlushMappedBufferRange(
 			bufferBindTarget,
-			numeric_cast<GLintptr>( pOffset ),
-			numeric_cast<GLsizeiptr>( pLength ) );
+			cppx::numeric_cast<GLintptr>( pOffset ),
+			cppx::numeric_cast<GLsizeiptr>( pLength ) );
 		ic3OpenGLHandleLastError();
 	}
 
-	void GLBufferObject::invalidateRegion( gpu_memory_size_t pOffset, gpu_memory_size_t pLength, GLenum pActiveBindTarget )
+	void GLBufferObject::InvalidateRegion( gpu_memory_size_t pOffset, gpu_memory_size_t pLength, GLenum pActiveBindTarget )
 	{
-	#if( ICFGX_GL_PLATFORM_TYPE == ICFGX_GL_PLATFORM_TYPE_ES )
-		auto bufferBindTarget = checkActiveBindTarget( pActiveBindTarget );
+	#if( IC3_GX_GL_PLATFORM_TYPE == IC3_GX_GL_PLATFORM_TYPE_ES )
+		auto bufferBindTarget = CheckActiveBindTarget( pActiveBindTarget );
 
 		glBufferSubData( bufferBindTarget, pOffset, pLength, nullptr );
 		ic3OpenGLHandleLastError();
 	#else
 		glInvalidateBufferSubData(
 			mGLHandle,
-			numeric_cast<GLintptr>( pOffset ),
-			numeric_cast<GLsizeiptr>( pLength ) );
+			cppx::numeric_cast<GLintptr>( pOffset ),
+			cppx::numeric_cast<GLsizeiptr>( pLength ) );
 		ic3OpenGLHandleLastError();
 	#endif
 	}
 
-	void GLBufferObject::updateCopyInvalidate( GLBufferObject & pSrcBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc, GLenum pActiveBindTarget )
+	void GLBufferObject::UpdateCopyInvalidate( GLBufferObject & pSrcBuffer, const GpuBufferSubDataCopyDesc & pCopyDesc, GLenum pActiveBindTarget )
 	{
-		auto bufferBindTarget = checkActiveBindTarget( pActiveBindTarget );
+		auto bufferBindTarget = CheckActiveBindTarget( pActiveBindTarget );
 
 		// If we copy data into the whole buffer, give driver a hint to invalidate the storage.
 		// For ES, use storage orphaning since glInvalidateBuffer() is not available there.
-		if( pCopyDesc.flags.isSet( E_GPU_BUFFER_DATA_COPY_FLAG_MODE_INVALIDATE_BIT ) )
+		if( pCopyDesc.flags.is_set( eGpuBufferDataCopyFlagModeInvalidateBit ) )
 		{
-			if( pCopyDesc.sourceBufferRegion.size == mSize )
+			if( pCopyDesc.sourceBufferRegion.size == size )
 			{
 				glInvalidateBufferData( mGLHandle );
 				ic3OpenGLHandleLastError();
@@ -224,8 +224,8 @@ namespace Ic3::Graphics::GCI
 			{
 				glInvalidateBufferSubData(
 					mGLHandle,
-					numeric_cast<GLintptr>( pCopyDesc.sourceBufferRegion.offset ),
-			        numeric_cast<GLsizeiptr>( pCopyDesc.sourceBufferRegion.size ) );
+					cppx::numeric_cast<GLintptr>( pCopyDesc.sourceBufferRegion.offset ),
+			        cppx::numeric_cast<GLsizeiptr>( pCopyDesc.sourceBufferRegion.size ) );
 				ic3OpenGLHandleLastError();
 			}
 		}
@@ -236,28 +236,28 @@ namespace Ic3::Graphics::GCI
 		glCopyBufferSubData(
 			GL_COPY_READ_BUFFER,
 			bufferBindTarget,
-			numeric_cast<GLintptr>( pCopyDesc.sourceBufferRegion.offset ),
-			numeric_cast<GLintptr>( pCopyDesc.targetBufferOffset ),
-			numeric_cast<GLsizeiptr>( pCopyDesc.sourceBufferRegion.size ) );
+			cppx::numeric_cast<GLintptr>( pCopyDesc.sourceBufferRegion.offset ),
+			cppx::numeric_cast<GLintptr>( pCopyDesc.targetBufferOffset ),
+			cppx::numeric_cast<GLsizeiptr>( pCopyDesc.sourceBufferRegion.size ) );
 		ic3OpenGLHandleLastError();
 
 		glBindBuffer( GL_COPY_READ_BUFFER, 0 );
 		ic3OpenGLHandleLastError();
 	}
 
-	void GLBufferObject::updateCopyOrphan( GLBufferObject & pSrcBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc, GLenum pActiveBindTarget )
+	void GLBufferObject::UpdateCopyOrphan( GLBufferObject & pSrcBuffer, const GpuBufferSubDataCopyDesc & pCopyDesc, GLenum pActiveBindTarget )
 	{
-		auto bufferBindTarget = checkActiveBindTarget( pActiveBindTarget );
+		auto bufferBindTarget = CheckActiveBindTarget( pActiveBindTarget );
 
 		// If we copy data into the whole buffer, give driver a hint to invalidate the storage.
 		// For ES, use storage orphaning since glInvalidateBuffer() is not available there.
-		if( pCopyDesc.flags.isSet( E_GPU_BUFFER_DATA_COPY_FLAG_MODE_INVALIDATE_BIT ) && ( pCopyDesc.sourceBufferRegion.size == mSize ) )
+		if( pCopyDesc.flags.is_set( eGpuBufferDataCopyFlagModeInvalidateBit ) && ( pCopyDesc.sourceBufferRegion.size == size ) )
 		{
 			GLint bufferUsage = 0;
 			glGetBufferParameteriv( bufferBindTarget, GL_BUFFER_USAGE, &bufferUsage );
 			ic3OpenGLHandleLastError();
 
-			glBufferData( bufferBindTarget, numeric_cast<GLsizeiptr>( mSize ), nullptr, bufferUsage );
+			glBufferData( bufferBindTarget, cppx::numeric_cast<GLsizeiptr>( size ), nullptr, bufferUsage );
 			ic3OpenGLHandleLastError();
 		}
 
@@ -267,22 +267,22 @@ namespace Ic3::Graphics::GCI
 		glCopyBufferSubData(
 			GL_COPY_READ_BUFFER,
 			bufferBindTarget,
-			numeric_cast<GLintptr>( pCopyDesc.sourceBufferRegion.offset ),
-			numeric_cast<GLintptr>( pCopyDesc.targetBufferOffset ),
-			numeric_cast<GLsizeiptr>( pCopyDesc.sourceBufferRegion.size ) );
+			cppx::numeric_cast<GLintptr>( pCopyDesc.sourceBufferRegion.offset ),
+			cppx::numeric_cast<GLintptr>( pCopyDesc.targetBufferOffset ),
+			cppx::numeric_cast<GLsizeiptr>( pCopyDesc.sourceBufferRegion.size ) );
 		ic3OpenGLHandleLastError();
 
 		glBindBuffer( GL_COPY_READ_BUFFER, 0 );
 		ic3OpenGLHandleLastError();
 	}
 
-	void GLBufferObject::updateUploadInvalidate( const GPUBufferSubDataUploadDesc & pUploadDesc, GLenum pActiveBindTarget )
+	void GLBufferObject::UpdateUploadInvalidate( const GpuBufferSubDataUploadDesc & pUploadDesc, GLenum pActiveBindTarget )
 	{
-		auto bufferBindTarget = checkActiveBindTarget( pActiveBindTarget );
+		auto bufferBindTarget = CheckActiveBindTarget( pActiveBindTarget );
 
-		if( pUploadDesc.flags.isSet( E_GPU_BUFFER_DATA_COPY_FLAG_MODE_INVALIDATE_BIT ) )
+		if( pUploadDesc.flags.is_set( eGpuBufferDataCopyFlagModeInvalidateBit ) )
 		{
-			if( pUploadDesc.bufferRegion.size == mSize )
+			if( pUploadDesc.bufferRegion.size == size )
 			{
 				glInvalidateBufferData( mGLHandle );
 				ic3OpenGLHandleLastError();
@@ -291,108 +291,109 @@ namespace Ic3::Graphics::GCI
 			{
 				glInvalidateBufferSubData(
 					mGLHandle,
-					numeric_cast<GLintptr>( pUploadDesc.bufferRegion.offset ),
-					numeric_cast<GLsizeiptr>( pUploadDesc.bufferRegion.size ) );
+					cppx::numeric_cast<GLintptr>( pUploadDesc.bufferRegion.offset ),
+					cppx::numeric_cast<GLsizeiptr>( pUploadDesc.bufferRegion.size ) );
 				ic3OpenGLHandleLastError();
 			}
 		}
 
 		glBufferSubData(
 			bufferBindTarget,
-			numeric_cast<GLintptr>( pUploadDesc.bufferRegion.offset ),
-			numeric_cast<GLsizeiptr>( pUploadDesc.inputDataDesc.size ),
+			cppx::numeric_cast<GLintptr>( pUploadDesc.bufferRegion.offset ),
+			cppx::numeric_cast<GLsizeiptr>( pUploadDesc.inputDataDesc.size ),
 			pUploadDesc.inputDataDesc.pointer );
 		ic3OpenGLHandleLastError();
 	}
 
-	void GLBufferObject::updateUploadOrphan( const GPUBufferSubDataUploadDesc & pUploadDesc, GLenum pActiveBindTarget )
+	void GLBufferObject::UpdateUploadOrphan( const GpuBufferSubDataUploadDesc & pUploadDesc, GLenum pActiveBindTarget )
 	{
-		auto bufferBindTarget = checkActiveBindTarget( pActiveBindTarget );
+		auto bufferBindTarget = CheckActiveBindTarget( pActiveBindTarget );
 
 		// If we copy data into the whole buffer, give driver a hint to invalidate the storage.
 		// For ES, use storage orphaning since glInvalidateBuffer() is not available there.
-		if( pUploadDesc.flags.isSet( E_GPU_BUFFER_DATA_COPY_FLAG_MODE_INVALIDATE_BIT ) && ( pUploadDesc.bufferRegion.size == mSize ) )
+		if( pUploadDesc.flags.is_set( eGpuBufferDataCopyFlagModeInvalidateBit ) && ( pUploadDesc.bufferRegion.size == size ) )
 		{
 			GLint bufferUsage = 0;
 			glGetBufferParameteriv( bufferBindTarget, GL_BUFFER_USAGE, &bufferUsage );
 			ic3OpenGLHandleLastError();
 
-			glBufferData( bufferBindTarget, numeric_cast<GLsizeiptr>( mSize ), pUploadDesc.inputDataDesc.pointer, bufferUsage );
+			glBufferData( bufferBindTarget, cppx::numeric_cast<GLsizeiptr>( size ), pUploadDesc.inputDataDesc.pointer, bufferUsage );
 			ic3OpenGLHandleLastError();
 		}
 
 		glBufferSubData(
 			bufferBindTarget,
-			numeric_cast<GLintptr>( pUploadDesc.bufferRegion.offset ),
-			numeric_cast<GLsizeiptr>( pUploadDesc.inputDataDesc.size ),
+			cppx::numeric_cast<GLintptr>( pUploadDesc.bufferRegion.offset ),
+			cppx::numeric_cast<GLsizeiptr>( pUploadDesc.inputDataDesc.size ),
 			pUploadDesc.inputDataDesc.pointer );
 		ic3OpenGLHandleLastError();
 	}
 
-	bool GLBufferObject::initializeCore( const GLBufferCreateInfo & pGLCreateInfo )
+	bool GLBufferObject::InitializeCore( const GLBufferCreateInfo & pGLCreateInfo )
 	{
 		const bool nonEmptyInitData = pGLCreateInfo.initDataDesc ? true : false;
 		const bool copyDataOnInit = nonEmptyInitData && ( pGLCreateInfo.initDataDesc.size == pGLCreateInfo.size );
 
-		const auto storageInitFlags = ATL::chooseGLBufferStorageFlags( pGLCreateInfo.bindTarget, pGLCreateInfo.resourceFlags, pGLCreateInfo.memoryFlags );
+		const auto storageInitFlags = ATL::ChooseGLBufferStorageFlags( pGLCreateInfo.bindTarget, pGLCreateInfo.resourceFlags, pGLCreateInfo.memoryFlags );
+		const auto * storageInitDataPtr = copyDataOnInit ? pGLCreateInfo.initDataDesc.pointer : nullptr;
 
 		glBufferStorage(
 			pGLCreateInfo.bindTarget,
-			numeric_cast<GLsizeiptr>( pGLCreateInfo.size ),
-			copyDataOnInit ? pGLCreateInfo.initDataDesc.pointer : nullptr,
+			cppx::numeric_cast<GLsizeiptr>( pGLCreateInfo.size ),
+			storageInitDataPtr,
 			storageInitFlags );
 		ic3OpenGLHandleLastError();
 
 		if( !copyDataOnInit && nonEmptyInitData )
 		{
-			const auto initDataSize = getMinOf( pGLCreateInfo.size, pGLCreateInfo.initDataDesc.size );
+			const auto initDataSize = cppx::get_min_of( pGLCreateInfo.size, pGLCreateInfo.initDataDesc.size );
 
 			glBufferSubData(
 				pGLCreateInfo.bindTarget,
 				0,
-				numeric_cast<GLsizeiptr>( initDataSize ),
+				cppx::numeric_cast<GLsizeiptr>( initDataSize ),
 		        pGLCreateInfo.initDataDesc.pointer );
 			ic3OpenGLHandleLastError();
 		}
 
-		if( pGLCreateInfo.memoryFlags.isSet( E_GPU_MEMORY_HEAP_PROPERTY_FLAG_PERSISTENT_MAP_BIT ) )
+		if( pGLCreateInfo.memoryFlags.is_set( eGpuMemoryHeapPropertyFlagPersistentMapBit ) )
 		{
 			// Map with the access specified for the buffer storage.
 			const auto mapMode =
-		        static_cast<EGPUMemoryMapMode>( static_cast<uint32>( pGLCreateInfo.memoryFlags & E_GPU_MEMORY_ACCESS_MASK_CPU_ALL ) );
+		        static_cast<EGpuMemoryMapMode>( static_cast<uint32>( pGLCreateInfo.memoryFlags & eGpuMemoryAccessMaskCpuAll ) );
 
-			auto openglMapFlags = ATL::translateGLBufferMapFlags( mapMode, pGLCreateInfo.memoryFlags );
-			if( mapPersistent( openglMapFlags ) )
+			auto openglMapFlags = ATL::TranslateGLBufferMapFlags( mapMode, pGLCreateInfo.memoryFlags );
+			if( MapPersistent( openglMapFlags ) )
 			{
-				_persistentMapPointer = queryMappedPtr();
+				_persistentMapPointer = QueryMappedPtr();
 			}
 		}
 
 		return true;
 	}
 
-	bool GLBufferObject::initializeCompat( const GLBufferCreateInfo & pGLCreateInfo )
+	bool GLBufferObject::InitializeCompat( const GLBufferCreateInfo & pGLCreateInfo )
 	{
 		const bool nonEmptyInitData = pGLCreateInfo.initDataDesc ? true : false;
 		const bool copyDataOnInit = nonEmptyInitData && ( pGLCreateInfo.initDataDesc.size == pGLCreateInfo.size );
 
-		const auto usagePolicy = ATL::chooseGLBufferUsagePolicy( pGLCreateInfo.bindTarget, pGLCreateInfo.resourceFlags );
+		const auto usagePolicy = ATL::ChooseGLBufferUsagePolicy( pGLCreateInfo.bindTarget, pGLCreateInfo.resourceFlags );
 
 		glBufferData(
 			pGLCreateInfo.bindTarget,
-			numeric_cast<GLsizeiptr>( pGLCreateInfo.size ),
+			cppx::numeric_cast<GLsizeiptr>( pGLCreateInfo.size ),
 			copyDataOnInit ? pGLCreateInfo.initDataDesc.pointer : nullptr,
 			usagePolicy );
 		ic3OpenGLHandleLastError();
 
 		if( !copyDataOnInit && nonEmptyInitData )
 		{
-			const auto initDataSize = getMinOf( pGLCreateInfo.size, pGLCreateInfo.initDataDesc.size );
+			const auto initDataSize = cppx::get_min_of( pGLCreateInfo.size, pGLCreateInfo.initDataDesc.size );
 
 			glBufferSubData(
 				pGLCreateInfo.bindTarget,
 				0,
-				numeric_cast<GLsizeiptr>( initDataSize ),
+				cppx::numeric_cast<GLsizeiptr>( initDataSize ),
 				pGLCreateInfo.initDataDesc.pointer );
 			ic3OpenGLHandleLastError();
 		}
@@ -400,7 +401,7 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	GLenum GLBufferObject::checkActiveBindTarget( GLenum pBindTarget ) const
+	GLenum GLBufferObject::CheckActiveBindTarget( GLenum pBindTarget ) const
 	{
 		if( pBindTarget == 0 )
 		{

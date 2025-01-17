@@ -21,8 +21,8 @@ namespace Ic3::Graphics::GCI
 			GLuint textureHandle;
 		};
 
-		using SamplerBindings = std::array<GLuint, GCM::RES_MAX_TEXTURE_UNITS_NUM>;
-		using TextureUnitBindings = std::array<TextureUnitBinding, GCM::RES_MAX_TEXTURE_UNITS_NUM>;
+		using SamplerBindings = std::array<GLuint, GCM::cxResMaxTextureUnitsNum>;
+		using TextureUnitBindings = std::array<TextureUnitBinding, GCM::cxResMaxTextureUnitsNum>;
 
 		GLuint shaderPipelineBinding;
 		GLuint shaderProgramBinding;
@@ -45,18 +45,18 @@ namespace Ic3::Graphics::GCI
 		GLGlobalStateCache();
 		~GLGlobalStateCache() = default;
 
-		void reset();
+		void Reset();
 
-		void applyShaderPipelineBinding( GLuint pShaderPipelineHandle );
-		void applyShaderProgramBinding( GLuint pShaderProgramHandle );
-		void applyIndexBufferBinding( GLuint pIndexBufferObjectHandle );
-		void applyVertexArrayObjectBinding( GLuint pVertexArrayObjectHandle );
+		void ApplyShaderPipelineBinding( GLuint pShaderPipelineHandle );
+		void ApplyShaderProgramBinding( GLuint pShaderProgramHandle );
+		void ApplyIndexBufferBinding( GLuint pIndexBufferObjectHandle );
+		void ApplyVertexArrayObjectBinding( GLuint pVertexArrayObjectHandle );
 
-		void applyBlendState( const GLBlendConfig & pBlendConfig );
-		void applyDepthStencilState( const GLDepthStencilConfig & pDepthStencilConfig, uint8 pStencilRefValue );
-		void applyRasterizerState( const GLRasterizerConfig & pRasterizerConfig );
+		void ApplyBlendState( const GLBlendConfig & pBlendConfig );
+		void ApplyDepthStencilState( const GLDepthStencilConfig & pDepthStencilConfig, uint8 pStencilRefValue );
+		void ApplyRasterizerState( const GLRasterizerConfig & pRasterizerConfig );
 
-		static GLGlobalState getDefaultGlobalState();
+		static GLGlobalState GetDefaultGlobalState();
 
 	private:
 		GLGlobalState _cachedState;

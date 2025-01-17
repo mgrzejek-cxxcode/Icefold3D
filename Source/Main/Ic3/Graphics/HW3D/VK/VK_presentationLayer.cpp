@@ -1,34 +1,34 @@
 
 #include "VK_presentationLayer.h"
-#include <Ic3/GPUapiVK/VKUDevice.h>
-#include <Ic3/GPUapiVK/VK_commandList.h>
-#include <Ic3/GPUapiVK/VK_commandSystem.h>
+#include <Ic3/GpuapiVK/VKUDevice.h>
+#include <Ic3/GpuapiVK/VK_commandList.h>
+#include <Ic3/GpuapiVK/VK_commandSystem.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	VKPresentationLayer::VKPresentationLayer( GPUDevice & pDevice )
+	VKPresentationLayer::VKPresentationLayer( GpuDevice & pDevice )
 	: PresentationLayer( pDevice )
 	{}
 
 	VKPresentationLayer::~VKPresentationLayer() = default;
 
 
-	VKScreenPresentationLayer::VKScreenPresentationLayer( GPUDevice & pDevice )
+	VKScreenPresentationLayer::VKScreenPresentationLayer( GpuDevice & pDevice )
 	: VKPresentationLayer( pDevice )
 	{}
 
 	VKScreenPresentationLayer::~VKScreenPresentationLayer() = default;
 
-	void VKScreenPresentationLayer::bindRenderTarget( CommandContext * pCmdContext )
+	void VKScreenPresentationLayer::BindRenderTarget( CommandContext * pCmdContext )
 	{
 	}
 
-	void VKScreenPresentationLayer::invalidateRenderTarget( CommandContext * pCmdContext )
+	void VKScreenPresentationLayer::InvalidateRenderTarget( CommandContext * pCmdContext )
 	{
 	}
 
-	void VKScreenPresentationLayer::present()
+	void VKScreenPresentationLayer::Present()
 	{
 	}
 
@@ -36,11 +36,11 @@ namespace Ic3::Graphics::GCI
 	{
 	}
 
-	void VKScreenPresentationLayer::setFullscreenMode( bool pEnable )
+	void VKScreenPresentationLayer::SetFullscreenMode( bool pEnable )
 	{
 	}
 
-	Ic3::Math::Vec2u32 VKScreenPresentationLayer::queryRenderTargetSize() const
+	Ic3::Math::Vec2u32 VKScreenPresentationLayer::QueryRenderTargetSize() const
 	{
 		return {};
 	}

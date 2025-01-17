@@ -8,194 +8,84 @@ namespace Ic3::Graphics::GCI
 	namespace RCU
 	{
 
-		TextureDimensions queryMipLevelDimensions( const TextureDimensions & pDimensions, uint32 pMipLevel ) noexcept
+		TextureDimensions QueryMipLevelDimensions( const TextureDimensions & pDimensions, uint32 pMipLevel ) noexcept
 		{
 			TextureDimensions mipLevelDimensions;
-			mipLevelDimensions.mArraySize = pDimensions.mArraySize;
-			mipLevelDimensions.mMipLevelsNum = pDimensions.mMipLevelsNum;
+			mipLevelDimensions.arraySize = pDimensions.arraySize;
+			mipLevelDimensions.mipLevelsNum = pDimensions.mipLevelsNum;
 
-			if( pMipLevel >= pDimensions.mMipLevelsNum )
+			if( pMipLevel >= pDimensions.mipLevelsNum )
 			{
-				mipLevelDimensions.mWidth = 0;
-				mipLevelDimensions.mHeight = 0;
-				mipLevelDimensions.mDepth = 0;
+				mipLevelDimensions.width = 0;
+				mipLevelDimensions.height = 0;
+				mipLevelDimensions.depth = 0;
 			}
 			else
 			{
 
-				mipLevelDimensions.mWidth = pDimensions.mWidth;
-				mipLevelDimensions.mHeight = pDimensions.mHeight;
-				mipLevelDimensions.mDepth = pDimensions.mDepth;
+				mipLevelDimensions.width = pDimensions.width;
+				mipLevelDimensions.height = pDimensions.height;
+				mipLevelDimensions.depth = pDimensions.depth;
 
 				for( uint32 mipLevelIndex = 0; mipLevelIndex < pMipLevel; ++mipLevelIndex )
 				{
-					mipLevelDimensions.mWidth = Cppx::getMaxOf( 1u, mipLevelDimensions.mWidth / 2 );
-					mipLevelDimensions.mHeight= Cppx::getMaxOf( 1u, mipLevelDimensions.mHeight / 2 );
-					mipLevelDimensions.mDepth = Cppx::getMaxOf( 1u, mipLevelDimensions.mDepth / 2 );
+					mipLevelDimensions.width = cppx::get_max_of( 1u, mipLevelDimensions.width / 2 );
+					mipLevelDimensions.height= cppx::get_max_of( 1u, mipLevelDimensions.height / 2 );
+					mipLevelDimensions.depth = cppx::get_max_of( 1u, mipLevelDimensions.depth / 2 );
 				}
 			}
 
 			return mipLevelDimensions;
 		}
 
-		TextureSubResource getTextureSubResourceWholeTexture( TextureHandle pTexture ) noexcept
+		TextureSubResource GetTextureSubResourceWholeTexture( TextureHandle pTexture ) noexcept
 		{
 			TextureSubResource subResource{};
 			if( pTexture )
 			{
-				subResource = pTexture->getAllSubResourcesRef();
+				subResource = pTexture->GetAllSubResourcesRef();
 			}
 			return subResource;
 		}
 
-		bool checkTextureSubRegion( TextureHandle pTexture, const TextureSubRegion & pSubRegion ) noexcept
+		bool CheckTextureSubRegion( TextureHandle pTexture, const TextureSubRegion & pSubRegion ) noexcept
 		{
-			return pTexture && checkTextureSubRegion( pTexture->mTextureLayout.mDimensions, pSubRegion );
+			return pTexture && CheckTextureSubRegion( pTexture->mTextureLayout.dimensions, pSubRegion );
 		}
 
-		bool checkTextureSubRegion( const TextureDimensions & pDimensions, const TextureSubRegion & pSubRegion ) noexcept
+		bool CheckTextureSubRegion( const TextureDimensions & pDimensions, const TextureSubRegion & pSubRegion ) noexcept
 		{
-			if( pSubRegion.mTexClass == ETextureClass::T2D )
+			if( pSubRegion.texClass == ETextureClass::T2D )
 			{
-				if( checkTextureSubRegion2D( pDimensions, pSubRegion.uSubReg2D ) )
+				if( CheckTextureSubRegion2D( pDimensions, pSubRegion.uSubReg2D ) )
 				{
 					return true;
 				}
 			}
-			else if( pSubRegion.mTexClass == ETextureClass::T2DArray )
+			else if( pSubRegion.texClass == ETextureClass::T2DArray )
 			{
-				if( checkTextureSubRegion2DArray( pDimensions, pSubRegion.uSubReg2DArray ) )
+				if( CheckTextureSubRegion2DArray( pDimensions, pSubRegion.uSubReg2DArray ) )
 				{
 					return true;
 				}
 			}
-			else if( pSubRegion.mTexClass == ETextureClass::T2DMS )
+			else if( pSubRegion.texClass == ETextureClass::T2DMS )
 			{
-				if( checkTextureSubRegion2DMS( pDimensions, pSubRegion.uSubReg2D ) )
+				if( CheckTextureSubRegion2DMS( pDimensions, pSubRegion.uSubReg2D ) )
 				{
 					return true;
 				}
 			}
-			else if( pSubRegion.mTexClass == ETextureClass::T3D )
+			else if( pSubRegion.texClass == ETextureClass::T3D )
 			{
-				if( checkTextureSubRegion3D( pDimensions, pSubRegion.uSubReg3D ) )
+				if( CheckTextureSubRegion3D( pDimensions, pSubRegion.uSubReg3D ) )
 				{
 					return true;
 				}
 			}
-			else if( pSubRegion.mTexClass == ETextureClass::TCubeMap )
+			else if( pSubRegion.texClass == ETextureClass::TCubeMap )
 			{
-				if( checkTextureSubRegionCubeMap( pDimensions, pSubRegion.uSubRegCubeMap ) )
-				{
-					return true;
-				}
-			}
-			else
-			{
-				ic3DebugInterrupt();
-			}
-
-			return false;
-		}
-
-		bool checkTextureSubRegion2D( const TextureDimensions & pDimensions, const TextureSubRegion2D & pSubRegion ) noexcept
-		{
-			const auto mipLevelDimensions = queryMipLevelDimensions( pDimensions, pSubRegion.mOffset.mMipLevel );
-
-			const bool validSubRegion =
-					( pSubRegion.mSize.mWidth > 0 ) &&
-					( pSubRegion.mSize.mHeight > 0 ) &&
-					( pSubRegion.mOffset.mPX < mipLevelDimensions.mWidth ) &&
-					( pSubRegion.mOffset.mPY < mipLevelDimensions.mHeight ) &&
-					( pSubRegion.mSize.mWidth < (mipLevelDimensions.mWidth - pSubRegion.mOffset.mPX ) ) &&
-					( pSubRegion.mSize.mHeight > (mipLevelDimensions.mHeight - pSubRegion.mOffset.mPY ) );
-
-			return validSubRegion;
-		}
-
-		bool checkTextureSubRegion2DArray( const TextureDimensions & pDimensions, const TextureSubRegion2DArray & pSubRegion ) noexcept
-		{
-			const bool validSubRegion =
-					( pSubRegion.mOffset.mArrayIndex < pDimensions.mArraySize ) &&
-					checkTextureSubRegion2D( pDimensions, TextureSubRegion2D{pSubRegion.mOffset, pSubRegion.mSize } );
-
-			return validSubRegion;
-		}
-
-		bool checkTextureSubRegion2DMS( const TextureDimensions & pDimensions, const TextureSubRegion2D & pSubRegion ) noexcept
-		{
-			const bool validSubRegion =
-					( pSubRegion.mOffset.mMipLevel == 0 ) &&
-					checkTextureSubRegion2D( pDimensions, pSubRegion );
-
-			return validSubRegion;
-		}
-
-		bool checkTextureSubRegion3D( const TextureDimensions & pDimensions, const TextureSubRegion3D & pSubRegion ) noexcept
-		{
-			const auto mipLevelDimensions = queryMipLevelDimensions( pDimensions, pSubRegion.mOffset.mMipLevel );
-
-			const bool validSubRegion =
-					( pSubRegion.mSize.mWidth > 0 ) &&
-					( pSubRegion.mSize.mHeight > 0 ) &&
-					( pSubRegion.mSize.mDepth > 0 ) &&
-					( pSubRegion.mOffset.mPX < mipLevelDimensions.mWidth ) &&
-					( pSubRegion.mOffset.mPY < mipLevelDimensions.mHeight ) &&
-					( pSubRegion.mOffset.mPZ < mipLevelDimensions.mDepth ) &&
-					( pSubRegion.mSize.mWidth < (mipLevelDimensions.mWidth - pSubRegion.mOffset.mPX ) ) &&
-					( pSubRegion.mSize.mHeight < (mipLevelDimensions.mHeight - pSubRegion.mOffset.mPY ) ) &&
-					( pSubRegion.mSize.mDepth < (mipLevelDimensions.mDepth - pSubRegion.mOffset.mPZ ) );
-
-			return validSubRegion;
-		}
-
-		bool checkTextureSubRegionCubeMap( const TextureDimensions & pDimensions, const TextureSubRegionCubeMap & pSubRegion ) noexcept
-		{
-			const bool validSubRegion =
-					( pSubRegion.mOffset.mFaceIndex <= 6 ) &&
-					checkTextureSubRegion2D( pDimensions, TextureSubRegion2D{pSubRegion.mOffset, pSubRegion.mSize } );
-
-			return validSubRegion;
-		}
-
-		bool checkTextureSubResource( TextureHandle pTexture, const TextureSubResource & pSubResource ) noexcept
-		{
-			return pTexture && checkTextureSubResource( pTexture->mTextureLayout.mDimensions, pSubResource );
-		}
-
-		bool checkTextureSubResource( const TextureDimensions & pDimensions, const TextureSubResource & pSubResource ) noexcept
-		{
-			if( pSubResource.mTexClass == ETextureClass::T2D )
-			{
-				if( checkTextureSubResource2D( pDimensions, pSubResource.uSubRes2D ) )
-				{
-					return true;
-				}
-			}
-			else if( pSubResource.mTexClass == ETextureClass::T2DArray )
-			{
-				if( checkTextureSubResource2DArray( pDimensions, pSubResource.uSubRes2DArray ) )
-				{
-					return true;
-				}
-			}
-			else if( pSubResource.mTexClass == ETextureClass::T2DMS )
-			{
-				if( checkTextureSubResource2DMS( pDimensions, pSubResource.uSubRes2D ) )
-				{
-					return true;
-				}
-			}
-			else if( pSubResource.mTexClass == ETextureClass::T3D )
-			{
-				if( checkTextureSubResource3D( pDimensions, pSubResource.uSubRes3D ) )
-				{
-					return true;
-				}
-			}
-			else if( pSubResource.mTexClass == ETextureClass::TCubeMap )
-			{
-				if( checkTextureSubResourceCubeMap( pDimensions, pSubResource.uSubResCubeMap ) )
+				if( CheckTextureSubRegionCubeMap( pDimensions, pSubRegion.uSubRegCubeMap ) )
 				{
 					return true;
 				}
@@ -208,76 +98,186 @@ namespace Ic3::Graphics::GCI
 			return false;
 		}
 
-		bool checkTextureSubResource2D( const TextureDimensions & pDimensions, const TextureSubResource2D & pSubResource ) noexcept
+		bool CheckTextureSubRegion2D( const TextureDimensions & pDimensions, const TextureSubRegion2D & pSubRegion ) noexcept
+		{
+			const auto mipLevelDimensions = QueryMipLevelDimensions( pDimensions, pSubRegion.offset.mipLevel );
+
+			const bool validSubRegion =
+					( pSubRegion.size.width > 0 ) &&
+					( pSubRegion.size.height > 0 ) &&
+					( pSubRegion.offset.x < mipLevelDimensions.width ) &&
+					( pSubRegion.offset.y < mipLevelDimensions.height ) &&
+					( pSubRegion.size.width < (mipLevelDimensions.width - pSubRegion.offset.x ) ) &&
+					( pSubRegion.size.height > (mipLevelDimensions.height - pSubRegion.offset.y ) );
+
+			return validSubRegion;
+		}
+
+		bool CheckTextureSubRegion2DArray( const TextureDimensions & pDimensions, const TextureSubRegion2DArray & pSubRegion ) noexcept
+		{
+			const bool validSubRegion =
+					( pSubRegion.offset.arrayIndex < pDimensions.arraySize ) &&
+					CheckTextureSubRegion2D( pDimensions, TextureSubRegion2D{pSubRegion.offset, pSubRegion.size } );
+
+			return validSubRegion;
+		}
+
+		bool CheckTextureSubRegion2DMS( const TextureDimensions & pDimensions, const TextureSubRegion2D & pSubRegion ) noexcept
+		{
+			const bool validSubRegion =
+					( pSubRegion.offset.mipLevel == 0 ) &&
+					CheckTextureSubRegion2D( pDimensions, pSubRegion );
+
+			return validSubRegion;
+		}
+
+		bool CheckTextureSubRegion3D( const TextureDimensions & pDimensions, const TextureSubRegion3D & pSubRegion ) noexcept
+		{
+			const auto mipLevelDimensions = QueryMipLevelDimensions( pDimensions, pSubRegion.offset.mipLevel );
+
+			const bool validSubRegion =
+					( pSubRegion.size.width > 0 ) &&
+					( pSubRegion.size.height > 0 ) &&
+					( pSubRegion.size.depth > 0 ) &&
+					( pSubRegion.offset.x < mipLevelDimensions.width ) &&
+					( pSubRegion.offset.y < mipLevelDimensions.height ) &&
+					( pSubRegion.offset.z < mipLevelDimensions.depth ) &&
+					( pSubRegion.size.width < (mipLevelDimensions.width - pSubRegion.offset.x ) ) &&
+					( pSubRegion.size.height < (mipLevelDimensions.height - pSubRegion.offset.y ) ) &&
+					( pSubRegion.size.depth < (mipLevelDimensions.depth - pSubRegion.offset.z ) );
+
+			return validSubRegion;
+		}
+
+		bool CheckTextureSubRegionCubeMap( const TextureDimensions & pDimensions, const TextureSubRegionCubeMap & pSubRegion ) noexcept
+		{
+			const bool validSubRegion =
+					( pSubRegion.offset.faceIndex <= 6 ) &&
+					CheckTextureSubRegion2D( pDimensions, TextureSubRegion2D{pSubRegion.offset, pSubRegion.size } );
+
+			return validSubRegion;
+		}
+
+		bool CheckTextureSubResource( TextureHandle pTexture, const TextureSubResource & pSubResource ) noexcept
+		{
+			return pTexture && CheckTextureSubResource( pTexture->mTextureLayout.dimensions, pSubResource );
+		}
+
+		bool CheckTextureSubResource( const TextureDimensions & pDimensions, const TextureSubResource & pSubResource ) noexcept
+		{
+			if( pSubResource.texClass == ETextureClass::T2D )
+			{
+				if( CheckTextureSubResource2D( pDimensions, pSubResource.uSubRes2D ) )
+				{
+					return true;
+				}
+			}
+			else if( pSubResource.texClass == ETextureClass::T2DArray )
+			{
+				if( CheckTextureSubResource2DArray( pDimensions, pSubResource.uSubRes2DArray ) )
+				{
+					return true;
+				}
+			}
+			else if( pSubResource.texClass == ETextureClass::T2DMS )
+			{
+				if( CheckTextureSubResource2DMS( pDimensions, pSubResource.uSubRes2D ) )
+				{
+					return true;
+				}
+			}
+			else if( pSubResource.texClass == ETextureClass::T3D )
+			{
+				if( CheckTextureSubResource3D( pDimensions, pSubResource.uSubRes3D ) )
+				{
+					return true;
+				}
+			}
+			else if( pSubResource.texClass == ETextureClass::TCubeMap )
+			{
+				if( CheckTextureSubResourceCubeMap( pDimensions, pSubResource.uSubResCubeMap ) )
+				{
+					return true;
+				}
+			}
+			else
+			{
+				ic3DebugInterrupt();
+			}
+
+			return false;
+		}
+
+		bool CheckTextureSubResource2D( const TextureDimensions & pDimensions, const TextureSubResource2D & pSubResource ) noexcept
 		{
 			const bool validSubResource =
-				( pSubResource.mMipLevel < pDimensions.mMipLevelsNum );
+				( pSubResource.mipLevel < pDimensions.mipLevelsNum );
 
 			return validSubResource;
 		}
 
-		bool checkTextureSubResource2DArray( const TextureDimensions & pDimensions, const TextureSubResource2DArray & pSubResource ) noexcept
+		bool CheckTextureSubResource2DArray( const TextureDimensions & pDimensions, const TextureSubResource2DArray & pSubResource ) noexcept
 		{
 			const bool validSubResource =
-					( pSubResource.mArrayIndex < pDimensions.mArraySize ) &&
-					( pSubResource.mMipLevel < pDimensions.mMipLevelsNum );
+					( pSubResource.arrayIndex < pDimensions.arraySize ) &&
+					( pSubResource.mipLevel < pDimensions.mipLevelsNum );
 
 			return validSubResource;
 		}
 
-		bool checkTextureSubResource2DMS( const TextureDimensions & pDimensions, const TextureSubResource2D & pSubResource ) noexcept
+		bool CheckTextureSubResource2DMS( const TextureDimensions & pDimensions, const TextureSubResource2D & pSubResource ) noexcept
 		{
 			const bool validSubResource =
-				( pSubResource.mMipLevel == 0 );
+				( pSubResource.mipLevel == 0 );
 
 			return validSubResource;
 		}
 
-		bool checkTextureSubResource3D( const TextureDimensions & pDimensions, const TextureSubResource3D & pSubResource ) noexcept
+		bool CheckTextureSubResource3D( const TextureDimensions & pDimensions, const TextureSubResource3D & pSubResource ) noexcept
 		{
 			const bool validSubResource =
-					( pSubResource.mDepthLayerIndex < pDimensions.mDepth ) &&
-					( pSubResource.mMipLevel < pDimensions.mMipLevelsNum );
+					( pSubResource.depthLayerIndex < pDimensions.depth ) &&
+					( pSubResource.mipLevel < pDimensions.mipLevelsNum );
 
 			return validSubResource;
 		}
 
-		bool checkTextureSubResourceCubeMap( const TextureDimensions & pDimensions, const TextureSubResourceCubeMap & pSubResource ) noexcept
+		bool CheckTextureSubResourceCubeMap( const TextureDimensions & pDimensions, const TextureSubResourceCubeMap & pSubResource ) noexcept
 		{
 			const bool validSubResource =
-					( pSubResource.mFaceIndex < 6 ) &&
-					( pSubResource.mMipLevel < pDimensions.mMipLevelsNum );
+					( pSubResource.faceIndex < 6 ) &&
+					( pSubResource.mipLevel < pDimensions.mipLevelsNum );
 
 			return validSubResource;
 		}
 
-		bool cmpEqTextureSubRegion( const TextureSubRegion & pSubRegion1, const TextureSubRegion & pSubRegion2 ) noexcept
+		bool CmpEqTextureSubRegion( const TextureSubRegion & pSubRegion1, const TextureSubRegion & pSubRegion2 ) noexcept
 		{
-			if( pSubRegion1.mTexClass != pSubRegion2.mTexClass )
+			if( pSubRegion1.texClass != pSubRegion2.texClass )
 			{
 				return false;
 			}
 			else
 			{
-				if( pSubRegion1.mTexClass == ETextureClass::T2D )
+				if( pSubRegion1.texClass == ETextureClass::T2D )
 				{
-					return cmpEqTextureSubRegion2D( pSubRegion1.uSubReg2D, pSubRegion2.uSubReg2D );
+					return CmpEqTextureSubRegion2D( pSubRegion1.uSubReg2D, pSubRegion2.uSubReg2D );
 				}
-				else if( pSubRegion1.mTexClass == ETextureClass::T2DArray )
+				else if( pSubRegion1.texClass == ETextureClass::T2DArray )
 				{
-					return cmpEqTextureSubRegion2DArray( pSubRegion1.uSubReg2DArray, pSubRegion2.uSubReg2DArray );
+					return CmpEqTextureSubRegion2DArray( pSubRegion1.uSubReg2DArray, pSubRegion2.uSubReg2DArray );
 				}
-				else if( pSubRegion1.mTexClass == ETextureClass::T2DMS )
+				else if( pSubRegion1.texClass == ETextureClass::T2DMS )
 				{
-					return cmpEqTextureSubRegion2DMS( pSubRegion1.uSubReg2D, pSubRegion2.uSubReg2D );
+					return CmpEqTextureSubRegion2DMS( pSubRegion1.uSubReg2D, pSubRegion2.uSubReg2D );
 				}
-				else if( pSubRegion1.mTexClass == ETextureClass::T3D )
+				else if( pSubRegion1.texClass == ETextureClass::T3D )
 				{
-					return cmpEqTextureSubRegion3D( pSubRegion1.uSubReg3D, pSubRegion2.uSubReg3D );
+					return CmpEqTextureSubRegion3D( pSubRegion1.uSubReg3D, pSubRegion2.uSubReg3D );
 				}
-				else if( pSubRegion1.mTexClass == ETextureClass::TCubeMap )
+				else if( pSubRegion1.texClass == ETextureClass::TCubeMap )
 				{
-					return cmpEqTextureSubRegionCubeMap( pSubRegion1.uSubRegCubeMap, pSubRegion2.uSubRegCubeMap );
+					return CmpEqTextureSubRegionCubeMap( pSubRegion1.uSubRegCubeMap, pSubRegion2.uSubRegCubeMap );
 				}
 				else
 				{
@@ -287,97 +287,97 @@ namespace Ic3::Graphics::GCI
 			}
 		}
 
-		bool cmpEqTextureSubRegion2D( const TextureSubRegion2D & pSubRegion1, const TextureSubRegion2D & pSubRegion2 ) noexcept
+		bool CmpEqTextureSubRegion2D( const TextureSubRegion2D & pSubRegion1, const TextureSubRegion2D & pSubRegion2 ) noexcept
 		{
 			const bool subRegionsEqual =
-					( pSubRegion1.mOffset.mMipLevel == pSubRegion2.mOffset.mMipLevel ) &&
-					( pSubRegion1.mOffset.mPX == pSubRegion2.mOffset.mPX ) &&
-					( pSubRegion1.mOffset.mPY == pSubRegion2.mOffset.mPY ) &&
-					( pSubRegion1.mSize.mWidth == pSubRegion2.mSize.mWidth ) &&
-					( pSubRegion1.mSize.mHeight == pSubRegion2.mSize.mHeight );
+					( pSubRegion1.offset.mipLevel == pSubRegion2.offset.mipLevel ) &&
+					( pSubRegion1.offset.x == pSubRegion2.offset.x ) &&
+					( pSubRegion1.offset.y == pSubRegion2.offset.y ) &&
+					( pSubRegion1.size.width == pSubRegion2.size.width ) &&
+					( pSubRegion1.size.height == pSubRegion2.size.height );
 
 			return subRegionsEqual;
 		}
 
-		bool cmpEqTextureSubRegion2DArray( const TextureSubRegion2DArray & pSubRegion1, const TextureSubRegion2DArray & pSubRegion2 ) noexcept
+		bool CmpEqTextureSubRegion2DArray( const TextureSubRegion2DArray & pSubRegion1, const TextureSubRegion2DArray & pSubRegion2 ) noexcept
 		{
 			const bool subRegionsEqual =
-					( pSubRegion1.mOffset.mArrayIndex == pSubRegion2.mOffset.mArrayIndex ) &&
-					( pSubRegion1.mOffset.mPX == pSubRegion2.mOffset.mPX ) &&
-					( pSubRegion1.mOffset.mPY == pSubRegion2.mOffset.mPY ) &&
-					( pSubRegion1.mSize.mArraySize == pSubRegion2.mSize.mArraySize ) &&
-					( pSubRegion1.mSize.mWidth == pSubRegion2.mSize.mWidth ) &&
-					( pSubRegion1.mSize.mHeight == pSubRegion2.mSize.mHeight );
+					( pSubRegion1.offset.arrayIndex == pSubRegion2.offset.arrayIndex ) &&
+					( pSubRegion1.offset.x == pSubRegion2.offset.x ) &&
+					( pSubRegion1.offset.y == pSubRegion2.offset.y ) &&
+					( pSubRegion1.size.arraySize == pSubRegion2.size.arraySize ) &&
+					( pSubRegion1.size.width == pSubRegion2.size.width ) &&
+					( pSubRegion1.size.height == pSubRegion2.size.height );
 
 			return subRegionsEqual;
 		}
 
-		bool cmpEqTextureSubRegion2DMS( const TextureSubRegion2D & pSubRegion1, const TextureSubRegion2D & pSubRegion2 ) noexcept
+		bool CmpEqTextureSubRegion2DMS( const TextureSubRegion2D & pSubRegion1, const TextureSubRegion2D & pSubRegion2 ) noexcept
 		{
 			const bool subRegionsEqual =
-					( pSubRegion1.mOffset.mMipLevel == pSubRegion2.mOffset.mMipLevel ) &&
-					( pSubRegion1.mOffset.mPX == pSubRegion2.mOffset.mPX ) &&
-					( pSubRegion1.mOffset.mPY == pSubRegion2.mOffset.mPY ) &&
-					( pSubRegion1.mSize.mWidth == pSubRegion2.mSize.mWidth ) &&
-					( pSubRegion1.mSize.mHeight == pSubRegion2.mSize.mHeight );
+					( pSubRegion1.offset.mipLevel == pSubRegion2.offset.mipLevel ) &&
+					( pSubRegion1.offset.x == pSubRegion2.offset.x ) &&
+					( pSubRegion1.offset.y == pSubRegion2.offset.y ) &&
+					( pSubRegion1.size.width == pSubRegion2.size.width ) &&
+					( pSubRegion1.size.height == pSubRegion2.size.height );
 
 			return subRegionsEqual;
 		}
 
-		bool cmpEqTextureSubRegion3D( const TextureSubRegion3D & pSubRegion1, const TextureSubRegion3D & pSubRegion2 ) noexcept
+		bool CmpEqTextureSubRegion3D( const TextureSubRegion3D & pSubRegion1, const TextureSubRegion3D & pSubRegion2 ) noexcept
 		{
 			const bool subRegionsEqual =
-					( pSubRegion1.mOffset.mMipLevel == pSubRegion2.mOffset.mMipLevel ) &&
-					( pSubRegion1.mOffset.mPX == pSubRegion2.mOffset.mPX ) &&
-					( pSubRegion1.mOffset.mPY == pSubRegion2.mOffset.mPY ) &&
-					( pSubRegion1.mOffset.mPZ == pSubRegion2.mOffset.mPZ ) &&
-					( pSubRegion1.mSize.mWidth == pSubRegion2.mSize.mWidth ) &&
-					( pSubRegion1.mSize.mHeight == pSubRegion2.mSize.mHeight ) &&
-					( pSubRegion1.mSize.mDepth == pSubRegion2.mSize.mDepth );
+					( pSubRegion1.offset.mipLevel == pSubRegion2.offset.mipLevel ) &&
+					( pSubRegion1.offset.x == pSubRegion2.offset.x ) &&
+					( pSubRegion1.offset.y == pSubRegion2.offset.y ) &&
+					( pSubRegion1.offset.z == pSubRegion2.offset.z ) &&
+					( pSubRegion1.size.width == pSubRegion2.size.width ) &&
+					( pSubRegion1.size.height == pSubRegion2.size.height ) &&
+					( pSubRegion1.size.depth == pSubRegion2.size.depth );
 
 			return subRegionsEqual;
 		}
 
-		bool cmpEqTextureSubRegionCubeMap( const TextureSubRegionCubeMap & pSubRegion1, const TextureSubRegionCubeMap & pSubRegion2 ) noexcept
+		bool CmpEqTextureSubRegionCubeMap( const TextureSubRegionCubeMap & pSubRegion1, const TextureSubRegionCubeMap & pSubRegion2 ) noexcept
 		{
 			const bool subRegionsEqual =
-					( pSubRegion1.mOffset.mFaceIndex == pSubRegion2.mOffset.mFaceIndex ) &&
-					( pSubRegion1.mOffset.mMipLevel == pSubRegion2.mOffset.mMipLevel ) &&
-					( pSubRegion1.mOffset.mPX == pSubRegion2.mOffset.mPX ) &&
-					( pSubRegion1.mOffset.mPY == pSubRegion2.mOffset.mPY ) &&
-					( pSubRegion1.mSize.mWidth == pSubRegion2.mSize.mWidth ) &&
-					( pSubRegion1.mSize.mHeight == pSubRegion2.mSize.mHeight );
+					( pSubRegion1.offset.faceIndex == pSubRegion2.offset.faceIndex ) &&
+					( pSubRegion1.offset.mipLevel == pSubRegion2.offset.mipLevel ) &&
+					( pSubRegion1.offset.x == pSubRegion2.offset.x ) &&
+					( pSubRegion1.offset.y == pSubRegion2.offset.y ) &&
+					( pSubRegion1.size.width == pSubRegion2.size.width ) &&
+					( pSubRegion1.size.height == pSubRegion2.size.height );
 
 			return subRegionsEqual;
 		}
 
-		bool cmpEqTextureSubResource( const TextureSubResource & pSubResource1, const TextureSubResource & pSubResource2 ) noexcept
+		bool CmpEqTextureSubResource( const TextureSubResource & pSubResource1, const TextureSubResource & pSubResource2 ) noexcept
 		{
-			if( pSubResource1.mTexClass != pSubResource2.mTexClass )
+			if( pSubResource1.texClass != pSubResource2.texClass )
 			{
 				return false;
 			}
 			else
 			{
-				if( pSubResource1.mTexClass == ETextureClass::T2D )
+				if( pSubResource1.texClass == ETextureClass::T2D )
 				{
-					return cmpEqTextureSubResource2D( pSubResource1.uSubRes2D, pSubResource2.uSubRes2D );
+					return CmpEqTextureSubResource2D( pSubResource1.uSubRes2D, pSubResource2.uSubRes2D );
 				}
-				else if( pSubResource1.mTexClass == ETextureClass::T2DArray )
+				else if( pSubResource1.texClass == ETextureClass::T2DArray )
 				{
-					return cmpEqTextureSubResource2DArray( pSubResource1.uSubRes2DArray, pSubResource2.uSubRes2DArray );
+					return CmpEqTextureSubResource2DArray( pSubResource1.uSubRes2DArray, pSubResource2.uSubRes2DArray );
 				}
-				else if( pSubResource1.mTexClass == ETextureClass::T2DMS )
+				else if( pSubResource1.texClass == ETextureClass::T2DMS )
 				{
-					return cmpEqTextureSubResource2DMS( pSubResource1.uSubRes2D, pSubResource2.uSubRes2D );
+					return CmpEqTextureSubResource2DMS( pSubResource1.uSubRes2D, pSubResource2.uSubRes2D );
 				}
-				else if( pSubResource1.mTexClass == ETextureClass::T3D )
+				else if( pSubResource1.texClass == ETextureClass::T3D )
 				{
-					return cmpEqTextureSubResource3D( pSubResource1.uSubRes3D, pSubResource2.uSubRes3D );
+					return CmpEqTextureSubResource3D( pSubResource1.uSubRes3D, pSubResource2.uSubRes3D );
 				}
-				else if( pSubResource1.mTexClass == ETextureClass::TCubeMap )
+				else if( pSubResource1.texClass == ETextureClass::TCubeMap )
 				{
-					return cmpEqTextureSubResourceCubeMap( pSubResource1.uSubResCubeMap, pSubResource2.uSubResCubeMap );
+					return CmpEqTextureSubResourceCubeMap( pSubResource1.uSubResCubeMap, pSubResource2.uSubResCubeMap );
 				}
 				else
 				{
@@ -387,45 +387,45 @@ namespace Ic3::Graphics::GCI
 			}
 		}
 
-		bool cmpEqTextureSubResource2D( const TextureSubResource2D & pSubResource1, const TextureSubResource2D & pSubResource2 ) noexcept
+		bool CmpEqTextureSubResource2D( const TextureSubResource2D & pSubResource1, const TextureSubResource2D & pSubResource2 ) noexcept
 		{
 			const bool subResourcesEqual =
-				( pSubResource1.mMipLevel == pSubResource2.mMipLevel );
+				( pSubResource1.mipLevel == pSubResource2.mipLevel );
 
 			return subResourcesEqual;
 		}
 
-		bool cmpEqTextureSubResource2DArray( const TextureSubResource2DArray & pSubResource1, const TextureSubResource2DArray & pSubResource2 ) noexcept
+		bool CmpEqTextureSubResource2DArray( const TextureSubResource2DArray & pSubResource1, const TextureSubResource2DArray & pSubResource2 ) noexcept
 		{
 			const bool subResourcesEqual =
-					( pSubResource1.mArrayIndex == pSubResource2.mArrayIndex ) &&
-					( pSubResource1.mMipLevel == pSubResource2.mMipLevel );
+					( pSubResource1.arrayIndex == pSubResource2.arrayIndex ) &&
+					( pSubResource1.mipLevel == pSubResource2.mipLevel );
 
 			return subResourcesEqual;
 		}
 
-		bool cmpEqTextureSubResource2DMS( const TextureSubResource2D & pSubResource1, const TextureSubResource2D & pSubResource2 ) noexcept
+		bool CmpEqTextureSubResource2DMS( const TextureSubResource2D & pSubResource1, const TextureSubResource2D & pSubResource2 ) noexcept
 		{
 			const bool subResourcesEqual =
-				( pSubResource1.mMipLevel == pSubResource2.mMipLevel );
+				( pSubResource1.mipLevel == pSubResource2.mipLevel );
 
 			return subResourcesEqual;
 		}
 
-		bool cmpEqTextureSubResource3D( const TextureSubResource3D & pSubResource1, const TextureSubResource3D & pSubResource2 ) noexcept
+		bool CmpEqTextureSubResource3D( const TextureSubResource3D & pSubResource1, const TextureSubResource3D & pSubResource2 ) noexcept
 		{
 			const bool subResourcesEqual =
-					( pSubResource1.mMipLevel == pSubResource2.mMipLevel ) &&
-					( pSubResource1.mDepthLayerIndex == pSubResource2.mDepthLayerIndex );
+					( pSubResource1.mipLevel == pSubResource2.mipLevel ) &&
+					( pSubResource1.depthLayerIndex == pSubResource2.depthLayerIndex );
 
 			return subResourcesEqual;
 		}
 
-		bool cmpEqTextureSubResourceCubeMap( const TextureSubResourceCubeMap & pSubResource1, const TextureSubResourceCubeMap & pSubResource2 ) noexcept
+		bool CmpEqTextureSubResourceCubeMap( const TextureSubResourceCubeMap & pSubResource1, const TextureSubResourceCubeMap & pSubResource2 ) noexcept
 		{
 			const bool subResourcesEqual =
-					( pSubResource1.mFaceIndex == pSubResource2.mFaceIndex ) &&
-					( pSubResource1.mMipLevel == pSubResource2.mMipLevel );
+					( pSubResource1.faceIndex == pSubResource2.faceIndex ) &&
+					( pSubResource1.mipLevel == pSubResource2.mipLevel );
 
 			return subResourcesEqual;
 		}

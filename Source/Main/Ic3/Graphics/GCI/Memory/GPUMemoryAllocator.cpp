@@ -1,2 +1,2 @@
 
-#include "GPUMemoryAllocator.h"
+#include "GpuMemoryAllocator.h"

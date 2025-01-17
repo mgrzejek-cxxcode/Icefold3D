@@ -7,32 +7,32 @@ namespace Ic3::Graphics::GCI
 
 	TextureReference::TextureReference( TextureHandle pTexture )
 	{
-		setRefTexture( pTexture );
+		SetRefTexture( pTexture );
 	}
 
 	TextureReference::TextureReference( TextureHandle pTexture, const TextureSubResource & pReferencedSubResource )
 	{
-		setRefTexture( pTexture, pReferencedSubResource );
+		SetRefTexture( pTexture, pReferencedSubResource );
 	}
 
 	TextureReference::~TextureReference() = default;
 
-	bool TextureReference::setRefTexture( TextureHandle pTexture )
+	bool TextureReference::SetRefTexture( TextureHandle pTexture )
 	{
-		return _setRefTextureInternal( pTexture, pTexture->getDefaultSubResourceRef() );
+		return _SetRefTextureInternal( pTexture, pTexture->GetDefaultSubResourceRef() );
 	}
 
-	bool TextureReference::setRefTexture( TextureHandle pTexture, const TextureSubResource & pReferencedSubResource )
+	bool TextureReference::SetRefTexture( TextureHandle pTexture, const TextureSubResource & pReferencedSubResource )
 	{
-		return _setRefTextureInternal( pTexture, pReferencedSubResource );
+		return _SetRefTextureInternal( pTexture, pReferencedSubResource );
 	}
 
-	bool TextureReference::reset()
+	bool TextureReference::Reset()
 	{
-		return _setRefTextureInternal( nullptr );
+		return _SetRefTextureInternal( nullptr );
 	}
 
-	bool TextureReference::_setRefTextureInternal( TextureHandle pTexture, const TextureSubResource & pReferencedSubResource )
+	bool TextureReference::_SetRefTextureInternal( TextureHandle pTexture, const TextureSubResource & pReferencedSubResource )
 	{
 		bool referenceUpdated = false;
 
@@ -43,9 +43,9 @@ namespace Ic3::Graphics::GCI
 			// Of course, assuming there is something to reset in the first place.
 			if( _refTextureObject )
 			{
-				_refTextureObject->releaseActiveRef();
+				_refTextureObject->ReleaseActiveRef();
 				_refTextureObject = nullptr;
-				_refTextureFormat = ETextureFormat::Unknown;
+				_refTextureFormat = ETextureFormat::Undefined;
 				_refSubResource.reset();
 
 				referenceUpdated = true;
@@ -53,10 +53,10 @@ namespace Ic3::Graphics::GCI
 		}
 		// Otherwise, check if there is anything to update: either the texture is a
 		// different texture or the referenced subresource is different from the current one.
-		else if( ( pTexture != _refTextureObject ) || !RCU::cmpEqTextureSubResource( pReferencedSubResource, _refSubResource ) )
+		else if( ( pTexture != _refTextureObject ) || !RCU::CmpEqTextureSubResource( pReferencedSubResource, _refSubResource ) )
 		{
 			// Validate if the specified subresource is valid for the given texture object.
-			if( RCU::checkTextureSubResource( pTexture, pReferencedSubResource ) )
+			if( RCU::CheckTextureSubResource( pTexture, pReferencedSubResource ) )
 			{
 				// Update the texture only if necessary.
 				if( pTexture != _refTextureObject )
@@ -64,13 +64,13 @@ namespace Ic3::Graphics::GCI
 					// This can be null (empty reference).
 					if( _refTextureObject )
 					{
-						_refTextureObject->releaseActiveRef();
+						_refTextureObject->ReleaseActiveRef();
 						_refTextureObject = nullptr;
 					}
 
 					_refTextureObject = pTexture;
-					_refTextureObject->addActiveRef();
-					_refTextureFormat = pTexture->mTextureLayout.mInternalFormat;
+					_refTextureObject->AddActiveRef();
+					_refTextureFormat = pTexture->mTextureLayout.internalFormat;
 				}
 
 				// Update the referenced subresource.

@@ -9,7 +9,7 @@
 #include "../Objects/GLFramebufferObject.h"
 #include "../Objects/GLShaderPipelineObject.h"
 #include "../Objects/GLVertexArrayObject.h"
-#include "../Resources/GLGPUBuffer.h"
+#include "../Resources/GLGpuBuffer.h"
 #include "../Resources/GLSampler.h"
 #include "../Resources/GLShader.h"
 #include "../Resources/GLTexture.h"
@@ -26,37 +26,37 @@ namespace Ic3::Graphics::GCI
 
 	GLGraphicsPipelineStateController::~GLGraphicsPipelineStateController() = default;
 
-	const GLDrawTopologyProperties & GLGraphicsPipelineStateController::getGLDrawTopologyProperties() const noexcept
+	const GLDrawTopologyProperties & GLGraphicsPipelineStateController::GetGLDrawTopologyProperties() const noexcept
 	{
 		return _currentDrawTopologyProperties;
 	}
 
-	const GLIAVertexStreamDefinition & GLGraphicsPipelineStateController::getCurrentIAVertexStreamDefinition() const noexcept
+	const GLIAVertexStreamDefinition & GLGraphicsPipelineStateController::GetCurrentIAVertexStreamDefinition() const noexcept
 	{
-		if( isIAVertexStreamStateDynamic() )
+		if( IsIAVertexStreamStateDynamic() )
 		{
 			return _dynamicIAVertexStreamDefinition;
 		}
 		else
 		{
-			const auto * glcVertexStreamState = _currentCommonState.iaVertexStreamState->queryInterface<GLIAVertexStreamImmutableState>();
+			const auto * glcVertexStreamState = _currentCommonState.iaVertexStreamState->QueryInterface<GLIAVertexStreamImmutableState>();
 			return glcVertexStreamState->mGLVertexStreamDefinition;
 		}
 	}
 
-	GLRenderTargetBindingInfo GLGraphicsPipelineStateController::getCurrentRenderTargetBindingInfo() const noexcept
+	GLRenderTargetBindingInfo GLGraphicsPipelineStateController::GetCurrentRenderTargetBindingInfo() const noexcept
 	{
 		GLRenderTargetBindingInfo glcRTBindingInfo{};
 		if( _currentCommonState.renderTargetBindingState )
 		{
-			if( isRenderTargetStateDynamic()  )
+			if( IsRenderTargetStateDynamic()  )
 			{
-				return smutil::getGLRenderTargetBindingInfo( _dynamicRenderTargetBindingDefinition );
+				return SMU::GetGLRenderTargetBindingInfo( _dynamicRenderTargetBindingDefinition );
 			}
 			else
 			{
-				const auto * glcRTBindingState = _currentCommonState.renderTargetBindingState->getInterface<GLRenderTargetBindingImmutableState>();
-				return glcRTBindingState->getGLRenderTargetBindingInfo();
+				const auto * glcRTBindingState = _currentCommonState.renderTargetBindingState->GetInterface<GLRenderTargetBindingImmutableState>();
+				return glcRTBindingState->GetGLRenderTargetBindingInfo();
 			}
 		}
 		else
@@ -66,50 +66,50 @@ namespace Ic3::Graphics::GCI
 		return glcRTBindingInfo;
 	}
 
-	bool GLGraphicsPipelineStateController::applyStateChanges()
+	bool GLGraphicsPipelineStateController::ApplyStateChanges()
 	{
-		Bitmask<uint32> executedUpdatesMask = 0;
+		cppx::bitmask<uint32> executedUpdatesMask = 0;
 
-		if( _stateUpdateMask.isSet( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_PSO_BIT ) )
+		if( _stateUpdateMask.is_set( eGraphicsStateUpdateFlagCommonPSOBit ) )
 		{
-			if( _stateUpdateMask.isSetAnyOf( E_GRAPHICS_STATE_UPDATE_MASK_SEPARABLE_STATES_ALL ) )
+			if( _stateUpdateMask.is_set_any_of( eGraphicsStateUpdateMaskSeparableStatesAll ) )
 			{
-				const auto * glcGraphicsPSO = _currentCommonState.graphicsPSO->queryInterface<GLGraphicsPipelineStateObject>();
-				const auto commonPSOUpdateMask = applyCommonGraphicsConfigState( *glcGraphicsPSO );
+				const auto * glcGraphicsPSO = _currentCommonState.graphicsPSO->QueryInterface<GLGraphicsPipelineStateObject>();
+				const auto commonPSOUpdateMask = ApplyCommonGraphicsConfigState( *glcGraphicsPSO );
 				executedUpdatesMask.set( commonPSOUpdateMask );
 			}
 		}
 
-		if( _stateUpdateMask.isSet( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_RENDER_TARGET_BINDING_BIT ) )
+		if( _stateUpdateMask.is_set( eGraphicsStateUpdateFlagCommonRenderTargetBindingBit ) )
 		{
-			const auto & currentRenderTargetBindingInfo = getCurrentRenderTargetBindingInfo();
-			applyGLRenderTargetBinding( currentRenderTargetBindingInfo );
-			executedUpdatesMask.set( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_RENDER_TARGET_BINDING_BIT );
+			const auto & currentRenderTargetBindingInfo = GetCurrentRenderTargetBindingInfo();
+			ApplyGLRenderTargetBinding( currentRenderTargetBindingInfo );
+			executedUpdatesMask.set( eGraphicsStateUpdateFlagCommonRenderTargetBindingBit );
 		}
 
-		applyGraphicsPipelineDynamicState( getRenderPassDynamicState() );
+		ApplyGraphicsPipelineDynamicState( GetRenderPassDynamicState() );
 
 		return !executedUpdatesMask.empty();
 	}
 
-	bool GLGraphicsPipelineStateController::setGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO )
+	bool GLGraphicsPipelineStateController::SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO )
 	{
-		return GraphicsPipelineStateControllerSeparable::setGraphicsPipelineStateObject( pGraphicsPSO );
+		return GraphicsPipelineStateControllerSeparable::SetGraphicsPipelineStateObject( pGraphicsPSO );
 	}
 
-	bool GLGraphicsPipelineStateController::resetGraphicsPipelineStateObject()
+	bool GLGraphicsPipelineStateController::ResetGraphicsPipelineStateObject()
 	{
-		return GraphicsPipelineStateControllerSeparable::resetGraphicsPipelineStateObject();
+		return GraphicsPipelineStateControllerSeparable::ResetGraphicsPipelineStateObject();
 	}
 
-	bool GLGraphicsPipelineStateController::setIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState )
+	bool GLGraphicsPipelineStateController::SetIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState )
 	{
-		bool updateResult = GraphicsPipelineStateController::setIAVertexStreamState( pIAVertexStreamState );
+		bool updateResult = GraphicsPipelineStateController::SetIAVertexStreamState( pIAVertexStreamState );
 
 		if( updateResult )
 		{
 			auto glcVertexStreamDefinition =
-					smutil::translateIAVertexStreamDefinitionGL( pIAVertexStreamState.getVertexStreamDefinition() );
+					SMU::TranslateIAVertexStreamDefinitionGL( pIAVertexStreamState.GetVertexStreamDefinition() );
 
 			_dynamicIAVertexStreamDefinition = glcVertexStreamDefinition;
 		}
@@ -117,24 +117,24 @@ namespace Ic3::Graphics::GCI
 		return updateResult;
 	}
 
-	bool GLGraphicsPipelineStateController::setIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState )
+	bool GLGraphicsPipelineStateController::SetIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState )
 	{
-		return GraphicsPipelineStateControllerSeparable::setIAVertexStreamState( pIAVertexStreamState );
+		return GraphicsPipelineStateControllerSeparable::SetIAVertexStreamState( pIAVertexStreamState );
 	}
 
-	bool GLGraphicsPipelineStateController::resetIAVertexStreamState()
+	bool GLGraphicsPipelineStateController::ResetIAVertexStreamState()
 	{
-		return GraphicsPipelineStateControllerSeparable::resetIAVertexStreamState();
+		return GraphicsPipelineStateControllerSeparable::ResetIAVertexStreamState();
 	}
 
-	bool GLGraphicsPipelineStateController::setRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState )
+	bool GLGraphicsPipelineStateController::SetRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState )
 	{
-		bool updateResult = GraphicsPipelineStateController::setRenderTargetBindingState( pRenderTargetBindingState );
+		bool updateResult = GraphicsPipelineStateController::SetRenderTargetBindingState( pRenderTargetBindingState );
 
 		if( updateResult )
 		{
 			auto glcRenderTargetBindingDefinition =
-					smutil::translateRenderTargetBindingDefinition( pRenderTargetBindingState.getBindingDefinition() );
+					SMU::TranslateRenderTargetBindingDefinition( pRenderTargetBindingState.GetBindingDefinition() );
 
 			_dynamicRenderTargetBindingDefinition = std::move( glcRenderTargetBindingDefinition );
 
@@ -143,27 +143,27 @@ namespace Ic3::Graphics::GCI
 		return updateResult;
 	}
 
-	bool GLGraphicsPipelineStateController::setRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState )
+	bool GLGraphicsPipelineStateController::SetRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState )
 	{
-		return GraphicsPipelineStateControllerSeparable::setRenderTargetBindingState( pRenderTargetBindingState );
+		return GraphicsPipelineStateControllerSeparable::SetRenderTargetBindingState( pRenderTargetBindingState );
 	}
 
-	bool GLGraphicsPipelineStateController::resetRenderTargetBindingState()
+	bool GLGraphicsPipelineStateController::ResetRenderTargetBindingState()
 	{
-		return GraphicsPipelineStateControllerSeparable::resetRenderTargetBindingState();
+		return GraphicsPipelineStateControllerSeparable::ResetRenderTargetBindingState();
 	}
 
-	bool GLGraphicsPipelineStateController::setViewport( const ViewportDesc & pViewportDesc )
+	bool GLGraphicsPipelineStateController::SetViewport( const ViewportDesc & pViewportDesc )
 	{
-		bool baseResult = GraphicsPipelineStateController::setViewport( pViewportDesc );
+		bool baseResult = GraphicsPipelineStateController::SetViewport( pViewportDesc );
 
 		if( baseResult )
 		{
 			glViewport(
-				numeric_cast<GLsizei>( pViewportDesc.origin.x ),
-		        numeric_cast<GLsizei>( pViewportDesc.origin.y ),
-	        numeric_cast<GLsizei>( pViewportDesc.size.x ),
-	        numeric_cast<GLsizei>( pViewportDesc.size.y ) );
+				cppx::numeric_cast<GLsizei>( pViewportDesc.origin.x ),
+		        cppx::numeric_cast<GLsizei>( pViewportDesc.origin.y ),
+	        cppx::numeric_cast<GLsizei>( pViewportDesc.size.x ),
+	        cppx::numeric_cast<GLsizei>( pViewportDesc.size.y ) );
 			ic3OpenGLHandleLastError();
 
 			glDepthRangef( pViewportDesc.depthRange.zNear, pViewportDesc.depthRange.zFar );
@@ -173,22 +173,22 @@ namespace Ic3::Graphics::GCI
 		return baseResult;
 	}
 
-	bool GLGraphicsPipelineStateController::setShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData )
+	bool GLGraphicsPipelineStateController::SetShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData )
 	{
-		bool baseResult = GraphicsPipelineStateController::setShaderConstant( pParamRefID, pData );
+		bool baseResult = GraphicsPipelineStateController::SetShaderConstant( pParamRefID, pData );
 
 		if( baseResult )
 		{
-			const auto & glcGraphicsPSO = getCurrentGraphicsPSORef<GLGraphicsPipelineStateObject>();
+			const auto & glcGraphicsPSO = GetCurrentGraphicsPSORef<GLGraphicsPipelineStateObject>();
 			if( const auto & inputSignature = glcGraphicsPSO.mShaderInputSignature )
 			{
-				const auto & constantInfo = inputSignature.getConstantInfo( pParamRefID );
+				const auto & constantInfo = inputSignature.GetConstantInfo( pParamRefID );
 				if( constantInfo.iVisibilityMask != 0 )
 				{
-					const auto * shaderLinkageState = getCurrentSeparableStates().shaderLinkageState;
-					const auto * glcShaderLinkageState = shaderLinkageState->queryInterface<GLGraphicsShaderLinkageImmutableState>();
+					const auto * shaderLinkageState = GetCurrentSeparableStates().shaderLinkageState;
+					const auto * glcShaderLinkageState = shaderLinkageState->QueryInterface<GLGraphicsShaderLinkageImmutableState>();
 
-					updateShaderInputInlineConstantData( *glcShaderLinkageState, constantInfo, pData );
+					UpdateShaderInputInlineConstantData( *glcShaderLinkageState, constantInfo, pData );
 
 					return true;
 				}
@@ -199,22 +199,22 @@ namespace Ic3::Graphics::GCI
 		return baseResult;
 	}
 
-	bool GLGraphicsPipelineStateController::setShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer )
+	bool GLGraphicsPipelineStateController::SetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GpuBuffer & pConstantBuffer )
 	{
-		bool baseResult = GraphicsPipelineStateController::setShaderConstantBuffer( pParamRefID, pConstantBuffer );
+		bool baseResult = GraphicsPipelineStateController::SetShaderConstantBuffer( pParamRefID, pConstantBuffer );
 
 		if( baseResult )
 		{
-			const auto & glcGraphicsPSO = getCurrentGraphicsPSORef<GLGraphicsPipelineStateObject>();
+			const auto & glcGraphicsPSO = GetCurrentGraphicsPSORef<GLGraphicsPipelineStateObject>();
 			if( const auto & inputSignature = glcGraphicsPSO.mShaderInputSignature )
 			{
-				const auto & descriptorInfo = inputSignature.getDescriptorInfo( pParamRefID );
+				const auto & descriptorInfo = inputSignature.GetDescriptorInfo( pParamRefID );
 				ic3DebugAssert( descriptorInfo.dDescriptorType == EShaderInputDescriptorType::Resource );
 				ic3DebugAssert( descriptorInfo.uResourceInfo.resourceType == EShaderInputResourceType::CBVConstantBuffer );
 
 				if( descriptorInfo.dShaderVisibilityMask != 0 )
 				{
-					auto * openglBuffer = pConstantBuffer.queryInterface<GLGPUBuffer>();
+					auto * openglBuffer = pConstantBuffer.QueryInterface<GLGpuBuffer>();
 
 					glBindBufferBase( GL_UNIFORM_BUFFER, descriptorInfo.uResourceInfo.resourceBaseRegisterIndex, openglBuffer->mGLBufferObject->mGLHandle );
 					ic3OpenGLHandleLastError();
@@ -227,20 +227,20 @@ namespace Ic3::Graphics::GCI
 		return baseResult;
 	}
 
-	bool GLGraphicsPipelineStateController::setShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture )
+	bool GLGraphicsPipelineStateController::SetShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture )
 	{
-		bool baseResult = GraphicsPipelineStateController::setShaderTextureImage( pParamRefID, pTexture );
+		bool baseResult = GraphicsPipelineStateController::SetShaderTextureImage( pParamRefID, pTexture );
 
 		if( baseResult )
 		{
-			const auto & glcGraphicsPSO = getCurrentGraphicsPSORef<GLGraphicsPipelineStateObject>();
+			const auto & glcGraphicsPSO = GetCurrentGraphicsPSORef<GLGraphicsPipelineStateObject>();
 			if( const auto & inputSignature = glcGraphicsPSO.mShaderInputSignature )
 			{
-				const auto & descriptorInfo = inputSignature.getDescriptorInfo( pParamRefID );
+				const auto & descriptorInfo = inputSignature.GetDescriptorInfo( pParamRefID );
 				ic3DebugAssert( descriptorInfo.dDescriptorType == EShaderInputDescriptorType::Resource );
 				ic3DebugAssert( descriptorInfo.uResourceInfo.resourceType == EShaderInputResourceType::SRVTextureImage );
 
-				auto * openglTexture = pTexture.queryInterface<GLTexture>();
+				auto * openglTexture = pTexture.QueryInterface<GLTexture>();
 
 				glActiveTexture( GL_TEXTURE0 + descriptorInfo.uResourceInfo.resourceBaseRegisterIndex );
 				ic3OpenGLHandleLastError();
@@ -255,21 +255,21 @@ namespace Ic3::Graphics::GCI
 		return baseResult;
 	}
 
-	bool GLGraphicsPipelineStateController::setShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler )
+	bool GLGraphicsPipelineStateController::SetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler )
 	{
-		bool baseResult = GraphicsPipelineStateController::setShaderTextureSampler( pParamRefID, pSampler );
+		bool baseResult = GraphicsPipelineStateController::SetShaderTextureSampler( pParamRefID, pSampler );
 
 		if( baseResult )
 		{
-			const auto & glcGraphicsPSO = getCurrentGraphicsPSORef<GLGraphicsPipelineStateObject>();
+			const auto & glcGraphicsPSO = GetCurrentGraphicsPSORef<GLGraphicsPipelineStateObject>();
 			if( const auto & inputSignature = glcGraphicsPSO.mShaderInputSignature )
 			{
-				const auto & descriptorInfo = inputSignature.getDescriptorInfo( pParamRefID );
+				const auto & descriptorInfo = inputSignature.GetDescriptorInfo( pParamRefID );
 				ic3DebugAssert( descriptorInfo.dDescriptorType == EShaderInputDescriptorType::Sampler );
 
 				if( descriptorInfo.dShaderVisibilityMask != 0 )
 				{
-					auto * openglSampler = pSampler.queryInterface<GLSampler>();
+					auto * openglSampler = pSampler.QueryInterface<GLSampler>();
 
 					glBindSampler( descriptorInfo.uSamplerInfo.samplerBindingIndex, openglSampler->mGLSamplerObject->mGLHandle );
 					ic3OpenGLHandleLastError();
@@ -282,47 +282,47 @@ namespace Ic3::Graphics::GCI
 		return baseResult;
 	}
 
-	Bitmask<uint32> GLGraphicsPipelineStateController::applyCommonGraphicsConfigState( const GLGraphicsPipelineStateObject & pGraphicsPSO )
+	cppx::bitmask<uint32> GLGraphicsPipelineStateController::ApplyCommonGraphicsConfigState( const GLGraphicsPipelineStateObject & pGraphicsPSO )
 	{
-		Bitmask<uint32> executedUpdatesMask = 0;
+		cppx::bitmask<uint32> executedUpdatesMask = 0;
 
-		if( _stateUpdateMask.isSet( E_GRAPHICS_STATE_UPDATE_FLAG_SEPARABLE_STATE_BLEND_BIT ) )
+		if( _stateUpdateMask.is_set( eGraphicsStateUpdateFlagSeparableStateBlendBit ) )
 		{
-			const auto & blendState = pGraphicsPSO.getBlendState();
-			_globalStateCache.applyBlendState( blendState.mGLBlendConfig );
-			executedUpdatesMask.set( E_GRAPHICS_STATE_UPDATE_FLAG_SEPARABLE_STATE_BLEND_BIT );
+			const auto & blendState = pGraphicsPSO.GetBlendState();
+			_globalStateCache.ApplyBlendState( blendState.mGLBlendConfig );
+			executedUpdatesMask.set( eGraphicsStateUpdateFlagSeparableStateBlendBit );
 		}
 
-		if( _stateUpdateMask.isSet( E_GRAPHICS_STATE_UPDATE_FLAG_SEPARABLE_STATE_DEPTH_STENCIL_BIT ) )
+		if( _stateUpdateMask.is_set( eGraphicsStateUpdateFlagSeparableStateDepthStencilBit ) )
 		{
-			const auto & depthStencilState = pGraphicsPSO.getDepthStencilState();
-			const auto & dynamicState = getRenderPassDynamicState();
+			const auto & depthStencilState = pGraphicsPSO.GetDepthStencilState();
+			const auto & dynamicState = GetRenderPassDynamicState();
 
-			if( dynamicState.activeStateMask.isSet( E_GRAPHICS_PIPELINE_DYNAMIC_STATE_FLAG_BLEND_CONSTANT_COLOR_BIT ) )
+			if( dynamicState.activeStateMask.is_set( eGraphicsPipelineDynamicStateFlagBlendConstantColorBit ) )
 			{
-				_globalStateCache.applyDepthStencilState( depthStencilState.mGLDepthStencilConfig, dynamicState.stencilTestRefValue );
+				_globalStateCache.ApplyDepthStencilState( depthStencilState.mGLDepthStencilConfig, dynamicState.stencilTestRefValue );
 			}
 			else
 			{
-				_globalStateCache.applyDepthStencilState( depthStencilState.mGLDepthStencilConfig, 0x00 );
+				_globalStateCache.ApplyDepthStencilState( depthStencilState.mGLDepthStencilConfig, 0x00 );
 			}
 
-			executedUpdatesMask.set( E_GRAPHICS_STATE_UPDATE_FLAG_SEPARABLE_STATE_DEPTH_STENCIL_BIT );
+			executedUpdatesMask.set( eGraphicsStateUpdateFlagSeparableStateDepthStencilBit );
 		}
 
-		if( _stateUpdateMask.isSet( E_GRAPHICS_STATE_UPDATE_FLAG_SEPARABLE_STATE_RASTERIZER_BIT ) )
+		if( _stateUpdateMask.is_set( eGraphicsStateUpdateFlagSeparableStateRasterizerBit ) )
 		{
-			const auto & rasterizerState = pGraphicsPSO.getRasterizerState();
-			_globalStateCache.applyRasterizerState( rasterizerState.mGLRasterizerConfig );
-			executedUpdatesMask.set( E_GRAPHICS_STATE_UPDATE_FLAG_SEPARABLE_STATE_RASTERIZER_BIT );
+			const auto & rasterizerState = pGraphicsPSO.GetRasterizerState();
+			_globalStateCache.ApplyRasterizerState( rasterizerState.mGLRasterizerConfig );
+			executedUpdatesMask.set( eGraphicsStateUpdateFlagSeparableStateRasterizerBit );
 		}
 
 		return executedUpdatesMask;
 	}
 
-	void GLGraphicsPipelineStateController::applyGraphicsPipelineDynamicState( const GraphicsPipelineDynamicState & pDynamicState )
+	void GLGraphicsPipelineStateController::ApplyGraphicsPipelineDynamicState( const GraphicsPipelineDynamicState & pDynamicState )
 	{
-		if( pDynamicState.activeStateMask.isSet( E_GRAPHICS_PIPELINE_DYNAMIC_STATE_FLAG_BLEND_CONSTANT_COLOR_BIT ) )
+		if( pDynamicState.activeStateMask.is_set( eGraphicsPipelineDynamicStateFlagBlendConstantColorBit ) )
 		{
 
 			glBlendColor(
@@ -334,7 +334,7 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	void GLGraphicsPipelineStateController::applyGLRenderTargetBinding( const GLRenderTargetBindingInfo & pGLRenderTargetBinding )
+	void GLGraphicsPipelineStateController::ApplyGLRenderTargetBinding( const GLRenderTargetBindingInfo & pGLRenderTargetBinding )
 	{
 		glBindFramebuffer( GL_FRAMEBUFFER, pGLRenderTargetBinding.renderFBO->mGLHandle );
 		ic3OpenGLHandleLastError();
@@ -342,57 +342,57 @@ namespace Ic3::Graphics::GCI
 
 
 
-	bool GLGraphicsPipelineStateControllerCore::applyStateChanges()
+	bool GLGraphicsPipelineStateControllerCore::ApplyStateChanges()
 	{
-		Bitmask<uint32> executedUpdatesMask = 0;
+		cppx::bitmask<uint32> executedUpdatesMask = 0;
 
-		if( GLGraphicsPipelineStateController::applyStateChanges() )
+		if( GLGraphicsPipelineStateController::ApplyStateChanges() )
 		{
-			const auto * glcGraphicsPSO = _currentCommonState.graphicsPSO->queryInterface<GLGraphicsPipelineStateObject>();
+			const auto * glcGraphicsPSO = _currentCommonState.graphicsPSO->QueryInterface<GLGraphicsPipelineStateObject>();
 
-			if( _stateUpdateMask.isSetAnyOf( E_GRAPHICS_STATE_UPDATE_FLAG_SEPARABLE_STATE_SHADER_LINKAGE_BIT ) )
+			if( _stateUpdateMask.is_set_any_of( eGraphicsStateUpdateFlagSeparableStateShaderLinkageBit ) )
 			{
-				const auto * shaderLinkageState = glcGraphicsPSO->getGraphicsShaderLinkageState().queryInterface<GLGraphicsShaderLinkageImmutableStateCore>();
-				_globalStateCache.applyShaderPipelineBinding( shaderLinkageState->mGLShaderPipelineObject->mGLHandle );
-				executedUpdatesMask.set( E_GRAPHICS_STATE_UPDATE_FLAG_SEPARABLE_STATE_SHADER_LINKAGE_BIT );
+				const auto * shaderLinkageState = glcGraphicsPSO->GetGraphicsShaderLinkageState().QueryInterface<GLGraphicsShaderLinkageImmutableStateCore>();
+				_globalStateCache.ApplyShaderPipelineBinding( shaderLinkageState->mGLShaderPipelineObject->mGLHandle );
+				executedUpdatesMask.set( eGraphicsStateUpdateFlagSeparableStateShaderLinkageBit );
 			}
 
-			if( _stateUpdateMask.isSet( E_GRAPHICS_STATE_UPDATE_FLAG_SEPARABLE_STATE_IA_INPUT_LAYOUT_BIT ) )
+			if( _stateUpdateMask.is_set( eGraphicsStateUpdateFlagSeparableStateIAInputLayoutBit ) )
 			{
-				const auto * inputLayoutState = glcGraphicsPSO->getIAInputLayoutState().queryInterface<GLIAInputLayoutImmutableStateCore>();
-				_globalStateCache.applyVertexArrayObjectBinding( inputLayoutState->mVertexArrayObject->mGLHandle );
+				const auto * inputLayoutState = glcGraphicsPSO->GetIAInputLayoutState().QueryInterface<GLIAInputLayoutImmutableStateCore>();
+				_globalStateCache.ApplyVertexArrayObjectBinding( inputLayoutState->mVertexArrayObject->mGLHandle );
 				_currentDrawTopologyProperties.primitiveTopology = inputLayoutState->mGLPrimitiveTopology;
-				executedUpdatesMask.set( E_GRAPHICS_STATE_UPDATE_FLAG_SEPARABLE_STATE_IA_INPUT_LAYOUT_BIT );
+				executedUpdatesMask.set( eGraphicsStateUpdateFlagSeparableStateIAInputLayoutBit );
 			}
 
-			if( _stateUpdateMask.isSetAnyOf( E_GRAPHICS_STATE_UPDATE_MASK_COMBINED_INPUT_ASSEMBLER ) )
+			if( _stateUpdateMask.is_set_any_of( eGraphicsStateUpdateMaskCombinedInputAssembler ) )
 			{
-				const auto & currentIAVertexStreamDefinition = getCurrentIAVertexStreamDefinition();
-				applyGLIAVertexBufferBindings( currentIAVertexStreamDefinition.vertexBufferBindings );
-				_globalStateCache.applyIndexBufferBinding( currentIAVertexStreamDefinition.indexBufferBinding.handle );
+				const auto & currentIAVertexStreamDefinition = GetCurrentIAVertexStreamDefinition();
+				ApplyGLIAVertexBufferBindings( currentIAVertexStreamDefinition.vertexBufferBindings );
+				_globalStateCache.ApplyIndexBufferBinding( currentIAVertexStreamDefinition.indexBufferBinding.handle );
 				_currentDrawTopologyProperties.indexBufferBaseOffset = currentIAVertexStreamDefinition.indexBufferBinding.offset;
 				_currentDrawTopologyProperties.indexBufferDataType = currentIAVertexStreamDefinition.indexBufferBinding.format;
 				_currentDrawTopologyProperties.indexBufferElementByteSize = currentIAVertexStreamDefinition.indexBufferBinding.elementByteSize;
-				executedUpdatesMask.set( E_GRAPHICS_STATE_UPDATE_MASK_COMBINED_INPUT_ASSEMBLER );
+				executedUpdatesMask.set( eGraphicsStateUpdateMaskCombinedInputAssembler );
 			}
 		}
 
-		_stateUpdateMask.unset( E_GRAPHICS_STATE_UPDATE_MASK_COMMON_ALL | E_GRAPHICS_STATE_UPDATE_MASK_SEPARABLE_ALL );
+		_stateUpdateMask.unset( eGraphicsStateUpdateMaskCommonAll | eGraphicsStateUpdateMaskSeparableAll );
 
 		return !executedUpdatesMask.empty();
 	}
 
-	void GLGraphicsPipelineStateControllerCore::updateShaderInputInlineConstantData(
+	void GLGraphicsPipelineStateControllerCore::UpdateShaderInputInlineConstantData(
 			const GLGraphicsShaderLinkageImmutableState & pShaderState,
 			const ShaderInputParameterConstant & pConstantInfo,
 			const void * pConstantData )
 	{
-		auto * shaderStateCore = pShaderState.queryInterface<GLGraphicsShaderLinkageImmutableStateCore>();
+		auto * shaderStateCore = pShaderState.QueryInterface<GLGraphicsShaderLinkageImmutableStateCore>();
 
-		auto constantBaseType = CxDef::getVertexAttribFormatBaseDataType( pConstantInfo.iFormat );
-		auto constantLength = CxDef::getVertexAttribFormatComponentsNum( pConstantInfo.iFormat );
+		auto constantBaseType = CxDef::GetVertexAttribFormatBaseDataType( pConstantInfo.iFormat );
+		auto constantLength = CxDef::GetVertexAttribFormatComponentsNum( pConstantInfo.iFormat );
 
-		smutil::updateUniformDataCurrentGL(
+		SMU::UpdateUniformDataCurrentGL(
 				*shaderStateCore->mGLShaderPipelineObject,
 				pConstantInfo.iStageIndex,
 				constantBaseType,
@@ -400,9 +400,9 @@ namespace Ic3::Graphics::GCI
 				pConstantData );
 	}
 
-	void GLGraphicsPipelineStateControllerCore::applyGLIAVertexBufferBindings( const GLIAVertexBuffersBindings & pVertexBufferBindings )
+	void GLGraphicsPipelineStateControllerCore::ApplyGLIAVertexBufferBindings( const GLIAVertexBuffersBindings & pVertexBufferBindings )
 	{
-	#if( ICFGX_GL_PLATFORM_TYPE == ICFGX_GL_PLATFORM_TYPE_ES )
+	#if( IC3_GX_GL_PLATFORM_TYPE == IC3_GX_GL_PLATFORM_TYPE_ES )
 		for( const auto & activeVBRange : pVertexBufferBindings.activeRanges )
 		{
 			for( uint32 entryOffset = 0; entryOffset < activeVBRange.length; ++entryOffset )
@@ -439,34 +439,34 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	bool GLGraphicsPipelineStateControllerCompat::applyStateChanges()
+	bool GLGraphicsPipelineStateControllerCompat::ApplyStateChanges()
 	{
-		Bitmask<uint32> executedUpdatesMask = 0;
+		cppx::bitmask<uint32> executedUpdatesMask = 0;
 
-		if( GLGraphicsPipelineStateController::applyStateChanges() )
+		if( GLGraphicsPipelineStateController::ApplyStateChanges() )
 		{
-			const auto * glcGraphicsPSO = _currentCommonState.graphicsPSO->queryInterface<GLGraphicsPipelineStateObject>();
+			const auto * glcGraphicsPSO = _currentCommonState.graphicsPSO->QueryInterface<GLGraphicsPipelineStateObject>();
 
-			if( _stateUpdateMask.isSetAnyOf( E_GRAPHICS_STATE_UPDATE_FLAG_SEPARABLE_STATE_SHADER_LINKAGE_BIT ) )
+			if( _stateUpdateMask.is_set_any_of( eGraphicsStateUpdateFlagSeparableStateShaderLinkageBit ) )
 			{
-				const auto * shaderLinkageState = glcGraphicsPSO->getGraphicsShaderLinkageState().queryInterface<GLGraphicsShaderLinkageImmutableStateCompat>();
-				_globalStateCache.applyShaderProgramBinding( shaderLinkageState->mGLShaderProgramObject->mGLHandle );
-				executedUpdatesMask.set( E_GRAPHICS_STATE_UPDATE_FLAG_SEPARABLE_STATE_SHADER_LINKAGE_BIT );
+				const auto * shaderLinkageState = glcGraphicsPSO->GetGraphicsShaderLinkageState().QueryInterface<GLGraphicsShaderLinkageImmutableStateCompat>();
+				_globalStateCache.ApplyShaderProgramBinding( shaderLinkageState->mGLShaderProgramObject->mGLHandle );
+				executedUpdatesMask.set( eGraphicsStateUpdateFlagSeparableStateShaderLinkageBit );
 			}
 
-			if( _stateUpdateMask.isSetAnyOf( E_GRAPHICS_STATE_UPDATE_MASK_COMBINED_INPUT_ASSEMBLER ) )
+			if( _stateUpdateMask.is_set_any_of( eGraphicsStateUpdateMaskCombinedInputAssembler ) )
 			{
-				if( !isIAVertexStreamStateDynamic() )
+				if( !IsIAVertexStreamStateDynamic() )
 				{
-					const auto * inputLayoutState = glcGraphicsPSO->getIAInputLayoutState().queryInterface<GLIAInputLayoutImmutableStateCompat>();
-					const auto * vertexStreamState = _currentCommonState.iaVertexStreamState->queryInterface<GLIAVertexStreamImmutableState>();
+					const auto * inputLayoutState = glcGraphicsPSO->GetIAInputLayoutState().QueryInterface<GLIAInputLayoutImmutableStateCompat>();
+					const auto * vertexStreamState = _currentCommonState.iaVertexStreamState->QueryInterface<GLIAVertexStreamImmutableState>();
 
-					const auto & vertexArrayObject = getCachedVertexArrayObject( *inputLayoutState, *vertexStreamState );
+					const auto & vertexArrayObject = GetCachedVertexArrayObject( *inputLayoutState, *vertexStreamState );
 
-					_globalStateCache.applyVertexArrayObjectBinding( vertexArrayObject.mGLHandle );
+					_globalStateCache.ApplyVertexArrayObjectBinding( vertexArrayObject.mGLHandle );
 					_currentDrawTopologyProperties.primitiveTopology = inputLayoutState->mGLInputLayoutDefinition.primitiveTopology;
 
-					_globalStateCache.applyIndexBufferBinding( vertexStreamState->mGLVertexStreamDefinition.indexBufferBinding.handle );
+					_globalStateCache.ApplyIndexBufferBinding( vertexStreamState->mGLVertexStreamDefinition.indexBufferBinding.handle );
 					_currentDrawTopologyProperties.indexBufferBaseOffset = vertexStreamState->mGLVertexStreamDefinition.indexBufferBinding.offset;
 					_currentDrawTopologyProperties.indexBufferDataType = vertexStreamState->mGLVertexStreamDefinition.indexBufferBinding.format;
 					_currentDrawTopologyProperties.indexBufferElementByteSize = vertexStreamState->mGLVertexStreamDefinition.indexBufferBinding.elementByteSize;
@@ -474,41 +474,41 @@ namespace Ic3::Graphics::GCI
 				}
 				else
 				{
-					const auto * inputLayoutState = glcGraphicsPSO->getIAInputLayoutState().queryInterface<GLIAInputLayoutImmutableStateCompat>();
+					const auto * inputLayoutState = glcGraphicsPSO->GetIAInputLayoutState().QueryInterface<GLIAInputLayoutImmutableStateCompat>();
 					const auto & currentVertexStreamDefinition = _dynamicIAVertexStreamDefinition;
 
-					const auto & vertexArrayObject = getCachedVertexArrayObject( inputLayoutState->mGLInputLayoutDefinition, currentVertexStreamDefinition );
+					const auto & vertexArrayObject = GetCachedVertexArrayObject( inputLayoutState->mGLInputLayoutDefinition, currentVertexStreamDefinition );
 
-					_globalStateCache.applyVertexArrayObjectBinding( vertexArrayObject.mGLHandle );
+					_globalStateCache.ApplyVertexArrayObjectBinding( vertexArrayObject.mGLHandle );
 					_currentDrawTopologyProperties.primitiveTopology = inputLayoutState->mGLInputLayoutDefinition.primitiveTopology;
 
-					_globalStateCache.applyIndexBufferBinding( currentVertexStreamDefinition.indexBufferBinding.handle );
+					_globalStateCache.ApplyIndexBufferBinding( currentVertexStreamDefinition.indexBufferBinding.handle );
 					_currentDrawTopologyProperties.indexBufferBaseOffset = currentVertexStreamDefinition.indexBufferBinding.offset;
 					_currentDrawTopologyProperties.indexBufferDataType = currentVertexStreamDefinition.indexBufferBinding.format;
 					_currentDrawTopologyProperties.indexBufferElementByteSize = currentVertexStreamDefinition.indexBufferBinding.elementByteSize;
 				}
 
-				executedUpdatesMask.set( E_GRAPHICS_STATE_UPDATE_MASK_COMBINED_INPUT_ASSEMBLER );
+				executedUpdatesMask.set( eGraphicsStateUpdateMaskCombinedInputAssembler );
 			}
 
 		}
 
-		_stateUpdateMask.unset( E_GRAPHICS_STATE_UPDATE_MASK_COMMON_ALL | E_GRAPHICS_STATE_UPDATE_MASK_SEPARABLE_ALL );
+		_stateUpdateMask.unset( eGraphicsStateUpdateMaskCommonAll | eGraphicsStateUpdateMaskSeparableAll );
 
 		return !executedUpdatesMask.empty();
 	}
 
-	void GLGraphicsPipelineStateControllerCompat::updateShaderInputInlineConstantData(
+	void GLGraphicsPipelineStateControllerCompat::UpdateShaderInputInlineConstantData(
 			const GLGraphicsShaderLinkageImmutableState & pShaderState,
 			const ShaderInputParameterConstant & pConstantInfo,
 			const void * pConstantData )
 	{
-		auto * shaderStateCompat = pShaderState.queryInterface<GLGraphicsShaderLinkageImmutableStateCompat>();
+		auto * shaderStateCompat = pShaderState.QueryInterface<GLGraphicsShaderLinkageImmutableStateCompat>();
 
-		auto constantBaseType = CxDef::getVertexAttribFormatBaseDataType( pConstantInfo.iFormat );
-		auto constantLength = CxDef::getVertexAttribFormatComponentsNum( pConstantInfo.iFormat );
+		auto constantBaseType = CxDef::GetVertexAttribFormatBaseDataType( pConstantInfo.iFormat );
+		auto constantLength = CxDef::GetVertexAttribFormatComponentsNum( pConstantInfo.iFormat );
 
-		smutil::updateUniformDataExplicitGL(
+		SMU::UpdateUniformDataExplicitGL(
 				*shaderStateCompat->mGLShaderProgramObject,
 				pConstantInfo.iStageIndex,
 				constantBaseType,
@@ -516,18 +516,18 @@ namespace Ic3::Graphics::GCI
 				pConstantData );
 	}
 
-	const GLVertexArrayObject & GLGraphicsPipelineStateControllerCompat::getCachedVertexArrayObject(
+	const GLVertexArrayObject & GLGraphicsPipelineStateControllerCompat::GetCachedVertexArrayObject(
 			const GLIAInputLayoutImmutableStateCompat & pInputLayoutState,
 			const GLIAVertexStreamImmutableState & pVertexStreamState )
 	{
-		return _vaoCache.getOrCreate( pInputLayoutState, pVertexStreamState );
+		return _vaoCache.GetOrCreate( pInputLayoutState, pVertexStreamState );
 	}
 
-	const GLVertexArrayObject & GLGraphicsPipelineStateControllerCompat::getCachedVertexArrayObject(
+	const GLVertexArrayObject & GLGraphicsPipelineStateControllerCompat::GetCachedVertexArrayObject(
 			const GLIAInputLayoutDefinition & pInputLayoutDefinition,
 			const GLIAVertexStreamDefinition & pVertexStreamDefinition )
 	{
-		return _vaoCache.getOrCreate( pInputLayoutDefinition, pVertexStreamDefinition );
+		return _vaoCache.GetOrCreate( pInputLayoutDefinition, pVertexStreamDefinition );
 	}
 
 } // namespace Ic3::Graphics::GCI

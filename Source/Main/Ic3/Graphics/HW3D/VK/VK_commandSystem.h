@@ -11,14 +11,14 @@ namespace Ic3::Graphics::GCI
 {
 
 	/// @brief
-	class ICFGX_VKCOMMON_CLASS VKCommandSystem : public CommandSystem
+	class IC3_GX_VKCOMMON_CLASS VKCommandSystem : public CommandSystem
 	{
 	public:
-		explicit VKCommandSystem( VKGPUDevice & pVKGPUDevice );
+		explicit VKCommandSystem( VKGpuDevice & pVKGpuDevice );
 		virtual ~VKCommandSystem();
 
-		virtual std::unique_ptr<CommandContext> acquireCommandContext( ECommandContextType pContextType ) override;
-		virtual CommandSync submitContext( CommandContextDirect & pContext, const CommandContextSubmitInfo & pSubmitInfo ) override;
+		virtual std::unique_ptr<CommandContext> AcquireCommandContext( ECommandContextType pContextType ) override;
+		virtual CommandSync SubmitContext( CommandContextDirect & pContext, const CommandContextSubmitInfo & pSubmitInfo ) override;
 	};
 
 } // namespace Ic3::Graphics::GCI

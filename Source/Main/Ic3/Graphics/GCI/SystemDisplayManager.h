@@ -13,14 +13,14 @@ namespace Ic3::Graphics::GCI
 
 	struct SystemDisplayManagerCreateInfo
 	{
-		System::temContext * exfSystemContext = nullptr;
-		Ic3::ESysDsmDisplayDriverType exfDisplayDriverType = Ic3::ESysDsmDisplayDriverType::Default;
+		System::SysContext * exfSystemContext = nullptr;
+		System::EDisplayDriverType exfDisplayDriverType = System::EDisplayDriverType::Default;
 	};
 
 	/// @brief
 	class IC3_GRAPHICS_GCI_CLASS SystemDisplayManager final : public DisplayManager
 	{
-		friend class GPUDriver;
+		friend class GpuDriver;
 
 	public:
 		System::DisplayDriver * const mExfDisplayDriver = nullptr;
@@ -29,22 +29,22 @@ namespace Ic3::Graphics::GCI
 		virtual ~SystemDisplayManager();
 
 		/// @brief
-		virtual void reset() override final;
+		virtual void Reset() override final;
 
 		/// @brief
-		virtual AdapterList enumAdapterList() const override;
+		virtual AdapterList EnumAdapterList() const override;
 
 		/// @brief
-		virtual AdapterDesc getDefaultAdapter() const override;
+		virtual AdapterDesc GetDefaultAdapter() const override;
 
 		/// @brief
-		virtual OutputList enumOutputList( display_system_id_t pAdapterID ) const override;
+		virtual OutputList EnumOutputList( display_system_id_t pAdapterID ) const override;
 
 		/// @brief
-		virtual OutputDesc getDefaultOutput( display_system_id_t pAdapterID ) const override;
+		virtual OutputDesc GetDefaultOutput( display_system_id_t pAdapterID ) const override;
 
 		/// @brief
-		virtual VideoModeList enumVideoModeList( display_system_id_t pOutputID, System::EColorFormat pFormat ) const override;
+		virtual VideoModeList EnumVideoModeList( display_system_id_t pOutputID, System::EColorFormat pFormat ) const override;
 	};
 
 } // namespace Ic3::Graphics::GCI

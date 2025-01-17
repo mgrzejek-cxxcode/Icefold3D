@@ -12,29 +12,29 @@ namespace Ic3::Graphics::GCI
 
 	enum EGraphicsStateUpdateSeparableFlags : graphics_state_update_mask_value_t
 	{
-		E_GRAPHICS_STATE_UPDATE_FLAG_SEPARABLE_STATE_BLENDBit = 0x0100,
-		E_GRAPHICS_STATE_UPDATE_FLAG_SEPARABLE_STATE_DEPTH_STENCILBit = 0x0200,
-		E_GRAPHICS_STATE_UPDATE_FLAG_SEPARABLE_STATE_RASTERIZERBit = 0x0400,
-		E_GRAPHICS_STATE_UPDATE_FLAG_SEPARABLE_STATE_IA_INPUT_LAYOUTBit = 0x0800,
-		E_GRAPHICS_STATE_UPDATE_FLAG_SEPARABLE_STATE_SHADER_LINKAGEBit = 0x1000,
+		eGraphicsStateUpdateFlagSeparableStateBlendBit = 0x0100,
+		eGraphicsStateUpdateFlagSeparableStateDepthStencilBit = 0x0200,
+		eGraphicsStateUpdateFlagSeparableStateRasterizerBit = 0x0400,
+		eGraphicsStateUpdateFlagSeparableStateIAInputLayoutBit = 0x0800,
+		eGraphicsStateUpdateFlagSeparableStateShaderLinkageBit = 0x1000,
 
-		E_GRAPHICS_STATE_UPDATE_MASK_SEPARABLE_STATES_ALL = 0x1F00,
+		eGraphicsStateUpdateMaskSeparableStatesAll = 0x1F00,
 		
-		E_GRAPHICS_STATE_UPDATE_FLAG_SEPARABLE_SHADER_VERTEXBit = 0x010000,
-		E_GRAPHICS_STATE_UPDATE_FLAG_SEPARABLE_SHADER_HULLBit = 0x020000,
-		E_GRAPHICS_STATE_UPDATE_FLAG_SEPARABLE_SHADER_DOMAINBit = 0x040000,
-		E_GRAPHICS_STATE_UPDATE_FLAG_SEPARABLE_SHADER_GEOMETRYBit = 0x080000,
-		E_GRAPHICS_STATE_UPDATE_FLAG_SEPARABLE_SHADER_PIXELBit = 0x100000,
+		eGraphicsStateUpdateFlagSeparableShaderVertexBit = 0x010000,
+		eGraphicsStateUpdateFlagSeparableShaderHullBit = 0x020000,
+		eGraphicsStateUpdateFlagSeparableShaderDomainBit = 0x040000,
+		eGraphicsStateUpdateFlagSeparableShaderGeometryBit = 0x080000,
+		eGraphicsStateUpdateFlagSeparableShaderPixelBit = 0x100000,
 
-		E_GRAPHICS_STATE_UPDATE_MASK_SEPARABLE_SHADERS_ALL = 0x1F0000,
+		eGraphicsStateUpdateMaskSeparableShadersAll = 0x1F0000,
 
-		E_GRAPHICS_STATE_UPDATE_MASK_SEPARABLE_ALL =
-			E_GRAPHICS_STATE_UPDATE_MASK_SEPARABLE_STATES_ALL |
-			E_GRAPHICS_STATE_UPDATE_MASK_SEPARABLE_SHADERS_ALL,
+		eGraphicsStateUpdateMaskSeparableAll =
+			eGraphicsStateUpdateMaskSeparableStatesAll |
+			eGraphicsStateUpdateMaskSeparableShadersAll,
 		
-		E_GRAPHICS_STATE_UPDATE_MASK_COMBINED_INPUT_ASSEMBLER =
-		eGraphicsStateUpdateFlagCommonVertexStreamBit |
-		E_GRAPHICS_STATE_UPDATE_FLAG_SEPARABLE_STATE_IA_INPUT_LAYOUTBit,
+		eGraphicsStateUpdateMaskCombinedInputAssembler =
+			eGraphicsStateUpdateFlagCommonVertexStreamBit |
+			eGraphicsStateUpdateFlagSeparableStateIAInputLayoutBit,
 	};
 
 	struct SeparablePSOStateSet
@@ -102,7 +102,7 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		GraphicsPipelineStateObjectSeparable(
-				GPUDevice & pGPUDevice,
+				GpuDevice & pGpuDevice,
 				RenderTargetLayout pRenderTargetLayout,
 				ShaderInputSignature pShaderInputSignature,
 				const SeparablePSOStateSet & pSeparableStates );
@@ -118,7 +118,7 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		GraphicsPipelineStateObjectSeparableShader(
-				GPUDevice & pGPUDevice,
+				GpuDevice & pGpuDevice,
 				RenderTargetLayout pRenderTargetLayout,
 				ShaderInputSignature pShaderInputSignature,
 				const SeparablePSOStateSet & pSeparableStates,
@@ -134,16 +134,16 @@ namespace Ic3::Graphics::GCI
 		GraphicsPipelineStateControllerSeparable();
 		virtual ~GraphicsPipelineStateControllerSeparable();
 
-		IC3_ATTR_NO_DISCARD const SeparablePSOStateCache & getCurrentSeparableStates() const noexcept;
+		CPPX_ATTR_NO_DISCARD const SeparablePSOStateCache & GetCurrentSeparableStates() const noexcept;
 
 		/// @see GraphicsPipelineStateController::setGraphicsPipelineStateObject
-		virtual bool setGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO ) override;
+		virtual bool SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO ) override;
 
 		/// @see GraphicsPipelineStateController::resetGraphicsPipelineStateObject
-		virtual bool resetGraphicsPipelineStateObject() override;
+		virtual bool ResetGraphicsPipelineStateObject() override;
 
 	private:
-		TBitmask<uint64> setSeparablePSOStates( const GraphicsPipelineStateObjectSeparable & pGraphicsPSOSeparable );
+		cppx::bitmask<uint64> SetSeparablePSOStates( const GraphicsPipelineStateObjectSeparable & pGraphicsPSOSeparable );
 
 	private:
 		SeparablePSOStateCache _currentSeparableStates;
@@ -156,16 +156,16 @@ namespace Ic3::Graphics::GCI
 		GraphicsPipelineStateControllerSeparableShader();
 		virtual ~GraphicsPipelineStateControllerSeparableShader();
 
-		IC3_ATTR_NO_DISCARD const SeparableShaderCache & getCurrentSeparableShaders() const noexcept;
+		CPPX_ATTR_NO_DISCARD const SeparableShaderCache & GetCurrentSeparableShaders() const noexcept;
 
 		/// @see GraphicsPipelineStateController::setGraphicsPipelineStateObject
-		virtual bool setGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO ) override;
+		virtual bool SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO ) override;
 
 		/// @see GraphicsPipelineStateController::resetGraphicsPipelineStateObject
-		virtual bool resetGraphicsPipelineStateObject() override;
+		virtual bool ResetGraphicsPipelineStateObject() override;
 
 	private:
-		TBitmask<uint64> setSeparableShaders( const GraphicsPipelineStateObjectSeparableShader & pGraphicsPSOSeparableShader );
+		cppx::bitmask<uint64> SetSeparableShaders( const GraphicsPipelineStateObjectSeparableShader & pGraphicsPSOSeparableShader );
 
 	private:
 		SeparableShaderCache _currentSeparableShaders;

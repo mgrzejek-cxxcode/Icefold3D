@@ -23,29 +23,29 @@ namespace Ic3::Graphics::GCI
 		DX11CommandList( DX11CommandSystem & pDX11CommandSystem, ECommandListType pListType, ComPtr<ID3D11DeviceContext1> pD3D11DeviceContext1 );
 		virtual ~DX11CommandList();
 
-		virtual void beginCommandSequence() override;
-		virtual void endCommandSequence() override;
+		virtual void BeginCommandSequence() override;
+		virtual void EndCommandSequence() override;
 
-		virtual void cmdDrawDirectIndexed( native_uint pIndicesNum, native_uint pIndicesOffset, native_uint pBaseVertexIndex ) override;
-		virtual void cmdDrawDirectIndexedInstanced( native_uint pIndicesNumPerInstance, native_uint pInstancesNum, native_uint pIndicesOffset ) override;
-		virtual void cmdDrawDirectNonIndexed( native_uint pVerticesNum, native_uint pVerticesOffset ) override;
-		virtual void cmdDrawDirectNonIndexedInstanced( native_uint pVerticesNumPerInstance, native_uint pInstancesNum, native_uint pVerticesOffset ) override;
+		virtual void CmdDrawDirectIndexed( native_uint pIndicesNum, native_uint pIndicesOffset, native_uint pBaseVertexIndex ) override;
+		virtual void CmdDrawDirectIndexedInstanced( native_uint pIndicesNumPerInstance, native_uint pInstancesNum, native_uint pIndicesOffset ) override;
+		virtual void CmdDrawDirectNonIndexed( native_uint pVerticesNum, native_uint pVerticesOffset ) override;
+		virtual void CmdDrawDirectNonIndexedInstanced( native_uint pVerticesNumPerInstance, native_uint pInstancesNum, native_uint pVerticesOffset ) override;
 
-		virtual void cmdExecuteDeferredContext( CommandContextDeferred & pDeferredContext ) override;
+		virtual void CmdExecuteDeferredContext( CommandContextDeferred & pDeferredContext ) override;
 
 	friendapi:
-		ID3D11Query * releaseExecutionSyncQuery();
+		ID3D11Query * ReleaseExecutionSyncQuery();
 
 	private:
-		virtual void executeRenderPassLoadActions(
+		virtual void ExecuteRenderPassLoadActions(
 				const RenderPassConfiguration & pRenderPassConfiguration,
 				const GraphicsPipelineDynamicState & pDynamicState ) override;
 
-		virtual void executeRenderPassStoreActions(
+		virtual void ExecuteRenderPassStoreActions(
 				const RenderPassConfiguration & pRenderPassConfiguration,
 				const GraphicsPipelineDynamicState & pDynamicState ) override;
 
-		static ComPtr<ID3D11Query> _createExecutionSyncQuery( ComPtr<ID3D11Device1> pD3D11Device );
+		static ComPtr<ID3D11Query> _CreateExecutionSyncQuery( ComPtr<ID3D11Device1> pD3D11Device );
 
 	private:
 		DX11GraphicsPipelineStateController _graphicsPipelineStateControllerDX11;

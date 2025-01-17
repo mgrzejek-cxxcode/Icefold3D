@@ -56,7 +56,7 @@ namespace Ic3::Graphics::GCI
 	/// @brief
 	struct DX11IAVertexStreamDefinition
 	{
-		Bitmask<EIAVertexStreamBindingFlags> activeBindingsMask;
+		cppx::bitmask<EIAVertexStreamBindingFlags> activeBindingsMask;
 
 		DX11IAVertexBuffersBindings vertexBufferBindings;
 
@@ -73,15 +73,15 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		DX11IAInputLayoutImmutableState(
-				DX11GPUDevice & pGPUDevice,
+				DX11GpuDevice & pGpuDevice,
 				const IAInputLayoutStateCommonProperties & pCommonProperties,
 				ComPtr<ID3D11InputLayout> pD3D11InputLayout,
 				D3D11_PRIMITIVE_TOPOLOGY pD3D11PrimitiveTopology );
 
 		virtual ~DX11IAInputLayoutImmutableState();
 
-		static GpaHandle<DX11IAInputLayoutImmutableState> createInstance(
-				DX11GPUDevice & pGPUDevice,
+		static GpaHandle<DX11IAInputLayoutImmutableState> CreateInstance(
+				DX11GpuDevice & pGpuDevice,
 				const IAInputLayoutDefinition & pInputLayoutDefinition,
 				const ShaderBinary & pVertexShaderBinary );
 	};
@@ -94,28 +94,28 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		DX11IAVertexStreamImmutableState(
-				DX11GPUDevice & pGPUDevice,
+				DX11GpuDevice & pGpuDevice,
 				const IAVertexStreamStateCommonProperties & pCommonProperties,
 				const DX11IAVertexStreamDefinition & pDX11VertexStreamDefinition );
 
 		virtual ~DX11IAVertexStreamImmutableState();
 
-		static GpaHandle<DX11IAVertexStreamImmutableState> createInstance(
-				DX11GPUDevice & pGPUDevice,
+		static GpaHandle<DX11IAVertexStreamImmutableState> CreateInstance(
+				DX11GpuDevice & pGpuDevice,
 				const IAVertexStreamDefinition & pVertexStreamDefinition );
 	};
 	
 	
-	namespace smutil
+	namespace SMU
 	{
 
-		IC3_ATTR_NO_DISCARD D3D11_INPUT_ELEMENT_DESC translateIAVertexAttributeInfoDX11(
+		CPPX_ATTR_NO_DISCARD D3D11_INPUT_ELEMENT_DESC TranslateDX11IAVertexAttributeInfo(
 				const IAVertexAttributeInfo & pAttributeInfo );
 
-		IC3_ATTR_NO_DISCARD DX11IAInputLayoutDefinition translateIAInputLayoutDefinitionDX11(
+		CPPX_ATTR_NO_DISCARD DX11IAInputLayoutDefinition TranslateDX11IAInputLayoutDefinition(
 				const IAInputLayoutDefinition & pDefinition );
 		
-		IC3_ATTR_NO_DISCARD DX11IAVertexStreamDefinition translateIAVertexStreamDefinitionDX11(
+		CPPX_ATTR_NO_DISCARD DX11IAVertexStreamDefinition TranslateDX11IAVertexStreamDefinition(
 				const IAVertexStreamDefinition & pDefinition );
 		
 	}

@@ -25,18 +25,18 @@ namespace Ic3::Graphics::GCI
 		Unknown
 	};
 
-	class GraphicsPipelineImmutableState : public GPUDeviceChildObject
+	class GraphicsPipelineImmutableState : public GpuDeviceChildObject
 	{
 	public:
 		GraphicsPipelineImmutableState( const GraphicsPipelineImmutableState & ) = delete;
 		GraphicsPipelineImmutableState & operator=( const GraphicsPipelineImmutableState & ) = delete;
 
-		GraphicsPipelineImmutableState( GPUDevice & pGPUDevice );
+		GraphicsPipelineImmutableState( GpuDevice & pGpuDevice );
 		virtual ~GraphicsPipelineImmutableState();
 
-		IC3_ATTR_NO_DISCARD virtual EGraphicsPipelineImmutableStateType queryStateType() const noexcept;
+		CPPX_ATTR_NO_DISCARD virtual EGraphicsPipelineImmutableStateType QueryStateType() const noexcept;
 
-		IC3_ATTR_NO_DISCARD virtual bool isDynamicOverrideState() const noexcept;
+		CPPX_ATTR_NO_DISCARD virtual bool IsDynamicOverrideState() const noexcept;
 	};
 
 	/// @brief Dummy trait type for the descriptor cache. List all the things required for the traits to provide.
@@ -46,18 +46,18 @@ namespace Ic3::Graphics::GCI
 		PipelineImmutableStateFactory() = default;
 		virtual ~PipelineImmutableStateFactory() = default;
 
-		virtual BlendImmutableStateHandle createBlendState( const BlendConfig & pConfig ) = 0;
-		virtual DepthStencilImmutableStateHandle createDepthStencilState( const DepthStencilConfig & pConfig ) = 0;
-		virtual GraphicsShaderLinkageImmutableStateHandle createGraphicsShaderLinkageState( const GraphicsShaderSet & pShaderSet ) = 0;
-		virtual IAInputLayoutImmutableStateHandle createIAInputLayoutState( const IAInputLayoutDefinition & pDefinition, Shader & pVertexShaderWithBinary ) = 0;
-		virtual IAVertexStreamImmutableStateHandle createIAVertexStreamState( const IAVertexStreamDefinition & pDefinition ) = 0;
-		virtual RasterizerImmutableStateHandle createRasterizerState( const RasterizerConfig & pConfig ) = 0;
-		virtual RenderTargetBindingImmutableStateHandle createRenderTargetBindingState( const RenderTargetBindingDefinition & pDefinition ) = 0;
-		virtual RenderPassConfigurationImmutableStateHandle createRenderPassState( const RenderPassConfiguration & pConfiguration ) = 0;
+		virtual BlendImmutableStateHandle CreateBlendState( const BlendConfig & pConfig ) = 0;
+		virtual DepthStencilImmutableStateHandle CreateDepthStencilState( const DepthStencilConfig & pConfig ) = 0;
+		virtual GraphicsShaderLinkageImmutableStateHandle CreateGraphicsShaderLinkageState( const GraphicsShaderSet & pShaderSet ) = 0;
+		virtual IAInputLayoutImmutableStateHandle CreateIAInputLayoutState( const IAInputLayoutDefinition & pDefinition, Shader & pVertexShaderWithBinary ) = 0;
+		virtual IAVertexStreamImmutableStateHandle CreateIAVertexStreamState( const IAVertexStreamDefinition & pDefinition ) = 0;
+		virtual RasterizerImmutableStateHandle CreateRasterizerState( const RasterizerConfig & pConfig ) = 0;
+		virtual RenderTargetBindingImmutableStateHandle CreateRenderTargetBindingState( const RenderTargetBindingDefinition & pDefinition ) = 0;
+		virtual RenderPassConfigurationImmutableStateHandle CreateRenderPassState( const RenderPassConfiguration & pConfiguration ) = 0;
 
 	protected:
-		virtual RenderPassConfigurationImmutableStateHandle createRenderPassStateDefault(
-				GPUDevice & pGPUDevice,
+		virtual RenderPassConfigurationImmutableStateHandle CreateRenderPassStateDefault(
+				GpuDevice & pGpuDevice,
 				const RenderPassConfiguration & pConfiguration );
 	};
 
@@ -68,27 +68,27 @@ namespace Ic3::Graphics::GCI
 		PipelineImmutableStateFactoryNull() = default;
 		virtual ~PipelineImmutableStateFactoryNull() = default;
 
-		virtual BlendImmutableStateHandle createBlendState( const BlendConfig & ) override final;
-		virtual DepthStencilImmutableStateHandle createDepthStencilState( const DepthStencilConfig & ) override final;
-		virtual GraphicsShaderLinkageImmutableStateHandle createGraphicsShaderLinkageState( const GraphicsShaderSet & ) override final;
-		virtual IAInputLayoutImmutableStateHandle createIAInputLayoutState( const IAInputLayoutDefinition &, Shader & ) override final;
-		virtual IAVertexStreamImmutableStateHandle createIAVertexStreamState( const IAVertexStreamDefinition & ) override final;
-		virtual RasterizerImmutableStateHandle createRasterizerState( const RasterizerConfig & ) override final;
-		virtual RenderTargetBindingImmutableStateHandle createRenderTargetBindingState( const RenderTargetBindingDefinition & ) override final;
-		virtual RenderPassConfigurationImmutableStateHandle createRenderPassState( const RenderPassConfiguration & ) override final;
+		virtual BlendImmutableStateHandle CreateBlendState( const BlendConfig & ) override final;
+		virtual DepthStencilImmutableStateHandle CreateDepthStencilState( const DepthStencilConfig & ) override final;
+		virtual GraphicsShaderLinkageImmutableStateHandle CreateGraphicsShaderLinkageState( const GraphicsShaderSet & ) override final;
+		virtual IAInputLayoutImmutableStateHandle CreateIAInputLayoutState( const IAInputLayoutDefinition &, Shader & ) override final;
+		virtual IAVertexStreamImmutableStateHandle CreateIAVertexStreamState( const IAVertexStreamDefinition & ) override final;
+		virtual RasterizerImmutableStateHandle CreateRasterizerState( const RasterizerConfig & ) override final;
+		virtual RenderTargetBindingImmutableStateHandle CreateRenderTargetBindingState( const RenderTargetBindingDefinition & ) override final;
+		virtual RenderPassConfigurationImmutableStateHandle CreateRenderPassState( const RenderPassConfiguration & ) override final;
 	};
 
 	/// @brief
 	class PipelineImmutableStateFactorySeparableShader : public PipelineImmutableStateFactory
 	{
 	public:
-		GPUDevice & mGPUDevice;
+		GpuDevice & mGpuDevice;
 
 	public:
-		PipelineImmutableStateFactorySeparableShader( GPUDevice & pGPUDevice );
+		PipelineImmutableStateFactorySeparableShader( GpuDevice & pGpuDevice );
 		virtual ~PipelineImmutableStateFactorySeparableShader();
 
-		virtual GraphicsShaderLinkageImmutableStateHandle createGraphicsShaderLinkageState( const GraphicsShaderSet & pShaderSet ) override;
+		virtual GraphicsShaderLinkageImmutableStateHandle CreateGraphicsShaderLinkageState( const GraphicsShaderSet & pShaderSet ) override;
 	};
 
 	class PipelineImmutableStateFactoryAdapter
@@ -97,14 +97,14 @@ namespace Ic3::Graphics::GCI
 		PipelineImmutableStateFactoryAdapter( PipelineImmutableStateFactory & pStateFactory );
 		~PipelineImmutableStateFactoryAdapter();
 
-		BlendImmutableStateHandle createState( const BlendConfig & pConfig );
-		DepthStencilImmutableStateHandle createState( const DepthStencilConfig & pConfig );
-		GraphicsShaderLinkageImmutableStateHandle createState( const GraphicsShaderSet & pShaderSet );
-		IAInputLayoutImmutableStateHandle createState( const IAInputLayoutDefinition & pDefinition, Shader & pVertexShaderWithBinary );
-		IAVertexStreamImmutableStateHandle createState( const IAVertexStreamDefinition & pDefinition );
-		RasterizerImmutableStateHandle createState( const RasterizerConfig & pConfig );
-		RenderTargetBindingImmutableStateHandle createState( const RenderTargetBindingDefinition & pDefinition );
-		RenderPassConfigurationImmutableStateHandle createState( const RenderPassConfiguration & pConfiguration );
+		BlendImmutableStateHandle CreateState( const BlendConfig & pConfig );
+		DepthStencilImmutableStateHandle CreateState( const DepthStencilConfig & pConfig );
+		GraphicsShaderLinkageImmutableStateHandle CreateState( const GraphicsShaderSet & pShaderSet );
+		IAInputLayoutImmutableStateHandle CreateState( const IAInputLayoutDefinition & pDefinition, Shader & pVertexShaderWithBinary );
+		IAVertexStreamImmutableStateHandle CreateState( const IAVertexStreamDefinition & pDefinition );
+		RasterizerImmutableStateHandle CreateState( const RasterizerConfig & pConfig );
+		RenderTargetBindingImmutableStateHandle CreateState( const RenderTargetBindingDefinition & pDefinition );
+		RenderPassConfigurationImmutableStateHandle CreateState( const RenderPassConfiguration & pConfiguration );
 
 	private:
 		PipelineImmutableStateFactory * _stateFactory;

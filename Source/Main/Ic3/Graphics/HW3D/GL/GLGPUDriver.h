@@ -5,29 +5,29 @@
 #define __IC3_GRAPHICS_HW3D_GLCOMMON_GPU_DRIVER_H__
 
 #include "GLPrerequisites.h"
-#include <Ic3/Graphics/GCI/GPUDriver.h>
+#include <Ic3/Graphics/GCI/GpuDriver.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	struct GLGPUDriverCreateInfo : public GPUDriverCreateInfo
+	struct GLGpuDriverCreateInfo : public GpuDriverCreateInfo
 	{
 	};
 
 	/// @brief Middle-layer OpenGL driver class. Implements features which are common for all GL drivers (core, ES).
-	class ICFGX_GL_CLASS GLGPUDriver : public GPUDriver
+	class IC3_GX_GL_CLASS GLGpuDriver : public GpuDriver
 	{
 	public:
 		System::OpenGLSystemDriverHandle const mSysGLDriver;
 
 	public:
-		explicit GLGPUDriver( System::OpenGLSystemDriverHandle pSysGLDriver );
-		virtual ~GLGPUDriver();
+		explicit GLGpuDriver( System::OpenGLSystemDriverHandle pSysGLDriver );
+		virtual ~GLGpuDriver();
 
 	protected:
 		/// @brief Helper method. Initializes EXF OpenGL driver component.
 		/// Used by specific sub-classes (drivers) when a driver is created.
-		static System::OpenGLSystemDriverHandle initializeSysGLDriver( System::SysContextHandle pSysContext );
+		static System::OpenGLSystemDriverHandle InitializeSysGLDriver( System::SysContextHandle pSysContext );
 	};
 
 } // namespace Ic3::Graphics::GCI

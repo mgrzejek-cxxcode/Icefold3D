@@ -7,42 +7,42 @@
 namespace Ic3::Graphics::GCI
 {
 
-	class GPUDriver;
-	class GPUDevice;
+	class GpuDriver;
+	class GpuDevice;
 
 	/// @brief
-    class GPUAPIObject : public IDynamicObject
+    class GfxObject : public IDynamicObject
     {
     };
 
 	/// @brief
-    class IC3_GRAPHICS_GCI_API GPUDriverChildObject : public GPUAPIObject
+    class IC3_GRAPHICS_GCI_API GpuDriverChildObject : public GfxObject
     {
     public:
-	    GPUDriver & mGPUDriver;
+	    GpuDriver & mGpuDriver;
 
-	    explicit GPUDriverChildObject( GPUDriver & pGPUDriver );
-	    virtual ~GPUDriverChildObject();
+	    explicit GpuDriverChildObject( GpuDriver & pGpuDriver );
+	    virtual ~GpuDriverChildObject();
     };
 
 	/// @brief
-	class IC3_GRAPHICS_GCI_API GPUDeviceChildObject : public GPUAPIObject
+	class IC3_GRAPHICS_GCI_API GpuDeviceChildObject : public GfxObject
 	{
 	public:
-        GPUDriver & mGPUDriver;
-		GPUDevice & mGPUDevice;
+        GpuDriver & mGpuDriver;
+		GpuDevice & mGpuDevice;
 
 	public:
-		explicit GPUDeviceChildObject( GPUDevice & pGPUDevice );
-		virtual ~GPUDeviceChildObject();
+		explicit GpuDeviceChildObject( GpuDevice & pGpuDevice );
+		virtual ~GpuDeviceChildObject();
 
-		virtual UniqueGPUObjectID queryObjectID() const;
+		virtual GfxObjectID QueryObjectID() const;
 	};
 
 	template <typename TClass, typename... TArgs>
-	inline TGPAHandle<TClass> createGPUAPIObject( TArgs && ...pArgs )
+	inline TGfxHandle<TClass> CreateGfxObject( TArgs && ...pArgs )
 	{
-		return createDynamicObject<TClass>( std::forward<TArgs>( pArgs )... );
+		return CreateDynamicObject<TClass>( std::forward<TArgs>( pArgs )... );
 	}
 
 } // namespace Ic3::Graphics::GCI

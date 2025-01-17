@@ -2,16 +2,16 @@
 #include "RenderTargetCommon.h"
 #include <Ic3/Graphics/GCI/Resources/Texture.h>
 #include <Ic3/Graphics/GCI/Resources/RenderTargetTexture.h>
-#include <Ic3/Cppx/Memory.h>
+#include <cppx/memory.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	void RenderTargetBindingDefinition::resetAttachmentsFlags() noexcept
+	void RenderTargetBindingDefinition::ResetAttachmentsFlags() noexcept
 	{
 		attachmentsActionResolveMask = 0;
 
-		foreachRTAttachmentIndex( activeAttachmentsMask,
+		ForEachRTAttachmentIndex( activeAttachmentsMask,
 			[&]( native_uint pIndex, ERTAttachmentFlags pAttachmentBit )
 			{
 				const auto & attachmentBinding = attachments[pIndex];
@@ -34,7 +34,7 @@ namespace Ic3::Graphics::GCI
 	namespace SMU
 	{
 
-		const RenderTargetAttachmentBinding * getRenderTargetBindingDefinitionFirstTarget(
+		const RenderTargetAttachmentBinding * GetRenderTargetBindingDefinitionFirstTarget(
 				const RenderTargetBindingDefinition & pBindingDefinition )
 		{
 			const RenderTargetAttachmentBinding * firstBinding = nullptr;
@@ -51,13 +51,13 @@ namespace Ic3::Graphics::GCI
 			return firstBinding;
 		}
 
-		bool validateRenderTargetBindingDefinition( const RenderTargetBindingDefinition & pBindingDefinition )
+		bool ValidateRenderTargetBindingDefinition( const RenderTargetBindingDefinition & pBindingDefinition )
 		{
-			if( const auto * firstBinding = getRenderTargetBindingDefinitionFirstTarget( pBindingDefinition ) )
+			if( const auto * firstBinding = GetRenderTargetBindingDefinitionFirstTarget( pBindingDefinition ) )
 			{
 				const auto & commonImageLayout = firstBinding->attachmentTexture->mRTTextureLayout;
 
-				const auto bindingValid = foreachRTAttachmentIndex( pBindingDefinition.activeAttachmentsMask,
+				const auto bindingValid = ForEachRTAttachmentIndex( pBindingDefinition.activeAttachmentsMask,
 					[&]( native_uint pIndex, ERTAttachmentFlags pAttachmentBit )
 					{
 						const auto & attachmentBinding = pBindingDefinition.attachments[pIndex];
@@ -65,21 +65,21 @@ namespace Ic3::Graphics::GCI
 						{
 							return false;
 						}
-						const auto requiredUsageFlags = CxDef::getRTAttachmentRequiredUsageMask( pIndex );
-						if( !attachmentBinding.attachmentTexture->mResourceFlags.isSetAnyOf( requiredUsageFlags ) )
+						const auto requiredUsageFlags = CxDef::GetRTAttachmentRequiredUsageMask( pIndex );
+						if( !attachmentBinding.attachmentTexture->mResourceFlags.is_set_any_of( requiredUsageFlags ) )
 						{
 							return false;
 						}
 						const auto & textureLayout = attachmentBinding.attachmentTexture->mRTTextureLayout;
-						if( textureLayout.mImageRect != commonImageLayout.mImageRect )
+						if( textureLayout.imageRect != commonImageLayout.imageRect )
 						{
 							return false;
 						}
-						if( textureLayout.mMSAALevel != commonImageLayout.mMSAALevel )
+						if( textureLayout.msaaLevel != commonImageLayout.msaaLevel )
 						{
 							return false;
 						}
-						if( pBindingDefinition.attachmentsActionResolveMask.isSet( pAttachmentBit ) && !attachmentBinding.resolveTexture )
+						if( pBindingDefinition.attachmentsActionResolveMask.is_set( pAttachmentBit ) && !attachmentBinding.resolveTexture )
 						{
 							return false;
 						}
@@ -95,23 +95,23 @@ namespace Ic3::Graphics::GCI
 			return false;
 		}
 
-		RenderTargetLayout getRenderTargetLayoutForBindingDefinition(
+		RenderTargetLayout GetRenderTargetLayoutForBindingDefinition(
 				const RenderTargetBindingDefinition & pBindingDefinition )
 		{
-			if( const auto * firstBinding = getRenderTargetBindingDefinitionFirstTarget( pBindingDefinition ) )
+			if( const auto * firstBinding = GetRenderTargetBindingDefinitionFirstTarget( pBindingDefinition ) )
 			{
 				const auto & commonLayout = firstBinding->attachmentTexture->mRTTextureLayout;
 
 				RenderTargetLayout renderTargetLayout{};
 				renderTargetLayout.activeAttachmentsMask = 0;
-				renderTargetLayout.sharedImageRect = commonLayout.mImageRect;
-				renderTargetLayout.sharedMSAALevel = commonLayout.mMSAALevel;
+				renderTargetLayout.sharedImageRect = commonLayout.imageRect;
+				renderTargetLayout.sharedMSAALevel = commonLayout.msaaLevel;
 
-				const auto layoutValid = foreachRTAttachmentIndex( pBindingDefinition.activeAttachmentsMask,
+				const auto layoutValid = ForEachRTAttachmentIndex( pBindingDefinition.activeAttachmentsMask,
 					[&]( native_uint pIndex, ERTAttachmentFlags pAttachmentBit )
 					{
 						const auto & attachmentBinding = pBindingDefinition.attachments[pIndex];
-						if( attachmentBinding.empty() )
+						if( attachmentBinding.IsEmpty() )
 						{
 							return false;
 						}
@@ -119,12 +119,12 @@ namespace Ic3::Graphics::GCI
 						const auto & caTexture = attachmentBinding.attachmentTexture;
 						const auto & caLayout = caTexture->mRTTextureLayout;
 
-						if((caLayout.mImageRect != commonLayout.mImageRect ) || (caLayout.mMSAALevel != commonLayout.mMSAALevel ) )
+						if((caLayout.imageRect != commonLayout.imageRect ) || (caLayout.msaaLevel != commonLayout.msaaLevel ) )
 						{
 							return false;
 						}
 
-						renderTargetLayout.attachments[pIndex].format = caLayout.mInternalFormat;
+						renderTargetLayout.attachments[pIndex].format = caLayout.internalFormat;
 						renderTargetLayout.activeAttachmentsMask.set( pAttachmentBit );
 
 						return true;
@@ -143,7 +143,7 @@ namespace Ic3::Graphics::GCI
 	namespace defaults
 	{
 
-		RenderTargetLayout getRenderTargetLayoutDefaultBGRA8()
+		RenderTargetLayout GetRenderTargetLayoutDefaultBGRA8()
 		{
 			RenderTargetLayout rtLayout{};
 			rtLayout.activeAttachmentsMask = eRTAttachmentFlagColor0Bit;
@@ -153,7 +153,7 @@ namespace Ic3::Graphics::GCI
 			return rtLayout;
 		}
 
-		RenderTargetLayout getRenderTargetLayoutDefaultBGRA8D24S8()
+		RenderTargetLayout GetRenderTargetLayoutDefaultBGRA8D24S8()
 		{
 			RenderTargetLayout rtLayout{};
 			rtLayout.activeAttachmentsMask = eRTAttachmentFlagColor0Bit | eRtAttachmentFlagDepthStencilBit;
@@ -164,7 +164,7 @@ namespace Ic3::Graphics::GCI
 			return rtLayout;
 		}
 
-		RenderTargetLayout getRenderTargetLayoutDefaultRGBA8()
+		RenderTargetLayout GetRenderTargetLayoutDefaultRGBA8()
 		{
 			RenderTargetLayout rtLayout{};
 			rtLayout.activeAttachmentsMask = eRTAttachmentFlagColor0Bit;
@@ -174,7 +174,7 @@ namespace Ic3::Graphics::GCI
 			return rtLayout;
 		}
 
-		RenderTargetLayout getRenderTargetLayoutDefaultRGBA8D24S8()
+		RenderTargetLayout GetRenderTargetLayoutDefaultRGBA8D24S8()
 		{
 			RenderTargetLayout rtLayout{};
 			rtLayout.activeAttachmentsMask = eRTAttachmentFlagColor0Bit | eRtAttachmentFlagDepthStencilBit;
@@ -185,18 +185,18 @@ namespace Ic3::Graphics::GCI
 			return rtLayout;
 		}
 
-		const RenderTargetLayout cvRenderTargetLayoutDefaultBGRA8 = getRenderTargetLayoutDefaultBGRA8();
+		const RenderTargetLayout cvRenderTargetLayoutDefaultBGRA8 = GetRenderTargetLayoutDefaultBGRA8();
 
-		const RenderTargetLayout cvRenderTargetLayoutDefaultBGRA8D24S8 = getRenderTargetLayoutDefaultBGRA8D24S8();
+		const RenderTargetLayout cvRenderTargetLayoutDefaultBGRA8D24S8 = GetRenderTargetLayoutDefaultBGRA8D24S8();
 
-		const RenderTargetLayout cvRenderTargetLayoutDefaultRGBA8 = getRenderTargetLayoutDefaultRGBA8();
+		const RenderTargetLayout cvRenderTargetLayoutDefaultRGBA8 = GetRenderTargetLayoutDefaultRGBA8();
 
-		const RenderTargetLayout cvRenderTargetLayoutDefaultRGBA8D24S8 = getRenderTargetLayoutDefaultRGBA8D24S8();
+		const RenderTargetLayout cvRenderTargetLayoutDefaultRGBA8D24S8 = GetRenderTargetLayoutDefaultRGBA8D24S8();
 	
 	}
 
 
-//	bool createRenderTargetLayout( const RenderTargetLayoutDesc & pRTLayoutDesc,
+//	bool CreateRenderTargetLayout( const RenderTargetLayoutDesc & pRTLayoutDesc,
 //	                               RenderTargetLayout & pOutRTLayout )
 //	{
 //		RenderTargetLayout renderTargetLayout;
@@ -225,22 +225,22 @@ namespace Ic3::Graphics::GCI
 //			return false;
 //		}
 //
-//		memCopy( pOutRTLayout, renderTargetLayout );
+//		mem_copy( pOutRTLayout, renderTargetLayout );
 //
 //		return true;
 //	}
 //
-//	RenderTargetLayout createRenderTargetLayout( const RenderTargetLayoutDesc & pRTLayoutDesc )
+//	RenderTargetLayout CreateRenderTargetLayout( const RenderTargetLayoutDesc & pRTLayoutDesc )
 //	{
 //		RenderTargetLayout renderTargetLayout;
-//		createRenderTargetLayout( pRTLayoutDesc, renderTargetLayout );
+//		CreateRenderTargetLayout( pRTLayoutDesc, renderTargetLayout );
 //		return renderTargetLayout;
 //	}
 //
 //	static bool validateRenderBufferRef( RenderTargetResourceBinding & pRTResourceBinding, const RTARenderBufferRef & pRenderBufferRef );
 //	static bool validateTextureRef( RenderTargetResourceBinding & pRTResourceBinding, const RTATextureRef & pTextureRef );
 //
-//	bool createRenderTargetLayoutAndResourceBinding( const RenderTargetResourceBindingDesc & pRTResourceBindingDesc,
+//	bool CreateRenderTargetLayoutAndResourceBinding( const RenderTargetResourceBindingDesc & pRTResourceBindingDesc,
 //	                                                 RenderTargetLayout & pOutRTLayout,
 //	                                                 RenderTargetResourceBinding & pOutRTResourceBinding )
 //	{
@@ -315,8 +315,8 @@ namespace Ic3::Graphics::GCI
 //			return false;
 //		}
 //
-//		memCopy( pOutRTLayout, renderTargetLayout );
-//		memCopy( pOutRTResourceBinding, rtResourceBinding );
+//		mem_copy( pOutRTLayout, renderTargetLayout );
+//		mem_copy( pOutRTResourceBinding, rtResourceBinding );
 //
 //		return true;
 //	}

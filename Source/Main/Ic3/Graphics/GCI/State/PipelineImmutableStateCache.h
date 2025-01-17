@@ -7,16 +7,16 @@
 #include "GraphicsPipelineImmutableState.h"
 #include <unordered_map>
 
-#define ic3GpaStateSubCacheDeclare( pStateName ) \
+#define Ic3GCIStateSubCacheDeclare( pStateName ) \
 	using pStateName##StateSubCache = PipelineImmutableStateSubCache<pStateName##ImmutableState>; \
 	mutable pStateName##StateSubCache _stateSubCache##pStateName;
 
-#define ic3GpaStateSubCacheInit( pStateName, pFactory ) \
+#define Ic3GCIStateSubCacheInit( pStateName, pFactory ) \
 	_stateSubCache##pStateName( pFactory )
 
-#define ic3GpaStateSubCacheDefineProxy( pStateName ) \
+#define Ic3GCIStateSubCacheDefineProxy( pStateName ) \
 	template <> \
-	inline PipelineImmutableStateSubCache<pStateName##ImmutableState> & PipelineImmutableStateCache::_subCacheProxy<pStateName##ImmutableState>() const \
+	inline PipelineImmutableStateSubCache<pStateName##ImmutableState> & PipelineImmutableStateCache::_SubCacheProxy<pStateName##ImmutableState>() const \
 	{ \
 		return _stateSubCache##pStateName; \
 	}
@@ -24,23 +24,26 @@
 namespace Ic3::Graphics::GCI
 {
 
-	/// @brief An extra wrapper for data required to create an immutable state object.
+	/// @brief An extra wrapper for data required to Create an immutable state object.
 	/// Used to pack the data together and avoid changing function signatures when a change is made.
 	template <typename TPInputDesc>
 	struct PipelineImmutableStateCreateInfo
 	{
-		/// A unique name given to an immutable state object.
-		UniqueGPUObjectID uniqueID = CxDef::GPU_OBJECT_ID_INVALID;
+		/// A unique ID given to an immutable state object.
+		GfxObjectID uniqueID = cxGpuObjectIDInvalid;
 
 		/// A unique name given to an immutable state object.
-		RefWrapper<const UniqueGPUObjectName> uniqueName;
+		cppx::ref<const GfxObjectName> uniqueName;
 
-		/// Data needed to initialize the state. Different for every state type.
-		RefWrapper<const TPInputDesc> inputDesc;
+		/// Data needed to Initialize the state. Different for every state type.
+		cppx::ref<const TPInputDesc> inputDesc;
 	};
 
+#define ic3GCIMakeStateCreateInfo( pUniqueID, pInputDesc ) \
+	PipelineImmutableStateCreateInfo<typename std::decay<decltype( pInputDesc )>::type>{ pUniqueID, #pUniqueID, pInputDesc }
+
 	/// @brief A "sub-cache" used by the actual cache. Manages single state type.
-	template <typename TState>
+	template <typename TPState>
 	class PipelineImmutableStateSubCache
 	{
 	public:
@@ -50,7 +53,7 @@ namespace Ic3::Graphics::GCI
 
 		~PipelineImmutableStateSubCache() = default;
 
-		IC3_ATTR_NO_DISCARD TGPAHandle<TState> getState( UniqueGPUObjectID pStateObjectID ) const noexcept
+		CPPX_ATTR_NO_DISCARD TGfxHandle<TPState> GetState( GfxObjectID pStateObjectID ) const noexcept
 		{
 			const auto existingStateRef = _cachedStates.find( pStateObjectID.asValue() );
 
@@ -63,23 +66,23 @@ namespace Ic3::Graphics::GCI
 			return nullptr;
 		}
 
-		IC3_ATTR_NO_DISCARD TGPAHandle<TState> getState( const UniqueGPUObjectName & pStateObjectName ) const noexcept
+		CPPX_ATTR_NO_DISCARD TGfxHandle<TPState> GetState( const GfxObjectName & pStateObjectName ) const noexcept
 		{
-			const auto uniqueID = generateUniqueGPUObjectID( pStateObjectName );
-			return getState( uniqueID );
+			const auto uniqueID = GenerateGfxObjectID( pStateObjectName );
+			return GetState( uniqueID );
 		}
 
 		template <typename TCreateData, typename... TArgs>
-		TGPAHandle<TState> createState( PipelineImmutableStateCreateInfo<TCreateData> pCreateInfo, TArgs && ...pArgs )
+		TGfxHandle<TPState> CreateState( PipelineImmutableStateCreateInfo<TCreateData> pCreateInfo, TArgs && ...pArgs )
 		{
-			const auto controlInputHash = hashCompute<EHashAlgo::FNV1A64>( pCreateInfo.inputDesc.get() );
+			const auto controlInputHash = cppx::hash_compute<cppx::hash_algo::fnv1a64>( pCreateInfo.inputDesc.get() );
 
-			if( ( pCreateInfo.uniqueID == CxDef::GPU_OBJECT_ID_AUTO ) && !pCreateInfo.uniqueName->empty() )
+			if(( pCreateInfo.uniqueID == cxGpuObjectIDAuto ) && !pCreateInfo.uniqueName->empty() )
 			{
-				pCreateInfo.uniqueID = generateUniqueGPUObjectID( pCreateInfo.uniqueName );
+				pCreateInfo.uniqueID = GenerateGfxObjectID( pCreateInfo.uniqueName );
 			}
 
-			if( CxDef::isUniqueGPUObjectIDValid( pCreateInfo.uniqueID ) )
+			if( CxDef::IsGfxObjectIDValid( pCreateInfo.uniqueID ) )
 			{
 				const auto existingStateRef = _cachedStates.find( pCreateInfo.uniqueID.asValue() );
 				if( existingStateRef != _cachedStates.end() )
@@ -98,14 +101,14 @@ namespace Ic3::Graphics::GCI
 				}
 			}
 
-			auto newImmutableState = _stateFactoryAdapter.createState( pCreateInfo.inputDesc, std::forward<TArgs>( pArgs )... );
+			auto newImmutableState = _stateFactoryAdapter.CreateState( pCreateInfo.inputDesc, std::forward<TArgs>( pArgs )... );
 
 			if( !newImmutableState )
 			{
 				return nullptr;
 			}
 
-			if( !CxDef::isUniqueGPUObjectIDValid( pCreateInfo.uniqueID ) )
+			if( !CxDef::IsGfxObjectIDValid( pCreateInfo.uniqueID ) )
 			{
 				pCreateInfo.uniqueID.idValue = reinterpret_cast<uint64>( newImmutableState.get() );
 			}
@@ -119,7 +122,7 @@ namespace Ic3::Graphics::GCI
 			return newImmutableState;
 		}
 
-		void reset()
+		void Reset()
 		{
 			_cachedStates.clear();
 		}
@@ -128,20 +131,20 @@ namespace Ic3::Graphics::GCI
 		/// The data stored internally for every cached state object.
 		struct CachedStateData
 		{
-			using ControlInputHash = THashObject<EHashAlgo::FNV1A64>;
+			using ControlInputHash = hash_object<cppx::hash_algo::fnv1a64>;
 			/// Control hash which is a hash of the inputDesc (passed inside the createInfo struct).
 			ControlInputHash controlInputHash;
 			/// The actual immutable state.
-			TGPAHandle<TState> immutableStateObject;
+			TGfxHandle<TPState> immutableStateObject;
 		};
 
-		using cache_map_key_t = UniqueGPUObjectID::ValueType;
+		using cache_map_key_t = GfxObjectID::ValueType;
 		using CachedStateMap = std::unordered_map<cache_map_key_t, CachedStateData>;
 
 	private:
-		/// Adapter for the state factory. Allows the cache to simply call createState() for every state type.
+		/// Adapter for the state factory. Allows the cache to simply call CreateState() for every state type.
 		PipelineImmutableStateFactoryAdapter _stateFactoryAdapter;
-		/// The actual map which serves as a storage for cached objects.
+		/// The actual Map which serves as a storage for cached objects.
 		CachedStateMap _cachedStates;
 	};
 
@@ -154,107 +157,107 @@ namespace Ic3::Graphics::GCI
 	public:
 		PipelineImmutableStateCache( PipelineImmutableStateFactory & pFactory )
 		: mStateFactory( pFactory )
-		, ic3GpaStateSubCacheInit( Blend, mStateFactory )
-		, ic3GpaStateSubCacheInit( DepthStencil, mStateFactory )
-		, ic3GpaStateSubCacheInit( GraphicsShaderLinkage, mStateFactory )
-		, ic3GpaStateSubCacheInit( IAInputLayout, mStateFactory )
-		, ic3GpaStateSubCacheInit( IAVertexStream, mStateFactory )
-		, ic3GpaStateSubCacheInit( Rasterizer, mStateFactory )
-		, ic3GpaStateSubCacheInit( RenderTargetBinding, mStateFactory )
-		, ic3GpaStateSubCacheInit( RenderPassConfiguration, mStateFactory )
+		, Ic3GCIStateSubCacheInit( Blend, mStateFactory )
+		, Ic3GCIStateSubCacheInit( DepthStencil, mStateFactory )
+		, Ic3GCIStateSubCacheInit( GraphicsShaderLinkage, mStateFactory )
+		, Ic3GCIStateSubCacheInit( IAInputLayout, mStateFactory )
+		, Ic3GCIStateSubCacheInit( IAVertexStream, mStateFactory )
+		, Ic3GCIStateSubCacheInit( Rasterizer, mStateFactory )
+		, Ic3GCIStateSubCacheInit( RenderTargetBinding, mStateFactory )
+		, Ic3GCIStateSubCacheInit( RenderPassConfiguration, mStateFactory )
 		{}
 
-		template <typename TState>
-		IC3_ATTR_NO_DISCARD TGPAHandle<TState> getState( UniqueGPUObjectID pStateObjectID ) const noexcept
+		template <typename TPState>
+		CPPX_ATTR_NO_DISCARD TGfxHandle<TPState> GetState( GfxObjectID pStateObjectID ) const noexcept
 		{
-			auto & subCache = _subCacheProxy<TState>();
-			return subCache.getState( pStateObjectID );
+			auto & subCache = _SubCacheProxy<TPState>();
+			return subCache.GetState( pStateObjectID );
 		}
 
-		template <typename TState>
-		IC3_ATTR_NO_DISCARD TGPAHandle<TState> getState( const UniqueGPUObjectName & pStateObjectName ) const noexcept
+		template <typename TPState>
+		CPPX_ATTR_NO_DISCARD TGfxHandle<TPState> GetState( const GfxObjectName & pStateObjectName ) const noexcept
 		{
-			auto & subCache = _subCacheProxy<TState>();
-			return subCache.getState( pStateObjectName );
+			auto & subCache = _SubCacheProxy<TPState>();
+			return subCache.GetState( pStateObjectName );
 		}
 
-		template <typename TState, typename TPInputDesc, typename... TArgs>
-		TGPAHandle<TState> createState( UniqueGPUObjectID pUniqueID, const TPInputDesc & pInputDesc, TArgs && ...pArgs )
+		template <typename TPState, typename TPInputDesc, typename... TArgs>
+		TGfxHandle<TPState> CreateState( GfxObjectID pUniqueID, const TPInputDesc & pInputDesc, TArgs && ...pArgs )
 		{
 			PipelineImmutableStateCreateInfo<TPInputDesc> createInfo{};
 			createInfo.uniqueID = pUniqueID;
 			createInfo.inputDesc = std::ref( pInputDesc );
-			auto & subCache = _subCacheProxy<TState>();
-			return subCache.createState( std::move( createInfo ), std::forward<TArgs>( pArgs )... );
+			auto & subCache = _SubCacheProxy<TPState>();
+			return subCache.CreateState( std::move( createInfo ), std::forward<TArgs>( pArgs )... );
 		}
 
-		template <typename TState, typename TPInputDesc, typename... TArgs>
-		TGPAHandle<TState> createState( const UniqueGPUObjectName & pUniqueName, const TPInputDesc & pInputDesc, TArgs && ...pArgs )
+		template <typename TPState, typename TPInputDesc, typename... TArgs>
+		TGfxHandle<TPState> CreateState( const GfxObjectName & pUniqueName, const TPInputDesc & pInputDesc, TArgs && ...pArgs )
 		{
 			PipelineImmutableStateCreateInfo<TPInputDesc> createInfo{};
 			createInfo.uniqueName = std::ref( pUniqueName );
 			createInfo.inputDesc = std::ref( pInputDesc );
-			auto & subCache = _subCacheProxy<TState>();
-			return subCache.createState( std::move( createInfo ), std::forward<TArgs>( pArgs )... );
+			auto & subCache = _SubCacheProxy<TPState>();
+			return subCache.CreateState( std::move( createInfo ), std::forward<TArgs>( pArgs )... );
 		}
 
-		template <typename TState>
-		void resetSubCache()
+		template <typename TPState>
+		void ResetSubCache()
 		{
-			auto & subCache = _subCacheProxy<TState>();
+			auto & subCache = _SubCacheProxy<TPState>();
 			return subCache.reset();
 		}
 
-		void reset( TBitmask<EPipelineImmutableStateTypeFlags> pResetMask = ePipelineImmutableStateTypeMaskAll )
+		void Reset( cppx::bitmask<EPipelineImmutableStateTypeFlags> pResetMask = ePipelineImmutableStateTypeMaskAll )
 		{
-			if( pResetMask.isSet( ePipelineImmutableStateTypeFlagBlendBit ) )
-				_stateSubCacheBlend.reset();
+			if( pResetMask.is_set( ePipelineImmutableStateTypeFlagBlendBit ) )
+				_stateSubCacheBlend.Reset();
 
-			if( pResetMask.isSet( ePipelineImmutableStateTypeFlagDepthStencilBit ) )
-				_stateSubCacheDepthStencil.reset();
+			if( pResetMask.is_set( ePipelineImmutableStateTypeFlagDepthStencilBit ) )
+				_stateSubCacheDepthStencil.Reset();
 
-			if( pResetMask.isSet( ePipelineImmutableStateTypeFlagGraphicsShaderLinkageBit ) )
-				_stateSubCacheGraphicsShaderLinkage.reset();
+			if( pResetMask.is_set( ePipelineImmutableStateTypeFlagGraphicsShaderLinkageBit ) )
+				_stateSubCacheGraphicsShaderLinkage.Reset();
 
-			if( pResetMask.isSet( ePipelineImmutableStateTypeFlagIAInputLayoutBit ) )
-				_stateSubCacheIAInputLayout.reset();
+			if( pResetMask.is_set( ePipelineImmutableStateTypeFlagIAInputLayoutBit ) )
+				_stateSubCacheIAInputLayout.Reset();
 
-			if( pResetMask.isSet( ePipelineImmutableStateTypeFlagIAVertexStreamBit ) )
-				_stateSubCacheIAVertexStream.reset();
+			if( pResetMask.is_set( ePipelineImmutableStateTypeFlagIAVertexStreamBit ) )
+				_stateSubCacheIAVertexStream.Reset();
 
-			if( pResetMask.isSet( ePipelineImmutableStateTypeFlagRasterizerBit ) )
-				_stateSubCacheRasterizer.reset();
+			if( pResetMask.is_set( ePipelineImmutableStateTypeFlagRasterizerBit ) )
+				_stateSubCacheRasterizer.Reset();
 
-			if( pResetMask.isSet( ePipelineImmutableStateTypeFlagRenderTargetBindingBit ) )
-				_stateSubCacheRenderTargetBinding.reset();
+			if( pResetMask.is_set( ePipelineImmutableStateTypeFlagRenderTargetBindingBit ) )
+				_stateSubCacheRenderTargetBinding.Reset();
 
-			if( pResetMask.isSet( ePipelineImmutableStateTypeFlagRenderPassBit ) )
-				_stateSubCacheRenderPassConfiguration.reset();
+			if( pResetMask.is_set( ePipelineImmutableStateTypeFlagRenderPassBit ) )
+				_stateSubCacheRenderPassConfiguration.Reset();
 		}
 
 	private:
-		template <typename TState>
-		IC3_ATTR_NO_DISCARD PipelineImmutableStateSubCache<TState> & _subCacheProxy() const;
+		template <typename TPState>
+		CPPX_ATTR_NO_DISCARD PipelineImmutableStateSubCache<TPState> & _SubCacheProxy() const;
 
 	private:
-		ic3GpaStateSubCacheDeclare( Blend );
-		ic3GpaStateSubCacheDeclare( DepthStencil );
-		ic3GpaStateSubCacheDeclare( GraphicsShaderLinkage );
-		ic3GpaStateSubCacheDeclare( IAInputLayout );
-		ic3GpaStateSubCacheDeclare( IAVertexStream );
-		ic3GpaStateSubCacheDeclare( Rasterizer );
-		ic3GpaStateSubCacheDeclare( RenderTargetBinding );
-		ic3GpaStateSubCacheDeclare( RenderPassConfiguration );
+		Ic3GCIStateSubCacheDeclare( Blend );
+		Ic3GCIStateSubCacheDeclare( DepthStencil );
+		Ic3GCIStateSubCacheDeclare( GraphicsShaderLinkage );
+		Ic3GCIStateSubCacheDeclare( IAInputLayout );
+		Ic3GCIStateSubCacheDeclare( IAVertexStream );
+		Ic3GCIStateSubCacheDeclare( Rasterizer );
+		Ic3GCIStateSubCacheDeclare( RenderTargetBinding );
+		Ic3GCIStateSubCacheDeclare( RenderPassConfiguration );
 	};
 
-	ic3GpaStateSubCacheDefineProxy( Blend );
-	ic3GpaStateSubCacheDefineProxy( DepthStencil );
-	ic3GpaStateSubCacheDefineProxy( GraphicsShaderLinkage );
-	ic3GpaStateSubCacheDefineProxy( IAInputLayout );
-	ic3GpaStateSubCacheDefineProxy( IAVertexStream );
-	ic3GpaStateSubCacheDefineProxy( Rasterizer );
-	ic3GpaStateSubCacheDefineProxy( RenderTargetBinding );
-	ic3GpaStateSubCacheDefineProxy( RenderPassConfiguration );
+	Ic3GCIStateSubCacheDefineProxy( Blend );
+	Ic3GCIStateSubCacheDefineProxy( DepthStencil );
+	Ic3GCIStateSubCacheDefineProxy( GraphicsShaderLinkage );
+	Ic3GCIStateSubCacheDefineProxy( IAInputLayout );
+	Ic3GCIStateSubCacheDefineProxy( IAVertexStream );
+	Ic3GCIStateSubCacheDefineProxy( Rasterizer );
+	Ic3GCIStateSubCacheDefineProxy( RenderTargetBinding );
+	Ic3GCIStateSubCacheDefineProxy( RenderPassConfiguration );
 
 } // namespace Ic3::Graphics::GCI
 

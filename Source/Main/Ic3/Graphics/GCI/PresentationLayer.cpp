@@ -1,18 +1,18 @@
 
 #include "PresentationLayer.h"
-#include "GPUDevice.h"
+#include "GpuDevice.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	PresentationLayer::PresentationLayer( GPUDevice & pGPUDevice )
-	: GPUDriverChildObject( pGPUDevice.mGPUDriver )
-	, mGPUDevice( pGPUDevice )
+	PresentationLayer::PresentationLayer( GpuDevice & pGpuDevice )
+	: GpuDriverChildObject( pGpuDevice.mGpuDriver )
+	, mGpuDevice( pGpuDevice )
 	{}
 
 	PresentationLayer::~PresentationLayer() = default;
 
-	System::EventSource * PresentationLayer::getInternalSystemEventSource() const noexcept
+	System::EventSource * PresentationLayer::GetInternalSystemEventSource() const noexcept
 	{
 		return nullptr;
 	}

@@ -13,17 +13,17 @@ namespace Ic3::Graphics::GCI
 
 	RenderTargetBindingDynamicState::~RenderTargetBindingDynamicState() = default;
 
-	bool RenderTargetBindingDynamicState::empty() const noexcept
+	bool RenderTargetBindingDynamicState::IsEmpty() const noexcept
 	{
 		return _renderTargetBindingDefinition.activeAttachmentsMask.empty();
 	}
 
-	native_uint RenderTargetBindingDynamicState::countActiveColorAttachments() const noexcept
+	native_uint RenderTargetBindingDynamicState::CountActiveColorAttachments() const noexcept
 	{
-		return popCount( _renderTargetBindingDefinition.activeAttachmentsMask & eRTAttachmentMaskColorAll );
+		return pop_count( _renderTargetBindingDefinition.activeAttachmentsMask & eRTAttachmentMaskColorAll );
 	}
 
-	const RenderTargetBindingDefinition & RenderTargetBindingDynamicState::getBindingDefinition() const noexcept
+	const RenderTargetBindingDefinition & RenderTargetBindingDynamicState::GetBindingDefinition() const noexcept
 	{
 		return _renderTargetBindingDefinition;
 	}
@@ -33,97 +33,98 @@ namespace Ic3::Graphics::GCI
 		_renderTargetBindingDefinition = pDefinition;
 	}
 
-	RenderTargetAttachmentBinding & RenderTargetBindingDynamicState::setColorAttachmentBinding( native_uint pIndex )
+	RenderTargetAttachmentBinding & RenderTargetBindingDynamicState::SetColorAttachmentBinding( native_uint pIndex )
 	{
-		ic3DebugAssert( CxDef::isRTAttachmentIndexValid( pIndex ) );
+		ic3DebugAssert( CxDef::IsRTAttachmentIndexValid( pIndex ) );
 		_renderTargetBindingDefinition.activeAttachmentsMask.set( CxDef::makeRTAttachmentFlag( pIndex ) );
 		return _renderTargetBindingDefinition.colorAttachments[pIndex];
 	}
 
-	void RenderTargetBindingDynamicState::setColorAttachmentBinding(
+	void RenderTargetBindingDynamicState::SetColorAttachmentBinding(
 			native_uint pIndex,
 			const RenderTargetAttachmentBinding & pRPCAttachmentBinding )
 	{
-		_setColorAttachmentBindings( pIndex, 1, &pRPCAttachmentBinding );
+		_SetColorAttachmentBindings( pIndex, 1, &pRPCAttachmentBinding );
 	}
 
-	void RenderTargetBindingDynamicState::setColorAttachmentBindings(
+	void RenderTargetBindingDynamicState::SetColorAttachmentBindings(
 			const RenderTargetColorAttachmentBindingArray & pRPCAttachmentBindings )
 	{
-		_setColorAttachmentBindings( 0, pRPCAttachmentBindings.size(), pRPCAttachmentBindings.data() );
+		_SetColorAttachmentBindings( 0, pRPCAttachmentBindings.size(), pRPCAttachmentBindings.data() );
 	}
 
-	void RenderTargetBindingDynamicState::setColorAttachmentBindings(
+	void RenderTargetBindingDynamicState::SetColorAttachmentBindings(
 			native_uint pFirstIndex,
 			native_uint pCount,
 			const RenderTargetAttachmentBinding * pRPCAttachmentBindings )
 	{
-		_setColorAttachmentBindings( pFirstIndex, pCount, pRPCAttachmentBindings );
+		_SetColorAttachmentBindings( pFirstIndex, pCount, pRPCAttachmentBindings );
 	}
 
-	RenderTargetAttachmentBinding & RenderTargetBindingDynamicState::setDepthStencilAttachmentBinding()
+	RenderTargetAttachmentBinding & RenderTargetBindingDynamicState::SetDepthStencilAttachmentBinding()
 	{
 		_renderTargetBindingDefinition.activeAttachmentsMask.set( eRtAttachmentFlagDepthStencilBit );
 		return _renderTargetBindingDefinition.depthStencilAttachment;
 	}
 
-	void RenderTargetBindingDynamicState::setDepthStencilAttachmentBinding(
+	void RenderTargetBindingDynamicState::SetDepthStencilAttachmentBinding(
 			const RenderTargetAttachmentBinding & pRPDSAttachmentBinding )
 	{
-		_renderTargetBindingDefinition.activeAttachmentsMask.setOrUnset( eRtAttachmentFlagDepthStencilBit, !pRPDSAttachmentBinding.empty() );
+		_renderTargetBindingDefinition.activeAttachmentsMask.set_or_unset( eRtAttachmentFlagDepthStencilBit,
+		                                                                   !pRPDSAttachmentBinding.IsEmpty());
 		_renderTargetBindingDefinition.depthStencilAttachment = pRPDSAttachmentBinding;
 	}
 
-	void RenderTargetBindingDynamicState::resetColorAttachmentBinding( native_uint pIndex )
+	void RenderTargetBindingDynamicState::ResetColorAttachmentBinding( native_uint pIndex )
 	{
-		_resetColorAttachmentBindings( pIndex, 1 );
+		_ResetColorAttachmentBindings( pIndex, 1 );
 	}
 
-	void RenderTargetBindingDynamicState::resetColorAttachmentBindings( native_uint pFirstIndex, native_uint pCount )
+	void RenderTargetBindingDynamicState::ResetColorAttachmentBindings( native_uint pFirstIndex, native_uint pCount )
 	{
-		_resetColorAttachmentBindings( pFirstIndex, pCount );
+		_ResetColorAttachmentBindings( pFirstIndex, pCount );
 	}
 
-	void RenderTargetBindingDynamicState::resetColorAttachmentBindings()
+	void RenderTargetBindingDynamicState::ResetColorAttachmentBindings()
 	{
-		_resetColorAttachmentBindings( 0, GCM::cxRTMaxColorAttachmentsNum );
+		_ResetColorAttachmentBindings( 0, GCM::cxRTMaxColorAttachmentsNum );
 	}
 
-	void RenderTargetBindingDynamicState::resetDepthStencilAttachmentBinding()
+	void RenderTargetBindingDynamicState::ResetDepthStencilAttachmentBinding()
 	{
 		_renderTargetBindingDefinition.activeAttachmentsMask.unset( eRtAttachmentFlagDepthStencilBit );
-		_renderTargetBindingDefinition.depthStencilAttachment.reset();
+		_renderTargetBindingDefinition.depthStencilAttachment.Reset();
 	}
 
-	void RenderTargetBindingDynamicState::resetAllAttachmentBindings()
+	void RenderTargetBindingDynamicState::ResetAllAttachmentBindings()
 	{
-		resetColorAttachmentBindings();
-		resetDepthStencilAttachmentBinding();
+		ResetColorAttachmentBindings();
+		ResetDepthStencilAttachmentBinding();
 	}
 
-	void RenderTargetBindingDynamicState::_setColorAttachmentBindings(
+	void RenderTargetBindingDynamicState::_SetColorAttachmentBindings(
 			native_uint pFirstIndex,
 			native_uint pCount,
 			const RenderTargetAttachmentBinding * pRPCAttachmentBindings )
 	{
-		for( native_uint caIndex = pFirstIndex; CxDef::isRTColorAttachmentIndexValid( caIndex ) && ( pCount != 0 ); ++caIndex, --pCount )
+		for( native_uint caIndex = pFirstIndex; CxDef::IsRTColorAttachmentIndexValid( caIndex ) && ( pCount != 0 ); ++caIndex, --pCount )
 		{
 			const auto & sourceCABinding = pRPCAttachmentBindings[caIndex - pFirstIndex];
 
 			const auto colorAttachmentBit = CxDef::makeRTAttachmentFlag( caIndex );
 
 			_renderTargetBindingDefinition.colorAttachments[caIndex] = sourceCABinding;
-			_renderTargetBindingDefinition.activeAttachmentsMask.setOrUnset( colorAttachmentBit, !sourceCABinding.empty() );
+			_renderTargetBindingDefinition.activeAttachmentsMask.set_or_unset( colorAttachmentBit, !sourceCABinding.IsEmpty() );
 		}
 	}
 
-	void RenderTargetBindingDynamicState::_resetColorAttachmentBindings( native_uint pFirstIndex, native_uint pCount )
+	void RenderTargetBindingDynamicState::_ResetColorAttachmentBindings( native_uint pFirstIndex, native_uint pCount )
 	{
-		for( native_uint caIndex = pFirstIndex; CxDef::isRTColorAttachmentIndexValid( caIndex ) && ( pCount != 0 ); ++caIndex, --pCount )
+		for( native_uint caIndex = pFirstIndex; CxDef::IsRTColorAttachmentIndexValid( caIndex ) && ( pCount != 0 ); ++caIndex, --pCount )
 		{
 			const auto colorAttachmentBit = CxDef::makeRTAttachmentFlag( caIndex );
 
-			_renderTargetBindingDefinition.colorAttachments[caIndex].reset();
+			_renderTargetBindingDefinition.colorAttachments[caIndex].Reset();
 			_renderTargetBindingDefinition.activeAttachmentsMask.unset( colorAttachmentBit );
 		}
 	}
@@ -138,113 +139,115 @@ namespace Ic3::Graphics::GCI
 
 	RenderPassConfigurationDynamicState::~RenderPassConfigurationDynamicState() = default;
 
-	bool RenderPassConfigurationDynamicState::empty() const noexcept
+	bool RenderPassConfigurationDynamicState::IsEmpty() const noexcept
 	{
 		return _renderPassConfiguration.activeAttachmentsMask.empty();
 	}
 
-	native_uint RenderPassConfigurationDynamicState::countActiveColorAttachments() const noexcept
+	native_uint RenderPassConfigurationDynamicState::CountActiveColorAttachments() const noexcept
 	{
-		return popCount( _renderPassConfiguration.activeAttachmentsMask & eRTAttachmentMaskColorAll );
+		return pop_count( _renderPassConfiguration.activeAttachmentsMask & eRTAttachmentMaskColorAll );
 	}
 
-	const RenderPassConfiguration & RenderPassConfigurationDynamicState::getRenderPassConfiguration() const noexcept
+	const RenderPassConfiguration & RenderPassConfigurationDynamicState::GetRenderPassConfiguration() const noexcept
 	{
 		return _renderPassConfiguration;
 	}
 
-	void RenderPassConfigurationDynamicState::assign( const RenderPassConfiguration & pConfiguration )
+	void RenderPassConfigurationDynamicState::Assign( const RenderPassConfiguration & pConfiguration )
 	{
 		_renderPassConfiguration = pConfiguration;
 	}
 
-	RenderPassAttachmentConfig & RenderPassConfigurationDynamicState::setColorAttachmentUsage( native_uint pIndex )
+	RenderPassAttachmentConfig & RenderPassConfigurationDynamicState::SetColorAttachmentUsage( native_uint pIndex )
 	{
-		ic3DebugAssert( CxDef::isRTAttachmentIndexValid( pIndex ) );
+		ic3DebugAssert( CxDef::IsRTAttachmentIndexValid( pIndex ) );
 		_renderPassConfiguration.activeAttachmentsMask.set( CxDef::makeRTAttachmentFlag( pIndex ) );
 		return _renderPassConfiguration.colorAttachments[pIndex];
 	}
 
-	void RenderPassConfigurationDynamicState::setColorAttachmentUsage(
+	void RenderPassConfigurationDynamicState::SetColorAttachmentUsage(
 			native_uint pIndex,
 			const RenderPassAttachmentConfig & pRPCAttachmentUsage )
 	{
-		_setColorAttachmentUsages( pIndex, 1, &pRPCAttachmentUsage );
+		_SetColorAttachmentUsages( pIndex, 1, &pRPCAttachmentUsage );
 	}
 
-	void RenderPassConfigurationDynamicState::setColorAttachmentUsages(
+	void RenderPassConfigurationDynamicState::SetColorAttachmentUsages(
 			const RenderPassColorAttachmentConfigArray & pRPCAttachmentUsages )
 	{
-		_setColorAttachmentUsages( 0, pRPCAttachmentUsages.size(), pRPCAttachmentUsages.data() );
+		_SetColorAttachmentUsages( 0, pRPCAttachmentUsages.size(), pRPCAttachmentUsages.data() );
 	}
 
-	void RenderPassConfigurationDynamicState::setColorAttachmentBindings(
+	void RenderPassConfigurationDynamicState::SetColorAttachmentBindings(
 			native_uint pFirstIndex,
 			native_uint pCount,
 			const RenderPassAttachmentConfig * pRPCAttachmentUsages )
 	{
-		_setColorAttachmentUsages( pFirstIndex, pCount, pRPCAttachmentUsages );
+		_SetColorAttachmentUsages( pFirstIndex, pCount, pRPCAttachmentUsages );
 	}
 
-	RenderPassAttachmentConfig & RenderPassConfigurationDynamicState::setDepthStencilAttachmentUsage()
+	RenderPassAttachmentConfig & RenderPassConfigurationDynamicState::SetDepthStencilAttachmentUsage()
 	{
 		_renderPassConfiguration.activeAttachmentsMask.set( eRtAttachmentFlagDepthStencilBit );
 		return _renderPassConfiguration.depthStencilAttachment;
 	}
 
-	void RenderPassConfigurationDynamicState::setDepthStencilAttachmentUsage(
+	void RenderPassConfigurationDynamicState::SetDepthStencilAttachmentUsage(
 			const RenderPassAttachmentConfig & pRPDSAttachmentUsage )
 	{
-		_renderPassConfiguration.activeAttachmentsMask.setOrUnset( eRtAttachmentFlagDepthStencilBit, !pRPDSAttachmentUsage.empty() );
+		_renderPassConfiguration.activeAttachmentsMask.set_or_unset(
+				eRtAttachmentFlagDepthStencilBit,
+				!pRPDSAttachmentUsage.empty());
 		_renderPassConfiguration.depthStencilAttachment = pRPDSAttachmentUsage;
 	}
 
-	void RenderPassConfigurationDynamicState::resetColorAttachmentUsage( native_uint pIndex )
+	void RenderPassConfigurationDynamicState::ResetColorAttachmentUsage( native_uint pIndex )
 	{
-		_resetColorAttachmentUsages( pIndex, 1 );
+		_ResetColorAttachmentUsages( pIndex, 1 );
 	}
 
-	void RenderPassConfigurationDynamicState::resetColorAttachmentUsages( native_uint pFirstIndex, native_uint pCount )
+	void RenderPassConfigurationDynamicState::ResetColorAttachmentUsages( native_uint pFirstIndex, native_uint pCount )
 	{
-		_resetColorAttachmentUsages( pFirstIndex, pCount );
+		_ResetColorAttachmentUsages( pFirstIndex, pCount );
 	}
 
-	void RenderPassConfigurationDynamicState::resetColorAttachmentUsages()
+	void RenderPassConfigurationDynamicState::ResetColorAttachmentUsages()
 	{
-		_resetColorAttachmentUsages( 0, GCM::cxRTMaxColorAttachmentsNum );
+		_ResetColorAttachmentUsages( 0, GCM::cxRTMaxColorAttachmentsNum );
 	}
 
-	void RenderPassConfigurationDynamicState::resetDepthStencilAttachmentUsage()
+	void RenderPassConfigurationDynamicState::ResetDepthStencilAttachmentUsage()
 	{
 		_renderPassConfiguration.activeAttachmentsMask.unset( eRtAttachmentFlagDepthStencilBit );
 		_renderPassConfiguration.depthStencilAttachment.reset();
 	}
 
-	void RenderPassConfigurationDynamicState::resetAllAttachmentUsages()
+	void RenderPassConfigurationDynamicState::ResetAllAttachmentUsages()
 	{
-		resetColorAttachmentUsages();
-		resetDepthStencilAttachmentUsage();
+		ResetColorAttachmentUsages();
+		ResetDepthStencilAttachmentUsage();
 	}
 
-	void RenderPassConfigurationDynamicState::_setColorAttachmentUsages(
+	void RenderPassConfigurationDynamicState::_SetColorAttachmentUsages(
 			native_uint pFirstIndex,
 			native_uint pCount,
 			const RenderPassAttachmentConfig * pRPCAttachmentUsages )
 	{
-		for( native_uint caIndex = pFirstIndex; CxDef::isRTColorAttachmentIndexValid( caIndex ) && ( pCount != 0 ); ++caIndex, --pCount )
+		for( native_uint caIndex = pFirstIndex; CxDef::IsRTColorAttachmentIndexValid( caIndex ) && ( pCount != 0 ); ++caIndex, --pCount )
 		{
 			const auto & sourceCAUsage = pRPCAttachmentUsages[caIndex - pFirstIndex];
 
 			const auto colorAttachmentBit = CxDef::makeRTAttachmentFlag( caIndex );
 
 			_renderPassConfiguration.colorAttachments[caIndex] = sourceCAUsage;
-			_renderPassConfiguration.activeAttachmentsMask.setOrUnset( colorAttachmentBit, !sourceCAUsage.empty() );
+			_renderPassConfiguration.activeAttachmentsMask.set_or_unset( colorAttachmentBit, !sourceCAUsage.empty() );
 		}
 	}
 
-	void RenderPassConfigurationDynamicState::_resetColorAttachmentUsages( native_uint pFirstIndex, native_uint pCount )
+	void RenderPassConfigurationDynamicState::_ResetColorAttachmentUsages( native_uint pFirstIndex, native_uint pCount )
 	{
-		for( native_uint caIndex = pFirstIndex; CxDef::isRTColorAttachmentIndexValid( caIndex ) && ( pCount != 0 ); ++caIndex, --pCount )
+		for( native_uint caIndex = pFirstIndex; CxDef::IsRTColorAttachmentIndexValid( caIndex ) && ( pCount != 0 ); ++caIndex, --pCount )
 		{
 			const auto colorAttachmentBit = CxDef::makeRTAttachmentFlag( caIndex );
 

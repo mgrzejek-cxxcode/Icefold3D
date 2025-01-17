@@ -7,18 +7,18 @@
 namespace Ic3::Graphics::GCI
 {
 
-	VKCommandSystem::VKCommandSystem( VKGPUDevice & pVKGPUDevice )
-	: CommandSystem( pVKGPUDevice )
+	VKCommandSystem::VKCommandSystem( VKGpuDevice & pVKGpuDevice )
+	: CommandSystem( pVKGpuDevice )
 	{ }
 
 	VKCommandSystem::~VKCommandSystem() = default;
 
-	std::unique_ptr<CommandContext> VKCommandSystem::acquireCommandContext( ECommandContextType pContextType )
+	std::unique_ptr<CommandContext> VKCommandSystem::AcquireCommandContext( ECommandContextType pContextType )
 	{
 		std::unique_ptr<CommandContext> commandContext;
 
 		auto contextExecutionMode = ecGetCommandContextExecutionMode( pContextType );
-		// if( auto * commandList = acquireCommandList( contextExecutionMode ) )
+		// if( auto * commandList = AcquireCommandList( contextExecutionMode ) )
 		{
 			if( contextExecutionMode == ECommandExecutionMode::Direct )
 			{
@@ -33,7 +33,7 @@ namespace Ic3::Graphics::GCI
 		return commandContext;
 	}
 
-	CommandSync VKCommandSystem::submitContext( CommandContextDirect & pContext, const CommandContextSubmitInfo & pSubmitInfo )
+	CommandSync VKCommandSystem::SubmitContext( CommandContextDirect & pContext, const CommandContextSubmitInfo & pSubmitInfo )
 	{
 		CommandSync cmdSyncObject;
 

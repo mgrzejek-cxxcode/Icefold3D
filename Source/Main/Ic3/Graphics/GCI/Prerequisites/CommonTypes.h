@@ -18,9 +18,9 @@ namespace Ic3::Graphics::GCI
 			float zFar;
 		};
 
-		DepthRange mDepthRange;
-		Math::Vec2u32 mOrigin;
-		Math::Size2u mSize;
+		Math::Vec2u32 origin;
+		Math::Size2u size;
+		DepthRange depthRange;
 	};
 
 } // namespace Ic3::Graphics::GCI

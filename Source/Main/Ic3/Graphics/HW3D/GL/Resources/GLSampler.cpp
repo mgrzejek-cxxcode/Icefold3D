@@ -1,60 +1,60 @@
 
 #include "GLSampler.h"
-#include "../GLAPITranslationLayer.h"
-#include "../GLGPUDevice.h"
+#include "../GLApiTranslationLayer.h"
+#include "../GLGpuDevice.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	GLSampler::GLSampler( GLGPUDevice & pGPUDevice, GLSamplerObjectHandle pGLSamplerObject )
-	: Sampler( pGPUDevice )
+	GLSampler::GLSampler( GLGpuDevice & pGpuDevice, GLSamplerObjectHandle pGLSamplerObject )
+	: Sampler( pGpuDevice )
 	, mGLSamplerObject( std::move( pGLSamplerObject ) )
 	{ }
 
 	GLSampler::~GLSampler() = default;
 
-	GLSamplerHandle GLSampler::createSampler( GLGPUDevice & pGPUDevice, const SamplerCreateInfo & pCreateInfo )
+	GLSamplerHandle GLSampler::CreateSampler( GLGpuDevice & pGpuDevice, const SamplerCreateInfo & pCreateInfo )
 	{
 		GLSamplerState openglSamplerState;
-		if( !translateSamplerConfig( pCreateInfo.samplerConfig, openglSamplerState ) )
+		if( !TranslateSamplerConfig( pCreateInfo.samplerConfig, openglSamplerState ) )
 		{
 			return nullptr;
 		}
 
-		auto openglSamplerObject = GLSamplerObject::create( openglSamplerState );
+		auto openglSamplerObject = GLSamplerObject::Create( openglSamplerState );
 		if( !openglSamplerObject )
 		{
 			return nullptr;
 		}
 
-		auto sampler = createGPUAPIObject<GLSampler>( pGPUDevice, std::move( openglSamplerObject ) );
+		auto sampler = CreateGfxObject<GLSampler>( pGpuDevice, std::move( openglSamplerObject ) );
 
 		return sampler;
 	}
 
-	bool GLSampler::translateSamplerConfig( const SamplerConfig & pSamplerConfig, GLSamplerState & pOutSamplerState )
+	bool GLSampler::TranslateSamplerConfig( const SamplerConfig & pSamplerConfig, GLSamplerState & pOutSamplerState )
 	{
 		pOutSamplerState.borderColor = pSamplerConfig.borderColor;
 		pOutSamplerState.mipLODRange.first = pSamplerConfig.mipLODRange.begin;
 		pOutSamplerState.mipLODRange.second = pSamplerConfig.mipLODRange.end;
 
-		pOutSamplerState.addressModeS = ATL::translateGLTextureAddressMode( pSamplerConfig.addressModeConfig.coordU );
-		pOutSamplerState.addressModeT = ATL::translateGLTextureAddressMode( pSamplerConfig.addressModeConfig.coordV );
-		pOutSamplerState.addressModeR = ATL::translateGLTextureAddressMode( pSamplerConfig.addressModeConfig.coordW );
+		pOutSamplerState.addressModeS = ATL::TranslateGLTextureAddressMode( pSamplerConfig.addressModeConfig.coordU );
+		pOutSamplerState.addressModeT = ATL::TranslateGLTextureAddressMode( pSamplerConfig.addressModeConfig.coordV );
+		pOutSamplerState.addressModeR = ATL::TranslateGLTextureAddressMode( pSamplerConfig.addressModeConfig.coordW );
 
-		pOutSamplerState.magFilter = ATL::chooseGLTextureMagFilter( pSamplerConfig.filterConfig.magFilter, pSamplerConfig.filterConfig.mipMode );
+		pOutSamplerState.magFilter = ATL::ChooseGLTextureMagFilter( pSamplerConfig.filterConfig.magFilter, pSamplerConfig.filterConfig.mipMode );
 		if( pOutSamplerState.magFilter == GL_INVALID_VALUE )
 		{
 			return false;
 		}
 
-		pOutSamplerState.minFilter = ATL::chooseGLTextureMinFilter( pSamplerConfig.filterConfig.minFilter, pSamplerConfig.filterConfig.mipMode );
+		pOutSamplerState.minFilter = ATL::ChooseGLTextureMinFilter( pSamplerConfig.filterConfig.minFilter, pSamplerConfig.filterConfig.mipMode );
 		if( pOutSamplerState.minFilter == GL_INVALID_VALUE )
 		{
 			return false;
 		}
 
-	#if( ICFGX_GL_FEATURE_SUPPORT_TEXTURE_ANISOTROPIC_FILTER )
+	#if( IC3_GX_GL_FEATURE_SUPPORT_TEXTURE_ANISOTROPIC_FILTER )
 		pOutSamplerState.anisotropyLevel = pSamplerConfig.filterConfig.anisotropyLevel;
 		if( pOutSamplerState.anisotropyLevel > 0 )
 		{
@@ -73,7 +73,7 @@ namespace Ic3::Graphics::GCI
 		if( pSamplerConfig.textureCompareMode == ETextureCompareMode::RefToTexture )
 		{
 			pOutSamplerState.textureCompareMode = GL_COMPARE_REF_TO_TEXTURE;
-			pOutSamplerState.textureCompareFunc = ATL::translateGLCompFunc( pSamplerConfig.textureCompareFunc );
+			pOutSamplerState.textureCompareFunc = ATL::TranslateGLCompFunc( pSamplerConfig.textureCompareFunc );
 		}
 		else
 		{

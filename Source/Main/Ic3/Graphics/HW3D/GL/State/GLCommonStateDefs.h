@@ -8,10 +8,11 @@
 namespace Ic3::Graphics::GCI
 {
 
-	namespace smutil
+	namespace SMU
 	{
 
-		IC3_ATTR_NO_DISCARD GLenum getFramebufferDepthStencilAttachmentIDForRTBufferMask( Bitmask<ERenderTargetBufferFlags> pRTBufferMask );
+		CPPX_ATTR_NO_DISCARD GLenum GetFramebufferDepthStencilAttachmentIDForRTBufferMask(
+				cppx::bitmask<ERenderTargetBufferFlags> pRTBufferMask );
 
 	}
 

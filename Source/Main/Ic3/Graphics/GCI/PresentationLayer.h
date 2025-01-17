@@ -17,33 +17,33 @@ namespace Ic3::Graphics::GCI
 	    System::SysContextHandle sysContext = nullptr;
 	    System::DisplayManagerHandle sysDisplayManager = nullptr;
 		System::WindowManagerHandle sysWindowManager = nullptr;
-		System::VisualConfig visualConfig = System::vsxGetDefaultVisualConfigForSysWindow();
+		System::VisualConfig visualConfig = System::VisGetDefaultVisualConfigForSysWindow();
 		ScreenRect screenRect;
-		TBitmask<EDisplayConfigurationFlags> displayConfigFlags = 0u;
+		cppx::bitmask<EDisplayConfigurationFlags> displayConfigFlags = 0u;
 	};
 
 	/// @brief
-	class IC3_GRAPHICS_GCI_CLASS PresentationLayer : public GPUDriverChildObject
+	class IC3_GRAPHICS_GCI_CLASS PresentationLayer : public GpuDriverChildObject
 	{
 	public:
-		GPUDevice & mGPUDevice;
+		GpuDevice & mGpuDevice;
 
-		explicit PresentationLayer( GPUDevice & pGPUDevice );
+		explicit PresentationLayer( GpuDevice & pGpuDevice );
 		virtual ~PresentationLayer();
 
-		virtual System::EventSource * getInternalSystemEventSource() const noexcept;
+		virtual System::EventSource * GetInternalSystemEventSource() const noexcept;
 
-		virtual void bindRenderTarget( CommandContext * pCmdContext ) = 0;
+		virtual void BindRenderTarget( CommandContext * pCmdContext ) = 0;
 
-		virtual void invalidateRenderTarget( CommandContext * pCmdContext ) = 0;
+		virtual void InvalidateRenderTarget( CommandContext * pCmdContext ) = 0;
 
-		virtual void present() = 0;
+		virtual void Present() = 0;
 
-		virtual void resize( uint32 pWidth, uint32 pHeight ) = 0;
+		virtual void Resize( uint32 pWidth, uint32 pHeight ) = 0;
 
-		virtual void setFullscreenMode( bool pEnable ) = 0;
+		virtual void SetFullscreenMode( bool pEnable ) = 0;
 
-		virtual Ic3::Math::Vec2u32 queryRenderTargetSize() const = 0;
+		virtual Ic3::Math::Vec2u32 QueryRenderTargetSize() const = 0;
 	};
 
 } // namespace Ic3::Graphics::GCI

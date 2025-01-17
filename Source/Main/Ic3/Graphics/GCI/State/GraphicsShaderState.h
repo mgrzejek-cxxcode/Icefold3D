@@ -4,7 +4,7 @@
 #ifndef __IC3_GRAPHICS_GCI_GRAPHICS_SHADER_STATE_H__
 #define __IC3_GRAPHICS_GCI_GRAPHICS_SHADER_STATE_H__
 
-#include "CommonGPUStateDefs.h"
+#include "CommonGpuStateDefs.h"
 #include "../Resources/ShaderCommon.h"
 
 namespace Ic3::Graphics::GCI
@@ -45,25 +45,25 @@ namespace Ic3::Graphics::GCI
 
 		GraphicsShaderSet & operator=( const GraphicsShaderArray & pRhs );
 
-		IC3_ATTR_NO_DISCARD Shader * operator[]( size_t pIndex ) const noexcept;
+		CPPX_ATTR_NO_DISCARD Shader * operator[]( size_t pIndex ) const noexcept;
 
-		IC3_ATTR_NO_DISCARD Shader * operator[]( EShaderType pShaderType ) const noexcept;
+		CPPX_ATTR_NO_DISCARD Shader * operator[]( EShaderType pShaderType ) const noexcept;
 
-		IC3_ATTR_NO_DISCARD TBitmask<EShaderStageFlags> getActiveShaderStagesMask() const noexcept;
+		CPPX_ATTR_NO_DISCARD cppx::bitmask<EShaderStageFlags> GetActiveShaderStagesMask() const noexcept;
 
-		IC3_ATTR_NO_DISCARD uint32 getActiveShaderStagesNum() const noexcept;
+		CPPX_ATTR_NO_DISCARD uint32 GetActiveShaderStagesNum() const noexcept;
 
-		IC3_ATTR_NO_DISCARD bool empty() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept;
 
-		IC3_ATTR_NO_DISCARD bool validateShaders() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool ValidateShaders() const noexcept;
 
-		void addShader( ShaderHandle pShader ) noexcept;
+		void AddShader( ShaderHandle pShader ) noexcept;
 
-		void setShaders( const GraphicsShaderArray & pShaderArray ) noexcept;
+		void SetShaders( const GraphicsShaderArray & pShaderArray ) noexcept;
 
-		void resetStage( uint32 pStageIndex ) noexcept;
+		void ResetStage( uint32 pStageIndex ) noexcept;
 
-		void resetStage( EShaderType pShaderType ) noexcept;
+		void ResetStage( EShaderType pShaderType ) noexcept;
 	};
 
 	// State Management Utility API
@@ -71,11 +71,11 @@ namespace Ic3::Graphics::GCI
 	{
 
 		/// @brief
-		IC3_GRAPHICS_GCI_API_NO_DISCARD TBitmask<EShaderStageFlags> getActiveShaderStagesMask(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD cppx::bitmask<EShaderStageFlags> GetActiveShaderStagesMask(
 				const GraphicsShaderArray & pShaderArray ) noexcept;
 
 		/// @brief
-		IC3_GRAPHICS_GCI_API_NO_DISCARD uint32 getActiveShaderStagesNum(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD uint32 GetActiveShaderStagesNum(
 				const GraphicsShaderArray & pShaderArray ) noexcept;
 
 	}

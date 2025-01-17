@@ -1,31 +1,31 @@
 
 #include "MTLsampler.h"
 #include "../MTLUDevice.h"
-#include "../MTL_APITranslationLayer.h"
+#include "../MTL_ApiTranslationLayer.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	MetalSampler::MetalSampler( MetalGPUDevice & pGPUDevice, id<MTLSamplerState> pMTLSamplerState )
-	: Sampler( pGPUDevice )
+	MetalSampler::MetalSampler( MetalGpuDevice & pGpuDevice, id<MTLSamplerState> pMTLSamplerState )
+	: Sampler( pGpuDevice )
 	, mMTLSamplerState( pMTLSamplerState )
 	{}
 
 	MetalSampler::~MetalSampler() = default;
 
-	MetalSamplerHandle MetalSampler::createSampler( MetalGPUDevice & pGPUDevice, const SamplerCreateInfo & pCreateInfo )
+	MetalSamplerHandle MetalSampler::CreateSampler( MetalGpuDevice & pGpuDevice, const SamplerCreateInfo & pCreateInfo )
 	{
-		auto * mtlSamplerDescriptor = translateSamplerConfig( pCreateInfo.samplerConfig );
-		auto * mtlSamplerState = [pGPUDevice.mMTLDevice newSamplerStateWithDescriptor:mtlSamplerDescriptor];
+		auto * mtlSamplerDescriptor = TranslateSamplerConfig( pCreateInfo.samplerConfig );
+		auto * mtlSamplerState = [pGpuDevice.mMTLDevice newSamplerStateWithDescriptor:mtlSamplerDescriptor];
 
 		[mtlSamplerDescriptor dealloc];
 
-		auto metalSampler = createGPUAPIObject<MetalSampler>( pGPUDevice, mtlSamplerState );
+		auto metalSampler = CreateGfxObject<MetalSampler>( pGpuDevice, mtlSamplerState );
 
 		return metalSampler;
 	}
 
-	MTLSamplerDescriptor * MetalSampler::translateSamplerConfig( const SamplerConfig & pSamplerConfig )
+	MTLSamplerDescriptor * MetalSampler::TranslateSamplerConfig( const SamplerConfig & pSamplerConfig )
 	{
 		auto * mtlSamplerDescriptor = [[MTLSamplerDescriptor alloc] init];
 

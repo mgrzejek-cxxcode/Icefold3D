@@ -6,26 +6,26 @@ namespace Ic3::Graphics::GCI
 {
 
 	RenderTargetTexture::RenderTargetTexture(
-			GPUDevice & pGPUDevice,
+			GpuDevice & pGpuDevice,
 			ERenderTargetTextureType pRTTextureType,
 			const RenderTargetTextureLayout & pRTTextureLayout,
 			TextureReference pTargetTexture )
-	: GPUResourceView( pGPUDevice, EGPUResourceBaseType::Texture, pTargetTexture->mTextureProperties.mResourceFlags )
+	: GpuResourceView( pGpuDevice, EGpuResourceBaseType::Texture, pTargetTexture->mTextureProperties.resourceFlags )
 	, mRTTextureType( pRTTextureType )
-	, mRTBufferMask( CxDef::getRTBufferMaskForRenderTargetTextureType( pRTTextureType ) )
+	, mRTBufferMask( CxDef::GetRTBufferMaskForRenderTargetTextureType( pRTTextureType ) )
 	, mRTTextureLayout( pRTTextureLayout )
 	, mTargetTexture( pTargetTexture )
 	{}
 
 	RenderTargetTexture::RenderTargetTexture(
-			GPUDevice & pGPUDevice,
+			GpuDevice & pGpuDevice,
 			ERenderTargetTextureType pRTTextureType,
 			const RenderTargetTextureLayout & pRTTextureLayout,
-			TGPAHandle<GPUDeviceChildObject> pInternalRenderBuffer,
-			TBitmask<resource_flags_value_t> pRenderBufferFlags )
-	: GPUResourceView( pGPUDevice, EGPUResourceBaseType::Texture, pRenderBufferFlags )
+			TGfxHandle<GpuDeviceChildObject> pInternalRenderBuffer,
+			cppx::bitmask<resource_flags_value_t> pRenderBufferFlags )
+	: GpuResourceView( pGpuDevice, EGpuResourceBaseType::Texture, pRenderBufferFlags )
 	, mRTTextureType( pRTTextureType )
-	, mRTBufferMask( CxDef::getRTBufferMaskForRenderTargetTextureType( pRTTextureType ) )
+	, mRTBufferMask( CxDef::GetRTBufferMaskForRenderTargetTextureType( pRTTextureType ) )
 	, mRTTextureLayout( pRTTextureLayout )
 	, mTargetTexture()
 	, _internalRenderBuffer( pInternalRenderBuffer )
@@ -33,41 +33,41 @@ namespace Ic3::Graphics::GCI
 
 	RenderTargetTexture::~RenderTargetTexture() = default;
 
-	bool RenderTargetTexture::empty() const noexcept
+	bool RenderTargetTexture::IsEmpty() const noexcept
 	{
 		return !mTargetTexture && !_internalRenderBuffer;
 	}
 
-	bool RenderTargetTexture::isDepthStencilTexture() const noexcept
+	bool RenderTargetTexture::IsDepthStencilTexture() const noexcept
 	{
-		return mRTBufferMask.isSetAnyOf( E_RENDER_TARGET_BUFFER_MASK_DEPTH_STENCIL );
+		return mRTBufferMask.is_set_any_of( E_RENDER_TARGET_BUFFER_MASK_DEPTH_STENCIL );
 	}
 
-	bool RenderTargetTexture::isDepthStencilRenderBuffer() const noexcept
+	bool RenderTargetTexture::IsDepthStencilRenderBuffer() const noexcept
 	{
-		return _internalRenderBuffer && isDepthStencilTexture();
+		return _internalRenderBuffer && IsDepthStencilTexture();
 	}
 
 	namespace RCU
 	{
 
-		ERenderTargetTextureType queryRenderTargetTextureType( ETextureFormat pFormat )
+		ERenderTargetTextureType QueryRenderTargetTextureType( ETextureFormat pFormat )
 		{
-			const TBitmask<uint8> pixelFormatFlags = CxDef::getTextureFormatFlags( pFormat );
+			const cppx::bitmask<uint8> pixelFormatFlags = CxDef::GetTextureFormatFlags( pFormat );
 
-			if( pixelFormatFlags.isSet( eGPUDataFormatFlagCompressedBit ) )
+			if( pixelFormatFlags.is_set( eGpuDataFormatFlagCompressedBit ) )
 			{
 				return ERenderTargetTextureType::Unknown;
 			}
-			else if( pixelFormatFlags.isSet( eGPUDataFormatFlagDepthStencilBit ) )
+			else if( pixelFormatFlags.is_set( eGpuDataFormatFlagDepthStencilBit ) )
 			{
 				return ERenderTargetTextureType::RTDepthStencil;
 			}
-			else if( pixelFormatFlags.isSet( eGPUDataFormatFlagDepthBit ) )
+			else if( pixelFormatFlags.is_set( eGpuDataFormatFlagDepthBit ) )
 			{
 				return ERenderTargetTextureType::RTDepthOnly;
 			}
-			else if( pixelFormatFlags.isSet( eGPUDataFormatFlagStencilBit ) )
+			else if( pixelFormatFlags.is_set( eGpuDataFormatFlagStencilBit ) )
 			{
 				return ERenderTargetTextureType::RTStencilOnly;
 			}
@@ -77,18 +77,18 @@ namespace Ic3::Graphics::GCI
 			}
 		}
 
-		RenderTargetTextureLayout queryRenderTargetTextureLayout( const TextureLayout & pTextureLayout )
+		RenderTargetTextureLayout QueryRenderTargetTextureLayout( const TextureLayout & pTextureLayout )
 		{
 			RenderTargetTextureLayout rtTextureLayout{};
-			rtTextureLayout.mImageRect.mWidth = pTextureLayout.mDimensions.mWidth;
-			rtTextureLayout.mImageRect.mHeight = pTextureLayout.mDimensions.mHeight;
-			rtTextureLayout.mInternalFormat = pTextureLayout.mInternalFormat;
-			rtTextureLayout.mMSAALevel = pTextureLayout.mMSAALevel;
+			rtTextureLayout.imageRect.width = pTextureLayout.dimensions.width;
+			rtTextureLayout.imageRect.height = pTextureLayout.dimensions.height;
+			rtTextureLayout.internalFormat = pTextureLayout.internalFormat;
+			rtTextureLayout.msaaLevel = pTextureLayout.msaaLevel;
 
 			return rtTextureLayout;
 		}
 
-		bool validateRenderTargetTextureLayout( TextureHandle pTargetTexture, const RenderTargetTextureLayout & pRTTextureLayout )
+		bool ValidateRenderTargetTextureLayout( TextureHandle pTargetTexture, const RenderTargetTextureLayout & pRTTextureLayout )
 		{
 			if( !pTargetTexture )
 			{
@@ -98,10 +98,10 @@ namespace Ic3::Graphics::GCI
 			const auto & targetTextureLayout = pTargetTexture->mTextureLayout;
 
 			const auto layoutMatch =
-					(pRTTextureLayout.mImageRect.mWidth == targetTextureLayout.mDimensions.mWidth ) &&
-					(pRTTextureLayout.mImageRect.mHeight == targetTextureLayout.mDimensions.mHeight ) &&
-					(pRTTextureLayout.mInternalFormat == targetTextureLayout.mInternalFormat ) &&
-					(pRTTextureLayout.mMSAALevel == targetTextureLayout.mMSAALevel );
+					(pRTTextureLayout.imageRect.width == targetTextureLayout.dimensions.width ) &&
+					(pRTTextureLayout.imageRect.height == targetTextureLayout.dimensions.height ) &&
+					(pRTTextureLayout.internalFormat == targetTextureLayout.internalFormat ) &&
+					(pRTTextureLayout.msaaLevel == targetTextureLayout.msaaLevel );
 
 			return layoutMatch;
 		}

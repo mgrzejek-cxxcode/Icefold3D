@@ -15,33 +15,33 @@ namespace Ic3::Graphics::GCI
 		GLsync openglSyncFence = nullptr;
 	};
 
-	ICFGX_GL_API void releaseGLCommandSyncData( void * pSyncData );
+	IC3_GX_GL_API void releaseGLCommandSyncData( void * pSyncData );
 
 	/// @brief
-	class ICFGX_GL_CLASS GLCommandSystem : public CommandSystem
+	class IC3_GX_GL_CLASS GLCommandSystem : public CommandSystem
 	{
 	public:
-		explicit GLCommandSystem( GLGPUDevice & pGPUDevice );
+		explicit GLCommandSystem( GLGpuDevice & pGpuDevice );
 		virtual ~GLCommandSystem();
 
-		virtual std::unique_ptr<CommandContext> acquireCommandContext( ECommandContextType pContextType ) override;
+		virtual std::unique_ptr<CommandContext> AcquireCommandContext( ECommandContextType pContextType ) override;
 
-		virtual CommandSync submitContext( CommandContextDirect & pContext, const CommandContextSubmitInfo & pSubmitInfo ) override;
+		virtual CommandSync SubmitContext( CommandContextDirect & pContext, const CommandContextSubmitInfo & pSubmitInfo ) override;
 
 		// OpenGL-specific thing coming from the fact, that context creation requires target surface (Drawable on X11,
-		// HDC on Win32, EGLSurface on Android, etc.). GPUDevice::setPresentationLayer was actually introduced only to
+		// HDC on Win32, EGLSurface on Android, etc.). GpuDevice::setPresentationLayer was actually introduced only to
 		// make tis possible in at least a bit natural way. So, when PresentationLayer is set, GL-level onSet() gets
 		// the surface and passes it here, so CmdManager has the surface when a CmdContext is created.
-		// Also, that is the reason why no context is created in initialize() function and the requirement of having
-		// a surface bound to the device when acquireContext() is called.
-		void setTargetGLSurface( System::OpenGLDisplaySurfaceHandle pSysGLDisplaySurface );
+		// Also, that is the reason why no context is created in Initialize() function and the requirement of having
+		// a surface bound to the device when AcquireContext() is called.
+		void SetTargetGLSurface( System::OpenGLDisplaySurfaceHandle pSysGLDisplaySurface );
 
 	private:
-		GLCommandList * acquireCommandList( ECommandExecutionMode pCommandExecutionMode );
+		GLCommandList * AcquireCommandList( ECommandExecutionMode pCommandExecutionMode );
 
-		bool initializeMainCommandList();
+		bool InitializeMainCommandList();
 
-		static System::OpenGLRenderContextHandle createSysGLRenderContext( GLGPUDevice & pGPUDevice, System::OpenGLDisplaySurfaceHandle pSysGLDisplaySurface );
+		static System::OpenGLRenderContextHandle CreateSysGLRenderContext( GLGpuDevice & pGpuDevice, System::OpenGLDisplaySurfaceHandle pSysGLDisplaySurface );
 
 	protected:
 		System::OpenGLDisplaySurfaceHandle _targetSysGLSurface;

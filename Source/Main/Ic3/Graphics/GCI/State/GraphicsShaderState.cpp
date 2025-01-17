@@ -25,7 +25,7 @@ namespace Ic3::Graphics::GCI
 	GraphicsShaderSet::GraphicsShaderSet( const GraphicsShaderArray & pShaderArray )
 	: GraphicsShaderSet()
 	{
-		setShaders( pShaderArray );
+		SetShaders( pShaderArray );
 	}
 
 	GraphicsShaderSet & GraphicsShaderSet::operator=( const GraphicsShaderSet & pRhs )
@@ -36,45 +36,45 @@ namespace Ic3::Graphics::GCI
 
 	GraphicsShaderSet & GraphicsShaderSet::operator=( const GraphicsShaderArray & pRhs )
 	{
-		setShaders( pRhs );
+		SetShaders( pRhs );
 		return *this;
 	}
 
 	Shader * GraphicsShaderSet::operator[]( size_t pIndex ) const noexcept
 	{
-		ic3DebugAssert( CxDef::isShaderStageIndexValid( pIndex ) );
+		ic3DebugAssert( CxDef::IsShaderStageIndexValid( pIndex ) );
 		return commonShaderArray[pIndex].get();
 	}
 
 	Shader * GraphicsShaderSet::operator[]( EShaderType pShaderType ) const noexcept
 	{
-		ic3DebugAssert( CxDef::isShaderTypeGraphics( pShaderType ) );
-		const auto stageIndex = CxDef::getShaderStageIndex( pShaderType );
+		ic3DebugAssert( CxDef::IsShaderTypeGraphics( pShaderType ) );
+		const auto stageIndex = CxDef::GetShaderStageIndex( pShaderType );
 		return commonShaderArray[stageIndex].get();
 	}
 
-	TBitmask<EShaderStageFlags> GraphicsShaderSet::getActiveShaderStagesMask() const noexcept
+	cppx::bitmask<EShaderStageFlags> GraphicsShaderSet::GetActiveShaderStagesMask() const noexcept
 	{
-		return SMU::getActiveShaderStagesMask( commonShaderArray );
+		return SMU::GetActiveShaderStagesMask( commonShaderArray );
 	}
 
-	uint32 GraphicsShaderSet::getActiveShaderStagesNum() const noexcept
+	uint32 GraphicsShaderSet::GetActiveShaderStagesNum() const noexcept
 	{
-		return SMU::getActiveShaderStagesNum( commonShaderArray );
+		return SMU::GetActiveShaderStagesNum( commonShaderArray );
 	}
 
-	bool GraphicsShaderSet::empty() const noexcept
+	bool GraphicsShaderSet::IsEmpty() const noexcept
 	{
 		return !vertexShader || !pixelShader;
 	}
 
-	bool GraphicsShaderSet::validateShaders() const noexcept
+	bool GraphicsShaderSet::ValidateShaders() const noexcept
 	{
 		for( uint32 stageIndex = 0; stageIndex < GCM::cxShaderGraphicsStagesNum; ++stageIndex )
 		{
 			if( auto shader = commonShaderArray[stageIndex] )
 			{
-				const auto shaderType = CxDef::getShaderTypeFromStageIndex( stageIndex );
+				const auto shaderType = CxDef::GetShaderTypeFromStageIndex( stageIndex );
 				if( shader->mShaderType != shaderType )
 				{
 					return false;
@@ -85,22 +85,22 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	void GraphicsShaderSet::addShader( ShaderHandle pShader ) noexcept
+	void GraphicsShaderSet::AddShader( ShaderHandle pShader ) noexcept
 	{
 		if( pShader )
 		{
-			const auto stageIndex = CxDef::getShaderStageIndex( pShader->mShaderType );
+			const auto stageIndex = CxDef::GetShaderStageIndex( pShader->mShaderType );
 			commonShaderArray[stageIndex] = pShader;
 		}
 	}
 
-	void GraphicsShaderSet::setShaders( const GraphicsShaderArray & pShaderArray ) noexcept
+	void GraphicsShaderSet::SetShaders( const GraphicsShaderArray & pShaderArray ) noexcept
 	{
 		for( uint32 stageIndex = 0; stageIndex < GCM::cxShaderGraphicsStagesNum; ++stageIndex )
 		{
 			if( const auto shader = pShaderArray[stageIndex] )
 			{
-				const auto shaderTypeAtIndex = CxDef::getShaderTypeFromStageIndex( stageIndex );
+				const auto shaderTypeAtIndex = CxDef::GetShaderTypeFromStageIndex( stageIndex );
 				if( shader->mShaderType == shaderTypeAtIndex )
 				{
 					commonShaderArray[stageIndex] = shader;
@@ -109,31 +109,31 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	void GraphicsShaderSet::resetStage( uint32 pStageIndex ) noexcept
+	void GraphicsShaderSet::ResetStage( uint32 pStageIndex ) noexcept
 	{
-		ic3DebugAssert( CxDef::isShaderStageIndexValidGraphics( pStageIndex ) );
+		ic3DebugAssert( CxDef::IsShaderStageIndexValidGraphics( pStageIndex ) );
 		commonShaderArray[pStageIndex] = cvNullHandle;
 	}
 
-	void GraphicsShaderSet::resetStage( EShaderType pShaderType ) noexcept
+	void GraphicsShaderSet::ResetStage( EShaderType pShaderType ) noexcept
 	{
-		ic3DebugAssert( CxDef::isShaderTypeGraphics( pShaderType ) );
-		const auto stageIndex = CxDef::getShaderStageIndex( pShaderType );
+		ic3DebugAssert( CxDef::IsShaderTypeGraphics( pShaderType ) );
+		const auto stageIndex = CxDef::GetShaderStageIndex( pShaderType );
 		commonShaderArray[stageIndex] = cvNullHandle;
 	}
 
 	namespace SMU
 	{
 
-		TBitmask<EShaderStageFlags> getActiveShaderStagesMask( const GraphicsShaderArray & pShaderArray ) noexcept
+		cppx::bitmask<EShaderStageFlags> GetActiveShaderStagesMask( const GraphicsShaderArray & pShaderArray ) noexcept
 		{
-			TBitmask<EShaderStageFlags> activeStagesMask = 0;
+			cppx::bitmask<EShaderStageFlags> activeStagesMask = 0;
 
 			for( uint32 stageIndex = 0; stageIndex < GCM::cxShaderGraphicsStagesNum; ++stageIndex )
 			{
 				if( const auto shader = pShaderArray[stageIndex] )
 				{
-					const auto shaderTypeAtIndex = CxDef::getShaderTypeFromStageIndex( stageIndex );
+					const auto shaderTypeAtIndex = CxDef::GetShaderTypeFromStageIndex( stageIndex );
 					if( shader->mShaderType == shaderTypeAtIndex )
 					{
 						const auto shaderTypeBit = CxDef::makeShaderStageBit( stageIndex );
@@ -145,10 +145,10 @@ namespace Ic3::Graphics::GCI
 			return activeStagesMask;
 		}
 
-		uint32 getActiveShaderStagesNum( const GraphicsShaderArray & pShaderArray ) noexcept
+		uint32 GetActiveShaderStagesNum( const GraphicsShaderArray & pShaderArray ) noexcept
 		{
-			const auto activeStagesMask = getActiveShaderStagesMask( pShaderArray );
-			const auto activeStagesNum = popCount( activeStagesMask );
+			const auto activeStagesMask = GetActiveShaderStagesMask( pShaderArray );
+			const auto activeStagesNum = pop_count( activeStagesMask );
 			return activeStagesNum;
 		}
 

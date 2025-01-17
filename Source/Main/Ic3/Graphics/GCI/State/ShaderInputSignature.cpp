@@ -30,7 +30,7 @@ namespace Ic3::Graphics::GCI
 	namespace SMU
 	{
 
-		ShaderInputSignature createShaderInputSignature( const ShaderInputSignatureDesc & pInputSignatureDesc )
+		ShaderInputSignature CreateShaderInputSignature( const ShaderInputSignatureDesc & pInputSignatureDesc )
 		{
 			ShaderInputSignature inputSignature;
 			inputSignature.dwordSize = 0;
@@ -41,12 +41,12 @@ namespace Ic3::Graphics::GCI
 
 			if( !createInputSignatureConstantLayout( pInputSignatureDesc, inputSignature ) )
 			{
-				return CX_INIT_EMPTY;
+				return cxInitEmpty;
 			}
 
 			if( !createInputSignatureDescriptorLayout( pInputSignatureDesc, inputSignature ) )
 			{
-				return CX_INIT_EMPTY;
+				return cxInitEmpty;
 			}
 
 			inputSignature.constantsNum = inputSignature.constantLayout.constantsNum;
@@ -101,7 +101,7 @@ namespace Ic3::Graphics::GCI
 				constantParameter.cParamType = EShaderInputParameterType::Constant;
 				constantParameter.iFormat = constantDesc.format;
 				constantParameter.iStageIndex = constantDesc.bindingIndex;
-				constantParameter.iByteSize = CxDef::getVertexAttribFormatByteSize( constantDesc.format );
+				constantParameter.iByteSize = CxDef::GetVertexAttribFormatByteSize( constantDesc.format );
 				constantParameter.iDwordSize = computeConstantDwordSize( constantParameter.iByteSize );
 				constantParameter.iAccessClass = constantGroupDesc.accessClass;
 
@@ -128,7 +128,7 @@ namespace Ic3::Graphics::GCI
 			}
 			else
 			{
-				constant.iVisibilityMask = CxDef::getShaderConstantVisibilityStageMask( constant.iAccessClass );
+				constant.iVisibilityMask = CxDef::GetShaderConstantVisibilityStageMask( constant.iAccessClass );
 			}
 		}
 
@@ -159,7 +159,7 @@ namespace Ic3::Graphics::GCI
 			auto descriptorSetIndex = descriptorLayout.descriptorSets.size();
 
 			uint32 setDescriptorsNum = 0;
-			TBitmask<EShaderStageFlags> descriptorSetVisibilityMask = 0;
+			cppx::bitmask<EShaderStageFlags> descriptorSetVisibilityMask = 0;
 
 			for( uint32 inputDescriptorIndex = 0; inputDescriptorIndex < descriptorSetDesc.descriptorsNum; ++inputDescriptorIndex )
 			{
@@ -168,7 +168,7 @@ namespace Ic3::Graphics::GCI
 				auto & descriptor = descriptorLayout.commonDescriptorArray.emplace_back();
 				descriptor.cRefID = descriptorDesc.refID;
 				descriptor.dDescriptorType = descriptorSetDesc.descriptorType;
-				descriptor.dSetIndex = numeric_cast<shader_input_index_t>( descriptorSetIndex );
+				descriptor.dSetIndex = cppx::numeric_cast<shader_input_index_t>( descriptorSetIndex );
 				descriptor.dShaderVisibilityMask = descriptorDesc.shaderVisibilityMask & pInputSignatureDesc.activeShaderStagesMask;
 
 				if( descriptorSetDesc.descriptorType == EShaderInputDescriptorType::Resource )
@@ -176,7 +176,7 @@ namespace Ic3::Graphics::GCI
 					descriptor.cParamType = EShaderInputParameterType::Resource;
 					descriptor.uResourceInfo.resourceArraySize = descriptorDesc.uResourceDesc.resourceArraySize;
 					descriptor.uResourceInfo.resourceType = descriptorDesc.uResourceDesc.resourceType;
-					descriptor.uResourceInfo.resourceClass = CxDef::getShaderInputResourceResourceClass( descriptorDesc.uResourceDesc.resourceType );
+					descriptor.uResourceInfo.resourceClass = CxDef::GetShaderInputResourceResourceClass( descriptorDesc.uResourceDesc.resourceType );
 					descriptor.uResourceInfo.resourceBaseRegisterIndex = descriptorDesc.uResourceDesc.resourceBaseRegisterIndex;
 				}
 				else if( descriptorSetDesc.descriptorType == EShaderInputDescriptorType::Sampler )
@@ -191,10 +191,10 @@ namespace Ic3::Graphics::GCI
 
 			auto & descriptorSet = descriptorLayout.descriptorSets.emplace_back();
 			descriptorSet.descriptorType = descriptorSetDesc.descriptorType;
-			descriptorSet.arrayOffset = numeric_cast<uint32>( descriptorSetArrayOffset );
+			descriptorSet.arrayOffset = cppx::numeric_cast<uint32>( descriptorSetArrayOffset );
 			descriptorSet.basePtr = descriptorLayout.commonDescriptorArray.data() + descriptorSetArrayOffset;
 			descriptorSet.setDescriptorsNum = setDescriptorsNum;
-			descriptorSet.setIndex = numeric_cast<uint32>( descriptorSetIndex );
+			descriptorSet.setIndex = cppx::numeric_cast<uint32>( descriptorSetIndex );
 			descriptorSet.shaderVisibilityMask = descriptorSetVisibilityMask;
 		}
 
@@ -218,11 +218,11 @@ namespace Ic3::Graphics::GCI
 		for( uint32 inputConstantGroupIndex = 0; inputConstantGroupIndex < pInputSignatureDesc.constantGroupsNum; ++inputConstantGroupIndex )
 		{
 			const auto & constantGroupDesc = pInputSignatureDesc.constantGroupArray[inputConstantGroupIndex];
-			auto groupShaderStageMask = CxDef::getShaderConstantVisibilityStageMask( constantGroupDesc.accessClass );
+			auto groupShaderStageMask = CxDef::GetShaderConstantVisibilityStageMask( constantGroupDesc.accessClass );
 
 			constantsNum += constantGroupDesc.constantsNum;
 
-			if( !pInputSignatureDesc.activeShaderStagesMask.isSet( groupShaderStageMask ) )
+			if( !pInputSignatureDesc.activeShaderStagesMask.is_set( groupShaderStageMask ) )
 			{
 				ic3DebugInterrupt();
 				return false;
@@ -232,7 +232,7 @@ namespace Ic3::Graphics::GCI
 			{
 				const auto & constantDesc = constantGroupDesc.constantList[inputConstantIndex];
 
-				auto constantByteSize = CxDef::getVertexAttribFormatByteSize( constantDesc.format );
+				auto constantByteSize = CxDef::GetVertexAttribFormatByteSize( constantDesc.format );
 				auto constantDwordSize = computeConstantDwordSize( constantByteSize );
 				totalDwordSize += constantDwordSize;
 
@@ -244,8 +244,8 @@ namespace Ic3::Graphics::GCI
 			}
 		}
 
-		pOutConstantLayoutInfo.constantsNum = numeric_cast<uint32>( constantsNum );
-		pOutConstantLayoutInfo.totalDwordSize = numeric_cast<uint32>( totalDwordSize );
+		pOutConstantLayoutInfo.constantsNum = cppx::numeric_cast<uint32>( constantsNum );
+		pOutConstantLayoutInfo.totalDwordSize = cppx::numeric_cast<uint32>( totalDwordSize );
 
 		return true;
 	}
@@ -278,8 +278,8 @@ namespace Ic3::Graphics::GCI
 			}
 		}
 
-		pOutDescriptorLayoutInfo.descriptorsNum = numeric_cast<uint32>( descriptorsNum );
-		pOutDescriptorLayoutInfo.descriptorSetsNum = numeric_cast<uint32>( descriptorSetsNum );
+		pOutDescriptorLayoutInfo.descriptorsNum = cppx::numeric_cast<uint32>( descriptorsNum );
+		pOutDescriptorLayoutInfo.descriptorSetsNum = cppx::numeric_cast<uint32>( descriptorSetsNum );
 
 		return true;
 	}
@@ -288,7 +288,7 @@ namespace Ic3::Graphics::GCI
 	{
 		auto dwordSize = pByteSize / sizeof( uint32 );
 		auto dwordSizeMod = pByteSize % sizeof( uint32 );
-		return ( dwordSizeMod == 0 ) ? numeric_cast<uint32>( dwordSize ) : numeric_cast<uint32>( dwordSize + 1 );
+		return ( dwordSizeMod == 0 ) ? cppx::numeric_cast<uint32>( dwordSize ) : cppx::numeric_cast<uint32>( dwordSize + 1 );
 	}
 
 } // namespace Ic3::Graphics::GCI

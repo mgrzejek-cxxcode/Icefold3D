@@ -69,7 +69,7 @@ namespace Ic3::Graphics::GCI
 
 	struct SamplerConfig
 	{
-		using MipLODRange = TRange<float>;
+		using MipLODRange = cppx::range<float>;
 		TextureCoordAddressModeConfig addressModeConfig;
 		Math::RGBAColorR32Norm borderColor;
 		ETextureBorderPredefinedColor borderPredefinedColor;

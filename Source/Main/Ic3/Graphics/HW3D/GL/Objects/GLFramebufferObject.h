@@ -13,7 +13,7 @@ namespace Ic3::Graphics::GCI
 	class GLRenderbufferObject;
 	class GLTextureObject;
 
-	ic3GLDeclareOpenGLObjectHandle( GLFramebufferObject );
+	Ic3GLDeclareOpenGLObjectHandle( GLFramebufferObject );
 
 	class GLFramebufferObject : public GLObject
 	{
@@ -21,39 +21,39 @@ namespace Ic3::Graphics::GCI
 		GLFramebufferObject( GLuint pHandle );
 		virtual ~GLFramebufferObject();
 
-		virtual bool release();
-		virtual bool validateHandle() const;
+		virtual bool Release();
+		virtual bool ValidateHandle() const;
 
-		void bindColorRenderbuffer(
+		void BindColorRenderbuffer(
 				uint32 pColorAttachmentIndex,
 				GLRenderbufferObject & pGLRenderbuffer,
 				GLenum pActiveBindTarget = 0 );
 
-		void bindDepthStencilRenderbuffer(
+		void BindDepthStencilRenderbuffer(
 				GLRenderbufferObject & pGLRenderbuffer,
-				Bitmask<uint32> pBufferMask,
+				cppx::bitmask<uint32> pBufferMask,
 				GLenum pActiveBindTarget = 0 );
 
-		void bindColorTexture(
+		void BindColorTexture(
 				uint32 pColorAttachmentIndex,
 				GLTextureObject & pGLTexture,
 				const TextureSubResource & pSubResource,
 				GLenum pActiveBindTarget = 0 );
 
-		void bindDepthStencilTexture(
+		void BindDepthStencilTexture(
 				GLTextureObject & pGLTexture,
 				const TextureSubResource & pSubResource,
-				Bitmask<uint32> pBufferMask,
+				cppx::bitmask<uint32> pBufferMask,
 				GLenum pActiveBindTarget = 0 );
 
-		bool checkStatus( GLenum pActiveBindTarget = 0 ) const;
+		bool CheckStatus( GLenum pActiveBindTarget = 0 ) const;
 
-		static GLFramebufferObjectHandle create();
+		static GLFramebufferObjectHandle Create();
 
-		static GLFramebufferObjectHandle createForDefaultFramebuffer();
+		static GLFramebufferObjectHandle CreateForDefaultFramebuffer();
 
 	private:
-		GLenum checkActiveBindTarget( GLenum pBindTarget ) const;
+		GLenum CheckActiveBindTarget( GLenum pBindTarget ) const;
 	};
 
 } // namespace Ic3::Graphics::GCI

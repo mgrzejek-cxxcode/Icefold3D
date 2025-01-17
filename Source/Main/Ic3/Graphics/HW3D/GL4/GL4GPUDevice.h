@@ -5,29 +5,29 @@
 #define __IC3_GRAPHICS_HW3D_GL4_GRAPHICS_DEVICE_H__
 
 #include "GL4Prerequisites.h"
-#include <Ic3/Graphics/HW3D/GL/GLGPUDevice.h>
+#include <Ic3/Graphics/HW3D/GL/GLGpuDevice.h>
 #include <Ic3/Graphics/HW3D/GL/State/GLPipelineStateObject.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-#if( ICFGX_GL4_USE_COMPAT_API )
-	using GL4GPUDeviceBase = GLGPUDeviceCompat;
+#if( IC3_GX_GL4_USE_COMPAT_API )
+	using GL4GpuDeviceBase = GLGpuDeviceCompat;
 #else
-	using GL4GPUDeviceBase = GLGPUDeviceCore;
+	using GL4GpuDeviceBase = GLGpuDeviceCore;
 #endif
 
-	struct GL4GPUDeviceCreateInfo : public GPUDeviceCreateInfo
+	struct GL4GpuDeviceCreateInfo : public GpuDeviceCreateInfo
 	{
 	};
 
-	class ICFGX_GL4_CLASS GL4GPUDevice final : public GL4GPUDeviceBase
+	class IC3_GX_GL4_CLASS GL4GpuDevice final : public GL4GpuDeviceBase
 	{
 	public:
-		explicit GL4GPUDevice( GL4GPUDriver & pDriver );
-		virtual ~GL4GPUDevice();
+		explicit GL4GpuDevice( GL4GpuDriver & pDriver );
+		virtual ~GL4GpuDevice();
 
-		static GL4GPUDeviceHandle create( GL4GPUDriver & pDriver, const GL4GPUDeviceCreateInfo & pCreateInfo );
+		static GL4GpuDeviceHandle Create( GL4GpuDriver & pDriver, const GL4GpuDeviceCreateInfo & pCreateInfo );
 	};
 
 } // namespace Ic3::Graphics::GCI

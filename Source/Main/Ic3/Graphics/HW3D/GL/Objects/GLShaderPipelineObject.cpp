@@ -11,7 +11,7 @@ namespace Ic3::Graphics::GCI
 
 	GLShaderPipelineObject::~GLShaderPipelineObject() = default;
 
-	GLuint GLShaderPipelineObject::queryCurrentShaderPipelineBinding()
+	GLuint GLShaderPipelineObject::QueryCurrentShaderPipelineBinding()
 	{
 		GLint shaderPipelineHandle = 0;
 
@@ -21,17 +21,17 @@ namespace Ic3::Graphics::GCI
 		return static_cast<GLuint>( shaderPipelineHandle );
 	}
 
-	GLShaderPipelineObjectHandle GLShaderPipelineObject::create()
+	GLShaderPipelineObjectHandle GLShaderPipelineObject::Create()
 	{
 		GLuint shaderPipelineHandle = 0;
 
 		glGenProgramPipelines( 1, &shaderPipelineHandle );
 		ic3OpenGLHandleLastError();
 
-		return createGLObject<GLShaderPipelineObject>( shaderPipelineHandle );
+		return CreateGLObject<GLShaderPipelineObject>( shaderPipelineHandle );
 	}
 
-	bool GLShaderPipelineObject::release()
+	bool GLShaderPipelineObject::Release()
 	{
 		glDeleteProgramPipelines( 1, &mGLHandle );
 		ic3OpenGLHandleLastError();
@@ -39,7 +39,7 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	bool GLShaderPipelineObject::validateHandle() const
+	bool GLShaderPipelineObject::ValidateHandle() const
 	{
 		auto isProgram = glIsProgramPipeline( mGLHandle );
 		ic3OpenGLHandleLastError();
@@ -47,9 +47,9 @@ namespace Ic3::Graphics::GCI
 		return isProgram != GL_FALSE;
 	}
 
-	void GLShaderPipelineObject::attachProgram( GLShaderProgramObject & pProgram )
+	void GLShaderPipelineObject::AttachProgram( GLShaderProgramObject & pProgram )
 	{
-		auto programStageMask = pProgram.getLinkedShaderStageMask();
+		auto programStageMask = pProgram.GetLinkedShaderStageMask();
 		if( programStageMask == 0 )
 		{
 			return;
@@ -59,15 +59,15 @@ namespace Ic3::Graphics::GCI
 		ic3OpenGLHandleLastError();
 	}
 
-	void GLShaderPipelineObject::attachProgram( GLShaderProgramObject & pProgram, Bitmask<GLenum> pStageMask )
+	void GLShaderPipelineObject::AttachProgram( GLShaderProgramObject & pProgram, cppx::bitmask<GLenum> pStageMask )
 	{
-		auto programStageMask = pProgram.getLinkedShaderStageMask();
+		auto programStageMask = pProgram.GetLinkedShaderStageMask();
 		if( programStageMask == 0 )
 		{
 			// WARN!
 			return;
 		}
-		if( !programStageMask.isSet( pStageMask ) )
+		if( !programStageMask.is_set( pStageMask ) )
 		{
 			// WARN!
 			return;
@@ -77,13 +77,13 @@ namespace Ic3::Graphics::GCI
 		ic3OpenGLHandleLastError();
 	}
 
-	void GLShaderPipelineObject::setActiveProgram( GLShaderProgramObject & pProgram )
+	void GLShaderPipelineObject::SetActiveProgram( GLShaderProgramObject & pProgram )
 	{
 		glActiveShaderProgram( mGLHandle, pProgram.mGLHandle );
 		ic3OpenGLHandleLastError();
 	}
 
-	void GLShaderPipelineObject::resetActiveProgram()
+	void GLShaderPipelineObject::ResetActiveProgram()
 	{
 		glActiveShaderProgram( mGLHandle, 0 );
 		ic3OpenGLHandleLastError();

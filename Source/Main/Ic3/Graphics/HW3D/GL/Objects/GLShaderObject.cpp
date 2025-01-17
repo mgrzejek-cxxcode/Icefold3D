@@ -1,7 +1,7 @@
 
 #include "GLShaderObject.h"
-#include <Ic3/Cppx/ByteArray.h>
-#include <Ic3/Cppx/STLHelperAlgo.h>
+#include <cppx/byteArray.h>
+#include <cppx/stdHelperAlgo.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -14,9 +14,9 @@ namespace Ic3::Graphics::GCI
 
 	GLShaderObject::~GLShaderObject() = default;
 
-	GLShaderObjectHandle GLShaderObject::create( GLenum pGLShaderType )
+	GLShaderObjectHandle GLShaderObject::Create( GLenum pGLShaderType )
 	{
-		auto shaderStageMaskBit = getStageMaskForEShaderType( pGLShaderType );
+		auto shaderStageMaskBit = GetStageMaskForEShaderType( pGLShaderType );
 		if( shaderStageMaskBit == cvGLInvalidValue )
 		{
 			return nullptr;
@@ -30,20 +30,20 @@ namespace Ic3::Graphics::GCI
 		return openglShaderObject;
 	}
 
-	GLShaderObjectHandle GLShaderObject::createWithSource( GLenum pGLShaderType, const void * pSource, size_t pSourceLength )
+	GLShaderObjectHandle GLShaderObject::CreateWithSource( GLenum pGLShaderType, const void * pSource, size_t pSourceLength )
 	{
 		if( !pSource || ( pSourceLength == 0 ) )
 		{
 			return nullptr;
 		}
 
-		auto shaderObject = create( pGLShaderType );
+		auto shaderObject = Create( pGLShaderType );
 		if( !shaderObject )
 		{
 			return nullptr;
 		}
 
-		if( !shaderObject->compileSource( pSource, pSourceLength ) )
+		if( !shaderObject->CompileSource( pSource, pSourceLength ) )
 		{
 			return nullptr;
 		}
@@ -51,9 +51,9 @@ namespace Ic3::Graphics::GCI
 		return shaderObject;
 	}
 
-	bool GLShaderObject::release()
+	bool GLShaderObject::Release()
 	{
-		auto deleteStatus = queryParameter( GL_DELETE_STATUS );
+		auto deleteStatus = QueryParameter( GL_DELETE_STATUS );
 		if( deleteStatus == GL_FALSE )
 		{
 			glDeleteShader( mGLHandle );
@@ -65,13 +65,13 @@ namespace Ic3::Graphics::GCI
 		return false;
 	}
 
-	bool GLShaderObject::validateHandle() const
+	bool GLShaderObject::ValidateHandle() const
 	{
 		GLboolean checkResult = glIsShader( mGLHandle );
 		return checkResult == GL_TRUE;
 	}
 
-	bool GLShaderObject::compileSource( const void * pSource, size_t pSourceLength )
+	bool GLShaderObject::CompileSource( const void * pSource, size_t pSourceLength )
 	{
 		const auto * sourceBuffer = reinterpret_cast<const GLchar*>( pSource );
 		const auto sourceLength = static_cast<GLint>( pSourceLength );
@@ -82,10 +82,10 @@ namespace Ic3::Graphics::GCI
 		glCompileShader( mGLHandle );
 		ic3OpenGLHandleLastError();
 
-		auto compileStatus = queryParameter( GL_COMPILE_STATUS );
+		auto compileStatus = QueryParameter( GL_COMPILE_STATUS );
 		if ( compileStatus != GL_TRUE )
 		{
-			auto infoLog = getInfoLog();
+			auto infoLog = GetInfoLog();
 			ic3DebugOutput( infoLog.data() );
 			ic3DebugInterrupt();
 			return false;
@@ -94,9 +94,9 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	bool GLShaderObject::loadBinary( GLenum pFormat, const void * pBinary, size_t pBinarySize )
+	bool GLShaderObject::LoadBinary( GLenum pFormat, const void * pBinary, size_t pBinarySize )
 	{
-		if( !checkBinaryCodeSupport() )
+		if( !CheckBinaryCodeSupport() )
 		{
 			return false;
 		}
@@ -107,17 +107,17 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	void GLShaderObject::setDataLayoutMap( GLShaderDataLayoutMap pLayoutMap )
+	void GLShaderObject::SetDataLayoutMap( GLShaderDataLayoutMap pLayoutMap )
 	{
 		_dataLayoutMap = std::make_unique<GLShaderDataLayoutMap>( std::move( pLayoutMap ) );
 	}
 
-	GLShaderDataLayoutMap * GLShaderObject::getDataLayoutMap() const noexcept
+	GLShaderDataLayoutMap * GLShaderObject::GetDataLayoutMap() const noexcept
 	{
 		return _dataLayoutMap.get();
 	}
 
-	GLint GLShaderObject::queryParameter( GLenum pParameter ) const
+	GLint GLShaderObject::QueryParameter( GLenum pParameter ) const
 	{
 		GLint parameterValue = GL_INVALID_VALUE;
 
@@ -127,14 +127,14 @@ namespace Ic3::Graphics::GCI
 		return parameterValue;
 	}
 
-	std::string GLShaderObject::getInfoLog() const
+	std::string GLShaderObject::GetInfoLog() const
 	{
 		std::string infoLog {};
 
-		auto infoLogLength = getInfoLogLength();
+		auto infoLogLength = GetInfoLogLength();
 		if( infoLogLength > 0 )
 		{
-			Ic3::DynamicByteArray infoLogBuffer;
+			cppx::dynamic_byte_array infoLogBuffer;
 			infoLogBuffer.resize( infoLogLength );
 
 			glGetShaderInfoLog( mGLHandle, static_cast<GLsizei>( infoLogLength ), nullptr, infoLogBuffer.dataAs<GLchar>() );
@@ -147,14 +147,14 @@ namespace Ic3::Graphics::GCI
 		return infoLog;
 	}
 
-	std::string GLShaderObject::getSource() const
+	std::string GLShaderObject::GetSource() const
 	{
 		std::string source {};
 
-		auto sourceLength = getSourceLength();
+		auto sourceLength = GetSourceLength();
 		if (sourceLength > 0)
 		{
-			Ic3::DynamicByteArray sourceBuffer;
+			cppx::dynamic_byte_array sourceBuffer;
 			sourceBuffer.resize( sourceLength );
 
 			glGetShaderSource( mGLHandle, static_cast<GLsizei>( sourceLength ), nullptr, sourceBuffer.dataAs<GLchar>() );
@@ -167,31 +167,31 @@ namespace Ic3::Graphics::GCI
 		return source;
 	}
 
-	size_t GLShaderObject::getInfoLogLength() const
+	size_t GLShaderObject::GetInfoLogLength() const
 	{
-		auto infoLogLength = queryParameter( GL_INFO_LOG_LENGTH );
+		auto infoLogLength = QueryParameter( GL_INFO_LOG_LENGTH );
 		return infoLogLength;
 	}
 
-	size_t GLShaderObject::getSourceLength() const
+	size_t GLShaderObject::GetSourceLength() const
 	{
-		auto sourceLength = queryParameter( GL_SHADER_SOURCE_LENGTH );
+		auto sourceLength = QueryParameter( GL_SHADER_SOURCE_LENGTH );
 		return sourceLength;
 	}
 
-	bool GLShaderObject::isInfoLogEmpty() const
+	bool GLShaderObject::IsInfoLogEmpty() const
 	{
-		auto infoLogLength = getInfoLogLength();
+		auto infoLogLength = GetInfoLogLength();
 		return infoLogLength == 0;
 	}
 
-	bool GLShaderObject::isSourceEmpty() const
+	bool GLShaderObject::IsSourceEmpty() const
 	{
-		auto sourceLength = getSourceLength();
+		auto sourceLength = GetSourceLength();
 		return sourceLength == 0;
 	}
 
-	bool GLShaderObject::checkBinaryCodeSupport()
+	bool GLShaderObject::CheckBinaryCodeSupport()
 	{
 		GLint shaderBinaryFormatsNum = 0;
 		glGetIntegerv( GL_NUM_SHADER_BINARY_FORMATS, &shaderBinaryFormatsNum );
@@ -200,7 +200,7 @@ namespace Ic3::Graphics::GCI
 		return shaderBinaryFormatsNum > 0;
 	}
 
-	bool GLShaderObject::checkBinaryFormatSupport( GLenum pFormat )
+	bool GLShaderObject::CheckBinaryFormatSupport( GLenum pFormat )
 	{
 		GLint shaderBinaryFormatsNum = 0;
 		glGetIntegerv( GL_NUM_SHADER_BINARY_FORMATS, &shaderBinaryFormatsNum );
@@ -209,20 +209,20 @@ namespace Ic3::Graphics::GCI
 		return shaderBinaryFormatsNum > 0;
 	}
 
-	GLbitfield GLShaderObject::getStageMaskForEShaderType( GLenum pGLShaderType )
+	GLbitfield GLShaderObject::GetStageMaskForEShaderType( GLenum pGLShaderType )
 	{
 		switch( pGLShaderType )
 		{
 			ic3CaseReturn( GL_VERTEX_SHADER   , GL_VERTEX_SHADER_BIT   );
 			ic3CaseReturn( GL_FRAGMENT_SHADER , GL_FRAGMENT_SHADER_BIT );
-		#if( ICFGX_GL_FEATURE_SUPPORT_SHADER_TYPE_GEOMETRY )
+		#if( IC3_GX_GL_FEATURE_SUPPORT_SHADER_TYPE_GEOMETRY )
 			ic3CaseReturn( GL_GEOMETRY_SHADER , GL_GEOMETRY_SHADER_BIT );
 		#endif
-		#if( ICFGX_GL_FEATURE_SUPPORT_SHADER_TYPE_TESSELATION )
+		#if( IC3_GX_GL_FEATURE_SUPPORT_SHADER_TYPE_TESSELATION )
 			ic3CaseReturn( GL_TESS_CONTROL_SHADER    , GL_TESS_CONTROL_SHADER_BIT    );
 			ic3CaseReturn( GL_TESS_EVALUATION_SHADER , GL_TESS_EVALUATION_SHADER_BIT );
 		#endif
-		#if( ICFGX_GL_FEATURE_SUPPORT_SHADER_TYPE_COMPUTE )
+		#if( IC3_GX_GL_FEATURE_SUPPORT_SHADER_TYPE_COMPUTE )
 			ic3CaseReturn( GL_COMPUTE_SHADER , GL_COMPUTE_SHADER_BIT );
 		#endif
 		};

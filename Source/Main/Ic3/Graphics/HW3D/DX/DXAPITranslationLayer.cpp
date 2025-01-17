@@ -1,14 +1,14 @@
 
-#include "DXAPITranslationLayer.h"
+#include "DXApiTranslationLayer.h"
 #include <Ic3/Graphics/GCI/Resources/ShaderCommon.h>
 #include <Ic3/Graphics/GCI/Resources/TextureCommon.h>
-#include <Ic3/Cppx/STLHelperAlgo.h>
-#include <Ic3/Cppx/Utilities.h>
+#include <cppx/stdHelperAlgo.h>
+#include <cppx/utilities.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	DXGIGetDebugInterfaceType ATL::loadDXGIDebugLegacyLoader()
+	DXGIGetDebugInterfaceType ATL::LoadDXGIDebugLegacyLoader()
 	{
 		HMODULE dxgiDebugLib = ::LoadLibraryExA( "dxgidebug.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32 );
 		if( !dxgiDebugLib )
@@ -25,9 +25,9 @@ namespace Ic3::Graphics::GCI
 		return reinterpret_cast<DXGIGetDebugInterfaceType>( dxgiProcAddress );
 	}
 
-	ComPtr<IDXGIDebug> ATL::queryDXGIDebugInterface( Bitmask<EGPUDriverConfigFlags> pDriverConfigFlags )
+	ComPtr<IDXGIDebug> ATL::QueryDXGIDebugInterface( cppx::bitmask<EGpuDriverConfigFlags> pDriverConfigFlags )
 	{
-		if( !pDriverConfigFlags.isSet( E_GPU_DRIVER_CONFIG_FLAG_ENABLE_DEBUG_LAYER_BIT ) )
+		if( !pDriverConfigFlags.is_set( E_GPU_DRIVER_CONFIG_FLAG_ENABLE_DEBUG_LAYER_BIT ) )
 		{
 			return nullptr;
 		}
@@ -43,7 +43,7 @@ namespace Ic3::Graphics::GCI
 		}
 		dxgiDebugInterface = std::move( dxgiDebugInterface1 );
 	#elif( IC3_DRIVER_GRAPHICS_HW3D_DX11_BUILD )
-		auto DXGIGetDebugInterface = loadDXGIDebugLegacyLoader();
+		auto DXGIGetDebugInterface = LoadDXGIDebugLegacyLoader();
 		auto hResult = DXGIGetDebugInterface( IID_PPV_ARGS( &dxgiDebugInterface ) );
 		if( FAILED( hResult ) )
 		{
@@ -54,9 +54,9 @@ namespace Ic3::Graphics::GCI
 		return dxgiDebugInterface;
 	}
 
-	ComPtr<IDXGIInfoQueue> ATL::queryDXGIDebugInfoQueue( Bitmask<EGPUDriverConfigFlags> pDriverConfigFlags )
+	ComPtr<IDXGIInfoQueue> ATL::QueryDXGIDebugInfoQueue( cppx::bitmask<EGpuDriverConfigFlags> pDriverConfigFlags )
 	{
-		if( !pDriverConfigFlags.isSet( E_GPU_DRIVER_CONFIG_FLAG_ENABLE_DEBUG_LAYER_BIT ) )
+		if( !pDriverConfigFlags.is_set( E_GPU_DRIVER_CONFIG_FLAG_ENABLE_DEBUG_LAYER_BIT ) )
 		{
 			return nullptr;
 		}
@@ -70,7 +70,7 @@ namespace Ic3::Graphics::GCI
 			// TODO: warning
 		}
 	#elif( IC3_DRIVER_GRAPHICS_HW3D_DX11_BUILD )
-		auto DXGIGetDebugInterface = loadDXGIDebugLegacyLoader();
+		auto DXGIGetDebugInterface = LoadDXGIDebugLegacyLoader();
 		auto hResult = DXGIGetDebugInterface( IID_PPV_ARGS( &dxgiInfoQueue ) );
 		if( FAILED( hResult ) )
 		{
@@ -81,7 +81,7 @@ namespace Ic3::Graphics::GCI
 		return dxgiInfoQueue;
 	}
 
-	uint32 ATL::getDXGITextureFormatBPP( DXGI_FORMAT pDXGIFormat )
+	uint32 ATL::GetDXGITextureFormatBPP( DXGI_FORMAT pDXGIFormat )
 	{
 	    switch( pDXGIFormat )
 		{
@@ -189,7 +189,7 @@ namespace Ic3::Graphics::GCI
 		return DXGI_FORMAT_UNKNOWN;
 	}
 
-	const char * ATL::getDXShaderTargetStr( DXShaderTarget pShaderTarget )
+	const char * ATL::GetDXShaderTargetStr( DXShaderTarget pShaderTarget )
 	{
 		static const char * const shaderTargetStrArray[] =
 		{
@@ -204,12 +204,12 @@ namespace Ic3::Graphics::GCI
 			"ps_5_0",
 			"cs_5_0",
 		};
-		return staticArrayElement( shaderTargetStrArray, pShaderTarget );
+		return static_array_element( shaderTargetStrArray, pShaderTarget );
 	}
 
-	uint32 ATL::computeDXTextureMemoryByteSize( const TextureDimensions & pTextDimensions, DXGI_FORMAT pFormat )
+	uint32 ATL::ComputeDXTextureMemoryByteSize( const TextureDimensions & pTextDimensions, DXGI_FORMAT pFormat )
 	{
-		const uint64 formatBitSize = getDXGITextureFormatBPP( pFormat );
+		const uint64 formatBitSize = GetDXGITextureFormatBPP( pFormat );
 		const uint64 totalPixelCount = pTextDimensions.width * pTextDimensions.height * pTextDimensions.depth * pTextDimensions.arraySize;
 
 		uint64 totalBaseBitSize = totalPixelCount * formatBitSize;
@@ -224,29 +224,29 @@ namespace Ic3::Graphics::GCI
 		return static_cast<uint32>( ( double )totalBaseBitSize / ( double )byteSizeDivisor );
 	}
 
-	Bitmask<UINT> ATL::translateShaderCompileFlagsDX( Bitmask<uint32> pShaderCreateFlags, bool pDebugDevice )
+	cppx::bitmask<UINT> ATL::TranslateDXShaderCompileFlags( cppx::bitmask<uint32> pShaderCreateFlags, bool pDebugDevice )
 	{
-		Bitmask<UINT> compileFlags = 0;
-		if( pDebugDevice || pShaderCreateFlags.isSet( E_SHADER_CREATE_FLAG_DEBUG_BIT ) )
+		cppx::bitmask<UINT> compileFlags = 0;
+		if( pDebugDevice || pShaderCreateFlags.is_set( E_SHADER_CREATE_FLAG_DEBUG_BIT ) )
 		{
 			compileFlags.set( D3DCOMPILE_DEBUG );
 		}
-		if( pDebugDevice || pShaderCreateFlags.isSet( E_SHADER_CREATE_FLAG_OPTIMIZATION_DISABLE_BIT ) )
+		if( pDebugDevice || pShaderCreateFlags.is_set( E_SHADER_CREATE_FLAG_OPTIMIZATION_DISABLE_BIT ) )
 		{
 			compileFlags.set( D3DCOMPILE_SKIP_OPTIMIZATION );
 		}
-		if( pShaderCreateFlags.isSet( E_SHADER_CREATE_FLAG_OPTIMIZATION_L0_BIT ) )
+		if( pShaderCreateFlags.is_set( E_SHADER_CREATE_FLAG_OPTIMIZATION_L0_BIT ) )
 		{
 			compileFlags.set( D3DCOMPILE_OPTIMIZATION_LEVEL0 );
 		}
-		if( !pDebugDevice || pShaderCreateFlags.isSet( E_SHADER_CREATE_FLAG_OPTIMIZATION_L1_BIT ) )
+		if( !pDebugDevice || pShaderCreateFlags.is_set( E_SHADER_CREATE_FLAG_OPTIMIZATION_L1_BIT ) )
 		{
 			compileFlags.set( D3DCOMPILE_OPTIMIZATION_LEVEL3 );
 		}
 		return compileFlags;
 	}
 
-	DXGI_FORMAT ATL::translateBaseDataTypeDX( EBaseDataType pBaseDataType )
+	DXGI_FORMAT ATL::TranslateDXShaderCompileFlags( EBaseDataType pBaseDataType )
 	{
 		switch( pBaseDataType )
 		{
@@ -264,7 +264,7 @@ namespace Ic3::Graphics::GCI
 		return DXGI_FORMAT_UNKNOWN;
 	}
 
-	DXGI_FORMAT ATL::translateTextureFormatDX( ETextureFormat pTextureFormat )
+	DXGI_FORMAT ATL::TranslateDXTextureFormat( ETextureFormat pTextureFormat )
 	{
 	    switch( pTextureFormat )
 		{
@@ -337,7 +337,7 @@ namespace Ic3::Graphics::GCI
 		return DXGI_FORMAT_UNKNOWN;
 	}
 
-	ETextureFormat ATL::translateTextureFormatInvDX( DXGI_FORMAT pDXGIFormat )
+	ETextureFormat ATL::TranslateDXTextureFormatInv( DXGI_FORMAT pDXGIFormat )
 	{
 		switch( pDXGIFormat )
 		{
@@ -407,7 +407,7 @@ namespace Ic3::Graphics::GCI
 		return ETextureFormat::UNKNOWN;
 	}
 
-	DXGI_FORMAT ATL::translateVertexAttribFormatDX( EVertexAttribFormat pVertexAttribFormat )
+	DXGI_FORMAT ATL::TranslateDXVertexAttribFormat( EVertexAttribFormat pVertexAttribFormat )
 	{
 	    switch( pVertexAttribFormat )
 		{

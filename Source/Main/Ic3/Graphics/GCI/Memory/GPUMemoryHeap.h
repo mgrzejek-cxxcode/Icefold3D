@@ -4,33 +4,33 @@
 #ifndef __IC3_GRAPHICS_GCI_GPU_MEMORY_HEAP_H__
 #define __IC3_GRAPHICS_GCI_GPU_MEMORY_HEAP_H__
 
-#include "CommonGPUMemoryDefs.h"
+#include "CommonGpuMemoryDefs.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	struct GPUMemoryPoolMetrics
+	struct GpuMemoryPoolMetrics
 	{
-		memory_align_t mBaseAlignment;
-		gpu_memory_size_t mTotalSizeBase;
-		gpu_memory_size_t mTotalSizeMB;
+		memory_align_t baseAlignment;
+		gpu_memory_size_t totalSizeBase;
+		gpu_memory_size_t totalSizeMB;
 	};
 
-	struct GPUMemoryHeapProperties
+	struct GpuMemoryHeapProperties
 	{
-		gpu_memory_heap_id_t mHeapID;
-		TBitmask<EGPUMemoryFlags> mMemoryFlags;
-		GPUMemoryPoolMetrics mHeapMetrics;
+		gpu_memory_heap_id_t heapID;
+		cppx::bitmask<EGpuMemoryFlags> memoryFlags;
+		GpuMemoryPoolMetrics mHeapMetrics;
 	};
 
-	class GPUMemoryHeap
+	class GpuMemoryHeap
 	{
 	public:
-		GPUMemoryHeapProperties const mHeapProperties;
+		GpuMemoryHeapProperties const mHeapProperties;
 
 	public:
-		GPUMemoryHeap();
-		virtual ~GPUMemoryHeap();
+		GpuMemoryHeap();
+		virtual ~GpuMemoryHeap();
 	};
 
 } // namespace Ic3::Graphics::GCI

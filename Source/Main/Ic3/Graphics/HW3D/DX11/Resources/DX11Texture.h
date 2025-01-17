@@ -17,9 +17,9 @@ namespace Ic3::Graphics::GCI
 
 	struct DX11TextureUsageDesc
 	{
-		Bitmask<D3D11_BIND_FLAG> bindFlags;
-		Bitmask<D3D11_CPU_ACCESS_FLAG> cpuAccessFlags;
-		Bitmask<D3D11_RESOURCE_MISC_FLAG> resourceMiscFlags;
+		cppx::bitmask<D3D11_BIND_FLAG> bindFlags;
+		cppx::bitmask<D3D11_CPU_ACCESS_FLAG> cpuAccessFlags;
+		cppx::bitmask<D3D11_RESOURCE_MISC_FLAG> resourceMiscFlags;
 		D3D11_USAGE usage;
 	};
 
@@ -43,7 +43,7 @@ namespace Ic3::Graphics::GCI
 		UINT msaaLevel;
 		DX11TextureUsageDesc dx11UsageDesc;
 		DX11TextureInitDataDesc dx11InitDataDesc;
-		Bitmask<resource_flags_value_t> resourceFlags;
+		cppx::bitmask<resource_flags_value_t> resourceFlags;
 	};
 
 	class DX11Texture : public Texture
@@ -59,7 +59,7 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		DX11Texture(
-				DX11GPUDevice & pDX11GPUDevice,
+				DX11GpuDevice & pDX11GpuDevice,
 				const ResourceMemoryInfo & pResourceMemory,
 				const TextureProperties & pTextureProperties,
 				const TextureLayout & pTextureLayout,
@@ -68,7 +68,7 @@ namespace Ic3::Graphics::GCI
 				ComPtr<ID3D11ShaderResourceView> pD3D11DefaultSRV );
 
 		DX11Texture(
-				DX11GPUDevice & pDX11GPUDevice,
+				DX11GpuDevice & pDX11GpuDevice,
 				const ResourceMemoryInfo & pResourceMemory,
 				const TextureProperties & pTextureProperties,
 				const TextureLayout & pTextureLayout,
@@ -78,21 +78,21 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~DX11Texture();
 
-		static DX11TextureHandle createDefault(
-				DX11GPUDevice & pDX11GPUDevice,
+		static DX11TextureHandle CreateDefault(
+				DX11GpuDevice & pDX11GpuDevice,
 				const TextureCreateInfo & pCreateInfo );
 
-		static DX11TextureHandle createForRenderTarget(
-				DX11GPUDevice & pDX11GPUDevice,
+		static DX11TextureHandle CreateForRenderTarget(
+				DX11GpuDevice & pDX11GpuDevice,
 				const RenderTargetTextureCreateInfo & pCreateInfo );
 
-		static RenderTargetTextureHandle createRenderTargetTextureView(
-				DX11GPUDevice & pDX11GPUDevice,
+		static RenderTargetTextureHandle CreateRenderTargetTextureView(
+				DX11GpuDevice & pDX11GpuDevice,
 				const RenderTargetTextureCreateInfo & pCreateInfo );
 	};
 
 
-	namespace rcutil
+	namespace RCU
 	{
 
 		struct DX11TextureData
@@ -117,42 +117,42 @@ namespace Ic3::Graphics::GCI
 			}
 		};
 
-		IC3_ATTR_NO_DISCARD DX11TextureData createTextureResourceDX11(
-				DX11GPUDevice & pDX11GPUDevice,
+		CPPX_ATTR_NO_DISCARD DX11TextureData CreateTextureResourceDX11(
+				DX11GpuDevice & pDX11GpuDevice,
 				const DX11TextureCreateInfo & pCreateInfo );
 
-		IC3_ATTR_NO_DISCARD DX11TextureData create2DTextureResourceDX11(
-				DX11GPUDevice & pDX11GPUDevice,
+		CPPX_ATTR_NO_DISCARD DX11TextureData create2DTextureResourceDX11(
+				DX11GpuDevice & pDX11GpuDevice,
 				const DX11TextureCreateInfo & pCreateInfo );
 
-		IC3_ATTR_NO_DISCARD DX11TextureData create2DMSTextureResourceDX11(
-				DX11GPUDevice & pDX11GPUDevice,
+		CPPX_ATTR_NO_DISCARD DX11TextureData create2DMSTextureResourceDX11(
+				DX11GpuDevice & pDX11GpuDevice,
 				const DX11TextureCreateInfo & pCreateInfo );
 
-		IC3_ATTR_NO_DISCARD DX11TextureData create3DTextureResourceDX11(
-				DX11GPUDevice & pDX11GPUDevice,
+		CPPX_ATTR_NO_DISCARD DX11TextureData create3DTextureResourceDX11(
+				DX11GpuDevice & pDX11GpuDevice,
 				const DX11TextureCreateInfo & pCreateInfo );
 
-		IC3_ATTR_NO_DISCARD ComPtr<ID3D11ShaderResourceView> create2DTextureDefaultShaderResourceViewDX11(
+		CPPX_ATTR_NO_DISCARD ComPtr<ID3D11ShaderResourceView> create2DTextureDefaultShaderResourceViewDX11(
 				ETextureClass pTexClass,
 				const ComPtr<ID3D11Texture2D> & pD3D11Texture2D );
 
-		IC3_ATTR_NO_DISCARD ComPtr<ID3D11ShaderResourceView> create3DTextureDefaultShaderResourceViewDX11(
+		CPPX_ATTR_NO_DISCARD ComPtr<ID3D11ShaderResourceView> create3DTextureDefaultShaderResourceViewDX11(
 				const ComPtr<ID3D11Texture3D> & pD3D11Texture3D );
 
-		IC3_ATTR_NO_DISCARD bool checkIsDXGIFormatDepthStencilDX11( DXGI_FORMAT pDXGIFormat );
+		CPPX_ATTR_NO_DISCARD bool checkIsDXGIFormatDepthStencilDX11( DXGI_FORMAT pDXGIFormat );
 
-		IC3_ATTR_NO_DISCARD bool checkIsDXGIFormatTypelessDX11( DXGI_FORMAT pDXGIFormat );
+		CPPX_ATTR_NO_DISCARD bool checkIsDXGIFormatTypelessDX11( DXGI_FORMAT pDXGIFormat );
 
-		IC3_ATTR_NO_DISCARD DXGI_FORMAT getTypelessFormatForDpethStencilFormatDX11( DXGI_FORMAT pDXGIFormat );
+		CPPX_ATTR_NO_DISCARD DXGI_FORMAT GetTypelessFormatForDpethStencilFormatDX11( DXGI_FORMAT pDXGIFormat );
 
-		DXGI_FORMAT getDSVFormatForTypelessFormatDX11( DXGI_FORMAT pDXGIFormat );
+		DXGI_FORMAT GetDSVFormatForTypelessFormatDX11( DXGI_FORMAT pDXGIFormat );
 
-		DXGI_FORMAT getSRVFormatForTypelessFormatDX11( DXGI_FORMAT pDXGIFormat, Bitmask<ERenderTargetBufferFlags> pRTBufferMask );
+		DXGI_FORMAT GetSRVFormatForTypelessFormatDX11( DXGI_FORMAT pDXGIFormat, cppx::bitmask<ERenderTargetBufferFlags> pRTBufferMask );
 
-		IC3_ATTR_NO_DISCARD DX11TextureInitDataDesc translateTextureInitDataDescDX11( const TextureCreateInfo & pCreateInfo );
+		CPPX_ATTR_NO_DISCARD DX11TextureInitDataDesc translateTextureInitDataDescDX11( const TextureCreateInfo & pCreateInfo );
 
-		IC3_ATTR_NO_DISCARD DX11TextureUsageDesc translateTextureUsageDescDX11( const TextureCreateInfo & pCreateInfo );
+		CPPX_ATTR_NO_DISCARD DX11TextureUsageDesc translateTextureUsageDescDX11( const TextureCreateInfo & pCreateInfo );
 
 	}
 

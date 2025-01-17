@@ -1,9 +1,9 @@
 
 #include "DX11CommandList.h"
 #include "DX11CommandSystem.h"
-#include "DX11APITranslationLayer.h"
-#include "DX11GPUDevice.h"
-#include "Resources/DX11GPUBuffer.h"
+#include "DX11ApiTranslationLayer.h"
+#include "DX11GpuDevice.h"
+#include "Resources/DX11GpuBuffer.h"
 #include "Resources/DX11Sampler.h"
 #include "Resources/DX11Shader.h"
 #include "Resources/DX11Texture.h"
@@ -23,9 +23,9 @@ namespace Ic3::Graphics::GCI
 
 	DX11CommandList::~DX11CommandList() = default;
 
-	void DX11CommandList::beginCommandSequence()
+	void DX11CommandList::BeginCommandSequence()
 	{
-		CommandList::beginCommandSequence();
+		CommandList::BeginCommandSequence();
 
 		if( _d3d11ExecutionSyncQuery )
 		{
@@ -33,43 +33,43 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	void DX11CommandList::endCommandSequence()
+	void DX11CommandList::EndCommandSequence()
 	{
 		if( _d3d11ExecutionSyncQuery )
 		{
 			mD3D11DeviceContext1->End( _d3d11ExecutionSyncQuery.Get() );
 		}
 
-		// _stateController.resetInternalState();
+		// _stateController.ResetInternalState();
 
-		CommandList::endCommandSequence();
+		CommandList::EndCommandSequence();
 	}
 
-	void DX11CommandList::cmdDrawDirectIndexed( native_uint pIndicesNum, native_uint pIndicesOffset, native_uint pBaseVertexIndex )
+	void DX11CommandList::CmdDrawDirectIndexed( native_uint pIndicesNum, native_uint pIndicesOffset, native_uint pBaseVertexIndex )
 	{
-		_graphicsPipelineStateControllerDX11.applyStateChanges();
+		_graphicsPipelineStateControllerDX11.ApplyStateChanges();
 		mD3D11DeviceContext1->DrawIndexed( pIndicesNum, pIndicesOffset, pBaseVertexIndex );
 	}
 
-	void DX11CommandList::cmdDrawDirectIndexedInstanced( native_uint pIndicesNumPerInstance, native_uint pInstancesNum, native_uint pIndicesOffset )
+	void DX11CommandList::CmdDrawDirectIndexedInstanced( native_uint pIndicesNumPerInstance, native_uint pInstancesNum, native_uint pIndicesOffset )
 	{
-		_graphicsPipelineStateControllerDX11.applyStateChanges();
+		_graphicsPipelineStateControllerDX11.ApplyStateChanges();
 		mD3D11DeviceContext1->DrawIndexedInstanced( pIndicesNumPerInstance, pInstancesNum, pIndicesOffset, 0, 0 );
 	}
 
-	void DX11CommandList::cmdDrawDirectNonIndexed( native_uint pVerticesNum, native_uint pVerticesOffset )
+	void DX11CommandList::CmdDrawDirectNonIndexed( native_uint pVerticesNum, native_uint pVerticesOffset )
 	{
-		_graphicsPipelineStateControllerDX11.applyStateChanges();
+		_graphicsPipelineStateControllerDX11.ApplyStateChanges();
 		mD3D11DeviceContext1->Draw( pVerticesNum, pVerticesOffset );
 	}
 
-	void DX11CommandList::cmdDrawDirectNonIndexedInstanced( native_uint pVerticesNumPerInstance, native_uint pInstancesNum, native_uint pVerticesOffset )
+	void DX11CommandList::CmdDrawDirectNonIndexedInstanced( native_uint pVerticesNumPerInstance, native_uint pInstancesNum, native_uint pVerticesOffset )
 	{
 	}
 
-	void DX11CommandList::cmdExecuteDeferredContext( CommandContextDeferred & pDeferredContext )
+	void DX11CommandList::CmdExecuteDeferredContext( CommandContextDeferred & pDeferredContext )
 	{
-		auto * dx11CommandList = pDeferredContext.mCommandList->queryInterface<DX11CommandList>();
+		auto * dx11CommandList = pDeferredContext.mCommandList->QueryInterface<DX11CommandList>();
 
 		ComPtr<ID3D11CommandList> d3d11RecorderCommandList;
 		dx11CommandList->mD3D11DeviceContext1->FinishCommandList( FALSE, &d3d11RecorderCommandList );
@@ -77,7 +77,7 @@ namespace Ic3::Graphics::GCI
 		mD3D11DeviceContext1->ExecuteCommandList( d3d11RecorderCommandList.Get(), FALSE );
 	}
 
-	ID3D11Query * DX11CommandList::releaseExecutionSyncQuery()
+	ID3D11Query * DX11CommandList::ReleaseExecutionSyncQuery()
 	{
 		auto * syncQuery = _d3d11ExecutionSyncQuery.Get();
 		_d3d11ExecutionSyncQuery.Reset();
@@ -85,35 +85,35 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	void DX11CommandList::executeRenderPassLoadActions(
+	void DX11CommandList::ExecuteRenderPassLoadActions(
 			const RenderPassConfiguration & pRenderPassConfiguration,
 			const GraphicsPipelineDynamicState & pDynamicState )
 	{
 		if( pRenderPassConfiguration.attachmentsActionClearMask != 0 )
 		{
-			smutil::renderPassClearRenderTargetDX11(
+			SMU::RenderPassClearRenderTargetDX11(
 					mD3D11DeviceContext1.Get(),
-					_graphicsPipelineStateControllerDX11.getCurrentRenderTargetBinding(),
+					_graphicsPipelineStateControllerDX11.GetCurrentRenderTargetBinding(),
 					pRenderPassConfiguration,
 					pDynamicState );
 		}
 	}
 
-	void DX11CommandList::executeRenderPassStoreActions(
+	void DX11CommandList::ExecuteRenderPassStoreActions(
 			const RenderPassConfiguration & pRenderPassConfiguration,
 			const GraphicsPipelineDynamicState & pDynamicState )
 	{
 		if( pRenderPassConfiguration.attachmentsActionResolveMask != 0 )
 		{
-			smutil::renderPassResolveRenderTargetDX11(
+			SMU::RenderPassResolveRenderTargetDX11(
 					mD3D11DeviceContext1.Get(),
-					_graphicsPipelineStateControllerDX11.getCurrentRenderTargetBinding(),
+					_graphicsPipelineStateControllerDX11.GetCurrentRenderTargetBinding(),
 					pRenderPassConfiguration,
 					pDynamicState );
 		}
 	}
 
-	ComPtr<ID3D11Query> DX11CommandList::_createExecutionSyncQuery( ComPtr<ID3D11Device1> pD3D11Device )
+	ComPtr<ID3D11Query> DX11CommandList::_CreateExecutionSyncQuery( ComPtr<ID3D11Device1> pD3D11Device )
 	{
 		D3D11_QUERY_DESC syncQueryDesc;
 		syncQueryDesc.Query = D3D11_QUERY_EVENT;

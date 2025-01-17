@@ -8,18 +8,18 @@
 #include <Ic3/System/gfxVulkan.h>
 
 #if( IC3_BUILD_STATIC )
-#  define ICFGX_VKCOMMON_API
-#  define ICFGX_VKCOMMON_CLASS
-#  define ICFGX_VKCOMMON_OBJ    extern
+#  define IC3_GX_VKCOMMON_API
+#  define IC3_GX_VKCOMMON_CLASS
+#  define IC3_GX_VKCOMMON_OBJ    extern
 #else
 #  if( IC3_DRIVER_GRAPHICS_HW3D_VKCOMMON_BUILD )
-#    define ICFGX_VKCOMMON_API    IC3_PCL_ATTR_DLL_EXPORT
-#    define ICFGX_VKCOMMON_CLASS  IC3_PCL_ATTR_DLL_EXPORT
-#    define ICFGX_VKCOMMON_OBJ    IC3_PCL_ATTR_DLL_EXPORT
+#    define IC3_GX_VKCOMMON_API    PCL_ATTR_DLL_EXPORT
+#    define IC3_GX_VKCOMMON_CLASS  PCL_ATTR_DLL_EXPORT
+#    define IC3_GX_VKCOMMON_OBJ    PCL_ATTR_DLL_EXPORT
 #  else
-#    define ICFGX_VKCOMMON_API    IC3_PCL_ATTR_DLL_IMPORT
-#    define ICFGX_VKCOMMON_CLASS  IC3_PCL_ATTR_DLL_IMPORT
-#    define ICFGX_VKCOMMON_OBJ    IC3_PCL_ATTR_DLL_IMPORT
+#    define IC3_GX_VKCOMMON_API    PCL_ATTR_DLL_IMPORT
+#    define IC3_GX_VKCOMMON_CLASS  PCL_ATTR_DLL_IMPORT
+#    define IC3_GX_VKCOMMON_OBJ    PCL_ATTR_DLL_IMPORT
 #  endif
 #endif
 
@@ -30,8 +30,8 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( VKGPUDevice );
-	ic3DeclareClassHandle( VKGPUDriver );
+	ic3DeclareClassHandle( VKGpuDevice );
+	ic3DeclareClassHandle( VKGpuDriver );
 	ic3DeclareClassHandle( VKPresentationLayer );
 
 } // namespace Ic3::Graphics::GCI

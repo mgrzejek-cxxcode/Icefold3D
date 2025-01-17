@@ -4,70 +4,70 @@
 #ifndef __IC3_GRAPHICS_GCI_GPU_DEVICE_NULL_H__
 #define __IC3_GRAPHICS_GCI_GPU_DEVICE_NULL_H__
 
-#include "GPUDevice.h"
+#include "GpuDevice.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	class GPUDeviceNull : public GPUDevice
+	class GpuDeviceNull : public GpuDevice
 	{
 	public:
-		explicit GPUDeviceNull( GPUDriver & pDriver )
-		: GPUDevice( pDriver )
+		explicit GpuDeviceNull( GpuDriver & pDriver )
+		: GpuDevice( pDriver )
 		{}
 
-		virtual ~GPUDeviceNull() = default;
+		virtual ~GpuDeviceNull() = default;
 
-		IC3_ATTR_NO_DISCARD virtual bool isNullDevice() const noexcept override final
+		CPPX_ATTR_NO_DISCARD virtual bool IsNullDevice() const noexcept override final
 		{
 			return true;
 		}
 
-		virtual void waitForCommandSync( CommandSync & pCommandSync ) override final
+		virtual void WaitForCommandSync( CommandSync & pCommandSync ) override final
 		{}
 
 	protected:
-		virtual bool onGPUResourceActiveRefsZero( GPUResource & pGPUResource ) override final
+		virtual bool OnGpuResourceActiveRefsZero( GpuResource & pGpuResource ) override final
 		{
 			return false;
 		}
 
 	private:
-		virtual void initializeCommandSystem() override final
+		virtual void InitializeCommandSystem() override final
 		{}
 
-		virtual bool _drvOnSetPresentationLayer( PresentationLayerHandle pPresentationLayer ) override final
+		virtual bool _DrvOnSetPresentationLayer( PresentationLayerHandle pPresentationLayer ) override final
 		{
 			return false;
 		}
 
-		virtual GPUBufferHandle _drvCreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo ) override final
+		virtual GpuBufferHandle _DrvCreateGpuBuffer( const GpuBufferCreateInfo & pCreateInfo ) override final
 		{
 			return nullptr;
 		}
 
-		virtual SamplerHandle _drvCreateSampler( const SamplerCreateInfo & pCreateInfo ) override final
+		virtual SamplerHandle _DrvCreateSampler( const SamplerCreateInfo & pCreateInfo ) override final
 		{
 			return nullptr;
 		}
 
-		virtual ShaderHandle _drvCreateShader( const ShaderCreateInfo & pCreateInfo ) override final
+		virtual ShaderHandle _DrvCreateShader( const ShaderCreateInfo & pCreateInfo ) override final
 		{
 			return nullptr;
 		}
 
-		virtual TextureHandle _drvCreateTexture( const TextureCreateInfo & pCreateInfo ) override final
+		virtual TextureHandle _DrvCreateTexture( const TextureCreateInfo & pCreateInfo ) override final
 		{
 			return nullptr;
 		}
 
-		virtual RenderTargetTextureHandle _drvCreateRenderTargetTexture(
+		virtual RenderTargetTextureHandle _DrvCreateRenderTargetTexture(
 				const RenderTargetTextureCreateInfo & pCreateInfo ) override final
 		{
 			return nullptr;
 		}
 
-		virtual GraphicsPipelineStateObjectHandle _drvCreateGraphicsPipelineStateObject(
+		virtual GraphicsPipelineStateObjectHandle _DrvCreateGraphicsPipelineStateObject(
 				const GraphicsPipelineStateObjectCreateInfo & pCreateInfo ) override final
 		{
 			return nullptr;

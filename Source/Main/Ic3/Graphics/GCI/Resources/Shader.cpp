@@ -4,17 +4,17 @@
 namespace Ic3::Graphics::GCI
 {
 
-	Shader::Shader( GPUDevice & pGPUDevice, EShaderType pShaderType )
-	: GPUDeviceChildObject( pGPUDevice )
+	Shader::Shader( GpuDevice & pGpuDevice, EShaderType pShaderType )
+	: GpuDeviceChildObject( pGpuDevice )
 	, mShaderType( pShaderType )
 	, mShaderBinary()
 	{}
 
 	Shader::Shader(
-			GPUDevice & pGPUDevice,
+			GpuDevice & pGpuDevice,
 			EShaderType pShaderType,
 			std::unique_ptr<ShaderBinary> pShaderBinary )
-	: GPUDeviceChildObject( pGPUDevice )
+	: GpuDeviceChildObject( pGpuDevice )
 	, mShaderType( pShaderType )
 	, mShaderBinary( std::move( pShaderBinary ) )
 	{}
@@ -25,9 +25,9 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	std::unique_ptr<ShaderBinary> ShaderBinary::create( size_t pBinarySize )
+	std::unique_ptr<ShaderBinary> ShaderBinary::Create( size_t pBinarySize )
 	{
-		const auto requiredBinaryStorageSize = pBinarySize - sDataBufferFixedSize;
+		const auto requiredBinaryStorageSize = pBinarySize - dataBufferFixedSize;
 		auto * shaderBinary = new ( cvAllocNewSizeExplicit, requiredBinaryStorageSize ) ShaderBinary();
 		return std::unique_ptr<ShaderBinary>{ shaderBinary };
 	}
@@ -36,19 +36,19 @@ namespace Ic3::Graphics::GCI
 	namespace RCU
 	{
 
-		EShaderType getShaderObjectType( Shader & pShader )
+		EShaderType GetShaderObjectType( Shader & pShader )
 		{
 			return pShader.mShaderType;
 		}
 
-		uint32 getShaderObjectStageIndex( Shader & pShader )
+		uint32 GetShaderObjectStageIndex( Shader & pShader )
 		{
-			return CxDef::getShaderStageIndex( pShader.mShaderType );
+			return CxDef::GetShaderStageIndex( pShader.mShaderType );
 		}
 
-		uint32 getShaderObjectStageBit( Shader & pShader )
+		uint32 GetShaderObjectStageBit( Shader & pShader )
 		{
-			return CxDef::getShaderStageBit( pShader.mShaderType );
+			return CxDef::GetShaderStageBit( pShader.mShaderType );
 		}
 
 	}

@@ -4,19 +4,19 @@
 namespace Ic3::Graphics::GCI
 {
 
-	const GLGlobalState GLGlobalStateCache::sDefaultState = GLGlobalStateCache::getDefaultGlobalState();
+	const GLGlobalState GLGlobalStateCache::sDefaultState = GLGlobalStateCache::GetDefaultGlobalState();
 
 	GLGlobalStateCache::GLGlobalStateCache()
 	{
-		reset();
+		Reset();
 	}
 
-	void GLGlobalStateCache::reset()
+	void GLGlobalStateCache::Reset()
 	{
 		_cachedState = sDefaultState;
 	}
 
-	void GLGlobalStateCache::applyShaderPipelineBinding( GLuint pShaderPipelineHandle )
+	void GLGlobalStateCache::ApplyShaderPipelineBinding( GLuint pShaderPipelineHandle )
 	{
 		if( pShaderPipelineHandle != _cachedState.shaderPipelineBinding )
 		{
@@ -26,7 +26,7 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	void GLGlobalStateCache::applyShaderProgramBinding( GLuint pShaderProgramHandle )
+	void GLGlobalStateCache::ApplyShaderProgramBinding( GLuint pShaderProgramHandle )
 	{
 		if( pShaderProgramHandle != _cachedState.shaderProgramBinding )
 		{
@@ -36,7 +36,7 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	void GLGlobalStateCache::applyIndexBufferBinding( GLuint pIndexBufferObjectHandle )
+	void GLGlobalStateCache::ApplyIndexBufferBinding( GLuint pIndexBufferObjectHandle )
 	{
 		if( pIndexBufferObjectHandle != _cachedState.indexBufferBinding )
 		{
@@ -46,7 +46,7 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	void GLGlobalStateCache::applyVertexArrayObjectBinding( GLuint pVertexArrayObjectHandle )
+	void GLGlobalStateCache::ApplyVertexArrayObjectBinding( GLuint pVertexArrayObjectHandle )
 	{
 		if( pVertexArrayObjectHandle != _cachedState.vertexArrayObjectBinding )
 		{
@@ -57,11 +57,11 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	void GLGlobalStateCache::applyBlendState( const GLBlendConfig & pBlendConfig )
+	void GLGlobalStateCache::ApplyBlendState( const GLBlendConfig & pBlendConfig )
 	{
 		auto & cachedBlendConfig = _cachedState.blendConfig;
 
-		if( !pBlendConfig.attachmentsMask.isSetAnyOf( E_RT_ATTACHMENT_MASK_COLOR_ALL ) )
+		if( !pBlendConfig.attachmentsMask.is_set_any_of( eRTAttachmentMaskColorAll ) )
 		{
 			if( cachedBlendConfig.blendActiveGlobal )
 			{
@@ -73,14 +73,16 @@ namespace Ic3::Graphics::GCI
 		}
 		else
 		{
-			const bool isSeparateBlendingEnabled = cachedBlendConfig.flags.isSet( E_BLEND_CONFIG_FLAG_ENABLE_MRT_INDEPENDENT_BLENDING_BIT );
-			const bool isSeparateBlendingRequested = pBlendConfig.flags.isSet( E_BLEND_CONFIG_FLAG_ENABLE_MRT_INDEPENDENT_BLENDING_BIT );
+			const bool isSeparateBlendingEnabled = cachedBlendConfig.flags.is_set(
+					eBlendConfigFlagEnableMRTIndependentBlendingBit );
+			const bool isSeparateBlendingRequested = pBlendConfig.flags.is_set(
+					eBlendConfigFlagEnableMRTIndependentBlendingBit );
 
 			if( isSeparateBlendingRequested )
 			{
 				bool compareCurrentState = isSeparateBlendingEnabled;
 
-				for( uint32 caIndex = 0; CxDef::isRTColorAttachmentIndexValid( caIndex ); ++caIndex )
+				for( uint32 caIndex = 0; CxDef::IsRTColorAttachmentIndexValid( caIndex ); ++caIndex )
 				{
 					auto & cachedBlendProps = cachedBlendConfig.attachments[caIndex];
 					const auto & blendProps = pBlendConfig.attachments[caIndex];
@@ -103,14 +105,14 @@ namespace Ic3::Graphics::GCI
 							cachedBlendProps.blendActive = 1;
 						}
 
-						if( !compareCurrentState || memCompareNotEqual( blendProps.equation, cachedBlendProps.equation ) )
+						if( !compareCurrentState || cppx::mem_cmp_not_equal( blendProps.equation, cachedBlendProps.equation ) )
 						{
 							glBlendEquationSeparatei( caIndex, blendProps.equation.rgb, blendProps.equation.alpha );
 							ic3OpenGLHandleLastError();
 							cachedBlendProps.equation = blendProps.equation;
 						}
 
-						if( !compareCurrentState || memCompareNotEqual( blendProps.factor, cachedBlendProps.factor ) )
+						if( !compareCurrentState || cppx::mem_cmp_not_equal( blendProps.factor, cachedBlendProps.factor ) )
 						{
 							glBlendFuncSeparatei( caIndex, blendProps.factor.rgbSrc, blendProps.factor.rgbDst, blendProps.factor.alphaSrc, blendProps.factor.alphaDst );
 							ic3OpenGLHandleLastError();
@@ -133,14 +135,14 @@ namespace Ic3::Graphics::GCI
 				auto & cachedBlendProps = cachedBlendConfig.attachments[0];
 				const auto & blendProps = pBlendConfig.attachments[0];
 
-				if( !compareCurrentState || memCompareNotEqual( blendProps.equation, cachedBlendProps.equation ) )
+				if( !compareCurrentState || cppx::mem_cmp_not_equal( blendProps.equation, cachedBlendProps.equation ) )
 				{
 					glBlendEquationSeparate( blendProps.equation.rgb, blendProps.equation.alpha );
 					ic3OpenGLHandleLastError();
 					cachedBlendProps.equation = blendProps.equation;
 				}
 
-				if( !compareCurrentState || memCompareNotEqual( blendProps.factor, cachedBlendProps.factor ) )
+				if( !compareCurrentState || cppx::mem_cmp_not_equal( blendProps.factor, cachedBlendProps.factor ) )
 				{
 					glBlendFuncSeparate( blendProps.factor.rgbSrc, blendProps.factor.rgbDst, blendProps.factor.alphaSrc, blendProps.factor.alphaDst );
 					ic3OpenGLHandleLastError();
@@ -148,11 +150,11 @@ namespace Ic3::Graphics::GCI
 				}
 			}
 
-			if( pBlendConfig.flags.isSetAnyOf( E_BLEND_CONFIG_FLAG_SET_FIXED_BLEND_CONSTANTS_BIT ) )
+			if( pBlendConfig.flags.is_set_any_of( eBlendConfigFlagSetFixedBlendConstantsBit ) )
 			{
 				const auto & blendConstantColor = pBlendConfig.constantColor;
 
-				if( memCompareNotEqual( blendConstantColor, cachedBlendConfig.constantColor ) )
+				if( cppx::mem_cmp_not_equal( blendConstantColor, cachedBlendConfig.constantColor ) )
 				{
 					glBlendColor( blendConstantColor.fpRed, blendConstantColor.fpGreen, blendConstantColor.fpBlue, blendConstantColor.fpAlpha );
 					ic3OpenGLHandleLastError();
@@ -162,7 +164,7 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	void GLGlobalStateCache::applyDepthStencilState( const GLDepthStencilConfig & pDepthStencilConfig, uint8 pStencilRefValue )
+	void GLGlobalStateCache::ApplyDepthStencilState( const GLDepthStencilConfig & pDepthStencilConfig, uint8 pStencilRefValue )
 	{
 		auto & cachedDepthStencilConfig = _cachedState.depthStencilConfig;
 		auto & cachedDepthSettings = cachedDepthStencilConfig.depthSettings;
@@ -220,7 +222,7 @@ namespace Ic3::Graphics::GCI
 			}
 
 			const auto & frontFace = pDepthStencilConfig.stencilSettings.frontFace;
-			if( !memCompareEqual( frontFace, cachedStencilSettings.frontFace ) )
+			if( !cppx::mem_cmp_equal( frontFace, cachedStencilSettings.frontFace ) )
 			{
 				glStencilFuncSeparate( GL_FRONT, frontFace.compFunc, pStencilRefValue, frontFace.readMask );
 				ic3OpenGLHandleLastError();
@@ -231,11 +233,11 @@ namespace Ic3::Graphics::GCI
 				glStencilMaskSeparate( GL_FRONT, frontFace.writeMask );
 				ic3OpenGLHandleLastError();
 
-				memCopy( cachedStencilSettings.frontFace, frontFace );
+				cppx::mem_copy( cachedStencilSettings.frontFace, frontFace );
 			}
 
 			const auto & backFace = pDepthStencilConfig.stencilSettings.backFace;
-			if( !memCompareEqual( backFace, cachedStencilSettings.backFace ) )
+			if( !cppx::mem_cmp_equal( backFace, cachedStencilSettings.backFace ) )
 			{
 				glStencilFuncSeparate( GL_FRONT, backFace.compFunc, pStencilRefValue, backFace.readMask );
 				ic3OpenGLHandleLastError();
@@ -246,12 +248,12 @@ namespace Ic3::Graphics::GCI
 				glStencilMaskSeparate( GL_FRONT, backFace.writeMask );
 				ic3OpenGLHandleLastError();
 
-				memCopy( cachedStencilSettings.backFace, backFace );
+				cppx::mem_copy( cachedStencilSettings.backFace, backFace );
 			}
 		}
 	}
 
-	void GLGlobalStateCache::applyRasterizerState( const GLRasterizerConfig & pRasterizerConfig )
+	void GLGlobalStateCache::ApplyRasterizerState( const GLRasterizerConfig & pRasterizerConfig )
 	{
 		auto & cachedRasterizerConfig = _cachedState.rasterizerConfig;
 
@@ -300,7 +302,7 @@ namespace Ic3::Graphics::GCI
 			cachedRasterizerConfig.frontFaceVerticesOrder = pRasterizerConfig.frontFaceVerticesOrder;
 		}
 
-	#if( ICFGX_GL_FEATURE_SUPPORT_PRIMITIVE_FILL_MODE )
+	#if( IC3_GX_GL_FEATURE_SUPPORT_PRIMITIVE_FILL_MODE )
 		if( pRasterizerConfig.primitiveFillMode != cachedRasterizerConfig.primitiveFillMode )
 		{
 			glPolygonMode( GL_FRONT_AND_BACK, pRasterizerConfig.primitiveFillMode );
@@ -311,7 +313,7 @@ namespace Ic3::Graphics::GCI
 	#endif
 	}
 
-	GLGlobalState GLGlobalStateCache::getDefaultGlobalState()
+	GLGlobalState GLGlobalStateCache::GetDefaultGlobalState()
 	{
 		GLGlobalState defaultGlobalState;
 
@@ -361,13 +363,13 @@ namespace Ic3::Graphics::GCI
 			defaultGlobalState.rasterizerConfig.scissorTestActive = false;
 			defaultGlobalState.rasterizerConfig.cullMode = GL_NONE; // This is initially GL_BACK, but culling itself is disabled!
 			defaultGlobalState.rasterizerConfig.frontFaceVerticesOrder = GL_CCW;
-		#if( ICFGX_GL_FEATURE_SUPPORT_PRIMITIVE_FILL_MODE )
+		#if( IC3_GX_GL_FEATURE_SUPPORT_PRIMITIVE_FILL_MODE )
 			defaultGlobalState.rasterizerConfig.primitiveFillMode = GL_FILL;
 		#endif
 		}
 
-		memZero( defaultGlobalState.samplerBindings );
-		memZero( defaultGlobalState.textureUnitBindings );
+		cppx::mem_set_zero( defaultGlobalState.samplerBindings );
+		cppx::mem_set_zero( defaultGlobalState.textureUnitBindings );
 
 		return defaultGlobalState;
 	}

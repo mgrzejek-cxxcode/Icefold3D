@@ -20,12 +20,12 @@ namespace Ic3::Graphics::GCI
 		RenderTargetBindingImmutableState & operator=( const RenderTargetBindingImmutableState & ) = delete;
 
 		RenderTargetBindingImmutableState(
-				GPUDevice & pGPUDevice,
+				GpuDevice & pGpuDevice,
 				const RenderTargetLayout & pRenderTargetLayout );
 
 		virtual ~RenderTargetBindingImmutableState();
 
-		IC3_ATTR_NO_DISCARD static const RenderTargetBindingImmutableState & getDynamicOverrideState();
+		CPPX_ATTR_NO_DISCARD static const RenderTargetBindingImmutableState & GetDynamicOverrideState();
 	};
 
 	class RenderPassConfigurationImmutableState : public GraphicsPipelineImmutableState
@@ -34,7 +34,7 @@ namespace Ic3::Graphics::GCI
 		RenderPassConfigurationImmutableState( const RenderPassConfigurationImmutableState & ) = delete;
 		RenderPassConfigurationImmutableState & operator=( const RenderPassConfigurationImmutableState & ) = delete;
 
-		RenderPassConfigurationImmutableState( GPUDevice & pGPUDevice );
+		RenderPassConfigurationImmutableState( GpuDevice & pGpuDevice );
 		virtual ~RenderPassConfigurationImmutableState();
 	};
 
@@ -45,13 +45,13 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		RenderPassConfigurationImmutableStateDefault(
-				GPUDevice & pGPUDevice,
+				GpuDevice & pGpuDevice,
 				const RenderPassConfiguration & pRenderPassConfiguration );
 
 		virtual ~RenderPassConfigurationImmutableStateDefault();
 
-		static TGPAHandle<RenderPassConfigurationImmutableStateDefault> createInstance(
-				GPUDevice & pGPUDevice,
+		static TGfxHandle<RenderPassConfigurationImmutableStateDefault> CreateInstance(
+				GpuDevice & pGpuDevice,
 				const RenderPassConfiguration & pConfiguration );
 	};
 

@@ -1,12 +1,12 @@
 
-#include "DX11APITranslationLayer.h"
-#include <Ic3/Graphics/HW3D/DX11/DX11GPUDevice.h>
-#include <Ic3/Graphics/GCI/Resources/GPUBufferCommon.h>
+#include "DX11ApiTranslationLayer.h"
+#include <Ic3/Graphics/HW3D/DX11/DX11GpuDevice.h>
+#include <Ic3/Graphics/GCI/Resources/GpuBufferCommon.h>
 #include <Ic3/Graphics/GCI/State/SamplerCommon.h>
 #include <Ic3/Graphics/GCI/Resources/ShaderCommon.h>
 #include <Ic3/Graphics/GCI/Resources/TextureCommon.h>
 #include <Ic3/System/WindowNative.h>
-#include <Ic3/Cppx/STLHelperAlgo.h>
+#include <cppx/stdHelperAlgo.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -17,19 +17,19 @@ namespace Ic3::Graphics::GCI
 	template <typename TEnum>
 	inline const TEnum D3D11_UNDEFINED = static_cast< TEnum >( 0 );
 
-	ComPtr<ID3D11Device1> ATL::createD3D11Device( D3D_DRIVER_TYPE pDeviceType, Bitmask<UINT> pCreateFlags )
+	ComPtr<ID3D11Device1> ATL::CreateD3D11Device( D3D_DRIVER_TYPE pDeviceType, cppx::bitmask<UINT> pCreateFlags )
 	{
-		Bitmask<UINT> createDeviceFlags = 0;
-		if( pCreateFlags.isSet( D3D11_CREATE_DEVICE_DEBUG ) )
+		cppx::bitmask<UINT> CreateDeviceFlags = 0;
+		if( pCreateFlags.is_set( D3D11_CREATE_DEVICE_DEBUG ) )
 		{
 			// This one is for creating a debug device, which is able to provide additional diagnostic info.
-			createDeviceFlags.set( D3D11_CREATE_DEVICE_DEBUG );
+			CreateDeviceFlags.set( D3D11_CREATE_DEVICE_DEBUG );
 			// This one is for shader debugging capability. Usable when using external diagnostic tools.
-			createDeviceFlags.set( D3D11_CREATE_DEVICE_DEBUGGABLE );
+			CreateDeviceFlags.set( D3D11_CREATE_DEVICE_DEBUGGABLE );
 		}
-		if( pCreateFlags.isSet( D3D11_CREATE_DEVICE_SINGLETHREADED ) )
+		if( pCreateFlags.is_set( D3D11_CREATE_DEVICE_SINGLETHREADED ) )
 		{
-			createDeviceFlags.set( D3D11_CREATE_DEVICE_SINGLETHREADED );
+			CreateDeviceFlags.set( D3D11_CREATE_DEVICE_SINGLETHREADED );
 		}
 
 		const D3D_FEATURE_LEVEL featureLevelArray[] =
@@ -41,7 +41,7 @@ namespace Ic3::Graphics::GCI
 		};
 
 		const D3D_FEATURE_LEVEL * requestedFeatureLevelPtr = &( featureLevelArray[0] );
-		UINT requestedFeatureLevelCount = static_cast<UINT>( staticArraySize( featureLevelArray ) );
+		UINT requestedFeatureLevelCount = static_cast<UINT>( static_array_size( featureLevelArray ) );
 
 		ComPtr<ID3D11Device> d3d11Device;
 		ComPtr<ID3D11DeviceContext> d3d11DeviceContext;
@@ -50,7 +50,7 @@ namespace Ic3::Graphics::GCI
 		auto hResult = ::D3D11CreateDevice( nullptr,
 		                                    pDeviceType,
 		                                    nullptr,
-		                                    createDeviceFlags,
+		                                    CreateDeviceFlags,
 		                                    requestedFeatureLevelPtr,
 		                                    requestedFeatureLevelCount,
 		                                    D3D11_SDK_VERSION,
@@ -70,15 +70,15 @@ namespace Ic3::Graphics::GCI
 			}
 			// D3D11_CREATE_DEVICE_DEBUGGABLE is one of the reasons requires D3D11SDKLayers.dll to be installed on the
 			// system *AND* WDDM 1.2 driver + Direct3D 11.1 runtime (>= Windows 8). If this error occurs, drop the flag.
-			else if( ( hResult == DXGI_ERROR_UNSUPPORTED ) && createDeviceFlags.isSet( D3D11_CREATE_DEVICE_DEBUGGABLE ) )
+			else if( ( hResult == DXGI_ERROR_UNSUPPORTED ) && CreateDeviceFlags.is_set( D3D11_CREATE_DEVICE_DEBUGGABLE ) )
 			{
-				createDeviceFlags.unset( D3D11_CREATE_DEVICE_DEBUGGABLE );
+				CreateDeviceFlags.unset( D3D11_CREATE_DEVICE_DEBUGGABLE );
 			}
 			// DXGI_ERROR_SDK_COMPONENT_MISSING is returned if D3D11_CREATE_DEVICE_DEBUG is specified and the incorrect
 			// version of the debug layer is installed on the system. In such case, we just drop the flag and proceed.
-			else if( ( hResult == DXGI_ERROR_SDK_COMPONENT_MISSING ) && createDeviceFlags.isSet( D3D11_CREATE_DEVICE_DEBUG ) )
+			else if( ( hResult == DXGI_ERROR_SDK_COMPONENT_MISSING ) && CreateDeviceFlags.is_set( D3D11_CREATE_DEVICE_DEBUG ) )
 			{
-				createDeviceFlags.unset( D3D11_CREATE_DEVICE_DEBUG );
+				CreateDeviceFlags.unset( D3D11_CREATE_DEVICE_DEBUG );
 			}
 			// Doesn't seem to be a known case. Treat as a failure and exit the loop.
 			else
@@ -90,7 +90,7 @@ namespace Ic3::Graphics::GCI
 			hResult = ::D3D11CreateDevice( nullptr,
 			                               pDeviceType,
 			                               nullptr,
-			                               createDeviceFlags,
+			                               CreateDeviceFlags,
 			                               requestedFeatureLevelPtr,
 			                               requestedFeatureLevelCount,
 			                               D3D11_SDK_VERSION,
@@ -114,7 +114,7 @@ namespace Ic3::Graphics::GCI
 		return d3d11Device1;
 	}
 
-	ComPtr<ID3D11Debug> ATL::queryD3D11DebugInterfaceForD3D11Device( const ComPtr<ID3D11Device1> & pD3D11Device1 )
+	ComPtr<ID3D11Debug> ATL::QueryD3D11DebugInterfaceForD3D11Device( const ComPtr<ID3D11Device1> & pD3D11Device1 )
 	{
 		ComPtr<ID3D11Debug> d3d11DebugInterface;
 		auto hResult = pD3D11Device1->QueryInterface( IID_PPV_ARGS( &d3d11DebugInterface ) );
@@ -126,7 +126,7 @@ namespace Ic3::Graphics::GCI
 		return d3d11DebugInterface;
 	}
 
-	ComPtr<IDXGIFactory2> ATL::queryDXGIFactoryForD3D11Device( const ComPtr<ID3D11Device1> & pD3D11Device1 )
+	ComPtr<IDXGIFactory2> ATL::QueryDXGIFactoryForD3D11Device( const ComPtr<ID3D11Device1> & pD3D11Device1 )
 	{
 		ComPtr<IDXGIDevice2> dxgiDevice2;
 		auto hResult = pD3D11Device1->QueryInterface( IID_PPV_ARGS( &dxgiDevice2 ) );
@@ -152,10 +152,10 @@ namespace Ic3::Graphics::GCI
 		return dxgiFactory2;
 	}
 
-	ComPtr<IDXGISwapChain1> ATL::createD3D11SwapChainForSystemWindow( DX11GPUDevice & pDX11GPUDevice, void * pSysWindow )
+	ComPtr<IDXGISwapChain1> ATL::CreateD3D11SwapChainForSystemWindow( DX11GpuDevice & pDX11GpuDevice, void * pSysWindow )
 	{
-	    auto * sysWindowPtr = static_cast<System::Window *>( pSysWindow )->queryInterface<System::Win32Window>();
-		auto presentationLayerSize = sysWindowPtr->getClientAreaSize();
+	    auto * sysWindowPtr = static_cast<System::Window *>( pSysWindow )->QueryInterface<System::Win32Window>();
+		auto presentationLayerSize = sysWindowPtr->GetClientAreaSize();
 
 		DXGI_SWAP_CHAIN_DESC1 swapChainDesc;
 		ZeroMemory( &swapChainDesc, sizeof( DXGI_SWAP_CHAIN_DESC1 ) );
@@ -168,10 +168,10 @@ namespace Ic3::Graphics::GCI
 		swapChainDesc.BufferCount = 1;
 		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 
-		auto & dxgiFactory = pDX11GPUDevice.mDXGIFactory2;
+		auto & dxgiFactory = pDX11GpuDevice.mDXGIFactory2;
 		ComPtr<IDXGISwapChain1> dxgiSwapChain1;
-		auto hResult = dxgiFactory->CreateSwapChainForHwnd( pDX11GPUDevice.mD3D11Device1.Get(),
-		                                                    sysWindowPtr->mNativeData.hwnd,
+		auto hResult = dxgiFactory->CreateSwapChainForHwnd( pDX11GpuDevice.mD3D11Device1.Get(),
+		                                                    sysWindowPtr->mNativeData.mHWND,
 		                                                    &swapChainDesc,
 		                                                    nullptr,
 		                                                    nullptr,
@@ -184,25 +184,25 @@ namespace Ic3::Graphics::GCI
 		return dxgiSwapChain1;
 	}
 
-	UINT ATL::translateDX11GPUDeviceCreateFlags( Bitmask<EGPUDriverConfigFlags> pDriverConfigFlags )
+	UINT ATL::TranslateDX11GpuDeviceCreateFlags( cppx::bitmask<EGpuDriverConfigFlags> pDriverConfigFlags )
 	{
-		Bitmask<UINT> deviceCreateFlags = 0;
-		if( pDriverConfigFlags.isSet( E_GPU_DRIVER_CONFIG_FLAG_ENABLE_DEBUG_LAYER_BIT ) )
+		cppx::bitmask<UINT> deviceCreateFlags = 0;
+		if( pDriverConfigFlags.is_set( E_GPU_DRIVER_CONFIG_FLAG_ENABLE_DEBUG_LAYER_BIT ) )
 		{
 			deviceCreateFlags.set( D3D11_CREATE_DEVICE_DEBUG );
 		}
-		if( pDriverConfigFlags.isSet( E_GPU_DRIVER_CONFIG_FLAG_ENABLE_SHADER_DEBUG_INFO_BIT ) )
+		if( pDriverConfigFlags.is_set( E_GPU_DRIVER_CONFIG_FLAG_ENABLE_SHADER_DEBUG_INFO_BIT ) )
 		{
 			deviceCreateFlags.set( D3D11_CREATE_DEVICE_DEBUGGABLE );
 		}
-		if( pDriverConfigFlags.isSet( E_GPU_DRIVER_CONFIG_FLAG_DISABLE_MULTI_THREAD_ACCESS_BIT ) )
+		if( pDriverConfigFlags.is_set( E_GPU_DRIVER_CONFIG_FLAG_DISABLE_MULTI_THREAD_ACCESS_BIT ) )
 		{
 			deviceCreateFlags.set( D3D11_CREATE_DEVICE_SINGLETHREADED );
 		}
 		return deviceCreateFlags;
 	}
 
-	D3D11_BLEND ATL::translateDX11BlendFactor( EBlendFactor pBlendFactor )
+	D3D11_BLEND ATL::TranslateDX11BlendFactor( EBlendFactor pBlendFactor )
 	{
 		switch( pBlendFactor )
 		{
@@ -223,7 +223,7 @@ namespace Ic3::Graphics::GCI
 		return D3D11_INVALID<D3D11_BLEND>;
 	}
 
-	D3D11_BLEND_OP ATL::translateDX11BlendOp( EBlendOp pBlendOp )
+	D3D11_BLEND_OP ATL::TranslateDX11BlendOp( EBlendOp pBlendOp )
 	{
 		switch( pBlendOp )
 		{
@@ -237,23 +237,23 @@ namespace Ic3::Graphics::GCI
 		return D3D11_INVALID<D3D11_BLEND_OP>;
 	}
 
-	UINT8 ATL::translateDX11BlendRenderTargetWriteMask( Bitmask<EBlendWriteMaskFlags> pWriteMask )
+	UINT8 ATL::TranslateDX11BlendRenderTargetWriteMask( cppx::bitmask<EBlendWriteMaskFlags> pWriteMask )
 	{
-		auto d3d11WriteMask = makeBitmask<UINT8>( 0 );
+		auto d3d11WriteMask = make_bitmask<UINT8>( 0 );
 
-		if( pWriteMask.isSet( E_BLEND_WRITE_MASK_CHANNEL_RED ) )
+		if( pWriteMask.is_set( E_BLEND_WRITE_MASK_CHANNEL_RED ) )
 		{
 			d3d11WriteMask.set( D3D11_COLOR_WRITE_ENABLE_RED );
 		}
-		if( pWriteMask.isSet( E_BLEND_WRITE_MASK_CHANNEL_GREEN ) )
+		if( pWriteMask.is_set( E_BLEND_WRITE_MASK_CHANNEL_GREEN ) )
 		{
 			d3d11WriteMask.set( D3D11_COLOR_WRITE_ENABLE_GREEN );
 		}
-		if( pWriteMask.isSet( E_BLEND_WRITE_MASK_CHANNEL_BLUE ) )
+		if( pWriteMask.is_set( E_BLEND_WRITE_MASK_CHANNEL_BLUE ) )
 		{
 			d3d11WriteMask.set( D3D11_COLOR_WRITE_ENABLE_BLUE );
 		}
-		if( pWriteMask.isSet( E_BLEND_WRITE_MASK_CHANNEL_ALPHA ) )
+		if( pWriteMask.is_set( E_BLEND_WRITE_MASK_CHANNEL_ALPHA ) )
 		{
 			d3d11WriteMask.set( D3D11_COLOR_WRITE_ENABLE_ALPHA );
 		}
@@ -261,64 +261,64 @@ namespace Ic3::Graphics::GCI
 		return d3d11WriteMask;
 	}
 
-	Bitmask<D3D11_CLEAR_FLAG> ATL::translateDX11RTClearDepthStencilFlags( Bitmask<ERenderTargetBufferFlags> pClearFlags )
+	cppx::bitmask<D3D11_CLEAR_FLAG> ATL::TranslateDX11RTClearDepthStencilFlags( cppx::bitmask<ERenderTargetBufferFlags> pClearFlags )
 	{
-		Bitmask<D3D11_CLEAR_FLAG> d3d11ClearDSFlags = 0;
-		if( pClearFlags.isSet( E_RENDER_TARGET_BUFFER_FLAG_DEPTH_BIT ) )
+		cppx::bitmask<D3D11_CLEAR_FLAG> d3d11ClearDSFlags = 0;
+		if( pClearFlags.is_set( E_RENDER_TARGET_BUFFER_FLAG_DEPTH_BIT ) )
 		{
 			d3d11ClearDSFlags.set( D3D11_CLEAR_DEPTH );
 		}
-		if( pClearFlags.isSet( E_RENDER_TARGET_BUFFER_FLAG_STENCIL_BIT ) )
+		if( pClearFlags.is_set( E_RENDER_TARGET_BUFFER_FLAG_STENCIL_BIT ) )
 		{
 			d3d11ClearDSFlags.set( D3D11_CLEAR_STENCIL );
 		}
 		return d3d11ClearDSFlags;
 	}
 
-	UINT ATL::translateDX11BufferBindFlags( Bitmask<resource_flags_value_t> pBufferFlags )
+	UINT ATL::TranslateDX11BufferBindFlags( cppx::bitmask<resource_flags_value_t> pBufferFlags )
 	{
-		Bitmask<UINT> d3d11BindFlags = 0;
-		if( pBufferFlags.isSet( E_GPU_BUFFER_BIND_FLAG_CONSTANT_BUFFER_BIT ) )
+		cppx::bitmask<UINT> d3d11BindFlags = 0;
+		if( pBufferFlags.is_set( E_GPU_BUFFER_BIND_FLAG_CONSTANT_BUFFER_BIT ) )
 		{
 			d3d11BindFlags.set( D3D11_BIND_CONSTANT_BUFFER );
 		}
-		if( pBufferFlags.isSet( E_GPU_BUFFER_BIND_FLAG_VERTEX_BUFFER_BIT ) )
+		if( pBufferFlags.is_set( E_GPU_BUFFER_BIND_FLAG_VERTEX_BUFFER_BIT ) )
 		{
 			d3d11BindFlags.set( D3D11_BIND_VERTEX_BUFFER );
 		}
-		if( pBufferFlags.isSet( E_GPU_BUFFER_BIND_FLAG_INDEX_BUFFER_BIT ) )
+		if( pBufferFlags.is_set( E_GPU_BUFFER_BIND_FLAG_INDEX_BUFFER_BIT ) )
 		{
 			d3d11BindFlags.set( D3D11_BIND_INDEX_BUFFER );
 		}
-		if( pBufferFlags.isSet( E_GPU_BUFFER_BIND_FLAG_SHADER_INPUT_BUFFER_BIT ) )
+		if( pBufferFlags.is_set( E_GPU_BUFFER_BIND_FLAG_SHADER_INPUT_BUFFER_BIT ) )
 		{
 			d3d11BindFlags.set( D3D11_BIND_SHADER_RESOURCE );
 		}
-		if( pBufferFlags.isSet( E_GPU_BUFFER_BIND_FLAG_SHADER_UAV_BUFFER_BIT ) )
+		if( pBufferFlags.is_set( E_GPU_BUFFER_BIND_FLAG_SHADER_UAV_BUFFER_BIT ) )
 		{
 			d3d11BindFlags.set( D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS );
 		}
-		if( pBufferFlags.isSet( E_GPU_BUFFER_BIND_FLAG_STREAM_OUTPUT_BUFFER_BIT ) )
+		if( pBufferFlags.is_set( E_GPU_BUFFER_BIND_FLAG_STREAM_OUTPUT_BUFFER_BIT ) )
 		{
 			d3d11BindFlags.set( D3D11_BIND_STREAM_OUTPUT );
 		}
 		return d3d11BindFlags;
 	}
 
-	D3D11_MAP ATL::translateDX11BufferMapFlags( EGPUMemoryMapMode pMapMode, Bitmask<EGPUMemoryFlags> /* pMemoryFlags */ )
+	D3D11_MAP ATL::TranslateDX11BufferMapFlags( EGpuMemoryMapMode pMapMode, cppx::bitmask<EGpuMemoryFlags> /* pMemoryFlags */ )
 	{
 		switch( pMapMode )
 		{
-			ic3CaseReturn( EGPUMemoryMapMode::ReadOnly        , D3D11_MAP_READ               );
-			ic3CaseReturn( EGPUMemoryMapMode::ReadWrite       , D3D11_MAP_READ_WRITE         );
-			ic3CaseReturn( EGPUMemoryMapMode::WriteDefault    , D3D11_MAP_WRITE              );
-			ic3CaseReturn( EGPUMemoryMapMode::WriteInvalidate , D3D11_MAP_WRITE_DISCARD      );
-			ic3CaseReturn( EGPUMemoryMapMode::WriteAppend     , D3D11_MAP_WRITE_NO_OVERWRITE );
+			ic3CaseReturn( EGpuMemoryMapMode::ReadOnly        , D3D11_MAP_READ               );
+			ic3CaseReturn( EGpuMemoryMapMode::ReadWrite       , D3D11_MAP_READ_WRITE         );
+			ic3CaseReturn( EGpuMemoryMapMode::WriteDefault    , D3D11_MAP_WRITE              );
+			ic3CaseReturn( EGpuMemoryMapMode::WriteInvalidate , D3D11_MAP_WRITE_DISCARD      );
+			ic3CaseReturn( EGpuMemoryMapMode::WriteAppend     , D3D11_MAP_WRITE_NO_OVERWRITE );
 		};
 		return static_cast<D3D11_MAP>( 0 );
 	}
 
-	D3D11_COMPARISON_FUNC ATL::translateDX11CompFunc( ECompFunc pCompFunc )
+	D3D11_COMPARISON_FUNC ATL::TranslateDX11CompFunc( ECompFunc pCompFunc )
 	{
 		switch( pCompFunc )
 		{
@@ -335,7 +335,7 @@ namespace Ic3::Graphics::GCI
 		return D3D11_INVALID<D3D11_COMPARISON_FUNC>;
 	}
 
-	D3D11_CULL_MODE ATL::translateDX11CullMode( ECullMode pCullMode )
+	D3D11_CULL_MODE ATL::TranslateDX11CullMode( ECullMode pCullMode )
 	{
 		switch( pCullMode )
 		{
@@ -347,7 +347,7 @@ namespace Ic3::Graphics::GCI
 		return D3D11_INVALID<D3D11_CULL_MODE>;
 	}
 
-	D3D11_DEPTH_WRITE_MASK ATL::translateDX11DepthWriteMask( EDepthWriteMask pDepthWriteMask )
+	D3D11_DEPTH_WRITE_MASK ATL::TranslateDX11DepthWriteMask( EDepthWriteMask pDepthWriteMask )
 	{
 		if( pDepthWriteMask == EDepthWriteMask::All )
 		{
@@ -359,7 +359,7 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	D3D11_FILL_MODE ATL::translateDX11PrimitiveFillMode( EPrimitiveFillMode pFillMode )
+	D3D11_FILL_MODE ATL::TranslateDX11PrimitiveFillMode( EPrimitiveFillMode pFillMode )
 	{
 		switch( pFillMode )
 		{
@@ -370,7 +370,7 @@ namespace Ic3::Graphics::GCI
 		return D3D11_INVALID<D3D11_FILL_MODE>;
 	}
 
-	D3D11_PRIMITIVE_TOPOLOGY ATL::translateDX11PrimitiveTopology( EPrimitiveTopology pTopology )
+	D3D11_PRIMITIVE_TOPOLOGY ATL::TranslateDX11PrimitiveTopology( EPrimitiveTopology pTopology )
 	{
 		switch( pTopology )
 		{
@@ -389,7 +389,7 @@ namespace Ic3::Graphics::GCI
 		return D3D11_INVALID<D3D11_PRIMITIVE_TOPOLOGY>;
 	}
 
-	D3D11_SHADER_TYPE ATL::translateDX11EShaderType( EShaderType pShaderType )
+	D3D11_SHADER_TYPE ATL::TranslateDX11EShaderType( EShaderType pShaderType )
 	{
 		switch( pShaderType )
 		{
@@ -404,7 +404,7 @@ namespace Ic3::Graphics::GCI
 		return D3D11_INVALID<D3D11_SHADER_TYPE>;
 	}
 
-	D3D11_STENCIL_OP ATL::translateDX11StencilOp( EStencilOp pStencilOp )
+	D3D11_STENCIL_OP ATL::TranslateDX11StencilOp( EStencilOp pStencilOp )
 	{
 		switch( pStencilOp )
 		{
@@ -421,7 +421,7 @@ namespace Ic3::Graphics::GCI
 		return D3D11_INVALID<D3D11_STENCIL_OP>;
 	}
 
-	D3D11_TEXTURE_ADDRESS_MODE ATL::translateDX11ETextureAddressMode( ETextureAddressMode pAddressMode )
+	D3D11_TEXTURE_ADDRESS_MODE ATL::TranslateDX11ETextureAddressMode( ETextureAddressMode pAddressMode )
 	{
 		switch( pAddressMode )
 		{
@@ -435,25 +435,25 @@ namespace Ic3::Graphics::GCI
 		return D3D11_UNDEFINED<D3D11_TEXTURE_ADDRESS_MODE>;
 	}
 
-	UINT ATL::translateDX11ETextureBindFlags( Bitmask<resource_flags_value_t> pTextureFlags )
+	UINT ATL::TranslateDX11ETextureBindFlags( cppx::bitmask<resource_flags_value_t> pTextureFlags )
 	{
-		Bitmask<UINT> d3d11BindFlags = 0;
-		if( pTextureFlags.isSet( E_GPU_RESOURCE_USAGE_FLAG_SHADER_INPUT_BIT ) )
+		cppx::bitmask<UINT> d3d11BindFlags = 0;
+		if( pTextureFlags.is_set( E_GPU_RESOURCE_USAGE_FLAG_SHADER_INPUT_BIT ) )
 		{
 			d3d11BindFlags.set( D3D11_BIND_SHADER_RESOURCE );
 		}
-		if( pTextureFlags.isSet( E_GPU_RESOURCE_USAGE_FLAG_RENDER_TARGET_COLOR_BIT ) )
+		if( pTextureFlags.is_set( E_GPU_RESOURCE_USAGE_FLAG_RENDER_TARGET_COLOR_BIT ) )
 		{
 			d3d11BindFlags.set( D3D11_BIND_RENDER_TARGET );
 		}
-		if( pTextureFlags.isSetAnyOf( E_GPU_RESOURCE_USAGE_MASK_RENDER_TARGET_DEPTH_STENCIL ) )
+		if( pTextureFlags.is_set_any_of( E_GPU_RESOURCE_USAGE_MASK_RENDER_TARGET_DEPTH_STENCIL ) )
 		{
 			d3d11BindFlags.set( D3D11_BIND_DEPTH_STENCIL );
 		}
 		return d3d11BindFlags;
 	}
 
-	D3D11_FILTER ATL::translateDX11ETextureFilter( ETextureFilter magFilter, ETextureFilter minFilter, ETextureMipMode mipMode, uint32 anisotropyLevel )
+	D3D11_FILTER ATL::TranslateDX11ETextureFilter( ETextureFilter magFilter, ETextureFilter minFilter, ETextureMipMode mipMode, uint32 anisotropyLevel )
 	{
 		return D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 	}

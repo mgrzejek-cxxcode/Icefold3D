@@ -4,7 +4,7 @@
 #ifndef __IC3_GRAPHICS_GCI_COMMON_COMMAND_DEFS_H__
 #define __IC3_GRAPHICS_GCI_COMMON_COMMAND_DEFS_H__
 
-#include "State/CommonGPUStateDefs.h"
+#include "State/CommonGpuStateDefs.h"
 #include "State/RenderTargetCommon.h"
 #include <atomic>
 
@@ -32,7 +32,7 @@ namespace Ic3::Graphics::GCI
         eDeviceCommandQueueIdDefaultCompute = 1u,
         eDeviceCommandQueueIdDefaultTransfer = 2u,
         eDeviceCommandQueueIdPresent = 3u,
-        eDeviceCommandQueueIdUnknown = QLimits<gpu_cmd_device_queue_id_t>::sMaxValue,
+        eDeviceCommandQueueIdUnknown = cppx::meta::limits<gpu_cmd_device_queue_id_t>::max_value,
     };
 
 	enum ECommandListActionFlags : uint32
@@ -114,14 +114,14 @@ namespace Ic3::Graphics::GCI
 	namespace CxDef
 	{
 
-		inline constexpr ECommandExecutionMode getCommandObjectExecutionMode( ECommandObjectType pType ) noexcept
+		inline constexpr ECommandExecutionMode GetCommandObjectExecutionMode( ECommandObjectType pType ) noexcept
 		{
 			return static_cast<ECommandExecutionMode>( static_cast<uint32>( pType ) & ECommandObjectPropertyMaskExecutionModeAll );
 		}
 
-		inline constexpr TBitmask<ECommandObjectPropertyFlags> getCommandObjectPropertyFlags( ECommandObjectType pType ) noexcept
+		inline constexpr cppx::bitmask<ECommandObjectPropertyFlags> GetCommandObjectPropertyFlags( ECommandObjectType pType ) noexcept
 		{
-			return Cppx::makeBitmask<uint32>( static_cast<uint32>( pType ) & ECommandObjectPropertyMaskAll );
+			return cppx::make_bitmask<uint32>( static_cast<uint32>( pType ) & ECommandObjectPropertyMaskAll );
 		}
 
 	}
@@ -158,9 +158,9 @@ namespace Ic3::Graphics::GCI
 
 	struct CommandContextSubmitInfo
 	{
-		ECommandQueueClass mQueuePreference = ECommandQueueClass::Default;
-		ECommandSubmitStateOp mStateOp = ECommandSubmitStateOp::Discard;
-		ECommandSubmitSyncMode mSyncMode = ECommandSubmitSyncMode::None;
+		ECommandQueueClass queuePreference = ECommandQueueClass::Default;
+		ECommandSubmitStateOp stateOp = ECommandSubmitStateOp::Discard;
+		ECommandSubmitSyncMode syncMode = ECommandSubmitSyncMode::None;
 	};
 
 	inline constexpr CommandContextSubmitInfo cxCommandContextSubmitDefault {};
@@ -170,45 +170,45 @@ namespace Ic3::Graphics::GCI
 	public:
 		using SyncDataReleaseFuncPtr = void ( * )( void * );
 
-		void * mSyncData = nullptr;
+		void * syncData = nullptr;
 
-		SyncDataReleaseFuncPtr mSyncDataReleaseFunc = nullptr;
+		SyncDataReleaseFuncPtr syncDataReleaseFunc = nullptr;
 
 	public:
 		CommandSync() = default;
 
 		CommandSync( CommandSync && pSrcObject )
-		: mSyncData( pSrcObject.mSyncData )
-		, mSyncDataReleaseFunc( pSrcObject.mSyncDataReleaseFunc )
+		: syncData( pSrcObject.syncData )
+		, syncDataReleaseFunc( pSrcObject.syncDataReleaseFunc )
 		{
-			pSrcObject.mSyncData = nullptr;
-			pSrcObject.mSyncDataReleaseFunc = nullptr;
+			pSrcObject.syncData = nullptr;
+			pSrcObject.syncDataReleaseFunc = nullptr;
 		}
 
 		~CommandSync()
 		{
-			if( mSyncData && mSyncDataReleaseFunc )
+			if( syncData && syncDataReleaseFunc )
 			{
-				mSyncDataReleaseFunc( mSyncData );
-				mSyncData = nullptr;
+				syncDataReleaseFunc( syncData );
+				syncData = nullptr;
 			}
 		}
 
 		CommandSync & operator=( CommandSync && pRhs )
 		{
-			CommandSync( std::move( pRhs ) ).swap( *this );
+			CommandSync( std::move( pRhs ) ).Swap( *this );
 			return *this;
 		}
 
 		explicit operator bool() const
 		{
-			return mSyncData != nullptr;
+			return syncData != nullptr;
 		}
 
-		void swap( CommandSync & pOther )
+		void Swap( CommandSync & pOther )
 		{
-			std::swap( mSyncData, pOther.mSyncData );
-			std::swap( mSyncDataReleaseFunc, pOther.mSyncDataReleaseFunc );
+			std::swap( syncData, pOther.syncData );
+			std::swap( syncDataReleaseFunc, pOther.syncDataReleaseFunc );
 		}
 	};
 

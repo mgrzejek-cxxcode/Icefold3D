@@ -24,9 +24,9 @@
 namespace Ic3::Graphics::GCI
 {
 
-	constexpr GLenum cvGLInvalidValue = QLimits<GLenum>::maxValue;
+	constexpr GLenum cvGLInvalidValue = cppx::meta::limits<GLenum>::max_value;
 
-	constexpr GLuint cvGLInvalidProgramLocation = QLimits<GLuint>::maxValue;
+	constexpr GLuint cvGLInvalidProgramLocation = cppx::meta::limits<GLuint>::max_value;
 
 	enum EGLRuntimeSupportFlags : uint32
 	{
@@ -37,12 +37,7 @@ namespace Ic3::Graphics::GCI
 		E_GL_RUNTIME_SUPPORT_FLAG_SEPARATE_SHADER_STAGES_BIT             = 1 << 3,
 	};
 
-	namespace coreutil
-	{
-
-		IC3_ATTR_NO_DISCARD Bitmask<EGLRuntimeSupportFlags> queryGLRuntimeSupportFlags( const System::OpenGLVersionSupportInfo & pSupportInfo );
-
-	}
+	CPPX_ATTR_NO_DISCARD cppx::bitmask<EGLRuntimeSupportFlags> QueryGLRuntimeSupportFlags( const System::OpenGLVersionSupportInfo & pSupportInfo );
 
 } // namespace Ic3::Graphics::GCI
 

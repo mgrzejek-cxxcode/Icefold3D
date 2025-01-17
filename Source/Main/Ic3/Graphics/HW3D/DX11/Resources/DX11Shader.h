@@ -26,27 +26,27 @@ namespace Ic3::Graphics::GCI
 		};
 		ComPtr<ID3D11DeviceChild> const mD3D11ShaderReference;
 
-		DX11Shader( DX11GPUDevice & pGPUDevice, ComPtr<ID3D11VertexShader> pD3D11VertexShader, std::unique_ptr<ShaderBinary> pShaderBinary );
-		DX11Shader( DX11GPUDevice & pGPUDevice, ComPtr<ID3D11HullShader> pD3D11HullShader, std::unique_ptr<ShaderBinary> pShaderBinary );
-		DX11Shader( DX11GPUDevice & pGPUDevice, ComPtr<ID3D11DomainShader> pD3D11DomainShader, std::unique_ptr<ShaderBinary> pShaderBinary );
-		DX11Shader( DX11GPUDevice & pGPUDevice, ComPtr<ID3D11GeometryShader> pD3D11GeometryShader, std::unique_ptr<ShaderBinary> pShaderBinary );
-		DX11Shader( DX11GPUDevice & pGPUDevice, ComPtr<ID3D11PixelShader> pD3D11PixelShader, std::unique_ptr<ShaderBinary> pShaderBinary );
-		DX11Shader( DX11GPUDevice & pGPUDevice, ComPtr<ID3D11ComputeShader> pD3D11ComputeShader, std::unique_ptr<ShaderBinary> pShaderBinary );
+		DX11Shader( DX11GpuDevice & pGpuDevice, ComPtr<ID3D11VertexShader> pD3D11VertexShader, std::unique_ptr<ShaderBinary> pShaderBinary );
+		DX11Shader( DX11GpuDevice & pGpuDevice, ComPtr<ID3D11HullShader> pD3D11HullShader, std::unique_ptr<ShaderBinary> pShaderBinary );
+		DX11Shader( DX11GpuDevice & pGpuDevice, ComPtr<ID3D11DomainShader> pD3D11DomainShader, std::unique_ptr<ShaderBinary> pShaderBinary );
+		DX11Shader( DX11GpuDevice & pGpuDevice, ComPtr<ID3D11GeometryShader> pD3D11GeometryShader, std::unique_ptr<ShaderBinary> pShaderBinary );
+		DX11Shader( DX11GpuDevice & pGpuDevice, ComPtr<ID3D11PixelShader> pD3D11PixelShader, std::unique_ptr<ShaderBinary> pShaderBinary );
+		DX11Shader( DX11GpuDevice & pGpuDevice, ComPtr<ID3D11ComputeShader> pD3D11ComputeShader, std::unique_ptr<ShaderBinary> pShaderBinary );
 		virtual ~DX11Shader();
 
-		static DX11ShaderHandle create( DX11GPUDevice & pDX11GPUDevice, const ShaderCreateInfo & pCreateInfo );
+		static DX11ShaderHandle Create( DX11GpuDevice & pDX11GpuDevice, const ShaderCreateInfo & pCreateInfo );
 	};
 
 
-	namespace rcutil
+	namespace RCU
 	{
 
-		IC3_ATTR_NO_DISCARD std::unique_ptr<ShaderBinary> compileShader(
+		CPPX_ATTR_NO_DISCARD std::unique_ptr<ShaderBinary> CompileShader(
 				const void * pCode,
 				size_t pCodeLength,
 				const char * pEntryPoint,
 				DXShaderTarget pShaderTarget,
-				Bitmask<UINT> pCompileFlags );
+				cppx::bitmask<UINT> pCompileFlags );
 
 	}
 

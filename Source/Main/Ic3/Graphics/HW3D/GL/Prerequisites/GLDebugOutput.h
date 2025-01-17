@@ -27,46 +27,46 @@ namespace Ic3::Graphics::GCI
 		GLDebugOutput( GLDebugOutputVersion pVersion );
 		virtual ~GLDebugOutput();
 
-		virtual void enableDebugOutput( bool pEnable );
-		virtual void enableSync( bool pEnable );
+		virtual void EnableDebugOutput( bool pEnable );
+		virtual void EnableSync( bool pEnable );
 
-		void enableBreakOnEvent( bool pEnable );
-		void enableEventFilter( bool pEnable );
+		void EnableBreakOnEvent( bool pEnable );
+		void EnableEventFilter( bool pEnable );
 
-		void setEventFilter( GLuint pEventID, bool pIgnored );
-		void resetEventFilters();
+		void SetEventFilter( GLuint pEventID, bool pIgnored );
+		void ResetEventFilters();
 
-		const char * getExtensionName() const;
-		uint64 getEventsCounter() const;
-		GLDebugOutputVersion getVersion() const;
+		const char * GetExtensionName() const;
+		uint64 GetEventsCounter() const;
+		GLDebugOutputVersion GetVersion() const;
 
-		bool isDebugOutputActive() const;
-		bool isEventFilterEnabled() const;
-		bool isEventIgnored( GLuint pEventID ) const;
+		bool IsDebugOutputActive() const;
+		bool IsEventFilterEnabled() const;
+		bool IsEventIgnored( GLuint pEventID ) const;
 
-		static std::unique_ptr<GLDebugOutput> createInterface( GLDebugOutputVersion pHint = GLDebugOutputVersion::Unknown );
+		static std::unique_ptr<GLDebugOutput> CreateInterface( GLDebugOutputVersion pHint = GLDebugOutputVersion::Unknown );
 
 	protected:
-		void processEvent( GLenum pEventSeverity, const char * pEventInfo );
+		void ProcessEvent( GLenum pEventSeverity, const char * pEventInfo );
 
 	private:
-		virtual void setCallbackActive( bool pEnable ) = 0;
+		virtual void SetCallbackActive( bool pEnable ) = 0;
 
-		static bool checkAPISupport( GLDebugOutputVersion pVersion );
-		static bool validateVersion( GLDebugOutputVersion pVersion );
+		static bool CheckAPISupport( GLDebugOutputVersion pVersion );
+		static bool ValidateVersion( GLDebugOutputVersion pVersion );
 
 	protected:
 		enum StateFlags : uint32
 		{
-			STATE_FLAG_DEBUG_CALLBACK_ACTIVE = 0x0001,
-			STATE_FLAG_ENABLE_BREAK_ON_EVENT = 0x0010,
-			STATE_FLAG_ENABLE_EVENT_FILTER = 0x0020
+			eStateFlagDebugCallbackActive = 0x0001,
+			eStateFlagEnableBreakOnEvent = 0x0010,
+			eStateFlagEnableEventFilter = 0x0020
 		};
 		using IgnoredEventsMap = std::unordered_set<GLuint>;
-		GLDebugOutputVersion APIVersion;
+		GLDebugOutputVersion _apiVersion;
 		IgnoredEventsMap _ignoredEventSet;
 		uint64 _processedEventsNum;
-		Bitmask<StateFlags> _stateFlags;
+		cppx::bitmask<StateFlags> _stateFlags;
 	};
 
 
@@ -79,16 +79,17 @@ namespace Ic3::Graphics::GCI
 		virtual ~GLDebugOutputAMDExt();
 
 	private:
-		virtual void setCallbackActive( bool pEnable ) override;
+		virtual void SetCallbackActive( bool pEnable ) override;
 
-		void handleEvent( GLuint pEventID, GLenum pEventCategory, GLenum pEventSeverity, const GLchar * pMessage );
+		void HandleEvent( GLuint pEventID, GLenum pEventCategory, GLenum pEventSeverity, const GLchar * pMessage );
 
-		static void GLAPIENTRY eventCallback( GLuint pEventID,
-                                              GLenum pEventCategory,
-                                              GLenum pEventSeverity,
-                                              GLsizei pLength,
-                                              const GLchar * pMessage,
-                                              GLvoid * pUserParam );
+		static void GLAPIENTRY EventCallback(
+				GLuint pEventID,
+				GLenum pEventCategory,
+				GLenum pEventSeverity,
+				GLsizei pLength,
+				const GLchar * pMessage,
+				GLvoid * pUserParam );
 	};
 
 	class GLDebugOutputARBExt final : public GLDebugOutput
@@ -97,20 +98,21 @@ namespace Ic3::Graphics::GCI
 		GLDebugOutputARBExt();
 		virtual ~GLDebugOutputARBExt();
 
-		virtual void enableSync( bool pEnable ) override;
+		virtual void EnableSync( bool pEnable ) override;
 
 	private:
-		virtual void setCallbackActive( bool pEnable ) override;
+		virtual void SetCallbackActive( bool pEnable ) override;
 
-		void handleEvent( GLuint pEventID, GLenum pEventCategory, GLenum pEventType, GLenum pEventSeverity, const GLchar * pMessage );
+		void HandleEvent( GLuint pEventID, GLenum pEventCategory, GLenum pEventType, GLenum pEventSeverity, const GLchar * pMessage );
 
-		static void GLAPIENTRY eventCallback( GLuint pEventID,
-                                              GLenum pEventSource,
-                                              GLenum pEventType,
-                                              GLenum pEventSeverity,
-                                              GLsizei pLength,
-                                              const GLchar * pMessage,
-                                              const GLvoid * pUserParam );
+		static void GLAPIENTRY EventCallback(
+				GLuint pEventID,
+				GLenum pEventSource,
+				GLenum pEventType,
+				GLenum pEventSeverity,
+				GLsizei pLength,
+				const GLchar * pMessage,
+				const GLvoid * pUserParam );
 	};
 
 	class GLDebugOutputKHRCore final : public GLDebugOutput
@@ -119,20 +121,21 @@ namespace Ic3::Graphics::GCI
 		GLDebugOutputKHRCore();
 		virtual ~GLDebugOutputKHRCore();
 
-		virtual void enableSync( bool pEnable ) override;
+		virtual void EnableSync( bool pEnable ) override;
 
 	private:
-		virtual void setCallbackActive( bool pEnable ) override;
+		virtual void SetCallbackActive( bool pEnable ) override;
 
-		void handleEvent( GLuint pEventID, GLenum pEventCategory, GLenum pEventType, GLenum pEventSeverity, const GLchar * pMessage );
+		void HandleEvent( GLuint pEventID, GLenum pEventCategory, GLenum pEventType, GLenum pEventSeverity, const GLchar * pMessage );
 
-		static void GLAPIENTRY eventCallback( GLuint pEventID,
-                                              GLenum pEventSource,
-                                              GLenum pEventType,
-                                              GLenum pEventSeverity,
-                                              GLsizei pLength,
-                                              const GLchar * pMessage,
-                                              const GLvoid * pUserParam );
+		static void GLAPIENTRY EventCallback(
+				GLuint pEventID,
+				GLenum pEventSource,
+				GLenum pEventType,
+				GLenum pEventSeverity,
+				GLsizei pLength,
+				const GLchar * pMessage,
+				const GLvoid * pUserParam );
 	};
 
 #endif

@@ -1,9 +1,9 @@
 
 #include "GLInputAssembler.h"
-#include <Ic3/Graphics/HW3D/GL/GLAPITranslationLayer.h>
-#include <Ic3/Graphics/HW3D/GL/GLGPUDevice.h>
+#include <Ic3/Graphics/HW3D/GL/GLApiTranslationLayer.h>
+#include <Ic3/Graphics/HW3D/GL/GLGpuDevice.h>
 #include <Ic3/Graphics/HW3D/GL/Objects/GLVertexArrayObject.h>
-#include <Ic3/Graphics/HW3D/GL/Resources/GLGPUBuffer.h>
+#include <Ic3/Graphics/HW3D/GL/Resources/GLGpuBuffer.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -12,7 +12,7 @@ namespace Ic3::Graphics::GCI
 	{
 		activeAttributesMask = 0;
 		primitiveTopology = 0;
-		memZero( attributeArray );
+		cppx::mem_set_zero( attributeArray );
 	}
 
 
@@ -32,17 +32,17 @@ namespace Ic3::Graphics::GCI
 	{
 		if( bindingType == EGLVertexBufferBindingType::Interleaved )
 		{
-			memZero( interleavedBindings );
+			cppx::mem_set_zero( interleavedBindings );
 		}
 		else if( bindingType == EGLVertexBufferBindingType::Separate )
 		{
-			memZero( separateBindings );
+			cppx::mem_set_zero( separateBindings );
 		}
 
 		bindingType = EGLVertexBufferBindingType::Undefined;
 	}
 
-	GLIAVertexBufferBinding GLIAVertexBuffersBindings::getBinding( native_uint pStreamIndex ) const
+	GLIAVertexBufferBinding GLIAVertexBuffersBindings::GetBinding( native_uint pStreamIndex ) const
 	{
 		if( bindingType == EGLVertexBufferBindingType::Interleaved )
 		{
@@ -72,24 +72,24 @@ namespace Ic3::Graphics::GCI
 
 
 	GLIAVertexStreamImmutableState::GLIAVertexStreamImmutableState(
-			GLGPUDevice & pGPUDevice,
+			GLGpuDevice & pGpuDevice,
 			const IAVertexStreamStateCommonProperties & pCommonProperties,
 			const GLIAVertexStreamDefinition & pGLVertexStreamDefinition )
-	: IAVertexStreamImmutableState( pGPUDevice, pCommonProperties )
+	: IAVertexStreamImmutableState( pGpuDevice, pCommonProperties )
 	, mGLVertexStreamDefinition( pGLVertexStreamDefinition )
 	{}
 
 	GLIAVertexStreamImmutableState::~GLIAVertexStreamImmutableState() = default;
 
-	GpaHandle<GLIAVertexStreamImmutableState> GLIAVertexStreamImmutableState::createInstance(
-			GLGPUDevice & pGPUDevice,
+	TGfxHandle<GLIAVertexStreamImmutableState> GLIAVertexStreamImmutableState::CreateInstance(
+			GLGpuDevice & pGpuDevice,
 			const IAVertexStreamDefinition & pVertexStreamDefinition )
 	{
-		const auto vertexStreamCommonProperties = smutil::getIAVertexStreamStateCommonProperties( pVertexStreamDefinition );
-		const auto glcVertexStreamDefinition = smutil::translateIAVertexStreamDefinitionGL( pVertexStreamDefinition );
+		const auto vertexStreamCommonProperties = SMU::GetIAVertexStreamStateCommonProperties( pVertexStreamDefinition );
+		const auto glcVertexStreamDefinition = SMU::TranslateIAVertexStreamDefinitionGL( pVertexStreamDefinition );
 
-		auto immutableState = createGPUAPIObject<GLIAVertexStreamImmutableState>(
-			pGPUDevice,
+		auto immutableState = CreateGfxObject<GLIAVertexStreamImmutableState>(
+			pGpuDevice,
 			vertexStreamCommonProperties,
 			glcVertexStreamDefinition );
 
@@ -98,41 +98,41 @@ namespace Ic3::Graphics::GCI
 
 
 	GLIAInputLayoutImmutableState::GLIAInputLayoutImmutableState(
-			GLGPUDevice & pGPUDevice,
+			GLGpuDevice & pGpuDevice,
 			const IAInputLayoutStateCommonProperties & pCommonProperties )
-	: IAInputLayoutImmutableState( pGPUDevice, pCommonProperties )
+	: IAInputLayoutImmutableState( pGpuDevice, pCommonProperties )
 	{}
 
 	GLIAInputLayoutImmutableState::~GLIAInputLayoutImmutableState() = default;
 
 
 	GLIAInputLayoutImmutableStateCore::GLIAInputLayoutImmutableStateCore(
-			GLGPUDevice & pGPUDevice,
+			GLGpuDevice & pGpuDevice,
 			const IAInputLayoutStateCommonProperties & pCommonProperties,
 			GLVertexArrayObjectHandle pVertexArrayObject,
 			GLenum pGLPrimitiveTopology )
-	: GLIAInputLayoutImmutableState( pGPUDevice, pCommonProperties )
+	: GLIAInputLayoutImmutableState( pGpuDevice, pCommonProperties )
 	, mVertexArrayObject( std::move( pVertexArrayObject ) )
 	, mGLPrimitiveTopology( pGLPrimitiveTopology )
 	{}
 
 	GLIAInputLayoutImmutableStateCore::~GLIAInputLayoutImmutableStateCore() = default;
 
-	GpaHandle<GLIAInputLayoutImmutableStateCore> GLIAInputLayoutImmutableStateCore::createInstance(
-			GLGPUDevice & pGPUDevice,
+	TGfxHandle<GLIAInputLayoutImmutableStateCore> GLIAInputLayoutImmutableStateCore::CreateInstance(
+			GLGpuDevice & pGpuDevice,
 			const IAInputLayoutDefinition & pInputLayoutDefinition )
 	{
-		const auto inputLayoutCommonProperties = smutil::getIAInputLayoutStateCommonProperties( pInputLayoutDefinition );
-		const auto glcInputLayoutDefinition = smutil::translateIAInputLayoutDefinitionGL( pInputLayoutDefinition );
+		const auto inputLayoutCommonProperties = SMU::GetIAInputLayoutStateCommonProperties( pInputLayoutDefinition );
+		const auto glcInputLayoutDefinition = SMU::TranslateIAInputLayoutDefinitionGL( pInputLayoutDefinition );
 
-		auto vertexArrayObject = smutil::createGLVertexArrayObjectLayoutOnlyGL( glcInputLayoutDefinition );
+		auto vertexArrayObject = SMU::CreateGLVertexArrayObjectLayoutOnlyGL( glcInputLayoutDefinition );
 		if( !vertexArrayObject )
 		{
 			return nullptr;
 		}
 
-		auto immutableState = createGPUAPIObject<GLIAInputLayoutImmutableStateCore>(
-			pGPUDevice,
+		auto immutableState = CreateGfxObject<GLIAInputLayoutImmutableStateCore>(
+			pGpuDevice,
 			inputLayoutCommonProperties,
 			std::move( vertexArrayObject ),
 			glcInputLayoutDefinition.primitiveTopology);
@@ -142,24 +142,24 @@ namespace Ic3::Graphics::GCI
 
 
 	GLIAInputLayoutImmutableStateCompat::GLIAInputLayoutImmutableStateCompat(
-			GLGPUDevice & pGPUDevice,
+			GLGpuDevice & pGpuDevice,
 			const IAInputLayoutStateCommonProperties & pCommonProperties,
 			const GLIAInputLayoutDefinition & pGLInputLayoutDefinition )
-	: GLIAInputLayoutImmutableState( pGPUDevice, pCommonProperties )
+	: GLIAInputLayoutImmutableState( pGpuDevice, pCommonProperties )
 	, mGLInputLayoutDefinition( pGLInputLayoutDefinition )
 	{}
 
 	GLIAInputLayoutImmutableStateCompat::~GLIAInputLayoutImmutableStateCompat() = default;
 
-	GpaHandle<GLIAInputLayoutImmutableStateCompat> GLIAInputLayoutImmutableStateCompat::createInstance(
-			GLGPUDevice & pGPUDevice,
+	TGfxHandle<GLIAInputLayoutImmutableStateCompat> GLIAInputLayoutImmutableStateCompat::CreateInstance(
+			GLGpuDevice & pGpuDevice,
 			const IAInputLayoutDefinition & pInputLayoutDefinition )
 	{
-		const auto inputLayoutCommonProperties = smutil::getIAInputLayoutStateCommonProperties( pInputLayoutDefinition );
-		const auto glcInputLayoutDefinition = smutil::translateIAInputLayoutDefinitionGL( pInputLayoutDefinition );
+		const auto inputLayoutCommonProperties = SMU::GetIAInputLayoutStateCommonProperties( pInputLayoutDefinition );
+		const auto glcInputLayoutDefinition = SMU::TranslateIAInputLayoutDefinitionGL( pInputLayoutDefinition );
 
-		auto immutableState = createGPUAPIObject<GLIAInputLayoutImmutableStateCompat>(
-			pGPUDevice,
+		auto immutableState = CreateGfxObject<GLIAInputLayoutImmutableStateCompat>(
+			pGpuDevice,
 			inputLayoutCommonProperties,
 			glcInputLayoutDefinition );
 
@@ -167,10 +167,10 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	namespace smutil
+	namespace SMU
 	{
 
-		GLIAVertexAttributeInfo translateIAVertexAttributeInfoGL(
+		GLIAVertexAttributeInfo TranslateIAVertexAttributeInfoGL(
 				const IAVertexAttributeInfo & pAttributeInfo )
 		{
 			GLIAVertexAttributeInfo glcAttributeInfo{};
@@ -178,50 +178,50 @@ namespace Ic3::Graphics::GCI
 			glcAttributeInfo.streamIndex = static_cast<GLuint>( pAttributeInfo.streamIndex );
 			glcAttributeInfo.instanceRate = pAttributeInfo.instanceRate;
 			glcAttributeInfo.relativeOffset = static_cast<uint32>( pAttributeInfo.relativeOffset );
-			glcAttributeInfo.byteSize = CxDef::getVertexAttribFormatByteSize( pAttributeInfo.format );
+			glcAttributeInfo.byteSize = CxDef::GetVertexAttribFormatByteSize( pAttributeInfo.format );
 
-			const auto attributeBaseType = CxDef::getVertexAttribFormatBaseDataType( pAttributeInfo.format );
-			glcAttributeInfo.baseType = ATL::translateGLBaseDataType( attributeBaseType );
+			const auto attributeBaseType = CxDef::GetVertexAttribFormatBaseDataType( pAttributeInfo.format );
+			glcAttributeInfo.baseType = ATL::TranslateGLBaseDataType( attributeBaseType );
 
-			const auto attributeComponentsNum = CxDef::getVertexAttribFormatComponentsNum( pAttributeInfo.format );
+			const auto attributeComponentsNum = CxDef::GetVertexAttribFormatComponentsNum( pAttributeInfo.format );
 			glcAttributeInfo.componentsNum = static_cast<uint32>( attributeComponentsNum );
 
-			const auto attributeFormatFlags = CxDef::getVertexAttribFormatFlags( pAttributeInfo.format );
-			glcAttributeInfo.normalized = attributeFormatFlags.isSet( E_GPU_DATA_FORMAT_FLAG_NORMALIZED_BIT ) ? GL_TRUE : GL_FALSE;
+			const auto attributeFormatFlags = CxDef::GetVertexAttribFormatFlags( pAttributeInfo.format );
+			glcAttributeInfo.normalized = attributeFormatFlags.is_set( eGpuDataFormatFlagNormalizedBit ) ? GL_TRUE : GL_FALSE;
 
 			return glcAttributeInfo;
 		}
 
-		GLIAInputLayoutDefinition translateIAInputLayoutDefinitionGL(
+		GLIAInputLayoutDefinition TranslateIAInputLayoutDefinitionGL(
 				const IAInputLayoutDefinition & pDefinition )
 		{
 			GLIAInputLayoutDefinition glcInputLayoutDefinition{};
 
-			const auto definedVertexAttributesNum = popCount( pDefinition.activeAttributesMask );
+			const auto definedVertexAttributesNum = pop_count( pDefinition.activeAttributesMask );
 
 			uint32 currentVertexAttributesNum = 0;
 			uint64 currentAttributePackedRelativeOffset = 0;
 
-			for( uint32 attributeIndex = 0; attributeIndex < GCM::IA_MAX_VERTEX_ATTRIBUTES_NUM; ++attributeIndex )
+			for( uint32 attributeIndex = 0; attributeIndex < GCM::cxIAMaxVertexAttributesNum; ++attributeIndex )
 			{
 				const auto attributeBit = CxDef::makeIAVertexAttributeFlag( attributeIndex );
-				if( pDefinition.activeAttributesMask.isSet( attributeBit ) )
+				if( pDefinition.activeAttributesMask.is_set( attributeBit ) )
 				{
 					const auto & inputAttributeInfo = pDefinition.attributeArray[attributeIndex];
 					auto & glcAttributeInfo = glcInputLayoutDefinition.attributeArray[attributeIndex];
 
 					// Translate the attribute data. This includes the relative offset.
-					glcAttributeInfo = translateIAVertexAttributeInfoGL( inputAttributeInfo );
+					glcAttributeInfo = TranslateIAVertexAttributeInfoGL( inputAttributeInfo );
 
-					if( inputAttributeInfo.relativeOffset == CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND )
+					if( inputAttributeInfo.relativeOffset == cxIAVertexAttributeOffsetAppend )
 					{
 						// If the offset is APPEND, update it with the current packed offset calculated.
-						glcAttributeInfo.relativeOffset = numeric_cast<uint32>( currentAttributePackedRelativeOffset );
+						glcAttributeInfo.relativeOffset = cppx::numeric_cast<uint32>( currentAttributePackedRelativeOffset );
 					}
-					else if( inputAttributeInfo.relativeOffset == CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND16 )
+					else if( inputAttributeInfo.relativeOffset == cxIAVertexAttributeOffsetAppend16 )
 					{
 						// If the offset is APPEND, update it with the current packed offset calculated.
-						glcAttributeInfo.relativeOffset = numeric_cast<uint32>( memGetAlignedValue( currentAttributePackedRelativeOffset, 16 ) );
+						glcAttributeInfo.relativeOffset = cppx::numeric_cast<uint32>( cppx::mem_get_aligned_value( currentAttributePackedRelativeOffset, 16 ) );
 					}
 
 					// Update the current packed offset.
@@ -237,74 +237,74 @@ namespace Ic3::Graphics::GCI
 			}
 
 			glcInputLayoutDefinition.activeAttributesMask = pDefinition.activeAttributesMask;
-			glcInputLayoutDefinition.primitiveTopology = ATL::translateGLPrimitiveTopology( pDefinition.primitiveTopology );
+			glcInputLayoutDefinition.primitiveTopology = ATL::TranslateGLPrimitiveTopology( pDefinition.primitiveTopology );
 
 			return glcInputLayoutDefinition;
 		}
 
-		GLIAVertexStreamDefinition translateIAVertexStreamDefinitionGL(
+		GLIAVertexStreamDefinition TranslateIAVertexStreamDefinitionGL(
 				const IAVertexStreamDefinition & pDefinition )
 		{
 			GLIAVertexStreamDefinition glcVertexStreamDefinition{};
 
-			if( pDefinition.activeBindingsMask.isSetAnyOf( E_IA_VERTEX_STREAM_BINDING_MASK_VERTEX_BUFFER_ALL_BITS ) )
+			if( pDefinition.activeBindingsMask.is_set_any_of( eIAVertexStreamBindingMaskVertexBufferAllBits ) )
 			{
-				translateVertexBufferReferencesGL(
+				TranslateVertexBufferReferencesGL(
 					pDefinition.vertexBufferReferences,
 					pDefinition.activeBindingsMask,
 					glcVertexStreamDefinition.vertexBufferBindings );
 			}
 
-			if( pDefinition.activeBindingsMask.isSet( E_IA_VERTEX_STREAM_BINDING_FLAG_INDEX_BUFFER_BIT ) )
+			if( pDefinition.activeBindingsMask.is_set( eIAVertexStreamBindingFlagIndexBufferBit ) )
 			{
-				translateIndexBufferReferenceGL(
+				TranslateIndexBufferReferenceGL(
 					pDefinition.indexBufferReference,
 					glcVertexStreamDefinition.indexBufferBinding );
 			}
 
-			glcVertexStreamDefinition.activeBindingsMask = ( pDefinition.activeBindingsMask & E_IA_VERTEX_STREAM_BINDING_MASK_ALL );
-			glcVertexStreamDefinition.vertexBufferBindings.activeRanges = smutil::generateActiveVertexBufferRanges( pDefinition.vertexBufferReferences );
+			glcVertexStreamDefinition.activeBindingsMask = (pDefinition.activeBindingsMask & eIAVertexStreamBindingMaskAll );
+			glcVertexStreamDefinition.vertexBufferBindings.activeRanges = SMU::GenerateActiveVertexBufferRanges( pDefinition.vertexBufferReferences );
 
 			return glcVertexStreamDefinition;
 		}
 
-		uint32 translateVertexBufferReferencesGL(
+		uint32 TranslateVertexBufferReferencesGL(
 				const IAVertexBufferReferenceArray & pVBReferences,
-				Bitmask<EIAVertexStreamBindingFlags> pBindingMask,
+				cppx::bitmask<EIAVertexStreamBindingFlags> pBindingMask,
 				GLIAVertexBuffersBindings & pOutGLBindings)
 		{
 			uint32 activeBindingsNum = 0;
 
-		#if( ICFGX_GL_PLATFORM_TYPE == ICFGX_GL_PLATFORM_TYPE_ES )
+		#if( IC3_GX_GL_PLATFORM_TYPE == IC3_GX_GL_PLATFORM_TYPE_ES )
 			pOutGLBindings.initializeInterleaved();
 		#else
 			pOutGLBindings.initializeSeparate();
 		#endif
 
-			for( native_uint streamIndex = 0; streamIndex < GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM; ++streamIndex )
+			for( native_uint streamIndex = 0; streamIndex < GCM::cxIAMaxVertexBufferBindingsNum; ++streamIndex )
 			{
 				const auto & inputVertexBufferRef = pVBReferences[streamIndex];
 				const auto vbBindingFlag = CxDef::makeIAVertexBufferFlag( streamIndex );
 
-				if( inputVertexBufferRef && pBindingMask.isSet( vbBindingFlag ) )
+				if( inputVertexBufferRef && pBindingMask.is_set( vbBindingFlag ) )
 				{
-					const auto * glcVertexBuffer = inputVertexBufferRef.sourceBuffer->queryInterface<GLGPUBuffer>();
+					const auto * glcVertexBuffer = inputVertexBufferRef.sourceBuffer->QueryInterface<GLGpuBuffer>();
 
-				#if( ICFGX_GL_PLATFORM_TYPE == ICFGX_GL_PLATFORM_TYPE_ES )
+				#if( IC3_GX_GL_PLATFORM_TYPE == IC3_GX_GL_PLATFORM_TYPE_ES )
 					pOutGLBindings.interleavedBindings[streamIndex].handle = glcVertexBuffer->mGLBufferObject->mGLHandle;
-					pOutGLBindings.interleavedBindings[streamIndex].offset = numeric_cast<GLintptr>( inputVertexBufferRef.dataOffset() );
-					pOutGLBindings.interleavedBindings[streamIndex].stride = numeric_cast<GLsizei>( inputVertexBufferRef.vertexStride );
+					pOutGLBindings.interleavedBindings[streamIndex].offset = cppx::numeric_cast<GLintptr>( inputVertexBufferRef.dataOffset() );
+					pOutGLBindings.interleavedBindings[streamIndex].stride = cppx::numeric_cast<GLsizei>( inputVertexBufferRef.vertexStride );
 				#else
 					pOutGLBindings.separateBindings.handleArray[streamIndex] = glcVertexBuffer->mGLBufferObject->mGLHandle;
-					pOutGLBindings.separateBindings.offsetArray[streamIndex] = numeric_cast<GLintptr>( inputVertexBufferRef.dataOffset() );
-					pOutGLBindings.separateBindings.strideArray[streamIndex] = numeric_cast<GLsizei>( inputVertexBufferRef.vertexStride );
+					pOutGLBindings.separateBindings.offsetArray[streamIndex] = cppx::numeric_cast<GLintptr>( inputVertexBufferRef.DataOffset() );
+					pOutGLBindings.separateBindings.strideArray[streamIndex] = cppx::numeric_cast<GLsizei>( inputVertexBufferRef.vertexStride );
 				#endif
 
 					++activeBindingsNum;
 				}
 				else
 				{
-				#if( ICFGX_GL_PLATFORM_TYPE == ICFGX_GL_PLATFORM_TYPE_ES )
+				#if( IC3_GX_GL_PLATFORM_TYPE == IC3_GX_GL_PLATFORM_TYPE_ES )
 					pOutGLBindings.interleavedBindings[streamIndex].handle = 0u;
 					pOutGLBindings.interleavedBindings[streamIndex].offset = 0u;
 					pOutGLBindings.interleavedBindings[streamIndex].stride = 0u;
@@ -319,18 +319,18 @@ namespace Ic3::Graphics::GCI
 			return activeBindingsNum;
 		}
 
-		bool translateIndexBufferReferenceGL(
+		bool TranslateIndexBufferReferenceGL(
 				const IAIndexBufferReference & pIBReference,
 				GLIAIndexBufferBinding & pOutGLBinding )
 		{
 			if( pIBReference )
 			{
-				const auto * glcIndexBuffer = pIBReference.sourceBuffer->queryInterface<GLGPUBuffer>();
+				const auto * glcIndexBuffer = pIBReference.sourceBuffer->QueryInterface<GLGpuBuffer>();
 
 				pOutGLBinding.handle = glcIndexBuffer->mGLBufferObject->mGLHandle;
-				pOutGLBinding.offset = pIBReference.dataOffset();
-				pOutGLBinding.format = ATL::translateGLIndexDataFormat( pIBReference.indexFormat );
-				pOutGLBinding.elementByteSize = CxDef::getIndexDataFormatByteSize( pIBReference.indexFormat );
+				pOutGLBinding.offset = pIBReference.DataOffset();
+				pOutGLBinding.format = ATL::TranslateGLIndexDataFormat( pIBReference.indexFormat );
+				pOutGLBinding.elementByteSize = CxDef::GetIndexDataFormatByteSize( pIBReference.indexFormat );
 
 				return true;
 			}
@@ -345,42 +345,42 @@ namespace Ic3::Graphics::GCI
 			}
 		}
 
-		GLIAVertexBuffersBindings translateVertexBufferReferencesGL(
+		GLIAVertexBuffersBindings TranslateVertexBufferReferencesGL(
 				const IAVertexBufferReferenceArray & pVBReferences,
-				Bitmask<EIAVertexStreamBindingFlags> pBindingMask )
+				cppx::bitmask<EIAVertexStreamBindingFlags> pBindingMask )
 		{
 			GLIAVertexBuffersBindings glcVertexBufferBindings{};
-			translateVertexBufferReferencesGL( pVBReferences, pBindingMask, glcVertexBufferBindings );
+			TranslateVertexBufferReferencesGL( pVBReferences, pBindingMask, glcVertexBufferBindings );
 			return glcVertexBufferBindings;
 		}
 
-		GLIAIndexBufferBinding translateIndexBufferReferenceGL(
+		GLIAIndexBufferBinding TranslateIndexBufferReferenceGL(
 				const IAIndexBufferReference & pIBReference )
 		{
 			GLIAIndexBufferBinding glcIndexBufferBinding{};
-			translateIndexBufferReferenceGL( pIBReference, glcIndexBufferBinding );
+			TranslateIndexBufferReferenceGL( pIBReference, glcIndexBufferBinding );
 			return glcIndexBufferBinding;
 		}
 
-		GLVertexArrayObjectHandle createGLVertexArrayObjectLayoutOnlyGL(
+		GLVertexArrayObjectHandle CreateGLVertexArrayObjectLayoutOnlyGL(
 				const GLIAInputLayoutDefinition & pInputLayoutDefinition ) noexcept
 		{
-			if( !pInputLayoutDefinition.activeAttributesMask.isSetAnyOf( E_IA_VERTEX_ATTRIBUTE_MASK_ALL ) )
+			if( !pInputLayoutDefinition.activeAttributesMask.is_set_any_of( eIAVertexAttributeMaskAll ) )
 			{
 				return nullptr;
 			}
 
-			auto vertexArrayObject = GLVertexArrayObject::create();
-			updateGLVertexArrayObjectLayoutOnlyGL( *vertexArrayObject, pInputLayoutDefinition );
+			auto vertexArrayObject = GLVertexArrayObject::Create();
+			UpdateGLVertexArrayObjectLayoutOnlyGL( *vertexArrayObject, pInputLayoutDefinition );
 
 			return vertexArrayObject;
 		}
 
-		bool updateGLVertexArrayObjectLayoutOnlyGL(
+		bool UpdateGLVertexArrayObjectLayoutOnlyGL(
 				GLVertexArrayObject & pVertexArrayObject,
 				const GLIAInputLayoutDefinition & pInputLayoutDefinition ) noexcept
 		{
-			if( !pInputLayoutDefinition.activeAttributesMask.isSetAnyOf( E_IA_VERTEX_ATTRIBUTE_MASK_ALL ) )
+			if( !pInputLayoutDefinition.activeAttributesMask.is_set_any_of( eIAVertexAttributeMaskAll ) )
 			{
 				return false;
 			}
@@ -388,10 +388,10 @@ namespace Ic3::Graphics::GCI
 			glBindVertexArray( pVertexArrayObject.mGLHandle );
 			ic3OpenGLHandleLastError();
 
-			for( uint32 attributeIndex = 0; attributeIndex < GCM::IA_MAX_VERTEX_ATTRIBUTES_NUM; ++attributeIndex )
+			for( uint32 attributeIndex = 0; attributeIndex < GCM::cxIAMaxVertexAttributesNum; ++attributeIndex )
 			{
 				const auto attributeBit = CxDef::makeIAVertexAttributeFlag( attributeIndex );
-				if( pInputLayoutDefinition.activeAttributesMask.isSet( attributeBit ) )
+				if( pInputLayoutDefinition.activeAttributesMask.is_set( attributeBit ) )
 				{
 					const auto & glcAttribute = pInputLayoutDefinition.attributeArray[attributeIndex];
 
@@ -429,27 +429,27 @@ namespace Ic3::Graphics::GCI
 			return true;
 		}
 
-		GLVertexArrayObjectHandle createGLVertexArrayObjectLayoutStreamCombinedGL(
+		GLVertexArrayObjectHandle CreateGLVertexArrayObjectLayoutStreamCombinedGL(
 				const GLIAInputLayoutDefinition & pInputLayoutDefinition,
 				const GLIAVertexStreamDefinition & pVertexStreamDefinition ) noexcept
 		{
-			if( !pInputLayoutDefinition.activeAttributesMask.isSetAnyOf( E_IA_VERTEX_ATTRIBUTE_MASK_ALL ) )
+			if( !pInputLayoutDefinition.activeAttributesMask.is_set_any_of( eIAVertexAttributeMaskAll ) )
 			{
 				return nullptr;
 			}
 
-			auto vertexArrayObject = GLVertexArrayObject::create();
-			updateGLVertexArrayObjectLayoutStreamCombinedGL( *vertexArrayObject, pInputLayoutDefinition, pVertexStreamDefinition );
+			auto vertexArrayObject = GLVertexArrayObject::Create();
+			UpdateGLVertexArrayObjectLayoutStreamCombinedGL( *vertexArrayObject, pInputLayoutDefinition, pVertexStreamDefinition );
 
 			return vertexArrayObject;
 		}
 
-		bool updateGLVertexArrayObjectLayoutStreamCombinedGL(
+		bool UpdateGLVertexArrayObjectLayoutStreamCombinedGL(
 				GLVertexArrayObject & pVertexArrayObject,
 				const GLIAInputLayoutDefinition & pInputLayoutDefinition,
 				const GLIAVertexStreamDefinition & pVertexStreamDefinition ) noexcept
 		{
-			if( !pInputLayoutDefinition.activeAttributesMask.isSetAnyOf( E_IA_VERTEX_ATTRIBUTE_MASK_ALL ) )
+			if( !pInputLayoutDefinition.activeAttributesMask.is_set_any_of( eIAVertexAttributeMaskAll ) )
 			{
 				return false;
 			}
@@ -459,13 +459,13 @@ namespace Ic3::Graphics::GCI
 
 			GLuint currentVBBinding = 0;
 
-			for( uint32 attributeIndex = 0; attributeIndex < GCM::IA_MAX_VERTEX_ATTRIBUTES_NUM; ++attributeIndex )
+			for( uint32 attributeIndex = 0; attributeIndex < GCM::cxIAMaxVertexAttributesNum; ++attributeIndex )
 			{
 				const auto attributeBit = CxDef::makeIAVertexAttributeFlag( attributeIndex );
-				if( pInputLayoutDefinition.activeAttributesMask.isSet( attributeBit ) )
+				if( pInputLayoutDefinition.activeAttributesMask.is_set( attributeBit ) )
 				{
 					const auto & glcAttribute = pInputLayoutDefinition.attributeArray[attributeIndex];
-					const auto & glcVertexBufferBinding = pVertexStreamDefinition.vertexBufferBindings.getBinding( glcAttribute.streamIndex );
+					const auto & glcVertexBufferBinding = pVertexStreamDefinition.vertexBufferBindings.GetBinding( glcAttribute.streamIndex );
 
 					ic3DebugAssert( glcVertexBufferBinding );
 

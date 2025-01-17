@@ -1,6 +1,6 @@
 
-#include "GPUUtils.h"
-#include "GPUDevice.h"
+#include "GpuUtils.h"
+#include "GpuDevice.h"
 #include <fstream>
 
 namespace Ic3::Graphics::GCI
@@ -9,28 +9,28 @@ namespace Ic3::Graphics::GCI
     namespace utils
     {
 
-        ShaderHandle createShaderFromSource( GPUDevice & pGPUDevice, EShaderType pShaderType, const void * pSource, size_t pSourceLength )
+        ShaderHandle CreateShaderFromSource( GpuDevice & pGpuDevice, EShaderType pShaderType, const void * pSource, size_t pSourceLength )
         {
             ShaderCreateInfo shaderCreateInfo;
-            shaderCreateInfo.mShaderType = pShaderType;
-            shaderCreateInfo.mShaderSourceView = bindMemoryView( pSource, pSourceLength );
+            shaderCreateInfo.shaderType = pShaderType;
+            shaderCreateInfo.shaderSourceView = cppx::bind_memory_view( pSource, pSourceLength );
 
-            if( pGPUDevice.isDebugDevice() )
+            if( pGpuDevice.IsDebugDevice() )
             {
-                shaderCreateInfo.mCreateFlags = eShaderCreateFlagDebugBit;
+                shaderCreateInfo.createFlags = eShaderCreateFlagDebugBit;
             }
             else
             {
-                shaderCreateInfo.mCreateFlags = eShaderCreateFlagOptimizationL1Bit;
+                shaderCreateInfo.createFlags = eShaderCreateFlagOptimizationL1Bit;
             }
 
-            auto shader = pGPUDevice.createShader( shaderCreateInfo );
+            auto shader = pGpuDevice.CreateShader( shaderCreateInfo );
             return shader;
         }
 
-        ShaderHandle createShaderFromFile( GPUDevice & pGPUDevice, EShaderType pShaderType, const char * pFilename )
+        ShaderHandle CreateShaderFromFile( GpuDevice & pGpuDevice, EShaderType pShaderType, const char * pFilename )
 	    {
-            std::ifstream inputFile( pFilename, std::ios::in );
+            std::ifstream inputFile{ pFilename, std::ios::in };
             if( !inputFile )
             {
                 return nullptr;
@@ -51,7 +51,7 @@ namespace Ic3::Graphics::GCI
             inputFile.read( fileContent.data(), fileSize );
             fileContent[fileSize] = 0;
 
-            return createShaderFromSource( pGPUDevice, pShaderType, fileContent.data(), fileContent.size() );
+            return CreateShaderFromSource( pGpuDevice, pShaderType, fileContent.data(), fileContent.size() );
         }
 
     }

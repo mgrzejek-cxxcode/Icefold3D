@@ -10,8 +10,8 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3GLDeclareOpenGLObjectHandle( GLFramebufferObject );
-	ic3GLDeclareOpenGLObjectHandle( GLRenderbufferObject );
+	Ic3GLDeclareOpenGLObjectHandle( GLFramebufferObject );
+	Ic3GLDeclareOpenGLObjectHandle( GLRenderbufferObject );
 
 	struct GLRenderTargetBindingFBOData
 	{
@@ -39,44 +39,44 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		GLRenderTargetBindingImmutableState(
-				GLGPUDevice & pGPUDevice,
+				GLGpuDevice & pGpuDevice,
 				const RenderTargetLayout & pRenderTargetLayout,
 				GLRenderTargetBindingFBOData pGLFBOData );
 
 		virtual ~GLRenderTargetBindingImmutableState();
 
-		IC3_ATTR_NO_DISCARD GLRenderTargetBindingInfo getGLRenderTargetBindingInfo() const;
+		CPPX_ATTR_NO_DISCARD GLRenderTargetBindingInfo GetGLRenderTargetBindingInfo() const;
 
-		static GpaHandle<GLRenderTargetBindingImmutableState> createInstance(
-			GLGPUDevice & pGPUDevice,
+		static TGfxHandle<GLRenderTargetBindingImmutableState> CreateInstance(
+			GLGpuDevice & pGpuDevice,
 			const RenderTargetBindingDefinition & pBindingDefinition );
 
-		static GpaHandle<GLRenderTargetBindingImmutableState> createForScreen(
-			GLGPUDevice & pGPUDevice,
+		static TGfxHandle<GLRenderTargetBindingImmutableState> CreateForScreen(
+			GLGpuDevice & pGpuDevice,
 			const RenderTargetLayout & pRenderTargetLayout );
 	};
 
 
-	namespace smutil
+	namespace SMU
 	{
 
-		IC3_ATTR_NO_DISCARD GLRenderTargetBindingInfo getGLRenderTargetBindingInfo(
+		CPPX_ATTR_NO_DISCARD GLRenderTargetBindingInfo GetGLRenderTargetBindingInfo(
 				const GLRenderTargetBindingDefinition & pBindingDefinition );
 
-		IC3_ATTR_NO_DISCARD GLRenderTargetBindingDefinition translateRenderTargetBindingDefinition(
+		CPPX_ATTR_NO_DISCARD GLRenderTargetBindingDefinition TranslateRenderTargetBindingDefinition(
 				const RenderTargetBindingDefinition & pBindingDefinition );
 
-		IC3_ATTR_NO_DISCARD GLFramebufferObjectHandle createFramebufferObject(
+		CPPX_ATTR_NO_DISCARD GLFramebufferObjectHandle CreateFramebufferObject(
 				const RenderTargetBindingDefinition & pBindingDefinition,
-				Bitmask<ERTAttachmentFlags> pAttachmentMask );
+				cppx::bitmask<ERTAttachmentFlags> pAttachmentMask );
 
-		IC3_ATTR_NO_DISCARD RenderTargetLayout translateSystemVisualConfigToRenderTargetLayout( const System::VisualConfig & pSysVisualConfig );
+		CPPX_ATTR_NO_DISCARD RenderTargetLayout TranslateSystemVisualConfigToRenderTargetLayout( const System::VisualConfig & pSysVisualConfig );
 
-		void clearRenderPassFramebuffer(
+		void ClearRenderPassFramebuffer(
 				const RenderPassConfiguration & pRenderPassConfiguration,
 				const GraphicsPipelineDynamicState & pDynamicState );
 
-		void resolveRenderPassFramebuffer(
+		void ResolveRenderPassFramebuffer(
 				const GLRenderTargetBindingInfo & pRTBindingInfo,
 				const RenderPassConfiguration & pRenderPassConfiguration );
 

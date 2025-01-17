@@ -11,13 +11,13 @@ namespace Ic3::Graphics::GCI
 {
 
 	DX11GraphicsPipelineStateObject::DX11GraphicsPipelineStateObject(
-			DX11GPUDevice & pGPUDevice,
+			DX11GpuDevice & pGpuDevice,
 			RenderTargetLayout pRenderTargetLayout,
 			ShaderInputSignature pShaderInputSignature,
 			const SeparablePSOStateSet & pPSOImmutableStates,
 			const GraphicsShaderSet & pSeparableShaders )
 	: GraphicsPipelineStateObjectSeparableShader(
-			pGPUDevice,
+			pGpuDevice,
 			std::move( pRenderTargetLayout ),
 			std::move( pShaderInputSignature ),
 			pPSOImmutableStates,
@@ -26,38 +26,38 @@ namespace Ic3::Graphics::GCI
 
 	DX11GraphicsPipelineStateObject::~DX11GraphicsPipelineStateObject() = default;
 
-	const DX11BlendImmutableState & DX11GraphicsPipelineStateObject::getBlendState() const noexcept
+	const DX11BlendImmutableState & DX11GraphicsPipelineStateObject::GetBlendState() const noexcept
 	{
 		ic3DebugAssert( mSeparableStates.blendState );
-		return *( mSeparableStates.blendState->queryInterface<DX11BlendImmutableState>() );
+		return *( mSeparableStates.blendState->QueryInterface<DX11BlendImmutableState>() );
 	}
 
-	const DX11DepthStencilImmutableState & DX11GraphicsPipelineStateObject::getDepthStencilState() const noexcept
+	const DX11DepthStencilImmutableState & DX11GraphicsPipelineStateObject::GetDepthStencilState() const noexcept
 	{
 		ic3DebugAssert( mSeparableStates.depthStencilState );
-		return *( mSeparableStates.depthStencilState->queryInterface<DX11DepthStencilImmutableState>() );
+		return *( mSeparableStates.depthStencilState->QueryInterface<DX11DepthStencilImmutableState>() );
 	}
 
-	const DX11RasterizerImmutableState & DX11GraphicsPipelineStateObject::getRasterizerState() const noexcept
+	const DX11RasterizerImmutableState & DX11GraphicsPipelineStateObject::GetRasterizerState() const noexcept
 	{
 		ic3DebugAssert( mSeparableStates.rasterizerState );
-		return *( mSeparableStates.rasterizerState->queryInterface<DX11RasterizerImmutableState>() );
+		return *( mSeparableStates.rasterizerState->QueryInterface<DX11RasterizerImmutableState>() );
 	}
 
-	const DX11GraphicsShaderLinkageImmutableState & DX11GraphicsPipelineStateObject::getGraphicsShaderLinkageState() const noexcept
+	const DX11GraphicsShaderLinkageImmutableState & DX11GraphicsPipelineStateObject::GetGraphicsShaderLinkageState() const noexcept
 	{
 		ic3DebugAssert( mSeparableStates.shaderLinkageState );
-		return *( mSeparableStates.shaderLinkageState->queryInterface<DX11GraphicsShaderLinkageImmutableState>() );
+		return *( mSeparableStates.shaderLinkageState->QueryInterface<DX11GraphicsShaderLinkageImmutableState>() );
 	}
 
-	const DX11IAInputLayoutImmutableState & DX11GraphicsPipelineStateObject::getIAInputLayoutState() const noexcept
+	const DX11IAInputLayoutImmutableState & DX11GraphicsPipelineStateObject::GetIAInputLayoutState() const noexcept
 	{
 		ic3DebugAssert( mSeparableStates.iaInputLayoutState );
-		return *( mSeparableStates.iaInputLayoutState->queryInterface<DX11IAInputLayoutImmutableState>() );
+		return *( mSeparableStates.iaInputLayoutState->QueryInterface<DX11IAInputLayoutImmutableState>() );
 	}
 
-	GpaHandle<DX11GraphicsPipelineStateObject> DX11GraphicsPipelineStateObject::create(
-			DX11GPUDevice & pGPUDevice,
+	GpaHandle<DX11GraphicsPipelineStateObject> DX11GraphicsPipelineStateObject::Create(
+			DX11GpuDevice & pGpuDevice,
 			const GraphicsPipelineStateObjectCreateInfo & pCreateInfo )
 	{
 		if( pCreateInfo.shaderSet.empty() && !pCreateInfo.shaderLinkageState )
@@ -74,10 +74,10 @@ namespace Ic3::Graphics::GCI
 
 		auto & renderTargetLayout = pCreateInfo.renderTargetLayout;
 		auto & shaderInputSignature = pCreateInfo.shaderInputSignature;
-		auto * separableShaderState = pCreateInfo.shaderLinkageState->queryInterface<GraphicsShaderLinkageImmutableStateSeparable>();
+		auto * separableShaderState = pCreateInfo.shaderLinkageState->QueryInterface<GraphicsShaderLinkageImmutableStateSeparable>();
 
-		auto pipelineStateObject = createDynamicInterfaceObject<DX11GraphicsPipelineStateObject>(
-				pGPUDevice,
+		auto pipelineStateObject = CreateDynamicObject<DX11GraphicsPipelineStateObject>(
+				pGpuDevice,
 				std::move( renderTargetLayout ),
 				std::move( shaderInputSignature ),
 				separableStates,

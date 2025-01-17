@@ -5,16 +5,16 @@
 #define __IC3_GRAPHICS_HW3D_DXCOMMON_GPU_DRIVER__
 
 #include "DXPrerequisites.h"
-#include <Ic3/Graphics/GCI/GPUDriver.h>
+#include <Ic3/Graphics/GCI/GpuDriver.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	class ICFGX_DXCOMMON_CLASS DXGPUDriver : public GPUDriver
+	class IC3_GX_DXCOMMON_CLASS DXGpuDriver : public GpuDriver
 	{
 	public:
-		explicit DXGPUDriver( System::SysContextHandle pSysContext ) noexcept;
-		virtual ~DXGPUDriver() noexcept;
+		explicit DXGpuDriver( System::SysContextHandle pSysContext ) noexcept;
+		virtual ~DXGpuDriver() noexcept;
 	};
 
 } // namespace Ic3::Graphics::GCI

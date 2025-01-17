@@ -1,7 +1,7 @@
 
 #include "DX11Texture.h"
-#include <Ic3/Graphics/HW3D/DX11/DX11APITranslationLayer.h>
-#include <Ic3/Graphics/HW3D/DX11/DX11GPUDevice.h>
+#include <Ic3/Graphics/HW3D/DX11/DX11ApiTranslationLayer.h>
+#include <Ic3/Graphics/HW3D/DX11/DX11GpuDevice.h>
 #include <Ic3/Graphics/HW3D/DX11/DX11CommandList.h>
 #include <Ic3/Graphics/GCI/Resources/RenderTargetTexture.h>
 
@@ -11,63 +11,63 @@ namespace Ic3::Graphics::GCI
 {
 
 	DX11Texture::DX11Texture(
-			DX11GPUDevice & pDX11GPUDevice,
+			DX11GpuDevice & pDX11GpuDevice,
 			const ResourceMemoryInfo & pResourceMemory,
 			const TextureProperties & pTextureProperties,
 			const TextureLayout & pTextureLayout,
 			DXGI_FORMAT pDXGIInternalFormat,
 			ComPtr<ID3D11Texture2D> pD3D11Texture2D,
 			ComPtr<ID3D11ShaderResourceView> pD3D11DefaultSRV )
-	: Texture( pDX11GPUDevice, pResourceMemory, pTextureProperties, pTextureLayout )
+	: Texture( pDX11GpuDevice, pResourceMemory, pTextureProperties, pTextureLayout )
 	, mDXGIInternalFormat( pDXGIInternalFormat )
-	, mD3D11Device1( pDX11GPUDevice.mD3D11Device1 )
+	, mD3D11Device1( pDX11GpuDevice.mD3D11Device1 )
 	, mD3D11Texture2D( pD3D11Texture2D )
 	, mD3D11DefaultSRV( pD3D11DefaultSRV )
 	{}
 
 	DX11Texture::DX11Texture(
-			DX11GPUDevice & pDX11GPUDevice,
+			DX11GpuDevice & pDX11GpuDevice,
 			const ResourceMemoryInfo & pResourceMemory,
 			const TextureProperties & pTextureProperties,
 			const TextureLayout & pTextureLayout,
 			DXGI_FORMAT pDXGIInternalFormat,
 			ComPtr<ID3D11Texture3D> pD3D11Texture3D,
 			ComPtr<ID3D11ShaderResourceView> pD3D11DefaultSRV )
-	: Texture( pDX11GPUDevice, pResourceMemory, pTextureProperties, pTextureLayout )
+	: Texture( pDX11GpuDevice, pResourceMemory, pTextureProperties, pTextureLayout )
 	, mDXGIInternalFormat( pDXGIInternalFormat )
-	, mD3D11Device1( pDX11GPUDevice.mD3D11Device1 )
+	, mD3D11Device1( pDX11GpuDevice.mD3D11Device1 )
 	, mD3D11Texture3D( pD3D11Texture3D )
 	, mD3D11DefaultSRV( pD3D11DefaultSRV )
 	{}
 
 	DX11Texture::~DX11Texture() = default;
 
-	DX11TextureHandle DX11Texture::createDefault(
-			DX11GPUDevice & pDX11GPUDevice,
+	DX11TextureHandle DX11Texture::CreateDefault(
+			DX11GpuDevice & pDX11GpuDevice,
 			const TextureCreateInfo & pCreateInfo )
 	{
-		auto dxgiTextureFormat = ATL::translateTextureFormatDX( pCreateInfo.internalFormat );
-		if( pCreateInfo.resourceFlags.isSetAnyOf( E_GPU_RESOURCE_USAGE_MASK_RENDER_TARGET_DEPTH_STENCIL ) && pCreateInfo.resourceFlags.isSet( E_GPU_RESOURCE_USAGE_FLAG_SHADER_INPUT_BIT ) )
+		auto dxgiTextureFormat = ATL::TranslateDXTextureFormat( pCreateInfo.internalFormat );
+		if( pCreateInfo.resourceFlags.is_set_any_of( E_GPU_RESOURCE_USAGE_MASK_RENDER_TARGET_DEPTH_STENCIL ) && pCreateInfo.resourceFlags.is_set( E_GPU_RESOURCE_USAGE_FLAG_SHADER_INPUT_BIT ) )
 		{
-			dxgiTextureFormat = rcutil::getTypelessFormatForDpethStencilFormatDX11( dxgiTextureFormat );
+			dxgiTextureFormat = RCU::GetTypelessFormatForDpethStencilFormatDX11( dxgiTextureFormat );
 		}
 
 		DX11TextureCreateInfo dx11CreateInfo;
 		dx11CreateInfo.texClass = pCreateInfo.texClass;
-		dx11CreateInfo.dimensions = rcutil::getValidTextureDimensions( pCreateInfo.texClass, pCreateInfo.dimensions );
+		dx11CreateInfo.dimensions = RCU::GetValidTextureDimensions( pCreateInfo.texClass, pCreateInfo.dimensions );
 		dx11CreateInfo.msaaLevel = pCreateInfo.msaaLevel;
 		dx11CreateInfo.resourceFlags = pCreateInfo.resourceFlags;
 		dx11CreateInfo.dxgiTextureFormat = dxgiTextureFormat;
-		dx11CreateInfo.dx11UsageDesc = rcutil::translateTextureUsageDescDX11( pCreateInfo );
-		dx11CreateInfo.dx11InitDataDesc = rcutil::translateTextureInitDataDescDX11( pCreateInfo );
+		dx11CreateInfo.dx11UsageDesc = RCU::translateTextureUsageDescDX11( pCreateInfo );
+		dx11CreateInfo.dx11InitDataDesc = RCU::translateTextureInitDataDescDX11( pCreateInfo );
 
-		auto dx11TextureData = rcutil::createTextureResourceDX11( pDX11GPUDevice, dx11CreateInfo );
+		auto dx11TextureData = RCU::CreateTextureResourceDX11( pDX11GpuDevice, dx11CreateInfo );
 		if( !dx11TextureData )
 		{
 			return nullptr;
 		}
 
-		auto textureMemoryByteSize = ATL::computeDXTextureMemoryByteSize( dx11CreateInfo.dimensions, dx11CreateInfo.dxgiTextureFormat );
+		auto textureMemoryByteSize = ATL::ComputeDXTextureMemoryByteSize( dx11CreateInfo.dimensions, dx11CreateInfo.dxgiTextureFormat );
 
 		ResourceMemoryInfo textureMemoryInfo;
 		textureMemoryInfo.sourceHeapRegion.offset = 0;
@@ -84,20 +84,20 @@ namespace Ic3::Graphics::GCI
 		textureLayout.internalFormat = pCreateInfo.internalFormat;
 		textureLayout.msaaLevel = pCreateInfo.msaaLevel;
 		textureLayout.storageSize = textureMemoryByteSize;
-		textureLayout.bitsPerPixel = ATL::getDXGITextureFormatBPP( dx11CreateInfo.dxgiTextureFormat );
+		textureLayout.bitsPerPixel = ATL::GetDXGITextureFormatBPP( dx11CreateInfo.dxgiTextureFormat );
 
 		DX11TextureHandle dx11Texture;
 
 		if( dx11TextureData.d3d11Texture2D )
 		{
 			ComPtr<ID3D11ShaderResourceView> d3d11TextureSRView = nullptr;
-			if( pCreateInfo.resourceFlags.isSet( E_GPU_RESOURCE_USAGE_FLAG_SHADER_INPUT_BIT ) )
+			if( pCreateInfo.resourceFlags.is_set( E_GPU_RESOURCE_USAGE_FLAG_SHADER_INPUT_BIT ) )
 			{
-				d3d11TextureSRView = rcutil::create2DTextureDefaultShaderResourceViewDX11( pCreateInfo.texClass, dx11TextureData.d3d11Texture2D );
+				d3d11TextureSRView = RCU::create2DTextureDefaultShaderResourceViewDX11( pCreateInfo.texClass, dx11TextureData.d3d11Texture2D );
 			}
 
-			dx11Texture = createDynamicInterfaceObject<DX11Texture>(
-					pDX11GPUDevice,
+			dx11Texture = CreateDynamicObject<DX11Texture>(
+					pDX11GpuDevice,
 					textureMemoryInfo,
 					textureProperties,
 					textureLayout,
@@ -108,13 +108,13 @@ namespace Ic3::Graphics::GCI
 		else if( dx11TextureData.d3d11Texture3D )
 		{
 			ComPtr<ID3D11ShaderResourceView> d3d11TextureSRView = nullptr;
-			if( pCreateInfo.resourceFlags.isSet( E_GPU_RESOURCE_USAGE_FLAG_SHADER_INPUT_BIT ) )
+			if( pCreateInfo.resourceFlags.is_set( E_GPU_RESOURCE_USAGE_FLAG_SHADER_INPUT_BIT ) )
 			{
-				d3d11TextureSRView = rcutil::create3DTextureDefaultShaderResourceViewDX11( dx11TextureData.d3d11Texture3D );
+				d3d11TextureSRView = RCU::create3DTextureDefaultShaderResourceViewDX11( dx11TextureData.d3d11Texture3D );
 			}
 
-			dx11Texture = createDynamicInterfaceObject<DX11Texture>(
-					pDX11GPUDevice,
+			dx11Texture = CreateDynamicObject<DX11Texture>(
+					pDX11GpuDevice,
 					textureMemoryInfo,
 					textureProperties,
 					textureLayout,
@@ -126,8 +126,8 @@ namespace Ic3::Graphics::GCI
 		return dx11Texture;
 	}
 
-	DX11TextureHandle DX11Texture::createForRenderTarget(
-			DX11GPUDevice & pDX11GPUDevice,
+	DX11TextureHandle DX11Texture::CreateForRenderTarget(
+			DX11GpuDevice & pDX11GpuDevice,
 			const RenderTargetTextureCreateInfo & pCreateInfo )
 	{
 		TextureCreateInfo textureCreateInfo;
@@ -139,29 +139,29 @@ namespace Ic3::Graphics::GCI
 		textureCreateInfo.dimensions.width = pCreateInfo.rtTextureLayout.imageRect.width;
 		textureCreateInfo.dimensions.height = pCreateInfo.rtTextureLayout.imageRect.height;
 
-		auto dx11Texture = createDefault( pDX11GPUDevice, textureCreateInfo );
+		auto dx11Texture = CreateDefault( pDX11GpuDevice, textureCreateInfo );
 
 		return dx11Texture;
 
 	}
 
-	RenderTargetTextureHandle DX11Texture::createRenderTargetTextureView(
-			DX11GPUDevice & pDX11GPUDevice,
+	RenderTargetTextureHandle DX11Texture::CreateRenderTargetTextureView(
+			DX11GpuDevice & pDX11GpuDevice,
 			const RenderTargetTextureCreateInfo & pCreateInfo )
 	{
 		if( pCreateInfo.targetTexture )
 		{
-			return createDefaultRenderTargetTextureView( pDX11GPUDevice, pCreateInfo );
+			return CreateDefaultRenderTargetTextureView( pDX11GpuDevice, pCreateInfo );
 		}
 		else
 		{
-			auto dx11Texture = createForRenderTarget( pDX11GPUDevice, pCreateInfo );
+			auto dx11Texture = CreateForRenderTarget( pDX11GpuDevice, pCreateInfo );
 
-			const auto rtTextureType = rcutil::queryRenderTargetTextureType( dx11Texture->mTextureLayout.internalFormat );
-			const auto rtTextureLayout = rcutil::queryRenderTargetTextureLayout( dx11Texture->mTextureLayout );
+			const auto rtTextureType = RCU::QueryRenderTargetTextureType( dx11Texture->mTextureLayout.internalFormat );
+			const auto rtTextureLayout = RCU::QueryRenderTargetTextureLayout( dx11Texture->mTextureLayout );
 
-			auto renderTargetTexture = createGPUAPIObject<RenderTargetTexture>(
-					pDX11GPUDevice,
+			auto renderTargetTexture = CreateGfxObject<RenderTargetTexture>(
+					pDX11GpuDevice,
 					rtTextureType,
 					rtTextureLayout,
 					TextureReference{ dx11Texture } );
@@ -171,41 +171,41 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	namespace rcutil
+	namespace RCU
 	{
 
-		DX11TextureData createTextureResourceDX11(
-				DX11GPUDevice & pDX11GPUDevice,
+		DX11TextureData CreateTextureResourceDX11(
+				DX11GpuDevice & pDX11GpuDevice,
 				const DX11TextureCreateInfo & pCreateInfo )
 		{
 			DX11TextureData dx11TextureData = nullptr;
 
 			if( pCreateInfo.texClass == ETextureClass::T2D )
 			{
-				dx11TextureData = create2DTextureResourceDX11( pDX11GPUDevice, pCreateInfo );
+				dx11TextureData = create2DTextureResourceDX11( pDX11GpuDevice, pCreateInfo );
 			}
 			else if( pCreateInfo.texClass == ETextureClass::T2DArray )
 			{
-				dx11TextureData = create2DTextureResourceDX11( pDX11GPUDevice, pCreateInfo );
+				dx11TextureData = create2DTextureResourceDX11( pDX11GpuDevice, pCreateInfo );
 			}
 			else if( pCreateInfo.texClass == ETextureClass::T2DMS )
 			{
-				dx11TextureData = create2DMSTextureResourceDX11( pDX11GPUDevice, pCreateInfo );
+				dx11TextureData = create2DMSTextureResourceDX11( pDX11GpuDevice, pCreateInfo );
 			}
 			else if( pCreateInfo.texClass == ETextureClass::T3D )
 			{
-				dx11TextureData = create3DTextureResourceDX11( pDX11GPUDevice, pCreateInfo );
+				dx11TextureData = create3DTextureResourceDX11( pDX11GpuDevice, pCreateInfo );
 			}
 			else if( pCreateInfo.texClass == ETextureClass::TCubeMap )
 			{
-				dx11TextureData = create2DTextureResourceDX11( pDX11GPUDevice, pCreateInfo );
+				dx11TextureData = create2DTextureResourceDX11( pDX11GpuDevice, pCreateInfo );
 			}
 
 			return dx11TextureData;
 		}
 
 		DX11TextureData create2DTextureResourceDX11(
-				DX11GPUDevice & pDX11GPUDevice,
+				DX11GpuDevice & pDX11GpuDevice,
 				const DX11TextureCreateInfo & pCreateInfo )
 		{
 			D3D11_TEXTURE2D_DESC d3d11Texture2DDesc;
@@ -215,7 +215,7 @@ namespace Ic3::Graphics::GCI
 			d3d11Texture2DDesc.ArraySize = pCreateInfo.dimensions.arraySize;
 			d3d11Texture2DDesc.MipLevels = pCreateInfo.dimensions.mipLevelsNum;
 			d3d11Texture2DDesc.BindFlags = pCreateInfo.dx11UsageDesc.bindFlags;
-			d3d11Texture2DDesc.CPUAccessFlags = pCreateInfo.dx11UsageDesc.cpuAccessFlags;
+			d3d11Texture2DDesc.CpuAccessFlags = pCreateInfo.dx11UsageDesc.cpuAccessFlags;
 			d3d11Texture2DDesc.MiscFlags = pCreateInfo.dx11UsageDesc.resourceMiscFlags;
 			d3d11Texture2DDesc.Usage = pCreateInfo.dx11UsageDesc.usage;
 			d3d11Texture2DDesc.SampleDesc.Count = 1;
@@ -240,14 +240,14 @@ namespace Ic3::Graphics::GCI
 			}
 
 			ComPtr<ID3D11Texture2D> d3d11Texture2D;
-			auto hResult = pDX11GPUDevice.mD3D11Device1->CreateTexture2D(
+			auto hResult = pDX11GpuDevice.mD3D11Device1->CreateTexture2D(
 					&d3d11Texture2DDesc,
 					d3d11TextureInitData,
 					d3d11Texture2D.GetAddressOf() );
 
 			if( FAILED( hResult ) )
 			{
-				const auto errStr = System::Platform::mseQueryCOMErrorMessage(hResult);
+				const auto errStr = System::Platform::WFAQueryComErrorMessage(hResult);
 				ic3DebugInterrupt();
 				return nullptr;
 			}
@@ -256,14 +256,14 @@ namespace Ic3::Graphics::GCI
 		}
 
 		DX11TextureData create2DMSTextureResourceDX11(
-				DX11GPUDevice & pDX11GPUDevice,
+				DX11GpuDevice & pDX11GpuDevice,
 				const DX11TextureCreateInfo & pCreateInfo )
 		{
 			return nullptr;
 		}
 
 		DX11TextureData create3DTextureResourceDX11(
-				DX11GPUDevice & pDX11GPUDevice,
+				DX11GpuDevice & pDX11GpuDevice,
 				const DX11TextureCreateInfo & pCreateInfo )
 		{
 			return nullptr;
@@ -282,9 +282,9 @@ namespace Ic3::Graphics::GCI
 			D3D11_SHADER_RESOURCE_VIEW_DESC d3d11DefaultSRVDesc;
 			d3d11DefaultSRVDesc.Format = d3D11Texture2DDesc.Format;
 
-			if( rcutil::checkIsDXGIFormatTypelessDX11( d3d11DefaultSRVDesc.Format ) )
+			if( RCU::checkIsDXGIFormatTypelessDX11( d3d11DefaultSRVDesc.Format ) )
 			{
-				d3d11DefaultSRVDesc.Format = rcutil::getSRVFormatForTypelessFormatDX11( d3d11DefaultSRVDesc.Format, E_RENDER_TARGET_BUFFER_FLAG_DEPTH_BIT | E_RENDER_TARGET_BUFFER_FLAG_STENCIL_BIT );
+				d3d11DefaultSRVDesc.Format = RCU::GetSRVFormatForTypelessFormatDX11( d3d11DefaultSRVDesc.Format, E_RENDER_TARGET_BUFFER_FLAG_DEPTH_BIT | E_RENDER_TARGET_BUFFER_FLAG_STENCIL_BIT );
 			}
 
 			if( pTexClass == ETextureClass::T2D )
@@ -338,9 +338,9 @@ namespace Ic3::Graphics::GCI
 			d3d11DefaultSRVDesc.Texture3D.MipLevels = d3D11Texture3DDesc.MipLevels;
 			d3d11DefaultSRVDesc.Texture3D.MostDetailedMip = 0;
 
-			if( rcutil::checkIsDXGIFormatTypelessDX11( d3d11DefaultSRVDesc.Format ) )
+			if( RCU::checkIsDXGIFormatTypelessDX11( d3d11DefaultSRVDesc.Format ) )
 			{
-				d3d11DefaultSRVDesc.Format = rcutil::getSRVFormatForTypelessFormatDX11( d3d11DefaultSRVDesc.Format, E_RENDER_TARGET_BUFFER_FLAG_DEPTH_BIT );
+				d3d11DefaultSRVDesc.Format = RCU::GetSRVFormatForTypelessFormatDX11( d3d11DefaultSRVDesc.Format, E_RENDER_TARGET_BUFFER_FLAG_DEPTH_BIT );
 			}
 
 			ComPtr<ID3D11ShaderResourceView> d3d11TextureSRV;
@@ -385,7 +385,7 @@ namespace Ic3::Graphics::GCI
 
 		}
 
-		DXGI_FORMAT getTypelessFormatForDpethStencilFormatDX11( DXGI_FORMAT pDXGIFormat )
+		DXGI_FORMAT GetTypelessFormatForDpethStencilFormatDX11( DXGI_FORMAT pDXGIFormat )
 		{
 			switch( pDXGIFormat )
 			{
@@ -397,7 +397,7 @@ namespace Ic3::Graphics::GCI
 			return DXGI_FORMAT_UNKNOWN;
 		}
 
-		DXGI_FORMAT getDSVFormatForTypelessFormatDX11( DXGI_FORMAT pDXGIFormat )
+		DXGI_FORMAT GetDSVFormatForTypelessFormatDX11( DXGI_FORMAT pDXGIFormat )
 		{
 			if( pDXGIFormat == DXGI_FORMAT_R32_TYPELESS )
 			{
@@ -417,7 +417,7 @@ namespace Ic3::Graphics::GCI
 			return DXGI_FORMAT_UNKNOWN;
 		}
 
-		DXGI_FORMAT getSRVFormatForTypelessFormatDX11( DXGI_FORMAT pDXGIFormat, Bitmask<ERenderTargetBufferFlags> pRTBufferMask )
+		DXGI_FORMAT GetSRVFormatForTypelessFormatDX11( DXGI_FORMAT pDXGIFormat, cppx::bitmask<ERenderTargetBufferFlags> pRTBufferMask )
 		{
 			if( pDXGIFormat == DXGI_FORMAT_R32_TYPELESS )
 			{
@@ -426,15 +426,15 @@ namespace Ic3::Graphics::GCI
 
 			if( pDXGIFormat == DXGI_FORMAT_R24G8_TYPELESS )
 			{
-				if( pRTBufferMask.isSet( E_RENDER_TARGET_BUFFER_FLAG_DEPTH_BIT | E_RENDER_TARGET_BUFFER_FLAG_STENCIL_BIT ) )
+				if( pRTBufferMask.is_set( E_RENDER_TARGET_BUFFER_FLAG_DEPTH_BIT | E_RENDER_TARGET_BUFFER_FLAG_STENCIL_BIT ) )
 				{
 					return DXGI_FORMAT_D24_UNORM_S8_UINT;
 				}
-				if( pRTBufferMask.isSet( E_RENDER_TARGET_BUFFER_FLAG_DEPTH_BIT ) )
+				if( pRTBufferMask.is_set( E_RENDER_TARGET_BUFFER_FLAG_DEPTH_BIT ) )
 				{
 					return DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
 				}
-				if( pRTBufferMask.isSet( E_RENDER_TARGET_BUFFER_FLAG_STENCIL_BIT ) )
+				if( pRTBufferMask.is_set( E_RENDER_TARGET_BUFFER_FLAG_STENCIL_BIT ) )
 				{
 					return DXGI_FORMAT_X24_TYPELESS_G8_UINT;
 				}
@@ -457,7 +457,7 @@ namespace Ic3::Graphics::GCI
 				auto subResourcesNum = pCreateInfo.dimensions.arraySize * pCreateInfo.dimensions.mipLevelsNum;
 				dx11InitDataDesc.textureSubResourcesNum = subResourcesNum;
 				dx11InitDataDesc.d3d11SubResourceDataArray.resize( subResourcesNum );
-				dx11InitDataDesc.pixelByteSize = CxDef::getTextureFormatByteSize( pCreateInfo.internalFormat );
+				dx11InitDataDesc.pixelByteSize = CxDef::GetTextureFormatByteSize( pCreateInfo.internalFormat );
 
 				for( uint32 subTextureIndex = 0; subTextureIndex < pCreateInfo.dimensions.arraySize; ++subTextureIndex )
 				{
@@ -482,30 +482,30 @@ namespace Ic3::Graphics::GCI
 		DX11TextureUsageDesc translateTextureUsageDescDX11( const TextureCreateInfo & pCreateInfo )
 		{
 			DX11TextureUsageDesc dx11UsageDesc;
-			dx11UsageDesc.bindFlags = ATL::translateDX11ETextureBindFlags( pCreateInfo.resourceFlags );
+			dx11UsageDesc.bindFlags = ATL::TranslateDX11ETextureBindFlags( pCreateInfo.resourceFlags );
 			dx11UsageDesc.cpuAccessFlags = 0;
 			dx11UsageDesc.resourceMiscFlags = 0;
 			dx11UsageDesc.usage = D3D11_USAGE_DEFAULT;
 
-			if( pCreateInfo.resourceFlags.isSet( E_GPU_RESOURCE_CONTENT_FLAG_IMMUTABLE_BIT ) )
+			if( pCreateInfo.resourceFlags.is_set( E_GPU_RESOURCE_CONTENT_FLAG_IMMUTABLE_BIT ) )
 			{
 				dx11UsageDesc.usage = D3D11_USAGE_IMMUTABLE;
 			}
-			if( pCreateInfo.resourceFlags.isSetAnyOf( E_GPU_RESOURCE_USAGE_FLAG_TRANSFER_SOURCE_BIT ) )
+			if( pCreateInfo.resourceFlags.is_set_any_of( E_GPU_RESOURCE_USAGE_FLAG_TRANSFER_SOURCE_BIT ) )
 			{
 				dx11UsageDesc.usage = D3D11_USAGE_STAGING;
 			}
-			if( pCreateInfo.resourceFlags.isSet( E_GPU_RESOURCE_CONTENT_FLAG_DYNAMIC_BIT ) && ( dx11UsageDesc.usage != D3D11_USAGE_DYNAMIC ) )
+			if( pCreateInfo.resourceFlags.is_set( E_GPU_RESOURCE_CONTENT_FLAG_DYNAMIC_BIT ) && ( dx11UsageDesc.usage != D3D11_USAGE_DYNAMIC ) )
 			{
 				dx11UsageDesc.usage = D3D11_USAGE_DYNAMIC;
 				dx11UsageDesc.cpuAccessFlags.set( D3D11_CPU_ACCESS_WRITE );
 			}
 
-			if( pCreateInfo.memoryFlags.isSet( E_GPU_MEMORY_ACCESS_FLAG_CPU_READ_BIT ) )
+			if( pCreateInfo.memoryFlags.is_set( E_GPU_MEMORY_ACCESS_FLAG_CPU_READ_BIT ) )
 			{
 				dx11UsageDesc.cpuAccessFlags.set( D3D11_CPU_ACCESS_READ );
 			}
-			if( pCreateInfo.memoryFlags.isSet( E_GPU_MEMORY_ACCESS_FLAG_CPU_WRITE_BIT ) )
+			if( pCreateInfo.memoryFlags.is_set( E_GPU_MEMORY_ACCESS_FLAG_CPU_WRITE_BIT ) )
 			{
 				dx11UsageDesc.cpuAccessFlags.set( D3D11_CPU_ACCESS_WRITE );
 			}

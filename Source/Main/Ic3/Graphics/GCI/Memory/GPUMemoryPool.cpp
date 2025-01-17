@@ -1,2 +1,2 @@
 
-#include "GPUMemoryPool.h"
+#include "GpuMemoryPool.h"

@@ -14,18 +14,18 @@
 #include <d3d11shadertracing.h>
 
 #if( IC3_BUILD_STATIC )
-#  define ICFGX_DX11_API
-#  define ICFGX_DX11_CLASS
-#  define ICFGX_DX11_OBJ    extern
+#  define IC3_GX_DX11_API
+#  define IC3_GX_DX11_CLASS
+#  define IC3_GX_DX11_OBJ    extern
 #else
 #  if( IC3_DRIVER_GRAPHICS_HW3D_DX11_BUILD )
-#    define ICFGX_DX11_API    IC3_PCL_ATTR_DLL_EXPORT
-#    define ICFGX_DX11_CLASS  IC3_PCL_ATTR_DLL_EXPORT
-#    define ICFGX_DX11_OBJ    IC3_PCL_ATTR_DLL_EXPORT
+#    define IC3_GX_DX11_API    PCL_ATTR_DLL_EXPORT
+#    define IC3_GX_DX11_CLASS  PCL_ATTR_DLL_EXPORT
+#    define IC3_GX_DX11_OBJ    PCL_ATTR_DLL_EXPORT
 #  else
-#    define ICFGX_DX11_API    IC3_PCL_ATTR_DLL_IMPORT
-#    define ICFGX_DX11_CLASS  IC3_PCL_ATTR_DLL_IMPORT
-#    define ICFGX_DX11_OBJ    IC3_PCL_ATTR_DLL_IMPORT
+#    define IC3_GX_DX11_API    PCL_ATTR_DLL_IMPORT
+#    define IC3_GX_DX11_CLASS  PCL_ATTR_DLL_IMPORT
+#    define IC3_GX_DX11_OBJ    PCL_ATTR_DLL_IMPORT
 #  endif
 #endif
 
@@ -42,20 +42,20 @@ namespace Ic3::Graphics::GCI
 	class DX11IAVertexStreamImmutableState;
 	class DX11RenderTargetBindingImmutableState;
 
-	ic3GpaDeclareClassHandle( DX11CommandList );
-	ic3GpaDeclareClassHandle( DX11CommandSystem );
-	ic3GpaDeclareClassHandle( DX11GPUDevice );
-	ic3GpaDeclareClassHandle( DX11GPUDriver );
-	ic3GpaDeclareClassHandle( DX11PresentationLayer );
+	Ic3GCIDeclareClassHandle( DX11CommandList );
+	Ic3GCIDeclareClassHandle( DX11CommandSystem );
+	Ic3GCIDeclareClassHandle( DX11GpuDevice );
+	Ic3GCIDeclareClassHandle( DX11GpuDriver );
+	Ic3GCIDeclareClassHandle( DX11PresentationLayer );
 
-	ic3GpaDeclareTypedefHandle( DX11GraphicsShaderLinkageImmutableState, GraphicsShaderLinkageImmutableStateSeparable );
-	ic3GpaDeclareTypedefHandle( DX11RenderPassConfigurationImmutableState, RenderPassConfigurationImmutableStateDefault );
+	Ic3GCIDeclareTypedefHandle( DX11GraphicsShaderLinkageImmutableState, GraphicsShaderLinkageImmutableStateSeparable );
+	Ic3GCIDeclareTypedefHandle( DX11RenderPassConfigurationImmutableState, RenderPassConfigurationImmutableStateDefault );
 
 
-	namespace smutil
+	namespace SMU
 	{
 
-		IC3_ATTR_NO_DISCARD ID3D11DeviceContext1 * getD3D11DeviceContextFromCommandList( void * pDX11CommandList );
+		CPPX_ATTR_NO_DISCARD ID3D11DeviceContext1 * GetD3D11DeviceContextFromCommandList( void * pDX11CommandList );
 
 	}
 

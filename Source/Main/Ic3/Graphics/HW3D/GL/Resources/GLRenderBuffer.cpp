@@ -1,27 +1,27 @@
 
 #include "GLRenderBuffer.h"
-#include <Ic3/Graphics/HW3D/GL/GLAPITranslationLayer.h>
-#include <Ic3/Graphics/HW3D/GL/GLGPUDevice.h>
+#include <Ic3/Graphics/HW3D/GL/GLApiTranslationLayer.h>
+#include <Ic3/Graphics/HW3D/GL/GLGpuDevice.h>
 
 namespace Ic3::Graphics::GCI
 {
 
 	GLInternalRenderBuffer::GLInternalRenderBuffer(
-			GLGPUDevice & pGPUDevice,
+			GLGpuDevice & pGpuDevice,
 			GLRenderbufferObjectHandle pGLRenderbufferObject )
-	: GPUDeviceChildObject( pGPUDevice )
+	: GpuDeviceChildObject( pGpuDevice )
 	, mGLRenderbufferObject( std::move( pGLRenderbufferObject ) )
 	{}
 
 	GLInternalRenderBuffer::GLInternalRenderBuffer(
-			GLGPUDevice & pGPUDevice,
+			GLGpuDevice & pGpuDevice,
 			GLTextureObjectHandle pGLTextureObject )
-	: GPUDeviceChildObject( pGPUDevice )
+	: GpuDeviceChildObject( pGpuDevice )
 	, mGLTextureObject( std::move( pGLTextureObject ) )
 	{}
 
-	GpaHandle<GLInternalRenderBuffer> GLInternalRenderBuffer::createInstance(
-			GLGPUDevice & pGPUDevice,
+	TGfxHandle<GLInternalRenderBuffer> GLInternalRenderBuffer::CreateInstance(
+			GLGpuDevice & pGpuDevice,
 			const RenderTargetTextureCreateInfo & pCreateInfo )
 	{
 		GLRenderbufferCreateInfo openglRenderbufferCreateInfo;
@@ -29,15 +29,15 @@ namespace Ic3::Graphics::GCI
 		openglRenderbufferCreateInfo.dimensions.y = pCreateInfo.rtTextureLayout.imageRect.height;
 		openglRenderbufferCreateInfo.msaaLevel = pCreateInfo.rtTextureLayout.msaaLevel;
 		openglRenderbufferCreateInfo.internalFormat =
-				ATL::translateGLTextureInternalFormat( pCreateInfo.rtTextureLayout.internalFormat );
+				ATL::TranslateGLTextureInternalFormat( pCreateInfo.rtTextureLayout.internalFormat );
 
-		auto openglRenderbuffer = GLRenderbufferObject::create( openglRenderbufferCreateInfo );
+		auto openglRenderbuffer = GLRenderbufferObject::Create( openglRenderbufferCreateInfo );
 		if( !openglRenderbuffer )
 		{
 			return nullptr;
 		}
 
-		auto renderBuffer = createGPUAPIObject<GLInternalRenderBuffer>( pGPUDevice, std::move( openglRenderbuffer ) );
+		auto renderBuffer = CreateGfxObject<GLInternalRenderBuffer>( pGpuDevice, std::move( openglRenderbuffer ) );
 
 		return renderBuffer;
 	}

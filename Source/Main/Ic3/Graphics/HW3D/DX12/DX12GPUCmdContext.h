@@ -18,13 +18,13 @@ namespace Ic3::Graphics::GCI
 		using RTVDescriptorArray = std::array<D3D12_CPU_DESCRIPTOR_HANDLE, GCM::RT_MAX_COLOR_ATTACHMENTS_NUM>;
 		uint32 rtvDescriptorsNum = 0;
 		RTVDescriptorArray rtvDescriptorArray;
-		D3D12_CPU_DESCRIPTOR_HANDLE dsvDescriptor = cvD3D12CPUDescriptorEmpty;
+		D3D12_CPU_DESCRIPTOR_HANDLE dsvDescriptor = cvD3D12CpuDescriptorEmpty;
 	};
 
 	/// @brief
-	class ICFGX_DX12_CLASS DX12CommandContext final : public CommandContext
+	class IC3_GX_DX12_CLASS DX12CommandContext final : public CommandContext
 	{
-		friend class DX12GPUCmdManager;
+		friend class DX12GpuCmdManager;
 		friend class DX12ScreenPresentationLayer;
 
 	public:
@@ -32,22 +32,22 @@ namespace Ic3::Graphics::GCI
 		ComPtr<ID3D12GraphicsCommandList> const mD3D12GraphicsCommandList;
 		D3D12_COMMAND_LIST_TYPE const mD3D12CommandListType;
 
-		DX12CommandContext( DX12GPUCmdManager & pDX12GPUCmdManager,
+		DX12CommandContext( DX12GpuCmdManager & pDX12GpuCmdManager,
 		                   ComPtr<ID3D12CommandAllocator> pD3D12CommandAllocator,
 		                   ComPtr<ID3D12GraphicsCommandList> pD3D12GraphicsCommandList );
 
 		virtual ~DX12CommandContext();
 
-		virtual void beginCommandSequence( const CommandContextCommandSequenceBeginInfo & pInfo ) override;
+		virtual void BeginCommandSequence( const CommandContextCommandSequenceBeginInfo & pInfo ) override;
 
-		virtual void endCommandSequence( const CommandContextCommandSequenceEndInfo & pInfo ) override;
+		virtual void EndCommandSequence( const CommandContextCommandSequenceEndInfo & pInfo ) override;
 
-		virtual void executeSecondaryContext( CommandContext & pSecondaryCmdContext ) override;
+		virtual void ExecuteSecondaryContext( CommandContext & pSecondaryCmdContext ) override;
 
-		virtual void clearColorTarget( const Math::RGBAColorR32Norm & pColor ) override;
+		virtual void ClearColorTarget( const Math::RGBAColorR32Norm & pColor ) override;
 
 	private:
-		void setRenderTargetState( const DX12RenderTargetState & pRenderTargetState );
+		void SetRenderTargetState( const DX12RenderTargetState & pRenderTargetState );
 
 	private:
 		DX12RenderTargetState _renderTargetState;

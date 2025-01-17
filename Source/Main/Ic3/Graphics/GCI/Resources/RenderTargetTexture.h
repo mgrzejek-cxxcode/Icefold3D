@@ -4,7 +4,7 @@
 #ifndef __IC3_GRAPHICS_GCI_RENDER_TARGET_TEXTURE_H__
 #define __IC3_GRAPHICS_GCI_RENDER_TARGET_TEXTURE_H__
 
-#include "GPUResource.h"
+#include "GpuResource.h"
 #include "TextureReference.h"
 #include "../State/RenderTargetCommon.h"
 
@@ -14,76 +14,76 @@ namespace Ic3::Graphics::GCI
 	/// @brief
 	struct RenderTargetTextureCreateInfo
 	{
-		TextureReference mTargetTexture;
+		TextureReference targetTexture;
 
-		RenderTargetTextureLayout mRTTextureLayout;
+		RenderTargetTextureLayout rtTextureLayout;
 
-		TBitmask<ETextureBindFlags> mBindFlags;
+		cppx::bitmask<ETextureBindFlags> bindFlags;
 	};
 
 	/// @brief
-	class RenderTargetTexture : public GPUResourceView
+	class RenderTargetTexture : public GpuResourceView
 	{
-		friend class GPUDevice;
+		friend class GpuDevice;
 		friend class Texture;
 
 	public:
 		ERenderTargetTextureType const mRTTextureType;
 
-		TBitmask<ERenderTargetBufferFlags> const mRTBufferMask;
+		cppx::bitmask<ERenderTargetBufferFlags> const mRTBufferMask;
 
 		RenderTargetTextureLayout const mRTTextureLayout;
 
 		/// Internal texture used by this RTT. Can be null, if this is a write-only depth-stencil
 		/// RTT (created solely for the purpose of an off-screen depth/stencil testing).
-		/// In particular, this is null always when isDepthStencilRenderBuffer() returns true.
+		/// In particular, this is null always when IsDepthStencilRenderBuffer() returns true.
 		TextureReference const mTargetTexture;
 
 	public:
 		RenderTargetTexture(
-			GPUDevice & pGPUDevice,
+			GpuDevice & pGpuDevice,
 			ERenderTargetTextureType pRTTextureType,
 			const RenderTargetTextureLayout & pRTTextureLayout,
 			TextureReference pTargetTexture );
 
 		RenderTargetTexture(
-			GPUDevice & pGPUDevice,
+			GpuDevice & pGpuDevice,
 			ERenderTargetTextureType pRTTextureType,
 			const RenderTargetTextureLayout & pRTTextureLayout,
-			TGPAHandle<GPUDeviceChildObject> pInternalRenderBuffer,
-			TBitmask<resource_flags_value_t> pRenderBufferFlags );
+			TGfxHandle<GpuDeviceChildObject> pInternalRenderBuffer,
+			cppx::bitmask<resource_flags_value_t> pRenderBufferFlags );
 
 		virtual ~RenderTargetTexture();
 
 		///
-		IC3_ATTR_NO_DISCARD bool empty() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept;
 
 		///
-		IC3_ATTR_NO_DISCARD bool isDepthStencilTexture() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsDepthStencilTexture() const noexcept;
 
 		///
-		IC3_ATTR_NO_DISCARD bool isDepthStencilRenderBuffer() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsDepthStencilRenderBuffer() const noexcept;
 
 		///
 		template <typename TRenderBufferType>
-		IC3_ATTR_NO_DISCARD TRenderBufferType * getInternalRenderBuffer() const noexcept
+		CPPX_ATTR_NO_DISCARD TRenderBufferType * GetInternalRenderBuffer() const noexcept
 		{
-			return _internalRenderBuffer ? _internalRenderBuffer->queryInterface<TRenderBufferType>() : nullptr;
+			return _internalRenderBuffer ? _internalRenderBuffer->QueryInterface<TRenderBufferType>() : nullptr;
 		}
 
 	private:
 		///
-		TGPAHandle<GPUDeviceChildObject> _internalRenderBuffer;
+		TGfxHandle<GpuDeviceChildObject> _internalRenderBuffer;
 	};
 
 	namespace RCU
 	{
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD ERenderTargetTextureType queryRenderTargetTextureType( ETextureFormat pFormat );
+		IC3_GRAPHICS_GCI_API_NO_DISCARD ERenderTargetTextureType QueryRenderTargetTextureType( ETextureFormat pFormat );
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD RenderTargetTextureLayout queryRenderTargetTextureLayout( const TextureLayout & pTextureLayout );
+		IC3_GRAPHICS_GCI_API_NO_DISCARD RenderTargetTextureLayout QueryRenderTargetTextureLayout( const TextureLayout & pTextureLayout );
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool validateRenderTargetTextureLayout(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool ValidateRenderTargetTextureLayout(
 				TextureHandle pTargetTexture,
 				const RenderTargetTextureLayout & pRTTextureLayout );
 

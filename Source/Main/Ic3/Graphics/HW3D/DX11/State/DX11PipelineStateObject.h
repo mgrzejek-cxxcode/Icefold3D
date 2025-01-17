@@ -14,7 +14,7 @@ namespace Ic3::Graphics::GCI
 	{
 	public:
 		DX11GraphicsPipelineStateObject(
-				DX11GPUDevice & pGPUDevice,
+				DX11GpuDevice & pGpuDevice,
 				RenderTargetLayout pRenderTargetLayout,
 				ShaderInputSignature pShaderInputSignature,
 				const SeparablePSOStateSet & pPSOImmutableStates,
@@ -22,18 +22,18 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~DX11GraphicsPipelineStateObject();
 
-		IC3_ATTR_NO_DISCARD const DX11BlendImmutableState & getBlendState() const noexcept;
+		CPPX_ATTR_NO_DISCARD const DX11BlendImmutableState & GetBlendState() const noexcept;
 
-		IC3_ATTR_NO_DISCARD const DX11DepthStencilImmutableState & getDepthStencilState() const noexcept;
+		CPPX_ATTR_NO_DISCARD const DX11DepthStencilImmutableState & GetDepthStencilState() const noexcept;
 
-		IC3_ATTR_NO_DISCARD const DX11RasterizerImmutableState & getRasterizerState() const noexcept;
+		CPPX_ATTR_NO_DISCARD const DX11RasterizerImmutableState & GetRasterizerState() const noexcept;
 
-		IC3_ATTR_NO_DISCARD const DX11GraphicsShaderLinkageImmutableState & getGraphicsShaderLinkageState() const noexcept;
+		CPPX_ATTR_NO_DISCARD const DX11GraphicsShaderLinkageImmutableState & GetGraphicsShaderLinkageState() const noexcept;
 
-		IC3_ATTR_NO_DISCARD const DX11IAInputLayoutImmutableState & getIAInputLayoutState() const noexcept;
+		CPPX_ATTR_NO_DISCARD const DX11IAInputLayoutImmutableState & GetIAInputLayoutState() const noexcept;
 
-		static GpaHandle<DX11GraphicsPipelineStateObject> create(
-				DX11GPUDevice & pGPUDevice,
+		static GpaHandle<DX11GraphicsPipelineStateObject> Create(
+				DX11GpuDevice & pGpuDevice,
 				const GraphicsPipelineStateObjectCreateInfo & pCreateInfo );
 	};
 

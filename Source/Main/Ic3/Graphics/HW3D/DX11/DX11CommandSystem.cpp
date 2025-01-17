@@ -1,25 +1,25 @@
 
 #include "DX11CommandSystem.h"
 #include "DX11CommandList.h"
-#include "DX11GPUDevice.h"
+#include "DX11GpuDevice.h"
 #include <Ic3/Graphics/GCI/CommandContext.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	DX11CommandSystem::DX11CommandSystem( DX11GPUDevice & pDX11GPUDevice )
-	: CommandSystem( pDX11GPUDevice )
-	, mD3D11Device1( pDX11GPUDevice.mD3D11Device1 )
+	DX11CommandSystem::DX11CommandSystem( DX11GpuDevice & pDX11GpuDevice )
+	: CommandSystem( pDX11GpuDevice )
+	, mD3D11Device1( pDX11GpuDevice.mD3D11Device1 )
 	{ }
 
 	DX11CommandSystem::~DX11CommandSystem() = default;
 
-	std::unique_ptr<CommandContext> DX11CommandSystem::acquireCommandContext( ECommandContextType pContextType )
+	std::unique_ptr<CommandContext> DX11CommandSystem::AcquireCommandContext( ECommandContextType pContextType )
 	{
 		std::unique_ptr<CommandContext> commandContext;
 
-		const auto contextExecutionMode = CxDef::getCommandObjectExecutionMode( pContextType );
-		if( auto * commandList = acquireCommandList( contextExecutionMode ) )
+		const auto contextExecutionMode = CxDef::GetCommandObjectExecutionMode( pContextType );
+		if( auto * commandList = AcquireCommandList( contextExecutionMode ) )
 		{
 			if( contextExecutionMode == ECommandExecutionMode::Direct )
 			{
@@ -34,7 +34,7 @@ namespace Ic3::Graphics::GCI
 		return commandContext;
 	}
 
-	CommandSync DX11CommandSystem::submitContext( CommandContextDirect & pContext, const CommandContextSubmitInfo & pSubmitInfo )
+	CommandSync DX11CommandSystem::SubmitContext( CommandContextDirect & pContext, const CommandContextSubmitInfo & pSubmitInfo )
 	{
 		CommandSync cmdSyncObject;
 
@@ -44,15 +44,15 @@ namespace Ic3::Graphics::GCI
 			cmdSyncObject.syncData = dx11CommandSyncData;
 			cmdSyncObject.syncDataReleaseFunc = releaseDX11CommandSyncData;
 
-			auto * dx11CommandList = pContext.mCommandList->queryInterface<DX11CommandList>();
-			dx11CommandSyncData->d3d11SyncQuery = dx11CommandList->releaseExecutionSyncQuery();
+			auto * dx11CommandList = pContext.mCommandList->QueryInterface<DX11CommandList>();
+			dx11CommandSyncData->d3d11SyncQuery = dx11CommandList->ReleaseExecutionSyncQuery();
 			dx11CommandSyncData->d3d11DeviceContext1 = dx11CommandList->mD3D11DeviceContext1.Get();
 		}
 
 		return cmdSyncObject;
 	}
 
-	DX11CommandList * DX11CommandSystem::acquireCommandList( ECommandExecutionMode pCommandExecutionMode  )
+	DX11CommandList * DX11CommandSystem::AcquireCommandList( ECommandExecutionMode pCommandExecutionMode  )
 	{
 		DX11CommandList * commandList = nullptr;
 
@@ -60,9 +60,9 @@ namespace Ic3::Graphics::GCI
 		{
 			if( !_directCommandList )
 			{
-				initializeDirectCommandList();
+				InitializeDirectCommandList();
 			}
-			if( _directCommandList && _directCommandList->acquireList() )
+			if( _directCommandList && _directCommandList->AcquireList() )
 			{
 				commandList = _directCommandList.get();
 			}
@@ -70,7 +70,7 @@ namespace Ic3::Graphics::GCI
 		else
 		{
 			std::unique_lock<std::mutex> listLockGuard{ _availableListLock };
-			if( !_availableList.empty() || createDeferredCommandList() )
+			if( !_availableList.empty() || CreateDeferredCommandList() )
 			{
 				commandList = _availableList.back();
 				_availableList.pop_back();
@@ -80,7 +80,7 @@ namespace Ic3::Graphics::GCI
 		return commandList;
 	}
 
-	bool DX11CommandSystem::initializeDirectCommandList()
+	bool DX11CommandSystem::InitializeDirectCommandList()
 	{
 		ic3DebugAssert( !_directCommandList );
 
@@ -91,12 +91,12 @@ namespace Ic3::Graphics::GCI
 			return false;
 		}
 
-		_directCommandList = createGPUAPIObject<DX11CommandList>( *this, ECommandListType::DirectGraphics, d3d11ImmediateContext );
+		_directCommandList = CreateGfxObject<DX11CommandList>( *this, ECommandListType::DirectGraphics, d3d11ImmediateContext );
 
 		return true;
 	}
 
-	bool DX11CommandSystem::createDeferredCommandList()
+	bool DX11CommandSystem::CreateDeferredCommandList()
 	{
 		ComPtr<ID3D11DeviceContext1> d3d11DeferredContext;
 		auto hResult = mD3D11Device1->CreateDeferredContext1( 0, &d3d11DeferredContext );
@@ -105,7 +105,7 @@ namespace Ic3::Graphics::GCI
 			return false;
 		}
 
-		auto deferredCommandList = createGPUAPIObject<DX11CommandList>( *this, ECommandListType::DeferredGraphics, d3d11DeferredContext );
+		auto deferredCommandList = CreateGfxObject<DX11CommandList>( *this, ECommandListType::DeferredGraphics, d3d11DeferredContext );
 		auto * deferredCommandListPtr = deferredCommandList.get();
 
 		_deferredCommandListStorage[deferredCommandListPtr] = std::move( deferredCommandList );

@@ -5,7 +5,7 @@
 #define __IC3_GRAPHICS_GCI_SHADER_COMMON_H__
 
 #include "../Prerequisites.h"
-#include <Ic3/Cppx/ByteArray.h>
+#include <cppx/byteArray.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -15,7 +15,7 @@ namespace Ic3::Graphics::GCI
 	namespace CxDef
 	{
 
-		IC3_ATTR_NO_DISCARD inline constexpr uint32 makeShaderType( native_uint pStageIndex )
+		CPPX_ATTR_NO_DISCARD inline constexpr uint32 makeShaderType( native_uint pStageIndex )
 		{
 			return ( static_cast<uint32>( pStageIndex ) << 16 ) | CxDef::makeShaderStageBit( static_cast< uint32 >( pStageIndex ) );
 		}
@@ -48,91 +48,97 @@ namespace Ic3::Graphics::GCI
 
 	struct alignas( 32 ) ShaderBinary
 	{
-		static constexpr size_t sDataBufferFixedSize = 12;
+		static constexpr size_t dataBufferFixedSize = 12;
 
-		uint64 mDriverSpecificID;
+		uint64 driverSpecificID;
 
-		uint64 mDriverSpecificType;
+		uint64 driverSpecificType;
 
-		uint32 mDataSizeInBytes;
+		uint32 dataSizeInBytes;
 
-		byte mDataBuffer[sDataBufferFixedSize];
+		byte dataBuffer[dataBufferFixedSize];
 
 		ShaderBinary() = default;
 
 		ShaderBinary( std::nullptr_t )
-		: mDataSizeInBytes( 0 )
+		: dataSizeInBytes( 0 )
 		{}
 
-		IC3_ATTR_NO_DISCARD explicit operator bool() const
+		CPPX_ATTR_NO_DISCARD explicit operator bool() const
 		{
-			return !empty();
+			return !IsEmpty();
 		}
 
-		IC3_ATTR_NO_DISCARD bool empty() const
+		CPPX_ATTR_NO_DISCARD bool IsEmpty() const
 		{
-			return mDataSizeInBytes == 0;
+			return dataSizeInBytes == 0;
 		}
 
 		/// @brief Allocates a ShaderBinary object capable of storing shader binary data of the specified size.
 		/// @return An std::unique_ptr holding the created ShaderBinary.
 		/// @notes Defined in shader.cpp file.
-		IC3_GRAPHICS_GCI_API_NO_DISCARD static std::unique_ptr<ShaderBinary> create( size_t pBinarySize );
+		IC3_GRAPHICS_GCI_API_NO_DISCARD static std::unique_ptr<ShaderBinary> Create( size_t pBinarySize );
 	};
 
 	/// @brief
 	struct ShaderCreateInfo
 	{
-		EShaderType mShaderType = EShaderType::Unknown;
-		UniqueGPUObjectName mShaderName;
-		TBitmask<EShaderCreateFlags> mCreateFlags = eShaderCreateFlagsDefault;
-		std::unique_ptr<ShaderBinary> mShaderBinary;
-		Cppx::DynamicByteArray mShaderSource;
-		Cppx::ReadOnlyMemoryView mShaderSourceView;
-		const char * mEntryPointName = nullptr;
+		EShaderType shaderType = EShaderType::Unknown;
+
+		GfxObjectName shaderName;
+
+		cppx::bitmask<EShaderCreateFlags> createFlags = eShaderCreateFlagsDefault;
+
+		std::unique_ptr<ShaderBinary> shaderBinary;
+
+		cppx::dynamic_byte_array shaderSource;
+
+		cppx::read_only_memory_view shaderSourceView;
+
+		cppx::string_view entryPointName;
 
 		explicit operator bool() const noexcept
 		{
-			return ( mShaderType != EShaderType::Unknown ) && (mShaderBinary || !mShaderSource.empty() || !mShaderSourceView.empty() );
+			return ( shaderType != EShaderType::Unknown ) && ( shaderBinary || !shaderSource.empty() || !shaderSourceView.empty() );
 		}
 	};
 
 	namespace CxDef
 	{
 
-		IC3_ATTR_NO_DISCARD inline constexpr bool isShaderStageIndexValid( native_uint pStageIndex )
+		CPPX_ATTR_NO_DISCARD inline constexpr bool IsShaderStageIndexValid( native_uint pStageIndex )
 		{
 			return ( pStageIndex >= eShaderStageIndexBase ) && ( pStageIndex <= eShaderStageIndexMax );
 		}
 
-		IC3_ATTR_NO_DISCARD inline constexpr bool isShaderStageIndexValidGraphics( native_uint pStageIndex )
+		CPPX_ATTR_NO_DISCARD inline constexpr bool IsShaderStageIndexValidGraphics( native_uint pStageIndex )
 		{
 			return ( pStageIndex >= eShaderStageIndexBase ) && ( pStageIndex <= eShaderStageIndexMaxGraphics );
 		}
 
-		IC3_ATTR_NO_DISCARD inline constexpr uint32 getShaderStageIndex( EShaderType pShaderType )
+		CPPX_ATTR_NO_DISCARD inline constexpr uint32 GetShaderStageIndex( EShaderType pShaderType )
 		{
 			return ( static_cast<uint32>( pShaderType ) >> 16 & 0xFFFF ) - eShaderStageIndexBase;
 		}
 
-		IC3_ATTR_NO_DISCARD inline constexpr uint32 getShaderStageBit( EShaderType pShaderType )
+		CPPX_ATTR_NO_DISCARD inline constexpr uint32 GetShaderStageBit( EShaderType pShaderType )
 		{
 			return static_cast<uint32>( pShaderType ) & 0xFFFF;
 		}
 
-		IC3_ATTR_NO_DISCARD inline constexpr bool isShaderTypeGraphics( EShaderType pShaderType )
+		CPPX_ATTR_NO_DISCARD inline constexpr bool IsShaderTypeGraphics( EShaderType pShaderType )
 		{
-			return getShaderStageIndex( pShaderType ) <= eShaderStageIndexMaxGraphics;
+			return GetShaderStageIndex( pShaderType ) <= eShaderStageIndexMaxGraphics;
 		}
 
-		IC3_ATTR_NO_DISCARD inline constexpr bool isShaderTypeValid( EShaderType pShaderType )
+		CPPX_ATTR_NO_DISCARD inline constexpr bool IsShaderTypeValid( EShaderType pShaderType )
 		{
-			return getShaderStageIndex( pShaderType ) <= eShaderStageIndexMax;
+			return GetShaderStageIndex( pShaderType ) <= eShaderStageIndexMax;
 		}
 
-		IC3_ATTR_NO_DISCARD inline constexpr EShaderType getShaderTypeFromStageIndex( native_uint pStageIndex )
+		CPPX_ATTR_NO_DISCARD inline constexpr EShaderType GetShaderTypeFromStageIndex( native_uint pStageIndex )
 		{
-			return isShaderStageIndexValid( pStageIndex ) ? static_cast<EShaderType>( CxDef::makeShaderType( pStageIndex ) ) : EShaderType::Unknown;
+			return IsShaderStageIndexValid( pStageIndex ) ? static_cast<EShaderType>( CxDef::makeShaderType( pStageIndex ) ) : EShaderType::Unknown;
 		}
 		
 	}
@@ -140,11 +146,11 @@ namespace Ic3::Graphics::GCI
 	namespace RCU
 	{
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD EShaderType getShaderObjectType( Shader & pShader );
+		IC3_GRAPHICS_GCI_API_NO_DISCARD EShaderType GetShaderObjectType( Shader & pShader );
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD uint32 getShaderObjectStageIndex( Shader & pShader );
+		IC3_GRAPHICS_GCI_API_NO_DISCARD uint32 GetShaderObjectStageIndex( Shader & pShader );
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD uint32 getShaderObjectStageBit( Shader & pShader );
+		IC3_GRAPHICS_GCI_API_NO_DISCARD uint32 GetShaderObjectStageBit( Shader & pShader );
 
 	}
 

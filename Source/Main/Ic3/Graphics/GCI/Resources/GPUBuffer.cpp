@@ -1,32 +1,32 @@
 
-#include "GPUBuffer.h"
+#include "GpuBuffer.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	GPUBuffer::GPUBuffer(
-			GPUDevice & pGPUDevice,
+	GpuBuffer::GpuBuffer(
+			GpuDevice & pGpuDevice,
 			const ResourceMemoryInfo & pResourceMemory,
-			const GPUBufferProperties & pBufferProperties )
-	: GPUResource( pGPUDevice, EGPUResourceBaseType::Buffer, pResourceMemory )
+			const GpuBufferProperties & pBufferProperties )
+	: GpuResource( pGpuDevice, EGpuResourceBaseType::Buffer, pResourceMemory )
 	, mBufferProperties( pBufferProperties )
 	{}
 
-	GPUBuffer::~GPUBuffer() = default;
+	GpuBuffer::~GpuBuffer() = default;
 
-	const GPUResourceProperties & GPUBuffer::getProperties() const
+	const GpuResourceProperties & GpuBuffer::GetProperties() const
 	{
 		return mBufferProperties;
 	}
 
-	GPUMemoryRegion GPUBuffer::getWholeBufferRegion() const
+	GpuMemoryRegion GpuBuffer::GetWholeBufferRegion() const
 	{
-		return GPUMemoryRegion{ 0, mBufferProperties.byteSize };
+		return GpuMemoryRegion{ 0, mBufferProperties.byteSize };
 	}
 
-	bool GPUBuffer::validateMapRequest( const GPUMemoryRegion & pRegion, const EGPUMemoryMapMode & pMapMode )
+	bool GpuBuffer::ValidateMapRequest( const GpuMemoryRegion & pRegion, const EGpuMemoryMapMode & pMapMode )
 	{
-		if( isMapped() )
+		if( IsMapped() )
 		{
 			return false;
 		}
@@ -36,8 +36,8 @@ namespace Ic3::Graphics::GCI
 			return false;
 		}
 
-		const GPUMemoryRegion bufferDataRegion{ 0, mBufferProperties.byteSize };
-		if( !Ic3::rangeIsSubRangeOf( pRegion.asRange(), bufferDataRegion.asRange() ) )
+		const GpuMemoryRegion bufferDataRegion{ 0, mBufferProperties.byteSize };
+		if( !cppx::range_is_sub_range_of( pRegion.as_range(), bufferDataRegion.as_range() ) )
 		{
 			return false;
 		}
@@ -45,11 +45,11 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	bool GPUBuffer::validateBufferCreateInfo( GPUBufferCreateInfo & pCreateInfo )
+	bool GpuBuffer::ValidateBufferCreateInfo( GpuBufferCreateInfo & pCreateInfo )
 	{
-		if( pCreateInfo.mMemoryBaseAlignment == 0 )
+		if( pCreateInfo.memoryBaseAlignment == 0 )
 		{
-		    pCreateInfo.mMemoryBaseAlignment = Ic3::cxMemoryCPUDefaultAlignment;
+		    pCreateInfo.memoryBaseAlignment = Ic3::cxMemoryCpuDefaultAlignment;
 		}
 
 		if( ( pCreateInfo.bufferSize == 0 ) && pCreateInfo.initDataDesc )

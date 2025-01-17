@@ -5,46 +5,46 @@
 #define __IC3_GRAPHICS_HW3D_MTLCOMMON_GPU_BUFFER_H__
 
 #include "../MTLPrerequisites.h"
-#include <Ic3/Graphics/GCI/Resources/GPUBuffer.h>
+#include <Ic3/Graphics/GCI/Resources/GpuBuffer.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( MetalGPUBuffer );
+	ic3DeclareClassHandle( MetalGpuBuffer );
 
-	class MetalGPUBuffer : public GPUBuffer
+	class MetalGpuBuffer : public GpuBuffer
 	{
 	public:
 		id<MTLDevice> const mMTLDevice;
 		id<MTLBuffer> const mMTLBuffer;
 
 	public:
-		MetalGPUBuffer(
-			MetalGPUDevice & pGPUDevice,
+		MetalGpuBuffer(
+			MetalGpuDevice & pGpuDevice,
 			const ResourceMemoryInfo & pResourceMemory,
-			const GPUBufferProperties & pBufferProperties,
+			const GpuBufferProperties & pBufferProperties,
 			id<MTLBuffer> pMTLBuffer );
 
-		virtual ~MetalGPUBuffer();
+		virtual ~MetalGpuBuffer();
 
-		static MetalGPUBufferHandle create( MetalGPUDevice & pGPUDevice, const GPUBufferCreateInfo & pCreateInfo );
+		static MetalGpuBufferHandle Create( MetalGpuDevice & pGpuDevice, const GpuBufferCreateInfo & pCreateInfo );
 
 	private:
-	    virtual bool mapRegion( void * pCommandObject, const GPUMemoryRegion & pRegion, EGPUMemoryMapMode pMapMode ) override;
+	    virtual bool MapRegion( void * pCommandObject, const GpuMemoryRegion & pRegion, EGpuMemoryMapMode pMapMode ) override;
 
-		virtual void unmap( void * pCommandObject ) override;
+		virtual void Unmap( void * pCommandObject ) override;
 
-		virtual void flushMappedRegion( void * pCommandObject, const GPUMemoryRegion & pRegion ) override;
+		virtual void FlushMappedRegion( void * pCommandObject, const GpuMemoryRegion & pRegion ) override;
 
-		virtual void invalidateRegion( void * pCommandObject, const GPUMemoryRegion & pRegion ) override;
+		virtual void InvalidateRegion( void * pCommandObject, const GpuMemoryRegion & pRegion ) override;
 
-		virtual void updateSubDataCopy( void * pCommandObject, GPUBuffer & pSrcBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc ) override;
+		virtual void UpdateSubDataCopy( void * pCommandObject, GpuBuffer & pSrcBuffer, const GpuBufferSubDataCopyDesc & pCopyDesc ) override;
 
-		virtual void updateSubDataUpload( void * pCommandObject, const GPUBufferSubDataUploadDesc & pUploadDesc ) override;
+		virtual void UpdateSubDataUpload( void * pCommandObject, const GpuBufferSubDataUploadDesc & pUploadDesc ) override;
 		
-		virtual bool validateMapRequest( const GPUMemoryRegion & pRegion, const EGPUMemoryMapMode & pMapMode ) override;
+		virtual bool ValidateMapRequest( const GpuMemoryRegion & pRegion, const EGpuMemoryMapMode & pMapMode ) override;
 
-		static id<MTLCommandBuffer> getMTLCommandBuffer( void * pCommandObject );
+		static id<MTLCommandBuffer> GetMTLCommandBuffer( void * pCommandObject );
 
 		static bool checkCommandListTransfer( void * pCommandObject );
 	};

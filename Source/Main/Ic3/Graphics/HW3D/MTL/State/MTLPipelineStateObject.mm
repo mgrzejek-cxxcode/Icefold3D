@@ -8,12 +8,12 @@ namespace Ic3::Graphics::GCI
 {
 
 	MetalGraphicsPipelineStateObject::MetalGraphicsPipelineStateObject(
-			MetalGPUDevice & pGPUDevice,
+			MetalGpuDevice & pGpuDevice,
 			RenderTargetLayout pRenderTargetLayout,
 			ShaderInputSignature pShaderInputSignature,
 			id<MTLRenderPipelineState> pMTLPipelineState )
 	: GraphicsPipelineStateObject(
-		pGPUDevice,
+		pGpuDevice,
 		std::move( pRenderTargetLayout ),
 		std::move( pShaderInputSignature ) )
 	, mMTLPipelineState( pMTLPipelineState )
@@ -21,13 +21,13 @@ namespace Ic3::Graphics::GCI
 
 	MetalGraphicsPipelineStateObject::~MetalGraphicsPipelineStateObject() = default;
 
-	GpaHandle<MetalGraphicsPipelineStateObject> MetalGraphicsPipelineStateObject::create(
-			MetalGPUDevice & pGPUDevice,
+	GpaHandle<MetalGraphicsPipelineStateObject> MetalGraphicsPipelineStateObject::Create(
+			MetalGpuDevice & pGpuDevice,
 			const GraphicsPipelineStateObjectCreateInfo & pCreateInfo )
 	{
 	@autoreleasepool
 	{
-		auto & mtlDevice = pGPUDevice.mMTLDevice;
+		auto & mtlDevice = pGpuDevice.mMTLDevice;
 
 		auto * pipelineStateDescriptor = [[MTLRenderPipelineDescriptor alloc] init];
 	}

@@ -1,29 +1,29 @@
 
 #include "GLCommonGraphicsConfig.h"
-#include <Ic3/Graphics/HW3D/GL/GLAPITranslationLayer.h>
-#include <Ic3/Graphics/HW3D/GL/GLGPUDevice.h>
+#include <Ic3/Graphics/HW3D/GL/GLApiTranslationLayer.h>
+#include <Ic3/Graphics/HW3D/GL/GLGpuDevice.h>
 
 namespace Ic3::Graphics::GCI
 {
 
 	GLBlendImmutableState::GLBlendImmutableState(
-			GLGPUDevice & pGPUDevice,
-			Bitmask<EBlendConfigFlags> pBlendFlags,
+			GLGpuDevice & pGpuDevice,
+			cppx::bitmask<EBlendConfigFlags> pBlendFlags,
 			const GLBlendConfig & pGLBlendConfig )
-	: BlendImmutableState( pGPUDevice, pBlendFlags )
+	: BlendImmutableState( pGpuDevice, pBlendFlags )
 	, mGLBlendConfig( pGLBlendConfig )
 	{}
 
 	GLBlendImmutableState::~GLBlendImmutableState() = default;
 
-	GpaHandle<GLBlendImmutableState> GLBlendImmutableState::createInstance(
-			GLGPUDevice & pGPUDevice,
+	TGfxHandle<GLBlendImmutableState> GLBlendImmutableState::CreateInstance(
+			GLGpuDevice & pGpuDevice,
 			const BlendConfig & pBlendConfig )
 	{
-		const auto glcBlendConfig = smutil::translateBlendConfigGL( pBlendConfig );
+		const auto glcBlendConfig = SMU::TranslateBlendConfigGL( pBlendConfig );
 
-		auto immutableState = createGPUAPIObject<GLBlendImmutableState>(
-				pGPUDevice,
+		auto immutableState = CreateGfxObject<GLBlendImmutableState>(
+				pGpuDevice,
 				pBlendConfig.flags,
 				glcBlendConfig );
 
@@ -32,23 +32,23 @@ namespace Ic3::Graphics::GCI
 
 
 	GLDepthStencilImmutableState::GLDepthStencilImmutableState(
-			GLGPUDevice & pGPUDevice,
-			Bitmask<EDepthStencilConfigFlags> pDepthStencilFlags,
+			GLGpuDevice & pGpuDevice,
+			cppx::bitmask<EDepthStencilConfigFlags> pDepthStencilFlags,
 			const GLDepthStencilConfig & pGLDepthStencilConfig  )
-	: DepthStencilImmutableState( pGPUDevice, pDepthStencilFlags )
+	: DepthStencilImmutableState( pGpuDevice, pDepthStencilFlags )
 	, mGLDepthStencilConfig( pGLDepthStencilConfig )
 	{}
 
 	GLDepthStencilImmutableState::~GLDepthStencilImmutableState() = default;
 
-	GpaHandle<GLDepthStencilImmutableState> GLDepthStencilImmutableState::createInstance(
-			GLGPUDevice & pGPUDevice,
+	TGfxHandle<GLDepthStencilImmutableState> GLDepthStencilImmutableState::CreateInstance(
+			GLGpuDevice & pGpuDevice,
 			const DepthStencilConfig & pDepthStencilConfig  )
 	{
-		const auto glcDepthStencilConfig = smutil::translateDepthStencilConfigGL( pDepthStencilConfig );
+		const auto glcDepthStencilConfig = SMU::TranslateDepthStencilConfigGL( pDepthStencilConfig );
 
-		auto immutableState = createGPUAPIObject<GLDepthStencilImmutableState>(
-				pGPUDevice,
+		auto immutableState = CreateGfxObject<GLDepthStencilImmutableState>(
+				pGpuDevice,
 				pDepthStencilConfig.commonFlags,
 				glcDepthStencilConfig );
 
@@ -57,23 +57,23 @@ namespace Ic3::Graphics::GCI
 
 
 	GLRasterizerImmutableState::GLRasterizerImmutableState(
-			GLGPUDevice & pGPUDevice,
-			Bitmask<ERasterizerConfigFlags> pRasterizerFlags,
+			GLGpuDevice & pGpuDevice,
+			cppx::bitmask<ERasterizerConfigFlags> pRasterizerFlags,
 			const GLRasterizerConfig & pGLRasterizerConfig )
-	: RasterizerImmutableState( pGPUDevice, pRasterizerFlags )
+	: RasterizerImmutableState( pGpuDevice, pRasterizerFlags )
 	, mGLRasterizerConfig( pGLRasterizerConfig )
 	{}
 
 	GLRasterizerImmutableState::~GLRasterizerImmutableState() = default;
 
-	GpaHandle<GLRasterizerImmutableState> GLRasterizerImmutableState::createInstance(
-			GLGPUDevice & pGPUDevice,
+	TGfxHandle<GLRasterizerImmutableState> GLRasterizerImmutableState::CreateInstance(
+			GLGpuDevice & pGpuDevice,
 			const RasterizerConfig & pRasterizerConfig )
 	{
-		const auto glcRasterizerConfig = smutil::translateRasterizerConfigGL( pRasterizerConfig );
+		const auto glcRasterizerConfig = SMU::TranslateRasterizerConfigGL( pRasterizerConfig );
 
-		auto immutableState = createGPUAPIObject<GLRasterizerImmutableState>(
-				pGPUDevice,
+		auto immutableState = CreateGfxObject<GLRasterizerImmutableState>(
+				pGpuDevice,
 				pRasterizerConfig.flags,
 				glcRasterizerConfig );
 
@@ -81,10 +81,10 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	namespace smutil
+	namespace SMU
 	{
 
-		GLBlendConfig translateBlendConfigGL( const BlendConfig & pConfig )
+		GLBlendConfig TranslateBlendConfigGL( const BlendConfig & pConfig )
 		{
 			GLBlendConfig openglBlendConfig{};
 			openglBlendConfig.attachmentsMask = pConfig.attachmentsMask;
@@ -92,17 +92,17 @@ namespace Ic3::Graphics::GCI
 
 			if( pConfig.attachmentsMask != 0 )
 			{
-				if( !pConfig.flags.isSet( E_BLEND_CONFIG_FLAG_ENABLE_MRT_INDEPENDENT_BLENDING_BIT ) )
+				if( !pConfig.flags.is_set( eBlendConfigFlagEnableMRTIndependentBlendingBit ) )
 				{
-					openglBlendConfig.attachments[0] = smutil::translateRTColorAttachmentBlendSettingsGL( pConfig.attachments[0] );
+					openglBlendConfig.attachments[0] = SMU::TranslateRTColorAttachmentBlendSettingsGL( pConfig.attachments[0] );
 				}
 				else
 				{
-					foreachRTAttachmentIndex( pConfig.attachmentsMask,
+					ForEachRTAttachmentIndex( pConfig.attachmentsMask,
 						[&]( native_uint pIndex, ERTAttachmentFlags pAttachmentBit )
 						{
 							auto & openglAttachmentSettings = openglBlendConfig.attachments[pIndex];
-							openglAttachmentSettings = smutil::translateRTColorAttachmentBlendSettingsGL( pConfig.attachments[pIndex] );
+							openglAttachmentSettings = SMU::TranslateRTColorAttachmentBlendSettingsGL( pConfig.attachments[pIndex] );
 							openglAttachmentSettings.blendActive = true;
 							return true;
 						} );
@@ -114,59 +114,61 @@ namespace Ic3::Graphics::GCI
 			return openglBlendConfig;
 		}
 
-		GLDepthStencilConfig translateDepthStencilConfigGL( const DepthStencilConfig & pConfig )
+		GLDepthStencilConfig TranslateDepthStencilConfigGL( const DepthStencilConfig & pConfig )
 		{
 			GLDepthStencilConfig openglDepthStencilConfig{};
 
 			auto & depthSettings = pConfig.depthTestSettings;
-			openglDepthStencilConfig.depthTestActive = pConfig.commonFlags.isSet( E_DEPTH_STENCIL_CONFIG_FLAG_ENABLE_DEPTH_TEST_BIT );
-			openglDepthStencilConfig.depthSettings.depthCompFunc = ATL::translateGLCompFunc( depthSettings.depthCompFunc );
-			openglDepthStencilConfig.depthSettings.writeMask = ( depthSettings.depthWriteMask == EDepthWriteMask::All ) ? GL_TRUE : GL_FALSE;
+			openglDepthStencilConfig.depthTestActive = pConfig.commonFlags.is_set(
+					eDepthStencilConfigFlagEnableDepthTestBit );
+			openglDepthStencilConfig.depthSettings.depthCompFunc = ATL::TranslateGLCompFunc( depthSettings.depthCompFunc );
+			openglDepthStencilConfig.depthSettings.writeMask = (depthSettings.depthWriteMask == EDepthWriteMask::All ) ? GL_TRUE : GL_FALSE;
 
-			openglDepthStencilConfig.stencilTestActive = pConfig.commonFlags.isSet( E_DEPTH_STENCIL_CONFIG_FLAG_ENABLE_STENCIL_TEST_BIT );
+			openglDepthStencilConfig.stencilTestActive = pConfig.commonFlags.is_set(
+					eDepthStencilConfigFlagEnableStencilTestBit );
 
 			auto & stencilBackFaceDesc = pConfig.stencilTestSettings.backFace;
-			openglDepthStencilConfig.stencilSettings.backFace.compFunc = ATL::translateGLCompFunc( stencilBackFaceDesc.compFunc );
-			openglDepthStencilConfig.stencilSettings.backFace.opFail = ATL::translateGLStencilOp( stencilBackFaceDesc.opFail );
-			openglDepthStencilConfig.stencilSettings.backFace.opPassDepthFail = ATL::translateGLStencilOp( stencilBackFaceDesc.opPassDepthFail );
-			openglDepthStencilConfig.stencilSettings.backFace.opPassDepthPass = ATL::translateGLStencilOp( stencilBackFaceDesc.opPassDepthPass );
+			openglDepthStencilConfig.stencilSettings.backFace.compFunc = ATL::TranslateGLCompFunc( stencilBackFaceDesc.compFunc );
+			openglDepthStencilConfig.stencilSettings.backFace.opFail = ATL::TranslateGLStencilOp( stencilBackFaceDesc.opFail );
+			openglDepthStencilConfig.stencilSettings.backFace.opPassDepthFail = ATL::TranslateGLStencilOp( stencilBackFaceDesc.opPassDepthFail );
+			openglDepthStencilConfig.stencilSettings.backFace.opPassDepthPass = ATL::TranslateGLStencilOp( stencilBackFaceDesc.opPassDepthPass );
 			openglDepthStencilConfig.stencilSettings.backFace.readMask = pConfig.stencilTestSettings.readMask;
 			openglDepthStencilConfig.stencilSettings.backFace.writeMask = pConfig.stencilTestSettings.writeMask;
 
 			auto & stencilFrontFaceDesc = pConfig.stencilTestSettings.frontFace;
-			openglDepthStencilConfig.stencilSettings.frontFace.compFunc = ATL::translateGLCompFunc( stencilFrontFaceDesc.compFunc );
-			openglDepthStencilConfig.stencilSettings.frontFace.opFail = ATL::translateGLStencilOp( stencilFrontFaceDesc.opFail );
-			openglDepthStencilConfig.stencilSettings.frontFace.opPassDepthFail = ATL::translateGLStencilOp( stencilFrontFaceDesc.opPassDepthFail );
-			openglDepthStencilConfig.stencilSettings.frontFace.opPassDepthPass = ATL::translateGLStencilOp( stencilFrontFaceDesc.opPassDepthPass );
+			openglDepthStencilConfig.stencilSettings.frontFace.compFunc = ATL::TranslateGLCompFunc( stencilFrontFaceDesc.compFunc );
+			openglDepthStencilConfig.stencilSettings.frontFace.opFail = ATL::TranslateGLStencilOp( stencilFrontFaceDesc.opFail );
+			openglDepthStencilConfig.stencilSettings.frontFace.opPassDepthFail = ATL::TranslateGLStencilOp( stencilFrontFaceDesc.opPassDepthFail );
+			openglDepthStencilConfig.stencilSettings.frontFace.opPassDepthPass = ATL::TranslateGLStencilOp( stencilFrontFaceDesc.opPassDepthPass );
 			openglDepthStencilConfig.stencilSettings.frontFace.readMask = pConfig.stencilTestSettings.readMask;
 			openglDepthStencilConfig.stencilSettings.frontFace.writeMask = pConfig.stencilTestSettings.writeMask;
 
 			return openglDepthStencilConfig;
 		}
 
-		GLRasterizerConfig translateRasterizerConfigGL( const RasterizerConfig & pConfig )
+		GLRasterizerConfig TranslateRasterizerConfigGL( const RasterizerConfig & pConfig )
 		{
 			GLRasterizerConfig rasterizerConfig{};
 
-			rasterizerConfig.scissorTestActive = pConfig.flags.isSet( E_RASTERIZER_CONFIG_FLAG_ENABLE_SCISSOR_TEST_BIT );
-			rasterizerConfig.cullMode = ATL::translateGLCullMode( pConfig.cullMode );
-			rasterizerConfig.frontFaceVerticesOrder = ATL::translateGLTriangleVerticesOrder( pConfig.frontFaceVerticesOrder );
-		#if( ICFGX_GL_FEATURE_SUPPORT_PRIMITIVE_FILL_MODE )
-			rasterizerConfig.primitiveFillMode = ATL::translateGLPrimitiveFillMode( pConfig.primitiveFillMode );
+			rasterizerConfig.scissorTestActive = pConfig.flags.is_set( eRasterizerConfigFlagEnableScissorTestBit );
+			rasterizerConfig.cullMode = ATL::TranslateGLCullMode( pConfig.cullMode );
+			rasterizerConfig.frontFaceVerticesOrder = ATL::TranslateGLTriangleVerticesOrder( pConfig.frontFaceVerticesOrder );
+		#if( IC3_GX_GL_FEATURE_SUPPORT_PRIMITIVE_FILL_MODE )
+			rasterizerConfig.primitiveFillMode = ATL::TranslateGLPrimitiveFillMode( pConfig.primitiveFillMode );
 		#endif
 
 			return rasterizerConfig;
 		}
 
-		GLRTColorAttachmentBlendSettings translateRTColorAttachmentBlendSettingsGL( const RTColorAttachmentBlendSettings & pSettings )
+		GLRTColorAttachmentBlendSettings TranslateRTColorAttachmentBlendSettingsGL( const RTColorAttachmentBlendSettings & pSettings )
 		{
 			GLRTColorAttachmentBlendSettings openglBlendSettings;
-			openglBlendSettings.equation.rgb = ATL::translateGLBlendOp( pSettings.opColor );
-			openglBlendSettings.equation.alpha = ATL::translateGLBlendOp( pSettings.opAlpha );
-			openglBlendSettings.factor.rgbSrc = ATL::translateGLBlendFactor( pSettings.factorSrcColor );
-			openglBlendSettings.factor.rgbDst = ATL::translateGLBlendFactor( pSettings.factorDstColor );
-			openglBlendSettings.factor.alphaSrc = ATL::translateGLBlendFactor( pSettings.factorSrcAlpha );
-			openglBlendSettings.factor.alphaDst = ATL::translateGLBlendFactor( pSettings.factorDstAlpha );
+			openglBlendSettings.equation.rgb = ATL::TranslateGLBlendOp( pSettings.opColor );
+			openglBlendSettings.equation.alpha = ATL::TranslateGLBlendOp( pSettings.opAlpha );
+			openglBlendSettings.factor.rgbSrc = ATL::TranslateGLBlendFactor( pSettings.factorSrcColor );
+			openglBlendSettings.factor.rgbDst = ATL::TranslateGLBlendFactor( pSettings.factorDstColor );
+			openglBlendSettings.factor.alphaSrc = ATL::TranslateGLBlendFactor( pSettings.factorSrcAlpha );
+			openglBlendSettings.factor.alphaDst = ATL::TranslateGLBlendFactor( pSettings.factorDstAlpha );
 
 			return openglBlendSettings;
 		}

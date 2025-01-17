@@ -1,6 +1,6 @@
 
 #include "GLRenderTarget.h"
-#include <Ic3/Graphics/HW3D/GL/GLGPUDevice.h>
+#include <Ic3/Graphics/HW3D/GL/GLGpuDevice.h>
 #include <Ic3/Graphics/HW3D/GL/Objects/GLFramebufferObject.h>
 #include <Ic3/Graphics/HW3D/GL/Objects/GLRenderbufferObject.h>
 #include <Ic3/Graphics/HW3D/GL/Resources/GLRenderBuffer.h>
@@ -10,16 +10,16 @@ namespace Ic3::Graphics::GCI
 {
 
 	GLRenderTargetBindingImmutableState::GLRenderTargetBindingImmutableState(
-			GLGPUDevice & pGPUDevice,
+			GLGpuDevice & pGpuDevice,
 			const RenderTargetLayout & pRenderTargetLayout,
 			GLRenderTargetBindingFBOData pGLFBOData )
-	: RenderTargetBindingImmutableState( pGPUDevice, pRenderTargetLayout )
+	: RenderTargetBindingImmutableState( pGpuDevice, pRenderTargetLayout )
 	, mGLFBOData( std::move( pGLFBOData ) )
 	{}
 
 	GLRenderTargetBindingImmutableState::~GLRenderTargetBindingImmutableState() = default;
 
-	GLRenderTargetBindingInfo GLRenderTargetBindingImmutableState::getGLRenderTargetBindingInfo() const
+	GLRenderTargetBindingInfo GLRenderTargetBindingImmutableState::GetGLRenderTargetBindingInfo() const
 	{
 		GLRenderTargetBindingInfo glcRTBindingInfo{};
 		glcRTBindingInfo.renderFBO = mGLFBOData.renderFBO.get();
@@ -28,36 +28,36 @@ namespace Ic3::Graphics::GCI
 		return glcRTBindingInfo;
 	}
 
-	GpaHandle<GLRenderTargetBindingImmutableState> GLRenderTargetBindingImmutableState::createInstance(
-			GLGPUDevice & pGPUDevice,
+	TGfxHandle<GLRenderTargetBindingImmutableState> GLRenderTargetBindingImmutableState::CreateInstance(
+			GLGpuDevice & pGpuDevice,
 			const RenderTargetBindingDefinition & pBindingDefinition )
 	{
-		if( !smutil::validateRenderTargetBindingDefinition( pBindingDefinition ) )
+		if( !SMU::ValidateRenderTargetBindingDefinition( pBindingDefinition ) )
 		{
 			return nullptr;
 		}
 
-		auto glcRenderTargetBindingDefinition = smutil::translateRenderTargetBindingDefinition( pBindingDefinition );
+		auto glcRenderTargetBindingDefinition = SMU::TranslateRenderTargetBindingDefinition( pBindingDefinition );
 
-		auto immutableState = createGPUAPIObject<GLRenderTargetBindingImmutableState>(
-				pGPUDevice,
+		auto immutableState = CreateGfxObject<GLRenderTargetBindingImmutableState>(
+				pGpuDevice,
 				glcRenderTargetBindingDefinition.rtLayout,
 				std::move( glcRenderTargetBindingDefinition.fboData ) );
 
 		return immutableState;
 	}
 
-	GpaHandle<GLRenderTargetBindingImmutableState> GLRenderTargetBindingImmutableState::createForScreen(
-			GLGPUDevice & pGPUDevice,
+	TGfxHandle<GLRenderTargetBindingImmutableState> GLRenderTargetBindingImmutableState::CreateForScreen(
+			GLGpuDevice & pGpuDevice,
 			const RenderTargetLayout & pRenderTargetLayout )
 	{
 		GLRenderTargetBindingDefinition glcRenderTargetBindingDefinition;
-		glcRenderTargetBindingDefinition.fboData.renderFBO = GLFramebufferObject::createForDefaultFramebuffer();
+		glcRenderTargetBindingDefinition.fboData.renderFBO = GLFramebufferObject::CreateForDefaultFramebuffer();
 		glcRenderTargetBindingDefinition.fboData.resolveFBO = nullptr;
 		glcRenderTargetBindingDefinition.rtLayout = pRenderTargetLayout;
 
-		auto immutableState = createGPUAPIObject<GLRenderTargetBindingImmutableState>(
-			pGPUDevice,
+		auto immutableState = CreateGfxObject<GLRenderTargetBindingImmutableState>(
+			pGpuDevice,
 			glcRenderTargetBindingDefinition.rtLayout,
 			std::move( glcRenderTargetBindingDefinition.fboData ) );
 
@@ -65,10 +65,10 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	namespace smutil
+	namespace SMU
 	{
 
-		GLRenderTargetBindingInfo getGLRenderTargetBindingInfo(
+		GLRenderTargetBindingInfo GetGLRenderTargetBindingInfo(
 				const GLRenderTargetBindingDefinition & pBindingDefinition )
 		{
 			GLRenderTargetBindingInfo glcRTBindingInfo{};
@@ -78,86 +78,86 @@ namespace Ic3::Graphics::GCI
 			return glcRTBindingInfo;
 		}
 
-		GLRenderTargetBindingDefinition translateRenderTargetBindingDefinition(
+		GLRenderTargetBindingDefinition TranslateRenderTargetBindingDefinition(
 				const RenderTargetBindingDefinition & pBindingDefinition )
 		{
 			GLRenderTargetBindingDefinition glcRenderTargetBindingDefinition{};
 
-			const auto renderTargetLayout = smutil::getRenderTargetLayoutForBindingDefinition( pBindingDefinition );
+			const auto renderTargetLayout = SMU::GetRenderTargetLayoutForBindingDefinition( pBindingDefinition );
 
 			glcRenderTargetBindingDefinition.fboData.renderFBO =
-					smutil::createFramebufferObject( pBindingDefinition, pBindingDefinition.activeAttachmentsMask );
+					SMU::CreateFramebufferObject( pBindingDefinition, pBindingDefinition.activeAttachmentsMask );
 
 			glcRenderTargetBindingDefinition.fboData.resolveFBO =
-					smutil::createFramebufferObject( pBindingDefinition, pBindingDefinition.attachmentsActionResolveMask );
+					SMU::CreateFramebufferObject( pBindingDefinition, pBindingDefinition.attachmentsActionResolveMask );
 
 			glcRenderTargetBindingDefinition.rtLayout = renderTargetLayout;
 
 			return glcRenderTargetBindingDefinition;
 		}
 
-		GLFramebufferObjectHandle createFramebufferObject(
+		GLFramebufferObjectHandle CreateFramebufferObject(
 				const RenderTargetBindingDefinition & pBindingDefinition,
-				Bitmask<ERTAttachmentFlags> pAttachmentMask )
+				cppx::bitmask<ERTAttachmentFlags> pAttachmentMask )
 		{
 			if( pAttachmentMask.empty() )
 			{
 				return nullptr;
 			}
 
-			auto framebufferObject = GLFramebufferObject::create();
+			auto framebufferObject = GLFramebufferObject::Create();
 			if( !framebufferObject )
 			{
 				return nullptr;
 			}
 
-			for( uint32 caIndex = 0; CxDef::isRTColorAttachmentIndexValid( caIndex ); ++caIndex )
+			for( uint32 caIndex = 0; CxDef::IsRTColorAttachmentIndexValid( caIndex ); ++caIndex )
 			{
 				const auto attachmentBit = CxDef::makeRTAttachmentFlag( caIndex );
-				if( pAttachmentMask.isSet( attachmentBit ) )
+				if( pAttachmentMask.is_set( attachmentBit ) )
 				{
 					auto & colorAttachmentBinding = pBindingDefinition.colorAttachments[caIndex];
 					auto & textureReference = colorAttachmentBinding.attachmentTexture->mTargetTexture;
-					auto * openglTexture = textureReference.getRefTexture()->queryInterface<GLTexture>();
+					auto * openglTexture = textureReference.GetRefTexture()->QueryInterface<GLTexture>();
 
-					framebufferObject->bindColorTexture(
+					framebufferObject->BindColorTexture(
 							caIndex,
 							*( openglTexture->mGLTextureObject ),
-							textureReference.getRefSubResource() );
+							textureReference.GetRefSubResource() );
 				}
 			}
 
-			if( pAttachmentMask.isSet( E_RT_ATTACHMENT_FLAG_DEPTH_STENCIL_BIT ) )
+			if( pAttachmentMask.is_set( eRtAttachmentFlagDepthStencilBit ) )
 			{
 				auto & depthStencilAttachmentBinding = pBindingDefinition.depthStencilAttachment;
 
-				if( depthStencilAttachmentBinding.attachmentTexture->isDepthStencilRenderBuffer() )
+				if( depthStencilAttachmentBinding.attachmentTexture->IsDepthStencilRenderBuffer() )
 				{
-					auto * renderBuffer = depthStencilAttachmentBinding.attachmentTexture->getInternalRenderBuffer<GLInternalRenderBuffer>();
+					auto * renderBuffer = depthStencilAttachmentBinding.attachmentTexture->GetInternalRenderBuffer<GLInternalRenderBuffer>();
 
-					framebufferObject->bindDepthStencilRenderbuffer(
+					framebufferObject->BindDepthStencilRenderbuffer(
 							*renderBuffer->mGLRenderbufferObject,
 							depthStencilAttachmentBinding.attachmentTexture->mRTBufferMask );
 				}
 				else
 				{
 					auto & textureReference = depthStencilAttachmentBinding.attachmentTexture->mTargetTexture;
-					auto * openglTexture = textureReference.getRefTexture()->queryInterface<GLTexture>();
+					auto * openglTexture = textureReference.GetRefTexture()->QueryInterface<GLTexture>();
 
-					framebufferObject->bindDepthStencilTexture(
+					framebufferObject->BindDepthStencilTexture(
 							*openglTexture->mGLTextureObject,
-							textureReference.getRefSubResource(),
+							textureReference.GetRefSubResource(),
 							depthStencilAttachmentBinding.attachmentTexture->mRTBufferMask );
 				}
 			}
 
-			if( !pAttachmentMask.isSetAnyOf( E_RT_ATTACHMENT_MASK_COLOR_ALL ) )
+			if( !pAttachmentMask.is_set_any_of( eRTAttachmentMaskColorAll ) )
 			{
 				glDrawBuffer( GL_NONE );
 				ic3OpenGLHandleLastError();
 			}
 
-			if( !framebufferObject->checkStatus() )
+			if( !framebufferObject->CheckStatus() )
 			{
 				ic3DebugInterrupt();
 				return nullptr;
@@ -166,31 +166,32 @@ namespace Ic3::Graphics::GCI
 			return framebufferObject;
 		}
 
-		RenderTargetLayout translateSystemVisualConfigToRenderTargetLayout( const System::VisualConfig & pSysVisualConfig )
+		RenderTargetLayout TranslateSystemVisualConfigToRenderTargetLayout( const System::VisualConfig & pSysVisualConfig )
 		{
 			RenderTargetLayout renderTargetLayout;
-			renderTargetLayout.activeAttachmentsMask = E_RT_ATTACHMENT_MASK_DEFAULT_C0_DS;
+			renderTargetLayout.activeAttachmentsMask = eRTAttachmentMaskDefaultC0DS;
 			renderTargetLayout.colorAttachments[0].format = ETextureFormat::BGRA8UN;
 			renderTargetLayout.depthStencilAttachment.format = ETextureFormat::D24UNS8U;
 			return renderTargetLayout;
 		}
 
-		void clearRenderPassFramebuffer(
+		void ClearRenderPassFramebuffer(
 				const RenderPassConfiguration & pRenderPassConfiguration,
 				const GraphicsPipelineDynamicState & pDynamicState )
 		{
-			const bool clearConfigOverride = pDynamicState.activeStateMask.isSet( E_GRAPHICS_PIPELINE_DYNAMIC_STATE_FLAG_COMMON_CLEAR_CONFIG_BIT );
+			const bool clearConfigOverride = pDynamicState.activeStateMask.is_set(
+					eGraphicsPipelineDynamicStateFlagCommonClearConfigBit );
 
 			if( pRenderPassConfiguration.attachmentsActionClearMask != 0 )
 			{
-				auto colorAttachmentsClearMask = pRenderPassConfiguration.attachmentsActionClearMask & E_RT_ATTACHMENT_MASK_COLOR_ALL;
-				for( uint32 caIndex = 0; CxDef::isRTColorAttachmentIndexValid( caIndex ); ++caIndex )
+				auto colorAttachmentsClearMask = pRenderPassConfiguration.attachmentsActionClearMask & eRTAttachmentMaskColorAll;
+				for( uint32 caIndex = 0; CxDef::IsRTColorAttachmentIndexValid( caIndex ); ++caIndex )
 				{
 					const auto attachmentBit = CxDef::makeRTAttachmentFlag( caIndex );
-					if( colorAttachmentsClearMask.isSet( attachmentBit ) )
+					if( colorAttachmentsClearMask.is_set( attachmentBit ) )
 					{
 						const auto & attachmentConfig = pRenderPassConfiguration.colorAttachments[caIndex];
-						if( attachmentConfig.clearMask.isSet( E_RENDER_TARGET_BUFFER_FLAG_COLOR_BIT ) )
+						if( attachmentConfig.clearMask.is_set( E_RENDER_TARGET_BUFFER_FLAG_COLOR_BIT ) )
 						{
 							const auto * clearConfig = clearConfigOverride ? &pDynamicState.commonClearConfig : &attachmentConfig.clearConfig;
 
@@ -213,19 +214,19 @@ namespace Ic3::Graphics::GCI
 					}
 				}
 
-				if( pRenderPassConfiguration.attachmentsActionClearMask.isSet( E_RT_ATTACHMENT_FLAG_DEPTH_STENCIL_BIT ) )
+				if( pRenderPassConfiguration.attachmentsActionClearMask.is_set( eRtAttachmentFlagDepthStencilBit ) )
 				{
 					const auto & attachmentConfig = pRenderPassConfiguration.depthStencilAttachment;
 					const auto * clearConfig = clearConfigOverride ? &pDynamicState.commonClearConfig : &attachmentConfig.clearConfig;
 
-					if( attachmentConfig.clearMask.isSet( E_RENDER_TARGET_BUFFER_FLAG_DEPTH_BIT ) )
+					if( attachmentConfig.clearMask.is_set( E_RENDER_TARGET_BUFFER_FLAG_DEPTH_BIT ) )
 					{
 						const GLfloat depthValue = clearConfig->depthValue;
 						glClearBufferfv( GL_DEPTH, 0, &depthValue );
 						ic3OpenGLHandleLastError();
 					}
 
-					if( attachmentConfig.clearMask.isSet( E_RENDER_TARGET_BUFFER_FLAG_STENCIL_BIT ) )
+					if( attachmentConfig.clearMask.is_set( E_RENDER_TARGET_BUFFER_FLAG_STENCIL_BIT ) )
 					{
 						const GLint stencilValue = clearConfig->stencilValue;
 						glClearBufferiv( GL_STENCIL, 0, &stencilValue );
@@ -235,7 +236,7 @@ namespace Ic3::Graphics::GCI
 			}
 		}
 
-		void resolveRenderPassFramebuffer(
+		void ResolveRenderPassFramebuffer(
 				const GLRenderTargetBindingInfo & pRTBindingInfo,
 				const RenderPassConfiguration & pRenderPassConfiguration )
 		{
@@ -260,10 +261,10 @@ namespace Ic3::Graphics::GCI
 				ic3OpenGLHandleLastError();
 
 				auto colorAttachmentsResolveMask = pRenderPassConfiguration.attachmentsActionResolveMask;
-				for( uint32 caIndex = 0; CxDef::isRTColorAttachmentIndexValid( caIndex ); ++caIndex )
+				for( uint32 caIndex = 0; CxDef::IsRTColorAttachmentIndexValid( caIndex ); ++caIndex )
 				{
 					const auto attachmentBit = CxDef::makeRTAttachmentFlag( caIndex );
-					if( colorAttachmentsResolveMask.isSet( attachmentBit ) )
+					if( colorAttachmentsResolveMask.is_set( attachmentBit ) )
 					{
 						glReadBuffer( GL_COLOR_ATTACHMENT0 + caIndex );
 						ic3OpenGLHandleLastError();

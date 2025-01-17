@@ -4,7 +4,7 @@
 #ifndef __IC3_GRAPHICS_GCI_COMMON_GRAPHICS_CONFIG_H__
 #define __IC3_GRAPHICS_GCI_COMMON_GRAPHICS_CONFIG_H__
 
-#include "CommonGPUStateDefs.h"
+#include "CommonGpuStateDefs.h"
 
 namespace Ic3::Graphics::GCI
 {
@@ -98,7 +98,7 @@ namespace Ic3::Graphics::GCI
 
 	enum class EDepthWriteMask : uint16
 	{
-		All = QLimits<uint16>::sMaxValue,
+		All = cppx::meta::limits<uint16>::max_value,
 		None = 0
 	};
 
@@ -119,13 +119,13 @@ namespace Ic3::Graphics::GCI
 	/// @see BlendConfig
 	struct RTColorAttachmentBlendSettings
 	{
-		EBlendFactor mFactorSrcColor;
-		EBlendFactor mFactorSrcAlpha;
-		EBlendFactor mFactorDstColor;
-		EBlendFactor mFactorDstAlpha;
-		EBlendOp mOpColor;
-		EBlendOp mOpAlpha;
-		TBitmask<EBlendWriteMaskFlags> mWriteMask;
+		EBlendFactor factorSrcColor;
+		EBlendFactor factorSrcAlpha;
+		EBlendFactor factorDstColor;
+		EBlendFactor factorDstAlpha;
+		EBlendOp opColor;
+		EBlendOp opAlpha;
+		cppx::bitmask<EBlendWriteMaskFlags> writeMask;
 	};
 
 	/// @brief A configuration of the depth test for the depth-stencil stage.
@@ -134,17 +134,17 @@ namespace Ic3::Graphics::GCI
 	/// @see DepthStencilConfig
 	struct DepthTestSettings
 	{
-		ECompFunc mDepthCompFunc;
-		EDepthWriteMask mDepthWriteMask;
+		ECompFunc depthCompFunc;
+		EDepthWriteMask depthWriteMask;
 	};
 
 	/// @brief
 	struct StencilFaceOp
 	{
-		ECompFunc mCompFunc;
-		EStencilOp mOpFail;
-		EStencilOp mOpPassDepthFail;
-		EStencilOp mOpPassDepthPass;
+		ECompFunc compFunc;
+		EStencilOp opFail;
+		EStencilOp opPassDepthFail;
+		EStencilOp opPassDepthPass;
 	};
 	
 	/// @brief A configuration of the stencil test for the depth-stencil stage.
@@ -153,35 +153,35 @@ namespace Ic3::Graphics::GCI
 	/// @see DepthStencilConfig
 	struct StencilTestSettings
 	{
-		StencilFaceOp mFrontFace;
-		StencilFaceOp mBackFace;
-		uint8 mReadMask;
-		uint8 mWriteMask;
+		StencilFaceOp frontFace;
+		StencilFaceOp backFace;
+		uint8 readMask;
+		uint8 writeMask;
 	};
 
-	/// @brief Represents blend configuration for the graphics pipeline. Used to create BlendStateDescriptor.
+	/// @brief Represents blend configuration for the graphics pipeline. Used to Create BlendStateDescriptor.
 	struct BlendConfig
 	{
-		/// A bitmask with RT attachments for which the blending is enabled.
-		/// Used to validate the blend configuration against the RT layout.
-		TBitmask<ERTAttachmentFlags> mAttachmentsMask = 0;
+		/// A cppx::bitmask with RT attachments for which the blending is enabled.
+		/// Used to Validate the blend configuration against the RT layout.
+		cppx::bitmask<ERTAttachmentFlags> attachmentsMask = 0;
 
 		/// Blending flags.
-		TBitmask<EBlendConfigFlags> mFlags = 0;
+		cppx::bitmask<EBlendConfigFlags> flags = 0;
 
 		/// An array of blend settings for each RT attachment.
 		/// If eBlendConfigFlagEnableMRTIndependentBlendingBit is set, each active target uses its corresponding entry.
 		/// Otherwise, attachments[0] is used for all targets and rest of the array is ignored.
 		/// @see EBlendConfigFlags
-		RTColorAttachmentBlendSettings mAttachments[GCM::cxRTMaxColorAttachmentsNum];
+		RTColorAttachmentBlendSettings attachments[GCM::cxRTMaxColorAttachmentsNum];
 
-		Math::RGBAColorR32Norm mConstantColor;
+		Math::RGBAColorR32Norm constantColor;
 	};
 
 	/// @brief
 	struct DepthStencilConfig
 	{
-		TBitmask<EDepthStencilConfigFlags> commonFlags = 0;
+		cppx::bitmask<EDepthStencilConfigFlags> commonFlags = 0;
 		DepthTestSettings depthTestSettings;
 		StencilTestSettings stencilTestSettings;
 	};
@@ -189,7 +189,7 @@ namespace Ic3::Graphics::GCI
 	/// @brief
 	struct RasterizerConfig
 	{
-		TBitmask<ERasterizerConfigFlags> flags = 0;
+		cppx::bitmask<ERasterizerConfigFlags> flags = 0;
 		ECullMode cullMode;
 		EPrimitiveFillMode primitiveFillMode;
 		ETriangleVerticesOrder frontFaceVerticesOrder;
@@ -249,9 +249,9 @@ namespace Ic3::Graphics::GCI
 	namespace SMU
 	{
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD TBitmask<ERTAttachmentFlags> getBlendActiveAttachmentMask( const BlendConfig & pBlendConfig );
+		IC3_GRAPHICS_GCI_API_NO_DISCARD cppx::bitmask<ERTAttachmentFlags> GetBlendActiveAttachmentMask( const BlendConfig & pBlendConfig );
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD uint32 getBlendActiveAttachmentsNum( const BlendConfig & pBlendConfig );
+		IC3_GRAPHICS_GCI_API_NO_DISCARD uint32 GetBlendActiveAttachmentsNum( const BlendConfig & pBlendConfig );
 
 	}
 

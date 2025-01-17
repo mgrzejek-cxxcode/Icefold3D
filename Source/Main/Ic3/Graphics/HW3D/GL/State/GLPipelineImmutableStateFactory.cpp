@@ -4,90 +4,90 @@
 #include "GLGraphicsShaderState.h"
 #include "GLInputAssembler.h"
 #include "GLRenderTarget.h"
-#include "../GLGPUDevice.h"
+#include "../GLGpuDevice.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	GLPipelineImmutableStateFactory::GLPipelineImmutableStateFactory( GLGPUDevice & pGPUDevice )
+	GLPipelineImmutableStateFactory::GLPipelineImmutableStateFactory( GLGpuDevice & pGpuDevice )
 	: PipelineImmutableStateFactory()
-	, mGLGPUDevice( pGPUDevice )
+	, mGLGpuDevice( pGpuDevice )
 	{}
 
 	GLPipelineImmutableStateFactory::~GLPipelineImmutableStateFactory() = default;
 
-	BlendImmutableStateHandle GLPipelineImmutableStateFactory::createBlendState(
+	BlendImmutableStateHandle GLPipelineImmutableStateFactory::CreateBlendState(
 			const BlendConfig & pConfig )
 	{
-		return GLBlendImmutableState::createInstance( mGLGPUDevice, pConfig );
+		return GLBlendImmutableState::CreateInstance( mGLGpuDevice, pConfig );
 	}
 
-	DepthStencilImmutableStateHandle GLPipelineImmutableStateFactory::createDepthStencilState(
+	DepthStencilImmutableStateHandle GLPipelineImmutableStateFactory::CreateDepthStencilState(
 			const DepthStencilConfig & pConfig )
 	{
-		return GLDepthStencilImmutableState::createInstance( mGLGPUDevice, pConfig );
+		return GLDepthStencilImmutableState::CreateInstance( mGLGpuDevice, pConfig );
 	}
 
-	IAVertexStreamImmutableStateHandle GLPipelineImmutableStateFactory::createIAVertexStreamState(
+	IAVertexStreamImmutableStateHandle GLPipelineImmutableStateFactory::CreateIAVertexStreamState(
 			const IAVertexStreamDefinition & pDefinition )
 	{
-		return GLIAVertexStreamImmutableState::createInstance( mGLGPUDevice, pDefinition );
+		return GLIAVertexStreamImmutableState::CreateInstance( mGLGpuDevice, pDefinition );
 	}
 
-	RasterizerImmutableStateHandle GLPipelineImmutableStateFactory::createRasterizerState(
+	RasterizerImmutableStateHandle GLPipelineImmutableStateFactory::CreateRasterizerState(
 			const RasterizerConfig & pConfig )
 	{
-		return GLRasterizerImmutableState::createInstance( mGLGPUDevice, pConfig );
+		return GLRasterizerImmutableState::CreateInstance( mGLGpuDevice, pConfig );
 	}
 
-	RenderTargetBindingImmutableStateHandle GLPipelineImmutableStateFactory::createRenderTargetBindingState(
+	RenderTargetBindingImmutableStateHandle GLPipelineImmutableStateFactory::CreateRenderTargetBindingState(
 			const RenderTargetBindingDefinition & pDefinition )
 	{
-		return GLRenderTargetBindingImmutableState::createInstance( mGLGPUDevice, pDefinition );
+		return GLRenderTargetBindingImmutableState::CreateInstance( mGLGpuDevice, pDefinition );
 	}
 
-	RenderPassConfigurationImmutableStateHandle GLPipelineImmutableStateFactory::createRenderPassState(
+	RenderPassConfigurationImmutableStateHandle GLPipelineImmutableStateFactory::CreateRenderPassState(
 			const RenderPassConfiguration & pConfiguration )
 	{
-		return createRenderPassStateDefault( mGLGPUDevice, pConfiguration );
+		return CreateRenderPassStateDefault( mGLGpuDevice, pConfiguration );
 	}
 
 
-	GLPipelineImmutableStateFactoryCore::GLPipelineImmutableStateFactoryCore( GLGPUDevice & pGPUDevice )
-	: GLPipelineImmutableStateFactory( pGPUDevice )
+	GLPipelineImmutableStateFactoryCore::GLPipelineImmutableStateFactoryCore( GLGpuDevice & pGpuDevice )
+	: GLPipelineImmutableStateFactory( pGpuDevice )
 	{}
 
 	GLPipelineImmutableStateFactoryCore::~GLPipelineImmutableStateFactoryCore() = default;
 
-	GraphicsShaderLinkageImmutableStateHandle GLPipelineImmutableStateFactoryCore::createGraphicsShaderLinkageState( const GraphicsShaderSet & pShaderSet )
+	GraphicsShaderLinkageImmutableStateHandle GLPipelineImmutableStateFactoryCore::CreateGraphicsShaderLinkageState( const GraphicsShaderSet & pShaderSet )
 	{
-		return GLGraphicsShaderLinkageImmutableStateCore::createInstance( mGLGPUDevice, pShaderSet );
+		return GLGraphicsShaderLinkageImmutableStateCore::CreateInstance( mGLGpuDevice, pShaderSet );
 	}
 
-	IAInputLayoutImmutableStateHandle GLPipelineImmutableStateFactoryCore::createIAInputLayoutState(
+	IAInputLayoutImmutableStateHandle GLPipelineImmutableStateFactoryCore::CreateIAInputLayoutState(
 			const IAInputLayoutDefinition & pDefinition,
 			Shader & pVertexShaderWithBinary )
 	{
-		return GLIAInputLayoutImmutableStateCore::createInstance( mGLGPUDevice, pDefinition );
+		return GLIAInputLayoutImmutableStateCore::CreateInstance( mGLGpuDevice, pDefinition );
 	}
 
 
-	GLPipelineImmutableStateFactoryCompat::GLPipelineImmutableStateFactoryCompat( GLGPUDevice & pGPUDevice )
-	: GLPipelineImmutableStateFactory( pGPUDevice )
+	GLPipelineImmutableStateFactoryCompat::GLPipelineImmutableStateFactoryCompat( GLGpuDevice & pGpuDevice )
+	: GLPipelineImmutableStateFactory( pGpuDevice )
 	{}
 
 	GLPipelineImmutableStateFactoryCompat::~GLPipelineImmutableStateFactoryCompat() = default;
 
-	GraphicsShaderLinkageImmutableStateHandle GLPipelineImmutableStateFactoryCompat::createGraphicsShaderLinkageState( const GraphicsShaderSet & pShaderSet )
+	GraphicsShaderLinkageImmutableStateHandle GLPipelineImmutableStateFactoryCompat::CreateGraphicsShaderLinkageState( const GraphicsShaderSet & pShaderSet )
 	{
-		return GLGraphicsShaderLinkageImmutableStateCompat::createInstance( mGLGPUDevice, pShaderSet );
+		return GLGraphicsShaderLinkageImmutableStateCompat::CreateInstance( mGLGpuDevice, pShaderSet );
 	}
 
-	IAInputLayoutImmutableStateHandle GLPipelineImmutableStateFactoryCompat::createIAInputLayoutState(
+	IAInputLayoutImmutableStateHandle GLPipelineImmutableStateFactoryCompat::CreateIAInputLayoutState(
 			const IAInputLayoutDefinition & pDefinition,
 			Shader & pVertexShaderWithBinary )
 	{
-		return GLIAInputLayoutImmutableStateCompat::createInstance( mGLGPUDevice, pDefinition );
+		return GLIAInputLayoutImmutableStateCompat::CreateInstance( mGLGpuDevice, pDefinition );
 	}
 
 }

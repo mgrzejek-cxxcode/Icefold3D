@@ -4,24 +4,24 @@
 #ifndef __IC3_GRAPHICS_GCI_TEXTURE_DIMENSIONS_H__
 #define __IC3_GRAPHICS_GCI_TEXTURE_DIMENSIONS_H__
 
-#include "CommonGPUResourceDefs.h"
+#include "CommonGpuResourceDefs.h"
 
 namespace Ic3::Graphics::GCI
 {
 
 	/// @brief A special value for texture array index indicating all resources in an array.
 	/// For a specific mip level, it references a vertical mip slice for a texture array.
-	constexpr auto cxTexSubresourceArrayIndexAllTextures = Cppx::QLimits<uint32>::sMaxValue;
+	constexpr auto cxTexSubresourceArrayIndexAllTextures = cppx::meta::limits<uint32>::max_value;
 
 	/// @brief
-	constexpr auto cxTexSubresourceCubeMapFaceAllFaces = Cppx::QLimits<uint32>::sMaxValue;
+	constexpr auto cxTexSubresourceCubeMapFaceAllFaces = cppx::meta::limits<uint32>::max_value;
 
 	/// @brief
-	constexpr auto cxTexSubresourceDepthAllLayers = Cppx::QLimits<uint32>::sMaxValue;
+	constexpr auto cxTexSubresourceDepthAllLayers = cppx::meta::limits<uint32>::max_value;
 
 	/// @brief A special value for mip level index indicating all levels a texture contains.
 	/// For a given texture, it references all sub-resources in that texture..
-	constexpr auto cxTexSubresourceMipLevelAllMips = Cppx::QLimits<uint32>::sMaxValue;
+	constexpr auto cxTexSubresourceMipLevelAllMips = cppx::meta::limits<uint32>::max_value;
 
 	/// @brief List of valid texture classes (types).
 	enum class ETextureClass : enum_default_value_t
@@ -42,7 +42,7 @@ namespace Ic3::Graphics::GCI
 		TCubeMap,
 	};
 
-	/// @brief List of valid face identifiers for cube map textures.
+	/// @brief List of valid face identifiers for cube Map textures.
 	enum ETextureCubeMapFace : uint32
 	{
 		/// Face located on the positive side of the X axis (right).
@@ -67,82 +67,82 @@ namespace Ic3::Graphics::GCI
 	struct TextureDimensions
 	{
 		/// Width of a single image/layer within the texture.
-		uint32 mWidth;
+		uint32 width;
 		/// Height of a single image/layer within the texture.
-		uint32 mHeight;
+		uint32 height;
 		/// Depth of the texture. Used only for T3D textures. For other classes this is always 1..
-		uint32 mDepth;
+		uint32 depth;
 		/// Size of the texture array. Used for T2DArray and T2DMSArray textures. For other classes, this is always 1.
-		uint32 mArraySize;
+		uint32 arraySize;
 		/// Number of mip levels within a single texture image/layer. Valid values are from 1 to GCM::cxTextureMaxMipLevelsNum.
-		uint32 mMipLevelsNum;
+		uint32 mipLevelsNum;
 	};
 
 	struct TextureOffset2D
 	{
-		uint32 mMipLevel;
-		uint32 mPX;
-		uint32 mPY;
+		uint32 mipLevel;
+		uint32 x;
+		uint32 y;
 
 		inline constexpr bool operator==( const TextureOffset2D & pRhs ) const noexcept
 		{
-			return ( mMipLevel == pRhs.mMipLevel ) && ( mPX == pRhs.mPX ) && ( mPY == pRhs.mPY );
+			return ( mipLevel == pRhs.mipLevel ) && ( x == pRhs.x ) && ( y == pRhs.y );
 		}
 
 		inline constexpr bool operator!=( const TextureOffset2D & pRhs ) const noexcept
 		{
-			return ( mMipLevel != pRhs.mMipLevel ) || ( mPX != pRhs.mPX ) || ( mPY != pRhs.mPY );
+			return ( mipLevel != pRhs.mipLevel ) || ( x != pRhs.x ) || ( y != pRhs.y );
 		}
 	};
 
 	struct TextureOffset2DArray : public TextureOffset2D
 	{
-		uint32 mArrayIndex;
+		uint32 arrayIndex;
 
 		inline constexpr bool operator==( const TextureOffset2DArray & pRhs ) const noexcept
 		{
-			return ( mMipLevel == pRhs.mMipLevel ) && ( mPX == pRhs.mPX ) && ( mPY == pRhs.mPY ) && ( mArrayIndex == pRhs.mArrayIndex );
+			return ( mipLevel == pRhs.mipLevel ) && ( x == pRhs.x ) && ( y == pRhs.y ) && ( arrayIndex == pRhs.arrayIndex );
 		}
 
 		inline constexpr bool operator!=( const TextureOffset2DArray & pRhs ) const noexcept
 		{
-			return ( mMipLevel != pRhs.mMipLevel ) || ( mPX != pRhs.mPX ) || ( mPY != pRhs.mPY ) || ( mArrayIndex != pRhs.mArrayIndex );
+			return ( mipLevel != pRhs.mipLevel ) || ( x != pRhs.x ) || ( y != pRhs.y ) || ( arrayIndex != pRhs.arrayIndex );
 		}
 	};
 
 	struct TextureOffset3D : public TextureOffset2D
 	{
-		uint32 mPZ;
+		uint32 z;
 
 		inline constexpr bool operator==( const TextureOffset3D & pRhs ) const noexcept
 		{
-			return ( mMipLevel == pRhs.mMipLevel ) && ( mPX == pRhs.mPX ) && ( mPY == pRhs.mPY ) && ( mPZ == pRhs.mPZ );
+			return ( mipLevel == pRhs.mipLevel ) && ( x == pRhs.x ) && ( y == pRhs.y ) && ( z == pRhs.z );
 		}
 
 		inline constexpr bool operator!=( const TextureOffset3D & pRhs ) const noexcept
 		{
-			return ( mMipLevel != pRhs.mMipLevel ) || ( mPX != pRhs.mPX ) || ( mPY != pRhs.mPY ) || ( mPZ != pRhs.mPZ );
+			return ( mipLevel != pRhs.mipLevel ) || ( x != pRhs.x ) || ( y != pRhs.y ) || ( z != pRhs.z );
 		}
 	};
 
 	struct TextureOffsetCubeMap : public TextureOffset2D
 	{
-		uint32 mFaceIndex;
+		uint32 faceIndex;
 
 		inline constexpr bool operator==( const TextureOffsetCubeMap & pRhs ) const noexcept
 		{
-			return ( mFaceIndex == pRhs.mFaceIndex ) && ( mMipLevel == pRhs.mMipLevel ) && ( mPX == pRhs.mPX ) && ( mPY == pRhs.mPY );
+			return ( faceIndex == pRhs.faceIndex ) && ( mipLevel == pRhs.mipLevel ) && ( x == pRhs.x ) && ( y == pRhs.y );
 		}
 
 		inline constexpr bool operator!=( const TextureOffsetCubeMap & pRhs ) const noexcept
 		{
-			return ( mFaceIndex != pRhs.mFaceIndex ) || ( mMipLevel != pRhs.mMipLevel ) || ( mPX != pRhs.mPX ) || ( mPY != pRhs.mPY );
+			return ( faceIndex != pRhs.faceIndex ) || ( mipLevel != pRhs.mipLevel ) || ( x != pRhs.x ) || ( y != pRhs.y );
 		}
 	};
 
 	struct TextureOffset
 	{
-		ETextureClass mTexClass = ETextureClass::Unknown;
+		ETextureClass texClass = ETextureClass::Unknown;
 
 		union
 		{
@@ -155,74 +155,74 @@ namespace Ic3::Graphics::GCI
 		TextureOffset() = default;
 
 		TextureOffset( const TextureOffset2D & pOffset2D, ETextureClass pTexClass = ETextureClass::T2D )
-		: mTexClass( pTexClass )
+		: texClass( pTexClass )
 		, uOff2D( pOffset2D )
 		{}
 
 		TextureOffset( const TextureOffset2DArray & pOffset2DArray, ETextureClass pTexClass = ETextureClass::T2D )
-		: mTexClass( pTexClass )
+		: texClass( pTexClass )
 		, uOff2DArray( pOffset2DArray )
 		{}
 
 		TextureOffset( const TextureOffset3D & pOffset3D )
-		: mTexClass( ETextureClass::T3D )
+		: texClass( ETextureClass::T3D )
 		, uOff3D( pOffset3D )
 		{}
 
 		TextureOffset( const TextureOffsetCubeMap & pOffsetCubeMap )
-		: mTexClass( ETextureClass::TCubeMap )
+		: texClass( ETextureClass::TCubeMap )
 		, uOffCubeMap( pOffsetCubeMap )
 		{}
 
 		explicit operator bool() const noexcept
 		{
-			return mTexClass != ETextureClass::Unknown;
+			return texClass != ETextureClass::Unknown;
 		}
 	};
 
 	struct TextureSize2D
 	{
-		uint32 mWidth;
-		uint32 mHeight;
+		uint32 width;
+		uint32 height;
 
 		inline constexpr bool operator==( const TextureSize2D & pRhs ) const noexcept
 		{
-			return ( mWidth == pRhs.mWidth ) && ( mHeight == pRhs.mHeight );
+			return ( width == pRhs.width ) && ( height == pRhs.height );
 		}
 
 		inline constexpr bool operator!=( const TextureSize2D & pRhs ) const noexcept
 		{
-			return ( mWidth != pRhs.mWidth ) || ( mHeight != pRhs.mHeight );
+			return ( width != pRhs.width ) || ( height != pRhs.height );
 		}
 	};
 
 	struct TextureSize2DArray : public TextureSize2D
 	{
-		uint32 mArraySize;
+		uint32 arraySize;
 
 		inline constexpr bool operator==( const TextureSize2DArray & pRhs ) const noexcept
 		{
-			return ( mWidth == pRhs.mWidth ) && ( mHeight == pRhs.mHeight ) && ( mArraySize == pRhs.mArraySize );
+			return ( width == pRhs.width ) && ( height == pRhs.height ) && ( arraySize == pRhs.arraySize );
 		}
 
 		inline constexpr bool operator!=( const TextureSize2DArray & pRhs ) const noexcept
 		{
-			return ( mWidth != pRhs.mWidth ) || ( mHeight != pRhs.mHeight ) || ( mArraySize != pRhs.mArraySize );
+			return ( width != pRhs.width ) || ( height != pRhs.height ) || ( arraySize != pRhs.arraySize );
 		}
 	};
 
 	struct TextureSize3D : public TextureSize2D
 	{
-		uint32 mDepth;
+		uint32 depth;
 
 		inline constexpr bool operator==( const TextureSize3D & pRhs ) const noexcept
 		{
-			return ( mWidth == pRhs.mWidth ) && ( mHeight == pRhs.mHeight ) && (mDepth == pRhs.mDepth );
+			return ( width == pRhs.width ) && ( height == pRhs.height ) && (depth == pRhs.depth );
 		}
 
 		inline constexpr bool operator!=( const TextureSize3D & pRhs ) const noexcept
 		{
-			return ( mWidth != pRhs.mWidth ) || ( mHeight != pRhs.mHeight ) || (mDepth != pRhs.mDepth );
+			return ( width != pRhs.width ) || ( height != pRhs.height ) || (depth != pRhs.depth );
 		}
 	};
 
@@ -273,31 +273,31 @@ namespace Ic3::Graphics::GCI
 
 	struct TextureSubRegion2D
 	{
-		TextureOffset2D mOffset;
-		TextureSize2D mSize;
+		TextureOffset2D offset;
+		TextureSize2D size;
 	};
 
 	struct TextureSubRegion2DArray
 	{
-		TextureOffset2DArray mOffset;
-		TextureSize2DArray mSize;
+		TextureOffset2DArray offset;
+		TextureSize2DArray size;
 	};
 
 	struct TextureSubRegion3D
 	{
-		TextureOffset3D mOffset;
-		TextureSize3D mSize;
+		TextureOffset3D offset;
+		TextureSize3D size;
 	};
 
 	struct TextureSubRegionCubeMap
 	{
-		TextureOffsetCubeMap mOffset;
-		TextureSizeCubeMap mSize;
+		TextureOffsetCubeMap offset;
+		TextureSizeCubeMap size;
 	};
 
 	struct TextureSubRegion
 	{
-		ETextureClass mTexClass = ETextureClass::Unknown;
+		ETextureClass texClass = ETextureClass::Unknown;
 
 		union
 		{
@@ -310,58 +310,58 @@ namespace Ic3::Graphics::GCI
 		TextureSubRegion() = default;
 
 		TextureSubRegion( const TextureSubRegion2D & pSubReg2D, ETextureClass pTexClass = ETextureClass::T2D )
-		: mTexClass( pTexClass )
+		: texClass( pTexClass )
 		, uSubReg2D( pSubReg2D )
 		{}
 
 		TextureSubRegion( const TextureSubRegion2DArray & pSubReg2DArray, ETextureClass pTexClass = ETextureClass::T2D )
-		: mTexClass( pTexClass )
+		: texClass( pTexClass )
 		, uSubReg2DArray( pSubReg2DArray )
 		{}
 
 		TextureSubRegion( const TextureSubRegion3D & pSubReg3D )
-		: mTexClass( ETextureClass::T3D )
+		: texClass( ETextureClass::T3D )
 		, uSubReg3D( pSubReg3D )
 		{}
 
 		TextureSubRegion( const TextureSubRegionCubeMap & pSubRegCubeMap )
-		: mTexClass( ETextureClass::TCubeMap )
+		: texClass( ETextureClass::TCubeMap )
 		, uSubRegCubeMap( pSubRegCubeMap )
 		{}
 
 		explicit operator bool() const noexcept
 		{
-			return mTexClass != ETextureClass::Unknown;
+			return texClass != ETextureClass::Unknown;
 		}
 	};
 
 	struct TextureSubResource2D
 	{
 		/// A mip level index.
-		uint32 mMipLevel;
+		uint32 mipLevel;
 	};
 
 	struct TextureSubResource2DArray : public TextureSubResource2D
 	{
 		/// An index within a texture array. Use CxDef::TEX_SUBRESOURCE_INDEX_MIP_VERTICAL_SLICE for a vertical mip slice.
-		uint32 mArrayIndex;
+		uint32 arrayIndex;
 	};
 
 	struct TextureSubResource3D : public TextureSubResource2D
 	{
 		///
-		uint32 mDepthLayerIndex;
+		uint32 depthLayerIndex;
 	};
 
 	struct TextureSubResourceCubeMap : public TextureSubResource2D
 	{
-		/// An index of the cube map face. Use CxDef::TEX_SUBRESOURCE_INDEX_MIP_VERTICAL_SLICE for a vertical mip slice.
-		uint32 mFaceIndex;
+		/// An index of the cube Map face. Use CxDef::TEX_SUBRESOURCE_INDEX_MIP_VERTICAL_SLICE for a vertical mip slice.
+		uint32 faceIndex;
 	};
 
 	struct TextureSubResource
 	{
-		ETextureClass mTexClass = ETextureClass::Unknown;
+		ETextureClass texClass = ETextureClass::Unknown;
 
 		union
 		{
@@ -374,146 +374,146 @@ namespace Ic3::Graphics::GCI
 		TextureSubResource() = default;
 
 		TextureSubResource( const TextureSubResource2D & pSubRes2D, ETextureClass pTexClass = ETextureClass::T2D )
-		: mTexClass( pTexClass )
+		: texClass( pTexClass )
 		, uSubRes2D( pSubRes2D )
 		{}
 
 		TextureSubResource( const TextureSubResource2DArray & pSubRes2DArray, ETextureClass pTexClass = ETextureClass::T2DArray )
-		: mTexClass( pTexClass )
+		: texClass( pTexClass )
 		, uSubRes2DArray( pSubRes2DArray )
 		{}
 
 		TextureSubResource( const TextureSubResource3D & pSubRes3D )
-		: mTexClass( ETextureClass::T3D )
+		: texClass( ETextureClass::T3D )
 		, uSubRes3D( pSubRes3D )
 		{}
 
 		TextureSubResource( const TextureSubResourceCubeMap & pSubResCubeMap )
-		: mTexClass( ETextureClass::TCubeMap )
+		: texClass( ETextureClass::TCubeMap )
 		, uSubResCubeMap( pSubResCubeMap )
 		{}
 
 		explicit operator bool() const noexcept
 		{
-			return mTexClass != ETextureClass::Unknown;
+			return texClass != ETextureClass::Unknown;
 		}
 
 		void reset()
 		{
-			mTexClass = ETextureClass::Unknown;
+			texClass = ETextureClass::Unknown;
 		}
 	};
 
 	namespace RCU
 	{
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD TextureDimensions queryMipLevelDimensions(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD TextureDimensions QueryMipLevelDimensions(
 				const TextureDimensions & pDimensions,
 				uint32 pMipLevel ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD TextureSubResource getTextureSubResourceWholeTexture( TextureHandle pTexture ) noexcept;
+		IC3_GRAPHICS_GCI_API_NO_DISCARD TextureSubResource GetTextureSubResourceWholeTexture( TextureHandle pTexture ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool checkTextureSubRegion(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CheckTextureSubRegion(
 				TextureHandle pTexture,
 				const TextureSubRegion & pSubRegion ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool checkTextureSubRegion(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CheckTextureSubRegion(
 				const TextureDimensions & pDimensions,
 				const TextureSubRegion & pSubRegion ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool checkTextureSubRegion2D(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CheckTextureSubRegion2D(
 				const TextureDimensions & pDimensions,
 				const TextureSubRegion2D & pSubRegion ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool checkTextureSubRegion2DArray(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CheckTextureSubRegion2DArray(
 				const TextureDimensions & pDimensions,
 				const TextureSubRegion2DArray & pSubRegion ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool checkTextureSubRegion2DMS(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CheckTextureSubRegion2DMS(
 				const TextureDimensions & pDimensions,
 				const TextureSubRegion2D & pSubRegion ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool checkTextureSubRegion3D(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CheckTextureSubRegion3D(
 				const TextureDimensions & pDimensions,
 				const TextureSubRegion3D & pSubRegion ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool checkTextureSubRegionCubeMap(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CheckTextureSubRegionCubeMap(
 				const TextureDimensions & pDimensions,
 				const TextureSubRegionCubeMap & pSubRegion ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool checkTextureSubResource(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CheckTextureSubResource(
 				TextureHandle pTexture,
 				const TextureSubResource & pSubResource ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool checkTextureSubResource(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CheckTextureSubResource(
 				const TextureDimensions & pDimensions,
 				const TextureSubResource & pSubResource ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool checkTextureSubResource2D(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CheckTextureSubResource2D(
 				const TextureDimensions & pDimensions,
 				const TextureSubResource2D & pSubResource ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool checkTextureSubResource2DArray(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CheckTextureSubResource2DArray(
 				const TextureDimensions & pDimensions,
 				const TextureSubResource2DArray & pSubResource ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool checkTextureSubResource2DMS(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CheckTextureSubResource2DMS(
 				const TextureDimensions & pDimensions,
 				const TextureSubResource2D & pSubResource ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool checkTextureSubResource3D(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CheckTextureSubResource3D(
 				const TextureDimensions & pDimensions,
 				const TextureSubResource3D & pSubResource ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool checkTextureSubResourceCubeMap(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CheckTextureSubResourceCubeMap(
 				const TextureDimensions & pDimensions,
 				const TextureSubResourceCubeMap & pSubResource ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool cmpEqTextureSubRegion(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CmpEqTextureSubRegion(
 				const TextureSubRegion & pSubRegion1,
 				const TextureSubRegion & pSubRegion2 ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool cmpEqTextureSubRegion2D(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CmpEqTextureSubRegion2D(
 				const TextureSubRegion2D & pSubRegion1,
 				const TextureSubRegion2D & pSubRegion2 ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool cmpEqTextureSubRegion2DArray(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CmpEqTextureSubRegion2DArray(
 				const TextureSubRegion2DArray & pSubRegion1,
 				const TextureSubRegion2DArray & pSubRegion2 ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool cmpEqTextureSubRegion2DMS(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CmpEqTextureSubRegion2DMS(
 				const TextureSubRegion2D & pSubRegion1,
 				const TextureSubRegion2D & pSubRegion2 ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool cmpEqTextureSubRegion3D(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CmpEqTextureSubRegion3D(
 				const TextureSubRegion3D & pSubRegion1,
 				const TextureSubRegion3D & pSubRegion2 ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool cmpEqTextureSubRegionCubeMap(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CmpEqTextureSubRegionCubeMap(
 				const TextureSubRegionCubeMap & pSubRegion1,
 				const TextureSubRegionCubeMap & pSubRegion2 ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool cmpEqTextureSubResource(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CmpEqTextureSubResource(
 				const TextureSubResource & pSubResource1,
 				const TextureSubResource & pSubResource2 ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool cmpEqTextureSubResource2D(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CmpEqTextureSubResource2D(
 				const TextureSubResource2D & pSubResource1,
 				const TextureSubResource2D & pSubResource2 ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool cmpEqTextureSubResource2DArray(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CmpEqTextureSubResource2DArray(
 				const TextureSubResource2DArray & pSubResource1,
 				const TextureSubResource2DArray & pSubResource2 ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool cmpEqTextureSubResource2DMS(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CmpEqTextureSubResource2DMS(
 				const TextureSubResource2D & pSubResource1,
 				const TextureSubResource2D & pSubResource2 ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool cmpEqTextureSubResource3D(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CmpEqTextureSubResource3D(
 				const TextureSubResource3D & pSubResource1,
 				const TextureSubResource3D & pSubResource2 ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool cmpEqTextureSubResourceCubeMap(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CmpEqTextureSubResourceCubeMap(
 				const TextureSubResourceCubeMap & pSubResource1,
 				const TextureSubResourceCubeMap & pSubResource2 ) noexcept;
 

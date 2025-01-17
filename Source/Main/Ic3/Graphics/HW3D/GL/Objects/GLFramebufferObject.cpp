@@ -13,7 +13,7 @@ namespace Ic3::Graphics::GCI
 
 	GLFramebufferObject::~GLFramebufferObject() = default;
 
-	GLFramebufferObjectHandle GLFramebufferObject::create()
+	GLFramebufferObjectHandle GLFramebufferObject::Create()
 	{
 		GLuint framebufferHandle = 0;
 
@@ -25,12 +25,12 @@ namespace Ic3::Graphics::GCI
 		return openglFramebufferObject;
 	}
 
-	GLFramebufferObjectHandle GLFramebufferObject::createForDefaultFramebuffer()
+	GLFramebufferObjectHandle GLFramebufferObject::CreateForDefaultFramebuffer()
 	{
 		return GLFramebufferObjectHandle{ new GLFramebufferObject( 0u ) };
 	}
 
-	bool GLFramebufferObject::release()
+	bool GLFramebufferObject::Release()
 	{
 		if( mGLHandle != 0 )
 		{
@@ -41,7 +41,7 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	bool GLFramebufferObject::validateHandle() const
+	bool GLFramebufferObject::ValidateHandle() const
 	{
 		auto isBuffer = glIsFramebuffer( mGLHandle );
 		ic3OpenGLHandleLastError();
@@ -49,12 +49,12 @@ namespace Ic3::Graphics::GCI
 		return isBuffer != GL_FALSE;
 	}
 
-	void GLFramebufferObject::bindColorRenderbuffer(
+	void GLFramebufferObject::BindColorRenderbuffer(
 			uint32 pColorAttachmentIndex,
 			GLRenderbufferObject & pGLRenderbuffer,
 			GLenum pActiveBindTarget )
 	{
-		const auto framebufferBindTarget = checkActiveBindTarget( pActiveBindTarget );
+		const auto framebufferBindTarget = CheckActiveBindTarget( pActiveBindTarget );
 
 		glFramebufferRenderbuffer(
 				framebufferBindTarget,
@@ -64,13 +64,13 @@ namespace Ic3::Graphics::GCI
 		ic3OpenGLHandleLastError();
 	}
 
-	void GLFramebufferObject::bindDepthStencilRenderbuffer(
+	void GLFramebufferObject::BindDepthStencilRenderbuffer(
 			GLRenderbufferObject & pGLRenderbuffer,
-			Bitmask<uint32> pBufferMask,
+			cppx::bitmask<uint32> pBufferMask,
 			GLenum pActiveBindTarget )
 	{
-		const auto framebufferBindTarget = checkActiveBindTarget( pActiveBindTarget );
-		const auto fboAttachmentID = smutil::getFramebufferDepthStencilAttachmentIDForRTBufferMask( pBufferMask );
+		const auto framebufferBindTarget = CheckActiveBindTarget( pActiveBindTarget );
+		const auto fboAttachmentID = SMU::GetFramebufferDepthStencilAttachmentIDForRTBufferMask( pBufferMask );
 
 		glFramebufferRenderbuffer(
 				framebufferBindTarget,
@@ -80,13 +80,13 @@ namespace Ic3::Graphics::GCI
 		ic3OpenGLHandleLastError();
 	}
 
-	void GLFramebufferObject::bindColorTexture(
+	void GLFramebufferObject::BindColorTexture(
 			uint32 pColorAttachmentIndex,
 			GLTextureObject & pGLTexture,
 			const TextureSubResource & pSubResource,
 			GLenum pActiveBindTarget )
 	{
-		const auto framebufferBindTarget = checkActiveBindTarget( pActiveBindTarget );
+		const auto framebufferBindTarget = CheckActiveBindTarget( pActiveBindTarget );
 
 		switch( pGLTexture.mGLTextureBindTarget )
 		{
@@ -97,7 +97,7 @@ namespace Ic3::Graphics::GCI
 						GL_COLOR_ATTACHMENT0 + pColorAttachmentIndex,
 						GL_TEXTURE_2D,
 						pGLTexture.mGLHandle,
-						numeric_cast<GLint>( pSubResource.uSubRes2D.mipLevel ) );
+						cppx::numeric_cast<GLint>( pSubResource.uSubRes2D.mipLevel ) );
 				ic3OpenGLHandleLastError();
 				break;
 			}
@@ -107,8 +107,8 @@ namespace Ic3::Graphics::GCI
 						framebufferBindTarget,
 						GL_COLOR_ATTACHMENT0 + pColorAttachmentIndex,
 						pGLTexture.mGLHandle,
-						numeric_cast<GLint>( pSubResource.uSubRes2D.mipLevel ),
-						numeric_cast<GLint>( pSubResource.uSubRes2DArray.arrayIndex ) );
+						cppx::numeric_cast<GLint>( pSubResource.uSubRes2D.mipLevel ),
+						cppx::numeric_cast<GLint>( pSubResource.uSubRes2DArray.arrayIndex ) );
 				ic3OpenGLHandleLastError();
 				break;
 			}
@@ -119,7 +119,7 @@ namespace Ic3::Graphics::GCI
 						GL_COLOR_ATTACHMENT0 + pColorAttachmentIndex,
 						GL_TEXTURE_2D_MULTISAMPLE,
 						pGLTexture.mGLHandle,
-						numeric_cast<GLint>( pSubResource.uSubRes2D.mipLevel ) );
+						cppx::numeric_cast<GLint>( pSubResource.uSubRes2D.mipLevel ) );
 				ic3OpenGLHandleLastError();
 				break;
 			}
@@ -129,8 +129,8 @@ namespace Ic3::Graphics::GCI
 						framebufferBindTarget,
 						GL_COLOR_ATTACHMENT0 + pColorAttachmentIndex,
 						pGLTexture.mGLHandle,
-						numeric_cast<GLint>( pSubResource.uSubRes3D.mipLevel ),
-						numeric_cast<GLint>( pSubResource.uSubRes3D.depthLayerIndex ) );
+						cppx::numeric_cast<GLint>( pSubResource.uSubRes3D.mipLevel ),
+						cppx::numeric_cast<GLint>( pSubResource.uSubRes3D.depthLayerIndex ) );
 				ic3OpenGLHandleLastError();
 				break;
 			}
@@ -141,21 +141,21 @@ namespace Ic3::Graphics::GCI
 						GL_COLOR_ATTACHMENT0 + pColorAttachmentIndex,
 						GL_TEXTURE_2D,
 						pGLTexture.mGLHandle,
-						numeric_cast<GLint>( pSubResource.uSubResCubeMap.mipLevel ) );
+						cppx::numeric_cast<GLint>( pSubResource.uSubResCubeMap.mipLevel ) );
 				ic3OpenGLHandleLastError();
 				break;
 			}
 		}
 	}
 
-	void GLFramebufferObject::bindDepthStencilTexture(
+	void GLFramebufferObject::BindDepthStencilTexture(
 			GLTextureObject & pGLTexture,
 			const TextureSubResource & pSubResource,
-			Bitmask<uint32> pBufferMask,
+			cppx::bitmask<uint32> pBufferMask,
 			GLenum pActiveBindTarget )
 	{
-		const auto framebufferBindTarget = checkActiveBindTarget( pActiveBindTarget );
-		const auto fboAttachmentID = smutil::getFramebufferDepthStencilAttachmentIDForRTBufferMask( pBufferMask );
+		const auto framebufferBindTarget = CheckActiveBindTarget( pActiveBindTarget );
+		const auto fboAttachmentID = SMU::GetFramebufferDepthStencilAttachmentIDForRTBufferMask( pBufferMask );
 
 		switch( pGLTexture.mGLTextureBindTarget )
 		{
@@ -166,7 +166,7 @@ namespace Ic3::Graphics::GCI
 						fboAttachmentID,
 						GL_TEXTURE_2D,
 						pGLTexture.mGLHandle,
-						numeric_cast<GLint>( pSubResource.uSubRes2D.mipLevel ) );
+						cppx::numeric_cast<GLint>( pSubResource.uSubRes2D.mipLevel ) );
 				ic3OpenGLHandleLastError();
 				break;
 			}
@@ -176,8 +176,8 @@ namespace Ic3::Graphics::GCI
 						framebufferBindTarget,
 						fboAttachmentID,
 						pGLTexture.mGLHandle,
-						numeric_cast<GLint>( pSubResource.uSubRes2DArray.mipLevel ),
-						numeric_cast<GLint>( pSubResource.uSubRes2DArray.arrayIndex ) );
+						cppx::numeric_cast<GLint>( pSubResource.uSubRes2DArray.mipLevel ),
+						cppx::numeric_cast<GLint>( pSubResource.uSubRes2DArray.arrayIndex ) );
 				ic3OpenGLHandleLastError();
 				break;
 			}
@@ -188,7 +188,7 @@ namespace Ic3::Graphics::GCI
 						fboAttachmentID,
 						GL_TEXTURE_2D_MULTISAMPLE,
 						pGLTexture.mGLHandle,
-						numeric_cast<GLint>( pSubResource.uSubRes2D.mipLevel ) );
+						cppx::numeric_cast<GLint>( pSubResource.uSubRes2D.mipLevel ) );
 				ic3OpenGLHandleLastError();
 				break;
 			}
@@ -198,8 +198,8 @@ namespace Ic3::Graphics::GCI
 						framebufferBindTarget,
 						fboAttachmentID,
 						pGLTexture.mGLHandle,
-						numeric_cast<GLint>( pSubResource.uSubRes3D.mipLevel ),
-						numeric_cast<GLint>( pSubResource.uSubRes3D.depthLayerIndex ) );
+						cppx::numeric_cast<GLint>( pSubResource.uSubRes3D.mipLevel ),
+						cppx::numeric_cast<GLint>( pSubResource.uSubRes3D.depthLayerIndex ) );
 				ic3OpenGLHandleLastError();
 				break;
 			}
@@ -210,16 +210,16 @@ namespace Ic3::Graphics::GCI
 						fboAttachmentID,
 						GL_TEXTURE_2D,
 						pGLTexture.mGLHandle,
-						numeric_cast<GLint>( pSubResource.uSubResCubeMap.mipLevel ) );
+						cppx::numeric_cast<GLint>( pSubResource.uSubResCubeMap.mipLevel ) );
 				ic3OpenGLHandleLastError();
 				break;
 			}
 		}
 	}
 
-	bool GLFramebufferObject::checkStatus( GLenum pActiveBindTarget ) const
+	bool GLFramebufferObject::CheckStatus( GLenum pActiveBindTarget ) const
 	{
-		auto framebufferBindTarget = checkActiveBindTarget( pActiveBindTarget );
+		auto framebufferBindTarget = CheckActiveBindTarget( pActiveBindTarget );
 
 		GLenum framebufferStatus = glCheckFramebufferStatus( framebufferBindTarget );
 		ic3OpenGLHandleLastError();
@@ -255,7 +255,7 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	GLenum GLFramebufferObject::checkActiveBindTarget( GLenum pBindTarget ) const
+	GLenum GLFramebufferObject::CheckActiveBindTarget( GLenum pBindTarget ) const
 	{
 		if( pBindTarget == 0 )
 		{

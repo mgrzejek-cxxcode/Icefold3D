@@ -5,12 +5,12 @@
 #define __IC3_GRAPHICS_HW3D_GLCOMMON_SHADER_OBJECT_H__
 
 #include "GLShaderCommon.h"
-#include <Ic3/Cppx/MemoryBuffer.h>
+#include <cppx/memoryBuffer.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	ic3GLDeclareOpenGLObjectHandle( GLShaderObject );
+	Ic3GLDeclareOpenGLObjectHandle( GLShaderObject );
 
 	class GLShaderObject : public GLObject
 	{
@@ -21,35 +21,35 @@ namespace Ic3::Graphics::GCI
 		GLShaderObject( GLuint pHandle, GLenum pGLShaderType, GLenum pGLShaderStageMaskBit );
 		virtual ~GLShaderObject();
 
-		virtual bool release();
-		virtual bool validateHandle() const;
+		virtual bool Release();
+		virtual bool ValidateHandle() const;
 
-		bool compileSource( const void * pShaderSource, size_t pSourceLength );
-		bool loadBinary( GLenum pFormat, const void * pBinary, size_t pBinarySize );
+		bool CompileSource( const void * pShaderSource, size_t pSourceLength );
+		bool LoadBinary( GLenum pFormat, const void * pBinary, size_t pBinarySize );
 
-		void setDataLayoutMap( GLShaderDataLayoutMap pLayoutMap );
+		void SetDataLayoutMap( GLShaderDataLayoutMap pLayoutMap );
 
-		IC3_ATTR_NO_DISCARD GLShaderDataLayoutMap * getDataLayoutMap() const noexcept;
+		CPPX_ATTR_NO_DISCARD GLShaderDataLayoutMap * GetDataLayoutMap() const noexcept;
 
-		IC3_ATTR_NO_DISCARD GLint queryParameter( GLenum pParameter ) const;
+		CPPX_ATTR_NO_DISCARD GLint QueryParameter( GLenum pParameter ) const;
 
-		IC3_ATTR_NO_DISCARD std::string getInfoLog() const;
-		IC3_ATTR_NO_DISCARD std::string getSource() const;
+		CPPX_ATTR_NO_DISCARD std::string GetInfoLog() const;
+		CPPX_ATTR_NO_DISCARD std::string GetSource() const;
 
-		IC3_ATTR_NO_DISCARD size_t getInfoLogLength() const;
-		IC3_ATTR_NO_DISCARD size_t getSourceLength() const;
+		CPPX_ATTR_NO_DISCARD size_t GetInfoLogLength() const;
+		CPPX_ATTR_NO_DISCARD size_t GetSourceLength() const;
 
-		IC3_ATTR_NO_DISCARD bool isInfoLogEmpty() const;
-		IC3_ATTR_NO_DISCARD bool isSourceEmpty() const;
+		CPPX_ATTR_NO_DISCARD bool IsInfoLogEmpty() const;
+		CPPX_ATTR_NO_DISCARD bool IsSourceEmpty() const;
 
-		static bool checkBinaryCodeSupport();
+		static bool CheckBinaryCodeSupport();
 
-		static bool checkBinaryFormatSupport( GLenum pFormat );
+		static bool CheckBinaryFormatSupport( GLenum pFormat );
 
-		static GLbitfield getStageMaskForEShaderType( GLenum pGLShaderType );
+		static GLbitfield GetStageMaskForEShaderType( GLenum pGLShaderType );
 
-		static GLShaderObjectHandle create( GLenum pGLShaderType );
-		static GLShaderObjectHandle createWithSource( GLenum pGLShaderType, const void * pShaderSource, size_t pSourceLength );
+		static GLShaderObjectHandle Create( GLenum pGLShaderType );
+		static GLShaderObjectHandle CreateWithSource( GLenum pGLShaderType, const void * pShaderSource, size_t pSourceLength );
 
 	private:
 		std::unique_ptr<GLShaderDataLayoutMap> _dataLayoutMap;

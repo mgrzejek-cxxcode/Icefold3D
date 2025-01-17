@@ -1,71 +1,71 @@
 
-#include "GPUResource.h"
-#include "../GPUDevice.h"
+#include "GpuResource.h"
+#include "../GpuDevice.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	GPUResource::GPUResource(
-			GPUDevice & pGPUDevice,
-			EGPUResourceBaseType pResourceBaseType,
+	GpuResource::GpuResource(
+			GpuDevice & pGpuDevice,
+			EGpuResourceBaseType pResourceBaseType,
 			const ResourceMemoryInfo & pResourceMemory )
-	: GPUDeviceChildObject( pGPUDevice )
+	: GpuDeviceChildObject( pGpuDevice )
 	, mResourceBaseType( pResourceBaseType )
 	, mResourceMemory( pResourceMemory )
 	{}
 
-	GPUResource::~GPUResource() = default;
+	GpuResource::~GpuResource() = default;
 
-	bool GPUResource::isMapped() const
+	bool GpuResource::IsMapped() const
 	{
 		return ( _mappedMemory.pointer != nullptr ) && !_mappedMemory.mappedRegion.empty();
 	}
 
-	bool GPUResource::isMapped( const GPUMemoryRegion & pRegion ) const
+	bool GpuResource::IsMapped( const GpuMemoryRegion & pRegion ) const
 	{
-		return Cppx::rangeIsSubRangeOf( pRegion.asRange(), _mappedMemory.mappedRegion.asRange() );
+		return cppx::range_is_sub_range_of( pRegion.as_range(), _mappedMemory.mappedRegion.as_range() );
 	}
 
-	gpu_resource_ref_counter_value_t GPUResource::addActiveRef()
+	gpu_resource_ref_counter_value_t GpuResource::AddActiveRef()
 	{
 		return _activeRefsCounter.increment();
 	}
 
-	gpu_resource_ref_counter_value_t GPUResource::releaseActiveRef()
+	gpu_resource_ref_counter_value_t GpuResource::ReleaseActiveRef()
 	{
 		const auto activeRefNum = _activeRefsCounter.decrement();
 
-		if( mGPUDevice.isResourceActiveRefsTrackingEnabled() && ( activeRefNum == 0 ) )
+		if( mGpuDevice.IsResourceActiveRefsTrackingEnabled() && ( activeRefNum == 0 ) )
 		{
-			mGPUDevice.onGPUResourceActiveRefsZero( *this );
+			mGpuDevice.OnGpuResourceActiveRefsZero( *this );
 		}
 
 		return activeRefNum;
 	}
 
-	void GPUResource::setMappedMemory( const ResourceMappedMemory & pMappedMemory )
+	void GpuResource::SetMappedMemory( const ResourceMappedMemory & pMappedMemory )
 	{
 		_mappedMemory = pMappedMemory;
 		_mappedMemory.sourceMemory = &mResourceMemory;
 	}
 
-	void GPUResource::resetMappedMemory()
+	void GpuResource::ResetMappedMemory()
 	{
 		_mappedMemory.pointer = nullptr;
 		_mappedMemory.memoryMapFlags = 0;
-		_mappedMemory.mappedRegion.setEmpty();
+		_mappedMemory.mappedRegion.set_empty();
 	}
 
 
-	GPUResourceView::GPUResourceView(
-			GPUDevice & pGPUDevice,
-			EGPUResourceBaseType pAliasedResourceType,
-			TBitmask<resource_flags_value_t> pResourceFlags )
-	: GPUDeviceChildObject( pGPUDevice )
+	GpuResourceView::GpuResourceView(
+			GpuDevice & pGpuDevice,
+			EGpuResourceBaseType pAliasedResourceType,
+			cppx::bitmask<resource_flags_value_t> pResourceFlags )
+	: GpuDeviceChildObject( pGpuDevice )
 	, mAliasedResourceType( pAliasedResourceType )
 	, mResourceFlags( pResourceFlags )
 	{}
 
-	GPUResourceView::~GPUResourceView() = default;
+	GpuResourceView::~GpuResourceView() = default;
 
 } // namespace Ic3::Graphics::GCI

@@ -9,8 +9,8 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3GLDeclareOpenGLObjectHandle( GLShaderPipelineObject );
-	ic3GLDeclareOpenGLObjectHandle( GLShaderProgramObject );
+	Ic3GLDeclareOpenGLObjectHandle( GLShaderPipelineObject );
+	Ic3GLDeclareOpenGLObjectHandle( GLShaderProgramObject );
 
 	class GLShaderPipelineObject : public GLObject
 	{
@@ -18,20 +18,20 @@ namespace Ic3::Graphics::GCI
 		GLShaderPipelineObject( GLuint pHandle );
 		virtual ~GLShaderPipelineObject();
 
-		virtual bool release();
-		virtual bool validateHandle() const;
+		virtual bool Release();
+		virtual bool ValidateHandle() const;
 
-		void attachProgram( GLShaderProgramObject & pProgram );
+		void AttachProgram( GLShaderProgramObject & pProgram );
 
-		void attachProgram( GLShaderProgramObject & pProgram, Bitmask<GLenum> pStageMask );
+		void AttachProgram( GLShaderProgramObject & pProgram, cppx::bitmask<GLenum> pStageMask );
 
-		void setActiveProgram( GLShaderProgramObject & pProgram );
+		void SetActiveProgram( GLShaderProgramObject & pProgram );
 
-		void resetActiveProgram();
+		void ResetActiveProgram();
 
-		static GLuint queryCurrentShaderPipelineBinding();
+		static GLuint QueryCurrentShaderPipelineBinding();
 
-		static GLShaderPipelineObjectHandle create();
+		static GLShaderPipelineObjectHandle Create();
 	};
 
 } // namespace Ic3::Graphics::GCI

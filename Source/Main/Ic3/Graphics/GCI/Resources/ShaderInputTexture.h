@@ -4,7 +4,7 @@
 #ifndef __IC3_GRAPHICS_GCI_SHADER_INPUT_TEXTURE_H__
 #define __IC3_GRAPHICS_GCI_SHADER_INPUT_TEXTURE_H__
 
-#include "GPUResource.h"
+#include "GpuResource.h"
 #include "TextureReference.h"
 
 namespace Ic3::Graphics::GCI
@@ -17,13 +17,13 @@ namespace Ic3::Graphics::GCI
 
 		ShaderInputTextureLayout mInputTextureLayout;
 
-		TBitmask<ETextureBindFlags> mBindFlags;
+		cppx::bitmask<ETextureBindFlags> mBindFlags;
 	};
 
 	/// @brief
-	class ShaderInputTexture : public GPUResourceView
+	class ShaderInputTexture : public GpuResourceView
 	{
-		friend class GPUDevice;
+		friend class GpuDevice;
 		friend class Texture;
 
 	public:
@@ -34,14 +34,14 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		ShaderInputTexture(
-				GPUDevice & pGPUDevice,
+				GpuDevice & pGpuDevice,
 				const ShaderInputTextureLayout & pSITextureLayout,
 				TextureReference pTargetTexture );
 
 		virtual ~ShaderInputTexture();
 
 		///
-		IC3_ATTR_NO_DISCARD bool empty() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept;
 	};
 
 } // namespace Ic3::Graphics::GCI

@@ -20,13 +20,13 @@ namespace Ic3::Graphics::GCI
 		id<MTLSamplerState> const mMTLSamplerState;
 
 	public:
-		MetalSampler( MetalGPUDevice & pGPUDevice, id<MTLSamplerState> pMTLSamplerState );
+		MetalSampler( MetalGpuDevice & pGpuDevice, id<MTLSamplerState> pMTLSamplerState );
 		virtual ~MetalSampler();
 
-		static MetalSamplerHandle createSampler( MetalGPUDevice & pGPUDevice, const SamplerCreateInfo & pCreateInfo );
+		static MetalSamplerHandle CreateSampler( MetalGpuDevice & pGpuDevice, const SamplerCreateInfo & pCreateInfo );
 
 	private:
-		static MTLSamplerDescriptor * translateSamplerConfig( const SamplerConfig & pSamplerConfig );
+		static MTLSamplerDescriptor * TranslateSamplerConfig( const SamplerConfig & pSamplerConfig );
 	};
 
 } // namespace Ic3::Graphics::GCI

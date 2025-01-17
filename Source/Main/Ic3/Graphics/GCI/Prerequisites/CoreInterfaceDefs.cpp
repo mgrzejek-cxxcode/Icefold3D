@@ -1,27 +1,27 @@
 
-#include "../GPUDriver.h"
-#include "../GPUDevice.h"
+#include "../GpuDriver.h"
+#include "../GpuDevice.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	GPUDriverChildObject::GPUDriverChildObject( GPUDriver & pGPUDriver )
-	: mGPUDriver( pGPUDriver )
+	GpuDriverChildObject::GpuDriverChildObject( GpuDriver & pGpuDriver )
+	: mGpuDriver( pGpuDriver )
 	{}
 
-	GPUDriverChildObject::~GPUDriverChildObject() = default;
+	GpuDriverChildObject::~GpuDriverChildObject() = default;
 
 
-	GPUDeviceChildObject::GPUDeviceChildObject( GPUDevice & pGPUDevice )
-	: mGPUDriver( pGPUDevice.mGPUDriver )
-	, mGPUDevice( pGPUDevice )
+	GpuDeviceChildObject::GpuDeviceChildObject( GpuDevice & pGpuDevice )
+	: mGpuDriver( pGpuDevice.mGpuDriver )
+	, mGpuDevice( pGpuDevice )
 	{}
 
-	GPUDeviceChildObject::~GPUDeviceChildObject() = default;
+	GpuDeviceChildObject::~GpuDeviceChildObject() = default;
 
-	UniqueGPUObjectID GPUDeviceChildObject::queryObjectID() const
+	GfxObjectID GpuDeviceChildObject::QueryObjectID() const
 	{
-		return CxDef::GPU_OBJECT_ID_EMPTY;
+		return cxGpuObjectIDEmpty;
 	}
 
 } // namespace Ic3::Graphics::GCI

@@ -1,6 +1,6 @@
 
 #include "InputAssemblerImmutableStates.h"
-#include <Ic3/Graphics/GCI/GPUDevice.h>
+#include <Ic3/Graphics/GCI/GpuDevice.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -9,12 +9,12 @@ namespace Ic3::Graphics::GCI
 	{
 	public:
 		IAVertexStreamImmutableStateDynamicOverride()
-		: IAVertexStreamImmutableState( GPUDevice::nullDevice(), {} )
+		: IAVertexStreamImmutableState( GpuDevice::nullDevice(), {} )
 		{}
 
 		virtual ~IAVertexStreamImmutableStateDynamicOverride() = default;
 
-		bool isDynamicOverrideState() const noexcept override final
+		bool IsDynamicOverrideState() const noexcept override final
 		{
 			return true;
 		}
@@ -22,35 +22,35 @@ namespace Ic3::Graphics::GCI
 
 
 	IAInputLayoutImmutableState::IAInputLayoutImmutableState(
-			GPUDevice & pGPUDevice,
+			GpuDevice & pGpuDevice,
 			const IAInputLayoutStateCommonProperties & pCommonProperties )
-	: GraphicsPipelineImmutableState( pGPUDevice )
+	: GraphicsPipelineImmutableState( pGpuDevice )
 	, mCommonProperties( pCommonProperties )
 	{}
 
 	IAInputLayoutImmutableState::~IAInputLayoutImmutableState() = default;
 
-	EGraphicsPipelineImmutableStateType IAInputLayoutImmutableState::queryStateType() const noexcept
+	EGraphicsPipelineImmutableStateType IAInputLayoutImmutableState::QueryStateType() const noexcept
 	{
 		return EGraphicsPipelineImmutableStateType::IAInputLayout;
 	}
 
 
 	IAVertexStreamImmutableState::IAVertexStreamImmutableState(
-			GPUDevice & pGPUDevice,
+			GpuDevice & pGpuDevice,
 			const IAVertexStreamStateCommonProperties & pCommonProperties )
-	: GraphicsPipelineImmutableState( pGPUDevice )
+	: GraphicsPipelineImmutableState( pGpuDevice )
 	, mCommonProperties( pCommonProperties )
 	{}
 
 	IAVertexStreamImmutableState::~IAVertexStreamImmutableState() = default;
 
-	EGraphicsPipelineImmutableStateType IAVertexStreamImmutableState::queryStateType() const noexcept
+	EGraphicsPipelineImmutableStateType IAVertexStreamImmutableState::QueryStateType() const noexcept
 	{
 		return EGraphicsPipelineImmutableStateType::IAVertexStream;
 	}
 
-	const IAVertexStreamImmutableState & IAVertexStreamImmutableState::getDynamicOverrideState()
+	const IAVertexStreamImmutableState & IAVertexStreamImmutableState::GetDynamicOverrideState()
 	{
 		static const IAVertexStreamImmutableStateDynamicOverride sDynamicOverrideState{};
 		return sDynamicOverrideState;
@@ -59,17 +59,17 @@ namespace Ic3::Graphics::GCI
 	namespace SMU
 	{
 
-		IAInputLayoutStateCommonProperties getIAInputLayoutStateCommonProperties(
+		IAInputLayoutStateCommonProperties GetIAInputLayoutStateCommonProperties(
 				const IAInputLayoutDefinition & pInputLayoutDefinition )
 		{
 			IAInputLayoutStateCommonProperties properties{};
 			properties.activeAttributesMask = pInputLayoutDefinition.activeAttributesMask;
 			properties.primitiveTopology = pInputLayoutDefinition.primitiveTopology;
-			properties.activeAttributesNum = popCount( pInputLayoutDefinition.activeAttributesMask );
+			properties.activeAttributesNum = pop_count( pInputLayoutDefinition.activeAttributesMask );
 			return properties;
 		}
 
-		IAVertexStreamStateCommonProperties getIAVertexStreamStateCommonProperties(
+		IAVertexStreamStateCommonProperties GetIAVertexStreamStateCommonProperties(
 				const IAVertexStreamDefinition & pVertexStreamDefinition )
 		{
 			IAVertexStreamStateCommonProperties properties{};

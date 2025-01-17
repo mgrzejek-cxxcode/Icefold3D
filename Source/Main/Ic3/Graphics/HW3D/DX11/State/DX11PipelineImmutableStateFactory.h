@@ -15,19 +15,19 @@ namespace Ic3::Graphics::GCI
 	class DX11PipelineImmutableStateFactory : public PipelineImmutableStateFactorySeparableShader
 	{
 	public:
-		DX11GPUDevice & mDX11GPUDevice;
+		DX11GpuDevice & mDX11GpuDevice;
 
 	public:
-		DX11PipelineImmutableStateFactory( DX11GPUDevice & pGPUDevice );
+		DX11PipelineImmutableStateFactory( DX11GpuDevice & pGpuDevice );
 		virtual ~DX11PipelineImmutableStateFactory();
 
-		virtual BlendImmutableStateHandle createBlendState( const BlendConfig & pConfig ) override final;
-		virtual DepthStencilImmutableStateHandle createDepthStencilState( const DepthStencilConfig & pConfig ) override final;
-		virtual IAInputLayoutImmutableStateHandle createIAInputLayoutState( const IAInputLayoutDefinition & pDefinition, Shader & pVertexShaderWithBinary ) override final;
-		virtual IAVertexStreamImmutableStateHandle createIAVertexStreamState( const IAVertexStreamDefinition & pDefinition ) override final;
-		virtual RasterizerImmutableStateHandle createRasterizerState( const RasterizerConfig & pConfig ) override final;
-		virtual RenderTargetBindingImmutableStateHandle createRenderTargetBindingState( const RenderTargetBindingDefinition & pDefinition ) override final;
-		virtual RenderPassConfigurationImmutableStateHandle createRenderPassState( const RenderPassConfiguration & pConfiguration ) override final;
+		virtual BlendImmutableStateHandle CreateBlendState( const BlendConfig & pConfig ) override final;
+		virtual DepthStencilImmutableStateHandle CreateDepthStencilState( const DepthStencilConfig & pConfig ) override final;
+		virtual IAInputLayoutImmutableStateHandle CreateIAInputLayoutState( const IAInputLayoutDefinition & pDefinition, Shader & pVertexShaderWithBinary ) override final;
+		virtual IAVertexStreamImmutableStateHandle CreateIAVertexStreamState( const IAVertexStreamDefinition & pDefinition ) override final;
+		virtual RasterizerImmutableStateHandle CreateRasterizerState( const RasterizerConfig & pConfig ) override final;
+		virtual RenderTargetBindingImmutableStateHandle CreateRenderTargetBindingState( const RenderTargetBindingDefinition & pDefinition ) override final;
+		virtual RenderPassConfigurationImmutableStateHandle CreateRenderPassState( const RenderPassConfiguration & pConfiguration ) override final;
 	};
 	
 } // namespace Ic3::Graphics::GCI

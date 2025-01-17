@@ -1,6 +1,6 @@
 
 #include "GLGraphicsShaderState.h"
-#include <Ic3/Graphics/HW3D/GL/GLGPUDevice.h>
+#include <Ic3/Graphics/HW3D/GL/GLGpuDevice.h>
 #include <Ic3/Graphics/HW3D/GL/Resources/GLShader.h>
 #include <Ic3/Graphics/HW3D/GL/Objects/GLShaderPipelineObject.h>
 
@@ -8,38 +8,38 @@ namespace Ic3::Graphics::GCI
 {
 
 	GLGraphicsShaderLinkageImmutableState::GLGraphicsShaderLinkageImmutableState(
-			GLGPUDevice & pGPUDevice,
+			GLGpuDevice & pGpuDevice,
 			const GraphicsShaderLinkageCommonProperties & pCommonProperties )
-	: GraphicsShaderLinkageImmutableState( pGPUDevice, pCommonProperties )
+	: GraphicsShaderLinkageImmutableState( pGpuDevice, pCommonProperties )
 	{}
 
 	GLGraphicsShaderLinkageImmutableState::~GLGraphicsShaderLinkageImmutableState() = default;
 
 
 	GLGraphicsShaderLinkageImmutableStateCore::GLGraphicsShaderLinkageImmutableStateCore(
-			GLGPUDevice & pGPUDevice,
+			GLGpuDevice & pGpuDevice,
 			const GraphicsShaderLinkageCommonProperties & pCommonProperties,
 			GLShaderPipelineObjectHandle pGLShaderPipelineObject )
-	: GLGraphicsShaderLinkageImmutableState( pGPUDevice, pCommonProperties )
+	: GLGraphicsShaderLinkageImmutableState( pGpuDevice, pCommonProperties )
 	, mGLShaderPipelineObject( std::move( pGLShaderPipelineObject ) )
 	{}
 
 	GLGraphicsShaderLinkageImmutableStateCore::~GLGraphicsShaderLinkageImmutableStateCore() = default;
 
-	GpaHandle<GLGraphicsShaderLinkageImmutableStateCore> GLGraphicsShaderLinkageImmutableStateCore::createInstance(
-			GLGPUDevice & pGPUDevice,
+	TGfxHandle<GLGraphicsShaderLinkageImmutableStateCore> GLGraphicsShaderLinkageImmutableStateCore::CreateInstance(
+			GLGpuDevice & pGpuDevice,
 			const GraphicsShaderSet & pShaderSet )
 	{
-		const auto & commonProperties = smutil::getGraphicsShaderLinkageCommonPropertiesForShaderSet( pShaderSet );
+		const auto & commonProperties = SMU::GetGraphicsShaderLinkageCommonPropertiesForShaderSet( pShaderSet );
 
-		auto shaderPipelineObject = smutil::createGraphicsShaderPipelineObjectGL( pShaderSet );
+		auto shaderPipelineObject = SMU::CreateGraphicsShaderPipelineObjectGL( pShaderSet );
 		if( !shaderPipelineObject )
 		{
 			return nullptr;
 		}
 
-		auto immutableState = createGPUAPIObject<GLGraphicsShaderLinkageImmutableStateCore>(
-				pGPUDevice,
+		auto immutableState = CreateGfxObject<GLGraphicsShaderLinkageImmutableStateCore>(
+				pGpuDevice,
 				commonProperties,
 				std::move( shaderPipelineObject ) );
 
@@ -48,29 +48,29 @@ namespace Ic3::Graphics::GCI
 
 
 	GLGraphicsShaderLinkageImmutableStateCompat::GLGraphicsShaderLinkageImmutableStateCompat(
-			GLGPUDevice & pGPUDevice,
+			GLGpuDevice & pGpuDevice,
 			const GraphicsShaderLinkageCommonProperties & pCommonProperties,
 			GLShaderProgramObjectHandle pGLShaderProgramObject )
-	: GLGraphicsShaderLinkageImmutableState( pGPUDevice, pCommonProperties )
+	: GLGraphicsShaderLinkageImmutableState( pGpuDevice, pCommonProperties )
 	, mGLShaderProgramObject( std::move( pGLShaderProgramObject ) )
 	{}
 
 	GLGraphicsShaderLinkageImmutableStateCompat::~GLGraphicsShaderLinkageImmutableStateCompat() = default;
 
-	GpaHandle<GLGraphicsShaderLinkageImmutableStateCompat> GLGraphicsShaderLinkageImmutableStateCompat::createInstance(
-			GLGPUDevice & pGPUDevice,
+	TGfxHandle<GLGraphicsShaderLinkageImmutableStateCompat> GLGraphicsShaderLinkageImmutableStateCompat::CreateInstance(
+			GLGpuDevice & pGpuDevice,
 			const GraphicsShaderSet & pShaderSet )
 	{
-		const auto & commonProperties = smutil::getGraphicsShaderLinkageCommonPropertiesForShaderSet( pShaderSet );
+		const auto & commonProperties = SMU::GetGraphicsShaderLinkageCommonPropertiesForShaderSet( pShaderSet );
 
-		auto shaderProgramObject = smutil::createGraphicsShaderProgramObjectGL( pShaderSet );
+		auto shaderProgramObject = SMU::CreateGraphicsShaderProgramObjectGL( pShaderSet );
 		if( !shaderProgramObject )
 		{
 			return nullptr;
 		}
 
-		auto immutableState = createGPUAPIObject<GLGraphicsShaderLinkageImmutableStateCompat>(
-				pGPUDevice,
+		auto immutableState = CreateGfxObject<GLGraphicsShaderLinkageImmutableStateCompat>(
+				pGpuDevice,
 				commonProperties,
 				std::move( shaderProgramObject ) );
 
@@ -78,12 +78,12 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	namespace smutil
+	namespace SMU
 	{
 
-		GLShaderPipelineObjectHandle createGraphicsShaderPipelineObjectGL( const GraphicsShaderSet & pShaderSet )
+		GLShaderPipelineObjectHandle CreateGraphicsShaderPipelineObjectGL( const GraphicsShaderSet & pShaderSet )
 		{
-			auto shaderPipelineObject = GLShaderPipelineObject::create();
+			auto shaderPipelineObject = GLShaderPipelineObject::Create();
 			if( !shaderPipelineObject )
 			{
 				return nullptr;
@@ -96,9 +96,9 @@ namespace Ic3::Graphics::GCI
 			{
 				if( shaderHandle )
 				{
-					auto * openglShader = shaderHandle->queryInterface<GLShader>();
+					auto * openglShader = shaderHandle->QueryInterface<GLShader>();
 					ic3DebugAssert( openglShader->mGLShaderProgramObject );
-					shaderPipelineObject->attachProgram( *( openglShader->mGLShaderProgramObject ) );
+					shaderPipelineObject->AttachProgram( *( openglShader->mGLShaderProgramObject ) );
 				}
 			}
 
@@ -108,9 +108,9 @@ namespace Ic3::Graphics::GCI
 			return shaderPipelineObject;
 		}
 
-		GLShaderProgramObjectHandle createGraphicsShaderProgramObjectGL( const GraphicsShaderSet & pShaderSet )
+		GLShaderProgramObjectHandle CreateGraphicsShaderProgramObjectGL( const GraphicsShaderSet & pShaderSet )
 		{
-			auto shaderProgramObject = GLShaderProgramObject::create( GLShaderProgramType::Combined );
+			auto shaderProgramObject = GLShaderProgramObject::Create( GLShaderProgramType::Combined );
 			if( !shaderProgramObject )
 			{
 				return nullptr;
@@ -122,19 +122,19 @@ namespace Ic3::Graphics::GCI
 			{
 				if( shaderHandle )
 				{
-					auto * openglShader = shaderHandle->queryInterface<GLShader>();
+					auto * openglShader = shaderHandle->QueryInterface<GLShader>();
 					ic3DebugAssert( openglShader->mGLShaderObject );
-					shaderProgramObject->attachShader( *( openglShader->mGLShaderObject ) );
+					shaderProgramObject->AttachShader( *( openglShader->mGLShaderObject ) );
 
-					if( const auto * shaderLayoutMap = openglShader->mGLShaderObject->getDataLayoutMap() )
+					if( const auto * shaderLayoutMap = openglShader->mGLShaderObject->GetDataLayoutMap() )
 					{
-						GLShaderProgramObject::setProgramPreLinkBindings( *shaderProgramObject, *shaderLayoutMap );
+						GLShaderProgramObject::SetProgramPreLinkBindings( *shaderProgramObject, *shaderLayoutMap );
 						useShaderLayoutMaps = true;
 					}
 				}
 			}
 
-			if( !shaderProgramObject->link() )
+			if( !shaderProgramObject->Link() )
 			{
 				ic3DebugInterrupt();
 				return nullptr;
@@ -146,21 +146,21 @@ namespace Ic3::Graphics::GCI
 				{
 					if( shaderHandle )
 					{
-						auto * openglShader = shaderHandle->queryInterface<GLShader>();
-						if( const auto * shaderLayoutMap = openglShader->mGLShaderObject->getDataLayoutMap() )
+						auto * openglShader = shaderHandle->QueryInterface<GLShader>();
+						if( const auto * shaderLayoutMap = openglShader->mGLShaderObject->GetDataLayoutMap() )
 						{
-							GLShaderProgramObject::setProgramPostLinkBindings( *shaderProgramObject, *shaderLayoutMap );
+							GLShaderProgramObject::SetProgramPostLinkBindings( *shaderProgramObject, *shaderLayoutMap );
 						}
 					}
 				}
 			}
 
-			shaderProgramObject->detachAllShaders();
+			shaderProgramObject->DetachAllShaders();
 
 			return shaderProgramObject;
 		}
 
-		void updateUniformDataCurrentGL(
+		void UpdateUniformDataCurrentGL(
 				GLShaderPipelineObject & pShaderPipeline,
 				uint32 pUniformIndex,
 				EBaseDataType pBaseType,
@@ -172,7 +172,7 @@ namespace Ic3::Graphics::GCI
 				return;
 			}
 
-			const auto currentPipelineHandle = GLShaderPipelineObject::queryCurrentShaderPipelineBinding();
+			const auto currentPipelineHandle = GLShaderPipelineObject::QueryCurrentShaderPipelineBinding();
 			if( currentPipelineHandle != pShaderPipeline.mGLHandle )
 			{
 				ic3Throw( 0 );
@@ -213,7 +213,7 @@ namespace Ic3::Graphics::GCI
 			}
 		}
 
-		void updateUniformDataExplicitGL(
+		void UpdateUniformDataExplicitGL(
 				GLShaderProgramObject & pShaderProgram,
 				uint32 pUniformIndex,
 				EBaseDataType pBaseType,
@@ -225,7 +225,7 @@ namespace Ic3::Graphics::GCI
 				return;
 			}
 
-			const auto currentProgramHandle = GLShaderProgramObject::queryCurrentShaderProgramBinding();
+			const auto currentProgramHandle = GLShaderProgramObject::QueryCurrentShaderProgramBinding();
 			if( currentProgramHandle != pShaderProgram.mGLHandle )
 			{
 				ic3Throw( 0 );

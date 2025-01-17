@@ -4,24 +4,24 @@
 namespace Ic3::Graphics::GCI
 {
 
-	BlendImmutableState::BlendImmutableState( GPUDevice & pGPUDevice, TBitmask<EBlendConfigFlags> pBlendFlags )
-	: GraphicsPipelineImmutableState( pGPUDevice )
+	BlendImmutableState::BlendImmutableState( GpuDevice & pGpuDevice, cppx::bitmask<EBlendConfigFlags> pBlendFlags )
+	: GraphicsPipelineImmutableState( pGpuDevice )
 	, mBlendFlags( pBlendFlags & eBlendConfigMaskAll )
 	{}
 
 	BlendImmutableState::~BlendImmutableState() = default;
 
 
-	DepthStencilImmutableState::DepthStencilImmutableState( GPUDevice & pGPUDevice, TBitmask<EDepthStencilConfigFlags> pDepthStencilFlags )
-	: GraphicsPipelineImmutableState( pGPUDevice )
+	DepthStencilImmutableState::DepthStencilImmutableState( GpuDevice & pGpuDevice, cppx::bitmask<EDepthStencilConfigFlags> pDepthStencilFlags )
+	: GraphicsPipelineImmutableState( pGpuDevice )
 	, mDepthStencilFlags( pDepthStencilFlags & eDepthStencilConfigMaskAll )
 	{}
 
 	DepthStencilImmutableState::~DepthStencilImmutableState() = default;
 
 
-	RasterizerImmutableState::RasterizerImmutableState( GPUDevice & pGPUDevice, TBitmask<ERasterizerConfigFlags> pRasterizerFlags )
-	: GraphicsPipelineImmutableState( pGPUDevice )
+	RasterizerImmutableState::RasterizerImmutableState( GpuDevice & pGpuDevice, cppx::bitmask<ERasterizerConfigFlags> pRasterizerFlags )
+	: GraphicsPipelineImmutableState( pGpuDevice )
 	, mRasterizerFlags( pRasterizerFlags & eRasterizerConfigMaskAll )
 	{}
 

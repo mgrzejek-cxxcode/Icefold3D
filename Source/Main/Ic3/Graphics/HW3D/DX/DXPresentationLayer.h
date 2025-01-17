@@ -13,32 +13,32 @@ namespace Ic3::Graphics::GCI
 
 	ic3DeclareClassHandle( DXPresentationLayer );
 
-	class ICFGX_DXCOMMON_CLASS DXPresentationLayer : public PresentationLayer
+	class IC3_GX_DXCOMMON_CLASS DXPresentationLayer : public PresentationLayer
 	{
 	public:
-		DXPresentationLayer( GPUDevice & pDevice );
+		DXPresentationLayer( GpuDevice & pDevice );
 		virtual ~DXPresentationLayer();
 	};
 
-	class ICFGX_DXCOMMON_CLASS DXScreenPresentationLayer : public DXPresentationLayer
+	class IC3_GX_DXCOMMON_CLASS DXScreenPresentationLayer : public DXPresentationLayer
 	{
 	public:
 		System::WindowHandle const mSysWindow;
 		ComPtr<IDXGISwapChain1> const mDXGISwapChain1;
 
-		DXScreenPresentationLayer( GPUDevice & pDevice, System::WindowHandle pSysWindow, ComPtr<IDXGISwapChain1> pDXGISwapChain1 ) noexcept;
+		DXScreenPresentationLayer( GpuDevice & pDevice, System::WindowHandle pSysWindow, ComPtr<IDXGISwapChain1> pDXGISwapChain1 ) noexcept;
 		virtual ~DXScreenPresentationLayer() noexcept;
 
-		virtual System::EventSource * getInternalSystemEventSource() const noexcept override;
+		virtual System::EventSource * GetInternalSystemEventSource() const noexcept override;
 
-		virtual void resize( uint32 pWidth, uint32 pHeight ) override final;
+		virtual void Resize( uint32 pWidth, uint32 pHeight ) override final;
 
-		virtual void setFullscreenMode( bool pEnable ) override final;
+		virtual void SetFullscreenMode( bool pEnable ) override final;
 
-		virtual Ic3::Math::Vec2u32 queryRenderTargetSize() const override;
+		virtual Ic3::Math::Vec2u32 QueryRenderTargetSize() const override;
 
 	protected:
-	    static System::WindowHandle createSysWindow( DXGPUDevice & pGPUDevice, const PresentationLayerCreateInfo & pCreateInfo );
+	    static System::WindowHandle createSysWindow( DXGpuDevice & pGpuDevice, const PresentationLayerCreateInfo & pCreateInfo );
 	};
 
 } // namespace Ic3::Graphics::GCI

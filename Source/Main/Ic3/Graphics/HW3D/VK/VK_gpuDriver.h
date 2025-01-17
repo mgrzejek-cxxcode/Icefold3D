@@ -5,26 +5,26 @@
 #define __IC3_GRAPHICS_HW3D_VKCOMMON_GPU_DRIVER__
 
 #include "VKPrerequisites.h"
-#include <Ic3/Graphics/GCI/GPUDriver.h>
+#include <Ic3/Graphics/GCI/GpuDriver.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	struct VKGPUDriverCreateInfo : public GPUDriverCreateInfo
+	struct VKGpuDriverCreateInfo : public GpuDriverCreateInfo
 	{
 	};
 
-	class ICFGX_VKCOMMON_CLASS VKGPUDriver : public GPUDriver
+	class IC3_GX_VKCOMMON_CLASS VKGpuDriver : public GpuDriver
 	{
 	public:
 		VkInstance const mVkInstance = nullptr;
 		
-		explicit VKGPUDriver( System::temContext * pExfSystemContext );
-		virtual ~VKGPUDriver();
+		explicit VKGpuDriver( System::SysContext * pExfSystemContext );
+		virtual ~VKGpuDriver();
 
-		virtual GPUDeviceHandle createDevice( const GPUDeviceCreateInfo & pCreateInfo ) override;
+		virtual GpuDeviceHandle CreateDevice( const GpuDeviceCreateInfo & pCreateInfo ) override;
 
-		static VKGPUDriverHandle create( const VKGPUDriverCreateInfo & pCreateInfo );
+		static VKGpuDriverHandle Create( const VKGpuDriverCreateInfo & pCreateInfo );
 	};
 
 } // namespace Ic3::Graphics::GCI

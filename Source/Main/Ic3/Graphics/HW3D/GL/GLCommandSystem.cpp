@@ -1,7 +1,7 @@
 
 #include "GLCommandSystem.h"
 #include "GLCommandList.h"
-#include "GLGPUDevice.h"
+#include "GLGpuDevice.h"
 #include <Ic3/Graphics/GCI/CommandContext.h>
 #include <mutex>
 
@@ -18,23 +18,23 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	GLCommandSystem::GLCommandSystem( GLGPUDevice & pGPUDevice )
-	: CommandSystem( pGPUDevice )
+	GLCommandSystem::GLCommandSystem( GLGpuDevice & pGpuDevice )
+	: CommandSystem( pGpuDevice )
 	, _targetSysGLSurface( nullptr )
 	{}
 
 	GLCommandSystem::~GLCommandSystem() = default;
 
-	std::unique_ptr<CommandContext> GLCommandSystem::acquireCommandContext( ECommandContextType pContextType )
+	std::unique_ptr<CommandContext> GLCommandSystem::AcquireCommandContext( ECommandContextType pContextType )
 	{
 		std::unique_ptr<CommandContext> commandContext;
 
-		auto contextExecutionMode = CxDef::getCommandObjectExecutionMode( pContextType );
-		if( auto * commandList = acquireCommandList( contextExecutionMode ) )
+		auto contextExecutionMode = CxDef::GetCommandObjectExecutionMode( pContextType );
+		if( auto * commandList = AcquireCommandList( contextExecutionMode ) )
 		{
 			ic3DebugAssert( contextExecutionMode == ECommandExecutionMode::Direct );
 			commandContext = std::make_unique<CommandContextDirectGraphics>( *commandList );
-			commandList->mSysGLRenderContext->bindForCurrentThread( *_targetSysGLSurface );
+			commandList->mSysGLRenderContext->BindForCurrentThread( *_targetSysGLSurface );
 
 			// A dirty workaround. GLEW is no longer used at the system level (now we use only
 			// the minimal set of GLX/WGL functions), so it needs to happen here. This is best
@@ -44,23 +44,23 @@ namespace Ic3::Graphics::GCI
 
 		if( commandContext )
 		{
-			auto * openglGPUDevice = mGPUDevice.queryInterface<GLGPUDevice>();
-			auto * openglDebugOutput = openglGPUDevice->getDebugOutputInterface();
+			auto * openglGpuDevice = mGpuDevice.QueryInterface<GLGpuDevice>();
+			auto * openglDebugOutput = openglGpuDevice->GetDebugOutputInterface();
 
-			const auto enableDebugOutput = false;
+			const auto EnableDebugOutput = false;
 
-			if( openglDebugOutput && enableDebugOutput )
+			if( openglDebugOutput && EnableDebugOutput )
 			{
-			    openglDebugOutput->enableDebugOutput( true );
-			    openglDebugOutput->enableBreakOnEvent( true );
-			    openglDebugOutput->enableSync( true );
+			    openglDebugOutput->EnableDebugOutput( true );
+			    openglDebugOutput->EnableBreakOnEvent( true );
+			    openglDebugOutput->EnableSync( true );
 			}
 		}
 
 		return commandContext;
 	}
 
-	CommandSync GLCommandSystem::submitContext( CommandContextDirect & pContext, const CommandContextSubmitInfo & pSubmitInfo )
+	CommandSync GLCommandSystem::SubmitContext( CommandContextDirect & pContext, const CommandContextSubmitInfo & pSubmitInfo )
 	{
 		CommandSync cmdSyncObject;
 
@@ -82,7 +82,7 @@ namespace Ic3::Graphics::GCI
 		return cmdSyncObject;
 	}
 
-	void GLCommandSystem::setTargetGLSurface( System::OpenGLDisplaySurfaceHandle pSysGLDisplaySurface )
+	void GLCommandSystem::SetTargetGLSurface( System::OpenGLDisplaySurfaceHandle pSysGLDisplaySurface )
 	{
 		// Surface is required to create a GL context. Since CommandSystem is bound to a device
 		// and PresentationLayer is created when device is already available, there is no way
@@ -91,7 +91,7 @@ namespace Ic3::Graphics::GCI
 		_targetSysGLSurface = pSysGLDisplaySurface;
 	}
 
-	GLCommandList * GLCommandSystem::acquireCommandList( ECommandExecutionMode pCommandExecutionMode )
+	GLCommandList * GLCommandSystem::AcquireCommandList( ECommandExecutionMode pCommandExecutionMode )
 	{
 		GLCommandList * commandList = nullptr;
 
@@ -99,9 +99,9 @@ namespace Ic3::Graphics::GCI
 		{
 			if( !_mainCommandList )
 			{
-				initializeMainCommandList();
+				InitializeMainCommandList();
 			}
-			if( _mainCommandList && _mainCommandList->acquireList() )
+			if( _mainCommandList && _mainCommandList->AcquireList() )
 			{
 				commandList = _mainCommandList.get();
 			}
@@ -110,29 +110,29 @@ namespace Ic3::Graphics::GCI
 		return commandList;
 	}
 
-	bool GLCommandSystem::initializeMainCommandList()
+	bool GLCommandSystem::InitializeMainCommandList()
 	{
 		ic3DebugAssert( !_mainCommandList );
 
-		auto * openglGPUDevice = mGPUDevice.queryInterface<GLGPUDevice>();
-		ic3DebugAssert( openglGPUDevice );
+		auto * openglGpuDevice = mGpuDevice.QueryInterface<GLGpuDevice>();
+		ic3DebugAssert( openglGpuDevice );
 
-		auto sysGLRenderContext = GLCommandSystem::createSysGLRenderContext( *openglGPUDevice, _targetSysGLSurface );
+		auto sysGLRenderContext = GLCommandSystem::CreateSysGLRenderContext( *openglGpuDevice, _targetSysGLSurface );
 		ic3DebugAssert( sysGLRenderContext );
 
-		if( openglGPUDevice->isCompatibilityDevice() )
+		if( openglGpuDevice->IsCompatibilityDevice() )
 		{
-			_mainCommandList = createGPUAPIObject<GLCommandListCompat>( *this, ECommandListType::DirectGraphics, sysGLRenderContext );
+			_mainCommandList = CreateGfxObject<GLCommandListCompat>( *this, ECommandListType::DirectGraphics, sysGLRenderContext );
 		}
 		else
 		{
-			_mainCommandList = createGPUAPIObject<GLCommandListCore>( *this, ECommandListType::DirectGraphics, sysGLRenderContext );
+			_mainCommandList = CreateGfxObject<GLCommandListCore>( *this, ECommandListType::DirectGraphics, sysGLRenderContext );
 		}
 
 		return true;
 	}
 
-	System::OpenGLRenderContextHandle GLCommandSystem::createSysGLRenderContext( GLGPUDevice & pGPUDevice, System::OpenGLDisplaySurfaceHandle pSysGLDisplaySurface )
+	System::OpenGLRenderContextHandle GLCommandSystem::CreateSysGLRenderContext( GLGpuDevice & pGpuDevice, System::OpenGLDisplaySurfaceHandle pSysGLDisplaySurface )
 	{
 		System::OpenGLRenderContextHandle sysGLRenderContext = nullptr;
 
@@ -141,25 +141,25 @@ namespace Ic3::Graphics::GCI
 			System::OpenGLRenderContextCreateInfo contextCreateInfo;
 			contextCreateInfo.shareContext = nullptr;
 
-		#if( ICFGX_GL_TARGET == ICFGX_GL_TARGET_GL43 )
-			contextCreateInfo.requestedAPIVersion.major = 4;
-			contextCreateInfo.requestedAPIVersion.minor = 3;
+		#if( IC3_GX_GL_TARGET == IC3_GX_GL_TARGET_GL43 )
+			contextCreateInfo.requestedAPIVersion.num_major = 4;
+			contextCreateInfo.requestedAPIVersion.num_minor = 3;
 			contextCreateInfo.contextAPIProfile = System::EOpenGLAPIProfile::Core;
-		#elif( ICFGX_GL_TARGET == ICFGX_GL_TARGET_ES31 )
-			contextCreateInfo.runtimeVersionDesc.apiVersion.major = 3;
-			contextCreateInfo.runtimeVersionDesc.apiVersion.minor = 1;
+		#elif( IC3_GX_GL_TARGET == IC3_GX_GL_TARGET_ES31 )
+			contextCreateInfo.runtimeVersionDesc.apiVersion.num_major = 3;
+			contextCreateInfo.runtimeVersionDesc.apiVersion.mNumMinor = 1;
 			contextCreateInfo.runtimeVersionDesc.apiProfile = System::EGLAPIProfile::OpenGLES;
 		#endif
 
-			if( pGPUDevice.isDebugDevice() )
+			if( pGpuDevice.IsDebugDevice() )
 			{
-				contextCreateInfo.flags.set( System::E_OPENGL_RENDER_CONTEXT_CREATE_FLAG_ENABLE_DEBUG_BIT );
+				contextCreateInfo.flags.set( System::eOpenGLRenderContextCreateFlagEnableDebugBit );
 			}
 
-			sysGLRenderContext = pSysGLDisplaySurface->mGLSystemDriver->createRenderContext( *pSysGLDisplaySurface, contextCreateInfo );
-			sysGLRenderContext->bindForCurrentThread( *pSysGLDisplaySurface );
+			sysGLRenderContext = pSysGLDisplaySurface->mGLSystemDriver->CreateRenderContext( *pSysGLDisplaySurface, contextCreateInfo );
+			sysGLRenderContext->BindForCurrentThread( *pSysGLDisplaySurface );
 
-			auto sysVersionInfo = sysGLRenderContext->querySystemVersionInfo();
+			auto sysVersionInfo = sysGLRenderContext->QuerySystemVersionInfo();
 			auto sysVersionInfoStr = sysVersionInfo.toString();
 			ic3DebugOutputFmt( "%s\n", sysVersionInfoStr.c_str() );
 		}

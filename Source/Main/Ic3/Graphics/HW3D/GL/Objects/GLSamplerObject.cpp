@@ -10,7 +10,7 @@ namespace Ic3::Graphics::GCI
 
 	GLSamplerObject::~GLSamplerObject() = default;
 
-	GLSamplerObjectHandle GLSamplerObject::create( const GLSamplerState & pSamplerState )
+	GLSamplerObjectHandle GLSamplerObject::Create( const GLSamplerState & pSamplerState )
 	{
 		GLuint samplerHandle = 0;
 
@@ -18,7 +18,7 @@ namespace Ic3::Graphics::GCI
 		ic3OpenGLHandleLastError();
 
 		GLSamplerObjectHandle openglSamplerObject{ new GLSamplerObject( samplerHandle ) };
-		if( !openglSamplerObject->setSamplerState( pSamplerState ) )
+		if( !openglSamplerObject->SetSamplerState( pSamplerState ) )
 		{
 			return nullptr;
 		}
@@ -26,7 +26,7 @@ namespace Ic3::Graphics::GCI
 		return openglSamplerObject;
 	}
 
-	bool GLSamplerObject::release()
+	bool GLSamplerObject::Release()
 	{
 		glDeleteSamplers( 1, &mGLHandle );
 		ic3OpenGLHandleLastError();
@@ -34,13 +34,13 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	bool GLSamplerObject::validateHandle() const
+	bool GLSamplerObject::ValidateHandle() const
 	{
 		GLboolean checkResult = glIsSampler( mGLHandle );
 		return checkResult == GL_TRUE;
 	}
 
-	bool GLSamplerObject::setSamplerState( const GLSamplerState & pSamplerState )
+	bool GLSamplerObject::SetSamplerState( const GLSamplerState & pSamplerState )
 	{
 		glSamplerParameteri( mGLHandle, GL_TEXTURE_WRAP_S, pSamplerState.addressModeS );
 		ic3OpenGLCheckLastResult();
@@ -57,7 +57,7 @@ namespace Ic3::Graphics::GCI
 		glSamplerParameteri( mGLHandle, GL_TEXTURE_MIN_FILTER, pSamplerState.minFilter );
 		ic3OpenGLCheckLastResult();
 
-	#if( ICFGX_GL_FEATURE_SUPPORT_TEXTURE_ANISOTROPIC_FILTER )
+	#if( IC3_GX_GL_FEATURE_SUPPORT_TEXTURE_ANISOTROPIC_FILTER )
 		if( pSamplerState.anisotropyLevel > 0 )
 		{
 			glSamplerParameteri( mGLHandle, GL_TEXTURE_MAX_ANISOTROPY, pSamplerState.anisotropyLevel );
@@ -71,8 +71,8 @@ namespace Ic3::Graphics::GCI
 		glSamplerParameterf( mGLHandle, GL_TEXTURE_MAX_LOD, pSamplerState.mipLODRange.second );
 		ic3OpenGLCheckLastResult();
 
-	#if( ICFGX_GL_FEATURE_SUPPORT_TEXTURE_EXTENDED_ADDRESS_MODE )
-		glSamplerParameterfv( mGLHandle, GL_TEXTURE_BORDER_COLOR, &( pSamplerState.borderColor.rgbaArray[0] ) );
+	#if( IC3_GX_GL_FEATURE_SUPPORT_TEXTURE_EXTENDED_ADDRESS_MODE )
+		glSamplerParameterfv( mGLHandle, GL_TEXTURE_BORDER_COLOR, &( pSamplerState.borderColor.mRGBA[0] ) );
 		ic3OpenGLCheckLastResult();
 	#endif
 

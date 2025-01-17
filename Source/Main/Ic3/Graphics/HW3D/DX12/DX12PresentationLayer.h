@@ -14,10 +14,10 @@ namespace Ic3::Graphics::GCI
 
 	struct DX12PresentationLayerCreateInfo : public PresentationLayerCreateInfo
 	{
-		Bitmask<UINT> dxgiFlags = 0;
+		cppx::bitmask<UINT> dxgiFlags = 0;
 	};
 
-	class ICFGX_DX12_CLASS DX12ScreenPresentationLayer final : public DXScreenPresentationLayer
+	class IC3_GX_DX12_CLASS DX12ScreenPresentationLayer final : public DXScreenPresentationLayer
 	{
 	public:
 		static constexpr uint32 sMinFrameQueueSize = 2;
@@ -26,20 +26,20 @@ namespace Ic3::Graphics::GCI
 		ComPtr<ID3D12Device> const mD3D12Device = nullptr;
 		ComPtr<ID3D12CommandQueue> const mD3D12PresentQueue = nullptr;
 
-		DX12ScreenPresentationLayer( DX12GPUDevice & pDevice, ComPtr<IDXGISwapChain3> pDXGISwapChain3, uint32 pFrameQueueSize = sMinFrameQueueSize );
+		DX12ScreenPresentationLayer( DX12GpuDevice & pDevice, ComPtr<IDXGISwapChain3> pDXGISwapChain3, uint32 pFrameQueueSize = sMinFrameQueueSize );
 		virtual ~DX12ScreenPresentationLayer();
 
-		virtual void bindRenderTarget( CommandContext * pCmdContext ) override;
+		virtual void BindRenderTarget( CommandContext * pCmdContext ) override;
 
-		virtual void invalidateRenderTarget( CommandContext * pCmdContext ) override;
+		virtual void InvalidateRenderTarget( CommandContext * pCmdContext ) override;
 
-		virtual void present() override;
+		virtual void Present() override;
 
-		static DX12ScreenPresentationLayerHandle create( DX12GPUDevice & pDX12Device, const DX12PresentationLayerCreateInfo & pCreateInfo );
+		static DX12ScreenPresentationLayerHandle Create( DX12GpuDevice & pDX12Device, const DX12PresentationLayerCreateInfo & pCreateInfo );
 
 	private:
-		bool _initializeRTVDescriptorHeap();
-		bool _initializeRTVResources();
+		bool _InitializeRTVDescriptorHeap();
+		bool _InitializeRTVResources();
 
 	private:
 		struct FrameResource

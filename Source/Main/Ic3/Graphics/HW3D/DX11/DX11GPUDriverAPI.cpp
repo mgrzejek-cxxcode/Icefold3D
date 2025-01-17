@@ -1,31 +1,31 @@
 
-#include "DX11GPUDriverAPI.h"
-#include "DX11GPUDriver.h"
-#include "DX11GPUDevice.h"
+#include "DX11GpuDriverAPI.h"
+#include "DX11GpuDriver.h"
+#include "DX11GpuDevice.h"
 #include "DX11presentationLayer.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	GPUDriverHandle DX11GPUDriverInterface::createDriver( const GPUDriverCreateInfo & pCreateInfo )
+	GpuDriverHandle DX11GpuDriverInterface::CreateDriver( const GpuDriverCreateInfo & pCreateInfo )
 	{
-		DX11GPUDriverCreateInfo dx11CreateInfo;
+		DX11GpuDriverCreateInfo dx11CreateInfo;
 		dx11CreateInfo.sysContext = pCreateInfo.sysContext;
 		dx11CreateInfo.sysContextCreateInfo = pCreateInfo.sysContextCreateInfo;
 		dx11CreateInfo.configFlags = pCreateInfo.configFlags;
 
-		return DX11GPUDriver::create( dx11CreateInfo );
+		return DX11GpuDriver::Create( dx11CreateInfo );
 	}
 
-	PresentationLayerHandle DX11GPUDriverInterface::createScreenPresentationLayer( GPUDevice & pDevice, const PresentationLayerCreateInfo & pCreateInfo )
+	PresentationLayerHandle DX11GpuDriverInterface::CreateScreenPresentationLayer( GpuDevice & pDevice, const PresentationLayerCreateInfo & pCreateInfo )
 	{
 		DX11PresentationLayerCreateInfo dx11CreateInfo;
 		dx11CreateInfo.screenRect = pCreateInfo.screenRect;
-		dx11CreateInfo.visualConfig = pCreateInfo.visualConfig;
-		dx11CreateInfo.displayConfigFlags = pCreateInfo.displayConfigFlags;
+		dx11CreateInfo.mVisualConfig = pCreateInfo.mVisualConfig;
+		dx11CreateInfo.mDisplayConfigFlags = pCreateInfo.mDisplayConfigFlags;
 
-		auto * deviceDX11 = pDevice.queryInterface<DX11GPUDevice>();
-		return DX11ScreenPresentationLayer::create( *deviceDX11, dx11CreateInfo );
+		auto * deviceDX11 = pDevice.QueryInterface<DX11GpuDevice>();
+		return DX11ScreenPresentationLayer::Create( *deviceDX11, dx11CreateInfo );
 	}
 
 } // namespace Ic3::Graphics::GCI

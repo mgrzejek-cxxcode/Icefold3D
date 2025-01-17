@@ -10,7 +10,7 @@ namespace Ic3::Graphics::GCI
 
 	GLVertexArrayObjectCache::~GLVertexArrayObjectCache() = default;
 
-	const GLVertexArrayObject & GLVertexArrayObjectCache::getOrCreate(
+	const GLVertexArrayObject & GLVertexArrayObjectCache::GetOrCreate(
 			const GLIAInputLayoutImmutableStateCompat & pInputLayoutState,
 			const GLIAVertexStreamImmutableState & pVertexStreamState )
 	{
@@ -22,7 +22,7 @@ namespace Ic3::Graphics::GCI
 		auto cachedEntryIter = _persistentVertexArrayObjectMap.find( cachedID );
 		if( cachedEntryIter == _persistentVertexArrayObjectMap.end() )
 		{
-			auto vertexArrayObject = smutil::createGLVertexArrayObjectLayoutStreamCombinedGL(
+			auto vertexArrayObject = SMU::CreateGLVertexArrayObjectLayoutStreamCombinedGL(
 					pInputLayoutState.mGLInputLayoutDefinition,
 					pVertexStreamState.mGLVertexStreamDefinition );
 
@@ -35,19 +35,19 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	const GLVertexArrayObject & GLVertexArrayObjectCache::getOrCreate(
+	const GLVertexArrayObject & GLVertexArrayObjectCache::GetOrCreate(
 			const GLIAInputLayoutDefinition & pInputLayoutDefinition,
 			const GLIAVertexStreamDefinition & pVertexStreamDefinition )
 	{
-		const auto hash1 = hashCompute<UniqueGPUObjectID::sHashAlgo1>( pInputLayoutDefinition );
-		const auto hash2 = hashCompute<UniqueGPUObjectID::sHashAlgo2>( pVertexStreamDefinition );
+		const auto hash1 = cppx::hash_compute<GfxObjectID::sHashAlgo1>( pInputLayoutDefinition );
+		const auto hash2 = cppx::hash_compute<GfxObjectID::sHashAlgo2>( pVertexStreamDefinition );
 
-		UniqueGPUObjectID vaoRefID{ hash1, hash2 };
+		GfxObjectID vaoRefID{ hash1, hash2 };
 
 		auto cachedEntryIter = _transientVertexArrayObjectMap.find( vaoRefID );
 		if( cachedEntryIter == _transientVertexArrayObjectMap.end() )
 		{
-			auto vertexArrayObject = smutil::createGLVertexArrayObjectLayoutStreamCombinedGL(
+			auto vertexArrayObject = SMU::CreateGLVertexArrayObjectLayoutStreamCombinedGL(
 					pInputLayoutDefinition,
 					pVertexStreamDefinition );
 

@@ -6,14 +6,14 @@
 
 #include "MTLPrerequisites.h"
 #include "State/MTL_pipelineImmutableStateFactory.h"
-#include <Ic3/Graphics/GCI/GPUDevice.h>
+#include <Ic3/Graphics/GCI/GpuDevice.h>
 #include <Ic3/Graphics/GCI/State/PipelineImmutableStateCache.h>
 
 namespace Ic3::Graphics::GCI
 {
 
 	/// @brief
-	class MetalGPUDevice : public GPUDevice
+	class MetalGpuDevice : public GpuDevice
 	{
 	public:
 		System::MetalDeviceHandle const mSysMetalDevice;
@@ -21,26 +21,26 @@ namespace Ic3::Graphics::GCI
 		id<MTLDevice> const mMTLDevice;
 
 	public:
-		explicit MetalGPUDevice( MetalGPUDriver & pGPUDriver, System::MetalDeviceHandle pSysMetalDevice );
-		virtual ~MetalGPUDevice();
+		explicit MetalGpuDevice( MetalGpuDriver & pGpuDriver, System::MetalDeviceHandle pSysMetalDevice );
+		virtual ~MetalGpuDevice();
 
-		virtual void waitForCommandSync( CommandSync & pCommandSync ) override;
+		virtual void WaitForCommandSync( CommandSync & pCommandSync ) override;
 
 	protected:
-		virtual void initializeCommandSystem() override;
+		virtual void InitializeCommandSystem() override;
 
 	private:
-	    virtual bool _drvOnSetPresentationLayer( PresentationLayerHandle pPresentationLayer ) override;
+	    virtual bool _DrvOnSetPresentationLayer( PresentationLayerHandle pPresentationLayer ) override;
 
-	    virtual GPUBufferHandle _drvCreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo ) override final;
-	    virtual SamplerHandle _drvCreateSampler( const SamplerCreateInfo & pCreateInfo ) override final;
-	    virtual ShaderHandle _drvCreateShader( const ShaderCreateInfo & pCreateInfo ) override final;
-	    virtual TextureHandle _drvCreateTexture( const TextureCreateInfo & pCreateInfo ) override final;
+	    virtual GpuBufferHandle _DrvCreateGpuBuffer( const GpuBufferCreateInfo & pCreateInfo ) override final;
+	    virtual SamplerHandle _DrvCreateSampler( const SamplerCreateInfo & pCreateInfo ) override final;
+	    virtual ShaderHandle _DrvCreateShader( const ShaderCreateInfo & pCreateInfo ) override final;
+	    virtual TextureHandle _DrvCreateTexture( const TextureCreateInfo & pCreateInfo ) override final;
 
-		virtual RenderTargetTextureHandle _drvCreateRenderTargetTexture(
+		virtual RenderTargetTextureHandle _DrvCreateRenderTargetTexture(
 				const RenderTargetTextureCreateInfo & pCreateInfo ) override final;
 
-		virtual GraphicsPipelineStateObjectHandle _drvCreateGraphicsPipelineStateObject(
+		virtual GraphicsPipelineStateObjectHandle _DrvCreateGraphicsPipelineStateObject(
 				const GraphicsPipelineStateObjectCreateInfo & pCreateInfo ) override final;
 
 	private:

@@ -4,7 +4,7 @@
 #ifndef __IC3_GRAPHICS_HW3D_DXCOMMON_PREREQUISITES_H__
 #define __IC3_GRAPHICS_HW3D_DXCOMMON_PREREQUISITES_H__
 
-#include <Ic3/Graphics/GCI/Memory/CommonGPUMemoryDefs.h>
+#include <Ic3/Graphics/GCI/Memory/CommonGpuMemoryDefs.h>
 
 #include <dxgi.h>
 #include <dxgi1_2.h>
@@ -18,18 +18,18 @@
 #endif
 
 #if( IC3_BUILD_STATIC )
-#  define ICFGX_DXCOMMON_API
-#  define ICFGX_DXCOMMON_CLASS
-#  define ICFGX_DXCOMMON_OBJ    extern
+#  define IC3_GX_DXCOMMON_API
+#  define IC3_GX_DXCOMMON_CLASS
+#  define IC3_GX_DXCOMMON_OBJ    extern
 #else
 #  if( IC3_DRIVER_GRAPHICS_HW3D_DXCOMMON_BUILD )
-#    define ICFGX_DXCOMMON_API    IC3_PCL_ATTR_DLL_EXPORT
-#    define ICFGX_DXCOMMON_CLASS  IC3_PCL_ATTR_DLL_EXPORT
-#    define ICFGX_DXCOMMON_OBJ    IC3_PCL_ATTR_DLL_EXPORT
+#    define IC3_GX_DXCOMMON_API    PCL_ATTR_DLL_EXPORT
+#    define IC3_GX_DXCOMMON_CLASS  PCL_ATTR_DLL_EXPORT
+#    define IC3_GX_DXCOMMON_OBJ    PCL_ATTR_DLL_EXPORT
 #  else
-#    define ICFGX_DXCOMMON_API    IC3_PCL_ATTR_DLL_IMPORT
-#    define ICFGX_DXCOMMON_CLASS  IC3_PCL_ATTR_DLL_IMPORT
-#    define ICFGX_DXCOMMON_OBJ    IC3_PCL_ATTR_DLL_IMPORT
+#    define IC3_GX_DXCOMMON_API    PCL_ATTR_DLL_IMPORT
+#    define IC3_GX_DXCOMMON_CLASS  PCL_ATTR_DLL_IMPORT
+#    define IC3_GX_DXCOMMON_OBJ    PCL_ATTR_DLL_IMPORT
 #  endif
 #endif
 
@@ -39,8 +39,8 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( DXGPUDevice );
-	ic3DeclareClassHandle( DXGPUDriver );
+	ic3DeclareClassHandle( DXGpuDevice );
+	ic3DeclareClassHandle( DXGpuDriver );
 	ic3DeclareClassHandle( DXPresentationLayer );
 
 } // namespace Ic3::Graphics::GCI

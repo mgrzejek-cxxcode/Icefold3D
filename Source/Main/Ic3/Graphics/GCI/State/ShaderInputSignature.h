@@ -4,7 +4,7 @@
 #ifndef __IC3_GRAPHICS_GCI_IS_H__
 #define __IC3_GRAPHICS_GCI_IS_H__
 
-#include "CommonGPUStateDefs.h"
+#include "CommonGpuStateDefs.h"
 #include "../Resources/ShaderCommon.h"
 #include <unordered_map>
 
@@ -73,12 +73,12 @@ namespace Ic3::Graphics::GCI
 	namespace CxDef
 	{
 
-		inline constexpr EShaderInputResourceClass getShaderInputResourceResourceClass( EShaderInputResourceType pResourceType )
+		inline constexpr EShaderInputResourceClass GetShaderInputResourceResourceClass( EShaderInputResourceType pResourceType )
 		{
 			return static_cast<EShaderInputResourceClass>( ( static_cast<uint32>( pResourceType ) >> 8u ) & 0xFFu );
 		}
 
-		inline constexpr TBitmask<EShaderStageFlags> getShaderConstantVisibilityStageMask( EShaderConstantAccessClass pAccessClass )
+		inline constexpr cppx::bitmask<EShaderStageFlags> GetShaderConstantVisibilityStageMask( EShaderConstantAccessClass pAccessClass )
 		{
 			return static_cast<uint32>( pAccessClass );
 		}
@@ -118,7 +118,7 @@ namespace Ic3::Graphics::GCI
 
 			shader_input_ref_id_t refID;
 			EShaderInputDescriptorType descriptorType;
-			TBitmask<EShaderStageFlags> shaderVisibilityMask;
+			cppx::bitmask<EShaderStageFlags> shaderVisibilityMask;
 
 			union
 			{
@@ -138,7 +138,7 @@ namespace Ic3::Graphics::GCI
 		using ConstantGroupArray = std::array<ConstantGroup, GCM::cxShaderCombinedStagesNum>;
 		using DescriptorSetArray = std::array<DescriptorSet, GCM::cxISMaxDescriptorSetsNum>;
 
-		TBitmask<EShaderStageFlags> activeShaderStagesMask;
+		cppx::bitmask<EShaderStageFlags> activeShaderStagesMask;
 		ConstantGroupArray constantGroupArray;
 		uint32 constantGroupsNum = 0;
 		DescriptorSetArray descriptorSetArray;
@@ -160,7 +160,7 @@ namespace Ic3::Graphics::GCI
 		shader_input_index_t iGlobalIndex;
 		shader_input_index_t iStageIndex;
 		EShaderConstantAccessClass iAccessClass;
-		TBitmask<EShaderStageFlags> iVisibilityMask;
+		cppx::bitmask<EShaderStageFlags> iVisibilityMask;
 	};
 
 	struct ShaderInputParameterDescriptor : public ShaderInputParameterBase
@@ -180,7 +180,7 @@ namespace Ic3::Graphics::GCI
 
 		EShaderInputDescriptorType dDescriptorType;
 		shader_input_index_t dSetIndex;
-		TBitmask<EShaderStageFlags> dShaderVisibilityMask;
+		cppx::bitmask<EShaderStageFlags> dShaderVisibilityMask;
 
 		union
 		{
@@ -195,7 +195,7 @@ namespace Ic3::Graphics::GCI
 		{
 			using CommonConstantArray = std::vector<ShaderInputParameterConstant>;
 
-			TBitmask<EShaderStageFlags> activeShaderStageMask;
+			cppx::bitmask<EShaderStageFlags> activeShaderStageMask;
 			CommonConstantArray commonConstantArray;
 			uint32 constantsNum;
 			uint32 dwordSize;
@@ -215,7 +215,7 @@ namespace Ic3::Graphics::GCI
 				uint32 arrayOffset;
 				uint32 setDescriptorsNum;
 				uint32 setIndex;
-				TBitmask<EShaderStageFlags> shaderVisibilityMask;
+				cppx::bitmask<EShaderStageFlags> shaderVisibilityMask;
 			};
 
 			using CommonDescriptorArray = std::vector<ShaderInputParameterDescriptor>;
@@ -236,7 +236,7 @@ namespace Ic3::Graphics::GCI
 		using ConstantMap = std::unordered_map<shader_input_ref_id_t, ShaderInputParameterConstant *>;
 		using DescriptorMap = std::unordered_map<shader_input_ref_id_t, ShaderInputParameterDescriptor *>;
 
-		TBitmask<EShaderStageFlags> activeShaderStagesMask;
+		cppx::bitmask<EShaderStageFlags> activeShaderStagesMask;
 		//
 		CommonParameterList commonParameterList;
 		//
@@ -265,13 +265,13 @@ namespace Ic3::Graphics::GCI
 			return ( dwordSize > 0 ) && !commonParameterList.empty();
 		}
 
-		const ShaderInputParameterConstant & getConstantInfo( shader_input_ref_id_t pParamRefID ) const
+		const ShaderInputParameterConstant & GetConstantInfo( shader_input_ref_id_t pParamRefID ) const
 		{
 			const auto * constantInfoPtr = constantMap.at( pParamRefID );
 			return *constantInfoPtr;
 		}
 
-		const ShaderInputParameterDescriptor & getDescriptorInfo( shader_input_ref_id_t pParamRefID ) const
+		const ShaderInputParameterDescriptor & GetDescriptorInfo( shader_input_ref_id_t pParamRefID ) const
 		{
 			const auto * descriptorInfoPtr = descriptorMap.at( pParamRefID );
 			return *descriptorInfoPtr;
@@ -281,7 +281,7 @@ namespace Ic3::Graphics::GCI
 	namespace SMU
 	{
 
-		IC3_GRAPHICS_GCI_API ShaderInputSignature createShaderInputSignature( const ShaderInputSignatureDesc & pSignatureDesc );
+		IC3_GRAPHICS_GCI_API ShaderInputSignature CreateShaderInputSignature( const ShaderInputSignatureDesc & pSignatureDesc );
 
 	}
 

@@ -10,46 +10,46 @@ namespace Ic3::Graphics::GCI
 
 	MTLGraphicsPipelineStateController::~MTLGraphicsPipelineStateController() = default;
 
-	bool MTLGraphicsPipelineStateController::applyStateChanges()
+	bool MTLGraphicsPipelineStateController::ApplyStateChanges()
 	{}
 
-	bool MTLGraphicsPipelineStateController::setGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO )
+	bool MTLGraphicsPipelineStateController::SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO )
 	{}
 
-	bool MTLGraphicsPipelineStateController::resetGraphicsPipelineStateObject()
+	bool MTLGraphicsPipelineStateController::ResetGraphicsPipelineStateObject()
 	{}
 
-	bool MTLGraphicsPipelineStateController::setIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState )
+	bool MTLGraphicsPipelineStateController::SetIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState )
 	{}
 
-	bool MTLGraphicsPipelineStateController::setIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState )
+	bool MTLGraphicsPipelineStateController::SetIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState )
 	{}
 
-	bool MTLGraphicsPipelineStateController::resetIAVertexStreamState()
+	bool MTLGraphicsPipelineStateController::ResetIAVertexStreamState()
 	{}
 
-	bool MTLGraphicsPipelineStateController::setRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState )
+	bool MTLGraphicsPipelineStateController::SetRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState )
 	{}
 
-	bool MTLGraphicsPipelineStateController::setRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState )
+	bool MTLGraphicsPipelineStateController::SetRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState )
 	{}
 
-	bool MTLGraphicsPipelineStateController::resetRenderTargetBindingState()
+	bool MTLGraphicsPipelineStateController::ResetRenderTargetBindingState()
 	{}
 
-	bool MTLGraphicsPipelineStateController::setViewport( const ViewportDesc & pViewportDesc )
+	bool MTLGraphicsPipelineStateController::SetViewport( const ViewportDesc & pViewportDesc )
 	{}
 
-	bool MTLGraphicsPipelineStateController::setShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData )
+	bool MTLGraphicsPipelineStateController::SetShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData )
 	{}
 
-	bool MTLGraphicsPipelineStateController::setShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer )
+	bool MTLGraphicsPipelineStateController::SetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GpuBuffer & pConstantBuffer )
 	{}
 
-	bool MTLGraphicsPipelineStateController::setShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture )
+	bool MTLGraphicsPipelineStateController::SetShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture )
 	{}
 
-	bool MTLGraphicsPipelineStateController::setShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler )
+	bool MTLGraphicsPipelineStateController::SetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler )
 	{}
 	
 }

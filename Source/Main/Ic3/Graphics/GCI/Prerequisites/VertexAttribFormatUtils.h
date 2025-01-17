@@ -14,7 +14,7 @@ namespace Ic3::Graphics::GCI
 	struct QBaseScalarDataTypeTraits<int8>
 	{
 		static constexpr auto sBaseDataType = EBaseDataType::Byte;
-		static constexpr auto sBaseDataFlags = eGPUDataFormatFlagTypeSignedBit;
+		static constexpr auto sBaseDataFlags = eGpuDataFormatFlagTypeSignedBit;
 		static constexpr auto sByteSize = 1;
 	};
 
@@ -22,7 +22,7 @@ namespace Ic3::Graphics::GCI
 	struct QBaseScalarDataTypeTraits<uint8>
 	{
 		static constexpr auto sBaseDataType = EBaseDataType::Ubyte;
-		static constexpr auto sBaseDataFlags = eGPUDataFormatFlagTypeUnsignedBit;
+		static constexpr auto sBaseDataFlags = eGpuDataFormatFlagTypeUnsignedBit;
 		static constexpr auto sByteSize = 1;
 	};
 
@@ -30,7 +30,7 @@ namespace Ic3::Graphics::GCI
 	struct QBaseScalarDataTypeTraits<int16>
 	{
 		static constexpr auto sBaseDataType = EBaseDataType::Int16;
-		static constexpr auto sBaseDataFlags = eGPUDataFormatFlagTypeSignedBit;
+		static constexpr auto sBaseDataFlags = eGpuDataFormatFlagTypeSignedBit;
 		static constexpr auto sByteSize = 2;
 	};
 
@@ -38,7 +38,7 @@ namespace Ic3::Graphics::GCI
 	struct QBaseScalarDataTypeTraits<uint16>
 	{
 		static constexpr auto sBaseDataType = EBaseDataType::Uint16;
-		static constexpr auto sBaseDataFlags = eGPUDataFormatFlagTypeUnsignedBit;
+		static constexpr auto sBaseDataFlags = eGpuDataFormatFlagTypeUnsignedBit;
 		static constexpr auto sByteSize = 2;
 	};
 
@@ -46,7 +46,7 @@ namespace Ic3::Graphics::GCI
 	struct QBaseScalarDataTypeTraits<int32>
 	{
 		static constexpr auto sBaseDataType = EBaseDataType::Int32;
-		static constexpr auto sBaseDataFlags = eGPUDataFormatFlagTypeSignedBit;
+		static constexpr auto sBaseDataFlags = eGpuDataFormatFlagTypeSignedBit;
 		static constexpr auto sByteSize = 4;
 	};
 
@@ -54,7 +54,7 @@ namespace Ic3::Graphics::GCI
 	struct QBaseScalarDataTypeTraits<uint32>
 	{
 		static constexpr auto sBaseDataType = EBaseDataType::Uint32;
-		static constexpr auto sBaseDataFlags = eGPUDataFormatFlagTypeUnsignedBit;
+		static constexpr auto sBaseDataFlags = eGpuDataFormatFlagTypeUnsignedBit;
 		static constexpr auto sByteSize = 4;
 	};
 
@@ -62,7 +62,7 @@ namespace Ic3::Graphics::GCI
 	struct QBaseScalarDataTypeTraits<float>
 	{
 		static constexpr auto sBaseDataType = EBaseDataType::Float32;
-		static constexpr auto sBaseDataFlags = eGPUDataFormatFlagTypeSignedBit;
+		static constexpr auto sBaseDataFlags = eGpuDataFormatFlagTypeSignedBit;
 		static constexpr auto sByteSize = 4;
 	};
 
@@ -97,9 +97,9 @@ namespace Ic3::Graphics::GCI
 		static constexpr auto sComponentSizeInBytes = sizeof( BaseDataType ) * tpSize;
 		static constexpr auto sSizeInBytes = sComponentSizeInBytes;
 
-		static constexpr auto sBaseAttribFormat = ( EVertexAttribFormat )CxDef::declareVertexAttribFormat(
-				QBaseScalarDataTypeTraits<TPScalar>::sBaseDataType,
+		static constexpr auto sBaseAttribFormat = ( EVertexAttribFormat )CxDef::makeVertexAttribFormatEnumValue(
 				tpSize,
+				QBaseScalarDataTypeTraits<TPScalar>::sBaseDataType,
 				QBaseScalarDataTypeTraits<TPScalar>::sBaseDataFlags );
 	};
 
@@ -113,9 +113,9 @@ namespace Ic3::Graphics::GCI
 		static constexpr auto sComponentSizeInBytes = sizeof( BaseDataType ) * tpColumns;
 		static constexpr auto sSizeInBytes = sComponentSizeInBytes * sAttribComponentsNum;
 
-		static constexpr auto sBaseAttribFormat = ( EVertexAttribFormat )CxDef::declareVertexAttribFormat(
-				QBaseScalarDataTypeTraits<TPScalar>::sBaseDataType,
+		static constexpr auto sBaseAttribFormat = ( EVertexAttribFormat )CxDef::makeVertexAttribFormatEnumValue(
 				tpColumns,
+				QBaseScalarDataTypeTraits<TPScalar>::sBaseDataType,
 				QBaseScalarDataTypeTraits<TPScalar>::sBaseDataFlags );
 	};
 
@@ -129,9 +129,9 @@ namespace Ic3::Graphics::GCI
 		static constexpr auto sComponentSizeInBytes = sizeof( BaseDataType ) * 4;
 		static constexpr auto sSizeInBytes = sComponentSizeInBytes * sAttribComponentsNum;
 
-		static constexpr auto sBaseAttribFormat = ( EVertexAttribFormat )CxDef::declareVertexAttribFormat(
-				QBaseScalarDataTypeTraits<uint8>::sBaseDataType,
+		static constexpr auto sBaseAttribFormat = ( EVertexAttribFormat )CxDef::makeVertexAttribFormatEnumValue(
 				4,
+				QBaseScalarDataTypeTraits<uint8>::sBaseDataType,
 				QBaseScalarDataTypeTraits<uint8>::sBaseDataFlags );
 	};
 
@@ -145,9 +145,9 @@ namespace Ic3::Graphics::GCI
 		static constexpr auto sComponentSizeInBytes = sizeof( BaseDataType ) * 4;
 		static constexpr auto sSizeInBytes = sComponentSizeInBytes * sAttribComponentsNum;
 
-		static constexpr auto sBaseAttribFormat = ( EVertexAttribFormat )CxDef::declareVertexAttribFormat(
-				QBaseScalarDataTypeTraits<float>::sBaseDataType,
+		static constexpr auto sBaseAttribFormat = ( EVertexAttribFormat )CxDef::makeVertexAttribFormatEnumValue(
 				4,
+				QBaseScalarDataTypeTraits<float>::sBaseDataType,
 				QBaseScalarDataTypeTraits<float>::sBaseDataFlags );
 	};
 

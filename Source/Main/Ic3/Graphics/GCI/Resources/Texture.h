@@ -4,17 +4,17 @@
 #ifndef __IC3_GRAPHICS_GCI_TEXTURE_H__
 #define __IC3_GRAPHICS_GCI_TEXTURE_H__
 
-#include "GPUResource.h"
+#include "GpuResource.h"
 #include "TextureReference.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	struct TextureProperties : public GPUResourceProperties
+	struct TextureProperties : public GpuResourceProperties
 	{
 	};
 
-	class Texture : public GPUResource
+	class Texture : public GpuResource
 	{
 		friend class CommandList;
 		friend class TextureReference;
@@ -24,28 +24,28 @@ namespace Ic3::Graphics::GCI
 		TextureLayout const mTextureLayout;
 
 		Texture(
-			GPUDevice & pGPUDevice,
+			GpuDevice & pGpuDevice,
 			const ResourceMemoryInfo & pResourceMemory,
 			const TextureProperties & pTextureProperties,
 			const TextureLayout & pTextureLayout );
 
 		virtual ~Texture();
 
-		IC3_ATTR_NO_DISCARD virtual const GPUResourceProperties & getProperties() const override final;
+		CPPX_ATTR_NO_DISCARD virtual const GpuResourceProperties & GetProperties() const override final;
 
-		IC3_ATTR_NO_DISCARD TextureSubResource getAllSubResourcesRef() const;
+		CPPX_ATTR_NO_DISCARD TextureSubResource GetAllSubResourcesRef() const;
 
-		IC3_ATTR_NO_DISCARD TextureSubResource getDefaultSubResourceRef() const;
+		CPPX_ATTR_NO_DISCARD TextureSubResource GetDefaultSubResourceRef() const;
 
-		static RenderTargetTextureHandle createDefaultRenderTargetTextureView(
-				GPUDevice & pGPUDevice,
+		static RenderTargetTextureHandle CreateDefaultRenderTargetTextureView(
+				GpuDevice & pGpuDevice,
 				const RenderTargetTextureCreateInfo & pCreateInfo );
 	};
 
 	namespace RCU
 	{
 
-		IC3_ATTR_NO_DISCARD TextureDimensions getValidTextureDimensions( ETextureClass pTexClass, const TextureDimensions & pDimensions );
+		CPPX_ATTR_NO_DISCARD TextureDimensions GetValidTextureDimensions( ETextureClass pTexClass, const TextureDimensions & pDimensions );
 
 	}
 

@@ -23,22 +23,22 @@ namespace Ic3::Graphics::GCI
 		virtual ~DisplayManager();
 
 		/// @brief
-		virtual void reset() = 0;
+		virtual void Reset() = 0;
 
 		/// @brief
-		virtual AdapterList enumAdapterList() const = 0;
+		virtual AdapterList EnumAdapterList() const = 0;
 
 		/// @brief
-		virtual AdapterDesc getDefaultAdapter() const = 0;
+		virtual AdapterDesc GetDefaultAdapter() const = 0;
 
 		/// @brief
-		virtual OutputList enumOutputList( display_system_id_t pAdapterID ) const = 0;
+		virtual OutputList EnumOutputList( display_system_id_t pAdapterID ) const = 0;
 
 		/// @brief
-		virtual OutputDesc getDefaultOutput( display_system_id_t pAdapterID ) const = 0;
+		virtual OutputDesc GetDefaultOutput( display_system_id_t pAdapterID ) const = 0;
 
 		/// @brief
-		virtual VideoModeList enumVideoModeList( display_system_id_t pOutputID, System::EColorFormat pFormat ) const = 0;
+		virtual VideoModeList EnumVideoModeList( display_system_id_t pOutputID, System::EColorFormat pFormat ) const = 0;
 	};
 
 } // namespace Ic3::Graphics::GCI

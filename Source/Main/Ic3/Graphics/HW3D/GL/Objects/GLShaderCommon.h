@@ -18,17 +18,17 @@ namespace Ic3::Graphics::GCI
 		ElementBindingMap samplerBindings;
 		ElementBindingMap uniformBlockBindings;
 
-		IC3_ATTR_NO_DISCARD bool empty() const noexcept
+		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept
 		{
 			return attributeLocations.empty() && fragDataLocations.empty() && samplerBindings.empty() && uniformBlockBindings.empty();
 		}
 	};
 
-	namespace rcutil
+	namespace RCU
 	{
 
-		bool processGLShaderSourceExplicitLayoutQualifiers(
-				const Version & pSupportedAPIVersion,
+		bool ProcessGLShaderSourceExplicitLayoutQualifiers(
+				const cppx::version & pSupportedAPIVersion,
 				std::string & pShaderSource,
 				GLShaderDataLayoutMap & pOutputLayoutMap );
 

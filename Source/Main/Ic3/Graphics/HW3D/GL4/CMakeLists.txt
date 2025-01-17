@@ -2,13 +2,13 @@
 set( IC3_GRAPHICS_HWAPI_GL4_SRC_FILES
         ${IC3_GRAPHICS_HWAPI_GL_SRC_FILES}
         "GL4Prerequisites.h"
-        "GL4GPUCmdCore.h"
-        "GL4GPUDevice.h"
-        "GL4GPUDevice.cpp"
-        "GL4GPUDriver.h"
-        "GL4GPUDriver.cpp"
-        "GL4GPUDriverAPI.h"
-        "GL4GPUDriverAPI.cpp"
+        "GL4GpuCmdCore.h"
+        "GL4GpuDevice.h"
+        "GL4GpuDevice.cpp"
+        "GL4GpuDriver.h"
+        "GL4GpuDriver.cpp"
+        "GL4GpuDriverAPI.h"
+        "GL4GpuDriverAPI.cpp"
         )
 
 message("${IC3_GRAPHICS_HWAPI_GL4_SRC_FILES}")

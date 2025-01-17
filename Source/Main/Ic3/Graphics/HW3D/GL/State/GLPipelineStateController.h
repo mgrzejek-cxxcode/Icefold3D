@@ -31,38 +31,38 @@ namespace Ic3::Graphics::GCI
 		GLGraphicsPipelineStateController();
 		~GLGraphicsPipelineStateController();
 
-		IC3_ATTR_NO_DISCARD const GLDrawTopologyProperties & getGLDrawTopologyProperties() const noexcept;
+		CPPX_ATTR_NO_DISCARD const GLDrawTopologyProperties & GetGLDrawTopologyProperties() const noexcept;
 
-		IC3_ATTR_NO_DISCARD const GLIAVertexStreamDefinition & getCurrentIAVertexStreamDefinition() const noexcept;
+		CPPX_ATTR_NO_DISCARD const GLIAVertexStreamDefinition & GetCurrentIAVertexStreamDefinition() const noexcept;
 
-		IC3_ATTR_NO_DISCARD GLRenderTargetBindingInfo getCurrentRenderTargetBindingInfo() const noexcept;
+		CPPX_ATTR_NO_DISCARD GLRenderTargetBindingInfo GetCurrentRenderTargetBindingInfo() const noexcept;
 
-		virtual bool applyStateChanges() override;
+		virtual bool ApplyStateChanges() override;
 
-		virtual bool setGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO ) override;
-		virtual bool resetGraphicsPipelineStateObject() override;
+		virtual bool SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO ) override;
+		virtual bool ResetGraphicsPipelineStateObject() override;
 
-		virtual bool setIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState ) override;
-		virtual bool setIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState ) override;
-		virtual bool resetIAVertexStreamState() override;
+		virtual bool SetIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState ) override;
+		virtual bool SetIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState ) override;
+		virtual bool ResetIAVertexStreamState() override;
 
-		virtual bool setRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState ) override;
-		virtual bool setRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState ) override;
-		virtual bool resetRenderTargetBindingState() override;
+		virtual bool SetRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState ) override;
+		virtual bool SetRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState ) override;
+		virtual bool ResetRenderTargetBindingState() override;
 
-		virtual bool setViewport( const ViewportDesc & pViewportDesc ) override;
-		virtual bool setShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData ) override;
-		virtual bool setShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer ) override;
-		virtual bool setShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture ) override;
-		virtual bool setShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler ) override;
-
-	private:
-		Bitmask<uint32> applyCommonGraphicsConfigState( const GLGraphicsPipelineStateObject & pGraphicsPSO );
-		static void applyGraphicsPipelineDynamicState( const GraphicsPipelineDynamicState & pDynamicState );
-		static void applyGLRenderTargetBinding( const GLRenderTargetBindingInfo & pGLRenderTargetBinding );
+		virtual bool SetViewport( const ViewportDesc & pViewportDesc ) override;
+		virtual bool SetShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData ) override;
+		virtual bool SetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GpuBuffer & pConstantBuffer ) override;
+		virtual bool SetShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture ) override;
+		virtual bool SetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler ) override;
 
 	private:
-		virtual void updateShaderInputInlineConstantData(
+		cppx::bitmask<uint32> ApplyCommonGraphicsConfigState( const GLGraphicsPipelineStateObject & pGraphicsPSO );
+		static void ApplyGraphicsPipelineDynamicState( const GraphicsPipelineDynamicState & pDynamicState );
+		static void ApplyGLRenderTargetBinding( const GLRenderTargetBindingInfo & pGLRenderTargetBinding );
+
+	private:
+		virtual void UpdateShaderInputInlineConstantData(
 				const GLGraphicsShaderLinkageImmutableState & pShaderState,
 				const ShaderInputParameterConstant & pConstantInfo,
 				const void * pConstantData ) = 0;
@@ -77,33 +77,33 @@ namespace Ic3::Graphics::GCI
 	class GLGraphicsPipelineStateControllerCore : public GLGraphicsPipelineStateController
 	{
 	public:
-		virtual bool applyStateChanges() override final;
+		virtual bool ApplyStateChanges() override final;
 
 	private:
-		virtual void updateShaderInputInlineConstantData(
+		virtual void UpdateShaderInputInlineConstantData(
 				const GLGraphicsShaderLinkageImmutableState & pShaderState,
 				const ShaderInputParameterConstant & pConstantInfo,
 				const void * pConstantData ) override final;
 
-		static void applyGLIAVertexBufferBindings( const GLIAVertexBuffersBindings & pVertexBufferBindings );
+		static void ApplyGLIAVertexBufferBindings( const GLIAVertexBuffersBindings & pVertexBufferBindings );
 	};
 
 	class GLGraphicsPipelineStateControllerCompat : public GLGraphicsPipelineStateController
 	{
 	public:
-		virtual bool applyStateChanges() override final;
+		virtual bool ApplyStateChanges() override final;
 
 	private:
-		virtual void updateShaderInputInlineConstantData(
+		virtual void UpdateShaderInputInlineConstantData(
 				const GLGraphicsShaderLinkageImmutableState & pShaderState,
 				const ShaderInputParameterConstant & pConstantInfo,
 				const void * pConstantData ) override final;
 
-		const GLVertexArrayObject & getCachedVertexArrayObject(
+		const GLVertexArrayObject & GetCachedVertexArrayObject(
 				const GLIAInputLayoutImmutableStateCompat & pInputLayoutState,
 				const GLIAVertexStreamImmutableState & pVertexStreamState );
 
-		const GLVertexArrayObject & getCachedVertexArrayObject(
+		const GLVertexArrayObject & GetCachedVertexArrayObject(
 				const GLIAInputLayoutDefinition & pInputLayoutDefinition,
 				const GLIAVertexStreamDefinition & pVertexStreamDefinition );
 

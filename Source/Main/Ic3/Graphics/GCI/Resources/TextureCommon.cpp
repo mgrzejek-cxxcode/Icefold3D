@@ -1,15 +1,15 @@
 
 #include "Texture.h"
-#include <Ic3/Cppx/Utilities.h>
+#include <cppx/utilities.h>
 
 namespace Ic3::Graphics::GCI
 {
 
 	TextureInitDataDesc::TextureInitDataDesc( TextureInitDataDesc && pSrcObject )
 	{
-		if( !pSrcObject.empty() )
+		if( !pSrcObject.IsEmpty() )
 		{
-			if( pSrcObject.isArray() )
+			if( pSrcObject.IsArray() )
 			{
 				_subTextureInitDataArray = std::move( pSrcObject._subTextureInitDataArray );
 				subTextureInitDataBasePtr = _subTextureInitDataArray.data();
@@ -25,15 +25,15 @@ namespace Ic3::Graphics::GCI
 
 	TextureInitDataDesc & TextureInitDataDesc::operator=( TextureInitDataDesc && pRhs )
 	{
-		TextureInitDataDesc( std::move( pRhs ) ).swap( *this );
+		TextureInitDataDesc( std::move( pRhs ) ).Swap( *this );
 		return *this;
 	}
 
 	TextureInitDataDesc::TextureInitDataDesc( const TextureInitDataDesc & pInitData )
 	{
-		if( !pInitData.empty() )
+		if( !pInitData.IsEmpty() )
 		{
-			if( pInitData.isArray() )
+			if( pInitData.IsArray() )
 			{
 				_subTextureInitDataArray = pInitData._subTextureInitDataArray;
 				subTextureInitDataBasePtr = _subTextureInitDataArray.data();
@@ -48,56 +48,56 @@ namespace Ic3::Graphics::GCI
 
 	TextureInitDataDesc & TextureInitDataDesc::operator=( const TextureInitDataDesc & pRhs )
 	{
-		TextureInitDataDesc( pRhs ).swap( *this );
+		TextureInitDataDesc( pRhs ).Swap( *this );
 		return *this;
 	}
 
-	void TextureInitDataDesc::initialize( const TextureDimensions & pDimensions )
+	void TextureInitDataDesc::Initialize( const TextureDimensions & pDimensions )
 	{
-		ic3DebugAssert( pDimensions.mArraySize > 0 );
-		ic3DebugAssert( pDimensions.mMipLevelsNum > 0 );
+		ic3DebugAssert( pDimensions.arraySize > 0 );
+		ic3DebugAssert( pDimensions.mipLevelsNum > 0 );
 
-		if( pDimensions.mArraySize == 1 )
+		if( pDimensions.arraySize == 1 )
 		{
 			subTextureInitDataBasePtr = &_subTextureInitData;
 		}
 		else
 		{
-			_subTextureInitDataArray.resize( pDimensions.mArraySize );
+			_subTextureInitDataArray.resize( pDimensions.arraySize );
 			subTextureInitDataBasePtr = _subTextureInitDataArray.data();
 		}
 
-		for( uint32 subTextureIndex = 0; subTextureIndex < pDimensions.mArraySize; ++subTextureIndex )
+		for( uint32 subTextureIndex = 0; subTextureIndex < pDimensions.arraySize; ++subTextureIndex )
 		{
 			auto & subTextureInitData = subTextureInitDataBasePtr[subTextureIndex];
-			subTextureInitData.mSubTextureIndex = subTextureIndex;
+			subTextureInitData.subTextureIndex = subTextureIndex;
 
-			uint32 mipLevelWidth = pDimensions.mWidth;
-			uint32 mipLevelHeight = pDimensions.mHeight;
-			uint32 mipLevelDepth = pDimensions.mDepth;
+			uint32 mipLevelWidth = pDimensions.width;
+			uint32 mipLevelHeight = pDimensions.height;
+			uint32 mipLevelDepth = pDimensions.depth;
 
-			for( uint32 mipLevelIndex = 0; mipLevelIndex < pDimensions.mMipLevelsNum; ++mipLevelIndex )
+			for( uint32 mipLevelIndex = 0; mipLevelIndex < pDimensions.mipLevelsNum; ++mipLevelIndex )
 			{
-				auto & mipLevelInitData = subTextureInitData.mMipLevelInitDataArray[mipLevelIndex];
-				mipLevelInitData.mMipLevelIndex = mipLevelIndex;
-				mipLevelInitData.mMipWidth = mipLevelWidth;
-				mipLevelInitData.mMipHeight = mipLevelHeight;
-				mipLevelInitData.mMipDepth = mipLevelDepth;
+				auto & mipLevelInitData = subTextureInitData.mipLevelInitDataArray[mipLevelIndex];
+				mipLevelInitData.mipLevelIndex = mipLevelIndex;
+				mipLevelInitData.mipWidth = mipLevelWidth;
+				mipLevelInitData.mipHeight = mipLevelHeight;
+				mipLevelInitData.mipDepth = mipLevelDepth;
 
-				mipLevelWidth = getMaxOf( mipLevelWidth >> 1, 1u );
-				mipLevelHeight = getMaxOf( mipLevelHeight >> 1, 1u );
-				mipLevelDepth = getMaxOf( mipLevelDepth >> 1, 1u );
+				mipLevelWidth = cppx::get_max_of( mipLevelWidth >> 1, 1u );
+				mipLevelHeight = cppx::get_max_of( mipLevelHeight >> 1, 1u );
+				mipLevelDepth = cppx::get_max_of( mipLevelDepth >> 1, 1u );
 			}
 
-			if( pDimensions.mMipLevelsNum > 1 )
+			if( pDimensions.mipLevelsNum > 1 )
 			{
-				const auto & sMipLevel = subTextureInitData.mMipLevelInitDataArray[pDimensions.mMipLevelsNum - 2];
-				ic3DebugAssert((sMipLevel.mMipWidth != 1 ) || (sMipLevel.mMipHeight != 1 ) || (sMipLevel.mMipDepth != 1 ) );
+				const auto & sMipLevel = subTextureInitData.mipLevelInitDataArray[pDimensions.mipLevelsNum - 2];
+				ic3DebugAssert((sMipLevel.mipWidth != 1 ) || (sMipLevel.mipHeight != 1 ) || (sMipLevel.mipDepth != 1 ) );
 			}
 		}
 	}
 
-	void TextureInitDataDesc::swap( TextureInitDataDesc & pOther )
+	void TextureInitDataDesc::Swap( TextureInitDataDesc & pOther )
 	{
 		if( _subTextureInitDataArray.empty() )
 		{
@@ -110,12 +110,12 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	bool TextureInitDataDesc::isArray() const
+	bool TextureInitDataDesc::IsArray() const
 	{
 		return !_subTextureInitDataArray.empty();
 	}
 
-	bool TextureInitDataDesc::empty() const
+	bool TextureInitDataDesc::IsEmpty() const
 	{
 		return subTextureInitDataBasePtr == nullptr;
 	}
@@ -142,7 +142,7 @@ namespace Ic3::Graphics::GCI
 
 		static const TextureLayout sInvalidTextureLayout {
 			ETextureClass::Unknown,
-			ETextureFormat::Unknown,
+			ETextureFormat::Undefined,
 			TextureDimensions {
 				0, 0, 0, 0, 0
 			},
@@ -151,22 +151,22 @@ namespace Ic3::Graphics::GCI
 			0
 		};
 
-		bool checkTextureFormatAndBindFlagsCompatibility(
+		bool CheckTextureFormatAndBindFlagsCompatibility(
 				ETextureFormat pTextureFormat,
-				TBitmask<resource_flags_value_t> pBindFlags )
+				cppx::bitmask<resource_flags_value_t> pBindFlags )
 		{
-			if( pBindFlags.isSet( eGPUResourceUsageMaskRenderTargetDepthStencil ) )
+			if( pBindFlags.is_set( eGpuResourceUsageMaskRenderTargetDepthStencil ) )
 			{
 				return ( pTextureFormat == ETextureFormat::D24UNS8U );
 			}
-			else if( pBindFlags.isSet( eGPUResourceUsageFlagRenderTargetDepthBit ) )
+			else if( pBindFlags.is_set( eGpuResourceUsageFlagRenderTargetDepthBit ) )
 			{
 				return
 					( pTextureFormat == ETextureFormat::D16UN ) ||
 					( pTextureFormat == ETextureFormat::D24UNX8 ) ||
 					( pTextureFormat == ETextureFormat::D32F );
 			}
-			else if( pBindFlags.isSet( eGPUResourceUsageFlagRenderTargetStencilBit ) )
+			else if( pBindFlags.is_set( eGpuResourceUsageFlagRenderTargetStencilBit ) )
 			{
 				return ( pTextureFormat == ETextureFormat::X24S8U );
 			}
@@ -174,23 +174,23 @@ namespace Ic3::Graphics::GCI
 			return false;
 		}
 
-		const TextureLayout & queryTextureLayout( TextureHandle pTexture ) noexcept
+		const TextureLayout & QueryTextureLayout( TextureHandle pTexture ) noexcept
 		{
 			return pTexture ? pTexture->mTextureLayout : sInvalidTextureLayout;
 		}
 
-		RenderTargetTextureLayout queryRenderTargetTextureLayoutForTexture( TextureHandle pTexture ) noexcept
+		RenderTargetTextureLayout QueryRenderTargetTextureLayoutForTexture( TextureHandle pTexture ) noexcept
 		{
-			return pTexture ? queryRenderTargetTextureLayoutForTexture( pTexture->mTextureLayout ) : RenderTargetTextureLayout{};
+			return pTexture ? QueryRenderTargetTextureLayoutForTexture( pTexture->mTextureLayout ) : RenderTargetTextureLayout{};
 		}
 
-		RenderTargetTextureLayout queryRenderTargetTextureLayoutForTexture( const TextureLayout & pTextureLayout ) noexcept
+		RenderTargetTextureLayout QueryRenderTargetTextureLayoutForTexture( const TextureLayout & pTextureLayout ) noexcept
 		{
 			RenderTargetTextureLayout rttLayout{};
-			rttLayout.mInternalFormat = pTextureLayout.mInternalFormat;
-			rttLayout.mMSAALevel = pTextureLayout.mMSAALevel;
-			rttLayout.mImageRect.mWidth = pTextureLayout.mDimensions.mWidth;
-			rttLayout.mImageRect.mHeight = pTextureLayout.mDimensions.mHeight;
+			rttLayout.internalFormat = pTextureLayout.internalFormat;
+			rttLayout.msaaLevel = pTextureLayout.msaaLevel;
+			rttLayout.imageRect.width = pTextureLayout.dimensions.width;
+			rttLayout.imageRect.height = pTextureLayout.dimensions.height;
 			return rttLayout;
 		}
 

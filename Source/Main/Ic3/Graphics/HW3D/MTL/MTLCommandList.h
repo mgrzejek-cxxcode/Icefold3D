@@ -28,25 +28,25 @@ namespace Ic3::Graphics::GCI
 		MetalCommandList( MetalCommandSystem & pMTLCommandSystem, ECommandListType pListType, id<MTLCommandQueue> pMTLCommandQueue );
 		virtual ~MetalCommandList();
 
-		virtual bool beginRenderPass(
+		virtual bool BeginRenderPass(
 				const RenderPassConfigurationImmutableState & pRenderPassState,
-				Bitmask<ECommandListActionFlags> pFlags ) override;
+				cppx::bitmask<ECommandListActionFlags> pFlags ) override;
 
-		virtual bool beginRenderPass(
+		virtual bool BeginRenderPass(
 				const RenderPassConfigurationDynamicState & pRenderPassState,
-				Bitmask<ECommandListActionFlags> pFlags ) override;
+				cppx::bitmask<ECommandListActionFlags> pFlags ) override;
 
-		virtual void endRenderPass() override;
+		virtual void EndRenderPass() override;
 
-		virtual void beginCommandSequence() override;
-		virtual void endCommandSequence() override;
+		virtual void BeginCommandSequence() override;
+		virtual void EndCommandSequence() override;
 
-		virtual void cmdDrawDirectIndexed( native_uint pIndicesNum, native_uint pIndicesOffset, native_uint pBaseVertexIndex ) override;
-		virtual void cmdDrawDirectIndexedInstanced( native_uint pIndicesNumPerInstance, native_uint pInstancesNum, native_uint pIndicesOffset ) override;
-		virtual void cmdDrawDirectNonIndexed( native_uint pVerticesNum, native_uint pVerticesOffset ) override;
-		virtual void cmdDrawDirectNonIndexedInstanced( native_uint pVerticesNumPerInstance, native_uint pInstancesNum, native_uint pVerticesOffset ) override;
+		virtual void CmdDrawDirectIndexed( native_uint pIndicesNum, native_uint pIndicesOffset, native_uint pBaseVertexIndex ) override;
+		virtual void CmdDrawDirectIndexedInstanced( native_uint pIndicesNumPerInstance, native_uint pInstancesNum, native_uint pIndicesOffset ) override;
+		virtual void CmdDrawDirectNonIndexed( native_uint pVerticesNum, native_uint pVerticesOffset ) override;
+		virtual void CmdDrawDirectNonIndexedInstanced( native_uint pVerticesNumPerInstance, native_uint pInstancesNum, native_uint pVerticesOffset ) override;
 
-		virtual void cmdExecuteDeferredContext( CommandContextDeferred & pDeferredContext ) override;
+		virtual void CmdExecuteDeferredContext( CommandContextDeferred & pDeferredContext ) override;
 
 	private:
 		id<MTLRenderCommandEncoder> _currentPassCommandEncoder;

@@ -1,5 +1,5 @@
 
-#include "MTLAPITranslationLayer.h"
+#include "MTLApiTranslationLayer.h"
 #include <Ic3/Graphics/GCI/Resources/TextureCommon.h>
 #include <Ic3/Graphics/GCI/State/SamplerCommon.h>
 #include <Ic3/Math/Color.h>

@@ -1,5 +1,5 @@
 
-#include "CommonGPUMemoryDefs.h"
+#include "CommonGpuMemoryDefs.h"
 
 namespace Ic3::Graphics::GCI
 {
@@ -7,10 +7,10 @@ namespace Ic3::Graphics::GCI
 	namespace memutil
 	{
 
-		bool checkMemoryMapAccess( EGPUMemoryMapMode pRequestedMapMode, TBitmask<EGPUMemoryFlags> pMemoryFlags )
+		bool checkMemoryMapAccess( EGpuMemoryMapMode pRequestedMapMode, cppx::bitmask<EGpuMemoryFlags> pMemoryFlags )
 		{
-			auto mapRequestedAccessFlags = static_cast<uint32>( pRequestedMapMode ) & eGPUMemoryMapFlagAccessReadWriteBit;
-			return pMemoryFlags.isSet( mapRequestedAccessFlags );
+			auto mapRequestedAccessFlags = static_cast<uint32>( pRequestedMapMode ) & eGpuMemoryMapFlagAccessReadWriteBit;
+			return pMemoryFlags.is_set( mapRequestedAccessFlags );
 		}
 
 		StructuredResourceAlignedMemory alignStructuredResourceDataAuto(
@@ -25,7 +25,7 @@ namespace Ic3::Graphics::GCI
 			return resourceMemory;
 		}
 
-		DynamicByteArray alignStructuredResourceData(
+		cppx::dynamic_byte_array alignStructuredResourceData(
 				const void * pData,
 				native_uint pElementSize,
 				native_uint pElementsNum,
@@ -41,7 +41,7 @@ namespace Ic3::Graphics::GCI
 			return alignStructuredResourceData( pData, memoryMetrics );
 		}
 
-		DynamicByteArray alignStructuredResourceData(
+		cppx::dynamic_byte_array alignStructuredResourceData(
 				const void * pData,
 				const StructuredResourceAlignedMemoryMetrics & pMetrics )
 		{
@@ -49,17 +49,17 @@ namespace Ic3::Graphics::GCI
 
 			const auto paddingSize = pMetrics.elementSizeAligned - pMetrics.elementSize;
 
-			DynamicByteArray alignedData;
+			cppx::dynamic_byte_array alignedData;
 			alignedData.resize( pMetrics.storageSizeAligned );
 
-			auto byteView = bindMemoryView( pData, pMetrics.storageSize );
+			auto byteView = cppx::bind_memory_view( pData, pMetrics.storageSize );
 			const auto * srcPtr = byteView.data();
 			auto * targetPtr = alignedData.data();
 
 			for( native_uint elementIndex = 0; elementIndex < pMetrics.elementsNum; ++elementIndex )
 			{
-				memCopyUnchecked( targetPtr, pMetrics.elementSizeAligned, srcPtr, pMetrics.elementSize );
-				memFillUnchecked( targetPtr + pMetrics.elementSize, pMetrics.elementSizeAligned, 0, paddingSize );
+				cppx::mem_copy_unchecked( targetPtr, pMetrics.elementSizeAligned, srcPtr, pMetrics.elementSize );
+				cppx::mem_set_fill_unchecked( targetPtr + pMetrics.elementSize, pMetrics.elementSizeAligned, 0, paddingSize );
 
 				srcPtr += pMetrics.elementSize;
 				targetPtr += pMetrics.storageSizeAligned;
@@ -84,7 +84,7 @@ namespace Ic3::Graphics::GCI
 
 		gpu_memory_size_t computeStructuredResourceAlignedStride( gpu_memory_size_t pElementSize )
 		{
-			return memGetAlignedValue( pElementSize, 16 );
+			return cppx::mem_get_aligned_value( pElementSize, 16 );
 		}
 
 	}

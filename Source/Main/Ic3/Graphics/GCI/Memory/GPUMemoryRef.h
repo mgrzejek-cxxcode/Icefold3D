@@ -4,24 +4,22 @@
 #ifndef __IC3_GRAPHICS_GCI_GPU_MEMORY_POOL_H__
 #define __IC3_GRAPHICS_GCI_GPU_MEMORY_POOL_H__
 
-#include "CommonGPUMemoryDefs.h"
-#include <Ic3/CoreLib/Sync/SpinLock.h>
-#include <Ic3/CoreLib/Sync/SyncInterface.h>
+#include "CommonGpuMemoryDefs.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	class GPUMemoryRef
+	class GpuMemoryRef
 	{
 	public:
-		GPUMemoryPool * const mSourcePool;
+		GpuMemoryPool * const mSourcePool;
 
-		GPUMemoryRef( GPUMemoryPool & pSourcePool, const GPUMemoryRegion & pPoolSubRegion );
-		~GPUMemoryRef();
+		GpuMemoryRef( GpuMemoryPool & pSourcePool, const GpuMemoryRegion & pPoolSubRegion );
+		~GpuMemoryRef();
 
-		IC3_ATTR_NO_DISCARD bool empty() const;
+		CPPX_ATTR_NO_DISCARD bool empty() const;
 
-		IC3_ATTR_NO_DISCARD bool isMemoryLocked() const;
+		CPPX_ATTR_NO_DISCARD bool IsMemoryLocked() const;
 
 		void lockMemory();
 
@@ -30,8 +28,8 @@ namespace Ic3::Graphics::GCI
 		void unlockMemory();
 
 	private:
-		GPUMemoryRegion _poolSubRegion;
-		Sync::AutoSharedLock<Sync::SharedSpinLock> _poolMemoryLock;
+		GpuMemoryRegion _poolSubRegion;
+		//Sync::TAutoSharedLock<Sync::SharedSpinLock> _poolMemoryLock;
 		std::atomic<uint32_t> _poolMemoryLockStatus;
 	};
 

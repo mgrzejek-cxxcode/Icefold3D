@@ -24,32 +24,32 @@ namespace Ic3::Graphics::GCI
 		System::MetalDisplaySurfaceHandle const mSysMetalDisplaySurface;
 
 	public:
-		MetalPresentationLayer( MetalGPUDevice & pGPUDevice, System::MetalDisplaySurfaceHandle pSysMetalDisplaySurface );
+		MetalPresentationLayer( MetalGpuDevice & pGpuDevice, System::MetalDisplaySurfaceHandle pSysMetalDisplaySurface );
 		virtual ~MetalPresentationLayer();
 
-		virtual System::EventSource * getInternalSystemEventSource() const noexcept override;
+		virtual System::EventSource * GetInternalSystemEventSource() const noexcept override;
 	};
 
 	class GLScreenPresentationLayer final : public MetalPresentationLayer
 	{
 	public:
-		GLScreenPresentationLayer( MetalGPUDevice & pGPUDevice, System::MetalDisplaySurfaceHandle pSysMetalDisplaySurface );
+		GLScreenPresentationLayer( MetalGpuDevice & pGpuDevice, System::MetalDisplaySurfaceHandle pSysMetalDisplaySurface );
 		virtual ~GLScreenPresentationLayer();
 
-		virtual void bindRenderTarget( CommandContext * pCmdContext ) override;
+		virtual void BindRenderTarget( CommandContext * pCmdContext ) override;
 
-		virtual void invalidateRenderTarget( CommandContext * pCmdContext ) override;
+		virtual void InvalidateRenderTarget( CommandContext * pCmdContext ) override;
 
-		virtual void present() override;
+		virtual void Present() override;
 
 		virtual void resize( uint32 pWidth, uint32 pHeight ) override;
 
-		virtual void setFullscreenMode( bool pEnable ) override;
+		virtual void SetFullscreenMode( bool pEnable ) override;
 
-		virtual Ic3::Math::Vec2u32 queryRenderTargetSize() const override;
+		virtual Ic3::Math::Vec2u32 QueryRenderTargetSize() const override;
 
 		/// @brief Creates new swap chain using provided create params.
-		static GLScreenPresentationLayerHandle create( GLGPUDevice & pDevice, const MetalPresentationLayerCreateInfo & pCreateInfo );
+		static GLScreenPresentationLayerHandle Create( GLGpuDevice & pDevice, const MetalPresentationLayerCreateInfo & pCreateInfo );
 	};
 
 } // namespace Ic3::Graphics::GCI

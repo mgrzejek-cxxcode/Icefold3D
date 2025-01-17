@@ -11,20 +11,20 @@ namespace Ic3::Graphics::GCI
 	class MetalPipelineImmutableStateFactory : public PipelineImmutableStateFactory
 	{
 	public:
-		MetalGPUDevice & mMetalGPUDevice;
+		MetalGpuDevice & mMetalGpuDevice;
 
 	public:
-		MetalPipelineImmutableStateFactory( MetalGPUDevice & pMetalGPUDevice );
+		MetalPipelineImmutableStateFactory( MetalGpuDevice & pMetalGpuDevice );
 		virtual ~MetalPipelineImmutableStateFactory();
 
-		virtual BlendImmutableStateHandle createBlendState( const BlendConfig & pConfig ) override final;
-		virtual DepthStencilImmutableStateHandle createDepthStencilState( const DepthStencilConfig & pConfig ) override final;
-		virtual GraphicsShaderLinkageImmutableStateHandle createGraphicsShaderLinkageState( const GraphicsShaderSet & pShaderSet ) override final;
-		virtual IAInputLayoutImmutableStateHandle createIAInputLayoutState( const IAInputLayoutDefinition & pDefinition, Shader & pVertexShaderWithBinary ) override final;
-		virtual IAVertexStreamImmutableStateHandle createIAVertexStreamState( const IAVertexStreamDefinition & pDefinition ) override final;
-		virtual RasterizerImmutableStateHandle createRasterizerState( const RasterizerConfig & pConfig ) override final;
-		virtual RenderTargetBindingImmutableStateHandle createRenderTargetBindingState( const RenderTargetBindingDefinition & pDefinition ) override final;
-		virtual RenderPassConfigurationImmutableStateHandle createRenderPassState( const RenderPassConfiguration & pConfiguration ) override final;
+		virtual BlendImmutableStateHandle CreateBlendState( const BlendConfig & pConfig ) override final;
+		virtual DepthStencilImmutableStateHandle CreateDepthStencilState( const DepthStencilConfig & pConfig ) override final;
+		virtual GraphicsShaderLinkageImmutableStateHandle CreateGraphicsShaderLinkageState( const GraphicsShaderSet & pShaderSet ) override final;
+		virtual IAInputLayoutImmutableStateHandle CreateIAInputLayoutState( const IAInputLayoutDefinition & pDefinition, Shader & pVertexShaderWithBinary ) override final;
+		virtual IAVertexStreamImmutableStateHandle CreateIAVertexStreamState( const IAVertexStreamDefinition & pDefinition ) override final;
+		virtual RasterizerImmutableStateHandle CreateRasterizerState( const RasterizerConfig & pConfig ) override final;
+		virtual RenderTargetBindingImmutableStateHandle CreateRenderTargetBindingState( const RenderTargetBindingDefinition & pDefinition ) override final;
+		virtual RenderPassConfigurationImmutableStateHandle CreateRenderPassState( const RenderPassConfiguration & pConfiguration ) override final;
 	};
 
 }

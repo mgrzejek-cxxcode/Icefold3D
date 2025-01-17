@@ -1,18 +1,18 @@
 
 #include "CommandSystem.h"
-#include "GPUDevice.h"
-#include <Ic3/Cppx/STLHelperAlgo.h>
+#include "GpuDevice.h"
+#include <cppx/stdHelperAlgo.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	CommandSystem::CommandSystem( GPUDevice & pGPUDevice )
-	: GPUDeviceChildObject( pGPUDevice )
+	CommandSystem::CommandSystem( GpuDevice & pGpuDevice )
+	: GpuDeviceChildObject( pGpuDevice )
 	{}
 
 	CommandSystem::~CommandSystem() = default;
 
-	bool CommandSystem::setQueueAlias( gpu_cmd_device_queue_id_t pAliasID, gpu_cmd_device_queue_id_t pMappedID )
+	bool CommandSystem::SetQueueAlias( gpu_cmd_device_queue_id_t pAliasID, gpu_cmd_device_queue_id_t pMappedID )
 	{
 		if((pAliasID == eDeviceCommandQueueIdUnknown ) || (pMappedID == eDeviceCommandQueueIdUnknown ) )
 		{
@@ -27,7 +27,7 @@ namespace Ic3::Graphics::GCI
 		return false;
 	}
 
-	bool CommandSystem::removeQueueAlias( gpu_cmd_device_queue_id_t pAliasID )
+	bool CommandSystem::RemoveQueueAlias( gpu_cmd_device_queue_id_t pAliasID )
 	{
 		auto aliasIter = _deviceQueueAliasMap.find( pAliasID );
 		if( aliasIter != _deviceQueueAliasMap.end() )
@@ -38,15 +38,15 @@ namespace Ic3::Graphics::GCI
 		return false;
 	}
 
-	bool CommandSystem::checkQueueAlias( gpu_cmd_device_queue_id_t pAliasID ) const
+	bool CommandSystem::CheckQueueAlias( gpu_cmd_device_queue_id_t pAliasID ) const
 	{
-		return resolveQueueID( pAliasID ) != pAliasID;
+		return ResolveQueueID( pAliasID ) != pAliasID;
 	}
 
-	gpu_cmd_device_queue_id_t CommandSystem::resolveQueueID( gpu_cmd_device_queue_id_t pQueueID ) const
+	gpu_cmd_device_queue_id_t CommandSystem::ResolveQueueID( gpu_cmd_device_queue_id_t pQueueID ) const
 	{
 		// Check if the specified ID is an alias. If so, the actual queue ID is the resolved name.
-		auto resolvedID = Cppx::getMapValueRefOrDefault( _deviceQueueAliasMap, pQueueID, eDeviceCommandQueueIdUnknown );
+		auto resolvedID = cppx::get_map_value_ref_or_default( _deviceQueueAliasMap, pQueueID, eDeviceCommandQueueIdUnknown );
 		if( resolvedID == eDeviceCommandQueueIdUnknown )
 		{
 			// If no such alias could be found, we assume this is a direct ID of a queue.

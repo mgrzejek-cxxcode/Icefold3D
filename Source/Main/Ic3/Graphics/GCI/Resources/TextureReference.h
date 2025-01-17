@@ -26,38 +26,38 @@ namespace Ic3::Graphics::GCI
 		explicit operator bool() const noexcept;
 
 		/// @brief Returns a pointer to the referenced texture. This can be null if the reference is empty().
-		IC3_ATTR_NO_DISCARD TextureHandle getRefTexture() const noexcept;
+		CPPX_ATTR_NO_DISCARD TextureHandle GetRefTexture() const noexcept;
 
 		/// @brief Returns a pointer to the referenced texture. This can be null if the reference is empty().
-		IC3_ATTR_NO_DISCARD ETextureFormat getRefTextureFormat() const noexcept;
+		CPPX_ATTR_NO_DISCARD ETextureFormat GetRefTextureFormat() const noexcept;
 
 		/// @brief
-		IC3_ATTR_NO_DISCARD const TextureSubResource & getRefSubResource() const noexcept;
+		CPPX_ATTR_NO_DISCARD const TextureSubResource & GetRefSubResource() const noexcept;
 
 		/// @brief Returns true if this instance represents a valid binding.
-		IC3_ATTR_NO_DISCARD bool empty() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept;
 
 		/// @brief
-		IC3_ATTR_NO_DISCARD bool valid() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsValid() const noexcept;
 
 		/// @brief
-		bool setRefTexture( TextureHandle pTexture );
+		bool SetRefTexture( TextureHandle pTexture );
 
 		/// @brief
-		bool setRefTexture( TextureHandle pTexture, const TextureSubResource & pReferencedSubResource );
+		bool SetRefTexture( TextureHandle pTexture, const TextureSubResource & pReferencedSubResource );
 
 		/// @brief
-		bool reset();
+		bool Reset();
 
 	private:
-		bool _setRefTextureInternal( TextureHandle pTexture, const TextureSubResource & pReferencedSubResource = {} );
+		bool _SetRefTextureInternal( TextureHandle pTexture, const TextureSubResource & pReferencedSubResource = {} );
 
 	private:
 		/// A handle to the referenced texture object. If the reference is empty, the handle is null.
 		TextureHandle _refTextureObject = nullptr;
 
 		/// The format of the referenced texture. If the reference is empty, the format is ETextureFormat::UNKNOWN.
-		ETextureFormat _refTextureFormat = ETextureFormat::Unknown;
+		ETextureFormat _refTextureFormat = ETextureFormat::Undefined;
 
 		/// The referenced sub-resource of the texture.
 		TextureSubResource _refSubResource;
@@ -70,32 +70,32 @@ namespace Ic3::Graphics::GCI
 
 	inline TextureReference::operator bool() const noexcept
 	{
-		return !empty();
+		return !IsEmpty();
 	}
 
-	inline TextureHandle TextureReference::getRefTexture() const noexcept
+	inline TextureHandle TextureReference::GetRefTexture() const noexcept
 	{
 		return _refTextureObject;
 	}
 
-	inline ETextureFormat TextureReference::getRefTextureFormat() const noexcept
+	inline ETextureFormat TextureReference::GetRefTextureFormat() const noexcept
 	{
 		return _refTextureFormat;
 	}
 
-	inline const TextureSubResource & TextureReference::getRefSubResource() const noexcept
+	inline const TextureSubResource & TextureReference::GetRefSubResource() const noexcept
 	{
 		return _refSubResource;
 	}
 
-	inline bool TextureReference::empty() const noexcept
+	inline bool TextureReference::IsEmpty() const noexcept
 	{
 		return !_refTextureObject || !_refSubResource;
 	}
 
-	inline bool TextureReference::valid() const noexcept
+	inline bool TextureReference::IsValid() const noexcept
 	{
-		return _refTextureObject && RCU::checkTextureSubResource( _refTextureObject, _refSubResource );
+		return _refTextureObject && RCU::CheckTextureSubResource( _refTextureObject, _refSubResource );
 	}
 
 } // namespace Ic3::Graphics::GCI

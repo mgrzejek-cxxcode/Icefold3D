@@ -4,7 +4,7 @@
 #ifndef __IC3_GRAPHICS_COMMON_GRAPHICS_CORE_METRICS_H__
 #define __IC3_GRAPHICS_COMMON_GRAPHICS_CORE_METRICS_H__
 
-#include <Ic3/Platform/Platform.h>
+#include "GraphicsCoreDefs.h"
 
 namespace Ic3::Graphics
 {
@@ -15,11 +15,15 @@ namespace Ic3::Graphics
 	namespace GCM
 	{
 
-		constexpr gcm_value_t cxIAMaxVertexAttributesNum = 16;
+		constexpr gcm_value_t cxIAGenericInputArraySize = 16;
+
+		constexpr gcm_value_t cxIAMaxVertexAttributesNum = cxIAGenericInputArraySize;
 
 		constexpr gcm_value_t cxIAMaxVertexAttributeComponentsNum = 4;
 
-		constexpr gcm_value_t cxIAMaxVertexBufferBindingsNum = 16;
+		constexpr gcm_value_t cxIAMaxVertexAttributeSemanticGroupSize = 4;
+
+		constexpr gcm_value_t cxIAMaxVertexBufferBindingsNum = cxIAGenericInputArraySize;
 
 		constexpr gcm_value_t cxIAMaxVertexStreamsNum = cxIAMaxVertexBufferBindingsNum;
 

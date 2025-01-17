@@ -1,62 +1,62 @@
 
-#include "GL4GPUDriver.h"
-#include "GL4GPUDevice.h"
+#include "GL4GpuDriver.h"
+#include "GL4GpuDevice.h"
 #include <Ic3/Graphics/HW3D/GL/GLPresentationLayer.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	GL4GPUDriver::GL4GPUDriver( System::OpenGLSystemDriverHandle pSysGLDriver )
-	: GLGPUDriver( pSysGLDriver )
+	GL4GpuDriver::GL4GpuDriver( System::OpenGLSystemDriverHandle pSysGLDriver )
+	: GLGpuDriver( pSysGLDriver )
 	{}
 
-	GL4GPUDriver::~GL4GPUDriver() = default;
+	GL4GpuDriver::~GL4GpuDriver() = default;
 
-	GL4GPUDriverHandle GL4GPUDriver::create( const GL4GPUDriverCreateInfo & pCreateInfo )
+	GL4GpuDriverHandle GL4GpuDriver::Create( const GL4GpuDriverCreateInfo & pCreateInfo )
 	{
-		constexpr auto gl4SupportedGPUConfigFlags =
-			E_GPU_DRIVER_CONFIG_FLAG_ENABLE_DEBUG_LAYER_BIT |
-			E_GPU_DRIVER_CONFIG_FLAG_ENABLE_SHADER_DEBUG_INFO_BIT;
+		constexpr auto gl4SupportedGpuConfigFlags =
+				eGpuDriverConfigFlagEnableDebugLayerBit |
+				eGpuDriverConfigFlagEnableShaderDebugInfoBit;
 
 		auto sysContext = pCreateInfo.sysContext;
 		if( !sysContext )
 		{
-			sysContext = System::Platform::createSysContext( pCreateInfo.sysContextCreateInfo );
+			sysContext = System::Platform::CreateSysContext( pCreateInfo.sysContextCreateInfo );
 			if( !sysContext )
 			{
 				return nullptr;
 			}
 		}
 
-		auto sysGLDriver = initializeSysGLDriver( sysContext );
+		auto sysGLDriver = InitializeSysGLDriver( sysContext );
 		if( !sysGLDriver )
 		{
 			return nullptr;
 		}
 
-		auto gl4Driver = createGPUAPIObject<GL4GPUDriver>( sysGLDriver );
-		gl4Driver->setConfigFlags( pCreateInfo.configFlags & gl4SupportedGPUConfigFlags );
+		auto gl4Driver = CreateGfxObject<GL4GpuDriver>( sysGLDriver );
+		gl4Driver->SetConfigFlags( pCreateInfo.configFlags & gl4SupportedGpuConfigFlags );
 
 		return gl4Driver;
 	}
 
-	DisplayManagerHandle GL4GPUDriver::_drvCreateDefaultDisplayManager()
+	DisplayManagerHandle GL4GpuDriver::_DrvCreateDefaultDisplayManager()
 	{
 		return nullptr;
 	}
 
-	GPUDeviceHandle GL4GPUDriver::_drvCreateDevice( const GPUDeviceCreateInfo & pCreateInfo )
+	GpuDeviceHandle GL4GpuDriver::_DrvCreateDevice( const GpuDeviceCreateInfo & pCreateInfo )
 	{
-		GL4GPUDeviceCreateInfo createInfo;
+		GL4GpuDeviceCreateInfo createInfo;
 		createInfo.adapterID = pCreateInfo.adapterID;
 		createInfo.flags = pCreateInfo.flags;
 
-		return GL4GPUDevice::create( *this, createInfo );
+		return GL4GpuDevice::Create( *this, createInfo );
 	}
 
-	EGPUDriverID GL4GPUDriver::queryGPUDriverID() const noexcept
+	EGpuDriverID GL4GpuDriver::QueryGpuDriverID() const noexcept
 	{
-		return EGPUDriverID::GDIOpenGLDesktop4;
+		return EGpuDriverID::GDIOpenGLDesktop4;
 	}
 
 } // namespace Ic3::Graphics::GCI

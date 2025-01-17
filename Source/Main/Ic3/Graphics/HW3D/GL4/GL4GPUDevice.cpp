@@ -1,29 +1,29 @@
 
-#include "GL4GPUDevice.h"
-#include "GL4GPUDriver.h"
-#include "GL4GPUCmdCore.h"
+#include "GL4GpuDevice.h"
+#include "GL4GpuDriver.h"
+#include "GL4GpuCmdCore.h"
 #include <Ic3/Graphics/HW3D/GL/GLPresentationLayer.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	GL4GPUDevice::GL4GPUDevice( GL4GPUDriver & pDriver )
-	: GL4GPUDeviceBase( pDriver )
+	GL4GpuDevice::GL4GpuDevice( GL4GpuDriver & pDriver )
+	: GL4GpuDeviceBase( pDriver )
 	{}
 
-	GL4GPUDevice::~GL4GPUDevice() = default;
+	GL4GpuDevice::~GL4GpuDevice() = default;
 
-	GL4GPUDeviceHandle GL4GPUDevice::create( GL4GPUDriver & pDriver, const GL4GPUDeviceCreateInfo & pCreateInfo )
+	GL4GpuDeviceHandle GL4GpuDevice::Create( GL4GpuDriver & pDriver, const GL4GpuDeviceCreateInfo & pCreateInfo )
 	{
-		auto driverConfigFlags = pDriver.getConfigFlags();
-		auto gl4GPUDevice = createGPUAPIObject<GL4GPUDevice>( pDriver );
+		auto driverConfigFlags = pDriver.GetConfigFlags();
+		auto gl4GpuDevice = CreateGfxObject<GL4GpuDevice>( pDriver );
 
-		if( driverConfigFlags.isSet( E_GPU_DRIVER_CONFIG_FLAG_ENABLE_DEBUG_LAYER_BIT ) )
+		if( driverConfigFlags.is_set( eGpuDriverConfigFlagEnableDebugLayerBit ) )
 		{
-			gl4GPUDevice->initializeGLDebugOutput();
+			gl4GpuDevice->InitializeGLDebugOutput();
 		}
 
-		return gl4GPUDevice;
+		return gl4GpuDevice;
 	}
 
 } // namespace Ic3::Graphics::GCI

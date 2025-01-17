@@ -10,20 +10,19 @@ namespace Ic3::Graphics::GCI
 	ic3EnableCustomExceptionSupport();
 	ic3EnableEnumTypeInfoSupport();
 
-	template <typename TPClass>
-	using TGPAHandle = TSharedHandle<TPClass>;
+#define Ic3GCIDeclareClassHandle( pClassName ) ic3DeclareClassHandle( pClassName )
+#define Ic3GCIDeclareTypedefHandle( pAliasName, pTypeName ) ic3DeclareTypedefHandle( pAliasName, pTypeName )
 
-	using UniqueGPUObjectID = HFSIdentifier;
-	using UniqueGPUObjectName = std::string;
+	/// A special constant which can be used for object IDs to indicate that ID should be assigned automatically.
+	/// In most cases it is safe to assume that object address will be used as the ID (unless stated otherwise).
+	inline constexpr GfxObjectID cxGpuObjectIDAuto { cppx::meta::limits<uint64>::max_value };
 
-	template <typename TPInput>
-	inline UniqueGPUObjectID generateUniqueGPUObjectID( const TPInput & pInput )
-	{
-		return generateHFSIdentifier( pInput );
-	}
+	/// An invalid object ID. Such IDs may refer to objects which are either uninitialised, marked for deletion,
+	/// or do not yet exist in the object management system. This ID also means "not found" in case of queries.
+	inline constexpr GfxObjectID cxGpuObjectIDInvalid { cppx::meta::limits<uint64>::max_value - 1 };
 
-#define ic3GpaDeclareClassHandle( pClassName ) ic3DeclareClassHandle( pClassName )
-#define ic3GpaDeclareTypedefHandle( pAliasName, pTypeName ) ic3DeclareTypedefHandle( pAliasName, pTypeName )
+	///
+	inline constexpr GfxObjectID cxGpuObjectIDEmpty { 0 };
 
 	namespace CxDef
 	{
@@ -41,34 +40,25 @@ namespace Ic3::Graphics::GCI
 		// constexpr uint32 GPU_SYSTEM_METRIC_RES_MAX_TEXTURE_UNITS_NUM = 32;
 		// constexpr uint32 GPU_SYSTEM_METRIC_TEXTURE_MAX_MIP_LEVELS_NUM = 16;
 
-		/// A special constant which can be used for object IDs to indicate that ID should be assigned automatically.
-		/// In most cases it is safe to assume that object address will be used as the ID (unless stated otherwise).
-		inline constexpr UniqueGPUObjectID GPU_OBJECT_ID_AUTO { Cppx::QLimits<uint64>::sMaxValue };
-
-		/// An invalid object ID. Such IDs may refer to objects which are either uninitialised, marked for deletion,
-		/// or do not yet exist in the object management system. This ID also means "not found" in case of queries.
-		inline constexpr UniqueGPUObjectID GPU_OBJECT_ID_INVALID { Cppx::QLimits<uint64>::sMaxValue - 1 };
-
 		///
-		inline constexpr UniqueGPUObjectID GPU_OBJECT_ID_EMPTY { 0 };
-
-		///
-		inline constexpr bool isUniqueGPUObjectIDValid( UniqueGPUObjectID pUniqueID ) noexcept
+		inline constexpr bool IsGfxObjectIDValid( GfxObjectID pUniqueID ) noexcept
 		{
-			return ( pUniqueID != GPU_OBJECT_ID_INVALID ) && ( pUniqueID != GPU_OBJECT_ID_EMPTY );
+			return ( pUniqueID != cxGpuObjectIDInvalid ) && ( pUniqueID != cxGpuObjectIDEmpty );
 		}
 
 	}
 
-	enum EGPUDriverConfigFlags : uint32
+	enum EGpuDriverConfigFlags : uint32
 	{
-		eGPUDriverConfigFlagEnableDebugLayerBit         = 0x0001,
-		eGPUDriverConfigFlagEnableShaderDebugInfoBit    = 0x0002 | eGPUDriverConfigFlagEnableDebugLayerBit,
-		eGPUDriverConfigFlagDisableMultiThreadAccessBit = 0x0010,
-		eGPUDriverConfigFlagForceCompatibilityBit       = 0x0100,
-		eGPUDriverConfigFlagForceCoreProfileBit         = 0x0200,
-		eGPUDriverConfigFlagUseReferenceDriverBit       = 0x8000,
-		eGPUDriverConfigMaskDefault                     = 0
+		eGpuDriverConfigFlagEnableDebugLayerBit         = 0x0001,
+		eGpuDriverConfigFlagEnableShaderDebugInfoBit    = 0x0002 | eGpuDriverConfigFlagEnableDebugLayerBit,
+		eGpuDriverConfigFlagDisableMultiThreadAccessBit = 0x0010,
+		eGpuDriverConfigFlagForceCompatibilityBit       = 0x0100,
+		eGpuDriverConfigFlagForceCoreProfileBit         = 0x0200,
+		eGpuDriverConfigFlagUseReferenceDriverBit       = 0x8000,
+		eGpuDriverConfigMaskDefault                     = 0,
+		
+		eGpu_DRIVER_CONFIG_MASK_DEFAULT
 	};
 
 	/// @brief A set of index values for supported shader stages.
@@ -84,7 +74,7 @@ namespace Ic3::Graphics::GCI
 		eShaderStageIndexCompute,
 
 		/// Base stage index, i.e. index of the first supported stage. Values below this one are not valid stage indexes.
-		/// To compute a zero-based index, subtract this from a valid stage index or use CxDef::getShaderStageAbsoluteIndex().
+		/// To compute a zero-based index, subtract this from a valid stage index or use CxDef::GetShaderStageAbsoluteIndex().
 		eShaderStageIndexBase = eShaderStageIndexGraphicsVertex,
 
 		/// Index of the last graphics stage. Used to verify if a specified index is a valid graphics stage index.
@@ -137,27 +127,27 @@ namespace Ic3::Graphics::GCI
 
 		/// @brief Returns an EShaderStageIndex matching the specified shader stage index value.
 		/// @return Corresponding EShaderStageIndex for valid index values or E_SHADER_STAGE_INDEX_INVALID otherwise.
-		IC3_ATTR_NO_DISCARD inline constexpr EShaderStageIndex getShaderStageIndexFromValue( native_uint pStageIndex )
+		CPPX_ATTR_NO_DISCARD inline constexpr EShaderStageIndex GetShaderStageIndexFromValue( native_uint pStageIndex )
 		{
 			return (pStageIndex <= eShaderStageIndexMax ) ? static_cast<EShaderStageIndex>( pStageIndex ) : eShaderStageIndexInvalid;
 		}
 
 		/// @brief Returns a 32-bit value which is a bit flag matching the shader stage specified using its index.
 		/// @return One of E_SHADER_STAGE_FLAG_xxx values for a valid stage index or 0 otherwise, returned as uint32.
-		IC3_ATTR_NO_DISCARD inline constexpr uint32 makeShaderStageBit( native_uint pStageIndex )
+		CPPX_ATTR_NO_DISCARD inline constexpr uint32 makeShaderStageBit( native_uint pStageIndex )
 		{
 			return ( 1 << static_cast<EShaderStageIndex>( pStageIndex ) ) & eShaderStageMaskAll;
 		}
 
 		/// @brief Returns a 32-bit value which is a bit flag matching the graphics shader stage specified using its index.
 		/// @return One of E_SHADER_STAGE_FLAG_GRAPHICS_xxx values for a valid stage index or 0 otherwise, returned as uint32.
-		IC3_ATTR_NO_DISCARD inline constexpr uint32 makeGraphicsShaderStageBit( native_uint pGraphicsStageIndex )
+		CPPX_ATTR_NO_DISCARD inline constexpr uint32 makeGraphicsShaderStageBit( native_uint pGraphicsStageIndex )
 		{
 			return ( 1 << static_cast<EShaderStageIndex>( pGraphicsStageIndex ) ) & eShaderStageMaskGraphicsAll;
 		}
 
 		/// @brief
-		IC3_ATTR_NO_DISCARD inline constexpr EShaderStageFlags makeGraphicsShaderStageFlag( native_uint pGraphicsStageIndex )
+		CPPX_ATTR_NO_DISCARD inline constexpr EShaderStageFlags makeGraphicsShaderStageFlag( native_uint pGraphicsStageIndex )
 		{
 			return static_cast<EShaderStageFlags>( makeGraphicsShaderStageBit( static_cast<EShaderStageIndex>( pGraphicsStageIndex ) ) );
 		}

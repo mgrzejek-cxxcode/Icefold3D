@@ -9,7 +9,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3GLDeclareOpenGLObjectHandle( GLVertexArrayObject );
+	Ic3GLDeclareOpenGLObjectHandle( GLVertexArrayObject );
 
 	class GLVertexArrayObject : public GLObject
 	{
@@ -17,10 +17,10 @@ namespace Ic3::Graphics::GCI
 		GLVertexArrayObject( GLuint pHandle );
 		virtual ~GLVertexArrayObject();
 
-		virtual bool release();
-		virtual bool validateHandle() const;
+		virtual bool Release();
+		virtual bool ValidateHandle() const;
 
-		static GLVertexArrayObjectHandle create();
+		static GLVertexArrayObjectHandle Create();
 	};
 
 } // namespace Ic3::Graphics::GCI

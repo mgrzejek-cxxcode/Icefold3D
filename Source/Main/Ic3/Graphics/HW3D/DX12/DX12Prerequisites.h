@@ -14,18 +14,18 @@
 #include <d3d12shader.h>
 
 #if( IC3_BUILD_STATIC )
-#  define ICFGX_DX12_API
-#  define ICFGX_DX12_CLASS
-#  define ICFGX_DX12_OBJ    extern
+#  define IC3_GX_DX12_API
+#  define IC3_GX_DX12_CLASS
+#  define IC3_GX_DX12_OBJ    extern
 #else
 #  if( IC3_DRIVER_GRAPHICS_HW3D_DX12_BUILD )
-#    define ICFGX_DX12_API    IC3_PCL_ATTR_DLL_EXPORT
-#    define ICFGX_DX12_CLASS  IC3_PCL_ATTR_DLL_EXPORT
-#    define ICFGX_DX12_OBJ    IC3_PCL_ATTR_DLL_EXPORT
+#    define IC3_GX_DX12_API    PCL_ATTR_DLL_EXPORT
+#    define IC3_GX_DX12_CLASS  PCL_ATTR_DLL_EXPORT
+#    define IC3_GX_DX12_OBJ    PCL_ATTR_DLL_EXPORT
 #  else
-#    define ICFGX_DX12_API    IC3_PCL_ATTR_DLL_IMPORT
-#    define ICFGX_DX12_CLASS  IC3_PCL_ATTR_DLL_IMPORT
-#    define ICFGX_DX12_OBJ    IC3_PCL_ATTR_DLL_IMPORT
+#    define IC3_GX_DX12_API    PCL_ATTR_DLL_IMPORT
+#    define IC3_GX_DX12_CLASS  PCL_ATTR_DLL_IMPORT
+#    define IC3_GX_DX12_OBJ    PCL_ATTR_DLL_IMPORT
 #  endif
 #endif
 
@@ -35,9 +35,9 @@ namespace Ic3::Graphics::GCI
 {
 
 	ic3DeclareClassHandle( DX12CommandContext );
-	ic3DeclareClassHandle( DX12GPUCmdManager );
-	ic3DeclareClassHandle( DX12GPUDevice );
-	ic3DeclareClassHandle( DX12GPUDriver );
+	ic3DeclareClassHandle( DX12GpuCmdManager );
+	ic3DeclareClassHandle( DX12GpuDevice );
+	ic3DeclareClassHandle( DX12GpuDriver );
 	ic3DeclareClassHandle( DX12PresentationLayer );
 
 } // namespace Ic3::Graphics::GCI

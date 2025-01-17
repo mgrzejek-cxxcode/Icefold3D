@@ -4,9 +4,9 @@
 #ifndef __IC3_GRAPHICS_GCI_COMMON_STATE_DEFS_H__
 #define __IC3_GRAPHICS_GCI_COMMON_STATE_DEFS_H__
 
-#include "../Memory/CommonGPUMemoryDefs.h"
-#include "../Resources/CommonGPUResourceDefs.h"
-#include <Ic3/Cppx/Hash.h>
+#include "../Memory/CommonGpuMemoryDefs.h"
+#include "../Resources/CommonGpuResourceDefs.h"
+#include <cppx/hash.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -28,19 +28,19 @@ namespace Ic3::Graphics::GCI
 	class RenderTargetBindingDynamicState;
 	class RenderPassConfigurationDynamicState;
 
-	ic3GpaDeclareClassHandle( GPUDeviceChildObject );
-	ic3GpaDeclareClassHandle( PipelineStateObject );
-	ic3GpaDeclareClassHandle( ComputePipelineStateObject );
-	ic3GpaDeclareClassHandle( GraphicsPipelineStateObject );
+	Ic3GCIDeclareClassHandle( GpuDeviceChildObject );
+	Ic3GCIDeclareClassHandle( PipelineStateObject );
+	Ic3GCIDeclareClassHandle( ComputePipelineStateObject );
+	Ic3GCIDeclareClassHandle( GraphicsPipelineStateObject );
 
-	ic3GpaDeclareClassHandle( BlendImmutableState );
-	ic3GpaDeclareClassHandle( DepthStencilImmutableState );
-	ic3GpaDeclareClassHandle( GraphicsShaderLinkageImmutableState );
-	ic3GpaDeclareClassHandle( IAInputLayoutImmutableState );
-	ic3GpaDeclareClassHandle( IAVertexStreamImmutableState );
-	ic3GpaDeclareClassHandle( RasterizerImmutableState );
-	ic3GpaDeclareClassHandle( RenderTargetBindingImmutableState );
-	ic3GpaDeclareClassHandle( RenderPassConfigurationImmutableState );
+	Ic3GCIDeclareClassHandle( BlendImmutableState );
+	Ic3GCIDeclareClassHandle( DepthStencilImmutableState );
+	Ic3GCIDeclareClassHandle( GraphicsShaderLinkageImmutableState );
+	Ic3GCIDeclareClassHandle( IAInputLayoutImmutableState );
+	Ic3GCIDeclareClassHandle( IAVertexStreamImmutableState );
+	Ic3GCIDeclareClassHandle( RasterizerImmutableState );
+	Ic3GCIDeclareClassHandle( RenderTargetBindingImmutableState );
+	Ic3GCIDeclareClassHandle( RenderPassConfigurationImmutableState );
 
 	using pipeline_internal_state_hash_t = uint64;
 	using render_target_index_t = uint16;
@@ -53,7 +53,7 @@ namespace Ic3::Graphics::GCI
 	constexpr auto cxPipelineInternalStateIDInvalid = 0u;
 
 	///
-	constexpr auto cxRRAttachmentMSAALevelInvalid = QLimits<uint32>::sMaxValue;
+	constexpr auto cxRRAttachmentMSAALevelInvalid = cppx::meta::limits<uint32>::max_value;
 
 	///
 	constexpr auto cxPipelineImmutableStateTypesNum = 8u;
@@ -68,13 +68,13 @@ namespace Ic3::Graphics::GCI
 		}
 
 		/// @brief
-		inline constexpr bool isRTAttachmentIndexValid( native_uint pIndex )
+		inline constexpr bool IsRTAttachmentIndexValid( native_uint pIndex )
 		{
 			return pIndex < GCM::cxRTMaxCombinedAttachmentsNum;
 		}
 
 		/// @brief
-		inline constexpr bool isRTColorAttachmentIndexValid( native_uint pIndex )
+		inline constexpr bool IsRTColorAttachmentIndexValid( native_uint pIndex )
 		{
 			return pIndex < GCM::cxRTMaxColorAttachmentsNum;
 		}
@@ -121,7 +121,7 @@ namespace Ic3::Graphics::GCI
 		eRTAttachmentFlagColor7Bit       = CxDef::makeRTAttachmentFlag( eRTAttachmentIndexColor7 ),
 		eRtAttachmentFlagDepthStencilBit = CxDef::makeRTAttachmentFlag( eRTAttachmentIndexDepthStencil ),
 
-		eRTAttachmentMaskColorAll      = Cppx::makeLSFBitmask<uint32>( GCM::cxRTMaxColorAttachmentsNum ),
+		eRTAttachmentMaskColorAll      = cppx::make_lsfb_bitmask<uint32>( GCM::cxRTMaxColorAttachmentsNum ),
 		eRTAttachmentMaskAll           = eRTAttachmentMaskColorAll | eRtAttachmentFlagDepthStencilBit,
 		eRTAttachmentMaskDefaultC0DS   = eRTAttachmentFlagColor0Bit | eRtAttachmentFlagDepthStencilBit,
 		eRTAttachmentMaskDefaultDSOnly = eRTAttachmentFlagColor0Bit | eRtAttachmentFlagDepthStencilBit,
@@ -164,27 +164,27 @@ namespace Ic3::Graphics::GCI
 
 	struct RenderTargetAttachmentClearConfig
 	{
-		Math::RGBAColorR32Norm mColorValue;
+		Math::RGBAColorR32Norm colorValue;
 
-		float mDepthValue = 1.0f;
+		float depthValue = 1.0f;
 
-		uint8 mStencilValue = 0;
+		uint8 stencilValue = 0;
 	};
 
 	struct GraphicsPipelineDynamicState
 	{
 		// Bitmask which describes what part of the state is active and should be used when the rendering is executed.
-		TBitmask<EGraphicsPipelineDynamicStateFlags> mActiveStateMask = 0;
+		cppx::bitmask<EGraphicsPipelineDynamicStateFlags> activeStateMask = 0;
 
 		// Constant color used for blending. Overrides color specified as a part of the BlendState within a PSO.
-		Math::RGBAColorR32Norm mBlendConstantColor;
+		Math::RGBAColorR32Norm blendConstantColor;
 
 		// Global clear values used to clear attachments when a render pass starts. It overrides clear settings
 		// for *ALL* attachments for which "Clear" was defined as the "Load" action in a given render pass.
-		RenderTargetAttachmentClearConfig mCommonClearConfig;
+		RenderTargetAttachmentClearConfig commonClearConfig;
 
 		// Ref value used for stencil testing. If this is not set and stencil testing is enabled, 0 is used by default.
-		uint8 mStencilTestRefValue = 0;
+		uint8 stencilTestRefValue = 0;
 	};
 
 } // namespace Ic3::Graphics::GCI
