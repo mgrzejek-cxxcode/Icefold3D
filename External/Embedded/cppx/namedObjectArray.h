@@ -2,8 +2,8 @@
 #ifndef __CPPX_NAMED_OBJECT_ARRAY_H__
 #define __CPPX_NAMED_OBJECT_ARRAY_H__
 
-#include "Hash.h"
-#include "SortedArray.h"
+#include "hash.h"
+#include "sortedArray.h"
 #include <unordered_map>
 
 namespace cppx

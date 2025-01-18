@@ -2,7 +2,7 @@
 #ifndef __CPPX_FLAT_MAP_H__
 #define __CPPX_FLAT_MAP_H__
 
-#include "SortedArray.h"
+#include "sortedArray.h"
 
 namespace cppx
 {

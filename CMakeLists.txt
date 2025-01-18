@@ -15,6 +15,8 @@ set( CMAKE_CXX_EXTENSIONS OFF )
 
 project( Icefold )
 
+message("ROOT: ${CMAKE_CURRENT_SOURCE_DIR}")
+
 include( "CMake/CMakeLists.txt" )
 
 if( "${CM_EBS_SYSCONF_HOST_COMPILER}" STREQUAL "GCC" )

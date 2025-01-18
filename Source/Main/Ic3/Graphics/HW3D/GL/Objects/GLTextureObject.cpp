@@ -1,6 +1,6 @@
 
 #include "GLTextureObject.h"
-#include <Ic3/Graphics/HW3D/GL/GLApiTranslationLayer.h>
+#include <Ic3/Graphics/HW3D/GL/GLAPITranslationLayer.h>
 
 namespace Ic3::Graphics::GCI
 {

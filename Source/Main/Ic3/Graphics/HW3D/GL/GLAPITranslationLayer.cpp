@@ -1,5 +1,5 @@
 
-#include "GLApiTranslationLayer.h"
+#include "GLAPITranslationLayer.h"
 #include <Ic3/Graphics/GCI/Resources/GPUBufferCommon.h>
 #include <Ic3/Graphics/GCI/Resources/ShaderCommon.h>
 #include <Ic3/Graphics/GCI/Resources/TextureCommon.h>

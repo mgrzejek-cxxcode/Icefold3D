@@ -1,7 +1,7 @@
 
 #include "DX11CommandList.h"
 #include "DX11CommandSystem.h"
-#include "DX11ApiTranslationLayer.h"
+#include "DX11APITranslationLayer.h"
 #include "DX11GPUDevice.h"
 #include "Resources/DX11GPUBuffer.h"
 #include "Resources/DX11Sampler.h"

@@ -1,7 +1,7 @@
 
 #include "MTLsampler.h"
 #include "../MTLUDevice.h"
-#include "../MTL_ApiTranslationLayer.h"
+#include "../MTL_APITranslationLayer.h"
 
 namespace Ic3::Graphics::GCI
 {

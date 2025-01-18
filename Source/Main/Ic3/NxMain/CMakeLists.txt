@@ -15,9 +15,9 @@ set( IC3_ENGINE_SRC_FILES
 
         "GCI/CommonGCIDefs.h"
         "GCI/ConstantBufferProxy.h"
-		"GCI/GCRBufferCommon.h"
-		"GCI/GCRBuffer.h"
-		"GCI/GCRBuffer.cpp"
+		# "GCI/GCRBufferCommon.h"
+		# "GCI/GCRBuffer.h"
+		# "GCI/GCRBuffer.cpp"
 		"GCI/IACommonDefs.h"
 		"GCI/IAVertexStreamLayout.h"
 		"GCI/IAVertexStreamLayout.inl"
@@ -44,7 +44,7 @@ set( IC3_ENGINE_SRC_FILES
 		"Renderer/Renderer.h"
 		"Renderer/Renderer.cpp"
 		"Renderer/ShaderLibrary.h"
-		"Renderer/shaderLibrary.cpp"
+		"Renderer/ShaderLibrary.cpp"
 		"Renderer/Effects/ShadowRenderer.h"
 		"Renderer/Effects/ShadowRenderer.cpp"
 

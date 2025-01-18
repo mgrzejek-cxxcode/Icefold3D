@@ -1,6 +1,6 @@
 
 #include "GLCommonGraphicsConfig.h"
-#include <Ic3/Graphics/HW3D/GL/GLApiTranslationLayer.h>
+#include <Ic3/Graphics/HW3D/GL/GLAPITranslationLayer.h>
 #include <Ic3/Graphics/HW3D/GL/GLGPUDevice.h>
 
 namespace Ic3::Graphics::GCI

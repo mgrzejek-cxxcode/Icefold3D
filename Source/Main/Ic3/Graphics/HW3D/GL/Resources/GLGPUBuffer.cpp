@@ -1,6 +1,6 @@
 
 #include "GLGPUBuffer.h"
-#include "../GLApiTranslationLayer.h"
+#include "../GLAPITranslationLayer.h"
 #include "../GLGPUDevice.h"
 
 namespace Ic3::Graphics::GCI

@@ -1,5 +1,5 @@
 
-#include "DX11ApiTranslationLayer.h"
+#include "DX11APITranslationLayer.h"
 #include <Ic3/Graphics/HW3D/DX11/DX11GPUDevice.h>
 #include <Ic3/Graphics/GCI/Resources/GPUBufferCommon.h>
 #include <Ic3/Graphics/GCI/State/SamplerCommon.h>

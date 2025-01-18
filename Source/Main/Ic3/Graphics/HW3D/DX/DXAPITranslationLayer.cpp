@@ -1,5 +1,5 @@
 
-#include "DXApiTranslationLayer.h"
+#include "DXAPITranslationLayer.h"
 #include <Ic3/Graphics/GCI/Resources/ShaderCommon.h>
 #include <Ic3/Graphics/GCI/Resources/TextureCommon.h>
 #include <cppx/stdHelperAlgo.h>

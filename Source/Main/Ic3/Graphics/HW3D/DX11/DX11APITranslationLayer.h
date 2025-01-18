@@ -5,7 +5,7 @@
 #define __IC3_GRAPHICS_HW3D_DX11_API_TRANSLATION_LAYER_H__
 
 #include "DX11Prerequisites.h"
-#include <Ic3/Graphics/HW3D/DX/DXApiTranslationLayer.h>
+#include <Ic3/Graphics/HW3D/DX/DXAPITranslationLayer.h>
 
 namespace Ic3::Graphics::GCI
 {

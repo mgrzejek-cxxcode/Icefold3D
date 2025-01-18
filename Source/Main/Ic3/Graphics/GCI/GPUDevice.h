@@ -9,7 +9,7 @@
 #include "Resources/TextureCommon.h"
 #include "State/GraphicsShaderState.h"
 #include "State/RenderPassCommon.h"
-#include "State/SharedImmutableStateCache.h"
+#include "State/PipelineImmutableStateCache.h"
 
 namespace Ic3::Graphics::GCI
 {
@@ -149,7 +149,7 @@ namespace Ic3::Graphics::GCI
 		/// @brief API-level initialization of the command system. Called by the parent driver when a device is created.
 		virtual void InitializeCommandSystem() = 0;
 
-	Ic3driverApi( private ):
+	_Ic3DriverAPI( private ):
 		virtual bool _DrvOnSetPresentationLayer( PresentationLayerHandle pPresentationLayer );
 
 		virtual GPUBufferHandle _DrvCreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo );
