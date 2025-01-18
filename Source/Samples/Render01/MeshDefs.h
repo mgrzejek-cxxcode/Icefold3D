@@ -101,7 +101,7 @@ std::vector<VertexPNT0> generateVertexPNT0Data()
 {
 	std::vector<VertexPNT0> result;
 
-	const auto verticesNum = ts3::staticArraySize( cvMeshTexUnitCubeVertexData );
+	const auto verticesNum = ts3::static_array_size( cvMeshTexUnitCubeVertexData );
 	result.resize( verticesNum );
 
 	for( uint32 vertexIdx = 0; vertexIdx < verticesNum; ++vertexIdx )
@@ -117,10 +117,10 @@ std::vector<uint32> generateIndexPNT0Data()
 {
 	std::vector<uint32> result;
 
-	const auto indicesNum = ts3::staticArraySize( cvMeshTexUnitCubeIndexData );
+	const auto indicesNum = ts3::static_array_size( cvMeshTexUnitCubeIndexData );
 	result.resize( indicesNum );
 
-	ts3::memCopy( result.data(), result.size(), cvMeshTexUnitCubeIndexData, indicesNum );
+	ts3::mem_copy( result.data(), result.size(), cvMeshTexUnitCubeIndexData, indicesNum );
 
 	return result;
 }

@@ -1,14 +1,14 @@
 
 #include "MeshData.h"
 #include "CVertexPipelineConfig.h"
-#include <Ic3/NxMain/res/image/pngCommon.h>
+#include <Ic3/NxMain/Res/Image/pngCommon.h>
 
 
 namespace Ic3
 {
 
 	InterleavedBufferElementRefReadWrite MeshData::getIndexDataSubRegionReadWrite(
-			const CPUGeometryDataReferenceBase & pMeshDataRef ) noexcept
+			const CpuGeometryDataReferenceBase & pMeshDataRef ) noexcept
 	{
 		return InterleavedBufferElementRefReadWrite {
 				_indexDataBuffer.data() + ( pMeshDataRef.indexDataRegion.offsetInElementsNum * pMeshDataRef.indexDataRegion.elementSize ),
@@ -18,13 +18,13 @@ namespace Ic3
 	}
 
 	InterleavedBufferElementRefReadWrite MeshData::getVertexAttributeDataSubRegionReadWrite(
-			const CPUGeometryDataReferenceBase & pMeshDataRef,
+			const CpuGeometryDataReferenceBase & pMeshDataRef,
 			uint32 pAttributeIndex ) noexcept
 	{
 		const auto & attributeFormat = mDataFormat.attribute( pAttributeIndex );
-		const auto & vertexStreamDataRef = pMeshDataRef.vertexStreamDataRegions[attributeFormat.streamIndex];
+		const auto & vertexStreamDataRef = pMeshDataRef.vertexStreamDataRegions[attributeFormat.mStreamIndex];
 
-		auto * bufferBasePtr = _vertexDataBuffers[attributeFormat.streamIndex].data();
+		auto * bufferBasePtr = _vertexDataBuffers[attributeFormat.mStreamIndex].data();
 
 		return InterleavedBufferElementRefReadWrite {
 				bufferBasePtr + ( vertexStreamDataRef.offsetInElementsNum * vertexStreamDataRef.elementSize ) + attributeFormat.streamElementRelativeOffset,
@@ -42,14 +42,14 @@ namespace Ic3
 			const auto vertexStreamElementSize = mDataFormat.vertexStreamElementSizeInBytes( iVertexStream );
 			const auto vertexStreamDataBufferSize = pVertexElementsNum * vertexStreamElementSize;
 			_vertexDataBuffers[iVertexStream].resize( vertexStreamDataBufferSize );
-			_allGeometryDataRef.vertexStreamDataRegions[iVertexStream].dataPtr = _vertexDataBuffers[iVertexStream].data();
+			_allGeometryDataRef.vertexStreamDataRegions[iVertexStream].mDataPtr = _vertexDataBuffers[iVertexStream].data();
 		}
 
 		if( pIndexElementsNum > 0 )
 		{
 			const auto _indexDataBufferSize = pIndexElementsNum * mDataFormat.indexElementSizeInBytes();
 			_indexDataBuffer.resize( _indexDataBufferSize );
-			_allGeometryDataRef.indexDataRegion.dataPtr = _indexDataBuffer.data();
+			_allGeometryDataRef.indexDataRegion.mDataPtr = _indexDataBuffer.data();
 		}
 	}
 
@@ -66,7 +66,7 @@ namespace Ic3
 		}
 
 		auto & subComponentData = _meshSubComponents.emplace_back( mDataFormat );
-		subComponentData.componentIndex = numeric_cast<uint32>( _meshSubComponents.size() - 1 );
+		subComponentData.componentIndex = cppx::numeric_cast<uint32>( _meshSubComponents.size() - 1 );
 
 		if( subComponentData.componentIndex == 0 )
 		{

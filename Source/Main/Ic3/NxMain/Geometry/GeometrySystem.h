@@ -4,17 +4,50 @@
 #ifndef __IC3_NXMAIN_GEOMETRY_MANAGER_H__
 #define __IC3_NXMAIN_GEOMETRY_MANAGER_H__
 
-#include "GeometryVertexFormat.h"
+#include "GeometryStorage.h"
 
 namespace Ic3
 {
 
-	/*
-	 * class GPUResourceContainer : public CoreEngineObject
+	/// @brief
+	struct GeometryStorageCreateInfo
+	{
+		struct GeometryStorageBufferCreateInfo
+		{
+			EGPUBufferUsagePolicy bufferUsagePolicy = EGPUBufferUsagePolicy::Undefined;
+
+			uint16 baseAlignment = 0;
+
+			uint16 elementStrideInBytes = 0;
+
+			uint32 sizeInBytes = 0;
+		};
+
+		struct GeometryStorageBufferShareInfo
+		{
+			GeometryBufferHandle buffer;
+
+			MemoryRegion sharedRange;
+		};
+
+		union BufferInitDesc
+		{
+			GeometryStorageBufferCreateInfo uCreateInfo;
+			GeometryStorageBufferShareInfo uShareInfo;
+		};
+
+		EGPUBufferUsagePolicy commonBufferUsagePolicy = EGPUBufferUsagePolicy::GeometryBufferStatic;
+
+		BufferInitDesc indexBufferInitDesc;
+
+		RGeometryVertexBufferGenericArray<BufferInitDesc> vertexBufferInitDescArray;
+	};
+
+	class GPUResourceContainer : public CoreEngineObject
 	{
 	public:
 		GPUResourceContainer( const CoreEngineState & pCES )
-		: CoreEngineObject( pCES )
+				: CoreEngineObject( pCES )
 		{}
 	};
 
@@ -50,7 +83,6 @@ namespace Ic3
 
 		NamedGeometryStorageMap _namedStoragesMap;
 	};
-	 */
 
 } // namespace Ic3
 

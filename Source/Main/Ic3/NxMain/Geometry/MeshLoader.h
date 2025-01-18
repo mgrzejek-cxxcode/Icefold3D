@@ -35,7 +35,7 @@ namespace Ic3
 	{
 		MeshImporter * importer = nullptr;
 		GeometryManager * geometryManager = nullptr;
-		GeometryDataGpuTransfer * geometryDataTransfer = nullptr;
+		GeometryDataGPUTransfer * geometryDataTransfer = nullptr;
 		const GeometryDataFormatBase * geometryDataFormat = nullptr;
 
 	};

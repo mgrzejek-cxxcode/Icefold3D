@@ -2,7 +2,7 @@
 #ifndef __IC3_NXMAIN_GEOMETRY_COMMON_H__
 #define __IC3_NXMAIN_GEOMETRY_COMMON_H__
 
-#include <Ic3/Graphics/GCI/Resources/GpuBufferCommon.h>
+#include <Ic3/Graphics/GCI/Resources/GPUBufferCommon.h>
 
 namespace Ic3
 {
@@ -26,7 +26,7 @@ namespace Ic3
 		uint32 elementSizeInBytes = 0;
 		uint32 elementStrideInBytes = 0;
 
-		IC3_ATTR_NO_DISCARD explicit operator bool() const noexcept
+		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept
 		{
 			return baseDataPtr && ( elementSizeInBytes > 0 );
 		}
@@ -42,7 +42,7 @@ namespace Ic3
 	class InterleavedBufferElementIterator
 	{
 	public:
-		using ByteType = typename Cppx::ValueByteType<TPValue>::Type;
+		using ByteType = typename cppx::value_byte_type<TPValue>::Type;
 		using ElementRef = InterleavedBufferElementRef<ByteType>;
 
 		InterleavedBufferElementIterator() = default;

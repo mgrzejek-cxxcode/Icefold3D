@@ -18,7 +18,7 @@ namespace Ic3
 		VertexFormatDescriptorBuilder & addAttribute(
 				uint32 pStreamIASlot,
 				VertexAttributeKey pAttributeKey,
-				Cppx::ImmutableString pSemanticName = {},
+				cppx::ImmutableString pSemanticName = {},
 				uint32 pDataPadding = 0,
 				uint32 pStreamRelativeOffset = GCI::cxIAVertexAttributeOffsetAppend );
 
@@ -42,10 +42,10 @@ namespace Ic3
 				EVertexDataRate pDataRate = EVertexDataRate::PerVertex );
 
 		VertexFormatDescriptorBuilder & addAttributeList(
-				const Cppx::TArrayView<VertexAttributeDefinition> & pAttributeList );
+				const cppx::array_view<VertexAttributeDefinition> & pAttributeList );
 
 		VertexFormatDescriptorBuilder & addAttributeList(
-				const Cppx::TArrayView<const VertexAttributeDefinition> & pAttributeList );
+				const cppx::array_view<const VertexAttributeDefinition> & pAttributeList );
 
 		TSharedHandle<VertexFormatDescriptor> createVertexFormatDescriptor(
 				const GCI::EPrimitiveTopology pPrimitiveTopology,
@@ -54,7 +54,7 @@ namespace Ic3
 		static TSharedHandle<VertexFormatDescriptor> createVertexFormatDescriptor(
 				const GCI::EPrimitiveTopology pPrimitiveTopology,
 				const GCI::EIndexDataFormat pIndexDataFormat,
-				const TArrayView<VertexAttributeDefinition> & pAttributeDefinitions );
+				const cppx::array_view<VertexAttributeDefinition> & pAttributeDefinitions );
 
 		static TSharedHandle<VertexFormatDescriptor> createVertexFormatDescriptor(
 				const GCI::EPrimitiveTopology pPrimitiveTopology,
@@ -65,7 +65,7 @@ namespace Ic3
 
 	private:
 		IC3_NXMAIN_API_NO_DISCARD static bool validateAttributeDefinitions(
-				const Cppx::TArrayView<VertexAttributeDefinition> & pAttributeDefinitionArray ) noexcept;
+				const cppx::array_view<VertexAttributeDefinition> & pAttributeDefinitionArray ) noexcept;
 
 		IC3_NXMAIN_API_NO_DISCARD static bool adjustAttributeDefinition(
 				VertexAttributeDefinition & pAttributeDefinition,
@@ -93,7 +93,7 @@ namespace Ic3
 		attributeDefinition.attributeIASlot = pBaseIndex;
 		attributeDefinition.semanticComponentsNum = Traits::sAttribComponentsNum;
 		attributeDefinition.componentPadding = 0;
-		attributeDefinition.vertexStreamIASlot = numeric_cast<uint16>( streamIASlot );
+		attributeDefinition.vertexStreamIASlot = cppx::numeric_cast<uint16>( streamIASlot );
 		attributeDefinition.vertexStreamRelativeOffset = pStreamRelativeOffset;
 		attributeDefinition.dataRate = pDataRate;
 		attributeDefinition.shaderSemantics = std::move( pSemantics );
@@ -114,16 +114,16 @@ namespace Ic3
 		const auto fixedAttributeFormat = CxDef::getVertexAttributeKeyBaseFormat( pAttributeKey );
 		const auto fixedAttributeComponentsNum = CxDef::getVertexAttributeKeyComponentsNum( pAttributeKey );
 
-		if( !GCU::checkAttributeAutoDataFormat<Traits>( fixedAttributeFormat, fixedAttributeComponentsNum ) )
+		if( !GCU::CheckAttributeAutoDataFormat<Traits>( fixedAttributeFormat, fixedAttributeComponentsNum ) )
 		{
-			ic3DebugOutput( "" );
+			Ic3DebugOutput( "" );
 		}
 		else
 		{
 			VertexAttributeDefinition attributeDefinition{};
 			attributeDefinition.attributeIASlot = CxDef::getVertexAttributeKeyBaseIndex( pAttributeKey );
 			attributeDefinition.baseFormat = Traits::sBaseAttribFormat;
-			attributeDefinition.vertexStreamIASlot = numeric_cast<uint16>( streamIASlot );
+			attributeDefinition.vertexStreamIASlot = cppx::numeric_cast<uint16>( streamIASlot );
 			attributeDefinition.vertexStreamRelativeOffset = pStreamRelativeOffset;
 			attributeDefinition.semanticComponentsNum = 0;
 			attributeDefinition.dataRate = EVertexDataRate::PerVertex;
@@ -138,7 +138,7 @@ namespace Ic3
 	}
 
 	template <typename TPAttributeTraits>
-	inline bool VertexFormatDescriptorBuilder::checkAttributeAutoDataFormat(
+	inline bool VertexFormatDescriptorBuilder::CheckAttributeAutoDataFormat(
 			GCI::EVertexAttribFormat pAttributeBaseFormat,
 			uint32 pAttributeComponentsNum ) noexcept
 	{

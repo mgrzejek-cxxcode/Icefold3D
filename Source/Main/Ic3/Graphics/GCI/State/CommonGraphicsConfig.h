@@ -15,7 +15,6 @@ namespace Ic3::Graphics::GCI
 		eBlendConfigFlagEnableMultiRenderTargetBit      = 0x02,
 		eBlendConfigFlagEnableMRTIndependentBlendingBit = 0x04,
 		eBlendConfigFlagSetFixedBlendConstantsBit       = 0x08,
-
 		eBlendConfigMaskDefault = 0,
 		eBlendConfigMaskAll     = 0x07,
 	};
@@ -26,7 +25,6 @@ namespace Ic3::Graphics::GCI
 		eBlendWriteMaskChannelGreen = 0x2,
 		eBlendWriteMaskChannelBlue  = 0x4,
 		eBlendWriteMaskChannelAlpha = 0x8,
-
 		eBlendWriteMaskNone = 0,
 		eBlendWriteMaskAll  = 0xF,
 	};
@@ -35,7 +33,6 @@ namespace Ic3::Graphics::GCI
 	{
 		eDepthStencilConfigFlagEnableDepthTestBit   = 0x01,
 		eDepthStencilConfigFlagEnableStencilTestBit = 0x02,
-
 		eDepthStencilConfigMaskNone = 0,
 		eDepthStencilConfigMaskAll  = 0x03,
 	};
@@ -43,7 +40,6 @@ namespace Ic3::Graphics::GCI
 	enum ERasterizerConfigFlags : uint16
 	{
 		eRasterizerConfigFlagEnableScissorTestBit = 0x01,
-
 		eRasterizerConfigMaskNone = 0,
 		eRasterizerConfigMaskAll  = 0x01,
 	};

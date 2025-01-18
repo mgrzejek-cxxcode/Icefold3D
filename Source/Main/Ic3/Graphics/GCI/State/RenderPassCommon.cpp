@@ -21,17 +21,17 @@ namespace Ic3::Graphics::GCI
 				else
 				{
 					const auto attachmentActionMask = SMU::GetRenderPassAttachmentActionMask( attachmentConfig );
-					if( attachmentActionMask.is_set( E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_ACCESS_RESTRICT_BIT ) )
+					if( attachmentActionMask.is_set( eRenderPassAttachmentActionFlagAccessRestrictBit ) )
 					{
 						attachmentsAccessRestrictMask.set( pAttachmentBit );
 					}
 					else
 					{
-						if( attachmentActionMask.is_set( E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_LOAD_CLEAR_BIT ) )
+						if( attachmentActionMask.is_set( eRenderPassAttachmentActionFlagLoadClearBit ) )
 						{
 							attachmentsActionClearMask.set( pAttachmentBit );
 						}
-						if( attachmentActionMask.is_set( E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_STORE_RESOLVE_BIT ) )
+						if( attachmentActionMask.is_set( eRenderPassAttachmentActionFlagStoreResolveBit ) )
 						{
 							attachmentsActionResolveMask.set( pAttachmentBit );
 						}
@@ -82,7 +82,7 @@ namespace Ic3::Graphics::GCI
 					pColorAttachments,
 					pDepthStencilAttachment,
 					pActiveAttachmentsMask,
-					E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_LOAD_CLEAR_BIT );
+					eRenderPassAttachmentActionFlagLoadClearBit );
 		}
 
 		cppx::bitmask<ERTAttachmentFlags> GetRenderPassAttachmentResolveMask(
@@ -94,7 +94,7 @@ namespace Ic3::Graphics::GCI
 					pColorAttachments,
 					pDepthStencilAttachment,
 					pActiveAttachmentsMask,
-					E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_STORE_RESOLVE_BIT );
+					eRenderPassAttachmentActionFlagStoreResolveBit );
 		}
 
 	}

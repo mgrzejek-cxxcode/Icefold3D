@@ -9,7 +9,7 @@
 #include <Ic3/Math/Matrix.h>
 #include <Ic3/Math/MatrixOps.h>
 #include <Ic3/Math/MatrixUtils.h>
-#include <Ic3/Cppx/ArrayView.h>
+#include <cppx/arrayView.h>
 
 #include <map>
 #include <set>
@@ -20,29 +20,29 @@
 #  define IC3_NXMAIN_OBJ    extern
 #else
 #  if( IC3_NXMAIN_BUILD )
-#    define IC3_NXMAIN_API    IC3_PCL_ATTR_DLL_EXPORT
-#    define IC3_NXMAIN_CLASS  IC3_PCL_ATTR_DLL_EXPORT
-#    define IC3_NXMAIN_OBJ    IC3_PCL_ATTR_DLL_EXPORT
+#    define IC3_NXMAIN_API    PCL_ATTR_DLL_EXPORT
+#    define IC3_NXMAIN_CLASS  PCL_ATTR_DLL_EXPORT
+#    define IC3_NXMAIN_OBJ    PCL_ATTR_DLL_EXPORT
 #  else
-#    define IC3_NXMAIN_API    IC3_PCL_ATTR_DLL_IMPORT
-#    define IC3_NXMAIN_CLASS  IC3_PCL_ATTR_DLL_IMPORT
-#    define IC3_NXMAIN_OBJ    IC3_PCL_ATTR_DLL_IMPORT
+#    define IC3_NXMAIN_API    PCL_ATTR_DLL_IMPORT
+#    define IC3_NXMAIN_CLASS  PCL_ATTR_DLL_IMPORT
+#    define IC3_NXMAIN_OBJ    PCL_ATTR_DLL_IMPORT
 #  endif
 #endif
 
-#define IC3_NXMAIN_API_NO_DISCARD IC3_NXMAIN_API IC3_ATTR_NO_DISCARD
+#define IC3_NXMAIN_API_NO_DISCARD IC3_NXMAIN_API CPPX_ATTR_NO_DISCARD
 
 #include "Prerequisites/GCICommon.h"
 #include "Prerequisites/GeometryCommon.h"
-#include "Prerequisites/coreEngineState.h"
+#include "Prerequisites/CoreEngineState.h"
 
 namespace Ic3
 {
 
 	template <typename TData>
-	using GeometryVertexStreamGenericArray = std::array<TData, gpa::MAX_GEOMETRY_VERTEX_STREAMS_NUM>;
+	using GeometryVertexStreamGenericArray = std::array<TData, GCM::cxIAMaxVertexStreamsNum>;
 
-	class CoreEngineObject : public DynamicInterface
+	class CoreEngineObject : public IDynamicObject
 	{
 	public:
 		const CoreEngineState & mCES;

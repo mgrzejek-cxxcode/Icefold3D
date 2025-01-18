@@ -5,7 +5,7 @@
 #define __IC3_NXMAIN_GEOMETRY_DATA_SOURCE_H__
 
 #include "GeometryCommonDefs.h"
-#include <Ic3/Cppx/STLHelperAlgo.h>
+#include <cppx/stdHelperAlgo.h>
 
 #include <deque>
 
@@ -53,7 +53,7 @@ namespace Ic3
 	public:
 		void setVertexData(
 				geometry_input_ref_id_t pGeometryRefID,
-				SShaderSemantics pVertexAttribSemantics,
+				ShaderSemantics pVertexAttribSemantics,
 				const void * pVertexAttribDataPtr,
 				size_t pAttributeSize );
 
@@ -63,11 +63,11 @@ namespace Ic3
 	class GeometryInputDataSourceManaged : public IGeometryInputDataSource
 	{
 	public:
-		IC3_ATTR_NO_DISCARD GeometrySubDataRefReadWrite setVertexData(
+		CPPX_ATTR_NO_DISCARD GeometrySubDataRefReadWrite setVertexData(
 				geometry_input_ref_id_t pGeometryRefID,
-				SShaderSemantics pVertexAttribSemantics );
+				ShaderSemantics pVertexAttribSemantics );
 
-		IC3_ATTR_NO_DISCARD GeometrySubDataRefReadWrite setIndexData( geometry_input_ref_id_t pGeometryRefID );
+		CPPX_ATTR_NO_DISCARD GeometrySubDataRefReadWrite setIndexData( geometry_input_ref_id_t pGeometryRefID );
 	};
 
 	class IC3_NXMAIN_CLASS XXGeometryInputSourceBase
@@ -76,8 +76,8 @@ namespace Ic3
 		XXGeometryInputSourceBase();
 		~XXGeometryInputSourceBase();
 
-		IC3_ATTR_NO_DISCARD GeometrySize getCurrentCapacity() const noexcept;
-		IC3_ATTR_NO_DISCARD bool isIndexedGeometry() const noexcept;
+		CPPX_ATTR_NO_DISCARD GeometrySize getCurrentCapacity() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool isIndexedGeometry() const noexcept;
 
 		void addIndexData( GCI::EIndexDataFormat pIndexFormat );
 
@@ -93,7 +93,7 @@ namespace Ic3
 			uint32 indexElementsAllocOffset = 0;
 			uint32 vertexElementsAllocOffset = 0;
 
-			IC3_ATTR_NO_DISCARD bool empty() const noexcept
+			CPPX_ATTR_NO_DISCARD bool empty() const noexcept
 			{
 				return ( indexElementsAllocOffset == 0 ) && ( vertexElementsAllocOffset == 0 );
 			}
@@ -104,9 +104,9 @@ namespace Ic3
 			GCI::EIndexDataFormat indexElementFormat = GCI::EIndexDataFormat::Undefined;
 			uint16 elementSizeInBytes = 0;
 			uint32 bufferCapacityInBytes = 0;
-			DynamicMemoryBuffer buffer;
+			dynamic_memory_buffer buffer;
 
-			IC3_ATTR_NO_DISCARD bool active() const noexcept
+			CPPX_ATTR_NO_DISCARD bool active() const noexcept
 			{
 				return elementSizeInBytes > 0;
 			}
@@ -116,16 +116,16 @@ namespace Ic3
 		{
 			uint32 elementSizeInBytes = 0;
 			uint32 bufferCapacityInBytes = 0;
-			DynamicMemoryBuffer buffer;
+			dynamic_memory_buffer buffer;
 
-			IC3_ATTR_NO_DISCARD bool active() const noexcept
+			CPPX_ATTR_NO_DISCARD bool active() const noexcept
 			{
 				return elementSizeInBytes > 0;
 			}
 		};
 
 		using AttributeMap = std::unordered_map<std::string, SGeometryInputAttributeInfo>;
-		using LocalVertexBufferArray = std::array<LocalVertexBuffer, GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM>;
+		using LocalVertexBufferArray = std::array<LocalVertexBuffer, GCM::cxIAMaxVertexBufferBindingsNum>;
 		using GeometryRefList = std::deque<GeometryInputDataLocation>;
 
 	private:

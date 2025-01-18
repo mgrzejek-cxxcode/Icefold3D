@@ -28,6 +28,8 @@ namespace Ic3::Graphics::GCI
 	class RenderTargetBindingDynamicState;
 	class RenderPassConfigurationDynamicState;
 
+	class PipelineImmutableStateFactory;
+
 	Ic3GCIDeclareClassHandle( GPUDeviceChildObject );
 	Ic3GCIDeclareClassHandle( PipelineStateObject );
 	Ic3GCIDeclareClassHandle( ComputePipelineStateObject );
@@ -42,7 +44,6 @@ namespace Ic3::Graphics::GCI
 	Ic3GCIDeclareClassHandle( RenderTargetBindingImmutableState );
 	Ic3GCIDeclareClassHandle( RenderPassConfigurationImmutableState );
 
-	using pipeline_internal_state_hash_t = uint64;
 	using render_target_index_t = uint16;
 	using shader_input_ref_id_t = uint64;
 	using shader_input_index_t = uint32;

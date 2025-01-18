@@ -4,7 +4,7 @@
 
 #include "arrayView.h"
 #include "staticAlgo.h"
-#include "staticLimits.h"
+#include "typeLimits.h"
 #include <stdexcept>
 
 namespace cppx

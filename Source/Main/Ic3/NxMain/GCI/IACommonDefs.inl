@@ -8,16 +8,16 @@ namespace Ic3
 
 	// @VertexAttributeDefinition
 
-	inline bool VertexAttributeDefinition::isValid() const noexcept
+	inline bool VertexAttributeDefinition::IsValid() const noexcept
 	{
 		return ( attributeIASlot != cxGCIVertexAttributeIndexUndefined ) &&
 		       ( streamIASlot != cxGCIVertexStreamIndexUndefined ) &&
 		       ( dataFormat != GCI::EVertexAttribFormat::Undefined ) &&
 		       cxGCIValidVertexAttributeSemanticGroupSizeRange.contains( semanticGroupSize ) &&
-		       shaderSemantics.valid();
+		       shaderSemantics.IsValid();
 	}
 
-	inline bool VertexAttributeDefinition::hasAppendAsRelativeOffset() const noexcept
+	inline bool VertexAttributeDefinition::HasAppendAsRelativeOffset() const noexcept
 	{
 		return vertexStreamRelativeOffset == cxGCIVertexAttributeOffsetAppend;
 	}
@@ -26,56 +26,56 @@ namespace Ic3
 
 	inline GenericVertexAttribute::operator bool() const noexcept
 	{
-		return isActive();
+		return IsActive();
 	}
 
-	inline bool GenericVertexAttribute::isActive() const noexcept
+	inline bool GenericVertexAttribute::IsActive() const noexcept
 	{
 		return dataFormat != GCI::EVertexAttribFormat::Undefined;
 	}
 
-	inline bool GenericVertexAttribute::isBaseAttribute() const noexcept
+	inline bool GenericVertexAttribute::IsBaseAttribute() const noexcept
 	{
 		return semanticIndex == 0;
 	}
 
-	inline bool GenericVertexAttribute::isSemanticGroupAttribute() const noexcept
+	inline bool GenericVertexAttribute::IsSemanticGroupAttribute() const noexcept
 	{
 		return cxGCIValidVertexAttributeSemanticGroupSizeRange.contains( semanticGroupSize ) && ( semanticGroupSize > 1 );
 	}
 
-	inline bool GenericVertexAttribute::isSameAs( const GenericVertexAttribute & pOther ) const noexcept
+	inline bool GenericVertexAttribute::IsSameAs( const GenericVertexAttribute & pOther ) const noexcept
 	{
 		/// TODO: Implement
 		return false;
 	}
 
-	inline bool GenericVertexAttribute::hasSameFormatAs( const GenericVertexAttribute & pOther ) const noexcept
+	inline bool GenericVertexAttribute::HasSameFormatAs( const GenericVertexAttribute & pOther ) const noexcept
 	{
 		return dataFormat == pOther.dataFormat;
 	}
 
-	inline bool GenericVertexAttribute::hasSameSemanticsAs( const GenericVertexAttribute & pOther ) const noexcept
+	inline bool GenericVertexAttribute::HasSameSemanticsAs( const GenericVertexAttribute & pOther ) const noexcept
 	{
 		return shaderSemantics == pOther.shaderSemantics;
 	}
 
-	inline GCI::EBaseDataType GenericVertexAttribute::getBaseDataType() const noexcept
+	inline GCI::EBaseDataType GenericVertexAttribute::GetBaseDataType() const noexcept
 	{
-		return GCI::CxDef::getVertexAttribFormatBaseDataType( dataFormat );
+		return GCI::CxDef::GetVertexAttribFormatBaseDataType( dataFormat );
 	}
 
-	inline uint32 GenericVertexAttribute::getDataSizeInBytes() const noexcept
+	inline uint32 GenericVertexAttribute::GetDataSizeInBytes() const noexcept
 	{
-		return GCI::CxDef::getVertexAttribFormatByteSize( dataFormat );
+		return GCI::CxDef::GetVertexAttribFormatByteSize( dataFormat );
 	}
 
-	inline uint32 GenericVertexAttribute::getDataStride() const noexcept
+	inline uint32 GenericVertexAttribute::GetDataStride() const noexcept
 	{
-		return getDataSizeInBytes() + dataPadding;
+		return GetDataSizeInBytes() + dataPadding;
 	}
 
-	inline void GenericVertexAttribute::initBaseAttributeFromDefinition( const VertexAttributeDefinition & pDefinition )
+	inline void GenericVertexAttribute::InitBaseAttributeFromDefinition( const VertexAttributeDefinition & pDefinition )
 	{
 		attributeIASlot = pDefinition.attributeIASlot;
 		streamIASlot = pDefinition.streamIASlot;
@@ -86,7 +86,7 @@ namespace Ic3
 		shaderSemantics = pDefinition.shaderSemantics;
 	}
 
-	inline void GenericVertexAttribute::initSemanticSubAttributeFromBaseAttribute(
+	inline void GenericVertexAttribute::InitSemanticSubAttributeFromBaseAttribute(
 			const GenericVertexAttribute & pBaseAttribute,
 			uint32 pSemanticIndex )
 	{
@@ -100,10 +100,10 @@ namespace Ic3
 
 		// To compute the offset for the next attributes in the same semantic group, we simply
 		// add the total stride to the offset of the base (first) attribute in that group.
-		vertexStreamRelativeOffset = pBaseAttribute.vertexStreamRelativeOffset + ( pBaseAttribute.getDataStride() * pSemanticIndex );
+		vertexStreamRelativeOffset = pBaseAttribute.vertexStreamRelativeOffset + ( pBaseAttribute.GetDataStride() * pSemanticIndex );
 	}
 
-	inline void GenericVertexAttribute::reset()
+	inline void GenericVertexAttribute::Reset()
 	{
 		attributeIASlot = cxGCIVertexAttributeIndexUndefined;
 		streamIASlot = cxGCIVertexStreamIndexUndefined;
@@ -119,7 +119,7 @@ namespace Ic3
 	namespace GCU
 	{
 
-		inline bool isAttributeLocationAndSizeValid( uint32 pAttributeBaseSlotIndex, uint32 pSemanticGroupSize = 1 )
+		inline bool IsAttributeLocationAndSizeValid( uint32 pAttributeBaseSlotIndex, uint32 pSemanticGroupSize = 1 )
 		{
 			return ( pAttributeBaseSlotIndex != cxGCIVertexAttributeIndexUndefined ) &&
 			       // Vertex attribute index should be in the valid range of supported values.

@@ -42,39 +42,39 @@ namespace Ic3
 			native_uint pBaseSlot,
 			native_uint pSemanticGroupSize,
 			GCI::EVertexAttribFormat pBaseFormat,
-			TBitmask<uint32> pCombinedSemanticKeyFlags )
+			cppx::bitmask<uint32> pCombinedSemanticKeyFlags )
 		: uBaseSlot( static_cast<uint8>( pBaseSlot ) & 0xF )
 		, uSemanticGroupSize( static_cast<uint8>( pSemanticGroupSize ) & 0xF )
 		, uCombinedSemanticKeyFlags( pCombinedSemanticKeyFlags & ( eSystemAttributeSemanticMaskAll | eVertexAttributeKeyMaskAll ) )
 		, uBaseFormat( pBaseFormat )
 		{}
 
-		IC3_ATTR_NO_DISCARD uint32 getBaseByteSize() const noexcept
+		CPPX_ATTR_NO_DISCARD uint32 getBaseByteSize() const noexcept
 		{
-			return GCI::CxDef::getVertexAttribFormatByteSize( uBaseFormat );
+			return GCI::CxDef::GetVertexAttribFormatByteSize( uBaseFormat );
 		}
 
-		IC3_ATTR_NO_DISCARD EVertexDataRate getVertexDataRate() const noexcept
+		CPPX_ATTR_NO_DISCARD EVertexDataRate getVertexDataRate() const noexcept
 		{
 			return isAttributePerInstance() ? EVertexDataRate::PerInstance : EVertexDataRate::PerVertex;
 		}
 
-		IC3_ATTR_NO_DISCARD TBitmask<uint32> getFlags() const noexcept
+		CPPX_ATTR_NO_DISCARD cppx::bitmask<uint32> getFlags() const noexcept
 		{
 			return uCombinedSemanticKeyFlags;
 		}
 
-		IC3_ATTR_NO_DISCARD TBitmask<ESystemAttributeSemanticFlags> getSystemSemanticFlags() const noexcept
+		CPPX_ATTR_NO_DISCARD cppx::bitmask<ESystemAttributeSemanticFlags> getSystemSemanticFlags() const noexcept
 		{
 			return ( uCombinedSemanticKeyFlags & eSystemAttributeSemanticMaskAll );
 		}
 
-		IC3_ATTR_NO_DISCARD TBitmask<EVertexAttributeKeyFlags> getVertexAttribKeyFlags() const noexcept
+		CPPX_ATTR_NO_DISCARD cppx::bitmask<EVertexAttributeKeyFlags> getVertexAttribKeyFlags() const noexcept
 		{
 			return ( uCombinedSemanticKeyFlags & eVertexAttributeKeyMaskAll );
 		}
 
-		IC3_ATTR_NO_DISCARD TBitmask<GCI::EIAVertexAttributeFlags> getVertexAttributeKeyGCIAttributeMask() const noexcept
+		CPPX_ATTR_NO_DISCARD cppx::bitmask<GCI::EIAVertexAttributeFlags> getVertexAttributeKeyGCIAttributeMask() const noexcept
 		{
 			return GCI::CxDef::makeIAVertexAttributeFlag( uBaseSlot ) |
 			       ( ( uSemanticGroupSize > 1 ) ? GCI::CxDef::makeIAVertexAttributeFlag( uBaseSlot + 1 ) : 0u ) |
@@ -82,9 +82,9 @@ namespace Ic3
 			       ( ( uSemanticGroupSize > 3 ) ? GCI::CxDef::makeIAVertexAttributeFlag( uBaseSlot + 3 ) : 0u );
 		}
 
-		IC3_ATTR_NO_DISCARD bool isAttributePerInstance() const noexcept
+		CPPX_ATTR_NO_DISCARD bool isAttributePerInstance() const noexcept
 		{
-			return Cppx::makeBitmask( uCombinedSemanticKeyFlags ).isSet( eVertexAttributeKeyFlagPerInstanceBit );
+			return cppx::make_bitmask( uCombinedSemanticKeyFlags ).is_set( eVertexAttributeKeyFlagPerInstanceBit );
 		}
 	};
 
@@ -100,12 +100,12 @@ namespace Ic3
 		 * @param pAttributeFlags     Additional attribute flags (bits shared with pSemanticFlags). @see EVertexAttributeKeyFlags
 		 * @return A VertexAttributeKey value with encoded attribute information.
 		 */
-		IC3_ATTR_NO_DISCARD inline constexpr VertexAttributeKey makeVertexAttributeKey(
+		CPPX_ATTR_NO_DISCARD inline constexpr VertexAttributeKey makeVertexAttributeKey(
 				native_uint pBaseSlot,
 				native_uint pSemanticGroupSize,
 				GCI::EVertexAttribFormat pBaseFormat,
-				TBitmask<ESystemAttributeSemanticFlags> pSemanticFlags,
-				TBitmask<EVertexAttributeKeyFlags> pAttributeFlags = 0 )
+				cppx::bitmask<ESystemAttributeSemanticFlags> pSemanticFlags,
+				cppx::bitmask<EVertexAttributeKeyFlags> pAttributeFlags = 0 )
 		{
 			return VertexAttributeKey{ pBaseSlot, pSemanticGroupSize, pBaseFormat, pSemanticFlags | pAttributeFlags };
 		}
@@ -115,10 +115,10 @@ namespace Ic3
 		 * specialized version of makeVertexAttributeKey, but assumes single-component attributes with no extra flags.
 		 * @return A VertexAttributeKey value with encoded attribute information.
 		 */
-		IC3_ATTR_NO_DISCARD inline constexpr VertexAttributeKey makeVertexAttributeKeyV(
+		CPPX_ATTR_NO_DISCARD inline constexpr VertexAttributeKey makeVertexAttributeKeyV(
 				uint16 pBaseSlot,
 				GCI::EVertexAttribFormat pBaseFormat,
-				TBitmask<ESystemAttributeSemanticFlags> pSemanticFlags )
+				cppx::bitmask<ESystemAttributeSemanticFlags> pSemanticFlags )
 		{
 			return makeVertexAttributeKey( pBaseSlot, 1, pBaseFormat, pSemanticFlags, 0u );
 		}
@@ -128,11 +128,11 @@ namespace Ic3
 		 * specialized version of makeVertexAttributeKey, but assumes per-instance attribute flag.
 		 * @return A VertexAttributeKey value with encoded attribute information.
 		 */
-		IC3_ATTR_NO_DISCARD inline constexpr VertexAttributeKey makeVertexAttributeKeyI(
+		CPPX_ATTR_NO_DISCARD inline constexpr VertexAttributeKey makeVertexAttributeKeyI(
 				uint16 pBaseSlot,
 				uint16 pComponentsNum,
 				GCI::EVertexAttribFormat pBaseFormat,
-				TBitmask<ESystemAttributeSemanticFlags> pSemanticFlags )
+				cppx::bitmask<ESystemAttributeSemanticFlags> pSemanticFlags )
 		{
 			return makeVertexAttributeKey( pBaseSlot, pComponentsNum, pBaseFormat, pSemanticFlags, eVertexAttributeKeyFlagPerInstanceBit );
 		}
@@ -179,11 +179,11 @@ namespace Ic3
 	inline constexpr auto cxStandardVertexAttributeKeyTexCoord23Combined =
 		GCU::makeVertexAttributeKeyV( 7, GCI::EVertexAttribFormat::Vec4F32, eSystemAttributeSemanticMaskTexCoord23Packed );
 
-	/// Pre-defined vertex blend indices
+	/// Pre-defined vertex blend indices: four 32-bit floats, located at slot 8.
 	inline constexpr auto cxStandardVertexAttributeKeyBlendIndices =
 		GCU::makeVertexAttributeKeyV( 8, GCI::EVertexAttribFormat::Vec4U32, eSystemAttributeSemanticFlagBlendIndicesBit );
 
-	/// Pre-defined vertex blend weights
+	/// Pre-defined vertex blend weights: four 32-bit floats, located at slot 9.
 	inline constexpr auto cxStandardVertexAttributeKeyBlendWeights =
 		GCU::makeVertexAttributeKeyV( 9, GCI::EVertexAttribFormat::Vec4F32, eSystemAttributeSemanticFlagBlendWeightsBit );
 

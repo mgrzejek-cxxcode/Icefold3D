@@ -88,7 +88,7 @@ namespace Ic3::Graphics::GCI
 	/// (1) DirectX 11 (with its ID3D11BlendState, ID3D11DepthStencilState, etc),
 	/// (2) OpenGL Core/ES (with no concept of state objects at all).
 	/// For those drivers, PSOs contain an explicit "state descriptor" for each: blend, depth/stencil, rasterizer and
-	/// vertex input state. Those pdesc are, of course, driver-specific (for DX11 they will have ID3D11XXXState
+	/// vertex input state. Those objects are, of course, driver-specific (for DX11 they will have ID3D11XXXState
 	/// interfaces, for OpenGL - bunch of translated state stored as a group of GL constants), but their IDs are stored
 	/// at this common level. This, combined with a neat GraphicsPipelineStateDescriptorCache class, enables writing
 	/// single implementation for caching and general state handling which can be used by the mentioned drivers.

@@ -5,9 +5,9 @@
 #define __IC3_NXMAIN_IA_VERTEX_STREAM_LAYOUT_H__
 
 #include "IACommonDefs.h"
-#include <Ic3/Cppx/StaticVector.h>
-#include <Ic3/Cppx/SortedArray.h>
-#include <Ic3/Cppx/STLHelperAlgo.h>
+#include <cppx/staticVector.h>
+#include <cppx/sortedArray.h>
+#include <cppx/stdHelperAlgo.h>
 
 namespace Ic3
 {
@@ -25,7 +25,7 @@ namespace Ic3
 		/**
 		 *
 		 */
-		TBitmask<GCI::EIAVertexAttributeFlags> activeAttributesMask {};
+		cppx::bitmask<GCI::EIAVertexAttributeFlags> activeAttributesMask {};
 
 		/**
 		 *
@@ -42,15 +42,15 @@ namespace Ic3
 		 */
 		EVertexDataRate streamDataRate = EVertexDataRate::Undefined;
 
-		IC3_ATTR_NO_DISCARD explicit operator bool() const noexcept;
+		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept;
 
-		IC3_ATTR_NO_DISCARD bool isActive() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsActive() const noexcept;
 
-		IC3_ATTR_NO_DISCARD bool checkAttributeCompatibility( const VertexAttributeDefinition & pAttributeDefinition ) const noexcept;
+		CPPX_ATTR_NO_DISCARD bool CheckAttributeCompatibility( const VertexAttributeDefinition & pAttributeDefinition ) const noexcept;
 
-		void init( uint16 pStreamIASlot, EVertexDataRate pDataRate );
+		void Init( uint16 pStreamIASlot, EVertexDataRate pDataRate );
 
-		void reset();
+		void Reset();
 	};
 
 	/**
@@ -64,61 +64,61 @@ namespace Ic3
 		VertexStreamArrayConfig() = default;
 		~VertexStreamArrayConfig() = default;
 
-		IC3_ATTR_NO_DISCARD explicit operator bool() const noexcept;
+		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept;
 
-		IC3_ATTR_NO_DISCARD const VertexInputStream & operator[]( native_uint pStreamIASlot ) const noexcept;
+		CPPX_ATTR_NO_DISCARD const VertexInputStream & operator[]( native_uint pStreamIASlot ) const noexcept;
 
-		IC3_ATTR_NO_DISCARD const VertexInputStream & streamAt( native_uint pStreamIASlot ) const;
+		CPPX_ATTR_NO_DISCARD const VertexInputStream & StreamAt( native_uint pStreamIASlot ) const;
 
-		IC3_ATTR_NO_DISCARD const VertexInputStream * streamPtr( native_uint pStreamIASlot ) const noexcept;
+		CPPX_ATTR_NO_DISCARD const VertexInputStream * StreamPtr( native_uint pStreamIASlot ) const noexcept;
 
-		IC3_ATTR_NO_DISCARD bool isStreamActive( native_uint pStreamIASlot ) const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsStreamActive( native_uint pStreamIASlot ) const noexcept;
 
-		IC3_ATTR_NO_DISCARD const VertexInputStreamArray & getStreamArray() const noexcept;
+		CPPX_ATTR_NO_DISCARD const VertexInputStreamArray & GetStreamArray() const noexcept;
 
-		IC3_ATTR_NO_DISCARD uint32 getActiveStreamsNum() const noexcept;
+		CPPX_ATTR_NO_DISCARD uint32 GetActiveStreamsNum() const noexcept;
 
-		IC3_ATTR_NO_DISCARD TBitmask<GCI::EIAVertexStreamBindingFlags> getActiveAttributesMask() const noexcept;
+		CPPX_ATTR_NO_DISCARD cppx::bitmask<GCI::EIAVertexStreamBindingFlags> GetActiveAttributesMask() const noexcept;
 
-		IC3_ATTR_NO_DISCARD const InputAssemblerSlotRange & getActiveAttributesRange() const noexcept;
+		CPPX_ATTR_NO_DISCARD const InputAssemblerSlotRange & GetActiveAttributesRange() const noexcept;
 
-		IC3_ATTR_NO_DISCARD const InputAssemblerSlotArray & getActiveStreamsSlots() const noexcept;
+		CPPX_ATTR_NO_DISCARD const InputAssemblerSlotArray & GetActiveStreamsSlots() const noexcept;
 
-		IC3_ATTR_NO_DISCARD bool isActiveStreamsRangeContinuous() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsActiveStreamsRangeContinuous() const noexcept;
 
-		IC3_ATTR_NO_DISCARD bool empty() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept;
 
-		IC3_NXMAIN_API_NO_DISCARD bool checkAttributeDefinitionCompatibility(
+		IC3_NXMAIN_API_NO_DISCARD bool CheckAttributeDefinitionCompatibility(
 				const VertexAttributeDefinition & pAttributeDefinition ) const noexcept;
 
-		IC3_NXMAIN_API bool addActiveStream(
+		IC3_NXMAIN_API bool AddActiveStream(
 				gci_input_assembler_slot_t pStreamIASlot,
 				EVertexDataRate pStreamDataRate );
 
-		IC3_NXMAIN_API bool appendAttribute(
+		IC3_NXMAIN_API bool AppendAttribute(
 				gci_input_assembler_slot_t pStreamIASlot,
 				const GenericVertexAttribute & pAttribute );
 
-		IC3_NXMAIN_API bool appendAttributeAuto(
+		IC3_NXMAIN_API bool AppendAttributeAuto(
 				gci_input_assembler_slot_t pStreamIASlot,
 				EVertexDataRate pStreamDataRate,
 				const GenericVertexAttribute & pAttribute );
 
-		IC3_NXMAIN_API void reset();
+		IC3_NXMAIN_API void Reset();
 
 	private:
-		void _addStreamImpl( gci_input_assembler_slot_t pStreamIASlot, EVertexDataRate pStreamDataRate );
+		void _AddStreamImpl( gci_input_assembler_slot_t pStreamIASlot, EVertexDataRate pStreamDataRate );
 
-		void _appendAttributeImpl( VertexInputStream & pStream, const GenericVertexAttribute & pAttribute );
+		void _AppendAttributeImpl( VertexInputStream & pStream, const GenericVertexAttribute & pAttribute );
 
 	private:
 		VertexInputStreamArray _streamArray;
 
-		TBitmask<GCI::EIAVertexStreamBindingFlags> _activeStreamsMask;
+		cppx::bitmask<GCI::EIAVertexStreamBindingFlags> _activeStreamsMask;
 
 		uint32 _activeStreamsNum = 0;
 
-		InputAssemblerSlotRange _activeStreamsRange = InputAssemblerSlotRange::emptyRange();
+		InputAssemblerSlotRange _activeStreamsRange = InputAssemblerSlotRange::empty_range();
 
 		InputAssemblerSlotArray _activeStreamsSlots;
 	};

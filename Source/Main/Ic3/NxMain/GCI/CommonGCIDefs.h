@@ -3,7 +3,7 @@
 #define __IC3_NXMAIN_COMMON_GPA_DEFS_H__
 
 #include "../Prerequisites.h"
-#include <Ic3/Graphics/GCI/Resources/GpuBufferCommon.h>
+#include <Ic3/Graphics/GCI/Resources/GPUBufferCommon.h>
 #include <Ic3/Graphics/GCI/State/InputAssemblerCommon.h>
 
 namespace Ic3
@@ -11,51 +11,51 @@ namespace Ic3
 
 	namespace GCM = Graphics::GCM;
 
-	enum class EGpuBufferUsagePolicy : uint64
+	enum class EGPUBufferUsagePolicy : uint64
 	{
 		Undefined = 0,
 
 		ConstantBufferDynamic =
-				GCI::eGpuBufferBindFlagConstantBufferBit |
-				GCI::eGpuResourceContentFlagDynamicBit |
-				Cppx::bshLeft<uint64, 32>( GCI::eGpuMemoryAccessFlagCpuWriteBit ),
+				GCI::eGPUBufferBindFlagConstantBufferBit |
+				GCI::eGPUResourceContentFlagDynamicBit |
+				cppx::bsh_left<uint64, 32>( GCI::eGPUMemoryAccessFlagCpuWriteBit ),
 
 		ConstantBufferStatic =
-				GCI::eGpuBufferBindFlagConstantBufferBit |
-				GCI::eGpuResourceContentFlagStaticBit,
+				GCI::eGPUBufferBindFlagConstantBufferBit |
+				GCI::eGPUResourceContentFlagStaticBit,
 
 		ConstantBufferWriteDiscard =
-				GCI::eGpuBufferBindFlagConstantBufferBit |
-				GCI::eGpuResourceContentFlagDynamicBit |
-				Cppx::bshLeft<uint64, 32>( GCI::eGpuMemoryMapFlagWriteInvalidateBit ),
+				GCI::eGPUBufferBindFlagConstantBufferBit |
+				GCI::eGPUResourceContentFlagDynamicBit |
+				cppx::bsh_left<uint64, 32>( GCI::eGPUMemoryMapFlagWriteInvalidateBit ),
 
 		GeometryBufferDynamic =
-				GCI::eGpuBufferBindFlagIndexBufferBit |
-				GCI::eGpuBufferBindFlagVertexBufferBit |
-				GCI::eGpuResourceContentFlagDynamicBit |
-				Cppx::bshLeft<uint64, 32>( GCI::eGpuMemoryAccessFlagCpuWriteBit ),
+				GCI::eGPUBufferBindFlagIndexBufferBit |
+				GCI::eGPUBufferBindFlagVertexBufferBit |
+				GCI::eGPUResourceContentFlagDynamicBit |
+				cppx::bsh_left<uint64, 32>( GCI::eGPUMemoryAccessFlagCpuWriteBit ),
 
 		GeometryBufferImmutable =
-				GCI::eGpuBufferBindFlagIndexBufferBit |
-				GCI::eGpuBufferBindFlagVertexBufferBit |
-				GCI::eGpuResourceContentFlagImmutableBit,
+				GCI::eGPUBufferBindFlagIndexBufferBit |
+				GCI::eGPUBufferBindFlagVertexBufferBit |
+				GCI::eGPUResourceContentFlagImmutableBit,
 
 		GeometryBufferStatic =
-				GCI::eGpuBufferBindFlagIndexBufferBit |
-				GCI::eGpuBufferBindFlagVertexBufferBit |
-				GCI::eGpuResourceContentFlagStaticBit,
+				GCI::eGPUBufferBindFlagIndexBufferBit |
+				GCI::eGPUBufferBindFlagVertexBufferBit |
+				GCI::eGPUResourceContentFlagStaticBit,
 
 		GeometryBufferStreamAppend =
-				GCI::eGpuBufferBindFlagIndexBufferBit |
-				GCI::eGpuBufferBindFlagVertexBufferBit |
-				GCI::eGpuResourceContentFlagDynamicBit |
-				Cppx::bshLeft<uint64, 32>( GCI::eGpuMemoryMapFlagWriteAppendBit ),
+				GCI::eGPUBufferBindFlagIndexBufferBit |
+				GCI::eGPUBufferBindFlagVertexBufferBit |
+				GCI::eGPUResourceContentFlagDynamicBit |
+				cppx::bsh_left<uint64, 32>( GCI::eGPUMemoryMapFlagWriteAppendBit ),
 
 		GeometryBufferStreamOverwrite =
-				GCI::eGpuBufferBindFlagIndexBufferBit |
-				GCI::eGpuBufferBindFlagVertexBufferBit |
-				GCI::eGpuResourceContentFlagDynamicBit |
-				Cppx::bshLeft<uint64, 32>( GCI::eGpuMemoryMapFlagWriteInvalidateBit ),
+				GCI::eGPUBufferBindFlagIndexBufferBit |
+				GCI::eGPUBufferBindFlagVertexBufferBit |
+				GCI::eGPUResourceContentFlagDynamicBit |
+				cppx::bsh_left<uint64, 32>( GCI::eGPUMemoryMapFlagWriteInvalidateBit ),
 	};
 
 	enum EGCIGeometryBufferFlags : uint32
@@ -82,43 +82,43 @@ namespace Ic3
 	namespace CxDef
 	{
 
-		IC3_ATTR_NO_DISCARD inline constexpr uint16 getIndexDataFormatByteSize( GCI::EIndexDataFormat pIndexFormat ) noexcept
+		CPPX_ATTR_NO_DISCARD inline constexpr uint16 getIndexDataFormatByteSize( GCI::EIndexDataFormat pIndexFormat ) noexcept
 		{
-			return GCI::CxDef::getIndexDataFormatByteSize( pIndexFormat );
+			return GCI::CxDef::GetIndexDataFormatByteSize( pIndexFormat );
 		}
 
-		inline constexpr GCI::gpu_memory_flags_value_t getGpuBufferUsagePolicyMemoryFlags( EGpuBufferUsagePolicy pUsagePolicy )
+		inline constexpr GCI::gpu_memory_flags_value_t getGPUBufferUsagePolicyMemoryFlags( EGPUBufferUsagePolicy pUsagePolicy )
 		{
-			return static_cast<GCI::gpu_memory_flags_value_t>( ( ( ( uint64 ) pUsagePolicy ) >> 32 ) & QLimits<uint32>::sMaxValue );
+			return static_cast<GCI::gpu_memory_flags_value_t>( ( ( ( uint64 ) pUsagePolicy ) >> 32 ) & cppx::meta::limits<uint32>::max_value );
 		}
 
-		inline constexpr GCI::resource_flags_value_t getGpuBufferUsagePolicyResourceFlags( EGpuBufferUsagePolicy pUsagePolicy )
+		inline constexpr GCI::resource_flags_value_t getGPUBufferUsagePolicyResourceFlags( EGPUBufferUsagePolicy pUsagePolicy )
 		{
-			return static_cast<GCI::resource_flags_value_t>( ( ( uint64 ) pUsagePolicy ) & QLimits<uint32>::sMaxValue );
+			return static_cast<GCI::resource_flags_value_t>( ( ( uint64 ) pUsagePolicy ) & cppx::meta::limits<uint32>::max_value );
 		}
 
 	}
 	
-//	/// @brief Represents a valid GpuBuffer subregion. This is basically a sub-buffer of a larger buffer.
-//	struct GpuBufferRef
+//	/// @brief Represents a valid GPUBuffer subregion. This is basically a sub-buffer of a larger buffer.
+//	struct GPUBufferRef
 //	{
 //		// The buffer itself.
-//		GCI::GpuBufferHandle buffer;
+//		GCI::GPUBufferHandle buffer;
 //
 //		// Memory region of the buffer. Note, that the offset is not buffer-relative, but heap-relative.
-//		// For an example, a GpuBufferRef referencing the whole memory of a buffer B1, would have here
+//		// For an example, a GPUBufferRef referencing the whole memory of a buffer B1, would have here
 //		// exactly same values as stored in B1.mResourceMemory.sourceHeapRegion.
-//		GCI::GpuMemoryRegion memoryRegion;
+//		GCI::GPUMemoryRegion memoryRegion;
 //
 //		// The actual region reserved to make the allocation. This is due to alignment requirements: it is
 //		// possible to sub-allocate a buffer's memory using a more strict alignment than the original buffer
 //		// has. To prevent extra calculation in the client code, memoryRegion always has the exact size which
 //		// was requested and the actual size of the region is stored here.
-//		GCI::GpuMemoryRegion reservedRegion;
+//		GCI::GPUMemoryRegion reservedRegion;
 //
-//		GpuBufferRef() = default;
+//		GPUBufferRef() = default;
 //
-//		GpuBufferRef( std::nullptr_t )
+//		GPUBufferRef( std::nullptr_t )
 //		: buffer{ nullptr }
 //		, memoryRegion{ 0, GCI::CxDef::GPU_MEMORY_SIZE_MAX }
 //		{}
@@ -129,17 +129,17 @@ namespace Ic3
 //		}
 //	};
 //
-//	struct GpuBufferUsageInfo
+//	struct GPUBufferUsageInfo
 //	{
 //		// Offset to the beginning of the free region of a buffer's memory.
 //		// This is a buffer-relative offset: initially its value is zero.
 //		GCI::gpu_memory_size_t currentAllocOffset;
 //
 //		// The size of a memory available for allocation (in bytes).
-//		// Initially its value is the size of the whole GpuBuffer.
+//		// Initially its value is the size of the whole GPUBuffer.
 //		GCI::gpu_memory_size_t availableMemorySize;
 //
-//		// Number of HWBuffers allocated from the referenced GpuBuffer.
+//		// Number of HWBuffers allocated from the referenced GPUBuffer.
 //		uint32 allocatedSubRegionCount;
 //	};
 //

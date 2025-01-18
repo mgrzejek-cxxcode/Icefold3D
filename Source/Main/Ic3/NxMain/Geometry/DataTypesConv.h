@@ -12,48 +12,48 @@ namespace Ic3
 
 	using DataTypeConversionFunction = std::function<void( const void *, void *, uint32 )>;
 
-	template <typename TInput, typename TOutput>
+	template <typename TPInput, typename TPOutput>
 	struct DataTypeConverter
 	{
-		static void convertValue( const TInput * pInputElements, TOutput * pOutputElements )
+		static void ConvertValue( const TPInput * pInputElements, TPOutput * pOutputElements )
 		{
-			*pOutputElements = numeric_cast<TOutput>( *pInputElements );
+			*pOutputElements = cppx::numeric_cast<TPOutput>( *pInputElements );
 		}
 
-		static void convertVector( const TInput * pInputElements, TOutput * pOutputElements, uint32 pElementsNum )
+		static void ConvertVector( const TPInput * pInputElements, TPOutput * pOutputElements, uint32 pElementsNum )
 		{
 			for( uint32 iElement = 0; iElement < pElementsNum; ++iElement )
 			{
-				pOutputElements[iElement] = numeric_cast<TOutput>( pInputElements[iElement] );
+				pOutputElements[iElement] = cppx::numeric_cast<TPOutput>( pInputElements[iElement] );
 			}
 		}
 	};
 
-	template <typename TInput>
+	template <typename TPInput>
 	struct GeometryDataConverter
 	{
-		template <typename TOutput>
-		static DataTypeConversionFunction getConversionFunction()
+		template <typename TPOutput>
+		static DataTypeConversionFunction GetConversionFunction()
 		{
 			return []( const void * pInputElements, void * pOutputElements, uint32 ) {
-				DataTypeConverter<TInput, TOutput>::convertValue(
-						reinterpret_cast<const TInput *>( pInputElements ),
-						reinterpret_cast<TOutput *>( pOutputElements ) );
+				DataTypeConverter<TPInput, TPOutput>::ConvertValue(
+						reinterpret_cast<const TPInput *>( pInputElements ),
+						reinterpret_cast<TPOutput *>( pOutputElements ) );
 			};
 		}
 	};
 
-	template <typename TValue, size_t tVectorSize>
-	struct GeometryDataConverter<Math::Vector<TValue, tVectorSize>>
+	template <typename TPValue, size_t tVectorSize>
+	struct GeometryDataConverter<Math::Vector<TPValue, tVectorSize>>
 	{
-		template <typename TOutput>
-		static DataTypeConversionFunction getConversionFunction()
+		template <typename TPOutput>
+		static DataTypeConversionFunction GetConversionFunction()
 		{
 			return []( const void * pInputElements, void * pOutputElements, uint32 pElementsNum ) {
-				DataTypeConverter<TValue, TOutput>::convertVector(
-						reinterpret_cast<const TValue *>( pInputElements ),
-						reinterpret_cast<TOutput *>( pOutputElements ),
-						getMinOf( tVectorSize, pElementsNum ) );
+				DataTypeConverter<TPValue, TPOutput>::ConvertVector(
+						reinterpret_cast<const TPValue *>( pInputElements ),
+						reinterpret_cast<TPOutput *>( pOutputElements ),
+						get_min_of( tVectorSize, pElementsNum ) );
 			};
 		}
 	};
@@ -62,42 +62,42 @@ namespace Ic3
 	namespace gmutil
 	{
 
-		template <typename TInput>
-		inline DataTypeConversionFunction getGeometryConversionFunction( GCI::EBaseDataType pOutputElementType )
+		template <typename TPInput>
+		inline DataTypeConversionFunction GetGeometryConversionFunction( GCI::EBaseDataType pOutputElementType )
 		{
 			switch( pOutputElementType )
 			{
 				case GCI::EBaseDataType::Byte:
 				{
-					return GeometryDataConverter<TInput>::template getConversionFunction<int8>();
+					return GeometryDataConverter<TPInput>::template GetConversionFunction<int8>();
 				}
 				case GCI::EBaseDataType::Ubyte:
 				{
-					return GeometryDataConverter<TInput>::template getConversionFunction<uint8>();
+					return GeometryDataConverter<TPInput>::template GetConversionFunction<uint8>();
 				}
 				case GCI::EBaseDataType::Int16:
 				{
-					return GeometryDataConverter<TInput>::template getConversionFunction<int16>();
+					return GeometryDataConverter<TPInput>::template GetConversionFunction<int16>();
 				}
 				case GCI::EBaseDataType::Uint16:
 				{
-					return GeometryDataConverter<TInput>::template getConversionFunction<uint16>();
+					return GeometryDataConverter<TPInput>::template GetConversionFunction<uint16>();
 				}
 				case GCI::EBaseDataType::Int32:
 				{
-					return GeometryDataConverter<TInput>::template getConversionFunction<int32>();
+					return GeometryDataConverter<TPInput>::template GetConversionFunction<int32>();
 				}
 				case GCI::EBaseDataType::Uint32:
 				{
-					return GeometryDataConverter<TInput>::template getConversionFunction<uint32>();
+					return GeometryDataConverter<TPInput>::template GetConversionFunction<uint32>();
 				}
 				case GCI::EBaseDataType::Float16:
 				{
-					return GeometryDataConverter<TInput>::template getConversionFunction<uint16>();
+					return GeometryDataConverter<TPInput>::template GetConversionFunction<uint16>();
 				}
 				case GCI::EBaseDataType::Float32:
 				{
-					return GeometryDataConverter<TInput>::template getConversionFunction<float>();
+					return GeometryDataConverter<TPInput>::template GetConversionFunction<float>();
 				}
 				default:
 				{

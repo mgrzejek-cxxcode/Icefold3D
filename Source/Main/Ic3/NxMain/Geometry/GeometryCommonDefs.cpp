@@ -6,9 +6,10 @@
 namespace Ic3
 {
 
+	/*
 	bool GeometryBufferRegion::append( const GeometryBufferRegion & pOther )
 	{
-		ic3DebugAssert( pOther.offsetInElementsNum == ( offsetInElementsNum + sizeInElementsNum ) );
+		Ic3DebugAssert( pOther.offsetInElementsNum == ( offsetInElementsNum + sizeInElementsNum ) );
 		sizeInElementsNum += pOther.sizeInElementsNum;
 	}
 
@@ -42,14 +43,14 @@ namespace Ic3
 	uint32 GeometryReferenceBase::vertexDataOffsetInElementsNum() const noexcept
 	{
 		const auto firstActiveStream = dataFormat->firstActiveVertexStream();
-		ic3DebugAssert( firstActiveStream != GCI::CxDef::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED );
+		Ic3DebugAssert( firstActiveStream != GCI::CxDef::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED );
 		return vertexStreamDataRegions[firstActiveStream].offsetInElementsNum;
 	}
 
 	uint32 GeometryReferenceBase::vertexDataSizeInElementsNum() const noexcept
 	{
 		const auto firstActiveStream = dataFormat->firstActiveVertexStream();
-		ic3DebugAssert( firstActiveStream != GCI::CxDef::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED );
+		Ic3DebugAssert( firstActiveStream != GCI::CxDef::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED );
 		return vertexStreamDataRegions[firstActiveStream].sizeInElementsNum;
 	}
 
@@ -66,7 +67,7 @@ namespace Ic3
 	GeometrySize GeometryReferenceBase::calculateGeometrySize() const noexcept
 	{
 		const auto firstActiveStream = dataFormat->firstActiveVertexStream();
-		ic3DebugAssert( firstActiveStream != GCI::CxDef::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED );
+		Ic3DebugAssert( firstActiveStream != GCI::CxDef::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED );
 
 		return {
 			vertexStreamDataRegions[firstActiveStream].sizeInElementsNum,
@@ -109,8 +110,8 @@ namespace Ic3
 				const auto & baseDataRegion = pGeometryDataRef.vertexStreamDataRegions[iVertexStream];
 				if( baseDataRegion.sizeInElementsNum > 0 )
 				{
-					const auto relativeOffsetInElementsNum = getMinOf( pVertexDataOffsetInElementsNum, baseDataRegion.sizeInElementsNum );
-					const auto sizeInElementsNum = getMinOf( pVertexElementsNum, baseDataRegion.sizeInElementsNum - relativeOffsetInElementsNum );
+					const auto relativeOffsetInElementsNum = get_min_of( pVertexDataOffsetInElementsNum, baseDataRegion.sizeInElementsNum );
+					const auto sizeInElementsNum = get_min_of( pVertexElementsNum, baseDataRegion.sizeInElementsNum - relativeOffsetInElementsNum );
 
 					auto & subDataRegion = subGeometryDataRef.vertexStreamDataRegions[iVertexStream];
 					subDataRegion.elementSize = baseDataRegion.elementSize;
@@ -123,8 +124,8 @@ namespace Ic3
 			const auto & baseDataRegion = pGeometryDataRef.indexDataRegion;
 			if( baseDataRegion.sizeInElementsNum > 0 )
 			{
-				const auto relativeOffsetInElementsNum = getMinOf( pIndexDataOffsetInElementsNum, baseDataRegion.sizeInElementsNum );
-				const auto sizeInElementsNum = getMinOf( pIndexElementsNum, baseDataRegion.sizeInElementsNum - relativeOffsetInElementsNum );
+				const auto relativeOffsetInElementsNum = get_min_of( pIndexDataOffsetInElementsNum, baseDataRegion.sizeInElementsNum );
+				const auto sizeInElementsNum = get_min_of( pIndexElementsNum, baseDataRegion.sizeInElementsNum - relativeOffsetInElementsNum );
 
 				auto & subDataRegion = subGeometryDataRef.indexDataRegion;
 				subDataRegion.elementSize = baseDataRegion.elementSize;
@@ -170,5 +171,6 @@ namespace Ic3
 			return advGeometryDataRef;
 		}
 	}
+	 */
 
 }

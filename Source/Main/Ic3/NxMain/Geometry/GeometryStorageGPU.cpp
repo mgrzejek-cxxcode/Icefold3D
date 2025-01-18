@@ -169,7 +169,7 @@ namespace Ic3
 		}
 
 		auto & geometryReference = _geometryRefList.emplace_back( *this );
-		geometryReference.geometryIndex = numeric_cast<uint32>( _geometryRefList.size() - 1 );
+		geometryReference.geometryIndex = cppx::numeric_cast<uint32>( _geometryRefList.size() - 1 );
 
 		if( geometryReference.geometryIndex == 0 )
 		{
@@ -208,7 +208,7 @@ namespace Ic3
 		bufferCreateInfo.resourceFlags.set( GCI::E_GPU_BUFFER_BIND_FLAG_INDEX_BUFFER_BIT );
 
 		auto indexBuffer = pCES.mGPUDevice->createGPUBuffer( bufferCreateInfo );
-		ic3DebugAssert( indexBuffer );
+		Ic3DebugAssert( indexBuffer );
 
 		return indexBuffer;
 	}
@@ -226,7 +226,7 @@ namespace Ic3
 		bufferCreateInfo.resourceFlags.set( GCI::E_GPU_BUFFER_BIND_FLAG_VERTEX_BUFFER_BIT );
 
 		auto vertexBuffer = pCES.mGPUDevice->createGPUBuffer( bufferCreateInfo );
-		ic3DebugAssert( vertexBuffer );
+		Ic3DebugAssert( vertexBuffer );
 
 		return vertexBuffer;
 	}

@@ -22,14 +22,14 @@ namespace Ic3
 		MeshComponent( Mesh & pParentMesh, std::string pName, GeometryRefHandle pGeometryRef );
 		virtual ~MeshComponent();
 
-		IC3_ATTR_NO_DISCARD virtual EMeshObjectType getMeshObjectType() const noexcept;
+		CPPX_ATTR_NO_DISCARD virtual EMeshObjectType getMeshObjectType() const noexcept;
 
-		IC3_ATTR_NO_DISCARD bool isMeshSubComponent() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool isMeshSubComponent() const noexcept;
 
-		IC3_ATTR_NO_DISCARD Mesh * parentMesh() const noexcept;
-		IC3_ATTR_NO_DISCARD MeshGroup * meshGroup() const noexcept;
-		IC3_ATTR_NO_DISCARD const std::string & name() const noexcept;
-		IC3_ATTR_NO_DISCARD GeometryRefHandle geometryDataRef() const noexcept;
+		CPPX_ATTR_NO_DISCARD Mesh * parentMesh() const noexcept;
+		CPPX_ATTR_NO_DISCARD MeshGroup * meshGroup() const noexcept;
+		CPPX_ATTR_NO_DISCARD const std::string & name() const noexcept;
+		CPPX_ATTR_NO_DISCARD GeometryRefHandle geometryDataRef() const noexcept;
 
 	protected:
 		MeshComponent( MeshGroup & pMeshGroup, std::string pName, GeometryRefHandle pGeometryRef );
@@ -73,13 +73,13 @@ namespace Ic3
 		Mesh( MeshGroup & pMeshGroup, std::string pName );
 		virtual ~Mesh();
 
-		IC3_ATTR_NO_DISCARD virtual EMeshObjectType getMeshObjectType() const noexcept override final;
+		CPPX_ATTR_NO_DISCARD virtual EMeshObjectType getMeshObjectType() const noexcept override final;
 
-		IC3_ATTR_NO_DISCARD uint32 getComponentsNum() const noexcept;
+		CPPX_ATTR_NO_DISCARD uint32 getComponentsNum() const noexcept;
 
-		IC3_ATTR_NO_DISCARD MeshComponent * getComponent( uint32 pIndex ) const noexcept;
+		CPPX_ATTR_NO_DISCARD MeshComponent * getComponent( uint32 pIndex ) const noexcept;
 
-		IC3_ATTR_NO_DISCARD MeshComponent * findSubComponent( const std::string & pName ) const noexcept;
+		CPPX_ATTR_NO_DISCARD MeshComponent * findSubComponent( const std::string & pName ) const noexcept;
 
 		MeshComponent * addMeshComponent( std::string pName, GeometryRefHandle pGeometryRef );
 

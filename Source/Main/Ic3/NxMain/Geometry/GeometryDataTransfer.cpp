@@ -6,25 +6,25 @@
 namespace Ic3
 {
 
-	GeometryDataGpuTransfer::GeometryDataGpuTransfer(
+	GeometryDataGPUTransfer::GeometryDataGPUTransfer(
 			CoreEngineState & pCES,
 			GpaTransferCommandContext & pTransferCmdContext )
 	: CoreEngineObject( pCES )
 	, mTransferCmdContext( pTransferCmdContext )
 	{}
 
-	GeometryDataGpuTransfer::~GeometryDataGpuTransfer() = default;
+	GeometryDataGPUTransfer::~GeometryDataGPUTransfer() = default;
 
 
-	GeometryDataGpuTransferUpload::GeometryDataGpuTransferUpload(
+	GeometryDataGPUTransferUpload::GeometryDataGPUTransferUpload(
 			CoreEngineState & pCES,
 			GpaTransferCommandContext & pTransferCmdContext )
-	: GeometryDataGpuTransfer( pCES, pTransferCmdContext )
+	: GeometryDataGPUTransfer( pCES, pTransferCmdContext )
 	{}
 
-	GeometryDataGpuTransferUpload::~GeometryDataGpuTransferUpload() = default;
+	GeometryDataGPUTransferUpload::~GeometryDataGPUTransferUpload() = default;
 
-	void GeometryDataGpuTransferUpload::initializeMeshData(
+	void GeometryDataGPUTransferUpload::initializeMeshData(
 			const GeometryReference & pGeometryRef,
 			const GeometryDataReferenceBase & pInputDataRef )
 	{
@@ -39,7 +39,7 @@ namespace Ic3
 			GCI::GPUBufferSubDataUploadDesc gpaDataUploadDesc;
 			gpaDataUploadDesc.bufferRegion.offset = vertexBufferRegion.offsetInElementsNum * vertexStreamFormat.elementSizeInBytes;
 			gpaDataUploadDesc.bufferRegion.size = vertexBufferRegion.sizeInElementsNum * vertexStreamFormat.elementSizeInBytes;
-			gpaDataUploadDesc.inputDataDesc.pointer = inputDataRegion.dataPtr;
+			gpaDataUploadDesc.inputDataDesc.mPointer = inputDataRegion.mDataPtr;
 			gpaDataUploadDesc.inputDataDesc.size = inputDataRegion.sizeInElementsNum * inputDataRegion.elementSize;
 
 			mTransferCmdContext.updateBufferSubDataUpload( *vertexBuffer, gpaDataUploadDesc );
@@ -55,7 +55,7 @@ namespace Ic3
 			GCI::GPUBufferSubDataUploadDesc gpaDataUploadDesc;
 			gpaDataUploadDesc.bufferRegion.offset = indexBufferRegion.offsetInElementsNum * pGeometryRef.dataReference.dataFormat->indexElementSizeInBytes();
 			gpaDataUploadDesc.bufferRegion.size = indexBufferRegion.sizeInElementsNum * pGeometryRef.dataReference.dataFormat->indexElementSizeInBytes();
-			gpaDataUploadDesc.inputDataDesc.pointer = inputDataRegion.dataPtr;
+			gpaDataUploadDesc.inputDataDesc.mPointer = inputDataRegion.mDataPtr;
 			gpaDataUploadDesc.inputDataDesc.size = inputDataRegion.sizeInElementsNum * inputDataRegion.elementSize;
 
 			mTransferCmdContext.updateBufferSubDataUpload( *indexBuffer, gpaDataUploadDesc );

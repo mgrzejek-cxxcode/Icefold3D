@@ -11,31 +11,31 @@ namespace Ic3
 {
 
 	using GpaTransferCommandContext = GCI::CommandContextDirectTransfer;
-	using GpaTransferCommandContextHandle = GCI::GpaHandle<GCI::CommandContextDirectTransfer>;
+	using GpaTransferCommandContextHandle = GCI::TGfxHandle<GCI::CommandContextDirectTransfer>;
 
-	class GeometryDataGpuTransfer : public CoreEngineObject
+	class GeometryDataGPUTransfer : public CoreEngineObject
 	{
 	public:
 		GpaTransferCommandContext & mTransferCmdContext;
 
 	public:
-		GeometryDataGpuTransfer(
+		GeometryDataGPUTransfer(
 				CoreEngineState & pCES,
 				GpaTransferCommandContext & pTransferCmdContext );
 
-		virtual ~GeometryDataGpuTransfer();
+		virtual ~GeometryDataGPUTransfer();
 
 		virtual void initializeMeshData(
 				const GeometryReference & pGeometryRef,
-				const GeometryDataReferenceBase & pInputDataRef ) = 0;
+			const GeometryDataReferenceBase & pInputDataRef ) = 0;
 	};
 
-	class GeometryDataGpuTransferDirectCopy : public GeometryDataGpuTransfer
+	class GeometryDataGPUTransferDirectCopy : public GeometryDataGPUTransfer
 	{
 	public:
-		GeometryDataGpuTransferDirectCopy();
+		GeometryDataGPUTransferDirectCopy();
 
-		virtual ~GeometryDataGpuTransferDirectCopy();
+		virtual ~GeometryDataGPUTransferDirectCopy();
 
 		virtual void initializeMeshData(
 				const GeometryReference & pGeometryRef,
@@ -44,11 +44,11 @@ namespace Ic3
 		}
 	};
 
-	class GeometryDataGpuTransferIntermediateBuffer : public GeometryDataGpuTransfer
+	class GeometryDataGPUTransferIntermediateBuffer : public GeometryDataGPUTransfer
 	{
 	public:
-		GeometryDataGpuTransferIntermediateBuffer();
-		virtual ~GeometryDataGpuTransferIntermediateBuffer();
+		GeometryDataGPUTransferIntermediateBuffer();
+		virtual ~GeometryDataGPUTransferIntermediateBuffer();
 
 		virtual void initializeMeshData(
 				const GeometryReference & pGeometryRef,
@@ -57,14 +57,14 @@ namespace Ic3
 		}
 	};
 
-	class GeometryDataGpuTransferUpload : public GeometryDataGpuTransfer
+	class GeometryDataGPUTransferUpload : public GeometryDataGPUTransfer
 	{
 	public:
-		GeometryDataGpuTransferUpload(
+		GeometryDataGPUTransferUpload(
 				CoreEngineState & pCES,
 				GpaTransferCommandContext & pTransferCmdContext);
 
-		virtual ~GeometryDataGpuTransferUpload();
+		virtual ~GeometryDataGPUTransferUpload();
 
 		virtual void initializeMeshData(
 				const GeometryReference & pGeometryRef,

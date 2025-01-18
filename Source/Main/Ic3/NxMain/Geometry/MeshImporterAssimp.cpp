@@ -30,7 +30,7 @@ namespace Ic3
 
 		if( !aiSceneObject )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			throw 0;
 		}
 
@@ -65,9 +65,9 @@ namespace Ic3
 			return metrics;
 		}
 
-		template <typename TInput>
+		template <typename TPInput>
 		void assimpReadMeshVertexAttributeData(
-				const TInput * pInputData,
+				const TPInput * pInputData,
 				const size_t pElementsNum,
 				const InterleavedBufferElementRefReadWrite & pWriteRegion,
 				const VertexAttributeFormat & pAttributeFormat,
@@ -95,7 +95,7 @@ namespace Ic3
 			if( pAiMesh->mNumFaces > 0 )
 			{
 				const auto indexDataWriteRegion = pMeshData.getIndexDataSubRegionReadWrite( meshSubComponentData->geometryDataRef );
-				const auto conversionFunction = gmutil::getGeometryConversionFunction<Math::Vec3u32>( GCI::EBaseDataType::Uint32 );
+				const auto conversionFunction = gmutil::GetGeometryConversionFunction<Math::Vec3u32>( GCI::EBaseDataType::Uint32 );
 
 				auto * currentWritePtr = indexDataWriteRegion.basePtr;
 
@@ -109,17 +109,17 @@ namespace Ic3
 
 			for( uint32 iAttribute = 0; iAttribute < gpa::MAX_GEOMETRY_VERTEX_ATTRIBUTES_NUM; ++iAttribute )
 			{
-				if( pMeshData.mDataFormat.isAttributeActive( iAttribute ) )
+				if( pMeshData.mDataFormat.IsAttributeActive( iAttribute ) )
 				{
 					const auto & attributeFormat = pMeshData.mDataFormat.attribute( iAttribute );
 					const auto attributeDataBaseType = GCI::CxDef::getVertexAttribFormatBaseDataType( attributeFormat.componentFormat );
 					const auto attributeDataWriteRegion = pMeshData.getVertexAttributeDataSubRegionReadWrite( meshSubComponentData->geometryDataRef, iAttribute );
 
-					switch( attributeFormat.semantics.smtID )
+					switch( attributeFormat.mSemantics.mSmtID )
 					{
 						case EShaderInputSemanticID::Position:
 						{
-							const auto conversionFunction = gmutil::getGeometryConversionFunction<Math::Vec3d>( attributeDataBaseType );
+							const auto conversionFunction = gmutil::GetGeometryConversionFunction<Math::Vec3d>( attributeDataBaseType );
 
 							assimpReadMeshVertexAttributeData(
 									pAiMesh->mVertices,
@@ -134,7 +134,7 @@ namespace Ic3
 						}
 						case EShaderInputSemanticID::Normal:
 						{
-							const auto conversionFunction = gmutil::getGeometryConversionFunction<Math::Vec3d>( attributeDataBaseType );
+							const auto conversionFunction = gmutil::GetGeometryConversionFunction<Math::Vec3d>( attributeDataBaseType );
 
 							assimpReadMeshVertexAttributeData(
 									pAiMesh->mNormals,
@@ -149,7 +149,7 @@ namespace Ic3
 						}
 						case EShaderInputSemanticID::TexCoord0:
 						{
-							const auto conversionFunction = gmutil::getGeometryConversionFunction<Math::Vec3d>( attributeDataBaseType );
+							const auto conversionFunction = gmutil::GetGeometryConversionFunction<Math::Vec3d>( attributeDataBaseType );
 
 							assimpReadMeshVertexAttributeData(
 									pAiMesh->mTextureCoords[0],

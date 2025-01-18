@@ -53,7 +53,7 @@ namespace Ic3
 		auto * meshComponentPtr = findMeshComponent( pName );
 		if( meshComponentPtr && ( meshComponentPtr->parentMesh() == &pMesh ) )
 		{
-			ic3DebugAssert( meshComponentPtr->isMeshSubComponent() );
+			Ic3DebugAssert( meshComponentPtr->isMeshSubComponent() );
 			return meshComponentPtr;
 		}
 
