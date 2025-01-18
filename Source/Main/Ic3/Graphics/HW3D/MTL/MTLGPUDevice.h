@@ -7,7 +7,7 @@
 #include "MTLPrerequisites.h"
 #include "State/MTL_pipelineImmutableStateFactory.h"
 #include <Ic3/Graphics/GCI/GPUDevice.h>
-#include <Ic3/Graphics/GCI/State/PipelineImmutableStateCache.h>
+#include <Ic3/Graphics/GCI/State/SharedImmutableStateCache.h>
 
 namespace Ic3::Graphics::GCI
 {

@@ -9,7 +9,7 @@ namespace Ic3
 	XXGeometryInputSourceBase::~XXGeometryInputSourceBase() = default;
 
 	bool XXGeometryInputSourceBase::addVertexAttribute(
-			SShaderSemantics pAttributeSemantics,
+			ShaderSemantics pAttributeSemantics,
 			uint32 pBufferIndex,
 			GCI::EVertexAttribFormat pBaseFormat,
 			uint32 pComponentsNum,
@@ -20,19 +20,19 @@ namespace Ic3
 			return false;
 		}
 
-		if( pBufferIndex >= GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM )
+		if( pBufferIndex >= GCM::cxIAMaxVertexBufferBindingsNum )
 		{
 			return false;
 		}
 
-		if( ( pComponentsNum > 4 ) || ( _activeAttributeSlotsNum + pComponentsNum >= GCM::IA_MAX_VERTEX_ATTRIBUTES_NUM ) )
+		if( ( pComponentsNum > 4 ) || ( _activeAttributeSlotsNum + pComponentsNum >= GCM::cxIAMaxVertexAttributesNum ) )
 		{
 			return false;
 		}
 
 		auto & targetBuffer = _localVertexBufferArray[pBufferIndex];
 
-		if( pBufferRelativeOffset == GCI::CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND )
+		if( pBufferRelativeOffset == GCI::cxIAVertexAttributeOffsetAppend )
 		{
 			pBufferRelativeOffset = targetBuffer.elementSizeInBytes;
 		}
@@ -43,8 +43,8 @@ namespace Ic3
 		attribDesc.attributeSizeInBytes = GCI::CxDef::getVertexAttribFormatByteSize( pBaseFormat ) * pComponentsNum;
 		attribDesc.bufferIndex = pBufferIndex;
 		attribDesc.bufferRelativeOffset = pBufferRelativeOffset;
-		attribDesc.semantics = std::move( pAttributeSemantics );
-		std::string attributeSemanticName = attribDesc.semantics.smtName;
+		attribDesc.mSemantics = std::move( pAttributeSemantics );
+		std::string attributeSemanticName = attribDesc.mSemantics.smtName;
 
 		targetBuffer.elementSizeInBytes += attribDesc.attributeSizeInBytes;
 
@@ -65,7 +65,7 @@ namespace Ic3
 	{
 		if( !_allocState.empty() )
 		{
-			ic3Throw( 0 );
+			Ic3Throw( 0 );
 		}
 
 		if( pIndexFormat != GCI::EIndexDataFormat::Undefined )
@@ -128,12 +128,12 @@ namespace Ic3
 	{
 		if( pVertexElementsNum == 0 )
 		{
-			ic3Throw( 0 );
+			Ic3Throw( 0 );
 		}
 
 		if( ( pIndexElementsNum == 0 ) && isIndexedGeometry() )
 		{
-			ic3Throw( 0 );
+			Ic3Throw( 0 );
 		}
 
 		const auto currentCapacity = getCurrentCapacity();

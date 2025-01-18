@@ -12,27 +12,27 @@ namespace Ic3::Graphics::GCI
 	/// @brief
 	enum ERenderPassAttachmentActionFlags : uint32
 	{
-		E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_ACCESS_RESTRICT_BIT = 0x001,
-		E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_LOAD_CLEAR_BIT      = 0x010,
-		E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_LOAD_DISCARD_BIT    = 0x020,
-		E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_LOAD_FETCH_BIT      = 0x040,
-		E_RENDER_PASS_ATTACHMENT_ACTION_MASK_LOAD_ALL            = 0x070,
-		E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_STORE_DISCARD_BIT   = 0x100,
-		E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_STORE_KEEP_BIT      = 0x200,
-		E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_STORE_RESOLVE_BIT   = 0x400,
-		E_RENDER_PASS_ATTACHMENT_ACTION_MASK_STORE_ALL           = 0x700,
-		E_RENDER_PASS_ATTACHMENT_ACTION_MASK_ALL                 = 0x771,
+		eRenderPassAttachmentActionFlagAccessRestrictBit = 0x001,
+		eRenderPassAttachmentActionFlagLoadClearBit      = 0x010,
+		eRenderPassAttachmentActionFlagLoadDiscardBit    = 0x020,
+		eRenderPassAttachmentActionFlagLoadFetchBit      = 0x040,
+		eRenderPassAttachmentActionMaskLoadAll           = 0x070,
+		eRenderPassAttachmentActionFlagStoreDiscardBit   = 0x100,
+		eRenderPassAttachmentActionFlagStoreKeepBit      = 0x200,
+		eRenderPassAttachmentActionFlagStoreResolveBit   = 0x400,
+		eRenderPassAttachmentActionMaskStoreAll          = 0x700,
+		eRenderPassAttachmentActionMaskAll               = 0x771,
 	};
 
 	/// @brief Specifies how the contents of render pass attachments are treated at the beginning of a render pass.
 	enum class ERenderPassAttachmentLoadAction : uint32
 	{
-		Clear = E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_LOAD_CLEAR_BIT,
+		Clear = eRenderPassAttachmentActionFlagLoadClearBit,
 		/// Indicates that the pass does not have any dependency on the previous contents of the resource.
 		/// The resource may have the previous data or some uninitialized one. No guarantees are given.
-		Discard = E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_LOAD_DISCARD_BIT,
-		Fetch = E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_LOAD_FETCH_BIT,
-		RestrictAccess = E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_ACCESS_RESTRICT_BIT,
+		Discard = eRenderPassAttachmentActionFlagLoadDiscardBit,
+		Fetch = eRenderPassAttachmentActionFlagLoadFetchBit,
+		RestrictAccess = eRenderPassAttachmentActionFlagAccessRestrictBit,
 		Undefined = 0
 	};
 
@@ -41,12 +41,12 @@ namespace Ic3::Graphics::GCI
 	{
 		/// Indicates that the contents need not to be preserved after the pass is finished. The contents MAY
 		/// (but not necessarily have to) be discarded by the driver. There should be no assumptions about it.
-		Discard = E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_STORE_DISCARD_BIT,
+		Discard = eRenderPassAttachmentActionFlagStoreDiscardBit,
 		/// The contents of the resource is to be preserved and kept after the pass is done.
 		/// This indicates there will be a dependency on the data in the future.
-		Keep = E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_STORE_KEEP_BIT,
-		KeepResolve = E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_STORE_KEEP_BIT | E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_STORE_RESOLVE_BIT,
-		Resolve = E_RENDER_PASS_ATTACHMENT_ACTION_FLAG_STORE_RESOLVE_BIT,
+		Keep = eRenderPassAttachmentActionFlagStoreKeepBit,
+		KeepResolve = eRenderPassAttachmentActionFlagStoreKeepBit | eRenderPassAttachmentActionFlagStoreResolveBit,
+		Resolve = eRenderPassAttachmentActionFlagStoreResolveBit,
 		Undefined = 0
 	};
 

@@ -8,28 +8,28 @@ namespace Ic3
 
 	inline VertexInputStream::operator bool() const noexcept
 	{
-		return isActive();
+		return IsActive();
 	}
 
-	inline bool VertexInputStream::isActive() const noexcept
+	inline bool VertexInputStream::IsActive() const noexcept
 	{
 		return ( streamIASlot != cxGCIVertexStreamIndexUndefined ) && ( activeAttributesNum > 0 );
 	}
 
-	inline bool VertexInputStream::checkAttributeCompatibility( const VertexAttributeDefinition & pAttributeDefinition ) const noexcept
+	inline bool VertexInputStream::CheckAttributeCompatibility( const VertexAttributeDefinition & pAttributeDefinition ) const noexcept
 	{
 		return ( streamDataRate == EVertexDataRate::Undefined ) || ( streamDataRate == pAttributeDefinition.dataRate );
 	}
 
-	inline void VertexInputStream::init( uint16 pStreamIASlot, EVertexDataRate pDataRate )
+	inline void VertexInputStream::Init( uint16 pStreamIASlot, EVertexDataRate pDataRate )
 	{
-		ic3DebugAssert( streamIASlot == cxGCIVertexStreamIndexUndefined );
-		ic3DebugAssert( streamDataRate == EVertexDataRate::Undefined );
+		Ic3DebugAssert( streamIASlot == cxGCIVertexStreamIndexUndefined );
+		Ic3DebugAssert( streamDataRate == EVertexDataRate::Undefined );
 		streamIASlot = pStreamIASlot;
 		streamDataRate = pDataRate;
 	}
 
-	inline void VertexInputStream::reset()
+	inline void VertexInputStream::Reset()
 	{
 		streamIASlot = cxGCIVertexStreamIndexUndefined;
 		activeAttributesMask.clear();
@@ -41,63 +41,63 @@ namespace Ic3
 
 	inline VertexStreamArrayConfig::operator bool() const noexcept
 	{
-		return !empty();
+		return !IsEmpty();
 	}
 
 	inline const VertexInputStream & VertexStreamArrayConfig::operator[]( native_uint pStreamIASlot ) const noexcept
 	{
-		ic3DebugAssert( cxGCIValidInputAssemblerSlotIndexRange.contains( pStreamIASlot ) );
+		Ic3DebugAssert( cxGCIValidInputAssemblerSlotIndexRange.contains( pStreamIASlot ) );
 		return _streamArray[pStreamIASlot];
 	}
 
-	inline const VertexInputStream & VertexStreamArrayConfig::streamAt( native_uint pStreamIASlot ) const
+	inline const VertexInputStream & VertexStreamArrayConfig::StreamAt( native_uint pStreamIASlot ) const
 	{
-		ic3DebugAssert( cxGCIValidInputAssemblerSlotIndexRange.contains( pStreamIASlot ) );
+		Ic3DebugAssert( cxGCIValidInputAssemblerSlotIndexRange.contains( pStreamIASlot ) );
 		return _streamArray.at( pStreamIASlot );
 	}
 
-	inline const VertexInputStream * VertexStreamArrayConfig::streamPtr( native_uint pStreamIASlot ) const noexcept
+	inline const VertexInputStream * VertexStreamArrayConfig::StreamPtr( native_uint pStreamIASlot ) const noexcept
 	{
 		return cxGCIValidInputAssemblerSlotIndexRange.contains( pStreamIASlot ) ? &( _streamArray[pStreamIASlot] ) : nullptr;
 	}
 
-	inline bool VertexStreamArrayConfig::isStreamActive( native_uint pStreamIASlot ) const noexcept
+	inline bool VertexStreamArrayConfig::IsStreamActive( native_uint pStreamIASlot ) const noexcept
 	{
-		ic3DebugAssert( cxGCIValidInputAssemblerSlotIndexRange.contains( pStreamIASlot ) );
-		return _streamArray[pStreamIASlot].isActive();
+		Ic3DebugAssert( cxGCIValidInputAssemblerSlotIndexRange.contains( pStreamIASlot ) );
+		return _streamArray[pStreamIASlot].IsActive();
 	}
 
-	inline const VertexInputStreamArray & VertexStreamArrayConfig::getStreamArray() const noexcept
+	inline const VertexInputStreamArray & VertexStreamArrayConfig::GetStreamArray() const noexcept
 	{
 		return _streamArray;
 	}
 
-	inline uint32 VertexStreamArrayConfig::getActiveStreamsNum() const noexcept
+	inline uint32 VertexStreamArrayConfig::GetActiveStreamsNum() const noexcept
 	{
 		return _activeStreamsNum;
 	}
 
-	inline TBitmask<GCI::EIAVertexStreamBindingFlags> VertexStreamArrayConfig::getActiveAttributesMask() const noexcept
+	inline cppx::bitmask<GCI::EIAVertexStreamBindingFlags> VertexStreamArrayConfig::GetActiveAttributesMask() const noexcept
 	{
 		return _activeStreamsMask;
 	}
 
-	inline const InputAssemblerSlotRange & VertexStreamArrayConfig::getActiveAttributesRange() const noexcept
+	inline const InputAssemblerSlotRange & VertexStreamArrayConfig::GetActiveAttributesRange() const noexcept
 	{
 		return _activeStreamsRange;
 	}
 
-	inline const InputAssemblerSlotArray & VertexStreamArrayConfig::getActiveStreamsSlots() const noexcept
+	inline const InputAssemblerSlotArray & VertexStreamArrayConfig::GetActiveStreamsSlots() const noexcept
 	{
 		return _activeStreamsSlots;
 	}
 
-	inline bool VertexStreamArrayConfig::isActiveStreamsRangeContinuous() const noexcept
+	inline bool VertexStreamArrayConfig::IsActiveStreamsRangeContinuous() const noexcept
 	{
-		return !empty() && ( _activeStreamsRange.length() == _activeStreamsNum );
+		return !IsEmpty() && ( _activeStreamsRange.length() == _activeStreamsNum );
 	}
 
-	inline bool VertexStreamArrayConfig::empty() const noexcept
+	inline bool VertexStreamArrayConfig::IsEmpty() const noexcept
 	{
 		return _activeStreamsNum == 0;
 	}

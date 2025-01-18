@@ -5,7 +5,7 @@
 #define __IC3_NXMAIN_MESH_DATA_H__
 
 #include "GeometryContainer.h"
-#include <Ic3/Cppx/MemoryBuffer.h>
+#include <cppx/memoryBuffer.h>
 
 namespace Ic3
 {
@@ -34,28 +34,28 @@ namespace Ic3
 		: GeometryContainer( pGeometryDataFormatBase )
 		{}
 
-		IC3_ATTR_NO_DISCARD uint32 getMeshSubComponentsNum() const noexcept;
+		CPPX_ATTR_NO_DISCARD uint32 getMeshSubComponentsNum() const noexcept;
 
-		IC3_ATTR_NO_DISCARD const std::string & getMeshName() const noexcept;
+		CPPX_ATTR_NO_DISCARD const std::string & getMeshName() const noexcept;
 
-		IC3_ATTR_NO_DISCARD const MeshSubComponentData * getMeshSubComponentData( uint32 pIndex ) const noexcept;
+		CPPX_ATTR_NO_DISCARD const MeshSubComponentData * getMeshSubComponentData( uint32 pIndex ) const noexcept;
 
-		IC3_ATTR_NO_DISCARD const void * getVertexStreamBaseDataPtr( uint32 pIndex ) const noexcept;
+		CPPX_ATTR_NO_DISCARD const void * getVertexStreamBaseDataPtr( uint32 pIndex ) const noexcept;
 
-		IC3_ATTR_NO_DISCARD const void * getIndexBaseDataPtr() const noexcept;
+		CPPX_ATTR_NO_DISCARD const void * getIndexBaseDataPtr() const noexcept;
 
-		IC3_ATTR_NO_DISCARD InterleavedBufferElementRefReadOnly getIndexDataSubRegionReadOnly(
-				const CPUGeometryDataReferenceBase & pMeshDataRef ) const noexcept;
+		CPPX_ATTR_NO_DISCARD InterleavedBufferElementRefReadOnly getIndexDataSubRegionReadOnly(
+				const CpuGeometryDataReferenceBase & pMeshDataRef ) const noexcept;
 
-		IC3_ATTR_NO_DISCARD InterleavedBufferElementRefReadOnly getVertexAttributeDataSubRegionReadOnly(
-				const CPUGeometryDataReferenceBase & pMeshDataRef,
+		CPPX_ATTR_NO_DISCARD InterleavedBufferElementRefReadOnly getVertexAttributeDataSubRegionReadOnly(
+				const CpuGeometryDataReferenceBase & pMeshDataRef,
 				uint32 pAttributeIndex ) const noexcept;
 
-		IC3_ATTR_NO_DISCARD InterleavedBufferElementRefReadWrite getIndexDataSubRegionReadWrite(
-				const CPUGeometryDataReferenceBase & pMeshDataRef ) noexcept;
+		CPPX_ATTR_NO_DISCARD InterleavedBufferElementRefReadWrite getIndexDataSubRegionReadWrite(
+				const CpuGeometryDataReferenceBase & pMeshDataRef ) noexcept;
 
-		IC3_ATTR_NO_DISCARD InterleavedBufferElementRefReadWrite getVertexAttributeDataSubRegionReadWrite(
-				const CPUGeometryDataReferenceBase & pMeshDataRef,
+		CPPX_ATTR_NO_DISCARD InterleavedBufferElementRefReadWrite getVertexAttributeDataSubRegionReadWrite(
+				const CpuGeometryDataReferenceBase & pMeshDataRef,
 				uint32 pAttributeIndex ) noexcept;
 
 		void initializeStorage( uint32 pVertexElementsNum, uint32 pIndexElementsNum );
@@ -65,10 +65,10 @@ namespace Ic3
 		MeshSubComponentData * addMeshComponent( uint32 pVertexElementsNum, uint32 pIndexElementsNum );
 
 	private:
-		using VertexDataBufferArray = std::array<DynamicMemoryBuffer, gpa::MAX_GEOMETRY_VERTEX_STREAMS_NUM>;
+		using VertexDataBufferArray = std::array<dynamic_memory_buffer, gpa::MAX_GEOMETRY_VERTEX_STREAMS_NUM>;
 		GeometrySize _geometrySize;
 		std::string _meshName;
-		DynamicMemoryBuffer _indexDataBuffer;
+		dynamic_memory_buffer _indexDataBuffer;
 		VertexDataBufferArray _vertexDataBuffers;
 		std::vector<MeshSubComponentData> _meshSubComponents;
 	};
@@ -109,22 +109,22 @@ namespace Ic3
 		: mGeometryDataFormatBase( pGeometryDataFormatBase )
 		{}
 
-		IC3_ATTR_NO_DISCARD uint32 getMeshesNum() const noexcept
+		CPPX_ATTR_NO_DISCARD uint32 getMeshesNum() const noexcept
 		{
 			return static_cast<uint32>( _meshDataArray.size() );
 		}
 
-		IC3_ATTR_NO_DISCARD const GeometrySize & geometrySize() const noexcept
+		CPPX_ATTR_NO_DISCARD const GeometrySize & geometrySize() const noexcept
 		{
 			return _geometrySize;
 		}
 
-		IC3_ATTR_NO_DISCARD bool empty() const noexcept
+		CPPX_ATTR_NO_DISCARD bool empty() const noexcept
 		{
 			return _meshDataArray.empty();
 		}
 
-		IC3_ATTR_NO_DISCARD const MeshData * getMeshData( uint32 pIndex ) const noexcept
+		CPPX_ATTR_NO_DISCARD const MeshData * getMeshData( uint32 pIndex ) const noexcept
 		{
 			return ( pIndex < _meshDataArray.size() ) ? _meshDataArray[pIndex].get() : nullptr;
 		}

@@ -9,7 +9,7 @@
 #include "Resources/TextureCommon.h"
 #include "State/GraphicsShaderState.h"
 #include "State/RenderPassCommon.h"
-#include "State/PipelineImmutableStateCache.h"
+#include "State/SharedImmutableStateCache.h"
 
 namespace Ic3::Graphics::GCI
 {
@@ -143,7 +143,7 @@ namespace Ic3::Graphics::GCI
 	protected:
 		virtual bool OnGPUResourceActiveRefsZero( GPUResource & pGPUResource );
 
-		void SetImmutableStateCache( PipelineImmutableStateCache & pStateCache );
+		void SetImmutableStateCache( SharedImmutableStateCache & pStateCache );
 
 	private:
 		/// @brief API-level initialization of the command system. Called by the parent driver when a device is created.
@@ -171,7 +171,7 @@ namespace Ic3::Graphics::GCI
 
 		/// Immutable state cache. Holds created states and enables re-using them across all APIs.
 		/// Requires PipelineImmutableStateFactory to be specified when created.
-		PipelineImmutableStateCache * _immutableStateCachePtr = nullptr;
+		SharedImmutableStateCache * _immutableStateCachePtr = nullptr;
 
 		cppx::bitmask<uint32> _internalStateFlags;
 	};

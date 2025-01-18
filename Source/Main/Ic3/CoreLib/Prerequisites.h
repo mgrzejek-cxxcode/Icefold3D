@@ -7,7 +7,7 @@
 #include <cppx/bitUtils.h>
 #include <cppx/range.h>
 #include <cppx/refWrapper.h>
-#include <cppx/staticLimits.h>
+#include <cppx/typeLimits.h>
 #include <cppx/stringView.h>
 
 #if( IC3_BUILD_STATIC )

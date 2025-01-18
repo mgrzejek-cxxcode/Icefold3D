@@ -6,7 +6,7 @@
 
 #include "ShaderInputSemantics.h"
 #include <Ic3/Graphics/GCI/State/InputAssemblerCommon.h>
-#include <Ic3/Cppx/SortedArray.h>
+#include <cppx/sortedArray.h>
 
 namespace Ic3
 {
@@ -17,11 +17,11 @@ namespace Ic3
 
 	using gci_input_assembler_slot_t = GCI::input_assembler_index_t;
 
-	using InputAssemblerSlotArray = Cppx::TSortedArray<gci_input_assembler_slot_t>;
-	using InputAssemblerSlotRange = TRange<gci_input_assembler_slot_t>;
+	using InputAssemblerSlotArray = cppx::sorted_array<gci_input_assembler_slot_t>;
+	using InputAssemblerSlotRange = cppx::range<gci_input_assembler_slot_t>;
 
-	using GenericVertexAttributeArray = std::array<GenericVertexAttribute, GCM::cxIAMaxVertexAttributesNum>; // Cppx::TSortedArray<VertexAttributeComponent>;
-	using VertexInputStreamArray = std::array<VertexInputStream, GCM::cxIAMaxVertexStreamsNum>; // Cppx::TSortedArray<VertexInputStream>;
+	using GenericVertexAttributeArray = std::array<GenericVertexAttribute, GCM::cxIAMaxVertexAttributesNum>; // cppx::sorted_array<VertexAttributeComponent>;
+	using VertexInputStreamArray = std::array<VertexInputStream, GCM::cxIAMaxVertexStreamsNum>; // cppx::sorted_array<VertexInputStream>;
 
 	/**
 	 * [Constant] Represents an invalid vertex attribute slot.
@@ -34,7 +34,7 @@ namespace Ic3
 	constexpr auto cxGCIVertexStreamIndexUndefined = GCI::cxIAVertexStreamIndexUndefined;
 
 	/// Represents an invalid offset value for vertex attribute.
-	constexpr auto cxGCIVertexAttributeOffsetInvalid = QLimits<uint32>::sMaxValue;
+	constexpr auto cxGCIVertexAttributeOffsetInvalid = cppx::meta::limits<uint32>::max_value;
 
 	///
 	constexpr auto cxGCIVertexAttributeOffsetAppend = GCI::cxIAVertexAttributeOffsetAppend;
@@ -55,7 +55,7 @@ namespace Ic3
 	{
 		PerVertex,
 		PerInstance,
-		Undefined = Cppx::QLimits<uint16>::sMaxValue
+		Undefined = cppx::meta::limits<uint16>::max_value
 	};
 
 	/**
@@ -79,9 +79,9 @@ namespace Ic3
 
 		ShaderSemantics shaderSemantics{};
 
-		IC3_ATTR_NO_DISCARD bool isValid() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsValid() const noexcept;
 
-		IC3_ATTR_NO_DISCARD bool hasAppendAsRelativeOffset() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool HasAppendAsRelativeOffset() const noexcept;
 	};
 
 	/**
@@ -142,77 +142,77 @@ namespace Ic3
 		/**
 		 *
 		 */
-		IC3_ATTR_NO_DISCARD explicit operator bool() const noexcept;
+		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept;
 
 		/**
 		 *
 		 */
-		IC3_ATTR_NO_DISCARD bool isActive() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsActive() const noexcept;
 
 		/**
 		 *
 		 */
-		IC3_ATTR_NO_DISCARD bool isBaseAttribute() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsBaseAttribute() const noexcept;
 
 		/**
 		 *
 		 */
-		IC3_ATTR_NO_DISCARD bool isSemanticGroupAttribute() const noexcept;
-
-		/**
-		 *
-		 * @return
-		 */
-		IC3_ATTR_NO_DISCARD bool isSameAs( const GenericVertexAttribute & pOther ) const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsSemanticGroupAttribute() const noexcept;
 
 		/**
 		 *
 		 * @return
 		 */
-		IC3_ATTR_NO_DISCARD bool hasSameFormatAs( const GenericVertexAttribute & pOther ) const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsSameAs( const GenericVertexAttribute & pOther ) const noexcept;
 
 		/**
 		 *
 		 * @return
 		 */
-		IC3_ATTR_NO_DISCARD bool hasSameSemanticsAs( const GenericVertexAttribute & pOther ) const noexcept;
+		CPPX_ATTR_NO_DISCARD bool HasSameFormatAs( const GenericVertexAttribute & pOther ) const noexcept;
+
+		/**
+		 *
+		 * @return
+		 */
+		CPPX_ATTR_NO_DISCARD bool HasSameSemanticsAs( const GenericVertexAttribute & pOther ) const noexcept;
 
 		/**
 		 *
 		 */
-		IC3_ATTR_NO_DISCARD GCI::EBaseDataType getBaseDataType() const noexcept;
+		CPPX_ATTR_NO_DISCARD GCI::EBaseDataType GetBaseDataType() const noexcept;
 
 		/**
 		 *
 		 */
-		IC3_ATTR_NO_DISCARD uint32 getDataSizeInBytes() const noexcept;
+		CPPX_ATTR_NO_DISCARD uint32 GetDataSizeInBytes() const noexcept;
 
 		/**
 		 *
 		 */
-		IC3_ATTR_NO_DISCARD uint32 getDataStride() const noexcept;
+		CPPX_ATTR_NO_DISCARD uint32 GetDataStride() const noexcept;
 
 		/**
 		 *
 		 */
-		void initBaseAttributeFromDefinition( const VertexAttributeDefinition & pDefinition );
+		void InitBaseAttributeFromDefinition( const VertexAttributeDefinition & pDefinition );
 
 		/**
 		 *
 		 */
-		void initSemanticSubAttributeFromBaseAttribute( const GenericVertexAttribute & pBaseAttribute, uint32 pSemanticIndex );
+		void InitSemanticSubAttributeFromBaseAttribute( const GenericVertexAttribute & pBaseAttribute, uint32 pSemanticIndex );
 
 		/**
 		 *
 		 */
-		void reset();
+		void Reset();
 	};
 
 
 	namespace GCU
 	{
 
-		IC3_ATTR_NO_DISCARD bool isAttributeLocationAndSizeValid( uint32 pBaseAttributeIASlot, uint32 pComponentsNum );
+		CPPX_ATTR_NO_DISCARD bool IsAttributeLocationAndSizeValid( uint32 pBaseAttributeIASlot, uint32 pComponentsNum );
 
 	}
 

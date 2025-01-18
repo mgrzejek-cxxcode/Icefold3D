@@ -3,7 +3,7 @@
 #define __CPPX_POLICY_BASED_DYNAMIC_ARRAY_H__
 
 #include "memoryBuffer.h"
-#include "staticLimits.h"
+#include "typeLimits.h"
 
 namespace cppx
 {

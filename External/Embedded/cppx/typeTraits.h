@@ -2,7 +2,7 @@
 #ifndef __CPPX_TYPE_TRAITS_H__
 #define __CPPX_TYPE_TRAITS_H__
 
-#include "staticLimits.h"
+#include "typeLimits.h"
 
 namespace cppx::meta
 {

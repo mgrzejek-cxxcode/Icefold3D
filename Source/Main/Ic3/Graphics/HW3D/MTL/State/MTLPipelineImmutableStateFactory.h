@@ -3,7 +3,7 @@
 #define __IC3_GRAPHICS_HW3D_MTLCOMMON_PIPELINE_IMMUTABLE_STATE_FACTORY_H__
 
 #include "../MTLPrerequisites.h"
-#include <Ic3/Graphics/GCI/State/PipelineImmutableStateCache.h>
+#include <Ic3/Graphics/GCI/State/SharedImmutableStateCache.h>
 
 namespace Ic3::Graphics::GCI
 {

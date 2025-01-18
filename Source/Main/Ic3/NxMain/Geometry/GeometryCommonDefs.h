@@ -15,27 +15,50 @@ namespace Ic3
 	struct GeometryReference;
 	struct GeometryStorageCreateInfo;
 
-	class GeometryDataGpuTransfer;
+	class GeometryDataGPUTransfer;
 	class GeometryManager;
 
-	ic3DeclareClassHandle( GeometryBuffer );
-	ic3DeclareClassHandle( IndexBuffer );
-	ic3DeclareClassHandle( VertexBuffer );
+	Ic3DeclareInterfaceHandle( IGeometryDataStorage );
+	Ic3DeclareInterfaceHandle( IGeometryDataStorageManaged );
+	Ic3DeclareInterfaceHandle( IGeometryStorageShared );
 
-	ic3DeclareInterfaceHandle( IGeometryStorage );
-	ic3DeclareInterfaceHandle( IGeometryStorageManaged );
-	ic3DeclareInterfaceHandle( IGeometryStorageShared );
+	Ic3DeclareClassHandle( GeometryBuffer );
+	Ic3DeclareClassHandle( IndexBuffer );
+	Ic3DeclareClassHandle( VertexBuffer );
 
-	template <typename TStruct>
-	using RGeometryVertexBufferGenericArray = std::array<TStruct, GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM>;
+	using RGeometryReferenceKey = uint64;
 
-	struct SGeometryBufferMemoryRef
+	template <typename TElement>
+	using RGeometryVertexBufferGenericArray = std::array<TElement, GCM::cxIAMaxVertexBufferBindingsNum>;
+
+	struct GeometryBufferInfo
+	{
+		uint16 baseAlignment = 0;
+		uint16 elementStrideInBytes = 0;
+		size_t sizeInBytes = 0;
+
+		std::atomic<uintptr_t> currentAllocationOffset = 0;
+
+		CPPX_ATTR_NO_DISCARD uintptr_t getCurrentAllocationOffset() const noexcept
+		{
+			const auto currentOffset = currentAllocationOffset.load( std::memory_order_relaxed );
+			return currentOffset;
+		}
+
+		CPPX_ATTR_NO_DISCARD uintptr_t getFreeSpace() const noexcept
+		{
+			const auto currentOffset = currentAllocationOffset.load( std::memory_order_relaxed );
+			return sizeInBytes - currentOffset;
+		}
+	};
+
+	struct GeometryStorageMemoryRef
 	{
 		uint32 bufferIndex = 0;
 
-		uintptr_t internalMemoryRef = 0;
+		MemoryRegion memoryRegion;
 
-		SMemoryRegion memoryRegion;
+		native_uint internalMemoryKey = 0;
 
 		explicit operator bool() const noexcept
 		{
@@ -43,58 +66,132 @@ namespace Ic3
 		}
 	};
 
-	struct SGeometryInstanceMemoryRef
+	struct GeometryMemoryReference
 	{
-		IGeometryStorage * storage = nullptr;
+		IGeometryDataStorage * storage = nullptr;
+		RGeometryReferenceKey memoryRefKey = 0;
 
-		SGeometryBufferMemoryRef indexBufferMemoryRef;
-
-		RGeometryVertexBufferGenericArray<SGeometryBufferMemoryRef> vertexBufferMemoryRefArray;
+		explicit operator bool() const noexcept
+		{
+			return storage != nullptr;
+		}
 	};
 
-	template <typename TByte>
+	struct GeometryMemorySubAllocationDesc
+	{
+		uint16 alignmentRestriction = 0;
+		uint16 elementSizeInBytes = 0;
+		uint32 elementsNum = 0;
+		uint32 explicitAllocationSize = 0;
+
+		explicit operator bool() const noexcept
+		{
+			return ( elementSizeInBytes > 0 ) && ( elementsNum > 0 );
+		}
+	};
+
+	struct GeometryMemoryAllocationDesc
+	{
+		GeometryMemorySubAllocationDesc indexDataAllocDesc;
+		RGeometryVertexBufferGenericArray<GeometryMemorySubAllocationDesc> vertexDataAllocDescArray;
+	};
+
+	struct GeometryExternalMemoryDesc
+	{
+		uintptr_t memoryAddress = 0;
+		uint32 elementStrideInBytes = 0;
+		uint32 elementsNum = 0;
+
+		explicit operator bool() const noexcept
+		{
+			return ( memoryAddress != 0 ) && ( elementStrideInBytes > 0 ) && ( elementsNum > 0 );
+		}
+
+		CPPX_ATTR_NO_DISCARD size_t size() const noexcept
+		{
+			return elementStrideInBytes * elementsNum;
+		}
+	};
+
+	struct GeometryInstanceExternalDataDesc
+	{
+		GeometryExternalMemoryDesc indexDataDesc;
+		RGeometryVertexBufferGenericArray<GeometryExternalMemoryDesc> vertexDataDescArray;
+	};
+
+
+
+
+
+	enum EGeometryBufferDataRefFlags : uint16
+	{
+		E_GEOMETRY_BUFFER_DATA_REF_FLAG_DIRECT_MEMORY_ACCESS_BIT = 0x0001,
+	};
+
+	/**
+	 * Contains information required to reference a portion of data within a geometry buffer. Allows to
+	 * perform various operations on geometry buffers like data fetch or update. @see IGeometryDataStorage.
+	 * Note, that GeometryBufferDataRefs *always* reference a range of homogenous elements, for example
+	 * positions, normals or interleaved vertex attributes.
+	 * @tparam TPByte Type
+	 */
+	template <typename TPByte>
 	struct GeometryBufferDataRef
 	{
-		TByte * baseDataPtr = nullptr;
+		// Base ref pointer identifying the referenced storage region. Note, that this is *NOT* (at least: not always)
+		// a direct pointer that can be used to write (or even read!) the data. In case of storages without DMA, this
+		// is simply a storage-specific implementation detail.
+		TPByte * baseDataPtr = nullptr;
 
+		// Size, in bytes, of the geometry storage region referenced by this instance.
 		uint32 dataRegionSizeInBytes = 0;
 
-		uint32 elementStrideInBytes = 0;
+		// Size, in bytes, of a stride. Stride is the number of bytes between start of an element and the next element.
+		// For example, if a given geometry buffer stores 3D float vertices (Vec3f) with no padding, stride is 12 bytes.
+		uint16 elementStrideInBytes = 0;
+
+		// Additional flags describing this data ref.
+		cppx::bitmask<EGeometryBufferDataRefFlags> flags = 0;
 
 		explicit operator bool() const noexcept
 		{
 			return baseDataPtr && ( dataRegionSizeInBytes > 0 );
 		}
 
-		IC3_ATTR_NO_DISCARD bool empty() noexcept
+		CPPX_ATTR_NO_DISCARD constexpr bool empty() const noexcept
 		{
-			return !std::is_const_v<TByte> && baseDataPtr;
+			return dataRegionSizeInBytes == 0;
 		}
 
-		IC3_ATTR_NO_DISCARD bool isWritable() noexcept
+		CPPX_ATTR_NO_DISCARD constexpr bool hasDirectMemoryAccess() const noexcept
 		{
-			return !std::is_const_v<TByte> && baseDataPtr;
+			return flags.is_set( E_GEOMETRY_BUFFER_DATA_REF_FLAG_DIRECT_MEMORY_ACCESS_BIT );
+		}
+
+		CPPX_ATTR_NO_DISCARD constexpr bool isWritable() const noexcept
+		{
+			return !std::is_const_v<TPByte> && hasDirectMemoryAccess();
 		}
 	};
 
 	using GeometryBufferDataRefReadOnly = GeometryBufferDataRef<const byte>;
 	using GeometryBufferDataRefReadWrite = GeometryBufferDataRef<byte>;
 
-	template <typename TValue, typename TByte>
+	template <typename TPValue, typename TPByte>
 	struct GeometryBufferDataIterator
 	{
 	public:
 		GeometryBufferDataIterator() = default;
 
-		GeometryBufferDataIterator( const GeometryBufferDataRef<TByte> & pDataRef, uint32 pCurrentElementOffset )
+		GeometryBufferDataIterator( const GeometryBufferDataRef<TPByte> & pDataRef, uint32 pCurrentElementOffset )
 		: _dataRef( pDataRef )
 		, _currentElementOffset( pCurrentElementOffset )
 		{}
 
-		TValue * dataPtr() const noexcept
+		TPValue * dataPtr() const noexcept
 		{
-			ic3DebugAssert( sizeof( TValue ) == _dataRef.elementSizeInBytes );
-			return reinterpret_cast<TValue *>( _dataRef.baseElementPtr + ( _currentElementOffset * _dataRef.strideInBytes ) );
+			Ic3DebugAssert( sizeof( TPValue ) == _dataRef.elementSizeInBytes );
+			return reinterpret_cast<TPValue *>( _dataRef.baseElementPtr + ( _currentElementOffset * _dataRef.strideInBytes ) );
 		}
 
 		GeometryBufferDataIterator & operator++() noexcept
@@ -123,29 +220,30 @@ namespace Ic3
 			return result;
 		}
 
-		TValue * operator->() const noexcept
+		TPValue * operator->() const noexcept
 		{
 			auto * const currentPtr = dataPtr();
 			return currentPtr;
 		}
 
-		TValue & operator*() const noexcept
+		TPValue & operator*() const noexcept
 		{
 			auto * const currentPtr = dataPtr();
 			return *currentPtr;
 		}
 
 	private:
-		GeometryBufferDataRef<TByte> _dataRef;
+		GeometryBufferDataRef<TPByte> _dataRef;
 		uint32 _currentElementOffset = 0;
 	};
 
-	template <typename TValue>
-	using GeometryBufferDataIteratorReadOnly = GeometryBufferDataIterator<const TValue, const byte>;
+	template <typename TPValue>
+	using GeometryBufferDataIteratorReadOnly = GeometryBufferDataIterator<const TPValue, const byte>;
 
-	template <typename TValue>
-	using GeometryBufferDataIteratorReadWrite = GeometryBufferDataIterator<TValue, byte>;
+	template <typename TPValue>
+	using GeometryBufferDataIteratorReadWrite = GeometryBufferDataIterator<TPValue, byte>;
 
+	/*
 	struct GeometryReference22
 	{
 		const GeometryDataFormatBase * dataFormat = nullptr;
@@ -158,23 +256,23 @@ namespace Ic3
 
 		GeometryDataReference dataReference;
 
-		IC3_ATTR_NO_DISCARD explicit operator bool() const noexcept;
+		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept;
 
-		IC3_ATTR_NO_DISCARD bool isIndexedGeometry() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool isIndexedGeometry() const noexcept;
 
-		IC3_ATTR_NO_DISCARD bool isVertexStreamActive( uint32 pVertexStreamIndex ) const;
+		CPPX_ATTR_NO_DISCARD bool isVertexStreamActive( uint32 pVertexStreamIndex ) const;
 
-		IC3_ATTR_NO_DISCARD uint32 vertexStreamElementSizeInBytes( uint32 pVertexStreamIndex ) const;
+		CPPX_ATTR_NO_DISCARD uint32 vertexStreamElementSizeInBytes( uint32 pVertexStreamIndex ) const;
 
-		IC3_ATTR_NO_DISCARD uint32 vertexDataOffsetInElementsNum() const noexcept;
+		CPPX_ATTR_NO_DISCARD uint32 vertexDataOffsetInElementsNum() const noexcept;
 
-		IC3_ATTR_NO_DISCARD uint32 vertexDataSizeInElementsNum() const noexcept;
+		CPPX_ATTR_NO_DISCARD uint32 vertexDataSizeInElementsNum() const noexcept;
 
-		IC3_ATTR_NO_DISCARD uint32 vertexElementSizeInBytes() const noexcept;
+		CPPX_ATTR_NO_DISCARD uint32 vertexElementSizeInBytes() const noexcept;
 
-		IC3_ATTR_NO_DISCARD uint32 indexElementSizeInBytes() const noexcept;
+		CPPX_ATTR_NO_DISCARD uint32 indexElementSizeInBytes() const noexcept;
 
-		IC3_ATTR_NO_DISCARD GeometrySize calculateGeometrySize() const noexcept;
+		CPPX_ATTR_NO_DISCARD GeometrySize calculateGeometrySize() const noexcept;
 
 		void append( const GeometryReference & pOther );
 	};
@@ -182,7 +280,7 @@ namespace Ic3
 	template <typename TGeometryBufferType>
 	struct GeometryBufferReference
 	{
-		SharedHandle<TGeometryBufferType> buffer;
+		TSharedHandle<TGeometryBufferType> buffer;
 
 		explicit operator bool() const noexcept
 		{
@@ -191,13 +289,13 @@ namespace Ic3
 
 		IndexBuffer * operator->() const noexcept
 		{
-			ic3DebugAssert( buffer );
+			Ic3DebugAssert( buffer );
 			return buffer.get();
 		}
 
 		IndexBuffer & operator*() const noexcept
 		{
-			ic3DebugAssert( buffer );
+			Ic3DebugAssert( buffer );
 			return *buffer;
 		}
 	};
@@ -208,20 +306,21 @@ namespace Ic3
 	namespace gmutil
 	{
 
-		template <size_t tVertexStreamArraySize>
-		IC3_ATTR_NO_DISCARD GeometryReference<tVertexStreamArraySize> getGeometryDataReferenceBaseSubRegion(
+		template <size_t tVertexStreamUsageSize>
+		CPPX_ATTR_NO_DISCARD GeometryReference<tVertexStreamUsageSize> getGeometryDataReferenceBaseSubRegion(
 				const GeometryDataReferenceBase & pGeometryDataRef,
 				uint32 pVertexDataOffsetInElementsNum,
 				uint32 pVertexElementsNum,
 				uint32 pIndexDataOffsetInElementsNum,
 				uint32 pIndexElementsNum );
 
-		IC3_ATTR_NO_DISCARD GeometryDataReferenceBase advanceGeometryDataReferenceBase(
+		CPPX_ATTR_NO_DISCARD GeometryDataReferenceBase advanceGeometryDataReferenceBase(
 				const GeometryDataReferenceBase & pGeometryDataRef,
 				uint32 pVertexElementsNum,
 				uint32 pIndexElementsNum );
 
 	}
+	 */
 
 } // namespace Ic3
 

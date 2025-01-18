@@ -3,7 +3,7 @@
 #include "ShaderLibrary.h"
 #include <Ic3/Graphics/GCI/GPUDevice.h>
 #include <Ic3/Graphics/GCI/State/InputAssemblerImmutableStates.h>
-#include <Ic3/Graphics/GCI/State/pipelineImmutableStateCache.h>
+#include <Ic3/Graphics/GCI/State/SharedImmutableStateCache.h>
 
 namespace Ic3
 {

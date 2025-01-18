@@ -7,7 +7,7 @@
 #include "Resources/RenderTargetTexture.h"
 #include "State/GraphicsShaderLinkageImmutableState.h"
 #include "State/PipelineStateObject.h"
-#include "State/PipelineImmutableStateCache.h"
+#include "State/SharedImmutableStateCache.h"
 
 namespace Ic3::Graphics::GCI
 {
@@ -272,7 +272,7 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	void GPUDevice::SetImmutableStateCache( PipelineImmutableStateCache & pStateCache )
+	void GPUDevice::SetImmutableStateCache( SharedImmutableStateCache & pStateCache )
 	{
 		_immutableStateCachePtr = &pStateCache;
 		_immutableStateFactoryBase = &( pStateCache.mStateFactory );

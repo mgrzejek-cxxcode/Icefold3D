@@ -1,6 +1,6 @@
 
-#ifndef __CPPX_STATIC_LIMITS_H__
-#define __CPPX_STATIC_LIMITS_H__
+#ifndef __CPPX_TYPE_LIMITS_H__
+#define __CPPX_TYPE_LIMITS_H__
 
 #include "prerequisites.h"
 
@@ -224,4 +224,4 @@ namespace cppx
 
 }
 
-#endif /* __CPPX_STATIC_LIMITS_H__ */
+#endif /* __CPPX_TYPE_LIMITS_H__ */

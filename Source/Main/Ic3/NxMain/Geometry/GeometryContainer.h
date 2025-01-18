@@ -4,43 +4,86 @@
 #ifndef __IC3_NXMAIN_GEOMETRY_CONTAINER_H__
 #define __IC3_NXMAIN_GEOMETRY_CONTAINER_H__
 
-#include "VertexPipelineConfig.h"
+#include "../GCI/VertexFormatDescriptor.h"
 #include "GeometryBuffer.h"
 
 namespace Ic3
 {
 
-	ic3DeclareInterfaceHandle( IGeometryContainer );
-	ic3DeclareInterfaceHandle( IGeometryStorage );
+	Ic3DeclareInterfaceHandle( IGeometryContainer );
+	Ic3DeclareInterfaceHandle( IGeometryDataStorage );
 
-	struct SGeometryReference
+	using geometry_ref_key_t = uint64;
+
+	struct GeometryReference
 	{
 		IGeometryContainer * container = nullptr;
-		uint32 geometryIndex = 0;
+
+		geometry_ref_key_t geometryRefKey = 0;
 	};
+
+	/*
+	 * !!!
+	 * Renaming:
+	 * - GeometryStorage -> GeometryDataStore/Storage - manages storage
+	 * - GeometryContainer -> GeometryDataContainer - manages objects that uses allocated/external memory (storage)
+	 * !!!
+	 */
 
 	class IGeometryContainer
 	{
 	public:
-		IGeometryContainer();
+		VertexDataInputConfigHandle const mVDIConfig;
+
+	public:
+		IGeometryContainer( VertexDataInputConfigHandle pVDIConfig );
 		virtual ~IGeometryContainer();
 
-		IC3_ATTR_NO_DISCARD virtual IGeometryStorage * getStorage() const noexcept = 0;
+		CPPX_ATTR_NO_DISCARD virtual IGeometryDataStorage * getStorage() const noexcept = 0;
 
 		virtual bool setStorage( IGeometryStorageHandle pStorage ) = 0;
 
+		GeometryReference addExternalGeometry( const GeometryInstanceExternalDataDesc & pDataDesc )
+		{
+			const auto geometryRefKey = _refKeyCounter++;
+			auto & geometryData = _geometryInstanceMap[geometryRefKey];
+			geometryData.memoryRef.storage = nullptr;
+
+			GeometryInstanceData geometryInstanceData;
+
+			const auto & activeVertexStreams = mVDIConfig->g                                                                                                                                                                                                                                                                                                                                                   etActiveStreamIndexList();
+			for( auto activeVertexStreamIndex : activeVertexStreams )
+			{
+				const auto & externalMemoryDesc = pDataDesc.vertexDataDescArray[activeVertexStreamIndex];
+				auto & vertexStreamMemoryRef = geometryInstanceData.memoryRef.vertexBufferMemoryRefArray[activeVertexStreamIndex];
+				vertexStreamMemoryRef.bufferIndex = activeVertexStreamIndex;
+				vertexStreamMemoryRef.internalMemoryRef = externalMemoryDesc.memoryAddress;
+				vertexStreamMemoryRef.memoryRegion.offset = 0u;
+				vertexStreamMemoryRef.memoryRegion.size = externalMemoryDesc.elementStrideInBytes * externalMemoryDesc.elementsNum;
+
+			}
+		}
+
+		GeometryReference allocateGeometry( const SGeometryInstanceAllocationDesc & pAllocDesc );
+
 	protected:
-		CVertexAttributeArrayLayout _vertexAttributeLayout;
+		struct GeometryInstanceData
+		{
+			GeometryInstanceMemoryRef memoryRef;
+		};
+
+	private:
+		using GeometryInstanceMap = std::unordered_map<geometry_ref_key_t, GeometryInstanceData>;
+		GeometryInstanceMap _geometryInstanceMap;
+		geometry_ref_key_t _refKeyCounter = 0x00000400;
 	};
 
-	class CGeometryDataSource : public IGeometryContainer
+	class GeometryDataSource : public IGeometryContainer
 	{
 	public:
-	private:
-		IGeometryStorageHandle _internalStorage;
 	};
 
-	class CMeshContainer : public IGeometryContainer
+	class MeshContainer : public IGeometryContainer
 	{
 	private:
 		IGeometryStorageManagedHandle _internalManagedStorage;
@@ -87,7 +130,7 @@ namespace Ic3
 		GeometryBufferDataRefReadWrite getVertexAttributeDataSubRegionReadWrite();
 	};
 
-	template <typename TBufferData, size_t tVertexStreamArraySize>
+	template <typename TBufferData, size_t tVertexStreamUsageSize>
 	class GeometryDataStore : public GeometryDataStoreBase
 	{
 	};
@@ -115,15 +158,15 @@ namespace Ic3
 	public:
 		GeometryContainer2( const GeometryDataFormatBase & pDataFormat );
 
-		IC3_ATTR_NO_DISCARD bool isStorageInitialized() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool isStorageInitialized() const noexcept;
 
-		IC3_ATTR_NO_DISCARD bool isIndexedGeometryContainer() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool isIndexedGeometryContainer() const noexcept;
 
-		IC3_ATTR_NO_DISCARD const GeometryDataReferenceBase & getAllGeometryDataRef() const noexcept;
+		CPPX_ATTR_NO_DISCARD const GeometryDataReferenceBase & getAllGeometryDataRef() const noexcept;
 
-		IC3_ATTR_NO_DISCARD const GeometryContainerStorageMetrics & getStorageMetrics() const noexcept;
+		CPPX_ATTR_NO_DISCARD const GeometryContainerStorageMetrics & getStorageMetrics() const noexcept;
 
-		IC3_ATTR_NO_DISCARD const GeometrySize & getGeometrySize() const noexcept;
+		CPPX_ATTR_NO_DISCARD const GeometrySize & getGeometrySize() const noexcept;
 
 	protected:
 		bool checkStorageAvailableSpace( uint32 pVertexElementsNum, uint32 pIndexElementsNum ) const noexcept;

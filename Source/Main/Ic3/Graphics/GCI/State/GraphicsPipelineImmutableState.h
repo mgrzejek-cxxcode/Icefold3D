@@ -91,25 +91,6 @@ namespace Ic3::Graphics::GCI
 		virtual GraphicsShaderLinkageImmutableStateHandle CreateGraphicsShaderLinkageState( const GraphicsShaderSet & pShaderSet ) override;
 	};
 
-	class PipelineImmutableStateFactoryAdapter
-	{
-	public:
-		PipelineImmutableStateFactoryAdapter( PipelineImmutableStateFactory & pStateFactory );
-		~PipelineImmutableStateFactoryAdapter();
-
-		BlendImmutableStateHandle CreateState( const BlendConfig & pConfig );
-		DepthStencilImmutableStateHandle CreateState( const DepthStencilConfig & pConfig );
-		GraphicsShaderLinkageImmutableStateHandle CreateState( const GraphicsShaderSet & pShaderSet );
-		IAInputLayoutImmutableStateHandle CreateState( const IAInputLayoutDefinition & pDefinition, Shader & pVertexShaderWithBinary );
-		IAVertexStreamImmutableStateHandle CreateState( const IAVertexStreamDefinition & pDefinition );
-		RasterizerImmutableStateHandle CreateState( const RasterizerConfig & pConfig );
-		RenderTargetBindingImmutableStateHandle CreateState( const RenderTargetBindingDefinition & pDefinition );
-		RenderPassConfigurationImmutableStateHandle CreateState( const RenderPassConfiguration & pConfiguration );
-
-	private:
-		PipelineImmutableStateFactory * _stateFactory;
-	};
-
 } // namespace Ic3::Graphics::GCI
 
 #endif // __IC3_GRAPHICS_GCI_GRAPHICS_PIPELINE_STATE_H__

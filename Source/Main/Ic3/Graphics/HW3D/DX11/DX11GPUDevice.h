@@ -7,7 +7,7 @@
 #include "DX11Prerequisites.h"
 #include "State/DX11pipelineImmutableStateFactory.h"
 #include <Ic3/Graphics/HW3D/DX/DXgpuDevice.h>
-#include <Ic3/Graphics/GCI/State/PipelineImmutableStateCache.h>
+#include <Ic3/Graphics/GCI/State/SharedImmutableStateCache.h>
 
 namespace Ic3::Graphics::GCI
 {

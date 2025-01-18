@@ -7,7 +7,7 @@
 #include "GLApiTranslationLayer.h"
 #include "State/GLPipelineImmutableStateFactory.h"
 #include <Ic3/Graphics/GCI/GPUDevice.h>
-#include <Ic3/Graphics/GCI/State/PipelineImmutableStateCache.h>
+#include <Ic3/Graphics/GCI/State/SharedImmutableStateCache.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -62,7 +62,7 @@ namespace Ic3::Graphics::GCI
 
 	private:
 		GLPipelineImmutableStateFactory * _immutableStateFactoryGL;
-		PipelineImmutableStateCache _immutableStateCache;
+		SharedImmutableStateCache _immutableStateCache;
 		std::unique_ptr<GLDebugOutput> _glDebugOutput;
 	};
 

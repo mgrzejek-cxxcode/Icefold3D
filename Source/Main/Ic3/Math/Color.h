@@ -3,7 +3,7 @@
 #define __IC3_MATH_COLOR_H__
 
 #include "Vector.h"
-#include <cppx/staticLimits.h>
+#include <cppx/typeLimits.h>
 
 #if( PCL_COMPILER & PCL_COMPILER_CLANG )
 #  pragma clang diagnostic push

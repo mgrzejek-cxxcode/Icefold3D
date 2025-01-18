@@ -1,14 +1,14 @@
 
 #include "ShaderInputSemantics.h"
 #include "VertexAttributeCommonDefs.h"
-#include <Ic3/Cppx/STLHelperAlgo.h>
+#include <cppx/stdHelperAlgo.h>
 
 namespace Ic3
 {
 
 	bool ShaderSemantics::resolve() noexcept
 	{
-		ic3DebugInterrupt();
+		Ic3DebugInterrupt();
 
 		/*
 		if( smtID == EShaderInputSemanticID::Custom )
@@ -58,13 +58,13 @@ namespace Ic3
 	namespace GCU
 	{
 
-		using AttribSemanticNameHash = Cppx::THashObject<Cppx::EHashAlgo::SDBM>;
+		using AttribSemanticNameHash = cppx::hash_object<cppx::hash_algo::sdbm>;
 		using AttribSemanticNameToFlagsMap = std::unordered_map<AttribSemanticNameHash, uint32>;
 		using AttribSemanticFlagsToNameMap = std::unordered_map<uint32, std::string_view>;
 
 		AttribSemanticNameHash computeAttribSemanticNameHash( const std::string_view & pSemanticName )
 		{
-			return Cppx::hashCompute<Cppx::EHashAlgo::SDBM>( pSemanticName );
+			return cppx::hash_compute<cppx::hash_algo::sdbm>( pSemanticName );
 		}
 
 		AttribSemanticNameToFlagsMap buildAttribSemanticNameToFlagsMap()
@@ -121,17 +121,17 @@ namespace Ic3
 			return resultMap;
 		}
 
-		TBitmask<ESystemAttributeSemanticFlags> getAttributeSystemSemanticFlagsFromName( const StringView & pSemanticName )
+		cppx::bitmask<ESystemAttributeSemanticFlags> getAttributeSystemSemanticFlagsFromName( const cppx::string_view & pSemanticName )
 		{
 			static const auto attribSemanticNameToFlagsMap = buildAttribSemanticNameToFlagsMap();
 			const auto semanticNameHash = computeAttribSemanticNameHash( pSemanticName );
-			return Cppx::getMapValueRefOrDefault( attribSemanticNameToFlagsMap, semanticNameHash, eSystemAttributeSemanticFlagCustomAttributeBit );
+			return cppx::get_map_value_ref_or_default( attribSemanticNameToFlagsMap, semanticNameHash, eSystemAttributeSemanticFlagCustomAttributeBit );
 		}
 
-		StringView getStandardSemanticNameFromSystemFlags( TBitmask<ESystemAttributeSemanticFlags> pSystemSemanticFlags )
+		cppx::string_view getStandardSemanticNameFromSystemFlags( cppx::bitmask<ESystemAttributeSemanticFlags> pSystemSemanticFlags )
 		{
 			static const auto attribSemanticFlagsToNameMap = buildAttribSemanticFlagsToNameMap();
-			return Cppx::getMapValueRefOrDefault( attribSemanticFlagsToNameMap, pSystemSemanticFlags, "" );
+			return cppx::get_map_value_ref_or_default( attribSemanticFlagsToNameMap, pSystemSemanticFlags, "" );
 		}
 
 	}

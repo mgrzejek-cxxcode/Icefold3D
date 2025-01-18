@@ -222,8 +222,8 @@ namespace Ic3::Graphics::GCI
 
 	}
 
-	template <typename TFunction>
-	inline bool ForEachRTAttachmentIndex( cppx::bitmask<ERTAttachmentFlags> pActiveAttachmentsMask, TFunction pFunction )
+	template <typename TPFunction>
+	inline bool ForEachRTAttachmentIndex( cppx::bitmask<ERTAttachmentFlags> pActiveAttachmentsMask, TPFunction pFunction )
 	{
 		// A local copy of the active attachments mask. Bits of already processed attachments
 		// are removed, so when the value reaches 0, we can immediately stop further processing.
@@ -255,8 +255,8 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	template <typename TFunction>
-	inline bool ForEachRTColorAttachmentIndex( cppx::bitmask<ERTAttachmentFlags> pActiveAttachmentsMask, TFunction pFunction )
+	template <typename TPFunction>
+	inline bool ForEachRTColorAttachmentIndex( cppx::bitmask<ERTAttachmentFlags> pActiveAttachmentsMask, TPFunction pFunction )
 	{
 		// A local copy of the active attachments mask. Bits of already processed attachments
 		// are removed, so when the value reaches 0, we can immediately stop further processing.

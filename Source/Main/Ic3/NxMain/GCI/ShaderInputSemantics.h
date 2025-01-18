@@ -3,7 +3,7 @@
 #define __IC3_NXMAIN_SHADER_INPUT_SEMANTICS_H__
 
 #include "CommonGCIDefs.h"
-#include <Ic3/Cppx/ImmutableString.h>
+#include <cppx/immutableString.h>
 #include <Ic3/Graphics/GCI/State/InputAssemblerCommon.h>
 
 namespace Ic3
@@ -45,69 +45,69 @@ namespace Ic3
 	namespace GCU
 	{
 
-		IC3_ATTR_NO_DISCARD TBitmask<ESystemAttributeSemanticFlags> getAttributeSystemSemanticFlagsFromName(
-				const StringView & pSemanticName );
+		CPPX_ATTR_NO_DISCARD cppx::bitmask<ESystemAttributeSemanticFlags> getAttributeSystemSemanticFlagsFromName(
+				const cppx::string_view & pSemanticName );
 
-		IC3_ATTR_NO_DISCARD StringView getStandardSemanticNameFromSystemFlags(
-				TBitmask<ESystemAttributeSemanticFlags> pSystemSemanticFlags );
+		CPPX_ATTR_NO_DISCARD cppx::string_view getStandardSemanticNameFromSystemFlags(
+				cppx::bitmask<ESystemAttributeSemanticFlags> pSystemSemanticFlags );
 
-		IC3_ATTR_NO_DISCARD inline bool isStandardShaderInputAttribute( TBitmask<ESystemAttributeSemanticFlags> pSysSmtFlags )
+		CPPX_ATTR_NO_DISCARD inline bool isStandardShaderInputAttribute( cppx::bitmask<ESystemAttributeSemanticFlags> pSysSmtFlags )
 		{
 			return // Standard attributes, by default are single-slot attributes with unique semantics.
-					( pSysSmtFlags.isSetAnyOf( eSystemAttributeSemanticMaskStandardAttribsAll ) && ( pSysSmtFlags.countBits() == 1 ) ) ||
+					( pSysSmtFlags.is_set_any_of( eSystemAttributeSemanticMaskStandardAttribsAll ) && ( pSysSmtFlags.count_bits() == 1 ) ) ||
 					// Exception: packed texture coordinates, where a single attribute holds two set of texture coords.
-					( ( pSysSmtFlags & eSystemAttributeSemanticMaskTexCoordAll ).countBits() == 2 );
+					( ( pSysSmtFlags & eSystemAttributeSemanticMaskTexCoordAll ).count_bits() == 2 );
 		}
 
 	}
 
 	struct ShaderSemantics
 	{
-		Cppx::ImmutableString semanticName {};
+		cppx::ImmutableString semanticName {};
 
 		uint32 semanticIndex = 0u;
 
-		TBitmask<ESystemAttributeSemanticFlags> systemSemanticFlags = 0;
+		cppx::bitmask<ESystemAttributeSemanticFlags> systemSemanticFlags = 0;
 
 		ShaderSemantics() = default;
 
-		ShaderSemantics( TBitmask<ESystemAttributeSemanticFlags> pSysSmtFlags )
+		ShaderSemantics( cppx::bitmask<ESystemAttributeSemanticFlags> pSysSmtFlags )
 		: semanticName( GCU::getStandardSemanticNameFromSystemFlags( pSysSmtFlags ) )
 		, systemSemanticFlags( pSysSmtFlags )
 		{}
 
 		ShaderSemantics(
-			Cppx::ImmutableString pSemanticName,
+			cppx::ImmutableString pSemanticName,
 			uint32 pSemanticGroupIndex = 0u,
-			TBitmask<ESystemAttributeSemanticFlags> pSysSmtFlags = 0 )
+			cppx::bitmask<ESystemAttributeSemanticFlags> pSysSmtFlags = 0 )
 		: semanticName( std::move( pSemanticName ) )
 		, semanticIndex( pSemanticGroupIndex )
 		, systemSemanticFlags( pSysSmtFlags ? pSysSmtFlags : GCU::getAttributeSystemSemanticFlagsFromName( pSemanticName.strView() ) )
 		{}
 
-		IC3_ATTR_NO_DISCARD explicit operator bool() const noexcept
+		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept
 		{
-			return !empty();
+			return !IsEmpty();
 		}
 
-		IC3_ATTR_NO_DISCARD bool operator==( const ShaderSemantics & pRhs ) const noexcept
+		CPPX_ATTR_NO_DISCARD bool operator==( const ShaderSemantics & pRhs ) const noexcept
 		{
 			return ( semanticName == pRhs.semanticName ) && ( semanticIndex == pRhs.semanticIndex );
 		}
 
-		IC3_ATTR_NO_DISCARD bool operator<( const ShaderSemantics & pRhs ) const noexcept
+		CPPX_ATTR_NO_DISCARD bool operator<( const ShaderSemantics & pRhs ) const noexcept
 		{
 			return ( semanticName < pRhs.semanticName ) || ( ( semanticName == pRhs.semanticName ) && ( semanticIndex < pRhs.semanticIndex ) );
 		}
 
-		IC3_ATTR_NO_DISCARD bool empty() const noexcept
+		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept
 		{
 			return systemSemanticFlags.empty() || semanticName.empty();
 		}
 
-		IC3_ATTR_NO_DISCARD bool valid() const noexcept
+		CPPX_ATTR_NO_DISCARD bool IsValid() const noexcept
 		{
-			return !empty();
+			return !IsEmpty();
 		}
 
 		void clear()

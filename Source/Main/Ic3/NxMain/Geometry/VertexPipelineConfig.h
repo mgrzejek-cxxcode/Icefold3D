@@ -5,14 +5,14 @@
 #define __IC3_NXMAIN_VERTEX_INPUT_LAYOUT_H__
 
 #include "GeometryCommonDefs.h"
-#include "../GCI/VertexPipelineLayouts.h"
+#include "../GCI/VertexFormatDescriptor.h"
 
 namespace Ic3
 {
 
-	class SVertexPipelineConfig
+	class VertexPipelineConfig
 	{
-		CVertexDataLayout dataLayout;
+		TSharedHandle<VertexFormatDescriptor> dataLayout;
 
 		GCI::IAInputLayoutImmutableStateHandle gciInputLayoutDefault;
 

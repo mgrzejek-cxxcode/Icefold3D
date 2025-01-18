@@ -2,7 +2,7 @@
 #ifndef __CPPX_BIT_UTILS_H__
 #define __CPPX_BIT_UTILS_H__
 
-#include "staticLimits.h"
+#include "typeLimits.h"
 #include "typeTraits.h"
 #include <climits>
 

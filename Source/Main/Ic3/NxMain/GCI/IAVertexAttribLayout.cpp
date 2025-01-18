@@ -5,17 +5,17 @@
 namespace Ic3
 {
 
-	bool VertexAttributeArrayLayout::checkAttributeArraySpace( native_uint pBaseIASlot, size_t pSemanticGroupSize ) const noexcept
+	bool VertexAttributeArrayLayout::CheckAttributeArraySpace( native_uint pBaseIASlot, size_t pSemanticGroupSize ) const noexcept
 	{
 		// First, check if the specified attribute range is valid at all.
-		if( !GCU::isAttributeLocationAndSizeValid( pBaseIASlot, pSemanticGroupSize ) )
+		if( !GCU::IsAttributeLocationAndSizeValid( pBaseIASlot, pSemanticGroupSize ) )
 		{
 			return false;
 		}
 
 		// Quick check: if the specified attribute range is completely outside the range of active attributes,
 		// we can immediately return with success (no attribute outside this range is an active attribute).
-		if( !_activeAttributesRange.overlapsWith( Cppx::makeRange<uint32>( pBaseIASlot, pBaseIASlot + pSemanticGroupSize ) ) )
+		if( !_activeAttributesRange.overlaps_with( cppx::make_range<uint32>( pBaseIASlot, pBaseIASlot + pSemanticGroupSize ) ) )
 		{
 			return true;
 		}
@@ -30,7 +30,7 @@ namespace Ic3
 			const auto attributeSlotIndex = pBaseIASlot + iSubAttribute;
 			const auto & attributeRef = _attributeArray[attributeSlotIndex];
 
-			if( attributeRef.isActive() )
+			if( attributeRef.IsActive() )
 			{
 				return false;
 			}
@@ -39,15 +39,15 @@ namespace Ic3
 		return true;
 	}
 
-	bool VertexAttributeArrayLayout::checkAttributeDefinitionCompatibility(
+	bool VertexAttributeArrayLayout::CheckAttributeDefinitionCompatibility(
 			const VertexAttributeDefinition & pAttributeDefinition ) const noexcept
 	{
-		if( !pAttributeDefinition.isValid() )
+		if( !pAttributeDefinition.IsValid() )
 		{
 			return false;
 		}
 
-		if( !checkAttributeArraySpace( pAttributeDefinition.attributeIASlot, pAttributeDefinition.semanticGroupSize ) )
+		if( !CheckAttributeArraySpace( pAttributeDefinition.attributeIASlot, pAttributeDefinition.semanticGroupSize ) )
 		{
 			return false;
 		}
@@ -55,9 +55,9 @@ namespace Ic3
 		return true;
 	}
 
-	GenericVertexAttribute * VertexAttributeArrayLayout::addActiveAttribute( VertexAttributeDefinition pAttributeDefinition )
+	GenericVertexAttribute * VertexAttributeArrayLayout::AddActiveAttribute( VertexAttributeDefinition pAttributeDefinition )
 	{
-		if( !checkAttributeDefinitionCompatibility( pAttributeDefinition ) )
+		if( !CheckAttributeDefinitionCompatibility( pAttributeDefinition ) )
 		{
 			return nullptr;
 		}
@@ -68,7 +68,7 @@ namespace Ic3
 		const auto semanticGroupSize = pAttributeDefinition.semanticGroupSize;
 
 		auto & baseAttribute = _attributeArray[baseAttributeSlotIndex];
-		baseAttribute.initBaseAttributeFromDefinition( pAttributeDefinition );
+		baseAttribute.InitBaseAttributeFromDefinition( pAttributeDefinition );
 
 		_activeBaseAttributesNum += 1;
 		_activeAttributeSlotsNum += 1;
@@ -82,7 +82,7 @@ namespace Ic3
 			const auto subAttributeSlotIndex = baseAttributeSlotIndex + nSemanticComponent;
 
 			auto & subAttribute = _attributeArray[subAttributeSlotIndex];
-			subAttribute.initSemanticSubAttributeFromBaseAttribute( baseAttribute, nSemanticComponent );
+			subAttribute.InitSemanticSubAttributeFromBaseAttribute( baseAttribute, nSemanticComponent );
 
 			_activeAttributeSlotsNum += 1;
 			_activeAttributesMask.set( GCI::CxDef::makeIAVertexAttributeFlag( subAttributeSlotIndex ) );
@@ -99,7 +99,7 @@ namespace Ic3
 	namespace GCU
 	{
 
-		GCI::EVertexAttribFormat getAttributeFormatFromStringIdentifier( const std::string & pAttribFormatStringID )
+		GCI::EVertexAttribFormat GetAttributeFormatFromStringIdentifier( const std::string & pAttribFormatStringID )
 		{
 			static const std::string cvReStrBaseFormat{ R"(([1-4])(F|I|U)(8|16|32)(N)?)" };
 			static const std::regex cvRegexBaseFormat{ cvReStrBaseFormat };
@@ -114,15 +114,15 @@ namespace Ic3
 				const auto & formatComponentBitSizeStr = regexMatch[3].str();
 				const auto & formatNormalizedStr = regexMatch[4].str();
 
-				const auto formatComponentsNum = Cppx::fromStringOrDefault<uint32>( formatComponentsNumStr );
-				const auto formatComponentBitSize = Cppx::fromStringOrDefault<uint32>( formatComponentBitSizeStr );
+				const auto formatComponentsNum = cppx::fromStringOrDefault<uint32>( formatComponentsNumStr );
+				const auto formatComponentBitSize = cppx::fromStringOrDefault<uint32>( formatComponentBitSizeStr );
 				const auto isNormalized = !formatNormalizedStr.empty();
 				const auto isFloat = ( formatBaseTypeStr == "F" );
 				const auto isSignedInt = !isFloat && ( formatBaseTypeStr == "I" );
 				const auto isUnsignedInt = !isFloat && !isSignedInt && ( formatBaseTypeStr == "U" );
 
 				GCI::EBaseDataType baseDataType = GCI::EBaseDataType::Undefined;
-				TBitmask<GCI::EGpuDataFormatFlags> dataFormatFlags = 0;
+				cppx::bitmask<GCI::EGPUDataFormatFlags> dataFormatFlags = 0;
 
 				if( isFloat && isNormalized )
 				{
@@ -145,7 +145,7 @@ namespace Ic3
 						baseDataType = GCI::EBaseDataType::Float32;
 					}
 
-					dataFormatFlags.set( GCI::eGpuDataFormatFlagTypeSignedBit );
+					dataFormatFlags.set( GCI::eGPUDataFormatFlagTypeSignedBit );
 				}
 				else if( isSignedInt )
 				{
@@ -162,7 +162,7 @@ namespace Ic3
 						baseDataType = GCI::EBaseDataType::Int32;
 					}
 
-					dataFormatFlags.set( GCI::eGpuDataFormatFlagTypeSignedBit );
+					dataFormatFlags.set( GCI::eGPUDataFormatFlagTypeSignedBit );
 				}
 				else if( isUnsignedInt )
 				{
@@ -179,12 +179,12 @@ namespace Ic3
 						baseDataType = GCI::EBaseDataType::Uint32;
 					}
 
-					dataFormatFlags.set( GCI::eGpuDataFormatFlagTypeUnsignedBit );
+					dataFormatFlags.set( GCI::eGPUDataFormatFlagTypeUnsignedBit );
 				}
 
 				if( isNormalized )
 				{
-					dataFormatFlags.set( GCI::eGpuDataFormatFlagNormalizedBit );
+					dataFormatFlags.set( GCI::eGPUDataFormatFlagNormalizedBit );
 				}
 
 				if( baseDataType != GCI::EBaseDataType::Undefined )
@@ -199,56 +199,56 @@ namespace Ic3
 			return vertexAttributeFormat;
 		}
 
-		StringView getAttributeFormatStringIdentifier( GCI::EVertexAttribFormat pGCIAttributeFormat )
+		cppx::string_view GetAttributeFormatStringIdentifier( GCI::EVertexAttribFormat pGCIAttributeFormat )
 		{
 			switch( pGCIAttributeFormat )
 			{
-				ic3CaseReturn( GCI::EVertexAttribFormat::F16      , "1F16"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::F32      , "1F32"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::I8       , "1I8"   );
-				ic3CaseReturn( GCI::EVertexAttribFormat::I16      , "1I16"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::I32      , "1I32"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::U8       , "1U8"   );
-				ic3CaseReturn( GCI::EVertexAttribFormat::U16      , "1U16"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::U32      , "1U32"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::I8N      , "1I8N"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::I16N     , "1I16N" );
-				ic3CaseReturn( GCI::EVertexAttribFormat::U8N      , "1U8N"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::U16N     , "1U16N" );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec2F16  , "2F16"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec2F32  , "2F32"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec2I8   , "2I8"   );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec2I16  , "2I16"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec2I32  , "2I32"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec2U8   , "2U8"   );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec2U16  , "2U16"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec2U32  , "2U32"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec2I8N  , "2I8N"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec2I16N , "2I16N" );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec2U8N  , "2U8N"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec2U16N , "2U16N" );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec3F32  , "3F32"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec3I32  , "3I32"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec3U32  , "3U32"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec4F16  , "4F16"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec4F32  , "4F32"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec4I8   , "4I8"   );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec4I16  , "4I16"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec4I32  , "4I32"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec4U8   , "4U8"   );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec4U16  , "4U16"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec4U32  , "4U32"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec4I8N  , "4I8N"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec4I16N , "4I16N" );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec4U8N  , "4U8N"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec4U16N , "4U16N" );
-				ic3CaseDefaultBreak();
+				Ic3CaseReturn( GCI::EVertexAttribFormat::F16      , "1F16"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::F32      , "1F32"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::I8       , "1I8"   );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::I16      , "1I16"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::I32      , "1I32"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::U8       , "1U8"   );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::U16      , "1U16"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::U32      , "1U32"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::I8N      , "1I8N"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::I16N     , "1I16N" );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::U8N      , "1U8N"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::U16N     , "1U16N" );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec2F16  , "2F16"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec2F32  , "2F32"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec2I8   , "2I8"   );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec2I16  , "2I16"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec2I32  , "2I32"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec2U8   , "2U8"   );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec2U16  , "2U16"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec2U32  , "2U32"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec2I8N  , "2I8N"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec2I16N , "2I16N" );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec2U8N  , "2U8N"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec2U16N , "2U16N" );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec3F32  , "3F32"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec3I32  , "3I32"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec3U32  , "3U32"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec4F16  , "4F16"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec4F32  , "4F32"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec4I8   , "4I8"   );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec4I16  , "4I16"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec4I32  , "4I32"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec4U8   , "4U8"   );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec4U16  , "4U16"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec4U32  , "4U32"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec4I8N  , "4I8N"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec4I16N , "4I16N" );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec4U8N  , "4U8N"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec4U16N , "4U16N" );
+				Ic3CaseDefaultBreak();
 			}
 
 			return "#";
 		}
 
-		StringView getShaderSemanticShortName( const StringView & pSemanticName )
+		cppx::string_view GetShaderSemanticShortName( const cppx::string_view & pSemanticName )
 		{
 			if( pSemanticName == "POSITION"        ) return "Pos" ;
 			if( pSemanticName == "NORMAL"          ) return "Nor" ;
@@ -275,7 +275,7 @@ namespace Ic3
 			return nullptr;
 		}
 
-		StringView resolveShaderSemanticShortName( const StringView & pSemanticName )
+		cppx::string_view ResolveShaderSemanticShortName( const cppx::string_view & pSemanticName )
 		{
 			if( pSemanticName == "Pos"  ) return "POSITION";
 			if( pSemanticName == "Nor"  ) return "NORMAL";
@@ -302,14 +302,14 @@ namespace Ic3
 			return nullptr;
 		}
 
-		std::string generateVertexAttributeFormatString( const GenericVertexAttribute & pAttribute )
+		std::string GenerateVertexAttributeFormatString( const GenericVertexAttribute & pAttribute )
 		{
 			std::string formatStr;
 			formatStr.reserve( 16 );
 			formatStr.append( 1, 'A' );
 			formatStr.append( std::to_string( pAttribute.attributeIASlot ) );
 
-			if( const auto semanticsIDCStr = getShaderSemanticShortName( pAttribute.shaderSemantics.semanticName.strView() ) )
+			if( const auto semanticsIDCStr = GetShaderSemanticShortName( pAttribute.shaderSemantics.semanticName.strView() ) )
 			{
 				formatStr.append( semanticsIDCStr );
 			}
@@ -321,7 +321,7 @@ namespace Ic3
 			formatStr.append( 1, ':' );
 			formatStr.append( std::to_string( pAttribute.vertexStreamRelativeOffset ) );
 
-			const auto baseFormatStr = getAttributeFormatStringIdentifier( pAttribute.dataFormat );
+			const auto baseFormatStr = GetAttributeFormatStringIdentifier( pAttribute.dataFormat );
 			formatStr.append( 1, ':' );
 			formatStr.append( baseFormatStr );
 
@@ -390,14 +390,14 @@ namespace Ic3
 				const GCI::EVertexAttribFormat * pFormatArray,
 				size_t pFormatsNum )
 		{
-			if( !pFormatArray || !Cppx::makeRange<size_t>( 1, 4 ).contains( pFormatsNum ) )
+			if( !pFormatArray || !cppx::make_range<size_t>( 1, 4 ).contains( pFormatsNum ) )
 			{
 				return GCI::EVertexAttribFormat::Undefined;
 			}
 
 			auto combinedBaseDataType = GCI::EBaseDataType::Undefined;
 			auto combinedBaseComponentsNum = 0u;
-			auto combinedDataTypeFlags = Cppx::makeBitmask<GCI::EGpuDataFormatFlags>();
+			auto combinedDataTypeFlags = cppx::make_bitmask<GCI::EGPUDataFormatFlags>();
 
 			for( size_t iFormat = 0; iFormat < pFormatsNum; ++iFormat )
 			{
@@ -484,7 +484,7 @@ namespace Ic3
 	/*
 	struct VertexAttributeIndexCmpEqual
 	{
-		IC3_ATTR_NO_DISCARD bool operator()( const VertexAttributeComponent & pLhs, size_t pRhs ) const noexcept
+		CPPX_ATTR_NO_DISCARD bool operator()( const VertexAttributeComponent & pLhs, size_t pRhs ) const noexcept
 		{
 			return pLhs.attributeIASlot == pRhs;
 		}
@@ -492,7 +492,7 @@ namespace Ic3
 
 	struct VertexAttributeIndexCmpLess
 	{
-		IC3_ATTR_NO_DISCARD bool operator()( const VertexAttributeComponent & pLhs, size_t pRhs ) const noexcept
+		CPPX_ATTR_NO_DISCARD bool operator()( const VertexAttributeComponent & pLhs, size_t pRhs ) const noexcept
 		{
 			return pLhs.attributeIASlot < pRhs;
 		}
@@ -504,7 +504,7 @@ namespace Ic3
 		return ( attribIter != _attributeArray.end() ) ? ( attribIter - _attributeArray.begin() ) : cxInvalidPosition;
 	}
 
-	bool VertexAttributeArrayLayout::checkAttributeArraySpace(
+	bool VertexAttributeArrayLayout::CheckAttributeArraySpace(
 			gci_input_assembler_slot_t pAttribBaseIASlot,
 			size_t pComponentsNum ) const noexcept
 	{
@@ -515,9 +515,9 @@ namespace Ic3
 
 			if( attributeArrayIndex != cxInvalidPosition )
 			{
-				ic3DebugAssert( _activeAttributesMask.isSet( GCI::CxDef::makeIAVertexAttributeFlag( vertexPropertySlot ) ) );
-				ic3DebugAssert( _activeAttributesRange.contains( vertexPropertySlot ) );
-				ic3DebugAssert( _activeAttributesSlots.hasValue( vertexPropertySlot ) );
+				Ic3DebugAssert( _activeAttributesMask.is_set( GCI::CxDef::makeIAVertexAttributeFlag( vertexPropertySlot ) ) );
+				Ic3DebugAssert( _activeAttributesRange.contains( vertexPropertySlot ) );
+				Ic3DebugAssert( _activeAttributesSlots.hasValue( vertexPropertySlot ) );
 				return false;
 			}
 		}
@@ -525,7 +525,7 @@ namespace Ic3
 		return true;
 	}
 
-	bool VertexAttributeArrayLayout::checkAttributeDefinitionCompatibility(
+	bool VertexAttributeArrayLayout::CheckAttributeDefinitionCompatibility(
 			const VertexAttributeDefinition & pAttributeDefinition ) const noexcept
 	{
 		if( !pAttributeDefinition.valid() )
@@ -533,7 +533,7 @@ namespace Ic3
 			return false;
 		}
 
-		if( !checkAttributeArraySpace( pAttributeDefinition.attributeIASlot, pAttributeDefinition.semanticComponentsNum ) )
+		if( !CheckAttributeArraySpace( pAttributeDefinition.attributeIASlot, pAttributeDefinition.semanticComponentsNum ) )
 		{
 			return false;
 		}
@@ -541,12 +541,12 @@ namespace Ic3
 		return true;
 	}
 
-	VertexAttributeComponent * VertexAttributeArrayLayout::addActiveAttribute( VertexAttributeDefinition pAttributeDefinition )
+	VertexAttributeComponent * VertexAttributeArrayLayout::AddActiveAttribute( VertexAttributeDefinition pAttributeDefinition )
 	{
 		auto attributeArrayIndex = findAttributeAtSlot( pAttributeDefinition.attributeIASlot );
 		if( attributeArrayIndex != cxInvalidPosition )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return nullptr;
 		}
 
@@ -554,7 +554,7 @@ namespace Ic3
 		_activeAttributesSlots.reserve( _activeAttributesSlots.size() + pAttributeDefinition.semanticComponentsNum );
 
 		auto baseAttribIter = _attributeArray.insert( VertexAttributeComponent{ pAttributeDefinition.attributeIASlot } );
-		baseAttribIter->initBaseAttributeFromDefinition( std::move( pAttributeDefinition ) );
+		baseAttribIter->InitBaseAttributeFromDefinition( std::move( pAttributeDefinition ) );
 
 		const auto baseAttribute = pAttributeDefinition.attributeIASlot;
 		const auto attribComponentsNum = pAttributeDefinition.semanticComponentsNum;
@@ -596,7 +596,7 @@ namespace Ic3
 			attributeInfo.reset();
 		}
 
-		_activeAttributesRange = InputAssemblerSlotRange::emptyRange();
+		_activeAttributesRange = InputAssemblerSlotRange::empty_range();
 		_activeAttributesSlots.clear();
 		_activeAttributesMask.clear();
 		_activeAttributeSemanticsMask.clear();
@@ -607,7 +607,7 @@ namespace Ic3
 	namespace GCU
 	{
 
-		GCI::EVertexAttribFormat getAttributeFormatFromStringIdentifier( const std::string & pAttribFormatStringID )
+		GCI::EVertexAttribFormat GetAttributeFormatFromStringIdentifier( const std::string & pAttribFormatStringID )
 		{
 			static const std::string cvReStrBaseFormat{ R"(([1-4])(F|I|U)(8|16|32)(N)?)" };
 			static const std::regex cvRegexBaseFormat{ cvReStrBaseFormat };
@@ -622,15 +622,15 @@ namespace Ic3
 				const auto & formatComponentBitSizeStr = regexMatch[3].str();
 				const auto & formatNormalizedStr = regexMatch[4].str();
 
-				const auto formatComponentsNum = Cppx::fromStringOrDefault<uint32>( formatComponentsNumStr );
-				const auto formatComponentBitSize = Cppx::fromStringOrDefault<uint32>( formatComponentBitSizeStr );
+				const auto formatComponentsNum = cppx::fromStringOrDefault<uint32>( formatComponentsNumStr );
+				const auto formatComponentBitSize = cppx::fromStringOrDefault<uint32>( formatComponentBitSizeStr );
 				const auto isNormalized = !formatNormalizedStr.empty();
 				const auto isFloat = ( formatBaseTypeStr == "F" );
 				const auto isSignedInt = !isFloat && ( formatBaseTypeStr == "I" );
 				const auto isUnsignedInt = !isFloat && !isSignedInt && ( formatBaseTypeStr == "U" );
 
 				GCI::EBaseDataType baseDataType = GCI::EBaseDataType::Undefined;
-				TBitmask<GCI::EGpuDataFormatFlags> dataFormatFlags = 0;
+				cppx::bitmask<GCI::EGPUDataFormatFlags> dataFormatFlags = 0;
 
 				if( isFloat && isNormalized )
 				{
@@ -653,7 +653,7 @@ namespace Ic3
 						baseDataType = GCI::EBaseDataType::Float32;
 					}
 
-					dataFormatFlags.set( GCI::eGpuDataFormatFlagTypeSignedBit );
+					dataFormatFlags.set( GCI::eGPUDataFormatFlagTypeSignedBit );
 				}
 				else if( isSignedInt )
 				{
@@ -670,7 +670,7 @@ namespace Ic3
 						baseDataType = GCI::EBaseDataType::Int32;
 					}
 
-					dataFormatFlags.set( GCI::eGpuDataFormatFlagTypeSignedBit );
+					dataFormatFlags.set( GCI::eGPUDataFormatFlagTypeSignedBit );
 				}
 				else if( isUnsignedInt )
 				{
@@ -687,12 +687,12 @@ namespace Ic3
 						baseDataType = GCI::EBaseDataType::Uint32;
 					}
 
-					dataFormatFlags.set( GCI::eGpuDataFormatFlagTypeUnsignedBit );
+					dataFormatFlags.set( GCI::eGPUDataFormatFlagTypeUnsignedBit );
 				}
 
 				if( isNormalized )
 				{
-					dataFormatFlags.set( GCI::eGpuDataFormatFlagNormalizedBit );
+					dataFormatFlags.set( GCI::eGPUDataFormatFlagNormalizedBit );
 				}
 
 				if( baseDataType != GCI::EBaseDataType::Undefined )
@@ -707,56 +707,56 @@ namespace Ic3
 			return vertexAttributeFormat;
 		}
 
-		StringView getAttributeFormatStringIdentifier( GCI::EVertexAttribFormat pGCIAttributeFormat )
+		cppx::string_view GetAttributeFormatStringIdentifier( GCI::EVertexAttribFormat pGCIAttributeFormat )
 		{
 			switch( pGCIAttributeFormat )
 			{
-				ic3CaseReturn( GCI::EVertexAttribFormat::F16      , "1F16"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::F32      , "1F32"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::I8       , "1I8"   );
-				ic3CaseReturn( GCI::EVertexAttribFormat::I16      , "1I16"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::I32      , "1I32"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::U8       , "1U8"   );
-				ic3CaseReturn( GCI::EVertexAttribFormat::U16      , "1U16"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::U32      , "1U32"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::I8N      , "1I8N"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::I16N     , "1I16N" );
-				ic3CaseReturn( GCI::EVertexAttribFormat::U8N      , "1U8N"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::U16N     , "1U16N" );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec2F16  , "2F16"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec2F32  , "2F32"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec2I8   , "2I8"   );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec2I16  , "2I16"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec2I32  , "2I32"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec2U8   , "2U8"   );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec2U16  , "2U16"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec2U32  , "2U32"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec2I8N  , "2I8N"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec2I16N , "2I16N" );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec2U8N  , "2U8N"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec2U16N , "2U16N" );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec3F32  , "3F32"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec3I32  , "3I32"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec3U32  , "3U32"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec4F16  , "4F16"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec4F32  , "4F32"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec4I8   , "4I8"   );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec4I16  , "4I16"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec4I32  , "4I32"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec4U8   , "4U8"   );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec4U16  , "4U16"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec4U32  , "4U32"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec4I8N  , "4I8N"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec4I16N , "4I16N" );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec4U8N  , "4U8N"  );
-				ic3CaseReturn( GCI::EVertexAttribFormat::Vec4U16N , "4U16N" );
-				ic3CaseDefaultBreak();
+				Ic3CaseReturn( GCI::EVertexAttribFormat::F16      , "1F16"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::F32      , "1F32"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::I8       , "1I8"   );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::I16      , "1I16"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::I32      , "1I32"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::U8       , "1U8"   );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::U16      , "1U16"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::U32      , "1U32"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::I8N      , "1I8N"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::I16N     , "1I16N" );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::U8N      , "1U8N"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::U16N     , "1U16N" );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec2F16  , "2F16"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec2F32  , "2F32"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec2I8   , "2I8"   );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec2I16  , "2I16"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec2I32  , "2I32"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec2U8   , "2U8"   );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec2U16  , "2U16"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec2U32  , "2U32"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec2I8N  , "2I8N"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec2I16N , "2I16N" );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec2U8N  , "2U8N"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec2U16N , "2U16N" );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec3F32  , "3F32"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec3I32  , "3I32"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec3U32  , "3U32"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec4F16  , "4F16"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec4F32  , "4F32"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec4I8   , "4I8"   );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec4I16  , "4I16"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec4I32  , "4I32"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec4U8   , "4U8"   );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec4U16  , "4U16"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec4U32  , "4U32"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec4I8N  , "4I8N"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec4I16N , "4I16N" );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec4U8N  , "4U8N"  );
+				Ic3CaseReturn( GCI::EVertexAttribFormat::Vec4U16N , "4U16N" );
+				Ic3CaseDefaultBreak();
 			}
 
 			return "#";
 		}
 
-		StringView getShaderSemanticShortName( const std::string_view & pSemanticName )
+		cppx::string_view GetShaderSemanticShortName( const std::string_view & pSemanticName )
 		{
 			if( pSemanticName == "POSITION"        ) return "Pos";
 			if( pSemanticName == "NORMAL"          ) return "Nor";
@@ -779,7 +779,7 @@ namespace Ic3
 			return nullptr;
 		}
 
-		StringView resolveShaderSemanticShortName( const std::string_view & pSemanticName )
+		cppx::string_view ResolveShaderSemanticShortName( const std::string_view & pSemanticName )
 		{
 			if( pSemanticName == "Pos" ) return "POSITION";
 			if( pSemanticName == "Nor" ) return "NORMAL";
@@ -802,14 +802,14 @@ namespace Ic3
 			return nullptr;
 		}
 
-		std::string generateVertexAttributeFormatString( const VertexAttributeComponent & pAttribute )
+		std::string GenerateVertexAttributeFormatString( const VertexAttributeComponent & pAttribute )
 		{
 			std::string formatStr;
 			formatStr.reserve( 16 );
 			formatStr.append( 1, 'A' );
 			formatStr.append( std::to_string( pAttribute.attributeIASlot ) );
 
-			if( const auto semanticsIDCStr = getShaderSemanticShortName( pAttribute.shaderSemantics.smtName ) )
+			if( const auto semanticsIDCStr = GetShaderSemanticShortName( pAttribute.shaderSemantics.smtName ) )
 			{
 				formatStr.append( semanticsIDCStr );
 			}
@@ -821,7 +821,7 @@ namespace Ic3
 			formatStr.append( 1, ':' );
 			formatStr.append( std::to_string( pAttribute.vertexStreamRelativeOffset ) );
 
-			const auto baseFormatStr = getAttributeFormatStringIdentifier( pAttribute.baseFormat );
+			const auto baseFormatStr = GetAttributeFormatStringIdentifier( pAttribute.baseFormat );
 			formatStr.append( 1, ':' );
 			formatStr.append( baseFormatStr );
 

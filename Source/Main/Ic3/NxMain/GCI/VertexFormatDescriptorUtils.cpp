@@ -1,6 +1,6 @@
 
 #include "VertexFormatDescriptorUtils.h"
-#include <Ic3/Cppx/StringUtils.h>
+#include <cppx/stringUtils.h>
 #include <regex>
 
 namespace Ic3
@@ -8,9 +8,9 @@ namespace Ic3
 
 	VertexFormatDescriptorBuilder & VertexFormatDescriptorBuilder::addAttribute( VertexAttributeDefinition pAttributeDefinition )
 	{
-		if( !pAttributeDefinition.isValid() )
+		if( !pAttributeDefinition.IsValid() )
 		{
-			ic3DebugOutput( "" );
+			Ic3DebugOutput( "" );
 		}
 		else
 		{
@@ -23,7 +23,7 @@ namespace Ic3
 	VertexFormatDescriptorBuilder & VertexFormatDescriptorBuilder::addAttribute(
 			uint32 pStreamIASlot,
 			VertexAttributeKey pAttributeKey,
-			Cppx::ImmutableString pSemanticName,
+			cppx::ImmutableString pSemanticName,
 			uint32 pDataPadding,
 			uint32 pStreamRelativeOffset )
 	{
@@ -32,7 +32,7 @@ namespace Ic3
 			auto autoSemanticName = GCU::getStandardSemanticNameFromSystemFlags( pAttributeKey.getSystemSemanticFlags() );
 			if( autoSemanticName.empty() )
 			{
-				ic3DebugOutput( "" );
+				Ic3DebugOutput( "" );
 				return *this;
 			}
 
@@ -99,11 +99,11 @@ namespace Ic3
 	}
 
 	VertexFormatDescriptorBuilder & VertexFormatDescriptorBuilder::addAttributeList(
-			const Cppx::TArrayView<VertexAttributeDefinition> & pAttributeList )
+			const cppx::array_view<VertexAttributeDefinition> & pAttributeList )
 	{
 		for( auto & attributeDefinition : pAttributeList )
 		{
-			if( attributeDefinition.isValid() )
+			if( attributeDefinition.IsValid() )
 			{
 				_attributeDefs.push_back( std::move( attributeDefinition ) );
 			}
@@ -113,11 +113,11 @@ namespace Ic3
 	}
 
 	VertexFormatDescriptorBuilder & VertexFormatDescriptorBuilder::addAttributeList(
-			const Cppx::TArrayView<const VertexAttributeDefinition> & pAttributeList )
+			const cppx::array_view<const VertexAttributeDefinition> & pAttributeList )
 	{
 		for( const auto & attributeDefinition : pAttributeList )
 		{
-			if( attributeDefinition.isValid() )
+			if( attributeDefinition.IsValid() )
 			{
 				_attributeDefs.push_back( attributeDefinition );
 			}
@@ -133,7 +133,7 @@ namespace Ic3
 		auto vertexFormatDescriptor = createVertexFormatDescriptor(
 				pPrimitiveTopology,
 				pIndexDataFormat,
-				Cppx::bindArrayView( _attributeDefs ) );
+				cppx::bind_array_view( _attributeDefs ) );
 
 		_attributeDefs.clear();
 
@@ -143,14 +143,14 @@ namespace Ic3
 	TSharedHandle<VertexFormatDescriptor> VertexFormatDescriptorBuilder::createVertexFormatDescriptor(
 			const GCI::EPrimitiveTopology pPrimitiveTopology,
 			const GCI::EIndexDataFormat pIndexDataFormat,
-			const TArrayView<VertexAttributeDefinition> & pAttributeDefinitions )
+			const cppx::array_view<VertexAttributeDefinition> & pAttributeDefinitions )
 	{
 		if( ( pIndexDataFormat == GCI::EIndexDataFormat::Undefined ) || ( pPrimitiveTopology == GCI::EPrimitiveTopology::Undefined ) )
 		{
 			return nullptr;
 		}
 
-		auto vertexFormatDescriptor = createDynamicObject<VertexFormatDescriptor>();
+		auto vertexFormatDescriptor = CreateDynamicObject<VertexFormatDescriptor>();
 
 		auto & attribArrayLayout = vertexFormatDescriptor->_attribArrayLayout;
 		auto & streamArrayConfig = vertexFormatDescriptor->_streamArrayConfig;
@@ -166,9 +166,9 @@ namespace Ic3
 			const auto streamIASlot = attributeDefinition.streamIASlot;
 			const auto attributeDataRate = attributeDefinition.dataRate;
 
-			auto * baseAttributeComponent = attribArrayLayout.addActiveAttribute( std::move( attributeDefinition ) );
+			auto * baseAttributeComponent = attribArrayLayout.AddActiveAttribute( std::move( attributeDefinition ) );
 
-			streamArrayConfig.appendAttributeAuto( streamIASlot, attributeDataRate, *baseAttributeComponent );
+			streamArrayConfig.AppendAttributeAuto( streamIASlot, attributeDataRate, *baseAttributeComponent );
 		}
 
 		if( vertexFormatDescriptor )
@@ -217,7 +217,7 @@ namespace Ic3
 		std::vector<VertexAttributeDefinition> vertexAttribsDefinitions{};
 
 		using StrArray = std::vector<std::string>;
-		auto vertexStreamStrings = Cppx::StrUtils::splitStringEx<StrArray>(
+		auto vertexStreamStrings = cppx::strutil::split_string_ex<StrArray>(
 				pVertexFormatString, '#', []( auto & pResult, auto * pStr, auto pLength ) {
 					pResult.push_back( std::string( pStr, pLength ) );
 				} );
@@ -240,14 +240,14 @@ namespace Ic3
 				// [2]: Stream data rate (V - per-vertex, I - per-instance).
 				const auto & streamDataRateStr = regexMatch[2].str();
 				// [3]: String with attributes contained within this stream.
-				const auto & streamAttributesCombinedStr = regexMatch[3].str();
+				const auto & StreamAttributesCombinedStr = regexMatch[3].str();
 
-				if( streamIASlotStr.empty() || streamDataRateStr.empty() || streamAttributesCombinedStr.empty() )
+				if( streamIASlotStr.empty() || streamDataRateStr.empty() || StreamAttributesCombinedStr.empty() )
 				{
 					continue;
 				}
 
-				const auto streamIASlot = Cppx::fromStringOrDefault<uint32>( streamIASlotStr, cxGCIVertexStreamIndexUndefined );
+				const auto streamIASlot = cppx::fromStringOrDefault<uint32>( streamIASlotStr, cxGCIVertexStreamIndexUndefined );
 				if( !cxGCIValidInputAssemblerSlotIndexRange.contains( streamIASlot ) )
 				{
 					continue;
@@ -255,7 +255,7 @@ namespace Ic3
 
 				const auto streamDataRate = ( streamDataRateStr == "I" ) ? EVertexDataRate::PerInstance : EVertexDataRate::PerVertex;
 
-				Cppx::StrUtils::splitString( streamAttributesCombinedStr, '|',
+				cppx::strutil::split_string( StreamAttributesCombinedStr, '|',
 				                             [&vsAttributesStrings]( auto * pStr, auto pLength ) {
 				                                vsAttributesStrings.push_back( std::string( pStr, pLength ) );
 				                             });
@@ -294,12 +294,12 @@ namespace Ic3
 							continue;
 						}
 
-						const auto attribIASlot = Cppx::fromStringOrDefault<uint32>( attribIASlotStr, cxGCIVertexAttributeIndexUndefined );
-						const auto attribRelativeOffset = Cppx::fromStringOrDefault<uint32>( attribIASlotStr, cxGCIVertexAttributeIndexUndefined );
-						const auto semanticGroupSize = Cppx::fromStringOrDefault<uint32>( semanticGroupSizeValueStr, 1u );
-						const auto dataPadding = Cppx::fromStringOrDefault<uint32>( dataPaddingValueStr, 0u );
+						const auto attribIASlot = cppx::fromStringOrDefault<uint32>( attribIASlotStr, cxGCIVertexAttributeIndexUndefined );
+						const auto attribRelativeOffset = cppx::fromStringOrDefault<uint32>( attribIASlotStr, cxGCIVertexAttributeIndexUndefined );
+						const auto semanticGroupSize = cppx::fromStringOrDefault<uint32>( semanticGroupSizeValueStr, 1u );
+						const auto dataPadding = cppx::fromStringOrDefault<uint32>( dataPaddingValueStr, 0u );
 
-						if( !GCU::isAttributeLocationAndSizeValid( attribIASlot, semanticGroupSize ) ||
+						if( !GCU::IsAttributeLocationAndSizeValid( attribIASlot, semanticGroupSize ) ||
 						    ( attribRelativeOffset == cxGCIVertexAttributeOffsetInvalid ) )
 						{
 							continue;
@@ -314,7 +314,7 @@ namespace Ic3
 						attributeDefinition.vertexStreamRelativeOffset = attribRelativeOffset;
 						attributeDefinition.dataRate = streamDataRate;
 
-						if( const auto resolvedSemantics = GCU::resolveShaderSemanticShortName( attribSemanticsStr ) )
+						if( const auto resolvedSemantics = GCU::ResolveShaderSemanticShortName( attribSemanticsStr ) )
 						{
 							attributeDefinition.shaderSemantics = ShaderSemantics( resolvedSemantics );
 						}
@@ -333,7 +333,7 @@ namespace Ic3
 	}
 
 	bool VertexFormatDescriptorBuilder::validateAttributeDefinitions(
-			const Cppx::TArrayView<VertexAttributeDefinition> & pAttributeDefinitionArray ) noexcept
+			const cppx::array_view<VertexAttributeDefinition> & pAttributeDefinitionArray ) noexcept
 	{
 		bool activeAttributesFlagArray[GCM::cxIAMaxVertexAttributesNum]{};
 		bool activeStreamsFlagArray[GCM::cxIAMaxVertexStreamsNum]{};
@@ -370,16 +370,16 @@ namespace Ic3
 		//   cxIAVertexAttributeOffsetAppend16, meaning that such attribute should follow immediately
 		//   after the previous data in the vertex stream.
 
-		if( pAttributeDefinition.hasAppendAsRelativeOffset() )
+		if( pAttributeDefinition.HasAppendAsRelativeOffset() )
 		{
 			// Get the vertex stream this attribute is defined for.
-			if( const auto * streamComponent =  pStreamArrayConfig.streamPtr( pAttributeDefinition.streamIASlot ) )
+			if( const auto * streamComponent =  pStreamArrayConfig.StreamPtr( pAttributeDefinition.streamIASlot ) )
 			{
 				// If the stream is already defined in the stream array config, replace the "append" offsets with
 				// the current data size defined for this stream (potentially aligned, if requested).
 				if( pAttributeDefinition.vertexStreamRelativeOffset == GCI::cxIAVertexAttributeOffsetAppend16 )
 				{
-					pAttributeDefinition.vertexStreamRelativeOffset = Cppx::memGetAlignedValue( streamComponent->dataStrideInBytes, 16 );
+					pAttributeDefinition.vertexStreamRelativeOffset = cppx::mem_get_aligned_value( streamComponent->dataStrideInBytes, 16 );
 				}
 				else if( pAttributeDefinition.vertexStreamRelativeOffset == GCI::cxIAVertexAttributeOffsetAppend )
 				{

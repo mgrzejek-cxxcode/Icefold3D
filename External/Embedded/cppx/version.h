@@ -4,7 +4,7 @@
 #ifndef __STDX_VERSION_H__
 #define __STDX_VERSION_H__
 
-#include "staticLimits.h"
+#include "typeLimits.h"
 
 #define CPPX_VERSION_MAJOR    0
 #define CPPX_VERSION_MINOR    0

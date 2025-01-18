@@ -1,8 +1,0 @@
-//
-// Created by Mateusz Grzejek on 17/12/2023.
-//
-
-#ifndef ICEFOLD_HARDWARETEXTURE_H
-#define ICEFOLD_HARDWARETEXTURE_H
-
-#endif //ICEFOLD_HARDWARETEXTURE_H

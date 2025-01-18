@@ -5,7 +5,7 @@
 #define __IC3_NXMAIN_INDEXED_MESH_DATA_BUFFER_BUILDER_H__
 
 #include "MeshData.h"
-#include <Ic3/Cppx/MemoryBuffer.h>
+#include <cppx/memoryBuffer.h>
 
 namespace Ic3
 {
@@ -39,12 +39,12 @@ namespace Ic3
 
 		uint32 vertexDataSize() const noexcept
 		{
-			return numeric_cast<uint32>( _vertexDataBuffer.size() );
+			return cppx::numeric_cast<uint32>( _vertexDataBuffer.size() );
 		}
 
 		uint32 indexDataSize() const noexcept
 		{
-			return numeric_cast<uint32>( _indexDataBuffer.data() );
+			return cppx::numeric_cast<uint32>( _indexDataBuffer.data() );
 		}
 
 		void allocateStorage( memory_size_t pVerticesNum, memory_size_t pIndicesNum )
@@ -88,7 +88,7 @@ namespace Ic3
 
 			auto currentVertexDataBufferOffsetBytes = _currentVertexDataBufferOffset;
 
-			memCopyUnchecked(
+			mem_copy_unchecked(
 					_vertexDataBuffer.data() + currentVertexDataBufferOffsetBytes,
 					pMeshData.verticesSizeInBytes,
 					pMeshData.verticesData.data(),
@@ -96,7 +96,7 @@ namespace Ic3
 
 			if( _currentVertexDataBufferOffset == 0 )
 			{
-				memCopyUnchecked(
+				mem_copy_unchecked(
 						_indexDataBuffer.data(),
 						pMeshData.indicesSizeInBytes,
 						pMeshData.indicesData.data(),
@@ -149,8 +149,8 @@ namespace Ic3
 		}
 
 	private:
-		DynamicMemoryBuffer _vertexDataBuffer;
-		DynamicMemoryBuffer _indexDataBuffer;
+		dynamic_memory_buffer _vertexDataBuffer;
+		dynamic_memory_buffer _indexDataBuffer;
 		memory_size_t _currentVertexDataBufferOffset = 0;
 		memory_size_t _currentIndexDataBufferOffset = 0;
 	};

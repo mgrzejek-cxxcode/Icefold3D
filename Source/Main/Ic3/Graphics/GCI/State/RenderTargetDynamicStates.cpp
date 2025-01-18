@@ -42,23 +42,23 @@ namespace Ic3::Graphics::GCI
 
 	void RenderTargetBindingDynamicState::SetColorAttachmentBinding(
 			native_uint pIndex,
-			const RenderTargetAttachmentBinding & pRPCAttachmentBinding )
+			const RenderTargetAttachmentBinding & pRTAttachmentBinding )
 	{
-		_SetColorAttachmentBindings( pIndex, 1, &pRPCAttachmentBinding );
+		_SetColorAttachmentBindings( pIndex, 1, &pRTAttachmentBinding );
 	}
 
 	void RenderTargetBindingDynamicState::SetColorAttachmentBindings(
-			const RenderTargetColorAttachmentBindingArray & pRPCAttachmentBindings )
+			const RenderTargetColorAttachmentBindingArray & pRTAttachmentBindings )
 	{
-		_SetColorAttachmentBindings( 0, pRPCAttachmentBindings.size(), pRPCAttachmentBindings.data() );
+		_SetColorAttachmentBindings( 0, pRTAttachmentBindings.size(), pRTAttachmentBindings.data() );
 	}
 
 	void RenderTargetBindingDynamicState::SetColorAttachmentBindings(
 			native_uint pFirstIndex,
 			native_uint pCount,
-			const RenderTargetAttachmentBinding * pRPCAttachmentBindings )
+			const RenderTargetAttachmentBinding * pRTAttachmentBindings )
 	{
-		_SetColorAttachmentBindings( pFirstIndex, pCount, pRPCAttachmentBindings );
+		_SetColorAttachmentBindings( pFirstIndex, pCount, pRTAttachmentBindings );
 	}
 
 	RenderTargetAttachmentBinding & RenderTargetBindingDynamicState::SetDepthStencilAttachmentBinding()
@@ -105,11 +105,11 @@ namespace Ic3::Graphics::GCI
 	void RenderTargetBindingDynamicState::_SetColorAttachmentBindings(
 			native_uint pFirstIndex,
 			native_uint pCount,
-			const RenderTargetAttachmentBinding * pRPCAttachmentBindings )
+			const RenderTargetAttachmentBinding * pRTAttachmentBindings )
 	{
 		for( native_uint caIndex = pFirstIndex; CxDef::IsRTColorAttachmentIndexValid( caIndex ) && ( pCount != 0 ); ++caIndex, --pCount )
 		{
-			const auto & sourceCABinding = pRPCAttachmentBindings[caIndex - pFirstIndex];
+			const auto & sourceCABinding = pRTAttachmentBindings[caIndex - pFirstIndex];
 
 			const auto colorAttachmentBit = CxDef::makeRTAttachmentFlag( caIndex );
 
@@ -168,23 +168,23 @@ namespace Ic3::Graphics::GCI
 
 	void RenderPassConfigurationDynamicState::SetColorAttachmentUsage(
 			native_uint pIndex,
-			const RenderPassAttachmentConfig & pRPCAttachmentUsage )
+			const RenderPassAttachmentConfig & pRTAttachmentUsage )
 	{
-		_SetColorAttachmentUsages( pIndex, 1, &pRPCAttachmentUsage );
+		_SetColorAttachmentUsages( pIndex, 1, &pRTAttachmentUsage );
 	}
 
 	void RenderPassConfigurationDynamicState::SetColorAttachmentUsages(
-			const RenderPassColorAttachmentConfigArray & pRPCAttachmentUsages )
+			const RenderPassColorAttachmentConfigArray & pRTAttachmentUsages )
 	{
-		_SetColorAttachmentUsages( 0, pRPCAttachmentUsages.size(), pRPCAttachmentUsages.data() );
+		_SetColorAttachmentUsages( 0, pRTAttachmentUsages.size(), pRTAttachmentUsages.data() );
 	}
 
 	void RenderPassConfigurationDynamicState::SetColorAttachmentBindings(
 			native_uint pFirstIndex,
 			native_uint pCount,
-			const RenderPassAttachmentConfig * pRPCAttachmentUsages )
+			const RenderPassAttachmentConfig * pRTAttachmentUsages )
 	{
-		_SetColorAttachmentUsages( pFirstIndex, pCount, pRPCAttachmentUsages );
+		_SetColorAttachmentUsages( pFirstIndex, pCount, pRTAttachmentUsages );
 	}
 
 	RenderPassAttachmentConfig & RenderPassConfigurationDynamicState::SetDepthStencilAttachmentUsage()
@@ -232,11 +232,11 @@ namespace Ic3::Graphics::GCI
 	void RenderPassConfigurationDynamicState::_SetColorAttachmentUsages(
 			native_uint pFirstIndex,
 			native_uint pCount,
-			const RenderPassAttachmentConfig * pRPCAttachmentUsages )
+			const RenderPassAttachmentConfig * pRTAttachmentUsages )
 	{
 		for( native_uint caIndex = pFirstIndex; CxDef::IsRTColorAttachmentIndexValid( caIndex ) && ( pCount != 0 ); ++caIndex, --pCount )
 		{
-			const auto & sourceCAUsage = pRPCAttachmentUsages[caIndex - pFirstIndex];
+			const auto & sourceCAUsage = pRTAttachmentUsages[caIndex - pFirstIndex];
 
 			const auto colorAttachmentBit = CxDef::makeRTAttachmentFlag( caIndex );
 

@@ -75,13 +75,13 @@ struct CB0Data
 	math::Mat4x4f projectionMatrix;
 };
 
-DynamicMemoryBuffer loadShaderSourceDefault( AssetLoader & pAssetLoader, const std::string & pShaderFile )
+dynamic_memory_buffer loadShaderSourceDefault( AssetLoader & pAssetLoader, const std::string & pShaderFile )
 {
 	auto psAsset = pAssetLoader.openSubAsset(
 			"shaders/" + sGxDriverName + "/" + pShaderFile,
 			E_ASSET_OPEN_FLAG_NO_EXTENSION_BIT );
 
-	DynamicMemoryBuffer resultBuffer;
+	dynamic_memory_buffer resultBuffer;
 	const auto sourceLength = psAsset->readAll( resultBuffer, 1 );
 
 	resultBuffer[sourceLength] = 0;
@@ -89,22 +89,22 @@ DynamicMemoryBuffer loadShaderSourceDefault( AssetLoader & pAssetLoader, const s
 	return resultBuffer;
 }
 
-DynamicMemoryBuffer loadFileDefault( AssetLoader & pAssetLoader, const std::string & pFilename )
+dynamic_memory_buffer loadFileDefault( AssetLoader & pAssetLoader, const std::string & pFilename )
 {
 	auto psAsset = pAssetLoader.openSubAsset( pFilename, 0 );
 
-	DynamicMemoryBuffer resultBuffer;
+	dynamic_memory_buffer resultBuffer;
 	const auto sourceLength = psAsset->readAll( resultBuffer );
 
 	return resultBuffer;
 }
 
-std::function<DynamicMemoryBuffer()> bindShaderSourceLoadCallbackDefault( AssetLoader & pAssetLoader, const std::string & pShaderFile )
+std::function<dynamic_memory_buffer()> bindShaderSourceLoadCallbackDefault( AssetLoader & pAssetLoader, const std::string & pShaderFile )
 {
 	return std::bind( loadShaderSourceDefault, std::ref( pAssetLoader ), std::ref( pShaderFile ) );
 }
 
-#if( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_ANDROID )
+#if( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_ANDROID )
 
 #include <ic3/GPUapiGLES3/GLES3_gpuDriverAPI.h>
 #include "../../engine/components/Ic3/Graphics/GCI/GPUDriver.h"
@@ -124,7 +124,7 @@ int ic3AndroidAppMain( int argc, char ** argv, AndroidAppState * pAppState )
     gxDriverState.driverID = "GLES3";
     gxDriverState.driverInterface = std::make_unique<GLES3GPUDriverInterface>();
 
-#elif( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_WIN32 )
+#elif( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_WIN32 )
 
 #define ENABLE_IC3DRV_GL4 1
 #define ENABLE_IC3DRV_D3D11 1
@@ -141,12 +141,12 @@ int main( int pArgc, const char ** pArgv )
     sGxDriverName = "GL4";
 
 	SysContextCreateInfo sysContextCreateInfo;
-	platform::SysContextCreateInfoNativeParams sysContextCreateInfoNP;
+	Platform::SysContextCreateInfoNativeParams sysContextCreateInfoNP;
 	sysContextCreateInfoNP.appExecModuleHandle = ::GetModuleHandleA( nullptr );
 	sysContextCreateInfo.nativeParams = &sysContextCreateInfoNP;
-	auto sysContext = platform::createSysContext( sysContextCreateInfo );
+	auto sysContext = Platform::createSysContext( sysContextCreateInfo );
 
-	platform::AssetLoaderCreateInfoNativeParams aslCreateInfoNP;
+	Platform::AssetLoaderCreateInfoNativeParams aslCreateInfoNP;
 	aslCreateInfoNP.relativeAssetRootDir = "assets";
 	AssetLoaderCreateInfo aslCreateInfo;
 	aslCreateInfo.nativeParams = &aslCreateInfoNP;
@@ -170,7 +170,7 @@ int main( int pArgc, const char ** pArgv )
 
     ic3DebugAssert( gxDriverState.driverInterface );
 
-#elif( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_X11 )
+#elif( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_X11 )
 
 #include <ic3/GPUapiGL4/GL4_gpuDriverAPI.h>
 
@@ -179,9 +179,9 @@ int main( int pArgc, const char ** pArgv )
     sGxDriverName = "GL4";
 
     SysContextCreateInfo sysContextCreateInfo;
-    auto sysContext = platform::createSysContext( sysContextCreateInfo );
+    auto sysContext = Platform::createSysContext( sysContextCreateInfo );
 
-    platform::AssetLoaderCreateInfoNativeParams aslCreateInfoNP;
+    Platform::AssetLoaderCreateInfoNativeParams aslCreateInfoNP;
     aslCreateInfoNP.relativeAssetRootDir = "assets";
     AssetLoaderCreateInfo aslCreateInfo;
     aslCreateInfo.nativeParams = &aslCreateInfoNP;
@@ -191,7 +191,7 @@ int main( int pArgc, const char ** pArgv )
     gxDriverState.driverID = "GL4";
     gxDriverState.driverInterface = std::make_unique<GL4GPUDriverInterface>();
 
-#elif( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_OSX )
+#elif( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_OSX )
 
 #include <Ic3/Graphics/HW3D/GL4/GL4GPUDriverAPI.h>
 
@@ -200,9 +200,9 @@ int main( int pArgc, const char ** pArgv )
 	sGxDriverName = "GL4";
 
 	SysContextCreateInfo sysContextCreateInfo;
-	auto sysContext = platform::createSysContext( sysContextCreateInfo );
+	auto sysContext = Platform::createSysContext( sysContextCreateInfo );
 
-	platform::AssetLoaderCreateInfoNativeParams aslCreateInfoNP;
+	Platform::AssetLoaderCreateInfoNativeParams aslCreateInfoNP;
 	aslCreateInfoNP.relativeAssetRootDir = "assets";
 	AssetLoaderCreateInfo aslCreateInfo;
 	aslCreateInfo.nativeParams = &aslCreateInfoNP;
@@ -222,7 +222,7 @@ int main( int pArgc, const char ** pArgv )
 	auto evtDispatcher = evtController->createEventDispatcher();
 	evtController->setActiveEventDispatcher( *evtDispatcher );
 
-#if( IC3_PCL_TARGET_OS == IC3_PCL_TARGET_OS_ANDROID )
+#if( PCL_TARGET_OS == PCL_TARGET_OS_ANDROID )
 	bool waitForDisplay = true;
 
     evtDispatcher->setEventHandler(
@@ -272,7 +272,7 @@ int main( int pArgc, const char ** pArgv )
 	evtDispatcher->setEventHandler(
 			EEventCodeIndex::WindowUpdateDestroy,
 			[evtDispatcher,&gxDriverState](const EventObject & pEvt) -> bool {
-				if( pEvt.eWindowUpdateDestroy.checkEventSource( gxDriverState.presentationLayer->getInternalSystemEventSource() ) )
+				if( pEvt.uEvtWindowUpdateDestroy.checkEventSource( gxDriverState.presentationLayer->getInternalSystemEventSource() ) )
 				{
 					evtDispatcher->postEventAppQuit();
 				}
@@ -281,8 +281,8 @@ int main( int pArgc, const char ** pArgv )
 	evtDispatcher->setEventHandler(
 			EEventCodeIndex::InputKeyboard,
 			[&](const EventObject & pEvt) -> bool {
-				auto & keyMap = pEvt.eInputKeyboard.inputKeyboardState->keyStateMap;
-				if( pEvt.eInputKeyboard.keyCode == EKeyCode::Escape )
+				auto & keyMap = pEvt.uEvtInputKeyboard.mInputKeyboardState->mKeyStateMap;
+				if( pEvt.uEvtInputKeyboard.mKeyCode == EKeyCode::Escape )
 				{
 					evtDispatcher->postEventAppQuit();
 				}
@@ -355,13 +355,13 @@ int main( int pArgc, const char ** pArgv )
 
 	{
 		MeshImporterAssimp meshImporter;
-		GeometryDataGpuTransferUpload geometryDataGpuTransfer{ ces, *gxDriverState.cmdContext };
+		GeometryDataGPUTransferUpload geometryDataGPUTransfer{ ces, *gxDriverState.cmdContext };
 
 		MeshImportContext mic;
 		mic.geometryManager = &geometryManager;
 		mic.geometryDataFormat = &gdf;
 		mic.importer = &meshImporter;
-		mic.geometryDataTransfer = &geometryDataGpuTransfer;
+		mic.geometryDataTransfer = &geometryDataGPUTransfer;
 
 		meshGroup = meshLoader.importMeshGroup( mic, "MeshGroupID_Default", {
 				{ "MeshID_Default_TreeBase", "assets/meshes/tree/Tree.obj" }
@@ -401,14 +401,14 @@ int main( int pArgc, const char ** pArgv )
 	GCI::RenderTargetTextureHandle texRTColor0RT;
 	{
 		GCI::TextureCreateInfo texRTColor0CI;
-		texRTColor0CI.texClass = GCI::ETextureClass::T2D;
-		texRTColor0CI.dimensions.width = rtSize.x;
-		texRTColor0CI.dimensions.height = rtSize.y;
+		texRTColor0CI.mTexClass = GCI::ETextureClass::T2D;
+		texRTColor0CI.mDimensions.mWidth = rtSize.x;
+		texRTColor0CI.mDimensions.mHeight = rtSize.y;
 		texRTColor0CI.memoryFlags = GCI::E_GPU_MEMORY_ACCESS_FLAG_GPU_READ_BIT;
 		texRTColor0CI.resourceFlags =
 				GCI::E_GPU_RESOURCE_USAGE_FLAG_RENDER_TARGET_COLOR_BIT |
 				GCI::E_GPU_RESOURCE_USAGE_FLAG_SHADER_INPUT_BIT;
-		texRTColor0CI.internalFormat = GCI::ETextureFormat::RGBA8UN;
+		texRTColor0CI.mInternalFormat = GCI::ETextureFormat::RGBA8UN;
 		texRTColor0 = gpuDevicePtr->createTexture( texRTColor0CI );
 
 		GCI::RenderTargetTextureCreateInfo texRTColor0RTCI;
@@ -423,13 +423,13 @@ int main( int pArgc, const char ** pArgv )
 	GCI::RenderTargetTextureHandle texRTDepthStencilRT;
 	{
 		GCI::TextureCreateInfo texRTDepthStencilCI;
-		texRTDepthStencilCI.texClass = GCI::ETextureClass::T2D;
-		texRTDepthStencilCI.dimensions.width = rtSize.x;
-		texRTDepthStencilCI.dimensions.height = rtSize.y;
+		texRTDepthStencilCI.mTexClass = GCI::ETextureClass::T2D;
+		texRTDepthStencilCI.mDimensions.mWidth = rtSize.x;
+		texRTDepthStencilCI.mDimensions.mHeight = rtSize.y;
 		texRTDepthStencilCI.memoryFlags = GCI::E_GPU_MEMORY_ACCESS_FLAG_GPU_READ_BIT;
 		texRTDepthStencilCI.resourceFlags =
-				GCI::E_GPU_RESOURCE_USAGE_MASK_RENDER_TARGET_DEPTH_STENCIL;
-		texRTDepthStencilCI.internalFormat = GCI::ETextureFormat::D24UNS8U;
+				GCI::eGPUResourceUsageMaskRenderTargetDepthStencil;
+		texRTDepthStencilCI.mInternalFormat = GCI::ETextureFormat::D24UNS8U;
 		texRTDepthStencil = gpuDevicePtr->createTexture( texRTDepthStencilCI );
 
 		GCI::RenderTargetTextureCreateInfo texRTDepthStencilRTCI;
@@ -443,15 +443,15 @@ int main( int pArgc, const char ** pArgv )
 	GCI::RenderPassConfigurationImmutableStateHandle scrRenderPassState;
 	{
 		RenderPassConfiguration rpConfig;
-		rpConfig.activeAttachmentsMask = E_RT_ATTACHMENT_MASK_DEFAULT_C0_DS;
-		rpConfig.attachmentsActionClearMask = E_RT_ATTACHMENT_MASK_DEFAULT_C0_DS;
+		rpConfig.activeAttachmentsMask = eRTAttachmentMaskDefaultC0DS;
+		rpConfig.attachmentsActionClearMask = eRTAttachmentMaskDefaultC0DS;
 		rpConfig.colorAttachments[0].renderPassLoadAction = ERenderPassAttachmentLoadAction::Clear;
 		rpConfig.colorAttachments[0].renderPassStoreAction = ERenderPassAttachmentStoreAction::Keep;
-		rpConfig.colorAttachments[0].clearConfig.colorValue = { 0.12f, 0.36f, 0.88f, 1.0f };
+		rpConfig.colorAttachments[0].clearConfig.mColorValue = {0.12f, 0.36f, 0.88f, 1.0f };
 		rpConfig.depthStencilAttachment.renderPassLoadAction = ERenderPassAttachmentLoadAction::Clear;
 		rpConfig.depthStencilAttachment.renderPassStoreAction = ERenderPassAttachmentStoreAction::Keep;
-		rpConfig.depthStencilAttachment.clearConfig.depthValue = 1.0f;
-		rpConfig.depthStencilAttachment.clearConfig.stencilValue = 0xFF;
+		rpConfig.depthStencilAttachment.clearConfig.mDepthValue = 1.0f;
+		rpConfig.depthStencilAttachment.clearConfig.mStencilValue = 0xFF;
 		fboRenderPassState = gpuDevicePtr->createRenderPassConfigurationImmutableState( rpConfig );
 
 		// rpConfig.colorAttachments[0].clearConfig.colorValue = { 0.68f, 0.92f, 0.78f, 1.0f };
@@ -461,12 +461,12 @@ int main( int pArgc, const char ** pArgv )
 	GraphicsPipelineStateObjectHandle mainPSO;
 	{
 		RenderTargetLayout rtLayout;
-		rtLayout.activeAttachmentsMask = E_RT_ATTACHMENT_MASK_DEFAULT_C0_DS;
+		rtLayout.activeAttachmentsMask = eRTAttachmentMaskDefaultC0DS;
 		rtLayout.colorAttachments[0].format = ETextureFormat::BGRA8UN;
 		rtLayout.depthStencilAttachment.format = ETextureFormat::D24UNS8U;
 
 		GraphicsPipelineStateObjectCreateInfo psoci;
-		psoci.renderTargetLayout.activeAttachmentsMask = E_RT_ATTACHMENT_MASK_DEFAULT_C0_DS;
+		psoci.renderTargetLayout.activeAttachmentsMask = eRTAttachmentMaskDefaultC0DS;
 		psoci.renderTargetLayout.colorAttachments[0].format = ETextureFormat::BGRA8UN;
 		psoci.renderTargetLayout.depthStencilAttachment.format = ETextureFormat::D24UNS8U;
 		psoci.blendConfig = defaults::cvPipelineBlendConfigDefault;
@@ -497,7 +497,7 @@ int main( int pArgc, const char ** pArgv )
 
 	math::Vec3f cameraOriginPoint{ 0.0f, 2.0f,  -4.0f };
 	math::Vec3f cameraTargetPoint{ 0.0f, 0.0f,  4.0f };
-	cameraController.initialize( cameraOriginPoint, cameraTargetPoint, 60.0f );
+	cameraController.Initialize( cameraOriginPoint, cameraTargetPoint, 60.0f );
 
 	GCI::ViewportDesc vpDescScreen{};
 	vpDescScreen.origin.x = 0;
@@ -553,12 +553,12 @@ int main( int pArgc, const char ** pArgv )
 	evtDispatcher->setEventHandler(
 			System::EEventCodeIndex::InputMouseButton,
 			[&rotate]( const System::EventObject & pEvt ) -> bool {
-				const auto & eButton = pEvt.eInputMouseButton;
-				if( eButton.buttonAction == EMouseButtonActionType::Click )
+				const auto & eButton = pEvt.uEvtInputMouseButton;
+				if( eButton.mButtonAction == EMouseButtonActionType::Click )
 				{
 					rotate = true;
 				}
-				else if( eButton.buttonAction == EMouseButtonActionType::Release )
+				else if( eButton.mButtonAction == EMouseButtonActionType::Release )
 				{
 					rotate = false;
 				}
@@ -569,14 +569,14 @@ int main( int pArgc, const char ** pArgv )
 			[&cameraController,&rotate]( const System::EventObject & pEvt ) -> bool {
 				//if( rotate )
 				{
-					const auto & emove = pEvt.eInputMouseMove;
-					if( emove.buttonStateMask.isSet( System::E_MOUSE_BUTTON_FLAG_LEFT_BIT ) )
+					const auto & emove = pEvt.uEvtInputMouseMove;
+					if( emove.mButtonStateMask.is_set( System::eMouseButtonFlagLeftBit ) )
 					{
-						cameraController.rotateAroundOrigin( emove.movementDelta.x, emove.movementDelta.y );
+						cameraController.rotateAroundOrigin( emove.mMovementDelta.x, emove.mMovementDelta.y );
 					}
-					else if( emove.buttonStateMask.isSet( System::E_MOUSE_BUTTON_FLAG_RIGHT_BIT ) )
+					else if( emove.mButtonStateMask.is_set( System::eMouseButtonFlagRightBit ) )
 					{
-						cameraController.rotateAroundTarget( emove.movementDelta.x, emove.movementDelta.y );
+						cameraController.rotateAroundTarget( emove.mMovementDelta.x, emove.mMovementDelta.y );
 					}
 				}
 				return true;
@@ -656,7 +656,7 @@ int main( int pArgc, const char ** pArgv )
 			}
 			gxDriverState.cmdContext->endRenderPass();
 
-			gxDriverState.cmdContext->endCommandSequence();
+			gxDriverState.cmdContext->EndCommandSequence();
 			gxDriverState.cmdContext->submit();
 
 			gxDriverState.presentationLayer->present();
@@ -686,8 +686,8 @@ void initializeGraphicsDriver( SysContextHandle pSysContext, GraphicsDriverState
 	PresentationLayerCreateInfo presentationLayerCreateInfo;
 	presentationLayerCreateInfo.screenRect.size.x = 1920;
 	presentationLayerCreateInfo.screenRect.size.y = 1080;
-	presentationLayerCreateInfo.displayConfigFlags = 0;
-	presentationLayerCreateInfo.displayConfigFlags = 0;//E_DISPLAY_CONFIGURATION_FLAG_FULLSCREEN_BIT;
+	presentationLayerCreateInfo.mDisplayConfigFlags = 0;
+	presentationLayerCreateInfo.mDisplayConfigFlags = 0;//E_DISPLAY_CONFIGURATION_FLAG_FULLSCREEN_BIT;
 	pGxDriverState.presentationLayer = pGxDriverState.driverInterface->createScreenPresentationLayer( *( pGxDriverState.device ), presentationLayerCreateInfo );
 
 	pGxDriverState.device->setPresentationLayer( pGxDriverState.presentationLayer );

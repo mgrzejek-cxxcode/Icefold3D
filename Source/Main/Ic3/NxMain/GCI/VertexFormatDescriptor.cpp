@@ -56,7 +56,7 @@ namespace Ic3
 			const auto & attribute = _attribArrayLayout[nAttribute];
 			const auto & otherAttribute = pOther._attribArrayLayout[nAttribute];
 
-			if( !attribute.isSameAs( otherAttribute ) )
+			if( !attribute.IsSameAs( otherAttribute ) )
 			{
 				return false;
 			}
@@ -68,10 +68,10 @@ namespace Ic3
 	uint32 VertexFormatDescriptor::getElementStrideForAttribute( native_uint pAttribIASlot ) const noexcept
 	{
 		const auto * genericAttribute = getAttribute( pAttribIASlot );
-		if( genericAttribute && genericAttribute->isActive() )
+		if( genericAttribute && genericAttribute->IsActive() )
 		{
 			const auto * attributeStream = getStream( genericAttribute->streamIASlot );
-			if( attributeStream && attributeStream->isActive() )
+			if( attributeStream && attributeStream->IsActive() )
 			{
 				return attributeStream->dataStrideInBytes;
 			}
@@ -80,7 +80,7 @@ namespace Ic3
 		return 0;
 	}
 
-	uint32 VertexFormatDescriptor::getElementStrideForAttribute( StringView pSemanticName ) const noexcept
+	uint32 VertexFormatDescriptor::getElementStrideForAttribute( cppx::string_view pSemanticName ) const noexcept
 	{
 		const auto attributeSlotIndex = _resolveAttributeRefImpl( pSemanticName, 0u );
 		return getElementStrideForAttribute( attributeSlotIndex );
@@ -92,7 +92,7 @@ namespace Ic3
 		return getElementStrideForAttribute( attributeSlotIndex );
 	}
 
-	uint32 VertexFormatDescriptor::getElementStrideForAttribute( TBitmask<ESystemAttributeSemanticFlags> pSysSmtFlags ) const noexcept
+	uint32 VertexFormatDescriptor::getElementStrideForAttribute( cppx::bitmask<ESystemAttributeSemanticFlags> pSysSmtFlags ) const noexcept
 	{
 		const auto attributeSlotIndex = _resolveAttributeRefImpl( pSysSmtFlags, 0u );
 		return getElementStrideForAttribute( attributeSlotIndex );
@@ -114,11 +114,11 @@ namespace Ic3
 
 	uint32 VertexFormatDescriptor::resolveAttributeRef( const ShaderSemantics & pSemantics ) const noexcept
 	{
-		const auto semanticName = pSemantics.empty() ? pSemantics.semanticName.strView() : StringView{};
+		const auto semanticName = pSemantics.IsEmpty() ? pSemantics.semanticName.strView() : cppx::string_view{};
 		return _resolveAttributeRefImpl( semanticName, pSemantics.semanticIndex );
 	}
 
-	uint32 VertexFormatDescriptor::resolveAttributeRef( StringView pSemanticName, uint32 pSemanticIndex ) const noexcept
+	uint32 VertexFormatDescriptor::resolveAttributeRef( cppx::string_view pSemanticName, uint32 pSemanticIndex ) const noexcept
 	{
 		return _resolveAttributeRefImpl( pSemanticName, pSemanticIndex );
 	}
@@ -129,7 +129,7 @@ namespace Ic3
 		return _resolveAttributeRefImpl( sysSmtFlags, pSemanticIndex );
 	}
 
-	uint32 VertexFormatDescriptor::resolveAttributeRef( TBitmask<ESystemAttributeSemanticFlags> pSysSmtFlags, uint32 pSemanticIndex ) const noexcept
+	uint32 VertexFormatDescriptor::resolveAttributeRef( cppx::bitmask<ESystemAttributeSemanticFlags> pSysSmtFlags, uint32 pSemanticIndex ) const noexcept
 	{
 		return _resolveAttributeRefImpl( pSysSmtFlags, pSemanticIndex );
 	}
@@ -143,14 +143,14 @@ namespace Ic3
 	{
 		std::vector<VertexAttributeDefinition> resultDefinitionArray;
 
-		if( !_attribArrayLayout.empty() )
+		if( !_attribArrayLayout.IsEmpty() )
 		{
-			const auto & attributeArray = _attribArrayLayout.getAttributeArray();
-			resultDefinitionArray.reserve( _attribArrayLayout.getActiveBaseAttributesNum() );
+			const auto & attributeArray = _attribArrayLayout.GetAttributeArray();
+			resultDefinitionArray.reserve( _attribArrayLayout.GetActiveBaseAttributesNum() );
 
 			for( const auto & attribute : attributeArray )
 			{
-				if( attribute.isBaseAttribute() )
+				if( attribute.IsBaseAttribute() )
 				{
 					auto & attributeDefinition = resultDefinitionArray.emplace_back();
 					attributeDefinition.attributeIASlot = attribute.attributeIASlot;
@@ -170,13 +170,13 @@ namespace Ic3
 		return resultDefinitionArray;
 	}
 
-	uint32 VertexFormatDescriptor::_resolveAttributeRefImpl( StringView pSemanticName, uint32 pSemanticIndex ) const noexcept
+	uint32 VertexFormatDescriptor::_resolveAttributeRefImpl( cppx::string_view pSemanticName, uint32 pSemanticIndex ) const noexcept
 	{
 		if( !pSemanticName.empty() && ( pSemanticIndex < GCM::cxIAMaxVertexAttributeSemanticGroupSize ) )
 		{
 			// Query the internal AttributeLayout object for the index of a base attribute with the specified semantics.
 			// If such attribute does not exist, an invalid index is returned instead (cxGCIVertexAttributeIndexUndefined).
-			const auto baseAttributeSlotIndex = _attribArrayLayout.queryBaseAttributeBySemantics( pSemanticName );
+			const auto baseAttributeSlotIndex = _attribArrayLayout.QueryBaseAttributeBySemantics( pSemanticName );
 
 			if( baseAttributeSlotIndex != cxGCIVertexAttributeIndexUndefined )
 			{
@@ -187,11 +187,11 @@ namespace Ic3
 				const auto requestedAttributeIASlotIndex = baseAttributeSlotIndex + pSemanticIndex;
 
 				// Fetch the requested attribute. In case it is not a valid attribute, a nullptr is returned here.
-				if( const auto * requestedAttributeComponent = _attribArrayLayout.attributePtr( requestedAttributeIASlotIndex ) )
+				if( const auto * requestedAttributeComponent = _attribArrayLayout.AttributePtr( requestedAttributeIASlotIndex ) )
 				{
-					if( requestedAttributeComponent->hasSameSemanticsAs( baseAttribute ) )
+					if( requestedAttributeComponent->HasSameSemanticsAs( baseAttribute ) )
 					{
-						ic3DebugAssert( requestedAttributeComponent->shaderSemantics.semanticIndex == pSemanticIndex );
+						Ic3DebugAssert( requestedAttributeComponent->shaderSemantics.semanticIndex == pSemanticIndex );
 						return requestedAttributeIASlotIndex;
 					}
 				}
@@ -201,7 +201,7 @@ namespace Ic3
 		return cxGCIVertexAttributeIndexUndefined;
 	}
 
-	uint32 VertexFormatDescriptor::_resolveAttributeRefImpl( TBitmask<ESystemAttributeSemanticFlags> pSysSmtFlags, uint32 pSemanticIndex ) const noexcept
+	uint32 VertexFormatDescriptor::_resolveAttributeRefImpl( cppx::bitmask<ESystemAttributeSemanticFlags> pSysSmtFlags, uint32 pSemanticIndex ) const noexcept
 	{
 		if( GCU::isStandardShaderInputAttribute( pSysSmtFlags ) )
 		{
@@ -221,14 +221,14 @@ namespace Ic3
 		{
 			std::string vertexStreamStrings[GCM::cxIAMaxVertexStreamsNum];
 
-			const auto & attributeArray = pAttributeLayout.getAttributeArray();
+			const auto & attributeArray = pAttributeLayout.GetAttributeArray();
 			for( const auto & genericAttribute : attributeArray )
 			{
-				if( genericAttribute.isActive() )
+				if( genericAttribute.IsActive() )
 				{
-					if( genericAttribute.isBaseAttribute() )
+					if( genericAttribute.IsBaseAttribute() )
 					{
-						const auto attributeFormatStr = generateVertexAttributeFormatString( genericAttribute );
+						const auto attributeFormatStr = GenerateVertexAttributeFormatString( genericAttribute );
 						if( !vertexStreamStrings[genericAttribute.streamIASlot].empty() )
 						{
 							vertexStreamStrings[genericAttribute.streamIASlot].append( 1, '|' );
@@ -240,10 +240,10 @@ namespace Ic3
 
 			std::string resultStringID;
 
-			const auto & streamArray = pStreamConfig.getStreamArray();
+			const auto & streamArray = pStreamConfig.GetStreamArray();
 			for( const auto & vertexStream : streamArray )
 			{
-				if( vertexStream.isActive() )
+				if( vertexStream.IsActive() )
 				{
 					if( !vertexStreamStrings[vertexStream.streamIASlot].empty() )
 					{
@@ -253,6 +253,8 @@ namespace Ic3
 						resultStringID.append( 1, '(' );
 						resultStringID.append( 1, ( vertexStream.streamDataRate == EVertexDataRate::PerInstance ) ? 'I' : 'V' );
 						resultStringID.append( 1, ')' );
+						resultStringID.append( 1, '=' );
+						resultStringID.append( std::to_string( vertexStream.dataStrideInBytes ) );
 						resultStringID.append( 1, '<' );
 						resultStringID.append( vertexStreamStrings[vertexStream.streamIASlot] );
 						resultStringID.append( 1, '>' );

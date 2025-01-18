@@ -1,6 +1,6 @@
 
 #include "hash.h"
-#include "staticLimits.h"
+#include "typeLimits.h"
 #include <zlib/zlib.h>
 
 namespace cppx

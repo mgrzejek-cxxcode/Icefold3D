@@ -10,7 +10,7 @@ namespace Ic3
 	, _name( std::move( pName ) )
 	, _geometryRef( pGeometryRef )
 	{
-		ic3DebugAssert( _meshGroup );
+		Ic3DebugAssert( _meshGroup );
 		_meshGroup->registerMeshComponent( *this );
 	}
 
@@ -20,7 +20,7 @@ namespace Ic3
 	, _name( std::move( pName ) )
 	, _geometryRef( pGeometryRef )
 	{
-		ic3DebugAssert( _meshGroup );
+		Ic3DebugAssert( _meshGroup );
 		_meshGroup->registerMeshComponent( *this );
 	}
 
