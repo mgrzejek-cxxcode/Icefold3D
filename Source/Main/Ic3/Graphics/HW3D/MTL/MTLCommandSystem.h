@@ -17,12 +17,12 @@ namespace Ic3::Graphics::GCI
 		explicit MetalCommandSystem( MetalGPUDevice & pMetalGPUDevice );
 		virtual ~MetalCommandSystem();
 
-		virtual std::unique_ptr<CommandContext> acquireCommandContext( ECommandContextType pContextType ) override;
+		virtual std::unique_ptr<CommandContext> AcquireCommandContext( ECommandContextType pContextType ) override;
 
-		virtual CommandSync submitContext( CommandContextDirect & pContext, const CommandContextSubmitInfo & pSubmitInfo ) override;
+		virtual CommandSync SubmitContext( CommandContextDirect & pContext, const CommandContextSubmitInfo & pSubmitInfo ) override;
 
 	private:
-		MetalCommandList * acquireCommandList( ECommandExecutionMode pCommandExecutionMode );
+		MetalCommandList * AcquireCommandList( ECommandExecutionMode pCommandExecutionMode );
 	};
 
 } // namespace Ic3::Graphics::GCI

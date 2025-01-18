@@ -17,13 +17,13 @@ namespace Ic3::Graphics::GCI
 	{
 	}
 
-	AdapterList SystemDisplayManager::enumAdapterList() const
+	AdapterList SystemDisplayManager::EnumAdapterList() const
 	{
 		AdapterList adapterList;
 
 		try
 		{
-			auto sysAdapterList = mExfDisplayDriver->enumAdapterList();
+			auto sysAdapterList = mExfDisplayDriver->EnumAdapterList();
 			for( auto * sysAdapterDesc : sysAdapterList )
 			{
 				auto & adapterDesc = adapterList.emplace_back();
@@ -34,19 +34,19 @@ namespace Ic3::Graphics::GCI
 		}
 		catch ( ... )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 		}
 
 		return adapterList;
 	}
 
-	AdapterDesc SystemDisplayManager::getDefaultAdapter() const
+	AdapterDesc SystemDisplayManager::GetDefaultAdapter() const
 	{
 		AdapterDesc adapterDesc;
 
 		try
 		{
-			auto * sysDefaultAdapterDesc = mExfDisplayDriver->getDefaultAdapter();
+			auto * sysDefaultAdapterDesc = mExfDisplayDriver->GetDefaultAdapter();
 			if( sysDefaultAdapterDesc != nullptr )
 			{
 				adapterDesc.id = sysDefaultAdapterDesc->index;
@@ -56,20 +56,20 @@ namespace Ic3::Graphics::GCI
 		}
 		catch ( ... )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 		}
 
 		return adapterDesc;
 	}
 
-	OutputList SystemDisplayManager::enumOutputList( display_system_id_t pAdapterID ) const
+	OutputList SystemDisplayManager::EnumOutputList( display_system_id_t pAdapterID ) const
 	{
 		OutputList outputList;
 
 		try
 		{
 			auto sysAdapterIndex = static_cast<Ic3::sys_dsm_index_t>( pAdapterID );
-			auto sysOutputList = mExfDisplayDriver->enumOutputList( sysAdapterIndex );
+			auto sysOutputList = mExfDisplayDriver->EnumOutputList( sysAdapterIndex );
 			for( auto * sysOutputDesc : sysOutputList )
 			{
 				auto & outputDesc = outputList.emplace_back();
@@ -81,20 +81,20 @@ namespace Ic3::Graphics::GCI
 		}
 		catch ( ... )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 		}
 
 		return outputList;
 	}
 
-	OutputDesc SystemDisplayManager::getDefaultOutput( display_system_id_t pAdapterID ) const
+	OutputDesc SystemDisplayManager::GetDefaultOutput( display_system_id_t pAdapterID ) const
 	{
 		OutputDesc outputDesc;
 
 		try
 		{
 			auto sysAdapterIndex = static_cast<Ic3::sys_dsm_index_t>( pAdapterID );
-			auto * sysDefaultOutputDesc = mExfDisplayDriver->getDefaultOutput( sysAdapterIndex );
+			auto * sysDefaultOutputDesc = mExfDisplayDriver->GetDefaultOutput( sysAdapterIndex );
 			if( sysDefaultOutputDesc != nullptr )
 			{
 				outputDesc.id = sysDefaultOutputDesc->id;
@@ -105,20 +105,20 @@ namespace Ic3::Graphics::GCI
 		}
 		catch ( ... )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 		}
 
 		return outputDesc;
 	}
 
-	VideoModeList SystemDisplayManager::enumVideoModeList( display_system_id_t pOutputID, System::EColorFormat pFormat ) const
+	VideoModeList SystemDisplayManager::EnumVideoModeList( display_system_id_t pOutputID, System::EColorFormat pFormat ) const
 	{
 		VideoModeList videoModeList;
 
 		try
 		{
 			auto sysOutputID = static_cast<Ic3::sys_dsm_output_id_t>( pOutputID );
-			auto sysVideoModeList = mExfDisplayDriver->enumVideoModeList( sysOutputID, pFormat );
+			auto sysVideoModeList = mExfDisplayDriver->EnumVideoModeList( sysOutputID, pFormat );
 			for( auto * sysVideoModeDesc : sysVideoModeList )
 			{
 				auto & outputDesc = videoModeList.emplace_back();
@@ -131,7 +131,7 @@ namespace Ic3::Graphics::GCI
 		}
 		catch ( ... )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 		}
 
 		return videoModeList;

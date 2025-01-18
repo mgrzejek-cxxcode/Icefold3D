@@ -18,28 +18,28 @@ namespace Ic3::Graphics::GCI
 
 	DX12CommandContext::~DX12CommandContext() = default;
 
-	void DX12CommandContext::beginCommandSequence( const CommandContextCommandSequenceBeginInfo & pInfo )
+	void DX12CommandContext::BeginCommandSequence( const CommandContextCommandSequenceBeginInfo & pInfo )
 	{
-		ic3DX12CmdContextVerifyGraphics( this );
+		Ic3DX12CmdContextVerifyGraphics( this );
 		mD3D12CommandAllocator->Reset();
 		mD3D12GraphicsCommandList->Reset( mD3D12CommandAllocator.Get(), nullptr );
 	}
 
-	void DX12CommandContext::endCommandSequence( const CommandContextCommandSequenceEndInfo & pInfo )
+	void DX12CommandContext::EndCommandSequence( const CommandContextCommandSequenceEndInfo & pInfo )
 	{
-		ic3DX12CmdContextVerifyGraphics( this );
+		Ic3DX12CmdContextVerifyGraphics( this );
 		mD3D12GraphicsCommandList->Close();
 	}
 
-	void DX12CommandContext::executeSecondaryContext( CommandContext & pSecondaryCmdContext )
+	void DX12CommandContext::ExecuteSecondaryContext( CommandContext & pSecondaryCmdContext )
 	{
-		auto * dx12CmdContext = pSecondaryCmdContext.queryInterface<DX12CommandContext>();
+		auto * dx12CmdContext = pSecondaryCmdContext.QueryInterface<DX12CommandContext>();
 		mD3D12GraphicsCommandList->ExecuteBundle( dx12CmdContext->mD3D12GraphicsCommandList.Get() );
 	}
 
-	void DX12CommandContext::clearColorTarget( const Math::RGBAColorR32Norm & pColor )
+	void DX12CommandContext::ClearColorTarget( const Math::RGBAColorR32Norm & pColor )
 	{
-		ic3DX12CmdContextVerifyGraphics( this );
+		Ic3DX12CmdContextVerifyGraphics( this );
 
 		const FLOAT clearColor[] = { pColor.fpRed, pColor.fpGreen, pColor.fpBlue, pColor.fpAlpha };
 		for( uint32 rtIndex = 0; rtIndex < _renderTargetState.rtvDescriptorsNum; ++rtIndex )
@@ -49,9 +49,9 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	void DX12CommandContext::setRenderTargetState( const DX12RenderTargetState & pRenderTargetState )
+	void DX12CommandContext::SetRenderTargetState( const DX12RenderTargetState & pRenderTargetState )
 	{
-		memCopyUnchecked(
+		mem_copy_unchecked(
 				&_renderTargetState,
 				sizeof( DX12RenderTargetState ),
 				&pRenderTargetState,
@@ -64,7 +64,7 @@ namespace Ic3::Graphics::GCI
 		{
 			rtvDescriptorArray = _renderTargetState.rtvDescriptorArray.data();
 		}
-		if( !DX12CoreAPIProxy::checkDescriptorEmpty( _renderTargetState.dsvDescriptor ) )
+		if( !DX12CoreAPIProxy::CheckDescriptorEmpty( _renderTargetState.dsvDescriptor ) )
 		{
 			dsvDescriptor = &( _renderTargetState.dsvDescriptor );
 		}

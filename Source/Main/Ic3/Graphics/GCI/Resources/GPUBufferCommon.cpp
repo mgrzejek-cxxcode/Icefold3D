@@ -5,28 +5,28 @@
 namespace Ic3::Graphics::GCI
 {
 
-	namespace rcutil
+	namespace RCU
 	{
 
-		EGPUBufferTarget getGPUBufferDefaultTargetFromBindFlags( Bitmask<resource_flags_value_t> pBindFlags )
+		EGPUBufferTarget GetGPUBufferDefaultTargetFromBindFlags( cppx::bitmask<resource_flags_value_t> pBindFlags )
 		{
 			const uint32 orderedBindMaskArray[] =
 			{
-				E_GPU_BUFFER_BIND_FLAG_CONSTANT_BUFFER_BIT,
-				E_GPU_BUFFER_BIND_FLAG_VERTEX_BUFFER_BIT,
-				E_GPU_BUFFER_BIND_FLAG_INDEX_BUFFER_BIT,
-				E_GPU_BUFFER_BIND_FLAG_STREAM_OUTPUT_BUFFER_BIT,
-				E_GPU_BUFFER_BIND_FLAG_SHADER_INPUT_BUFFER_BIT,
-				E_GPU_BUFFER_BIND_FLAG_SHADER_UAV_BUFFER_BIT,
-				E_GPU_BUFFER_BIND_FLAG_INDIRECT_DISPATCH_BUFFER_BIT,
-				E_GPU_BUFFER_BIND_FLAG_INDIRECT_DRAW_BUFFER_BIT,
-				E_GPU_BUFFER_BIND_FLAG_TRANSFER_SOURCE_BUFFER_BIT,
-				E_GPU_BUFFER_BIND_FLAG_TRANSFER_TARGET_BUFFER_BIT
+					eGPUBufferBindFlagConstantBufferBit,
+					eGPUBufferBindFlagVertexBufferBit,
+					eGPUBufferBindFlagIndexBufferBit,
+					eGPUBufferBindFlagStreamOutputBufferBit,
+					eGPUBufferBindFlagShaderInputBufferBit,
+					eGPUBufferBindFlagShaderUAVBufferBit,
+					eGPUBufferBindFlagIndirectDispatchBufferBit,
+					eGPUBufferBindFlagIndirectDrawBufferBit,
+					eGPUBufferBindFlagTransferSourceBufferBit,
+					eGPUBufferBindFlagTransferTargetBufferBit
 			};
 
 			for( auto bindMask : orderedBindMaskArray )
 			{
-				if( pBindFlags.isSet( bindMask ) )
+				if( pBindFlags.is_set( bindMask ) )
 				{
 					return static_cast<EGPUBufferTarget>( bindMask );
 				}
@@ -35,36 +35,36 @@ namespace Ic3::Graphics::GCI
 			return EGPUBufferTarget::Unknown;
 		}
 
-		gpu_memory_size_t queryGPUBufferByteSize( GPUBufferHandle pGPUBuffer )
+		gpu_memory_size_t QueryGPUBufferByteSize( GPUBufferHandle pGPUBuffer )
 		{
 			return pGPUBuffer->mBufferProperties.byteSize;
 		}
 
-		bool checkGPUBufferRegion( GPUBufferHandle pGPUBuffer, gpu_memory_size_t pOffset, gpu_memory_size_t pSize )
+		bool CheckGPUBufferRegion( GPUBufferHandle pGPUBuffer, gpu_memory_size_t pOffset, gpu_memory_size_t pSize )
 		{
-			const auto bufferSize = rcutil::queryGPUBufferByteSize( pGPUBuffer );
+			const auto bufferSize = RCU::QueryGPUBufferByteSize( pGPUBuffer );
 			return ( pSize > 0 ) && ( pOffset < bufferSize ) && ( pSize <= ( bufferSize - pOffset ) );
 		}
 
-		bool checkGPUBufferRegion( GPUBufferHandle pGPUBuffer, const GPUMemoryRegion & pRegion )
+		bool CheckGPUBufferRegion( GPUBufferHandle pGPUBuffer, const GPUMemoryRegion & pRegion )
 		{
-			return checkGPUBufferRegion( pGPUBuffer, pRegion.offset, pRegion.size );
+			return CheckGPUBufferRegion( pGPUBuffer, pRegion.offset, pRegion.size );
 		}
 
-		GPUMemoryRegion validateGPUBufferRegion( GPUBufferHandle pGPUBuffer, gpu_memory_size_t pOffset, gpu_memory_size_t pSize )
+		GPUMemoryRegion ValidateGPUBufferRegion( GPUBufferHandle pGPUBuffer, gpu_memory_size_t pOffset, gpu_memory_size_t pSize )
 		{
-			const auto bufferSize = rcutil::queryGPUBufferByteSize( pGPUBuffer );
+			const auto bufferSize = RCU::QueryGPUBufferByteSize( pGPUBuffer );
 
 			GPUMemoryRegion validRegion{ 0, 0 };
-			validRegion.offset = getMinOf( pOffset, bufferSize );
-			validRegion.size = getMinOf( pSize, bufferSize - pOffset );
+			validRegion.offset = cppx::get_min_of( pOffset, bufferSize );
+			validRegion.size = cppx::get_min_of( pSize, bufferSize - pOffset );
 
 			return validRegion;
 		}
 
-		GPUMemoryRegion validateGPUBufferRegion( GPUBufferHandle pGPUBuffer, const GPUMemoryRegion & pRegion )
+		GPUMemoryRegion ValidateGPUBufferRegion( GPUBufferHandle pGPUBuffer, const GPUMemoryRegion & pRegion )
 		{
-			return validateGPUBufferRegion( pGPUBuffer, pRegion.offset, pRegion.size );
+			return ValidateGPUBufferRegion( pGPUBuffer, pRegion.offset, pRegion.size );
 		}
 
 	}

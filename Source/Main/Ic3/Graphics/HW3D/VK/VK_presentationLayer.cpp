@@ -20,15 +20,15 @@ namespace Ic3::Graphics::GCI
 
 	VKScreenPresentationLayer::~VKScreenPresentationLayer() = default;
 
-	void VKScreenPresentationLayer::bindRenderTarget( CommandContext * pCmdContext )
+	void VKScreenPresentationLayer::BindRenderTarget( CommandContext * pCmdContext )
 	{
 	}
 
-	void VKScreenPresentationLayer::invalidateRenderTarget( CommandContext * pCmdContext )
+	void VKScreenPresentationLayer::InvalidateRenderTarget( CommandContext * pCmdContext )
 	{
 	}
 
-	void VKScreenPresentationLayer::present()
+	void VKScreenPresentationLayer::Present()
 	{
 	}
 
@@ -36,11 +36,11 @@ namespace Ic3::Graphics::GCI
 	{
 	}
 
-	void VKScreenPresentationLayer::setFullscreenMode( bool pEnable )
+	void VKScreenPresentationLayer::SetFullscreenMode( bool pEnable )
 	{
 	}
 
-	Ic3::Math::Vec2u32 VKScreenPresentationLayer::queryRenderTargetSize() const
+	Ic3::Math::Vec2u32 VKScreenPresentationLayer::QueryRenderTargetSize() const
 	{
 		return {};
 	}

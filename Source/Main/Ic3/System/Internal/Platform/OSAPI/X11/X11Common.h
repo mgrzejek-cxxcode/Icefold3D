@@ -24,16 +24,16 @@ namespace Ic3::System
 		// and remove them from the global scope.
 		enum : XID
 		{
-			E_X11_XID_ALWAYS = Always,
-			E_X11_XID_NONE = None,
-			E_X11_XID_SUCCESS = Success,
+			eXIDAlways = Always,
+			eXIDNone = None,
+			eXIDSuccess = Success,
 		};
 
 		#undef Always
 		#undef None
 		#undef Success
 
-		inline constexpr auto CX_X11_DISPLAY_NULL = static_cast<XDisplay>( nullptr );
+		inline constexpr auto cxX11DisplayNull = static_cast<XDisplay>( nullptr );
 
 		struct X11SessionInfo
 		{
@@ -52,8 +52,9 @@ namespace Ic3::System
 				Atom wmState = 0;
 				Atom wmStateFullscreen = 0;
 			};
-			XDisplay display = CX_X11_DISPLAY_NULL;
-			XWindow rootWindowXID = E_X11_XID_NONE;
+
+			XDisplay displayHandle = cxX11DisplayNull;
+			XWindow rootWindowXID = eXIDNone;
 			int screenIndex = -1;
 			AtomCache atomCache;
 			X11SessionInfo sessionInfo;
@@ -62,39 +63,39 @@ namespace Ic3::System
 		struct X11NativeDataCommon
 		{
 		public:
-			void setSessionData( X11SessionData & pSessionData )
+			void SetSessionData( X11SessionData & pSessionData )
 			{
-				ic3DebugAssert( xSessionDataPtr == nullptr );
-				xSessionDataPtr = &pSessionData;
+				Ic3DebugAssert( _xSessionDataPtr == nullptr );
+				_xSessionDataPtr = &pSessionData;
 			}
 
-			void resetSessionData()
+			void ResetSessionData()
 			{
-				ic3DebugAssert( xSessionDataPtr != nullptr );
-				xSessionDataPtr = nullptr;
+				Ic3DebugAssert( _xSessionDataPtr != nullptr );
+				_xSessionDataPtr = nullptr;
 			}
 
-			IC3_ATTR_NO_DISCARD X11SessionData & getSessionData() const
+			CPPX_ATTR_NO_DISCARD X11SessionData & GetSessionData() const
 			{
-				ic3DebugAssert( xSessionDataPtr != nullptr );
-				return *xSessionDataPtr;
+				Ic3DebugAssert( _xSessionDataPtr != nullptr );
+				return *_xSessionDataPtr;
 			}
 
 		private:
-			X11SessionData * xSessionDataPtr = nullptr;
+			X11SessionData * _xSessionDataPtr = nullptr;
 		};
 
-		IC3_SYSTEM_API_NODISCARD X11SessionData & x11GetXSessionData( SysContext & pSysContext );
+		IC3_SYSTEM_API_NODISCARD X11SessionData & X11GetXSessionData( SysContext & pSysContext );
 
-		IC3_SYSTEM_API_NODISCARD inline X11SessionData & x11GetXSessionData( const X11NativeDataCommon & pNativeData )
+		IC3_SYSTEM_API_NODISCARD inline X11SessionData & X11GetXSessionData( const X11NativeDataCommon & pNativeData )
 		{
-			return pNativeData.getSessionData();
+			return pNativeData.GetSessionData();
 		}
 
 		template <typename TBaseType, typename TNativeData>
-		IC3_SYSTEM_API_NODISCARD inline X11SessionData & x11GetXSessionData( const NativeObject<TBaseType, TNativeData> & pNativeObject )
+		IC3_SYSTEM_API_NODISCARD inline X11SessionData & X11GetXSessionData( const NativeObject<TBaseType, TNativeData> & pNativeObject )
 		{
-			return x11GetXSessionData( static_cast<X11NativeDataCommon>( pNativeObject.mNativeData ) );
+			return X11GetXSessionData( static_cast<X11NativeDataCommon>( pNativeObject.mNativeData ) );
 		}
 
 	}
@@ -107,26 +108,26 @@ namespace Ic3::System
 		explicit X11NativeObject( SysContextHandle pSysContext, TBaseTypeArgs && ...pBaseTypeArgs )
 		: NativeObject<TBaseType, TNativeData>( pSysContext, std::forward<TBaseTypeArgs>( pBaseTypeArgs )... )
 		{
-			this->mNativeData.setSessionData( Platform::x11GetXSessionData( *pSysContext ) );
+			this->mNativeData.SetSessionData( Platform::X11GetXSessionData( *pSysContext ) );
 		}
 
 		template <typename TParentSysObject, typename... TBaseTypeArgs>
 		explicit X11NativeObject( TParentSysObject & pParentSysObject, TBaseTypeArgs && ...pBaseTypeArgs )
 		: NativeObject<TBaseType, TNativeData>( pParentSysObject, std::forward<TBaseTypeArgs>( pBaseTypeArgs )... )
 		{
-			this->mNativeData.setSessionData( Platform::x11GetXSessionData( pParentSysObject ) );
+			this->mNativeData.SetSessionData( Platform::X11GetXSessionData( pParentSysObject ) );
 		}
 
 		template <typename TParentSysObject, typename... TBaseTypeArgs>
-		explicit X11NativeObject( SysHandle<TParentSysObject> pParentSysObject, TBaseTypeArgs && ...pBaseTypeArgs )
+		explicit X11NativeObject( TSysHandle<TParentSysObject> pParentSysObject, TBaseTypeArgs && ...pBaseTypeArgs )
 		: NativeObject<TBaseType, TNativeData>( pParentSysObject, std::forward<TBaseTypeArgs>( pBaseTypeArgs )... )
 		{
-			this->mNativeData.setSessionData( Platform::x11GetXSessionData( *pParentSysObject ) );
+			this->mNativeData.SetSessionData( Platform::X11GetXSessionData( *pParentSysObject ) );
 		}
 
 		virtual ~X11NativeObject()
 		{
-			this->mNativeData.resetSessionData();
+			this->mNativeData.ResetSessionData();
 		}
 	};
 

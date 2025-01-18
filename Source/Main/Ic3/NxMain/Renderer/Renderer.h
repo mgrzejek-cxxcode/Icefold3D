@@ -5,7 +5,7 @@
 #define __IC3_NXMAIN_SHADOW_RENDERER_H__
 
 #include "CommonRendererDefs.h"
-#include <Ic3/Graphics/GCI/State/renderTargetDynamicStates.h>
+#include <Ic3/Graphics/GCI/State/RenderTargetDynamicStates.h>
 
 namespace Ic3
 {
@@ -48,7 +48,7 @@ namespace Ic3
 		TCBData * updateConstantBufferData( native_uint pCBIndex );
 
 	protected:
-		struct GpuAPIStateCommon
+		struct GPUAPIStateCommon
 		{
 		};
 
@@ -68,7 +68,7 @@ namespace Ic3
 
 	protected:
 		ShaderLibraryHandle _shaderLibrary;
-		GpuAPIStateCommon _gpaStateCommon;
+		GPUAPIStateCommon _gpaStateCommon;
 		GCI::CommandContextHandle _currentCmdContext;
 	};
 

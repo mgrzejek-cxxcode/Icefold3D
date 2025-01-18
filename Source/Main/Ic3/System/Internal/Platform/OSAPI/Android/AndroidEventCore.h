@@ -21,12 +21,12 @@ namespace Ic3::System
 
 		enum : int32_t
 		{
-			E_ANDROID_EVT_CMD_USER_DESTROY_REQUESTED = 0xFF00,
+			eAndroidEvtCmdUserDestroyRequested = 0xFF00,
 		};
 
-		inline constexpr int32_t CX_ANDROID_EVENT_LOOPER_WAIT_TIMEOUT_IMMEDIATE = 0;
+		inline constexpr int32_t cxAndroidEventLooperWaitTimeoutImmediate = 0;
 
-		inline constexpr int32_t CX_ANDROID_EVENT_LOOPER_WAIT_TIMEOUT_INFINITY = -1;
+		inline constexpr int32_t cxAndroidEventLooperWaitTimeoutInfinity = -1;
 
 		struct NativeEventType
 		{
@@ -48,21 +48,21 @@ namespace Ic3::System
 		AndroidEventController( SysContextHandle pSysContext );
 		virtual ~AndroidEventController() noexcept;
 
-		using EventController::getEventSystemInternalConfig;
-		using EventController::getEventDispatcherInputState;
+		using EventController::GetEventSystemInternalConfig;
+		using EventController::GetEventDispatcherInputState;
 
 	private:
-		/// @copybrief EventController::_nativeRegisterEventSource
-		virtual void _nativeRegisterEventSource( EventSource & pEventSource ) override final;
+		/// @copybrief EventController::_NativeRegisterEventSource
+		virtual void _NativeRegisterEventSource( EventSource & pEventSource ) override final;
 
-		/// @copybrief EventController::_nativeUnregisterEventSource
-		virtual void _nativeUnregisterEventSource( EventSource & pEventSource ) override final;
+		/// @copybrief EventController::_NativeUnRegisterEventSource
+		virtual void _NativeUnRegisterEventSource( EventSource & pEventSource ) override final;
 
-		/// @copybrief EventController::_nativeDispatchPendingEvents
-		virtual bool _nativeDispatchPendingEvents() override final;
+		/// @copybrief EventController::_NativeDispatchPendingEvents
+		virtual bool _NativeDispatchPendingEvents() override final;
 
-		/// @copybrief EventController::_nativeDispatchPendingEventsWait
-		virtual bool _nativeDispatchPendingEventsWait() override final;
+		/// @copybrief EventController::_NativeDispatchPendingEventsWait
+		virtual bool _NativeDispatchPendingEventsWait() override final;
 	};
 
 } // namespace Ic3::System

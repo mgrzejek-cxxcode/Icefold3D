@@ -11,8 +11,8 @@
 namespace Ic3::System
 {
 
-	ic3SysDeclareHandle( OSXMetalSystemDriver );
-	ic3SysDeclareHandle( OSXMetalRenderContext );
+	Ic3SysDeclareHandle( OSXMetalSystemDriver );
+	Ic3SysDeclareHandle( OSXMetalRenderContext );
 
 	namespace Platform
 	{
@@ -30,8 +30,9 @@ namespace Ic3::System
 		{
 		};
 
-        void osxCreateSurfaceMetalView( OSXMetalDisplaySurfaceNativeData & pSurfaceNativeData,
-		                                const MetalDisplaySurfaceCreateInfo & pCreateInfo );
+        void OSXCreateSurfaceMetalView(
+				OSXMetalDisplaySurfaceNativeData & pSurfaceNativeData,
+				const MetalDisplaySurfaceCreateInfo & pCreateInfo );
 
 	}
 
@@ -43,11 +44,11 @@ namespace Ic3::System
 		virtual ~OSXMetalSystemDriver() noexcept;
 		
 	private:
-		virtual MetalDisplaySurfaceHandle _nativeCreateDisplaySurface(
+		virtual MetalDisplaySurfaceHandle _NativeCreateDisplaySurface(
 				MetalDevice & pMetalDevice,
 				const MetalDisplaySurfaceCreateInfo & pCreateInfo ) override final;
 
-		virtual void _nativeDestroyDisplaySurface( MetalDisplaySurface & pDisplaySurface ) override final;
+		virtual void _NativeDestroyDisplaySurface( MetalDisplaySurface & pDisplaySurface ) override final;
 	};
 
     /// @brief OSX-specific implementation of the MetalDisplaySurface class.
@@ -58,30 +59,31 @@ namespace Ic3::System
         virtual ~OSXMetalDisplaySurface() noexcept;
 
     private:
-	    /// @copybrief MetalDisplaySurface::_nativeQueryRenderAreaSize
-        virtual FrameSize _nativeQueryRenderAreaSize() const override final;
+	    /// @copybrief MetalDisplaySurface::_NativeQueryRenderAreaSize
+        virtual FrameSize _NativeQueryRenderAreaSize() const override final;
 
-        /// @copybrief MetalDisplaySurface::_nativeSysValidate
-        virtual bool _nativeSysValidate() const override final;
+        /// @copybrief MetalDisplaySurface::_NativeSysValidate
+        virtual bool _NativeSysValidate() const override final;
 
-        /// @copybrief MetalDisplaySurface::_nativeResize
-        virtual void _nativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode ) override final;
+        /// @copybrief MetalDisplaySurface::_NativeResize
+        virtual void _NativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode ) override final;
 
-        /// @copybrief MetalDisplaySurface::_nativeSetFullscreenMode
-        virtual void _nativeSetFullscreenMode( bool pEnable ) override final;
+        /// @copybrief MetalDisplaySurface::_NativeSetFullscreenMode
+        virtual void _NativeSetFullscreenMode( bool pEnable ) override final;
 
-        /// @copybrief MetalDisplaySurface::_nativeSetTitle
-        virtual void _nativeSetTitle( const std::string & pTitle ) override final;
+        /// @copybrief MetalDisplaySurface::_NativeSetTitle
+        virtual void _NativeSetTitle( const std::string & pTitle ) override final;
 
-        /// @copybrief MetalDisplaySurface::_nativeUpdateGeometry
-        virtual void _nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-                                            Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
+        /// @copybrief MetalDisplaySurface::_NativeUpdateGeometry
+        virtual void _NativeUpdateGeometry(
+				const FrameGeometry & pFrameGeometry,
+				cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
 
-        /// @copybrief MetalDisplaySurface::_nativeGetSize
-        virtual FrameSize _nativeGetSize( EFrameSizeMode pSizeMode ) const override final;
+        /// @copybrief MetalDisplaySurface::_NativeGetSize
+        virtual FrameSize _NativeGetSize( EFrameSizeMode pSizeMode ) const override final;
 
-        /// @copybrief MetalDisplaySurface::_nativeIsFullscreen
-        virtual bool _nativeIsFullscreen() const override final;
+        /// @copybrief MetalDisplaySurface::_NativeIsFullscreen
+        virtual bool _NativeIsFullscreen() const override final;
     };
 
 } // namespace Ic3::System

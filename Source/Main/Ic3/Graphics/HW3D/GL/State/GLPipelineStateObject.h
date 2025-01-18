@@ -10,8 +10,8 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3GLDeclareOpenGLObjectHandle( GLShaderPipelineObject );
-	ic3GLDeclareOpenGLObjectHandle( GLShaderProgramObject );
+	Ic3GLDeclareOpenGLObjectHandle( GLShaderPipelineObject );
+	Ic3GLDeclareOpenGLObjectHandle( GLShaderProgramObject );
 
 	class GLGraphicsPipelineStateObject : public GraphicsPipelineStateObjectSeparable
 	{
@@ -24,17 +24,17 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~GLGraphicsPipelineStateObject();
 
-		IC3_ATTR_NO_DISCARD const GLBlendImmutableState & getBlendState() const noexcept;
+		CPPX_ATTR_NO_DISCARD const GLBlendImmutableState & GetBlendState() const noexcept;
 
-		IC3_ATTR_NO_DISCARD const GLDepthStencilImmutableState & getDepthStencilState() const noexcept;
+		CPPX_ATTR_NO_DISCARD const GLDepthStencilImmutableState & GetDepthStencilState() const noexcept;
 
-		IC3_ATTR_NO_DISCARD const GLRasterizerImmutableState & getRasterizerState() const noexcept;
+		CPPX_ATTR_NO_DISCARD const GLRasterizerImmutableState & GetRasterizerState() const noexcept;
 
-		IC3_ATTR_NO_DISCARD const GLGraphicsShaderLinkageImmutableState & getGraphicsShaderLinkageState() const noexcept;
+		CPPX_ATTR_NO_DISCARD const GLGraphicsShaderLinkageImmutableState & GetGraphicsShaderLinkageState() const noexcept;
 
-		IC3_ATTR_NO_DISCARD const GLIAInputLayoutImmutableState & getIAInputLayoutState() const noexcept;
+		CPPX_ATTR_NO_DISCARD const GLIAInputLayoutImmutableState & GetIAInputLayoutState() const noexcept;
 
-		static GpaHandle<GLGraphicsPipelineStateObject> create(
+		static TGfxHandle<GLGraphicsPipelineStateObject> Create(
 				GLGPUDevice & pGPUDevice,
 				const GraphicsPipelineStateObjectCreateInfo & pCreateInfo );
 	};

@@ -1,5 +1,5 @@
 
-#include "pngCommon.h"
+#include "PngCommon.h"
 
 namespace Ic3
 {
@@ -74,7 +74,7 @@ namespace Ic3
 
 		bool imageDataValidate( const byte * pRawData, native_uint pSize )
 		{
-			const auto sigDataSize = getMinOf( pSize, 8u );
+			const auto sigDataSize = cppx::get_min_of( pSize, 8u );
 			int sigCheckResult = png_sig_cmp( pRawData, 0, sigDataSize );
 
 			if( sigCheckResult == 0 )
@@ -205,9 +205,9 @@ namespace Ic3
 			void * readObjPtr = png_get_io_ptr( pPngStruct );
 			auto * pngStream = reinterpret_cast<PngStreamState *>( readObjPtr );
 
-			ic3DebugAssert( pSize + pngStream->readOffset <= pngStream->pngDataSize );
+			Ic3DebugAssert( pSize + pngStream->readOffset <= pngStream->pngDataSize );
 
-			memCopyUnchecked( pBuffer,  pngStream->pngDataSize -  pngStream->readOffset, pngStream->pngDataPtr, pSize );
+			cppx::mem_copy_unchecked( pBuffer,  pngStream->pngDataSize -  pngStream->readOffset, pngStream->pngDataPtr, pSize );
 
 			pngStream->readOffset += pSize;
 			pngStream->pngDataPtr += pSize;
@@ -221,7 +221,7 @@ namespace Ic3
 
 		if( !pnglib::init(&pngReadState) )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return {};
 		}
 
@@ -230,11 +230,11 @@ namespace Ic3
 		pngStream.pngDataSize = pDataSize;
 
 		byte signatureBuffer[8];
-		memCopyUnchecked( signatureBuffer, 8, pData, 8 );
+		cppx::mem_copy_unchecked( signatureBuffer, 8, pData, 8 );
 
 		if( png_sig_cmp( signatureBuffer, 0, 8 ) !=  0)
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return {};
 		}
 

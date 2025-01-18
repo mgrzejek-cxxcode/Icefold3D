@@ -3,12 +3,12 @@ set( IC3_GRAPHICS_HWAPI_MTL2_SRC_FILES
         ${IC3_GRAPHICS_HWAPI_MTLCOMMON_SRC_FILES}
 
         "MTL2Prerequisites.h"
-        "MTL2GpuDevice.h"
-        "MTL2GpuDevice.mm"
-        "MTL2GpuDriver.h"
-        "MTL2GpuDriver.mm"
-        "MTL2GpuDriverAPI.h"
-        "MTL2GpuDriverAPI.mm"
+        "MTL2GPUDevice.h"
+        "MTL2GPUDevice.mm"
+        "MTL2GPUDriver.h"
+        "MTL2GPUDriver.mm"
+        "MTL2GPUDriverAPI.h"
+        "MTL2GPUDriverAPI.mm"
         )
 
 if( "${IC3_COMPONENTS_BUILD_MODE}" STREQUAL "STATIC" )

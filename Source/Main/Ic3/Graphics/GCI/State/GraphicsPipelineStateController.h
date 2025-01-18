@@ -17,11 +17,11 @@ namespace Ic3::Graphics::GCI
 	/// @brief Defines bit flags describing what kind of changes are pending for
 	enum EGraphicsStateUpdateCommonFlags : graphics_state_update_mask_value_t
 	{
-		E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_PSO_BIT = 0x01,
-		E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_VERTEX_STREAM_BIT = 0x02,
-		E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_RENDER_TARGET_BINDING_BIT = 0x04,
+		eGraphicsStateUpdateFlagCommonPSOBit = 0x01,
+		eGraphicsStateUpdateFlagCommonVertexStreamBit = 0x02,
+		eGraphicsStateUpdateFlagCommonRenderTargetBindingBit = 0x04,
 
-		E_GRAPHICS_STATE_UPDATE_MASK_COMMON_ALL = 0x07
+		eGraphicsStateUpdateMaskCommonAll = 0x07
 	};
 
 	/// @brief
@@ -31,115 +31,115 @@ namespace Ic3::Graphics::GCI
 		GraphicsPipelineStateController();
 		virtual ~GraphicsPipelineStateController();
 
-		virtual bool applyStateChanges() = 0;
+		virtual bool ApplyStateChanges() = 0;
 
-		IC3_ATTR_NO_DISCARD bool isIAVertexStreamStateDynamic() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsIAVertexStreamStateDynamic() const noexcept;
 
-		IC3_ATTR_NO_DISCARD bool isRenderTargetStateDynamic() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsRenderTargetStateDynamic() const noexcept;
 
-		IC3_ATTR_NO_DISCARD const GraphicsPipelineDynamicState & getRenderPassDynamicState() const noexcept;
+		CPPX_ATTR_NO_DISCARD const GraphicsPipelineDynamicState & GetRenderPassDynamicState() const noexcept;
 
-		IC3_ATTR_NO_DISCARD const ShaderInputSignature & getShaderInputSignature() const noexcept;
+		CPPX_ATTR_NO_DISCARD const ShaderInputSignature & GetShaderInputSignature() const noexcept;
 
-		void setRenderPassDynamicState( const GraphicsPipelineDynamicState & pDynamicState );
+		void SetRenderPassDynamicState( const GraphicsPipelineDynamicState & pDynamicState );
 
-		void resetRenderPassDynamicState();
+		void ResetRenderPassDynamicState();
 
 		/// @brief Binds the specified state object to the pipeline. Returns true if any change has been made.
 		/// @return True if anything has been changed or false otherwise.
 		/// @note Sub-classes should always call the base method first and check the result before doing the actual update.
-		virtual bool setGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO );
+		virtual bool SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO );
 
 		/// @brief Resets the current SO to the default one. Returns true if any change has been made.
 		/// @return True if anything has been changed or false otherwise.
 		/// @note Sub-classes should always call the base method first and check the result before doing the actual update.
-		virtual bool resetGraphicsPipelineStateObject();
+		virtual bool ResetGraphicsPipelineStateObject();
 
-		virtual bool setIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState );
-		virtual bool setIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState );
-		virtual bool resetIAVertexStreamState();
+		virtual bool SetIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState );
+		virtual bool SetIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState );
+		virtual bool ResetIAVertexStreamState();
 
-		virtual bool setRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState );
-		virtual bool setRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState );
-		virtual bool resetRenderTargetBindingState();
+		virtual bool SetRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState );
+		virtual bool SetRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState );
+		virtual bool ResetRenderTargetBindingState();
 
-		virtual bool setViewport( const ViewportDesc & pViewportDesc );
-		virtual bool setShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData );
-		virtual bool setShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer );
-		virtual bool setShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture );
-		virtual bool setShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler );
+		virtual bool SetViewport( const ViewportDesc & pViewportDesc );
+		virtual bool SetShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData );
+		virtual bool SetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer );
+		virtual bool SetShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture );
+		virtual bool SetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler );
 
 		/// @brief
-		IC3_ATTR_NO_DISCARD bool hasPendingStateChanges() const noexcept
+		CPPX_ATTR_NO_DISCARD bool HasPendingStateChanges() const noexcept
 		{
 			return !_stateUpdateMask.empty();
 		}
 
 		template <typename TGraphicsPipelineStateObject = GraphicsPipelineStateObject>
-		inline const TGraphicsPipelineStateObject * getCurrentGraphicsPSO() const noexcept
+		inline const TGraphicsPipelineStateObject * GetCurrentGraphicsPSO() const noexcept
 		{
 			if( _currentCommonState.graphicsPSO )
 			{
-				const auto * baseInterface = reinterpret_cast<const GPUAPIObject *>( _currentCommonState.graphicsPSO );
-				return baseInterface->queryInterface<TGraphicsPipelineStateObject>();
+				const auto * baseInterface = reinterpret_cast<const GfxObject *>( _currentCommonState.graphicsPSO );
+				return baseInterface->QueryInterface<TGraphicsPipelineStateObject>();
 			}
 			return nullptr;
 		}
 
 		template <typename TGraphicsPipelineStateObject = GraphicsPipelineStateObject>
-		inline const TGraphicsPipelineStateObject & getCurrentGraphicsPSORef() const
+		inline const TGraphicsPipelineStateObject & GetCurrentGraphicsPSORef() const
 		{
-			if( const auto * stateObject = getCurrentGraphicsPSO<TGraphicsPipelineStateObject>() )
+			if( const auto * stateObject = GetCurrentGraphicsPSO<TGraphicsPipelineStateObject>() )
 			{
 				return *stateObject;
 			}
-			ic3Throw( 0 );
+			Ic3Throw( 0 );
 		}
 
 		template <typename TIAVertexStreamState = IAVertexStreamImmutableState>
-		inline const TIAVertexStreamState * getCurrentIAVertexStreamState() const noexcept
+		inline const TIAVertexStreamState * GetCurrentIAVertexStreamState() const noexcept
 		{
 			if( _currentCommonState.iaVertexStreamState )
 			{
-				const auto * baseInterface = reinterpret_cast<const GPUAPIObject *>( _currentCommonState.iaVertexStreamState );
-				return baseInterface->queryInterface<TIAVertexStreamState>();
+				const auto * baseInterface = reinterpret_cast<const GfxObject *>( _currentCommonState.iaVertexStreamState );
+				return baseInterface->QueryInterface<TIAVertexStreamState>();
 			}
 			return nullptr;
 		}
 
 		template <typename TIAVertexStreamState = IAVertexStreamImmutableState>
-		inline const TIAVertexStreamState & getCurrentIAVertexStreamStateRef() const
+		inline const TIAVertexStreamState & GetCurrentIAVertexStreamStateRef() const
 		{
-			if( const auto * stateObject = getCurrentIAVertexStreamState<TIAVertexStreamState>() )
+			if( const auto * stateObject = GetCurrentIAVertexStreamState<TIAVertexStreamState>() )
 			{
 				return *stateObject;
 			}
-			ic3Throw( 0 );
+			Ic3Throw( 0 );
 		}
 
 		template <typename TRenderTargetBindingState = RenderTargetBindingImmutableState>
-		inline const TRenderTargetBindingState * getCurrentRenderTargetBindingState() const noexcept
+		inline const TRenderTargetBindingState * GetCurrentRenderTargetBindingState() const noexcept
 		{
 			if( _currentCommonState.renderTargetBindingState )
 			{
-				const auto * baseInterface = reinterpret_cast<const GPUAPIObject *>( _currentCommonState.renderTargetBindingState );
-				return baseInterface->queryInterface<TRenderTargetBindingState>();
+				const auto * baseInterface = reinterpret_cast<const GfxObject *>( _currentCommonState.renderTargetBindingState );
+				return baseInterface->QueryInterface<TRenderTargetBindingState>();
 			}
 			return nullptr;
 		}
 
 		template <typename TRenderTargetBindingState = RenderTargetBindingImmutableState>
-		inline const TRenderTargetBindingState & getCurrentRenderTargetBindingStateRef() const
+		inline const TRenderTargetBindingState & GetCurrentRenderTargetBindingStateRef() const
 		{
-			if( const auto * stateObject = getCurrentRenderTargetBindingState<TRenderTargetBindingState>() )
+			if( const auto * stateObject = GetCurrentRenderTargetBindingState<TRenderTargetBindingState>() )
 			{
 				return *stateObject;
 			}
-			ic3Throw( 0 );
+			Ic3Throw( 0 );
 		}
 
 	protected:
-		void resetStateUpdateMask();
+		void ResetStateUpdateMask();
 
 	protected:
 		struct CurrentCommonState
@@ -153,7 +153,7 @@ namespace Ic3::Graphics::GCI
 
 		GraphicsPipelineDynamicState _currentRenderPassDynamicState;
 
-		Bitmask<graphics_state_update_mask_value_t> _stateUpdateMask = 0;
+		cppx::bitmask<graphics_state_update_mask_value_t> _stateUpdateMask = 0;
 	};
 
 } // namespace Ic3::Graphics::GCI

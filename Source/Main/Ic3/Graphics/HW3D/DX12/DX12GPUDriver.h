@@ -15,17 +15,17 @@ namespace Ic3::Graphics::GCI
 	{
 	};
 
-	class ICFGX_DX12_CLASS DX12GPUDriver final : public DXGPUDriver
+	class IC3_GX_DX12_CLASS DX12GPUDriver final : public DXGPUDriver
 	{
 	public:
-		explicit DX12GPUDriver( System::temContext * pExfSystemContext );
+		explicit DX12GPUDriver( System::SysContext * pExfSystemContext );
 		virtual ~DX12GPUDriver();
 
-		virtual DisplayManagerHandle createDefaultDisplayManager() override;
+		virtual DisplayManagerHandle CreateDefaultDisplayManager() override;
 
-		virtual GPUDeviceHandle createDevice( const GPUDeviceCreateInfo & pCreateInfo ) override;
+		virtual GPUDeviceHandle CreateDevice( const GPUDeviceCreateInfo & pCreateInfo ) override;
 
-		static DX12GPUDriverHandle create( const DX12GPUDriverCreateInfo & pCreateInfo );
+		static DX12GPUDriverHandle Create( const DX12GPUDriverCreateInfo & pCreateInfo );
 	};
 
 } // namespace Ic3::Graphics::GCI

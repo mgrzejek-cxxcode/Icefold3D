@@ -5,7 +5,7 @@
 #include "OSXCommon.h"
 #include <Ic3/System/EventCore.h>
 #include <Ic3/System/EventObject.h>
-#include <Ic3/Cppx/BitUtils.h>
+#include <cppx/bitUtils.h>
 
 #import <AppKit/NSEvent.h>
 
@@ -17,81 +17,81 @@ namespace Ic3::System
 	namespace Platform
 	{
 
-		enum OSXEventID : NSUInteger
+		enum EOSXEventID : NSUInteger
 		{
-			OSXEventIDNull                      = 0,
-			OSXEventIDGenericLeftMouseDown      = NSEventTypeLeftMouseDown      ,
-			OSXEventIDGenericLeftMouseUp        = NSEventTypeLeftMouseUp        ,
-			OSXEventIDGenericRightMouseDown     = NSEventTypeRightMouseDown     ,
-			OSXEventIDGenericRightMouseUp       = NSEventTypeRightMouseUp       ,
-			OSXEventIDGenericMouseMoved         = NSEventTypeMouseMoved         ,
-			OSXEventIDGenericLeftMouseDragged   = NSEventTypeLeftMouseDragged   ,
-			OSXEventIDGenericRightMouseDragged  = NSEventTypeRightMouseDragged  ,
-			OSXEventIDGenericMouseEntered       = NSEventTypeMouseEntered       ,
-			OSXEventIDGenericMouseExited        = NSEventTypeMouseExited        ,
-			OSXEventIDGenericKeyDown            = NSEventTypeKeyDown            ,
-			OSXEventIDGenericKeyUp              = NSEventTypeKeyUp              ,
-			OSXEventIDGenericFlagsChanged       = NSEventTypeFlagsChanged       ,
-			OSXEventIDGenericAppKitDefined      = NSEventTypeAppKitDefined      ,
-			OSXEventIDGenericSystemDefined      = NSEventTypeSystemDefined      ,
-			OSXEventIDGenericApplicationDefined = NSEventTypeApplicationDefined ,
-			OSXEventIDGenericPeriodic           = NSEventTypePeriodic           ,
-			OSXEventIDGenericCursorUpdate       = NSEventTypeCursorUpdate       ,
-			OSXEventIDGenericRotate             = NSEventTypeRotate             ,
-			OSXEventIDGenericBeginGesture       = NSEventTypeBeginGesture       ,
-			OSXEventIDGenericEndGesture         = NSEventTypeEndGesture         ,
-			OSXEventIDX21                       ,
-			OSXEventIDGenericScrollWheel        = NSEventTypeScrollWheel        ,
-			OSXEventIDGenericTabletPoint        = NSEventTypeTabletPoint        ,
-			OSXEventIDGenericTabletProximity    = NSEventTypeTabletProximity    ,
-			OSXEventIDGenericOtherMouseDown     = NSEventTypeOtherMouseDown     ,
-			OSXEventIDGenericOtherMouseUp       = NSEventTypeOtherMouseUp       ,
-			OSXEventIDGenericOtherMouseDragged  = NSEventTypeOtherMouseDragged  ,
-			OSXEventIDX28                       ,
-			OSXEventIDGenericGesture            = NSEventTypeGesture            ,
-			OSXEventIDGenericMagnify            = NSEventTypeMagnify            ,
-			OSXEventIDGenericSwipe              = NSEventTypeSwipe              ,
-			OSXEventIDGenericSmartMagnify       = NSEventTypeSmartMagnify       ,
-			OSXEventIDGenericQuickLook          = NSEventTypeQuickLook          ,
-			OSXEventIDGenericPressure           = NSEventTypePressure           ,
-			OSXEventIDX35                       ,
-			OSXEventIDX36                       ,
-			OSXEventIDGenericDirectTouch        = NSEventTypeDirectTouch        ,
-			OSXEventIDGenericChangeMode         = NSEventTypeChangeMode         ,
-			OSXEventIDWindowDidExpose                  ,
-			OSXEventIDWindowDidMove                    ,
-			OSXEventIDWindowDidResize                  ,
-			OSXEventIDWindowMiniaturize                ,
-			OSXEventIDWindowDidDeminiaturize           ,
-			OSXEventIDWindowDidBecomeKey               ,
-			OSXEventIDWindowDidResignKey               ,
-			OSXEventIDWindowDidChangeBackingProperties ,
-			OSXEventIDWindowDidChangeScreenProfile     ,
-			OSXEventIDWindowWillEnterFullScreen        ,
-			OSXEventIDWindowDidEnterFullScreen         ,
-			OSXEventIDWindowWillExitFullScreen         ,
-			OSXEventIDWindowDidExitFullScreen          ,
-			OSXEventIDWindowWillClose                  ,
+			eOSXEventIDNull                      = 0,
+			eOSXEventIDGenericLeftMouseDown      = NSEventTypeLeftMouseDown      ,
+			eOSXEventIDGenericLeftMouseUp        = NSEventTypeLeftMouseUp        ,
+			eOSXEventIDGenericRightMouseDown     = NSEventTypeRightMouseDown     ,
+			eOSXEventIDGenericRightMouseUp       = NSEventTypeRightMouseUp       ,
+			eOSXEventIDGenericMouseMoved         = NSEventTypeMouseMoved         ,
+			eOSXEventIDGenericLeftMouseDragged   = NSEventTypeLeftMouseDragged   ,
+			eOSXEventIDGenericRightMouseDragged  = NSEventTypeRightMouseDragged  ,
+			eOSXEventIDGenericMouseEntered       = NSEventTypeMouseEntered       ,
+			eOSXEventIDGenericMouseExited        = NSEventTypeMouseExited        ,
+			eOSXEventIDGenericKeyDown            = NSEventTypeKeyDown            ,
+			eOSXEventIDGenericKeyUp              = NSEventTypeKeyUp              ,
+			eOSXEventIDGenericFlagsChanged       = NSEventTypeFlagsChanged       ,
+			eOSXEventIDGenericAppKitDefined      = NSEventTypeAppKitDefined      ,
+			eOSXEventIDGenericSystemDefined      = NSEventTypeSystemDefined      ,
+			eOSXEventIDGenericApplicationDefined = NSEventTypeApplicationDefined ,
+			eOSXEventIDGenericPeriodic           = NSEventTypePeriodic           ,
+			eOSXEventIDGenericCursorUpdate       = NSEventTypeCursorUpdate       ,
+			eOSXEventIDGenericRotate             = NSEventTypeRotate             ,
+			eOSXEventIDGenericBeginGesture       = NSEventTypeBeginGesture       ,
+			eOSXEventIDGenericEndGesture         = NSEventTypeEndGesture         ,
+			eOSXEventIDX21                       ,
+			eOSXEventIDGenericScrollWheel        = NSEventTypeScrollWheel        ,
+			eOSXEventIDGenericTabletPoint        = NSEventTypeTabletPoint        ,
+			eOSXEventIDGenericTabletProximity    = NSEventTypeTabletProximity    ,
+			eOSXEventIDGenericOtherMouseDown     = NSEventTypeOtherMouseDown     ,
+			eOSXEventIDGenericOtherMouseUp       = NSEventTypeOtherMouseUp       ,
+			eOSXEventIDGenericOtherMouseDragged  = NSEventTypeOtherMouseDragged  ,
+			eOSXEventIDX28                       ,
+			eOSXEventIDGenericGesture            = NSEventTypeGesture            ,
+			eOSXEventIDGenericMagnify            = NSEventTypeMagnify            ,
+			eOSXEventIDGenericSwipe              = NSEventTypeSwipe              ,
+			eOSXEventIDGenericSmartMagnify       = NSEventTypeSmartMagnify       ,
+			eOSXEventIDGenericQuickLook          = NSEventTypeQuickLook          ,
+			eOSXEventIDGenericPressure           = NSEventTypePressure           ,
+			eOSXEventIDX35                       ,
+			eOSXEventIDX36                       ,
+			eOSXEventIDGenericDirectTouch        = NSEventTypeDirectTouch        ,
+			eOSXEventIDGenericChangeMode         = NSEventTypeChangeMode         ,
+			eOSXEventIDWindowDidExpose                  ,
+			eOSXEventIDWindowDidMove                    ,
+			eOSXEventIDWindowDidResize                  ,
+			eOSXEventIDWindowMiniaturize                ,
+			eOSXEventIDWindowDidDeminiaturize           ,
+			eOSXEventIDWindowDidBecomeKey               ,
+			eOSXEventIDWindowDidResignKey               ,
+			eOSXEventIDWindowDidChangeBackingProperties ,
+			eOSXEventIDWindowDidChangeScreenProfile     ,
+			eOSXEventIDWindowWillEnterFullScreen        ,
+			eOSXEventIDWindowDidEnterFullScreen         ,
+			eOSXEventIDWindowWillExitFullScreen         ,
+			eOSXEventIDWindowDidExitFullScreen          ,
+			eOSXEventIDWindowWillClose                  ,
 		};
 
-		static_assert( OSXEventIDX21 == 21 );
-		static_assert( OSXEventIDX28 == 28 );
-		static_assert( OSXEventIDX35 == 35 );
-		static_assert( OSXEventIDX36 == 36 );
+		static_assert( eOSXEventIDX21 == 21 );
+		static_assert( eOSXEventIDX28 == 28 );
+		static_assert( eOSXEventIDX35 == 35 );
+		static_assert( eOSXEventIDX36 == 36 );
 
 		enum EOSXMouseScrollEventFlags : uint32
 		{
-			E_OSX_MOUSE_SCROLL_EVENT_FLAG_SCROLLING_MODE_NORMAL_BIT = 0x01,
-			E_OSX_MOUSE_SCROLL_EVENT_FLAG_SCROLLING_MODE_PRECISE_BIT = 0x02,
-			E_OSX_MOUSE_SCROLL_EVENT_FLAG_SCROLLING_DIRECTION_NORMAL_BIT = 0x10,
-			E_OSX_MOUSE_SCROLL_EVENT_FLAG_SCROLLING_DIRECTION_INVERTED_BIT = 0x20,
+			eOSXMouseScrollEventFlagScrollingModeNormalBit = 0x01,
+			eOSXMouseScrollEventFlagScrollingModePreciseBit = 0x02,
+			eOSXMouseScrollEventFlagScrollingDirectionNormalBit = 0x10,
+			eOSXMouseScrollEventFlagScrollingDirectionInvertedBit = 0x20,
 		};
 
 		struct OSXEventSourceNativeData : public OSXNativeDataCommon
 		{
-			NSWindow * nsWindow = nil;
-			NSView * nsView = nil;
-			id nsEventListener = nil;
+			NSWindow * mNSWindow = nil;
+			NSView * mNSView = nil;
+			id mNSEventListener = nil;
 		};
 
 		struct OSXEventControllerNativeData : public OSXNativeDataCommon
@@ -101,52 +101,52 @@ namespace Ic3::System
 
 		struct NativeEventType
 		{
-			OSXEventID nsAppEventID = OSXEventIDNull;
+			EOSXEventID mNSAppEventID = eOSXEventIDNull;
 
-			NSEvent * nsEvent = nil;
+			NSEvent * mNSEvent = nil;
 
-			NSNotification * nsNotification = nil;
+			NSNotification * mNSNotification = nil;
 
-			NSWindow * nsSourceWindow = nil;
+			NSWindow * mNSSourceWindow = nil;
 
 			explicit NativeEventType( NSEvent * pNSEvent )
-			: nsAppEventID( static_cast<OSXEventID>( [pNSEvent type] ) )
-			, nsEvent( pNSEvent )
-			, nsSourceWindow( [pNSEvent window] )
+			: mNSAppEventID( static_cast<EOSXEventID>( [pNSEvent type] ) )
+			, mNSEvent( pNSEvent )
+			, mNSSourceWindow( [pNSEvent window] )
 			{}
 
 			explicit NativeEventType( NSEvent * pNSEvent, NSEventType pOverrideEventID )
-			: nsAppEventID( static_cast<OSXEventID>( pOverrideEventID ) )
-			, nsEvent( pNSEvent )
-			, nsSourceWindow( [pNSEvent window] )
+			: mNSAppEventID( static_cast<EOSXEventID>( pOverrideEventID ) )
+			, mNSEvent( pNSEvent )
+			, mNSSourceWindow( [pNSEvent window] )
 			{}
 
-			NativeEventType( OSXEventID pAppEventID, NSNotification * pNSNotification )
-			: nsAppEventID( pAppEventID )
-			, nsNotification( pNSNotification )
-			, nsSourceWindow( static_cast<NSWindow *>( [pNSNotification object] ) )
+			NativeEventType( EOSXEventID pAppEventID, NSNotification * pNSNotification )
+			: mNSAppEventID( pAppEventID )
+			, mNSNotification( pNSNotification )
+			, mNSSourceWindow( static_cast<NSWindow *>( [pNSNotification object] ) )
 			{}
 		};
 
 		EventSource * osxFindEventSourceByNSWindow( OSXEventController & pEventController, NSWindow * pNSWindow );
 
-		void osxCreateEventListener( OSXEventSourceNativeData & pEventSourceNativeData );
+		void OSXCreateEventListener( OSXEventSourceNativeData & pEventSourceNativeData );
 
 		bool osxTranslateEvent( EventController & pEventController, EventSource & pEventSource, const NativeEventType & pNativeEvent, EventObject & pOutEvent );
 
-		IC3_SYSTEM_API_NODISCARD bool osxIsEventTypeInputKeyboard( OSXEventID pEventID );
+		IC3_SYSTEM_API_NODISCARD bool osxIsEventTypeInputKeyboard( EOSXEventID pEventID );
 
-		IC3_SYSTEM_API_NODISCARD bool osxIsEventTypeInputMouse( OSXEventID pEventID );
+		IC3_SYSTEM_API_NODISCARD bool osxIsEventTypeInputMouse( EOSXEventID pEventID );
 
-		IC3_SYSTEM_API_NODISCARD bool osxIsEventTypeInputOther( OSXEventID pEventID );
+		IC3_SYSTEM_API_NODISCARD bool osxIsEventTypeInputOther( EOSXEventID pEventID );
 
-		IC3_SYSTEM_API_NODISCARD bool osxIsEventTypeWindow( OSXEventID pEventID );
+		IC3_SYSTEM_API_NODISCARD bool osxIsEventTypeWindow( EOSXEventID pEventID );
 
-		IC3_SYSTEM_API_NODISCARD EMouseButtonID osxQueryMouseButtonID( NSEvent * pNSEvent );
+		IC3_SYSTEM_API_NODISCARD EMouseButtonID OSXQueryMouseButtonID( NSEvent * pNSEvent );
 
-		IC3_SYSTEM_API_NODISCARD Math::Vec2i32 osxQueryMouseRelativePosition( NSEvent * pNSEvent );
+		IC3_SYSTEM_API_NODISCARD Math::Vec2i32 OSXQueryMouseRelativePosition( NSEvent * pNSEvent );
 
-		IC3_SYSTEM_API_NODISCARD Bitmask<EOSXMouseScrollEventFlags> osxQueryMouseScrollEventFlags( const NativeEventType & pNativeEvent );
+		IC3_SYSTEM_API_NODISCARD cppx::bitmask<EOSXMouseScrollEventFlags> OSXQueryMouseScrollEventFlags( const NativeEventType & pNativeEvent );
 
 	}
 
@@ -157,17 +157,17 @@ namespace Ic3::System
 		virtual ~OSXEventController() noexcept;
 
 	private:
-		/// @copybrief EventController::_nativeRegisterEventSource
-		virtual void _nativeRegisterEventSource( EventSource & pEventSource ) override final;
+		/// @copybrief EventController::_NativeRegisterEventSource
+		virtual void _NativeRegisterEventSource( EventSource & pEventSource ) override final;
 
-		/// @copybrief EventController::_nativeUnregisterEventSource
-		virtual void _nativeUnregisterEventSource( EventSource & pEventSource ) override final;
+		/// @copybrief EventController::_NativeUnRegisterEventSource
+		virtual void _NativeUnRegisterEventSource( EventSource & pEventSource ) override final;
 
-		/// @copybrief EventController::_nativeDispatchPendingEvents
-		virtual bool _nativeDispatchPendingEvents() override final;
+		/// @copybrief EventController::_NativeDispatchPendingEvents
+		virtual bool _NativeDispatchPendingEvents() override final;
 
-		/// @copybrief EventController::_nativeDispatchPendingEventsWait
-		virtual bool _nativeDispatchPendingEventsWait() override final;
+		/// @copybrief EventController::_NativeDispatchPendingEventsWait
+		virtual bool _NativeDispatchPendingEventsWait() override final;
 	};
 
 } // namespace Ic3::System

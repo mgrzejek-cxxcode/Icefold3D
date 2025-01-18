@@ -18,8 +18,8 @@ namespace Ic3::Graphics::GCI
 		using CreateDriverFuncType = std::function<GPUDriverHandle( const GPUDriverCreateInfo & )>;
 		using CreateScreenPresentationLayerFuncType = std::function<PresentationLayerHandle( GPUDevice &, const PresentationLayerCreateInfo & )>;
 
-		CreateDriverFuncType createDriver;
-		CreateScreenPresentationLayerFuncType createScreenPresentationLayer;
+		CreateDriverFuncType CreateDriver;
+		CreateScreenPresentationLayerFuncType CreateScreenPresentationLayer;
 	};
 
 	class GPUDriverInterface
@@ -28,8 +28,8 @@ namespace Ic3::Graphics::GCI
 		GPUDriverInterface() = default;
 		virtual ~GPUDriverInterface() = default;
 
-		virtual GPUDriverHandle createDriver( const GPUDriverCreateInfo & pCreateInfo ) = 0;
-		virtual PresentationLayerHandle createScreenPresentationLayer( GPUDevice & pDevice, const PresentationLayerCreateInfo & pCreateInfo ) = 0;
+		virtual GPUDriverHandle CreateDriver( const GPUDriverCreateInfo & pCreateInfo ) = 0;
+		virtual PresentationLayerHandle CreateScreenPresentationLayer( GPUDevice & pDevice, const PresentationLayerCreateInfo & pCreateInfo ) = 0;
 	};
 
 } // namespace Ic3::Graphics::GCI

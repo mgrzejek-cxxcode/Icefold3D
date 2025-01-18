@@ -21,7 +21,7 @@
 
 - ( void ) setUpdateFlag;
 
-- ( BOOL ) isUpdateRequired;
+- ( BOOL ) IsUpdateRequired;
 
 - ( BOOL ) updateConditional;
 

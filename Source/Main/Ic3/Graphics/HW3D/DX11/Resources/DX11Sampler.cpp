@@ -1,6 +1,6 @@
 
 #include "DX11Sampler.h"
-#include "../DX11APITranslationLayer.h"
+#include "../DX11ApiTranslationLayer.h"
 #include "../DX11gpuDevice.h"
 
 namespace Ic3::Graphics::GCI
@@ -13,10 +13,10 @@ namespace Ic3::Graphics::GCI
 
 	DX11Sampler::~DX11Sampler() = default;
 
-	DX11SamplerHandle DX11Sampler::create( DX11GPUDevice & pDX11GPUDevice, const SamplerCreateInfo & pCreateInfo )
+	DX11SamplerHandle DX11Sampler::Create( DX11GPUDevice & pDX11GPUDevice, const SamplerCreateInfo & pCreateInfo )
 	{
 		D3D11_SAMPLER_DESC d3d11SamplerConfig;
-		if( !translateSamplerConfig( pCreateInfo.samplerConfig, d3d11SamplerConfig ) )
+		if( !TranslateSamplerConfig( pCreateInfo.samplerConfig, d3d11SamplerConfig ) )
 		{
 			return nullptr;
 		}
@@ -29,29 +29,29 @@ namespace Ic3::Graphics::GCI
 			return nullptr;
 		}
 
-		auto sampler = createGPUAPIObject<DX11Sampler>( pDX11GPUDevice, d3d11SamplerState );
+		auto sampler = CreateGfxObject<DX11Sampler>( pDX11GPUDevice, d3d11SamplerState );
 
 		return sampler;
 	}
 
-	bool DX11Sampler::translateSamplerConfig( const SamplerConfig & pSamplerConfig, D3D11_SAMPLER_DESC & pOutD3D11SamplerConfig )
+	bool DX11Sampler::TranslateSamplerConfig( const SamplerConfig & pSamplerConfig, D3D11_SAMPLER_DESC & pOutD3D11SamplerConfig )
 	{
-		pOutD3D11SamplerConfig.AddressU = ATL::translateDX11ETextureAddressMode( pSamplerConfig.addressModeConfig.coordU );
-		pOutD3D11SamplerConfig.AddressV = ATL::translateDX11ETextureAddressMode( pSamplerConfig.addressModeConfig.coordV );
-		pOutD3D11SamplerConfig.AddressW = ATL::translateDX11ETextureAddressMode( pSamplerConfig.addressModeConfig.coordW );
-		pOutD3D11SamplerConfig.ComparisonFunc = ATL::translateDX11CompFunc( pSamplerConfig.textureCompareFunc );
+		pOutD3D11SamplerConfig.AddressU = ATL::TranslateDX11ETextureAddressMode( pSamplerConfig.addressModeConfig.coordU );
+		pOutD3D11SamplerConfig.AddressV = ATL::TranslateDX11ETextureAddressMode( pSamplerConfig.addressModeConfig.coordV );
+		pOutD3D11SamplerConfig.AddressW = ATL::TranslateDX11ETextureAddressMode( pSamplerConfig.addressModeConfig.coordW );
+		pOutD3D11SamplerConfig.ComparisonFunc = ATL::TranslateDX11CompFunc( pSamplerConfig.textureCompareFunc );
 
 		pOutD3D11SamplerConfig.MaxAnisotropy = pSamplerConfig.filterConfig.anisotropyLevel;
 		pOutD3D11SamplerConfig.MinLOD = pSamplerConfig.mipLODRange.begin;
 		pOutD3D11SamplerConfig.MaxLOD = pSamplerConfig.mipLODRange.end;
 		pOutD3D11SamplerConfig.MipLODBias = pSamplerConfig.mipLODBias;
 
-		pOutD3D11SamplerConfig.BorderColor[0] = pSamplerConfig.borderColor.rgbaArray[0];
-		pOutD3D11SamplerConfig.BorderColor[1] = pSamplerConfig.borderColor.rgbaArray[1];
-		pOutD3D11SamplerConfig.BorderColor[2] = pSamplerConfig.borderColor.rgbaArray[2];
-		pOutD3D11SamplerConfig.BorderColor[3] = pSamplerConfig.borderColor.rgbaArray[3];
+		pOutD3D11SamplerConfig.BorderColor[0] = pSamplerConfig.borderColor.mRGBA[0];
+		pOutD3D11SamplerConfig.BorderColor[1] = pSamplerConfig.borderColor.mRGBA[1];
+		pOutD3D11SamplerConfig.BorderColor[2] = pSamplerConfig.borderColor.mRGBA[2];
+		pOutD3D11SamplerConfig.BorderColor[3] = pSamplerConfig.borderColor.mRGBA[3];
 
-		pOutD3D11SamplerConfig.Filter = ATL::translateDX11ETextureFilter(
+		pOutD3D11SamplerConfig.Filter = ATL::TranslateDX11ETextureFilter(
 				pSamplerConfig.filterConfig.magFilter,
 				pSamplerConfig.filterConfig.minFilter,
 				pSamplerConfig.filterConfig.mipMode,

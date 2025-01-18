@@ -10,17 +10,17 @@ namespace Ic3::System
 
 	AssetLoader::~AssetLoader() noexcept = default;
 
-	AssetHandle AssetLoader::openSubAsset( const std::string & pAssetRefName, Bitmask<EAssetOpenFlags> pFlags )
+	AssetHandle AssetLoader::openSubAsset( const std::string & pAssetRefName, cppx::bitmask<EAssetOpenFlags> pFlags )
 	{
 		if( pAssetRefName.empty() )
 		{
 			return nullptr;
 		}
 
-		auto assetRefName = Cppx::fsNormalizePath( pAssetRefName );
-		auto assetPathInfo = fsSplitPath( std::move( assetRefName ), Cppx::E_FSAPI_SPLIT_PATH_FLAG_ASSUME_FILE_BIT );
+		auto assetRefName = cppx::fs_normalize_path( pAssetRefName );
+		auto assetPathInfo = cppx::fs_split_path( std::move( assetRefName ), cppx::fs_api_flag_split_assume_file_bit );
 
-		return _nativeOpenSubAsset( std::move( assetPathInfo ), pFlags );
+		return _NativeOpenSubAsset( std::move( assetPathInfo ), pFlags );
 	}
 
 	AssetDirectoryHandle AssetLoader::openDirectory( std::string pDirectoryName )
@@ -30,22 +30,22 @@ namespace Ic3::System
 			return nullptr;
 		}
 
-		auto assetDirectory = _nativeOpenDirectory( std::move( pDirectoryName ) );
+		auto assetDirectory = _NativeOpenDirectory( std::move( pDirectoryName ) );
 		if( assetDirectory )
 		{
-			assetDirectory->refreshAssetList();
+			assetDirectory->RefreshAssetList();
 		}
 
 		return assetDirectory;
 	}
 
-	bool AssetLoader::checkDirectoryExists( const std::string & pDirectoryName ) const
+	bool AssetLoader::CheckDirectoryExists( const std::string & pDirectoryName ) const
 	{
 		if( pDirectoryName.empty() )
 		{
 			return false;
 		}
-		return _nativeCheckDirectoryExists( pDirectoryName );
+		return _NativeCheckDirectoryExists( pDirectoryName );
 	}
 
 
@@ -56,50 +56,50 @@ namespace Ic3::System
 
 	AssetDirectory::~AssetDirectory() noexcept = default;
 
-	void AssetDirectory::refreshAssetList()
+	void AssetDirectory::RefreshAssetList()
 	{
 		if( !_assetNameList.empty() )
 		{
 			_assetNameList.clear();
 		}
-		_nativeRefreshAssetList();
+		_NativeRefreshAssetList();
 	}
 
-	AssetHandle AssetDirectory::openAsset( std::string pAssetName, Bitmask<EAssetOpenFlags> pFlags )
+	AssetHandle AssetDirectory::OpenAsset( std::string pAssetName, cppx::bitmask<EAssetOpenFlags> pFlags )
 	{
 		if( pAssetName.empty() )
 		{
 			return nullptr;
 		}
-		return _nativeOpenAsset( std::move( pAssetName ), pFlags );
+		return _NativeOpenAsset( std::move( pAssetName ), pFlags );
 	}
 
-	const AssetNameList & AssetDirectory::getAssetList() const
+	const AssetNameList & AssetDirectory::GetAssetList() const
 	{
 		return _assetNameList;
 	}
 
-	bool AssetDirectory::checkAssetExists( const std::string & pAssetName ) const
+	bool AssetDirectory::CheckAssetExists( const std::string & pAssetName ) const
 	{
-		return _nativeCheckAssetExists( pAssetName );
+		return _NativeCheckAssetExists( pAssetName );
 	}
 
-	const std::string & AssetDirectory::getDirName() const
+	const std::string & AssetDirectory::GetDirName() const
 	{
 		return _dirName;
 	}
 
-	void AssetDirectory::addAsset( std::string pAssetName )
+	void AssetDirectory::AddAsset( std::string pAssetName )
 	{
 		_assetNameList.push_back( std::move( pAssetName ) );
 	}
 
-	void AssetDirectory::setAssetList( AssetNameList pAssetList )
+	void AssetDirectory::SetAssetList( AssetNameList pAssetList )
 	{
 		_assetNameList = std::move( pAssetList );
 	}
 
-	void AssetDirectory::setDirName( std::string pDirName )
+	void AssetDirectory::SetDirName( std::string pDirName )
 	{
 		_dirName = std::move( pDirName );
 	}
@@ -117,39 +117,39 @@ namespace Ic3::System
 
 	Asset::~Asset() noexcept = default;
 
-	file_size_t Asset::readData( void * pTargetBuffer, file_size_t pTargetBufferSize, file_size_t pReadSize )
+	file_size_t Asset::ReadData( void * pTargetBuffer, file_size_t pTargetBufferSize, file_size_t pReadSize )
 	{
 		if( !pTargetBuffer || ( pTargetBufferSize == 0 ) || ( pReadSize == 0 ) )
 		{
 			return 0;
 		}
 
-		const auto readSize = Cppx::getMinOf( pTargetBufferSize, pReadSize );
+		const auto readSize = cppx::get_min_of( pTargetBufferSize, pReadSize );
 
-		return _nativeReadData( pTargetBuffer, readSize );
+		return _NativeReadData( pTargetBuffer, readSize );
 	}
 
-	file_size_t Asset::readData( Cppx::MemoryBuffer & pBuffer, file_size_t pReadSize )
+	file_size_t Asset::ReadData( cppx::memory_buffer & pBuffer, file_size_t pReadSize )
 	{
-		return readData( pBuffer.data(), pBuffer.size(), pReadSize );
+		return ReadData( pBuffer.data(), pBuffer.size(), pReadSize );
 	}
 
-	file_offset_t Asset::setReadPointer( file_offset_t pOffset, EFilePointerRefPos pRefPos )
+	file_offset_t Asset::SetReadPointer( file_offset_t pOffset, EFilePointerRefPos pRefPos )
 	{
-		return _nativeSetReadPointer( pOffset, pRefPos );
+		return _NativeSetReadPointer( pOffset, pRefPos );
 	}
 
-	void Asset::resetReadPointer()
+	void Asset::ResetReadPointer()
 	{
-		_nativeSetReadPointer( 0, EFilePointerRefPos::FileBeg );
+		_NativeSetReadPointer( 0, EFilePointerRefPos::FileBeg );
 	}
 
-	const std::string & Asset::getName() const
+	const std::string & Asset::GetName() const
 	{
 		return _name;
 	}
 
-	void Asset::setName( std::string pAssetName )
+	void Asset::SetName( std::string pAssetName )
 	{
 		_name = std::move( pAssetName );
 	}

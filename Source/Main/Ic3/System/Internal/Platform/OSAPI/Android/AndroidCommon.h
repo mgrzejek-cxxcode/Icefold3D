@@ -18,8 +18,8 @@ namespace Ic3::System
 
 		enum : uint32
 		{
-			E_ANDROID_APP_STATE_USER_DATA_INDEX_SYS_CONTEXT,
-			E_ANDROID_APP_STATE_USER_DATA_INDEX_EVENT_CONTROLLER
+			eAndroidAppStateUserDataIndexSysContext,
+			eAndroidAppStateUserDataIndexEventController
 		};
 
 		struct ASessionData
@@ -31,39 +31,39 @@ namespace Ic3::System
 		struct AndroidNativeDataCommon
 		{
 		public:
-			void setSessionData( ASessionData & pSessionData )
+			void SetSessionData( ASessionData & pSessionData )
 			{
-				ic3DebugAssert( aSessionDataPtr == nullptr );
-				aSessionDataPtr = &pSessionData;
+				Ic3DebugAssert( _aSessionDataPtr == nullptr );
+				_aSessionDataPtr = &pSessionData;
 			}
 
-			void resetSessionData()
+			void ResetSessionData()
 			{
-				ic3DebugAssert( aSessionDataPtr != nullptr );
-				aSessionDataPtr = nullptr;
+				Ic3DebugAssert( _aSessionDataPtr != nullptr );
+				_aSessionDataPtr = nullptr;
 			}
 
-			ASessionData & getSessionData() const
+			ASessionData & GetSessionData() const
 			{
-				ic3DebugAssert( aSessionDataPtr != nullptr );
-				return *aSessionDataPtr;
+				Ic3DebugAssert( _aSessionDataPtr != nullptr );
+				return *_aSessionDataPtr;
 			}
 
 		private:
-			ASessionData * aSessionDataPtr = nullptr;
+			ASessionData * _aSessionDataPtr = nullptr;
 		};
 
-		IC3_SYSTEM_API_NODISCARD ASessionData & androidGetASessionData( SysContext & pSysContext );
+		IC3_SYSTEM_API_NODISCARD ASessionData & AndroidGetASessionData( SysContext & pSysContext );
 
-		IC3_SYSTEM_API_NODISCARD inline ASessionData & androidGetASessionData( const AndroidNativeDataCommon & pNativeData )
+		IC3_SYSTEM_API_NODISCARD inline ASessionData & AndroidGetASessionData( const AndroidNativeDataCommon & pNativeData )
 		{
-			return pNativeData.getSessionData();
+			return pNativeData.GetSessionData();
 		}
 
 		template <typename TNativeData>
-		IC3_SYSTEM_API_NODISCARD inline ASessionData & androidGetASessionData( const NativeObject<TNativeData> & pNativeObject )
+		IC3_SYSTEM_API_NODISCARD inline ASessionData & AndroidGetASessionData( const NativeObject<TNativeData> & pNativeObject )
 		{
-			return androidGetASessionData( static_cast<AndroidNativeDataCommon>( pNativeObject.mNativeData ) );
+			return AndroidGetASessionData( static_cast<AndroidNativeDataCommon>( pNativeObject.mNativeData ) );
 		}
 		
 	}
@@ -76,26 +76,26 @@ namespace Ic3::System
 		explicit AndroidNativeObject( SysContextHandle pSysContext, TBaseTypeArgs && ...pBaseTypeArgs )
 		: TBaseType( pSysContext, std::forward<TBaseTypeArgs>( pBaseTypeArgs )... )
 		{
-			this->mNativeData.setSessionData( Platform::androidGetASessionData( *pSysContext ) );
+			this->mNativeData.SetSessionData( Platform::AndroidGetASessionData( *pSysContext ) );
 		}
 
 		template <typename TParentSysObject, typename... TBaseTypeArgs>
 		explicit AndroidNativeObject( TParentSysObject & pParentSysObject, TBaseTypeArgs && ...pBaseTypeArgs )
 		: TBaseType( pParentSysObject, std::forward<TBaseTypeArgs>( pBaseTypeArgs )... )
 		{
-			this->mNativeData.setSessionData( Platform::androidGetASessionData( pParentSysObject ) );
+			this->mNativeData.SetSessionData( Platform::AndroidGetASessionData( pParentSysObject ) );
 		}
 
 		template <typename TParentSysObject, typename... TBaseTypeArgs>
-		explicit AndroidNativeObject( SysHandle<TParentSysObject> pParentSysObject, TBaseTypeArgs && ...pBaseTypeArgs )
+		explicit AndroidNativeObject( TSysHandle<TParentSysObject> pParentSysObject, TBaseTypeArgs && ...pBaseTypeArgs )
 		: TBaseType( pParentSysObject, std::forward<TBaseTypeArgs>( pBaseTypeArgs )... )
 		{
-			this->mNativeData.setSessionData( Platform::androidGetASessionData( *pParentSysObject ) );
+			this->mNativeData.SetSessionData( Platform::AndroidGetASessionData( *pParentSysObject ) );
 		}
 
 		virtual ~AndroidNativeObject()
 		{
-			this->mNativeData.resetSessionData();
+			this->mNativeData.ResetSessionData();
 		}
 	};
 

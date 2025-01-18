@@ -10,32 +10,32 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( VKPresentationLayer );
+	Ic3DeclareClassHandle( VKPresentationLayer );
 
-	class ICFGX_VKCOMMON_CLASS VKPresentationLayer : public PresentationLayer
+	class IC3_GX_VKCOMMON_CLASS VKPresentationLayer : public PresentationLayer
 	{
 	public:
 		VKPresentationLayer( GPUDevice & pDevice );
 		virtual ~VKPresentationLayer();
 	};
 
-	class ICFGX_VKCOMMON_CLASS VKScreenPresentationLayer : public VKPresentationLayer
+	class IC3_GX_VKCOMMON_CLASS VKScreenPresentationLayer : public VKPresentationLayer
 	{
 	public:
 		VKScreenPresentationLayer( GPUDevice & pDevice );
 		virtual ~VKScreenPresentationLayer();
 
-		virtual void bindRenderTarget( CommandContext * pCmdContext ) override;
+		virtual void BindRenderTarget( CommandContext * pCmdContext ) override;
 
-		virtual void invalidateRenderTarget( CommandContext * pCmdContext ) override;
+		virtual void InvalidateRenderTarget( CommandContext * pCmdContext ) override;
 
-		virtual void present() override;
+		virtual void Present() override;
 
 		virtual void resize( uint32 pWidth, uint32 pHeight ) override;
 
-		virtual void setFullscreenMode( bool pEnable ) override;
+		virtual void SetFullscreenMode( bool pEnable ) override;
 
-		virtual Ic3::Math::Vec2u32 queryRenderTargetSize() const override;
+		virtual Ic3::Math::Vec2u32 QueryRenderTargetSize() const override;
 	};
 
 } // namespace Ic3::Graphics::GCI

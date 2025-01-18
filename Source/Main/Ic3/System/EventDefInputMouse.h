@@ -10,26 +10,26 @@ namespace Ic3::System
 	using MouseCursorPos = Math::Vec2i32;
 
 	// Represents invalid mouse position. Used as a default value for last position registered.
-	inline constexpr MouseCursorPos CX_EVENT_MOUSE_POS_INVALID { Cppx::CX_INT32_MAX, Cppx::CX_INT32_MAX };
+	inline constexpr MouseCursorPos CX_EVENT_MOUSE_POS_INVALID {cppx::cve::int32_max, cppx::cve::int32_max };
 
 	enum EMouseButtonFlagBits : uint32
 	{
-		E_MOUSE_BUTTON_FLAG_LEFT_BIT = 0x0001,
-		E_MOUSE_BUTTON_FLAG_RIGHT_BIT = 0x0002,
-		E_MOUSE_BUTTON_FLAG_MIDDLE_BIT = 0x0010,
-		E_MOUSE_BUTTON_FLAG_XB1_BIT = 0x0020,
-		E_MOUSE_BUTTON_FLAG_XB2_BIT = 0x0040,
-		E_MOUSE_BUTTON_FLAG_ALL_BIT = 0x00FF
+		eMouseButtonFlagLeftBit = 0x0001,
+		eMouseButtonFlagRightBit = 0x0002,
+		eMouseButtonFlagMiddleBit = 0x0010,
+		eMouseButtonFlagXB1Bit = 0x0020,
+		eMouseButtonFlagXB2Bit = 0x0040,
+		eMouseButtonMaskAll = 0x00FF
 	};
 
 	enum class EMouseButtonID : enum_default_value_t
 	{
 		Unknown,
-		Left = static_cast<enum_default_value_t>( E_MOUSE_BUTTON_FLAG_LEFT_BIT ),
-		Right = static_cast<enum_default_value_t>( E_MOUSE_BUTTON_FLAG_RIGHT_BIT ),
-		Middle = static_cast<enum_default_value_t>( E_MOUSE_BUTTON_FLAG_MIDDLE_BIT ),
-		XB1 = static_cast<enum_default_value_t>( E_MOUSE_BUTTON_FLAG_XB1_BIT ),
-		XB2 = static_cast<enum_default_value_t>( E_MOUSE_BUTTON_FLAG_XB2_BIT ),
+		Left = static_cast<enum_default_value_t>( eMouseButtonFlagLeftBit ),
+		Right = static_cast<enum_default_value_t>( eMouseButtonFlagRightBit ),
+		Middle = static_cast<enum_default_value_t>( eMouseButtonFlagMiddleBit ),
+		XB1 = static_cast<enum_default_value_t>( eMouseButtonFlagXB1Bit ),
+		XB2 = static_cast<enum_default_value_t>( eMouseButtonFlagXB2Bit ),
 	};
 
 	enum class EMouseButtonActionType : enum_default_value_t
@@ -60,12 +60,12 @@ namespace Ic3::System
 		// Current sequence length, i.e. number of clicks of the same button in a row.
 		uint32 currentMultiClickSequenceLength = 1;
 
-        Bitmask<EMouseButtonFlagBits> buttonStateMask = 0;
+        cppx::bitmask<EMouseButtonFlagBits> buttonStateMask = 0;
 	};
 
 	struct EvtInputMouse : public EvtInput
 	{
-		Bitmask<EMouseButtonFlagBits> buttonStateMask;
+		cppx::bitmask<EMouseButtonFlagBits> buttonStateMask;
 
 		Math::Vec2i32 cursorPos;
 
@@ -78,6 +78,7 @@ namespace Ic3::System
 	{
 		//
 		EMouseButtonActionType buttonAction;
+
 		//
 		EMouseButtonID buttonID;
 	};
@@ -92,6 +93,7 @@ namespace Ic3::System
 	{
 		//
 		Math::Vec2d scrollDelta;
+
 		//
 		EMouseScrollDirection scrollDirection;
 	};
@@ -100,9 +102,9 @@ namespace Ic3::System
 	namespace CxDef
 	{
 
-		inline constexpr EMouseButtonFlagBits getMouseButtonFlagFromButtonID( EMouseButtonID pButtonID )
+		inline constexpr EMouseButtonFlagBits GetMouseButtonFlagFromButtonID( EMouseButtonID pButtonID )
 		{
-			return static_cast<EMouseButtonFlagBits>( static_cast<uint32>( pButtonID ) & E_MOUSE_BUTTON_FLAG_ALL_BIT );
+			return static_cast<EMouseButtonFlagBits>( static_cast<uint32>( pButtonID ) & eMouseButtonMaskAll );
 		}
 
 	}

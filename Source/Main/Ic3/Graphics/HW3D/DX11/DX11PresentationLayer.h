@@ -11,14 +11,14 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( DX11ScreenPresentationLayer );
+	Ic3DeclareClassHandle( DX11ScreenPresentationLayer );
 
 	struct DX11PresentationLayerCreateInfo : public PresentationLayerCreateInfo
 	{
-		Bitmask<UINT> dxgiFlags = 0;
+		cppx::bitmask<UINT> dxgiFlags = 0;
 	};
 
-	class ICFGX_DX11_CLASS DX11ScreenPresentationLayer final : public DXScreenPresentationLayer
+	class IC3_GX_DX11_CLASS DX11ScreenPresentationLayer final : public DXScreenPresentationLayer
 	{
 	public:
 		ComPtr<ID3D11Device1> const mD3D11Device1;
@@ -34,18 +34,18 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~DX11ScreenPresentationLayer();
 
-		virtual void bindRenderTarget( CommandContext * pCmdContext ) override;
+		virtual void BindRenderTarget( CommandContext * pCmdContext ) override;
 
-		virtual void invalidateRenderTarget( CommandContext * pCmdContext ) override;
+		virtual void InvalidateRenderTarget( CommandContext * pCmdContext ) override;
 
-		virtual void present() override;
+		virtual void Present() override;
 
-		static DX11ScreenPresentationLayerHandle create( DX11GPUDevice & pDX11Device, const DX11PresentationLayerCreateInfo & pCreateInfo );
+		static DX11ScreenPresentationLayerHandle Create( DX11GPUDevice & pDX11Device, const DX11PresentationLayerCreateInfo & pCreateInfo );
 
 	private:
-		ID3D11RenderTargetView * getBackBufferRTView();
-		ID3D11DepthStencilView * getBackBufferDSView();
-		bool _createBackBufferResources();
+		ID3D11RenderTargetView * GetBackBufferRTView();
+		ID3D11DepthStencilView * GetBackBufferDSView();
+		bool _CreateBackBufferResources();
 
 	private:
 		ComPtr<ID3D11RenderTargetView> _backBufferRTView;

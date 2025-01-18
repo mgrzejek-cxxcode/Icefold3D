@@ -31,6 +31,7 @@ namespace Ic3
 			uint32 maxZoomLevel = 8;
 			float zoomBaseFactor = 4.0f;
 		};
+
 		struct Orientation
 		{
 			Math::Vec3f origin;
@@ -40,12 +41,14 @@ namespace Ic3
 			Math::Vec3f vUp;
 			float originTargetDistance;
 		};
+
 		struct Projection
 		{
 			float fovAngle;
 			float fovAngleDiff;
 			uint32 zoomLevel = 1;
 		};
+
 		struct Rotation
 		{
 			float yaw;
@@ -54,8 +57,11 @@ namespace Ic3
 		};
 
 		Configuration configuration;
+
 		Orientation orientation;
+
 		Projection projection;
+
 		Rotation rotation;
 
 	};

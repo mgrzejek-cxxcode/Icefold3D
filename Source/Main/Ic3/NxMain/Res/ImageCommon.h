@@ -2,14 +2,14 @@
 #ifndef __IC3_NXMAIN_IMAGE_COMMON_H__
 #define __IC3_NXMAIN_IMAGE_COMMON_H__
 
-#include "resourceCommon.h"
-#include <Ic3/CoreLib/graphicsTypes.h>
-#include <Ic3/Cppx/MemoryBuffer.h>
+#include "ResourceCommon.h"
+#include <Ic3/CoreLib/PixelCommon.h>
+#include <cppx/memoryBuffer.h>
 
 namespace Ic3
 {
 
-	using ImageDataBuffer = DynamicMemoryBuffer;
+	using ImageDataBuffer = cppx::dynamic_memory_buffer;
 
 	struct ImageFormatInfo
 	{

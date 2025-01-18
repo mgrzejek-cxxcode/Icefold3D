@@ -20,10 +20,10 @@ namespace Ic3::System
 
     class OSXSysContext;
 
-	ic3SysDeclareHandle( OSXDisplayManager  );
-	ic3SysDeclareHandle( OSXDisplayDriver   );
-	ic3SysDeclareHandle( OSXEventController );
-	ic3SysDeclareHandle( OSXWindowManager   );
+	Ic3SysDeclareHandle( OSXDisplayManager  );
+	Ic3SysDeclareHandle( OSXDisplayDriver   );
+	Ic3SysDeclareHandle( OSXEventController );
+	Ic3SysDeclareHandle( OSXWindowManager   );
 
 }
 

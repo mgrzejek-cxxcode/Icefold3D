@@ -9,7 +9,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3GLDeclareOpenGLObjectHandle( GLSamplerObject );
+	Ic3GLDeclareOpenGLObjectHandle( GLSamplerObject );
 
 	struct GLSamplerState
 	{
@@ -31,12 +31,12 @@ namespace Ic3::Graphics::GCI
 		GLSamplerObject( GLuint pHandle );
 		virtual ~GLSamplerObject();
 
-		virtual bool release();
-		virtual bool validateHandle() const;
+		virtual bool Release();
+		virtual bool ValidateHandle() const;
 
-		bool setSamplerState( const GLSamplerState & pSamplerState );
+		bool SetSamplerState( const GLSamplerState & pSamplerState );
 
-		static GLSamplerObjectHandle create( const GLSamplerState & pSamplerState );
+		static GLSamplerObjectHandle Create( const GLSamplerState & pSamplerState );
 	};
 
 } // namespace Ic3::Graphics::GCI

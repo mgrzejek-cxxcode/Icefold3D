@@ -19,7 +19,7 @@
 	self->_updateFlag.store( 1, std::memory_order_release );
 }
 
--( BOOL ) isUpdateRequired
+-( BOOL ) IsUpdateRequired
 {
 	return self->_updateFlag.load( std::memory_order_acquire ) != 0;
 }
@@ -37,7 +37,7 @@
 
 -( void ) updateExplicit
 {
-	if( [NSThread isMainThread] )
+	if( [NSThread IsMainThread] )
 	{
 		[super update];
 	}

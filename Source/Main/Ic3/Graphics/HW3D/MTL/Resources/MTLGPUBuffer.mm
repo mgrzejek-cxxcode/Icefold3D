@@ -20,10 +20,10 @@ namespace Ic3::Graphics::GCI
 
 	MetalGPUBuffer::~MetalGPUBuffer() = default;
 
-	MetalGPUBufferHandle MetalGPUBuffer::create( MetalGPUDevice & pGPUDevice, const GPUBufferCreateInfo & pCreateInfo )
+	MetalGPUBufferHandle MetalGPUBuffer::Create( MetalGPUDevice & pGPUDevice, const GPUBufferCreateInfo & pCreateInfo )
 	{}
 
-	bool MetalGPUBuffer::mapRegion( void *, const GPUMemoryRegion & pRegion, EGPUMemoryMapMode pMapMode )
+	bool MetalGPUBuffer::MapRegion( void *, const GPUMemoryRegion & pRegion, EGPUMemoryMapMode pMapMode )
 	{
 		auto * baseBufferPointer = [mMTLBuffer contents];
 		if( !baseBufferPointer )
@@ -35,50 +35,50 @@ namespace Ic3::Graphics::GCI
 		mappedMemoryInfo.pointer = baseBufferPointer;
 		mappedMemoryInfo.mappedRegion = pRegion;
 		mappedMemoryInfo.memoryMapFlags = static_cast<EGPUMemoryMapFlags>( pMapMode );
-		setMappedMemory( mappedMemoryInfo );
+		SetMappedMemory( mappedMemoryInfo );
 
 		return true;
 	}
 
-	void MetalGPUBuffer::unmap( void * )
+	void MetalGPUBuffer::Unmap( void * )
 	{
-		if( const auto & mappedMemory = getMappedMemory() )
+		if( const auto & mappedMemory = GetMappedMemory() )
 		{
 			NSRange updateRange;
-			updateRange.location = numeric_cast<NSUInteger>( mappedMemory.mappedRegion.offset );
-			updateRange.length = numeric_cast<NSUInteger>( mappedMemory.mappedRegion.size );
+			updateRange.location = cppx::numeric_cast<NSUInteger>( mappedMemory.mappedRegion.offset );
+			updateRange.length = cppx::numeric_cast<NSUInteger>( mappedMemory.mappedRegion.size );
 
 			[mMTLBuffer didModifyRange:updateRange];
 
-			resetMappedMemory();
+			ResetMappedMemory();
 		}
 	}
 
-	void MetalGPUBuffer::flushMappedRegion( void *, const GPUMemoryRegion & pRegion )
+	void MetalGPUBuffer::FlushMappedRegion( void *, const GPUMemoryRegion & pRegion )
 	{
-		if( const auto & mappedMemory = getMappedMemory() )
+		if( const auto & mappedMemory = GetMappedMemory() )
 		{
 			NSRange updateRange;
-			updateRange.location = numeric_cast<NSUInteger>( mappedMemory.mappedRegion.offset );
-			updateRange.length = numeric_cast<NSUInteger>( mappedMemory.mappedRegion.size );
+			updateRange.location = cppx::numeric_cast<NSUInteger>( mappedMemory.mappedRegion.offset );
+			updateRange.length = cppx::numeric_cast<NSUInteger>( mappedMemory.mappedRegion.size );
 
 			[mMTLBuffer didModifyRange:updateRange];
 		}
 	}
 
-	void MetalGPUBuffer::invalidateRegion( void * pCommandObject, const GPUMemoryRegion & pRegion )
+	void MetalGPUBuffer::InvalidateRegion( void * pCommandObject, const GPUMemoryRegion & pRegion )
 	{
 	}
 
-	void MetalGPUBuffer::updateSubDataCopy( void * pCommandObject, GPUBuffer & pSrcBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc )
+	void MetalGPUBuffer::UpdateSubDataCopy( void * pCommandObject, GPUBuffer & pSrcBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc )
 	{
 		auto * metalCommandList = reinterpret_cast<MetalCommandList *>( pCommandObject );
-		if( !metalCommandList->checkCommandClassSupport( ECommandQueueClass::Transfer ) )
+		if( !metalCommandList->CheckCommandClassSupport( ECommandQueueClass::Transfer ) )
 		{
 			throw 0;
 		}
 
-		auto * sourceMTLBuffer = pSrcBuffer.queryInterface<MetalGPUBuffer>()->mMTLBuffer;
+		auto * sourceMTLBuffer = pSrcBuffer.QueryInterface<MetalGPUBuffer>()->mMTLBuffer;
 
 		id<MTLBlitCommandEncoder> blitCommandEncoder = [metalCommandList->mMTLCommandBuffer blitCommandEncoder];
 
@@ -92,17 +92,17 @@ namespace Ic3::Graphics::GCI
 
 	}
 
-	void MetalGPUBuffer::updateSubDataUpload( void * pCommandObject, const GPUBufferSubDataUploadDesc & pUploadDesc )
+	void MetalGPUBuffer::UpdateSubDataUpload( void * pCommandObject, const GPUBufferSubDataUploadDesc & pUploadDesc )
 	{
 		auto * metalCommandList = reinterpret_cast<MetalCommandList *>( pCommandObject );
-		if( !metalCommandList->checkCommandClassSupport( ECommandQueueClass::Transfer ) )
+		if( !metalCommandList->CheckCommandClassSupport( ECommandQueueClass::Transfer ) )
 		{
 			throw 0;
 		}
 
 		id<MTLBuffer> uploadBuffer = [mMTLDevice newBufferWithBytes:pUploadDesc.inputDataDesc.pointer
 									                         length:pUploadDesc.inputDataDesc.size
-									                        options:MTLResourceStorageModePrivate | MTLResourceCPUCacheModeDefaultCache];
+									                        options:MTLResourceStorageModePrivate | MTLResourceCpuCacheModeDefaultCache];
 
 		id<MTLBlitCommandEncoder> blitCommandEncoder = [metalCommandList->mMTLCommandBuffer blitCommandEncoder];
 
@@ -115,12 +115,12 @@ namespace Ic3::Graphics::GCI
 		[blitCommandEncoder endEncoding];
 	}
 
-	bool MetalGPUBuffer::validateMapRequest( const GPUMemoryRegion & pRegion, const EGPUMemoryMapMode & pMapMode )
+	bool MetalGPUBuffer::ValidateMapRequest( const GPUMemoryRegion & pRegion, const EGPUMemoryMapMode & pMapMode )
 	{
 		return true;
 	}
 
-	id<MTLCommandBuffer> MetalGPUBuffer::getMTLCommandBuffer( void * pCommandObject )
+	id<MTLCommandBuffer> MetalGPUBuffer::GetMTLCommandBuffer( void * pCommandObject )
 	{
 		return reinterpret_cast<MetalCommandList *>( pCommandObject )->mMTLCommandBuffer;
 	}

@@ -12,16 +12,16 @@
 
 #include <unistd.h>
 
-#if( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_OSX )
+#if( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_OSX )
 namespace Ic3::System
 {
 
     namespace Platform
     {
 
-        SysContextHandle createSysContext( const SysContextCreateInfo & pCreateInfo )
+        SysContextHandle CreateSysContext( const SysContextCreateInfo & pCreateInfo )
         {
-            return createDynamicInterfaceObject<OSXSysContext>();
+            return CreateDynamicObject<OSXSysContext>();
         }
 
     }
@@ -29,67 +29,68 @@ namespace Ic3::System
 
     OSXSysContext::OSXSysContext()
     {
-        _initializeOSXContextState();
+        _InitializeOSXContextState();
     }
 
     OSXSysContext::~OSXSysContext() noexcept
     {
-        _releaseOSXContextState();
+        _ReleaseOSXContextState();
     }
     
-    AssetLoaderHandle OSXSysContext::createAssetLoader( const AssetLoaderCreateInfo & pCreateInfo )
+    AssetLoaderHandle OSXSysContext::CreateAssetLoader( const AssetLoaderCreateInfo & pCreateInfo )
     {
-		ic3DebugAssert( pCreateInfo.nativeParams );
-        return Platform::createFileAssetLoader( getHandle<SysContext>(), *pCreateInfo.nativeParams );
+		Ic3DebugAssert( pCreateInfo.nativeParams );
+        return Platform::CreateFileAssetLoader( GetHandle<SysContext>(), *pCreateInfo.nativeParams );
     }
 
-    DisplayManagerHandle OSXSysContext::createDisplayManager()
+    DisplayManagerHandle OSXSysContext::CreateDisplayManager()
     {
-        return createSysObject<OSXDisplayManager>( getHandle<OSXSysContext>() );
+        return CreateSysObject<OSXDisplayManager>( GetHandle<OSXSysContext>() );
     }
 
-    EventControllerHandle OSXSysContext::createEventController()
+    EventControllerHandle OSXSysContext::CreateEventController()
     {
-        return createSysObject<OSXEventController>( getHandle<OSXSysContext>() );
+        return CreateSysObject<OSXEventController>( GetHandle<OSXSysContext>() );
     }
 
-    FileManagerHandle OSXSysContext::createFileManager()
+    FileManagerHandle OSXSysContext::CreateFileManager()
     {
-        return createSysObject<PosixFileManager>( getHandle<OSXSysContext>() );
+        return CreateSysObject<PosixFileManager>( GetHandle<OSXSysContext>() );
     }
 
-	MetalSystemDriverHandle OSXSysContext::createMetalSystemDriver( DisplayManagerHandle pDisplayManager,
-	                                                                const MetalSystemDriverCreateInfo & pCreateInfo )
+	MetalSystemDriverHandle OSXSysContext::CreateMetalSystemDriver(
+			DisplayManagerHandle pDisplayManager,
+			const MetalSystemDriverCreateInfo & pCreateInfo )
 	{
 		if( !pDisplayManager )
 		{
-			pDisplayManager = createDisplayManager();
+			pDisplayManager = CreateDisplayManager();
 		}
 
-		return createSysObject<OSXMetalSystemDriver>( pDisplayManager->getHandle<OSXDisplayManager>() );
+		return CreateSysObject<OSXMetalSystemDriver>( pDisplayManager->GetHandle<OSXDisplayManager>() );
 	}
 
-    OpenGLSystemDriverHandle OSXSysContext::createOpenGLSystemDriver( DisplayManagerHandle pDisplayManager )
+    OpenGLSystemDriverHandle OSXSysContext::CreateOpenGLSystemDriver( DisplayManagerHandle pDisplayManager )
     {
         if( !pDisplayManager )
         {
-            pDisplayManager = createDisplayManager();
+            pDisplayManager = CreateDisplayManager();
         }
 
-        return createSysObject<OSXOpenGLSystemDriver>( pDisplayManager->getHandle<OSXDisplayManager>() );
+        return CreateSysObject<OSXOpenGLSystemDriver>( pDisplayManager->GetHandle<OSXDisplayManager>() );
     }
 
-    WindowManagerHandle OSXSysContext::createWindowManager( DisplayManagerHandle pDisplayManager )
+    WindowManagerHandle OSXSysContext::CreateWindowManager( DisplayManagerHandle pDisplayManager )
     {
         if( !pDisplayManager )
         {
-            pDisplayManager = createDisplayManager();
+            pDisplayManager = CreateDisplayManager();
         }
 
-        return createSysObject<OSXWindowManager>( pDisplayManager->getHandle<OSXDisplayManager>() );
+        return CreateSysObject<OSXWindowManager>( pDisplayManager->GetHandle<OSXDisplayManager>() );
     }
 
-	std::string OSXSysContext::queryCurrentProcessWorkingDirectory() const
+	std::string OSXSysContext::QueryCurrentProcessWorkingDirectory() const
 	{
 		char workingDirStrBuffer[2048];
 		getcwd( workingDirStrBuffer, 2048 );
@@ -97,7 +98,7 @@ namespace Ic3::System
 		return std::string( workingDirStrBuffer );
 	}
 
-    std::string OSXSysContext::queryCurrentProcessExecutableFilePath() const
+    std::string OSXSysContext::QueryCurrentProcessExecutableFilePath() const
     {
         std::string executableFilePath;
 
@@ -108,17 +109,17 @@ namespace Ic3::System
         return executableFilePath;
     }
 
-	bool OSXSysContext::isNSAppProxyRegistered() const
+	bool OSXSysContext::IsNSAppProxyRegistered() const
 	{
-		return _stateMask.isSet( E_STATE_NS_APP_PROXY_REGISTERED, std::memory_order_acquire );
+		return _stateMask.is_set( E_STATE_NS_APP_PROXY_REGISTERED, std::memory_order_acquire );
 	}
 
-    void OSXSysContext::_initializeOSXContextState()
+    void OSXSysContext::_InitializeOSXContextState()
     {
 		_registerNSAppProxy();
     }
 
-    void OSXSysContext::_releaseOSXContextState()
+    void OSXSysContext::_ReleaseOSXContextState()
     {
     }
 
@@ -126,27 +127,27 @@ namespace Ic3::System
 	{
 	@autoreleasepool
 	{
-		auto & osxSharedData = Platform::osxGetOSXSharedData( *this );
+		auto & osxSharedData = Platform::OSXGetOSXSharedData( *this );
 
 		if( !NSApp )
 		{
 			[NSOSXApplicationProxy sharedApplication];
-			ic3DebugAssert( NSApp );
+			Ic3DebugAssert( NSApp );
 
 			if( ![NSApp delegate] )
 			{
 				auto * nsAppDelegate = [[NSOSXApplicationDelegate alloc] initWithSysContext:this];
 				[NSApp setDelegate:nsAppDelegate];
 
-				mNativeData.nsApplicationDelegate = nsAppDelegate;
-				mNativeData.osxSharedData.stateFlags.isSet( Platform::E_OSX_COMMON_STATE_APP_DELEGATE_INITIALIZED_BIT );
+				mNativeData.mNSApplicationDelegate = nsAppDelegate;
+				mNativeData.mOSXSharedData.stateFlags.is_set( Platform::eOSXCommonStateAppDelegateInitializedBit );
 			}
 
-			if( !mNativeData.osxSharedData.stateFlags.isSet( Platform::E_OSX_COMMON_STATE_APP_FINISHED_LAUNCHING_BIT ) )
+			if( !mNativeData.mOSXSharedData.stateFlags.is_set( Platform::eOSXCommonStateAppFinishedLaunchingBit ) )
 			{
 				[NSApp finishLaunching];
 
-				// Note: E_OSX_COMMON_STATE_APP_FINISHED_LAUNCHING_BIT is usually (better: almost certainly) not set at
+				// Note: eOSXCommonStateAppFinishedLaunchingBit is usually (better: almost certainly) not set at
 				// this point. The reason is that [finishLaunching] posts a message which is caught by the AppDelegate
 				// and processed during event loop. That means, that applicationDidFinishLaunching() may still not be
 				// called when SysContext finishes its initialization process.
@@ -161,4 +162,4 @@ namespace Ic3::System
 	}
 
 } // namespace Ic3::System
-#endif // IC3_PCL_TARGET_SYSAPI_OSX
+#endif // PCL_TARGET_SYSAPI_OSX

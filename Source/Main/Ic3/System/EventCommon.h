@@ -28,7 +28,7 @@ namespace Ic3::System
 		App,
 		Input,
 		Window,
-		_ReservedMax
+		_Reserved
 	};
 
 	/// @brief
@@ -41,7 +41,7 @@ namespace Ic3::System
 		InputMouse,
 		InputTouch,
 		WindowUpdate,
-		_ReservedMax
+		_Reserved
 	};
 
 	/// @brief
@@ -73,16 +73,17 @@ namespace Ic3::System
 		WindowUpdateFullscreen,
 		WindowUpdateResize,
 		WindowUpdateVisibility,
-		_ReservedMax
+		_Reserved
 	};
 
-	constexpr uint8 CX_EVENT_CODE_CONTROL_KEY = 0xEC;
+	///
+	constexpr auto cxEnumEventBaseTypeCount = static_cast< size_t >( EEventBaseType::_Reserved );
 
-	constexpr auto CX_ENUM_EVENT_BASE_TYPE_COUNT = static_cast< size_t >( EEventBaseType::_ReservedMax );
+	///
+	constexpr auto cxEnumEventCategoryCount = static_cast< size_t >( EEventCategory::_Reserved );
 
-	constexpr auto CX_ENUM_EVENT_CATEGORY_COUNT = static_cast< size_t >( EEventCategory::_ReservedMax );
-
-	constexpr auto CX_ENUM_EVENT_CODE_INDEX_COUNT = static_cast< size_t >( EEventCodeIndex::_ReservedMax );
+	///
+	constexpr auto cxEnumEventCodeIndexCount = static_cast< size_t >( EEventCodeIndex::_Reserved );
 
 	/// @brief
 	struct EvtBase
@@ -98,9 +99,13 @@ namespace Ic3::System
 	namespace CxDef
 	{
 
+		///
+		constexpr uint8 VBM_EVENT_CODE_CONTROL_KEY = 0xEC;
+
+		/// @brief
 		inline constexpr event_code_value_t declareEventCode( EEventBaseType pEventBaseType, EEventCategory pEventCategory, EEventCodeIndex pEventCodeIndex )
 		{
-			return ( ( (uint32)CX_EVENT_CODE_CONTROL_KEY << 24 ) | ( (uint32)pEventBaseType << 16 ) | ( (uint32)pEventCategory << 8 ) | (uint32)pEventCodeIndex );
+			return ( ( ( uint32 )VBM_EVENT_CODE_CONTROL_KEY << 24 ) | ( ( uint32 )pEventBaseType << 16 ) | ( ( uint32 )pEventCategory << 8 ) | ( uint32 )pEventCodeIndex );
 		}
 
 		inline constexpr event_code_value_t declareEventCodeAppActivity( EEventCodeIndex pEventCodeIndex )
@@ -133,69 +138,67 @@ namespace Ic3::System
 			return declareEventCode( EEventBaseType::Window, EEventCategory::WindowUpdate, pEventCodeIndex );
 		}
 
-		inline constexpr uint8 getEventCodeControlKey( event_code_value_t pEventCode )
+		inline constexpr uint8 GetEventCodeControlKey( event_code_value_t pEventCode )
 		{
 			return static_cast<uint8>( ( pEventCode >> 24 ) & 0xFF );
 		}
 
-		inline constexpr EEventBaseType getEventCodeBaseType( event_code_value_t pEventCode )
+		inline constexpr EEventBaseType GetEventCodeBaseType( event_code_value_t pEventCode )
 		{
 			return static_cast<EEventBaseType>( ( pEventCode >> 16 ) & 0xFF );
 		}
 
-		inline constexpr EEventCategory getEventCodeCategory( event_code_value_t pEventCode )
+		inline constexpr EEventCategory GetEventCodeCategory( event_code_value_t pEventCode )
 		{
 			return static_cast<EEventCategory>( ( pEventCode >> 8 ) & 0xFF );
 		}
 
-		inline constexpr EEventCodeIndex getEventCodeCodeIndex( event_code_value_t pEventCode )
+		inline constexpr EEventCodeIndex GetEventCodeCodeIndex( event_code_value_t pEventCode )
 		{
 			return static_cast<EEventCodeIndex>( pEventCode & 0xFF );
 		}
 
 		inline constexpr bool validateEventCode( event_code_value_t pEventCode )
 		{
-			return ( getEventCodeControlKey( pEventCode ) == CX_EVENT_CODE_CONTROL_KEY ) &&
-			       ( getEventCodeBaseType( pEventCode ) < EEventBaseType::_ReservedMax ) &&
-			       ( getEventCodeCategory( pEventCode ) < EEventCategory::_ReservedMax ) &&
-			       ( getEventCodeCodeIndex( pEventCode ) < EEventCodeIndex::_ReservedMax );
+			return ( GetEventCodeControlKey( pEventCode ) == VBM_EVENT_CODE_CONTROL_KEY ) &&
+			       ( GetEventCodeBaseType( pEventCode ) < EEventBaseType::_Reserved ) &&
+			       ( GetEventCodeCategory( pEventCode ) < EEventCategory::_Reserved ) &&
+			       ( GetEventCodeCodeIndex( pEventCode ) < EEventCodeIndex::_Reserved );
 		}
 
 	}
 
 	enum EEventCode : event_code_value_t
 	{
-		E_EVENT_CODE_UNDEFINED = 0,
-		E_EVENT_CODE_APP_ACTIVITY_DISPLAY_INIT  = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityDisplayInit ),
-		E_EVENT_CODE_APP_ACTIVITY_DISPLAY_TERM  = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityDisplayTerm ),
-		E_EVENT_CODE_APP_ACTIVITY_FOCUS_GAINED  = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityFocusGained ),
-		E_EVENT_CODE_APP_ACTIVITY_FOCUS_LOST    = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityFocusLost ),
-		E_EVENT_CODE_APP_ACTIVITY_PAUSE         = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityPause ),
-		E_EVENT_CODE_APP_ACTIVITY_RESUME        = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityResume ),
-		E_EVENT_CODE_APP_ACTIVITY_START         = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityStart ),
-		E_EVENT_CODE_APP_ACTIVITY_STOP          = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityStop ),
-		E_EVENT_CODE_APP_ACTIVITY_QUIT          = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityQuit ),
-		E_EVENT_CODE_APP_ACTIVITY_TERMINATE     = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityTerminate ),
+		eEventCodeUndefined = 0,
 
-		E_EVENT_CODE_INPUT_GAMEPAD_AXIS    = CxDef::declareEventCodeInputGamepad( EEventCodeIndex::InputGamepadAxis ),
-		E_EVENT_CODE_INPUT_GAMEPAD_BUTTON  = CxDef::declareEventCodeInputGamepad( EEventCodeIndex::InputGamepadButton ),
-		E_EVENT_CODE_INPUT_GAMEPAD_STATE   = CxDef::declareEventCodeInputGamepad( EEventCodeIndex::InputGamepadState ),
+		eEventCodeAppActivityDisplayInit = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityDisplayInit ),
+		eEventCodeAppActivityDisplayTerm = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityDisplayTerm ),
+		eEventCodeAppActivityFocusGained = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityFocusGained ),
+		eEventCodeAppActivityFocusLost   = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityFocusLost ),
+		eEventCodeAppActivityPause       = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityPause ),
+		eEventCodeAppActivityResume      = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityResume ),
+		eEventCodeAppActivityStart       = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityStart ),
+		eEventCodeAppActivityStop        = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityStop ),
+		eEventCodeAppActivityQuit        = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityQuit ),
+		eEventCodeAppActivityTerminate   = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityTerminate ),
 
-		E_EVENT_CODE_INPUT_KEYBOARD  = CxDef::declareEventCodeInputKeyboard( EEventCodeIndex::InputKeyboard ),
+		eEventCodeInputGamepadAxis   = CxDef::declareEventCodeInputGamepad( EEventCodeIndex::InputGamepadAxis ),
+		eEventCodeInputGamepadButton = CxDef::declareEventCodeInputGamepad( EEventCodeIndex::InputGamepadButton ),
+		eEventCodeInputGamepadState  = CxDef::declareEventCodeInputGamepad( EEventCodeIndex::InputGamepadState ),
+		eEventCodeInputKeyboard      = CxDef::declareEventCodeInputKeyboard( EEventCodeIndex::InputKeyboard ),
+		eEventCodeInputMouseButton   = CxDef::declareEventCodeInputMouse( EEventCodeIndex::InputMouseButton ),
+		eEventCodeInputMouseMove     = CxDef::declareEventCodeInputMouse( EEventCodeIndex::InputMouseMove ),
+		eEventCodeInputMouseScroll   = CxDef::declareEventCodeInputMouse( EEventCodeIndex::InputMouseScroll ),
+		eEventCodeInputTouchDown     = CxDef::declareEventCodeInputTouch( EEventCodeIndex::InputTouchDown ),
+		eEventCodeInputTouchMove     = CxDef::declareEventCodeInputTouch( EEventCodeIndex::InputTouchMove ),
+		eEventCodeInputTouchUp       = CxDef::declareEventCodeInputTouch( EEventCodeIndex::InputTouchUp ),
 
-		E_EVENT_CODE_INPUT_MOUSE_BUTTON  = CxDef::declareEventCodeInputMouse( EEventCodeIndex::InputMouseButton ),
-		E_EVENT_CODE_INPUT_MOUSE_MOVE    = CxDef::declareEventCodeInputMouse( EEventCodeIndex::InputMouseMove ),
-		E_EVENT_CODE_INPUT_MOUSE_SCROLL  = CxDef::declareEventCodeInputMouse( EEventCodeIndex::InputMouseScroll ),
-
-		E_EVENT_CODE_INPUT_TOUCH_DOWN  = CxDef::declareEventCodeInputTouch( EEventCodeIndex::InputTouchDown ),
-		E_EVENT_CODE_INPUT_TOUCH_MOVE  = CxDef::declareEventCodeInputTouch( EEventCodeIndex::InputTouchMove ),
-		E_EVENT_CODE_INPUT_TOUCH_UP    = CxDef::declareEventCodeInputTouch( EEventCodeIndex::InputTouchUp ),
-
-		E_EVENT_CODE_WINDOW_UPDATE_CREATE     = CxDef::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateCreate ),
-		E_EVENT_CODE_WINDOW_UPDATE_DESTROY    = CxDef::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateDestroy ),
-		E_EVENT_CODE_WINDOW_UPDATE_FULLSCREEN = CxDef::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateFullscreen ),
-		E_EVENT_CODE_WINDOW_UPDATE_RESIZE     = CxDef::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateResize ),
-		E_EVENT_CODE_WINDOW_UPDATE_VISIBILITY = CxDef::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateVisibility )
+		eEventCodeWindowUpdateCreate     = CxDef::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateCreate ),
+		eEventCodeWindowUpdateDestroy    = CxDef::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateDestroy ),
+		eEventCodeWindowUpdateFullscreen = CxDef::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateFullscreen ),
+		eEventCodeWindowUpdateResize     = CxDef::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateResize ),
+		eEventCodeWindowUpdateVisibility = CxDef::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateVisibility )
 	};
 
 } // namespace Ic3::System

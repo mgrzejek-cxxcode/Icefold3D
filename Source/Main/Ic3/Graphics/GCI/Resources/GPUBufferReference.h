@@ -21,36 +21,36 @@ namespace Ic3::Graphics::GCI
 
 		GPUBufferReference( GPUBufferHandle pGPUBuffer );
 		GPUBufferReference( GPUBufferHandle pGPUBuffer, const GPUMemoryRegion & pReferencedSubRegion );
-		GPUBufferReference( GPUBufferHandle pGPUBuffer, gpu_memory_size_t pOffset, gpu_memory_size_t pSize = CxDef::GPU_MEMORY_SIZE_MAX );
+		GPUBufferReference( GPUBufferHandle pGPUBuffer, gpu_memory_size_t pOffset, gpu_memory_size_t pSize = cxGPUMemorySizeMax );
 
 		GPUBuffer * operator->() const noexcept;
 
 		/// @brief Returns a pointer to the referenced GPU buffer. This can be null if the reference is empty().
-		IC3_ATTR_NO_DISCARD GPUBufferHandle getRefBuffer() const noexcept;
+		CPPX_ATTR_NO_DISCARD GPUBufferHandle GetRefBuffer() const noexcept;
 
 		/// @brief
-		IC3_ATTR_NO_DISCARD const GPUMemoryRegion & getRefSubRegion() const noexcept;
+		CPPX_ATTR_NO_DISCARD const GPUMemoryRegion & GetRefSubRegion() const noexcept;
 
 		/// @brief Returns true if this instance represents a valid binding.
-		IC3_ATTR_NO_DISCARD bool empty() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept;
 
 		/// @brief
-		IC3_ATTR_NO_DISCARD bool valid() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsValid() const noexcept;
 
 		/// @brief
-		bool setRefBuffer( GPUBufferHandle pGPUBuffer );
+		bool SetRefBuffer( GPUBufferHandle pGPUBuffer );
 
 		/// @brief
-		bool setRefBuffer( GPUBufferHandle pGPUBuffer, const GPUMemoryRegion & pReferencedSubRegion );
+		bool SetRefBuffer( GPUBufferHandle pGPUBuffer, const GPUMemoryRegion & pReferencedSubRegion );
 
 		/// @brief
-		bool setRefBuffer( GPUBufferHandle pGPUBuffer, gpu_memory_size_t pOffset, gpu_memory_size_t pSize = CxDef::GPU_MEMORY_SIZE_MAX );
+		bool SetRefBuffer( GPUBufferHandle pGPUBuffer, gpu_memory_size_t pOffset, gpu_memory_size_t pSize = cxGPUMemorySizeMax );
 
 		/// @brief
-		bool reset();
+		bool Reset();
 
 	private:
-		bool _setRefBufferInternal( GPUBufferHandle pGPUBuffer, const GPUMemoryRegion & pReferencedSubRegion = {} );
+		bool _SetRefBufferInternal( GPUBufferHandle pGPUBuffer, const GPUMemoryRegion & pReferencedSubRegion = {} );
 
 	private:
 		/// A handle to the referenced buffer object. If the reference is empty, the handle is null.
@@ -67,24 +67,24 @@ namespace Ic3::Graphics::GCI
 		return _refBufferObject.get();
 	}
 
-	inline GPUBufferHandle GPUBufferReference::getRefBuffer() const noexcept
+	inline GPUBufferHandle GPUBufferReference::GetRefBuffer() const noexcept
 	{
 		return _refBufferObject;
 	}
 
-	inline const GPUMemoryRegion & GPUBufferReference::getRefSubRegion() const noexcept
+	inline const GPUMemoryRegion & GPUBufferReference::GetRefSubRegion() const noexcept
 	{
 		return _refSubRegion;
 	}
 
-	inline bool GPUBufferReference::empty() const noexcept
+	inline bool GPUBufferReference::IsEmpty() const noexcept
 	{
 		return !_refBufferObject || !_refSubRegion;
 	}
 
-	inline bool GPUBufferReference::valid() const noexcept
+	inline bool GPUBufferReference::IsValid() const noexcept
 	{
-		return _refBufferObject && rcutil::checkGPUBufferRegion( _refBufferObject, _refSubRegion );
+		return _refBufferObject && RCU::CheckGPUBufferRegion( _refBufferObject, _refSubRegion );
 	}
 
 } // namespace Ic3::Graphics::GCI

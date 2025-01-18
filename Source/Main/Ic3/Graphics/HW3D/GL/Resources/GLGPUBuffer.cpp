@@ -1,23 +1,23 @@
 
 #include "GLGPUBuffer.h"
-#include "../GLAPITranslationLayer.h"
+#include "../GLApiTranslationLayer.h"
 #include "../GLGPUDevice.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-#if( ICFGX_GL_PLATFORM_TYPE == ICFGX_GL_PLATFORM_TYPE_ES )
+#if( IC3_GX_GL_PLATFORM_TYPE == IC3_GX_GL_PLATFORM_TYPE_ES )
 	// OpenGL ES 3.1 exposes neither the immutable storage API (glBufferStorage), nor the persistent mapping
 	// (as a natural consequence of the former). Thus, explicit coherency/persistence flags are not used.
 	static constexpr uint32 sSupportedGPUMemoryFlags = E_GPU_MEMORY_ACCESS_MASK_CPU_READ_WRITE | E_GPU_MEMORY_ACCESS_MASK_GPU_READ_WRITE;
 #else
 	// Core supports full set of features, including immutable storage, persistent mapping and explicit flushes.
 	static constexpr uint32 sSupportedGPUMemoryFlags =
-			E_GPU_MEMORY_ACCESS_MASK_CPU_READ_WRITE |
-			E_GPU_MEMORY_ACCESS_MASK_GPU_READ_WRITE |
-			E_GPU_MEMORY_HEAP_PROPERTY_FLAG_CPU_COHERENT_BIT |
-			E_GPU_MEMORY_HEAP_PROPERTY_FLAG_GPU_COHERENT_BIT |
-			E_GPU_MEMORY_HEAP_PROPERTY_FLAG_PERSISTENT_MAP_BIT;
+			eGPUMemoryAccessMaskCpuReadWrite |
+			eGPUMemoryAccessMaskGPUReadWrite |
+			eGPUMemoryHeapPropertyFlagCpuCoherentBit |
+			eGPUMemoryHeapPropertyFlagGPUCoherentBit |
+			eGPUMemoryHeapPropertyFlagPersistentMapBit;
 #endif
 
 
@@ -32,41 +32,41 @@ namespace Ic3::Graphics::GCI
 
 	GLGPUBuffer::~GLGPUBuffer() = default;
 
-	GLGPUBufferHandle GLGPUBuffer::createInstance( GLGPUDevice & pGPUDevice, const GPUBufferCreateInfo & pCreateInfo )
+	GLGPUBufferHandle GLGPUBuffer::CreateInstance( GLGPUDevice & pGPUDevice, const GPUBufferCreateInfo & pCreateInfo )
 	{
 		auto createInfo = pCreateInfo;
-		if( !validateBufferCreateInfo( createInfo ) )
+		if( !ValidateBufferCreateInfo( createInfo ) )
 		{
 			return nullptr;
 		}
 
-		const auto initialBufferTarget = rcutil::getGPUBufferDefaultTargetFromBindFlags( createInfo.resourceFlags );
+		const auto initialBufferTarget = RCU::GetGPUBufferDefaultTargetFromBindFlags( createInfo.resourceFlags );
 		if( initialBufferTarget == EGPUBufferTarget::Unknown )
 		{
 			return nullptr;
 		}
 
 		GLBufferCreateInfo openglCreateInfo;
-		openglCreateInfo.bindTarget = ATL::translateGLBufferBindTarget( initialBufferTarget );
+		openglCreateInfo.bindTarget = ATL::TranslateGLBufferBindTarget( initialBufferTarget );
 		openglCreateInfo.size = static_cast<GLuint>( createInfo.bufferSize );
 		openglCreateInfo.resourceFlags = createInfo.resourceFlags;
 		openglCreateInfo.memoryFlags = createInfo.memoryFlags;
 		openglCreateInfo.initDataDesc = pCreateInfo.initDataDesc;
 
 		GLBufferObjectHandle openglBufferObject = nullptr;
-		if( pGPUDevice.isCompatibilityDevice() )
+		if( pGPUDevice.IsCompatibilityDevice() )
 		{
-			openglBufferObject = GLBufferObject::createCompat( openglCreateInfo );
-			ic3DebugAssert( openglBufferObject );
+			openglBufferObject = GLBufferObject::CreateCompat( openglCreateInfo );
+			Ic3DebugAssert( openglBufferObject );
 		}
 		else
 		{
-			openglBufferObject = GLBufferObject::createCore( openglCreateInfo );
-			ic3DebugAssert( openglBufferObject );
+			openglBufferObject = GLBufferObject::CreateCore( openglCreateInfo );
+			Ic3DebugAssert( openglBufferObject );
 		}
 
 		GPUBufferProperties bufferProperties;
-		bufferProperties.byteSize = openglBufferObject->querySize();
+		bufferProperties.byteSize = openglBufferObject->QuerySize();
 		bufferProperties.resourceFlags = createInfo.resourceFlags;
 
 		ResourceMemoryInfo bufferMemoryInfo;
@@ -75,7 +75,7 @@ namespace Ic3::Graphics::GCI
 		bufferMemoryInfo.baseAlignment = createInfo.memoryBaseAlignment;
 		bufferMemoryInfo.memoryFlags = createInfo.memoryFlags;
 
-		auto openglBuffer = createDynamicInterfaceObject<GLGPUBuffer>(
+		auto openglBuffer = CreateDynamicObject<GLGPUBuffer>(
 				pGPUDevice,
 				bufferMemoryInfo,
 				bufferProperties,
@@ -84,9 +84,9 @@ namespace Ic3::Graphics::GCI
 		return openglBuffer;
 	}
 
-	bool GLGPUBuffer::validateBufferCreateInfo( GPUBufferCreateInfo & pCreateInfo )
+	bool GLGPUBuffer::ValidateBufferCreateInfo( GPUBufferCreateInfo & pCreateInfo )
 	{
-		if( !GPUBuffer::validateBufferCreateInfo( pCreateInfo ) )
+		if( !GPUBuffer::ValidateBufferCreateInfo( pCreateInfo ) )
 		{
 			return false;
 		}
@@ -97,25 +97,25 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	bool GLGPUBuffer::mapRegion( void * , const GPUMemoryRegion & pRegion, EGPUMemoryMapMode pMapMode )
+	bool GLGPUBuffer::MapRegion( void * , const GPUMemoryRegion & pRegion, EGPUMemoryMapMode pMapMode )
 	{
 		void * mappedMemoryPtr = nullptr;
 
-		if( mGLBufferObject->isMappedPersistent() )
+		if( mGLBufferObject->IsMappedPersistent() )
 		{
-			if( !mResourceMemory.memoryFlags.isSet( E_GPU_MEMORY_HEAP_PROPERTY_FLAG_CPU_COHERENT_BIT ) )
+			if( !mResourceMemory.memoryFlags.is_set( eGPUMemoryHeapPropertyFlagCpuCoherentBit ) )
 			{
 				glMemoryBarrier( GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT );
-				ic3OpenGLHandleLastError();
+				Ic3OpenGLHandleLastError();
 			}
-			mappedMemoryPtr = mGLBufferObject->getPersistentMapPtr();
+			mappedMemoryPtr = mGLBufferObject->GetPersistentMapPtr();
 		}
 		else
 		{
-			const auto openglMapFlags = ATL::translateGLBufferMapFlags( pMapMode, mResourceMemory.memoryFlags );
-			if( mGLBufferObject->map( pRegion.offset, pRegion.size, openglMapFlags ) )
+			const auto openglMapFlags = ATL::TranslateGLBufferMapFlags( pMapMode, mResourceMemory.memoryFlags );
+			if( mGLBufferObject->Map( pRegion.offset, pRegion.size, openglMapFlags ) )
 			{
-				mappedMemoryPtr = mGLBufferObject->queryMappedPtr();
+				mappedMemoryPtr = mGLBufferObject->QueryMappedPtr();
 			}
 		}
 
@@ -128,68 +128,68 @@ namespace Ic3::Graphics::GCI
 		mappedMemoryInfo.pointer = mappedMemoryPtr;
 		mappedMemoryInfo.mappedRegion = pRegion;
 		mappedMemoryInfo.memoryMapFlags = static_cast<EGPUMemoryMapFlags>( pMapMode );
-		setMappedMemory( mappedMemoryInfo );
+		SetMappedMemory( mappedMemoryInfo );
 
 		return true;
 	}
 
-	void GLGPUBuffer::unmap( void * )
+	void GLGPUBuffer::Unmap( void * )
 	{
-		if( const auto & mappedMemory = getMappedMemory() )
+		if( const auto & mappedMemory = GetMappedMemory() )
 		{
-			if( mGLBufferObject->isMappedPersistent() )
+			if( mGLBufferObject->IsMappedPersistent() )
 			{
-				if( !mResourceMemory.memoryFlags.isSet( E_GPU_MEMORY_HEAP_PROPERTY_FLAG_CPU_COHERENT_BIT ) )
+				if( !mResourceMemory.memoryFlags.is_set( eGPUMemoryHeapPropertyFlagCpuCoherentBit ) )
 				{
-					mGLBufferObject->flushMappedRegion( mappedMemory.mappedRegion.offset, mappedMemory.mappedRegion.size );
+					mGLBufferObject->FlushMappedRegion( mappedMemory.mappedRegion.offset, mappedMemory.mappedRegion.size );
 				}
 			}
 			else
 			{
-				mGLBufferObject->unmap();
+				mGLBufferObject->Unmap();
 			}
-			resetMappedMemory();
+			ResetMappedMemory();
 		}
 	}
 
-	void GLGPUBuffer::flushMappedRegion( void * , const GPUMemoryRegion & pRegion )
+	void GLGPUBuffer::FlushMappedRegion( void * , const GPUMemoryRegion & pRegion )
 	{
-		mGLBufferObject->flushMappedRegion( pRegion.offset, pRegion.size );
+		mGLBufferObject->FlushMappedRegion( pRegion.offset, pRegion.size );
 	}
 
-	void GLGPUBuffer::invalidateRegion( void * , const GPUMemoryRegion & pRegion )
+	void GLGPUBuffer::InvalidateRegion( void * , const GPUMemoryRegion & pRegion )
 	{
-		mGLBufferObject->invalidateRegion( pRegion.offset, pRegion.size );
+		mGLBufferObject->InvalidateRegion( pRegion.offset, pRegion.size );
 	}
 
-	void GLGPUBuffer::updateSubDataCopy( void * , GPUBuffer & pSrcBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc )
+	void GLGPUBuffer::UpdateSubDataCopy( void * , GPUBuffer & pSrcBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc )
 	{
-		auto * openglSourceBuffer = pSrcBuffer.queryInterface<GLGPUBuffer>();
-		if( !mGPUDevice.queryInterface<GLGPUDevice>()->isCompatibilityDevice() )
+		auto * openglSourceBuffer = pSrcBuffer.QueryInterface<GLGPUBuffer>();
+		if( !mGPUDevice.QueryInterface<GLGPUDevice>()->IsCompatibilityDevice() )
 		{
-			mGLBufferObject->updateCopyInvalidate( *openglSourceBuffer->mGLBufferObject, pCopyDesc );
+			mGLBufferObject->UpdateCopyInvalidate( *openglSourceBuffer->mGLBufferObject, pCopyDesc );
 		}
 		else
 		{
-			mGLBufferObject->updateCopyOrphan( *openglSourceBuffer->mGLBufferObject, pCopyDesc );
+			mGLBufferObject->UpdateCopyOrphan( *openglSourceBuffer->mGLBufferObject, pCopyDesc );
 		}
 	}
 
-	void GLGPUBuffer::updateSubDataUpload( void * , const GPUBufferSubDataUploadDesc & pUploadDesc )
+	void GLGPUBuffer::UpdateSubDataUpload( void * , const GPUBufferSubDataUploadDesc & pUploadDesc )
 	{
-		if( !mGPUDevice.queryInterface<GLGPUDevice>()->isCompatibilityDevice() )
+		if( !mGPUDevice.QueryInterface<GLGPUDevice>()->IsCompatibilityDevice() )
 		{
-			mGLBufferObject->updateUploadInvalidate( pUploadDesc );
+			mGLBufferObject->UpdateUploadInvalidate( pUploadDesc );
 		}
 		else
 		{
-			mGLBufferObject->updateUploadOrphan( pUploadDesc );
+			mGLBufferObject->UpdateUploadOrphan( pUploadDesc );
 		}
 	}
 
-	bool GLGPUBuffer::validateMapRequest( const GPUMemoryRegion & pRegion, const EGPUMemoryMapMode & pMapMode )
+	bool GLGPUBuffer::ValidateMapRequest( const GPUMemoryRegion & pRegion, const EGPUMemoryMapMode & pMapMode )
 	{
-		return GPUBuffer::validateMapRequest( pRegion, pMapMode );
+		return GPUBuffer::ValidateMapRequest( pRegion, pMapMode );
 	}
 
 } // namespace Ic3::Graphics::GCI

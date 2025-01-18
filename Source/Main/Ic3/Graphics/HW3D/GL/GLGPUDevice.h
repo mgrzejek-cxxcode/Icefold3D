@@ -4,7 +4,7 @@
 #ifndef __IC3_GRAPHICS_HW3D_GLCOMMON_GPU_DEVICE_H__
 #define __IC3_GRAPHICS_HW3D_GLCOMMON_GPU_DEVICE_H__
 
-#include "GLAPITranslationLayer.h"
+#include "GLApiTranslationLayer.h"
 #include "State/GLPipelineImmutableStateFactory.h"
 #include <Ic3/Graphics/GCI/GPUDevice.h>
 #include <Ic3/Graphics/GCI/State/PipelineImmutableStateCache.h>
@@ -29,35 +29,35 @@ namespace Ic3::Graphics::GCI
 
 		System::OpenGLVersionSupportInfo const mSysGLSupportInfo;
 
-		Bitmask<EGLRuntimeSupportFlags> const mGLRuntimeSupportFlags;
+		cppx::bitmask<EGLRuntimeSupportFlags> const mGLRuntimeSupportFlags;
 
 	public:
 		explicit GLGPUDevice( GLGPUDriver & pGPUDriver, GLPipelineImmutableStateFactory & pImmutableStateFactory );
 		virtual ~GLGPUDevice();
 
-		IC3_ATTR_NO_DISCARD virtual bool isCompatibilityDevice() const noexcept = 0;
+		CPPX_ATTR_NO_DISCARD virtual bool IsCompatibilityDevice() const noexcept = 0;
 
-		GLDebugOutput * getDebugOutputInterface() const;
+		GLDebugOutput * GetDebugOutputInterface() const;
 
-		virtual void waitForCommandSync( CommandSync & pCommandSync ) override;
+		virtual void WaitForCommandSync( CommandSync & pCommandSync ) override;
 
 	protected:
-		bool initializeGLDebugOutput();
+		bool InitializeGLDebugOutput();
 
-		virtual void initializeCommandSystem() override;
+		virtual void InitializeCommandSystem() override;
 
 	private:
-	    virtual bool _drvOnSetPresentationLayer( PresentationLayerHandle pPresentationLayer ) override;
+	    virtual bool _DrvOnSetPresentationLayer( PresentationLayerHandle pPresentationLayer ) override;
 
-		virtual GPUBufferHandle _drvCreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo ) override final;
-	    virtual SamplerHandle _drvCreateSampler( const SamplerCreateInfo & pCreateInfo ) override final;
-		virtual ShaderHandle _drvCreateShader( const ShaderCreateInfo & pCreateInfo ) override final;
-		virtual TextureHandle _drvCreateTexture( const TextureCreateInfo & pCreateInfo ) override final;
+		virtual GPUBufferHandle _DrvCreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo ) override final;
+	    virtual SamplerHandle _DrvCreateSampler( const SamplerCreateInfo & pCreateInfo ) override final;
+		virtual ShaderHandle _DrvCreateShader( const ShaderCreateInfo & pCreateInfo ) override final;
+		virtual TextureHandle _DrvCreateTexture( const TextureCreateInfo & pCreateInfo ) override final;
 
-		virtual RenderTargetTextureHandle _drvCreateRenderTargetTexture(
+		virtual RenderTargetTextureHandle _DrvCreateRenderTargetTexture(
 				const RenderTargetTextureCreateInfo & pCreateInfo ) override final;
 
-		virtual GraphicsPipelineStateObjectHandle _drvCreateGraphicsPipelineStateObject(
+		virtual GraphicsPipelineStateObjectHandle _DrvCreateGraphicsPipelineStateObject(
 				const GraphicsPipelineStateObjectCreateInfo & pCreateInfo ) override final;
 
 	private:
@@ -72,7 +72,7 @@ namespace Ic3::Graphics::GCI
 		explicit GLGPUDeviceCore( GLGPUDriver & pGPUDriver );
 		virtual ~GLGPUDeviceCore();
 
-		virtual bool isCompatibilityDevice() const noexcept override final;
+		virtual bool IsCompatibilityDevice() const noexcept override final;
 
 	private:
 		GLPipelineImmutableStateFactoryCore _immutableStateFactoryCore;
@@ -84,7 +84,7 @@ namespace Ic3::Graphics::GCI
 		explicit GLGPUDeviceCompat( GLGPUDriver & pGPUDriver );
 		virtual ~GLGPUDeviceCompat();
 
-		virtual bool isCompatibilityDevice() const noexcept override final;
+		virtual bool IsCompatibilityDevice() const noexcept override final;
 
 	private:
 		GLPipelineImmutableStateFactoryCompat _immutableStateFactoryCompat;

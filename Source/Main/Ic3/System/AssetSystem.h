@@ -5,7 +5,7 @@
 #include "AssetCommon.h"
 #include "FileCommon.h"
 #include "SysObject.h"
-#include <Ic3/Cppx/MemoryBuffer.h>
+#include <cppx/memoryBuffer.h>
 
 namespace Ic3::System
 {
@@ -14,7 +14,7 @@ namespace Ic3::System
 
 	enum EAssetOpenFlags : uint32
 	{
-		E_ASSET_OPEN_FLAG_NO_EXTENSION_BIT = 0x0001
+		eAssetOpenFlagNoExtensionBit = 0x0001
 	};
 
 	class AssetLoader : public SysObject
@@ -23,18 +23,18 @@ namespace Ic3::System
 		explicit AssetLoader( SysContextHandle pSysContext );
 		virtual ~AssetLoader() noexcept;
 
-		AssetHandle openSubAsset( const std::string & pAssetRefName, Bitmask<EAssetOpenFlags> pFlags = 0u );
+		AssetHandle openSubAsset( const std::string & pAssetRefName, cppx::bitmask<EAssetOpenFlags> pFlags = 0u );
 
 		AssetDirectoryHandle openDirectory( std::string pDirectoryName );
 
-		bool checkDirectoryExists( const std::string & pDirectoryName ) const;
+		bool CheckDirectoryExists( const std::string & pDirectoryName ) const;
 
 	private:
-		virtual AssetHandle _nativeOpenSubAsset( Cppx::FilePathInfo pAssetPathInfo, Bitmask<EAssetOpenFlags> pFlags ) = 0;
+		virtual AssetHandle _NativeOpenSubAsset( cppx::file_path_info pAssetPathInfo, cppx::bitmask<EAssetOpenFlags> pFlags ) = 0;
 
-		virtual AssetDirectoryHandle _nativeOpenDirectory( std::string pDirectoryName ) = 0;
+		virtual AssetDirectoryHandle _NativeOpenDirectory( std::string pDirectoryName ) = 0;
 
-		virtual bool _nativeCheckDirectoryExists( const std::string & pDirectoryName ) const = 0;
+		virtual bool _NativeCheckDirectoryExists( const std::string & pDirectoryName ) const = 0;
 	};
 
 	class AssetDirectory : public SysObject
@@ -46,29 +46,29 @@ namespace Ic3::System
 		explicit AssetDirectory( AssetLoaderHandle pAssetLoader );
 		virtual ~AssetDirectory() noexcept;
 
-		void refreshAssetList();
+		void RefreshAssetList();
 
-		AssetHandle openAsset( std::string pAssetName, Bitmask<EAssetOpenFlags> pFlags = 0u );
+		AssetHandle OpenAsset( std::string pAssetName, cppx::bitmask<EAssetOpenFlags> pFlags = 0u );
 
-		const AssetNameList & getAssetList() const;
+		const AssetNameList & GetAssetList() const;
 
-		bool checkAssetExists( const std::string & pAssetName ) const;
+		bool CheckAssetExists( const std::string & pAssetName ) const;
 
-		const std::string & getDirName() const;
+		const std::string & GetDirName() const;
 
 	protected:
-		void addAsset( std::string pAssetName );
+		void AddAsset( std::string pAssetName );
 
-		void setAssetList( AssetNameList pAssetList );
+		void SetAssetList( AssetNameList pAssetList );
 
-		void setDirName( std::string pDirName );
+		void SetDirName( std::string pDirName );
 
 	private:
-		virtual void _nativeRefreshAssetList() = 0;
+		virtual void _NativeRefreshAssetList() = 0;
 
-		virtual AssetHandle _nativeOpenAsset( std::string pAssetName, Bitmask<EAssetOpenFlags> pFlags ) = 0;
+		virtual AssetHandle _NativeOpenAsset( std::string pAssetName, cppx::bitmask<EAssetOpenFlags> pFlags ) = 0;
 
-		virtual bool _nativeCheckAssetExists( const std::string & pAssetName ) const = 0;
+		virtual bool _NativeCheckAssetExists( const std::string & pAssetName ) const = 0;
 
 	private:
 		std::string _dirName;
@@ -85,61 +85,61 @@ namespace Ic3::System
 		explicit Asset( AssetDirectoryHandle pAssetDirectory );
 		virtual ~Asset() noexcept;
 
-		file_size_t readData( void * pTargetBuffer, file_size_t pTargetBufferSize, file_size_t pReadSize = CX_FILE_SIZE_MAX );
-		file_size_t readData( Cppx::MemoryBuffer & pBuffer, file_size_t pReadSize = CX_FILE_SIZE_MAX );
+		file_size_t ReadData( void * pTargetBuffer, file_size_t pTargetBufferSize, file_size_t pReadSize = cxFileSizeMax );
+		file_size_t ReadData( cppx::memory_buffer & pBuffer, file_size_t pReadSize = cxFileSizeMax );
 
 		template <typename TChar>
-		file_size_t readData( std::basic_string<TChar> & pString, file_size_t pReadSize = CX_FILE_SIZE_MAX )
+		file_size_t ReadData( std::basic_string<TChar> & pString, file_size_t pReadSize = cxFileSizeMax )
 		{
-			return readData( pString.data(), pString.length() * sizeof( TChar ), pReadSize );
+			return ReadData( pString.data(), pString.length() * sizeof( TChar ), pReadSize );
 		}
 
-		template <typename TValue>
-		file_size_t readData( std::vector<TValue> & pVector, file_size_t pReadSize = CX_FILE_SIZE_MAX )
+		template <typename TPValue>
+		file_size_t ReadData( std::vector<TPValue> & pVector, file_size_t pReadSize = cxFileSizeMax )
 		{
-			return readData( pVector.data(), pVector.size() * sizeof( TValue ), pReadSize );
+			return ReadData( pVector.data(), pVector.size() * sizeof( TPValue ), pReadSize );
 		}
 
-		file_size_t readAll( Cppx::DynamicMemoryBuffer & pBuffer, size_t pExtraAllocSize = 0 )
+		file_size_t ReadAll( cppx::dynamic_memory_buffer & pBuffer, size_t pExtraAllocSize = 0 )
 		{
-			const auto assetSize = _nativeGetSize();
+			const auto assetSize = _NativeGetSize();
 			pBuffer.resize( assetSize + pExtraAllocSize );
-			return readData( pBuffer.data(), assetSize, assetSize );
+			return ReadData( pBuffer.data(), assetSize, assetSize );
 		}
 
 		template <typename TChar>
-		file_size_t readAll( std::basic_string<TChar> & pString )
+		file_size_t ReadAll( std::basic_string<TChar> & pString )
 		{
-			const auto assetSize = _nativeGetSize();
+			const auto assetSize = _NativeGetSize();
 			const auto strLength = assetSize / sizeof( TChar );
 			pString.resize( strLength + 1 );
-			return readData( pString.data(), pString.length() * sizeof( TChar ), assetSize );
+			return ReadData( pString.data(), pString.length() * sizeof( TChar ), assetSize );
 		}
 
-		template <typename TValue>
-		file_size_t readAll( std::vector<TValue> & pVector )
+		template <typename TPValue>
+		file_size_t ReadAll( std::vector<TPValue> & pVector )
 		{
-			const auto assetSize = _nativeGetSize();
-			const auto vectorSize = assetSize / sizeof( TValue );
+			const auto assetSize = _NativeGetSize();
+			const auto vectorSize = assetSize / sizeof( TPValue );
 			pVector.resize( vectorSize );
-			return readData( pVector.data(), pVector.size() * sizeof( TValue ), vectorSize );
+			return ReadData( pVector.data(), pVector.size() * sizeof( TPValue ), vectorSize );
 		}
 
-		file_offset_t setReadPointer( file_offset_t pOffset, EFilePointerRefPos pRefPos = EFilePointerRefPos::FileBeg );
+		file_offset_t SetReadPointer( file_offset_t pOffset, EFilePointerRefPos pRefPos = EFilePointerRefPos::FileBeg );
 
-		void resetReadPointer();
+		void ResetReadPointer();
 
-		const std::string & getName() const;
+		const std::string & GetName() const;
 
 	protected:
-		void setName( std::string pAssetName );
+		void SetName( std::string pAssetName );
 
 	private:
-		virtual file_size_t _nativeReadData( void * pTargetBuffer, file_size_t pReadSize ) = 0;
+		virtual file_size_t _NativeReadData( void * pTargetBuffer, file_size_t pReadSize ) = 0;
 
-		virtual file_offset_t _nativeSetReadPointer( file_offset_t pOffset, EFilePointerRefPos pRefPos ) = 0;
+		virtual file_offset_t _NativeSetReadPointer( file_offset_t pOffset, EFilePointerRefPos pRefPos ) = 0;
 
-		virtual file_size_t _nativeGetSize() const = 0;
+		virtual file_size_t _NativeGetSize() const = 0;
 
 	private:
 		std::string _name;

@@ -5,24 +5,24 @@
 namespace Ic3::Graphics::GCI
 {
 
-	VKGPUDriver::VKGPUDriver( System::temContext * pExfSystemContext )
+	VKGPUDriver::VKGPUDriver( System::SysContext * pExfSystemContext )
 	: GPUDriver( pExfSystemContext )
 	{ }
 
 	VKGPUDriver::~VKGPUDriver()
 	{ }
 
-	VKGPUDriverHandle VKGPUDriver::create( const VKGPUDriverCreateInfo & pCreateInfo )
+	VKGPUDriverHandle VKGPUDriver::Create( const VKGPUDriverCreateInfo & pCreateInfo )
 	{
-		return createGPUAPIObject<VKGPUDriver>( pCreateInfo.exfSystemContext );
+		return CreateGfxObject<VKGPUDriver>( pCreateInfo.exfSystemContext );
 	}
 
-	GPUDeviceHandle VKGPUDriver::createDevice( const GPUDeviceCreateInfo & pCreateInfo )
+	GPUDeviceHandle VKGPUDriver::CreateDevice( const GPUDeviceCreateInfo & pCreateInfo )
 	{
 		VKGPUDeviceCreateInfo createInfo;
 		createInfo.adapterID = pCreateInfo.adapterID;
 		createInfo.flags = pCreateInfo.flags;
-		return VKGPUDevice::create( this, createInfo );
+		return VKGPUDevice::Create( this, createInfo );
 	}
 
 } // namespace Ic3::Graphics::GCI

@@ -15,7 +15,7 @@ namespace Ic3::Graphics::GCI
 	};
 
 	/// @brief
-	class ICFGX_VKCOMMON_CLASS VKGPUDevice : public GPUDevice
+	class IC3_GX_VKCOMMON_CLASS VKGPUDevice : public GPUDevice
 	{
 	public:
 		VkDevice const mVkDevice = nullptr;
@@ -23,10 +23,10 @@ namespace Ic3::Graphics::GCI
 		VKGPUDevice( VKGPUDriver * pDriver, VkDevice pVkDevice );
 		virtual ~VKGPUDevice();
 
-		static VKGPUDeviceHandle create( VKGPUDriver * pDriver, const VKGPUDeviceCreateInfo & pCreateInfo );
+		static VKGPUDeviceHandle Create( VKGPUDriver * pDriver, const VKGPUDeviceCreateInfo & pCreateInfo );
 
 	private:
-		virtual void initializeCommandSystem() override;
+		virtual void InitializeCommandSystem() override;
 
 	};
 

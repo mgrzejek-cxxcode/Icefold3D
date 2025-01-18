@@ -3,18 +3,18 @@
 #define __IC3_SYSTEM_SYS_OBJECT_H__
 
 #include "Prerequisites.h"
-#include <Ic3/Cppx/BitmaskAtomic.h>
+#include <cppx/bitmaskAtomic.h>
 
 namespace Ic3::System
 {
 
 	enum ESysObjectStateFlags : uint32
 	{
-		E_SYS_OBJECT_STATE_FLAG_DESTROY_REQUEST_FLAG_SET_BIT = 0x4000,
+		eSysObjectStateFlagDestroyRequestFlagSetBit = 0x4000,
 
-		E_SYS_OBJECT_STATE_FLAG_DESTROY_REQUEST_PROCESSED_BIT = 0x8000,
+		eSysObjectStateFlagDestroyRequestProcessedBit = 0x8000,
 
-		E_SYS_OBJECT_STATE_FLAG_INVALID_BIT = 0x8000
+		eSysObjectStateFlagInvalidBit = 0x8000
 	};
 
     /// @brief Base class for all system classes
@@ -22,7 +22,7 @@ namespace Ic3::System
     /// This class is used for easy injection of useful stuff (debug logs, instance counting, lifetime control)
     /// into all classes created by the System Library. It also provides (and, thus, enforces!) SysContext
     /// access, so it doesn't have to be declared multiple times (for every separate class in the library).
-    class SysObject : public DynamicInterface
+    class SysObject : public IDynamicObject
     {
     public:
         // Public handle to the SysContext. This is always non-null and specified at construction time.
@@ -51,25 +51,25 @@ namespace Ic3::System
 		/// This method itself IS NOT a part of the dtor! Of course this fact automatically implies the following things:
 		/// - if an object is managed by a raw pointer, this needs to be called before destroying that object
 		/// - if an object should be destroyed "remotely" (e.g. custom OS-level stuff), this can be used to do that.
-		bool destroySystemObject();
+		bool DestroySystemObject();
 
-		IC3_ATTR_NO_DISCARD bool isStateMaskSet( Cppx::Bitmask<ESysObjectStateFlags> pMask ) const
+		CPPX_ATTR_NO_DISCARD bool IsStateMaskSet( cppx::bitmask<ESysObjectStateFlags> pMask ) const
 		{
-			return _stateMask.isSet( pMask );
+			return _stateMask.is_set( pMask );
 		}
 
 		/// @brief Returns true if this object has been requested to be destroyed or false otherwise.
-		/// A positive value indicates, that destroySystemObject() has been successfully called for this object.
+		/// A positive value indicates, that DestroySystemObject() has been successfully called for this object.
 		/// Since the destruction may require, for example, system events to be processed, an object may still be valid
 		/// even though the request has been already made.
-		IC3_ATTR_NO_DISCARD bool isDestroyRequestSet() const
+		CPPX_ATTR_NO_DISCARD bool IsDestroyRequestSet() const
 		{
-			return isStateMaskSet( E_SYS_OBJECT_STATE_FLAG_DESTROY_REQUEST_FLAG_SET_BIT );
+			return IsStateMaskSet( eSysObjectStateFlagDestroyRequestFlagSetBit );
 		}
 
-		IC3_ATTR_NO_DISCARD bool isValidSystemObject() const
+		CPPX_ATTR_NO_DISCARD bool IsValidSystemObject() const
 		{
-			return !isStateMaskSet( E_SYS_OBJECT_STATE_FLAG_INVALID_BIT );
+			return !IsStateMaskSet( eSysObjectStateFlagInvalidBit );
 		}
 
 	protected:
@@ -78,20 +78,20 @@ namespace Ic3::System
 		/// Base method (from SysObject class) should ALWAYS be called at the end of the class-specific one.
 		/// However, it is not mandatory to form a complete call chain for all subclasses. Classes are also
 		/// free to decide at which point a base class version should be called.
-		virtual void onDestroySystemObjectRequested();
+		virtual void OnDestroySystemObjectRequested();
 
-		bool setDestroyRequestFlag()
+		bool SetDestroyRequestFlag()
 		{
-			return _stateMask.testAndSet( E_SYS_OBJECT_STATE_FLAG_DESTROY_REQUEST_FLAG_SET_BIT );
+			return _stateMask.test_and_set( eSysObjectStateFlagDestroyRequestFlagSetBit );
 		}
 
-		void setStateFlags( bool pSetOrUnset, Cppx::Bitmask<ESysObjectStateFlags> pFlags )
+		void SetStateFlags( bool pSetOrUnset, cppx::bitmask<ESysObjectStateFlags> pFlags )
 		{
-			_stateMask.setOrUnset( pFlags, pSetOrUnset );
+			_stateMask.set_or_unset( pFlags, pSetOrUnset );
 		}
 
 	private:
-	    Cppx::AtomicBitmask<uint32> _stateMask;
+	    cppx::atomic_bitmask<uint32> _stateMask;
     };
 
     struct SysObjectDeleter
@@ -100,7 +100,7 @@ namespace Ic3::System
         {
             if( pSysObject )
             {
-                pSysObject->destroySystemObject();
+                pSysObject->DestroySystemObject();
 
                 delete pSysObject;
             }
@@ -108,9 +108,9 @@ namespace Ic3::System
     };
 
     template <typename TObject, typename... TArgs>
-    inline SysHandle<TObject> createSysObject( TArgs && ...pArgs )
+    inline TSysHandle<TObject> CreateSysObject( TArgs && ...pArgs )
     {
-        return createDynamicInterfaceObjectWithDeleter<TObject>( SysObjectDeleter{}, std::forward<TArgs>( pArgs )... );
+        return CreateDynamicObjectWithDeleter<TObject>( SysObjectDeleter{}, std::forward<TArgs>( pArgs )... );
     }
 
 } // namespace Ic3::System

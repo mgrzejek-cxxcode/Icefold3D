@@ -14,20 +14,20 @@ namespace Ic3::Graphics::GCI
 	{
 	};
 
-	class ICFGX_GL4_CLASS GL4GPUDriver final : public GLGPUDriver
+	class IC3_GX_GL4_CLASS GL4GPUDriver final : public GLGPUDriver
 	{
 	public:
 		explicit GL4GPUDriver( System::OpenGLSystemDriverHandle pSysGLDriver );
 		virtual ~GL4GPUDriver();
 
-		virtual EGPUDriverID queryGPUDriverID() const noexcept override;
+		virtual EGPUDriverID QueryGPUDriverID() const noexcept override;
 
-		static GL4GPUDriverHandle create( const GL4GPUDriverCreateInfo & pCreateInfo );
+		static GL4GPUDriverHandle Create( const GL4GPUDriverCreateInfo & pCreateInfo );
 
 	private:
-		virtual DisplayManagerHandle _drvCreateDefaultDisplayManager() override;
+		virtual DisplayManagerHandle _DrvCreateDefaultDisplayManager() override;
 
-		virtual GPUDeviceHandle _drvCreateDevice( const GPUDeviceCreateInfo & pCreateInfo ) override;
+		virtual GPUDeviceHandle _DrvCreateDevice( const GPUDeviceCreateInfo & pCreateInfo ) override;
 	};
 
 } // namespace Ic3::Graphics::GCI

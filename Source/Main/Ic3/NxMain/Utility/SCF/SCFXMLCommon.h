@@ -54,11 +54,11 @@ namespace Ic3
 
 		const std::string & resourceType() const;
 
-		XMLAttribute attribute( const StringView<char> & pAttribName ) const;
+		XMLAttribute attribute( const cppx::string_view<char> & pAttribName ) const;
 
-		XMLNode dataNode( const StringView<char> & pNodeName ) const;
+		XMLNode dataNode( const cppx::string_view<char> & pNodeName ) const;
 
-		bool hasDataNode( const StringView<char> & pNodeName ) const;
+		bool hasDataNode( const cppx::string_view<char> & pNodeName ) const;
 
 		static SCFXMLResourceNode initFromXMLNode( XMLNode pXMLNode );
 
@@ -79,9 +79,9 @@ namespace Ic3
 
 		const std::string & folderName() const;
 
-		const SCFXMLResourceNode * resource( const StringView<char> & pResourceID ) const;
+		const SCFXMLResourceNode * resource( const cppx::string_view<char> & pResourceID ) const;
 
-		const SCFXMLFolderNode * subFolder( const StringView<char> & pSubFolderName ) const;
+		const SCFXMLFolderNode * subFolder( const cppx::string_view<char> & pSubFolderName ) const;
 
 		SCFXMLNodeList getNodeList() const;
 
@@ -95,17 +95,17 @@ namespace Ic3
 
 		const SubFolderNodeList & getSubFolderNodes() const;
 
-		bool hasResource( const StringView<char> & pResourceID ) const;
+		bool hasResource( const cppx::string_view<char> & pResourceID ) const;
 
-		bool hasSubFolder( const StringView<char> & pSubFolderName ) const;
+		bool hasSubFolder( const cppx::string_view<char> & pSubFolderName ) const;
 
 		static SCFXMLFolderNode initFromXMLNode( XMLNode pXMLNode );
 
 		static void initFromXMLNode( XMLNode pXMLNode, SCFXMLFolderNode & pInitNode );
 
 	protected:
-		using ResourceNodeMap = std::map<std::string, SCFXMLResourceNode *, StringViewCmpLess<char>>;
-		using SubFolderNodeMap = std::map<std::string, SCFXMLFolderNode *, StringViewCmpLess<char>>;
+		using ResourceNodeMap = std::map<std::string, SCFXMLResourceNode *, Qcppx::string_viewCmpLess<char>>;
+		using SubFolderNodeMap = std::map<std::string, SCFXMLFolderNode *, Qcppx::string_viewCmpLess<char>>;
 
 		static void _initContent( const XMLNode & pXMLNode, SCFXMLFolderNode & pInitNode );
 

@@ -9,10 +9,10 @@
 namespace Ic3
 {
 
-	class ByteArray;
-	class MemoryBuffer;
-	class DynamicByteArray;
-	class DynamicMemoryBuffer;
+	class byte_array;
+	class memory_buffer;
+	class Dynamicbyte_array;
+	class dynamic_memory_buffer;
 
 	using SCFEntryPredicate = std::function<bool( const SCFEntry & )>;
 	using SCFEntryList = std::vector<SCFEntry *>;
@@ -75,13 +75,13 @@ namespace Ic3
 		SCFResource( SCFVirtualFolder & pParentFolder, SCFResourceInfo pInfo );
 
 		uint64 readData( void * pTarget, uint64 pCapacity ) const;
-		uint64 readData( DynamicByteArray & pTarget ) const;
-		uint64 readData( DynamicMemoryBuffer & pTarget ) const;
+		uint64 readData( Dynamicbyte_array & pTarget ) const;
+		uint64 readData( dynamic_memory_buffer & pTarget ) const;
 		uint64 readData( std::string & pTarget ) const;
 		uint64 readData( std::vector<byte> & pTarget ) const;
 
 		uint64 readSubData( void * pTarget, uint64 pCapacity, uint64 pReadSize, uint64 pResOffset = 0 ) const;
-		uint64 readSubData( const ReadWriteMemoryView & pTarget, uint64 pReadSize, uint64 pResOffset = 0 ) const;
+		uint64 readSubData( const read_write_memory_view & pTarget, uint64 pReadSize, uint64 pResOffset = 0 ) const;
 		uint64 readSubData( std::vector<byte> & pTarget, uint64 pReadSize, uint64 pResOffset = 0 ) const;
 	};
 

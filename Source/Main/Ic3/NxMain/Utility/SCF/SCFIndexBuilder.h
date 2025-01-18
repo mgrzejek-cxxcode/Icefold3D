@@ -5,8 +5,8 @@
 #define __IC3_NXMAIN_SCF_INDEX_BUILDER_H__
 
 #include "scfIndex.h"
-#include <Ic3/Cppx/ByteArray.h>
-#include <Ic3/Cppx/sortedArray.h>
+#include <cppx/byteArray.h>
+#include <cppx/sortedArray.h>
 #include <Ic3/System/FileCommon.h>
 
 namespace Ic3
@@ -14,7 +14,7 @@ namespace Ic3
 
 	struct SCFInputDataSource
 	{
-		using DataReadCallback = std::function<uint64( uint64 /* pOffset */, uint64 /* pReadSize */, DynamicByteArray & /* pBuffer */ )>;
+		using DataReadCallback = std::function<uint64( uint64 /* pOffset */, uint64 /* pReadSize */, Dynamicbyte_array & /* pBuffer */ )>;
 
 		uint64 byteSize = 0;
 
@@ -29,7 +29,7 @@ namespace Ic3
 
 		static SCFInputDataSource fromFile( System::FileManagerHandle pSysFileManager, const std::string & pFilename );
 
-		static SCFInputDataSource fromMemory( ReadOnlyMemoryView pMemoryView );
+		static SCFInputDataSource fromMemory( read_only_memory_view pMemoryView );
 
 		template <typename TCallback, typename... TArgs>
 		static SCFInputDataSource bindGenericCallback( TCallback pCallback, TArgs && ...pArgs )

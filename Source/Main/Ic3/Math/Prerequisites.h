@@ -2,27 +2,27 @@
 #ifndef __IC3_MATH_PREREQUISITES_H__
 #define __IC3_MATH_PREREQUISITES_H__
 
-#include <Ic3/Cppx/Prerequisites.h>
+#include <Ic3/CoreLib/Prerequisites.h>
 #include <cmath>
 
-#if( IC3_PCL_FEATURE_EIS )
+#if( PCL_FEATURE_EIS )
 #  define IC3_MATH_SIMD_ENABLE 1
-#  if( IC3_PCL_EIS_SUPPORT_LEVEL & IC3_PCL_EIS_FEATURE_SSE ) // SSE -> float[4] (__m128)
+#  if( PCL_EIS_SUPPORT_LEVEL & PCL_EIS_FEATURE_SSE ) // SSE -> float[4] (__m128)
 #    define IC3_MATH_SIMD_USE_VX128F 1
 #  else
 #    define IC3_MATH_SIMD_USE_VX128F 0
 #  endif
-#  if( IC3_PCL_EIS_SUPPORT_LEVEL & IC3_PCL_EIS_FEATURE_SSE2 ) // SSE2 -> int32[4] (__m128i)
+#  if( PCL_EIS_SUPPORT_LEVEL & PCL_EIS_FEATURE_SSE2 ) // SSE2 -> int32[4] (__m128i)
 #    define IC3_MATH_SIMD_USE_VX128I 1
 #  else
 #    define IC3_MATH_SIMD_USE_VX128I 0
 #  endif
-#  if( IC3_PCL_EIS_SUPPORT_LEVEL & IC3_PCL_EIS_FEATURE_AVX ) // AVX -> double[4] (__m256d)
+#  if( PCL_EIS_SUPPORT_LEVEL & PCL_EIS_FEATURE_AVX ) // AVX -> double[4] (__m256d)
 #    define IC3_MATH_SIMD_USE_VX256D 1
 #  else
 #    define IC3_MATH_SIMD_USE_VX256D 0
 #  endif
-#  if( IC3_PCL_EIS_SUPPORT_LEVEL & IC3_PCL_EIS_FEATURE_AVX2 ) // AVX2 -> int64[4] (__m256i)
+#  if( PCL_EIS_SUPPORT_LEVEL & PCL_EIS_FEATURE_AVX2 ) // AVX2 -> int64[4] (__m256i)
 #    define IC3_MATH_SIMD_USE_VX256I 1
 #  else
 #    define IC3_MATH_SIMD_USE_VX256I 0
@@ -32,20 +32,20 @@
 namespace Ic3::Math
 {
 
-	template <typename TValue, size_t tSize>
-	using Array = TValue[tSize];
+	template <typename TPValue, size_t tpSize>
+	using Array = TPValue[tpSize];
 
-	template <typename TValue>
-	using Array2 = Array<TValue, 2>;
+	template <typename TPValue>
+	using Array2 = Array<TPValue, 2>;
 
-	template <typename TValue>
-	using Array3 = Array<TValue, 3>;
+	template <typename TPValue>
+	using Array3 = Array<TPValue, 3>;
 
-	template <typename TValue>
-	using Array4 = Array<TValue, 4>;
+	template <typename TPValue>
+	using Array4 = Array<TPValue, 4>;
 
-	template <typename TScalar>
-	using enable_if_scalar_t = std::enable_if_t<std::is_arithmetic<TScalar>::value, bool>;
+	template <typename TPScalar>
+	using enable_if_scalar_t = std::enable_if_t<std::is_arithmetic<TPScalar>::value, bool>;
 
 	namespace Constants
 	{
@@ -100,6 +100,6 @@ namespace Ic3::Math
 
 	}
 
-}
+} // namespace Ic3::Math
 
 #endif // __IC3_MATH_PREREQUISITES_H__

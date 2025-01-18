@@ -4,9 +4,9 @@
 #ifndef __IC3_NXMAIN_RES_FONT_TEXTURE_H__
 #define __IC3_NXMAIN_RES_FONT_TEXTURE_H__
 
-#include "fontCommon.h"
-#include <Ic3/Graphics/GCI/Resources/textureCommon.h>
-#include <Ic3/Cppx/ByteArray.h>
+#include "FontCommon.h"
+#include <Ic3/Graphics/GCI/Resources/TextureCommon.h>
+#include <cppx/byteArray.h>
 
 namespace Ic3
 {
@@ -44,7 +44,7 @@ namespace Ic3
 		struct TextureLayerInitData
 		{
 			uint32 layerIndex;
-			DynamicByteArray initDataBuffer;
+			cppx::dynamic_byte_array initDataBuffer;
 		};
 
 		std::vector<TextureLayerInitData> textureLayerInitDataArray;
@@ -92,7 +92,7 @@ namespace Ic3
 //	private:
 //		size_t _dataBufferCapacity;
 //		size_t _dataBufferAllocOffset;
-//		DynamicMemoryBuffer _dataBuffer;
+//		dynamic_memory_buffer _dataBuffer;
 //		PreloadedSubDataArray _preloadedSubData;
 //	};
 

@@ -35,7 +35,7 @@ namespace Ic3
 			Math::Mat4f mLightSpace;
 		};
 
-		struct GpuAPIState
+		struct GPUAPIState
 		{
 			GCI::RenderTargetBindingDynamicState rtBindingPass1Light;
 			GCI::GraphicsPipelineStateObjectHandle psoPass1Light;
@@ -105,7 +105,7 @@ namespace Ic3
 		GCI::GPUDevice & _gpuDevice;
 		ShaderLibrary & _shaderLibrary;
 		ShadowConfig _shadowConfig;
-		GpuAPIState _gpuAPIState;
+		GPUAPIState _gpuAPIState;
 		Resources _resources;
 		CurrentState _currentState;
 	};

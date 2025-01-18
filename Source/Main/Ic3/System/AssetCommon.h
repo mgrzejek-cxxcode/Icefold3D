@@ -4,7 +4,7 @@
 
 #include "Prerequisites.h"
 
-#if( IC3_PCL_TARGET_OS == IC3_PCL_TARGET_OS_ANDROID )
+#if( PCL_TARGET_OS == PCL_TARGET_OS_ANDROID )
 #  define IC3_SYSTEM_USE_ASSET_SYSTEM_DEFAULT 0
 #else
 #  define IC3_SYSTEM_USE_ASSET_SYSTEM_DEFAULT 1
@@ -13,9 +13,9 @@
 namespace Ic3::System
 {
 
-	ic3SysDeclareHandle( Asset );
-	ic3SysDeclareHandle( AssetDirectory );
-	ic3SysDeclareHandle( AssetLoader );
+	Ic3SysDeclareHandle( Asset );
+	Ic3SysDeclareHandle( AssetDirectory );
+	Ic3SysDeclareHandle( AssetLoader );
 
 } // namespace Ic3::System
 

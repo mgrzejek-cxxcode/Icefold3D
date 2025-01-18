@@ -20,51 +20,51 @@ namespace Ic3::Graphics::GCI
 
 	DX12GPUDevice::~DX12GPUDevice() = default;
 
-	DX12GPUDeviceHandle DX12GPUDevice::create( DX12GPUDriver & pDX12Driver, const DX12GPUDeviceCreateInfo & pCreateInfo )
+	DX12GPUDeviceHandle DX12GPUDevice::Create( DX12GPUDriver & pDX12Driver, const DX12GPUDeviceCreateInfo & pCreateInfo )
 	{
-		auto d3d12DebugInterface = DX12CoreAPIProxy::initializeD3D12DebugInterface( pDX12Driver.getConfigFlags() );
+		auto d3d12DebugInterface = DX12CoreAPIProxy::InitializeD3D12DebugInterface( pDX12Driver.GetConfigFlags() );
 
-		auto d3d12Device = DX12CoreAPIProxy::createD3D12Device();
-		ic3DebugAssert( d3d12Device );
+		auto d3d12Device = DX12CoreAPIProxy::CreateD3D12Device();
+		Ic3DebugAssert( d3d12Device );
 
 		auto dxgiFactory3 = DX12CoreAPIProxy::createDXGIFactoryForD3D12Device( d3d12Device, d3d12DebugInterface );
-		ic3DebugAssert( dxgiFactory3 );
+		Ic3DebugAssert( dxgiFactory3 );
 
-		auto dx12GPUDevice = createGPUAPIObject<DX12GPUDevice>( pDX12Driver, dxgiFactory3, d3d12Device, d3d12DebugInterface );
-		ic3DebugAssert( dx12GPUDevice );
+		auto dx12GPUDevice = CreateGfxObject<DX12GPUDevice>( pDX12Driver, dxgiFactory3, d3d12Device, d3d12DebugInterface );
+		Ic3DebugAssert( dx12GPUDevice );
 
-		dx12GPUDevice->initializeCommandSystem();
+		dx12GPUDevice->InitializeCommandSystem();
 
-		if( pCreateInfo.flags.isSet( E_GPU_DEVICE_CREATE_FLAG_INIT_DEFAULT_PRESENT_QUEUE_BIT ) )
+		if( pCreateInfo.flags.is_set( E_GPU_DEVICE_CREATE_FLAG_INIT_DEFAULT_PRESENT_QUEUE_BIT ) )
 		{
-			dx12GPUDevice->initializeDefaultPresentDeviceQueue();
+			dx12GPUDevice->InitializeDefaultPresentDeviceQueue();
 		}
 
 		return dx12GPUDevice;
 	}
 
-	ID3D12CommandQueue * DX12GPUDevice::getD3D12DeviceQueue( gpu_cmd_device_queue_id_t pQueueID ) const
+	ID3D12CommandQueue * DX12GPUDevice::GetD3D12DeviceQueue( gpu_cmd_device_queue_id_t pQueueID ) const
 	{
-		return _cmdManager->queryInterface<DX12GPUCmdManager>()->getD3D12DeviceQueue( pQueueID );
+		return _cmdManager->QueryInterface<DX12GPUCmdManager>()->GetD3D12DeviceQueue( pQueueID );
 	}
 
-	void DX12GPUDevice::initializeCommandSystem()
+	void DX12GPUDevice::InitializeCommandSystem()
 	{
-		ic3DebugAssert( !_cmdManager );
-		auto cmdManager = createGPUAPIObject<DX12GPUCmdManager>( *this );
-		auto initResult = cmdManager->initialize();
+		Ic3DebugAssert( !_cmdManager );
+		auto cmdManager = CreateGfxObject<DX12GPUCmdManager>( *this );
+		auto initResult = cmdManager->Initialize();
 		if( initResult )
 		{
 			_cmdManager = std::move( cmdManager );
 		}
 	}
 
-	void DX12GPUDevice::initializeDefaultPresentDeviceQueue()
+	void DX12GPUDevice::InitializeDefaultPresentDeviceQueue()
 	{
-		if( !_cmdManager->isQueueAvailable( E_DEVICE_COMMAND_QUEUE_ID_PRESENT ) )
+		if( !_cmdManager->IsQueueAvailable( E_DEVICE_COMMAND_QUEUE_ID_PRESENT ) )
 		{
-			ic3DebugAssert( _cmdManager->isQueueAvailable( E_DEVICE_COMMAND_QUEUE_ID_DEFAULT_GRAPHICS ) );
-			_cmdManager->setQueueAlias( E_DEVICE_COMMAND_QUEUE_ID_PRESENT, E_DEVICE_COMMAND_QUEUE_ID_DEFAULT_GRAPHICS );
+			Ic3DebugAssert( _cmdManager->IsQueueAvailable( E_DEVICE_COMMAND_QUEUE_ID_DEFAULT_GRAPHICS ) );
+			_cmdManager->SetQueueAlias( E_DEVICE_COMMAND_QUEUE_ID_PRESENT, E_DEVICE_COMMAND_QUEUE_ID_DEFAULT_GRAPHICS );
 		}
 	}
 

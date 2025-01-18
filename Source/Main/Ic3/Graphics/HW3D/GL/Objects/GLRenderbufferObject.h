@@ -9,7 +9,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3GLDeclareOpenGLObjectHandle( GLRenderbufferObject );
+	Ic3GLDeclareOpenGLObjectHandle( GLRenderbufferObject );
 
 	struct GLRenderbufferCreateInfo
 	{
@@ -21,19 +21,19 @@ namespace Ic3::Graphics::GCI
 	class GLRenderbufferObject : public GLObject
 	{
 	public:
-		Math::Vec2u32 const mDimensions;
+		Math::Vec2u32 const dimensions;
 		GLenum const mGLInternalFormat;
 
 		GLRenderbufferObject( GLuint pHandle, const GLRenderbufferCreateInfo & pGLCreateInfo );
 		virtual ~GLRenderbufferObject();
 
-		virtual bool release();
-		virtual bool validateHandle() const;
+		virtual bool Release();
+		virtual bool ValidateHandle() const;
 
-		static GLRenderbufferObjectHandle create( const GLRenderbufferCreateInfo & pGLCreateInfo );
+		static GLRenderbufferObjectHandle Create( const GLRenderbufferCreateInfo & pGLCreateInfo );
 
 	private:
-		bool initialize( const GLRenderbufferCreateInfo & pGLCreateInfo );
+		bool Initialize( const GLRenderbufferCreateInfo & pGLCreateInfo );
 	};
 
 } // namespace Ic3::Graphics::GCI

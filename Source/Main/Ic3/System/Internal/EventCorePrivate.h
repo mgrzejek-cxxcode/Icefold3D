@@ -17,31 +17,36 @@ namespace Ic3::System
 	enum EEventSystemInternalFlags : uint32
 	{
 		//
-		E_EVENT_SYSTEM_INTERNAL_FLAG_APP_QUIT_REQUEST_SET_BIT = 0x010000,
+		eEventSystemInternalFlagAppQuitRequestSetBit = 0x010000,
 	};
 
 	struct EventSystemConfig
 	{
 		// Configuration flags. Allow controlling aspects like mouse or keyboard behaviour.
-		Bitmask<EEventSystemConfigFlags> configFlags = 0u;
+		cppx::bitmask<EEventSystemConfigFlags> configFlags = 0u;
 
 		// Timeout (in milliseconds) after which mouse click sequence is reset.
-		Cppx::duration_value_t mouseClickSequenceTimeoutMs = 100;
+		cppx::duration_value_t mouseClickSequenceTimeoutMs = 100;
 	};
 
 	struct EventSystemSharedState
 	{
+		// Pointer to the current configuration of the event system. This configuration is managed by EventDispatchers
+		// and is only referenced here. This happens when a new dispatcher is set (EventController::_OnActiveDispatcherChange).
 		const EventSystemConfig * currentEventSystemConfig = nullptr;
 
+		// Current state of the keyboard cached by the event system.
 		EvtSharedInputKeyboardState inputKeyboardState;
 
+		// Current state of the mouse cached by the event system.
 		EvtSharedInputMouseState inputMouseState;
 
-		Bitmask<EEventSystemInternalFlags> internalStateFlags = 0u;
+		// Internal flags, used by the event system.
+		cppx::bitmask<EEventSystemInternalFlags> internalStateFlags = 0u;
 
-		IC3_ATTR_NO_DISCARD const EventSystemConfig & getEventSystemConfig() const
+		CPPX_ATTR_NO_DISCARD const EventSystemConfig & GetEventSystemConfig() const
 		{
-			ic3DebugAssert( currentEventSystemConfig );
+			Ic3DebugAssert( currentEventSystemConfig );
 			return *currentEventSystemConfig;
 		}
 	};
@@ -69,17 +74,20 @@ namespace Ic3::System
 
 		LocalEventQueue userEventQueue;
 
-		IC3_ATTR_NO_DISCARD std::pair<bool, std::vector<EventDispatcher *>::iterator> findEventDispatcherInternal( EventDispatcher * pEventDispatcher )
+		using InternalEventDispatcherRef = std::vector<EventDispatcher *>::iterator;
+		using InternalEventSourceRef = std::vector<EventSource *>::iterator;
+
+		CPPX_ATTR_NO_DISCARD std::pair<bool, InternalEventDispatcherRef> FindEventDispatcherInternal( EventDispatcher * pEventDispatcher )
 		{
-			std::pair<bool, std::vector<EventDispatcher *>::iterator> result;
+			std::pair<bool, InternalEventDispatcherRef> result;
 			result.second = std::find( eventDispatcherList.begin(), eventDispatcherList.end(), pEventDispatcher );
 			result.first = ( result.second != eventDispatcherList.end() );
 			return result;
 		}
 
-		IC3_ATTR_NO_DISCARD std::pair<bool, std::vector<EventSource *>::iterator> findEventSourceInternal( EventSource * pEventSource )
+		CPPX_ATTR_NO_DISCARD std::pair<bool, InternalEventSourceRef> FindEventSourceInternal( EventSource * pEventSource )
 		{
-			std::pair<bool, std::vector<EventSource *>::iterator> result;
+			std::pair<bool, InternalEventSourceRef> result;
 			result.second = std::find( eventSourceList.begin(), eventSourceList.end(), pEventSource );
 			result.first = ( result.second != eventSourceList.end() );
 			return result;
@@ -95,13 +103,13 @@ namespace Ic3::System
 		EventHandler defaultHandler;
 
 		// Array of handlers registered for EventBaseType.
-		std::array<EventHandler, CX_ENUM_EVENT_BASE_TYPE_COUNT> handlerMapByBaseType;
+		std::array<EventHandler, cxEnumEventBaseTypeCount> handlerMapByBaseType;
 
 		// Array of handlers registered for EventCategory.
-		std::array<EventHandler, CX_ENUM_EVENT_CATEGORY_COUNT> handlerMapByCategory;
+		std::array<EventHandler, cxEnumEventCategoryCount> handlerMapByCategory;
 
 		// Array of handlers registered for EventCodeIndex (i.e. event code itself).
-		std::array<EventHandler, CX_ENUM_EVENT_CODE_INDEX_COUNT> handlerMapByCodeIndex;
+		std::array<EventHandler, cxEnumEventCodeIndexCount> handlerMapByCodeIndex;
 	};
 
 	namespace Platform
@@ -111,8 +119,8 @@ namespace Ic3::System
 
 		/// @brief Translates a native, OS-specific event into an internal representation.
 		/// This is an internal function, implemented at the OS API level. Technically, it could be purely OS-specific,
-		/// but having it here gives us the ability to write the dispatching helper function below and avoid duplicating.
-		IC3_SYSTEM_API bool nativeEventTranslate( EventController & pEventController,
+		/// but having it here gives us the ability to Write the dispatching helper function below and avoid duplicating.
+		IC3_SYSTEM_API bool NativeEventTranslate( EventController & pEventController,
 		                                          const NativeEventType & pNativeEvent,
 		                                          EventObject & pOutEvent );
 
@@ -121,18 +129,18 @@ namespace Ic3::System
 		{
 			EventObject eventObject;
 
-			auto & eventSystemSharedState = pEventController.getEventSystemSharedState();
+			auto & eventSystemSharedState = pEventController.GetEventSystemSharedState();
 
 			eventObject.eventSystemSharedState = &eventSystemSharedState;
 
 			// Translate the input event and store the output in the temporary auto event object.
 			// The boolean result indicates whether the translation was successful (event is known).
-			if( nativeEventTranslate( pEventController, pNativeEvent, eventObject ) )
+			if( NativeEventTranslate( pEventController, pNativeEvent, eventObject ) )
 			{
 				// Dispatch the event through the provided controller object.
 				// The boolean result indicates whether there was a handler for this event.
 				// False means, that the event has not been processed.
-				if( pEventController.dispatchEvent( eventObject ) )
+				if( pEventController.DispatchEvent( eventObject ) )
 				{
 					return true;
 				}

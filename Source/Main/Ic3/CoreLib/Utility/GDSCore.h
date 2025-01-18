@@ -6,7 +6,7 @@
 #include "../Exception.h"
 
 #include <Ic3/Platform/GDS.h>
-#include <Ic3/Cppx/ByteArray.h>
+#include <cppx/byteArray.h>
 
 #include <array>
 #include <functional>
@@ -15,13 +15,10 @@
 namespace Ic3
 {
 
-	template <typename TIntegral>
-	class AtomicBitmask;
+	template <typename TPIntegral>
+	class atomic_bitmask;
 
-	template <typename TIntegral>
-	class Bitmask;
-
-	template <typename TVal, typename TCompare, typename TAlloc>
+	template <typename TPValue, typename TPComparator, typename TPAllocator>
 	class SortedArray;
 
 	namespace GDSCore
@@ -37,145 +34,145 @@ namespace Ic3
 		/**************************************** Core API - evalByteSize() ****************************************/
 		/***********************************************************************************************************/
 
-		template <typename TVal, std::enable_if_t<IsGdsSerializable<TVal>::sValue, int>>
-		gds_size_t evalByteSize( const TVal & pValue );
+		template <typename TPValue, std::enable_if_t<IsGdsSerializable<TPValue>::sValue, int>>
+		gds_size_t evalByteSize( const TPValue & pValue );
 
-		template <typename TVal>
-		gds_size_t evalByteSize( const TVal & pValue );
+		template <typename TPValue>
+		gds_size_t evalByteSize( const TPValue & pValue );
 
 		template <typename TRef, typename TInternal>
 		gds_size_t evalByteSize( const GDS::ValueRef<TRef, TInternal> & pValueRef );
 
-		template <typename TVal, typename TInternal, std::enable_if_t<std::is_void<TInternal>::value, int>>
-		gds_size_t evalByteSize( const TVal & pValue, const GDS::TypeCastTag<TInternal> & );
+		template <typename TPValue, typename TInternal, std::enable_if_t<std::is_void<TInternal>::value, int>>
+		gds_size_t evalByteSize( const TPValue & pValue, const GDS::TypeCastTag<TInternal> & );
 
-		template <typename TVal, typename TInternal, std::enable_if_t<!std::is_void<TInternal>::value, int>>
-		gds_size_t evalByteSize( const TVal & pValue, const GDS::TypeCastTag<TInternal> & );
+		template <typename TPValue, typename TInternal, std::enable_if_t<!std::is_void<TInternal>::value, int>>
+		gds_size_t evalByteSize( const TPValue & pValue, const GDS::TypeCastTag<TInternal> & );
 
-		template <typename TVal, typename TInternal, std::enable_if_t<!std::is_void<TInternal>::value, int>>
-		gds_size_t evalByteSize( const GDS::TypeCastInfo<TVal, TInternal> & pCastInfo );
+		template <typename TPValue, typename TInternal, std::enable_if_t<!std::is_void<TInternal>::value, int>>
+		gds_size_t evalByteSize( const GDS::TypeCastInfo<TPValue, TInternal> & pCastInfo );
 
 		/***********************************************************************************************************/
 		/***************************************** Core API - serialize() ******************************************/
 		/***********************************************************************************************************/
 
-		template <typename TVal, std::enable_if_t<IsGdsSerializable<TVal>::sValue, int>>
-		gds_size_t serialize( byte * pOutputBuffer, const TVal & pValue );
+		template <typename TPValue, std::enable_if_t<IsGdsSerializable<TPValue>::sValue, int>>
+		gds_size_t serialize( byte * pOutputBuffer, const TPValue & pValue );
 
-		template <typename TVal>
-		gds_size_t serialize( byte * pOutputBuffer, const TVal & pValue );
+		template <typename TPValue>
+		gds_size_t serialize( byte * pOutputBuffer, const TPValue & pValue );
 
 		template <typename TRef, typename TInternal>
 		gds_size_t serialize( byte * pOutputBuffer, const GDS::ValueRef<TRef, TInternal> & pValueRef );
 
-		template <typename TVal, typename TInternal, std::enable_if_t<std::is_void<TInternal>::value, int>>
-		gds_size_t serialize( byte * pOutputBuffer, const TVal & pValue, const GDS::TypeCastTag<TInternal> & );
+		template <typename TPValue, typename TInternal, std::enable_if_t<std::is_void<TInternal>::value, int>>
+		gds_size_t serialize( byte * pOutputBuffer, const TPValue & pValue, const GDS::TypeCastTag<TInternal> & );
 
-		template <typename TVal, typename TInternal, std::enable_if_t<!std::is_void<TInternal>::value, int>>
-		gds_size_t serialize( byte * pOutputBuffer, const TVal & pValue, const GDS::TypeCastTag<TInternal> & );
+		template <typename TPValue, typename TInternal, std::enable_if_t<!std::is_void<TInternal>::value, int>>
+		gds_size_t serialize( byte * pOutputBuffer, const TPValue & pValue, const GDS::TypeCastTag<TInternal> & );
 
-		template <typename TVal, typename TInternal, std::enable_if_t<!std::is_void<TInternal>::value, int>>
-		gds_size_t serialize( byte * pOutputBuffer, const GDS::TypeCastInfo<TVal, TInternal> & pCastInfo );
+		template <typename TPValue, typename TInternal, std::enable_if_t<!std::is_void<TInternal>::value, int>>
+		gds_size_t serialize( byte * pOutputBuffer, const GDS::TypeCastInfo<TPValue, TInternal> & pCastInfo );
 
 		/***********************************************************************************************************/
 		/**************************************** Core API - deserialize() *****************************************/
 		/***********************************************************************************************************/
 
-		template <typename TVal, std::enable_if_t<IsGdsSerializable<TVal>::sValue, int>>
-		gds_size_t deserialize( const byte * pInputData, TVal & pValue );
+		template <typename TPValue, std::enable_if_t<IsGdsSerializable<TPValue>::sValue, int>>
+		gds_size_t deserialize( const byte * pInputData, TPValue & pValue );
 
-		template <typename TVal>
-		gds_size_t deserialize( const byte * pInputData, TVal & pValue );
+		template <typename TPValue>
+		gds_size_t deserialize( const byte * pInputData, TPValue & pValue );
 
 		template <typename TRef, typename TInternal>
 		gds_size_t deserialize( const byte * pInputData, const GDS::ValueRef<TRef, TInternal> & pValueRef );
 
-		template <typename TVal, typename TInternal, std::enable_if_t<std::is_void<TInternal>::value, int>>
-		gds_size_t deserialize( const byte * pInputData, TVal & pRef, const GDS::TypeCastTag<TInternal> & );
+		template <typename TPValue, typename TInternal, std::enable_if_t<std::is_void<TInternal>::value, int>>
+		gds_size_t deserialize( const byte * pInputData, TPValue & pRef, const GDS::TypeCastTag<TInternal> & );
 
-		template <typename TVal, typename TInternal, std::enable_if_t<!std::is_void<TInternal>::value, int>>
-		gds_size_t deserialize( const byte * pInputData, TVal & pRef, const GDS::TypeCastTag<TInternal> & );
+		template <typename TPValue, typename TInternal, std::enable_if_t<!std::is_void<TInternal>::value, int>>
+		gds_size_t deserialize( const byte * pInputData, TPValue & pRef, const GDS::TypeCastTag<TInternal> & );
 
-		template <typename TVal, typename TInternal, std::enable_if_t<!std::is_void<TInternal>::value, int>>
-		gds_size_t deserialize( const byte * pInputData, const GDS::TypeCastInfo<TVal, TInternal> & pCastInfo );
+		template <typename TPValue, typename TInternal, std::enable_if_t<!std::is_void<TInternal>::value, int>>
+		gds_size_t deserialize( const byte * pInputData, const GDS::TypeCastInfo<TPValue, TInternal> & pCastInfo );
 
 		/***********************************************************************************************************/
 		/******************************************** Core API - MetaData ******************************************/
 		/***********************************************************************************************************/
 
 		/// @brief Returns an evaluated byte size of the specified object which will be serialized using metadata.
-		template <typename TVal>
-		gds_size_t evalByteSizeWithMetaData( const TVal & pValue );
+		template <typename TPValue>
+		gds_size_t evalByteSizeWithMetaData( const TPValue & pValue );
 
 		/// @brief Serializes given object with additional metadata.
-		template <typename TVal>
-		gds_size_t serializeWithMetaData( byte * pOutputBuffer, const TVal & pValue );
+		template <typename TPValue>
+		gds_size_t serializeWithMetaData( byte * pOutputBuffer, const TPValue & pValue );
 
 		/// @brief Performs deserialization of the specified data, written with serializeWithMetaData().
-		template <typename TVal>
-		gds_size_t deserializeWithMetaData( const byte * pInputData, TVal & pValue );
+		template <typename TPValue>
+		gds_size_t deserializeWithMetaData( const byte * pInputData, TPValue & pValue );
 
 		/***********************************************************************************************************/
 		/******************************************** Core API - Variadic ******************************************/
 		/***********************************************************************************************************/
 
-		template <typename TVal>
-		gds_size_t evalByteSizeAll( const TVal & pValue );
+		template <typename TPValue>
+		gds_size_t evalByteSizeAll( const TPValue & pValue );
 
-		template <typename TVal, typename... TRest>
-		gds_size_t evalByteSizeAll( const TVal & pValue, TRest && ...pRest );
+		template <typename TPValue, typename... TRest>
+		gds_size_t evalByteSizeAll( const TPValue & pValue, TRest && ...pRest );
 
-		template <typename TVal>
-		gds_size_t serializeAll( byte * pOutputBuffer, const TVal & pValue );
+		template <typename TPValue>
+		gds_size_t serializeAll( byte * pOutputBuffer, const TPValue & pValue );
 
-		template <typename TVal, typename... TRest>
-		gds_size_t serializeAll( byte * pOutputBuffer, const TVal & pValue, TRest && ...pRest );
+		template <typename TPValue, typename... TRest>
+		gds_size_t serializeAll( byte * pOutputBuffer, const TPValue & pValue, TRest && ...pRest );
 
-		template <typename TVal>
-		gds_size_t deserializeAll( const byte * pInputData, TVal & pValue );
+		template <typename TPValue>
+		gds_size_t deserializeAll( const byte * pInputData, TPValue & pValue );
 
-		template <typename TVal, typename... TRest>
-		gds_size_t deserializeAll( const byte * pInputData, TVal & pValue, TRest && ...pRest );
+		template <typename TPValue, typename... TRest>
+		gds_size_t deserializeAll( const byte * pInputData, TPValue & pValue, TRest && ...pRest );
 
 		/***********************************************************************************************************/
 		/********************************************** Core API - Auto ********************************************/
 		/***********************************************************************************************************/
 
-		template <typename TValue>
-		gds_size_t serializeAuto( const ReadWriteMemoryView & pOutputBuffer, const TValue & pValue );
+		template <typename TPValue>
+		gds_size_t serializeAuto( const read_write_memory_view & pOutputBuffer, const TPValue & pValue );
 
-		template <typename TValue, size_t tSize>
-		gds_size_t serializeAuto( std::array<byte, tSize> & pOutputBuffer, const TValue & pValue );
+		template <typename TPValue, size_t tpSize>
+		gds_size_t serializeAuto( std::array<byte, tpSize> & pOutputBuffer, const TPValue & pValue );
 
-		template <typename TValue>
-		gds_size_t serializeAutoWithMetaData( const ReadWriteMemoryView & pOutputBuffer, const TValue & pValue );
+		template <typename TPValue>
+		gds_size_t serializeAutoWithMetaData( const read_write_memory_view & pOutputBuffer, const TPValue & pValue );
 
-		template <typename TValue, size_t tSize>
-		gds_size_t serializeAutoWithMetaData( std::array<byte, tSize> & pOutputBuffer, const TValue & pValue );
+		template <typename TPValue, size_t tpSize>
+		gds_size_t serializeAutoWithMetaData( std::array<byte, tpSize> & pOutputBuffer, const TPValue & pValue );
 
-		template <typename TValue>
-		gds_size_t serializeAuto( DynamicByteArray & pOutputBuffer, const TValue & pValue );
+		template <typename TPValue>
+		gds_size_t serializeAuto( Dynamicbyte_array & pOutputBuffer, const TPValue & pValue );
 
-		template <typename TValue>
-		gds_size_t serializeAuto( DynamicMemoryBuffer & pOutputBuffer, const TValue & pValue );
+		template <typename TPValue>
+		gds_size_t serializeAuto( dynamic_memory_buffer & pOutputBuffer, const TPValue & pValue );
 
-		template <typename TValue>
-		gds_size_t serializeAuto( std::vector<byte> & pOutputBuffer, const TValue & pValue );
+		template <typename TPValue>
+		gds_size_t serializeAuto( std::vector<byte> & pOutputBuffer, const TPValue & pValue );
 
-		template <typename TValue>
-		gds_size_t serializeAutoWithMetaData( DynamicByteArray & pOutputBuffer, const TValue & pValue );
+		template <typename TPValue>
+		gds_size_t serializeAutoWithMetaData( Dynamicbyte_array & pOutputBuffer, const TPValue & pValue );
 
-		template <typename TValue>
-		gds_size_t serializeAutoWithMetaData( DynamicMemoryBuffer & pOutputBuffer, const TValue & pValue );
+		template <typename TPValue>
+		gds_size_t serializeAutoWithMetaData( dynamic_memory_buffer & pOutputBuffer, const TPValue & pValue );
 
-		template <typename TValue>
-		gds_size_t serializeAutoWithMetaData( std::vector<byte> & pOutputBuffer, const TValue & pValue );
+		template <typename TPValue>
+		gds_size_t serializeAutoWithMetaData( std::vector<byte> & pOutputBuffer, const TPValue & pValue );
 
-		template <typename TBuffer, typename TValue>
-		gds_size_t deserializeAuto( const TBuffer & pInputData, TValue & pValue );
+		template <typename TBuffer, typename TPValue>
+		gds_size_t deserializeAuto( const TBuffer & pInputData, TPValue & pValue );
 
-		template <typename TBuffer, typename TValue>
-		gds_size_t deserializeAutoWithMetaData( const TBuffer & pInputData, TValue & pValue );
+		template <typename TBuffer, typename TPValue>
+		gds_size_t deserializeAutoWithMetaData( const TBuffer & pInputData, TPValue & pValue );
 
 		/***********************************************************************************************************/
 		/******************************************** Core API - External ******************************************/
@@ -201,14 +198,14 @@ namespace Ic3
 		/// @param pValue The object to be serialized
 		/// @param pWriteCallback The write callback for data writing. Cannot be empty.
 		/// @param pGdsCache Custom cache to which the data is serialized before writing.
-		template <typename TBuffer, typename TValue>
-		gds_size_t serializeExternal( const TValue & pValue, const DataWriteCallback & pWriteCallback, TBuffer & pGdsCache );
+		template <typename TBuffer, typename TPValue>
+		gds_size_t serializeExternal( const TPValue & pValue, const DataWriteCallback & pWriteCallback, TBuffer & pGdsCache );
 
 		/// @brief Serializes the specified object and writes the byte representation using the specified callback.
 		/// @param pValue The object to be serialized
 		/// @param pWriteCallback The write callback for data writing. Cannot be empty.
-		template <typename TValue>
-		gds_size_t serializeExternal( const TValue & pValue, const DataWriteCallback & pWriteCallback );
+		template <typename TPValue>
+		gds_size_t serializeExternal( const TPValue & pValue, const DataWriteCallback & pWriteCallback );
 
 		// Deserialization is more problematic, because the data is usually dynamically-sized (containers, strings, ranges).
 		// For the best flexibility, we assume, that the data source is a one-way stream (we can read bytes in order
@@ -224,26 +221,26 @@ namespace Ic3
 		/// @param pValue The object to store the deserialized state.
 		/// @param pReadCallback The read callback for data reading. Cannot be empty.
 		/// @param pGdsCache Custom cache that will be used as a read buffer.
-		template <typename TValue>
-		gds_size_t deserializeExternal( TValue & pValue, const DataReadCallback & pReadCallback, const ReadWriteMemoryView & pGdsCache );
+		template <typename TPValue>
+		gds_size_t deserializeExternal( TPValue & pValue, const DataReadCallback & pReadCallback, const read_write_memory_view & pGdsCache );
 
-		template <typename TValue, size_t tSize>
-		gds_size_t deserializeExternal( TValue & pValue, const DataReadCallback & pReadCallback, std::array<byte, tSize> & pGdsCache );
+		template <typename TPValue, size_t tpSize>
+		gds_size_t deserializeExternal( TPValue & pValue, const DataReadCallback & pReadCallback, std::array<byte, tpSize> & pGdsCache );
 
-		template <typename TValue>
-		gds_size_t deserializeExternal( TValue & pValue, const DataReadCallback & pReadCallback, DynamicByteArray & pGdsCache );
+		template <typename TPValue>
+		gds_size_t deserializeExternal( TPValue & pValue, const DataReadCallback & pReadCallback, Dynamicbyte_array & pGdsCache );
 
-		template <typename TValue>
-		gds_size_t deserializeExternal( TValue & pValue, const DataReadCallback & pReadCallback, DynamicMemoryBuffer & pGdsCache );
+		template <typename TPValue>
+		gds_size_t deserializeExternal( TPValue & pValue, const DataReadCallback & pReadCallback, dynamic_memory_buffer & pGdsCache );
 
-		template <typename TValue>
-		gds_size_t deserializeExternal( TValue & pValue, const DataReadCallback & pReadCallback, std::vector<byte> & pGdsCache );
+		template <typename TPValue>
+		gds_size_t deserializeExternal( TPValue & pValue, const DataReadCallback & pReadCallback, std::vector<byte> & pGdsCache );
 
 		/// @brief Deserializes object of the specified type and stores it in pValue. Binary data is read using the specified read callback.
 		/// @param pValue The object to store the deserialized state.
 		/// @param pReadCallback The read callback for data reading. Cannot be empty.
-		template <typename TValue>
-		gds_size_t deserializeExternal( TValue & pValue, const DataReadCallback & pReadCallback );
+		template <typename TPValue>
+		gds_size_t deserializeExternal( TPValue & pValue, const DataReadCallback & pReadCallback );
 
 		/***********************************************************************************************************/
 		/******************************************* Container/Map Helpers *****************************************/
@@ -325,66 +322,66 @@ namespace Ic3
 		/************************************************* ArrayView ***********************************************/
 		/***********************************************************************************************************/
 
-		template <typename TVal>
-		gds_size_t evalByteSize( const ArrayView<TVal> & pArrayView );
+		template <typename TPValue>
+		gds_size_t evalByteSize( const cppx::array_view<TPValue> & pArrayView );
 
-		template <typename TVal>
-		gds_size_t serialize( byte * pOutputBuffer, const ArrayView<TVal> & pArrayView );
+		template <typename TPValue>
+		gds_size_t serialize( byte * pOutputBuffer, const cppx::array_view<TPValue> & pArrayView );
 
-		template <typename TVal>
-		gds_size_t deserialize( const byte * pInputData, ArrayView<TVal> & pArrayView );
+		template <typename TPValue>
+		gds_size_t deserialize( const byte * pInputData, cppx::array_view<TPValue> & pArrayView );
 
 		/***********************************************************************************************************/
 		/*********************************************** AtomicBitmask *********************************************/
 		/***********************************************************************************************************/
 
-		template <typename TIntegral>
-		gds_size_t evalByteSize( const AtomicBitmask<TIntegral> & pBitmask );
+		template <typename TPIntegral>
+		gds_size_t evalByteSize( const AtomicBitmask<TPIntegral> & pBitmask );
 
-		template <typename TIntegral>
-		gds_size_t serialize( byte * pOutputBuffer, const AtomicBitmask<TIntegral> & pBitmask );
+		template <typename TPIntegral>
+		gds_size_t serialize( byte * pOutputBuffer, const AtomicBitmask<TPIntegral> & pBitmask );
 
-		template <typename TIntegral>
-		gds_size_t deserialize( const byte * pInputData, AtomicBitmask<TIntegral> & pBitmask );
+		template <typename TPIntegral>
+		gds_size_t deserialize( const byte * pInputData, AtomicBitmask<TPIntegral> & pBitmask );
 
 		/***********************************************************************************************************/
 		/************************************************** Bitmask ************************************************/
 		/***********************************************************************************************************/
 
-		template <typename TIntegral>
-		gds_size_t evalByteSize( const Bitmask<TIntegral> & pBitmask );
+		template <typename TPIntegral>
+		gds_size_t evalByteSize( const cppx::bitmask<TPIntegral> & pBitmask );
 
-		template <typename TIntegral>
-		gds_size_t serialize( byte * pOutputBuffer, const Bitmask<TIntegral> & pBitmask );
+		template <typename TPIntegral>
+		gds_size_t serialize( byte * pOutputBuffer, const cppx::bitmask<TPIntegral> & pBitmask );
 
-		template <typename TIntegral>
-		gds_size_t deserialize( const byte * pInputData, Bitmask<TIntegral> & pBitmask );
+		template <typename TPIntegral>
+		gds_size_t deserialize( const byte * pInputData, cppx::bitmask<TPIntegral> & pBitmask );
 
 		/***********************************************************************************************************/
 		/************************************************ SortedArray **********************************************/
 		/***********************************************************************************************************/
 
-		template <typename TVal, typename TCompare, typename TAlloc>
-		gds_size_t evalByteSize( const SortedArray<TVal, TCompare, TAlloc> & pSortedArray );
+		template <typename TPValue, typename TPComparator, typename TPAllocator>
+		gds_size_t evalByteSize( const SortedArray<TPValue, TPComparator, TPAllocator> & pSortedArray );
 
-		template <typename TVal, typename TCompare, typename TAlloc>
-		gds_size_t serialize( byte * pOutputBuffer, const SortedArray<TVal, TCompare, TAlloc> & pSortedArray );
+		template <typename TPValue, typename TPComparator, typename TPAllocator>
+		gds_size_t serialize( byte * pOutputBuffer, const SortedArray<TPValue, TPComparator, TPAllocator> & pSortedArray );
 
-		template <typename TVal, typename TCompare, typename TAlloc>
-		gds_size_t deserialize( const byte * pInputData, const SortedArray<TVal, TCompare, TAlloc> & pSortedArray );
+		template <typename TPValue, typename TPComparator, typename TPAllocator>
+		gds_size_t deserialize( const byte * pInputData, const SortedArray<TPValue, TPComparator, TPAllocator> & pSortedArray );
 
 		/***********************************************************************************************************/
 		/******************************************** std::basic_string ********************************************/
 		/***********************************************************************************************************/
 
-		template <typename TCh, typename TTr, typename TAlloc>
-		gds_size_t evalByteSize( const std::basic_string<TCh, TTr, TAlloc> & pString );
+		template <typename TCh, typename TTr, typename TPAllocator>
+		gds_size_t evalByteSize( const std::basic_string<TCh, TTr, TPAllocator> & pString );
 		
-		template <typename TCh, typename TTr, typename TAlloc>
-		gds_size_t serialize( byte * pOutputBuffer, const std::basic_string<TCh, TTr, TAlloc> & pString );
+		template <typename TCh, typename TTr, typename TPAllocator>
+		gds_size_t serialize( byte * pOutputBuffer, const std::basic_string<TCh, TTr, TPAllocator> & pString );
 		
-		template <typename TCh, typename TTr, typename TAlloc>
-		gds_size_t deserialize( const byte * pInputData, std::basic_string<TCh, TTr, TAlloc> & pString );
+		template <typename TCh, typename TTr, typename TPAllocator>
+		gds_size_t deserialize( const byte * pInputData, std::basic_string<TCh, TTr, TPAllocator> & pString );
 
 		/***********************************************************************************************************/
 		/************************************************ std::pair ************************************************/
@@ -403,48 +400,48 @@ namespace Ic3
 		/************************************************ std::array ***********************************************/
 		/***********************************************************************************************************/
 
-		template <typename TValue, size_t tSize>
-		gds_size_t evalByteSize( const std::array<TValue, tSize> & pArray );
+		template <typename TPValue, size_t tpSize>
+		gds_size_t evalByteSize( const std::array<TPValue, tpSize> & pArray );
 
-		template <typename TValue, size_t tSize>
-		gds_size_t serialize( byte * pOutputBuffer, const std::array<TValue, tSize> & pArray );
+		template <typename TPValue, size_t tpSize>
+		gds_size_t serialize( byte * pOutputBuffer, const std::array<TPValue, tpSize> & pArray );
 
-		template <typename TValue, size_t tSize>
-		gds_size_t deserialize( const byte * pInputData, std::array<TValue, tSize> & pArray );
+		template <typename TPValue, size_t tpSize>
+		gds_size_t deserialize( const byte * pInputData, std::array<TPValue, tpSize> & pArray );
 
 		/***********************************************************************************************************/
 		/*********************************************** std::vector ***********************************************/
 		/***********************************************************************************************************/
 
-		template <typename TValue, typename TAlloc>
-		gds_size_t evalByteSize( const std::vector<TValue, TAlloc> & pVector );
+		template <typename TPValue, typename TPAllocator>
+		gds_size_t evalByteSize( const std::vector<TPValue, TPAllocator> & pVector );
 
-		template <typename TValue, typename TAlloc>
-		gds_size_t serialize( byte * pOutputBuffer, const std::vector<TValue, TAlloc> & pVector );
+		template <typename TPValue, typename TPAllocator>
+		gds_size_t serialize( byte * pOutputBuffer, const std::vector<TPValue, TPAllocator> & pVector );
 
-		template <typename TValue, typename TAlloc>
-		gds_size_t deserialize( const byte * pInputData, std::vector<TValue, TAlloc> & pVector );
+		template <typename TPValue, typename TPAllocator>
+		gds_size_t deserialize( const byte * pInputData, std::vector<TPValue, TPAllocator> & pVector );
 
 		namespace internal
 		{
 
-			template <typename TFxBuffer, typename TValue>
-			gds_size_t serializeAutoFixed( TFxBuffer & pOutputBuffer, const TValue & pValue );
+			template <typename TFxBuffer, typename TPValue>
+			gds_size_t serializeAutoFixed( TFxBuffer & pOutputBuffer, const TPValue & pValue );
 
-			template <typename TFxBuffer, typename TValue>
-			gds_size_t serializeAutoWithMetaDataFixed( TFxBuffer & pOutputBuffer, const TValue & pValue );
+			template <typename TFxBuffer, typename TPValue>
+			gds_size_t serializeAutoWithMetaDataFixed( TFxBuffer & pOutputBuffer, const TPValue & pValue );
 
-			template <typename TRsBuffer, typename TValue>
-			gds_size_t serializeAutoResizable( TRsBuffer & pOutputBuffer, const TValue & pValue );
+			template <typename TRsBuffer, typename TPValue>
+			gds_size_t serializeAutoResizable( TRsBuffer & pOutputBuffer, const TPValue & pValue );
 
-			template <typename TRsBuffer, typename TValue>
-			gds_size_t serializeAutoWithMetaDataResizable( TRsBuffer & pOutputBuffer, const TValue & pValue );
+			template <typename TRsBuffer, typename TPValue>
+			gds_size_t serializeAutoWithMetaDataResizable( TRsBuffer & pOutputBuffer, const TPValue & pValue );
 
-			template <typename TValue, typename TFxBuffer>
-			gds_size_t deserializeExternalFixed( TValue & pValue, const DataReadCallback & pReadCallback, TFxBuffer & pGdsCache );
+			template <typename TPValue, typename TFxBuffer>
+			gds_size_t deserializeExternalFixed( TPValue & pValue, const DataReadCallback & pReadCallback, TFxBuffer & pGdsCache );
 
-			template <typename TValue, typename TRsBuffer>
-			gds_size_t deserializeExternalResizable( TValue & pValue, const DataReadCallback & pReadCallback, TRsBuffer & pGdsCache );
+			template <typename TPValue, typename TRsBuffer>
+			gds_size_t deserializeExternalResizable( TPValue & pValue, const DataReadCallback & pReadCallback, TRsBuffer & pGdsCache );
 
 			template <typename TFxBuffer>
 			bool readDataExternalFixed( const DataReadCallback & pReadCallback, TFxBuffer & pReadBuffer );
@@ -460,14 +457,14 @@ namespace Ic3
 	/**************************************** Core API - evalByteSize() ****************************************/
 	/***********************************************************************************************************/
 
-	template <typename TVal, std::enable_if_t<IsGdsSerializable<TVal>::sValue, int>>
-	inline gds_size_t GDSCore::evalByteSize( const TVal & pValue )
+	template <typename TPValue, std::enable_if_t<IsGdsSerializable<TPValue>::sValue, int>>
+	inline gds_size_t GDSCore::evalByteSize( const TPValue & pValue )
 	{
 		return pValue.evalByteSize();
 	}
 
-	template <typename TVal>
-	inline gds_size_t GDSCore::evalByteSize( const TVal & pValue )
+	template <typename TPValue>
+	inline gds_size_t GDSCore::evalByteSize( const TPValue & pValue )
 	{
 		return GDS::evalByteSize( pValue );
 	}
@@ -478,20 +475,20 @@ namespace Ic3
 		return evalByteSize( pValueRef.get() );
 	}
 
-	template <typename TVal, typename TInternal, std::enable_if_t<std::is_void<TInternal>::value, int>>
-	inline gds_size_t GDSCore::evalByteSize( const TVal & pValue, const GDS::TypeCastTag<TInternal> & )
+	template <typename TPValue, typename TInternal, std::enable_if_t<std::is_void<TInternal>::value, int>>
+	inline gds_size_t GDSCore::evalByteSize( const TPValue & pValue, const GDS::TypeCastTag<TInternal> & )
 	{
 		return evalByteSize( pValue );
 	}
 
-	template <typename TVal, typename TInternal, std::enable_if_t<!std::is_void<TInternal>::value, int>>
-	inline gds_size_t GDSCore::evalByteSize( const TVal & pValue, const GDS::TypeCastTag<TInternal> & )
+	template <typename TPValue, typename TInternal, std::enable_if_t<!std::is_void<TInternal>::value, int>>
+	inline gds_size_t GDSCore::evalByteSize( const TPValue & pValue, const GDS::TypeCastTag<TInternal> & )
 	{
-		return evalByteSize( GDS::ValueRef<const TVal, TInternal>{ pValue } );
+		return evalByteSize( GDS::ValueRef<const TPValue, TInternal>{ pValue } );
 	}
 
-	template <typename TVal, typename TInternal, std::enable_if_t<!std::is_void<TInternal>::value, int>>
-	inline gds_size_t GDSCore::evalByteSize( const GDS::TypeCastInfo<TVal, TInternal> & pCastInfo )
+	template <typename TPValue, typename TInternal, std::enable_if_t<!std::is_void<TInternal>::value, int>>
+	inline gds_size_t GDSCore::evalByteSize( const GDS::TypeCastInfo<TPValue, TInternal> & pCastInfo )
 	{
 		return evalByteSize( pCastInfo.refWrapper.get(), pCastInfo.castTag );
 	}
@@ -500,14 +497,14 @@ namespace Ic3
 	/***************************************** Core API - serialize() ******************************************/
 	/***********************************************************************************************************/
 
-	template <typename TVal, std::enable_if_t<IsGdsSerializable<TVal>::sValue, int>>
-	inline gds_size_t GDSCore::serialize( byte * pOutputBuffer, const TVal & pValue )
+	template <typename TPValue, std::enable_if_t<IsGdsSerializable<TPValue>::sValue, int>>
+	inline gds_size_t GDSCore::serialize( byte * pOutputBuffer, const TPValue & pValue )
 	{
 		return pValue.serialize( pOutputBuffer );
 	}
 
-	template <typename TVal>
-	inline gds_size_t GDSCore::serialize( byte * pOutputBuffer, const TVal & pValue )
+	template <typename TPValue>
+	inline gds_size_t GDSCore::serialize( byte * pOutputBuffer, const TPValue & pValue )
 	{
 		return GDS::serialize( pOutputBuffer, pValue );
 	}
@@ -518,20 +515,20 @@ namespace Ic3
 		return serialize( pOutputBuffer, pValueRef.get() );
 	}
 
-	template <typename TVal, typename TInternal, std::enable_if_t<std::is_void<TInternal>::value, int>>
-	inline gds_size_t GDSCore::serialize( byte * pOutputBuffer, const TVal & pValue, const GDS::TypeCastTag<TInternal> & )
+	template <typename TPValue, typename TInternal, std::enable_if_t<std::is_void<TInternal>::value, int>>
+	inline gds_size_t GDSCore::serialize( byte * pOutputBuffer, const TPValue & pValue, const GDS::TypeCastTag<TInternal> & )
 	{
 		return serialize( pOutputBuffer, pValue );
 	}
 
-	template <typename TVal, typename TInternal, std::enable_if_t<!std::is_void<TInternal>::value, int>>
-	inline gds_size_t GDSCore::serialize( byte * pOutputBuffer, const TVal & pValue, const GDS::TypeCastTag<TInternal> & )
+	template <typename TPValue, typename TInternal, std::enable_if_t<!std::is_void<TInternal>::value, int>>
+	inline gds_size_t GDSCore::serialize( byte * pOutputBuffer, const TPValue & pValue, const GDS::TypeCastTag<TInternal> & )
 	{
-		return serialize( pOutputBuffer, GDS::ValueRef<TVal, TInternal>{ pValue } );
+		return serialize( pOutputBuffer, GDS::ValueRef<TPValue, TInternal>{ pValue } );
 	}
 
-	template <typename TVal, typename TInternal, std::enable_if_t<!std::is_void<TInternal>::value, int>>
-	inline gds_size_t GDSCore::serialize( byte * pOutputBuffer, const GDS::TypeCastInfo<TVal, TInternal> & pCastInfo )
+	template <typename TPValue, typename TInternal, std::enable_if_t<!std::is_void<TInternal>::value, int>>
+	inline gds_size_t GDSCore::serialize( byte * pOutputBuffer, const GDS::TypeCastInfo<TPValue, TInternal> & pCastInfo )
 	{
 		return serialize( pOutputBuffer, pCastInfo.refWrapper.get(), pCastInfo.castTag );
 	}
@@ -540,14 +537,14 @@ namespace Ic3
 	/**************************************** Core API - deserialize() *****************************************/
 	/***********************************************************************************************************/
 
-	template <typename TVal, std::enable_if_t<IsGdsSerializable<TVal>::sValue, int>>
-	inline gds_size_t GDSCore::deserialize( const byte * pInputData, TVal & pValue )
+	template <typename TPValue, std::enable_if_t<IsGdsSerializable<TPValue>::sValue, int>>
+	inline gds_size_t GDSCore::deserialize( const byte * pInputData, TPValue & pValue )
 	{
 		return pValue.deserialize( pInputData );
 	}
 
-	template <typename TVal>
-	inline gds_size_t GDSCore::deserialize( const byte * pInputData, TVal & pValue )
+	template <typename TPValue>
+	inline gds_size_t GDSCore::deserialize( const byte * pInputData, TPValue & pValue )
 	{
 		return GDS::deserialize( pInputData, pValue );
 	}
@@ -558,20 +555,20 @@ namespace Ic3
 		return deserialize( pInputData, pValueRef.get() );
 	}
 
-	template <typename TVal, typename TInternal, std::enable_if_t<std::is_void<TInternal>::value, int>>
-	inline gds_size_t GDSCore::deserialize( const byte * pInputData, TVal & pRef, const GDS::TypeCastTag<TInternal> & )
+	template <typename TPValue, typename TInternal, std::enable_if_t<std::is_void<TInternal>::value, int>>
+	inline gds_size_t GDSCore::deserialize( const byte * pInputData, TPValue & pRef, const GDS::TypeCastTag<TInternal> & )
 	{
 		return deserialize( pInputData, pRef );
 	}
 
-	template <typename TVal, typename TInternal, std::enable_if_t<!std::is_void<TInternal>::value, int>>
-	inline gds_size_t GDSCore::deserialize( const byte * pInputData, TVal & pRef, const GDS::TypeCastTag<TInternal> & )
+	template <typename TPValue, typename TInternal, std::enable_if_t<!std::is_void<TInternal>::value, int>>
+	inline gds_size_t GDSCore::deserialize( const byte * pInputData, TPValue & pRef, const GDS::TypeCastTag<TInternal> & )
 	{
-		return deserialize( pInputData, GDS::ValueRef<TVal, TInternal>{ pRef } );
+		return deserialize( pInputData, GDS::ValueRef<TPValue, TInternal>{ pRef } );
 	}
 
-	template <typename TVal, typename TInternal, std::enable_if_t<!std::is_void<TInternal>::value, int>>
-	inline gds_size_t GDSCore::deserialize( const byte * pInputData, const GDS::TypeCastInfo<TVal, TInternal> & pCastInfo )
+	template <typename TPValue, typename TInternal, std::enable_if_t<!std::is_void<TInternal>::value, int>>
+	inline gds_size_t GDSCore::deserialize( const byte * pInputData, const GDS::TypeCastInfo<TPValue, TInternal> & pCastInfo )
 	{
 		return deserialize( pInputData, pCastInfo.refWrapper.get(), pCastInfo.castTag );
 	}
@@ -581,8 +578,8 @@ namespace Ic3
 	/***********************************************************************************************************/
 
 	/// @brief Returns an evaluated byte size of the specified object which will be serialized using metadata.
-	template <typename TVal>
-	inline gds_size_t GDSCore::evalByteSizeWithMetaData( const TVal & pValue )
+	template <typename TPValue>
+	inline gds_size_t GDSCore::evalByteSizeWithMetaData( const TPValue & pValue )
 	{
 		const auto metaDataSize = GDS::getInstanceMetaDataSize();
 		const auto valueByteSize = evalByteSize( pValue );
@@ -594,8 +591,8 @@ namespace Ic3
 	}
 
 	/// @brief Serializes given object with additional metadata.
-	template <typename TVal>
-	inline gds_size_t GDSCore::serializeWithMetaData( byte * pOutputBuffer, const TVal & pValue )
+	template <typename TPValue>
+	inline gds_size_t GDSCore::serializeWithMetaData( byte * pOutputBuffer, const TPValue & pValue )
 	{
 		// Size of the metadata, in bytes.
 		const auto metaDataSize = GDS::getInstanceMetaDataSize();
@@ -617,8 +614,8 @@ namespace Ic3
 	}
 
 	/// @brief Performs deserialization of the specified data, written with serializeWithMetaData().
-	template <typename TVal>
-	inline gds_size_t GDSCore::deserializeWithMetaData( const byte * pInputData, TVal & pValue )
+	template <typename TPValue>
+	inline gds_size_t GDSCore::deserializeWithMetaData( const byte * pInputData, TPValue & pValue )
 	{
 		// The metadata object to which we will deserialize.
 		GDS::InstanceMetaData metaData;
@@ -628,7 +625,7 @@ namespace Ic3
 
 		// deserialize() returns the number of bytes read from the buffer.
 		// This should match the byte size of the InstanceMetaData struct.
-		ic3DebugAssert( metaDataSize == GDS::getInstanceMetaDataSize() );
+		Ic3DebugAssert( metaDataSize == GDS::getInstanceMetaDataSize() );
 
 		const auto valueByteSize = deserialize( pInputData + metaDataSize, pValue );
 
@@ -639,42 +636,42 @@ namespace Ic3
 	/******************************************** Core API - Variadic ******************************************/
 	/***********************************************************************************************************/
 
-	template <typename TVal>
-	inline gds_size_t GDSCore::evalByteSizeAll( const TVal & pValue )
+	template <typename TPValue>
+	inline gds_size_t GDSCore::evalByteSizeAll( const TPValue & pValue )
 	{
 		return evalByteSize( pValue );
 	}
 
-	template <typename TVal, typename... TRest>
-	inline gds_size_t GDSCore::evalByteSizeAll( const TVal & pValue, TRest && ...pRest )
+	template <typename TPValue, typename... TRest>
+	inline gds_size_t GDSCore::evalByteSizeAll( const TPValue & pValue, TRest && ...pRest )
 	{
 		gds_size_t byteSize = evalByteSize( pValue );
 		byteSize += evalByteSizeAll( std::forward<TRest>( pRest )... );
 		return byteSize;
 	}
 
-	template <typename TVal>
-	inline gds_size_t GDSCore::serializeAll( byte * pOutputBuffer, const TVal & pValue )
+	template <typename TPValue>
+	inline gds_size_t GDSCore::serializeAll( byte * pOutputBuffer, const TPValue & pValue )
 	{
 		return serialize( pOutputBuffer, pValue );
 	}
 
-	template <typename TVal, typename... TRest>
-	inline gds_size_t GDSCore::serializeAll( byte * pOutputBuffer, const TVal & pValue, TRest && ...pRest )
+	template <typename TPValue, typename... TRest>
+	inline gds_size_t GDSCore::serializeAll( byte * pOutputBuffer, const TPValue & pValue, TRest && ...pRest )
 	{
 		gds_size_t byteSize = serialize( pOutputBuffer, pValue );
 		byteSize += serializeAll( pOutputBuffer + byteSize, std::forward<TRest>( pRest )... );
 		return byteSize;
 	}
 
-	template <typename TVal>
-	inline gds_size_t GDSCore::deserializeAll( const byte * pInputData, TVal & pValue )
+	template <typename TPValue>
+	inline gds_size_t GDSCore::deserializeAll( const byte * pInputData, TPValue & pValue )
 	{
 		return deserialize( pInputData, pValue );
 	}
 
-	template <typename TVal, typename... TRest>
-	inline gds_size_t GDSCore::deserializeAll( const byte * pInputData, TVal & pValue, TRest && ...pRest )
+	template <typename TPValue, typename... TRest>
+	inline gds_size_t GDSCore::deserializeAll( const byte * pInputData, TPValue & pValue, TRest && ...pRest )
 	{
 		gds_size_t byteSize = deserialize( pInputData, pValue );
 		byteSize += deserializeAll( pInputData + byteSize, std::forward<TRest>( pRest )... );
@@ -685,74 +682,74 @@ namespace Ic3
 	/********************************************** Core API - Auto ********************************************/
 	/***********************************************************************************************************/
 
-	template <typename TValue>
-	inline gds_size_t GDSCore::serializeAuto( const ReadWriteMemoryView & pOutputBuffer, const TValue & pValue )
+	template <typename TPValue>
+	inline gds_size_t GDSCore::serializeAuto( const read_write_memory_view & pOutputBuffer, const TPValue & pValue )
 	{
 		return internal::serializeAutoFixed( pOutputBuffer, pValue );
 	}
 
-	template <typename TValue, size_t tSize>
-	inline gds_size_t GDSCore::serializeAuto( std::array<byte, tSize> & pOutputBuffer, const TValue & pValue )
+	template <typename TPValue, size_t tpSize>
+	inline gds_size_t GDSCore::serializeAuto( std::array<byte, tpSize> & pOutputBuffer, const TPValue & pValue )
 	{
 		return internal::serializeAutoFixed( pOutputBuffer, pValue );
 	}
 
-	template <typename TValue>
-	inline gds_size_t GDSCore::serializeAutoWithMetaData( const ReadWriteMemoryView & pOutputBuffer, const TValue & pValue )
+	template <typename TPValue>
+	inline gds_size_t GDSCore::serializeAutoWithMetaData( const read_write_memory_view & pOutputBuffer, const TPValue & pValue )
 	{
 		return internal::serializeAutoWithMetaDataFixed( pOutputBuffer, pValue );
 	}
 
-	template <typename TValue, size_t tSize>
-	inline gds_size_t GDSCore::serializeAutoWithMetaData( std::array<byte, tSize> & pOutputBuffer, const TValue & pValue )
+	template <typename TPValue, size_t tpSize>
+	inline gds_size_t GDSCore::serializeAutoWithMetaData( std::array<byte, tpSize> & pOutputBuffer, const TPValue & pValue )
 	{
 		return internal::serializeAutoWithMetaDataFixed( pOutputBuffer, pValue );
 	}
 
-	template <typename TValue>
-	inline gds_size_t GDSCore::serializeAuto( DynamicByteArray & pOutputBuffer, const TValue & pValue )
+	template <typename TPValue>
+	inline gds_size_t GDSCore::serializeAuto( Dynamicbyte_array & pOutputBuffer, const TPValue & pValue )
 	{
 		return internal::serializeAutoResizable( pOutputBuffer, pValue );
 	}
 
-	template <typename TValue>
-	inline gds_size_t GDSCore::serializeAuto( DynamicMemoryBuffer & pOutputBuffer, const TValue & pValue )
+	template <typename TPValue>
+	inline gds_size_t GDSCore::serializeAuto( dynamic_memory_buffer & pOutputBuffer, const TPValue & pValue )
 	{
 		return internal::serializeAutoResizable( pOutputBuffer, pValue );
 	}
 
-	template <typename TValue>
-	inline gds_size_t GDSCore::serializeAuto( std::vector<byte> & pOutputBuffer, const TValue & pValue )
+	template <typename TPValue>
+	inline gds_size_t GDSCore::serializeAuto( std::vector<byte> & pOutputBuffer, const TPValue & pValue )
 	{
 		return internal::serializeAutoResizable( pOutputBuffer, pValue );
 	}
 
-	template <typename TValue>
-	inline gds_size_t GDSCore::serializeAutoWithMetaData( DynamicByteArray & pOutputBuffer, const TValue & pValue )
+	template <typename TPValue>
+	inline gds_size_t GDSCore::serializeAutoWithMetaData( Dynamicbyte_array & pOutputBuffer, const TPValue & pValue )
 	{
 		return internal::serializeAutoWithMetaDataResizable( pOutputBuffer, pValue );
 	}
 
-	template <typename TValue>
-	inline gds_size_t GDSCore::serializeAutoWithMetaData( DynamicMemoryBuffer & pOutputBuffer, const TValue & pValue )
+	template <typename TPValue>
+	inline gds_size_t GDSCore::serializeAutoWithMetaData( dynamic_memory_buffer & pOutputBuffer, const TPValue & pValue )
 	{
 		return internal::serializeAutoWithMetaDataResizable( pOutputBuffer, pValue );
 	}
 
-	template <typename TValue>
-	inline gds_size_t GDSCore::serializeAutoWithMetaData( std::vector<byte> & pOutputBuffer, const TValue & pValue )
+	template <typename TPValue>
+	inline gds_size_t GDSCore::serializeAutoWithMetaData( std::vector<byte> & pOutputBuffer, const TPValue & pValue )
 	{
 		return internal::serializeAutoWithMetaDataResizable( pOutputBuffer, pValue );
 	}
 
-	template <typename TBuffer, typename TValue>
-	inline gds_size_t GDSCore::deserializeAuto( const TBuffer & pInputData, TValue & pValue )
+	template <typename TBuffer, typename TPValue>
+	inline gds_size_t GDSCore::deserializeAuto( const TBuffer & pInputData, TPValue & pValue )
 	{
 		return deserialize( pInputData.data(), pValue );
 	}
 
-	template <typename TBuffer, typename TValue>
-	inline gds_size_t GDSCore::deserializeAutoWithMetaData( const TBuffer & pInputData, TValue & pValue )
+	template <typename TBuffer, typename TPValue>
+	inline gds_size_t GDSCore::deserializeAutoWithMetaData( const TBuffer & pInputData, TPValue & pValue )
 	{
 		return deserializeWithMetaData( pInputData.data(), pValue );
 	}
@@ -761,8 +758,8 @@ namespace Ic3
 	/******************************************** Core API - External ******************************************/
 	/***********************************************************************************************************/
 
-	template <typename TBuffer, typename TValue>
-	inline gds_size_t GDSCore::serializeExternal( const TValue & pValue, const DataWriteCallback & pWriteCallback, TBuffer & pGdsCache )
+	template <typename TBuffer, typename TPValue>
+	inline gds_size_t GDSCore::serializeExternal( const TPValue & pValue, const DataWriteCallback & pWriteCallback, TBuffer & pGdsCache )
 	{
 		// Serialize the object into the cache. We can use our neat serializeAuto()
 		// to properly handle different type of buffers here!
@@ -773,7 +770,7 @@ namespace Ic3
 			if( !pWriteCallback )
 			{
 				// This cannot be an empty function.
-				ic3ThrowDesc( E_EXC_DEBUG_PLACEHOLDER, "Empty write callback." );
+				Ic3ThrowDesc( eExcCodeDebugPlaceholder, "Empty write callback." );
 			}
 
 			// Write the data using the callback.
@@ -783,47 +780,47 @@ namespace Ic3
 		return writeSize;
 	}
 
-	template <typename TValue>
-	inline gds_size_t GDSCore::serializeExternal( const TValue & pValue, const DataWriteCallback & pWriteCallback )
+	template <typename TPValue>
+	inline gds_size_t GDSCore::serializeExternal( const TPValue & pValue, const DataWriteCallback & pWriteCallback )
 	{
-		DynamicByteArray localGdsCache{};
+		Dynamicbyte_array localGdsCache{};
 		return serializeExternal( pValue, pWriteCallback, localGdsCache );
 	}
 
-	template <typename TValue>
-	inline gds_size_t GDSCore::deserializeExternal( TValue & pValue, const DataReadCallback & pReadCallback, const ReadWriteMemoryView & pGdsCache )
+	template <typename TPValue>
+	inline gds_size_t GDSCore::deserializeExternal( TPValue & pValue, const DataReadCallback & pReadCallback, const read_write_memory_view & pGdsCache )
 	{
 		return internal::deserializeExternalFixed( pValue, pReadCallback, pGdsCache );
 	}
 
-	template <typename TValue, size_t tSize>
-	inline gds_size_t GDSCore::deserializeExternal( TValue & pValue, const DataReadCallback & pReadCallback, std::array<byte, tSize> & pGdsCache )
+	template <typename TPValue, size_t tpSize>
+	inline gds_size_t GDSCore::deserializeExternal( TPValue & pValue, const DataReadCallback & pReadCallback, std::array<byte, tpSize> & pGdsCache )
 	{
 		return internal::deserializeExternalFixed( pValue, pReadCallback, pGdsCache );
 	}
 
-	template <typename TValue>
-	inline gds_size_t GDSCore::deserializeExternal( TValue & pValue, const DataReadCallback & pReadCallback, DynamicByteArray & pGdsCache )
+	template <typename TPValue>
+	inline gds_size_t GDSCore::deserializeExternal( TPValue & pValue, const DataReadCallback & pReadCallback, Dynamicbyte_array & pGdsCache )
 	{
 		return internal::deserializeExternalResizable( pValue, pReadCallback, pGdsCache );
 	}
 
-	template <typename TValue>
-	inline gds_size_t GDSCore::deserializeExternal( TValue & pValue, const DataReadCallback & pReadCallback, DynamicMemoryBuffer & pGdsCache )
+	template <typename TPValue>
+	inline gds_size_t GDSCore::deserializeExternal( TPValue & pValue, const DataReadCallback & pReadCallback, dynamic_memory_buffer & pGdsCache )
 	{
 		return internal::deserializeExternalResizable( pValue, pReadCallback, pGdsCache );
 	}
 
-	template <typename TValue>
-	inline gds_size_t GDSCore::deserializeExternal( TValue & pValue, const DataReadCallback & pReadCallback, std::vector<byte> & pGdsCache )
+	template <typename TPValue>
+	inline gds_size_t GDSCore::deserializeExternal( TPValue & pValue, const DataReadCallback & pReadCallback, std::vector<byte> & pGdsCache )
 	{
 		return internal::deserializeExternalResizable( pValue, pReadCallback, pGdsCache );
 	}
 
-	template <typename TValue>
-	inline gds_size_t GDSCore::deserializeExternal( TValue & pValue, const DataReadCallback & pReadCallback )
+	template <typename TPValue>
+	inline gds_size_t GDSCore::deserializeExternal( TPValue & pValue, const DataReadCallback & pReadCallback )
 	{
-		DynamicByteArray localGdsCache{};
+		Dynamicbyte_array localGdsCache{};
 		return deserializeExternal( pValue, pReadCallback, localGdsCache );
 	}
 
@@ -958,8 +955,8 @@ namespace Ic3
 	/************************************************* ArrayView ***********************************************/
 	/***********************************************************************************************************/
 
-	template <typename TVal>
-	inline gds_size_t GDSCore::evalByteSize( const ArrayView<TVal> & pArrayView )
+	template <typename TPValue>
+	inline gds_size_t GDSCore::evalByteSize( const cppx::array_view<TPValue> & pArrayView )
 	{
 		gds_size_t byteSize = GDS::evalByteSize( GDS::emptySizeType() );
 		for( const auto & entry : pArrayView )
@@ -969,8 +966,8 @@ namespace Ic3
 		return byteSize;
 	}
 
-	template <typename TVal>
-	inline gds_size_t GDSCore::serialize( byte * pOutputBuffer, const ArrayView<TVal> & pArrayView )
+	template <typename TPValue>
+	inline gds_size_t GDSCore::serialize( byte * pOutputBuffer, const cppx::array_view<TPValue> & pArrayView )
 	{
 		gds_size_t byteSize = GDS::serialize( pOutputBuffer, GDS::asSizeType( pArrayView.size() ) );
 		for( const auto & value : pArrayView )
@@ -980,8 +977,8 @@ namespace Ic3
 		return byteSize;
 	}
 
-	template <typename TVal>
-	inline gds_size_t GDSCore::deserialize( const byte * pInputData, ArrayView<TVal> & pArrayView )
+	template <typename TPValue>
+	inline gds_size_t GDSCore::deserialize( const byte * pInputData, cppx::array_view<TPValue> & pArrayView )
 	{
 		size_t arraySize = 0;
 		gds_size_t byteSize = GDS::deserialize( pInputData, GDS::asSizeType( arraySize ) );
@@ -996,64 +993,64 @@ namespace Ic3
 	/*********************************************** AtomicBitmask *********************************************/
 	/***********************************************************************************************************/
 
-	template <typename TIntegral>
-	inline gds_size_t GDSCore::evalByteSize( const AtomicBitmask<TIntegral> & pBitmask )
+	template <typename TPIntegral>
+	inline gds_size_t GDSCore::evalByteSize( const AtomicBitmask<TPIntegral> & pBitmask )
 	{
-		return GDS::evalByteSize( static_cast<TIntegral>( pBitmask ) );
+		return GDS::evalByteSize( static_cast<TPIntegral>( pBitmask ) );
 	}
 
-	template <typename TIntegral>
-	inline gds_size_t GDSCore::serialize( byte * pOutputBuffer, const AtomicBitmask<TIntegral> & pBitmask )
+	template <typename TPIntegral>
+	inline gds_size_t GDSCore::serialize( byte * pOutputBuffer, const AtomicBitmask<TPIntegral> & pBitmask )
 	{
-		return GDS::serialize( pOutputBuffer, static_cast<TIntegral>( pBitmask ) );
+		return GDS::serialize( pOutputBuffer, static_cast<TPIntegral>( pBitmask ) );
 	}
 
-	template <typename TIntegral>
-	inline gds_size_t GDSCore::deserialize( const byte * pInputData, AtomicBitmask<TIntegral> & pBitmask )
+	template <typename TPIntegral>
+	inline gds_size_t GDSCore::deserialize( const byte * pInputData, AtomicBitmask<TPIntegral> & pBitmask )
 	{
-		return deserialize( pInputData, static_cast<TIntegral>( pBitmask ) );
+		return deserialize( pInputData, static_cast<TPIntegral>( pBitmask ) );
 	}
 
 	/***********************************************************************************************************/
 	/************************************************** Bitmask ************************************************/
 	/***********************************************************************************************************/
 
-	template <typename TIntegral>
-	inline gds_size_t GDSCore::evalByteSize( const Bitmask<TIntegral> & pBitmask )
+	template <typename TPIntegral>
+	inline gds_size_t GDSCore::evalByteSize( const cppx::bitmask<TPIntegral> & pBitmask )
 	{
-		return evalByteSize( static_cast<TIntegral>( pBitmask ) );
+		return evalByteSize( static_cast<TPIntegral>( pBitmask ) );
 	}
 
-	template <typename TIntegral>
-	inline gds_size_t GDSCore::serialize( byte * pOutputBuffer, const Bitmask<TIntegral> & pBitmask )
+	template <typename TPIntegral>
+	inline gds_size_t GDSCore::serialize( byte * pOutputBuffer, const cppx::bitmask<TPIntegral> & pBitmask )
 	{
-		return serialize( pOutputBuffer, static_cast<TIntegral>( pBitmask ) );
+		return serialize( pOutputBuffer, static_cast<TPIntegral>( pBitmask ) );
 	}
 
-	template <typename TIntegral>
-	inline gds_size_t GDSCore::deserialize( const byte * pInputData, Bitmask<TIntegral> & pBitmask )
+	template <typename TPIntegral>
+	inline gds_size_t GDSCore::deserialize( const byte * pInputData, cppx::bitmask<TPIntegral> & pBitmask )
 	{
-		return deserialize( pInputData, static_cast<TIntegral>( pBitmask ) );
+		return deserialize( pInputData, static_cast<TPIntegral>( pBitmask ) );
 	}
 
 	/***********************************************************************************************************/
 	/************************************************ SortedArray **********************************************/
 	/***********************************************************************************************************/
 
-	template <typename TVal, typename TCompare, typename TAlloc>
-	inline gds_size_t GDSCore::evalByteSize( const SortedArray<TVal, TCompare, TAlloc> & pSortedArray )
+	template <typename TPValue, typename TPComparator, typename TPAllocator>
+	inline gds_size_t GDSCore::evalByteSize( const SortedArray<TPValue, TPComparator, TPAllocator> & pSortedArray )
 	{
 		return evalByteSizeContainer( pSortedArray );
 	}
 
-	template <typename TVal, typename TCompare, typename TAlloc>
-	inline gds_size_t GDSCore::serialize( byte * pOutputBuffer, const SortedArray<TVal, TCompare, TAlloc> & pSortedArray )
+	template <typename TPValue, typename TPComparator, typename TPAllocator>
+	inline gds_size_t GDSCore::serialize( byte * pOutputBuffer, const SortedArray<TPValue, TPComparator, TPAllocator> & pSortedArray )
 	{
 		return serializeContainer( pOutputBuffer, pSortedArray );
 	}
 
-	template <typename TVal, typename TCompare, typename TAlloc>
-	inline gds_size_t GDSCore::deserialize( const byte * pInputData, const SortedArray<TVal, TCompare, TAlloc> & pSortedArray )
+	template <typename TPValue, typename TPComparator, typename TPAllocator>
+	inline gds_size_t GDSCore::deserialize( const byte * pInputData, const SortedArray<TPValue, TPComparator, TPAllocator> & pSortedArray )
 	{
 		return deserializeContainer( pInputData, pSortedArray,
 			[]( auto & SA, auto, auto E ) -> void { SA.insert( std::forward<decltype( E )>( E ) ); } );
@@ -1063,8 +1060,8 @@ namespace Ic3
 	/******************************************** std::basic_string ********************************************/
 	/***********************************************************************************************************/
 
-	template <typename TCh, typename TTr, typename TAlloc>
-	inline gds_size_t GDSCore::evalByteSize( const std::basic_string<TCh, TTr, TAlloc> & pString )
+	template <typename TCh, typename TTr, typename TPAllocator>
+	inline gds_size_t GDSCore::evalByteSize( const std::basic_string<TCh, TTr, TPAllocator> & pString )
 	{
 		gds_size_t byteSize = 0;
 
@@ -1077,8 +1074,8 @@ namespace Ic3
 		return byteSize;
 	}
 
-	template <typename TCh, typename TTr, typename TAlloc>
-	inline gds_size_t GDSCore::serialize( byte * pOutputBuffer, const std::basic_string<TCh, TTr, TAlloc> & pString )
+	template <typename TCh, typename TTr, typename TPAllocator>
+	inline gds_size_t GDSCore::serialize( byte * pOutputBuffer, const std::basic_string<TCh, TTr, TPAllocator> & pString )
 	{
 		const auto strLength = pString.length();
 
@@ -1092,8 +1089,8 @@ namespace Ic3
 		return byteSize;
 	}
 
-	template <typename TCh, typename TTr, typename TAlloc>
-	inline gds_size_t GDSCore::deserialize( const byte * pInputData, std::basic_string<TCh, TTr, TAlloc> & pString )
+	template <typename TCh, typename TTr, typename TPAllocator>
+	inline gds_size_t GDSCore::deserialize( const byte * pInputData, std::basic_string<TCh, TTr, TPAllocator> & pString )
 	{
 		size_t strLength = 0;
 		gds_size_t byteSize = GDS::deserialize( pInputData, GDS::asSizeType( strLength ) );
@@ -1143,20 +1140,20 @@ namespace Ic3
 	/************************************************ std::array ***********************************************/
 	/***********************************************************************************************************/
 
-	template <typename TValue, size_t tSize>
-	inline gds_size_t GDSCore::evalByteSize( const std::array<TValue, tSize> & pArray )
+	template <typename TPValue, size_t tpSize>
+	inline gds_size_t GDSCore::evalByteSize( const std::array<TPValue, tpSize> & pArray )
 	{
 		return evalByteSizeContainer( pArray );
 	}
 
-	template <typename TValue, size_t tSize>
-	inline gds_size_t GDSCore::serialize( byte * pOutputBuffer, const std::array<TValue, tSize> & pArray )
+	template <typename TPValue, size_t tpSize>
+	inline gds_size_t GDSCore::serialize( byte * pOutputBuffer, const std::array<TPValue, tpSize> & pArray )
 	{
 		return serializeContainer( pOutputBuffer, pArray );
 	}
 
-	template <typename TValue, size_t tSize>
-	inline gds_size_t GDSCore::deserialize( const byte * pInputData, std::array<TValue, tSize> & pArray )
+	template <typename TPValue, size_t tpSize>
+	inline gds_size_t GDSCore::deserialize( const byte * pInputData, std::array<TPValue, tpSize> & pArray )
 	{
 		// std::array doesn't have any push/insert methods, so that's the one case where index becomes useful.
 		// We simply assign the incoming elements under their indexes passed by the helper method. Simple.
@@ -1168,20 +1165,20 @@ namespace Ic3
 	/*********************************************** std::vector ***********************************************/
 	/***********************************************************************************************************/
 
-	template <typename TValue, typename TAlloc>
-	inline gds_size_t GDSCore::evalByteSize( const std::vector<TValue, TAlloc> & pVector )
+	template <typename TPValue, typename TPAllocator>
+	inline gds_size_t GDSCore::evalByteSize( const std::vector<TPValue, TPAllocator> & pVector )
 	{
 		return evalByteSizeContainer( pVector );
 	}
 
-	template <typename TValue, typename TAlloc>
-	inline gds_size_t GDSCore::serialize( byte * pOutputBuffer, const std::vector<TValue, TAlloc> & pVector )
+	template <typename TPValue, typename TPAllocator>
+	inline gds_size_t GDSCore::serialize( byte * pOutputBuffer, const std::vector<TPValue, TPAllocator> & pVector )
 	{
 		return serializeContainer( pOutputBuffer, pVector );
 	}
 
-	template <typename TValue, typename TAlloc>
-	inline gds_size_t GDSCore::deserialize( const byte * pInputData, std::vector<TValue, TAlloc> & pVector )
+	template <typename TPValue, typename TPAllocator>
+	inline gds_size_t GDSCore::deserialize( const byte * pInputData, std::vector<TPValue, TPAllocator> & pVector )
 	{
 		return deserializeContainer( pInputData, pVector,
 			[]( auto & V, auto, auto && E ) -> void { V.push_back( std::forward<decltype( E )>( E ) ); } );
@@ -1193,8 +1190,8 @@ namespace Ic3
 	//
 	//
 
-	template <typename TFxBuffer, typename TValue>
-	inline gds_size_t GDSCore::internal::serializeAutoFixed( TFxBuffer & pOutputBuffer, const TValue & pValue )
+	template <typename TFxBuffer, typename TPValue>
+	inline gds_size_t GDSCore::internal::serializeAutoFixed( TFxBuffer & pOutputBuffer, const TPValue & pValue )
 	{
 		// Get the size of the serialized object (i.e. the minimum required size of the target buffer).
 		const auto totalByteSize = evalByteSize( pValue );
@@ -1205,7 +1202,7 @@ namespace Ic3
 			if( totalByteSize > pOutputBuffer.size() )
 			{
 				// Buffer is too small, throw an error, nothing can be done here.
-				ic3ThrowDesc( E_EXC_DEBUG_PLACEHOLDER, "Fixed buffer is to small for the output data." );
+				Ic3ThrowDesc( eExcCodeDebugPlaceholder, "Fixed buffer is to small for the output data." );
 			}
 
 			// Buffer is large enough, so we can use it as the target for the output.
@@ -1216,8 +1213,8 @@ namespace Ic3
 		return totalByteSize;
 	}
 
-	template <typename TFxBuffer, typename TValue>
-	inline gds_size_t GDSCore::internal::serializeAutoWithMetaDataFixed( TFxBuffer & pOutputBuffer, const TValue & pValue )
+	template <typename TFxBuffer, typename TPValue>
+	inline gds_size_t GDSCore::internal::serializeAutoWithMetaDataFixed( TFxBuffer & pOutputBuffer, const TPValue & pValue )
 	{
 		// Same thing as above, but we also include the MetaData block alongside the object itself.
 
@@ -1227,7 +1224,7 @@ namespace Ic3
 		{
 			if( totalByteSize > pOutputBuffer.size() )
 			{
-				ic3ThrowDesc( E_EXC_DEBUG_PLACEHOLDER, "Fixed buffer is to small for the output data." );
+				Ic3ThrowDesc( eExcCodeDebugPlaceholder, "Fixed buffer is to small for the output data." );
 			}
 			serializeWithMetaData( pOutputBuffer.data(), pValue );
 		}
@@ -1235,8 +1232,8 @@ namespace Ic3
 		return totalByteSize;
 	}
 
-	template <typename TRsBuffer, typename TValue>
-	inline gds_size_t GDSCore::internal::serializeAutoResizable( TRsBuffer & pOutputBuffer, const TValue & pValue )
+	template <typename TRsBuffer, typename TPValue>
+	inline gds_size_t GDSCore::internal::serializeAutoResizable( TRsBuffer & pOutputBuffer, const TPValue & pValue )
 	{
 		// Get the size of the serialized object (i.e. the minimum required size of the target buffer).
 		const auto totalByteSize = evalByteSize( pValue );
@@ -1244,7 +1241,7 @@ namespace Ic3
 		if( totalByteSize > 0 )
 		{
 			// Resize the output buffer.
-			pOutputBuffer.resize( numeric_cast<size_t>( totalByteSize ) );
+			pOutputBuffer.resize( cppx::numeric_cast<size_t>( totalByteSize ) );
 
 			// Serialize the data into the buffer. This is the call to the actual, value-specific serialize().
 			serialize( pOutputBuffer.data(), pValue );
@@ -1253,8 +1250,8 @@ namespace Ic3
 		return totalByteSize;
 	}
 
-	template <typename TRsBuffer, typename TValue>
-	inline gds_size_t GDSCore::internal::serializeAutoWithMetaDataResizable( TRsBuffer & pOutputBuffer, const TValue & pValue )
+	template <typename TRsBuffer, typename TPValue>
+	inline gds_size_t GDSCore::internal::serializeAutoWithMetaDataResizable( TRsBuffer & pOutputBuffer, const TPValue & pValue )
 	{
 		// Same thing as above, but we also include the MetaData block alongside the object itself.
 
@@ -1262,15 +1259,15 @@ namespace Ic3
 
 		if( totalByteSize > 0 )
 		{
-			pOutputBuffer.resize( numeric_cast<size_t>( totalByteSize ) );
+			pOutputBuffer.resize( cppx::numeric_cast<size_t>( totalByteSize ) );
 			serializeWithMetaData( pOutputBuffer.data(), pValue );
 		}
 
 		return totalByteSize;
 	}
 
-	template <typename TValue, typename TFxBuffer>
-	inline gds_size_t GDSCore::internal::deserializeExternalFixed( TValue & pValue, const DataReadCallback & pReadCallback, TFxBuffer & pGdsCache )
+	template <typename TPValue, typename TFxBuffer>
+	inline gds_size_t GDSCore::internal::deserializeExternalFixed( TPValue & pValue, const DataReadCallback & pReadCallback, TFxBuffer & pGdsCache )
 	{
 		if( !readDataExternalFixed( pReadCallback, pGdsCache ) )
 		{
@@ -1279,8 +1276,8 @@ namespace Ic3
 		return deserializeWithMetaData( pGdsCache.data(), pValue );
 	}
 
-	template <typename TValue, typename TRsBuffer>
-	inline gds_size_t GDSCore::internal::deserializeExternalResizable( TValue & pValue, const DataReadCallback & pReadCallback, TRsBuffer & pGdsCache )
+	template <typename TPValue, typename TRsBuffer>
+	inline gds_size_t GDSCore::internal::deserializeExternalResizable( TPValue & pValue, const DataReadCallback & pReadCallback, TRsBuffer & pGdsCache )
 	{
 		// Read data from the stream using the MetaData info. If this succeeds, pGdsCache will have
 		// a byte representation of a serialized object (including its MetaData block, of course).
@@ -1303,7 +1300,7 @@ namespace Ic3
 		// This is a fixed buffer and cannot be resized. If there is not enough space, we need to abort.
 		if( metaDataSize > pReadBuffer.size() )
 		{
-			ic3ThrowDesc( E_EXC_DEBUG_PLACEHOLDER, "Fixed buffer is to small for the output data." );
+			Ic3ThrowDesc( eExcCodeDebugPlaceholder, "Fixed buffer is to small for the output data." );
 		}
 
 		const auto metaDataReadSize = pReadCallback( pReadBuffer.data(), metaDataSize );
@@ -1321,7 +1318,7 @@ namespace Ic3
 		// Again - we cannot resize the buffer. If the additional data does not fit, report an error and quit.
 		if( metaData.outputBlockSize > pReadBuffer.size() )
 		{
-			ic3ThrowDesc( E_EXC_DEBUG_PLACEHOLDER, "Fixed buffer is to small for the output data." );
+			Ic3ThrowDesc( eExcCodeDebugPlaceholder, "Fixed buffer is to small for the output data." );
 		}
 
 		const auto objectDataReadSize = pReadCallback( pReadBuffer.data() + metaDataSize, metaData.objectDataSize );
@@ -1358,7 +1355,7 @@ namespace Ic3
 
 		// MetaData contains information about the size. ::outputBlockSize is the size of the whole data block
 		// (i.e. MetaData + ObjectData). Resize the buffer so we can read the remaining object data now.
-		pReadBuffer.resize( numeric_cast<size_t>( metaData.outputBlockSize ) );
+		pReadBuffer.resize( cppx::numeric_cast<size_t>( metaData.outputBlockSize ) );
 
 		// Read the object data. Save it after the MetaData (hence the offset), so we have a full representation.
 		const auto objectDataReadSize = pReadCallback( pReadBuffer.data() + metaDataSize, metaData.objectDataSize );

@@ -12,27 +12,27 @@ namespace Ic3::System
 
 	OSXMetalSystemDriver::~OSXMetalSystemDriver() noexcept = default;
 
-	MetalDisplaySurfaceHandle OSXMetalSystemDriver::_nativeCreateDisplaySurface(
+	MetalDisplaySurfaceHandle OSXMetalSystemDriver::_NativeCreateDisplaySurface(
 			MetalDevice & pMetalDevice,
 			const MetalDisplaySurfaceCreateInfo & pCreateInfo )
 	{
-        auto displaySurface = createSysObject<OSXMetalDisplaySurface>( getHandle<OSXMetalSystemDriver>() );
+        auto displaySurface = CreateSysObject<OSXMetalDisplaySurface>( GetHandle<OSXMetalSystemDriver>() );
 
         WindowCreateInfo windowCreateInfo;
         windowCreateInfo.frameGeometry = pCreateInfo.frameGeometry;
         windowCreateInfo.title = "TS3 Metal Window";
 
-        Platform::osxCreateWindow( displaySurface->mNativeData, nullptr, windowCreateInfo );
-        Platform::osxCreateSurfaceMetalView( displaySurface->mNativeData, pCreateInfo );
-        Platform::osxCreateEventListener( displaySurface->mNativeData );
-        Platform::osxSetInputWindow( displaySurface->mNativeData );
+        Platform::OSXCreateWindow( displaySurface->mNativeData, nullptr, windowCreateInfo );
+        Platform::OSXCreateSurfaceMetalView( displaySurface->mNativeData, pCreateInfo );
+        Platform::OSXCreateEventListener( displaySurface->mNativeData );
+        Platform::OSXSetInputWindow( displaySurface->mNativeData );
 
-		displaySurface->mSurfaceData->caMetalLayer = displaySurface->mNativeData.caMetalLayer;
+		displaySurface->surfaceData->caMetalLayer = displaySurface->mNativeData.caMetalLayer;
 
         return displaySurface;
 	}
 
-	void OSXMetalSystemDriver::_nativeDestroyDisplaySurface( MetalDisplaySurface & pDisplaySurface )
+	void OSXMetalSystemDriver::_NativeDestroyDisplaySurface( MetalDisplaySurface & pDisplaySurface )
 	{
     }
 
@@ -43,7 +43,7 @@ namespace Ic3::System
 
 	OSXMetalDisplaySurface::~OSXMetalDisplaySurface() noexcept = default;
 	
-    FrameSize OSXMetalDisplaySurface::_nativeQueryRenderAreaSize() const
+    FrameSize OSXMetalDisplaySurface::_NativeQueryRenderAreaSize() const
     {
         const auto & drawableSize = [mNativeData.caMetalLayer drawableSize];
 
@@ -54,35 +54,36 @@ namespace Ic3::System
         return result;
     }
 
-    bool OSXMetalDisplaySurface::_nativeSysValidate() const
+    bool OSXMetalDisplaySurface::_NativeSysValidate() const
     {
         return mNativeData.caMetalLayer != nil;
     }
 
-    void OSXMetalDisplaySurface::_nativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode )
+    void OSXMetalDisplaySurface::_NativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode )
     {
     }
 
-    void OSXMetalDisplaySurface::_nativeSetFullscreenMode( bool pEnable )
+    void OSXMetalDisplaySurface::_NativeSetFullscreenMode( bool pEnable )
     {
     }
 
-    void OSXMetalDisplaySurface::_nativeSetTitle( const std::string & pTitle )
+    void OSXMetalDisplaySurface::_NativeSetTitle( const std::string & pTitle )
     {
-        Platform::osxSetFrameTitle( mNativeData.nsWindow, pTitle );
+        Platform::OSXSetFrameTitle( mNativeData.mNSWindow, pTitle );
     }
 
-    void OSXMetalDisplaySurface::_nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-                                                        Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
+    void OSXMetalDisplaySurface::_NativeUpdateGeometry(
+			const FrameGeometry & pFrameGeometry,
+			cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
     {
     }
 
-    FrameSize OSXMetalDisplaySurface::_nativeGetSize( EFrameSizeMode pSizeMode ) const
+    FrameSize OSXMetalDisplaySurface::_NativeGetSize( EFrameSizeMode pSizeMode ) const
     {
-        return Platform::osxGetFrameSize( mNativeData.nsWindow, pSizeMode );
+        return Platform::OSXGetFrameSize( mNativeData.mNSWindow, pSizeMode );
     }
 
-    bool OSXMetalDisplaySurface::_nativeIsFullscreen() const
+    bool OSXMetalDisplaySurface::_NativeIsFullscreen() const
     {
         return false;
     }
@@ -90,36 +91,37 @@ namespace Ic3::System
     namespace Platform
     {
 
-        void osxCreateSurfaceMetalView( OSXMetalDisplaySurfaceNativeData & pSurfaceNativeData,
-		                                const MetalDisplaySurfaceCreateInfo & pCreateInfo )
+        void OSXCreateSurfaceMetalView(
+				OSXMetalDisplaySurfaceNativeData & pSurfaceNativeData,
+				const MetalDisplaySurfaceCreateInfo & pCreateInfo )
         {
         @autoreleasepool
         {
-            if( ![( id )pSurfaceNativeData.nsWindow isKindOfClass:[NSOSXWindow class]] )
+            if( ![( id )pSurfaceNativeData.mNSWindow IsKindOfClass:[NSOSXWindow class]] )
             {
                 return;
             }
 
-            auto * nsWindow = static_cast<NSOSXWindow *>( pSurfaceNativeData.nsWindow );
+            auto * nsWindow = static_cast<NSOSXWindow *>( pSurfaceNativeData.mNSWindow );
 
             @try
             {
                 auto * nsMetalView = [[NSOSXMetalView alloc] initForWindow:nsWindow];
 				auto * caMetalLayer = nsMetalView->mMetalLayer;
 
-	            const auto mtlPixelFormat = Platform::mtlChoosePixelFormatForVisualConfig( pCreateInfo.visualConfig );
+	            const auto mtlPixelFormat = Platform::MTAChoosePixelFormatForVisualConfig( pCreateInfo.visualConfig );
 	            [caMetalLayer setPixelFormat:mtlPixelFormat];
 
 	            const auto layerRect = [nsWindow contentRectForFrameRect:[nsWindow frame]];
 	            [caMetalLayer setDrawableSize:CGSizeMake( layerRect.size.width, layerRect.size.height )];
 
-                pSurfaceNativeData.nsView = nsMetalView;
+                pSurfaceNativeData.mNSView = nsMetalView;
                 pSurfaceNativeData.caMetalLayer = caMetalLayer;
             }
             @catch( NSException * pException )
             {
                 const auto message = [[pException reason] UTF8String];
-                ic3DebugInterrupt();
+                Ic3DebugInterrupt();
             }
         }
         }

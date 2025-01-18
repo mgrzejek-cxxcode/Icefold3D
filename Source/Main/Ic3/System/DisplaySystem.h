@@ -10,9 +10,9 @@
 namespace Ic3::System
 {
 
-	ic3SysDeclareHandle( DisplayAdapter );
-	ic3SysDeclareHandle( DisplayOutput );
-	ic3SysDeclareHandle( DisplayVideoMode );
+	Ic3SysDeclareHandle( DisplayAdapter );
+	Ic3SysDeclareHandle( DisplayOutput );
+	Ic3SysDeclareHandle( DisplayVideoMode );
 
 	/// @brief
 	class DisplayManager : public SysObject
@@ -21,32 +21,32 @@ namespace Ic3::System
 		explicit DisplayManager( SysContextHandle pSysContext );
 		virtual ~DisplayManager() noexcept;
 
-		IC3_ATTR_NO_DISCARD DisplayDriverHandle createDisplayDriver( EDisplayDriverType pDriverID );
+		CPPX_ATTR_NO_DISCARD DisplayDriverHandle CreateDisplayDriver( EDisplayDriverType pDriverID );
 
-		IC3_ATTR_NO_DISCARD DisplayDriverHandle createDisplayDriver();
+		CPPX_ATTR_NO_DISCARD DisplayDriverHandle CreateDisplayDriver();
 
-		IC3_ATTR_NO_DISCARD bool checkDriverSupport( EDisplayDriverType pDriverID ) const;
+		CPPX_ATTR_NO_DISCARD bool CheckDriverSupport( EDisplayDriverType pDriverID ) const;
 
-		IC3_ATTR_NO_DISCARD EDisplayDriverType resolveDisplayDriverID( EDisplayDriverType pDriverID ) const;
+		CPPX_ATTR_NO_DISCARD EDisplayDriverType ResolveDisplayDriverID( EDisplayDriverType pDriverID ) const;
 
-		IC3_ATTR_NO_DISCARD DisplayOffset queryDefaultDisplayOffset() const;
+		CPPX_ATTR_NO_DISCARD DisplayOffset QueryDefaultDisplayOffset() const;
 
-		IC3_ATTR_NO_DISCARD DisplaySize queryDefaultDisplaySize() const;
+		CPPX_ATTR_NO_DISCARD DisplaySize QueryDefaultDisplaySize() const;
 
-		IC3_ATTR_NO_DISCARD DisplaySize queryMinWindowSize() const;
+		CPPX_ATTR_NO_DISCARD DisplaySize QueryMinWindowSize() const;
 
-		IC3_ATTR_NO_DISCARD bool checkFrameGeometry( const FrameGeometry & pFrameGeometry ) const;
+		CPPX_ATTR_NO_DISCARD bool CheckFrameGeometry( const FrameGeometry & pFrameGeometry ) const;
 
-		IC3_ATTR_NO_DISCARD FrameGeometry validateFrameGeometry( const FrameGeometry & pFrameGeometry ) const;
+		CPPX_ATTR_NO_DISCARD FrameGeometry ValidateFrameGeometry( const FrameGeometry & pFrameGeometry ) const;
 
 	private:
-		virtual DisplayDriverHandle _nativeCreateDisplayDriver() = 0;
+		virtual DisplayDriverHandle _NativeCreateDisplayDriver() = 0;
 
-		virtual void _nativeQueryDefaultDisplayOffset( DisplayOffset & pOutOffset ) const = 0;
+		virtual void _NativeQueryDefaultDisplayOffset( DisplayOffset & pOutOffset ) const = 0;
 
-		virtual void _nativeQueryDefaultDisplaySize( DisplaySize & pOutSize ) const = 0;
+		virtual void _NativeQueryDefaultDisplaySize( DisplaySize & pOutSize ) const = 0;
 
-		virtual void _nativeQueryMinWindowSize( DisplaySize & pOutSize ) const = 0;
+		virtual void _NativeQueryMinWindowSize( DisplaySize & pOutSize ) const = 0;
 
 	protected:
 		struct DisplayManagerPrivateData;
@@ -67,81 +67,81 @@ namespace Ic3::System
 
 		explicit operator bool() const;
 
-		void syncDisplayConfiguration();
+		void SyncDisplayConfiguration();
 
-		void reset();
+		void Reset();
 
-		EColorFormat queryDefaultSystemColorFormat() const;
+		EColorFormat QueryDefaultSystemColorFormat() const;
 
-		IC3_ATTR_NO_DISCARD DisplayAdapter * findAdapter( DisplayAdapterPredicate pPredicate ) const;
-		IC3_ATTR_NO_DISCARD DisplayAdapterList findAdapters( DisplayAdapterPredicate pPredicate ) const;
+		CPPX_ATTR_NO_DISCARD DisplayAdapter * FindAdapter( DisplayAdapterPredicate pPredicate ) const;
+		CPPX_ATTR_NO_DISCARD DisplayAdapterList FindAdapters( DisplayAdapterPredicate pPredicate ) const;
 
-		IC3_ATTR_NO_DISCARD const DisplayAdapterList & getAdapterList() const;
-		IC3_ATTR_NO_DISCARD const DisplayOutputList & getOutputList( dsm_index_t pAdapterIndex ) const;
+		CPPX_ATTR_NO_DISCARD const DisplayAdapterList & GetAdapterList() const;
+		CPPX_ATTR_NO_DISCARD const DisplayOutputList & GetOutputList( dsm_index_t pAdapterIndex ) const;
 
-		IC3_ATTR_NO_DISCARD DisplayAdapter * getAdapter( dsm_index_t pAdapterIndex ) const;
-		IC3_ATTR_NO_DISCARD DisplayAdapter * getDefaultAdapter() const;
+		CPPX_ATTR_NO_DISCARD DisplayAdapter * GetAdapter( dsm_index_t pAdapterIndex ) const;
+		CPPX_ATTR_NO_DISCARD DisplayAdapter * GetDefaultAdapter() const;
 
-		IC3_ATTR_NO_DISCARD DisplayOutput * getDefaultOutput( dsm_index_t pAdapterIndex = CX_DSM_INDEX_DEFAULT ) const;
-		IC3_ATTR_NO_DISCARD DisplayOutput * getOutput( dsm_output_id_t pOutputID ) const;
+		CPPX_ATTR_NO_DISCARD DisplayOutput * GetDefaultOutput( dsm_index_t pAdapterIndex = CX_DSM_INDEX_DEFAULT ) const;
+		CPPX_ATTR_NO_DISCARD DisplayOutput * GetOutput( dsm_output_id_t pOutputID ) const;
 
-		IC3_ATTR_NO_DISCARD bool hasActiveAdapters() const;
-		IC3_ATTR_NO_DISCARD bool hasAnyAdapters() const;
+		CPPX_ATTR_NO_DISCARD bool HasActiveAdapters() const;
+		CPPX_ATTR_NO_DISCARD bool HasAnyAdapters() const;
 
-		IC3_ATTR_NO_DISCARD bool hasValidConfiguration() const;
+		CPPX_ATTR_NO_DISCARD bool HasValidConfiguration() const;
 
-		IC3_ATTR_NO_DISCARD std::string generateConfigurationDump( const std::string & pLinePrefix = {} ) const;
+		CPPX_ATTR_NO_DISCARD std::string GenerateConfigurationDump( const std::string & pLinePrefix = {} ) const;
 
 	protected:
 		DisplayDriver( DisplayManagerHandle pDisplayManager, EDisplayDriverType pDriverType );
 
-		static DisplayAdapterDesc & getAdapterDescInternal( DisplayAdapter & pAdapter );
+		static DisplayAdapterDesc & GetAdapterDescInternal( DisplayAdapter & pAdapter );
 
-		static DisplayOutputDesc & getOutputDescInternal( DisplayOutput & pOutput );
+		static DisplayOutputDesc & GetOutputDescInternal( DisplayOutput & pOutput );
 
-		static DisplayVideoModeDesc & getVideoModeDescInternal( DisplayVideoMode & pVideoMode );
+		static DisplayVideoModeDesc & GetVideoModeDescInternal( DisplayVideoMode & pVideoMode );
 
-		template <typename TAdapter, typename TDriver>
-		SysHandle<TAdapter> createAdapter( TDriver & pDriver)
+		template <typename TPAdapter, typename TDriver>
+		TSysHandle<TPAdapter> CreateAdapter( TDriver & pDriver)
 		{
-			auto adapterHandle = createSysObject<TAdapter>( pDriver );
+			auto adapterHandle = CreateSysObject<TPAdapter>( pDriver );
 			_registerAdapter( adapterHandle );
 			return adapterHandle;
 		}
 
-		template <typename TOutput, typename TAdapter>
-		SysHandle<TOutput> createOutput( TAdapter & pAdapter )
+		template <typename TPOutput, typename TPAdapter>
+		TSysHandle<TPOutput> CreateOutput( TPAdapter & pAdapter )
 		{
-			auto outputHandle = createSysObject<TOutput>( pAdapter );
-			_registerOutput( pAdapter, outputHandle );
+			auto outputHandle = CreateSysObject<TPOutput>( pAdapter );
+			_RegisterOutput( pAdapter, outputHandle );
 			return outputHandle;
 		}
 
-		template <typename TVideoMode, typename TOutput>
-		SysHandle<TVideoMode> createVideoMode( TOutput & pOutput, EColorFormat pColorFormat )
+		template <typename TVideoMode, typename TPOutput>
+		TSysHandle<TVideoMode> CreateVideoMode( TPOutput & pOutput, EColorFormat pColorFormat )
 		{
-			auto videoModeHandle = createSysObject<TVideoMode>( pOutput );
-			_registerVideoMode( pOutput, pColorFormat, videoModeHandle );
+			auto videoModeHandle = CreateSysObject<TVideoMode>( pOutput );
+			_RegisterVideoMode( pOutput, pColorFormat, videoModeHandle );
 			return videoModeHandle;
 		}
 
 	private:
 		/// Platform-level function: enumerates display devices in the system (adapters and their outputs).
-		virtual void _nativeEnumDisplayDevices() = 0;
+		virtual void _NativeEnumDisplayDevices() = 0;
 
 		/// Platform-level function: enumerates supported video modes for a given output and color format.
-		virtual void _nativeEnumVideoModes( DisplayOutput & pOutput, EColorFormat pColorFormat ) = 0;
+		virtual void _NativeEnumVideoModes( DisplayOutput & pOutput, EColorFormat pColorFormat ) = 0;
 
 		/// Platform-level function: returns the default color format (OS-/driver-specific).
-		virtual EColorFormat _nativeQueryDefaultSystemColorFormat() const = 0;
+		virtual EColorFormat _NativeQueryDefaultSystemColorFormat() const = 0;
 
-		void _initializeDisplayConfiguration();
-		void _resetDisplayConfiguration();
+		void _InitializeDisplayConfiguration();
+		void _ResetDisplayConfiguration();
 		void _enumDisplayDevices();
 		void _enumVideoModes();
 		void _registerAdapter( DisplayAdapterHandle pAdapter );
-		void _registerOutput( DisplayAdapter & pAdapter, DisplayOutputHandle pOutput );
-		void _registerVideoMode( DisplayOutput & pOutput, EColorFormat pColorFormat, DisplayVideoModeHandle pVideoMode );
+		void _RegisterOutput( DisplayAdapter & pAdapter, DisplayOutputHandle pOutput );
+		void _RegisterVideoMode( DisplayOutput & pOutput, EColorFormat pColorFormat, DisplayVideoModeHandle pVideoMode );
 		void _validateAdaptersConfiguration();
 
 	protected:

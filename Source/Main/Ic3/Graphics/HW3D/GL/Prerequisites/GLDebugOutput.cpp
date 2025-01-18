@@ -1,6 +1,6 @@
 
 #include "../GLPrerequisites.h"
-#include "../GLAPITranslationLayer.h"
+#include "../GLApiTranslationLayer.h"
 
 namespace Ic3::Graphics::GCI
 {
@@ -10,7 +10,7 @@ namespace Ic3::Graphics::GCI
 	static const size_t sEventInfoBufferSize = 1024;
 
 	GLDebugOutput::GLDebugOutput( GLDebugOutputVersion pVersion )
-	: APIVersion( pVersion )
+	: _apiVersion( pVersion )
 	, _processedEventsNum( 0 )
 	, _stateFlags( 0 )
 	{}
@@ -18,39 +18,39 @@ namespace Ic3::Graphics::GCI
 	GLDebugOutput::~GLDebugOutput()
 	{}
 
-	void GLDebugOutput::enableDebugOutput( bool pEnable )
+	void GLDebugOutput::EnableDebugOutput( bool pEnable )
 	{
 		if( pEnable )
 		{
 			glEnable( GL_DEBUG_OUTPUT );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 		else
 		{
 			glDisable( GL_DEBUG_OUTPUT );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 
-		setCallbackActive( pEnable );
-		ic3DebugOutputFmt( "Debug output has been %s.", pEnable ? "enabled" : "disabled" );
+		SetCallbackActive( pEnable );
+		Ic3DebugOutputFmt( "Debug output has been %s.", pEnable ? "enabled" : "disabled" );
 	}
 
-	void GLDebugOutput::enableSync( bool pEnable )
+	void GLDebugOutput::EnableSync( bool pEnable )
 	{
 		// By default - nothing. AMD extension, for example, does not have this concept.
 	}
 
-	void GLDebugOutput::enableBreakOnEvent( bool pEnable )
+	void GLDebugOutput::EnableBreakOnEvent( bool pEnable )
 	{
-		_stateFlags.setOrUnset( STATE_FLAG_ENABLE_BREAK_ON_EVENT, pEnable );
+		_stateFlags.set_or_unset( eStateFlagEnableBreakOnEvent, pEnable );
 	}
 
-	void GLDebugOutput::enableEventFilter( bool pEnable )
+	void GLDebugOutput::EnableEventFilter( bool pEnable )
 	{
-		_stateFlags.setOrUnset( STATE_FLAG_ENABLE_EVENT_FILTER, pEnable );
+		_stateFlags.set_or_unset( eStateFlagEnableEventFilter, pEnable );
 	}
 
-	void GLDebugOutput::setEventFilter( GLuint pEventID, bool pIgnored )
+	void GLDebugOutput::SetEventFilter( GLuint pEventID, bool pIgnored )
 	{
 		if( pIgnored )
 		{
@@ -62,34 +62,34 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	void GLDebugOutput::resetEventFilters()
+	void GLDebugOutput::ResetEventFilters()
 	{
 		_ignoredEventSet.clear();
 	}
 
-	const char * GLDebugOutput::getExtensionName() const
+	const char * GLDebugOutput::GetExtensionName() const
 	{
-		return ATL::translateGLDebugOutputExtensionName( APIVersion );
+		return ATL::TranslateGLDebugOutputExtensionName( _apiVersion );
 	}
 
-	uint64 GLDebugOutput::getEventsCounter() const
+	uint64 GLDebugOutput::GetEventsCounter() const
 	{
 		return _processedEventsNum;
 	}
 
-	GLDebugOutputVersion GLDebugOutput::getVersion() const
+	GLDebugOutputVersion GLDebugOutput::GetVersion() const
 	{
-		return APIVersion;
+		return _apiVersion;
 	}
 
-	bool GLDebugOutput::isDebugOutputActive() const
+	bool GLDebugOutput::IsDebugOutputActive() const
 	{
-		return _stateFlags.isSet( STATE_FLAG_DEBUG_CALLBACK_ACTIVE );
+		return _stateFlags.is_set( eStateFlagDebugCallbackActive );
 	}
 
-	bool GLDebugOutput::isEventIgnored( GLuint pEventID ) const
+	bool GLDebugOutput::IsEventIgnored( GLuint pEventID ) const
 	{
-		if( !_stateFlags.isSet( STATE_FLAG_ENABLE_EVENT_FILTER ) || _ignoredEventSet.empty() )
+		if( !_stateFlags.is_set( eStateFlagEnableEventFilter ) || _ignoredEventSet.empty() )
 		{
 			return false;
 		}
@@ -97,19 +97,19 @@ namespace Ic3::Graphics::GCI
 		return eventIter != _ignoredEventSet.end();
 	}
 
-	std::unique_ptr<GLDebugOutput> GLDebugOutput::createInterface( GLDebugOutputVersion pHint )
+	std::unique_ptr<GLDebugOutput> GLDebugOutput::CreateInterface( GLDebugOutputVersion pHint )
 	{
 		GLDebugOutputVersion selectedVersion = GLDebugOutputVersion::Unknown;
 
-		if( checkAPISupport( GLDebugOutputVersion::KHRCore ) )
+		if( CheckAPISupport( GLDebugOutputVersion::KHRCore ) )
 		{
 			selectedVersion = GLDebugOutputVersion::KHRCore;
 		}
-		else if( checkAPISupport( GLDebugOutputVersion::ARBExt ) )
+		else if( CheckAPISupport( GLDebugOutputVersion::ARBExt ) )
 		{
 			selectedVersion = GLDebugOutputVersion::ARBExt;
 		}
-		else if( checkAPISupport( GLDebugOutputVersion::AMDExt ) )
+		else if( CheckAPISupport( GLDebugOutputVersion::AMDExt ) )
 		{
 			selectedVersion = GLDebugOutputVersion::AMDExt;
 		}
@@ -123,7 +123,7 @@ namespace Ic3::Graphics::GCI
 
 		// Preferred API version overwrites the selected one, as long
 		// as it is a valid version and is supported by the runtime.
-		if( validateVersion( pHint ) && checkAPISupport( pHint ) )
+		if( ValidateVersion( pHint ) && CheckAPISupport( pHint ) )
 		{
 			selectedVersion = pHint;
 		}
@@ -146,34 +146,34 @@ namespace Ic3::Graphics::GCI
 
 		if( debugOutputInterface )
 		{
-			auto apiVersion = debugOutputInterface->getVersion();
-			const char * extensionName = debugOutputInterface->getExtensionName();
+			auto apiVersion = debugOutputInterface->GetVersion();
+			const char * extensionName = debugOutputInterface->GetExtensionName();
 
-			ic3DebugOutputFmt( "GLDebugOutput object has been initialized (version %u: %s)", apiVersion, extensionName );
+			Ic3DebugOutputFmt( "GLDebugOutput object has been initialized (version %u: %s)", apiVersion, extensionName );
 
 		}
 
 		return debugOutputInterface;
 	}
 
-	void GLDebugOutput::processEvent( GLenum pEventSeverity, const char * pEventInfo )
+	void GLDebugOutput::ProcessEvent( GLenum pEventSeverity, const char * pEventInfo )
 	{
 		++_processedEventsNum;
 
-		ic3DebugOutput( pEventInfo );
+		Ic3DebugOutput( pEventInfo );
 
-		if( ( pEventSeverity == GL_DEBUG_SEVERITY_HIGH_ARB ) && _stateFlags.isSet( STATE_FLAG_ENABLE_BREAK_ON_EVENT ) )
+		if( ( pEventSeverity == GL_DEBUG_SEVERITY_HIGH_ARB ) && _stateFlags.is_set( eStateFlagEnableBreakOnEvent ) )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 		}
 	}
 
-	bool GLDebugOutput::checkAPISupport( GLDebugOutputVersion pVersion )
+	bool GLDebugOutput::CheckAPISupport( GLDebugOutputVersion pVersion )
 	{
 		return true;
 	}
 
-	bool GLDebugOutput::validateVersion( GLDebugOutputVersion pVersion )
+	bool GLDebugOutput::ValidateVersion( GLDebugOutputVersion pVersion )
 	{
 		return ( pVersion == GLDebugOutputVersion::AMDExt ) ||
 		       ( pVersion == GLDebugOutputVersion::ARBExt ) ||
@@ -187,23 +187,23 @@ namespace Ic3::Graphics::GCI
 
 	GLDebugOutputAMDExt::~GLDebugOutputAMDExt() = default;
 
-	void GLDebugOutputAMDExt::setCallbackActive( bool pEnable )
+	void GLDebugOutputAMDExt::SetCallbackActive( bool pEnable )
 	{
 		if( pEnable )
 		{
-			glDebugMessageCallbackAMD( eventCallback, this );
-			_stateFlags.set( STATE_FLAG_DEBUG_CALLBACK_ACTIVE );
+			glDebugMessageCallbackAMD( EventCallback, this );
+			_stateFlags.set( eStateFlagDebugCallbackActive );
 		}
 		else
 		{
 			glDebugMessageCallbackAMD( nullptr, nullptr );
-			_stateFlags.unset( STATE_FLAG_DEBUG_CALLBACK_ACTIVE );
+			_stateFlags.unset( eStateFlagDebugCallbackActive );
 		}
 	}
 
-	void GLDebugOutputAMDExt::handleEvent( GLuint pEventID, GLenum pEventCategory, GLenum pEventSeverity, const GLchar * pMessage )
+	void GLDebugOutputAMDExt::HandleEvent( GLuint pEventID, GLenum pEventCategory, GLenum pEventSeverity, const GLchar * pMessage )
 	{
-		if( isEventIgnored( pEventID ) )
+		if( IsEventIgnored( pEventID ) )
 		{
 			return;
 		}
@@ -219,14 +219,14 @@ namespace Ic3::Graphics::GCI
 					"- Description: %s\n"\
 					"----------------------------------------------------------------------\n",
 		          pEventID,
-		          ATL::translateGLDebugEventCategoryStrAMD( pEventCategory ),
-		          ATL::translateGLDebugEventSeverityStr( pEventSeverity ),
+		          ATL::TranslateGLDebugEventCategoryStrAMD( pEventCategory ),
+		          ATL::TranslateGLDebugEventSeverityStr( pEventSeverity ),
 		          pMessage );
 
-		processEvent( pEventSeverity, eventInfoBuffer );
+		ProcessEvent( pEventSeverity, eventInfoBuffer );
 	}
 
-	void GLDebugOutputAMDExt::eventCallback( GLuint pEventID,
+	void GLDebugOutputAMDExt::EventCallback( GLuint pEventID,
 	                                         GLenum pEventCategory,
 	                                         GLenum pEventSeverity,
 	                                         GLsizei pLength,
@@ -234,7 +234,7 @@ namespace Ic3::Graphics::GCI
 	                                         GLvoid * pUserParam )
 	{
 		auto * debugOutputInterface = reinterpret_cast<GLDebugOutputAMDExt *>( pUserParam );
-		debugOutputInterface->handleEvent( pEventID, pEventCategory, pEventSeverity, pMessage );
+		debugOutputInterface->HandleEvent( pEventID, pEventCategory, pEventSeverity, pMessage );
 	}
 
 
@@ -244,37 +244,37 @@ namespace Ic3::Graphics::GCI
 
 	GLDebugOutputARBExt::~GLDebugOutputARBExt() = default;
 
-	void GLDebugOutputARBExt::enableSync( bool pEnable )
+	void GLDebugOutputARBExt::EnableSync( bool pEnable )
 	{
 		if( pEnable )
 		{
 			glEnable( GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 		else
 		{
 			glDisable( GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 	}
 
-	void GLDebugOutputARBExt::setCallbackActive( bool pEnable )
+	void GLDebugOutputARBExt::SetCallbackActive( bool pEnable )
 	{
 		if( pEnable )
 		{
-			glDebugMessageCallbackARB( eventCallback, this );
-			_stateFlags.set( STATE_FLAG_DEBUG_CALLBACK_ACTIVE );
+			glDebugMessageCallbackARB( EventCallback, this );
+			_stateFlags.set( eStateFlagDebugCallbackActive );
 		}
 		else
 		{
 			glDebugMessageCallbackARB( nullptr, nullptr );
-			_stateFlags.unset( STATE_FLAG_DEBUG_CALLBACK_ACTIVE );
+			_stateFlags.unset( eStateFlagDebugCallbackActive );
 		}
 	}
 
-	void GLDebugOutputARBExt::handleEvent( GLuint pEventID, GLenum pEventSource, GLenum pEventType, GLenum pEventSeverity, const GLchar * pMessage )
+	void GLDebugOutputARBExt::HandleEvent( GLuint pEventID, GLenum pEventSource, GLenum pEventType, GLenum pEventSeverity, const GLchar * pMessage )
 	{
-		if( isEventIgnored( pEventID ) )
+		if( IsEventIgnored( pEventID ) )
 		{
 			return;
 		}
@@ -291,15 +291,15 @@ namespace Ic3::Graphics::GCI
 					"- Description: %s\n"\
 					"----------------------------------------------------------------------\n",
 		          pEventID,
-		          ATL::translateGLDebugEventSourceStr( pEventSource ),
-		          ATL::translateGLDebugEventTypeStr( pEventType ),
-		          ATL::translateGLDebugEventSeverityStr( pEventSeverity ),
+		          ATL::TranslateGLDebugEventSourceStr( pEventSource ),
+		          ATL::TranslateGLDebugEventTypeStr( pEventType ),
+		          ATL::TranslateGLDebugEventSeverityStr( pEventSeverity ),
 		          pMessage );
 
-		processEvent( pEventSeverity, eventInfoBuffer );
+		ProcessEvent( pEventSeverity, eventInfoBuffer );
 	}
 
-	void GLDebugOutputARBExt::eventCallback( GLuint pEventID,
+	void GLDebugOutputARBExt::EventCallback( GLuint pEventID,
 	                                         GLenum pEventSource,
 	                                         GLenum pEventType,
 	                                         GLenum pEventSeverity,
@@ -308,7 +308,7 @@ namespace Ic3::Graphics::GCI
 	                                         const GLvoid * pUserParam )
 	{
 		auto * debugOutputInterface = reinterpret_cast<GLDebugOutputARBExt *>( const_cast<void *>( pUserParam ) );
-		debugOutputInterface->handleEvent( pEventID, pEventSource, pEventType, pEventSeverity, pMessage );
+		debugOutputInterface->HandleEvent( pEventID, pEventSource, pEventType, pEventSeverity, pMessage );
 	}
 
 
@@ -318,37 +318,37 @@ namespace Ic3::Graphics::GCI
 
 	GLDebugOutputKHRCore::~GLDebugOutputKHRCore() = default;
 
-	void GLDebugOutputKHRCore::enableSync( bool pEnable )
+	void GLDebugOutputKHRCore::EnableSync( bool pEnable )
 	{
 		if( pEnable )
 		{
 			glEnable( GL_DEBUG_OUTPUT_SYNCHRONOUS );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 		else
 		{
 			glDisable( GL_DEBUG_OUTPUT_SYNCHRONOUS );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 	}
 
-	void GLDebugOutputKHRCore::setCallbackActive( bool pEnable )
+	void GLDebugOutputKHRCore::SetCallbackActive( bool pEnable )
 	{
 		if( pEnable )
 		{
-			glDebugMessageCallback( eventCallback, this );
-			_stateFlags.set( STATE_FLAG_DEBUG_CALLBACK_ACTIVE );
+			glDebugMessageCallback( EventCallback, this );
+			_stateFlags.set( eStateFlagDebugCallbackActive );
 		}
 		else
 		{
 			glDebugMessageCallback( nullptr, nullptr );
-			_stateFlags.unset( STATE_FLAG_DEBUG_CALLBACK_ACTIVE );
+			_stateFlags.unset( eStateFlagDebugCallbackActive );
 		}
 	}
 
-	void GLDebugOutputKHRCore::handleEvent( GLuint pEventID, GLenum pEventSource, GLenum pEventType, GLenum pEventSeverity, const GLchar * pMessage )
+	void GLDebugOutputKHRCore::HandleEvent( GLuint pEventID, GLenum pEventSource, GLenum pEventType, GLenum pEventSeverity, const GLchar * pMessage )
 	{
-		if( isEventIgnored( pEventID ) )
+		if( IsEventIgnored( pEventID ) )
 		{
 			return;
 		}
@@ -365,15 +365,15 @@ namespace Ic3::Graphics::GCI
 		           "- Description: %s\n"\
 		           "----------------------------------------------------------------------\n",
 		          pEventID,
-		          ATL::translateGLDebugEventSourceStr( pEventSource ),
-		          ATL::translateGLDebugEventTypeStr( pEventType ),
-		          ATL::translateGLDebugEventSeverityStr( pEventSeverity ),
+		          ATL::TranslateGLDebugEventSourceStr( pEventSource ),
+		          ATL::TranslateGLDebugEventTypeStr( pEventType ),
+		          ATL::TranslateGLDebugEventSeverityStr( pEventSeverity ),
 		          pMessage );
 
-		processEvent( pEventSeverity, eventInfoBuffer );
+		ProcessEvent( pEventSeverity, eventInfoBuffer );
 	}
 
-	void GLDebugOutputKHRCore::eventCallback( GLuint pEventID,
+	void GLDebugOutputKHRCore::EventCallback( GLuint pEventID,
 	                                          GLenum pEventSource,
 	                                          GLenum pEventType,
 	                                          GLenum pEventSeverity,
@@ -382,13 +382,13 @@ namespace Ic3::Graphics::GCI
 	                                          const GLvoid * pUserParam )
 	{
 		auto * debugOutputInterface = reinterpret_cast<GLDebugOutputKHRCore *>( const_cast<void *>( pUserParam ) );
-		debugOutputInterface->handleEvent( pEventID, pEventSource, pEventType, pEventSeverity, pMessage );
+		debugOutputInterface->HandleEvent( pEventID, pEventSource, pEventType, pEventSeverity, pMessage );
 	}
 
 #elif( IC3_SYSTEM_GL_PLATFORM_TYPE == IC3_SYSTEM_GL_PLATFORM_TYPE_ES )
 
 	GLDebugOutput::GLDebugOutput( GLDebugOutputVersion /* pVersion */ )
-	: APIVersion( GLDebugOutputVersion::Unknown )
+	: _apiVersion( GLDebugOutputVersion::Unknown )
 	, _processedEventsNum( 0 )
 	, _stateFlags( 0 )
 	{}
@@ -396,63 +396,63 @@ namespace Ic3::Graphics::GCI
 	GLDebugOutput::~GLDebugOutput()
 	{}
 
-	void GLDebugOutput::enableDebugOutput( bool pEnable )
+	void GLDebugOutput::EnableDebugOutput( bool pEnable )
 	{}
 
-	void GLDebugOutput::enableSync( bool pEnable )
+	void GLDebugOutput::EnableSync( bool pEnable )
 	{}
 
-	void GLDebugOutput::enableBreakOnEvent( bool pEnable )
+	void GLDebugOutput::EnableBreakOnEvent( bool pEnable )
 	{}
 
-	void GLDebugOutput::enableEventFilter( bool pEnable )
+	void GLDebugOutput::EnableEventFilter( bool pEnable )
 	{}
 
-	void GLDebugOutput::setEventFilter( GLuint pEventID, bool pIgnored )
+	void GLDebugOutput::SetEventFilter( GLuint pEventID, bool pIgnored )
 	{}
 
-	void GLDebugOutput::resetEventFilters()
+	void GLDebugOutput::ResetEventFilters()
 	{}
 
-	const char * GLDebugOutput::getExtensionName() const
+	const char * GLDebugOutput::GetExtensionName() const
 	{
-		return ATL::translateGLDebugOutputExtensionName( GLDebugOutputVersion::Unknown );
+		return ATL::TranslateGLDebugOutputExtensionName( GLDebugOutputVersion::Unknown );
 	}
 
-	uint64 GLDebugOutput::getEventsCounter() const
+	uint64 GLDebugOutput::GetEventsCounter() const
 	{
 		return 0;
 	}
 
-	GLDebugOutputVersion GLDebugOutput::getVersion() const
+	GLDebugOutputVersion GLDebugOutput::GetVersion() const
 	{
 		return GLDebugOutputVersion::Unknown;
 	}
 
-	bool GLDebugOutput::isDebugOutputActive() const
+	bool GLDebugOutput::IsDebugOutputActive() const
 	{
 		return false;
 	}
 
-	bool GLDebugOutput::isEventIgnored( GLuint pEventID ) const
+	bool GLDebugOutput::IsEventIgnored( GLuint pEventID ) const
 	{
 		return true;
 	}
 
-	std::unique_ptr<GLDebugOutput> GLDebugOutput::createInterface( GLDebugOutputVersion pHint )
+	std::unique_ptr<GLDebugOutput> GLDebugOutput::CreateInterface( GLDebugOutputVersion pHint )
 	{
 		return nullptr;
 	}
 
-	void GLDebugOutput::processEvent( GLenum pEventSeverity, const char * pEventInfo )
+	void GLDebugOutput::ProcessEvent( GLenum pEventSeverity, const char * pEventInfo )
 	{}
 
-	bool GLDebugOutput::checkAPISupport( GLDebugOutputVersion pVersion )
+	bool GLDebugOutput::CheckAPISupport( GLDebugOutputVersion pVersion )
 	{
 		return pVersion == GLDebugOutputVersion::Unknown;
 	}
 
-	bool GLDebugOutput::validateVersion( GLDebugOutputVersion pVersion )
+	bool GLDebugOutput::ValidateVersion( GLDebugOutputVersion pVersion )
 	{
 		return pVersion == GLDebugOutputVersion::Unknown;
 	}

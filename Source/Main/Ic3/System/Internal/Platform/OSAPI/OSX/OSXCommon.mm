@@ -3,25 +3,25 @@
 #include "NSIApplicationProxy.h"
 #import <AppKit/NSNibLoading.h>
 
-#if( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_OSX )
+#if( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_OSX )
 namespace Ic3::System
 {
 
 	namespace Platform
 	{
 
-		OSXSharedData & osxGetOSXSharedData( SysContext & pSysContext )
+		OSXSharedData & OSXGetOSXSharedData( SysContext & pSysContext )
 		{
-			auto * osxSysContext = pSysContext.queryInterface<OSXSysContext>();
-			return osxSysContext->mNativeData.osxSharedData;
+			auto * osxSysContext = pSysContext.QueryInterface<OSXSysContext>();
+			return osxSysContext->mNativeData.mOSXSharedData;
 		}
 
-		OSXSharedData & osxGetOSXSharedData( OSXSysContext & pSysContext )
+		OSXSharedData & OSXGetOSXSharedData( OSXSysContext & pSysContext )
 		{
-			return pSysContext.mNativeData.osxSharedData;
+			return pSysContext.mNativeData.mOSXSharedData;
 		}
 
-		bool osxNibLoadMenuNibFile()
+		bool OSXNibLoadMenuNibFile()
 		{
 		@autoreleasepool
 		{
@@ -61,7 +61,7 @@ namespace Ic3::System
 		}
 		}
 
-		void osxNibCreateDefaultApplicationMenu()
+		void OSXNibCreateDefaultApplicationMenu()
 		{
 		@autoreleasepool
 		{
@@ -94,7 +94,7 @@ namespace Ic3::System
 		}
 		}
 
-		bool osxCheckAppKitFrameworkVersion( NSAppKitVersion pRequiredVersion )
+		bool OSXCheckAppKitFrameworkVersion( NSAppKitVersion pRequiredVersion )
 		{
 			const auto cvAppKitVersion = floor( NSAppKitVersionNumber );
 
@@ -106,7 +106,7 @@ namespace Ic3::System
 			return false;
 		}
 
-		const char * osxQueryCGErrorMessage( CGError pCGError )
+		const char * OSXQueryCGErrorMessage( CGError pCGError )
 		{
 			switch( pCGError )
 			{
@@ -128,4 +128,4 @@ namespace Ic3::System
 	}
 
 } // namespace Ic3::System
-#endif // IC3_PCL_TARGET_SYSAPI_OSX
+#endif // PCL_TARGET_SYSAPI_OSX

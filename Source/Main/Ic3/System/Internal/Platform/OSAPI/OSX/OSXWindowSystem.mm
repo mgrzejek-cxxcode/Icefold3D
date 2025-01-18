@@ -4,18 +4,19 @@
 #include "NSIWindow.h"
 #include "NSIEventListener.h"
 
-#if( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_OSX )
+#if( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_OSX )
 namespace Ic3::System
 {
 
 	namespace Platform
 	{
 
-		OSXFrameGeometry _osxCheckFrameGeometry( NSScreen * pNSScreen, const FrameGeometry & pFrameGeometry );
+		OSXFrameGeometry _OSXCheckFrameGeometry( NSScreen * pNSScreen, const FrameGeometry & pFrameGeometry );
 
-		OSXFrameGeometry _osxCheckFrameGeometryUpdate( NSWindow * pNSWindow,
-		                                               const FrameGeometry & pFrameGeometry,
-		                                               Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags );
+		OSXFrameGeometry _OSXCheckFrameGeometryUpdate(
+				NSWindow * pNSWindow,
+				const FrameGeometry & pFrameGeometry,
+				cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags );
 
 	}
 
@@ -26,20 +27,20 @@ namespace Ic3::System
 	OSXWindowManager::~OSXWindowManager() noexcept
 	{}
 	
-	WindowHandle OSXWindowManager::_nativeCreateWindow( WindowCreateInfo pCreateInfo )
+	WindowHandle OSXWindowManager::_NativeCreateWindow( WindowCreateInfo pCreateInfo )
 	{
-		auto osxDisplayManager = mDisplayManager->getHandle<OSXDisplayManager>();
-		auto windowObject = createSysObject<OSXWindow>( getHandle<OSXWindowManager>() );
+		auto osxDisplayManager = mDisplayManager->GetHandle<OSXDisplayManager>();
+		auto windowObject = CreateSysObject<OSXWindow>( GetHandle<OSXWindowManager>() );
 
-		Platform::osxCreateWindow( windowObject->mNativeData, nullptr, pCreateInfo );
-		Platform::osxCreateWindowDefaultView( windowObject->mNativeData );
-		Platform::osxCreateEventListener( windowObject->mNativeData );
-		Platform::osxSetInputWindow( windowObject->mNativeData );
+		Platform::OSXCreateWindow( windowObject->mNativeData, nullptr, pCreateInfo );
+		Platform::OSXCreateWindowDefaultView( windowObject->mNativeData );
+		Platform::OSXCreateEventListener( windowObject->mNativeData );
+		Platform::OSXSetInputWindow( windowObject->mNativeData );
 
 		return windowObject;
 	}
 
-	void OSXWindowManager::_nativeDestroyWindow( Window & pWindow )
+	void OSXWindowManager::_NativeDestroyWindow( Window & pWindow )
 	{
 	}
 
@@ -50,21 +51,23 @@ namespace Ic3::System
 	
 	OSXWindow::~OSXWindow() noexcept = default;
 	
-	void OSXWindow::_nativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode )
+	void OSXWindow::_NativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode )
 	{}
 	
-	void OSXWindow::_nativeSetFullscreenMode( bool pEnable )
+	void OSXWindow::_NativeSetFullscreenMode( bool pEnable )
 	{}
 	
-	void OSXWindow::_nativeSetTitle( const std::string & pTitle )
+	void OSXWindow::_NativeSetTitle( const std::string & pTitle )
 	{
-        Platform::osxSetFrameTitle( mNativeData.nsWindow, pTitle );
+        Platform::OSXSetFrameTitle( mNativeData.mNSWindow, pTitle );
     }
 	
-	void OSXWindow::_nativeUpdateGeometry( const FrameGeometry & pFrameGeometry, Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
+	void OSXWindow::_NativeUpdateGeometry(
+			const FrameGeometry & pFrameGeometry,
+			cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
 	{}
 
-	FrameSize OSXWindow::_nativeGetSize( EFrameSizeMode pSizeMode ) const
+	FrameSize OSXWindow::_NativeGetSize( EFrameSizeMode pSizeMode ) const
 	{
 		return {};
 	}
@@ -73,7 +76,10 @@ namespace Ic3::System
 	namespace Platform
 	{
 
-		void osxCreateWindow( OSXWindowNativeData & pWindowNativeData, NSScreen * pTargetScreen, const WindowCreateInfo & pCreateInfo )
+		void OSXCreateWindow(
+				OSXWindowNativeData & pWindowNativeData,
+				NSScreen * pTargetScreen,
+				const WindowCreateInfo & pCreateInfo )
 		{
 		@autoreleasepool
 		{
@@ -87,10 +93,10 @@ namespace Ic3::System
 
 			@try
 			{
-				const auto frameGeometry = _osxCheckFrameGeometry( pTargetScreen, pCreateInfo.frameGeometry );
+				const auto frameGeometry = _OSXCheckFrameGeometry( pTargetScreen, pCreateInfo.frameGeometry );
 
-				nsWindow = [[NSOSXWindow alloc] initWithContentRect:frameGeometry.frameRect
-				                                styleMask:static_cast<NSWindowStyleMask>( frameGeometry.style )
+				nsWindow = [[NSOSXWindow alloc] initWithContentRect:frameGeometry.mFrameRect
+				                                styleMask:static_cast<NSWindowStyleMask>( frameGeometry.mStyle )
 				                                backing:NSBackingStoreBuffered
 				                                defer:NO
 				                                screen:pTargetScreen];
@@ -100,53 +106,53 @@ namespace Ic3::System
 					[nsWindow setTabbingMode:NSWindowTabbingModeDisallowed];
 				}
 
-				pWindowNativeData.nsWindow = nsWindow;
-				pWindowNativeData.nsTargetScreen = pTargetScreen;
+				pWindowNativeData.mNSWindow = nsWindow;
+				pWindowNativeData.mNSTargetScreen = pTargetScreen;
 			}
 			@catch( NSException * pException )
 			{
 				const auto message = [[pException reason] UTF8String];
-				ic3DebugInterrupt();
+				Ic3DebugInterrupt();
 			}
 		}
 		}
 
-		void osxCreateWindowDefaultView( OSXWindowNativeData & pWindowNativeData )
+		void OSXCreateWindowDefaultView( OSXWindowNativeData & pWindowNativeData )
 		{
 		@autoreleasepool
 		{
-			if( ![( id )pWindowNativeData.nsWindow isKindOfClass:[NSOSXWindow class]] )
+			if( ![( id )pWindowNativeData.mNSWindow IsKindOfClass:[NSOSXWindow class]] )
 			{
 				return;
 			}
 
-			auto * nsWindow = static_cast<NSOSXWindow *>( pWindowNativeData.nsWindow );
+			auto * nsWindow = static_cast<NSOSXWindow *>( pWindowNativeData.mNSWindow );
 
 			@try
 			{
 				NSOSXWindowView * nsWindowView = [[NSOSXWindowView alloc] initForWindow:nsWindow];
-				pWindowNativeData.nsView = nsWindowView;
+				pWindowNativeData.mNSView = nsWindowView;
 			}
 			@catch( NSException * pException )
 			{
 				const auto message = [[pException reason] UTF8String];
-				ic3DebugInterrupt();
+				Ic3DebugInterrupt();
 			}
 		}
 		}
 
-		void osxSetInputWindow( OSXWindowNativeData & pWindowNativeData )
+		void OSXSetInputWindow( OSXWindowNativeData & pWindowNativeData )
 		{
-			if( ![pWindowNativeData.nsWindow isMiniaturized] )
+			if( ![pWindowNativeData.mNSWindow IsMiniaturized] )
 			{
 				[NSApp activateIgnoringOtherApps:YES];
 
-				[pWindowNativeData.nsWindow makeKeyAndOrderFront:nil];
-				[pWindowNativeData.nsWindow orderFrontRegardless];
+				[pWindowNativeData.mNSWindow makeKeyAndOrderFront:nil];
+				[pWindowNativeData.mNSWindow orderFrontRegardless];
 			}
 		}
 
-		void osxSetFrameTitle( NSWindow * pNSWindow, const std::string & pTitle )
+		void OSXSetFrameTitle( NSWindow * pNSWindow, const std::string & pTitle )
 		{
 		@autoreleasepool
 		{
@@ -157,34 +163,37 @@ namespace Ic3::System
 			}
 
 			NSString * nsTitle = [[NSString alloc] initWithUTF8String:newTitle];
-			[pNSWindow setTitle:nsTitle];
+			[pNSWindow SetTitle:nsTitle];
 		}
 		}
 
-		void osxUpdateFrameGeometry( NSWindow * pNSWindow, const FrameGeometry & pFrameGeometry, Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
+		void OSXUpdateFrameGeometry(
+				NSWindow * pNSWindow,
+				const FrameGeometry & pFrameGeometry,
+				cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
 		{
 		@autoreleasepool
 		{
-			const auto frameGeometry = _osxCheckFrameGeometryUpdate( pNSWindow, pFrameGeometry, pUpdateFlags );
+			const auto frameGeometry = _OSXCheckFrameGeometryUpdate( pNSWindow, pFrameGeometry, pUpdateFlags );
 
-			if( pUpdateFlags.isSet( E_FRAME_GEOMETRY_UPDATE_FLAG_STYLE_BIT ) )
+			if( pUpdateFlags.is_set( eFrameGeometryUpdateFlagStyleBit ) )
 			{
-				[pNSWindow setStyleMask:static_cast<NSWindowStyleMask>( frameGeometry.style )];
+				[pNSWindow setStyleMask:static_cast<NSWindowStyleMask>( frameGeometry.mStyle )];
 			}
 
-			if( pUpdateFlags.isSet( E_FRAME_GEOMETRY_UPDATE_FLAG_POSITION_BIT ) )
+			if( pUpdateFlags.is_set( eFrameGeometryUpdateFlagPositionBit ) )
 			{
-				[pNSWindow setFrameOrigin:frameGeometry.frameRect.origin];
+				[pNSWindow setFrameOrigin:frameGeometry.mFrameRect.origin];
 			}
 
-			if( pUpdateFlags.isSet( E_FRAME_GEOMETRY_UPDATE_FLAG_SIZE_BIT ) )
+			if( pUpdateFlags.is_set( eFrameGeometryUpdateFlagSizeBit ) )
 			{
-				[pNSWindow setFrame:[pNSWindow frameRectForContentRect:frameGeometry.frameRect] display:YES];
+				[pNSWindow setFrame:[pNSWindow frameRectForContentRect:frameGeometry.mFrameRect] display:YES];
 			}
 		}
 		}
 
-		FrameSize osxGetFrameSize( NSWindow * pNSWindow, EFrameSizeMode pSizeMode )
+		FrameSize OSXGetFrameSize( NSWindow * pNSWindow, EFrameSizeMode pSizeMode )
 		{
 		@autoreleasepool
 		{
@@ -207,7 +216,7 @@ namespace Ic3::System
 		}
 		}
 
-		NSUInteger osxTranslateFrameStyle( EFrameStyle pStyle )
+		NSUInteger OSXTranslateFrameStyle( EFrameStyle pStyle )
 		{
 			//
 			constexpr NSUInteger cvCaptionFrameStyle = NSWindowStyleMaskTitled | NSWindowStyleMaskClosable;
@@ -218,7 +227,7 @@ namespace Ic3::System
 			//
 			constexpr NSUInteger cvResizeableFrameStyle = cvFixedFrameStyle | NSWindowStyleMaskResizable;
 
-			NSUInteger resultStyle = Cppx::QLimits<NSUInteger>::maxValue;
+			NSUInteger resultStyle = cppx::meta::limits<NSUInteger>::max_value;
 
 			switch ( pStyle )
 			{
@@ -252,62 +261,63 @@ namespace Ic3::System
 			return resultStyle;
 		}
 
-		OSXFrameGeometry _osxCheckFrameGeometry( NSScreen * pNSScreen, const FrameGeometry & pFrameGeometry )
+		OSXFrameGeometry _OSXCheckFrameGeometry( NSScreen * pNSScreen, const FrameGeometry & pFrameGeometry )
 		{
 			// Alternatively: CGDisplayPixelsHigh( kCGDirectMainDisplay ) ??
 			const auto screenRect = [pNSScreen frame];
 
-			auto xOrigin = static_cast<CGFloat>( pFrameGeometry.position.x );
+			auto xOrigin = static_cast<CGFloat>( pFrameGeometry.mPosition.x );
 
 			NSRect frameRect{};
-			frameRect.origin.x = static_cast<CGFloat>( pFrameGeometry.position.x );
-			frameRect.origin.y = static_cast<CGFloat>( pFrameGeometry.position.y );
+			frameRect.origin.x = static_cast<CGFloat>( pFrameGeometry.mPosition.x );
+			frameRect.origin.y = static_cast<CGFloat>( pFrameGeometry.mPosition.y );
 			frameRect.size.width = static_cast<CGFloat>( pFrameGeometry.size.x );
 			frameRect.size.height = static_cast<CGFloat>( pFrameGeometry.size.y );
 
-			frameRect.origin.x = Cppx::getMaxOf( frameRect.origin.x, 0.0f );
+			frameRect.origin.x = cppx::get_max_of( frameRect.origin.x, 0.0f );
 			frameRect.origin.y = screenRect.size.height - frameRect.origin.y - frameRect.size.height;
 
 			OSXFrameGeometry osxGeometry{};
-			osxGeometry.frameRect = frameRect;
-			osxGeometry.style = osxTranslateFrameStyle( pFrameGeometry.style );
+			osxGeometry.mFrameRect = frameRect;
+			osxGeometry.mStyle = OSXTranslateFrameStyle( pFrameGeometry.mStyle );
 
 			return osxGeometry;
 		}
 
-		OSXFrameGeometry _osxCheckFrameGeometryUpdate( NSWindow * pNSWindow,
-		                                               const FrameGeometry & pFrameGeometry,
-		                                               Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
+		OSXFrameGeometry _OSXCheckFrameGeometryUpdate(
+				NSWindow * pNSWindow,
+				const FrameGeometry & pFrameGeometry,
+				cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
 		{
 			OSXFrameGeometry osxGeometry{};
 
-			if( pUpdateFlags.isSet( E_FRAME_GEOMETRY_UPDATE_FLAG_STYLE_BIT ) )
+			if( pUpdateFlags.is_set( eFrameGeometryUpdateFlagStyleBit ) )
 			{
-				osxGeometry.style = osxTranslateFrameStyle( pFrameGeometry.style );
+				osxGeometry.mStyle = OSXTranslateFrameStyle( pFrameGeometry.mStyle );
 			}
 			else
 			{
-				osxGeometry.style = [pNSWindow styleMask];
+				osxGeometry.mStyle = [pNSWindow styleMask];
 			}
 
-			if( pUpdateFlags.isSetAnyOf( E_FRAME_GEOMETRY_UPDATE_FLAG_POSITION_BIT | E_FRAME_GEOMETRY_UPDATE_FLAG_SIZE_BIT ) )
+			if( pUpdateFlags.is_set_any_of( eFrameGeometryUpdateFlagPositionBit | eFrameGeometryUpdateFlagSizeBit ) )
 			{
 				const auto screenRect = [[pNSWindow screen] frame];
 
 				NSRect frameRect{};
-				frameRect.origin.x = static_cast<CGFloat>( pFrameGeometry.position.x );
-				frameRect.origin.y = static_cast<CGFloat>( pFrameGeometry.position.y );
+				frameRect.origin.x = static_cast<CGFloat>( pFrameGeometry.mPosition.x );
+				frameRect.origin.y = static_cast<CGFloat>( pFrameGeometry.mPosition.y );
 				frameRect.size.width = static_cast<CGFloat>( pFrameGeometry.size.x );
 				frameRect.size.height = static_cast<CGFloat>( pFrameGeometry.size.y );
 
-				frameRect.origin.x = Cppx::getMaxOf( frameRect.origin.x, 0.0f );
+				frameRect.origin.x = cppx::get_max_of( frameRect.origin.x, 0.0f );
 				frameRect.origin.y = screenRect.size.height - frameRect.origin.y - frameRect.size.height;
 
-				osxGeometry.frameRect = frameRect;
+				osxGeometry.mFrameRect = frameRect;
 			}
 			else
 			{
-				osxGeometry.frameRect = [pNSWindow frame];
+				osxGeometry.mFrameRect = [pNSWindow frame];
 			}
 
 			return osxGeometry;
@@ -316,4 +326,4 @@ namespace Ic3::System
 	}
 
 } // namespace Ic3::System
-#endif // IC3_PCL_TARGET_SYSAPI_OSX
+#endif // PCL_TARGET_SYSAPI_OSX

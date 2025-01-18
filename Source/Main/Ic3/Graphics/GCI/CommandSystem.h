@@ -18,23 +18,23 @@ namespace Ic3::Graphics::GCI
 		explicit CommandSystem( GPUDevice & pGPUDevice );
 		virtual ~CommandSystem();
 
-		virtual std::unique_ptr<CommandContext> acquireCommandContext( ECommandContextType pContextType ) = 0;
+		virtual std::unique_ptr<CommandContext> AcquireCommandContext( ECommandContextType pContextType ) = 0;
 
-		virtual CommandSync submitContext( CommandContextDirect & pContext, const CommandContextSubmitInfo & pSubmitInfo ) = 0;
+		virtual CommandSync SubmitContext( CommandContextDirect & pContext, const CommandContextSubmitInfo & pSubmitInfo ) = 0;
 
 		template <typename TContext>
-		std::unique_ptr<TContext> acquireCommandContext()
+		std::unique_ptr<TContext> AcquireCommandContext()
 		{
-			return moveInterfaceUniquePtr<TContext>( acquireCommandContext( TContext::sContextType ) );
+			return MoveInterfaceUniquePtr<TContext>( AcquireCommandContext( TContext::sContextType ) );
 		}
 		
-		bool setQueueAlias( gpu_cmd_device_queue_id_t pAliasID, gpu_cmd_device_queue_id_t pMappedID );
+		bool SetQueueAlias( gpu_cmd_device_queue_id_t pAliasID, gpu_cmd_device_queue_id_t pMappedID );
 
-		bool removeQueueAlias( gpu_cmd_device_queue_id_t pAliasID );
+		bool RemoveQueueAlias( gpu_cmd_device_queue_id_t pAliasID );
 
-		bool checkQueueAlias( gpu_cmd_device_queue_id_t pAliasID ) const;
+		bool CheckQueueAlias( gpu_cmd_device_queue_id_t pAliasID ) const;
 
-		gpu_cmd_device_queue_id_t resolveQueueID( gpu_cmd_device_queue_id_t pQueueID ) const;
+		gpu_cmd_device_queue_id_t ResolveQueueID( gpu_cmd_device_queue_id_t pQueueID ) const;
 
 	private:
 		using DeviceQueueAliasMap = std::unordered_map<gpu_cmd_device_queue_id_t, gpu_cmd_device_queue_id_t>;

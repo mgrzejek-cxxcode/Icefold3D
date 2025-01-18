@@ -7,9 +7,9 @@
 namespace Ic3::Graphics::GCI
 {
 
-	constexpr auto CX_GL_OBJECT_HANDLE_INVALID = QLimits<GLuint>::maxValue;
+	constexpr auto CX_GL_OBJECT_HANDLE_INVALID = cppx::meta::limits<GLuint>::max_value;
 
-	constexpr auto CX_GL_BIND_TARGET_UNKNOWN = QLimits<GLenum>::maxValue;
+	constexpr auto CX_GL_BIND_TARGET_UNKNOWN = cppx::meta::limits<GLenum>::max_value;
 
 	enum class GLObjectBaseType : enum_default_value_t
 	{
@@ -47,14 +47,14 @@ namespace Ic3::Graphics::GCI
 		GLObject( GLObjectBaseType pBaseType, GLuint pHandle );
 		virtual ~GLObject();
 
-		virtual bool release();
+		virtual bool Release();
 
-		virtual bool validateHandle() const;
+		virtual bool ValidateHandle() const;
 
-		bool checkHandle() const;
+		bool CheckHandle() const;
 	};
 
-	inline bool GLObject::checkHandle() const
+	inline bool GLObject::CheckHandle() const
 	{
 		return mGLHandle != CX_GL_OBJECT_HANDLE_INVALID;
 	}
@@ -63,7 +63,7 @@ namespace Ic3::Graphics::GCI
 	{
 		void operator()( GLObject * pObject ) const
 		{
-			pObject->release();
+			pObject->Release();
 			delete pObject;
 		}
 	};
@@ -72,13 +72,13 @@ namespace Ic3::Graphics::GCI
 	using GLObjectHandle = std::unique_ptr<TObject, GLObjectDeleter>;
 
 	template <typename TObject, typename... TArgs>
-	inline GLObjectHandle<TObject> createGLObject( TArgs && ...pArgs )
+	inline GLObjectHandle<TObject> CreateGLObject( TArgs && ...pArgs )
 	{
 		GLObjectHandle<TObject> result{ new TObject( std::forward<TArgs>( pArgs )... ) };
 		return result;
 	}
 
-#define ic3GLDeclareOpenGLObjectHandle( pObjectClass ) \
+#define Ic3GLDeclareOpenGLObjectHandle( pObjectClass ) \
 	class pObjectClass; \
 	using pObjectClass##Handle = GLObjectHandle<pObjectClass>
 

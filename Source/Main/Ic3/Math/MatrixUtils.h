@@ -7,38 +7,38 @@
 namespace Ic3::Math
 {
 
-	template <typename TVal>
-	inline Matrix2x2<TVal> identity2()
+	template <typename TPValue>
+	inline Matrix2x2<TPValue> identity2()
 	{
-		constexpr TVal cxOne = static_cast<TVal>( 1 );
-		constexpr TVal cxZero = static_cast<TVal>( 0 );
+		constexpr auto cxOne = static_cast<TPValue>( 1 );
+		constexpr auto cxZero = static_cast<TPValue>( 0 );
 
-		return Matrix2x2<TVal> {
+		return Matrix2x2<TPValue> {
 			cxOne,  cxZero,
 			cxZero, cxOne
 		};
 	}
 
-	template <typename TVal>
-	inline Matrix3x3<TVal> identity3()
+	template <typename TPValue>
+	inline Matrix3x3<TPValue> identity3()
 	{
-		constexpr TVal cxOne = static_cast<TVal>( 1 );
-		constexpr TVal cxZero = static_cast<TVal>( 0 );
+		constexpr auto cxOne = static_cast<TPValue>( 1 );
+		constexpr auto cxZero = static_cast<TPValue>( 0 );
 
-		return Matrix3x3<TVal> {
+		return Matrix3x3<TPValue> {
 			cxOne,  cxZero, cxZero,
 			cxZero, cxOne,  cxZero,
 			cxZero, cxZero, cxOne
 		};
 	}
 
-	template <typename TVal>
-	inline Matrix4x4<TVal> identity4()
+	template <typename TPValue>
+	inline Matrix4x4<TPValue> identity4()
 	{
-		constexpr TVal cxOne = static_cast<TVal>( 1 );
-		constexpr TVal cxZero = static_cast<TVal>( 0 );
+		constexpr auto cxOne = static_cast<TPValue>( 1 );
+		constexpr auto cxZero = static_cast<TPValue>( 0 );
 
-		return Matrix4x4<TVal> {
+		return Matrix4x4<TPValue> {
 			cxOne,  cxZero, cxZero, cxZero,
 			cxZero, cxOne,  cxZero, cxZero,
 			cxZero, cxZero, cxOne,  cxZero,
@@ -46,41 +46,41 @@ namespace Ic3::Math
 		};
 	}
 
-	template <typename TVal>
-	inline void transposeInplace( Matrix2x2<TVal> & pMatrix )
+	template <typename TPValue>
+	inline void transposeInplace( Matrix2x2<TPValue> & pMatrix )
 	{
 		std::swap( pMatrix[1][0], pMatrix[0][1] );
 	}
 
-	template <typename TVal>
-	inline Matrix2x2<TVal> transpose( const Matrix2x2<TVal> & pMatrix )
+	template <typename TPValue>
+	inline Matrix2x2<TPValue> transpose( const Matrix2x2<TPValue> & pMatrix )
 	{
-		return Matrix2x2<TVal> {
+		return Matrix2x2<TPValue> {
 			pMatrix[0][0], pMatrix[1][0],
 			pMatrix[0][1], pMatrix[1][1]
 		};
 	}
 
-	template <typename TVal>
-	inline void transposeInplace( Matrix3x3<TVal> & pMatrix )
+	template <typename TPValue>
+	inline void transposeInplace( Matrix3x3<TPValue> & pMatrix )
 	{
 		std::swap( pMatrix[1][0], pMatrix[0][1]);
 		std::swap( pMatrix[2][0], pMatrix[0][2]);
 		std::swap( pMatrix[2][1], pMatrix[1][2]);
 	}
 
-	template <typename TVal>
-	inline Matrix3x3<TVal> transpose( const Matrix3x3<TVal> & pMatrix )
+	template <typename TPValue>
+	inline Matrix3x3<TPValue> transpose( const Matrix3x3<TPValue> & pMatrix )
 	{
-		return Matrix3x3<TVal> {
+		return Matrix3x3<TPValue> {
 			pMatrix[0][0], pMatrix[1][0], pMatrix[2][0],
 			pMatrix[0][1], pMatrix[1][1], pMatrix[2][1],
 			pMatrix[0][2], pMatrix[1][2], pMatrix[2][2]
 		};
 	}
 
-	template <typename TVal>
-	inline void transposeInplace( Matrix4x4<TVal> & pMatrix )
+	template <typename TPValue>
+	inline void transposeInplace( Matrix4x4<TPValue> & pMatrix )
 	{
 		std::swap( pMatrix[1][0], pMatrix[0][1]);
 		std::swap( pMatrix[2][0], pMatrix[0][2]);
@@ -90,10 +90,10 @@ namespace Ic3::Math
 		std::swap( pMatrix[3][2], pMatrix[2][3]);
 	}
 
-	template <typename TVal>
-	inline Matrix4x4<TVal> transpose( const Matrix4x4<TVal> & pMatrix )
+	template <typename TPValue>
+	inline Matrix4x4<TPValue> transpose( const Matrix4x4<TPValue> & pMatrix )
 	{
-		return Matrix4x4<TVal> {
+		return Matrix4x4<TPValue> {
 			pMatrix[0][0], pMatrix[1][0], pMatrix[2][0], pMatrix[3][0],
 			pMatrix[0][1], pMatrix[1][1], pMatrix[2][1], pMatrix[3][1],
 			pMatrix[0][2], pMatrix[1][2], pMatrix[2][2], pMatrix[3][2],
@@ -101,12 +101,12 @@ namespace Ic3::Math
 		};
 	}
 
-	template <typename TVal>
-	inline Matrix2x2<TVal> inverseTranspose( const Matrix2x2<TVal> & pMatrix )
+	template <typename TPValue>
+	inline Matrix2x2<TPValue> inverseTranspose( const Matrix2x2<TPValue> & pMatrix )
 	{
-		const TVal det = pMatrix[0][0] * pMatrix[1][1] - pMatrix[1][0] * pMatrix[0][1];
+		const TPValue det = pMatrix[0][0] * pMatrix[1][1] - pMatrix[1][0] * pMatrix[0][1];
 
-		return Matrix2x2<TVal> {
+		return Matrix2x2<TPValue> {
 			+ ( pMatrix[1][1] / det ),
 			- ( pMatrix[0][1] / det ),
 			- ( pMatrix[1][0] / det ),
@@ -114,10 +114,10 @@ namespace Ic3::Math
 		};
 	}
 
-	template <typename TVal>
-	inline Matrix3x3<TVal> inverse( const Matrix3x3<TVal> & pMatrix )
+	template <typename TPValue>
+	inline Matrix3x3<TPValue> inverse( const Matrix3x3<TPValue> & pMatrix )
 	{
-		const auto oneOverDet = static_cast<TVal>( 1 ) / (
+		const auto oneOverDet = static_cast<TPValue>( 1 ) / (
 				+ pMatrix[0][0] * (pMatrix[1][1] * pMatrix[2][2] - pMatrix[2][1] * pMatrix[1][2])
 				- pMatrix[1][0] * (pMatrix[0][1] * pMatrix[2][2] - pMatrix[2][1] * pMatrix[0][2])
 				+ pMatrix[2][0] * (pMatrix[0][1] * pMatrix[1][2] - pMatrix[1][1] * pMatrix[0][2]));
@@ -135,15 +135,15 @@ namespace Ic3::Math
 		};
 	}
 
-	template <typename TVal>
-	inline Matrix3x3<TVal> inverseTranspose( const Matrix3x3<TVal> & pMatrix )
+	template <typename TPValue>
+	inline Matrix3x3<TPValue> inverseTranspose( const Matrix3x3<TPValue> & pMatrix )
 	{
-		const TVal det =
+		const TPValue det =
 			+ pMatrix[0][0] * ( pMatrix[1][1] * pMatrix[2][2] - pMatrix[1][2] * pMatrix[2][1] )
 			- pMatrix[0][1] * ( pMatrix[1][0] * pMatrix[2][2] - pMatrix[1][2] * pMatrix[2][0] )
 			+ pMatrix[0][2] * ( pMatrix[1][0] * pMatrix[2][1] - pMatrix[1][1] * pMatrix[2][0] );
 
-		return Matrix3x3<TVal> {
+		return Matrix3x3<TPValue> {
 			( + ( pMatrix[1][1] * pMatrix[2][2] - pMatrix[2][1] * pMatrix[1][2] ) / det ),
 			( - ( pMatrix[1][0] * pMatrix[2][2] - pMatrix[2][0] * pMatrix[1][2] ) / det ),
 			( + ( pMatrix[1][0] * pMatrix[2][1] - pMatrix[2][0] * pMatrix[1][1] ) / det ),
@@ -156,29 +156,29 @@ namespace Ic3::Math
 		};
 	}
 
-	template <typename TVal>
-	inline Matrix4x4<TVal> inverseTranspose( const Matrix4x4<TVal> & pMatrix )
+	template <typename TPValue>
+	inline Matrix4x4<TPValue> inverseTranspose( const Matrix4x4<TPValue> & pMatrix )
 	{
-		const TVal tmp00 = pMatrix[2][2] * pMatrix[3][3] - pMatrix[3][2] * pMatrix[2][3];
-		const TVal tmp01 = pMatrix[2][1] * pMatrix[3][3] - pMatrix[3][1] * pMatrix[2][3];
-		const TVal tmp02 = pMatrix[2][1] * pMatrix[3][2] - pMatrix[3][1] * pMatrix[2][2];
-		const TVal tmp03 = pMatrix[2][0] * pMatrix[3][3] - pMatrix[3][0] * pMatrix[2][3];
-		const TVal tmp04 = pMatrix[2][0] * pMatrix[3][2] - pMatrix[3][0] * pMatrix[2][2];
-		const TVal tmp05 = pMatrix[2][0] * pMatrix[3][1] - pMatrix[3][0] * pMatrix[2][1];
-		const TVal tmp06 = pMatrix[1][2] * pMatrix[3][3] - pMatrix[3][2] * pMatrix[1][3];
-		const TVal tmp07 = pMatrix[1][1] * pMatrix[3][3] - pMatrix[3][1] * pMatrix[1][3];
-		const TVal tmp08 = pMatrix[1][1] * pMatrix[3][2] - pMatrix[3][1] * pMatrix[1][2];
-		const TVal tmp09 = pMatrix[1][0] * pMatrix[3][3] - pMatrix[3][0] * pMatrix[1][3];
-		const TVal tmp10 = pMatrix[1][0] * pMatrix[3][2] - pMatrix[3][0] * pMatrix[1][2];
-		const TVal tmp11 = pMatrix[1][0] * pMatrix[3][1] - pMatrix[3][0] * pMatrix[1][1];
-		const TVal tmp12 = pMatrix[1][2] * pMatrix[2][3] - pMatrix[2][2] * pMatrix[1][3];
-		const TVal tmp13 = pMatrix[1][1] * pMatrix[2][3] - pMatrix[2][1] * pMatrix[1][3];
-		const TVal tmp14 = pMatrix[1][1] * pMatrix[2][2] - pMatrix[2][1] * pMatrix[1][2];
-		const TVal tmp15 = pMatrix[1][0] * pMatrix[2][3] - pMatrix[2][0] * pMatrix[1][3];
-		const TVal tmp16 = pMatrix[1][0] * pMatrix[2][2] - pMatrix[2][0] * pMatrix[1][2];
-		const TVal tmp17 = pMatrix[1][0] * pMatrix[2][1] - pMatrix[2][0] * pMatrix[1][1];
+		const TPValue tmp00 = pMatrix[2][2] * pMatrix[3][3] - pMatrix[3][2] * pMatrix[2][3];
+		const TPValue tmp01 = pMatrix[2][1] * pMatrix[3][3] - pMatrix[3][1] * pMatrix[2][3];
+		const TPValue tmp02 = pMatrix[2][1] * pMatrix[3][2] - pMatrix[3][1] * pMatrix[2][2];
+		const TPValue tmp03 = pMatrix[2][0] * pMatrix[3][3] - pMatrix[3][0] * pMatrix[2][3];
+		const TPValue tmp04 = pMatrix[2][0] * pMatrix[3][2] - pMatrix[3][0] * pMatrix[2][2];
+		const TPValue tmp05 = pMatrix[2][0] * pMatrix[3][1] - pMatrix[3][0] * pMatrix[2][1];
+		const TPValue tmp06 = pMatrix[1][2] * pMatrix[3][3] - pMatrix[3][2] * pMatrix[1][3];
+		const TPValue tmp07 = pMatrix[1][1] * pMatrix[3][3] - pMatrix[3][1] * pMatrix[1][3];
+		const TPValue tmp08 = pMatrix[1][1] * pMatrix[3][2] - pMatrix[3][1] * pMatrix[1][2];
+		const TPValue tmp09 = pMatrix[1][0] * pMatrix[3][3] - pMatrix[3][0] * pMatrix[1][3];
+		const TPValue tmp10 = pMatrix[1][0] * pMatrix[3][2] - pMatrix[3][0] * pMatrix[1][2];
+		const TPValue tmp11 = pMatrix[1][0] * pMatrix[3][1] - pMatrix[3][0] * pMatrix[1][1];
+		const TPValue tmp12 = pMatrix[1][2] * pMatrix[2][3] - pMatrix[2][2] * pMatrix[1][3];
+		const TPValue tmp13 = pMatrix[1][1] * pMatrix[2][3] - pMatrix[2][1] * pMatrix[1][3];
+		const TPValue tmp14 = pMatrix[1][1] * pMatrix[2][2] - pMatrix[2][1] * pMatrix[1][2];
+		const TPValue tmp15 = pMatrix[1][0] * pMatrix[2][3] - pMatrix[2][0] * pMatrix[1][3];
+		const TPValue tmp16 = pMatrix[1][0] * pMatrix[2][2] - pMatrix[2][0] * pMatrix[1][2];
+		const TPValue tmp17 = pMatrix[1][0] * pMatrix[2][1] - pMatrix[2][0] * pMatrix[1][1];
 
-		Matrix4x4<TVal> tmpInv;
+		Matrix4x4<TPValue> tmpInv;
 
 		tmpInv[0][0] = + ( pMatrix[1][1] * tmp00 - pMatrix[1][2] * tmp01 + pMatrix[1][3] * tmp02 );
 		tmpInv[0][1] = - ( pMatrix[1][0] * tmp00 - pMatrix[1][2] * tmp03 + pMatrix[1][3] * tmp04 );
@@ -200,7 +200,7 @@ namespace Ic3::Math
 		tmpInv[3][2] = - ( pMatrix[0][0] * tmp13 - pMatrix[0][1] * tmp15 + pMatrix[0][3] * tmp17 );
 		tmpInv[3][3] = + ( pMatrix[0][0] * tmp14 - pMatrix[0][1] * tmp16 + pMatrix[0][2] * tmp17 );
 
-		const TVal det =
+		const TPValue det =
 			+ ( pMatrix[0][0] * tmpInv[0][0] )
 			+ ( pMatrix[0][1] * tmpInv[0][1] )
 			+ ( pMatrix[0][2] * tmpInv[0][2] )
@@ -209,53 +209,53 @@ namespace Ic3::Math
 		return tmpInv / det;
 	}
 
-	template <typename TVal>
-	inline Matrix4x4<TVal> lookAtLH( const Vec3<TVal> & pEyePos, const Vec3<TVal> & pLookAt, const Vec3<TVal> & pUpVec )
+	template <typename TPValue>
+	inline Matrix4x4<TPValue> lookAtLH( const Vec3<TPValue> & pEyePos, const Vec3<TPValue> & pLookAt, const Vec3<TPValue> & pUpVec )
 	{
 		const auto zAxis = normalize( pLookAt - pEyePos );
 		const auto xAxis = normalize( cross( pUpVec, zAxis ) );
 		const auto yAxis = cross( zAxis, xAxis );
 
-		const TVal xAxisEyeDot = dot( xAxis, pEyePos );
-		const TVal yAxisEyeDot = dot( yAxis, pEyePos );
-		const TVal zAxisEyeDot = dot( zAxis, pEyePos );
+		const TPValue xAxisEyeDot = dot( xAxis, pEyePos );
+		const TPValue yAxisEyeDot = dot( yAxis, pEyePos );
+		const TPValue zAxisEyeDot = dot( zAxis, pEyePos );
 
-		return Matrix4x4<TVal> {
-			xAxis.x, xAxis.y, xAxis.z, -xAxisEyeDot,
-			yAxis.x, yAxis.y, yAxis.z, -yAxisEyeDot,
-			zAxis.x, zAxis.y, zAxis.z, -zAxisEyeDot,
-			0,       0,       0,        1
+		return Matrix4x4<TPValue> {
+				xAxis.x, xAxis.y, xAxis.z, -xAxisEyeDot,
+				yAxis.x, yAxis.y, yAxis.z, -yAxisEyeDot,
+				zAxis.x, zAxis.y, zAxis.z, -zAxisEyeDot,
+				0, 0, 0, 1
 		};
 	}
 
-	template <typename TVal>
-	inline Matrix4x4<TVal> lookAtRH( const Vec3<TVal> & pEyePos, const Vec3<TVal> & pLookAt, const Vec3<TVal> & pUpVec )
+	template <typename TPValue>
+	inline Matrix4x4<TPValue> lookAtRH( const Vec3<TPValue> & pEyePos, const Vec3<TPValue> & pLookAt, const Vec3<TPValue> & pUpVec )
 	{
 		const auto zAxis = normalize( pLookAt - pEyePos );
 		const auto xAxis = normalize( cross( zAxis, pUpVec ) );
 		const auto yAxis = cross( xAxis, zAxis );
 
-		const TVal xAxisEyeDot = dot( xAxis, pEyePos );
-		const TVal yAxisEyeDot = dot( yAxis, pEyePos );
-		const TVal zAxisEyeDot = dot( zAxis, pEyePos );
+		const TPValue xAxisEyeDot = dot( xAxis, pEyePos );
+		const TPValue yAxisEyeDot = dot( yAxis, pEyePos );
+		const TPValue zAxisEyeDot = dot( zAxis, pEyePos );
 
-		return Matrix4x4<TVal> {
-			 xAxis.x,  xAxis.y,  xAxis.z, -xAxisEyeDot,
-			 yAxis.x,  yAxis.y,  yAxis.z, -yAxisEyeDot,
-			-zAxis.x, -zAxis.y, -zAxis.z,  zAxisEyeDot,
-			0,         0,        0,        1
+		return Matrix4x4<TPValue> {
+				xAxis.x, xAxis.y, xAxis.z, -xAxisEyeDot,
+				yAxis.x, yAxis.y, yAxis.z, -yAxisEyeDot,
+				-zAxis.x, -zAxis.y, -zAxis.z, zAxisEyeDot,
+				0, 0, 0, 1
 		};
 	}
 
-	template <typename TVal>
-	inline Matrix4x4<TVal> orthoCenterLH( TVal pWidth, TVal pHeight, TVal pZNear, TVal pZFar )
+	template <typename TPValue>
+	inline Matrix4x4<TPValue> orthoCenterLH( TPValue pWidth, TPValue pHeight, TPValue pZNear, TPValue pZFar )
 	{
-		const TVal mElem00 = static_cast<TVal>( 2 ) / pWidth;
-		const TVal mElem11 = static_cast<TVal>( 2 ) / pHeight;
-		const TVal mElem22 = static_cast<TVal>( 1 ) / ( pZFar - pZNear );
-		const TVal mElem23 = pZNear / ( pZNear - pZFar );
+		const TPValue mElem00 = static_cast<TPValue>( 2 ) / pWidth;
+		const TPValue mElem11 = static_cast<TPValue>( 2 ) / pHeight;
+		const TPValue mElem22 = static_cast<TPValue>( 1 ) / ( pZFar - pZNear );
+		const TPValue mElem23 = pZNear / ( pZNear - pZFar );
 
-		return Matrix4x4<TVal> {
+		return Matrix4x4<TPValue> {
 			mElem00, 0,       0,       0,
 			0,       mElem11, 0,       0,
 			0,       0,       mElem22, mElem23,
@@ -263,17 +263,17 @@ namespace Ic3::Math
 		};
 	}
 
-	template <typename TVal>
-	inline Matrix4x4<TVal> orthoOffCenterLH( TVal pLeft, TVal pRight, TVal pBottom, TVal pTop, TVal pZNear, TVal pZFar )
+	template <typename TPValue>
+	inline Matrix4x4<TPValue> orthoOffCenterLH( TPValue pLeft, TPValue pRight, TPValue pBottom, TPValue pTop, TPValue pZNear, TPValue pZFar )
 	{
-		const TVal mElem00 = static_cast<TVal>( 2 ) / ( pRight - pLeft );
-		const TVal mElem11 = static_cast<TVal>( 2 ) / ( pTop - pBottom );
-		const TVal mElem22 = static_cast<TVal>( 1 ) / ( pZFar - pZNear );
-		const TVal mElem03 = ( pLeft + pRight ) / ( pLeft - pRight );
-		const TVal mElem13 = ( pBottom + pTop ) / ( pBottom - pTop );
-		const TVal mElem23 = pZNear / ( pZNear - pZFar );
+		const TPValue mElem00 = static_cast<TPValue>( 2 ) / ( pRight - pLeft );
+		const TPValue mElem11 = static_cast<TPValue>( 2 ) / ( pTop - pBottom );
+		const TPValue mElem22 = static_cast<TPValue>( 1 ) / ( pZFar - pZNear );
+		const TPValue mElem03 = ( pLeft + pRight ) / ( pLeft - pRight );
+		const TPValue mElem13 = ( pBottom + pTop ) / ( pBottom - pTop );
+		const TPValue mElem23 = pZNear / ( pZNear - pZFar );
 
-		return Matrix4x4<TVal> {
+		return Matrix4x4<TPValue> {
 				mElem00, 0,       0,       mElem03,
 				0,       mElem11, 0,       mElem13,
 				0,       0,       mElem22, mElem23,
@@ -281,15 +281,15 @@ namespace Ic3::Math
 		};
 	}
 
-	template <typename TVal>
-	inline Matrix4x4<TVal> orthoCenterRH( TVal pWidth, TVal pHeight, TVal pZNear, TVal pZFar )
+	template <typename TPValue>
+	inline Matrix4x4<TPValue> orthoCenterRH( TPValue pWidth, TPValue pHeight, TPValue pZNear, TPValue pZFar )
 	{
-		const TVal mElem00 = static_cast<TVal>( 2 ) / pWidth;
-		const TVal mElem11 = static_cast<TVal>( 2 ) / pHeight;
-		const TVal mElem22 = static_cast<TVal>( 1 ) / ( pZNear - pZFar );
-		const TVal mElem23 = pZNear / ( pZNear - pZFar );
+		const TPValue mElem00 = static_cast<TPValue>( 2 ) / pWidth;
+		const TPValue mElem11 = static_cast<TPValue>( 2 ) / pHeight;
+		const TPValue mElem22 = static_cast<TPValue>( 1 ) / ( pZNear - pZFar );
+		const TPValue mElem23 = pZNear / ( pZNear - pZFar );
 
-		return Matrix4x4<TVal> {
+		return Matrix4x4<TPValue> {
 			mElem00, 0,       0,       0,
 			0,       mElem11, 0,       0,
 			0,       0,       mElem22, mElem23,
@@ -297,17 +297,17 @@ namespace Ic3::Math
 		};
 	}
 
-	template <typename TVal>
-	inline Matrix4x4<TVal> orthoOffCenterRH( TVal pLeft, TVal pRight, TVal pBottom, TVal pTop, TVal pZNear, TVal pZFar )
+	template <typename TPValue>
+	inline Matrix4x4<TPValue> orthoOffCenterRH( TPValue pLeft, TPValue pRight, TPValue pBottom, TPValue pTop, TPValue pZNear, TPValue pZFar )
 	{
-		const TVal mElem00 = static_cast<TVal>( 2 ) / ( pRight - pLeft );
-		const TVal mElem11 = static_cast<TVal>( 2 ) / ( pTop - pBottom );
-		const TVal mElem22 = static_cast<TVal>( 1 ) / ( pZNear - pZFar );
-		const TVal mElem03 = ( pLeft + pRight ) / ( pLeft - pRight );
-		const TVal mElem13 = ( pBottom + pTop ) / ( pBottom - pTop );
-		const TVal mElem23 = pZNear / ( pZNear - pZFar );
+		const TPValue mElem00 = static_cast<TPValue>( 2 ) / ( pRight - pLeft );
+		const TPValue mElem11 = static_cast<TPValue>( 2 ) / ( pTop - pBottom );
+		const TPValue mElem22 = static_cast<TPValue>( 1 ) / ( pZNear - pZFar );
+		const TPValue mElem03 = ( pLeft + pRight ) / ( pLeft - pRight );
+		const TPValue mElem13 = ( pBottom + pTop ) / ( pBottom - pTop );
+		const TPValue mElem23 = pZNear / ( pZNear - pZFar );
 
-		return Matrix4x4<TVal> {
+		return Matrix4x4<TPValue> {
 				mElem00, 0,       0,       mElem03,
 				0,       mElem11, 0,       mElem13,
 				0,       0,       mElem22, mElem23,
@@ -315,17 +315,17 @@ namespace Ic3::Math
 		};
 	}
 
-	template <typename TVal>
-	inline Matrix4x4<TVal> perspectiveAspectLH( TVal pFOV, TVal pAspectRatio, TVal pZNear, TVal pZFar )
+	template <typename TPValue>
+	inline Matrix4x4<TPValue> perspectiveAspectLH( TPValue pFOV, TPValue pAspectRatio, TPValue pZNear, TPValue pZFar )
 	{
-		const TVal halfTanFOV = std::tan( static_cast<TVal>( 0.5 ) * pFOV );
+		const TPValue halfTanFOV = std::tan( static_cast<TPValue>( 0.5 ) * pFOV );
 
-		const TVal mElem00 = static_cast<TVal>( 1 ) / ( pAspectRatio * halfTanFOV );
-		const TVal mElem11 = static_cast<TVal>( 1 ) / halfTanFOV;
-		const TVal mElem22 = ( pZFar + pZNear ) / ( pZFar - pZNear );
-		const TVal mElem23 = ( 2 * pZFar * pZNear ) / ( pZNear - pZFar );
+		const TPValue mElem00 = static_cast<TPValue>( 1 ) / ( pAspectRatio * halfTanFOV );
+		const TPValue mElem11 = static_cast<TPValue>( 1 ) / halfTanFOV;
+		const TPValue mElem22 = ( pZFar + pZNear ) / ( pZFar - pZNear );
+		const TPValue mElem23 = ( 2 * pZFar * pZNear ) / ( pZNear - pZFar );
 
-		return Matrix4x4<TVal> {
+		return Matrix4x4<TPValue> {
 			mElem00, 0,       0,       0,
 			0,       mElem11, 0,       0,
 			0,       0,       mElem22, mElem23,
@@ -333,17 +333,17 @@ namespace Ic3::Math
 		};
 	}
 
-	template <typename TVal>
-	inline Matrix4x4<TVal> perspectiveAspectRH( TVal pFOV, TVal pAspectRatio, TVal pZNear, TVal pZFar )
+	template <typename TPValue>
+	inline Matrix4x4<TPValue> perspectiveAspectRH( TPValue pFOV, TPValue pAspectRatio, TPValue pZNear, TPValue pZFar )
 	{
-		const TVal halfTanFOV = std::tan( static_cast<TVal>( 0.5 ) * pFOV );
+		const TPValue halfTanFOV = std::tan( static_cast<TPValue>( 0.5 ) * pFOV );
 
-		const TVal mElem00 = static_cast<TVal>( 1 ) / ( pAspectRatio * halfTanFOV );
-		const TVal mElem11 = static_cast<TVal>( 1 ) / halfTanFOV;
-		const TVal mElem22 = ( pZFar + pZNear ) / ( pZNear - pZFar );
-		const TVal mElem23 = ( 2 * pZFar * pZNear ) / ( pZNear - pZFar );
+		const TPValue mElem00 = static_cast<TPValue>( 1 ) / ( pAspectRatio * halfTanFOV );
+		const TPValue mElem11 = static_cast<TPValue>( 1 ) / halfTanFOV;
+		const TPValue mElem22 = ( pZFar + pZNear ) / ( pZNear - pZFar );
+		const TPValue mElem23 = ( 2 * pZFar * pZNear ) / ( pZNear - pZFar );
 
-		return Matrix4x4<TVal> {
+		return Matrix4x4<TPValue> {
 			mElem00, 0,       0,       0,
 			0,       mElem11, 0,       0,
 			0,       0,       mElem22, mElem23,
@@ -351,17 +351,17 @@ namespace Ic3::Math
 		};
 	}
 
-	template <typename TVal>
-	inline Matrix4x4<TVal> perspectiveRectLH( TVal pFOV, TVal pWidth, TVal pHeight, TVal pZNear, TVal pZFar )
+	template <typename TPValue>
+	inline Matrix4x4<TPValue> perspectiveRectLH( TPValue pFOV, TPValue pWidth, TPValue pHeight, TPValue pZNear, TPValue pZFar )
 	{
-		const TVal fovFactor = std::cos( static_cast<TVal>( 0.5 ) * pFOV ) / std::sin( static_cast<TVal>( 0.5 ) * pFOV );
+		const TPValue fovFactor = std::cos( static_cast<TPValue>( 0.5 ) * pFOV ) / std::sin( static_cast<TPValue>( 0.5 ) * pFOV );
 
-		const TVal mElem00 = fovFactor * pHeight / pWidth;
-		const TVal mElem11 = fovFactor;
-		const TVal mElem22 = ( pZFar + pZNear ) / ( pZFar - pZNear );
-		const TVal mElem23 = ( 2 * pZFar * pZNear ) / ( pZNear - pZFar );
+		const TPValue mElem00 = fovFactor * pHeight / pWidth;
+		const TPValue mElem11 = fovFactor;
+		const TPValue mElem22 = ( pZFar + pZNear ) / ( pZFar - pZNear );
+		const TPValue mElem23 = ( 2 * pZFar * pZNear ) / ( pZNear - pZFar );
 
-		return Matrix4x4<TVal> {
+		return Matrix4x4<TPValue> {
 			mElem00, 0,       0,       0,
 			0,       mElem11, 0,       0,
 			0,       0,       mElem22, mElem23,
@@ -369,17 +369,17 @@ namespace Ic3::Math
 		};
 	}
 
-	template <typename TVal>
-	inline Matrix4x4<TVal> perspectiveRectRH( TVal pFOV, TVal pWidth, TVal pHeight, TVal pZNear, TVal pZFar )
+	template <typename TPValue>
+	inline Matrix4x4<TPValue> perspectiveRectRH( TPValue pFOV, TPValue pWidth, TPValue pHeight, TPValue pZNear, TPValue pZFar )
 	{
-		const TVal fovFactor = std::cos( static_cast<TVal>( 0.5 ) * pFOV ) / std::sin( static_cast<TVal>( 0.5 ) * pFOV );
+		const TPValue fovFactor = std::cos( static_cast<TPValue>( 0.5 ) * pFOV ) / std::sin( static_cast<TPValue>( 0.5 ) * pFOV );
 
-		const TVal mElem00 = fovFactor * pHeight / pWidth;
-		const TVal mElem11 = fovFactor;
-		const TVal mElem22 = ( pZFar + pZNear ) / ( pZFar - pZNear );
-		const TVal mElem23 = ( 2 * pZFar * pZNear ) / ( pZNear - pZFar );
+		const TPValue mElem00 = fovFactor * pHeight / pWidth;
+		const TPValue mElem11 = fovFactor;
+		const TPValue mElem22 = ( pZFar + pZNear ) / ( pZFar - pZNear );
+		const TPValue mElem23 = ( 2 * pZFar * pZNear ) / ( pZNear - pZFar );
 
-		return Matrix4x4<TVal> {
+		return Matrix4x4<TPValue> {
 			mElem00, 0,        0,       0,
 			0,       mElem11,  0,       0,
 			0,       0,        mElem22, mElem23,
@@ -387,13 +387,13 @@ namespace Ic3::Math
 		};
 	}
 
-	template <typename TVal>
-	inline Matrix4x4<TVal> rotationAxisX( TVal pAngle )
+	template <typename TPValue>
+	inline Matrix4x4<TPValue> rotationAxisX( TPValue pAngle )
 	{
-		const TVal angleSin = std::sin( pAngle );
-		const TVal angleCos = std::cos( pAngle );
+		const TPValue angleSin = std::sin( pAngle );
+		const TPValue angleCos = std::cos( pAngle );
 
-		return Matrix4x4<TVal> {
+		return Matrix4x4<TPValue> {
 			1, 0,         0,        0,
 			0, angleCos, -angleSin, 0,
 			0, angleSin,  angleCos, 0,
@@ -401,13 +401,13 @@ namespace Ic3::Math
 		};
 	}
 
-	template <typename TVal>
-	inline Matrix4x4<TVal> rotationAxisY( TVal pAngle )
+	template <typename TPValue>
+	inline Matrix4x4<TPValue> rotationAxisY( TPValue pAngle )
 	{
-		const TVal angleSin = std::sin( pAngle );
-		const TVal angleCos = std::cos( pAngle );
+		const TPValue angleSin = std::sin( pAngle );
+		const TPValue angleCos = std::cos( pAngle );
 
-		return Matrix4x4<TVal> {
+		return Matrix4x4<TPValue> {
 			 angleCos, 0, angleSin, 0,
 			 0,        1, 0,        0,
 			-angleSin, 0, angleCos, 0,
@@ -415,13 +415,13 @@ namespace Ic3::Math
 		};
 	}
 
-	template <typename TVal>
-	inline Matrix4x4<TVal> rotationAxisZ( TVal pAngle )
+	template <typename TPValue>
+	inline Matrix4x4<TPValue> rotationAxisZ( TPValue pAngle )
 	{
-		const TVal angleSin = std::sin( pAngle );
-		const TVal angleCos = std::cos( pAngle );
+		const TPValue angleSin = std::sin( pAngle );
+		const TPValue angleCos = std::cos( pAngle );
 
-		return Matrix4x4<TVal> {
+		return Matrix4x4<TPValue> {
 			angleCos, -angleSin, 0, 0,
 			angleSin,  angleCos, 0, 0,
 			0,         0,        1, 0,
@@ -429,15 +429,15 @@ namespace Ic3::Math
 		};
 	}
 
-	template <typename TVal>
-	inline Matrix4x4<TVal> rotationCombined( const Vector3<TVal> & pAxis, TVal pAngle )
+	template <typename TPValue>
+	inline Matrix4x4<TPValue> rotationCombined( const Vector3<TPValue> & pAxis, TPValue pAngle )
 	{
-		const TVal angleSin = std::sin( pAngle );
-		const TVal angleCos = std::cos( pAngle );
+		const TPValue angleSin = std::sin( pAngle );
+		const TPValue angleCos = std::cos( pAngle );
 		const auto normalizedAxis = normalize( pAxis );
-		const auto icnAxis = normalizedAxis * ( static_cast<TVal>( 1 ) - angleCos );
+		const auto icnAxis = normalizedAxis * ( static_cast<TPValue>( 1 ) - angleCos );
 
-		Matrix3x3<TVal> rMat;
+		Matrix3x3<TPValue> rMat;
 		rMat[0][0] = pAxis.x * icnAxis.x + angleCos;
 		rMat[0][1] = pAxis.x * icnAxis.y - pAxis.z * angleSin;
 		rMat[0][2] = pAxis.x * icnAxis.z + pAxis.y * angleSin;
@@ -450,7 +450,7 @@ namespace Ic3::Math
 		rMat[2][1] = pAxis.z * icnAxis.y + pAxis.y * angleSin;
 		rMat[2][2] = pAxis.z * icnAxis.z + angleCos;
 
-		return Matrix4x4<TVal> {
+		return Matrix4x4<TPValue> {
 			rMat.row0.x, rMat.row0.y, rMat.row0.z, 0,
 			rMat.row1.x, rMat.row1.y, rMat.row1.z, 0,
 			rMat.row2.x, rMat.row2.y, rMat.row2.z, 0,
@@ -458,10 +458,10 @@ namespace Ic3::Math
 		};
 	}
 
-	template <typename TVal>
-	inline Matrix4x4<TVal> scaling( TVal pScaleX, TVal pScaleY, TVal pScaleZ )
+	template <typename TPValue>
+	inline Matrix4x4<TPValue> scaling( TPValue pScaleX, TPValue pScaleY, TPValue pScaleZ )
 	{
-		return Matrix4x4<TVal> {
+		return Matrix4x4<TPValue> {
 			pScaleX, 0,       0,       0,
 			0,       pScaleY, 0,       0,
 			0,       0,       pScaleZ, 0,
@@ -469,10 +469,10 @@ namespace Ic3::Math
 		};
 	}
 
-	template <typename TVal>
-	inline Matrix4x4<TVal> translation( TVal pMoveX, TVal pMoveY, TVal pMoveZ )
+	template <typename TPValue>
+	inline Matrix4x4<TPValue> translation( TPValue pMoveX, TPValue pMoveY, TPValue pMoveZ )
 	{
-		return Matrix4x4<TVal> {
+		return Matrix4x4<TPValue> {
 			1, 0, 0, pMoveX,
 			0, 1, 0, pMoveY,
 			0, 0, 1, pMoveZ,
@@ -483,7 +483,7 @@ namespace Ic3::Math
 }
 
 #if( IC3_MATH_SIMD_ENABLE )
-#  include "matrixUtilsSIMD.inl"
+#  include "MatrixUtilsSIMD.inl"
 #endif
 
 #endif // __IC3_MATH_MATRIX_UTILS_H__

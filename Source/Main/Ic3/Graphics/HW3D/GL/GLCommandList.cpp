@@ -26,21 +26,21 @@ namespace Ic3::Graphics::GCI
 
 	GLCommandList::~GLCommandList() = default;
 
-	void GLCommandList::beginCommandSequence()
+	void GLCommandList::BeginCommandSequence()
 	{
-		CommandList::beginCommandSequence();
+		CommandList::BeginCommandSequence();
 	}
 
-	void GLCommandList::endCommandSequence()
+	void GLCommandList::EndCommandSequence()
 	{
-		CommandList::endCommandSequence();
+		CommandList::EndCommandSequence();
 	}
 
-	void GLCommandList::cmdDrawDirectIndexed( native_uint pIndicesNum, native_uint pIndicesOffset, native_uint pBaseVertexIndex )
+	void GLCommandList::CmdDrawDirectIndexed( native_uint pIndicesNum, native_uint pIndicesOffset, native_uint pBaseVertexIndex )
 	{
-		_graphicsPipelineStateControllerGL->applyStateChanges();
+		_graphicsPipelineStateControllerGL->ApplyStateChanges();
 
-		const auto & drawTopologyProperties = _graphicsPipelineStateControllerGL->getGLDrawTopologyProperties();
+		const auto & drawTopologyProperties = _graphicsPipelineStateControllerGL->GetGLDrawTopologyProperties();
 		const auto relativeIndexDataOffset = pIndicesOffset * drawTopologyProperties.indexBufferElementByteSize;
 		auto * baseIndexDataOffset = reinterpret_cast<void *>( drawTopologyProperties.indexBufferBaseOffset + relativeIndexDataOffset );
 
@@ -50,53 +50,53 @@ namespace Ic3::Graphics::GCI
 			drawTopologyProperties.indexBufferDataType,
 			baseIndexDataOffset,
 			static_cast<GLint>( pBaseVertexIndex ) );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
-	void GLCommandList::cmdDrawDirectIndexedInstanced( native_uint pIndicesNumPerInstance, native_uint pInstancesNum, native_uint pIndicesOffset )
+	void GLCommandList::CmdDrawDirectIndexedInstanced( native_uint pIndicesNumPerInstance, native_uint pInstancesNum, native_uint pIndicesOffset )
 	{
 	}
 
-	void GLCommandList::cmdDrawDirectNonIndexed( native_uint pVerticesNum, native_uint pVerticesOffset )
+	void GLCommandList::CmdDrawDirectNonIndexed( native_uint pVerticesNum, native_uint pVerticesOffset )
 	{
-		_graphicsPipelineStateControllerGL->applyStateChanges();
+		_graphicsPipelineStateControllerGL->ApplyStateChanges();
 
-		const auto & drawTopologyProperties = _graphicsPipelineStateControllerGL->getGLDrawTopologyProperties();
+		const auto & drawTopologyProperties = _graphicsPipelineStateControllerGL->GetGLDrawTopologyProperties();
 
 		glDrawArrays(
 			drawTopologyProperties.primitiveTopology,
 			static_cast< GLint >( pVerticesOffset ),
 			static_cast< GLsizei >( pVerticesNum ) );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
-	void GLCommandList::cmdDrawDirectNonIndexedInstanced( native_uint pVerticesNumPerInstance, native_uint pInstancesNum, native_uint pVerticesOffset )
+	void GLCommandList::CmdDrawDirectNonIndexedInstanced( native_uint pVerticesNumPerInstance, native_uint pInstancesNum, native_uint pVerticesOffset )
 	{
 	}
 
-	void GLCommandList::cmdExecuteDeferredContext( CommandContextDeferred & pDeferredContext )
+	void GLCommandList::CmdExecuteDeferredContext( CommandContextDeferred & pDeferredContext )
 	{
-		ic3DebugInterrupt();
+		Ic3DebugInterrupt();
 	}
 
-	void GLCommandList::executeRenderPassLoadActions(
+	void GLCommandList::ExecuteRenderPassLoadActions(
 			const RenderPassConfiguration & pRenderPassConfiguration,
 			const GraphicsPipelineDynamicState & pDynamicState )
 	{
 		if( pRenderPassConfiguration.attachmentsActionClearMask != 0 )
 		{
-			smutil::clearRenderPassFramebuffer( pRenderPassConfiguration, pDynamicState );
+			SMU::ClearRenderPassFramebuffer( pRenderPassConfiguration, pDynamicState );
 		}
 	}
 
-	void GLCommandList::executeRenderPassStoreActions(
+	void GLCommandList::ExecuteRenderPassStoreActions(
 			const RenderPassConfiguration & pRenderPassConfiguration,
 			const GraphicsPipelineDynamicState & pDynamicState )
 	{
 		if( pRenderPassConfiguration.attachmentsActionResolveMask != 0 )
 		{
-			smutil::resolveRenderPassFramebuffer(
-				_graphicsPipelineStateControllerGL->getCurrentRenderTargetBindingInfo(),
+			SMU::ResolveRenderPassFramebuffer(
+				_graphicsPipelineStateControllerGL->GetCurrentRenderTargetBindingInfo(),
 				pRenderPassConfiguration );
 		}
 	}

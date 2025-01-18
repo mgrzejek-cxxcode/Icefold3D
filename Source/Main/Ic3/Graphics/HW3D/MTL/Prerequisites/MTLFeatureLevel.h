@@ -21,13 +21,13 @@ namespace Ic3::Graphics::GCI
 		MFL1CommonSet2 = 0x20,
 
 		/// Tier1 feature set for Apple GPUs. Requires at least Apple4 GPU family.
-		MFL1GpuAppleTier1 = 0x41,
+		MFL1GPUAppleTier1 = 0x41,
 
 		/// Tier2 feature set for Apple GPUs. Requires at least Apple6 GPU family.
-		MFL2GpuAppleTier2 = 0x42,
+		MFL2GPUAppleTier2 = 0x42,
 
 		///
-		MFL2GpuMac2 = 0x52
+		MFL2GPUMac2 = 0x52
 	};
 
 } // namespace Ic3::Graphics::GCI

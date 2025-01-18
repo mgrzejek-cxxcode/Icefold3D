@@ -12,25 +12,23 @@ namespace Ic3::Graphics::GCI
 	struct TextureCreateInfo;
 	struct RenderTargetTextureCreateInfo;
 
-	ic3DeclareClassHandle( Texture );
-	ic3DeclareClassHandle( RenderTargetTexture );
+	Ic3DeclareClassHandle( Texture );
+	Ic3DeclareClassHandle( RenderTargetTexture );
 
-	namespace CxDef
-	{
+	/// @brief Identifies all mip levels available in a texture resource. Can be used for all resource accesses.
+	constexpr uint32 cxTextureMipLevelAll = cppx::meta::limits<uint32>::max_value;
 
-		/// @brief Identifies all mip levels available in a texture resource. Can be used for all resource accesses.
-		constexpr uint32 TEXTURE_MIP_LEVEL_ALL = QLimits<uint32>::maxValue;
+	/// @brief
+	constexpr uint32 cxTextureMSAALevelUndefined = cppx::meta::limits<uint32>::max_value;
 
-		inline constexpr TextureSize2D TEXTURE_SIZE_2D_UNDEFINED{ QLimits<uint32>::maxValue, QLimits<uint32>::maxValue };
+	/// @brief
+	inline constexpr TextureSize2D cxTextureSize2DUndefined{cppx::meta::limits<uint32>::max_value, cppx::meta::limits<uint32>::max_value };
 
-		inline constexpr uint32 TEXTURE_MSAA_LEVEL_UNDEFINED = QLimits<uint32>::maxValue;
-
-	}
-
+	/// @brief
 	enum ETextureDataCopyFlags : uint32
 	{
-		E_TEXTURE_DATA_COPY_FLAG_MODE_INVALIDATE_BIT = E_GPU_MEMORY_MAP_FLAG_WRITE_INVALIDATE_BIT,
-		E_TEXTURE_DATA_COPY_FLAGS_DEFAULT = 0,
+		eTextureDataCopyFlagModeInvalidateBit = eGPUMemoryMapFlagWriteInvalidateBit,
+		eTextureDataCopyFlagsDefault = 0,
 	};
 
 	/// @brief Bind flags for texture resources. Used to specify how textures are bound to the pipeline.
@@ -40,77 +38,77 @@ namespace Ic3::Graphics::GCI
 	enum ETextureBindFlags : resource_flags_value_t
 	{
 		//
-		E_TEXTURE_BIND_FLAG_COMMON_TEXTURE_BIT = 0x010000,
+		eTextureBindFlagCommonTextureBit = 0x010000,
 
 		// Bind flag for using a texture as a sampled image available in one or more shader stages.
 		// Such texture is accessible via one of the valid TX input registers and can be read through a sampler object.
 		// Implies SHADER_INPUT usage bit.
-		E_TEXTURE_BIND_FLAG_SHADER_INPUT_SAMPLED_IMAGE_BIT =
-				E_TEXTURE_BIND_FLAG_COMMON_TEXTURE_BIT |
-				E_GPU_RESOURCE_USAGE_FLAG_SHADER_INPUT_BIT,
+		eTextureBindFlagShaderInputSampledImageBit =
+			eTextureBindFlagCommonTextureBit |
+			eGPUResourceUsageFlagShaderInputBit,
 
 		// Bind flag for using a texture as a color attachment image, modified as part of the FBO rendering.
 		// Implies RENDER_TARGET_COLOR usage bit.
-		E_TEXTURE_BIND_FLAG_RENDER_TARGET_COLOR_ATTACHMENT_BIT =
-				E_TEXTURE_BIND_FLAG_COMMON_TEXTURE_BIT |
-				E_GPU_RESOURCE_USAGE_FLAG_RENDER_TARGET_COLOR_BIT,
+		eTextureBindFlagRenderTargetColorAttachmentBit =
+			eTextureBindFlagCommonTextureBit |
+			eGPUResourceUsageFlagRenderTargetColorBit,
 
 		//
-		E_TEXTURE_BIND_FLAG_RENDER_TARGET_DEPTH_ATTACHMENT_BIT =
-				E_TEXTURE_BIND_FLAG_COMMON_TEXTURE_BIT |
-				E_GPU_RESOURCE_USAGE_FLAG_RENDER_TARGET_DEPTH_BIT,
+		eTextureBindFlagRenderTargetDepthAttachmentBit =
+			eTextureBindFlagCommonTextureBit |
+			eGPUResourceUsageFlagRenderTargetDepthBit,
 
 		// Bind flag for using a texture as a depth/stencil attachment image, modified as part of the FBO rendering
 		// (target storage for depth/stencil values) or read/modified during the depth and/or stencil tests.
 		// Implies RENDER_TARGET_DEPTH_STENCIL usage bit.
-		E_TEXTURE_BIND_FLAG_RENDER_TARGET_DEPTH_STENCIL_ATTACHMENT_BIT =
-				E_TEXTURE_BIND_FLAG_COMMON_TEXTURE_BIT |
-				E_GPU_RESOURCE_USAGE_MASK_RENDER_TARGET_DEPTH_STENCIL,
+		eTextureBindFlagRenderTargetDepthStencilAttachmentBit =
+			eTextureBindFlagCommonTextureBit |
+			eGPUResourceUsageMaskRenderTargetDepthStencil,
 
 		// Bind flag for using a texture as a source in transfer operations. @See E_GPU_RESOURCE_USAGE_FLAG_TRANSFER_SOURCE_BIT.
-		E_TEXTURE_BIND_FLAG_TRANSFER_SOURCE_IMAGE_BIT =
-				E_TEXTURE_BIND_FLAG_COMMON_TEXTURE_BIT |
-				E_GPU_RESOURCE_USAGE_FLAG_TRANSFER_SOURCE_BIT,
+		eTextureBindFlagTransferSourceImageBit =
+			eTextureBindFlagCommonTextureBit |
+			eGPUResourceUsageFlagTransferSourceBit,
 
 		// Bind flag for using a texture as a target in transfer operations. @See E_GPU_RESOURCE_USAGE_FLAG_TRANSFER_TARGET_BIT.
-		E_TEXTURE_BIND_FLAG_TRANSFER_TARGET_IMAGE_BIT =
-				E_TEXTURE_BIND_FLAG_COMMON_TEXTURE_BIT |
-				E_GPU_RESOURCE_USAGE_FLAG_TRANSFER_TARGET_BIT,
+		eTextureBindFlagTransferTargetImageBit =
+			eTextureBindFlagCommonTextureBit |
+			eGPUResourceUsageFlagTransferTargetBit,
 	};
 	
 	enum ETextureInitFlags : uint32
 	{
-		E_TEXTURE_INIT_FLAG_GENERATE_MIPMAPS_BIT = 0x01
+		eTextureInitFlagGenerateMipmapsBit = 0x01
 	};
 
 	/// @brief Represents all valid targets for texture resources. Corresponding E_TEXTURE_BIND_FLAGs are used as values.
 	enum class ETextureTarget : resource_flags_value_t
 	{
-		ShaderInputSampledImage            = E_TEXTURE_BIND_FLAG_SHADER_INPUT_SAMPLED_IMAGE_BIT,
-		RenderTargetColorAttachment        = E_TEXTURE_BIND_FLAG_RENDER_TARGET_COLOR_ATTACHMENT_BIT,
-		RenderTargetDepthStencilAttachment = E_TEXTURE_BIND_FLAG_RENDER_TARGET_DEPTH_STENCIL_ATTACHMENT_BIT,
-		TransferSourceImage                = E_TEXTURE_BIND_FLAG_TRANSFER_SOURCE_IMAGE_BIT,
-		TransferTargetImage                = E_TEXTURE_BIND_FLAG_TRANSFER_TARGET_IMAGE_BIT,
+		ShaderInputSampledImage            = eTextureBindFlagShaderInputSampledImageBit,
+		RenderTargetColorAttachment        = eTextureBindFlagRenderTargetColorAttachmentBit,
+		RenderTargetDepthStencilAttachment = eTextureBindFlagRenderTargetDepthStencilAttachmentBit,
+		TransferSourceImage                = eTextureBindFlagTransferSourceImageBit,
+		TransferTargetImage                = eTextureBindFlagTransferTargetImageBit,
 		Unknown = 0
 	};
 
 	struct RenderTargetTextureLayout
 	{
-		ETextureFormat internalFormat = ETextureFormat::UNKNOWN;
-		TextureSize2D imageRect{ 0, 0 };
+		ETextureFormat internalFormat = ETextureFormat::Undefined;
+		TextureSize2D imageRect{0, 0 };
 		uint32 msaaLevel = 0;
 
 		explicit operator bool() const noexcept
 		{
-			return internalFormat != ETextureFormat::UNKNOWN;
+			return internalFormat != ETextureFormat::Undefined;
 		}
 	};
 
 	struct ShaderInputTextureLayout
 	{
-		ETextureFormat internalFormat = ETextureFormat::UNKNOWN;
 		ETextureClass texClass = ETextureClass::Unknown;
-		TextureSize2D imageRect{ 0, 0 };
+		ETextureFormat internalFormat = ETextureFormat::Undefined;
+		TextureSize2D imageRect{0, 0 };
 		uint32 depth = 1;
 		uint32 arraySize = 1;
 		uint32 mipLevelsNum = 1;
@@ -118,14 +116,14 @@ namespace Ic3::Graphics::GCI
 
 		explicit operator bool() const noexcept
 		{
-			return internalFormat != ETextureFormat::UNKNOWN;
+			return internalFormat != ETextureFormat::Undefined;
 		}
 	};
 
 	struct TextureLayout
 	{
 		ETextureClass texClass = ETextureClass::Unknown;
-		ETextureFormat internalFormat = ETextureFormat::UNKNOWN;
+		ETextureFormat internalFormat = ETextureFormat::Undefined;
 		TextureDimensions dimensions;
 		uint32 msaaLevel;
 		uint32 bitsPerPixel;
@@ -147,7 +145,7 @@ namespace Ic3::Graphics::GCI
 
 	struct TextureSubTextureInitDataDesc
 	{
-		using MipLevelInitDataDescArray = std::array<TextureMipSubLevelInitDataDesc, GCM::TEXTURE_MAX_MIP_LEVELS_NUM>;
+		using MipLevelInitDataDescArray = std::array<TextureMipSubLevelInitDataDesc, GCM::cxTextureMaxMipLevelsNum>;
 		MipLevelInitDataDescArray mipLevelInitDataArray;
 		uint32 subTextureIndex;
 	};
@@ -172,22 +170,22 @@ namespace Ic3::Graphics::GCI
 		// is used for allocating huge number of small non-array textures, this turned out to be an issue.
 		TextureSubTextureInitDataDesc * subTextureInitDataBasePtr = nullptr;
 
-		Bitmask<ETextureInitFlags> textureInitFlags = E_TEXTURE_INIT_FLAG_GENERATE_MIPMAPS_BIT;
+		cppx::bitmask<ETextureInitFlags> textureInitFlags = eTextureInitFlagGenerateMipmapsBit;
 
 		explicit operator bool() const
 		{
 			return subTextureInitDataBasePtr != nullptr;
 		}
 
-		void initialize( const TextureDimensions & pDimensions );
+		void Initialize( const TextureDimensions & pDimensions );
 
-		void swap( TextureInitDataDesc & pOther );
+		void Swap( TextureInitDataDesc & pOther );
 
-		bool isArray() const;
+		CPPX_ATTR_NO_DISCARD bool IsArray() const;
 
-		bool empty() const;
+		CPPX_ATTR_NO_DISCARD bool IsEmpty() const;
 
-		TextureInitDataDesc copy() const;
+		CPPX_ATTR_NO_DISCARD TextureInitDataDesc copy() const;
 
 	private:
 		// Init data for single-layer (non-array) texture.
@@ -200,6 +198,7 @@ namespace Ic3::Graphics::GCI
 	struct TextureInputDataDesc : public ResourceInputDataDesc
 	{
 		EPixelDataLayout pixelDataLayout;
+
 		EBaseDataType pixelDataType;
 	};
 
@@ -207,57 +206,57 @@ namespace Ic3::Graphics::GCI
 	{
 		ETextureClass texClass;
 		uint32 msaaLevel = 0;
-		TextureDimensions dimensions{ 0, 0, 1, 1, 1 };
+		TextureDimensions dimensions{0, 0, 1, 1, 1 };
 		ETextureFormat internalFormat;
-		TextureInitDataDesc initDataDesc;
+		TextureInitDataDesc mInitDataDesc;
 
 		explicit operator bool() const
 		{
-			return ( texClass != ETextureClass::Unknown ) && ( internalFormat != ETextureFormat::UNKNOWN );
+			return ( texClass != ETextureClass::Unknown ) && ( internalFormat != ETextureFormat::Undefined );
 		}
 	};
 
 	struct TextureDataCopyDesc
 	{
-		ETextureClass texClass;
-		Bitmask<ETextureDataCopyFlags> flags = E_TEXTURE_DATA_COPY_FLAGS_DEFAULT;
+		ETextureClass texClass = ETextureClass::Unknown;
+		cppx::bitmask<ETextureDataCopyFlags> flags = eTextureDataCopyFlagsDefault;
 	};
 
 	struct TextureSubDataCopyDesc
 	{
-		ETextureClass texClass;
+		ETextureClass texClass = ETextureClass::Unknown;
 		TextureSubRegion sourceTextureSubRegion;
 		TextureOffset targetTextureOffset;
-		Bitmask<ETextureDataCopyFlags> flags = E_TEXTURE_DATA_COPY_FLAGS_DEFAULT;
+		cppx::bitmask<ETextureDataCopyFlags> flags = eTextureDataCopyFlagsDefault;
 	};
 
 	struct TextureDataUploadDesc
 	{
-		ETextureClass texClass;
+		ETextureClass texClass = ETextureClass::Unknown;
 		TextureInputDataDesc inputDataDesc;
-		Bitmask<ETextureDataCopyFlags> flags = E_TEXTURE_DATA_COPY_FLAGS_DEFAULT;
+		cppx::bitmask<ETextureDataCopyFlags> flags = eTextureDataCopyFlagsDefault;
 	};
 
 	struct TextureSubDataUploadDesc
 	{
-		ETextureClass texClass;
+		ETextureClass texClass = ETextureClass::Unknown;
 		TextureSubRegion textureSubRegion;
 		TextureInputDataDesc inputDataDesc;
-		Bitmask<ETextureDataCopyFlags> flags = E_TEXTURE_DATA_COPY_FLAGS_DEFAULT;
+		cppx::bitmask<ETextureDataCopyFlags> flags = eTextureDataCopyFlagsDefault;
 	};
 
-	namespace rcutil
+	namespace RCU
 	{
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool checkTextureFormatAndBindFlagsCompatibility(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CheckTextureFormatAndBindFlagsCompatibility(
 				ETextureFormat pTextureFormat,
-				Bitmask<resource_flags_value_t> pBindFlags );
+				cppx::bitmask<resource_flags_value_t> pBindFlags );
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD const TextureLayout & queryTextureLayout( TextureHandle pTexture ) noexcept;
+		IC3_GRAPHICS_GCI_API_NO_DISCARD const TextureLayout & QueryTextureLayout( TextureHandle pTexture ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD RenderTargetTextureLayout queryRenderTargetTextureLayoutForTexture( TextureHandle pTexture ) noexcept;
+		IC3_GRAPHICS_GCI_API_NO_DISCARD RenderTargetTextureLayout QueryRenderTargetTextureLayoutForTexture( TextureHandle pTexture ) noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD RenderTargetTextureLayout queryRenderTargetTextureLayoutForTexture( const TextureLayout & pTextureLayout ) noexcept;
+		IC3_GRAPHICS_GCI_API_NO_DISCARD RenderTargetTextureLayout QueryRenderTargetTextureLayoutForTexture( const TextureLayout & pTextureLayout ) noexcept;
 
 	}
 

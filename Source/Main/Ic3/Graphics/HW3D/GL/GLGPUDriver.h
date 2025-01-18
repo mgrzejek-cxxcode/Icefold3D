@@ -15,7 +15,7 @@ namespace Ic3::Graphics::GCI
 	};
 
 	/// @brief Middle-layer OpenGL driver class. Implements features which are common for all GL drivers (core, ES).
-	class ICFGX_GL_CLASS GLGPUDriver : public GPUDriver
+	class IC3_GX_GL_CLASS GLGPUDriver : public GPUDriver
 	{
 	public:
 		System::OpenGLSystemDriverHandle const mSysGLDriver;
@@ -27,7 +27,7 @@ namespace Ic3::Graphics::GCI
 	protected:
 		/// @brief Helper method. Initializes EXF OpenGL driver component.
 		/// Used by specific sub-classes (drivers) when a driver is created.
-		static System::OpenGLSystemDriverHandle initializeSysGLDriver( System::SysContextHandle pSysContext );
+		static System::OpenGLSystemDriverHandle InitializeSysGLDriver( System::SysContextHandle pSysContext );
 	};
 
 } // namespace Ic3::Graphics::GCI

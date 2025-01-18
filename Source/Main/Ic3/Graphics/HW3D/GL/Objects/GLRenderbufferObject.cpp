@@ -6,51 +6,51 @@ namespace Ic3::Graphics::GCI
 
 	GLRenderbufferObject::GLRenderbufferObject( GLuint pHandle, const GLRenderbufferCreateInfo & pGLCreateInfo )
 	: GLObject( GLObjectBaseType::Renderbuffer, pHandle )
-	, mDimensions( pGLCreateInfo.dimensions )
+	, dimensions( pGLCreateInfo.dimensions )
 	, mGLInternalFormat( pGLCreateInfo.internalFormat )
 	{}
 
 	GLRenderbufferObject::~GLRenderbufferObject() = default;
 
-	GLRenderbufferObjectHandle GLRenderbufferObject::create( const GLRenderbufferCreateInfo & pGLCreateInfo )
+	GLRenderbufferObjectHandle GLRenderbufferObject::Create( const GLRenderbufferCreateInfo & pGLCreateInfo )
 	{
 		GLuint renderbufferHandle = 0;
 
 		glGenRenderbuffers( 1, &renderbufferHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		glBindRenderbuffer( GL_RENDERBUFFER, renderbufferHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		GLRenderbufferObjectHandle openglRenderbufferObject{ new GLRenderbufferObject( renderbufferHandle, pGLCreateInfo ) };
-		if( !openglRenderbufferObject->initialize( pGLCreateInfo ) )
+		if( !openglRenderbufferObject->Initialize( pGLCreateInfo ) )
 		{
 			return nullptr;
 		}
 
 		glBindRenderbuffer( GL_RENDERBUFFER, 0 );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return openglRenderbufferObject;
 	}
 
-	bool GLRenderbufferObject::release()
+	bool GLRenderbufferObject::Release()
 	{
 		glDeleteRenderbuffers( 1, &mGLHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return true;
 	}
 
-	bool GLRenderbufferObject::validateHandle() const
+	bool GLRenderbufferObject::ValidateHandle() const
 	{
 		auto isBuffer = glIsRenderbuffer( mGLHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return isBuffer != GL_FALSE;
 	}
 
-	bool GLRenderbufferObject::initialize( const GLRenderbufferCreateInfo & pGLCreateInfo )
+	bool GLRenderbufferObject::Initialize( const GLRenderbufferCreateInfo & pGLCreateInfo )
 	{
 		if( pGLCreateInfo.msaaLevel == 0 )
 		{
@@ -58,7 +58,7 @@ namespace Ic3::Graphics::GCI
 			                       pGLCreateInfo.internalFormat,
 			                       pGLCreateInfo.dimensions.x,
 			                       pGLCreateInfo.dimensions.y );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 		else
 		{
@@ -67,7 +67,7 @@ namespace Ic3::Graphics::GCI
 			                                  pGLCreateInfo.internalFormat,
 			                                  pGLCreateInfo.dimensions.x,
 			                                  pGLCreateInfo.dimensions.y );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 		}
 
 		return true;

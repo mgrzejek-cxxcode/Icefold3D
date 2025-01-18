@@ -8,7 +8,8 @@
 #include <Ic3/CoreLib/PixelCommon.h>
 #include <Ic3/CoreLib/MathImports.h>
 #include <Ic3/CoreLib/Utility/HFSIdentifier.h>
-#include <Ic3/Cppx/Utilities.h>
+#include <cppx/hash.h>
+#include <cppx/utilities.h>
 
 #include <Ic3/Graphics/Common/GraphicsCoreMetrics.h>
 
@@ -20,20 +21,20 @@
 #  define IC3_GRAPHICS_GCI_OBJ    extern
 #else
 #  if( IC3_GRAPHICS_GCI_BUILD )
-#    define IC3_GRAPHICS_GCI_API    IC3_PCL_ATTR_DLL_EXPORT
-#    define IC3_GRAPHICS_GCI_CLASS  IC3_PCL_ATTR_DLL_EXPORT
-#    define IC3_GRAPHICS_GCI_OBJ    IC3_PCL_ATTR_DLL_EXPORT
+#    define IC3_GRAPHICS_GCI_API    PCL_ATTR_DLL_EXPORT
+#    define IC3_GRAPHICS_GCI_CLASS  PCL_ATTR_DLL_EXPORT
+#    define IC3_GRAPHICS_GCI_OBJ    PCL_ATTR_DLL_EXPORT
 #  else
-#    define IC3_GRAPHICS_GCI_API    IC3_PCL_ATTR_DLL_IMPORT
-#    define IC3_GRAPHICS_GCI_CLASS  IC3_PCL_ATTR_DLL_IMPORT
-#    define IC3_GRAPHICS_GCI_OBJ    IC3_PCL_ATTR_DLL_IMPORT
+#    define IC3_GRAPHICS_GCI_API    PCL_ATTR_DLL_IMPORT
+#    define IC3_GRAPHICS_GCI_CLASS  PCL_ATTR_DLL_IMPORT
+#    define IC3_GRAPHICS_GCI_OBJ    PCL_ATTR_DLL_IMPORT
 #  endif
 #endif
 
 #define IC3_GRAPHICS_GCI_API_NO_DISCARD \
-	IC3_GRAPHICS_GCI_API IC3_ATTR_NO_DISCARD
+	IC3_GRAPHICS_GCI_API CPPX_ATTR_NO_DISCARD
 
-#define ic3driverApi( access ) access
+#define Ic3driverApi( access ) access
 
 #include "Prerequisites/CommonDefs.h"
 #include "Prerequisites/CommonTypes.h"
@@ -41,19 +42,26 @@
 #include "Prerequisites/GPUDataFormats.h"
 #include "Prerequisites/VertexAttribFormatUtils.h"
 
+namespace Ic3::Graphics
+{
+
+	using cppx::hash_object;
+
+}
+
 namespace Ic3::Graphics::GCI
 {
 
 	/// @namespace CxDef
-	/// @brief GpuAPI-level constant expressions and utility functions used by those.
+	/// @brief GPUAPI-level constant expressions and utility functions used by those.
 
 	/// @namespace defaults
-	/// @brief GpuAPI-level default/pre-defined values/instances that can be used whenever a common case is implemented.
+	/// @brief GPUAPI-level default/pre-defined values/instances that can be used whenever a common case is implemented.
 
-	/// @namespace rcutil
+	/// @namespace RCU
 	/// @brief Resource Utilities, used to interact with resources and provide additional, common functionalities.
 
-	/// @namespace smutil
+	/// @namespace SMU
 	/// @brief State Management Utilities, used to provide helper methods related to GPU state management.
 
 	// Same for all drivers. A top-level interface for querying capabilities and
@@ -85,15 +93,15 @@ namespace Ic3::Graphics::GCI
 	// OpenGL: window + surface, xxxSwapBuffers()
 	// GLES: EGL surface + context, eglSwapBuffers()
 	// DX11&12: HWND + IDXGISwapChain, Present()
-	// Vulkan: native window + KHR swap chain + KHR present
+	// Vulkan: native window + KHR swap chain + KHR Present
 	class PresentationLayer;
 
-	ic3GpaDeclareClassHandle( CommandContext );
-	ic3GpaDeclareClassHandle( CommandSystem );
-	ic3GpaDeclareClassHandle( DisplayManager );
-	ic3GpaDeclareClassHandle( GPUDevice );
-	ic3GpaDeclareClassHandle( GPUDriver );
-	ic3GpaDeclareClassHandle( PresentationLayer );
+	Ic3GCIDeclareClassHandle( CommandContext );
+	Ic3GCIDeclareClassHandle( CommandSystem );
+	Ic3GCIDeclareClassHandle( DisplayManager );
+	Ic3GCIDeclareClassHandle( GPUDevice );
+	Ic3GCIDeclareClassHandle( GPUDriver );
+	Ic3GCIDeclareClassHandle( PresentationLayer );
 
 	using resource_flags_value_t = uint32;
 
@@ -119,7 +127,7 @@ namespace Ic3::Graphics::GCI
 	enum class ETextureAddressMode : enum_default_value_t;
 	enum class ETextureClass : enum_default_value_t;
 	enum class ETextureFilter : enum_default_value_t;
-	enum class ETextureFormat : gpu_pixel_format_value_t;
+	enum class ETextureFormat : texture_format_value_t;
 	enum class ETextureMipMode : enum_default_value_t;
 
 	enum class EGPUDriverAPI : uint32
@@ -158,8 +166,9 @@ namespace Ic3::Graphics::GCI
 namespace Ic3
 {
 
-	namespace Gfx = Graphics;
+	namespace GFX = Graphics;
 	namespace GCI = Graphics::GCI;
+	namespace GCM = Graphics::GCM;
 
 }
 

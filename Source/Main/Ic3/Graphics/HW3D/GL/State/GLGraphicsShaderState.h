@@ -11,8 +11,8 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3GLDeclareOpenGLObjectHandle( GLShaderPipelineObject );
-	ic3GLDeclareOpenGLObjectHandle( GLShaderProgramObject );
+	Ic3GLDeclareOpenGLObjectHandle( GLShaderPipelineObject );
+	Ic3GLDeclareOpenGLObjectHandle( GLShaderProgramObject );
 
 	/// @brief
 	class GLGraphicsShaderLinkageImmutableState : public GraphicsShaderLinkageImmutableState
@@ -39,7 +39,7 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~GLGraphicsShaderLinkageImmutableStateCore();
 
-		IC3_ATTR_NO_DISCARD static GpaHandle<GLGraphicsShaderLinkageImmutableStateCore> createInstance(
+		CPPX_ATTR_NO_DISCARD static TGfxHandle<GLGraphicsShaderLinkageImmutableStateCore> CreateInstance(
 				GLGPUDevice & pGPUDevice,
 				const GraphicsShaderSet & pShaderSet );
 	};
@@ -58,28 +58,28 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~GLGraphicsShaderLinkageImmutableStateCompat();
 
-		IC3_ATTR_NO_DISCARD static GpaHandle<GLGraphicsShaderLinkageImmutableStateCompat> createInstance(
+		CPPX_ATTR_NO_DISCARD static TGfxHandle<GLGraphicsShaderLinkageImmutableStateCompat> CreateInstance(
 				GLGPUDevice & pGPUDevice,
 				const GraphicsShaderSet & pShaderSet );
 	};
 
-	namespace smutil
+	namespace SMU
 	{
 
-		IC3_ATTR_NO_DISCARD GLShaderPipelineObjectHandle createGraphicsShaderPipelineObjectGL(
+		CPPX_ATTR_NO_DISCARD GLShaderPipelineObjectHandle CreateGraphicsShaderPipelineObjectGL(
 				const GraphicsShaderSet & pShaderSet );
 
-		IC3_ATTR_NO_DISCARD GLShaderProgramObjectHandle createGraphicsShaderProgramObjectGL(
+		CPPX_ATTR_NO_DISCARD GLShaderProgramObjectHandle CreateGraphicsShaderProgramObjectGL(
 				const GraphicsShaderSet & pShaderSet );
 
-		void updateUniformDataCurrentGL(
+		void UpdateUniformDataCurrentGL(
 				GLShaderPipelineObject & pShaderPipeline,
 				uint32 pUniformIndex,
 				EBaseDataType pBaseType,
 				uint32 pLength,
 				const void * pData );
 
-		void updateUniformDataExplicitGL(
+		void UpdateUniformDataExplicitGL(
 				GLShaderProgramObject & pShaderProgram,
 				uint32 pUniformIndex,
 				EBaseDataType pBaseType,

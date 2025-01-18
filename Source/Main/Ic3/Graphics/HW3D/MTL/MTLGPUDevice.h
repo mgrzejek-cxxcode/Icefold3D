@@ -24,23 +24,23 @@ namespace Ic3::Graphics::GCI
 		explicit MetalGPUDevice( MetalGPUDriver & pGPUDriver, System::MetalDeviceHandle pSysMetalDevice );
 		virtual ~MetalGPUDevice();
 
-		virtual void waitForCommandSync( CommandSync & pCommandSync ) override;
+		virtual void WaitForCommandSync( CommandSync & pCommandSync ) override;
 
 	protected:
-		virtual void initializeCommandSystem() override;
+		virtual void InitializeCommandSystem() override;
 
 	private:
-	    virtual bool _drvOnSetPresentationLayer( PresentationLayerHandle pPresentationLayer ) override;
+	    virtual bool _DrvOnSetPresentationLayer( PresentationLayerHandle pPresentationLayer ) override;
 
-	    virtual GPUBufferHandle _drvCreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo ) override final;
-	    virtual SamplerHandle _drvCreateSampler( const SamplerCreateInfo & pCreateInfo ) override final;
-	    virtual ShaderHandle _drvCreateShader( const ShaderCreateInfo & pCreateInfo ) override final;
-	    virtual TextureHandle _drvCreateTexture( const TextureCreateInfo & pCreateInfo ) override final;
+	    virtual GPUBufferHandle _DrvCreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo ) override final;
+	    virtual SamplerHandle _DrvCreateSampler( const SamplerCreateInfo & pCreateInfo ) override final;
+	    virtual ShaderHandle _DrvCreateShader( const ShaderCreateInfo & pCreateInfo ) override final;
+	    virtual TextureHandle _DrvCreateTexture( const TextureCreateInfo & pCreateInfo ) override final;
 
-		virtual RenderTargetTextureHandle _drvCreateRenderTargetTexture(
+		virtual RenderTargetTextureHandle _DrvCreateRenderTargetTexture(
 				const RenderTargetTextureCreateInfo & pCreateInfo ) override final;
 
-		virtual GraphicsPipelineStateObjectHandle _drvCreateGraphicsPipelineStateObject(
+		virtual GraphicsPipelineStateObjectHandle _DrvCreateGraphicsPipelineStateObject(
 				const GraphicsPipelineStateObjectCreateInfo & pCreateInfo ) override final;
 
 	private:

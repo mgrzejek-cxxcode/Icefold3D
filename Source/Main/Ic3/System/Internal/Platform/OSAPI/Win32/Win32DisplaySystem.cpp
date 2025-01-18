@@ -1,9 +1,9 @@
 
 #include "Win32DisplaySystem.h"
 #include <Ic3/System/Internal/DisplaySystemPrivate.h>
-#include <Ic3/Cppx/StringUtils.h>
+#include <cppx/stringUtils.h>
 
-#if( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_WIN32 )
+#if( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_WIN32 )
 namespace Ic3::System
 {
 
@@ -11,7 +11,7 @@ namespace Ic3::System
 	{
 
 		// Returns a name for an output by extracting the output part from the DisplayDevice registry key.
-		std::string _win32GetAdapterOutputName( const std::string & pAdapterRegistryKey );
+		std::string _Win32GetAdapterOutputName( const std::string & pAdapterRegistryKey );
 
 	}
 
@@ -22,18 +22,18 @@ namespace Ic3::System
 
 	Win32DisplayManager::~Win32DisplayManager() noexcept = default;
 
-	DisplayDriverHandle Win32DisplayManager::_nativeCreateDisplayDriver()
+	DisplayDriverHandle Win32DisplayManager::_NativeCreateDisplayDriver()
 	{
-		return createSysObject<Win32DisplayDriver>( getHandle<Win32DisplayManager>() );
+		return CreateSysObject<Win32DisplayDriver>( GetHandle<Win32DisplayManager>() );
 	}
 
-    void Win32DisplayManager::_nativeQueryDefaultDisplayOffset( DisplayOffset & pOutOffset ) const
+    void Win32DisplayManager::_NativeQueryDefaultDisplayOffset( DisplayOffset & pOutOffset ) const
     {
         pOutOffset.x = 0;
         pOutOffset.y = 0;
     }
 
-	void Win32DisplayManager::_nativeQueryDefaultDisplaySize( DisplaySize & pOutSize ) const
+	void Win32DisplayManager::_NativeQueryDefaultDisplaySize( DisplaySize & pOutSize ) const
 	{
 		auto cxScreen = ::GetSystemMetrics( SM_CXSCREEN );
 		auto cyScreen = ::GetSystemMetrics( SM_CYSCREEN );
@@ -41,7 +41,7 @@ namespace Ic3::System
 		pOutSize.y = static_cast<uint32>( cyScreen );
 	}
 
-	void Win32DisplayManager::_nativeQueryMinWindowSize( DisplaySize & pOutSize ) const
+	void Win32DisplayManager::_NativeQueryMinWindowSize( DisplaySize & pOutSize ) const
 	{
 		auto cxMin = ::GetSystemMetrics( SM_CXMIN );
 		auto cyMin = ::GetSystemMetrics( SM_CYMIN );
@@ -65,8 +65,8 @@ namespace Ic3::System
 	// 1) \\Registry\\Machine\\System\\CurrentControlSet\\Control\\Video\\{79BD17DD-B591-11EA-B520-AC9E17ECDDE5}\\0000
 	// 2) \\Registry\\Machine\\System\\CurrentControlSet\\Control\\Video\\{79BD17DD-B591-11EA-B520-AC9E17ECDDE5}\\0001
 	// So, to enumerate adapters properly, we must check the UUID of the adapter to not duplicate the entries.
-	// See SysDisplayDriverImplProxy::nativeEnumAdapterList below.
-	void Win32DisplayDriver::_nativeEnumDisplayDevices()
+	// See SysDisplayDriverImplProxy::nativeEnuadapterList below.
+	void Win32DisplayDriver::_NativeEnumDisplayDevices()
 	{
 		// Represents information about a display device in the system. String properties have the following meaning:
 		// ::DeviceID - PCI-specific ID, not really interesting
@@ -96,24 +96,24 @@ namespace Ic3::System
 			}
 
 			// Extract adapter UUID from the registry key. Devices referring to the same adapter have the same adapter UUID.
-			auto adapterUUID = getUUIDString( adapterInfoGDI.DeviceKey );
+			auto adapterUUID = GetUUIDString( adapterInfoGDI.DeviceKey );
 			// Check if that adapter has been already added to the list of adapters (if there was already another device which referred to it).
-			auto adapterObject = _findAdapterByUUID( adapterUUID );
+			auto adapterObject = _FindAdapterByUUID( adapterUUID );
 
 			if( adapterObject == nullptr )
 			{
-				auto newAdapterObject = createAdapter<Win32DisplayAdapter>( *this );
-				newAdapterObject->mNativeData.deviceUUID = std::move( adapterUUID );
-				newAdapterObject->mNativeData.deviceName = adapterInfoGDI.DeviceName;
+				auto newAdapterObject = CreateAdapter<Win32DisplayAdapter>( *this );
+				newAdapterObject->mNativeData.mDeviceUUID = std::move( adapterUUID );
+				newAdapterObject->mNativeData.mDeviceName = adapterInfoGDI.DeviceName;
 
-				auto & adapterDesc = getAdapterDescInternal( *newAdapterObject );
+				auto & adapterDesc = GetAdapterDescInternal( *newAdapterObject );
 				adapterDesc.name = adapterInfoGDI.DeviceString;
 
-				if( makeBitmask( adapterInfoGDI.StateFlags ).isSet( DISPLAY_DEVICE_ATTACHED_TO_DESKTOP ) )
+				if( make_bitmask( adapterInfoGDI.StateFlags ).is_set( DISPLAY_DEVICE_ATTACHED_TO_DESKTOP ) )
 				{
 					adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_ACTIVE_BIT );
 				}
-				if( makeBitmask( adapterInfoGDI.StateFlags ).isSet( DISPLAY_DEVICE_PRIMARY_DEVICE ) )
+				if( make_bitmask( adapterInfoGDI.StateFlags ).is_set( DISPLAY_DEVICE_PRIMARY_DEVICE ) )
 				{
 					adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_PRIMARY_BIT );
 				}
@@ -130,15 +130,15 @@ namespace Ic3::System
 					break;
 				}
 
-				auto outputObject = createOutput<Win32DisplayOutput>( *adapterObject );
-				outputObject->mNativeData.displayDeviceName = adapterInfoGDI.DeviceName;
+				auto outputObject = CreateOutput<Win32DisplayOutput>( *adapterObject );
+				outputObject->mNativeData.mDisplayDeviceName = adapterInfoGDI.DeviceName;
 				outputObject->mNativeData.outputID = outputInfoGDI.DeviceName;
 
-				auto & outputDesc = getOutputDescInternal( *outputObject );
+				auto & outputDesc = GetOutputDescInternal( *outputObject );
 				// NOTE: 'DISPLAY_DEVICE_PRIMARY_DEVICE' flag is not set in case of output devices (unlike adapters).
 				// Primary output can be detected by analysing at monitor flags and looking for MONITORINFOF_PRIMARY.
 				// See _win32MonitorEnumProc function above where this gets done.
-				if( makeBitmask( outputInfoGDI.StateFlags ).isSet( DISPLAY_DEVICE_ATTACHED_TO_DESKTOP ) )
+				if( make_bitmask( outputInfoGDI.StateFlags ).is_set( DISPLAY_DEVICE_ATTACHED_TO_DESKTOP ) )
 				{
 					outputDesc.flags.set( E_DISPLAY_OUTPUT_FLAG_ACTIVE_BIT );
 				}
@@ -148,9 +148,9 @@ namespace Ic3::System
 		::EnumDisplayMonitors( nullptr, nullptr, _win32MonitorEnumProc, reinterpret_cast<LPARAM>( this ) );
 	}
 
-	// Monitor enumeration function. Called for each monitor in the system (as a part of _nativeEnumOutputs).
+	// Monitor enumeration function. Called for each monitor in the system (as a part of _NativeEnumOutputs).
 	// This function is called after all output devices in the system have been enumerated and added to the
-	// internal list inside the adapter. IMPORTANT: again, this gets called *within* _nativeEnumOutputs()
+	// internal list inside the adapter. IMPORTANT: again, this gets called *within* _NativeEnumOutputs()
 	// function *per each adapter* (that's why we pass DisplayAdapter* and check for monitors connected to it.
 	BOOL CALLBACK Win32DisplayDriver::_win32MonitorEnumProc( HMONITOR pMonitorHandle, HDC pHDC, LPRECT pMonitorRect, LPARAM pUserParam )
 	{
@@ -164,19 +164,19 @@ namespace Ic3::System
 		{
 			// 'szDevice' of the MONITORINFOEXA matches the DISPLAY_DEVICEA::DeviceName property of the output.
 			// Thanks to that, we can obtain the output this monitor refers to.
-			if( auto outputObject = win32DisplayDriver->_findAnyOutputForDisplayDeviceName( gdiMonitorInfo.szDevice ) )
+			if( auto outputObject = win32DisplayDriver->_FindAnyOutputForDisplayDeviceName( gdiMonitorInfo.szDevice ) )
 			{
-				auto * win32OutputObject = outputObject->queryInterface<Win32DisplayOutput>();
-				win32OutputObject->mNativeData.gdiMonitorHandle = pMonitorHandle;
+				auto * win32OutputObject = outputObject->QueryInterface<Win32DisplayOutput>();
+				win32OutputObject->mNativeData.mGDIMonitorHandle = pMonitorHandle;
 
-				auto & outputDesc = getOutputDescInternal( *win32OutputObject );
-				outputDesc.name = strUtils::convertStringRepresentation<char>( gdiMonitorInfo.szDevice );
+				auto & outputDesc = GetOutputDescInternal( *win32OutputObject );
+				outputDesc.name = strutil::convert_string_representation<char>( gdiMonitorInfo.szDevice );
 				outputDesc.screenRect.offset.x = gdiMonitorInfo.rcMonitor.left;
 				outputDesc.screenRect.offset.y = gdiMonitorInfo.rcMonitor.top;
 				outputDesc.screenRect.size.x = gdiMonitorInfo.rcMonitor.right - gdiMonitorInfo.rcMonitor.left;
 				outputDesc.screenRect.size.y = gdiMonitorInfo.rcMonitor.bottom - gdiMonitorInfo.rcMonitor.top;
 
-				if( makeBitmask( gdiMonitorInfo.dwFlags ).isSet( MONITORINFOF_PRIMARY ) )
+				if( make_bitmask( gdiMonitorInfo.dwFlags ).is_set( MONITORINFOF_PRIMARY ) )
 				{
 					outputDesc.flags.set( E_DISPLAY_OUTPUT_FLAG_PRIMARY_BIT );
 				}
@@ -186,11 +186,11 @@ namespace Ic3::System
 		return TRUE;
 	}
 
-	void Win32DisplayDriver::_nativeEnumVideoModes( DisplayOutput & pOutput, EColorFormat pColorFormat )
+	void Win32DisplayDriver::_NativeEnumVideoModes( DisplayOutput & pOutput, EColorFormat pColorFormat )
 	{
-		auto * outputWin32 = pOutput.queryInterface<Win32DisplayOutput>();
+		auto * outputWin32 = pOutput.QueryInterface<Win32DisplayOutput>();
 
-		const auto & colorFormatDesc = vsxGetDescForColorFormat( pColorFormat );
+		const auto & colorFormatDesc = VisGetDescForColorFormat( pColorFormat );
 
 		if( colorFormatDesc.colorSpace != EColorSpace::Linear )
 		{
@@ -210,7 +210,7 @@ namespace Ic3::System
 
 		for( UINT displayModeIndex = 0; ; ++displayModeIndex )
 		{
-			auto * displayDeviceNameStr = outputWin32->mNativeData.displayDeviceName.c_str();
+			auto * displayDeviceNameStr = outputWin32->mNativeData.mDisplayDeviceName.c_str();
 
 			BOOL edsResult = ::EnumDisplaySettingsExA( displayDeviceNameStr, displayModeIndex, &gdiDevMode, 0 );
 
@@ -229,7 +229,7 @@ namespace Ic3::System
 			videoSettings.resolution.y = static_cast<uint32>( gdiDevMode.dmPelsHeight );
 			videoSettings.refreshRate = static_cast<uint16>( gdiDevMode.dmDisplayFrequency );
 
-			if( makeBitmask( gdiDevMode.dmDisplayFlags ).isSet( DM_INTERLACED ) )
+			if( make_bitmask( gdiDevMode.dmDisplayFlags ).is_set( DM_INTERLACED ) )
 			{
 				videoSettings.flags.set( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_INTERLACED_BIT );
 			}
@@ -238,16 +238,16 @@ namespace Ic3::System
 				videoSettings.flags.set( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_PROGRESSIVE_BIT );
 			}
 
-			auto settingsHash = dsmComputeVideoSettingsHash( pColorFormat, videoSettings );
+			auto settingsHash = DSMComputeVideoSettingsHash( pColorFormat, videoSettings );
 			if( settingsHash == lastSettingsHash )
 			{
 				continue;
 			}
 
-			auto videoModeObject = createVideoMode<Win32DisplayVideoMode>( *outputWin32, pColorFormat );
-			videoModeObject->mNativeData.gdiModeInfo = gdiDevMode;
+			auto videoModeObject = CreateVideoMode<Win32DisplayVideoMode>( *outputWin32, pColorFormat );
+			videoModeObject->mNativeData.mGDIModeInfo = gdiDevMode;
 
-			auto & videoModeDesc = getVideoModeDescInternal( *videoModeObject );
+			auto & videoModeDesc = GetVideoModeDescInternal( *videoModeObject );
 			videoModeDesc.settings = videoSettings;
 			videoModeDesc.settingsHash = settingsHash;
 
@@ -255,36 +255,37 @@ namespace Ic3::System
 		}
 	}
 
-	EColorFormat Win32DisplayDriver::_nativeQueryDefaultSystemColorFormat() const
+	EColorFormat Win32DisplayDriver::_NativeQueryDefaultSystemColorFormat() const
 	{
 		return EColorFormat::B8G8R8A8;
 	}
 
 
-	SysHandle<Win32DisplayAdapter> Win32DisplayDriver::_findAdapterByUUID( const std::string & pUUID )
+	TSysHandle<Win32DisplayAdapter> Win32DisplayDriver::_FindAdapterByUUID( const std::string & pUUID )
 	{
-		auto displayAdapter = findAdapter( [&pUUID]( const DisplayAdapter & pAdapter ) -> bool {
-			auto * win32Adapter = pAdapter.queryInterface<Win32DisplayAdapter>();
-			return win32Adapter->mNativeData.deviceUUID == pUUID;
+		auto displayAdapter = FindAdapter( [&pUUID]( const DisplayAdapter & pAdapter ) -> bool {
+			auto * win32Adapter = pAdapter.QueryInterface<Win32DisplayAdapter>();
+			return win32Adapter->mNativeData.mDeviceUUID == pUUID;
 		} );
-		return displayAdapter ? displayAdapter->getHandle<Win32DisplayAdapter>() : nullptr;
+		return displayAdapter ? displayAdapter->GetHandle<Win32DisplayAdapter>() : nullptr;
 	}
 
-	SysHandle<Win32DisplayOutput> Win32DisplayDriver::_findAdapterOutputForDisplayDeviceName( DisplayAdapter & pAdapter,
-	                                                                                       const char * pDeviceName )
+	TSysHandle<Win32DisplayOutput> Win32DisplayDriver::_FindAdapterOutputForDisplayDeviceName(
+			DisplayAdapter & pAdapter,
+			const char * pDeviceName )
 	{
-		auto displayOutput = pAdapter.findOutput( [pDeviceName]( const DisplayOutput & pOutput ) -> bool {
-			auto * win32Output = pOutput.queryInterface<Win32DisplayOutput>();
-			return win32Output->mNativeData.displayDeviceName == pDeviceName;
+		auto displayOutput = pAdapter.FindOutput( [pDeviceName]( const DisplayOutput & pOutput ) -> bool {
+			auto * win32Output = pOutput.QueryInterface<Win32DisplayOutput>();
+			return win32Output->mNativeData.mDisplayDeviceName == pDeviceName;
 		} );
-		return displayOutput ? displayOutput->getHandle<Win32DisplayOutput>() : nullptr;
+		return displayOutput ? displayOutput->GetHandle<Win32DisplayOutput>() : nullptr;
 	}
 
-	SysHandle<Win32DisplayOutput> Win32DisplayDriver::_findAnyOutputForDisplayDeviceName( const char * pDeviceName )
+	TSysHandle<Win32DisplayOutput> Win32DisplayDriver::_FindAnyOutputForDisplayDeviceName( const char * pDeviceName )
 	{
 		for( auto & adapter : _privateData->adapterInstanceList )
 		{
-			if( auto adapterOutput = _findAdapterOutputForDisplayDeviceName( *adapter, pDeviceName ) )
+			if( auto adapterOutput = _FindAdapterOutputForDisplayDeviceName( *adapter, pDeviceName ) )
 			{
 				return adapterOutput;
 			}
@@ -297,7 +298,7 @@ namespace Ic3::System
 	namespace Platform
 	{
 
-		std::string _win32GetAdapterOutputName( const std::string & pAdapterRegistryKey )
+		std::string _Win32GetAdapterOutputName( const std::string & pAdapterRegistryKey )
 		{
 			auto lastSepPos = pAdapterRegistryKey.find_last_of( '\\', 0 );
 			return pAdapterRegistryKey.substr( 0, lastSepPos );
@@ -306,4 +307,4 @@ namespace Ic3::System
 	}
 	
 } // namespace Ic3::System
-#endif // IC3_PCL_TARGET_SYSAPI_WIN32
+#endif // PCL_TARGET_SYSAPI_WIN32

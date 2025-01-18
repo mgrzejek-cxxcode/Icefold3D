@@ -10,7 +10,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( GLTexture );
+	Ic3DeclareClassHandle( GLTexture );
 
 	class GLTexture : public Texture
 	{
@@ -28,11 +28,11 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~GLTexture();
 
-		static GLTextureHandle createDefault( GLGPUDevice & pGPUDevice, const TextureCreateInfo & pCreateInfo );
+		static GLTextureHandle CreateDefault( GLGPUDevice & pGPUDevice, const TextureCreateInfo & pCreateInfo );
 
-		static GLTextureHandle createForRenderTarget( GLGPUDevice & pGPUDevice, const RenderTargetTextureCreateInfo & pCreateInfo );
+		static GLTextureHandle CreateForRenderTarget( GLGPUDevice & pGPUDevice, const RenderTargetTextureCreateInfo & pCreateInfo );
 
-		static RenderTargetTextureHandle createRenderTargetTextureView( GLGPUDevice & pGPUDevice, const RenderTargetTextureCreateInfo & pCreateInfo );
+		static RenderTargetTextureHandle CreateRenderTargetTextureView( GLGPUDevice & pGPUDevice, const RenderTargetTextureCreateInfo & pCreateInfo );
 	};
 
 } // namespace Ic3::Graphics::GCI

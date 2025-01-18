@@ -16,24 +16,24 @@ namespace Ic3::Script
 		struct MemberVariable;
 
 
-		template <class TClass, class TValue>
-		struct MemberVariable<TValue TClass::*>
+		template <class TClass, class TPValue>
+		struct MemberVariable<TPValue TClass::*>
 		{
-			static void get( lua_State * pLuaState, TValue TClass::* pVariablePtr )
+			static void get( lua_State * pLuaState, TPValue TClass::* pVariablePtr )
 			{
 				// Stack: [..., userdata]
 
 				TClass * thisPtr = LuaCore::getThisPointer<TClass>( pLuaState, 0 );
 				auto value = thisPtr->*( pVariablePtr );
-				LuaCore::pushValue<TValue>( pLuaState, value );
+				LuaCore::pushValue<TPValue>( pLuaState, value );
 			}
 
-			static void set( lua_State * pLuaState, TValue TClass::* pVariablePtr )
+			static void set( lua_State * pLuaState, TPValue TClass::* pVariablePtr )
 			{
 				// Stack: [..., userdata, value]
 
 				TClass * thisPtr = LuaCore::getThisPointer<TClass>( pLuaState, 1 );
-				const auto newValue = LuaCore::getValue<TValue>( pLuaState, -1 );
+				const auto newValue = LuaCore::getValue<TPValue>( pLuaState, -1 );
 				thisPtr->*( pVariablePtr ) = newValue;
 			}
 		};
@@ -60,10 +60,10 @@ namespace Ic3::Script
 		};
 
 
-		#define ic3ScriptMemberVariableGetter( pVariable ) \
+		#define Ic3ScriptMemberVariableGetter( pVariable ) \
 			LuaWrappers::MemberVariableGetterWrapper<decltype( pVariable ), pVariable>::proxyCall
 
-		#define ic3ScriptMemberVariableSetter( pVariable ) \
+		#define Ic3ScriptMemberVariableSetter( pVariable ) \
 			LuaWrappers::MemberVariableSetterWrapper<decltype( pVariable ), pVariable>::proxyCall
 
 	}

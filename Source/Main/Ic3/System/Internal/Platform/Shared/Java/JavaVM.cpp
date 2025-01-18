@@ -19,7 +19,7 @@ namespace Ic3::System
 
 	JavaVMInstance::~JavaVMInstance() noexcept = default;
 
-	JavaNativeInterfacePtr JavaVMInstance::acquireJNI( Platform::JNIThreadID pJNIThreadID )
+	JavaNativeInterfacePtr JavaVMInstance::AcquireJNI( Platform::JNIThreadID pJNIThreadID )
 	{
 		auto currentThreadID = std::this_thread::get_id();
 
@@ -27,7 +27,7 @@ namespace Ic3::System
 		// It involves a call to VM's AttachCurrentThread(), which works only for the current thread.
 		bool autoCreateState = ( currentThreadID == pJNIThreadID );
 
-		if( auto * jniObject = _acquireJNI( pJNIThreadID, autoCreateState ) )
+		if( auto * jniObject = _AcquireJNI( pJNIThreadID, autoCreateState ) )
 		{
 			return JavaNativeInterfacePtr( jniObject, Platform::JavaNativeInterfaceDeleter{} );
 		}
@@ -35,46 +35,46 @@ namespace Ic3::System
 		return nullptr;
 	}
 
-	JavaNativeInterfacePtr JavaVMInstance::acquireJNIForCurrentThread()
+	JavaNativeInterfacePtr JavaVMInstance::AcquireJNIForCurrentThread()
 	{
 		auto currentThreadID = std::this_thread::get_id();
-		if( auto * jniObject = _acquireJNI( currentThreadID, true ) )
+		if( auto * jniObject = _AcquireJNI( currentThreadID, true ) )
 		{
 			return JavaNativeInterfacePtr( jniObject, Platform::JavaNativeInterfaceDeleter{} );
 		}
 		return nullptr;
 	}
 
-	void JavaVMInstance::initializeCurrentThreadJNIState()
+	void JavaVMInstance::InitializeCurrentThreadJNIState()
 	{
 		auto currentThreadID = std::this_thread::get_id();
-		_getJNIThreadState( currentThreadID, true );
+		_GetJNIThreadState( currentThreadID, true );
 	}
 
-	void JavaVMInstance::setCurrentThreadAutoReleaseState( bool pAutoRelease )
+	void JavaVMInstance::SetCurrentThreadAutoReleaseState( bool pAutoRelease )
 	{
 		auto currentThreadID = std::this_thread::get_id();
-		auto * jniThreadState = _getJNIThreadState( currentThreadID, true );
-		jniThreadState->flags.set( Platform::E_JNI_THREAD_STATE_AUTO_RELEASE_BIT );
+		auto * jniThreadState = _GetJNIThreadState( currentThreadID, true );
+		jniThreadState->flags.set( Platform::eJNIThreadStateAutoReleaseBit );
 	}
 
-	void JavaVMInstance::releaseCurrentThreadState()
+	void JavaVMInstance::ReleaseCurrentThreadState()
 	{
 		auto currentThreadID = std::this_thread::get_id();
 
 		// Call the destroy request with force=true (this in the explicit release function).
 		// Note, that this call may still fail if the reference counter has not reached 0.
-		_onJNIThreadStateDestroyRequest( currentThreadID, true );
+		_OnJNIThreadStateDestroyRequest( currentThreadID, true );
 	}
 
-	void JavaVMInstance::onJavaNativeInterfacePtrDestroy( JavaNativeInterface * pJNI )
+	void JavaVMInstance::OnJavaNativeInterfacePtrDestroy( JavaNativeInterface * pJNI )
 	{
 		// This function is called within ~JavaNativeInterface().
 
 		// Retrieve the thread state using JNI's thread id. This should never return nullptr,
 		// because there is at least one remaining JNI instance (the one being currently destroyed).
-		auto * jniThreadState = _getJNIThreadState( pJNI->mJNIThreadID, false );
-		ic3DebugAssert( jniThreadState != nullptr );
+		auto * jniThreadState = _GetJNIThreadState( pJNI->jniThreadID, false );
+		Ic3DebugAssert( jniThreadState != nullptr );
 
 		auto refCounter = jniThreadState->jniRefCounter.fetch_sub( 1, std::memory_order_acq_rel );
 		if( refCounter == 1 )
@@ -83,18 +83,18 @@ namespace Ic3::System
 			// depending on the configuration. But this can be done only if the current thread
 			// is the one that owns the state.
 			auto currentThreadID = std::this_thread::get_id();
-			if( pJNI->mJNIThreadID == currentThreadID )
+			if( pJNI->jniThreadID == currentThreadID )
 			{
 				// Call the destroy request, do not force deletion (it will be automatically
-				// released if E_JNI_THREAD_STATE_AUTO_RELEASE_BIT has been set for this thread).
-				_onJNIThreadStateDestroyRequest( pJNI->mJNIThreadID, false );
+				// released if eJNIThreadStateAutoReleaseBit has been set for this thread).
+				_OnJNIThreadStateDestroyRequest( pJNI->jniThreadID, false );
 			}
 		}
 	}
 
-	JavaNativeInterface * JavaVMInstance::_acquireJNI( Platform::JNIThreadID pJNIThreadID, bool pAutoCreateState )
+	JavaNativeInterface * JavaVMInstance::_AcquireJNI( Platform::JNIThreadID pJNIThreadID, bool pAutoCreateState )
 	{
-		if( auto * jniThreadState = _getJNIThreadState( pJNIThreadID, pAutoCreateState ) )
+		if( auto * jniThreadState = _GetJNIThreadState( pJNIThreadID, pAutoCreateState ) )
 		{
 			jniThreadState->jniRefCounter.fetch_add( 1, std::memory_order_acq_rel );
 			return jniThreadState->jniObject;
@@ -102,7 +102,7 @@ namespace Ic3::System
 		return nullptr;
 	}
 
-	Platform::JNIThreadState * JavaVMInstance::_getJNIThreadState( Platform::JNIThreadID pJNIThreadID, bool pAutoCreateState )
+	Platform::JNIThreadState * JavaVMInstance::_GetJNIThreadState( Platform::JNIThreadID pJNIThreadID, bool pAutoCreateState )
 	{
 		auto jniThreadStateIter = _privateData->jniThreadStateMap.find( pJNIThreadID );
 		if( ( jniThreadStateIter == _privateData->jniThreadStateMap.end() ) && pAutoCreateState )
@@ -110,8 +110,8 @@ namespace Ic3::System
 			auto currentThreadID = std::this_thread::get_id();
 			if( pJNIThreadID != currentThreadID )
 			{
-				ic3ThrowDesc( E_EXC_DEBUG_PLACEHOLDER,
-				              "acquireJNIEnv(): JNIThreadState can be only initialized by the thread itself" );
+				Ic3ThrowDesc( eExcCodeDebugPlaceholder,
+				              "AcquireJNIEnv(): JNIThreadState can be only initialized by the thread itself" );
 			}
 
 			auto jniThreadState = std::make_unique<Platform::JNIThreadState>();
@@ -120,7 +120,7 @@ namespace Ic3::System
 			auto threadAttachResult = mJavaVM->AttachCurrentThread( &jniEnv, nullptr );
 			if( threadAttachResult != JNI_OK )
 			{
-				ic3ThrowDesc( E_EXC_DEBUG_PLACEHOLDER,
+				Ic3ThrowDesc( eExcCodeDebugPlaceholder,
 				              "JavaVM::AttachCurrentThread() has failed" );
 			}
 
@@ -136,30 +136,30 @@ namespace Ic3::System
 
 		if( jniThreadStateIter != _privateData->jniThreadStateMap.end() )
 		{
-			ic3DebugAssert( jniThreadStateIter->second->jniObject != nullptr );
+			Ic3DebugAssert( jniThreadStateIter->second->jniObject != nullptr );
 			jniThreadState = jniThreadStateIter->second;
 		}
 
 		return jniThreadState;
 	}
 
-	void JavaVMInstance::_onJNIThreadStateDestroyRequest( Platform::JNIThreadID pJNIThreadID, bool pForceRelease )
+	void JavaVMInstance::_OnJNIThreadStateDestroyRequest( Platform::JNIThreadID pJNIThreadID, bool pForceRelease )
 	{
 		auto jniThreadStateIter = _privateData->jniThreadStateMap.find( pJNIThreadID );
 		if( jniThreadStateIter != _privateData->jniThreadStateMap.end() )
 		{
-			ic3DebugAssert( pJNIThreadID == std::this_thread::get_id() );
+			Ic3DebugAssert( pJNIThreadID == std::this_thread::get_id() );
 
 			auto * jniThreadState = jniThreadStateIter->second;
 			auto refCounter = jniThreadState->jniRefCounter.load( std::memory_order_acquire );
 
 			if( refCounter > 0 )
 			{
-				ic3ThrowDesc( E_EXC_DEBUG_PLACEHOLDER,
-				              "_onJNIThreadStateDestroyRequest(): refCounter > 0" );
+				Ic3ThrowDesc( eExcCodeDebugPlaceholder,
+				              "_OnJNIThreadStateDestroyRequest(): refCounter > 0" );
 			}
 
-			if( jniThreadState->flags.isSet( Platform::E_JNI_THREAD_STATE_AUTO_RELEASE_BIT ) || pForceRelease )
+			if( jniThreadState->flags.is_set( Platform::eJNIThreadStateAutoReleaseBit ) || pForceRelease )
 			{
 				std::unique_ptr<Platform::JNIThreadState> jniThreadStatePtr{ jniThreadState };
 
@@ -179,7 +179,7 @@ namespace Ic3::System
 		void JavaNativeInterfaceDeleter::operator()( JavaNativeInterface * pJNI ) const
 		{
 			auto * jvmInstance = pJNI->mJVMInstance;
-			jvmInstance->onJavaNativeInterfacePtrDestroy( pJNI );
+			jvmInstance->OnJavaNativeInterfacePtrDestroy( pJNI );
 		}
 
 	}

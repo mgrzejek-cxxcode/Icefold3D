@@ -25,37 +25,37 @@ namespace Ic3::Graphics::GCI
 
 	GLGraphicsPipelineStateObject::~GLGraphicsPipelineStateObject() = default;
 
-	const GLBlendImmutableState & GLGraphicsPipelineStateObject::getBlendState() const noexcept
+	const GLBlendImmutableState & GLGraphicsPipelineStateObject::GetBlendState() const noexcept
 	{
-		ic3DebugAssert( mSeparableStates.blendState );
-		return *( mSeparableStates.blendState->queryInterface<GLBlendImmutableState>() );
+		Ic3DebugAssert( mSeparableStates.blendState );
+		return *( mSeparableStates.blendState->QueryInterface<GLBlendImmutableState>() );
 	}
 
-	const GLDepthStencilImmutableState & GLGraphicsPipelineStateObject::getDepthStencilState() const noexcept
+	const GLDepthStencilImmutableState & GLGraphicsPipelineStateObject::GetDepthStencilState() const noexcept
 	{
-		ic3DebugAssert( mSeparableStates.depthStencilState );
-		return *( mSeparableStates.depthStencilState->queryInterface<GLDepthStencilImmutableState>() );
+		Ic3DebugAssert( mSeparableStates.depthStencilState );
+		return *( mSeparableStates.depthStencilState->QueryInterface<GLDepthStencilImmutableState>() );
 	}
 
-	const GLRasterizerImmutableState & GLGraphicsPipelineStateObject::getRasterizerState() const noexcept
+	const GLRasterizerImmutableState & GLGraphicsPipelineStateObject::GetRasterizerState() const noexcept
 	{
-		ic3DebugAssert( mSeparableStates.rasterizerState );
-		return *( mSeparableStates.rasterizerState->queryInterface<GLRasterizerImmutableState>() );
+		Ic3DebugAssert( mSeparableStates.rasterizerState );
+		return *( mSeparableStates.rasterizerState->QueryInterface<GLRasterizerImmutableState>() );
 	}
 
-	const GLGraphicsShaderLinkageImmutableState & GLGraphicsPipelineStateObject::getGraphicsShaderLinkageState() const noexcept
+	const GLGraphicsShaderLinkageImmutableState & GLGraphicsPipelineStateObject::GetGraphicsShaderLinkageState() const noexcept
 	{
-		ic3DebugAssert( mSeparableStates.shaderLinkageState );
-		return *( mSeparableStates.shaderLinkageState->queryInterface<GLGraphicsShaderLinkageImmutableState>() );
+		Ic3DebugAssert( mSeparableStates.shaderLinkageState );
+		return *( mSeparableStates.shaderLinkageState->QueryInterface<GLGraphicsShaderLinkageImmutableState>() );
 	}
 
-	const GLIAInputLayoutImmutableState & GLGraphicsPipelineStateObject::getIAInputLayoutState() const noexcept
+	const GLIAInputLayoutImmutableState & GLGraphicsPipelineStateObject::GetIAInputLayoutState() const noexcept
 	{
-		ic3DebugAssert( mSeparableStates.iaInputLayoutState );
-		return *( mSeparableStates.iaInputLayoutState->queryInterface<GLIAInputLayoutImmutableState>() );
+		Ic3DebugAssert( mSeparableStates.iaInputLayoutState );
+		return *( mSeparableStates.iaInputLayoutState->QueryInterface<GLIAInputLayoutImmutableState>() );
 	}
 
-	GpaHandle<GLGraphicsPipelineStateObject> GLGraphicsPipelineStateObject::create(
+	TGfxHandle<GLGraphicsPipelineStateObject> GLGraphicsPipelineStateObject::Create(
 			GLGPUDevice & pGPUDevice,
 			const GraphicsPipelineStateObjectCreateInfo & pCreateInfo )
 	{
@@ -69,7 +69,7 @@ namespace Ic3::Graphics::GCI
 		auto & renderTargetLayout = pCreateInfo.renderTargetLayout;
 		auto & shaderInputSignature = pCreateInfo.shaderInputSignature;
 
-		auto graphicsPSO = createGPUAPIObject<GLGraphicsPipelineStateObject>(
+		auto graphicsPSO = CreateGfxObject<GLGraphicsPipelineStateObject>(
 				pGPUDevice,
 				std::move( renderTargetLayout ),
 				std::move( shaderInputSignature ),

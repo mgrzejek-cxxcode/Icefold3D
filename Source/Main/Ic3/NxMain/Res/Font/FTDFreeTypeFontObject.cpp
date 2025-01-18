@@ -1,6 +1,6 @@
 
-#include "ftdFreeTypeFontObject.h"
-#include "ftdFreeTypeFontFace.h"
+#include "FTDFreeTypeFontObject.h"
+#include "FTDFreeTypeFontFace.h"
 
 namespace Ic3
 {
@@ -10,7 +10,7 @@ namespace Ic3
 	, _ftLibraryInstance( nullptr )
 	{}
 
-	FreeTypeFontObject::FreeTypeFontObject( FT_Library pFTLibrary, DynamicByteArray pFontData )
+	FreeTypeFontObject::FreeTypeFontObject( FT_Library pFTLibrary, cppx::dynamic_byte_array pFontData )
 	: mFTLibrary( pFTLibrary )
 	, _activeFace( nullptr )
 	, _ftLibraryInstance( pFTLibrary )
@@ -49,7 +49,7 @@ namespace Ic3
 			ftFaceCreateInfo.faceDesc.fontSize = pFontSize;
 			ftFaceCreateInfo.faceDesc.fontResolutionHint = { 0, 0 };
 			ftFaceCreateInfo.inputData = reinterpret_cast<const FT_Byte *>( _ftFontData.data() );
-			ftFaceCreateInfo.inputDataSize = numeric_cast<FT_Long>( _ftFontData.size() );
+			ftFaceCreateInfo.inputDataSize = cppx::numeric_cast<FT_Long>( _ftFontData.size() );
 
 			auto newFontFace = FreeTypeFontFace::create( this, ftFaceCreateInfo );
 			if( newFontFace )
@@ -62,7 +62,7 @@ namespace Ic3
 		return facePtr;
 	}
 
-	bool FreeTypeFontObject::setActiveFace( uint32 pFontSize, const Math::Vec2u32 & pFontResolution )
+	bool FreeTypeFontObject::SetActiveFace( uint32 pFontSize, const Math::Vec2u32 & pFontResolution )
 	{
 		if( auto * ftFace = getFace( pFontSize ) )
 		{
@@ -127,7 +127,7 @@ namespace Ic3
 		return false;
 	}
 
-	void FreeTypeFontObject::resetActiveGlyphCache()
+	void FreeTypeFontObject::ResetActiveGlyphCache()
 	{
 		if( _activeFace )
 		{
@@ -168,7 +168,7 @@ namespace Ic3
 			return nullptr;
 		}
 
-		DynamicByteArray ftFontData;
+		cppx::dynamic_byte_array ftFontData;
 		ftFontData.resize( pFontDataSize );
 		ftFontData.setData( pFontData, pFontDataSize );
 

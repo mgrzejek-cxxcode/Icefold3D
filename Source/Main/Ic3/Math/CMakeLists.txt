@@ -28,6 +28,5 @@ target_include_directories( Ic3.Math PUBLIC
         )
 
 target_link_libraries( Ic3.Math PUBLIC
-        ${IC3_LINK_INPUT}
-        Ic3.Cppx
+        ext-cppx
         )

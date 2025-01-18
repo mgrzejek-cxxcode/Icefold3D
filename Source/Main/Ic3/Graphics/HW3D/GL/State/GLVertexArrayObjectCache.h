@@ -14,7 +14,7 @@ namespace Ic3::Graphics::GCI
 	class GLIAInputLayoutImmutableStateCompat;
 	class GLIAVertexStreamImmutableState;
 
-	ic3GLDeclareOpenGLObjectHandle( GLVertexArrayObject );
+	Ic3GLDeclareOpenGLObjectHandle( GLVertexArrayObject );
 
 	struct GLVertexArrayObjectCachedID
 	{
@@ -39,11 +39,11 @@ namespace Ic3::Graphics::GCI
 		GLVertexArrayObjectCache();
 		~GLVertexArrayObjectCache();
 
-		const GLVertexArrayObject & getOrCreate(
+		const GLVertexArrayObject & GetOrCreate(
 				const GLIAInputLayoutImmutableStateCompat & pInputLayoutState,
 				const GLIAVertexStreamImmutableState & pVertexStreamState );
 
-		const GLVertexArrayObject & getOrCreate(
+		const GLVertexArrayObject & GetOrCreate(
 				const GLIAInputLayoutDefinition & pInputLayoutDefinition,
 				const GLIAVertexStreamDefinition & pVertexStreamDefinition );
 
@@ -53,7 +53,7 @@ namespace Ic3::Graphics::GCI
 		using PersistentVertexArrayObjectMap = std::map<GLVertexArrayObjectCachedID, GLVertexArrayObjectHandle>;
 		PersistentVertexArrayObjectMap _persistentVertexArrayObjectMap;
 
-		using TransientVertexArrayObjectMap = std::map<UniqueGPUObjectID, GLVertexArrayObjectHandle>;
+		using TransientVertexArrayObjectMap = std::map<GfxObjectID, GLVertexArrayObjectHandle>;
 		TransientVertexArrayObjectMap _transientVertexArrayObjectMap;
 	};
 

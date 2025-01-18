@@ -13,7 +13,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( GLShader );
+	Ic3DeclareClassHandle( GLShader );
 
 	class GLShader : public GCI::Shader
 	{
@@ -26,8 +26,8 @@ namespace Ic3::Graphics::GCI
 		GLShader( GLGPUDevice & pGPUDevice, EShaderType pShaderType, GLShaderProgramObjectHandle pGLShaderProgramObject );
 		virtual ~GLShader();
 
-		static GLShaderHandle createInstance( GLGPUDevice & pGPUDevice, const ShaderCreateInfo & pCreateInfo );
-		static GLShaderHandle createInstanceFromSource( GLGPUDevice & pGPUDevice, EShaderType pShaderType, const void * pSource, size_t pSourceLength );
+		static GLShaderHandle CreateInstance( GLGPUDevice & pGPUDevice, const ShaderCreateInfo & pCreateInfo );
+		static GLShaderHandle CreateInstanceFromSource( GLGPUDevice & pGPUDevice, EShaderType pShaderType, const void * pSource, size_t pSourceLength );
 	};
 
 } // namespace Ic3::Graphics::GCI

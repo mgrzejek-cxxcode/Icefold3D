@@ -14,17 +14,17 @@ namespace Ic3::Graphics::GCI
 	{
 	};
 
-	class ICFGX_VKCOMMON_CLASS VKGPUDriver : public GPUDriver
+	class IC3_GX_VKCOMMON_CLASS VKGPUDriver : public GPUDriver
 	{
 	public:
 		VkInstance const mVkInstance = nullptr;
 		
-		explicit VKGPUDriver( System::temContext * pExfSystemContext );
+		explicit VKGPUDriver( System::SysContext * pExfSystemContext );
 		virtual ~VKGPUDriver();
 
-		virtual GPUDeviceHandle createDevice( const GPUDeviceCreateInfo & pCreateInfo ) override;
+		virtual GPUDeviceHandle CreateDevice( const GPUDeviceCreateInfo & pCreateInfo ) override;
 
-		static VKGPUDriverHandle create( const VKGPUDriverCreateInfo & pCreateInfo );
+		static VKGPUDriverHandle Create( const VKGPUDriverCreateInfo & pCreateInfo );
 	};
 
 } // namespace Ic3::Graphics::GCI

@@ -17,58 +17,58 @@ namespace Ic3::System
 	{
 		union
 		{
-			EEventCode                 code;
-			EvtBase                    commonData;
-			EvtAppActivityDisplayInit  eAppActivityDisplayInit;
-			EvtAppActivityDisplayTerm  eAppActivityDisplayTerm;
-			EvtAppActivityFocusGained  eAppActivityFocusGained;
-			EvtAppActivityFocusLost    eAppActivityFocusLost;
-			EvtAppActivityPause        eAppActivityPause;
-			EvtAppActivityResume       eAppActivityResume;
-			EvtAppActivityStart        eAppActivityStart;
-			EvtAppActivityStop         eAppActivityStop;
-			EvtAppActivityQuit         eAppActivityQuit;
-			EvtAppActivityTerminate    eAppActivityTerminate;
-			EvtInputGamepadAxis        eInputGamepadAxis;
-			EvtInputGamepadButton      eInputGamepadButton;
-			EvtInputGamepadState       eInputGamepadState;
-			EvtInputKeyboard           eInputKeyboard;
-			EvtInputMouse              eInputMouse;
-			EvtInputMouseButton        eInputMouseButton;
-			EvtInputMouseMove          eInputMouseMove;
-			EvtInputMouseScroll        eInputMouseScroll;
-			EvtInputTouchDown          eInputTouchDown;
-			EvtInputTouchMove          eInputTouchMove;
-			EvtInputTouchUp            eInputTouchUp;
-			EvtWindowUpdateCreate      eWindowUpdateCreate;
-			EvtWindowUpdateDestroy     eWindowUpdateDestroy;
-			EvtWindowUpdateFullscreen  eWindowUpdateFullscreen;
-			EvtWindowUpdateResize      eWindowUpdateResize;
-			EvtWindowUpdateVisibility  eWindowUpdateVisibility;
+			EEventCode                 uCode;
+			EvtBase                    uCommonData;
+			EvtAppActivityDisplayInit  uEvtAppActivityDisplayInit;
+			EvtAppActivityDisplayTerm  uEvtAppActivityDisplayTerm;
+			EvtAppActivityFocusGained  uEvtAppActivityFocusGained;
+			EvtAppActivityFocusLost    uEvtAppActivityFocusLost;
+			EvtAppActivityPause        uEvtAppActivityPause;
+			EvtAppActivityResume       uEvtAppActivityResume;
+			EvtAppActivityStart        uEvtAppActivityStart;
+			EvtAppActivityStop         uEvtAppActivityStop;
+			EvtAppActivityQuit         uEvtAppActivityQuit;
+			EvtAppActivityTerminate    uEvtAppActivityTerminate;
+			EvtInputGamepadAxis        uEvtInputGamepadAxis;
+			EvtInputGamepadButton      uEvtInputGamepadButton;
+			EvtInputGamepadState       uEvtInputGamepadState;
+			EvtInputKeyboard           uEvtInputKeyboard;
+			EvtInputMouse              uEvtInputMouse;
+			EvtInputMouseButton        uEvtInputMouseButton;
+			EvtInputMouseMove          uEvtInputMouseMove;
+			EvtInputMouseScroll        uEvtInputMouseScroll;
+			EvtInputTouchDown          uEvtInputTouchDown;
+			EvtInputTouchMove          uEvtInputTouchMove;
+			EvtInputTouchUp            uEvtInputTouchUp;
+			EvtWindowUpdateCreate      uEvtWindowUpdateCreate;
+			EvtWindowUpdateDestroy     uEvtWindowUpdateDestroy;
+			EvtWindowUpdateFullscreen  uEvtWindowUpdateFullscreen;
+			EvtWindowUpdateResize      uEvtWindowUpdateResize;
+			EvtWindowUpdateVisibility  uEvtWindowUpdateVisibility;
 		};
 
 		EventSystemSharedState * eventSystemSharedState = nullptr;
 
 		constexpr EventObject()
-		: code{ E_EVENT_CODE_UNDEFINED }
+		: uCode{ eEventCodeUndefined }
 		{}
 
 		constexpr explicit EventObject( EEventCode pEventCode )
-		: code{ pEventCode }
+		: uCode{ pEventCode }
 		{}
 
 		constexpr explicit EventObject( event_code_value_t pEventCode )
-		: code{ static_cast<EEventCode>( pEventCode ) }
+		: uCode{ static_cast<EEventCode>( pEventCode ) }
 		{}
 
 		constexpr explicit operator bool() const
 		{
-			return ( code != E_EVENT_CODE_UNDEFINED ) && CxDef::validateEventCode( code );
+			return ( uCode != eEventCodeUndefined ) && CxDef::validateEventCode( uCode );
 		}
 
-		 IC3_ATTR_NO_DISCARD constexpr EEventCategory category() const
+		 CPPX_ATTR_NO_DISCARD constexpr EEventCategory category() const
 		{
-			return CxDef::getEventCodeCategory( code );
+			return CxDef::GetEventCodeCategory( uCode );
 		}
 	};
 

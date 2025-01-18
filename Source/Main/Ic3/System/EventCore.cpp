@@ -12,31 +12,31 @@ namespace Ic3::System
 
 	EventController::~EventController() noexcept = default;
 
-	EventDispatcherHandle EventController::createEventDispatcher()
+	EventDispatcherHandle EventController::CreateEventDispatcher()
 	{
-		auto dispatcher = createSysObject<EventDispatcher>( getHandle<EventController>() );
+		auto dispatcher = CreateSysObject<EventDispatcher>( GetHandle<EventController>() );
 
 		_privateData->eventDispatcherList.push_back( dispatcher.get() );
 
 		return dispatcher;
 	}
 
-	void EventController::registerEventSource( EventSource & pEventSource )
+	void EventController::RegisterEventSource( EventSource & pEventSource )
 	{
-		_nativeRegisterEventSource( pEventSource );
+		_NativeRegisterEventSource( pEventSource );
 
-		auto eventSourceRef = _privateData->findEventSourceInternal( &pEventSource );
+		auto eventSourceRef = _privateData->FindEventSourceInternal( &pEventSource );
 		if( eventSourceRef.first )
 		{
-			ic3Throw( E_EXC_DEBUG_PLACEHOLDER );
+			Ic3Throw( eExcCodeDebugPlaceholder );
 		}
 
 		_privateData->eventSourceList.push_back( &pEventSource );
 
-		pEventSource.setEventController( getHandle<EventController>() );
+		pEventSource.SetEventController( GetHandle<EventController>() );
 	}
 
-	bool EventController::registerPrimaryEventSource( EventSource & pEventSource )
+	bool EventController::RegisterPrimaryEventSource( EventSource & pEventSource )
 	{
 		if( _privateData->primaryEventSource )
 		{
@@ -47,148 +47,148 @@ namespace Ic3::System
 
 		_privateData->primaryEventSource = &pEventSource;
 
-		registerEventSource( pEventSource );
+		RegisterEventSource( pEventSource );
 
 		return true;
 	}
 
-	void EventController::unregisterEventSource( EventSource & pEventSource )
+	void EventController::UnregisterEventSource( EventSource & pEventSource )
 	{
-		auto eventSourceRef = _privateData->findEventSourceInternal( &pEventSource );
+		auto eventSourceRef = _privateData->FindEventSourceInternal( &pEventSource );
 		if( !eventSourceRef.first )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return;
 		}
 
 		_privateData->eventSourceList.erase( eventSourceRef.second );
 
-		_nativeUnregisterEventSource( pEventSource );
+		_NativeUnRegisterEventSource( pEventSource );
 
 		if( &pEventSource == _privateData->primaryEventSource )
 		{
 			_privateData->primaryEventSource = nullptr;
 		}
 
-		pEventSource.setEventController( nullptr );
+		pEventSource.SetEventController( nullptr );
 	}
 
-	void EventController::setPrimaryEventSource( EventSource * pEventSource )
+	void EventController::SetPrimaryEventSource( EventSource * pEventSource )
 	{
 		if( pEventSource )
 		{
 			// If the specified event source is not NULL, it should be a valid object,
 			// already registered within this event controller. Check if that is the case.
-			auto eventSourceRef = _privateData->findEventSourceInternal( pEventSource );
+			auto eventSourceRef = _privateData->FindEventSourceInternal( pEventSource );
 
 			if( !eventSourceRef.first )
 			{
 				// Unknown event source. Most likely it has not been registered yet.
-				ic3Throw( E_EXC_DEBUG_PLACEHOLDER );
+				Ic3Throw( eExcCodeDebugPlaceholder );
 			}
 		}
 
 		_privateData->primaryEventSource = pEventSource;
 	}
 
-	bool EventController::setActiveEventDispatcher( EventDispatcher & pEventDispatcher )
+	bool EventController::SetActiveEventDispatcher( EventDispatcher & pEventDispatcher )
 	{
 		if( &pEventDispatcher != _privateData->activeEventDispatcher )
 		{
-			_onActiveDispatcherChange( &pEventDispatcher );
+			_OnActiveDispatcherChange( &pEventDispatcher );
 			return true;
 		}
 		return false;
 	}
 
-	bool EventController::resetActiveEventDispatcher()
+	bool EventController::ResetActiveEventDispatcher()
 	{
 		if( _privateData->activeEventDispatcher  )
 		{
-			_onActiveDispatcherChange( nullptr );
+			_OnActiveDispatcherChange( nullptr );
 			return true;
 		}
 		return false;
 	}
 
-	bool EventController::dispatchEvent( EventObject pEvent )
+	bool EventController::DispatchEvent( EventObject pEvent )
 	{
-		validateActiveDispatcherState();
+		ValidateActiveDispatcherState();
 
-		const auto dispatchResult = _privateData->activeEventDispatcher->postEvent( pEvent );
+		const auto dispatchResult = _privateData->activeEventDispatcher->PostEvent( pEvent );
 
-		if( pEvent.code == E_EVENT_CODE_WINDOW_UPDATE_DESTROY )
+		if( pEvent.uCode == eEventCodeWindowUpdateDestroy )
 		{
 			//
-			if( auto * eventSource = pEvent.eWindowUpdateDestroy.eventSource )
+			if( auto * eventSource = pEvent.uEvtWindowUpdateDestroy.eventSource )
 			{
 				//
-				_checkAndPostAppAutoQuitEvent( E_EVENT_CODE_WINDOW_UPDATE_DESTROY, *eventSource );
+				_CheckAndPostAppAutoQuitEvent( eEventCodeWindowUpdateDestroy, *eventSource );
 			}
 		}
 
 		return dispatchResult;
 	}
 
-	void EventController::pushUserEvent( EventObject pEvent )
+	void EventController::PushUserEvent( EventObject pEvent )
 	{
-		_privateData->userEventQueue.push_back(  pEvent );
+		_privateData->userEventQueue.push_back( pEvent );
 	}
 
-	EventObject & EventController::emplaceUserEvent()
+	EventObject & EventController::EmplaceUserEvent()
 	{
 		return _privateData->userEventQueue.emplace_back();
 	}
 
-	void EventController::pushPriorityEvent( EventObject pEvent )
+	void EventController::PushPriorityEvent( EventObject pEvent )
 	{
-		_privateData->priorityEventQueue.push_back(  pEvent );
+		_privateData->priorityEventQueue.push_back( pEvent );
 	}
 
-	EventObject & EventController::emplacePriorityEvent()
+	EventObject & EventController::EmplacePriorityEvent()
 	{
 		return _privateData->priorityEventQueue.emplace_back();
 	}
 
-	uint32 EventController::dispatchPendingEventsAuto()
+	uint32 EventController::DispatchPendingEventsAuto()
 	{
-		validateActiveDispatcherState();
+		ValidateActiveDispatcherState();
 
 		uint32 eventCounter = 0;
 
-		while( _processLocalQueues() )
+		while( _ProcessLocalQueues() )
 		{
 			++eventCounter;
 		}
 
-		while( _nativeDispatchPendingEvents() )
+		while( _NativeDispatchPendingEvents() )
 		{
 			++eventCounter;
 		}
 
 		if( eventCounter == 0 )
 		{
-			if( checkEventSystemConfigFlags( E_EVENT_SYSTEM_CONFIG_FLAG_IDLE_PROCESSING_MODE_BIT ) )
+			if( CheckEventSystemConfigFlags( eEventSystemConfigFlagIdleProcessingModeBit ) )
 			{
-				_nativeDispatchPendingEventsWait();
+				_NativeDispatchPendingEventsWait();
 			}
 		}
 
 		return eventCounter;
 	}
 
-	uint32 EventController::dispatchPendingEventsPeek( uint32 pLimit )
+	uint32 EventController::DispatchPendingEventsPeek( uint32 pLimit )
 	{
-		validateActiveDispatcherState();
+		ValidateActiveDispatcherState();
 
 		uint32 eventCounter = 0;
 
-		while( _processLocalQueues() && ( eventCounter <= pLimit ) )
+		while( _ProcessLocalQueues() && ( eventCounter <= pLimit ) )
 		{
 			++eventCounter;
 		}
 
-		while( _nativeDispatchPendingEvents() && ( eventCounter <= pLimit ) )
+		while( _NativeDispatchPendingEvents() && ( eventCounter <= pLimit ) )
 		{
 			++eventCounter;
 		}
@@ -196,77 +196,77 @@ namespace Ic3::System
 		return eventCounter;
 	}
 
-	uint32 EventController::dispatchPendingEventsWait( uint32 pLimit )
+	uint32 EventController::DispatchPendingEventsWait( uint32 pLimit )
 	{
-		validateActiveDispatcherState();
+		ValidateActiveDispatcherState();
 
 		uint32 eventCounter = 0;
 
-		while( _processLocalQueues() && ( eventCounter <= pLimit ) )
+		while( _ProcessLocalQueues() && ( eventCounter <= pLimit ) )
 		{
 			++eventCounter;
 		}
 
-		while( _nativeDispatchPendingEvents() && ( eventCounter <= pLimit ) )
+		while( _NativeDispatchPendingEvents() && ( eventCounter <= pLimit ) )
 		{
 			++eventCounter;
 		}
 
 		if( eventCounter == 0 )
 		{
-			_nativeDispatchPendingEventsWait();
+			_NativeDispatchPendingEventsWait();
 		}
 
 		return eventCounter;
 	}
 
-	uint32 EventController::dispatchPendingEventsWaitTimeout( const Cppx::Microseconds & pTimeout, uint32 pLimit )
+	uint32 EventController::DispatchPendingEventsWaitTimeout( const cppx::microseconds & pTimeout, uint32 pLimit )
 	{
-		validateActiveDispatcherState();
+		ValidateActiveDispatcherState();
 
 		uint32 eventCounter = 0;
 
-		while( _processLocalQueues() && ( eventCounter <= pLimit ) )
+		while( _ProcessLocalQueues() && ( eventCounter <= pLimit ) )
 		{
 			++eventCounter;
 		}
 
-		while( _nativeDispatchPendingEvents() && ( eventCounter <= pLimit ) )
+		while( _NativeDispatchPendingEvents() && ( eventCounter <= pLimit ) )
 		{
 			++eventCounter;
 		}
 
 		if( eventCounter == 0 )
 		{
-			_nativeDispatchPendingEventsWaitTimeout( pTimeout );
+			_NativeDispatchPendingEventsWaitTimeout( pTimeout );
 		}
 
 		return eventCounter;
 	}
 
-	void EventController::validateActiveDispatcherState() const
+	void EventController::ValidateActiveDispatcherState() const
 	{
-		if( !isActiveDispatcherSet() )
+		if( !IsActiveDispatcherSet() )
 		{
-			ic3Throw( E_EXC_DEBUG_PLACEHOLDER );
+			Ic3Throw( eExcCodeDebugPlaceholder );
 		}
 	}
 
-	EventSystemSharedState & EventController::getEventSystemSharedState() noexcept
+	EventSystemSharedState & EventController::GetEventSystemSharedState() noexcept
 	{
 		return _privateData->sharedEventSystemState;
 	}
 
-	bool EventController::checkEventSystemConfigFlags( Bitmask<EEventSystemConfigFlags> pFlags ) const
+	bool EventController::CheckEventSystemConfigFlags( cppx::bitmask<EEventSystemConfigFlags> pFlags ) const
 	{
-		if( !isActiveDispatcherSet() )
+		if( !IsActiveDispatcherSet() )
 		{
 			return false;
 		}
-		return _privateData->activeEventDispatcher->checkEventSystemConfigFlags( pFlags );
+		return _privateData->activeEventDispatcher->CheckEventSystemConfigFlags( pFlags );
 	}
 
-	EventSource * EventController::findEventSource( const EventSourceFindPredicate & pPredicate ) const
+	EventSource * EventController::FindEventSource( const EventSourceFindPredicate & pPredicate ) const
 	{
 		for( auto * eventSource : _privateData->eventSourceList )
 		{
@@ -278,11 +278,11 @@ namespace Ic3::System
 		return nullptr;
 	}
 
-	EventSource * EventController::findEventSource( const EventSourceNativeDataFindPredicate & pPredicate ) const
+	EventSource * EventController::FindEventSource( const EventSourceNativeDataFindPredicate & pPredicate ) const
 	{
 		for( auto * eventSource : _privateData->eventSourceList )
 		{
-			if( pPredicate( eventSource->getEventSourceNativeData() ) )
+			if( pPredicate( eventSource->GetEventSourceNativeData() ) )
 			{
 				return eventSource;
 			}
@@ -290,7 +290,7 @@ namespace Ic3::System
 		return nullptr;
 	}
 
-	bool EventController::isActiveDispatcherSet() const noexcept
+	bool EventController::IsActiveDispatcherSet() const noexcept
 	{
 		if( !_privateData->activeEventDispatcher )
 		{
@@ -306,7 +306,7 @@ namespace Ic3::System
 			// Missing per-dispatcher data. Configuration and input state belong to a dispatcher,
 			// so the system can properly adjust when they are changed.
 			// Currently, this situation is rather impossible to occur (config and inputState are
-			// stored by value and set/cleared inside _onActiveDispatcherChange()), but if we ever
+			// stored by value and set/cleared inside _OnActiveDispatcherChange()), but if we ever
 			// change this, this check will help to catch potential issues much faster.
 
 			return false;
@@ -315,22 +315,22 @@ namespace Ic3::System
 		return true;
 	}
 
-	size_t EventController::getRegisteredEventSourcesNum() const noexcept
+	size_t EventController::GetRegisteredEventSourcesNum() const noexcept
 	{
 		return _privateData->eventSourceList.size();
 	}
 
-	EventSource * EventController::getPrimaryEventSource() const noexcept
+	EventSource * EventController::GetPrimaryEventSource() const noexcept
 	{
 		return _privateData->primaryEventSource;
 	}
 
-	EventSource * EventController::getRegisteredEventSourceByIndex( size_t pIndex ) const noexcept
+	EventSource * EventController::GetRegisteredEventSourceByIndex( size_t pIndex ) const noexcept
 	{
 		return _privateData->eventSourceList[pIndex];
 	}
 
-	bool EventController::isEventSourceRegistered( const EventSource & pEventSource ) const noexcept
+	bool EventController::IsEventSourceRegistered( const EventSource & pEventSource ) const noexcept
 	{
 		for( auto * eventSource : _privateData->eventSourceList )
 		{
@@ -342,35 +342,35 @@ namespace Ic3::System
 		return false;
 	}
 
-	void EventController::onEventSourceDestroy( EventSource & pEventSource ) noexcept
+	void EventController::OnEventSourceDestroy( EventSource & pEventSource ) noexcept
 	{
-		unregisterEventSource( pEventSource );
+		UnregisterEventSource( pEventSource );
 	}
 
-	void EventController::onEventDispatcherDestroy( EventDispatcher & pEventDispatcher ) noexcept
+	void EventController::OnEventDispatcherDestroy( EventDispatcher & pEventDispatcher ) noexcept
 	{
-		auto eventDispatcherRef = _privateData->findEventDispatcherInternal( &pEventDispatcher );
+		auto eventDispatcherRef = _privateData->FindEventDispatcherInternal( &pEventDispatcher );
 
 		if( !eventDispatcherRef.first )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return;
 		}
 
 		_privateData->eventDispatcherList.erase( eventDispatcherRef.second );
 	}
 
-	void EventController::_nativeRegisterEventSource( EventSource & /* pEventSource */ )
+	void EventController::_NativeRegisterEventSource( EventSource & /* pEventSource */ )
 	{}
 
-	void EventController::_nativeUnregisterEventSource( EventSource & /* pEventSource */ )
+	void EventController::_NativeUnRegisterEventSource( EventSource & /* pEventSource */ )
 	{}
 
-	void EventController::_onActiveDispatcherChange( EventDispatcher * pEventDispatcher )
+	void EventController::_OnActiveDispatcherChange( EventDispatcher * pEventDispatcher )
 	{
 		if( pEventDispatcher )
 		{
-			auto & eventSystemConfig = pEventDispatcher->getEventSystemConfig();
+			auto & eventSystemConfig = pEventDispatcher->GetEventSystemConfig();
 			_privateData->sharedEventSystemState.currentEventSystemConfig = &eventSystemConfig;
 		}
 		else
@@ -381,7 +381,7 @@ namespace Ic3::System
 		_privateData->activeEventDispatcher = pEventDispatcher;
 	}
 
-	bool EventController::_processLocalQueues()
+	bool EventController::_ProcessLocalQueues()
 	{
 		auto & priorityQueue = _privateData->priorityEventQueue;
 
@@ -390,7 +390,7 @@ namespace Ic3::System
 			auto nextPriorityEvent = priorityQueue.front();
 			priorityQueue.pop_front();
 
-			if( dispatchEvent( nextPriorityEvent ) )
+			if( DispatchEvent( nextPriorityEvent ) )
 			{
 				return true;
 			}
@@ -403,7 +403,7 @@ namespace Ic3::System
 			auto nextUserEvent = userQueue.front();
 			userQueue.pop_front();
 
-			if( dispatchEvent( nextUserEvent ) )
+			if( DispatchEvent( nextUserEvent ) )
 			{
 				return true;
 			}
@@ -412,26 +412,26 @@ namespace Ic3::System
 		return false;
 	}
 
-	bool EventController::_checkAndPostAppAutoQuitEvent( EEventCode pEvent, EventSource & pEventSource )
+	bool EventController::_CheckAndPostAppAutoQuitEvent( EEventCode pEvent, EventSource & pEventSource )
 	{
-		if( pEvent != E_EVENT_CODE_WINDOW_UPDATE_DESTROY )
+		if( pEvent != eEventCodeWindowUpdateDestroy )
 		{
 			return false;
 		}
 
 		bool postAutoQuit = false;
 
-		if( pEventSource.isLastEventSource() )
+		if( pEventSource.IsLastEventSource() )
 		{
-			if( checkEventSystemConfigFlags( E_EVENT_SYSTEM_CONFIG_FLAG_ENABLE_AUTO_QUIT_ON_LAST_SOURCE_DESTROY_BIT ) )
+			if( CheckEventSystemConfigFlags( eEventSystemConfigFlagEnableAutoQuitOnLastSourceDestroyBit ) )
 			{
 				postAutoQuit = true;
 			}
 		}
 
-		if( !postAutoQuit && pEventSource.isPrimaryEventSource() )
+		if( !postAutoQuit && pEventSource.IsPrimaryEventSource() )
 		{
-			if( checkEventSystemConfigFlags( E_EVENT_SYSTEM_CONFIG_FLAG_ENABLE_AUTO_QUIT_ON_PRIMARY_SOURCE_DESTROY_BIT ) )
+			if( CheckEventSystemConfigFlags( eEventSystemConfigFlagEnableAutoQuitOnPrimarySourceDestroyBit ) )
 			{
 				postAutoQuit = true;
 			}
@@ -439,56 +439,56 @@ namespace Ic3::System
 
 		if( postAutoQuit )
 		{
-			auto internalStateMask = _getInternalStateFlags();
+			auto internalStateMask = _GetInternalStateFlags();
 
 			// Dedicated mask for quick checking if any of the quit modes has been properly set.
-			if( !internalStateMask.isSetAnyOf( E_EVENT_SYSTEM_CONFIG_MASK_SET_AUTO_QUIT_MODE ) )
+			if( !internalStateMask.is_set_any_of( eEventSystemConfigMaskSetAutoQuitMode ) )
 			{
 				// If not, we default to the one based on user message. This is probably the best one, as it allows
 				// to still process pending important messages before breaking the whole event lopp.
-				internalStateMask.set( E_EVENT_SYSTEM_CONFIG_FLAG_SET_AUTO_QUIT_MODE_POST_USER_EVENT_BIT );
+				internalStateMask.set( eEventSystemConfigFlagSetAutoQuitModePostUserEventBit );
 			}
 
-			if( internalStateMask.isSet( E_EVENT_SYSTEM_CONFIG_FLAG_SET_AUTO_QUIT_MODE_DIRECT_EVENT_DISPATCH_BIT ) )
+			if( internalStateMask.is_set( eEventSystemConfigFlagSetAutoQuitModeDirectEventDispatchBit ) )
 			{
 				// Dispatch event immediately. This basically causes the handler for the AppQuit to be executed here immediately.
-				dispatchEvent( EventObject{ E_EVENT_CODE_APP_ACTIVITY_QUIT } );
+				DispatchEvent( EventObject{eEventCodeAppActivityQuit } );
 			}
-			else if( internalStateMask.isSet( E_EVENT_SYSTEM_CONFIG_FLAG_SET_AUTO_QUIT_MODE_POST_PRIORITY_EVENT_BIT ) )
+			else if( internalStateMask.is_set( eEventSystemConfigFlagSetAutoQuitModePostPriorityEventBit ) )
 			{
 				// Push the AppQuit event to the end of the priority queue.
-				pushPriorityEvent( EventObject{ E_EVENT_CODE_APP_ACTIVITY_QUIT } );
+				PushPriorityEvent( EventObject{eEventCodeAppActivityQuit } );
 			}
-			else if( internalStateMask.isSet( E_EVENT_SYSTEM_CONFIG_FLAG_SET_AUTO_QUIT_MODE_POST_USER_EVENT_BIT ) )
+			else if( internalStateMask.is_set( eEventSystemConfigFlagSetAutoQuitModePostUserEventBit ) )
 			{
 				// Push the AppQuit event to the end of the user queue.
-				pushUserEvent( EventObject{ E_EVENT_CODE_APP_ACTIVITY_QUIT } );
+				PushUserEvent( EventObject{eEventCodeAppActivityQuit } );
 			}
-			else if( internalStateMask.isSet( E_EVENT_SYSTEM_CONFIG_FLAG_SET_AUTO_QUIT_MODE_SET_INTERNAL_REQUEST_ONLY_BIT ) )
+			else if( internalStateMask.is_set( eEventSystemConfigFlagSetAutoQuitModeSetInternalRequestOnlyBit ) )
 			{
 				// Only set the internal flag to mark a quit request has been issued. The system will process it when there are no events.
-				_setInternalStateFlags( E_EVENT_SYSTEM_INTERNAL_FLAG_APP_QUIT_REQUEST_SET_BIT, true );
+				_SetInternalStateFlags( eEventSystemInternalFlagAppQuitRequestSetBit, true );
 			}
 			else
 			{
-				ic3DebugInterrupt();
+				Ic3DebugInterrupt();
 			}
 		}
 
 		return postAutoQuit;
 	}
 
-	void EventController::_setInternalStateFlags( Bitmask<uint32> pFlags, bool pSetOrUnset )
+	void EventController::_SetInternalStateFlags( cppx::bitmask<uint32> pFlags, bool pSetOrUnset )
 	{
-		_privateData->sharedEventSystemState.internalStateFlags.setOrUnset( pFlags, pSetOrUnset );
+		_privateData->sharedEventSystemState.internalStateFlags.set_or_unset( pFlags, pSetOrUnset );
 	}
 
-	uint32 EventController::_checkInternalStateFlags( Bitmask<uint32> pFlags ) const
+	uint32 EventController::_CheckInternalStateFlags( cppx::bitmask<uint32> pFlags ) const
 	{
 		return ( _privateData->sharedEventSystemState.internalStateFlags & pFlags );
 	}
 
-	Bitmask<uint32> EventController::_getInternalStateFlags() const
+	cppx::bitmask<uint32> EventController::_GetInternalStateFlags() const
 	{
 		return _privateData->sharedEventSystemState.internalStateFlags;
 	}
@@ -504,99 +504,100 @@ namespace Ic3::System
 	{
 		if( _eventControllerActiveRef )
 		{
-			_eventControllerActiveRef->onEventDispatcherDestroy( *this );
+			_eventControllerActiveRef->OnEventDispatcherDestroy( *this );
 			_eventControllerActiveRef = nullptr;
 		}
 	}
 
-	void EventDispatcher::setActive()
+	void EventDispatcher::SetActive()
 	{
-		_eventControllerActiveRef->setActiveEventDispatcher( *this );
+		_eventControllerActiveRef->SetActiveEventDispatcher( *this );
 	}
 
-	void EventDispatcher::setEventHandler( EEventBaseType pBaseType, EventHandler pHandler )
+	void EventDispatcher::SetEventHandler( EEventBaseType pBaseType, EventHandler pHandler )
 	{
 		// EventBaseType enum is numbered from zero to have constant access time to its entry.
 		auto baseTypeValue = static_cast<size_t>( pBaseType );
 		// Check for possible violation attempt.
-		if( baseTypeValue >= CX_ENUM_EVENT_BASE_TYPE_COUNT )
+		if( baseTypeValue >= cxEnumEventBaseTypeCount )
 		{
-			ic3Throw( E_EXC_DEBUG_PLACEHOLDER );
+			Ic3Throw( eExcCodeDebugPlaceholder );
 		}
 		_privateData->handlerMapByBaseType[baseTypeValue] = std::move( pHandler );
 	}
 
-	void EventDispatcher::setEventHandler( EEventCategory pCategory, EventHandler pHandler )
+	void EventDispatcher::SetEventHandler( EEventCategory pCategory, EventHandler pHandler )
 	{
 		// EventCategory enum is numbered from zero to have constant access time to its entry.
 		auto categoryValue = static_cast<size_t>( pCategory );
 		// Check for possible violation attempt.
-		if( categoryValue >= CX_ENUM_EVENT_CATEGORY_COUNT )
+		if( categoryValue >= cxEnumEventCategoryCount )
 		{
-			ic3Throw( E_EXC_DEBUG_PLACEHOLDER );
+			Ic3Throw( eExcCodeDebugPlaceholder );
 		}
 		_privateData->handlerMapByCategory[categoryValue] = std::move( pHandler );
 	}
 
-	void EventDispatcher::setEventHandler( EEventCodeIndex pCodeIndex, EventHandler pHandler )
+	void EventDispatcher::SetEventHandler( EEventCodeIndex pCodeIndex, EventHandler pHandler )
 	{
 		// EventCodeIndex enum is numbered from zero to have constant access time to its entry.
 		auto codeIndexValue = static_cast<size_t>( pCodeIndex );
 		// Check for possible violation attempt.
-		if( codeIndexValue >= CX_ENUM_EVENT_CODE_INDEX_COUNT )
+		if( codeIndexValue >= cxEnumEventCodeIndexCount )
 		{
-			ic3Throw( E_EXC_DEBUG_PLACEHOLDER );
+			Ic3Throw( eExcCodeDebugPlaceholder );
 		}
 		_privateData->handlerMapByCodeIndex[codeIndexValue] = std::move( pHandler );
 	}
 
-	void EventDispatcher::setDefaultEventHandler( EventHandler pHandler )
+	void EventDispatcher::SetDefaultEventHandler( EventHandler pHandler )
 	{
 		_privateData->defaultHandler = std::move( pHandler );
 	}
 
-	void EventDispatcher::resetEventHandler( EEventBaseType pBaseType )
+	void EventDispatcher::ResetEventHandler( EEventBaseType pBaseType )
 	{
-		setEventHandler( pBaseType, nullptr );
+		SetEventHandler( pBaseType, nullptr );
 	}
 
-	void EventDispatcher::resetEventHandler( EEventCategory pCategory )
+	void EventDispatcher::ResetEventHandler( EEventCategory pCategory )
 	{
-		setEventHandler( pCategory, nullptr );
+		SetEventHandler( pCategory, nullptr );
 	}
 
-	void EventDispatcher::resetEventHandler( EEventCodeIndex pCodeIndex )
+	void EventDispatcher::ResetEventHandler( EEventCodeIndex pCodeIndex )
 	{
-		setEventHandler( pCodeIndex, nullptr );
+		SetEventHandler( pCodeIndex, nullptr );
 	}
 
-	void EventDispatcher::resetDefaultEventHandler()
+	void EventDispatcher::ResetDefaultEventHandler()
 	{
-		setDefaultEventHandler( nullptr );
+		SetDefaultEventHandler( nullptr );
 	}
 
-	void EventDispatcher::setEventSystemConfigFlags( Bitmask<EEventSystemConfigFlags> pFlags, bool pSetOrUnset )
+	void EventDispatcher::SetEventSystemConfigFlags( cppx::bitmask<EEventSystemConfigFlags> pFlags, bool pSetOrUnset )
 	{
-		const auto configFlagsOnly = ( pFlags & E_EVENT_SYSTEM_CONFIG_MASK_ALL );
-		ic3DebugAssert( configFlagsOnly == pFlags );
-		_privateData->currentEventSystemConfig.configFlags.setOrUnset( pFlags, pSetOrUnset );
+		const auto configFlagsOnly = (pFlags & eEventSystemConfigMaskAll );
+		Ic3DebugAssert( configFlagsOnly == pFlags );
+		_privateData->currentEventSystemConfig.configFlags.set_or_unset( pFlags, pSetOrUnset );
 	}
 
-	void EventDispatcher::setIdleProcessingMode( bool pIdle )
+	void EventDispatcher::SetIdleProcessingMode( bool pIdle )
 	{
-		_privateData->currentEventSystemConfig.configFlags.setOrUnset( E_EVENT_SYSTEM_CONFIG_FLAG_IDLE_PROCESSING_MODE_BIT, pIdle );
+		_privateData->currentEventSystemConfig.configFlags.set_or_unset( eEventSystemConfigFlagIdleProcessingModeBit,
+		                                                                 pIdle );
 	}
 
-	bool EventDispatcher::postEvent( EventObject pEvent )
+	bool EventDispatcher::PostEvent( EventObject pEvent )
 	{
-		if( CxDef::validateEventCode( pEvent.code ) )
+		if( CxDef::validateEventCode( pEvent.uCode ) )
 		{
-			if( _preProcessEvent( pEvent ) )
+			if( _PreProcessEvent( pEvent ) )
 			{
-				pEvent.commonData.timeStamp = PerfCounter::queryCurrentStamp();
+				pEvent.uCommonData.timeStamp = PerfCounter::QueryCurrentStamp();
 
 				{
-					auto codeIndexValue = static_cast<size_t>( CxDef::getEventCodeCodeIndex( pEvent.code ) );
+					auto codeIndexValue = static_cast<size_t>( CxDef::GetEventCodeCodeIndex( pEvent.uCode ) );
 					auto & eventHandler = _privateData->handlerMapByCodeIndex[codeIndexValue];
 					if( eventHandler && eventHandler( pEvent ) )
 					{
@@ -604,7 +605,7 @@ namespace Ic3::System
 					}
 				}
 				{
-					auto categoryValue = static_cast<size_t>( CxDef::getEventCodeCategory( pEvent.code ) );
+					auto categoryValue = static_cast<size_t>( CxDef::GetEventCodeCategory( pEvent.uCode ) );
 					auto & eventHandler = _privateData->handlerMapByCategory[categoryValue];
 					if( eventHandler && eventHandler( pEvent ) )
 					{
@@ -612,7 +613,7 @@ namespace Ic3::System
 					}
 				}
 				{
-					auto baseTypeValue = static_cast<size_t>( CxDef::getEventCodeBaseType( pEvent.code ) );
+					auto baseTypeValue = static_cast<size_t>( CxDef::GetEventCodeBaseType( pEvent.uCode ) );
 					auto & eventHandler = _privateData->handlerMapByBaseType[baseTypeValue];
 					if( eventHandler && eventHandler( pEvent ) )
 					{
@@ -632,78 +633,78 @@ namespace Ic3::System
 		return false;
 	}
 
-	bool EventDispatcher::postEvent( event_code_value_t pEventCode )
+	bool EventDispatcher::PostEvent( event_code_value_t pEventCode )
 	{
-		return postEvent( EventObject( pEventCode ) );
+		return PostEvent( EventObject( pEventCode ) );
 	}
 
-	bool EventDispatcher::postEventAppQuit()
+	bool EventDispatcher::PostEventAppQuit()
 	{
-		return postEvent( E_EVENT_CODE_APP_ACTIVITY_QUIT );
+		return PostEvent( eEventCodeAppActivityQuit );
 	}
 
-	bool EventDispatcher::postEventAppTerminate()
+	bool EventDispatcher::PostEventAppTerminate()
 	{
-		return postEvent( E_EVENT_CODE_APP_ACTIVITY_TERMINATE );
+		return PostEvent( eEventCodeAppActivityTerminate );
 	}
 
-	bool EventDispatcher::checkEventSystemConfigFlags( Bitmask<EEventSystemConfigFlags> pFlags ) const
+	bool EventDispatcher::CheckEventSystemConfigFlags( cppx::bitmask<EEventSystemConfigFlags> pFlags ) const
 	{
-		const auto configFlagsOnly = ( pFlags & E_EVENT_SYSTEM_CONFIG_MASK_ALL );
-		ic3DebugAssert( configFlagsOnly == pFlags );
-		return _privateData->currentEventSystemConfig.configFlags.isSet( configFlagsOnly );
+		const auto configFlagsOnly = (pFlags & eEventSystemConfigMaskAll );
+		Ic3DebugAssert( configFlagsOnly == pFlags );
+		return _privateData->currentEventSystemConfig.configFlags.is_set( configFlagsOnly );
 	}
 
-	Bitmask<EEventSystemConfigFlags> EventDispatcher::getEventSystemConfigFlags() const
+	cppx::bitmask<EEventSystemConfigFlags> EventDispatcher::GetEventSystemConfigFlags() const
 	{
 		return _privateData->currentEventSystemConfig.configFlags;
 	}
 
-	const EventSystemConfig & EventDispatcher::getEventSystemConfig() const
+	const EventSystemConfig & EventDispatcher::GetEventSystemConfig() const
 	{
 		return _privateData->currentEventSystemConfig;
 	}
 
-	bool EventDispatcher::_preProcessEvent( EventObject & pEvent )
+	bool EventDispatcher::_PreProcessEvent( EventObject & pEvent )
 	{
 		const auto eventCategory = pEvent.category();
 
-		auto & eventSystemSharedState = _eventControllerActiveRef->getEventSystemSharedState();
+		auto & eventSystemSharedState = _eventControllerActiveRef->GetEventSystemSharedState();
 
 		if( eventCategory == EEventCategory::InputKeyboard )
 		{
-			return _preProcessEventKeyboard( pEvent.eInputKeyboard, eventSystemSharedState );
+			return _PreProcessEventKeyboard( pEvent.uEvtInputKeyboard, eventSystemSharedState );
 		}
 
 		if( eventCategory == EEventCategory::InputMouse )
 		{
-			return _preProcessEventMouse( pEvent.eInputMouse, eventSystemSharedState );
+			return _PreProcessEventMouse( pEvent.uEvtInputMouse, eventSystemSharedState );
 		}
 
 		return true;
 	}
 
-	bool EventDispatcher::_preProcessEventKeyboard( EvtInputKeyboard & pKeyboardEvent, EventSystemSharedState & pSharedState )
+	bool EventDispatcher::_PreProcessEventKeyboard( EvtInputKeyboard & pKeyboardEvent, EventSystemSharedState & pSharedState )
 	{
-		if( pKeyboardEvent.keyCode == EKeyCode::Unknown )
+		if( pKeyboardEvent.mKeyCode == EKeyCode::Unknown )
 		{
 			// Discard unknown key events
 			return false;
 		}
 
-		if( pKeyboardEvent.keyAction == EKeyActionType::Press )
+		if( pKeyboardEvent.mKeyAction == EKeyActionType::Press )
 		{
-			pSharedState.inputKeyboardState.keyStateMap[pKeyboardEvent.keyCode] = true;
+			pSharedState.inputKeyboardState.mKeyStateMap[pKeyboardEvent.mKeyCode] = true;
 		}
 		else
 		{
-			pSharedState.inputKeyboardState.keyStateMap[pKeyboardEvent.keyCode] = false;
+			pSharedState.inputKeyboardState.mKeyStateMap[pKeyboardEvent.mKeyCode] = false;
 		}
 
 		return true;
 	}
 
-	bool EventDispatcher::_preProcessEventMouse( EvtInputMouse & pMouseEvent, EventSystemSharedState & pSharedState )
+	bool EventDispatcher::_PreProcessEventMouse( EvtInputMouse & pMouseEvent, EventSystemSharedState & pSharedState )
 	{
 		return true;
 	}
@@ -721,10 +722,10 @@ namespace Ic3::System
 	{
 		evtUpdateEventInputMouse( pMouseButtonEvent, pEventSystemSharedState );
 
-		const auto & eventSystemConfig = pEventSystemSharedState.getEventSystemConfig();
+		const auto & eventSystemConfig = pEventSystemSharedState.GetEventSystemConfig();
 		auto & inputMouseState = pEventSystemSharedState.inputMouseState;
 
-		if( eventSystemConfig.configFlags.isSet( E_EVENT_SYSTEM_CONFIG_FLAG_ENABLE_MOUSE_MULTI_CLICK_BIT ) )
+		if( eventSystemConfig.configFlags.is_set( eEventSystemConfigFlagEnableMouseMultiClickBit ) )
 		{
 			if( pMouseButtonEvent.buttonAction == EMouseButtonActionType::Click )
 			{
@@ -733,7 +734,7 @@ namespace Ic3::System
 				if( inputMouseState.lastPressButtonID == pMouseButtonEvent.buttonID )
 				{
 					auto lastClickDiff = pMouseButtonEvent.timeStamp - inputMouseState.lastPressTimestamp;
-					auto lastClickDiffMs = PerfCounter::convertToDuration<Cppx::EDurationPeriod::Millisecond>( lastClickDiff );
+					auto lastClickDiffMs = PerfCounter::ConvertToDuration<cppx::duration_period::millisecond>( lastClickDiff );
 					if( lastClickDiffMs <= eventSystemConfig.mouseClickSequenceTimeoutMs )
 					{
 						if( inputMouseState.currentMultiClickSequenceLength == 1 )
@@ -742,7 +743,7 @@ namespace Ic3::System
 							inputMouseState.currentMultiClickSequenceLength = 2;
 							multiClickEventSet = true;
 						}
-						else if( eventSystemConfig.configFlags.isSet( E_EVENT_SYSTEM_CONFIG_FLAG_ENABLE_MOUSE_MULTI_CLICK_BIT ) )
+						else if( eventSystemConfig.configFlags.is_set( eEventSystemConfigFlagEnableMouseMultiClickBit ) )
 						{
 							pMouseButtonEvent.buttonAction = EMouseButtonActionType::MultiClick;
 							inputMouseState.currentMultiClickSequenceLength += 1;
@@ -763,7 +764,7 @@ namespace Ic3::System
 			}
 		}
 
-		const auto buttonMask = CxDef::getMouseButtonFlagFromButtonID( pMouseButtonEvent.buttonID );
+		const auto buttonMask = CxDef::GetMouseButtonFlagFromButtonID( pMouseButtonEvent.buttonID );
 		if( pMouseButtonEvent.buttonAction == EMouseButtonActionType::Click )
 		{
 			pMouseButtonEvent.buttonStateMask.set( buttonMask );

@@ -11,35 +11,41 @@ namespace Ic3::Graphics::GCI
 
 	enum EBlendConfigFlags : uint16
 	{
-		E_BLEND_CONFIG_FLAG_ENABLE_ALPHA_TO_COVERAGE_BIT = 0x01,
-		E_BLEND_CONFIG_FLAG_ENABLE_MULTI_RENDER_TARGET_BIT = 0x02,
-		E_BLEND_CONFIG_FLAG_ENABLE_MRT_INDEPENDENT_BLENDING_BIT = 0x04,
-		E_BLEND_CONFIG_FLAG_SET_FIXED_BLEND_CONSTANTS_BIT = 0x08,
-		E_BLEND_CONFIG_FLAGS_DEFAULT = 0,
-		E_BLEND_CONFIG_MASK_ALL = 0x07,
+		eBlendConfigFlagEnableAlphaToCoverageBit        = 0x01,
+		eBlendConfigFlagEnableMultiRenderTargetBit      = 0x02,
+		eBlendConfigFlagEnableMRTIndependentBlendingBit = 0x04,
+		eBlendConfigFlagSetFixedBlendConstantsBit       = 0x08,
+
+		eBlendConfigMaskDefault = 0,
+		eBlendConfigMaskAll     = 0x07,
 	};
 
 	enum EBlendWriteMaskFlags : uint16
 	{
-		E_BLEND_WRITE_MASK_NONE = 0,
-		E_BLEND_WRITE_MASK_CHANNEL_RED = 0x1,
-		E_BLEND_WRITE_MASK_CHANNEL_GREEN = 0x2,
-		E_BLEND_WRITE_MASK_CHANNEL_BLUE = 0x4,
-		E_BLEND_WRITE_MASK_CHANNEL_ALPHA = 0x8,
-		E_BLEND_WRITE_MASK_ALL = 0xF,
+		eBlendWriteMaskChannelRed   = 0x1,
+		eBlendWriteMaskChannelGreen = 0x2,
+		eBlendWriteMaskChannelBlue  = 0x4,
+		eBlendWriteMaskChannelAlpha = 0x8,
+
+		eBlendWriteMaskNone = 0,
+		eBlendWriteMaskAll  = 0xF,
 	};
 
 	enum EDepthStencilConfigFlags : uint16
 	{
-		E_DEPTH_STENCIL_CONFIG_FLAG_ENABLE_DEPTH_TEST_BIT = 0x01,
-		E_DEPTH_STENCIL_CONFIG_FLAG_ENABLE_STENCIL_TEST_BIT = 0x02,
-		E_DEPTH_STENCIL_CONFIG_MASK_ALL = 0x03,
+		eDepthStencilConfigFlagEnableDepthTestBit   = 0x01,
+		eDepthStencilConfigFlagEnableStencilTestBit = 0x02,
+
+		eDepthStencilConfigMaskNone = 0,
+		eDepthStencilConfigMaskAll  = 0x03,
 	};
 
 	enum ERasterizerConfigFlags : uint16
 	{
-		E_RASTERIZER_CONFIG_FLAG_ENABLE_SCISSOR_TEST_BIT = 0x01,
-		E_RASTERIZER_CONFIG_MASK_ALL = 0x01
+		eRasterizerConfigFlagEnableScissorTestBit = 0x01,
+
+		eRasterizerConfigMaskNone = 0,
+		eRasterizerConfigMaskAll  = 0x01,
 	};
 
 	enum class EBlendFactor : uint16
@@ -92,7 +98,7 @@ namespace Ic3::Graphics::GCI
 
 	enum class EDepthWriteMask : uint16
 	{
-		All = QLimits<uint16>::maxValue,
+		All = cppx::meta::limits<uint16>::max_value,
 		None = 0
 	};
 
@@ -119,7 +125,7 @@ namespace Ic3::Graphics::GCI
 		EBlendFactor factorDstAlpha;
 		EBlendOp opColor;
 		EBlendOp opAlpha;
-		Bitmask<EBlendWriteMaskFlags> writeMask;
+		cppx::bitmask<EBlendWriteMaskFlags> writeMask;
 	};
 
 	/// @brief A configuration of the depth test for the depth-stencil stage.
@@ -132,41 +138,42 @@ namespace Ic3::Graphics::GCI
 		EDepthWriteMask depthWriteMask;
 	};
 
+	/// @brief
+	struct StencilFaceOp
+	{
+		ECompFunc compFunc;
+		EStencilOp opFail;
+		EStencilOp opPassDepthFail;
+		EStencilOp opPassDepthPass;
+	};
+	
 	/// @brief A configuration of the stencil test for the depth-stencil stage.
 	/// Together with the DepthTestSettings struct, it forms DepthStencilConfig used for depth-stencil configuration.
 	/// @see DepthTestSettings
 	/// @see DepthStencilConfig
 	struct StencilTestSettings
 	{
-		struct FaceOp
-		{
-			ECompFunc compFunc;
-			EStencilOp opFail;
-			EStencilOp opPassDepthFail;
-			EStencilOp opPassDepthPass;
-		};
-
-		FaceOp frontFace;
-		FaceOp backFace;
+		StencilFaceOp frontFace;
+		StencilFaceOp backFace;
 		uint8 readMask;
 		uint8 writeMask;
 	};
 
-	/// @brief Represents blend configuration for the graphics pipeline. Used to create BlendStateDescriptor.
+	/// @brief Represents blend configuration for the graphics pipeline. Used to Create BlendStateDescriptor.
 	struct BlendConfig
 	{
-		/// A bitmask with RT attachments for which the blending is enabled.
-		/// Used to validate the blend configuration against the RT layout.
-		Bitmask<ERTAttachmentFlags> attachmentsMask = 0;
+		/// A cppx::bitmask with RT attachments for which the blending is enabled.
+		/// Used to Validate the blend configuration against the RT layout.
+		cppx::bitmask<ERTAttachmentFlags> attachmentsMask = 0;
 
 		/// Blending flags.
-		Bitmask<EBlendConfigFlags> flags = 0;
+		cppx::bitmask<EBlendConfigFlags> flags = 0;
 
 		/// An array of blend settings for each RT attachment.
-		/// If ENABLE_MRT_SEPARATE_CONFIG_BIT is set, each active target uses its corresponding entry.
+		/// If eBlendConfigFlagEnableMRTIndependentBlendingBit is set, each active target uses its corresponding entry.
 		/// Otherwise, attachments[0] is used for all targets and rest of the array is ignored.
 		/// @see EBlendConfigFlags
-		RTColorAttachmentBlendSettings attachments[GCM::RT_MAX_COLOR_ATTACHMENTS_NUM];
+		RTColorAttachmentBlendSettings attachments[GCM::cxRTMaxColorAttachmentsNum];
 
 		Math::RGBAColorR32Norm constantColor;
 	};
@@ -174,7 +181,7 @@ namespace Ic3::Graphics::GCI
 	/// @brief
 	struct DepthStencilConfig
 	{
-		Bitmask<EDepthStencilConfigFlags> commonFlags = 0;
+		cppx::bitmask<EDepthStencilConfigFlags> commonFlags = 0;
 		DepthTestSettings depthTestSettings;
 		StencilTestSettings stencilTestSettings;
 	};
@@ -182,7 +189,7 @@ namespace Ic3::Graphics::GCI
 	/// @brief
 	struct RasterizerConfig
 	{
-		Bitmask<ERasterizerConfigFlags> flags = 0;
+		cppx::bitmask<ERasterizerConfigFlags> flags = 0;
 		ECullMode cullMode;
 		EPrimitiveFillMode primitiveFillMode;
 		ETriangleVerticesOrder frontFaceVerticesOrder;
@@ -239,12 +246,12 @@ namespace Ic3::Graphics::GCI
 
 	}
 
-	namespace smutil
+	namespace SMU
 	{
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD Bitmask<ERTAttachmentFlags> getBlendActiveAttachmentMask( const BlendConfig & pBlendConfig );
+		IC3_GRAPHICS_GCI_API_NO_DISCARD cppx::bitmask<ERTAttachmentFlags> GetBlendActiveAttachmentMask( const BlendConfig & pBlendConfig );
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD uint32 getBlendActiveAttachmentsNum( const BlendConfig & pBlendConfig );
+		IC3_GRAPHICS_GCI_API_NO_DISCARD uint32 GetBlendActiveAttachmentsNum( const BlendConfig & pBlendConfig );
 
 	}
 

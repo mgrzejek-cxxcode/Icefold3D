@@ -10,14 +10,14 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3GLDeclareOpenGLObjectHandle( GLBufferObject );
+	Ic3GLDeclareOpenGLObjectHandle( GLBufferObject );
 
 	struct GLBufferCreateInfo
 	{
 		GLenum bindTarget = 0;
 		GLuint size = 0;
-		Bitmask<resource_flags_value_t> resourceFlags = 0;
-		Bitmask<EGPUMemoryFlags> memoryFlags = 0;
+		cppx::bitmask<resource_flags_value_t> resourceFlags = 0;
+		cppx::bitmask<EGPUMemoryFlags> memoryFlags = 0;
 		GPUBufferInitDataDesc initDataDesc;
 	};
 
@@ -25,50 +25,50 @@ namespace Ic3::Graphics::GCI
 	{
 	public:
 		GLenum const mGLBufferBindTarget = CX_GL_BIND_TARGET_UNKNOWN;
-		GLuint const mSize;
+		GLuint const size;
 
 		GLBufferObject( GLuint pHandle, const GLBufferCreateInfo & pGLCreateInfo );
 		virtual ~GLBufferObject();
 
-		virtual bool release();
-		virtual bool validateHandle() const;
+		virtual bool Release();
+		virtual bool ValidateHandle() const;
 
-		IC3_ATTR_NO_DISCARD bool queryIsMapped( GLenum pActiveBindTarget = 0 ) const;
+		CPPX_ATTR_NO_DISCARD bool QueryIsMapped( GLenum pActiveBindTarget = 0 ) const;
 
-		IC3_ATTR_NO_DISCARD byte * queryMappedPtr( GLenum pActiveBindTarget = 0 ) const;
+		CPPX_ATTR_NO_DISCARD byte * QueryMappedPtr( GLenum pActiveBindTarget = 0 ) const;
 
-		IC3_ATTR_NO_DISCARD SMemoryRegion queryMappedRegion( GLenum pActiveBindTarget = 0 ) const;
+		CPPX_ATTR_NO_DISCARD MemoryRegion QueryMappedRegion( GLenum pActiveBindTarget = 0 ) const;
 
-		IC3_ATTR_NO_DISCARD memory_size_t querySize( GLenum pActiveBindTarget = 0 ) const;
+		CPPX_ATTR_NO_DISCARD memory_size_t QuerySize( GLenum pActiveBindTarget = 0 ) const;
 
-		IC3_ATTR_NO_DISCARD bool isMappedPersistent() const;
+		CPPX_ATTR_NO_DISCARD bool IsMappedPersistent() const;
 
-		IC3_ATTR_NO_DISCARD void * getPersistentMapPtr() const;
+		CPPX_ATTR_NO_DISCARD void * GetPersistentMapPtr() const;
 
-		bool map( gpu_memory_size_t pOffset, gpu_memory_size_t pLength, GLenum pFlags, GLenum pActiveBindTarget = 0 );
-		bool mapPersistent( GLenum pFlags, GLenum pActiveBindTarget = 0 );
-		void unmap( GLenum pActiveBindTarget = 0 );
+		bool Map( gpu_memory_size_t pOffset, gpu_memory_size_t pLength, GLenum pFlags, GLenum pActiveBindTarget = 0 );
+		bool MapPersistent( GLenum pFlags, GLenum pActiveBindTarget = 0 );
+		void Unmap( GLenum pActiveBindTarget = 0 );
 
-		void flushMappedRegion( gpu_memory_size_t pOffset, gpu_memory_size_t pLength, GLenum pActiveBindTarget = 0 );
-		void invalidateRegion( gpu_memory_size_t pOffset, gpu_memory_size_t pLength, GLenum pActiveBindTarget = 0 );
+		void FlushMappedRegion( gpu_memory_size_t pOffset, gpu_memory_size_t pLength, GLenum pActiveBindTarget = 0 );
+		void InvalidateRegion( gpu_memory_size_t pOffset, gpu_memory_size_t pLength, GLenum pActiveBindTarget = 0 );
 
-		void updateCopyInvalidate( GLBufferObject & pSrcBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc, GLenum pActiveBindTarget = 0 );
-		void updateCopyOrphan( GLBufferObject & pSrcBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc, GLenum pActiveBindTarget = 0 );
+		void UpdateCopyInvalidate( GLBufferObject & pSrcBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc, GLenum pActiveBindTarget = 0 );
+		void UpdateCopyOrphan( GLBufferObject & pSrcBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc, GLenum pActiveBindTarget = 0 );
 
-		void updateUploadInvalidate( const GPUBufferSubDataUploadDesc & pUploadDesc, GLenum pActiveBindTarget = 0 );
-		void updateUploadOrphan( const GPUBufferSubDataUploadDesc & pUploadDesc, GLenum pActiveBindTarget = 0 );
+		void UpdateUploadInvalidate( const GPUBufferSubDataUploadDesc & pUploadDesc, GLenum pActiveBindTarget = 0 );
+		void UpdateUploadOrphan( const GPUBufferSubDataUploadDesc & pUploadDesc, GLenum pActiveBindTarget = 0 );
 
-		static GLBufferObjectHandle createCore( const GLBufferCreateInfo & pGLCreateInfo );
-		static GLBufferObjectHandle createCompat( const GLBufferCreateInfo & pGLCreateInfo );
+		static GLBufferObjectHandle CreateCore( const GLBufferCreateInfo & pGLCreateInfo );
+		static GLBufferObjectHandle CreateCompat( const GLBufferCreateInfo & pGLCreateInfo );
 
 	private:
-		static GLBufferObjectHandle createBase( const GLBufferCreateInfo & pGLCreateInfo );
+		static GLBufferObjectHandle CreateBase( const GLBufferCreateInfo & pGLCreateInfo );
 
-		GLenum checkActiveBindTarget( GLenum pBindTarget ) const;
+		GLenum CheckActiveBindTarget( GLenum pBindTarget ) const;
 
-		bool initializeCore( const GLBufferCreateInfo & pGLCreateInfo );
+		bool InitializeCore( const GLBufferCreateInfo & pGLCreateInfo );
 
-		bool initializeCompat( const GLBufferCreateInfo & pGLCreateInfo );
+		bool InitializeCompat( const GLBufferCreateInfo & pGLCreateInfo );
 
 	private:
 		void * _persistentMapPointer = nullptr;

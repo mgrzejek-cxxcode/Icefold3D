@@ -1,6 +1,6 @@
 
 #include "Internal/DisplaySystemPrivate.h"
-#include <Ic3/Cppx/StringUtils.h>
+#include <cppx/stringUtils.h>
 #include <sstream>
 
 namespace Ic3::System
@@ -11,21 +11,21 @@ namespace Ic3::System
 		std::stringstream strStream;
 		strStream << "Adapter <" << adapterIndex << "> (" << name << ")";
 
-		if( flags.isSet( E_DISPLAY_ADAPTER_FLAG_ACTIVE_BIT ) )
+		if( flags.is_set( eDisplayAdapterFlagActiveBit ) )
 		{
 			strStream << ", Active";
 		}
 
-		if( flags.isSet( E_DISPLAY_ADAPTER_FLAG_PRIMARY_BIT ) )
+		if( flags.is_set( eDisplayAdapterFlagPrimaryBit ) )
 		{
 			strStream << ", Primary";
 		}
 
-		if( flags.isSet( E_DISPLAY_ADAPTER_FLAG_HARDWARE_BIT ) )
+		if( flags.is_set( eDisplayAdapterFlagHardwareBit ) )
 		{
 			strStream << ", Hardware";
 		}
-		else if( flags.isSet( E_DISPLAY_ADAPTER_FLAG_SOFTWARE_BIT ) )
+		else if( flags.is_set( eDisplayAdapterFlagSoftwareBit ) )
 		{
 			strStream << ", Software";
 		}
@@ -38,12 +38,12 @@ namespace Ic3::System
 		std::stringstream strStream;
 		strStream << "Output <" << outputIndex << "> (" << name << ")";
 
-		if( flags.isSet( E_DISPLAY_OUTPUT_FLAG_ACTIVE_BIT ) )
+		if( flags.is_set( eDisplayOutputFlagActiveBit ) )
 		{
 			strStream << ", Active";
 		}
 
-		if( flags.isSet( E_DISPLAY_OUTPUT_FLAG_PRIMARY_BIT ) )
+		if( flags.is_set( eDisplayOutputFlagPrimaryBit ) )
 		{
 			strStream << ", Primary";
 		}
@@ -59,13 +59,28 @@ namespace Ic3::System
 		std::stringstream strStream;
 		strStream << "DisplayMode <" << videoModeIndex << "> ";
 
-		const auto settingsText = dsmGetVideoSettingsString( colorFormat, settings );
+		const auto settingsText = DSMGetVideoSettingsString( colorFormat, settings );
 		strStream << settingsText;
 
 		return strStream.str();
 	}
 
-	dsm_output_id_t dsmCreateDisplayOutputID( dsm_index_t pAdapterIndex, dsm_index_t pOutputIndex )
+
+	dsm_index_t DSMExtractOutputIDAdapterIndex( dsm_output_id_t pOutputID )
+	{
+		DisplayOutputIDGen outputIDGen;
+		outputIDGen.outputID = pOutputID;
+		return outputIDGen.uAdapterIndex;
+	}
+
+	dsm_index_t DSMExtractOutputIDOutputIndex( dsm_output_id_t pOutputID )
+	{
+		DisplayOutputIDGen outputIDGen;
+		outputIDGen.outputID = pOutputID;
+		return outputIDGen.uOutputIndex;
+	}
+
+	dsm_output_id_t DSMCreateDisplayOutputID( dsm_index_t pAdapterIndex, dsm_index_t pOutputIndex )
 	{
 		DisplayOutputIDGen outputIDGen;
 		outputIDGen.uAdapterIndex = pAdapterIndex;
@@ -73,7 +88,7 @@ namespace Ic3::System
 		return outputIDGen.outputID;
 	}
 
-	dsm_video_settings_hash_t dsmComputeVideoSettingsHash( EColorFormat pFormat, const DisplayVideoSettings & pSettings )
+	inline dsm_video_settings_hash_t DSMComputeVideoSettingsHash( EColorFormat pFormat, const DisplayVideoSettings & pSettings )
 	{
 		DisplayVideoSettingsHashGen hashValueGen;
 		hashValueGen.uResWidth = static_cast<uint16>( pSettings.resolution.x );
@@ -84,19 +99,19 @@ namespace Ic3::System
 		return hashValueGen.hashValue;
 	}
 
-	std::string dsmGetVideoSettingsString( EColorFormat pFormat, const DisplayVideoSettings & pSettings )
+	std::string DSMGetVideoSettingsString( EColorFormat pFormat, const DisplayVideoSettings & pSettings )
 	{
-		auto & colorFormatDesc = vsxGetDescForColorFormat( pFormat );
-		auto settingsHash = dsmComputeVideoSettingsHash( pFormat, pSettings );
+		auto & colorFormatDesc = VisGetDescForColorFormat( pFormat );
+		auto settingsHash = DSMComputeVideoSettingsHash( pFormat, pSettings );
 
 		std::stringstream strStream;
 		strStream << pSettings.resolution.x << 'x' << pSettings.resolution.y;
 
-		if( pSettings.flags.isSet( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_PROGRESSIVE_BIT ) )
+		if( pSettings.flags.is_set( eDisplayVideoSettingsFlagScanProgressiveBit ) )
 		{
 			strStream << "p";
 		}
-		else if( pSettings.flags.isSet( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_INTERLACED_BIT ) )
+		else if( pSettings.flags.is_set( eDisplayVideoSettingsFlagScanInterlacedBit ) )
 		{
 			strStream << "i";
 		}
@@ -107,10 +122,10 @@ namespace Ic3::System
 		return strStream.str();
 	}
 
-	EDisplayAdapterVendorID dsmResolveAdapterVendorID( const std::string & pAdapterName )
+	EDisplayAdapterVendorID DSMResolveAdapterVendorID( const std::string & pAdapterName )
 	{
 		auto adapterVendorID = EDisplayAdapterVendorID::Unknown;
-		auto adapterString = Cppx::strUtils::makeUpper( pAdapterName );
+		auto adapterString = cppx::strutil::make_upper( pAdapterName );
 
 		if( ( adapterString.find( "AMD" ) != std::string::npos ) || ( adapterString.find( "ATI" ) != std::string::npos ) )
 		{
@@ -134,7 +149,7 @@ namespace Ic3::System
 		}
 		else if( adapterString.find( "NVIDIA" ) != std::string::npos )
 		{
-			adapterVendorID = EDisplayAdapterVendorID::Nvidia;
+			adapterVendorID = EDisplayAdapterVendorID::NVidia;
 		}
 		else if( adapterString.find( "QUALCOMM" ) != std::string::npos )
 		{
@@ -144,7 +159,7 @@ namespace Ic3::System
 		return adapterVendorID;
 	}
 
-	bool dsmCheckSettingsFilterMatch( const DisplayVideoSettingsFilter & pFilter, const DisplayVideoSettings & pSettings )
+	bool DSMCheckSettingsFilterMatch( const DisplayVideoSettingsFilter & pFilter, const DisplayVideoSettings & pSettings )
 	{
 		return true;
 	}

@@ -1,10 +1,10 @@
 
 #include "AndroidDisplaySystem.h"
 #include "AndroidWindowSystem.h"
-#include <Ic3/Cppx/STLHelperAlgo.h>
+#include <cppx/stdHelperAlgo.h>
 #include <map>
 
-#if( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_ANDROID )
+#if( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_ANDROID )
 namespace Ic3::System
 {
 
@@ -43,21 +43,21 @@ namespace Ic3::System
 
 	AndroidDisplayManager::~AndroidDisplayManager() noexcept = default;
 
-	DisplayDriverHandle AndroidDisplayManager::_nativeCreateDisplayDriver()
+	DisplayDriverHandle AndroidDisplayManager::_NativeCreateDisplayDriver()
 	{
-		return createSysObject<AndroidDisplayDriver>( getHandle<AndroidDisplayManager>() );
+		return CreateSysObject<AndroidDisplayDriver>( GetHandle<AndroidDisplayManager>() );
 	}
 
-	void AndroidDisplayManager::_nativeQueryDefaultDisplaySize( DisplaySize & pOutSize ) const
+	void AndroidDisplayManager::_NativeQueryDefaultDisplaySize( DisplaySize & pOutSize ) const
 	{
-		auto & aSessionData = Platform::androidGetASessionData( *this );
-		pOutSize = Platform::androidQueryNativeWindowSize( aSessionData.aNativeWindow );
+		auto & aSessionData = Platform::AndroidGetASessionData( *this );
+		pOutSize = Platform::AndroidQueryNativeWindowSize( aSessionData.aNativeWindow );
 	}
 
-	void AndroidDisplayManager::_nativeQueryMinWindowSize( DisplaySize & pOutSize ) const
+	void AndroidDisplayManager::_NativeQueryMinWindowSize( DisplaySize & pOutSize ) const
 	{
-		auto & aSessionData = Platform::androidGetASessionData( *this );
-		pOutSize = Platform::androidQueryNativeWindowSize( aSessionData.aNativeWindow );
+		auto & aSessionData = Platform::AndroidGetASessionData( *this );
+		pOutSize = Platform::AndroidQueryNativeWindowSize( aSessionData.aNativeWindow );
 	}
 
 
@@ -67,9 +67,9 @@ namespace Ic3::System
 
 	AndroidDisplayDriver::~AndroidDisplayDriver() noexcept = default;
 
-	void AndroidDisplayDriver::_nativeEnumDisplayDevices()
+	void AndroidDisplayDriver::_NativeEnumDisplayDevices()
 	{
-		auto adapterObject = createAdapter<AndroidDisplayAdapter>( *this );
+		auto adapterObject = CreateAdapter<AndroidDisplayAdapter>( *this );
 		auto & adapterDesc = adapterObject->getAdapterDescInternal();
 		adapterDesc.name = "ANDROID_DEFAULT_ADAPTER";
 		adapterDesc.vendorID = EDisplayAdapterVendorID::Google;
@@ -77,16 +77,16 @@ namespace Ic3::System
 		adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_PRIMARY_BIT );
 
 		auto outputObject = adapterObject->createOutput<AndroidDisplayOutput>( *adapterObject );
-		auto & outputDesc = outputObject->getOutputDescInternal();
+		auto & outputDesc = outputObject->GetOutputDescInternal();
 		outputDesc.name = "ANDROID_DEFAULT_DISPLAY";
 		outputDesc.screenRect.offset.x = 0;
 		outputDesc.screenRect.offset.y = 0;
 		outputDesc.screenRect.size = mDisplayManager->queryDefaultDisplaySize();
 	}
 
-	void AndroidDisplayDriver::_nativeEnumVideoModes( DisplayOutput & pOutput, EColorFormat pColorFormat )
+	void AndroidDisplayDriver::_NativeEnumVideoModes( DisplayOutput & pOutput, EColorFormat pColorFormat )
 	{
-		auto & aSessionData = Platform::androidGetASessionData( *this );
+		auto & aSessionData = Platform::AndroidGetASessionData( *this );
 
 		auto aWindowFormat = ANativeWindow_getFormat( aSessionData.aNativeWindow );
 		auto aHWBufferFormat = static_cast<AHardwareBuffer_Format>( aWindowFormat );
@@ -97,19 +97,19 @@ namespace Ic3::System
 			return;
 		}
 
-		auto * androidDisplayOutput = pOutput.queryInterface<AndroidDisplayOutput>();
+		auto * androidDisplayOutput = pOutput.QueryInterface<AndroidDisplayOutput>();
 		auto videoModeObject = androidDisplayOutput->createVideoMode<AndroidDisplayVideoMode>( *androidDisplayOutput, pColorFormat );
 
-		auto & videoModeDesc = videoModeObject->getModeDescInternal();
+		auto & videoModeDesc = videoModeObject->GetModeDescInternal();
 		videoModeDesc.settings.resolution = pOutput.getOutputDesc().screenRect.size;
 		videoModeDesc.settings.refreshRate = 60;
 		videoModeDesc.settings.flags.set( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_PROGRESSIVE_BIT );
-		videoModeDesc.settingsHash = dsmComputeVideoSettingsHash( pColorFormat, videoModeDesc.settings );
+		videoModeDesc.settingsHash = DSMComputeVideoSettingsHash( pColorFormat, videoModeDesc.settings );
 	}
 
-	EColorFormat AndroidDisplayDriver::_nativeQueryDefaultSystemColorFormat() const
+	EColorFormat AndroidDisplayDriver::_NativeQueryDefaultSystemColorFormat() const
 	{
-		auto & aSessionData = Platform::androidGetASessionData( *this );
+		auto & aSessionData = Platform::AndroidGetASessionData( *this );
 
 		auto aWindowFormat = ANativeWindow_getFormat( aSessionData.aNativeWindow );
 		auto aHWBufferFormat = static_cast<AHardwareBuffer_Format>( aWindowFormat );
@@ -129,10 +129,10 @@ namespace Ic3::System
 				{ AHARDWAREBUFFER_FORMAT_R8G8B8X8_UNORM,    EColorFormat::R8G8B8X8 },
 				{ AHARDWAREBUFFER_FORMAT_R10G10B10A2_UNORM, EColorFormat::R10G10B10A2 }
 			};
-			return Cppx::getMapValueRefOrDefault( colorDescMap, pAHWBufferFormat, EColorFormat::Unknown );
+			return cppx::get_map_value_ref_or_default( colorDescMap, pAHWBufferFormat, EColorFormat::Unknown );
 		}
 
 	}
 
 } // namespace Ic3::System
-#endif // IC3_PCL_TARGET_SYSAPI_ANDROID
+#endif // PCL_TARGET_SYSAPI_ANDROID

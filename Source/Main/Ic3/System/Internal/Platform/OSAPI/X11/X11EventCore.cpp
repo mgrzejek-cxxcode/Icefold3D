@@ -5,24 +5,24 @@
 #include <Ic3/Math/VectorOps.h>
 #include <X11/keysym.h>
 
-#if( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_X11 )
+#if( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_X11 )
 namespace Ic3::System
 {
 
 	namespace Platform
 	{
 
-		bool _x11TranslateGenericEvent( EventSource & pEventSource, const XEvent & pXEvent, EventObject & pOutEvent );
+		bool _X11TranslateGenericEvent( EventSource & pEventSource, const XEvent & pXEvent, EventObject & pOutEvent );
 		
-		bool _x11TranslateInputEvent( EventSource & pEventSource, const XEvent & pXEvent, EventObject & pOutEvent );
+		bool _X11TranslateInputEvent( EventSource & pEventSource, const XEvent & pXEvent, EventObject & pOutEvent );
 		
-		bool _x11TranslateSystemEvent( EventSource & pEventSource, const XEvent & pXEvent, EventObject & pOutEvent );
+		bool _X11TranslateSystemEvent( EventSource & pEventSource, const XEvent & pXEvent, EventObject & pOutEvent );
 		
-		EKeyCode _x11GetSysKeyCode( KeySym pXkeySym );
+		EKeyCode _X11GetSysKeyCode( KeySym pXkeySym );
 		
-		EX11MouseButtonID _x11GetMouseButtonID( uint32 pButton );
+		EX11MouseButtonID _X11GetMouseButtonID( uint32 pButton );
 		
-		Bitmask<EMouseButtonFlagBits> _x11GetMouseButtonStateMask( uint32 pState );
+		cppx::bitmask<EMouseButtonFlagBits> _X11GetMouseButtonStateMask( uint32 pState );
 		
 	}
 
@@ -34,20 +34,20 @@ namespace Ic3::System
 	X11EventController::~X11EventController() noexcept
 	{}
 
-	void X11EventController::_nativeRegisterEventSource( EventSource & /* pEventSource */ )
+	void X11EventController::_NativeRegisterEventSource( EventSource & /* pEventSource */ )
 	{}
 
-	void X11EventController::_nativeUnregisterEventSource( EventSource & /* pEventSource */ )
+	void X11EventController::_NativeUnRegisterEventSource( EventSource & /* pEventSource */ )
 	{}
 
-	bool X11EventController::_nativeDispatchPendingEvents()
+	bool X11EventController::_NativeDispatchPendingEvents()
 	{
-		auto & xSessionData = Platform::x11GetXSessionData( *this );
+		auto & xSessionData = Platform::X11GetXSessionData( *this );
 
 		Platform::NativeEventType x11NativeEvent{};
-		if( XEventsQueued( xSessionData.display, QueuedAfterReading ) > 0 )
+		if( XEventsQueued( xSessionData.displayHandle, QueuedAfterReading ) > 0 )
 		{
-			XNextEvent( xSessionData.display, &( x11NativeEvent.xEvent ) );
+			XNextEvent( xSessionData.displayHandle, &( x11NativeEvent.mXEvent ) );
 			Platform::nativeEventDispatch( *this, x11NativeEvent );
 			return true;
 		}
@@ -55,14 +55,14 @@ namespace Ic3::System
 		return false;
 	}
 
-	bool X11EventController::_nativeDispatchPendingEventsWait()
+	bool X11EventController::_NativeDispatchPendingEventsWait()
 	{
-		auto & xSessionData = Platform::x11GetXSessionData( *this );
+		auto & xSessionData = Platform::X11GetXSessionData( *this );
 
 		Platform::NativeEventType x11NativeEvent{};
-		if( XEventsQueued( xSessionData.display, QueuedAfterFlush ) > 0 )
+		if( XEventsQueued( xSessionData.displayHandle, QueuedAfterFlush ) > 0 )
 		{
-			XNextEvent( xSessionData.display, &( x11NativeEvent.xEvent ) );
+			XNextEvent( xSessionData.displayHandle, &( x11NativeEvent.mXEvent ) );
 			Platform::nativeEventDispatch( *this, x11NativeEvent );
 			return true;
 		}
@@ -74,23 +74,23 @@ namespace Ic3::System
 	namespace Platform
 	{
 
-		bool nativeEventTranslate( EventController & pEventController, const NativeEventType & pNativeEvent, EventObject & pOutEvent )
+		bool NativeEventTranslate( EventController & pEventController, const NativeEventType & pNativeEvent, EventObject & pOutEvent )
 		{
-			auto * x11EventController = pEventController.queryInterface<X11EventController>();
+			auto * x11EventController = pEventController.QueryInterface<X11EventController>();
             
-			if( auto * eventSource = x11FindEventSourceByXWindow( *x11EventController, pNativeEvent.xEvent.xany.window ) )
+			if( auto * eventSource = X11FindEventSourceByXWindow( *x11EventController, pNativeEvent.mXEvent.xany.window ) )
 			{
-				return x11TranslateEvent( *eventSource, pNativeEvent.xEvent, pOutEvent );
+				return X11TranslateEvent( *eventSource, pNativeEvent.mXEvent, pOutEvent );
 			}
 
 			return false;
 		}
 
-		EventSource * x11FindEventSourceByXWindow( X11EventController & pEventController, XWindow pWindowXID )
+		EventSource * X11FindEventSourceByXWindow( X11EventController & pEventController, XWindow pWindowXID )
 		{
-			auto * eventSource = pEventController.findEventSource( [pWindowXID]( const EventSource & pEventSource ) -> bool {
+			auto * eventSource = pEventController.FindEventSource( [pWindowXID]( const EventSource & pEventSource ) -> bool {
 				const auto * eventSourceNativeData = pEventSource.getEventSourceNativeDataAs<Platform::X11EventSourceNativeData>();
-				return eventSourceNativeData->windowXID == pWindowXID;
+				return eventSourceNativeData->mWindowXID == pWindowXID;
 			});
 			return eventSource;
 		}
@@ -99,64 +99,64 @@ namespace Ic3::System
 		{
 			switch( pEventType )
 			{
-				ic3CaseReturnStr( KeyPress );
-				ic3CaseReturnStr( KeyRelease );
-				ic3CaseReturnStr( ButtonPress );
-				ic3CaseReturnStr( ButtonRelease );
-				ic3CaseReturnStr( MotionNotify );
-				ic3CaseReturnStr( EnterNotify );
-				ic3CaseReturnStr( LeaveNotify );
-				ic3CaseReturnStr( FocusIn );
-				ic3CaseReturnStr( FocusOut );
-				ic3CaseReturnStr( KeymapNotify );
-				ic3CaseReturnStr( Expose );
-				ic3CaseReturnStr( GraphicsExpose );
-				ic3CaseReturnStr( NoExpose );
-				ic3CaseReturnStr( VisibilityNotify );
-				ic3CaseReturnStr( CreateNotify );
-				ic3CaseReturnStr( DestroyNotify );
-				ic3CaseReturnStr( UnmapNotify );
-				ic3CaseReturnStr( MapNotify );
-				ic3CaseReturnStr( MapRequest );
-				ic3CaseReturnStr( ReparentNotify );
-				ic3CaseReturnStr( ConfigureNotify );
-				ic3CaseReturnStr( ConfigureRequest );
-				ic3CaseReturnStr( GravityNotify );
-				ic3CaseReturnStr( ResizeRequest );
-				ic3CaseReturnStr( CirculateNotify );
-				ic3CaseReturnStr( CirculateRequest );
-				ic3CaseReturnStr( PropertyNotify );
-				ic3CaseReturnStr( SelectionClear );
-				ic3CaseReturnStr( SelectionRequest );
-				ic3CaseReturnStr( SelectionNotify );
-				ic3CaseReturnStr( ColormapNotify );
-				ic3CaseReturnStr( ClientMessage );
-				ic3CaseReturnStr( MappingNotify );
-				ic3CaseReturnStr( GenericEvent );
+				Ic3CaseReturnStr( KeyPress         );
+				Ic3CaseReturnStr( KeyRelease       );
+				Ic3CaseReturnStr( ButtonPress      );
+				Ic3CaseReturnStr( ButtonRelease    );
+				Ic3CaseReturnStr( MotionNotify     );
+				Ic3CaseReturnStr( EnterNotify      );
+				Ic3CaseReturnStr( LeaveNotify      );
+				Ic3CaseReturnStr( FocusIn          );
+				Ic3CaseReturnStr( FocusOut         );
+				Ic3CaseReturnStr( KeymapNotify     );
+				Ic3CaseReturnStr( Expose           );
+				Ic3CaseReturnStr( GraphicsExpose   );
+				Ic3CaseReturnStr( NoExpose         );
+				Ic3CaseReturnStr( VisibilityNotify );
+				Ic3CaseReturnStr( CreateNotify     );
+				Ic3CaseReturnStr( DestroyNotify    );
+				Ic3CaseReturnStr( UnmapNotify      );
+				Ic3CaseReturnStr( MapNotify        );
+				Ic3CaseReturnStr( MapRequest       );
+				Ic3CaseReturnStr( ReparentNotify   );
+				Ic3CaseReturnStr( ConfigureNotify  );
+				Ic3CaseReturnStr( ConfigureRequest );
+				Ic3CaseReturnStr( GravityNotify    );
+				Ic3CaseReturnStr( ResizeRequest    );
+				Ic3CaseReturnStr( CirculateNotify  );
+				Ic3CaseReturnStr( CirculateRequest );
+				Ic3CaseReturnStr( PropertyNotify   );
+				Ic3CaseReturnStr( SelectionClear   );
+				Ic3CaseReturnStr( SelectionRequest );
+				Ic3CaseReturnStr( SelectionNotify  );
+				Ic3CaseReturnStr( ColormapNotify   );
+				Ic3CaseReturnStr( ClientMessage    );
+				Ic3CaseReturnStr( MappingNotify    );
+				Ic3CaseReturnStr( GenericEvent     );
 				default: break;
 			}
 			return "UNKNOWN";
 		}
 
-		bool x11TranslateEvent( EventSource & pEventSource, const XEvent & pXEvent, EventObject & pOutEvent )
+		bool X11TranslateEvent( EventSource & pEventSource, const XEvent & pXEvent, EventObject & pOutEvent )
 		{
 			if( ( pXEvent.type >= KeyPress ) && ( pXEvent.type <= MotionNotify ) )
 			{
-				if( _x11TranslateInputEvent( pEventSource, pXEvent, pOutEvent ) )
+				if( _X11TranslateInputEvent( pEventSource, pXEvent, pOutEvent ) )
 				{
 					return true;
 				}
 			}
 			else if( ( pXEvent.type >= EnterNotify ) && ( pXEvent.type <= PropertyNotify ) )
 			{
-				if( _x11TranslateGenericEvent( pEventSource, pXEvent, pOutEvent  ) )
+				if( _X11TranslateGenericEvent( pEventSource, pXEvent, pOutEvent  ) )
 				{
 					return true;
 				}
 			}
 			else
 			{
-				if( _x11TranslateSystemEvent( pEventSource, pXEvent, pOutEvent ) )
+				if( _X11TranslateSystemEvent( pEventSource, pXEvent, pOutEvent ) )
 				{
 					return true;
 				}
@@ -165,7 +165,7 @@ namespace Ic3::System
 			return false;
 		}
 
-		bool _x11TranslateGenericEvent( EventSource & pEventSource, const XEvent & pXEvent, EventObject & pOutEvent )
+		bool _X11TranslateGenericEvent( EventSource & pEventSource, const XEvent & pXEvent, EventObject & pOutEvent )
 		{
 			switch( pXEvent.type )
 			{
@@ -183,23 +183,23 @@ namespace Ic3::System
 
 				case DestroyNotify:
 				{
-					auto & eWindowUpdateDestroy = pOutEvent.eWindowUpdateDestroy;
-					eWindowUpdateDestroy.eventCode = E_EVENT_CODE_WINDOW_UPDATE_DESTROY;
+					auto & eWindowUpdateDestroy = pOutEvent.uEvtWindowUpdateDestroy;
+					eWindowUpdateDestroy.mEventCode = eEventCodeWindowUpdateDestroy;
 					eWindowUpdateDestroy.eventSource = &pEventSource;
 					break;
 				}
 				case UnmapNotify:
 				{
-					auto & eWindowUpdateVisibility = pOutEvent.eWindowUpdateVisibility;
-					eWindowUpdateVisibility.eventCode = E_EVENT_CODE_WINDOW_UPDATE_VISIBILITY;
+					auto & eWindowUpdateVisibility = pOutEvent.uEvtWindowUpdateVisibility;
+					eWindowUpdateVisibility.mEventCode = eEventCodeWindowUpdateVisibility;
 					eWindowUpdateVisibility.newVisibilityState = EWindowVisibilityState::Hidden;
 					eWindowUpdateVisibility.eventSource = &pEventSource;
 					break;
 				}
 				case MapNotify:
 				{
-					auto & eWindowUpdateVisibility = pOutEvent.eWindowUpdateVisibility;
-					eWindowUpdateVisibility.eventCode = E_EVENT_CODE_WINDOW_UPDATE_VISIBILITY;
+					auto & eWindowUpdateVisibility = pOutEvent.uEvtWindowUpdateVisibility;
+					eWindowUpdateVisibility.mEventCode = eEventCodeWindowUpdateVisibility;
 					eWindowUpdateVisibility.newVisibilityState = EWindowVisibilityState::Visible;
 					eWindowUpdateVisibility.eventSource = &pEventSource;
 					break;
@@ -217,25 +217,25 @@ namespace Ic3::System
 				case PropertyNotify:
 				{
 					auto * eventSourceNativeData = pEventSource.getEventSourceNativeDataAs<Platform::X11EventSourceNativeData>();
-					auto & xSessionData = x11GetXSessionData( *eventSourceNativeData );
+					auto & xSessionData = X11GetXSessionData( *eventSourceNativeData );
 
 					if( pXEvent.xproperty.atom == xSessionData.atomCache.wmState )
 					{
 						// PropertyNotify is emitted after the state has been changed.
 						// Check what is the current state of WM_STATE_FULLSCREEN.
-						const auto isFullscreenWindow = Platform::x11IsFullscreenWindow( xSessionData.display, eventSourceNativeData->windowXID );
+						const auto IsFullscreenWindow = Platform::X11IsFullscreenWindow( xSessionData.displayHandle, eventSourceNativeData->mWindowXID );
 
 						// This is the cached fullscreen state, updated on each change.
-						const auto previousFullscreenState = eventSourceNativeData->sysWindowFlags.isSet( E_X11_SYSTEM_WINDOW_FLAG_WM_STATE_FULLSCREEN );
+						const auto previousFullscreenState = eventSourceNativeData->mSysWindowFlags.is_set( eX11SystemWindowFlagWMStateFullscreen );
 
-						if( isFullscreenWindow != previousFullscreenState )
+						if( IsFullscreenWindow != previousFullscreenState )
 						{
-							auto & eWindowUpdateFullscreen = pOutEvent.eWindowUpdateFullscreen;
-							eWindowUpdateFullscreen.eventCode = E_EVENT_CODE_WINDOW_UPDATE_FULLSCREEN;
-							eWindowUpdateFullscreen.fullscreenState = isFullscreenWindow ? EActiveState::Enabled : EActiveState::Disabled;
+							auto & eWindowUpdateFullscreen = pOutEvent.uEvtWindowUpdateFullscreen;
+							eWindowUpdateFullscreen.mEventCode = eEventCodeWindowUpdateFullscreen;
+							eWindowUpdateFullscreen.fullscreenState = IsFullscreenWindow ? EActiveState::ENABLED : EActiveState::DISABLED;
 							eWindowUpdateFullscreen.eventSource = &pEventSource;
 							// Save the current state inside the native data of the event source.
-							eventSourceNativeData->sysWindowFlags.setOrUnset( E_X11_SYSTEM_WINDOW_FLAG_WM_STATE_FULLSCREEN, isFullscreenWindow );
+							eventSourceNativeData->mSysWindowFlags.setOrUnset( eX11SystemWindowFlagWMStateFullscreen, IsFullscreenWindow );
 						}
 					}
 					break;
@@ -249,13 +249,13 @@ namespace Ic3::System
 			return true;
 		}
 
-		bool _x11TranslateInputEventMouseButton(
+		bool _X11TranslateInputEventMouseButton(
                 EventSource & pEventSource,
                 const XEvent & pXEvent,
                 EventObject & pOutEvent,
                 EMouseButtonActionType pActionType );
 
-		bool _x11TranslateInputEvent( EventSource & pEventSource, const XEvent & pXEvent, EventObject & pOutEvent )
+		bool _X11TranslateInputEvent( EventSource & pEventSource, const XEvent & pXEvent, EventObject & pOutEvent )
 		{
             auto & eventController = pEventSource.getEventControllerRef();
 
@@ -268,41 +268,41 @@ namespace Ic3::System
 				// [Source: https://tronche.com/gui/x/xlib/input/keyboard-encoding.html#KeySym]
 				case KeyPress:
 				{
-					auto & inputKeyboardState = eventController.getEventSystemSharedState().inputKeyboardState;
+					auto & inputKeyboardState = eventController.getEventSystemSharedState().mInputKeyboardState;
 
 					// XLookupKeysym requires non-const XKeyEvent parameter.
 					// Use locally copied one to keep the API right (we don't want to drop 'const for input event param).
 					auto xKey = pXEvent.xkey;
 					auto keysym = XLookupKeysym( &xKey, 0 );
-					auto keycode = _x11GetSysKeyCode( keysym );
-					auto & eInputKeyboard = pOutEvent.eInputKeyboard;
-                    eInputKeyboard.eventCode = E_EVENT_CODE_INPUT_KEYBOARD;
-                    eInputKeyboard.inputKeyboardState = &inputKeyboardState;
-                    eInputKeyboard.keyCode = keycode;
-                    eInputKeyboard.keyAction = EKeyActionType::Press;
+					auto keycode = _X11GetSysKeyCode( keysym );
+					auto & eInputKeyboard = pOutEvent.uEvtInputKeyboard;
+                    eInputKeyboard.mEventCode = eEventCodeInputKeyboard;
+                    eInputKeyboard.mInputKeyboardState = &inputKeyboardState;
+                    eInputKeyboard.mKeyCode = keycode;
+                    eInputKeyboard.mKeyAction = EKeyActionType::Press;
 
 					break;
 				}
 				case KeyRelease:
 				{
-                    auto & inputKeyboardState = eventController.getEventSystemSharedState().inputKeyboardState;
+                    auto & inputKeyboardState = eventController.getEventSystemSharedState().mInputKeyboardState;
 
 					// XLookupKeysym requires non-const XKeyEvent parameter.
 					// Use locally copied one to keep the API right (we don't want to drop 'const for input event param).
 					auto xKey = pXEvent.xkey;
 					auto keysym = XLookupKeysym( &xKey, 0 );
-					auto keycode = _x11GetSysKeyCode( keysym );
-					auto & eInputKeyboard = pOutEvent.eInputKeyboard;
-                    eInputKeyboard.eventCode = E_EVENT_CODE_INPUT_KEYBOARD;
-                    eInputKeyboard.inputKeyboardState = &inputKeyboardState;
-                    eInputKeyboard.keyCode = keycode;
-                    eInputKeyboard.keyAction = EKeyActionType::Release;
+					auto keycode = _X11GetSysKeyCode( keysym );
+					auto & eInputKeyboard = pOutEvent.uEvtInputKeyboard;
+                    eInputKeyboard.mEventCode = eEventCodeInputKeyboard;
+                    eInputKeyboard.mInputKeyboardState = &inputKeyboardState;
+                    eInputKeyboard.mKeyCode = keycode;
+                    eInputKeyboard.mKeyAction = EKeyActionType::Release;
 
 					break;
 				}
 				case ButtonPress:
 				{
-					_x11TranslateInputEventMouseButton(
+					_X11TranslateInputEventMouseButton(
                             pEventSource,
                             pXEvent,
                             pOutEvent,
@@ -312,7 +312,7 @@ namespace Ic3::System
 				}
 				case ButtonRelease:
 				{
-					_x11TranslateInputEventMouseButton(
+					_X11TranslateInputEventMouseButton(
                             pEventSource,
                             pXEvent,
                             pOutEvent,
@@ -331,15 +331,15 @@ namespace Ic3::System
 						inputMouseState.lastCursorPos = cursorPos;
 					}
 
-					auto & eInputMouseMove = pOutEvent.eInputMouseMove;
-					eInputMouseMove.eventCode = E_EVENT_CODE_INPUT_MOUSE_MOVE;
+					auto & eInputMouseMove = pOutEvent.uEvtInputMouseMove;
+					eInputMouseMove.mEventCode = eEventCodeInputMouseMove;
 					eInputMouseMove.cursorPos = cursorPos;
 
 					// Old method, based on the state mask provided by the system. Although *some* modifiers are there,
 					// extra mouse buttons (X1 and X2) are not reported. Since there is our own internal state mask kept
 					// inside the EventInputState object, we just use that. This line is supposed to be kept here just
 					// for the future reference or if additional modifiers need to be supported.
-					// eInputMouseMove.buttonStateMask = _x11GetMouseButtonStateMask( pXEvent.xmotion.state );
+					// eInputMouseMove.buttonStateMask = _X11GetMouseButtonStateMask( pXEvent.xmotion.state );
 
 					eInputMouseMove.buttonStateMask = inputMouseState.buttonStateMask;
 					eInputMouseMove.movementDelta = cursorPos - inputMouseState.lastCursorPos;
@@ -354,10 +354,10 @@ namespace Ic3::System
 				}
 			}
 
-			return pOutEvent.commonData.eventCode != E_EVENT_CODE_UNDEFINED;
+			return pOutEvent.uCommonData.mEventCode != eEventCodeUndefined;
 		}
 
-		bool _x11TranslateInputEventMouseButton(
+		bool _X11TranslateInputEventMouseButton(
                 EventSource & pEventSource,
                 const XEvent & pXEvent,
                 EventObject & pOutEvent,
@@ -365,26 +365,26 @@ namespace Ic3::System
 		{
             auto & eventController = pEventSource.getEventControllerRef();
 
-            const auto x11MouseButtonID = _x11GetMouseButtonID( pXEvent.xbutton.button );
+            const auto x11MouseButtonID = _X11GetMouseButtonID( pXEvent.xbutton.button );
 
 			switch( x11MouseButtonID )
 			{
 				case EX11MouseButtonID::Left:
 				{
 					auto & inputMouseState = eventController.getEventSystemSharedState().inputMouseState;
-					auto & eInputMouseButton = pOutEvent.eInputMouseButton;
-					eInputMouseButton.eventCode = E_EVENT_CODE_INPUT_MOUSE_BUTTON;
+					auto & eInputMouseButton = pOutEvent.uEvtInputMouseButton;
+					eInputMouseButton.mEventCode = eEventCodeInputMouseButton;
 					eInputMouseButton.cursorPos = { pXEvent.xbutton.x, pXEvent.xbutton.y };;
 					eInputMouseButton.buttonAction = pActionType;
 					eInputMouseButton.buttonID = EMouseButtonID::Left;
 
 					if( pActionType == EMouseButtonActionType::Click )
 					{
-						inputMouseState.buttonStateMask.set( E_MOUSE_BUTTON_FLAG_LEFT_BIT );
+						inputMouseState.buttonStateMask.set( eMouseButtonFlagLeftBit );
 					}
 					else if( pActionType == EMouseButtonActionType::Release )
 					{
-						inputMouseState.buttonStateMask.unset( E_MOUSE_BUTTON_FLAG_LEFT_BIT );
+						inputMouseState.buttonStateMask.unset( eMouseButtonFlagLeftBit );
 					}
 
 					break;
@@ -392,19 +392,19 @@ namespace Ic3::System
 				case EX11MouseButtonID::Middle:
 				{
                     auto & inputMouseState = eventController.getEventSystemSharedState().inputMouseState;
-					auto & eInputMouseButton = pOutEvent.eInputMouseButton;
-					eInputMouseButton.eventCode = E_EVENT_CODE_INPUT_MOUSE_BUTTON;
+					auto & eInputMouseButton = pOutEvent.uEvtInputMouseButton;
+					eInputMouseButton.mEventCode = eEventCodeInputMouseButton;
 					eInputMouseButton.cursorPos = { pXEvent.xbutton.x, pXEvent.xbutton.y };;
 					eInputMouseButton.buttonAction = pActionType;
 					eInputMouseButton.buttonID = EMouseButtonID::Middle;
 
 					if( pActionType == EMouseButtonActionType::Click )
 					{
-						inputMouseState.buttonStateMask.set( E_MOUSE_BUTTON_FLAG_MIDDLE_BIT );
+						inputMouseState.buttonStateMask.set( eMouseButtonFlagMiddleBit );
 					}
 					else if( pActionType == EMouseButtonActionType::Release )
 					{
-						inputMouseState.buttonStateMask.unset( E_MOUSE_BUTTON_FLAG_MIDDLE_BIT );
+						inputMouseState.buttonStateMask.unset( eMouseButtonFlagMiddleBit );
 					}
 
 					break;
@@ -412,35 +412,35 @@ namespace Ic3::System
 				case EX11MouseButtonID::Right:
 				{
                     auto & inputMouseState = eventController.getEventSystemSharedState().inputMouseState;
-					auto & eInputMouseButton = pOutEvent.eInputMouseButton;
-					eInputMouseButton.eventCode = E_EVENT_CODE_INPUT_MOUSE_BUTTON;
+					auto & eInputMouseButton = pOutEvent.uEvtInputMouseButton;
+					eInputMouseButton.mEventCode = eEventCodeInputMouseButton;
 					eInputMouseButton.cursorPos = { pXEvent.xbutton.x, pXEvent.xbutton.y };;
 					eInputMouseButton.buttonAction = pActionType;
 					eInputMouseButton.buttonID = EMouseButtonID::Right;
 
 					if( pActionType == EMouseButtonActionType::Click )
 					{
-						inputMouseState.buttonStateMask.set( E_MOUSE_BUTTON_FLAG_RIGHT_BIT );
+						inputMouseState.buttonStateMask.set( eMouseButtonFlagRightBit );
 					}
 					else if( pActionType == EMouseButtonActionType::Release )
 					{
-						inputMouseState.buttonStateMask.unset( E_MOUSE_BUTTON_FLAG_RIGHT_BIT );
+						inputMouseState.buttonStateMask.unset( eMouseButtonFlagRightBit );
 					}
 
 					break;
 				}
 				case EX11MouseButtonID::VWheelUp:
 				{
-					auto & eInputMouseScroll = pOutEvent.eInputMouseScroll;
-					eInputMouseScroll.eventCode = E_EVENT_CODE_INPUT_MOUSE_SCROLL;
+					auto & eInputMouseScroll = pOutEvent.uEvtInputMouseScroll;
+					eInputMouseScroll.mEventCode = eEventCodeInputMouseScroll;
 					eInputMouseScroll.scrollDelta.x = 0;
 					eInputMouseScroll.scrollDelta.y = 100;
 					break;
 				}
 				case EX11MouseButtonID::VWheelDown:
 				{
-					auto & eInputMouseScroll = pOutEvent.eInputMouseScroll;
-					eInputMouseScroll.eventCode = E_EVENT_CODE_INPUT_MOUSE_SCROLL;
+					auto & eInputMouseScroll = pOutEvent.uEvtInputMouseScroll;
+					eInputMouseScroll.mEventCode = eEventCodeInputMouseScroll;
 					eInputMouseScroll.scrollDelta.x = 0;
 					eInputMouseScroll.scrollDelta.y = -100;
 
@@ -448,8 +448,8 @@ namespace Ic3::System
 				}
 				case EX11MouseButtonID::HWheelLeft:
 				{
-					auto & eInputMouseScroll = pOutEvent.eInputMouseScroll;
-					eInputMouseScroll.eventCode = E_EVENT_CODE_INPUT_MOUSE_SCROLL;
+					auto & eInputMouseScroll = pOutEvent.uEvtInputMouseScroll;
+					eInputMouseScroll.mEventCode = eEventCodeInputMouseScroll;
 					eInputMouseScroll.scrollDelta.x = -100;
 					eInputMouseScroll.scrollDelta.y = 0;
 
@@ -457,8 +457,8 @@ namespace Ic3::System
 				}
 				case EX11MouseButtonID::HWheelRight:
 				{
-					auto & eInputMouseScroll = pOutEvent.eInputMouseScroll;
-					eInputMouseScroll.eventCode = E_EVENT_CODE_INPUT_MOUSE_SCROLL;
+					auto & eInputMouseScroll = pOutEvent.uEvtInputMouseScroll;
+					eInputMouseScroll.mEventCode = eEventCodeInputMouseScroll;
 					eInputMouseScroll.scrollDelta.x = 100;
 					eInputMouseScroll.scrollDelta.y = 0;
 
@@ -467,19 +467,19 @@ namespace Ic3::System
 				case EX11MouseButtonID::XBT1:
 				{
                     auto & inputMouseState = eventController.getEventSystemSharedState().inputMouseState;
-					auto & eInputMouseButton = pOutEvent.eInputMouseButton;
-					eInputMouseButton.eventCode = E_EVENT_CODE_INPUT_MOUSE_BUTTON;
+					auto & eInputMouseButton = pOutEvent.uEvtInputMouseButton;
+					eInputMouseButton.mEventCode = eEventCodeInputMouseButton;
 					eInputMouseButton.cursorPos = { pXEvent.xbutton.x, pXEvent.xbutton.y };;
 					eInputMouseButton.buttonAction = pActionType;
 					eInputMouseButton.buttonID = EMouseButtonID::XB1;
 
 					if( pActionType == EMouseButtonActionType::Click )
 					{
-						inputMouseState.buttonStateMask.set( E_MOUSE_BUTTON_FLAG_XB1_BIT );
+						inputMouseState.buttonStateMask.set( eMouseButtonFlagXB1Bit );
 					}
 					else if( pActionType == EMouseButtonActionType::Release )
 					{
-						inputMouseState.buttonStateMask.unset( E_MOUSE_BUTTON_FLAG_XB1_BIT );
+						inputMouseState.buttonStateMask.unset( eMouseButtonFlagXB1Bit );
 					}
 
 					break;
@@ -487,19 +487,19 @@ namespace Ic3::System
 				case EX11MouseButtonID::XBT2:
 				{
                     auto & inputMouseState = eventController.getEventSystemSharedState().inputMouseState;
-					auto & eInputMouseButton = pOutEvent.eInputMouseButton;
-					eInputMouseButton.eventCode = E_EVENT_CODE_INPUT_MOUSE_BUTTON;
+					auto & eInputMouseButton = pOutEvent.uEvtInputMouseButton;
+					eInputMouseButton.mEventCode = eEventCodeInputMouseButton;
 					eInputMouseButton.cursorPos = { pXEvent.xbutton.x, pXEvent.xbutton.y };;
 					eInputMouseButton.buttonAction = pActionType;
 					eInputMouseButton.buttonID = EMouseButtonID::XB2;
 
 					if( pActionType == EMouseButtonActionType::Click )
 					{
-						inputMouseState.buttonStateMask.set( E_MOUSE_BUTTON_FLAG_XB2_BIT );
+						inputMouseState.buttonStateMask.set( eMouseButtonFlagXB2Bit );
 					}
 					else if( pActionType == EMouseButtonActionType::Release )
 					{
-						inputMouseState.buttonStateMask.unset( E_MOUSE_BUTTON_FLAG_XB2_BIT );
+						inputMouseState.buttonStateMask.unset( eMouseButtonFlagXB2Bit );
 					}
 
 					break;
@@ -513,23 +513,23 @@ namespace Ic3::System
 			return true;
 		}
 
-		bool _x11TranslateSystemEvent( EventSource & pEventSource, const XEvent & pXEvent, EventObject & pOutEvent )
+		bool _X11TranslateSystemEvent( EventSource & pEventSource, const XEvent & pXEvent, EventObject & pOutEvent )
 		{
 			switch( pXEvent.type )
 			{
 				case ClientMessage:
 				{
-					auto & xSessionData = Platform::x11GetXSessionData( *( pEventSource.mSysContext ) );
+					auto & xSessionData = Platform::X11GetXSessionData( *( pEventSource.mSysContext ) );
 
-					// printf("--ClientMessage: %s\n", XGetAtomName( pXEvent.xclient.display, pXEvent.xclient.message_type ) );
+					// printf("--ClientMessage: %s\n", XGetAtomName( pXEvent.xclient.displayHandle, pXEvent.xclient.message_type ) );
 
 					if( pXEvent.xclient.message_type == xSessionData.atomCache.wmProtocol )
 					{
 						// Window Message Protocol (WMP) id is stored in data.l[0].
 						if( pXEvent.xclient.data.l[0] == xSessionData.atomCache.wmProtocolDelete )
 						{
-							auto & eventData = pOutEvent.eWindowUpdateDestroy;
-							eventData.eventCode = E_EVENT_CODE_WINDOW_UPDATE_DESTROY;
+							auto & eventData = pOutEvent.uEvtWindowUpdateDestroy;
+							eventData.mEventCode = eEventCodeWindowUpdateDestroy;
 							eventData.eventSource = &pEventSource;
 						}
 					}
@@ -704,7 +704,7 @@ namespace Ic3::System
 		};
 
 
-		EKeyCode _x11GetSysKeyCode( KeySym pXkeySym )
+		EKeyCode _X11GetSysKeyCode( KeySym pXkeySym )
 		{
 			if( ( pXkeySym >= 0x0020 ) && ( pXkeySym <= 0x007a ) )
 			{
@@ -780,35 +780,35 @@ namespace Ic3::System
 			EX11MouseButtonID::XBT2,
 			EX11MouseButtonID::Unknown
 		};
-		static constexpr auto x11MouseButtonMaxIndex = staticArraySize( x11MouseButtonIDMap ) - 1;
+		static constexpr auto x11MouseButtonMaxIndex = cppx::static_array_size( x11MouseButtonIDMap ) - 1;
 
-		EX11MouseButtonID _x11GetMouseButtonID( uint32 pButton )
+		EX11MouseButtonID _X11GetMouseButtonID( uint32 pButton )
 		{
 			auto mouseButtonIndex = static_cast<size_t>( pButton - 1 );
-			mouseButtonIndex = getMinOf( mouseButtonIndex, x11MouseButtonMaxIndex );
+			mouseButtonIndex = cppx::get_min_of( mouseButtonIndex, x11MouseButtonMaxIndex );
 			return x11MouseButtonIDMap[mouseButtonIndex];
 		}
 
-		Bitmask<EMouseButtonFlagBits> _x11GetMouseButtonStateMask( uint32 pState )
+		cppx::bitmask<EMouseButtonFlagBits> _X11GetMouseButtonStateMask( uint32 pState )
 		{
-			Bitmask<uint32> inputStateMask = pState;
-			Bitmask<EMouseButtonFlagBits> buttonStateMask;
+            cppx::bitmask<uint32> inputStateMask = pState;
+            cppx::bitmask<EMouseButtonFlagBits> buttonStateMask;
 			if( pState != 0 )
 			{
-				if( inputStateMask.isSetAnyOf( Button1Mask | Button1MotionMask ) )
+				if( inputStateMask.is_set_any_of( Button1Mask | Button1MotionMask ) )
 				{
 					inputStateMask.unset( Button1Mask | Button1MotionMask );
-					buttonStateMask.set( E_MOUSE_BUTTON_FLAG_LEFT_BIT );
+					buttonStateMask.set( eMouseButtonFlagLeftBit );
 				}
-				if( inputStateMask.isSetAnyOf( Button2Mask | Button2MotionMask ) )
+				if( inputStateMask.is_set_any_of( Button2Mask | Button2MotionMask ) )
 				{
 					inputStateMask.unset( Button2Mask | Button2MotionMask );
-					buttonStateMask.set( E_MOUSE_BUTTON_FLAG_MIDDLE_BIT );
+					buttonStateMask.set( eMouseButtonFlagMiddleBit );
 				}
-				if( inputStateMask.isSetAnyOf( Button3Mask | Button3MotionMask ) )
+				if( inputStateMask.is_set_any_of( Button3Mask | Button3MotionMask ) )
 				{
 					inputStateMask.unset( Button3Mask | Button3MotionMask );
-					buttonStateMask.set( E_MOUSE_BUTTON_FLAG_RIGHT_BIT);
+					buttonStateMask.set( eMouseButtonFlagRightBit );
 				}
 			}
 			return buttonStateMask;
@@ -816,4 +816,4 @@ namespace Ic3::System
 	}
 
 } // namespace Ic3::System
-#endif // IC3_PCL_TARGET_SYSAPI_X11
+#endif // PCL_TARGET_SYSAPI_X11

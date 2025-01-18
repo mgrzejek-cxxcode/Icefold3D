@@ -4,9 +4,10 @@
 namespace Ic3::System
 {
 
-	JavaNativeInterface::JavaNativeInterface( JavaVMInstance & pJVMInstance,
-	                                          Platform::JNIThreadID pJNIThreadID,
-	                                          Platform::JNIEnvPtr pJNIEnvPtr )
+	JavaNativeInterface::JavaNativeInterface(
+			JavaVMInstance & pJVMInstance,
+			Platform::JNIThreadID pJNIThreadID,
+			Platform::JNIEnvPtr pJNIEnvPtr )
 	: mJVMInstance( &pJVMInstance )
 	, mJNIThreadID( pJNIThreadID )
 	, mJNIEnv( pJNIEnvPtr )
@@ -14,8 +15,9 @@ namespace Ic3::System
 
 	JavaNativeInterface::~JavaNativeInterface() noexcept = default;
 
-	void JavaNativeInterface::nativeActivitySetRequestedOrientation( jobject pNativeActivity,
-	                                                                 Platform::EAndroidScreenOrientation pOrientation )
+	void JavaNativeInterface::NASetRequestedOrientation(
+			jobject pNativeActivity,
+			Platform::EAndroidScreenOrientation pOrientation )
 	{
 		auto * jNativeActivityClass = mJNIEnv->GetObjectClass( pNativeActivity );
 		auto * jMethod = mJNIEnv->GetMethodID( jNativeActivityClass, "setRequestedOrientation", "(I)V" );

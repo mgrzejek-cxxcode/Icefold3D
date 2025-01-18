@@ -11,41 +11,41 @@ namespace Ic3::Graphics::GCI
 
 	GPUDriver::~GPUDriver() noexcept = default;
 
-	EGPUDriverID GPUDriver::queryGPUDriverID() const noexcept
+	EGPUDriverID GPUDriver::QueryGPUDriverID() const noexcept
 	{
 		return EGPUDriverID::GDIUnknown;
 	}
 
-	bool GPUDriver::isNullDriver() const noexcept
+	bool GPUDriver::IsNullDriver() const noexcept
 	{
 		return false;
 	}
 
-	DisplayManagerHandle GPUDriver::createDefaultDisplayManager()
+	DisplayManagerHandle GPUDriver::CreateDefaultDisplayManager()
 	{
 		return nullptr;
 	}
 
-	GPUDeviceHandle GPUDriver::createDevice( const GPUDeviceCreateInfo & pCreateInfo )
+	GPUDeviceHandle GPUDriver::CreateDevice( const GPUDeviceCreateInfo & pCreateInfo )
 	{
-		auto gpuDevice = _drvCreateDevice( pCreateInfo );
+		auto gpuDevice = _DrvCreateDevice( pCreateInfo );
 		if( !gpuDevice )
 		{
 			return nullptr;
 		}
 
-		gpuDevice->initializeCommandSystem();
+		gpuDevice->InitializeCommandSystem();
 
 		return gpuDevice;
 	}
 
-	GPUDriver & GPUDriver::nullDriver()
+	GPUDriver & GPUDriver::GetNullDriver()
 	{
-		static const GPUDriverHandle sNullDriverInstance = createGPUAPIObject<GPUDriverNull>();
+		static const GPUDriverHandle sNullDriverInstance = CreateGfxObject<GPUDriverNull>();
 		return *sNullDriverInstance;
 	}
 
-	void GPUDriver::setConfigFlags( Bitmask<EGPUDriverConfigFlags> pConfigFlags )
+	void GPUDriver::SetConfigFlags( cppx::bitmask<EGPUDriverConfigFlags> pConfigFlags )
 	{
 		_configFlags = pConfigFlags;
 	}

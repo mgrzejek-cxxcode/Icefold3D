@@ -11,59 +11,59 @@ namespace Ic3::Graphics::GCI
 
 	VKCommandList::VKCommandList( VKCommandSystem & pVKCommandSystem, ECommandListType pListType )
 	: CommandList( pVKCommandSystem, pListType )
-	, _stateController( *this, mGPUDevice.queryInterface<VKGPUDevice>()->getDescriptorCache() )
+	, _stateController( *this, mGPUDevice.QueryInterface<VKGPUDevice>()->GetDescriptorCache() )
 	{ }
 
 	VKCommandList::~VKCommandList() = default;
 
-	void VKCommandList::beginCommandSequence()
+	void VKCommandList::BeginCommandSequence()
 	{
-		CommandList::beginCommandSequence();
+		CommandList::BeginCommandSequence();
 	}
 
-	void VKCommandList::endCommandSequence()
+	void VKCommandList::EndCommandSequence()
 	{
-		CommandList::endCommandSequence();
+		CommandList::EndCommandSequence();
 	}
 
 	void VKCommandList::executeDeferredContext( CommandContextDeferred & pDeferredContext )
 	{
 	}
 
-	bool VKCommandList::setGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPipelineSO )
+	bool VKCommandList::SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPipelineSO )
 	{
 		return true;
 	}
 
-	bool VKCommandList::setVertexStreamStateObject( const VertexStreamStateObject & pVertexStreamSO )
+	bool VKCommandList::SetVertexStreamStateObject( const VertexStreamStateObject & pVertexStreamSO )
 	{
 		return true;
 	}
 
-	void VKCommandList::clearRenderTarget( Bitmask<ERenderTargetAttachmentFlags> pAttachmentMask )
+	void VKCommandList::clearRenderTarget( cppx::bitmask<ERenderTargetAttachmentFlags> pAttachmentMask )
 	{
 	}
 
-	void VKCommandList::setViewport( const ViewportDesc & pViewportDesc )
+	void VKCommandList::SetViewport( const ViewportDesc & pViewportDesc )
 	{
 	}
 
-	bool VKCommandList::setShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData )
-	{
-		return true;
-	}
-
-	bool VKCommandList::setShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer )
+	bool VKCommandList::SetShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData )
 	{
 		return true;
 	}
 
-	bool VKCommandList::setShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture )
+	bool VKCommandList::SetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer )
 	{
 		return true;
 	}
 
-	bool VKCommandList::setShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler )
+	bool VKCommandList::SetShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture )
+	{
+		return true;
+	}
+
+	bool VKCommandList::SetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler )
 	{
 		return true;
 	}

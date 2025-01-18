@@ -4,14 +4,14 @@
 
 #include "Prerequisites.h"
 
-#if( IC3_PCL_COMPILER & IC3_PCL_COMPILER_CLANG )
+#if( PCL_COMPILER & PCL_COMPILER_CLANG )
 #  pragma clang diagnostic push
 #  pragma clang diagnostic ignored "-Wgnu-anonymous-struct"
 #  pragma clang diagnostic ignored "-Wnested-anon-types"
-#elif( IC3_PCL_COMPILER & IC3_PCL_COMPILER_GCC )
+#elif( PCL_COMPILER & PCL_COMPILER_GCC )
 #  pragma GCC diagnostic push
 #  pragma GCC diagnostic ignored "-Wpedantic"
-#elif( IC3_PCL_COMPILER & IC3_PCL_COMPILER_MSVC )
+#elif( PCL_COMPILER & PCL_COMPILER_MSVC )
 #  pragma warning( push )
 #  pragma warning( disable: 4201 )  // 'Nonstandard extension used: nameless struct/union'
 #endif
@@ -19,10 +19,10 @@
 namespace Ic3::Math
 {
 
-	template <typename TVal>
+	template <typename TPValue>
 	struct Vector4SIMDData
 	{
-		using Type = TVal[4];
+		using Type = TPValue[4];
 	};
 
 #if( IC3_MATH_SIMD_USE_VX128F )
@@ -69,21 +69,21 @@ namespace Ic3::Math
 	};
 #endif
 
-	template <typename TVal, size_t tSize>
+	template <typename TPValue, size_t tpSize>
 	struct VectorTraits
 	{
-		static const uint32 sLength = tSize;
-		static const uint32 sByteSize = sizeof( TVal ) * sLength;
+		static const uint32 sLength = tpSize;
+		static const uint32 sByteSize = sizeof( TPValue ) * sLength;
 	};
 
-	template <typename TVal, size_t tSize>
+	template <typename TPValue, size_t tpSize>
 	struct Vector;
 
-	template <typename TVal>
-	struct Vector<TVal, 2>
+	template <typename TPValue>
+	struct Vector<TPValue, 2>
 	{
 	public:
-		using Traits = VectorTraits<TVal, 2>;
+		using Traits = VectorTraits<TPValue, 2>;
 
 		static const uint32 sLength = Traits::sLength;
 		static const uint32 sByteSize = Traits::sByteSize;
@@ -93,12 +93,12 @@ namespace Ic3::Math
 			struct
 			{
 				// Explicit values for member access.
-				TVal x, y;
+				TPValue x, y;
 			};
 
 			struct
 			{
-				TVal values[2];
+				TPValue values[2];
 			};
 		};
 
@@ -108,58 +108,58 @@ namespace Ic3::Math
 
 		constexpr Vector() = default;
 
-		template <typename TOther>
-		constexpr explicit Vector( const Vector<TOther, 2> & pVec ) noexcept
-		: x( static_cast<TVal>( pVec.x ) )
-		, y( static_cast<TVal>( pVec.y ) )
+		template <typename TPOther>
+		constexpr explicit Vector( const Vector<TPOther, 2> & pVec ) noexcept
+		: x( static_cast<TPValue>( pVec.x ) )
+		, y( static_cast<TPValue>( pVec.y ) )
 		{}
 
-		template <typename TScalar, enable_if_scalar_t<TScalar> = true>
-		constexpr explicit Vector( TScalar pScalar ) noexcept
-		: x( static_cast<TVal>( pScalar ) )
-		, y( static_cast<TVal>( pScalar ) )
+		template <typename TPScalar, enable_if_scalar_t<TPScalar> = true>
+		constexpr explicit Vector( TPScalar pScalar ) noexcept
+		: x( static_cast<TPValue>( pScalar ) )
+		, y( static_cast<TPValue>( pScalar ) )
 		{}
 
-		template <typename TScalar, enable_if_scalar_t<TScalar> = true>
-		constexpr explicit Vector( const TScalar * pData ) noexcept
-		: x( static_cast<TVal>( pData[0] ) )
-		, y( static_cast<TVal>( pData[1] ) )
+		template <typename TPScalar, enable_if_scalar_t<TPScalar> = true>
+		constexpr explicit Vector( const TPScalar * pData ) noexcept
+		: x( static_cast<TPValue>( pData[0] ) )
+		, y( static_cast<TPValue>( pData[1] ) )
 		{}
 
 		template <typename TX, typename TY>
 		constexpr Vector( TX pX, TY pY ) noexcept
-		: x( static_cast<TVal>( pX ) )
-		, y( static_cast<TVal>( pY ) )
+		: x( static_cast<TPValue>( pX ) )
+		, y( static_cast<TPValue>( pY ) )
 		{}
 
-		TVal * data() noexcept
+		TPValue * data() noexcept
 		{
 			return &( values[0] );
 		}
 
-		const TVal * data() const noexcept
+		const TPValue * data() const noexcept
 		{
 			return &( values[0] );
 		}
 
-		TVal & operator[]( size_t pIndex ) noexcept
+		TPValue & operator[]( size_t pIndex ) noexcept
 		{
-			ic3DebugAssert( pIndex < sLength )
+			Ic3DebugAssert( pIndex < sLength )
 			return values[pIndex];
 		}
 
-		const TVal & operator[]( size_t pIndex ) const noexcept
+		const TPValue & operator[]( size_t pIndex ) const noexcept
 		{
-			ic3DebugAssert( pIndex < sLength )
+			Ic3DebugAssert( pIndex < sLength )
 			return values[pIndex];
 		}
 	};
 
-	template <typename TVal>
-	struct Vector<TVal, 3>
+	template <typename TPValue>
+	struct Vector<TPValue, 3>
 	{
 	public:
-		using Traits = VectorTraits<TVal, 3>;
+		using Traits = VectorTraits<TPValue, 3>;
 
 		static const uint32 sLength = Traits::sLength;
 		static const uint32 sByteSize = Traits::sByteSize;
@@ -169,12 +169,12 @@ namespace Ic3::Math
 			struct
 			{
 				// Explicit values for member access.
-				TVal x, y, z;
+				TPValue x, y, z;
 			};
 
 			struct
 			{
-				TVal values[3];
+				TPValue values[3];
 			};
 		};
 
@@ -184,77 +184,77 @@ namespace Ic3::Math
 
 		constexpr Vector() = default;
 
-		template <typename TOther>
-		constexpr explicit Vector( const Vector<TOther, 3> & pVec ) noexcept
-		: x( static_cast<TVal>( pVec.x ) )
-		, y( static_cast<TVal>( pVec.y ) )
-		, z( static_cast<TVal>( pVec.z ) )
+		template <typename TPOther>
+		constexpr explicit Vector( const Vector<TPOther, 3> & pVec ) noexcept
+		: x( static_cast<TPValue>( pVec.x ) )
+		, y( static_cast<TPValue>( pVec.y ) )
+		, z( static_cast<TPValue>( pVec.z ) )
 		{}
 
-		template <typename TScalar, enable_if_scalar_t<TScalar> = true>
-		constexpr explicit Vector( TScalar pScalar ) noexcept
-		: x( static_cast<TVal>( pScalar ) )
-		, y( static_cast<TVal>( pScalar ) )
-		, z( static_cast<TVal>( pScalar ) )
+		template <typename TPScalar, enable_if_scalar_t<TPScalar> = true>
+		constexpr explicit Vector( TPScalar pScalar ) noexcept
+		: x( static_cast<TPValue>( pScalar ) )
+		, y( static_cast<TPValue>( pScalar ) )
+		, z( static_cast<TPValue>( pScalar ) )
 		{}
 
-		template <typename TScalar, enable_if_scalar_t<TScalar> = true>
-		constexpr explicit Vector( const TScalar * pData ) noexcept
-		: x( static_cast<TVal>( pData[0] ) )
-		, y( static_cast<TVal>( pData[1] ) )
-		, z( static_cast<TVal>( pData[2] ) )
+		template <typename TPScalar, enable_if_scalar_t<TPScalar> = true>
+		constexpr explicit Vector( const TPScalar * pData ) noexcept
+		: x( static_cast<TPValue>( pData[0] ) )
+		, y( static_cast<TPValue>( pData[1] ) )
+		, z( static_cast<TPValue>( pData[2] ) )
 		{}
 
 		template <typename TXY, typename TZ>
 		constexpr Vector( const Vector<TXY, 2> & pVecXY, TZ pZ ) noexcept
-		: x( static_cast<TVal>( pVecXY.x ) )
-		, y( static_cast<TVal>( pVecXY.y ) )
-		, z( static_cast<TVal>( pZ ) )
+		: x( static_cast<TPValue>( pVecXY.x ) )
+		, y( static_cast<TPValue>( pVecXY.y ) )
+		, z( static_cast<TPValue>( pZ ) )
 		{}
 
 		template <typename TX, typename TYZ>
 		constexpr Vector( TX pX, const Vector<TYZ, 2> & pVecYZ ) noexcept
-		: x( static_cast<TVal>( pX ) )
-		, y( static_cast<TVal>( pVecYZ.y ) )
-		, z( static_cast<TVal>( pVecYZ.z ) )
+		: x( static_cast<TPValue>( pX ) )
+		, y( static_cast<TPValue>( pVecYZ.y ) )
+		, z( static_cast<TPValue>( pVecYZ.z ) )
 		{}
 
 		template <typename TX, typename TY, typename TZ>
 		constexpr Vector( TX pX, TY pY, TZ pZ ) noexcept
-		: x( static_cast<TVal>( pX ) )
-		, y( static_cast<TVal>( pY ) )
-		, z( static_cast<TVal>( pZ ) )
+		: x( static_cast<TPValue>( pX ) )
+		, y( static_cast<TPValue>( pY ) )
+		, z( static_cast<TPValue>( pZ ) )
 		{}
 
-		TVal * data() noexcept
+		TPValue * data() noexcept
 		{
 			return &( values[0] );
 		}
 
-		const TVal * data() const noexcept
+		const TPValue * data() const noexcept
 		{
 			return &( values[0] );
 		}
 
-		TVal & operator[]( size_t pIndex ) noexcept
+		TPValue & operator[]( size_t pIndex ) noexcept
 		{
-			ic3DebugAssert( pIndex < sLength )
+			Ic3DebugAssert( pIndex < sLength )
 			return values[pIndex];
 		}
 
-		const TVal & operator[]( size_t pIndex ) const noexcept
+		const TPValue & operator[]( size_t pIndex ) const noexcept
 		{
-			ic3DebugAssert( pIndex < sLength )
+			Ic3DebugAssert( pIndex < sLength )
 			return values[pIndex];
 		}
 	};
 
-	template <typename TVal>
-	struct Vector<TVal, 4>
+	template <typename TPValue>
+	struct Vector<TPValue, 4>
 	{
 	public:
-		using Traits = VectorTraits<TVal, 4>;
-		using SIMDDataType = typename Vector4SIMDData<TVal>::Type;
+		using Traits = VectorTraits<TPValue, 4>;
+		using SIMDDataType = typename Vector4SIMDData<TPValue>::Type;
 
 		static const uint32 sLength = Traits::sLength;
 		static const uint32 sByteSize = Traits::sByteSize;
@@ -264,7 +264,7 @@ namespace Ic3::Math
 			struct
 			{
 				// Explicit values for member access.
-				TVal x, y, z, w;
+				TPValue x, y, z, w;
 			};
 
 			struct
@@ -275,7 +275,7 @@ namespace Ic3::Math
 
 			struct
 			{
-				TVal values[4];
+				TPValue values[4];
 			};
 		};
 
@@ -289,96 +289,96 @@ namespace Ic3::Math
 		: mmv( pMMV )
 		{}
 
-		template <typename TOther>
-		constexpr explicit Vector( const Vector<TOther, 4> & pVec ) noexcept
-		: x( static_cast<TVal>( pVec.x ) )
-		, y( static_cast<TVal>( pVec.y ) )
-		, z( static_cast<TVal>( pVec.z ) )
-		, w( static_cast<TVal>( pVec.w ) )
+		template <typename TPOther>
+		constexpr explicit Vector( const Vector<TPOther, 4> & pVec ) noexcept
+		: x( static_cast<TPValue>( pVec.x ) )
+		, y( static_cast<TPValue>( pVec.y ) )
+		, z( static_cast<TPValue>( pVec.z ) )
+		, w( static_cast<TPValue>( pVec.w ) )
 		{}
 
-		template <typename TScalar, enable_if_scalar_t<TScalar> = true>
-		constexpr explicit Vector( TScalar pScalar ) noexcept
-		: x( static_cast<TVal>( pScalar ) )
-		, y( static_cast<TVal>( pScalar ) )
-		, z( static_cast<TVal>( pScalar ) )
-		, w( static_cast<TVal>( pScalar ) )
+		template <typename TPScalar, enable_if_scalar_t<TPScalar> = true>
+		constexpr explicit Vector( TPScalar pScalar ) noexcept
+		: x( static_cast<TPValue>( pScalar ) )
+		, y( static_cast<TPValue>( pScalar ) )
+		, z( static_cast<TPValue>( pScalar ) )
+		, w( static_cast<TPValue>( pScalar ) )
 		{}
 
-		template <typename TScalar, enable_if_scalar_t<TScalar> = true>
-		constexpr explicit Vector( const TScalar * pData ) noexcept
-		: x( static_cast<TVal>( pData[0] ) )
-		, y( static_cast<TVal>( pData[1] ) )
-		, z( static_cast<TVal>( pData[2] ) )
-		, w( static_cast<TVal>( pData[3] ) )
+		template <typename TPScalar, enable_if_scalar_t<TPScalar> = true>
+		constexpr explicit Vector( const TPScalar * pData ) noexcept
+		: x( static_cast<TPValue>( pData[0] ) )
+		, y( static_cast<TPValue>( pData[1] ) )
+		, z( static_cast<TPValue>( pData[2] ) )
+		, w( static_cast<TPValue>( pData[3] ) )
 		{}
 
 		template <typename TXY, typename TZ, typename TW>
 		constexpr Vector( const Vector<TXY, 2> & pVecXY, TZ pZ, TW pW ) noexcept
-		: x( static_cast<TVal>( pVecXY.x ) )
-		, y( static_cast<TVal>( pVecXY.y ) )
-		, z( static_cast<TVal>( pZ ) )
-		, w( static_cast<TVal>( pW ) )
+		: x( static_cast<TPValue>( pVecXY.x ) )
+		, y( static_cast<TPValue>( pVecXY.y ) )
+		, z( static_cast<TPValue>( pZ ) )
+		, w( static_cast<TPValue>( pW ) )
 		{}
 
 		template <typename TX, typename TYZ, typename TW>
 		constexpr Vector( TX pX, const Vector<TYZ, 2> & pVecYZ, TW pW ) noexcept
-		: x( static_cast<TVal>( pX ) )
-		, y( static_cast<TVal>( pVecYZ.y ) )
-		, z( static_cast<TVal>( pVecYZ.z ) )
-		, w( static_cast<TVal>( pW ) )
+		: x( static_cast<TPValue>( pX ) )
+		, y( static_cast<TPValue>( pVecYZ.y ) )
+		, z( static_cast<TPValue>( pVecYZ.z ) )
+		, w( static_cast<TPValue>( pW ) )
 		{}
 
 		template <typename TX, typename TY, typename TZW>
-		constexpr Vector( TX pX, TVal pY, const Vector<TZW, 2> & pVecZW ) noexcept
-		: x( static_cast<TVal>( pX ) )
-		, y( static_cast<TVal>( pY ) )
-		, z( static_cast<TVal>( pVecZW.z ) )
-		, w( static_cast<TVal>( pVecZW.w ) )
+		constexpr Vector( TX pX, TPValue pY, const Vector<TZW, 2> & pVecZW ) noexcept
+		: x( static_cast<TPValue>( pX ) )
+		, y( static_cast<TPValue>( pY ) )
+		, z( static_cast<TPValue>( pVecZW.z ) )
+		, w( static_cast<TPValue>( pVecZW.w ) )
 		{}
 
 		template <typename TXYZ, typename TW>
 		constexpr Vector( const Vector<TXYZ, 3> & pVecXYZ, TW pW ) noexcept
-		: x( static_cast<TVal>( pVecXYZ.x ) )
-		, y( static_cast<TVal>( pVecXYZ.y ) )
-		, z( static_cast<TVal>( pVecXYZ.z ) )
-		, w( static_cast<TVal>( pW ) )
+		: x( static_cast<TPValue>( pVecXYZ.x ) )
+		, y( static_cast<TPValue>( pVecXYZ.y ) )
+		, z( static_cast<TPValue>( pVecXYZ.z ) )
+		, w( static_cast<TPValue>( pW ) )
 		{}
 
 		template <typename TX, typename TYZW>
 		constexpr Vector( TX pX, const Vector<TYZW, 3> & pVecYZW ) noexcept
-		: x( static_cast<TVal>( pX ) )
-		, y( static_cast<TVal>( pVecYZW.y ) )
-		, z( static_cast<TVal>( pVecYZW.z ) )
-		, w( static_cast<TVal>( pVecYZW.w ) )
+		: x( static_cast<TPValue>( pX ) )
+		, y( static_cast<TPValue>( pVecYZW.y ) )
+		, z( static_cast<TPValue>( pVecYZW.z ) )
+		, w( static_cast<TPValue>( pVecYZW.w ) )
 		{}
 
 		template <typename TX, typename TY, typename TZ, typename TW>
 		constexpr Vector( TX pX, TY pY, TZ pZ, TW pW ) noexcept
-		: x( static_cast<TVal>( pX ) )
-		, y( static_cast<TVal>( pY ) )
-		, z( static_cast<TVal>( pZ ) )
-		, w( static_cast<TVal>( pW ) )
+		: x( static_cast<TPValue>( pX ) )
+		, y( static_cast<TPValue>( pY ) )
+		, z( static_cast<TPValue>( pZ ) )
+		, w( static_cast<TPValue>( pW ) )
 		{}
 
-		TVal & operator[]( size_t pIndex ) noexcept
+		TPValue & operator[]( size_t pIndex ) noexcept
 		{
-			ic3DebugAssert( pIndex < sLength )
+			Ic3DebugAssert( pIndex < sLength )
 			return values[pIndex];
 		}
 
-		const TVal & operator[]( size_t pIndex ) const noexcept
+		const TPValue & operator[]( size_t pIndex ) const noexcept
 		{
-			ic3DebugAssert( pIndex < sLength )
+			Ic3DebugAssert( pIndex < sLength )
 			return values[pIndex];
 		}
 
-		TVal * data() noexcept
+		TPValue * data() noexcept
 		{
 			return &( values[0] );
 		}
 
-		const TVal * data() const noexcept
+		const TPValue * data() const noexcept
 		{
 			return &( values[0] );
 		}
@@ -394,23 +394,23 @@ namespace Ic3::Math
 		}
 	};
 
-	template <typename TVal>
-	using Vec2 = Vector<TVal, 2>;
+	template <typename TPValue>
+	using Vec2 = Vector<TPValue, 2>;
 
-	template <typename TVal>
-	using Vec3 = Vector<TVal, 3>;
+	template <typename TPValue>
+	using Vec3 = Vector<TPValue, 3>;
 
-	template <typename TVal>
-	using Vec4 = Vector<TVal, 4>;
+	template <typename TPValue>
+	using Vec4 = Vector<TPValue, 4>;
 
-	template <typename TVal>
-	using Vector2 = Vector<TVal, 2>;
+	template <typename TPValue>
+	using Vector2 = Vector<TPValue, 2>;
 
-	template <typename TVal>
-	using Vector3 = Vector<TVal, 3>;
+	template <typename TPValue>
+	using Vector3 = Vector<TPValue, 3>;
 
-	template <typename TVal>
-	using Vector4 = Vector<TVal, 4>;
+	template <typename TPValue>
+	using Vector4 = Vector<TPValue, 4>;
 
 	using Vec2i16 = Vector2<int16>;
 	using Vec2u16 = Vector2<uint16>;
@@ -447,13 +447,13 @@ namespace Ic3::Math
 	using Size3f = Vector3<float>;
 	using Size3u = Vector3<uint32>;
 
-}
+} // namespace Ic3::Math
 
-#if( IC3_PCL_COMPILER & IC3_PCL_COMPILER_CLANG )
+#if( PCL_COMPILER & PCL_COMPILER_CLANG )
 #  pragma clang diagnostic pop
-#elif( IC3_PCL_COMPILER & IC3_PCL_COMPILER_GCC )
+#elif( PCL_COMPILER & PCL_COMPILER_GCC )
 #  pragma GCC diagnostic pop
-#elif( IC3_PCL_COMPILER & IC3_PCL_COMPILER_MSVC )
+#elif( PCL_COMPILER & PCL_COMPILER_MSVC )
 #  pragma warning( pop )
 #endif
 

@@ -10,7 +10,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( GLSampler );
+	Ic3DeclareClassHandle( GLSampler );
 
 	class  GLSampler : public Sampler
 	{
@@ -21,10 +21,10 @@ namespace Ic3::Graphics::GCI
 		GLSampler( GLGPUDevice & pGPUDevice, GLSamplerObjectHandle pGLSamplerObject );
 		virtual ~GLSampler();
 
-		static GLSamplerHandle createSampler( GLGPUDevice & pGPUDevice, const SamplerCreateInfo & pCreateInfo );
+		static GLSamplerHandle CreateSampler( GLGPUDevice & pGPUDevice, const SamplerCreateInfo & pCreateInfo );
 
 	private:
-		static bool translateSamplerConfig( const SamplerConfig & pSamplerConfig, GLSamplerState & pOutSamplerState );
+		static bool TranslateSamplerConfig( const SamplerConfig & pSamplerConfig, GLSamplerState & pOutSamplerState );
 	};
 
 } // namespace Ic3::Graphics::GCI

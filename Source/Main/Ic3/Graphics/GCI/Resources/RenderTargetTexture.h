@@ -15,8 +15,10 @@ namespace Ic3::Graphics::GCI
 	struct RenderTargetTextureCreateInfo
 	{
 		TextureReference targetTexture;
+
 		RenderTargetTextureLayout rtTextureLayout;
-		Bitmask<ETextureBindFlags> bindFlags;
+
+		cppx::bitmask<ETextureBindFlags> bindFlags;
 	};
 
 	/// @brief
@@ -28,13 +30,13 @@ namespace Ic3::Graphics::GCI
 	public:
 		ERenderTargetTextureType const mRTTextureType;
 
-		Bitmask<ERenderTargetBufferFlags> const mRTBufferMask;
+		cppx::bitmask<ERenderTargetBufferFlags> const mRTBufferMask;
 
 		RenderTargetTextureLayout const mRTTextureLayout;
 
 		/// Internal texture used by this RTT. Can be null, if this is a write-only depth-stencil
 		/// RTT (created solely for the purpose of an off-screen depth/stencil testing).
-		/// In particular, this is null always when isDepthStencilRenderBuffer() returns true.
+		/// In particular, this is null always when IsDepthStencilRenderBuffer() returns true.
 		TextureReference const mTargetTexture;
 
 	public:
@@ -48,40 +50,40 @@ namespace Ic3::Graphics::GCI
 			GPUDevice & pGPUDevice,
 			ERenderTargetTextureType pRTTextureType,
 			const RenderTargetTextureLayout & pRTTextureLayout,
-			GpaHandle<GPUDeviceChildObject> pInternalRenderBuffer,
-			Bitmask<resource_flags_value_t> pRenderBufferFlags );
+			TGfxHandle<GPUDeviceChildObject> pInternalRenderBuffer,
+			cppx::bitmask<resource_flags_value_t> pRenderBufferFlags );
 
 		virtual ~RenderTargetTexture();
 
 		///
-		IC3_ATTR_NO_DISCARD bool empty() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept;
 
 		///
-		IC3_ATTR_NO_DISCARD bool isDepthStencilTexture() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsDepthStencilTexture() const noexcept;
 
 		///
-		IC3_ATTR_NO_DISCARD bool isDepthStencilRenderBuffer() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsDepthStencilRenderBuffer() const noexcept;
 
 		///
 		template <typename TRenderBufferType>
-		IC3_ATTR_NO_DISCARD TRenderBufferType * getInternalRenderBuffer() const noexcept
+		CPPX_ATTR_NO_DISCARD TRenderBufferType * GetInternalRenderBuffer() const noexcept
 		{
-			return _internalRenderBuffer ? _internalRenderBuffer->queryInterface<TRenderBufferType>() : nullptr;
+			return _internalRenderBuffer ? _internalRenderBuffer->QueryInterface<TRenderBufferType>() : nullptr;
 		}
 
 	private:
 		///
-		GpaHandle<GPUDeviceChildObject> _internalRenderBuffer;
+		TGfxHandle<GPUDeviceChildObject> _internalRenderBuffer;
 	};
 
-	namespace rcutil
+	namespace RCU
 	{
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD ERenderTargetTextureType queryRenderTargetTextureType( ETextureFormat pFormat );
+		IC3_GRAPHICS_GCI_API_NO_DISCARD ERenderTargetTextureType QueryRenderTargetTextureType( ETextureFormat pFormat );
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD RenderTargetTextureLayout queryRenderTargetTextureLayout( const TextureLayout & pTextureLayout );
+		IC3_GRAPHICS_GCI_API_NO_DISCARD RenderTargetTextureLayout QueryRenderTargetTextureLayout( const TextureLayout & pTextureLayout );
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool validateRenderTargetTextureLayout(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool ValidateRenderTargetTextureLayout(
 				TextureHandle pTargetTexture,
 				const RenderTargetTextureLayout & pRTTextureLayout );
 

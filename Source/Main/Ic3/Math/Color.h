@@ -3,16 +3,16 @@
 #define __IC3_MATH_COLOR_H__
 
 #include "Vector.h"
-#include <Ic3/Cppx/StaticLimits.h>
+#include <cppx/staticLimits.h>
 
-#if( IC3_PCL_COMPILER & IC3_PCL_COMPILER_CLANG )
+#if( PCL_COMPILER & PCL_COMPILER_CLANG )
 #  pragma clang diagnostic push
 #  pragma clang diagnostic ignored "-Wgnu-anonymous-struct"
 #  pragma clang diagnostic ignored "-Wnested-anon-types"
-#elif( IC3_PCL_COMPILER & IC3_PCL_COMPILER_GCC )
+#elif( PCL_COMPILER & PCL_COMPILER_GCC )
 #  pragma GCC diagnostic push
 #  pragma GCC diagnostic ignored "-Wpedantic"
-#elif( IC3_PCL_COMPILER & IC3_PCL_COMPILER_MSVC )
+#elif( PCL_COMPILER & PCL_COMPILER_MSVC )
 #  pragma warning( push )
 #  pragma warning( disable: 4201 )  // 'Nonstandard extension used: nameless struct/union'
 #endif
@@ -30,6 +30,7 @@ namespace Ic3::Math
 			uint8 u8Blue;
 			uint8 u8Alpha;
 		};
+
 		uint32 u32Code = 0xFF;
 
 	public:
@@ -66,7 +67,7 @@ namespace Ic3::Math
 			TReal fpAlpha;
 		};
 
-		TReal rgbaArray[4];
+		TReal mRGBA[4];
 
 	public:
 		constexpr RGBAColorNorm() noexcept
@@ -84,19 +85,19 @@ namespace Ic3::Math
 		{}
 
 		constexpr RGBAColorNorm( RGBAColor pColor )
-		: fpRed( static_cast<TReal>( pColor.u8Red ) / static_cast<TReal>( Cppx::QLimits<uint8>::maxValue ) )
-		, fpGreen( static_cast<TReal>( pColor.u8Green ) / static_cast<TReal>( Cppx::QLimits<uint8>::maxValue ) )
-		, fpBlue( static_cast<TReal>( pColor.u8Blue ) / static_cast<TReal>( Cppx::QLimits<uint8>::maxValue ) )
-		, fpAlpha( static_cast<TReal>( pColor.u8Alpha ) / static_cast<TReal>( Cppx::QLimits<uint8>::maxValue ) )
+		: fpRed( static_cast<TReal>( pColor.u8Red ) / static_cast<TReal>( cppx::meta::limits<uint8>::max_value ) )
+		, fpGreen( static_cast<TReal>( pColor.u8Green ) / static_cast<TReal>( cppx::meta::limits<uint8>::max_value ) )
+		, fpBlue( static_cast<TReal>( pColor.u8Blue ) / static_cast<TReal>( cppx::meta::limits<uint8>::max_value ) )
+		, fpAlpha( static_cast<TReal>( pColor.u8Alpha ) / static_cast<TReal>( cppx::meta::limits<uint8>::max_value ) )
 		{}
 
 		constexpr RGBAColor toU8Color() const
 		{
 			return RGBAColor(
-				static_cast<uint8>( fpRed * Cppx::QLimits<uint8>::maxValue  ),
-				static_cast<uint8>( fpGreen * Cppx::QLimits<uint8>::maxValue  ),
-				static_cast<uint8>( fpBlue * Cppx::QLimits<uint8>::maxValue  ),
-				static_cast<uint8>( fpAlpha * Cppx::QLimits<uint8>::maxValue  ) );
+				static_cast<uint8>( fpRed * cppx::meta::limits<uint8>::max_value  ),
+				static_cast<uint8>( fpGreen * cppx::meta::limits<uint8>::max_value  ),
+				static_cast<uint8>( fpBlue * cppx::meta::limits<uint8>::max_value  ),
+				static_cast<uint8>( fpAlpha * cppx::meta::limits<uint8>::max_value  ) );
 		}
 	};
 
@@ -157,13 +158,13 @@ namespace Ic3::Math
 
 	}
 
-}
+} // namespace Ic3::Math
 
-#if( IC3_PCL_COMPILER & IC3_PCL_COMPILER_CLANG )
+#if( PCL_COMPILER & PCL_COMPILER_CLANG )
 #  pragma clang diagnostic pop
-#elif( IC3_PCL_COMPILER & IC3_PCL_COMPILER_GCC )
+#elif( PCL_COMPILER & PCL_COMPILER_GCC )
 #  pragma GCC diagnostic pop
-#elif( IC3_PCL_COMPILER & IC3_PCL_COMPILER_MSVC )
+#elif( PCL_COMPILER & PCL_COMPILER_MSVC )
 #  pragma warning( pop )
 #endif
 

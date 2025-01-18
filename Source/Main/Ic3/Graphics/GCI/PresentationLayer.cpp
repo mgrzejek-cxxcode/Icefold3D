@@ -12,7 +12,7 @@ namespace Ic3::Graphics::GCI
 
 	PresentationLayer::~PresentationLayer() = default;
 
-	System::EventSource * PresentationLayer::getInternalSystemEventSource() const noexcept
+	System::EventSource * PresentationLayer::GetInternalSystemEventSource() const noexcept
 	{
 		return nullptr;
 	}

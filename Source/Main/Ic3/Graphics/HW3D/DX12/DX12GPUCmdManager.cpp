@@ -14,7 +14,7 @@ namespace Ic3::Graphics::GCI
 
 	DX12GPUCmdManager::~DX12GPUCmdManager() = default;
 
-	bool DX12GPUCmdManager::initialize()
+	bool DX12GPUCmdManager::Initialize()
 	{
 		// TODO: Vendor-/GPU Family-specific checks:
 		//  if(INTEL) DEFAULT_TRANSFER = DEFAULT_GRAPHICS; (UMA architecture)
@@ -23,19 +23,19 @@ namespace Ic3::Graphics::GCI
 		DeviceCommandQueueProperties queueProperties;
 
 		queueProperties.commandClassFlags = GPU_CMD_COMMAND_CLASS_GRAPHICS_BIT;
-		if( !initializeDeviceQueue( E_DEVICE_COMMAND_QUEUE_ID_DEFAULT_GRAPHICS, queueProperties ) )
+		if( !InitializeDeviceQueue( E_DEVICE_COMMAND_QUEUE_ID_DEFAULT_GRAPHICS, queueProperties ) )
 		{
 			return false;
 		}
 
 		queueProperties.commandClassFlags = GPU_CMD_COMMAND_CLASS_COMPUTE_BIT;
-		if( !initializeDeviceQueue( E_DEVICE_COMMAND_QUEUE_ID_DEFAULT_COMPUTE, queueProperties ) )
+		if( !InitializeDeviceQueue( E_DEVICE_COMMAND_QUEUE_ID_DEFAULT_COMPUTE, queueProperties ) )
 		{
 			return false;
 		}
 
 		queueProperties.commandClassFlags = GPU_CMD_COMMAND_CLASS_TRANSFER_BIT;
-		if( !initializeDeviceQueue( E_DEVICE_COMMAND_QUEUE_ID_DEFAULT_TRANSFER, queueProperties ) )
+		if( !InitializeDeviceQueue( E_DEVICE_COMMAND_QUEUE_ID_DEFAULT_TRANSFER, queueProperties ) )
 		{
 			return false;
 		}
@@ -43,11 +43,11 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	CommandContext * DX12GPUCmdManager::acquireContext( const CommandContextProperties & pContextProperties )
+	CommandContext * DX12GPUCmdManager::AcquireContext( const CommandContextProperties & pContextProperties )
 	{
 		DX12CommandContext * dx12CmdContext = nullptr;
 
-		auto commandListType = DX12CoreAPIProxy::translateCommandListType( pContextProperties.contextType, pContextProperties.commandClassFlags );
+		auto commandListType = DX12CoreAPIProxy::TranslateD3D12CommandListType( pContextProperties.contextType, pContextProperties.commandClassFlags );
 
 		auto & availableContextList = _availableContextMap[commandListType];
 		if( !availableContextList.empty() )
@@ -58,47 +58,47 @@ namespace Ic3::Graphics::GCI
 
 		if( !dx12CmdContext )
 		{
-			dx12CmdContext = createCmdContext( commandListType, true );
+			dx12CmdContext = CreateCmdContext( commandListType, true );
 		}
 
 		if( dx12CmdContext )
 		{
-			dx12CmdContext->setActiveState();
+			dx12CmdContext->SetActiveState();
 		}
 
 		return dx12CmdContext;
 	}
 
-	bool DX12GPUCmdManager::executeContext( gpu_cmd_device_queue_id_t pQueueID, CommandContext & pContext )
+	bool DX12GPUCmdManager::ExecuteContext( gpu_cmd_device_queue_id_t pQueueID, CommandContext & pContext )
 	{
-		auto * deviceQueueData = Ic3::getMapValuePtrOrNull( _deviceQueueMap, pQueueID );
+		auto * deviceQueueData = Ic3::get_map_value_ptr_or_null( _deviceQueueMap, pQueueID );
 		if( !deviceQueueData )
 		{
 			return false;
 		}
 
-		auto * dx12CmdContext = pContext.queryInterface<DX12CommandContext>();
+		auto * dx12CmdContext = pContext.QueryInterface<DX12CommandContext>();
 		ID3D12CommandList * commandListArray[] = { dx12CmdContext->mD3D12GraphicsCommandList.Get() };
 		deviceQueueData->d3d12CommandQueue->ExecuteCommandLists( 1, commandListArray );
 
 		return true;
 	}
 
-	bool DX12GPUCmdManager::initializeDeviceQueue( gpu_cmd_device_queue_id_t pQueueID, const DeviceCommandQueueProperties & pQueueProperties )
+	bool DX12GPUCmdManager::InitializeDeviceQueue( gpu_cmd_device_queue_id_t pQueueID, const DeviceCommandQueueProperties & pQueueProperties )
 	{
-		if( checkQueueAlias( pQueueID ) )
+		if( CheckQueueAlias( pQueueID ) )
 		{
 			return true;
 		}
 
-		auto * existingQueue = Ic3::getMapValuePtrOrNull( _deviceQueueMap, pQueueID );
+		auto * existingQueue = Ic3::get_map_value_ptr_or_null( _deviceQueueMap, pQueueID );
 		if( existingQueue )
 		{
 			return true;
 		}
 
-		auto commandListType = DX12CoreAPIProxy::translateCommandListType( ECommandContextType::Direct, pQueueProperties.commandClassFlags );
-		auto d3d12CommandQueue = DX12CoreAPIProxy::createD3D12CommandQueue( mD3D12Device, commandListType );
+		auto commandListType = DX12CoreAPIProxy::TranslateD3D12CommandListType( ECommandContextType::Direct, pQueueProperties.commandClassFlags );
+		auto d3d12CommandQueue = DX12CoreAPIProxy::CreateD3D12CommandQueue( mD3D12Device, commandListType );
 		if( !d3d12CommandQueue )
 		{
 			return false;
@@ -110,29 +110,29 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	bool DX12GPUCmdManager::isQueueAvailable( gpu_cmd_device_queue_id_t pQueueID ) const
+	bool DX12GPUCmdManager::IsQueueAvailable( gpu_cmd_device_queue_id_t pQueueID ) const
 	{
 		pQueueID = resolveQueueAlias( pQueueID );
-		auto * deviceQueueData = Ic3::getMapValuePtrOrNull( _deviceQueueMap, pQueueID );
+		auto * deviceQueueData = Ic3::get_map_value_ptr_or_null( _deviceQueueMap, pQueueID );
 		return deviceQueueData != nullptr;
 	}
 
-	ID3D12CommandQueue * DX12GPUCmdManager::getD3D12DeviceQueue( gpu_cmd_device_queue_id_t pQueueID ) const
+	ID3D12CommandQueue * DX12GPUCmdManager::GetD3D12DeviceQueue( gpu_cmd_device_queue_id_t pQueueID ) const
 	{
 		pQueueID = resolveQueueAlias( pQueueID );
-		auto * deviceQueueData = Ic3::getMapValuePtrOrNull( _deviceQueueMap, pQueueID );
+		auto * deviceQueueData = Ic3::get_map_value_ptr_or_null( _deviceQueueMap, pQueueID );
 		return deviceQueueData ? deviceQueueData->d3d12CommandQueue.Get() : nullptr;
 	}
 
-	DX12CommandContext * DX12GPUCmdManager::createCmdContext( D3D12_COMMAND_LIST_TYPE pD3D12CommandListType, bool pAutoAcquire )
+	DX12CommandContext * DX12GPUCmdManager::CreateCmdContext( D3D12_COMMAND_LIST_TYPE pD3D12CommandListType, bool pAutoAcquire )
 	{
-		auto d3d12CommandListData = DX12CoreAPIProxy::createD3D12CommandList( mD3D12Device, pD3D12CommandListType );
+		auto d3d12CommandListData = DX12CoreAPIProxy::CreateD3D12CommandList( mD3D12Device, pD3D12CommandListType );
 		if( !d3d12CommandListData )
 		{
 			return nullptr;
 		}
 
-		auto cmdContext = createGPUAPIObject<DX12CommandContext>( *this,
+		auto cmdContext = CreateGfxObject<DX12CommandContext>( *this,
 		                                                         std::move( d3d12CommandListData.commandAllocator ),
 		                                                         std::move( d3d12CommandListData.graphicsCommandList ) );
 
@@ -141,7 +141,7 @@ namespace Ic3::Graphics::GCI
 
 		if( pAutoAcquire )
 		{
-			cmdContextPtr->setActiveState();
+			cmdContextPtr->SetActiveState();
 		}
 		else
 		{

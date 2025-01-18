@@ -28,7 +28,7 @@ namespace Ic3::Graphics::GCI
 //				const void * pSource,
 //				size_t pSourceLength,
 //				const std::string & pOptions,
-//				Bitmask<uint64> pFlags ) = 0;
+//				cppx::bitmask<uint64> pFlags ) = 0;
 //
 //		virtual ResultCode loadPrecompiledBinary( const void * pBinary, size_t pBinaryLength ) = 0;
 	};

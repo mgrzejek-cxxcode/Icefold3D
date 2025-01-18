@@ -6,14 +6,14 @@
 namespace Ic3::Graphics::GCI
 {
 
-	DX12GPUDriver::DX12GPUDriver( System::temContext * pExfSystemContext )
+	DX12GPUDriver::DX12GPUDriver( System::SysContext * pExfSystemContext )
 	: DXGPUDriver( pExfSystemContext )
 	{}
 
 	DX12GPUDriver::~DX12GPUDriver()
 	{}
 
-	DX12GPUDriverHandle DX12GPUDriver::create( const DX12GPUDriverCreateInfo & pCreateInfo )
+	DX12GPUDriverHandle DX12GPUDriver::Create( const DX12GPUDriverCreateInfo & pCreateInfo )
 	{
 		constexpr auto dx12SupportedGPUConfigFlags =
 			E_GPU_DRIVER_CONFIG_FLAG_ENABLE_DEBUG_LAYER_BIT |
@@ -21,27 +21,27 @@ namespace Ic3::Graphics::GCI
 			E_GPU_DRIVER_CONFIG_FLAG_DISABLE_MULTI_THREAD_ACCESS_BIT |
 			E_GPU_DRIVER_CONFIG_FLAG_USE_REFERENCE_DRIVER_BIT;
 
-		auto dx12GPUDriver = createGPUAPIObject<DX12GPUDriver>( pCreateInfo.exfSystemContext );
-		dx12GPUDriver->setConfigFlags( pCreateInfo.configFlags & dx12SupportedGPUConfigFlags );
+		auto dx12GPUDriver = CreateGfxObject<DX12GPUDriver>( pCreateInfo.exfSystemContext );
+		dx12GPUDriver->SetConfigFlags( pCreateInfo.configFlags & dx12SupportedGPUConfigFlags );
 
 		return dx12GPUDriver;
 	}
 
-	DisplayManagerHandle DX12GPUDriver::createDefaultDisplayManager()
+	DisplayManagerHandle DX12GPUDriver::CreateDefaultDisplayManager()
 	{
-		auto * exfDisplayManager = mExfSystemContext->getDisplayManager();
+		auto * exfDisplayManager = mExfSystemContext->GetDisplayManager();
 
 		System::DisplayDriverCreateInfoDXGI dxgiDriverCreateInfo;
 
 		return nullptr;
 	}
 
-	GPUDeviceHandle DX12GPUDriver::createDevice( const GPUDeviceCreateInfo & pCreateInfo )
+	GPUDeviceHandle DX12GPUDriver::CreateDevice( const GPUDeviceCreateInfo & pCreateInfo )
 	{
 		DX12GPUDeviceCreateInfo createInfo;
 		createInfo.adapterID = pCreateInfo.adapterID;
 		createInfo.flags = pCreateInfo.flags;
-		return DX12GPUDevice::create( *this, createInfo );
+		return DX12GPUDevice::Create( *this, createInfo );
 	}
 
 } // namespace Ic3::Graphics::GCI

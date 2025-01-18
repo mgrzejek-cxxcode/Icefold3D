@@ -26,7 +26,7 @@ namespace Ic3::Graphics::GCI
 				GLGPUDevice & pGPUDevice,
 				GLTextureObjectHandle pGLTextureObject );
 
-		static GpaHandle<GLInternalRenderBuffer> createInstance(
+		static TGfxHandle<GLInternalRenderBuffer> CreateInstance(
 				GLGPUDevice & pGPUDevice,
 				const RenderTargetTextureCreateInfo & pCreateInfo );
 	};

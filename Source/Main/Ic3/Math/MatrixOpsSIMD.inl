@@ -3,12 +3,12 @@
 #  error ""
 #endif
 
-namespace Icefold::math
+namespace Ic3::Math
 {
 
 #if( IC3_MATH_SIMD_USE_VX128F )
 
-	IC3_PCL_ATTR_ALWAYS_INLINE __m128 _mm_mul_mat4_vec4_128f( __m128 pM0, __m128 pM1, __m128 pM2, __m128 pM3, __m128 pV0 )
+	PCL_ATTR_ALWAYS_INLINE __m128 _mm_mul_mat4_vec4_128f( __m128 pM0, __m128 pM1, __m128 pM2, __m128 pM3, __m128 pV0 )
 	{
 		const __m128 mul0 = _mm_mul_ps( pM0, pV0 );
 		const __m128 mul1 = _mm_mul_ps( pM1, pV0 );
@@ -36,4 +36,4 @@ namespace Icefold::math
 
 #endif // IC3_MATH_SIMD_USE_VX128F
 
-}
+} // namespace Ic3::Math

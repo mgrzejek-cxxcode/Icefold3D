@@ -22,7 +22,7 @@ namespace Ic3::System
 
 	public:
 		template <typename TObject>
-		bool checkEventSource( const TObject * pSource ) const
+		bool CheckEventSource( const TObject * pSource ) const
 		{
 			return static_cast<const void *>( pSource ) == eventSource;
 		}

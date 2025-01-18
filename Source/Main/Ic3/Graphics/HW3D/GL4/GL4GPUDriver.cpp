@@ -12,49 +12,49 @@ namespace Ic3::Graphics::GCI
 
 	GL4GPUDriver::~GL4GPUDriver() = default;
 
-	GL4GPUDriverHandle GL4GPUDriver::create( const GL4GPUDriverCreateInfo & pCreateInfo )
+	GL4GPUDriverHandle GL4GPUDriver::Create( const GL4GPUDriverCreateInfo & pCreateInfo )
 	{
 		constexpr auto gl4SupportedGPUConfigFlags =
-			E_GPU_DRIVER_CONFIG_FLAG_ENABLE_DEBUG_LAYER_BIT |
-			E_GPU_DRIVER_CONFIG_FLAG_ENABLE_SHADER_DEBUG_INFO_BIT;
+				eGPUDriverConfigFlagEnableDebugLayerBit |
+				eGPUDriverConfigFlagEnableShaderDebugInfoBit;
 
 		auto sysContext = pCreateInfo.sysContext;
 		if( !sysContext )
 		{
-			sysContext = System::Platform::createSysContext( pCreateInfo.sysContextCreateInfo );
+			sysContext = System::Platform::CreateSysContext( pCreateInfo.sysContextCreateInfo );
 			if( !sysContext )
 			{
 				return nullptr;
 			}
 		}
 
-		auto sysGLDriver = initializeSysGLDriver( sysContext );
+		auto sysGLDriver = InitializeSysGLDriver( sysContext );
 		if( !sysGLDriver )
 		{
 			return nullptr;
 		}
 
-		auto gl4Driver = createGPUAPIObject<GL4GPUDriver>( sysGLDriver );
-		gl4Driver->setConfigFlags( pCreateInfo.configFlags & gl4SupportedGPUConfigFlags );
+		auto gl4Driver = CreateGfxObject<GL4GPUDriver>( sysGLDriver );
+		gl4Driver->SetConfigFlags( pCreateInfo.configFlags & gl4SupportedGPUConfigFlags );
 
 		return gl4Driver;
 	}
 
-	DisplayManagerHandle GL4GPUDriver::_drvCreateDefaultDisplayManager()
+	DisplayManagerHandle GL4GPUDriver::_DrvCreateDefaultDisplayManager()
 	{
 		return nullptr;
 	}
 
-	GPUDeviceHandle GL4GPUDriver::_drvCreateDevice( const GPUDeviceCreateInfo & pCreateInfo )
+	GPUDeviceHandle GL4GPUDriver::_DrvCreateDevice( const GPUDeviceCreateInfo & pCreateInfo )
 	{
 		GL4GPUDeviceCreateInfo createInfo;
 		createInfo.adapterID = pCreateInfo.adapterID;
 		createInfo.flags = pCreateInfo.flags;
 
-		return GL4GPUDevice::create( *this, createInfo );
+		return GL4GPUDevice::Create( *this, createInfo );
 	}
 
-	EGPUDriverID GL4GPUDriver::queryGPUDriverID() const noexcept
+	EGPUDriverID GL4GPUDriver::QueryGPUDriverID() const noexcept
 	{
 		return EGPUDriverID::GDIOpenGLDesktop4;
 	}

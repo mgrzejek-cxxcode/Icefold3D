@@ -13,12 +13,12 @@ namespace Ic3::Graphics::GCI
 
 	GraphicsShaderLinkageImmutableState::~GraphicsShaderLinkageImmutableState() = default;
 
-	Shader * GraphicsShaderLinkageImmutableState::getShader( size_t pIndex ) const noexcept
+	Shader * GraphicsShaderLinkageImmutableState::GetShader( size_t pIndex ) const noexcept
 	{
 		return nullptr;
 	}
 
-	Shader * GraphicsShaderLinkageImmutableState::getShader( EShaderType pShaderType ) const noexcept
+	Shader * GraphicsShaderLinkageImmutableState::GetShader( EShaderType pShaderType ) const noexcept
 	{
 		return nullptr;
 	}
@@ -34,26 +34,26 @@ namespace Ic3::Graphics::GCI
 
 	GraphicsShaderLinkageImmutableStateSeparable::~GraphicsShaderLinkageImmutableStateSeparable() = default;
 
-	Shader * GraphicsShaderLinkageImmutableStateSeparable::getShader( size_t pIndex ) const noexcept
+	Shader * GraphicsShaderLinkageImmutableStateSeparable::GetShader( size_t pIndex ) const noexcept
 	{
 		return mShaderSet[pIndex];
 	}
 
-	Shader * GraphicsShaderLinkageImmutableStateSeparable::getShader( EShaderType pShaderType ) const noexcept
+	Shader * GraphicsShaderLinkageImmutableStateSeparable::GetShader( EShaderType pShaderType ) const noexcept
 	{
 		return mShaderSet[pShaderType];
 	}
 
 
-	namespace smutil
+	namespace SMU
 	{
 
-		GraphicsShaderLinkageCommonProperties getGraphicsShaderLinkageCommonPropertiesForShaderSet(
+		GraphicsShaderLinkageCommonProperties GetGraphicsShaderLinkageCommonPropertiesForShaderSet(
 				const GraphicsShaderSet & pShaderSet ) noexcept
 		{
 			GraphicsShaderLinkageCommonProperties commonProperties{};
-			commonProperties.activeStagesMask = pShaderSet.getActiveShaderStagesMask();
-			commonProperties.activeStagesNum = pShaderSet.getActiveShaderStagesNum();
+			commonProperties.mActiveStagesMask = pShaderSet.GetActiveShaderStagesMask();
+			commonProperties.mActiveStagesNum = pShaderSet.GetActiveShaderStagesNum();
 			return commonProperties;
 		}
 

@@ -14,44 +14,44 @@ namespace Ic3::Graphics::GCI
 		try
 		{
 		    System::OpenGLDisplaySurfaceCreateInfo surfaceCreateInfo;
-			surfaceCreateInfo.frameGeometry.position = System::CX_FRAME_POS_AUTO;
+			surfaceCreateInfo.frameGeometry.mPosition = System::cxFramePosAuto;
 			surfaceCreateInfo.frameGeometry.size = pPLCreateInfo.screenRect.size;
-			surfaceCreateInfo.frameGeometry.style = System::EFrameStyle::Default;
+			surfaceCreateInfo.frameGeometry.mStyle = System::EFrameStyle::Default;
 			surfaceCreateInfo.visualConfig = pPLCreateInfo.visualConfig;
 			surfaceCreateInfo.flags = 0u;
 
-		#if( ICFGX_GL_TARGET == ICFGX_GL_TARGET_GL32 )
-			surfaceCreateInfo.runtimeVersionDesc.apiVersion.major = 3;
-			surfaceCreateInfo.runtimeVersionDesc.apiVersion.minor = 2;
-		#elif( ICFGX_GL_TARGET == ICFGX_GL_TARGET_GL43 )
-			surfaceCreateInfo.minimumAPIVersion = pSysGLDriver->getVersionSupportInfo().apiVersion;
-			surfaceCreateInfo.targetAPIClass = System::EOpenGLAPIClass::OpenGLDesktop;
-		#elif( ICFGX_GL_TARGET == ICFGX_GL_TARGET_ES31 )
-			surfaceCreateInfo.runtimeVersionDesc.apiVersion.major = 3;
-			surfaceCreateInfo.runtimeVersionDesc.apiVersion.minor = 1;
+		#if( IC3_GX_GL_TARGET == IC3_GX_GL_TARGET_GL32 )
+			surfaceCreateInfo.runtimeVersionDesc.apiVersion.num_major = 3;
+			surfaceCreateInfo.runtimeVersionDesc.apiVersion.mNumMinor = 2;
+		#elif( IC3_GX_GL_TARGET == IC3_GX_GL_TARGET_GL43 )
+			surfaceCreateInfo.minimumAPIVersion = pSysGLDriver->GetVersionSupportInfo().apiVersion;
+			surfaceCreateInfo.targetAPIClass = System::EOpenGLAPIClass::Desktop;
+		#elif( IC3_GX_GL_TARGET == IC3_GX_GL_TARGET_ES31 )
+			surfaceCreateInfo.runtimeVersionDesc.apiVersion.num_major = 3;
+			surfaceCreateInfo.runtimeVersionDesc.apiVersion.mNumMinor = 1;
         #endif
 
-			if( pPLCreateInfo.displayConfigFlags.isSet( E_DISPLAY_CONFIGURATION_FLAG_FULLSCREEN_BIT ) )
+			if( pPLCreateInfo.displayConfigFlags.is_set( E_DISPLAY_CONFIGURATION_FLAG_FULLSCREEN_BIT ) )
 			{
-				surfaceCreateInfo.flags.set( System::E_OPENGL_DISPLAY_SURFACE_CREATE_FLAG_FULLSCREEN_BIT );
+				surfaceCreateInfo.flags.set( System::eOpenGLDisplaySurfaceCreateFlagFullscreenBit );
 			}
 
-			if( pPLCreateInfo.displayConfigFlags.isSet( E_DISPLAY_CONFIGURATION_FLAG_SYNC_MODE_ADAPTIVE_BIT ) )
+			if( pPLCreateInfo.displayConfigFlags.is_set( E_DISPLAY_CONFIGURATION_FLAG_SYNC_MODE_ADAPTIVE_BIT ) )
 			{
-				surfaceCreateInfo.flags.set( System::E_OPENGL_DISPLAY_SURFACE_CREATE_FLAG_SYNC_ADAPTIVE_BIT );
+				surfaceCreateInfo.flags.set( System::eOpenGLDisplaySurfaceCreateFlagSyncAdaptiveBit );
 			}
-			else if( pPLCreateInfo.displayConfigFlags.isSet( E_DISPLAY_CONFIGURATION_FLAG_SYNC_MODE_VERTICAL_BIT ) )
+			else if( pPLCreateInfo.displayConfigFlags.is_set( E_DISPLAY_CONFIGURATION_FLAG_SYNC_MODE_VERTICAL_BIT ) )
 			{
-				surfaceCreateInfo.flags.set( System::E_OPENGL_DISPLAY_SURFACE_CREATE_FLAG_SYNC_VERTICAL_BIT );
+				surfaceCreateInfo.flags.set( System::eOpenGLDisplaySurfaceCreateFlagSyncVerticalBit );
 			}
 
-			auto sysGLSurface = pSysGLDriver->createDisplaySurface( surfaceCreateInfo );
+			auto sysGLSurface = pSysGLDriver->CreateDisplaySurface( surfaceCreateInfo );
 
 			return sysGLSurface;
 		}
 		catch ( ... )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 		}
 
 		return nullptr;
@@ -64,7 +64,7 @@ namespace Ic3::Graphics::GCI
 
 	GLPresentationLayer::~GLPresentationLayer() = default;
 
-	System::EventSource * GLPresentationLayer::getInternalSystemEventSource() const noexcept
+	System::EventSource * GLPresentationLayer::GetInternalSystemEventSource() const noexcept
 	{
 		return mSysGLDisplaySurface.get();
 	}
@@ -80,58 +80,58 @@ namespace Ic3::Graphics::GCI
 
 	GLScreenPresentationLayer::~GLScreenPresentationLayer() = default;
 
-	GLScreenPresentationLayerHandle GLScreenPresentationLayer::create( GLGPUDevice & pDevice, const GLPresentationLayerCreateInfo & pCreateInfo )
+	GLScreenPresentationLayerHandle GLScreenPresentationLayer::Create( GLGPUDevice & pDevice, const GLPresentationLayerCreateInfo & pCreateInfo )
 	{
 		auto sysGLSurface = createSysGLSurface( pDevice.mSysGLDriver, pCreateInfo );
-		ic3DebugAssert( sysGLSurface );
+		Ic3DebugAssert( sysGLSurface );
 
-		const auto surfaceVisualConfig = sysGLSurface->queryVisualConfig();
-		const auto surfaceSize = sysGLSurface->getClientAreaSize();
+		const auto surfaceVisualConfig = sysGLSurface->QueryVisualConfig();
+		const auto surfaceSize = sysGLSurface->GetClientAreaSize();
 
-		auto screenRTLayout = smutil::translateSystemVisualConfigToRenderTargetLayout( surfaceVisualConfig );
+		auto screenRTLayout = SMU::TranslateSystemVisualConfigToRenderTargetLayout( surfaceVisualConfig );
 		screenRTLayout.sharedImageRect = { surfaceSize.x, surfaceSize.y };
 
-		auto renderTargetState = GLRenderTargetBindingImmutableState::createForScreen( pDevice, screenRTLayout );
-		ic3DebugAssert( renderTargetState );
+		auto renderTargetState = GLRenderTargetBindingImmutableState::CreateForScreen( pDevice, screenRTLayout );
+		Ic3DebugAssert( renderTargetState );
 		
-		auto presentationLayer = createGPUAPIObject<GLScreenPresentationLayer>( pDevice, sysGLSurface, renderTargetState );
+		auto presentationLayer = CreateGfxObject<GLScreenPresentationLayer>( pDevice, sysGLSurface, renderTargetState );
 
 		return presentationLayer;
 	}
 
-	void GLScreenPresentationLayer::bindRenderTarget( CommandContext * pCmdContext )
+	void GLScreenPresentationLayer::BindRenderTarget( CommandContext * pCmdContext )
 	{
-		auto * directGraphicsContext = pCmdContext->queryInterface<CommandContextDirectGraphics>();
-		directGraphicsContext->setRenderTargetBindingState( *mScreenRenderTargetBindingState );
+		auto * directGraphicsContext = pCmdContext->QueryInterface<CommandContextDirectGraphics>();
+		directGraphicsContext->SetRenderTargetBindingState( *mScreenRenderTargetBindingState );
 
 		glBindFramebuffer( GL_DRAW_FRAMEBUFFER, 0 );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		glDrawBuffer( GL_BACK );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 	}
 
-	void GLScreenPresentationLayer::invalidateRenderTarget( CommandContext * pCmdContext )
+	void GLScreenPresentationLayer::InvalidateRenderTarget( CommandContext * pCmdContext )
 	{
 	}
 
-	void GLScreenPresentationLayer::present()
+	void GLScreenPresentationLayer::Present()
 	{
-		mSysGLDisplaySurface->swapBuffers();
+		mSysGLDisplaySurface->SwapBuffers();
 	}
 
-	void GLScreenPresentationLayer::resize( uint32 pWidth, uint32 pHeight )
+	void GLScreenPresentationLayer::Resize( uint32 pWidth, uint32 pHeight )
 	{
 	}
 
-	void GLScreenPresentationLayer::setFullscreenMode( bool pEnable )
+	void GLScreenPresentationLayer::SetFullscreenMode( bool pEnable )
 	{
-		mSysGLDisplaySurface->setFullscreenMode( pEnable );
+		mSysGLDisplaySurface->SetFullscreenMode( pEnable );
 	}
 
-	Ic3::Math::Vec2u32 GLScreenPresentationLayer::queryRenderTargetSize() const
+	Ic3::Math::Vec2u32 GLScreenPresentationLayer::QueryRenderTargetSize() const
 	{
-		return mSysGLDisplaySurface->queryRenderAreaSize();
+		return mSysGLDisplaySurface->QueryRenderAreaSize();
 	}
 
 } // namespace Ic3::Graphics::GCI

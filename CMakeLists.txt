@@ -3,7 +3,7 @@ cmake_minimum_required( VERSION 3.10 )
 
 set( CMAKE_PROJECT_ROOT_PATH "${CMAKE_CURRENT_SOURCE_DIR}" )
 string( REPLACE "\\" "/" CMAKE_PROJECT_ROOT_PATH "${CMAKE_PROJECT_ROOT_PATH}" )
-set( IC3_PCL_PROJECT_ROOT_PATH "${CMAKE_PROJECT_ROOT_PATH}" )
+set( PCL_PROJECT_ROOT_PATH "${CMAKE_PROJECT_ROOT_PATH}" )
 
 set( CMAKE_C_STANDARD 11 )
 set( CMAKE_C_STANDARD_REQUIRED ON )
@@ -36,6 +36,11 @@ ebsSetInternal( IC3_COMPONENTS_BUILD_MODE STATIC )
 
 ebsSetInternal( IC3_BASE_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}" )
+
+ebsSetInternal( EXT_INCLUDE_DIR
+		"${IC3_BASE_DIR}/External/Embedded/"
+        "${IC3_BASE_DIR}/External/Prebuilt/Include/"
+        )
 
 ebsSetInternal( IC3_INCLUDE_DIR
 		"${IC3_BASE_DIR}/External/Embedded/"

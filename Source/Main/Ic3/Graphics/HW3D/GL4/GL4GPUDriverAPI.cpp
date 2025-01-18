@@ -7,25 +7,25 @@
 namespace Ic3::Graphics::GCI
 {
 
-	GPUDriverHandle GL4GPUDriverInterface::createDriver( const GPUDriverCreateInfo & pCreateInfo )
+	GPUDriverHandle GL4GPUDriverInterface::CreateDriver( const GPUDriverCreateInfo & pCreateInfo )
 	{
 		GL4GPUDriverCreateInfo gl4CreateInfo;
 		gl4CreateInfo.sysContext = pCreateInfo.sysContext;
 		gl4CreateInfo.sysContextCreateInfo = pCreateInfo.sysContextCreateInfo;
 		gl4CreateInfo.configFlags = pCreateInfo.configFlags;
 
-		return GL4GPUDriver::create( gl4CreateInfo );
+		return GL4GPUDriver::Create( gl4CreateInfo );
 	}
 
-	PresentationLayerHandle GL4GPUDriverInterface::createScreenPresentationLayer( GPUDevice & pDevice, const PresentationLayerCreateInfo & pCreateInfo )
+	PresentationLayerHandle GL4GPUDriverInterface::CreateScreenPresentationLayer( GPUDevice & pDevice, const PresentationLayerCreateInfo & pCreateInfo )
 	{
 		GLPresentationLayerCreateInfo openglCreateInfo;
 		openglCreateInfo.screenRect = pCreateInfo.screenRect;
 		openglCreateInfo.visualConfig = pCreateInfo.visualConfig;
 		openglCreateInfo.displayConfigFlags = pCreateInfo.displayConfigFlags;
 
-		auto * deviceGL = pDevice.queryInterface<GLGPUDevice>();
-		return GLScreenPresentationLayer::create( *deviceGL, openglCreateInfo );
+		auto * deviceGL = pDevice.QueryInterface<GLGPUDevice>();
+		return GLScreenPresentationLayer::Create( *deviceGL, openglCreateInfo );
 	}
 
 } // namespace Ic3::Graphics::GCI

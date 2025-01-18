@@ -22,27 +22,27 @@ namespace Ic3::Graphics::GCI
 	namespace ATL
 	{
 
-		DXGIGetDebugInterfaceType loadDXGIDebugLegacyLoader();
+		DXGIGetDebugInterfaceType LoadDXGIDebugLegacyLoader();
 
-		ComPtr<IDXGIDebug> queryDXGIDebugInterface( Bitmask<EGPUDriverConfigFlags> pDriverConfigFlags );
+		ComPtr<IDXGIDebug> QueryDXGIDebugInterface( cppx::bitmask<EGPUDriverConfigFlags> pDriverConfigFlags );
 
-		ComPtr<IDXGIInfoQueue> queryDXGIDebugInfoQueue( Bitmask<EGPUDriverConfigFlags> pDriverConfigFlags );
+		ComPtr<IDXGIInfoQueue> QueryDXGIDebugInfoQueue( cppx::bitmask<EGPUDriverConfigFlags> pDriverConfigFlags );
 
-		uint32 getDXGITextureFormatBPP( DXGI_FORMAT pDXGIFormat );
+		uint32 GetDXGITextureFormatBPP( DXGI_FORMAT pDXGIFormat );
 
-		const char * getDXShaderTargetStr( DXShaderTarget pShaderTarget );
+		const char * GetDXShaderTargetStr( DXShaderTarget pShaderTarget );
 
-		uint32 computeDXTextureMemoryByteSize( const TextureDimensions & pTextDimensions, DXGI_FORMAT pFormat );
+		uint32 ComputeDXTextureMemoryByteSize( const TextureDimensions & pTextDimensions, DXGI_FORMAT pFormat );
 
-		Bitmask<UINT> translateShaderCompileFlagsDX( Bitmask<uint32> pShaderCreateFlags, bool pDebugDevice );
+		cppx::bitmask<UINT> TranslateDXShaderCompileFlags( cppx::bitmask<uint32> pShaderCreateFlags, bool pDebugDevice );
 
-		DXGI_FORMAT translateBaseDataTypeDX( EBaseDataType pBaseDataType );
+		DXGI_FORMAT TranslateDXShaderCompileFlags( EBaseDataType pBaseDataType );
 
-		DXGI_FORMAT translateTextureFormatDX( ETextureFormat pTextureFormat );
+		DXGI_FORMAT TranslateDXTextureFormat( ETextureFormat pTextureFormat );
 
-		ETextureFormat translateTextureFormatInvDX( DXGI_FORMAT pDXGIFormat );
+		ETextureFormat TranslateDXTextureFormatInv( DXGI_FORMAT pDXGIFormat );
 
-		DXGI_FORMAT translateVertexAttribFormatDX( EVertexAttribFormat pVertexAttribFormat );
+		DXGI_FORMAT TranslateDXVertexAttribFormat( EVertexAttribFormat pVertexAttribFormat );
 
 	};
 

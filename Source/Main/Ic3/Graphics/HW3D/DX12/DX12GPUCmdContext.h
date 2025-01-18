@@ -7,8 +7,8 @@
 #include "DX12Prerequisites.h"
 #include <Ic3/Graphics/GCI/cmds/CommandContext.h>
 
-#define ic3DX12CmdContextVerifyGraphics( pDX12CmdContext ) \
-	ic3DebugAssert( pDX12CmdContext->mD3D12GraphicsCommandList )
+#define Ic3DX12CmdContextVerifyGraphics( pDX12CmdContext ) \
+	Ic3DebugAssert( pDX12CmdContext->mD3D12GraphicsCommandList )
 
 namespace Ic3::Graphics::GCI
 {
@@ -18,11 +18,11 @@ namespace Ic3::Graphics::GCI
 		using RTVDescriptorArray = std::array<D3D12_CPU_DESCRIPTOR_HANDLE, GCM::RT_MAX_COLOR_ATTACHMENTS_NUM>;
 		uint32 rtvDescriptorsNum = 0;
 		RTVDescriptorArray rtvDescriptorArray;
-		D3D12_CPU_DESCRIPTOR_HANDLE dsvDescriptor = cvD3D12CPUDescriptorEmpty;
+		D3D12_CPU_DESCRIPTOR_HANDLE dsvDescriptor = cvD3D12CpuDescriptorEmpty;
 	};
 
 	/// @brief
-	class ICFGX_DX12_CLASS DX12CommandContext final : public CommandContext
+	class IC3_GX_DX12_CLASS DX12CommandContext final : public CommandContext
 	{
 		friend class DX12GPUCmdManager;
 		friend class DX12ScreenPresentationLayer;
@@ -38,16 +38,16 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~DX12CommandContext();
 
-		virtual void beginCommandSequence( const CommandContextCommandSequenceBeginInfo & pInfo ) override;
+		virtual void BeginCommandSequence( const CommandContextCommandSequenceBeginInfo & pInfo ) override;
 
-		virtual void endCommandSequence( const CommandContextCommandSequenceEndInfo & pInfo ) override;
+		virtual void EndCommandSequence( const CommandContextCommandSequenceEndInfo & pInfo ) override;
 
-		virtual void executeSecondaryContext( CommandContext & pSecondaryCmdContext ) override;
+		virtual void ExecuteSecondaryContext( CommandContext & pSecondaryCmdContext ) override;
 
-		virtual void clearColorTarget( const Math::RGBAColorR32Norm & pColor ) override;
+		virtual void ClearColorTarget( const Math::RGBAColorR32Norm & pColor ) override;
 
 	private:
-		void setRenderTargetState( const DX12RenderTargetState & pRenderTargetState );
+		void SetRenderTargetState( const DX12RenderTargetState & pRenderTargetState );
 
 	private:
 		DX12RenderTargetState _renderTargetState;

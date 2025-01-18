@@ -2,9 +2,9 @@
 #include "scfEntry.h"
 #include "scfIndex.h"
 #include <Ic3/NxMain/exception.h>
-#include <Ic3/Cppx/ByteArray.h>
-#include <Ic3/Cppx/MemoryBuffer.h>
-#include <Ic3/Cppx/pathNameIterator.h>
+#include <cppx/byteArray.h>
+#include <cppx/memoryBuffer.h>
+#include <cppx/pathNameIterator.h>
 
 namespace Ic3
 {
@@ -78,7 +78,7 @@ namespace Ic3
 		return mIndex->readResourceData( pTarget, mResourceInfo.dataSize, mResourceInfo.dataOffset );
 	}
 
-	uint64 SCFResource::readData( DynamicByteArray & pTarget ) const
+	uint64 SCFResource::readData( Dynamicbyte_array & pTarget ) const
 	{
 		if( pTarget.size() < mResourceInfo.dataSize )
 		{
@@ -87,7 +87,7 @@ namespace Ic3
 		return readData( pTarget.data(), pTarget.size() );
 	}
 
-	uint64 SCFResource::readData( DynamicMemoryBuffer & pTarget ) const
+	uint64 SCFResource::readData( dynamic_memory_buffer & pTarget ) const
 	{
 		if( pTarget.size() < mResourceInfo.dataSize )
 		{
@@ -122,13 +122,13 @@ namespace Ic3
 		}
 
 		const auto maxDataSize = mResourceInfo.dataSize - pResOffset;
-		const auto maxReadSize = getMinOf( pCapacity, maxDataSize );
-		const auto readSize = getMinOf( pReadSize, maxReadSize );
+		const auto maxReadSize = get_min_of( pCapacity, maxDataSize );
+		const auto readSize = get_min_of( pReadSize, maxReadSize );
 
 		return mIndex->readResourceData( pTarget, readSize, mResourceInfo.dataOffset + pResOffset );
 	}
 
-	uint64 SCFResource::readSubData( const ReadWriteMemoryView & pTarget, uint64 pReadSize, uint64 pResOffset ) const
+	uint64 SCFResource::readSubData( const read_write_memory_view & pTarget, uint64 pReadSize, uint64 pResOffset ) const
 	{
 		return readSubData( pTarget.data(), pTarget.size(), pReadSize, pResOffset );
 	}
@@ -174,7 +174,7 @@ namespace Ic3
 		auto * entryPtr = findEntryInternal( pEntryPath, pFindMode );
 		if( !entryPtr )
 		{
-			ic3ThrowDesc( E_EXC_ESM_MAIN_SCF_ERROR, pEntryPath + " not found in " + mInfo->name );
+			Ic3ThrowDesc( E_EXC_ESM_MAIN_SCF_ERROR, pEntryPath + " not found in " + mInfo->name );
 		}
 		return *entryPtr;
 	}
@@ -194,11 +194,11 @@ namespace Ic3
 		auto * entryPtr = findEntryInternal( pFolderPath, pFindMode );
 		if( !entryPtr )
 		{
-			ic3ThrowDesc( E_EXC_ESM_MAIN_SCF_ERROR, pFolderPath + " not found in " + mInfo->name );
+			Ic3ThrowDesc( E_EXC_ESM_MAIN_SCF_ERROR, pFolderPath + " not found in " + mInfo->name );
 		}
 		if( !entryPtr->isVirtualFolder() )
 		{
-			ic3ThrowDesc( E_EXC_ESM_MAIN_SCF_ERROR, pFolderPath + " in " + mInfo->name + " is not a folder" );
+			Ic3ThrowDesc( E_EXC_ESM_MAIN_SCF_ERROR, pFolderPath + " in " + mInfo->name + " is not a folder" );
 		}
 		return entryPtr->asVirtualFolder();
 	}
@@ -218,11 +218,11 @@ namespace Ic3
 		auto * entryPtr = findEntryInternal( pResourcePath, pFindMode );
 		if( !entryPtr )
 		{
-			ic3ThrowDesc( E_EXC_ESM_MAIN_SCF_ERROR, pResourcePath + " not found in " + mInfo->name );
+			Ic3ThrowDesc( E_EXC_ESM_MAIN_SCF_ERROR, pResourcePath + " not found in " + mInfo->name );
 		}
 		if( !entryPtr->isResource() )
 		{
-			ic3ThrowDesc( E_EXC_ESM_MAIN_SCF_ERROR, pResourcePath + " in " + mInfo->name + " is not a resource" );
+			Ic3ThrowDesc( E_EXC_ESM_MAIN_SCF_ERROR, pResourcePath + " in " + mInfo->name + " is not a resource" );
 		}
 		return entryPtr->asResource();
 	}
@@ -356,7 +356,7 @@ namespace Ic3
 		// Current entry pointer, initially this.
 		SCFEntry * currentEntryPtr = const_cast<SCFVirtualFolder *>( this );
 
-		auto pathNameIterator = PathNameIterator( pEntryPath );
+		auto pathNameIterator = path_name_iterator( pEntryPath );
 
 		// This could be cleaner in the recursive version, but we hit couple use cases with
 		// deep SCF structures, where iteration-based approach turned out to be much better.

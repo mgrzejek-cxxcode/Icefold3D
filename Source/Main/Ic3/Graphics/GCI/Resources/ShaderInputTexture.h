@@ -13,9 +13,11 @@ namespace Ic3::Graphics::GCI
 	/// @brief
 	struct ShaderInputTextureCreateInfo
 	{
-		TextureReference targetTexture;
-		ShaderInputTextureLayout siTextureLayout;
-		Bitmask<ETextureBindFlags> bindFlags;
+		TextureReference mTargetTexture;
+
+		ShaderInputTextureLayout mInputTextureLayout;
+
+		cppx::bitmask<ETextureBindFlags> mBindFlags;
 	};
 
 	/// @brief
@@ -39,7 +41,7 @@ namespace Ic3::Graphics::GCI
 		virtual ~ShaderInputTexture();
 
 		///
-		IC3_ATTR_NO_DISCARD bool empty() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept;
 	};
 
 } // namespace Ic3::Graphics::GCI

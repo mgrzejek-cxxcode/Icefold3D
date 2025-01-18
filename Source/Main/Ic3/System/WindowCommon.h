@@ -8,13 +8,15 @@
 namespace Ic3::System
 {
 
-    ic3SysDeclareHandle( Window );
-    ic3SysDeclareHandle( WindowManager );
+    Ic3SysDeclareHandle( Window );
+    Ic3SysDeclareHandle( WindowManager );
 
 	struct WindowCreateInfo
 	{
+		/// Geometry of the window's frame (position, size, style, etc).
 		FrameGeometry frameGeometry = CX_FRAME_GEOMETRY_DEFAULT;
 
+		/// Window title (text visible on the title bar - if present).
 		std::string title;
 
 		/// Visual config for the window. Describes primary rendering properties of the surface.

@@ -31,26 +31,26 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~GPUBuffer();
 
-		IC3_ATTR_NO_DISCARD virtual const GPUResourceProperties & getProperties() const override final;
+		CPPX_ATTR_NO_DISCARD virtual const GPUResourceProperties & GetProperties() const override final;
 
-		IC3_ATTR_NO_DISCARD GPUMemoryRegion getWholeBufferRegion() const;
+		CPPX_ATTR_NO_DISCARD GPUMemoryRegion GetWholeBufferRegion() const;
 
 	protected:
-		virtual bool mapRegion( void * pCommandObject, const GPUMemoryRegion & pRegion, EGPUMemoryMapMode pMapMode ) = 0;
+		virtual bool MapRegion( void * pCommandObject, const GPUMemoryRegion & pRegion, EGPUMemoryMapMode pMapMode ) = 0;
 
-		virtual void unmap( void * pCommandObject ) = 0;
+		virtual void Unmap( void * pCommandObject ) = 0;
 
-		virtual void flushMappedRegion( void * pCommandObject, const GPUMemoryRegion & pRegion ) = 0;
+		virtual void FlushMappedRegion( void * pCommandObject, const GPUMemoryRegion & pRegion ) = 0;
 
-		virtual void invalidateRegion( void * pCommandObject, const GPUMemoryRegion & pRegion ) = 0;
+		virtual void InvalidateRegion( void * pCommandObject, const GPUMemoryRegion & pRegion ) = 0;
 
-		virtual void updateSubDataCopy( void * pCommandObject, GPUBuffer & pSourceBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc ) = 0;
+		virtual void UpdateSubDataCopy( void * pCommandObject, GPUBuffer & pSourceBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc ) = 0;
 
-		virtual void updateSubDataUpload( void * pCommandObject, const GPUBufferSubDataUploadDesc & pUploadDesc ) = 0;
+		virtual void UpdateSubDataUpload( void * pCommandObject, const GPUBufferSubDataUploadDesc & pUploadDesc ) = 0;
 
-		virtual bool validateMapRequest( const GPUMemoryRegion & pRegion, const EGPUMemoryMapMode & pMapMode );
+		virtual bool ValidateMapRequest( const GPUMemoryRegion & pRegion, const EGPUMemoryMapMode & pMapMode );
 
-		static bool validateBufferCreateInfo( GPUBufferCreateInfo & pCreateInfo );
+		static bool ValidateBufferCreateInfo( GPUBufferCreateInfo & pCreateInfo );
 	};
 
 } // namespace Ic3::Graphics::GCI

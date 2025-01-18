@@ -5,7 +5,7 @@
 #define __IC3_NXMAIN_CONSTANT_BUFFER_PROXY_H__
 
 #include "../Prerequisites.h"
-#include <Ic3/Graphics/GCI/Resources/GPUBufferCommon.h>
+#include <Ic3/Graphics/GCI/Resources/GpuBufferCommon.h>
 
 namespace Ic3
 {
@@ -21,19 +21,19 @@ namespace Ic3
 	class ConstantBufferProxy
 	{
 	public:
-		GCI::GPUDevice & mGPUDevice;
+		GCI::GpuDevice & mGpuDevice;
 
 	public:
-		ConstantBufferProxy( GCI::GPUBufferHandle pBuffer );
+		ConstantBufferProxy( GCI::GpuBufferHandle pBuffer );
 		~ConstantBufferProxy();
 
-		GCI::GPUBufferHandle buffer() const noexcept;
+		GCI::GpuBufferHandle buffer() const noexcept;
 
 		template <typename TData>
 		void setData( const TData & pData )
 		{
-			ic3DebugAssert( sizeof( TData ) == _dataRef.dataSize );
-			memCopyUnchecked( _dataRef.dataPtr, _dataRef.dataSize, &pData, sizeof( TData ) );
+			ic3DebugAssert( sizeof( TData ) == _dataRef.mDataSize );
+			memCopyUnchecked( _dataRef.mDataPtr, _dataRef.mDataSize, &pData, sizeof( TData ) );
 		}
 
 		template <typename TData, typename TMember >
@@ -41,8 +41,8 @@ namespace Ic3
 		{
 			const auto offset = memberOffset( pMember );
 			const auto size = sizeof( TMember );
-			ic3DebugAssert( ( offset < _dataRef.dataSize ) && ( size <= _dataRef.dataSize - offset ) );
-			memCopyUnchecked( _dataRef.dataPtr + offset, size, &pData, size );
+			ic3DebugAssert( ( offset < _dataRef.mDataSize ) && (size <= _dataRef.mDataSize - offset ) );
+			memCopyUnchecked( _dataRef.mDataPtr + offset, size, &pData, size );
 		}
 
 		template <typename TData>
@@ -51,9 +51,9 @@ namespace Ic3
 		void flushUpdates();
 
 	private:
-		GCI::GPUBufferHandle _buffer;
+		GCI::GpuBufferHandle _buffer;
 		ConstantBufferDataRef _dataRef;
-		DynamicMemoryBuffer _localCache;
+		Cppx::DynamicMemoryBuffer _localCache;
 	};
 
 } // namespace Ic3

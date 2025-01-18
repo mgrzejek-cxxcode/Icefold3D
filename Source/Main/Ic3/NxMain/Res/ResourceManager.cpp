@@ -1,2 +1,2 @@
 
-#include "resourceManager.h"
+#include "ResourceManager.h"

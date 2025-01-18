@@ -25,7 +25,7 @@ namespace Ic3::System
 		EColorFormat::R10G10B10A2,
 	};
 
-	static_assert( Cppx::staticArraySize( cvColorFormatArray ) == CX_ENUM_COLOR_FORMAT_COUNT );
+	static_assert( cppx::static_array_size( cvColorFormatArray ) == CX_ENUM_COLOR_FORMAT_COUNT );
 
 	union DisplayOutputIDGen
 	{
@@ -47,7 +47,7 @@ namespace Ic3::System
 			dsm_index_t uModeIndex;
 		};
 
-		dsm_video_mode_id_t modeID = 0u;
+		dsm_video_mode_id_t mModeID = 0u;
 	};
 
 	union DisplayVideoSettingsHashGen
@@ -63,20 +63,6 @@ namespace Ic3::System
 
 		dsm_video_settings_hash_t hashValue = 0u;
 	};
-
-	inline dsm_index_t dsmExtractOutputIDAdapterIndex( dsm_output_id_t pOutputID )
-	{
-		DisplayOutputIDGen outputIDGen;
-		outputIDGen.outputID = pOutputID;
-		return outputIDGen.uAdapterIndex;
-	}
-
-	inline dsm_index_t dsmExtractOutputIDOutputIndex( dsm_output_id_t pOutputID )
-	{
-		DisplayOutputIDGen outputIDGen;
-		outputIDGen.outputID = pOutputID;
-		return outputIDGen.uOutputIndex;
-	}
 
 	using DisplayDriverFactoryCallback = std::function<DisplayDriverHandle()>;
 	using DisplayDriverFactoryMap = std::map<EDisplayDriverType, DisplayDriverFactoryCallback>;
@@ -156,6 +142,21 @@ namespace Ic3::System
 	{
 		DisplayVideoModeDesc modeDesc;
 	};
+
+
+	CPPX_ATTR_NO_DISCARD dsm_index_t DSMExtractOutputIDAdapterIndex( dsm_output_id_t pOutputID );
+
+	CPPX_ATTR_NO_DISCARD dsm_index_t DSMExtractOutputIDOutputIndex( dsm_output_id_t pOutputID );
+
+	CPPX_ATTR_NO_DISCARD dsm_output_id_t DSMCreateDisplayOutputID( dsm_index_t pAdapterIndex, dsm_index_t pOutputIndex );
+
+	CPPX_ATTR_NO_DISCARD dsm_video_settings_hash_t DSMComputeVideoSettingsHash( EColorFormat pFormat, const DisplayVideoSettings & pSettings );
+
+	CPPX_ATTR_NO_DISCARD std::string DSMGetVideoSettingsString( EColorFormat pFormat, const DisplayVideoSettings & pSettings );
+
+	CPPX_ATTR_NO_DISCARD EDisplayAdapterVendorID DSMResolveAdapterVendorID( const std::string & pAdapterName );
+
+	CPPX_ATTR_NO_DISCARD bool DSMCheckSettingsFilterMatch( const DisplayVideoSettingsFilter & pFilter, const DisplayVideoSettings & pSettings );
 
 } // namespace Ic3::System
 

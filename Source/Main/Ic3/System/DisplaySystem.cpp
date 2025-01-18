@@ -13,25 +13,25 @@ namespace Ic3::System
 	, _privateData( std::make_unique<DisplayManagerPrivateData>() )
 	{
 		_privateData->driverFactoryMap[EDisplayDriverType::Generic] = [this]() {
-			return createDisplayDriver();
+			return CreateDisplayDriver();
 		};
 	#if( IC3_SYSTEM_DSM_DRIVER_TYPE_SUPPORT_DXGI )
 		_privateData->driverFactoryMap[EDisplayDriverType::DXGI] = [this]() {
-			return createSysObject<DisplayDriverDXGI>( getHandle<DisplayManager>() );
+			return CreateSysObject<DisplayDriverDXGI>( GetHandle<DisplayManager>() );
 		};
 	#endif
 	#if( IC3_SYSTEM_DSM_DRIVER_TYPE_SUPPORT_SDL )
 		_privateData->driverFactoryMap[EDisplayDriverType::SDL] = [this]() {
-			return createSysObject<DisplayDriverSDL>( getHandle<DisplayManager>() );
+			return CreateSysObject<DisplayDriverSDL>( GetHandle<DisplayManager>() );
 		};
 	#endif
 	}
 
 	DisplayManager::~DisplayManager() noexcept = default;
 
-	DisplayDriverHandle DisplayManager::createDisplayDriver( EDisplayDriverType pDriverID )
+	DisplayDriverHandle DisplayManager::CreateDisplayDriver( EDisplayDriverType pDriverID )
 	{
-		pDriverID = resolveDisplayDriverID( pDriverID );
+		pDriverID = ResolveDisplayDriverID( pDriverID );
 		if( pDriverID == EDisplayDriverType::Unknown )
 		{
 			return nullptr;
@@ -43,12 +43,12 @@ namespace Ic3::System
 		return displayDriver;
 	}
 
-	DisplayDriverHandle DisplayManager::createDisplayDriver()
+	DisplayDriverHandle DisplayManager::CreateDisplayDriver()
 	{
-		return _nativeCreateDisplayDriver();
+		return _NativeCreateDisplayDriver();
 	}
 
-	bool DisplayManager::checkDriverSupport( EDisplayDriverType pDriverID ) const
+	bool DisplayManager::CheckDriverSupport( EDisplayDriverType pDriverID ) const
 	{
 		// The default driver is always supported. If no driver is available on
 		// a given system, DisplayManager will fail to create in the first place,
@@ -59,12 +59,12 @@ namespace Ic3::System
 
 		// Resolve the driver ID. This will return EDisplayDriverType::Unknown
 		// if the specified driver is not supported on the current system.
-		auto resolvedDriverID = resolveDisplayDriverID( pDriverID );
+		auto resolvedDriverID = ResolveDisplayDriverID( pDriverID );
 
 		return resolvedDriverID != EDisplayDriverType::Unknown;
 	}
 
-	EDisplayDriverType DisplayManager::resolveDisplayDriverID( EDisplayDriverType pDriverID ) const
+	EDisplayDriverType DisplayManager::ResolveDisplayDriverID( EDisplayDriverType pDriverID ) const
 	{
 		EDisplayDriverType resolvedDriverID = EDisplayDriverType::Unknown;
 
@@ -74,13 +74,13 @@ namespace Ic3::System
 		}
 		else if( pDriverID == EDisplayDriverType::Default )
 		{
-		#if( IC3_PCL_TARGET_OS & IC3_PCL_TARGET_FLAG_OS_MSE )
+		#if( PCL_TARGET_OS & PCL_TARGET_FLAG_OS_MSE )
 			resolvedDriverID = EDisplayDriverType::DXGI;
 		#else
 			resolvedDriverID = EDisplayDriverType::Generic;
 		#endif
 		}
-	#if( IC3_PCL_TARGET_OS & IC3_PCL_TARGET_FLAG_OS_MSE )
+	#if( PCL_TARGET_OS & PCL_TARGET_FLAG_OS_MSE )
 		else if( pDriverID == EDisplayDriverType::DXGI )
 		{
 			resolvedDriverID = EDisplayDriverType::DXGI;
@@ -90,36 +90,36 @@ namespace Ic3::System
 		return resolvedDriverID;
 	}
 
-	DisplayOffset DisplayManager::queryDefaultDisplayOffset() const
+	DisplayOffset DisplayManager::QueryDefaultDisplayOffset() const
 	{
 		DisplayOffset result;
-		_nativeQueryDefaultDisplayOffset( result );
+		_NativeQueryDefaultDisplayOffset( result );
 		return result;
 	}
 
-	DisplaySize DisplayManager::queryDefaultDisplaySize() const
+	DisplaySize DisplayManager::QueryDefaultDisplaySize() const
 	{
 		DisplaySize result;
-		_nativeQueryDefaultDisplaySize( result );
+		_NativeQueryDefaultDisplaySize( result );
 		return result;
 	}
 
-	DisplaySize DisplayManager::queryMinWindowSize() const
+	DisplaySize DisplayManager::QueryMinWindowSize() const
 	{
 		DisplaySize result;
-		_nativeQueryMinWindowSize( result );
+		_NativeQueryMinWindowSize( result );
 		return result;
 	}
 
-	bool DisplayManager::checkFrameGeometry( const FrameGeometry & pFrameGeometry ) const
+	bool DisplayManager::CheckFrameGeometry( const FrameGeometry & pFrameGeometry ) const
 	{
-		const auto & framePos = pFrameGeometry.position;
+		const auto & framePos = pFrameGeometry.mPosition;
 		const auto & frameSize = pFrameGeometry.size;
 
-		auto screenSize = queryDefaultDisplaySize();
-		auto minFrameSize = queryMinWindowSize();
+		auto screenSize = QueryDefaultDisplaySize();
+		auto minFrameSize = QueryMinWindowSize();
 
-		if( frameSize != CX_FRAME_SIZE_MAX )
+		if( frameSize != cxFrameSizeMax )
 		{
 			if( ( frameSize.x == 0 ) || ( frameSize.y == 0 ) )
 			{
@@ -135,7 +135,7 @@ namespace Ic3::System
 			}
 		}
 
-		if( framePos != CX_FRAME_POS_AUTO )
+		if( framePos != cxFramePosAuto )
 		{
 			if( ( framePos.x < 0 ) || ( framePos.y < 0 ) )
 			{
@@ -154,18 +154,18 @@ namespace Ic3::System
 		return true;
 	}
 
-	FrameGeometry DisplayManager::validateFrameGeometry( const FrameGeometry & pFrameGeometry ) const
+	FrameGeometry DisplayManager::ValidateFrameGeometry( const FrameGeometry & pFrameGeometry ) const
 	{
 		auto resultGeometry = pFrameGeometry;
 
-		const auto & framePos = pFrameGeometry.position;
+		const auto & framePos = pFrameGeometry.mPosition;
 		const auto & frameSize = pFrameGeometry.size;
 
-		auto screenOffset = queryDefaultDisplayOffset();
-		auto screenSize = queryDefaultDisplaySize();
-		auto minFrameSize = queryMinWindowSize();
+		auto screenOffset = QueryDefaultDisplayOffset();
+		auto screenSize = QueryDefaultDisplaySize();
+		auto minFrameSize = QueryMinWindowSize();
 
-		if( frameSize == CX_FRAME_SIZE_MAX )
+		if( frameSize == cxFrameSizeMax )
 		{
 			// Frame is defined as maximum allowed for the current display/screen. Make it that big.
 			resultGeometry.size.x = screenSize.x;
@@ -183,30 +183,30 @@ namespace Ic3::System
 			else
 			{
 				// Size of the window must be less than the size of the screen...
-				resultGeometry.size.x = Cppx::getMinOf( resultGeometry.size.x, screenSize.x );
-				resultGeometry.size.y = Cppx::getMinOf( resultGeometry.size.y, screenSize.y );
+				resultGeometry.size.x = cppx::get_min_of( resultGeometry.size.x, screenSize.x );
+				resultGeometry.size.y = cppx::get_min_of( resultGeometry.size.y, screenSize.y );
 
 				// ... but at the same time bigger than the minimum allowed size (Win32-specific, really).
-				resultGeometry.size.x = Cppx::getMaxOf( resultGeometry.size.x, minFrameSize.x );
-				resultGeometry.size.y = Cppx::getMaxOf( resultGeometry.size.y, minFrameSize.y );
+				resultGeometry.size.x = cppx::get_max_of( resultGeometry.size.x, minFrameSize.x );
+				resultGeometry.size.y = cppx::get_max_of( resultGeometry.size.y, minFrameSize.y );
 			}
 		}
 
 		if( ( framePos.x < 0 ) || ( framePos.y < 0 ) )
 		{
-			resultGeometry.position.x = static_cast<int32>( ( screenSize.x - resultGeometry.size.x ) / 2 );
-			resultGeometry.position.y = static_cast<int32>( ( screenSize.y - resultGeometry.size.y ) / 2 );
+			resultGeometry.mPosition.x = static_cast<int32>( ( screenSize.x - resultGeometry.size.x ) / 2 );
+			resultGeometry.mPosition.y = static_cast<int32>( ( screenSize.y - resultGeometry.size.y ) / 2 );
 		}
 		else
 		{
 			auto maxPosX = static_cast<int32>( screenSize.x - resultGeometry.size.x );
 			auto maxPosY = static_cast<int32>( screenSize.y - resultGeometry.size.y );
-			resultGeometry.position.x = Cppx::getMinOf( resultGeometry.position.x, maxPosX );
-			resultGeometry.position.y = Cppx::getMinOf( resultGeometry.position.y, maxPosY );
+			resultGeometry.mPosition.x = cppx::get_min_of( resultGeometry.mPosition.x, maxPosX );
+			resultGeometry.mPosition.y = cppx::get_min_of( resultGeometry.mPosition.y, maxPosY );
 		}
 
-		resultGeometry.position.x += screenOffset.x;
-		resultGeometry.position.y += screenOffset.y;
+		resultGeometry.mPosition.x += screenOffset.x;
+		resultGeometry.mPosition.y += screenOffset.y;
 
 		return resultGeometry;
 	}
@@ -222,34 +222,34 @@ namespace Ic3::System
 
 	DisplayDriver::~DisplayDriver()
 	{
-		reset();
+		Reset();
 	}
 
 	DisplayDriver::operator bool() const
 	{
-		return hasValidConfiguration();
+		return HasValidConfiguration();
 	}
 
-	void DisplayDriver::syncDisplayConfiguration()
+	void DisplayDriver::SyncDisplayConfiguration()
 	{
 		if( !_privateData->adapterInstanceList.empty() )
 		{
-			_resetDisplayConfiguration();
+			_ResetDisplayConfiguration();
 		}
-		_initializeDisplayConfiguration();
+		_InitializeDisplayConfiguration();
 	}
 
-	void DisplayDriver::reset()
+	void DisplayDriver::Reset()
 	{
-		_resetDisplayConfiguration();
+		_ResetDisplayConfiguration();
 	}
 
-	EColorFormat DisplayDriver::queryDefaultSystemColorFormat() const
+	EColorFormat DisplayDriver::QueryDefaultSystemColorFormat() const
 	{
-		return _nativeQueryDefaultSystemColorFormat();
+		return _NativeQueryDefaultSystemColorFormat();
 	}
 
-	DisplayAdapter * DisplayDriver::findAdapter( DisplayAdapterPredicate pPredicate ) const
+	DisplayAdapter * DisplayDriver::FindAdapter( DisplayAdapterPredicate pPredicate ) const
 	{
 		for( auto & adapterPtr : _privateData->adapterInstanceList )
 		{
@@ -261,7 +261,7 @@ namespace Ic3::System
 		return nullptr;
 	}
 
-	DisplayAdapterList DisplayDriver::findAdapters( DisplayAdapterPredicate pPredicate ) const
+	DisplayAdapterList DisplayDriver::FindAdapters( DisplayAdapterPredicate pPredicate ) const
 	{
 		DisplayAdapterList adapterList;
 		for( auto & adapterPtr : _privateData->adapterInstanceList )
@@ -274,18 +274,18 @@ namespace Ic3::System
 		return adapterList;
 	}
 
-	const DisplayAdapterList & DisplayDriver::getAdapterList() const
+	const DisplayAdapterList & DisplayDriver::GetAdapterList() const
 	{
 		return _privateData->adapterList;
 	}
 
-	const DisplayOutputList & DisplayDriver::getOutputList( dsm_index_t pAdapterIndex ) const
+	const DisplayOutputList & DisplayDriver::GetOutputList( dsm_index_t pAdapterIndex ) const
 	{
-		auto * adapter = getAdapter( pAdapterIndex );
-		return adapter->getOutputList();
+		auto * adapter = GetAdapter( pAdapterIndex );
+		return adapter->GetOutputList();
 	}
 
-	DisplayAdapter * DisplayDriver::getAdapter( dsm_index_t pAdapterIndex ) const
+	DisplayAdapter * DisplayDriver::GetAdapter( dsm_index_t pAdapterIndex ) const
 	{
 		if( pAdapterIndex == CX_DSM_INDEX_DEFAULT )
 		{
@@ -297,50 +297,50 @@ namespace Ic3::System
 		}
 	}
 
-	DisplayAdapter * DisplayDriver::getDefaultAdapter() const
+	DisplayAdapter * DisplayDriver::GetDefaultAdapter() const
 	{
 		return _privateData->primaryAdapter;
 	}
 
-	DisplayOutput * DisplayDriver::getDefaultOutput( dsm_index_t pAdapterIndex ) const
+	DisplayOutput * DisplayDriver::GetDefaultOutput( dsm_index_t pAdapterIndex ) const
 	{
-		auto * adapter = getAdapter( pAdapterIndex );
-		return adapter->getDefaultOutput();
+		auto * adapter = GetAdapter( pAdapterIndex );
+		return adapter->GetDefaultOutput();
 	}
 
-	DisplayOutput * DisplayDriver::getOutput( dsm_output_id_t pOutputID ) const
+	DisplayOutput * DisplayDriver::GetOutput( dsm_output_id_t pOutputID ) const
 	{
-		auto adapterIndex = dsmExtractOutputIDAdapterIndex( pOutputID );
-		auto outputIndex = dsmExtractOutputIDOutputIndex( pOutputID );
+		auto adapterIndex = DSMExtractOutputIDAdapterIndex( pOutputID );
+		auto outputIndex = DSMExtractOutputIDOutputIndex( pOutputID );
 
-		auto * adapter = getAdapter( adapterIndex );
+		auto * adapter = GetAdapter( adapterIndex );
 
 		if( outputIndex == CX_DSM_INDEX_DEFAULT )
 		{
-			return adapter->getDefaultOutput();
+			return adapter->GetDefaultOutput();
 		}
 		else
 		{
-			return adapter->getOutput( outputIndex );
+			return adapter->GetOutput( outputIndex );
 		}
 	}
 
-	bool DisplayDriver::hasActiveAdapters() const
+	bool DisplayDriver::HasActiveAdapters() const
 	{
 		return _privateData->activeAdaptersNum > 0;
 	}
 
-	bool DisplayDriver::hasAnyAdapters() const
+	bool DisplayDriver::HasAnyAdapters() const
 	{
 		return !_privateData->adapterInstanceList.empty();
 	}
 
-	bool DisplayDriver::hasValidConfiguration() const
+	bool DisplayDriver::HasValidConfiguration() const
 	{
-		return !_privateData->adapterInstanceList.empty() && ( _privateData->combinedActiveOutputsNum > 0 );
+		return !_privateData->adapterInstanceList.empty() && (_privateData->combinedActiveOutputsNum > 0 );
 	}
 
-	std::string DisplayDriver::generateConfigurationDump( const std::string & pLinePrefix ) const
+	std::string DisplayDriver::GenerateConfigurationDump( const std::string & pLinePrefix ) const
 	{
 		const auto adaptersNum = _privateData->adapterInstanceList.size();
 		const auto displayDevicesNum = adaptersNum * 2;
@@ -351,17 +351,17 @@ namespace Ic3::System
 		std::string result;
 		result.reserve( strReserveSize );
 
-		if( !hasAnyAdapters() )
+		if( !HasAnyAdapters() )
 		{
 			result.append( pLinePrefix );
 			result.append( "<empty>" );
 		}
 		else
 		{
-			const auto & adapterList = getAdapterList();
+			const auto & adapterList = GetAdapterList();
 			for( const auto * adapter : adapterList )
 			{
-				const auto & adapterDesc = adapter->getAdapterDesc();
+				const auto & adapterDesc = adapter->GetAdapterDesc();
 				if( adapterDesc.adapterIndex > 0 )
 				{
 					result.append( 1, '\n' );
@@ -369,7 +369,7 @@ namespace Ic3::System
 				result.append( pLinePrefix );
 				result.append( adapterDesc.toString() );
 
-				if( !adapter->hasAnyOutputs() )
+				if( !adapter->HasAnyOutputs() )
 				{
 					result.append( 1, '\n' );
 					result.append( pLinePrefix );
@@ -378,25 +378,25 @@ namespace Ic3::System
 				}
 				else
 				{
-					const auto & outputList = adapter->getOutputList();
+					const auto & outputList = adapter->GetOutputList();
 					for( const auto * output : outputList )
 					{
-						const auto & outputDesc = output->getOutputDesc();
+						const auto & outputDesc = output->GetOutputDesc();
 						result.append( 1, '\n' );
 						result.append( pLinePrefix );
 						result.append( 1, '\t' );
 						result.append( outputDesc.toString() );
 
-						auto colorFormats = output->getSupportedColorFormatList();
+						auto colorFormats = output->GetSupportedColorFormatList();
 						for( auto colorFormat : colorFormats )
 						{
-							auto colorFormatStr = vsxQueryColorFormatStr( colorFormat );
+							auto colorFormatStr = VisQueryColorFormatStr( colorFormat );
 							result.append( 1, '\n' );
 							result.append( pLinePrefix );
 							result.append( 2, '\t' );
 							result.append( colorFormatStr );
 
-							const auto & videoModeList = output->getVideoModeList( colorFormat );
+							const auto & videoModeList = output->GetVideoModeList( colorFormat );
 							if( videoModeList.empty() )
 							{
 								result.append( 1, '\n' );
@@ -408,7 +408,7 @@ namespace Ic3::System
 							{
 								for( const auto * videoMode : videoModeList )
 								{
-									const auto & videoModeDesc = videoMode->getModeDesc();
+									const auto & videoModeDesc = videoMode->GetModeDesc();
 									result.append( 1, '\n' );
 									result.append( pLinePrefix );
 									result.append( 3, '\t' );
@@ -425,22 +425,22 @@ namespace Ic3::System
 		return result;
 	}
 
-	DisplayAdapterDesc & DisplayDriver::getAdapterDescInternal( DisplayAdapter & pAdapter )
+	DisplayAdapterDesc & DisplayDriver::GetAdapterDescInternal( DisplayAdapter & pAdapter )
 	{
-		return pAdapter.getAdapterDescInternal();
+		return pAdapter.GetAdapterDescInternal();
 	}
 
-	DisplayOutputDesc & DisplayDriver::getOutputDescInternal( DisplayOutput & pOutput )
+	DisplayOutputDesc & DisplayDriver::GetOutputDescInternal( DisplayOutput & pOutput )
 	{
-		return pOutput.getOutputDescInternal();
+		return pOutput.GetOutputDescInternal();
 	}
 
-	DisplayVideoModeDesc & DisplayDriver::getVideoModeDescInternal( DisplayVideoMode & pVideoMode )
+	DisplayVideoModeDesc & DisplayDriver::GetVideoModeDescInternal( DisplayVideoMode & pVideoMode )
 	{
-		return pVideoMode.getModeDescInternal();
+		return pVideoMode.GetModeDescInternal();
 	}
 
-	void DisplayDriver::_initializeDisplayConfiguration()
+	void DisplayDriver::_InitializeDisplayConfiguration()
 	{
 		// Enum all display devices (adapters and outputs). This process is combined,
 		// because some drivers (like GDI, for example) may perform better if this is
@@ -458,7 +458,7 @@ namespace Ic3::System
 		_validateAdaptersConfiguration();
 	}
 
-	void DisplayDriver::_resetDisplayConfiguration()
+	void DisplayDriver::_ResetDisplayConfiguration()
 	{
 		_privateData->adapterInstanceList.clear();
 		_privateData->adapterList.clear();
@@ -469,20 +469,20 @@ namespace Ic3::System
 
 	void DisplayDriver::_enumDisplayDevices()
 	{
-		_nativeEnumDisplayDevices();
+		_NativeEnumDisplayDevices();
 	}
 
 	void DisplayDriver::_enumVideoModes()
 	{
 		for( auto & adapterPtr : _privateData->adapterInstanceList )
 		{
-			const auto & adapterOutputList = adapterPtr->getOutputList();
+			const auto & adapterOutputList = adapterPtr->GetOutputList();
 
 			for( auto * output : adapterOutputList )
 			{
 				for( auto colorFormat : cvColorFormatArray )
 				{
-					_nativeEnumVideoModes( *output, colorFormat );
+					_NativeEnumVideoModes( *output, colorFormat );
 				}
 			}
 		}
@@ -492,7 +492,7 @@ namespace Ic3::System
 	{
 		const auto adapterIndex = _privateData->adapterInstanceList.size();
 
-		auto & adapterDesc = pAdapter->getAdapterDescInternal();
+		auto & adapterDesc = pAdapter->GetAdapterDescInternal();
 		adapterDesc.driverType = mDriverType;
 		adapterDesc.adapterIndex = static_cast<dsm_index_t>( adapterIndex );
 
@@ -501,19 +501,19 @@ namespace Ic3::System
 		// Adapters are not added to the helper list at this point.
 		// This is done as a post-process step later in DisplayDriver::_enumAdapters().
 		// Assertion added to prevent problems in case of refactoring.
-		ic3DebugAssert( _privateData->adapterList.empty() );
+		Ic3DebugAssert( _privateData->adapterList.empty() );
 	}
 
-	void DisplayDriver::_registerOutput( DisplayAdapter & pAdapter, DisplayOutputHandle pOutput )
+	void DisplayDriver::_RegisterOutput( DisplayAdapter & pAdapter, DisplayOutputHandle pOutput )
 	{
-		ic3DebugAssert( _privateData->adapterList.empty() );
-		pAdapter.registerOutput( std::move( pOutput ) );
+		Ic3DebugAssert( _privateData->adapterList.empty() );
+		pAdapter.RegisterOutput( std::move( pOutput ) );
 	}
 
-	void DisplayDriver::_registerVideoMode( DisplayOutput & pOutput, EColorFormat pColorFormat, DisplayVideoModeHandle pVideoMode )
+	void DisplayDriver::_RegisterVideoMode( DisplayOutput & pOutput, EColorFormat pColorFormat, DisplayVideoModeHandle pVideoMode )
 	{
-		ic3DebugAssert( _privateData->adapterList.empty() );
-		pOutput.registerVideoMode( pColorFormat, std::move( pVideoMode ) );
+		Ic3DebugAssert( _privateData->adapterList.empty() );
+		pOutput.RegisterVideoMode( pColorFormat, std::move( pVideoMode ) );
 	}
 
 	void DisplayDriver::_validateAdaptersConfiguration()
@@ -526,56 +526,56 @@ namespace Ic3::System
 			for( auto & adapterPtr : _privateData->adapterInstanceList )
 			{
 				// Update the non-driver-specific part of the adapter info
-				auto & adapterDesc = adapterPtr->getAdapterDescInternal();
+				auto & adapterDesc = adapterPtr->GetAdapterDescInternal();
 
 				if( adapterDesc.vendorID == EDisplayAdapterVendorID::Unknown )
 				{
 					// Driver can set the vendor ID internally, but in case it is missing,
 					// this function tries to resolve the ID by looking at the adapter desc.
-					adapterDesc.vendorID = dsmResolveAdapterVendorID( adapterDesc.name );
+					adapterDesc.vendorID = DSMResolveAdapterVendorID( adapterDesc.name );
 				}
-				if( adapterPtr->isPrimaryAdapter() && !_privateData->primaryAdapter )
+				if( adapterPtr->IsPrimaryAdapter() && !_privateData->primaryAdapter )
 				{
 					// Driver can also explicitly set the primary system adapter.
-					// If it has not been set, we use the first adapter with proper flag set.
+					// If it Has not been set, we use the first adapter with proper flag set.
 					_privateData->primaryAdapter = adapterPtr.get();
 				}
-				if( adapterPtr->isActiveAdapter() )
+				if( adapterPtr->IsActiveAdapter() )
 				{
 					_privateData->activeAdaptersNum += 1;
 				}
 
-				auto adapterActiveOutputsNum = adapterPtr->validateOutputsConfiguration();
+				auto adapterActiveOutputsNum = adapterPtr->ValidateOutputsConfiguration();
 
 				_privateData->combinedActiveOutputsNum += adapterActiveOutputsNum;
 
 				_privateData->adapterList.push_back( adapterPtr.get() );
 			}
 
-			// Validate if the default system adapter has been properly set.
+			// Validate if the default system adapter Has been properly set.
 			if( _privateData->primaryAdapter )
 			{
 				// Default./primary adapter will usually have the proper bit set (all drivers should do that).
-				// In case the adapter has been set, but this bit is missing, emit a warning. It may be an
+				// In case the adapter Has been set, but this bit is missing, emit a warning. It may be an
 				// intentional choice, but also an error or missing driver-specific init code.
 
-				auto & adapterDesc = _privateData->primaryAdapter->getAdapterDescInternal();
-				if( !adapterDesc.flags.isSet( E_DISPLAY_ADAPTER_FLAG_PRIMARY_BIT ) )
+				auto & adapterDesc = _privateData->primaryAdapter->GetAdapterDescInternal();
+				if( !adapterDesc.flags.is_set( eDisplayAdapterFlagPrimaryBit ) )
 				{
-					ic3DebugOutput(
+					Ic3DebugOutput(
 						"Primary/Default adapter selected by the driver does not have "\
 						"E_DISPLAY_ADAPTER_FLAG_PRIMARY_BIT set. Is that intentional?" );
 				}
 			}
 			else
 			{
-				// If there is no default adapter set, it means it has not been done by the driver AND
-				// there has not been any adapter marked as PRIMARY. In this case, just select the first
+				// If there is no default adapter set, it means it Has not been done by the driver AND
+				// there Has not been any adapter marked as PRIMARY. In this case, just select the first
 				// one, update its state and set as the default one.
 
 				auto & firstAdapter = _privateData->adapterInstanceList.front();
-				auto & firstAdapterDesc = firstAdapter->getAdapterDescInternal();
-				firstAdapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_PRIMARY_BIT );
+				auto & firstAdapterDesc = firstAdapter->GetAdapterDescInternal();
+				firstAdapterDesc.flags.set( eDisplayAdapterFlagPrimaryBit );
 				_privateData->primaryAdapter = firstAdapter.get();
 			}
 		}

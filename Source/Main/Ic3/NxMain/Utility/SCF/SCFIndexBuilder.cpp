@@ -1,8 +1,8 @@
 
 #include "scfIndexBuilder.h"
 #include <Ic3/NxMain/exception.h>
-#include <Ic3/Cppx/pathNameIterator.h>
-#include <Ic3/Cppx/sortedArray.h>
+#include <cppx/pathNameIterator.h>
+#include <cppx/sortedArray.h>
 #include <Ic3/System/FileManager.h>
 
 #include <unordered_map>
@@ -34,11 +34,11 @@ namespace Ic3
 		SCFInputDataSource dataSource;
 		dataSource.byteSize = pDataSize;
 		dataSource.readCallback =
-			[pDataSize]( uint64 pOffset, uint64 pReadSize, DynamicByteArray & pTarget ) -> uint64 {
-				const auto readSize = memCheckRequestedCopySize( pDataSize, pReadSize, pOffset );
+			[pDataSize]( uint64 pOffset, uint64 pReadSize, Dynamicbyte_array & pTarget ) -> uint64 {
+				const auto readSize = mem_check_requested_copy_size( pDataSize, pReadSize, pOffset );
 				if( readSize > 0 )
 				{
-					pTarget.resize( numeric_cast<size_t>( readSize ) );
+					pTarget.resize( cppx::numeric_cast<size_t>( readSize ) );
 					pTarget.fill( 0x7 );
 					return readSize;
 				}
@@ -66,14 +66,14 @@ namespace Ic3
 		SCFInputDataSource dataSource;
 		dataSource.byteSize = fileSize;
 		dataSource.readCallback =
-			[pSysFileManager, pFilename, fileSize]( uint64 pOffset, uint64 pReadSize, DynamicByteArray & pTarget ) -> uint64 {
-				const auto readSize = memCheckRequestedCopySize( fileSize, pReadSize, pOffset );
+			[pSysFileManager, pFilename, fileSize]( uint64 pOffset, uint64 pReadSize, Dynamicbyte_array & pTarget ) -> uint64 {
+				const auto readSize = mem_check_requested_copy_size( fileSize, pReadSize, pOffset );
 				if( readSize > 0 )
 				{
 					if( auto sourceFile = pSysFileManager->openFile( pFilename, System::EFileOpenMode::ReadOnly ) )
 					{
-						sourceFile->setFilePointer( numeric_cast<System::file_offset_t>( pOffset ) );
-						return sourceFile->readAuto( pTarget, numeric_cast<System::file_size_t>( readSize ) );
+						sourceFile->setFilePointer( cppx::numeric_cast<System::file_offset_t>( pOffset ) );
+						return sourceFile->readAuto( pTarget, cppx::numeric_cast<System::file_size_t>( readSize ) );
 					}
 				}
 				return 0;
@@ -82,7 +82,7 @@ namespace Ic3
 		return dataSource;
 	}
 
-	SCFInputDataSource SCFInputDataSource::fromMemory( ReadOnlyMemoryView pMemoryView )
+	SCFInputDataSource SCFInputDataSource::fromMemory( read_only_memory_view pMemoryView )
 	{
 		if( !pMemoryView )
 		{
@@ -92,16 +92,16 @@ namespace Ic3
 		SCFInputDataSource dataSource;
 		dataSource.byteSize = pMemoryView.size();
 		dataSource.readCallback =
-			[pMemoryView]( uint64 pOffset, uint64 pReadSize, DynamicByteArray & pTarget ) -> uint64 {
-				const auto readSize = memCheckRequestedCopySize( pMemoryView.size(), pReadSize, pOffset );
+			[pMemoryView]( uint64 pOffset, uint64 pReadSize, Dynamicbyte_array & pTarget ) -> uint64 {
+				const auto readSize = mem_check_requested_copy_size( pMemoryView.size(), pReadSize, pOffset );
 				if( readSize > 0 )
 				{
-					pTarget.resize( numeric_cast<size_t>( readSize ) );
+					pTarget.resize( cppx::numeric_cast<size_t>( readSize ) );
 
-					memCopyUnchecked( pTarget.data(),
+					mem_copy_unchecked( pTarget.data(),
 									  pTarget.size(),
 									  pMemoryView.data() + pOffset,
-									  numeric_cast<size_t>( readSize ) );
+									  cppx::numeric_cast<size_t>( readSize ) );
 
 					return readSize;
 				}
@@ -287,7 +287,7 @@ namespace Ic3
 
 		SCFVirtualFolderTemplate * currentFolderPtr = pRootFolder;
 
-		for( auto pathNameIterator = PathNameIterator( pFolderLocation ); !pathNameIterator.empty(); ++pathNameIterator )
+		for( auto pathNameIterator = path_name_iterator( pFolderLocation ); !pathNameIterator.empty(); ++pathNameIterator )
 		{
 			// Iterator yields a name of a next sub-folder.
 			const auto & subFolderName = pathNameIterator.name();
@@ -321,7 +321,7 @@ namespace Ic3
 		SCFVirtualFolderTemplate * currentFolderPtr = pRootFolder;
 		SCFResourceTemplate * resourcePtr = nullptr;
 
-		for( auto pathNameIterator = PathNameIterator( pResourceLocation ); !pathNameIterator.empty(); ++pathNameIterator )
+		for( auto pathNameIterator = path_name_iterator( pResourceLocation ); !pathNameIterator.empty(); ++pathNameIterator )
 		{
 			// Iterator yields a name of a next sub-folder or a resource.
 			const auto & subLocationName = pathNameIterator.name();

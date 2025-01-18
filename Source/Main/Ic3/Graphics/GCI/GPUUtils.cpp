@@ -9,28 +9,28 @@ namespace Ic3::Graphics::GCI
     namespace utils
     {
 
-        ShaderHandle createShaderFromSource( GPUDevice & pGPUDevice, EShaderType pShaderType, const void * pSource, size_t pSourceLength )
+        ShaderHandle CreateShaderFromSource( GPUDevice & pGPUDevice, EShaderType pShaderType, const void * pSource, size_t pSourceLength )
         {
             ShaderCreateInfo shaderCreateInfo;
             shaderCreateInfo.shaderType = pShaderType;
-            shaderCreateInfo.shaderSourceView = bindMemoryView( pSource, pSourceLength );
+            shaderCreateInfo.shaderSourceView = cppx::bind_memory_view( pSource, pSourceLength );
 
-            if( pGPUDevice.isDebugDevice() )
+            if( pGPUDevice.IsDebugDevice() )
             {
-                shaderCreateInfo.createFlags = E_SHADER_CREATE_FLAG_DEBUG_BIT;
+                shaderCreateInfo.createFlags = eShaderCreateFlagDebugBit;
             }
             else
             {
-                shaderCreateInfo.createFlags = E_SHADER_CREATE_FLAG_OPTIMIZATION_L1_BIT;
+                shaderCreateInfo.createFlags = eShaderCreateFlagOptimizationL1Bit;
             }
 
-            auto shader = pGPUDevice.createShader( shaderCreateInfo );
+            auto shader = pGPUDevice.CreateShader( shaderCreateInfo );
             return shader;
         }
 
-        ShaderHandle createShaderFromFile( GPUDevice & pGPUDevice, EShaderType pShaderType, const char * pFilename )
+        ShaderHandle CreateShaderFromFile( GPUDevice & pGPUDevice, EShaderType pShaderType, const char * pFilename )
 	    {
-            std::ifstream inputFile( pFilename, std::ios::in );
+            std::ifstream inputFile{ pFilename, std::ios::in };
             if( !inputFile )
             {
                 return nullptr;
@@ -51,7 +51,7 @@ namespace Ic3::Graphics::GCI
             inputFile.read( fileContent.data(), fileSize );
             fileContent[fileSize] = 0;
 
-            return createShaderFromSource( pGPUDevice, pShaderType, fileContent.data(), fileContent.size() );
+            return CreateShaderFromSource( pGPUDevice, pShaderType, fileContent.data(), fileContent.size() );
         }
 
     }

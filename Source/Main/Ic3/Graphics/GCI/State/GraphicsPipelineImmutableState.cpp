@@ -12,12 +12,12 @@ namespace Ic3::Graphics::GCI
 
 	GraphicsPipelineImmutableState::~GraphicsPipelineImmutableState() = default;
 
-	EGraphicsPipelineImmutableStateType GraphicsPipelineImmutableState::queryStateType() const noexcept
+	EGraphicsPipelineImmutableStateType GraphicsPipelineImmutableState::QueryStateType() const noexcept
 	{
 		return EGraphicsPipelineImmutableStateType::Unknown;
 	}
 
-	bool GraphicsPipelineImmutableState::isDynamicOverrideState() const noexcept
+	bool GraphicsPipelineImmutableState::IsDynamicOverrideState() const noexcept
 	{
 		return false;
 	}
@@ -29,7 +29,7 @@ namespace Ic3::Graphics::GCI
 
 	PipelineImmutableStateFactorySeparableShader::~PipelineImmutableStateFactorySeparableShader() = default;
 
-	GraphicsShaderLinkageImmutableStateHandle PipelineImmutableStateFactorySeparableShader::createGraphicsShaderLinkageState(
+	GraphicsShaderLinkageImmutableStateHandle PipelineImmutableStateFactorySeparableShader::CreateGraphicsShaderLinkageState(
 			const GraphicsShaderSet & pShaderSet )
 	{
 		if( !pShaderSet[EShaderType::GSVertex] || !pShaderSet[EShaderType::GSPixel] )
@@ -37,66 +37,66 @@ namespace Ic3::Graphics::GCI
 			return nullptr;
 		}
 
-		if( !pShaderSet.validateShaders() )
+		if( !pShaderSet.ValidateShaders() )
 		{
 			return nullptr;
 		}
 
-		const auto stateCommonProperties = smutil::getGraphicsShaderLinkageCommonPropertiesForShaderSet( pShaderSet );
+		const auto commonProperties = SMU::GetGraphicsShaderLinkageCommonPropertiesForShaderSet( pShaderSet );
 
-		const auto shaderImmutableState = createGPUAPIObject<GraphicsShaderLinkageImmutableStateSeparable>(
+		const auto shaderImmutableState = CreateGfxObject<GraphicsShaderLinkageImmutableStateSeparable>(
 				mGPUDevice,
-				stateCommonProperties,
+				commonProperties,
 				pShaderSet );
 
 		return shaderImmutableState;
 	}
 
 
-	RenderPassConfigurationImmutableStateHandle PipelineImmutableStateFactory::createRenderPassStateDefault(
+	RenderPassConfigurationImmutableStateHandle PipelineImmutableStateFactory::CreateRenderPassStateDefault(
 			GPUDevice & pGPUDevice,
 			const RenderPassConfiguration & pConfiguration )
 	{
-		return RenderPassConfigurationImmutableStateDefault::createInstance( pGPUDevice, pConfiguration );
+		return RenderPassConfigurationImmutableStateDefault::CreateInstance( pGPUDevice, pConfiguration );
 	}
 
 
-	BlendImmutableStateHandle PipelineImmutableStateFactoryNull::createBlendState( const BlendConfig & )
+	BlendImmutableStateHandle PipelineImmutableStateFactoryNull::CreateBlendState( const BlendConfig & )
 	{
 		return nullptr;
 	}
 
-	DepthStencilImmutableStateHandle PipelineImmutableStateFactoryNull::createDepthStencilState( const DepthStencilConfig & )
+	DepthStencilImmutableStateHandle PipelineImmutableStateFactoryNull::CreateDepthStencilState( const DepthStencilConfig & )
 	{
 		return nullptr;
 	}
 
-	GraphicsShaderLinkageImmutableStateHandle PipelineImmutableStateFactoryNull::createGraphicsShaderLinkageState( const GraphicsShaderSet & )
+	GraphicsShaderLinkageImmutableStateHandle PipelineImmutableStateFactoryNull::CreateGraphicsShaderLinkageState( const GraphicsShaderSet & )
 	{
 		return nullptr;
 	}
 
-	IAInputLayoutImmutableStateHandle PipelineImmutableStateFactoryNull::createIAInputLayoutState( const IAInputLayoutDefinition &, Shader & )
+	IAInputLayoutImmutableStateHandle PipelineImmutableStateFactoryNull::CreateIAInputLayoutState( const IAInputLayoutDefinition &, Shader & )
 	{
 		return nullptr;
 	}
 
-	IAVertexStreamImmutableStateHandle PipelineImmutableStateFactoryNull::createIAVertexStreamState( const IAVertexStreamDefinition & )
+	IAVertexStreamImmutableStateHandle PipelineImmutableStateFactoryNull::CreateIAVertexStreamState( const IAVertexStreamDefinition & )
 	{
 		return nullptr;
 	}
 
-	RasterizerImmutableStateHandle PipelineImmutableStateFactoryNull::createRasterizerState( const RasterizerConfig & )
+	RasterizerImmutableStateHandle PipelineImmutableStateFactoryNull::CreateRasterizerState( const RasterizerConfig & )
 	{
 		return nullptr;
 	}
 
-	RenderTargetBindingImmutableStateHandle PipelineImmutableStateFactoryNull::createRenderTargetBindingState( const RenderTargetBindingDefinition & )
+	RenderTargetBindingImmutableStateHandle PipelineImmutableStateFactoryNull::CreateRenderTargetBindingState( const RenderTargetBindingDefinition & )
 	{
 		return nullptr;
 	}
 
-	RenderPassConfigurationImmutableStateHandle PipelineImmutableStateFactoryNull::createRenderPassState( const RenderPassConfiguration & )
+	RenderPassConfigurationImmutableStateHandle PipelineImmutableStateFactoryNull::CreateRenderPassState( const RenderPassConfiguration & )
 	{
 		return nullptr;
 	}
@@ -108,44 +108,44 @@ namespace Ic3::Graphics::GCI
 
 	PipelineImmutableStateFactoryAdapter::~PipelineImmutableStateFactoryAdapter() = default;
 
-	BlendImmutableStateHandle PipelineImmutableStateFactoryAdapter::createState( const BlendConfig & pConfig )
+	BlendImmutableStateHandle PipelineImmutableStateFactoryAdapter::CreateState( const BlendConfig & pConfig )
 	{
-		return _stateFactory->createBlendState( pConfig );
+		return _stateFactory->CreateBlendState( pConfig );
 	}
 
-	DepthStencilImmutableStateHandle PipelineImmutableStateFactoryAdapter::createState( const DepthStencilConfig & pConfig )
+	DepthStencilImmutableStateHandle PipelineImmutableStateFactoryAdapter::CreateState( const DepthStencilConfig & pConfig )
 	{
-		return _stateFactory->createDepthStencilState( pConfig );
+		return _stateFactory->CreateDepthStencilState( pConfig );
 	}
 
-	GraphicsShaderLinkageImmutableStateHandle PipelineImmutableStateFactoryAdapter::createState( const GraphicsShaderSet & pShaderSet )
+	GraphicsShaderLinkageImmutableStateHandle PipelineImmutableStateFactoryAdapter::CreateState( const GraphicsShaderSet & pShaderSet )
 	{
-		return _stateFactory->createGraphicsShaderLinkageState( pShaderSet );
+		return _stateFactory->CreateGraphicsShaderLinkageState( pShaderSet );
 	}
 
-	IAInputLayoutImmutableStateHandle PipelineImmutableStateFactoryAdapter::createState( const IAInputLayoutDefinition & pDefinition, Shader & pVertexShaderWithBinary )
+	IAInputLayoutImmutableStateHandle PipelineImmutableStateFactoryAdapter::CreateState( const IAInputLayoutDefinition & pDefinition, Shader & pVertexShaderWithBinary )
 	{
-		return _stateFactory->createIAInputLayoutState( pDefinition, pVertexShaderWithBinary );
+		return _stateFactory->CreateIAInputLayoutState( pDefinition, pVertexShaderWithBinary );
 	}
 
-	IAVertexStreamImmutableStateHandle PipelineImmutableStateFactoryAdapter::createState( const IAVertexStreamDefinition & pDefinition )
+	IAVertexStreamImmutableStateHandle PipelineImmutableStateFactoryAdapter::CreateState( const IAVertexStreamDefinition & pDefinition )
 	{
-		return _stateFactory->createIAVertexStreamState( pDefinition );
+		return _stateFactory->CreateIAVertexStreamState( pDefinition );
 	}
 
-	RasterizerImmutableStateHandle PipelineImmutableStateFactoryAdapter::createState( const RasterizerConfig & pConfig )
+	RasterizerImmutableStateHandle PipelineImmutableStateFactoryAdapter::CreateState( const RasterizerConfig & pConfig )
 	{
-		return _stateFactory->createRasterizerState( pConfig );
+		return _stateFactory->CreateRasterizerState( pConfig );
 	}
 
-	RenderTargetBindingImmutableStateHandle PipelineImmutableStateFactoryAdapter::createState( const RenderTargetBindingDefinition & pDefinition )
+	RenderTargetBindingImmutableStateHandle PipelineImmutableStateFactoryAdapter::CreateState( const RenderTargetBindingDefinition & pDefinition )
 	{
-		return _stateFactory->createRenderTargetBindingState( pDefinition );
+		return _stateFactory->CreateRenderTargetBindingState( pDefinition );
 	}
 
-	RenderPassConfigurationImmutableStateHandle PipelineImmutableStateFactoryAdapter::createState( const RenderPassConfiguration & pConfiguration )
+	RenderPassConfigurationImmutableStateHandle PipelineImmutableStateFactoryAdapter::CreateState( const RenderPassConfiguration & pConfiguration )
 	{
-		return _stateFactory->createRenderPassState( pConfiguration );
+		return _stateFactory->CreateRenderPassState( pConfiguration );
 	}
 
 } // namespace Ic3::Graphics::GCI

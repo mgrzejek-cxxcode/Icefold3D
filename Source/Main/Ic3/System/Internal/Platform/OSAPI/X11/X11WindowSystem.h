@@ -8,16 +8,16 @@
 namespace Ic3::System
 {
 
-	ic3SysDeclareHandle( X11DisplayManager );
-	ic3SysDeclareHandle( X11Window );
-	ic3SysDeclareHandle( X11WindowManager );
+	Ic3SysDeclareHandle( X11DisplayManager );
+	Ic3SysDeclareHandle( X11Window );
+	Ic3SysDeclareHandle( X11WindowManager );
 
 	namespace Platform
 	{
 
 		struct X11WindowNativeData : public X11EventSourceNativeData
 		{
-			Colormap xColormap = E_X11_XID_NONE;
+			Colormap xColormap = eXIDNone;
 		};
 
 		struct X11WindowCreateInfo : public WindowCreateInfo
@@ -27,34 +27,37 @@ namespace Ic3::System
 			bool fullscreenMode = false;
 		};
 
-		void x11CreateWindow( X11WindowNativeData & pWindowNativeData, const X11WindowCreateInfo & pCreateInfo );
+		void X11CreateWindow( X11WindowNativeData & pWindowNativeData, const X11WindowCreateInfo & pCreateInfo );
 
-		void x11WindowPostCreateUpdate( X11WindowNativeData & pWindowNativeData, const X11WindowCreateInfo & pCreateInfo );
+		void X11WindowPostCreateUpdate( X11WindowNativeData & pWindowNativeData, const X11WindowCreateInfo & pCreateInfo );
 		
-		void x11DestroyWindow( X11WindowNativeData & pWindowNativeData );
+		void X11DestroyWindow( X11WindowNativeData & pWindowNativeData );
 
-		void x11SetWindowFullscreenState( X11WindowNativeData & pWindowNativeData, bool pSetFullscreen );
+		void X11SetWindowFullscreenState( X11WindowNativeData & pWindowNativeData, bool pSetFullscreen );
 
-		void x11SetFrameTitle( const X11WindowNativeData & pWindowNativeData, const std::string & pTitle );
+		void X11SetFrameTitle( const X11WindowNativeData & pWindowNativeData, const std::string & pTitle );
 
-		void x11UpdateFrameGeometry( const X11WindowNativeData & pWindowNativeData,
-		                             const FrameGeometry & pFrameGeometry,
-		                             Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags );
+		void X11UpdateFrameGeometry(
+				const X11WindowNativeData & pWindowNativeData,
+				const FrameGeometry & pFrameGeometry,
+				cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags );
 
-		IC3_SYSTEM_API_NODISCARD FrameSize x11GetFrameSize( const X11WindowNativeData & pWindowNativeData, EFrameSizeMode pSizeMode );
+		CPPX_ATTR_NO_DISCARD FrameSize X11GetFrameSize( const X11WindowNativeData & pWindowNativeData, EFrameSizeMode pSizeMode );
 
-		IC3_SYSTEM_API_NODISCARD bool x11IsFullscreenWindow( XDisplay pDisplay, XWindow pWindow );
+		CPPX_ATTR_NO_DISCARD bool X11IsFullscreenWindow( XDisplay pDisplay, XWindow pWindow );
 
-		IC3_SYSTEM_API_NODISCARD bool x11IsFullscreenWindow( const X11WindowNativeData & pWindowNativeData );
+		CPPX_ATTR_NO_DISCARD bool X11IsFullscreenWindow( const X11WindowNativeData & pWindowNativeData );
 
-		IC3_SYSTEM_API_NODISCARD std::vector<Atom> x11QueryWindowPropertyValueArray( XDisplay pDisplay,
-		                                                                             XWindow pWindow,
-		                                                                             const char * pPropertyName );
+		CPPX_ATTR_NO_DISCARD std::vector<Atom> X11QueryWindowPropertyValueArray(
+				XDisplay pDisplay,
+				XWindow pWindow,
+				const char * pPropertyName );
 
-		IC3_SYSTEM_API_NODISCARD bool x11CheckWindowPropertyValueSet( XDisplay pDisplay,
-		                                                              XWindow pWindow,
-		                                                              const char * pPropertyName,
-		                                                              const char * pValueID );
+		CPPX_ATTR_NO_DISCARD bool X11CheckWindowPropertyValueSet(
+				XDisplay pDisplay,
+				XWindow pWindow,
+				const char * pPropertyName,
+				const char * pValueID );
 
 	}
 
@@ -65,11 +68,11 @@ namespace Ic3::System
 		virtual ~X11WindowManager() noexcept;
 
 	private:
-		// @override WindowManager::_nativeCreateWindow
-		virtual WindowHandle _nativeCreateWindow( WindowCreateInfo pCreateInfo ) override final;
+		// @override WindowManager::_NativeCreateWindow
+		virtual WindowHandle _NativeCreateWindow( WindowCreateInfo pCreateInfo ) override final;
 
-		// @override WindowManager::_nativeDestroyWindow
-		virtual void _nativeDestroyWindow( Window & pWindow ) override final;
+		// @override WindowManager::_NativeDestroyWindow
+		virtual void _NativeDestroyWindow( Window & pWindow ) override final;
 	};
 
 	class X11Window : public X11NativeObject<Window, Platform::X11WindowNativeData>
@@ -81,21 +84,22 @@ namespace Ic3::System
 		virtual ~X11Window() noexcept;
 
 	private:
-		// @override Window::_nativeResize
-		virtual void _nativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode ) override final;
+		// @override Window::_NativeResize
+		virtual void _NativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode ) override final;
 
-		// @override Window::_nativeSetFullscreenMode
-		virtual void _nativeSetFullscreenMode( bool pEnable ) override final;
+		// @override Window::_NativeSetFullscreenMode
+		virtual void _NativeSetFullscreenMode( bool pEnable ) override final;
 
-		// @override Window::_nativeSetTitle
-		virtual void _nativeSetTitle( const std::string & pTitle ) override final;
+		// @override Window::_NativeSetTitle
+		virtual void _NativeSetTitle( const std::string & pTitle ) override final;
 
-		// @override Window::_nativeUpdateGeometry
-		virtual void _nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-											Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
+		// @override Window::_NativeUpdateGeometry
+		virtual void _NativeUpdateGeometry(
+				const FrameGeometry & pFrameGeometry,
+				cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
 
-		// @override Window::_nativeGetSize
-		virtual FrameSize _nativeGetSize( EFrameSizeMode pSizeMode ) const override final;
+		// @override Window::_NativeGetSize
+		virtual FrameSize _NativeGetSize( EFrameSizeMode pSizeMode ) const override final;
 	};
 
 } // namespace Ic3::System

@@ -53,7 +53,7 @@ namespace Ic3::Graphics::GCI
 	struct RenderPassAttachmentConfig
 	{
 		RenderTargetAttachmentClearConfig clearConfig;
-		Bitmask<ERenderTargetBufferFlags> clearMask = E_RENDER_TARGET_BUFFER_MASK_ALL;
+		cppx::bitmask<ERenderTargetBufferFlags> clearMask = E_RENDER_TARGET_BUFFER_MASK_ALL;
 		ERenderPassAttachmentLoadAction renderPassLoadAction = ERenderPassAttachmentLoadAction::Undefined;
 		ERenderPassAttachmentStoreAction renderPassStoreAction = ERenderPassAttachmentStoreAction::Undefined;
 
@@ -79,41 +79,41 @@ namespace Ic3::Graphics::GCI
 
 	struct RenderPassConfiguration : public RenderTargetAttachmentConfigurationSet<RenderPassAttachmentConfig>
 	{
-		Bitmask<ERTAttachmentFlags> attachmentsAccessRestrictMask = 0;
+		cppx::bitmask<ERTAttachmentFlags> attachmentsAccessRestrictMask = 0;
 
-		Bitmask<ERTAttachmentFlags> attachmentsActionClearMask = 0;
+		cppx::bitmask<ERTAttachmentFlags> attachmentsActionClearMask = 0;
 
-		IC3_ATTR_NO_DISCARD native_uint countAttachmentsAccessRestrict() const noexcept
+		CPPX_ATTR_NO_DISCARD native_uint CountAttachmentsAccessRestrict() const noexcept
 		{
-			return popCount( attachmentsAccessRestrictMask & E_RT_ATTACHMENT_MASK_ALL );
+			return pop_count( attachmentsAccessRestrictMask & eRTAttachmentMaskAll );
 		}
 
-		IC3_ATTR_NO_DISCARD native_uint countAttachmentsActionClear() const noexcept
+		CPPX_ATTR_NO_DISCARD native_uint CountAttachmentsActionClear() const noexcept
 		{
-			return popCount( attachmentsActionClearMask & E_RT_ATTACHMENT_MASK_ALL );
+			return pop_count( attachmentsActionClearMask & eRTAttachmentMaskAll );
 		}
 
-		IC3_ATTR_NO_DISCARD RenderPassConfiguration getValidated() const noexcept
+		CPPX_ATTR_NO_DISCARD RenderPassConfiguration GetValidated() const noexcept
 		{
 			RenderPassConfiguration validatedConfiguration = *this;
-			validatedConfiguration.resetAttachmentsFlags();
+			validatedConfiguration.ResetAttachmentsFlags();
 			return validatedConfiguration;
 		}
 
-		IC3_GRAPHICS_GCI_API void resetAttachmentsFlags() noexcept;
+		IC3_GRAPHICS_GCI_API void ResetAttachmentsFlags() noexcept;
 	};
 
-	namespace smutil
+	namespace SMU
 	{
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD Bitmask<ERenderPassAttachmentActionFlags> getRenderPassAttachmentActionMask(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD cppx::bitmask<ERenderPassAttachmentActionFlags> GetRenderPassAttachmentActionMask(
 				const RenderPassAttachmentConfig & pAttachmentConfig );
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD Bitmask<ERTAttachmentFlags> getRenderPassAttachmentArbitraryActionMask(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD cppx::bitmask<ERTAttachmentFlags> GetRenderPassAttachmentArbitraryActionMask(
 				const RenderPassColorAttachmentConfigArray & pColorAttachments,
 				const RenderPassAttachmentConfig pDepthStencilAttachment,
-				Bitmask<ERTAttachmentFlags> pActiveAttachmentsMask,
-				Bitmask<ERenderPassAttachmentActionFlags> pActionMask );
+				cppx::bitmask<ERTAttachmentFlags> pActiveAttachmentsMask,
+				cppx::bitmask<ERenderPassAttachmentActionFlags> pActionMask );
 
 	}
 

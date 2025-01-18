@@ -11,12 +11,12 @@ namespace Ic3::Graphics::GCI
 
 	GLObject::~GLObject() = default;
 
-	bool GLObject::release()
+	bool GLObject::Release()
 	{
 		return true;
 	}
 
-	bool GLObject::validateHandle() const
+	bool GLObject::ValidateHandle() const
 	{
 		return false;
 	}

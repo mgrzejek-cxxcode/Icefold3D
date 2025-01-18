@@ -8,159 +8,159 @@
 namespace Ic3
 {
 
-	template <typename TClass>
-	using RSharedHandle = std::shared_ptr<TClass>;
+	template <typename TPClass>
+	using TSharedHandle = std::shared_ptr<TPClass>;
 
-	template <typename TClass>
-	using RWeakHandle = std::weak_ptr<TClass>;
+	template <typename TPClass>
+	using TWeakHandle = std::weak_ptr<TPClass>;
 
-	inline constexpr std::nullptr_t cvNullHandle { nullptr };
+	constexpr std::nullptr_t cvNullHandle = nullptr;
 
-	class DynamicInterface : public std::enable_shared_from_this<DynamicInterface>
+	class IDynamicObject : public std::enable_shared_from_this<IDynamicObject>
 	{
 	public:
-		virtual ~DynamicInterface() = default;
+		virtual ~IDynamicObject() = default;
 
-		template <typename TInterfaceSubClass>
-		IC3_ATTR_NO_DISCARD TInterfaceSubClass * getInterface()
+		template <typename TPInterfaceSubClass>
+		CPPX_ATTR_NO_DISCARD TPInterfaceSubClass * GetInterface()
 		{
 		#if( IC3_DEBUG )
-			return dynamic_cast_check<TInterfaceSubClass *>( this );
+			return dynamic_cast_check<TPInterfaceSubClass *>( this );
 		#else
-			return static_cast<TInterfaceSubClass *>( this );
+			return static_cast<TPInterfaceSubClass *>( this );
 		#endif
 		}
 
-		template <typename TInterfaceSubClass>
-		IC3_ATTR_NO_DISCARD const TInterfaceSubClass * getInterface() const
+		template <typename TPInterfaceSubClass>
+		CPPX_ATTR_NO_DISCARD const TPInterfaceSubClass * GetInterface() const
 		{
 		#if( IC3_DEBUG )
-		    return dynamic_cast_check<const TInterfaceSubClass *>( this );
+		    return dynamic_cast_check<const TPInterfaceSubClass *>( this );
 		#else
-		    return static_cast<const TInterfaceSubClass *>( this );
+		    return static_cast<const TPInterfaceSubClass *>( this );
 		#endif
 		}
 
-		template <typename TInterfaceSubClass>
-		IC3_ATTR_NO_DISCARD TInterfaceSubClass * queryInterface()
+		template <typename TPInterfaceSubClass>
+		CPPX_ATTR_NO_DISCARD TPInterfaceSubClass * QueryInterface()
 		{
 		#if( IC3_DEBUG )
-			return dynamic_cast_check<TInterfaceSubClass *>( this );
+			return dynamic_cast_check<TPInterfaceSubClass *>( this );
 		#else
-			return dynamic_cast_throw<TInterfaceSubClass *>( this );
+			return dynamic_cast_throw<TPInterfaceSubClass *>( this );
 		#endif
 		}
 
-		template <typename TInterfaceSubClass>
-		IC3_ATTR_NO_DISCARD const TInterfaceSubClass * queryInterface() const
+		template <typename TPInterfaceSubClass>
+		CPPX_ATTR_NO_DISCARD const TPInterfaceSubClass * QueryInterface() const
 		{
 		#if( IC3_DEBUG )
-			return dynamic_cast_check<const TInterfaceSubClass *>( this );
+			return dynamic_cast_check<const TPInterfaceSubClass *>( this );
 		#else
-			return dynamic_cast_throw<const TInterfaceSubClass *>( this );
+			return dynamic_cast_throw<const TPInterfaceSubClass *>( this );
 		#endif
 		}
 
-		template <typename TInterfaceSubClass>
-		IC3_ATTR_NO_DISCARD RSharedHandle<TInterfaceSubClass> getHandle()
+		template <typename TPInterfaceSubClass>
+		CPPX_ATTR_NO_DISCARD TSharedHandle<TPInterfaceSubClass> GetHandle()
 		{
 		#if( IC3_DEBUG )
-			return dynamic_ptr_cast_check<TInterfaceSubClass>( shared_from_this() );
+			return dynamic_ptr_cast_check<TPInterfaceSubClass>( shared_from_this() );
 		#else
-			return std::static_pointer_cast<TInterfaceSubClass>( shared_from_this() );
+			return std::static_pointer_cast<TPInterfaceSubClass>( shared_from_this() );
 		#endif
 		}
 
-		template <typename TInterfaceSubClass>
-		IC3_ATTR_NO_DISCARD RSharedHandle<TInterfaceSubClass> queryHandle()
+		template <typename TPInterfaceSubClass>
+		CPPX_ATTR_NO_DISCARD TSharedHandle<TPInterfaceSubClass> QueryHandle()
 		{
 		#if( IC3_DEBUG )
-			return dynamic_ptr_cast_throw<TInterfaceSubClass>( shared_from_this() );
+			return dynamic_ptr_cast_throw<TPInterfaceSubClass>( shared_from_this() );
 		#else
-			return std::static_pointer_cast<TInterfaceSubClass>( shared_from_this() );
+			return std::static_pointer_cast<TPInterfaceSubClass>( shared_from_this() );
 		#endif
 		}
 
 	private:
-		using std::enable_shared_from_this<DynamicInterface>::shared_from_this;
-		using std::enable_shared_from_this<DynamicInterface>::weak_from_this;
+		using std::enable_shared_from_this<IDynamicObject>::shared_from_this;
+		using std::enable_shared_from_this<IDynamicObject>::weak_from_this;
 	};
 
-	template <typename TClass, typename... TArgs>
-	IC3_ATTR_NO_DISCARD inline RSharedHandle<TClass> createDynamicInterfaceObject( TArgs && ...pArgs )
+	template <typename TPClass, typename... TPArgs>
+	CPPX_ATTR_NO_DISCARD inline TSharedHandle<TPClass> CreateDynamicObject( TPArgs && ...pArgs )
 	{
-		auto objectHandle = std::make_shared<TClass>( std::forward<TArgs>( pArgs )... );
+		auto objectHandle = std::make_shared<TPClass>( std::forward<TPArgs>( pArgs )... );
 	#if( IC3_DEBUG )
-		// This will trigger a compile-time error if TClass is not a subclass of DynamicInterface.
-		static_cast<DynamicInterface *>( objectHandle.get() );
+		// This will trigger a compile-time error if TPClass is not a subclass of IDynamicObject.
+		static_cast<IDynamicObject *>( objectHandle.get() );
 	#endif
 		return objectHandle;
 	}
 
-    template <typename TClass, typename TDeleter, typename... TArgs>
-    IC3_ATTR_NO_DISCARD inline RSharedHandle<TClass> createDynamicInterfaceObjectWithDeleter( TDeleter pDeleter, TArgs && ...pArgs )
+    template <typename TPClass, typename TPDeleter, typename... TPArgs>
+    CPPX_ATTR_NO_DISCARD inline TSharedHandle<TPClass> CreateDynamicObjectWithDeleter( TPDeleter pDeleter, TPArgs && ...pArgs )
     {
-        auto objectHandle = std::shared_ptr<TClass>{ new TClass( std::forward<TArgs>( pArgs )... ), std::forward<TDeleter>( pDeleter ) };
+        auto objectHandle = std::shared_ptr<TPClass>{ new TPClass( std::forward<TPArgs>( pArgs )... ), std::forward<TPDeleter>( pDeleter ) };
     #if( IC3_DEBUG )
-        // This will trigger a compile-time error if TClass is not a subclass of DynamicInterface.
-        static_cast<DynamicInterface *>( objectHandle.get() );
+        // This will trigger a compile-time error if TPClass is not a subclass of IDynamicObject.
+        static_cast<IDynamicObject *>( objectHandle.get() );
     #endif
         return objectHandle;
     }
 
-	template <typename TResultType, typename TInputType>
-	IC3_ATTR_NO_DISCARD inline std::unique_ptr<TResultType> moveInterfaceUniquePtr( std::unique_ptr<TInputType> pUPtr )
+	template <typename TPResultType, typename TPInputType>
+	CPPX_ATTR_NO_DISCARD inline std::unique_ptr<TPResultType> MoveInterfaceUniquePtr( std::unique_ptr<TPInputType> pUPtr )
 	{
-		std::unique_ptr<TResultType> result;
+		std::unique_ptr<TPResultType> result;
 		if( pUPtr )
 		{
-			if( TResultType * targetPtr = pUPtr->template queryInterface<TResultType>() )
+			if( TPResultType * targetPtr = pUPtr->template QueryInterface<TPResultType>() )
 			{
-				result = std::unique_ptr<TResultType>{ targetPtr };
+				result = std::unique_ptr<TPResultType>{ targetPtr };
 				pUPtr.release();
 			}
 		}
 		return result;
 	}
 
-	template <typename TInterfaceSubClass, typename TInputType>
-	IC3_ATTR_NO_DISCARD inline TInterfaceSubClass * dynamic_interface_cast_get( TInputType * pInterfacePtr )
+	template <typename TPInterfaceSubClass, typename TPInputType>
+	CPPX_ATTR_NO_DISCARD inline TPInterfaceSubClass * dynamic_interface_cast_get( TPInputType * pInterfacePtr )
 	{
-		return reinterpret_cast<DynamicInterface *>( pInterfacePtr )->template getInterface<TInterfaceSubClass>();
+		return reinterpret_cast<IDynamicObject *>( pInterfacePtr )->template GetInterface<TPInterfaceSubClass>();
 	}
 
-	template <typename TInterfaceSubClass, typename TInputType>
-	IC3_ATTR_NO_DISCARD inline const TInterfaceSubClass * dynamic_interface_cast_get( const TInputType * pInterfacePtr )
+	template <typename TPInterfaceSubClass, typename TPInputType>
+	CPPX_ATTR_NO_DISCARD inline const TPInterfaceSubClass * dynamic_interface_cast_get( const TPInputType * pInterfacePtr )
 	{
-		return reinterpret_cast<const DynamicInterface *>( pInterfacePtr )->template getInterface<TInterfaceSubClass>();
+		return reinterpret_cast<const IDynamicObject *>( pInterfacePtr )->template GetInterface<TPInterfaceSubClass>();
 	}
 
-	template <typename TInterfaceSubClass, typename TInputType>
-	IC3_ATTR_NO_DISCARD inline TInterfaceSubClass * dynamic_interface_cast_query( TInputType * pInterfacePtr )
+	template <typename TPInterfaceSubClass, typename TPInputType>
+	CPPX_ATTR_NO_DISCARD inline TPInterfaceSubClass * dynamic_interface_cast_query( TPInputType * pInterfacePtr )
 	{
-		return reinterpret_cast<DynamicInterface *>( pInterfacePtr )->template queryInterface<TInterfaceSubClass>();
+		return reinterpret_cast<IDynamicObject *>( pInterfacePtr )->template QueryInterface<TPInterfaceSubClass>();
 	}
 
-	template <typename TInterfaceSubClass, typename TInputType>
-	IC3_ATTR_NO_DISCARD inline const TInterfaceSubClass * dynamic_interface_cast_query( const TInputType * pInterfacePtr )
+	template <typename TPInterfaceSubClass, typename TPInputType>
+	CPPX_ATTR_NO_DISCARD inline const TPInterfaceSubClass * dynamic_interface_cast_query( const TPInputType * pInterfacePtr )
 	{
-		return reinterpret_cast<const DynamicInterface *>( pInterfacePtr )->template queryInterface<TInterfaceSubClass>();
+		return reinterpret_cast<const IDynamicObject *>( pInterfacePtr )->template QueryInterface<TPInterfaceSubClass>();
 	}
 
-#define ic3DeclareClassHandle( pClassName ) \
+#define Ic3DeclareClassHandle( pClassName ) \
     class pClassName; \
-    using pClassName##Handle = RSharedHandle<pClassName>; \
-    using pClassName##RWeakHandle = RWeakHandle<pClassName>
+    using pClassName##Handle = TSharedHandle<pClassName>; \
+    using pClassName##TWeakHandle = TWeakHandle<pClassName>
 
-#define ic3DeclareInterfaceHandle( pInterfaceName ) \
+#define Ic3DeclareInterfaceHandle( pInterfaceName ) \
     class pInterfaceName; \
-    using pInterfaceName##Handle = RSharedHandle<pInterfaceName>; \
-    using pInterfaceName##RWeakHandle = RWeakHandle<pInterfaceName>
+    using pInterfaceName##Handle = TSharedHandle<pInterfaceName>; \
+    using pInterfaceName##TWeakHandle = TWeakHandle<pInterfaceName>
 
-#define ic3DeclareTypedefHandle( pAliasName, pTypeName ) \
+#define Ic3DeclareTypedefHandle( pAliasName, pTypeName ) \
     using pAliasName = pTypeName; \
-    using pAliasName##Handle = RSharedHandle<pAliasName>; \
-    using pAliasName##RWeakHandle = RWeakHandle<pAliasName>
+    using pAliasName##Handle = TSharedHandle<pAliasName>; \
+    using pAliasName##TWeakHandle = TWeakHandle<pAliasName>
 
 }
 

@@ -10,239 +10,239 @@ namespace Ic3::Math
 	namespace ArrayOps
 	{
 
-		template <typename TVal>
-		inline void set( Array2<TVal> & pDest, TVal pX, TVal pY )
+		template <typename TPVal>
+		inline void set( Array2<TPVal> & pDest, TPVal pX, TPVal pY )
 		{
 			pDest[0] = pX;
 			pDest[1] = pY;
 		}
 
-		template <typename TVal>
-		inline void set( Array2<TVal> & pDest, TVal pValue )
+		template <typename TPVal>
+		inline void set( Array2<TPVal> & pDest, TPVal pValue )
 		{
 			pDest[0] = pValue;
 			pDest[1] = pValue;
 		}
 
-		template <typename TVal>
-		inline void set( Array2<TVal> & pDest, const TVal * pArray )
+		template <typename TPVal>
+		inline void set( Array2<TPVal> & pDest, const TPVal * pArray )
 		{
 			pDest[0] = pArray[0];
 			pDest[1] = pArray[1];
 		}
 
-		template <typename TVal>
-		inline void add( const Array2<TVal> & pFirst, const Array2<TVal> & pSecond, Array2<TVal> & pResult )
+		template <typename TPVal>
+		inline void add( const Array2<TPVal> & pFirst, const Array2<TPVal> & pSecond, Array2<TPVal> & pResult )
 		{
 			pResult[0] = pFirst[0] + pSecond[0];
 			pResult[1] = pFirst[1] + pSecond[1];
 		}
 
-		template <typename TVal>
-		inline void sub( const Array2<TVal> & pFirst, const Array2<TVal> & pSecond, Array2<TVal> & pResult )
+		template <typename TPVal>
+		inline void sub( const Array2<TPVal> & pFirst, const Array2<TPVal> & pSecond, Array2<TPVal> & pResult )
 		{
 			pResult[0] = pFirst[0] - pSecond[0];
 			pResult[1] = pFirst[1] - pSecond[1];
 		}
 
-		template <typename TVal>
-		inline void mul( const Array2<TVal> & pFirst, const Array2<TVal> & pSecond, Array2<TVal> & pResult )
+		template <typename TPVal>
+		inline void mul( const Array2<TPVal> & pFirst, const Array2<TPVal> & pSecond, Array2<TPVal> & pResult )
 		{
 			pResult[0] = pFirst[0] * pSecond[0];
 			pResult[1] = pFirst[1] * pSecond[1];
 		}
 
-		template <typename TVal, typename TScalar, enable_if_scalar_t<TScalar> = true>
-		inline void mul( const Array2<TVal> & pData, const TScalar pScalar, Array2<TVal> & pResult )
+		template <typename TPVal, typename TPScalar, enable_if_scalar_t<TPScalar> = true>
+		inline void mul( const Array2<TPVal> & pData, const TPScalar pScalar, Array2<TPVal> & pResult )
 		{
 			pResult[0] = pData[0] * pScalar;
 			pResult[1] = pData[1] * pScalar;
 		}
 
-		template <typename TVal>
-		inline void div( const Array2<TVal> & pFirst, const Array2<TVal> & pSecond, Array2<TVal> & pResult )
+		template <typename TPVal>
+		inline void div( const Array2<TPVal> & pFirst, const Array2<TPVal> & pSecond, Array2<TPVal> & pResult )
 		{
 			pResult[0] = pFirst[0] / pSecond[0];
 			pResult[1] = pFirst[1] / pSecond[1];
 		}
 
-		template <typename TVal, typename TScalar, enable_if_scalar_t<TScalar> = true>
-		inline void div( const Array2<TVal> & pData, const TScalar pScalar, Array2<TVal> & pResult )
+		template <typename TPVal, typename TPScalar, enable_if_scalar_t<TPScalar> = true>
+		inline void div( const Array2<TPVal> & pData, const TPScalar pScalar, Array2<TPVal> & pResult )
 		{
 			pResult[0] = pData[0] / pScalar;
 			pResult[1] = pData[1] / pScalar;
 		}
 
-		template <typename TVal, typename TScalar, enable_if_scalar_t<TScalar> = true>
-		inline void div( const TScalar pScalar, const Array2<TVal> & pData, Array2<TVal> & pResult )
+		template <typename TPVal, typename TPScalar, enable_if_scalar_t<TPScalar> = true>
+		inline void div( const TPScalar pScalar, const Array2<TPVal> & pData, Array2<TPVal> & pResult )
 		{
 			pResult[0] = pScalar / pData[0];
 			pResult[1] = pScalar / pData[1];
 		}
 
-		template <typename TVal>
-		inline void neg( const Array2<TVal> & pData, Array2<TVal> & pResult )
+		template <typename TPVal>
+		inline void neg( const Array2<TPVal> & pData, Array2<TPVal> & pResult )
 		{
 			pResult[0] = -pData[0];
 			pResult[1] = -pData[1];
 		}
 
-		template <typename TVal>
-		inline TVal dot( const Array2<TVal> & pFirst, const Array2<TVal> & pSecond )
+		template <typename TPVal>
+		inline TPVal dot( const Array2<TPVal> & pFirst, const Array2<TPVal> & pSecond )
 		{
 			return pFirst[0] * pSecond[0] + pFirst[1] * pSecond[1];
 		}
 
-		template <typename TVal>
-		inline TVal length( const Array2<TVal> & pData )
+		template <typename TPVal>
+		inline TPVal length( const Array2<TPVal> & pData )
 		{
-			return static_cast<TVal>( sqrt( dot( pData, pData ) ) );
+			return static_cast<TPVal>( sqrt( dot( pData, pData ) ) );
 		}
 
-		template <typename TVal>
-		inline void normalize( const Array2<TVal> & pData, Array2<TVal> & pResult )
+		template <typename TPVal>
+		inline void normalize( const Array2<TPVal> & pData, Array2<TPVal> & pResult )
 		{
 			const auto dotInvSqrt = invSqrt( dot( pData, pData ) );
 			pResult[0] = pData[0] * dotInvSqrt;
 			pResult[1] = pData[1] * dotInvSqrt;
 		}
 
-		template <typename TVal>
-		inline void normalizeInplace( Array2<TVal> & pData )
+		template <typename TPVal>
+		inline void normalizeInplace( Array2<TPVal> & pData )
 		{
 			normalize( pData, pData );
 		}
 
-		template <typename TVal>
-		inline bool cmpEqual( const Array2<TVal> & pFirst, const Array2<TVal> & pSecond )
+		template <typename TPVal>
+		inline bool cmpEqual( const Array2<TPVal> & pFirst, const Array2<TPVal> & pSecond )
 		{
 			return ( pFirst[0] == pSecond[0] ) && ( pFirst[1] == pSecond[1] );
 		}
 
-		template <typename TVal>
-		inline bool cmpNotEqual( const Array2<TVal> & pFirst, const Array2<TVal> & pSecond )
+		template <typename TPVal>
+		inline bool cmpNotEqual( const Array2<TPVal> & pFirst, const Array2<TPVal> & pSecond )
 		{
 			return ( pFirst[0] != pSecond[0] ) || ( pFirst[1] != pSecond[1] );
 		}
 
-		template <typename TVal>
-		inline bool cmpLess( const Array2<TVal> & pFirst, const Array2<TVal> & pSecond )
+		template <typename TPVal>
+		inline bool cmpLess( const Array2<TPVal> & pFirst, const Array2<TPVal> & pSecond )
 		{
 			return  ( pFirst[0] < pSecond[0] ) || ( ( pFirst[0] == pSecond[0] ) && ( pFirst[1] < pSecond[1] ) );
 		}
 
 
 
-		template <typename TVal>
-		inline void set( Array3<TVal> & pDest, float pX, float pY, float pZ )
+		template <typename TPVal>
+		inline void set( Array3<TPVal> & pDest, float pX, float pY, float pZ )
 		{
 			pDest[0] = pX;
 			pDest[1] = pY;
 			pDest[2] = pZ;
 		}
 
-		template <typename TVal>
-		inline void set( Array3<TVal> & pDest, TVal pValue )
+		template <typename TPVal>
+		inline void set( Array3<TPVal> & pDest, TPVal pValue )
 		{
 			pDest[0] = pValue;
 			pDest[1] = pValue;
 			pDest[2] = pValue;
 		}
 
-		template <typename TVal>
-		inline void set( Array3<TVal> & pDest, const float * pArray )
+		template <typename TPVal>
+		inline void set( Array3<TPVal> & pDest, const float * pArray )
 		{
 			pDest[0] = pArray[0];
 			pDest[1] = pArray[1];
 			pDest[2] = pArray[2];
 		}
 
-		template <typename TVal>
-		inline void add( const Array3<TVal> & pFirst, const Array3<TVal> & pSecond, Array3<TVal> & pResult )
+		template <typename TPVal>
+		inline void add( const Array3<TPVal> & pFirst, const Array3<TPVal> & pSecond, Array3<TPVal> & pResult )
 		{
 			pResult[0] = pFirst[0] + pSecond[0];
 			pResult[1] = pFirst[1] + pSecond[1];
 			pResult[2] = pFirst[2] + pSecond[2];
 		}
 
-		template <typename TVal>
-		inline void sub( const Array3<TVal> & pFirst, const Array3<TVal> & pSecond, Array3<TVal> & pResult )
+		template <typename TPVal>
+		inline void sub( const Array3<TPVal> & pFirst, const Array3<TPVal> & pSecond, Array3<TPVal> & pResult )
 		{
 			pResult[0] = pFirst[0] - pSecond[0];
 			pResult[1] = pFirst[1] - pSecond[1];
 			pResult[2] = pFirst[2] - pSecond[2];
 		}
 
-		template <typename TVal>
-		inline void mul( const Array3<TVal> & pFirst, const Array3<TVal> & pSecond, Array3<TVal> & pResult )
+		template <typename TPVal>
+		inline void mul( const Array3<TPVal> & pFirst, const Array3<TPVal> & pSecond, Array3<TPVal> & pResult )
 		{
 			pResult[0] = pFirst[0] * pSecond[0];
 			pResult[1] = pFirst[1] * pSecond[1];
 			pResult[2] = pFirst[2] * pSecond[2];
 		}
 
-		template <typename TVal, typename TScalar, enable_if_scalar_t<TScalar> = true>
-		inline void mul( const Array3<TVal> & pData, const TScalar pScalar, Array3<TVal> & pResult )
+		template <typename TPVal, typename TPScalar, enable_if_scalar_t<TPScalar> = true>
+		inline void mul( const Array3<TPVal> & pData, const TPScalar pScalar, Array3<TPVal> & pResult )
 		{
 			pResult[0] = pData[0] * pScalar;
 			pResult[1] = pData[1] * pScalar;
 			pResult[2] = pData[2] * pScalar;
 		}
 
-		template <typename TVal>
-		inline void div( const Array3<TVal> & pFirst, const Array3<TVal> & pSecond, Array3<TVal> & pResult )
+		template <typename TPVal>
+		inline void div( const Array3<TPVal> & pFirst, const Array3<TPVal> & pSecond, Array3<TPVal> & pResult )
 		{
 			pResult[0] = pFirst[0] / pSecond[0];
 			pResult[1] = pFirst[1] / pSecond[1];
 			pResult[2] = pFirst[2] / pSecond[2];
 		}
 
-		template <typename TVal, typename TScalar, enable_if_scalar_t<TScalar> = true>
-		inline void div( const Array3<TVal> & pData, const TScalar pScalar, Array3<TVal> & pResult )
+		template <typename TPVal, typename TPScalar, enable_if_scalar_t<TPScalar> = true>
+		inline void div( const Array3<TPVal> & pData, const TPScalar pScalar, Array3<TPVal> & pResult )
 		{
 			pResult[0] = pData[0] / pScalar;
 			pResult[1] = pData[1] / pScalar;
 			pResult[2] = pData[2] / pScalar;
 		}
 
-		template <typename TVal, typename TScalar, enable_if_scalar_t<TScalar> = true>
-		inline void div( const TScalar pScalar, const Array3<TVal> & pData, Array3<TVal> & pResult )
+		template <typename TPVal, typename TPScalar, enable_if_scalar_t<TPScalar> = true>
+		inline void div( const TPScalar pScalar, const Array3<TPVal> & pData, Array3<TPVal> & pResult )
 		{
 			pResult[0] = pScalar / pData[0];
 			pResult[1] = pScalar / pData[1];
 			pResult[2] = pScalar / pData[2];
 		}
 
-		template <typename TVal>
-		inline void neg( const Array3<TVal> & pData, Array3<TVal> & pResult )
+		template <typename TPVal>
+		inline void neg( const Array3<TPVal> & pData, Array3<TPVal> & pResult )
 		{
 			pResult[0] = ( -pData[0] );
 			pResult[1] = ( -pData[1] );
 			pResult[2] = ( -pData[2] );
 		}
 
-		template <typename TVal>
-		inline void cross( const Array3<TVal> & pFirst, const Array3<TVal> & pSecond, Array3<TVal> & pResult )
+		template <typename TPVal>
+		inline void cross( const Array3<TPVal> & pFirst, const Array3<TPVal> & pSecond, Array3<TPVal> & pResult )
 		{
 			pResult[0] = pFirst[1] * pSecond[2] - pFirst[2] * pSecond[1];
 			pResult[1] = pFirst[2] * pSecond[0] - pFirst[0] * pSecond[2];
 			pResult[2] = pFirst[0] * pSecond[1] - pFirst[1] * pSecond[0];
 		}
 
-		template <typename TVal>
-		inline TVal dot( const Array3<TVal> & pFirst, const Array3<TVal> & pSecond )
+		template <typename TPVal>
+		inline TPVal dot( const Array3<TPVal> & pFirst, const Array3<TPVal> & pSecond )
 		{
 			return pFirst[0] * pSecond[0] + pFirst[1] * pSecond[1] + pFirst[2] * pSecond[2];
 		}
 
-		template <typename TVal>
-		static double length( const Array3<TVal> & pData )
+		template <typename TPVal>
+		static double length( const Array3<TPVal> & pData )
 		{
 			return sqrt( dot( pData, pData ) );
 		}
 
-		template <typename TVal>
-		inline void normalize( const Array3<TVal> & pData, Array3<TVal> & pResult )
+		template <typename TPVal>
+		inline void normalize( const Array3<TPVal> & pData, Array3<TPVal> & pResult )
 		{
 			const auto dotInvSqrt = invSqrt( dot( pData, pData ) );
 			pResult[0] = pData[0] * dotInvSqrt;
@@ -250,26 +250,26 @@ namespace Ic3::Math
 			pResult[2] = pData[2] * dotInvSqrt;
 		}
 
-		template <typename TVal>
-		inline void normalizeInplace( Array3<TVal> & pData )
+		template <typename TPVal>
+		inline void normalizeInplace( Array3<TPVal> & pData )
 		{
 			normalize( pData, pData );
 		}
 
-		template <typename TVal>
-		inline bool cmpEqual( const Array3<TVal> & pFirst, const Array3<TVal> & pSecond )
+		template <typename TPVal>
+		inline bool cmpEqual( const Array3<TPVal> & pFirst, const Array3<TPVal> & pSecond )
 		{
 			return ( pFirst[0] == pSecond[0] ) && ( pFirst[1] == pSecond[1] ) && ( pFirst[2] == pSecond[2] );
 		}
 
-		template <typename TVal>
-		inline bool cmpNotEqual( const Array3<TVal> & pFirst, const Array3<TVal> & pSecond )
+		template <typename TPVal>
+		inline bool cmpNotEqual( const Array3<TPVal> & pFirst, const Array3<TPVal> & pSecond )
 		{
 			return ( pFirst[0] != pSecond[0] ) || ( pFirst[1] != pSecond[1] ) || ( pFirst[2] != pSecond[2] );
 		}
 
-		template <typename TVal>
-		inline bool cmpLess( const Array3<TVal> & pFirst, const Array3<TVal> & pSecond )
+		template <typename TPVal>
+		inline bool cmpLess( const Array3<TPVal> & pFirst, const Array3<TPVal> & pSecond )
 		{
 			return ( pFirst[0] < pSecond[0] ) ||
 			       ( ( pFirst[0] == pSecond[0] ) && ( pFirst[1] < pSecond[1] ) ) ||
@@ -277,8 +277,8 @@ namespace Ic3::Math
 		}
 
 
-		template <typename TVal>
-		inline void set( Array4<TVal> & pDest, float pX, float pY, float pZ, float pW )
+		template <typename TPVal>
+		inline void set( Array4<TPVal> & pDest, float pX, float pY, float pZ, float pW )
 		{
 			pDest[0] = pX;
 			pDest[1] = pY;
@@ -286,8 +286,8 @@ namespace Ic3::Math
 			pDest[3] = pW;
 		}
 
-		template <typename TVal>
-		inline void set( Array4<TVal> & pDest, TVal pValue )
+		template <typename TPVal>
+		inline void set( Array4<TPVal> & pDest, TPVal pValue )
 		{
 			pDest[0] = pValue;
 			pDest[1] = pValue;
@@ -295,8 +295,8 @@ namespace Ic3::Math
 			pDest[3] = pValue;
 		}
 
-		template <typename TVal>
-		inline void set( Array4<TVal> & pDest, const float * pArray )
+		template <typename TPVal>
+		inline void set( Array4<TPVal> & pDest, const float * pArray )
 		{
 			pDest[0] = pArray[0];
 			pDest[1] = pArray[1];
@@ -304,8 +304,8 @@ namespace Ic3::Math
 			pDest[3] = pArray[3];
 		}
 
-		template <typename TVal>
-		inline void add( const Array4<TVal> & pFirst, const Array4<TVal> & pSecond, Array4<TVal> & pResult )
+		template <typename TPVal>
+		inline void add( const Array4<TPVal> & pFirst, const Array4<TPVal> & pSecond, Array4<TPVal> & pResult )
 		{
 			pResult[0] = pFirst[0] + pSecond[0];
 			pResult[1] = pFirst[1] + pSecond[1];
@@ -313,8 +313,8 @@ namespace Ic3::Math
 			pResult[3] = pFirst[3] + pSecond[3];
 		}
 
-		template <typename TVal>
-		inline void sub( const Array4<TVal> & pFirst, const Array4<TVal> & pSecond, Array4<TVal> & pResult )
+		template <typename TPVal>
+		inline void sub( const Array4<TPVal> & pFirst, const Array4<TPVal> & pSecond, Array4<TPVal> & pResult )
 		{
 			pResult[0] = pFirst[0] - pSecond[0];
 			pResult[1] = pFirst[1] - pSecond[1];
@@ -322,8 +322,8 @@ namespace Ic3::Math
 			pResult[3] = pFirst[3] - pSecond[3];
 		}
 
-		template <typename TVal>
-		inline void mul( const Array4<TVal> & pFirst, const Array4<TVal> & pSecond, Array4<TVal> & pResult )
+		template <typename TPVal>
+		inline void mul( const Array4<TPVal> & pFirst, const Array4<TPVal> & pSecond, Array4<TPVal> & pResult )
 		{
 			pResult[0] = pFirst[0] * pSecond[0];
 			pResult[1] = pFirst[1] * pSecond[1];
@@ -331,8 +331,8 @@ namespace Ic3::Math
 			pResult[3] = pFirst[3] * pSecond[3];
 		}
 
-		template <typename TVal, typename TScalar, enable_if_scalar_t<TScalar> = true>
-		inline void mul( const Array4<TVal> & pData, const TScalar pScalar, Array4<TVal> & pResult )
+		template <typename TPVal, typename TPScalar, enable_if_scalar_t<TPScalar> = true>
+		inline void mul( const Array4<TPVal> & pData, const TPScalar pScalar, Array4<TPVal> & pResult )
 		{
 			pResult[0] = pData[0] * pScalar;
 			pResult[1] = pData[1] * pScalar;
@@ -340,8 +340,8 @@ namespace Ic3::Math
 			pResult[3] = pData[3] * pScalar;
 		}
 
-		template <typename TVal>
-		inline void div( const Array4<TVal> & pFirst, const Array4<TVal> & pSecond, Array4<TVal> & pResult )
+		template <typename TPVal>
+		inline void div( const Array4<TPVal> & pFirst, const Array4<TPVal> & pSecond, Array4<TPVal> & pResult )
 		{
 			pResult[0] = pFirst[0] / pSecond[0];
 			pResult[1] = pFirst[1] / pSecond[1];
@@ -349,8 +349,8 @@ namespace Ic3::Math
 			pResult[3] = pFirst[3] / pSecond[3];
 		}
 
-		template <typename TVal, typename TScalar, enable_if_scalar_t<TScalar> = true>
-		inline void div( const Array4<TVal> & pData, const TScalar pScalar, Array4<TVal> & pResult )
+		template <typename TPVal, typename TPScalar, enable_if_scalar_t<TPScalar> = true>
+		inline void div( const Array4<TPVal> & pData, const TPScalar pScalar, Array4<TPVal> & pResult )
 		{
 			pResult[0] = pData[0] / pScalar;
 			pResult[1] = pData[1] / pScalar;
@@ -358,8 +358,8 @@ namespace Ic3::Math
 			pResult[3] = pData[3] / pScalar;
 		}
 
-		template <typename TVal, typename TScalar, enable_if_scalar_t<TScalar> = true>
-		inline void div( const TScalar pScalar, const Array4<TVal> & pData, Array4<TVal> & pResult )
+		template <typename TPVal, typename TPScalar, enable_if_scalar_t<TPScalar> = true>
+		inline void div( const TPScalar pScalar, const Array4<TPVal> & pData, Array4<TPVal> & pResult )
 		{
 			pResult[0] = pScalar / pData[0];
 			pResult[1] = pScalar / pData[1];
@@ -367,8 +367,8 @@ namespace Ic3::Math
 			pResult[3] = pScalar / pData[3];
 		}
 
-		template <typename TVal>
-		inline void neg( const Array4<TVal> & pData, Array4<TVal> & pResult )
+		template <typename TPVal>
+		inline void neg( const Array4<TPVal> & pData, Array4<TPVal> & pResult )
 		{
 			pResult[0] = ( -pData[0] );
 			pResult[1] = ( -pData[1] );
@@ -376,20 +376,20 @@ namespace Ic3::Math
 			pResult[3] = ( -pData[3] );
 		}
 
-		template <typename TVal>
-		inline TVal dot( const Array4<TVal> & pFirst, const Array4<TVal> & pSecond )
+		template <typename TPVal>
+		inline TPVal dot( const Array4<TPVal> & pFirst, const Array4<TPVal> & pSecond )
 		{
 			return pFirst[0] * pSecond[0] + pFirst[1] * pSecond[1] + pFirst[2] * pSecond[2] + pFirst[3] * pSecond[3];
 		}
 
-		template <typename TVal>
-		static double length( const Array4<TVal> & pData )
+		template <typename TPVal>
+		static double length( const Array4<TPVal> & pData )
 		{
 			return sqrt( dot( pData, pData ) );
 		}
 
-		template <typename TVal>
-		inline void normalize( const Array4<TVal> & pData, Array4<TVal> & pResult )
+		template <typename TPVal>
+		inline void normalize( const Array4<TPVal> & pData, Array4<TPVal> & pResult )
 		{
 			const auto dotInvSqrt = invSqrt( dot( pData, pData ) );
 			pResult[0] = pData[0] * dotInvSqrt;
@@ -398,35 +398,36 @@ namespace Ic3::Math
 			pResult[3] = pData[3] * dotInvSqrt;
 		}
 
-		template <typename TVal>
-		inline void normalizeInplace( Array4<TVal> & pData )
+		template <typename TPVal>
+		inline void normalizeInplace( Array4<TPVal> & pData )
 		{
 			normalize( pData, pData );
 		}
 
-		template <typename TVal>
-		inline bool cmpEqual( const Array4<TVal> & pFirst, const Array4<TVal> & pSecond )
+		template <typename TPVal>
+		inline bool cmpEqual( const Array4<TPVal> & pFirst, const Array4<TPVal> & pSecond )
 		{
 			return ( pFirst[0] == pSecond[0] ) && ( pFirst[1] == pSecond[1] ) && ( pFirst[2] == pSecond[2] ) && ( pFirst[3] == pSecond[3] );
 		}
 
-		template <typename TVal>
-		inline bool cmpNotEqual( const Array4<TVal> & pFirst, const Array4<TVal> & pSecond )
+		template <typename TPVal>
+		inline bool cmpNotEqual( const Array4<TPVal> & pFirst, const Array4<TPVal> & pSecond )
 		{
 			return ( pFirst[0] != pSecond[0] ) || ( pFirst[1] != pSecond[1] ) || ( pFirst[2] != pSecond[2] ) || ( pFirst[3] != pSecond[3] );
 		}
 
-		template <typename TVal>
-		inline bool cmpLess( const Array4<TVal> & pFirst, const Array4<TVal> & pSecond )
+		template <typename TPVal>
+		inline bool cmpLess( const Array4<TPVal> & pFirst, const Array4<TPVal> & pSecond )
 		{
 			return ( pFirst[0] < pSecond[0] ) ||
 			       ( ( pFirst[0] == pSecond[0] ) && ( pFirst[1] < pSecond[1] ) ) ||
 			       ( ( pFirst[0] == pSecond[0] ) && ( pFirst[1] == pSecond[1] ) && ( pFirst[2] < pSecond[2] ) ) ||
 			       ( ( pFirst[0] == pSecond[0] ) && ( pFirst[1] == pSecond[1] ) && ( pFirst[2] == pSecond[2] ) && ( pFirst[3] < pSecond[3] ) );
 		}
-	}
 
-}
+	} // namespace ArrayOps
+
+} // namespace Ic3::Math
 
 #if( IC3_MATH_SIMD_ENABLE )
 #  include "ArrayOpsSIMD.inl"

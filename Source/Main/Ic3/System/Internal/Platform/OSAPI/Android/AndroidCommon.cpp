@@ -1,20 +1,20 @@
 
 #include "AndroidSysContext.h"
 
-#if( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_ANDROID )
+#if( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_ANDROID )
 namespace Ic3::System
 {
 
 	namespace Platform
 	{
 
-		ASessionData & androidGetASessionData( SysContext & pSysContext )
+		ASessionData & AndroidGetASessionData( SysContext & pSysContext )
 		{
-			auto * androidSysContext = pSysContext.queryInterface<AndroidSysContext>();
+			auto * androidSysContext = pSysContext.QueryInterface<AndroidSysContext>();
 			return androidSysContext->mNativeData.aSessionData;
 		}
 
 	}
 
 } // namespace Ic3::System
-#endif // IC3_PCL_TARGET_SYSAPI_ANDROID
+#endif // PCL_TARGET_SYSAPI_ANDROID

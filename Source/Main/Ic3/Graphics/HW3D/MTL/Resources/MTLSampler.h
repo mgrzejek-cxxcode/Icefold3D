@@ -12,7 +12,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( MetalSampler );
+	Ic3DeclareClassHandle( MetalSampler );
 
 	class  MetalSampler : public Sampler
 	{
@@ -23,10 +23,10 @@ namespace Ic3::Graphics::GCI
 		MetalSampler( MetalGPUDevice & pGPUDevice, id<MTLSamplerState> pMTLSamplerState );
 		virtual ~MetalSampler();
 
-		static MetalSamplerHandle createSampler( MetalGPUDevice & pGPUDevice, const SamplerCreateInfo & pCreateInfo );
+		static MetalSamplerHandle CreateSampler( MetalGPUDevice & pGPUDevice, const SamplerCreateInfo & pCreateInfo );
 
 	private:
-		static MTLSamplerDescriptor * translateSamplerConfig( const SamplerConfig & pSamplerConfig );
+		static MTLSamplerDescriptor * TranslateSamplerConfig( const SamplerConfig & pSamplerConfig );
 	};
 
 } // namespace Ic3::Graphics::GCI

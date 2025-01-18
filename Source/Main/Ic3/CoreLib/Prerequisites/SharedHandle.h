@@ -4,8 +4,8 @@
 #ifndef __IC3_CORELIB_SHARED_HANDLE_H__
 #define __IC3_CORELIB_SHARED_HANDLE_H__
 
-#include <Ic3/Cppx/Aligned.h>
-#include <Ic3/Cppx/RefCounter.h>
+#include <cppx/aligned.h>
+#include <cppx/refCounter.h>
 
 namespace Ic3
 {
@@ -13,47 +13,48 @@ namespace Ic3
 	struct SharedHandleRefCounterData
 	{
 	public:
-		using ref_counter_value_t = Cppx::ref_counter_value_t;
+		using ref_counter_value_t = cppx::ref_counter_default_value_t;
 
-		Cppx::AtomicRefCounter activeRefs;
-		Cppx::AtomicRefCounter weakRefs;
+		cppx::atomic_ref_counter<ref_counter_value_t> activeRefs;
+
+		cppx::atomic_ref_counter<ref_counter_value_t> weakRefs;
 
 	public:
 		ref_counter_value_t addActiveRef();
 		ref_counter_value_t releaseActiveRef();
 	};
 
-	template <typename T>
+	template <typename TPClass>
 	struct SharedHandleControlBlock : public SharedHandleRefCounterData
 	{
 	public:
-		T * ptr;
+		TPClass * ptr;
 
 	public:
-		explicit SharedHandleControlBlock( T * pPtr = nullptr )
+		explicit SharedHandleControlBlock( TPClass * pPtr = nullptr )
 		: ptr( pPtr )
 		{}
 	};
 
-	template <typename T>
-	struct SharedHandleControlBlockWithStorage : public SharedHandleControlBlock<T>
+	template <typename TPClass>
+	struct SharedHandleControlBlockWithStorage : public SharedHandleControlBlock<TPClass>
 	{
 	public:
-		using Storage = typename Cppx::AlignedStorage<T>;
+		using Storage = typename cppx::aligned_storage<TPClass>;
 		Storage storage;
 
 	public:
 		SharedHandleControlBlockWithStorage()
-		: SharedHandleControlBlock<T>( reinterpret_cast<T *>( storage.ptr() ) )
+		: SharedHandleControlBlock<TPClass>( reinterpret_cast<TPClass *>( storage.ptr() ) )
 		{}
 	};
 
-	template <typename T>
+	template <typename TPClass>
 	class SharedHandle
 	{
 	private:
-		T * _objectPtr;
-		SharedHandleRefCounterData * _cblock;
+		TPClass * _objectPtr;
+		SharedHandleControlBlock<TPClass> * _cblock;
 	};
 
 }

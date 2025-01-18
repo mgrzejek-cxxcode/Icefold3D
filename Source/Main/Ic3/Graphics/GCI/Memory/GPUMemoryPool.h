@@ -5,7 +5,7 @@
 #define __IC3_GRAPHICS_GCI_GPU_MEMORY_POOL_H__
 
 #include "CommonGPUMemoryDefs.h"
-#include <Ic3/CoreLib/Sync/SpinLock.h>
+#include <cppx/sync/spinLock.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -20,7 +20,7 @@ namespace Ic3::Graphics::GCI
 		friend class GPUMemoryRef;
 
 	public:
-		using MemoryLock = Sync::SharedSpinLock;
+		using MemoryLock = cppx::sync::shared_spin_lock;
 
 		gpu_memory_pool_id_t const mPoolID;
 		gpu_memory_size_t const mPoolSize;
@@ -31,12 +31,12 @@ namespace Ic3::Graphics::GCI
 		GPUMemoryPool();
 		virtual ~GPUMemoryPool();
 
-		gpu_memory_size_t getCurrentUsage() const;
+		CPPX_ATTR_NO_DISCARD gpu_memory_size_t GetCurrentUsage() const;
 
 	protected:
-		void setCurrentUsage( gpu_memory_size_t pUsageInBytes );
+		void SetCurrentUsage( gpu_memory_size_t pUsageInBytes );
 
-		MemoryLock & getMemoryLock();
+		MemoryLock & GetMemoryLock();
 
 	private:
 		GPUMemoryRegion _sourceHeapRegion;

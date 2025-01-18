@@ -25,7 +25,7 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~RenderTargetBindingImmutableState();
 
-		IC3_ATTR_NO_DISCARD static const RenderTargetBindingImmutableState & getDynamicOverrideState();
+		CPPX_ATTR_NO_DISCARD static const RenderTargetBindingImmutableState & GetDynamicOverrideState();
 	};
 
 	class RenderPassConfigurationImmutableState : public GraphicsPipelineImmutableState
@@ -50,7 +50,7 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~RenderPassConfigurationImmutableStateDefault();
 
-		static GpaHandle<RenderPassConfigurationImmutableStateDefault> createInstance(
+		static TGfxHandle<RenderPassConfigurationImmutableStateDefault> CreateInstance(
 				GPUDevice & pGPUDevice,
 				const RenderPassConfiguration & pConfiguration );
 	};

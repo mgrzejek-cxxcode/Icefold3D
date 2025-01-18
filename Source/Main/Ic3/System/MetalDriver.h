@@ -15,7 +15,7 @@ namespace Ic3::System
 	struct MetalDisplaySurfaceCreateInfo : public WindowCreateInfo
 	{
 		/// Creation flags, describing additional surface properties.
-		Bitmask<EMetalSurfaceCreateFlags> flags = 0;
+		cppx::bitmask<EMetalSurfaceCreateFlags> flags = 0;
 	};
 
 	class MetalDevice : public SysObject
@@ -27,7 +27,7 @@ namespace Ic3::System
 		MetalDevice( SysContextHandle pSysContext );
 		~MetalDevice();
 
-		static MetalDeviceHandle createDefault( SysContextHandle pSysContext );
+		static MetalDeviceHandle CreateDefault( SysContextHandle pSysContext );
 	};
 
 	class MetalSystemDriver : public SysObject
@@ -41,25 +41,25 @@ namespace Ic3::System
 		virtual ~MetalSystemDriver() noexcept;
 		
 		/// @brief
-		IC3_ATTR_NO_DISCARD MetalDevice & initializeDefaultDevice();
+		CPPX_ATTR_NO_DISCARD MetalDevice & InitializeDefaultDevice();
 
 		/// @brief
-		IC3_ATTR_NO_DISCARD MetalDevice & getDefaultDevice() noexcept;
+		CPPX_ATTR_NO_DISCARD MetalDevice & GetDefaultDevice() noexcept;
 
 		/// @brief
-		IC3_ATTR_NO_DISCARD MetalDevice & getDefaultDevice() const;
+		CPPX_ATTR_NO_DISCARD MetalDevice & GetDefaultDevice() const;
 
 		/// @brief
-		IC3_ATTR_NO_DISCARD MetalDisplaySurfaceHandle createDisplaySurface(
+		CPPX_ATTR_NO_DISCARD MetalDisplaySurfaceHandle CreateDisplaySurface(
 				MetalDevice & pMetalDevice,
 				const MetalDisplaySurfaceCreateInfo & pCreateInfo );
 		
 	private:
-		virtual MetalDisplaySurfaceHandle _nativeCreateDisplaySurface(
+		virtual MetalDisplaySurfaceHandle _NativeCreateDisplaySurface(
 				MetalDevice & pMetalDevice,
 				const MetalDisplaySurfaceCreateInfo & pCreateInfo ) = 0;
 
-		virtual void _nativeDestroyDisplaySurface( MetalDisplaySurface & pDisplaySurface ) = 0;
+		virtual void _NativeDestroyDisplaySurface( MetalDisplaySurface & pDisplaySurface ) = 0;
 
 	private:
 		MetalDeviceHandle _defaultMetalDevice;
@@ -70,7 +70,7 @@ namespace Ic3::System
 		friend class MetalSystemDriver;
 
 	public:
-		std::unique_ptr<MetalDisplaySurfaceData> const mSurfaceData;
+		std::unique_ptr<MetalDisplaySurfaceData> const surfaceData;
 		MetalSystemDriverHandle const mMetalDriver;
 		MetalDeviceHandle const mMetalDevice;
 
@@ -78,50 +78,52 @@ namespace Ic3::System
 		explicit MetalDisplaySurface( MetalSystemDriverHandle pMTLSystemDriver, void * pNativeData );
 		virtual ~MetalDisplaySurface() noexcept;
 
-		void clearColorBuffer();
+		void ClearColorBuffer();
 
-		/// @copybrief Frame::resizeClientArea
-		virtual void resizeClientArea( const FrameSize & pSize ) override final;
+		/// @copybrief Frame::ResizeClientArea
+		virtual void ResizeClientArea( const FrameSize & pSize ) override final;
 
-		/// @copybrief Frame::resizeFrame
-		virtual void resizeFrame( const FrameSize & pSize ) override final;
+		/// @copybrief Frame::ResizeFrame
+		virtual void ResizeFrame( const FrameSize & pSize ) override final;
 
-		/// @copybrief Frame::setFullscreenMode
-		virtual void setFullscreenMode( bool pEnable ) override final;
+		/// @copybrief Frame::SetFullscreenMode
+		virtual void SetFullscreenMode( bool pEnable ) override final;
 
-		/// @copybrief Frame::setTitle
-		virtual void setTitle( const std::string & pTitleText ) override final;
+		/// @copybrief Frame::SetTitle
+		virtual void SetTitle( const std::string & pTitleText ) override final;
 
-		/// @copybrief Frame::updateGeometry
-		virtual void updateGeometry( const FrameGeometry & pFrameGeometry,
-		                             Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
+		/// @copybrief Frame::UpdateGeometry
+		virtual void UpdateGeometry(
+				const FrameGeometry & pFrameGeometry,
+				cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
 
-		/// @copybrief Frame::getClientAreaSize
-		IC3_ATTR_NO_DISCARD virtual FrameSize getClientAreaSize() const override final;
+		/// @copybrief Frame::GetClientAreaSize
+		CPPX_ATTR_NO_DISCARD virtual FrameSize GetClientAreaSize() const override final;
 
-		/// @copybrief Frame::getSize
-		IC3_ATTR_NO_DISCARD virtual FrameSize getFrameSize() const override final;
+		/// @copybrief Frame::GetSize
+		CPPX_ATTR_NO_DISCARD virtual FrameSize GetFrameSize() const override final;
 
-		/// @copybrief Frame::isFullscreen
-		IC3_ATTR_NO_DISCARD virtual bool isFullscreen() const override final;
+		/// @copybrief Frame::IsFullscreen
+		CPPX_ATTR_NO_DISCARD virtual bool IsFullscreen() const override final;
 		
 	private:
-		virtual FrameSize _nativeQueryRenderAreaSize() const = 0;
+		virtual FrameSize _NativeQueryRenderAreaSize() const = 0;
 
-		virtual bool _nativeSysValidate() const = 0;
+		virtual bool _NativeSysValidate() const = 0;
 
-		virtual void _nativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode ) = 0;
+		virtual void _NativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode ) = 0;
 
-		virtual void _nativeSetFullscreenMode( bool pEnable ) = 0;
+		virtual void _NativeSetFullscreenMode( bool pEnable ) = 0;
 
-		virtual void _nativeSetTitle( const std::string & pTitle ) = 0;
+		virtual void _NativeSetTitle( const std::string & pTitle ) = 0;
 
-		virtual void _nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-		                                    Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) = 0;
+		virtual void _NativeUpdateGeometry(
+				const FrameGeometry & pFrameGeometry,
+				cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) = 0;
 
-		virtual FrameSize _nativeGetSize( EFrameSizeMode pSizeMode ) const = 0;
+		virtual FrameSize _NativeGetSize( EFrameSizeMode pSizeMode ) const = 0;
 
-		virtual bool _nativeIsFullscreen() const = 0;
+		virtual bool _NativeIsFullscreen() const = 0;
 
 	private:
 		struct MTLDisplaySurfacePrivateData;

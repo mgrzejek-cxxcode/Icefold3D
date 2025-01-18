@@ -16,51 +16,51 @@ namespace Ic3::Graphics::GCI
 
 	GPUResource::~GPUResource() = default;
 
-	bool GPUResource::isMapped() const
+	bool GPUResource::IsMapped() const
 	{
 		return ( _mappedMemory.pointer != nullptr ) && !_mappedMemory.mappedRegion.empty();
 	}
 
-	bool GPUResource::isMapped( const GPUMemoryRegion & pRegion ) const
+	bool GPUResource::IsMapped( const GPUMemoryRegion & pRegion ) const
 	{
-		return Ic3::rangeIsSubRangeOf( pRegion.asRange(), _mappedMemory.mappedRegion.asRange() );
+		return cppx::range_is_sub_range_of( pRegion.as_range(), _mappedMemory.mappedRegion.as_range() );
 	}
 
-	ref_counter_value_t GPUResource::addActiveRef()
+	gpu_resource_ref_counter_value_t GPUResource::AddActiveRef()
 	{
 		return _activeRefsCounter.increment();
 	}
 
-	ref_counter_value_t GPUResource::releaseActiveRef()
+	gpu_resource_ref_counter_value_t GPUResource::ReleaseActiveRef()
 	{
 		const auto activeRefNum = _activeRefsCounter.decrement();
 
-		if( mGPUDevice.isResourceActiveRefsTrackingEnabled() && ( activeRefNum == 0 ) )
+		if( mGPUDevice.IsResourceActiveRefsTrackingEnabled() && ( activeRefNum == 0 ) )
 		{
-			mGPUDevice.onGPUResourceActiveRefsZero( *this );
+			mGPUDevice.OnGPUResourceActiveRefsZero( *this );
 		}
 
 		return activeRefNum;
 	}
 
-	void GPUResource::setMappedMemory( const ResourceMappedMemory & pMappedMemory )
+	void GPUResource::SetMappedMemory( const ResourceMappedMemory & pMappedMemory )
 	{
 		_mappedMemory = pMappedMemory;
 		_mappedMemory.sourceMemory = &mResourceMemory;
 	}
 
-	void GPUResource::resetMappedMemory()
+	void GPUResource::ResetMappedMemory()
 	{
 		_mappedMemory.pointer = nullptr;
 		_mappedMemory.memoryMapFlags = 0;
-		_mappedMemory.mappedRegion.setEmpty();
+		_mappedMemory.mappedRegion.set_empty();
 	}
 
 
 	GPUResourceView::GPUResourceView(
 			GPUDevice & pGPUDevice,
 			EGPUResourceBaseType pAliasedResourceType,
-			Bitmask<resource_flags_value_t> pResourceFlags )
+			cppx::bitmask<resource_flags_value_t> pResourceFlags )
 	: GPUDeviceChildObject( pGPUDevice )
 	, mAliasedResourceType( pAliasedResourceType )
 	, mResourceFlags( pResourceFlags )

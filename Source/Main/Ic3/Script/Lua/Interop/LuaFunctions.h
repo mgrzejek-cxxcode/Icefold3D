@@ -237,7 +237,7 @@ namespace Ic3::Script
 			}
 		};
 
-		#define ic3ScriptFunction( pFunction ) \
+		#define Ic3ScriptFunction( pFunction ) \
 			LuaWrappers::FunctionProxy<decltype( pFunction ), pFunction>::proxyCall
 
 	}

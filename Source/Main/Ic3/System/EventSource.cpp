@@ -13,38 +13,38 @@ namespace Ic3::System
 	{
 		if( _eventControllerActiveRef )
 		{
-			_eventControllerActiveRef->onEventSourceDestroy( *this );
+			_eventControllerActiveRef->OnEventSourceDestroy( *this );
 			_eventControllerActiveRef = nullptr;
 		}
 	}
 
-	void * EventSource::getEventSourceNativeData() const
+	void * EventSource::GetEventSourceNativeData() const
 	{
 		return _eventSourceNativeData;
 	}
 
-    EventController * EventSource::getEventController() const
+    EventController * EventSource::GetEventController() const
     {
         return _eventControllerActiveRef.get();
     }
 
-    EventController & EventSource::getEventControllerRef() const
+    EventController & EventSource::GetEventControllerRef() const
     {
-        ic3DebugAssert( _eventControllerActiveRef );
+        Ic3DebugAssert( _eventControllerActiveRef );
         return *_eventControllerActiveRef;
     }
 
-	bool EventSource::isPrimaryEventSource() const
+	bool EventSource::IsPrimaryEventSource() const
 	{
-		return _eventControllerActiveRef && ( this == _eventControllerActiveRef->getPrimaryEventSource() );
+		return _eventControllerActiveRef && ( this == _eventControllerActiveRef->GetPrimaryEventSource() );
 	}
 
-	bool EventSource::isLastEventSource() const
+	bool EventSource::IsLastEventSource() const
 	{
-		if( _eventControllerActiveRef && ( _eventControllerActiveRef->getRegisteredEventSourcesNum() == 1 ) )
+		if( _eventControllerActiveRef && ( _eventControllerActiveRef->GetRegisteredEventSourcesNum() == 1 ) )
 		{
 			// EventController has one event source registered. They are indexed starting from 0 - get that last one.
-			auto * lastRegEventSource = _eventControllerActiveRef->getRegisteredEventSourceByIndex( 0 );
+			auto * lastRegEventSource = _eventControllerActiveRef->GetRegisteredEventSourceByIndex( 0 );
 
 			if( this == lastRegEventSource )
 			{
@@ -53,32 +53,32 @@ namespace Ic3::System
 
 			// This is veeery weird. If this source has a controller set (which means it is a registered event source),
 			// it definitely should be present on that controller's event source list. Investigate if this gets triggered.
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 		}
 
 		return false;
 	}
 
-	void EventSource::onDestroySystemObjectRequested()
+	void EventSource::OnDestroySystemObjectRequested()
 	{
 		if( _eventControllerActiveRef )
 		{
-			_eventControllerActiveRef->onEventSourceDestroy( *this );
+			_eventControllerActiveRef->OnEventSourceDestroy( *this );
 			_eventControllerActiveRef = nullptr;
 		}
 	}
 
-	void EventSource::setEventController( EventControllerHandle pEventController )
+	void EventSource::SetEventController( EventControllerHandle pEventController )
 	{
 		_eventControllerActiveRef = std::move( pEventController );
 	}
 
-	void EventSource::setEventSourceNativeData( void * pNativeData )
+	void EventSource::SetEventSourceNativeData( void * pNativeData )
 	{
 		_eventSourceNativeData = pNativeData;
 	}
 
-	void EventSource::resetEventSourceNativeData()
+	void EventSource::ResetEventSourceNativeData()
 	{
 		_eventSourceNativeData = nullptr;
 	}

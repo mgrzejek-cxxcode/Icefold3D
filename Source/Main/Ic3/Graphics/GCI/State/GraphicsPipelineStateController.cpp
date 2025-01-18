@@ -5,7 +5,7 @@
 #include "RenderTargetImmutableStates.h"
 
 #include <Ic3/Graphics/GCI/GPUDevice.h>
-#include <Ic3/Cppx/Memory.h>
+#include <cppx/memory.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -14,130 +14,130 @@ namespace Ic3::Graphics::GCI
 
 	GraphicsPipelineStateController::~GraphicsPipelineStateController() = default;
 
-	bool GraphicsPipelineStateController::isIAVertexStreamStateDynamic() const noexcept
+	bool GraphicsPipelineStateController::IsIAVertexStreamStateDynamic() const noexcept
 	{
-		return _currentCommonState.iaVertexStreamState && _currentCommonState.iaVertexStreamState->isDynamicOverrideState();
+		return _currentCommonState.iaVertexStreamState && _currentCommonState.iaVertexStreamState->IsDynamicOverrideState();
 	}
 
-	bool GraphicsPipelineStateController::isRenderTargetStateDynamic() const noexcept
+	bool GraphicsPipelineStateController::IsRenderTargetStateDynamic() const noexcept
 	{
-		return _currentCommonState.renderTargetBindingState && _currentCommonState.renderTargetBindingState->isDynamicOverrideState();
+		return _currentCommonState.renderTargetBindingState && _currentCommonState.renderTargetBindingState->IsDynamicOverrideState();
 	}
 
-	const GraphicsPipelineDynamicState & GraphicsPipelineStateController::getRenderPassDynamicState() const noexcept
+	const GraphicsPipelineDynamicState & GraphicsPipelineStateController::GetRenderPassDynamicState() const noexcept
 	{
 		return _currentRenderPassDynamicState;
 	}
 
-	const ShaderInputSignature & GraphicsPipelineStateController::getShaderInputSignature() const noexcept
+	const ShaderInputSignature & GraphicsPipelineStateController::GetShaderInputSignature() const noexcept
 	{
-		ic3DebugAssert( _currentCommonState.graphicsPSO );
+		Ic3DebugAssert( _currentCommonState.graphicsPSO );
 		return _currentCommonState.graphicsPSO->mShaderInputSignature;
 	}
 
-	void GraphicsPipelineStateController::setRenderPassDynamicState( const GraphicsPipelineDynamicState & pDynamicState )
+	void GraphicsPipelineStateController::SetRenderPassDynamicState( const GraphicsPipelineDynamicState & pDynamicState )
 	{
 		_currentRenderPassDynamicState = pDynamicState;
 	}
 
-	void GraphicsPipelineStateController::resetRenderPassDynamicState()
+	void GraphicsPipelineStateController::ResetRenderPassDynamicState()
 	{
 		_currentRenderPassDynamicState.activeStateMask.clear();
 	}
 
-	bool GraphicsPipelineStateController::setGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO )
+	bool GraphicsPipelineStateController::SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO )
 	{
 		if( _currentCommonState.graphicsPSO != &pGraphicsPSO )
 		{
 			_currentCommonState.graphicsPSO = &pGraphicsPSO;
-			_stateUpdateMask.set( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_PSO_BIT );
+			_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonPSOBit );
 		}
 
-		return _stateUpdateMask.isSet( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_PSO_BIT );
+		return _stateUpdateMask.is_set( eGraphicsStateUpdateFlagCommonPSOBit );
 	}
 
-	bool GraphicsPipelineStateController::resetGraphicsPipelineStateObject()
+	bool GraphicsPipelineStateController::ResetGraphicsPipelineStateObject()
 	{
 		if( _currentCommonState.graphicsPSO )
 		{
 			_currentCommonState.graphicsPSO = nullptr;
-			_stateUpdateMask.set( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_PSO_BIT );
+			_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonPSOBit );
 		}
 
-		return _stateUpdateMask.isSet( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_PSO_BIT );
+		return _stateUpdateMask.is_set( eGraphicsStateUpdateFlagCommonPSOBit );
 	}
 
-	bool GraphicsPipelineStateController::setIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState )
+	bool GraphicsPipelineStateController::SetIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState )
 	{
-		_currentCommonState.iaVertexStreamState = &( IAVertexStreamImmutableState::getDynamicOverrideState() );
-		_stateUpdateMask.set( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_VERTEX_STREAM_BIT );
+		_currentCommonState.iaVertexStreamState = &( IAVertexStreamImmutableState::GetDynamicOverrideState() );
+		_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonVertexStreamBit );
 		return true;
 	}
 
-	bool GraphicsPipelineStateController::setIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState )
+	bool GraphicsPipelineStateController::SetIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState )
 	{
 		if( _currentCommonState.iaVertexStreamState != &pIAVertexStreamState )
 		{
 			_currentCommonState.iaVertexStreamState = &pIAVertexStreamState;
-			_stateUpdateMask.set( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_VERTEX_STREAM_BIT );
+			_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonVertexStreamBit );
 		}
 
-		return _stateUpdateMask.isSet( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_VERTEX_STREAM_BIT );
+		return _stateUpdateMask.is_set( eGraphicsStateUpdateFlagCommonVertexStreamBit );
 	}
 
-	bool GraphicsPipelineStateController::resetIAVertexStreamState()
+	bool GraphicsPipelineStateController::ResetIAVertexStreamState()
 	{
 		_currentCommonState.iaVertexStreamState = nullptr;
-		_stateUpdateMask.set( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_VERTEX_STREAM_BIT );
+		_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonVertexStreamBit );
 		return true;
 	}
 
-	bool GraphicsPipelineStateController::setRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState )
+	bool GraphicsPipelineStateController::SetRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState )
 	{
-		_currentCommonState.renderTargetBindingState = &( RenderTargetBindingImmutableState::getDynamicOverrideState() );
-		_stateUpdateMask.set( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_RENDER_TARGET_BINDING_BIT );
+		_currentCommonState.renderTargetBindingState = &( RenderTargetBindingImmutableState::GetDynamicOverrideState() );
+		_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonRenderTargetBindingBit );
 		return true;
 	}
 
-	bool GraphicsPipelineStateController::setRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState )
+	bool GraphicsPipelineStateController::SetRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState )
 	{
 		if( _currentCommonState.renderTargetBindingState != &pRenderTargetBindingState )
 		{
 			_currentCommonState.renderTargetBindingState = &pRenderTargetBindingState;
-			_stateUpdateMask.set( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_RENDER_TARGET_BINDING_BIT );
+			_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonRenderTargetBindingBit );
 		}
 
-		return _stateUpdateMask.isSet( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_RENDER_TARGET_BINDING_BIT );
+		return _stateUpdateMask.is_set( eGraphicsStateUpdateFlagCommonRenderTargetBindingBit );
 	}
 
-	bool GraphicsPipelineStateController::resetRenderTargetBindingState()
+	bool GraphicsPipelineStateController::ResetRenderTargetBindingState()
 	{
 		_currentCommonState.renderTargetBindingState = nullptr;
-		_stateUpdateMask.set( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_RENDER_TARGET_BINDING_BIT );
+		_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonRenderTargetBindingBit );
 		return true;
 	}
 
-	bool GraphicsPipelineStateController::setViewport( const ViewportDesc & pViewportDesc )
+	bool GraphicsPipelineStateController::SetViewport( const ViewportDesc & pViewportDesc )
 	{
 		return true;
 	}
 
-	bool GraphicsPipelineStateController::setShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData )
+	bool GraphicsPipelineStateController::SetShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData )
 	{
 		return true;
 	}
 
-	bool GraphicsPipelineStateController::setShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer )
+	bool GraphicsPipelineStateController::SetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer )
 	{
 		return true;
 	}
 
-	bool GraphicsPipelineStateController::setShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture )
+	bool GraphicsPipelineStateController::SetShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture )
 	{
 		return true;
 	}
 
-	bool GraphicsPipelineStateController::setShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler )
+	bool GraphicsPipelineStateController::SetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler )
 	{
 		return true;
 	}

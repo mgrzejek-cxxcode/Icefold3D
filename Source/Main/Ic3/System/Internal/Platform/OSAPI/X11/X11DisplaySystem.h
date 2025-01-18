@@ -6,33 +6,33 @@
 #include <Ic3/System/DisplayConfiguration.h>
 #include <Ic3/System/DisplaySystem.h>
 #include <X11/extensions/Xrandr.h>
-#include <Ic3/Cppx/Version.h>
+#include <cppx/version.h>
 #include <unordered_map>
 
 namespace Ic3::System
 {
 
-	ic3SysDeclareHandle( X11DisplayManager );
-	ic3SysDeclareHandle( X11DisplayDriver );
+	Ic3SysDeclareHandle( X11DisplayManager );
+	Ic3SysDeclareHandle( X11DisplayDriver );
 
 	namespace Platform
 	{
 
 		struct X11DisplayManagerNativeData : public X11NativeDataCommon
 		{
-			uint32 screenDepth = 0;
-			Version xrrVersion = CX_VERSION_UNKNOWN;
-			XRRMonitorInfo xrrDefaultMonitorInfo;
+			uint32 mScreenDepth = 0;
+			cppx::version mXRRVersion = CX_VERSION_UNKNOWN;
+			XRRMonitorInfo mXRRDefaultMonitorInfo;
 		};
 
 		struct X11DisplayDriverNativeData : public X11NativeDataCommon
 		{
-			uint32 screenDepth = 0;
-			XRRScreenResources * xrrScreenResources = nullptr;
-			XRRMonitorInfo * xrrMonitorList = nullptr;
-			int xrrMonitorsNum = 0;
-			XRRMonitorInfo * xrrDefaultMonitorInfo = nullptr;
-			std::unordered_map<RRMode, XRRModeInfo *> xrrModeInfoMap;
+			uint32 mScreenDepth = 0;
+			XRRScreenResources * mXRRScreenResources = nullptr;
+			XRRMonitorInfo * mXRRMonitorList = nullptr;
+			int mXRRMonitorsNum = 0;
+			XRRMonitorInfo * mXRRDefaultMonitorInfo = nullptr;
+			std::unordered_map<RRMode, XRRModeInfo *> mXRRModeInfoMap;
 		};
 
 		struct X11DisplayAdapterNativeData : public X11NativeDataCommon
@@ -41,14 +41,14 @@ namespace Ic3::System
 
 		struct X11DisplayOutputNativeData : public X11NativeDataCommon
 		{
-			RROutput xrrOutputID = E_X11_XID_NONE;
-			RRCrtc xrrCrtcID = E_X11_XID_NONE;
+			RROutput mXRROutputID = eXIDNone;
+			RRCrtc mXRRCrtcID = eXIDNone;
 		};
 
 		struct X11DisplayVideoModeNativeData : public X11NativeDataCommon
 		{
-			RRMode xrrModeID = E_X11_XID_NONE;
-			XRRModeInfo * xrrModeInfo = nullptr;
+			RRMode mXRRModeID = eXIDNone;
+			XRRModeInfo * mXRRModeInfo = nullptr;
 		};
 
 	}
@@ -65,16 +65,16 @@ namespace Ic3::System
 		virtual ~X11DisplayManager() noexcept;
 
 	private:
-		void _initializeX11DisplayManagerState();
-		void _releaseX11DisplayManagerState();
+		void _InitializeX11DisplayManagerState();
+		void _ReleaseX11DisplayManagerState();
 
-		virtual DisplayDriverHandle _nativeCreateDisplayDriver() override final;
+		virtual DisplayDriverHandle _NativeCreateDisplayDriver() override final;
 
-		virtual void _nativeQueryDefaultDisplayOffset( DisplayOffset & pOutOffset ) const override final;
+		virtual void _NativeQueryDefaultDisplayOffset( DisplayOffset & pOutOffset ) const override final;
 
-		virtual void _nativeQueryDefaultDisplaySize( DisplaySize & pOutSize ) const override final;
+		virtual void _NativeQueryDefaultDisplaySize( DisplaySize & pOutSize ) const override final;
 
-		virtual void _nativeQueryMinWindowSize( DisplaySize & pOutSize ) const override final;
+		virtual void _NativeQueryMinWindowSize( DisplaySize & pOutSize ) const override final;
 	};
 
 	/// @brief Implementation of DisplayDriver for the X11 subsystem.
@@ -85,14 +85,14 @@ namespace Ic3::System
 		virtual ~X11DisplayDriver() noexcept;
 
 	private:
-		void _initializeX11DisplayDriverState();
-		void _releaseX11DisplayDriverState();
+		void _InitializeX11DisplayDriverState();
+		void _ReleaseX11DisplayDriverState();
 
-		virtual void _nativeEnumDisplayDevices() override final;
+		virtual void _NativeEnumDisplayDevices() override final;
 
-		virtual void _nativeEnumVideoModes( DisplayOutput & pOutput, EColorFormat pColorFormat ) override final;
+		virtual void _NativeEnumVideoModes( DisplayOutput & pOutput, EColorFormat pColorFormat ) override final;
 
-		virtual EColorFormat _nativeQueryDefaultSystemColorFormat() const override final;
+		virtual EColorFormat _NativeQueryDefaultSystemColorFormat() const override final;
 	};
 
 } // namespace Ic3::System

@@ -89,8 +89,8 @@
 	if( NSWindow * nsAppKeyWindow = [NSApp keyWindow] )
 	{
 		// Idea:
-		// auto * ic3Window = mSysContext->findWindowByNSWindow( nsAppKeyWindow );
-		// if( !ic3Window )
+		// auto * Ic3Window = mSysContext->FindWindowByNSWindow( nsAppKeyWindow );
+		// if( !Ic3Window )
 		// {
 		//   return;
 		// }
@@ -120,7 +120,7 @@
 	// Get the window that will be closed
 	auto * nsWindowToClose = ( NSWindow * )[pNotification object];
 
-	if( ![nsWindowToClose isKeyWindow] )
+	if( ![nsWindowToClose IsKeyWindow] )
 	{
 		// If the window is not a key one, there is nothing to do here.
 		return;
@@ -134,7 +134,7 @@
 			continue;
 		}
 
-		if( [nsWindow isOnActiveSpace] )
+		if( [nsWindow IsOnActiveSpace] )
 		{
 			[nsWindow makeKeyAndOrderFront:self];
 			return;
@@ -166,21 +166,21 @@
 
 -( void ) applicationWillFinishLaunching: (NSNotification *)pNotification
 {
-	auto & osxSharedData = Ic3::System::Platform::osxGetOSXSharedData( *mOSXSysContext );
-	ic3DebugAssert( !osxSharedData.stateFlags.isSet( Ic3::System::Platform::E_OSX_COMMON_STATE_APP_FINISHED_LAUNCHING_BIT ) );
+	auto & osxSharedData = Ic3::System::Platform::OSXGetOSXSharedData( *mOSXSysContext );
+	Ic3DebugAssert( !osxSharedData.stateFlags.is_set( Ic3::System::Platform::eOSXCommonStateAppFinishedLaunchingBit ) );
 
 	if( ![NSApp mainMenu] )
 	{
-		if( !Ic3::System::Platform::osxNibLoadMenuNibFile() )
+		if( !Ic3::System::Platform::OSXNibLoadMenuNibFile() )
 		{
-			Ic3::System::Platform::osxNibCreateDefaultApplicationMenu();
+			Ic3::System::Platform::OSXNibCreateDefaultApplicationMenu();
 		}
 	}
 }
 
 -( void ) applicationDidFinishLaunching:( NSNotification * )pNotification
 {
-	auto & osxSharedData = Ic3::System::Platform::osxGetOSXSharedData( *mOSXSysContext );
+	auto & osxSharedData = Ic3::System::Platform::OSXGetOSXSharedData( *mOSXSysContext );
 
 	[NSOSXApplicationProxy registerUserDefaults];
 
@@ -213,7 +213,7 @@
 	// This has to go after the app's activation policy is properly set.
 	[NSApp activateIgnoringOtherApps:YES];
 
-	osxSharedData.stateFlags.set( Ic3::System::Platform::E_OSX_COMMON_STATE_APP_FINISHED_LAUNCHING_BIT );
+	osxSharedData.stateFlags.set( Ic3::System::Platform::eOSXCommonStateAppFinishedLaunchingBit );
 }
 
 -( BOOL ) applicationShouldTerminateAfterLastWindowClosed:( NSApplication * )pApplication

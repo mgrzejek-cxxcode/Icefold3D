@@ -26,7 +26,7 @@ namespace Ic3
 		{
 			uint32 id;
 			Math::Vec2u32 textureDimensions = { 0, 0 };
-			DynamicMemoryBuffer imageData;
+			dynamic_memory_buffer imageData;
 		};
 
 		struct FontBMFCharDesc

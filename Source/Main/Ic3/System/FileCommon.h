@@ -4,12 +4,12 @@
 
 #include "Prerequisites.h"
 #include <Ic3/CoreLib/Exception.h>
-#include <Ic3/Cppx/FSUtils.h>
+#include <cppx/fsUtils.h>
 
 namespace Ic3::System
 {
 
-	ic3SysDeclareHandle( FileManager );
+	Ic3SysDeclareHandle( FileManager );
 
 	using FileHandle = std::shared_ptr<class File>;
 	using FileList = std::vector<FileHandle>;
@@ -20,20 +20,23 @@ namespace Ic3::System
 	using file_offset_t = native_int;
 	using file_size_t = native_uint;
 
-	inline constexpr auto CX_FILE_SIZE_MAX = Cppx::QLimits<file_size_t>::maxValue;
+	inline constexpr auto cxFileSizeMax = cppx::meta::limits<file_size_t>::max_value;
 
+	/// @brief
 	enum : exception_code_value_t
 	{
-		E_EXC_SYSTEM_FILE_OPEN_ERROR = Ic3::CxDef::declareExceptionCode( E_EXCEPTION_CATEGORY_SYSTEM_FILE, 1 )
+		eEXCSystemFileOpenError = Ic3::CxDef::declareExceptionCode( eExceptionCategorySystemFile, 1 )
 	};
 
+	/// @brief
 	enum class EFilePointerRefPos : enum_default_value_t
 	{
+		CurrentPos,
 		FileBeg,
 		FileEnd,
-		PtrCurrent,
 	};
 
+	/// @brief
 	enum class EFileOpenMode : enum_default_value_t
 	{
 		// Open file for reading. If the specified file does not exist, an error is reported.
@@ -57,6 +60,7 @@ namespace Ic3::System
 		WriteOverwrite
 	};
 
+	/// @brief
 	class FileException : public SystemException
 	{
 	public:
@@ -69,7 +73,7 @@ namespace Ic3::System
 		{}
 	};
 
-	ic3SetExceptionCategoryType( E_EXCEPTION_CATEGORY_SYSTEM_FILE, FileException );
+	Ic3SetExceptionCategoryType( eExceptionCategorySystemFile, FileException );
 
 }
 

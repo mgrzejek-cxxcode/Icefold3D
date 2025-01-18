@@ -27,16 +27,13 @@ namespace Ic3::Graphics::GCI
 		uint32 blendActive;
 		Equation equation;
 		Factor factor;
-
-		static constexpr auto sEquationDataSize = sizeof( Equation );
-		static constexpr auto sFactorDataSize = sizeof( Factor );
 	};
 
 	struct GLBlendConfig
 	{
-		Bitmask<ERTAttachmentFlags> attachmentsMask;
-		Bitmask<EBlendConfigFlags> flags;
-		GLRTColorAttachmentBlendSettings attachments[GCM::RT_MAX_COLOR_ATTACHMENTS_NUM];
+		cppx::bitmask<ERTAttachmentFlags> attachmentsMask;
+		cppx::bitmask<EBlendConfigFlags> flags;
+		GLRTColorAttachmentBlendSettings attachments[GCM::cxRTMaxColorAttachmentsNum];
 		Math::RGBAColorR32Norm constantColor;
 	};
 
@@ -75,7 +72,7 @@ namespace Ic3::Graphics::GCI
 		uint32 scissorTestActive;
 		GLenum cullMode;
 		GLenum frontFaceVerticesOrder;
-	#if( ICFGX_GL_FEATURE_SUPPORT_PRIMITIVE_FILL_MODE )
+	#if( IC3_GX_GL_FEATURE_SUPPORT_PRIMITIVE_FILL_MODE )
 		GLenum primitiveFillMode;
 	#endif
 	};
@@ -90,12 +87,12 @@ namespace Ic3::Graphics::GCI
 	public:
 		GLBlendImmutableState(
 				GLGPUDevice & pGPUDevice,
-				Bitmask<EBlendConfigFlags> pBlendFlags,
+				cppx::bitmask<EBlendConfigFlags> pBlendFlags,
 				const GLBlendConfig & pGLBlendConfig );
 
 		virtual ~GLBlendImmutableState();
 
-		static GpaHandle<GLBlendImmutableState> createInstance( GLGPUDevice & pGPUDevice, const BlendConfig & pBlendConfig );
+		static TGfxHandle<GLBlendImmutableState> CreateInstance( GLGPUDevice & pGPUDevice, const BlendConfig & pBlendConfig );
 	};
 
 	///
@@ -107,12 +104,12 @@ namespace Ic3::Graphics::GCI
 	public:
 		GLDepthStencilImmutableState(
 				GLGPUDevice & pGPUDevice,
-				Bitmask<EDepthStencilConfigFlags> pDepthStencilFlags,
+				cppx::bitmask<EDepthStencilConfigFlags> pDepthStencilFlags,
 				const GLDepthStencilConfig & pGLDepthStencilConfig );
 
 		virtual ~GLDepthStencilImmutableState();
 
-		static GpaHandle<GLDepthStencilImmutableState> createInstance( GLGPUDevice & pGPUDevice, const DepthStencilConfig & pDepthStencilConfig );
+		static TGfxHandle<GLDepthStencilImmutableState> CreateInstance( GLGPUDevice & pGPUDevice, const DepthStencilConfig & pDepthStencilConfig );
 	};
 
 	///
@@ -124,25 +121,25 @@ namespace Ic3::Graphics::GCI
 	public:
 		GLRasterizerImmutableState(
 				GLGPUDevice & pGPUDevice,
-				Bitmask<ERasterizerConfigFlags> pRasterizerFlags,
+				cppx::bitmask<ERasterizerConfigFlags> pRasterizerFlags,
 				const GLRasterizerConfig & pGLRasterizerConfig );
 
 		virtual ~GLRasterizerImmutableState();
 
-		static GpaHandle<GLRasterizerImmutableState> createInstance( GLGPUDevice & pGPUDevice, const RasterizerConfig & pRasterizerConfig );
+		static TGfxHandle<GLRasterizerImmutableState> CreateInstance( GLGPUDevice & pGPUDevice, const RasterizerConfig & pRasterizerConfig );
 	};
 
 
-	namespace smutil
+	namespace SMU
 	{
 
-		IC3_ATTR_NO_DISCARD GLBlendConfig translateBlendConfigGL( const BlendConfig & pConfig );
+		CPPX_ATTR_NO_DISCARD GLBlendConfig TranslateBlendConfigGL( const BlendConfig & pConfig );
 
-		IC3_ATTR_NO_DISCARD GLDepthStencilConfig translateDepthStencilConfigGL( const DepthStencilConfig & pConfig );
+		CPPX_ATTR_NO_DISCARD GLDepthStencilConfig TranslateDepthStencilConfigGL( const DepthStencilConfig & pConfig );
 
-		IC3_ATTR_NO_DISCARD GLRasterizerConfig translateRasterizerConfigGL( const RasterizerConfig & pConfig );
+		CPPX_ATTR_NO_DISCARD GLRasterizerConfig TranslateRasterizerConfigGL( const RasterizerConfig & pConfig );
 
-		IC3_ATTR_NO_DISCARD GLRTColorAttachmentBlendSettings translateRTColorAttachmentBlendSettingsGL(
+		CPPX_ATTR_NO_DISCARD GLRTColorAttachmentBlendSettings TranslateRTColorAttachmentBlendSettingsGL(
 				const RTColorAttachmentBlendSettings & pSettings );
 
 	}

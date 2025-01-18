@@ -15,4 +15,4 @@ namespace Ic3::Math
 		};
 	}
 
-}
+} // namespace Ic3::Math

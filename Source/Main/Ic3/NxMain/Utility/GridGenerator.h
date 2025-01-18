@@ -7,7 +7,7 @@
 #include "../Prerequisites.h"
 #include <Ic3/Graphics/GCI/State/commonGPUStateDefs.h>
 #include <Ic3/Math/Vector.h>
-#include <Ic3/Cppx/MemoryBuffer.h>
+#include <cppx/memoryBuffer.h>
 
 namespace Ic3
 {
@@ -17,9 +17,9 @@ namespace Ic3
 		using VertexType = Math::Vec3f;
 		using IndexType = uint32;
 
-		DynamicMemoryBuffer vertices;
+		dynamic_memory_buffer vertices;
 
-		DynamicMemoryBuffer indices;
+		dynamic_memory_buffer indices;
 
 		native_uint verticesNum;
 

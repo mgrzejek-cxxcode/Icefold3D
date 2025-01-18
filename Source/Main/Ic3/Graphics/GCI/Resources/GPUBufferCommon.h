@@ -9,13 +9,13 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( GPUBuffer );
+	Ic3DeclareClassHandle( GPUBuffer );
 
 	enum EGPUBufferDataCopyFlags : uint32
 	{
-		E_GPU_BUFFER_DATA_COPY_FLAG_MODE_APPEND_BIT     = E_GPU_MEMORY_MAP_FLAG_WRITE_APPEND_BIT,
-		E_GPU_BUFFER_DATA_COPY_FLAG_MODE_INVALIDATE_BIT = E_GPU_MEMORY_MAP_FLAG_WRITE_INVALIDATE_BIT,
-		E_GPU_BUFFER_DATA_COPY_FLAGS_DEFAULT = 0,
+		eGPUBufferDataCopyFlagModeAppendBit     = eGPUMemoryMapFlagWriteAppendBit,
+		eGPUBufferDataCopyFlagModeInvalidateBit = eGPUMemoryMapFlagWriteInvalidateBit,
+		eGPUBufferDataCopyFlagsDefault = 0,
 	};
 
 	/// @brief Bind flags for buffer resources. Used to specify how buffers are bound to the pipeline.
@@ -30,59 +30,59 @@ namespace Ic3::Graphics::GCI
 		// Bind flag for using a buffer as a constant buffer in one or more shader stages.
 		// Such buffer is accessible via one of the valid CB input registers.
 		// Implies SHADER_INPUT usage bit.
-		E_GPU_BUFFER_BIND_FLAG_CONSTANT_BUFFER_BIT          = 0x010000 | E_GPU_RESOURCE_USAGE_FLAG_SHADER_INPUT_BIT,
+		eGPUBufferBindFlagConstantBufferBit          = 0x010000 | eGPUResourceUsageFlagShaderInputBit,
 
 		// Bind flag for using a buffer as a source for vertex data fetched during execution of all rendering commands.
 		// Such buffer is bound to the pipeline via TODO.
 		// Implies VERTEX_STREAM usage bit.
-		E_GPU_BUFFER_BIND_FLAG_VERTEX_BUFFER_BIT            = 0x020000 | E_GPU_RESOURCE_USAGE_FLAG_VERTEX_STREAM_BIT,
+		eGPUBufferBindFlagVertexBufferBit            = 0x020000 | eGPUResourceUsageFlagVertexStreamBit,
 
 		// Bind flag for using a buffer as a source for index data fetched during execution of indexed rendering commands.
 		// Such buffer is bound to the pipeline via TODO.
 		// Implies VERTEX_STREAM usage bit.
-		E_GPU_BUFFER_BIND_FLAG_INDEX_BUFFER_BIT             = 0x040000 | E_GPU_RESOURCE_USAGE_FLAG_VERTEX_STREAM_BIT,
+		eGPUBufferBindFlagIndexBufferBit             = 0x040000 | eGPUResourceUsageFlagVertexStreamBit,
 
 		// Bind flag for using a buffer as a target storage for stream output functionality.
-		E_GPU_BUFFER_BIND_FLAG_STREAM_OUTPUT_BUFFER_BIT     = 0x080000,
+		eGPUBufferBindFlagStreamOutputBufferBit     = 0x080000,
 
 		// Bind flag for using a buffer as a general read-only resource.
-		E_GPU_BUFFER_BIND_FLAG_SHADER_INPUT_BUFFER_BIT      = 0x100000 | E_GPU_RESOURCE_USAGE_FLAG_SHADER_INPUT_BIT,
+		eGPUBufferBindFlagShaderInputBufferBit      = 0x100000 | eGPUResourceUsageFlagShaderInputBit,
 		// Implies SHADER_INPUT usage bit.
 
 		// Bind flag for using a buffer as a general read/write resource supporting unordered access.
-		E_GPU_BUFFER_BIND_FLAG_SHADER_UAV_BUFFER_BIT        = 0x200000 | E_GPU_RESOURCE_USAGE_FLAG_SHADER_UAV_BIT,
+		eGPUBufferBindFlagShaderUAVBufferBit        = 0x200000 | eGPUResourceUsageFlagShaderUavBit,
 		// Implies SHADER_UAV usage bit.
 
 		// Bind flag for using a buffer as a source for arguments to indirect dispatch commands.
-		E_GPU_BUFFER_BIND_FLAG_INDIRECT_DISPATCH_BUFFER_BIT = 0x400000,
+		eGPUBufferBindFlagIndirectDispatchBufferBit = 0x400000,
 
 		// Bind flag for using a buffer as a source for arguments to indirect draw commands.
-		E_GPU_BUFFER_BIND_FLAG_INDIRECT_DRAW_BUFFER_BIT     = 0x800000,
+		eGPUBufferBindFlagIndirectDrawBufferBit     = 0x800000,
 
 		// Bind flag for using a buffer as a source in transfer operations. @See E_GPU_RESOURCE_USAGE_FLAG_TRANSFER_SOURCE_BIT.
-		E_GPU_BUFFER_BIND_FLAG_TRANSFER_SOURCE_BUFFER_BIT   = E_GPU_RESOURCE_USAGE_FLAG_TRANSFER_SOURCE_BIT,
+		eGPUBufferBindFlagTransferSourceBufferBit   = eGPUResourceUsageFlagTransferSourceBit,
 
 		// Bind flag for using a buffer as a target in transfer operations. @See E_GPU_RESOURCE_USAGE_FLAG_TRANSFER_TARGET_BIT.
-		E_GPU_BUFFER_BIND_FLAG_TRANSFER_TARGET_BUFFER_BIT   = E_GPU_RESOURCE_USAGE_FLAG_TRANSFER_TARGET_BIT,
+		eGPUBufferBindFlagTransferTargetBufferBit   = eGPUResourceUsageFlagTransferTargetBit,
 
 		// Mask with all valid BIND_FLAG bits set.
-		E_GPU_BUFFER_BIND_MASK_ALL = 0xFF0000 | E_GPU_RESOURCE_USAGE_MASK_ALL,
+		eGPUBufferBindMaskAll = 0xFF0000 | eGPUResourceUsageMaskAll,
 	};
 
 	/// @brief Represents all valid targets for buffer resources. Corresponding E_GPU_BUFFER_BIND_FLAGs are used as values.
 	enum class EGPUBufferTarget : uint32
 	{
 		Unknown                = 0,
-		ConstantBuffer         = E_GPU_BUFFER_BIND_FLAG_CONSTANT_BUFFER_BIT,
-		VertexBuffer           = E_GPU_BUFFER_BIND_FLAG_VERTEX_BUFFER_BIT,
-		IndexBuffer            = E_GPU_BUFFER_BIND_FLAG_INDEX_BUFFER_BIT,
-		StreamOutputBuffer     = E_GPU_BUFFER_BIND_FLAG_STREAM_OUTPUT_BUFFER_BIT,
-		ShaderInputBuffer      = E_GPU_BUFFER_BIND_FLAG_SHADER_INPUT_BUFFER_BIT,
-		ShaderUAVBuffer        = E_GPU_BUFFER_BIND_FLAG_SHADER_UAV_BUFFER_BIT,
-		IndirectDispatchBuffer = E_GPU_BUFFER_BIND_FLAG_INDIRECT_DISPATCH_BUFFER_BIT,
-		IndirectDrawBuffer     = E_GPU_BUFFER_BIND_FLAG_INDIRECT_DRAW_BUFFER_BIT,
-		TransferSourceBuffer   = E_GPU_BUFFER_BIND_FLAG_TRANSFER_SOURCE_BUFFER_BIT,
-		TransferTargetBuffer   = E_GPU_BUFFER_BIND_FLAG_TRANSFER_TARGET_BUFFER_BIT,
+		ConstantBuffer         = eGPUBufferBindFlagConstantBufferBit,
+		VertexBuffer           = eGPUBufferBindFlagVertexBufferBit,
+		IndexBuffer            = eGPUBufferBindFlagIndexBufferBit,
+		StreamOutputBuffer     = eGPUBufferBindFlagStreamOutputBufferBit,
+		ShaderInputBuffer      = eGPUBufferBindFlagShaderInputBufferBit,
+		ShaderUAVBuffer        = eGPUBufferBindFlagShaderUAVBufferBit,
+		IndirectDispatchBuffer = eGPUBufferBindFlagIndirectDispatchBufferBit,
+		IndirectDrawBuffer     = eGPUBufferBindFlagIndirectDrawBufferBit,
+		TransferSourceBuffer   = eGPUBufferBindFlagTransferSourceBufferBit,
+		TransferTargetBuffer   = eGPUBufferBindFlagTransferTargetBufferBit,
 	};
 
 	struct GPUBufferInitDataDesc : public ResourceInputDataDesc
@@ -102,51 +102,51 @@ namespace Ic3::Graphics::GCI
 
 	struct GPUBufferDataCopyDesc
 	{
-		Bitmask<EGPUBufferDataCopyFlags> flags = E_GPU_BUFFER_DATA_COPY_FLAGS_DEFAULT;
+		cppx::bitmask<EGPUBufferDataCopyFlags> flags = eGPUBufferDataCopyFlagsDefault;
 	};
 
 	struct GPUBufferSubDataCopyDesc
 	{
 		GPUMemoryRegion sourceBufferRegion;
-		gpu_memory_size_t targetBufferOffset = CxDef::GPU_MEMORY_OFFSET_INVALID;
-		Bitmask<EGPUBufferDataCopyFlags> flags = E_GPU_BUFFER_DATA_COPY_FLAGS_DEFAULT;
+		gpu_memory_size_t targetBufferOffset = cxGPUMemoryOffsetInvalid;
+		cppx::bitmask<EGPUBufferDataCopyFlags> flags = eGPUBufferDataCopyFlagsDefault;
 	};
 
 	struct GPUBufferDataUploadDesc
 	{
 		ResourceInputDataDesc inputDataDesc;
-		Bitmask<EGPUBufferDataCopyFlags> flags = E_GPU_BUFFER_DATA_COPY_FLAGS_DEFAULT;
+		cppx::bitmask<EGPUBufferDataCopyFlags> flags = eGPUBufferDataCopyFlagsDefault;
 	};
 
 	struct GPUBufferSubDataUploadDesc
 	{
 		GPUMemoryRegion bufferRegion;
 		ResourceInputDataDesc inputDataDesc;
-		Bitmask<EGPUBufferDataCopyFlags> flags = E_GPU_BUFFER_DATA_COPY_FLAGS_DEFAULT;
+		cppx::bitmask<EGPUBufferDataCopyFlags> flags = eGPUBufferDataCopyFlagsDefault;
 	};
 
-	namespace rcutil
+	namespace RCU
 	{
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD EGPUBufferTarget getGPUBufferDefaultTargetFromBindFlags( Bitmask<resource_flags_value_t> pBindFlags );
+		IC3_GRAPHICS_GCI_API_NO_DISCARD EGPUBufferTarget GetGPUBufferDefaultTargetFromBindFlags( cppx::bitmask<resource_flags_value_t> pBindFlags );
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD gpu_memory_size_t queryGPUBufferByteSize( GPUBufferHandle pGPUBuffer );
+		IC3_GRAPHICS_GCI_API_NO_DISCARD gpu_memory_size_t QueryGPUBufferByteSize( GPUBufferHandle pGPUBuffer );
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool checkGPUBufferRegion(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CheckGPUBufferRegion(
 				GPUBufferHandle pGPUBuffer,
 				gpu_memory_size_t pOffset,
 				gpu_memory_size_t pSize );
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool checkGPUBufferRegion(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool CheckGPUBufferRegion(
 				GPUBufferHandle pGPUBuffer,
 				const GPUMemoryRegion & pRegion );
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD GPUMemoryRegion validateGPUBufferRegion(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD GPUMemoryRegion ValidateGPUBufferRegion(
 				GPUBufferHandle pGPUBuffer,
 				gpu_memory_size_t pOffset,
 				gpu_memory_size_t pSize );
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD GPUMemoryRegion validateGPUBufferRegion(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD GPUMemoryRegion ValidateGPUBufferRegion(
 				GPUBufferHandle pGPUBuffer,
 				const GPUMemoryRegion & pRegion );
 

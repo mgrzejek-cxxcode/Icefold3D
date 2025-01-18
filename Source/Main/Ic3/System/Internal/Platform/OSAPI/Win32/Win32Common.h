@@ -16,7 +16,7 @@ namespace Ic3::System
 
 		enum EWin32SystemWindowFlags : uint32
 		{
-			E_WIN32_SYSTEM_WINDOW_FLAG_WM_STATE_FULLSCREEN = 0x8000
+			eWin32SystemWindowFlagWMStateFullscreen = 0x8000
 		};
 
         inline constexpr UINT CX_WIN32_MESSAGE_ID_FULLSCREEN_STATE_CHANGE = 0x0477;

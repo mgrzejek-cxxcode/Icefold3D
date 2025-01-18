@@ -10,28 +10,28 @@ namespace Ic3::Graphics::GCI
 
 	GLVertexArrayObject::~GLVertexArrayObject() = default;
 
-	GLVertexArrayObjectHandle GLVertexArrayObject::create()
+	GLVertexArrayObjectHandle GLVertexArrayObject::Create()
 	{
 		GLuint vertexArrayHandle = 0;
 
 		glGenVertexArrays( 1, &vertexArrayHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
-		return createGLObject<GLVertexArrayObject>( vertexArrayHandle );
+		return CreateGLObject<GLVertexArrayObject>( vertexArrayHandle );
 	}
 
-	bool GLVertexArrayObject::release()
+	bool GLVertexArrayObject::Release()
 	{
 		glDeleteVertexArrays( 1, &mGLHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return true;
 	}
 
-	bool GLVertexArrayObject::validateHandle() const
+	bool GLVertexArrayObject::ValidateHandle() const
 	{
 		auto isProgram = glIsVertexArray( mGLHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return isProgram != GL_FALSE;
 	}

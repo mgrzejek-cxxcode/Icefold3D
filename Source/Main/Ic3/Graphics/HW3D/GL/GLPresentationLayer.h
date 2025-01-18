@@ -11,15 +11,15 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( GLPresentationLayer );
-	ic3DeclareClassHandle( GLScreenPresentationLayer );
+	Ic3DeclareClassHandle( GLPresentationLayer );
+	Ic3DeclareClassHandle( GLScreenPresentationLayer );
 
 	struct GLPresentationLayerCreateInfo : public PresentationLayerCreateInfo
 	{
 	};
 
 	/// @brief
-	class ICFGX_GL_CLASS GLPresentationLayer : public PresentationLayer
+	class IC3_GX_GL_CLASS GLPresentationLayer : public PresentationLayer
 	{
 	public:
 		System::OpenGLDisplaySurfaceHandle const mSysGLDisplaySurface;
@@ -28,7 +28,7 @@ namespace Ic3::Graphics::GCI
 	    GLPresentationLayer( GLGPUDevice & pGPUDevice, System::OpenGLDisplaySurfaceHandle pSysGLDisplaySurface );
 		virtual ~GLPresentationLayer();
 
-		virtual System::EventSource * getInternalSystemEventSource() const noexcept override;
+		virtual System::EventSource * GetInternalSystemEventSource() const noexcept override;
 	};
 
 	class GLScreenPresentationLayer final : public GLPresentationLayer
@@ -46,20 +46,20 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~GLScreenPresentationLayer();
 
-		virtual void bindRenderTarget( CommandContext * pCmdContext ) override;
+		virtual void BindRenderTarget( CommandContext * pCmdContext ) override;
 
-		virtual void invalidateRenderTarget( CommandContext * pCmdContext ) override;
+		virtual void InvalidateRenderTarget( CommandContext * pCmdContext ) override;
 
-		virtual void present() override;
+		virtual void Present() override;
 
-		virtual void resize( uint32 pWidth, uint32 pHeight ) override;
+		virtual void Resize( uint32 pWidth, uint32 pHeight ) override;
 
-		virtual void setFullscreenMode( bool pEnable ) override;
+		virtual void SetFullscreenMode( bool pEnable ) override;
 
-		virtual Ic3::Math::Vec2u32 queryRenderTargetSize() const override;
+		virtual Ic3::Math::Vec2u32 QueryRenderTargetSize() const override;
 
-		/// @brief Creates new swap chain using provided create params.
-		static GLScreenPresentationLayerHandle create( GLGPUDevice & pDevice, const GLPresentationLayerCreateInfo & pCreateInfo );
+		/// @brief Creates new swap chain using provided Create params.
+		static GLScreenPresentationLayerHandle Create( GLGPUDevice & pDevice, const GLPresentationLayerCreateInfo & pCreateInfo );
 	};
 
 } // namespace Ic3::Graphics::GCI

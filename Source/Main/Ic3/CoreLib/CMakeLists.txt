@@ -2,9 +2,10 @@
 set( IC3_CORELIB_SRC_FILES
 		"Prerequisites/CoreDefs.h"
 		"Prerequisites/CoreEnums.h"
+		"Prerequisites/DebugLayer.h"
 		"Prerequisites/DynamicInterface.h"
         "Prerequisites/DynamicInterface.cpp"
-        "Prerequisites/Result.h"
+        "Prerequisites/ResultCode.h"
         "Prerequisites/SharedHandle.h"
 
         "Prerequisites.h"
@@ -13,7 +14,7 @@ set( IC3_CORELIB_SRC_FILES
         "Exception.h"
 		"Exception.cpp"
 		"ExceptionCommon.h"
-		"ExceptionResult.h"
+		"ReturnValueObject.h"
 		"ExceptionUtils.h"
         "PixelCommon.h"
         "MathImports.h"
@@ -23,13 +24,9 @@ set( IC3_CORELIB_SRC_FILES
 		"Reflection/EnumTypeInfo.h"
 		"Reflection/EnumTypeInfo.cpp"
 
-		"Sync/AtomicRWLock.h"
-		"Sync/CommonSyncDefs.h"
-		"Sync/Lockable.h"
-		"Sync/MutexCommon.h"
-		"Sync/MutexLockTypes.h"
-		"Sync/SpinLock.h"
-		"Sync/SyncInterface.h"
+		"Threading/CommonSyncDefs.h"
+		"Threading/Lockable.h"
+		"Threading/MutexCommon.h"
 
 		"TypeInfo/TPIDefsCoreEnum.cpp"
 
@@ -66,6 +63,5 @@ target_include_directories( Ic3.CoreLib PUBLIC
 		)
 
 target_link_libraries( Ic3.CoreLib PUBLIC
-		Ic3.Platform
-		Ic3.Cppx
+		ext-cppx
 		)

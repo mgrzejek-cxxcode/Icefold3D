@@ -8,8 +8,8 @@
 namespace Ic3::System
 {
 
-	ic3SysDeclareHandle( AndroidWindow );
-	ic3SysDeclareHandle( AndroidWindowManager );
+	Ic3SysDeclareHandle( AndroidWindow );
+	Ic3SysDeclareHandle( AndroidWindowManager );
 
 	namespace Platform
 	{
@@ -17,7 +17,7 @@ namespace Ic3::System
 		using AndroidWindowManagerNativeData = AndroidNativeDataCommon;
 		using AndroidWindowNativeData = AndroidNativeDataCommon;
 
-		IC3_SYSTEM_API_NODISCARD Math::Size2u androidQueryNativeWindowSize( ANativeWindow * pANativeWindow );
+		IC3_SYSTEM_API_NODISCARD Math::Size2u AndroidQueryNativeWindowSize( ANativeWindow * pANativeWindow );
 
 	}
 
@@ -28,8 +28,8 @@ namespace Ic3::System
 		virtual ~AndroidWindowManager() noexcept;
 
 	private:
-		// @override WindowManager::_nativeCreateWindow
-		virtual WindowHandle _nativeCreateWindow( WindowCreateInfo pCreateInfo ) override final;
+		// @override WindowManager::_NativeCreateWindow
+		virtual WindowHandle _NativeCreateWindow( WindowCreateInfo pCreateInfo ) override final;
 	};
 
 	class AndroidWindow : public Window, public NativeObject<Platform::AndroidWindowNativeData>
@@ -41,21 +41,22 @@ namespace Ic3::System
 		virtual ~AndroidWindow() noexcept;
 
 	private:
-		// @override Window::_nativeResize
-		virtual void _nativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode ) override final;
+		// @override Window::_NativeResize
+		virtual void _NativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode ) override final;
 
-		// @override Window::_nativeSetFullscreenMode
-		virtual void _nativeSetFullscreenMode( bool pEnable ) override final;
+		// @override Window::_NativeSetFullscreenMode
+		virtual void _NativeSetFullscreenMode( bool pEnable ) override final;
 
-		// @override Window::_nativeSetTitle
-		virtual void _nativeSetTitle( const std::string & pTitle ) override final;
+		// @override Window::_NativeSetTitle
+		virtual void _NativeSetTitle( const std::string & pTitle ) override final;
 
-		// @override Window::_nativeUpdateGeometry
-		virtual void _nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-		                                    Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
+		// @override Window::_NativeUpdateGeometry
+		virtual void _NativeUpdateGeometry(
+				const FrameGeometry & pFrameGeometry,
+				cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
 
-		// @override Window::_nativeGetSize
-		virtual FrameSize _nativeGetSize( EFrameSizeMode pSizeMode ) const override final;
+		// @override Window::_NativeGetSize
+		virtual FrameSize _NativeGetSize( EFrameSizeMode pSizeMode ) const override final;
 	};
 
 } // namespace Ic3::System

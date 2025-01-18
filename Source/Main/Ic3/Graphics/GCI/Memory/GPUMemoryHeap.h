@@ -19,8 +19,8 @@ namespace Ic3::Graphics::GCI
 	struct GPUMemoryHeapProperties
 	{
 		gpu_memory_heap_id_t heapID;
-		Bitmask<EGPUMemoryFlags> memoryFlags;
-		GPUMemoryPoolMetrics heapMetrics;
+		cppx::bitmask<EGPUMemoryFlags> memoryFlags;
+		GPUMemoryPoolMetrics mHeapMetrics;
 	};
 
 	class GPUMemoryHeap

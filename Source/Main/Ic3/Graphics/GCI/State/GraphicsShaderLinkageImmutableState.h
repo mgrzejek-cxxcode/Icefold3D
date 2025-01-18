@@ -12,9 +12,10 @@ namespace Ic3::Graphics::GCI
 
 	struct GraphicsShaderLinkageCommonProperties
 	{
-		Bitmask<EShaderStageFlags> activeStagesMask;
-		uint32 activeStagesNum;
-
+		///
+		cppx::bitmask<EShaderStageFlags> mActiveStagesMask;
+		///
+		uint32 mActiveStagesNum;
 	};
 
 	/// @brief
@@ -33,24 +34,24 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~GraphicsShaderLinkageImmutableState();
 
-		IC3_ATTR_NO_DISCARD bool isStageActive( uint32 pStageIndex ) const noexcept
+		CPPX_ATTR_NO_DISCARD bool IsStageActive( uint32 pStageIndex ) const noexcept
 		{
-			return mCommonProperties.activeStagesMask.isSet( CxDef::makeShaderStageBit( pStageIndex ) );
+			return mCommonProperties.mActiveStagesMask.is_set( CxDef::makeShaderStageBit( pStageIndex ));
 		}
 
-		IC3_ATTR_NO_DISCARD bool isStageActive( EShaderType pShaderType ) const noexcept
+		CPPX_ATTR_NO_DISCARD bool IsStageActive( EShaderType pShaderType ) const noexcept
 		{
-			return mCommonProperties.activeStagesMask.isSet( CxDef::getShaderStageBit( pShaderType ) );
+			return mCommonProperties.mActiveStagesMask.is_set( CxDef::GetShaderStageBit( pShaderType ));
 		}
 
-		IC3_ATTR_NO_DISCARD uint32 getActiveStagesNum() const noexcept
+		CPPX_ATTR_NO_DISCARD uint32 GetActiveStagesNum() const noexcept
 		{
-			return mCommonProperties.activeStagesNum;
+			return mCommonProperties.mActiveStagesNum;
 		}
 
-		IC3_ATTR_NO_DISCARD virtual Shader * getShader( size_t pIndex ) const noexcept;
+		CPPX_ATTR_NO_DISCARD virtual Shader * GetShader( size_t pIndex ) const noexcept;
 
-		IC3_ATTR_NO_DISCARD virtual Shader * getShader( EShaderType pShaderType ) const noexcept;
+		CPPX_ATTR_NO_DISCARD virtual Shader * GetShader( EShaderType pShaderType ) const noexcept;
 	};
 
 	/// @brief
@@ -70,15 +71,15 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~GraphicsShaderLinkageImmutableStateSeparable();
 
-		IC3_ATTR_NO_DISCARD virtual Shader * getShader( size_t pIndex ) const noexcept override final;
+		CPPX_ATTR_NO_DISCARD virtual Shader * GetShader( size_t pIndex ) const noexcept override final;
 
-		IC3_ATTR_NO_DISCARD virtual Shader * getShader( EShaderType pShaderType ) const noexcept override final;
+		CPPX_ATTR_NO_DISCARD virtual Shader * GetShader( EShaderType pShaderType ) const noexcept override final;
 	};
 
-	namespace smutil
+	namespace SMU
 	{
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD GraphicsShaderLinkageCommonProperties getGraphicsShaderLinkageCommonPropertiesForShaderSet(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD GraphicsShaderLinkageCommonProperties GetGraphicsShaderLinkageCommonPropertiesForShaderSet(
 				const GraphicsShaderSet & pShaderSet ) noexcept;
 
 	}

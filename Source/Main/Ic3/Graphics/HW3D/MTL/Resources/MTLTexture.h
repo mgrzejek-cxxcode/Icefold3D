@@ -10,7 +10,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( MetalTexture );
+	Ic3DeclareClassHandle( MetalTexture );
 
 	class MetalTexture : public Texture
 	{
@@ -28,9 +28,9 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~MetalTexture();
 
-		static MetalTextureHandle create( MetalGPUDevice & pGPUDevice, const TextureCreateInfo & pCreateInfo );
+		static MetalTextureHandle Create( MetalGPUDevice & pGPUDevice, const TextureCreateInfo & pCreateInfo );
 
-		static RenderTargetTextureHandle createForRenderTarget( MetalGPUDevice & pGPUDevice, const RenderTargetTextureCreateInfo & pCreateInfo );
+		static RenderTargetTextureHandle CreateForRenderTarget( MetalGPUDevice & pGPUDevice, const RenderTargetTextureCreateInfo & pCreateInfo );
 	};
 
 } // namespace Ic3::Graphics::GCI

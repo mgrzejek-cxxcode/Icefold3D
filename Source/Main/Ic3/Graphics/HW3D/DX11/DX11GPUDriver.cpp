@@ -11,7 +11,7 @@ namespace Ic3::Graphics::GCI
 
 	DX11GPUDriver::~DX11GPUDriver() noexcept = default;
 
-	DX11GPUDriverHandle DX11GPUDriver::create( const DX11GPUDriverCreateInfo & pCreateInfo )
+	DX11GPUDriverHandle DX11GPUDriver::Create( const DX11GPUDriverCreateInfo & pCreateInfo )
 	{
 		constexpr auto dx11SupportedGPUConfigFlags =
 			E_GPU_DRIVER_CONFIG_FLAG_ENABLE_DEBUG_LAYER_BIT |
@@ -19,27 +19,27 @@ namespace Ic3::Graphics::GCI
 			E_GPU_DRIVER_CONFIG_FLAG_DISABLE_MULTI_THREAD_ACCESS_BIT |
 			E_GPU_DRIVER_CONFIG_FLAG_USE_REFERENCE_DRIVER_BIT;
 
-		auto dx11GPUDriver = createGPUAPIObject<DX11GPUDriver>( pCreateInfo.sysContext );
-		dx11GPUDriver->setConfigFlags( pCreateInfo.configFlags & dx11SupportedGPUConfigFlags );
+		auto dx11GPUDriver = CreateGfxObject<DX11GPUDriver>( pCreateInfo.sysContext );
+		dx11GPUDriver->SetConfigFlags( pCreateInfo.configFlags & dx11SupportedGPUConfigFlags );
 		return dx11GPUDriver;
 	}
 
-	EGPUDriverID DX11GPUDriver::queryGPUDriverID() const noexcept
+	EGPUDriverID DX11GPUDriver::QueryGPUDriverID() const noexcept
 	{
 		return EGPUDriverID::GDIDirectX11;
 	}
 
-	DisplayManagerHandle DX11GPUDriver::_drvCreateDefaultDisplayManager()
+	DisplayManagerHandle DX11GPUDriver::_DrvCreateDefaultDisplayManager()
 	{
 		return nullptr;
 	}
 
-	GPUDeviceHandle DX11GPUDriver::_drvCreateDevice( const GPUDeviceCreateInfo & pCreateInfo )
+	GPUDeviceHandle DX11GPUDriver::_DrvCreateDevice( const GPUDeviceCreateInfo & pCreateInfo )
 	{
 		DX11GPUDeviceCreateInfo createInfo;
 		createInfo.adapterID = pCreateInfo.adapterID;
 		createInfo.flags = pCreateInfo.flags;
-		return DX11GPUDevice::create( *this, createInfo );
+		return DX11GPUDevice::Create( *this, createInfo );
 	}
 
 } // namespace Ic3::Graphics::GCI

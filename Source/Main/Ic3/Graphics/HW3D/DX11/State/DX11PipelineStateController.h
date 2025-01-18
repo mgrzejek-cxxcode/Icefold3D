@@ -27,34 +27,34 @@ namespace Ic3::Graphics::GCI
 		DX11GraphicsPipelineStateController( DX11CommandList & pDX11CommandList );
 		~DX11GraphicsPipelineStateController();
 
-		IC3_ATTR_NO_DISCARD const DX11IAVertexStreamDefinition & getCurrentIAVertexStreamDefinition() const noexcept;
+		CPPX_ATTR_NO_DISCARD const DX11IAVertexStreamDefinition & GetCurrentIAVertexStreamDefinition() const noexcept;
 
-		IC3_ATTR_NO_DISCARD DX11RenderTargetBindingData getCurrentRenderTargetBinding() const noexcept;
+		CPPX_ATTR_NO_DISCARD DX11RenderTargetBindingData GetCurrentRenderTargetBinding() const noexcept;
 
-		virtual bool applyStateChanges() override;
+		virtual bool ApplyStateChanges() override;
 
-		virtual bool setGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO ) override;
-		virtual bool resetGraphicsPipelineStateObject() override;
+		virtual bool SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO ) override;
+		virtual bool ResetGraphicsPipelineStateObject() override;
 
-		virtual bool setIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState ) override;
-		virtual bool setIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState ) override;
-		virtual bool resetIAVertexStreamState() override;
+		virtual bool SetIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState ) override;
+		virtual bool SetIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState ) override;
+		virtual bool ResetIAVertexStreamState() override;
 
-		virtual bool setRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState ) override;
-		virtual bool setRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState ) override;
-		virtual bool resetRenderTargetBindingState() override;
+		virtual bool SetRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState ) override;
+		virtual bool SetRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState ) override;
+		virtual bool ResetRenderTargetBindingState() override;
 
-		virtual bool setViewport( const ViewportDesc & pViewportDesc ) override;
-		virtual bool setShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData ) override;
-		virtual bool setShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer ) override;
-		virtual bool setShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture ) override;
-		virtual bool setShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler ) override;
+		virtual bool SetViewport( const ViewportDesc & pViewportDesc ) override;
+		virtual bool SetShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData ) override;
+		virtual bool SetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer ) override;
+		virtual bool SetShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture ) override;
+		virtual bool SetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler ) override;
 
 	private:
-		Bitmask<uint32> applyCommonGraphicsConfigState( const DX11GraphicsPipelineStateObject & pGraphicsPSO );
-		Bitmask<uint32> applyGraphicsShaderState( const SeparableShaderCache & pSeparableShaders );
-		void applyIAVertexStreamState( const DX11IAVertexStreamDefinition & pVertexStreamDefinition );
-		void applyRenderTargetBinding( const DX11RenderTargetBindingData & pRenderTargetBindingData );
+		cppx::bitmask<uint32> ApplyCommonGraphicsConfigState( const DX11GraphicsPipelineStateObject & pGraphicsPSO );
+		cppx::bitmask<uint32> ApplyGraphicsShaderState( const SeparableShaderCache & pSeparableShaders );
+		void ApplyIAVertexStreamState( const DX11IAVertexStreamDefinition & pVertexStreamDefinition );
+		void ApplyRenderTargetBinding( const DX11RenderTargetBindingData & pRenderTargetBindingData );
 
 	private:
 		DX11IAVertexStreamDefinition _dynamicIAVertexStreamDefinitionDX11;

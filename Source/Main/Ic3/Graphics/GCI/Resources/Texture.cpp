@@ -17,26 +17,26 @@ namespace Ic3::Graphics::GCI
 
 	Texture::~Texture() = default;
 
-	const GPUResourceProperties & Texture::getProperties() const
+	const GPUResourceProperties & Texture::GetProperties() const
 	{
 		return mTextureProperties;
 	}
 
-	TextureSubResource Texture::getAllSubResourcesRef() const
+	TextureSubResource Texture::GetAllSubResourcesRef() const
 	{
 		switch( mTextureLayout.texClass )
 		{
 			case ETextureClass::T2D:
 			{
 				TextureSubResource2D subResource2D;
-				subResource2D.mipLevel = CxDef::TEX_SUBRESOURCE_MIP_LEVEL_ALL_MIPS;
+				subResource2D.mipLevel = cxTexSubresourceMipLevelAllMips;
 				return TextureSubResource{ subResource2D, ETextureClass::T2D };
 			}
 			case ETextureClass::T2DArray:
 			{
 				TextureSubResource2DArray subResource2DArray;
-				subResource2DArray.arrayIndex = CxDef::TEX_SUBRESOURCE_ARRAY_INDEX_ALL_TEXTURES;
-				subResource2DArray.mipLevel = CxDef::TEX_SUBRESOURCE_MIP_LEVEL_ALL_MIPS;
+				subResource2DArray.arrayIndex = cxTexSubresourceArrayIndexAllTextures;
+				subResource2DArray.mipLevel = cxTexSubresourceMipLevelAllMips;
 				return TextureSubResource{ subResource2DArray, ETextureClass::T2DArray };
 			}
 			case ETextureClass::T2DMS:
@@ -48,22 +48,22 @@ namespace Ic3::Graphics::GCI
 			case ETextureClass::T2DMSArray:
 			{
 				TextureSubResource2DArray subResource2DMSArray;
-				subResource2DMSArray.arrayIndex = CxDef::TEX_SUBRESOURCE_ARRAY_INDEX_ALL_TEXTURES;
+				subResource2DMSArray.arrayIndex = cxTexSubresourceArrayIndexAllTextures;
 				subResource2DMSArray.mipLevel = 0; // MSAA textures only have a single sub-resource (mip level 0).
 				return TextureSubResource{ subResource2DMSArray, ETextureClass::T2DMSArray };
 			}
 			case ETextureClass::T3D:
 			{
 				TextureSubResource3D subResource3D;
-				subResource3D.mipLevel = CxDef::TEX_SUBRESOURCE_MIP_LEVEL_ALL_MIPS;
-				subResource3D.depthLayerIndex = CxDef::TEX_SUBRESOURCE_DEPTH_ALL_LAYERS;
+				subResource3D.mipLevel = cxTexSubresourceMipLevelAllMips;
+				subResource3D.depthLayerIndex = cxTexSubresourceDepthAllLayers;
 				return TextureSubResource{ subResource3D };
 			}
 			case ETextureClass::TCubeMap:
 			{
 				TextureSubResourceCubeMap subResourceCubeMap;
-				subResourceCubeMap.faceIndex = CxDef::TEX_SUBRESOURCE_CUBE_MAP_FACE_ALL_FACES;
-				subResourceCubeMap.mipLevel = CxDef::TEX_SUBRESOURCE_MIP_LEVEL_ALL_MIPS;
+				subResourceCubeMap.faceIndex = cxTexSubresourceCubeMapFaceAllFaces;
+				subResourceCubeMap.mipLevel = cxTexSubresourceMipLevelAllMips;
 				return TextureSubResource{ subResourceCubeMap };
 			}
 			default:
@@ -73,7 +73,7 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	TextureSubResource Texture::getDefaultSubResourceRef() const
+	TextureSubResource Texture::GetDefaultSubResourceRef() const
 	{
 		switch( mTextureLayout.texClass )
 		{
@@ -107,13 +107,13 @@ namespace Ic3::Graphics::GCI
 			{
 				TextureSubResource3D subResource3D;
 				subResource3D.mipLevel = 0;
-				subResource3D.depthLayerIndex = CxDef::TEX_SUBRESOURCE_DEPTH_ALL_LAYERS;
+				subResource3D.depthLayerIndex = cxTexSubresourceDepthAllLayers;
 				return TextureSubResource{ subResource3D };
 			}
 			case ETextureClass::TCubeMap:
 			{
 				TextureSubResourceCubeMap subResourceCubeMap;
-				subResourceCubeMap.faceIndex = E_TEXTURE_CUBE_MAP_FACE_FIRST;
+				subResourceCubeMap.faceIndex = eTextureCubeMapFaceFirst;
 				subResourceCubeMap.mipLevel = 0;
 				return TextureSubResource{ subResourceCubeMap };
 			}
@@ -124,16 +124,16 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	RenderTargetTextureHandle Texture::createDefaultRenderTargetTextureView(
+	RenderTargetTextureHandle Texture::CreateDefaultRenderTargetTextureView(
 			GPUDevice & pGPUDevice,
 			const RenderTargetTextureCreateInfo & pCreateInfo )
 	{
 		if( pCreateInfo.targetTexture )
 		{
-			const auto rttType = rcutil::queryRenderTargetTextureType( pCreateInfo.targetTexture->mTextureLayout.internalFormat );
-			const auto rttLayout = rcutil::queryRenderTargetTextureLayout( pCreateInfo.targetTexture->mTextureLayout );
+			const auto rttType = RCU::QueryRenderTargetTextureType( pCreateInfo.targetTexture->mTextureLayout.internalFormat );
+			const auto rttLayout = RCU::QueryRenderTargetTextureLayout( pCreateInfo.targetTexture->mTextureLayout );
 
-			auto existingTextureRTT = createGPUAPIObject<RenderTargetTexture>( pGPUDevice, rttType, rttLayout, pCreateInfo.targetTexture );
+			auto existingTextureRTT = CreateGfxObject<RenderTargetTexture>( pGPUDevice, rttType, rttLayout, pCreateInfo.targetTexture );
 
 			return existingTextureRTT;
 		}
@@ -142,10 +142,10 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	namespace rcutil
+	namespace RCU
 	{
 
-		TextureDimensions getValidTextureDimensions( ETextureClass pTexClass, const TextureDimensions & pDimensions )
+		TextureDimensions GetValidTextureDimensions( ETextureClass pTexClass, const TextureDimensions & pDimensions )
 		{
 			TextureDimensions validTextureDimensions = pDimensions;
 

@@ -21,7 +21,7 @@ namespace Ic3::Graphics::GCI
 
 		ECommandListType const mListType;
 
-		Bitmask<ECommandObjectPropertyFlags> const mCommandFlags;
+		cppx::bitmask<ECommandObjectPropertyFlags> const mCommandFlags;
 
 		CommandList(
 			CommandSystem & pCommandSystem,
@@ -30,77 +30,77 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~CommandList();
 
-		IC3_ATTR_NO_DISCARD bool checkCommandClassSupport( ECommandQueueClass pQueueClass ) const noexcept;
+		CPPX_ATTR_NO_DISCARD bool CheckCommandClassSupport( ECommandQueueClass pQueueClass ) const noexcept;
 
-		IC3_ATTR_NO_DISCARD bool checkFeatureSupport( Bitmask<ECommandObjectPropertyFlags> pCommandListFlags ) const noexcept;
+		CPPX_ATTR_NO_DISCARD bool CheckFeatureSupport( cppx::bitmask<ECommandObjectPropertyFlags> pCommandListFlags ) const noexcept;
 
-		IC3_ATTR_NO_DISCARD bool isRenderPassActive() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsRenderPassActive() const noexcept;
 
-		IC3_ATTR_NO_DISCARD bool hasPendingGraphicsPipelineStateChanges() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool HasPendingGraphicsPipelineStateChanges() const noexcept;
 
-		bool acquireList();
-		void releaseList();
+		bool AcquireList();
+		void ReleaseList();
 
-		bool applyGraphicsPipelineStateChanges();
+		bool ApplyGraphicsPipelineStateChanges();
 
-		virtual void beginCommandSequence();
-		virtual void endCommandSequence();
+		virtual void BeginCommandSequence();
+		virtual void EndCommandSequence();
 
-		bool mapBuffer( GPUBuffer & pBuffer, EGPUMemoryMapMode pMapMode );
-		bool mapBufferRegion( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion, EGPUMemoryMapMode pMapMode );
-		bool unmapBuffer( GPUBuffer & pBuffer );
-		bool flushMappedBuffer( GPUBuffer & pBuffer );
-		bool flushMappedBufferRegion( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion );
-		bool invalidateBuffer( GPUBuffer & pBuffer );
-		bool invalidateBufferRegion( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion );
-		bool updateBufferDataCopy( GPUBuffer & pBuffer, GPUBuffer & pSourceBuffer, const GPUBufferDataCopyDesc & pCopyDesc );
-		bool updateBufferSubDataCopy( GPUBuffer & pBuffer, GPUBuffer & pSourceBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc );
-		bool updateBufferDataUpload( GPUBuffer & pBuffer, const GPUBufferDataUploadDesc & pUploadDesc );
-		bool updateBufferSubDataUpload( GPUBuffer & pBuffer, const GPUBufferSubDataUploadDesc & pUploadDesc );
+		bool MapBuffer( GPUBuffer & pBuffer, EGPUMemoryMapMode pMapMode );
+		bool MapBufferRegion( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion, EGPUMemoryMapMode pMapMode );
+		bool UnmapBuffer( GPUBuffer & pBuffer );
+		bool FlushMappedBuffer( GPUBuffer & pBuffer );
+		bool FlushMappedBufferRegion( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion );
+		bool InvalidateBuffer( GPUBuffer & pBuffer );
+		bool InvalidateBufferRegion( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion );
+		bool UpdateBufferDataCopy( GPUBuffer & pBuffer, GPUBuffer & pSourceBuffer, const GPUBufferDataCopyDesc & pCopyDesc );
+		bool UpdateBufferSubDataCopy( GPUBuffer & pBuffer, GPUBuffer & pSourceBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc );
+		bool UpdateBufferDataUpload( GPUBuffer & pBuffer, const GPUBufferDataUploadDesc & pUploadDesc );
+		bool UpdateBufferSubDataUpload( GPUBuffer & pBuffer, const GPUBufferSubDataUploadDesc & pUploadDesc );
 
-		virtual bool beginRenderPass(
+		virtual bool BeginRenderPass(
 				const RenderPassConfigurationImmutableState & pRenderPassState,
-				Bitmask<ECommandListActionFlags> pFlags );
+				cppx::bitmask<ECommandListActionFlags> pFlags );
 
-		virtual bool beginRenderPass(
+		virtual bool BeginRenderPass(
 				const RenderPassConfigurationDynamicState & pRenderPassState,
-				Bitmask<ECommandListActionFlags> pFlags );
+				cppx::bitmask<ECommandListActionFlags> pFlags );
 
-		virtual void endRenderPass();
+		virtual void EndRenderPass();
 
-		void setRenderPassDynamicState( const GraphicsPipelineDynamicState & pDynamicState );
-		void resetRenderPassDynamicState();
+		void SetRenderPassDynamicState( const GraphicsPipelineDynamicState & pDynamicState );
+		void ResetRenderPassDynamicState();
 
-		bool setGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO );
-		bool setIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState );
-		bool setIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState );
-		bool setRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState );
-		bool setRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState );
+		bool SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO );
+		bool SetIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState );
+		bool SetIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState );
+		bool SetRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState );
+		bool SetRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState );
 
-		bool cmdSetViewport( const ViewportDesc & pViewportDesc );
-		bool cmdSetShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData );
-		bool cmdSetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer );
-		bool cmdSetShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture );
-		bool cmdSetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler );
+		bool CmdSetViewport( const ViewportDesc & pViewportDesc );
+		bool CmdSetShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData );
+		bool CmdSetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer );
+		bool CmdSetShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture );
+		bool CmdSetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler );
 
-		virtual void cmdDispatchCompute( uint32 pThrGroupSizeX, uint32 pThrGroupSizeY, uint32 pThrGroupSizeZ ) {} // = 0;
-		virtual void cmdDispatchComputeIndirect( uint32 pIndirectBufferOffset ) {} // = 0;
+		virtual void CmdDispatchCompute( uint32 pThrGroupSizeX, uint32 pThrGroupSizeY, uint32 pThrGroupSizeZ ) {} // = 0;
+		virtual void CmdDispatchComputeIndirect( uint32 pIndirectBufferOffset ) {} // = 0;
 
-		virtual void cmdDrawDirectIndexed( native_uint pIndicesNum, native_uint pIndicesOffset, native_uint pBaseVertexIndex ) = 0;
-		virtual void cmdDrawDirectIndexedInstanced( native_uint pIndicesNumPerInstance, native_uint pInstancesNum, native_uint pIndicesOffset ) = 0;
-		virtual void cmdDrawDirectNonIndexed( native_uint pVerticesNum, native_uint pVerticesOffset ) = 0;
-		virtual void cmdDrawDirectNonIndexedInstanced( native_uint pVerticesNumPerInstance, native_uint pInstancesNum, native_uint pVerticesOffset ) = 0;
+		virtual void CmdDrawDirectIndexed( native_uint pIndicesNum, native_uint pIndicesOffset, native_uint pBaseVertexIndex ) = 0;
+		virtual void CmdDrawDirectIndexedInstanced( native_uint pIndicesNumPerInstance, native_uint pInstancesNum, native_uint pIndicesOffset ) = 0;
+		virtual void CmdDrawDirectNonIndexed( native_uint pVerticesNum, native_uint pVerticesOffset ) = 0;
+		virtual void CmdDrawDirectNonIndexedInstanced( native_uint pVerticesNumPerInstance, native_uint pInstancesNum, native_uint pVerticesOffset ) = 0;
 
-		virtual void cmdExecuteDeferredContext( CommandContextDeferred & pDeferredContext ) = 0;
+		virtual void CmdExecuteDeferredContext( CommandContextDeferred & pDeferredContext ) = 0;
 
 	private:
-		bool onBeginRenderPass( Bitmask<ECommandListActionFlags> pFlags );
-		void onEndRenderPass();
+		bool OnBeginRenderPass( cppx::bitmask<ECommandListActionFlags> pFlags );
+		void OnEndRenderPass();
 
 	protected:
 		std::atomic<bool> _listLockStatus = ATOMIC_VAR_INIT( false );
 
-		Bitmask<uint32> _internalStateMask;
+		cppx::bitmask<uint32> _internalStateMask;
 
 		GraphicsPipelineStateController * _graphicsPipelineStateController = nullptr;
 	};
@@ -115,24 +115,24 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~CommandListRenderPassDefault();
 
-		IC3_ATTR_NO_DISCARD const RenderPassConfiguration & getRenderPassConfiguration() const noexcept;
+		CPPX_ATTR_NO_DISCARD const RenderPassConfiguration & GetRenderPassConfiguration() const noexcept;
 
-		virtual bool beginRenderPass(
+		virtual bool BeginRenderPass(
 				const RenderPassConfigurationImmutableState & pRenderPassState,
-				Bitmask<ECommandListActionFlags> pFlags ) override;
+				cppx::bitmask<ECommandListActionFlags> pFlags ) override;
 
-		virtual bool beginRenderPass(
+		virtual bool BeginRenderPass(
 				const RenderPassConfigurationDynamicState & pRenderPassState,
-				Bitmask<ECommandListActionFlags> pFlags ) override;
+				cppx::bitmask<ECommandListActionFlags> pFlags ) override;
 
-		virtual void endRenderPass() override;
+		virtual void EndRenderPass() override;
 
 	protected:
-		virtual void executeRenderPassLoadActions(
+		virtual void ExecuteRenderPassLoadActions(
 				const RenderPassConfiguration & pRenderPassConfiguration,
 				const GraphicsPipelineDynamicState & pDynamicState ) = 0;
 
-		virtual void executeRenderPassStoreActions(
+		virtual void ExecuteRenderPassStoreActions(
 				const RenderPassConfiguration & pRenderPassConfiguration,
 				const GraphicsPipelineDynamicState & pDynamicState ) = 0;
 

@@ -40,14 +40,14 @@ namespace Ic3::Script
 
 	int luaDumpCodeWriter( lua_State * pLuaState, const void * pData, size_t pLength, void * pArg )
 	{
-		auto * targetBuffer = reinterpret_cast<Cppx::DynamicByteArray *>( pArg );
+		auto * targetBuffer = reinterpret_cast<cppx::dynamic_byte_array *>( pArg );
 		targetBuffer->resize( pLength );
 		targetBuffer->setData( pData, pLength, 0 );
 
 		return 0;
 	}
 
-	bool LuaScriptSystem::compileSource( const char * pName, const void * pSource, size_t pLength, Cppx::DynamicByteArray & pOutput ) noexcept
+	bool LuaScriptSystem::compileSource( const char * pName, const void * pSource, size_t pLength, cppx::dynamic_byte_array & pOutput ) noexcept
 	{
 		const auto loadResult = luaL_loadbufferx( _context.luaState, reinterpret_cast<const char *>( pSource ), pLength, pName, "t" );
 		if( !LuaCore::checkResult( _context.luaState, loadResult ) )

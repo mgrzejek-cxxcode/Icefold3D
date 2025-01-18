@@ -18,23 +18,23 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~GPUDriverNull() noexcept = default;
 
-		IC3_ATTR_NO_DISCARD virtual EGPUDriverID queryGPUDriverID() const noexcept override final
+		CPPX_ATTR_NO_DISCARD virtual EGPUDriverID QueryGPUDriverID() const noexcept override final
 		{
 			return EGPUDriverID::GDINull;
 		}
 
-		IC3_ATTR_NO_DISCARD virtual bool isNullDriver() const noexcept override final
+		CPPX_ATTR_NO_DISCARD virtual bool IsNullDriver() const noexcept override final
 		{
 			return true;
 		}
 
 	private:
-		virtual DisplayManagerHandle _drvCreateDefaultDisplayManager() override final
+		virtual DisplayManagerHandle _DrvCreateDefaultDisplayManager() override final
 		{
 			return nullptr;
 		}
 
-		virtual GPUDeviceHandle _drvCreateDevice( const GPUDeviceCreateInfo & pCreateInfo ) override final
+		virtual GPUDeviceHandle _DrvCreateDevice( const GPUDeviceCreateInfo & pCreateInfo ) override final
 		{
 			return nullptr;
 		}

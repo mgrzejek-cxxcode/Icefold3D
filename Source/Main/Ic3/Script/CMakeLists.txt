@@ -7,7 +7,10 @@ set( IC3_SCRIPT_SRC_FILES
 	"Prerequisites.h"
 	"ScriptSystem.h"
 	"ScriptSystem.cpp"
+	"ScriptModule.h"
+	"ScriptModule.cpp"
 
+	"Lua/LuaCommon.h"
 	"Lua/LuaCoreAPI.h"
     "Lua/LuaCoreAPI.cpp"
 	"Lua/LuaScriptSystem.h"
@@ -41,8 +44,7 @@ target_include_directories( Ic3.Graphics.GCI PUBLIC
 		)
 
 target_link_libraries( Ic3.Script PUBLIC
-		ExtLib.Lua
+		ext-lua
 		Ic3.CoreLib
-		Ic3.Cppx
 		Ic3.System
 		)

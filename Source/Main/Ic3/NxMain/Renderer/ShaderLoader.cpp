@@ -36,7 +36,7 @@ namespace Ic3
 
 		if( pShaderDefinitions.size() > 0 )
 		{
-			shaderLibrary = createDynamicInterfaceObject<ShaderLibrary>( mCES );
+			shaderLibrary = CreateDynamicObject<ShaderLibrary>( mCES );
 
 			for( auto & shaderDefinition : pShaderDefinitions )
 			{
@@ -122,7 +122,7 @@ namespace Ic3
 
 		if( pShaderDefinitions.size() > 0 )
 		{
-			shaderLibrary = createDynamicInterfaceObject<ShaderLibrary>( mCES );
+			shaderLibrary = CreateDynamicObject<ShaderLibrary>( mCES );
 
 			for( auto & shaderDefinition : pShaderDefinitions )
 			{
@@ -186,13 +186,13 @@ namespace Ic3
 		};
 	}
 
-	DynamicMemoryBuffer FileShaderLoader::loadShaderFile( System::AssetLoader & pAssetLoader, const std::string & pFilename )
+	dynamic_memory_buffer FileShaderLoader::loadShaderFile( System::AssetLoader & pAssetLoader, const std::string & pFilename )
 	{
 		auto psAsset = pAssetLoader.openSubAsset(
 				pFilename,
-				System::E_ASSET_OPEN_FLAG_NO_EXTENSION_BIT );
+				System::eAssetOpenFlagNoExtensionBit );
 
-		DynamicMemoryBuffer resultBuffer;
+		dynamic_memory_buffer resultBuffer;
 		const auto sourceLength = psAsset->readAll( resultBuffer, 1 );
 		resultBuffer[sourceLength] = 0;
 

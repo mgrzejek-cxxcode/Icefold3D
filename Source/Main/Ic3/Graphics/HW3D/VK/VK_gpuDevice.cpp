@@ -12,12 +12,12 @@ namespace Ic3::Graphics::GCI
 
 	VKGPUDevice::~VKGPUDevice() = default;
 
-	VKGPUDeviceHandle VKGPUDevice::create( VKGPUDriver * pDriver, const VKGPUDeviceCreateInfo & pCreateInfo )
+	VKGPUDeviceHandle VKGPUDevice::Create( VKGPUDriver * pDriver, const VKGPUDeviceCreateInfo & pCreateInfo )
 	{
 		return nullptr;
 	}
 
-	void VKGPUDevice::initializeCommandSystem()
+	void VKGPUDevice::InitializeCommandSystem()
 	{
 	}
 

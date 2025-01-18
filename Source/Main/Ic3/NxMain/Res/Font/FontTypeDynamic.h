@@ -4,10 +4,11 @@
 #ifndef __IC3_NXMAIN_RES_FONT_TYPE_DYNAMIC_H__
 #define __IC3_NXMAIN_RES_FONT_TYPE_DYNAMIC_H__
 
-#include "../font.h"
-#include "../resourceLoader.h"
-#include "ftdFreeTypeCommon.h"
-#include <Ic3/Cppx/ByteArray.h>
+#include "../Font.h"
+#include "../ResourceLoader.h"
+#include "FTDFreeTypeCommon.h"
+#include <cppx/byteArray.h>
+#include <cppx/platform/gds.h>
 
 namespace Ic3
 {
@@ -21,7 +22,7 @@ namespace Ic3
 	struct DynamicFontCreateInfo
 	{
 		DynamicFontDesc fontDesc;
-		DynamicByteArray binaryFontData;
+		cppx::dynamic_byte_array binaryFontData;
 		Math::Vec2u32 fontResolutionHint;
 		std::vector<char_code_point_t> preloadGlyphSet;
 	};
@@ -56,9 +57,9 @@ namespace Ic3
 	namespace GDS
 	{
 
-		gds_size_t evalByteSize( const DynamicFontCreateInfo & pValue );
-		gds_size_t serialize( byte * pOutputBuffer, const DynamicFontCreateInfo & pValue );
-		gds_size_t deserialize( const byte * pInputData, DynamicFontCreateInfo & pValue );
+		cppx::gds_size_t evalByteSize( const DynamicFontCreateInfo & pValue );
+		cppx::gds_size_t serialize( byte * pOutputBuffer, const DynamicFontCreateInfo & pValue );
+		cppx::gds_size_t deserialize( const byte * pInputData, DynamicFontCreateInfo & pValue );
 
 	}
 

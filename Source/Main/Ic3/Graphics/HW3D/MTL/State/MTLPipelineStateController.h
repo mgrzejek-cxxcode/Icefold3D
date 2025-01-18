@@ -20,24 +20,24 @@ namespace Ic3::Graphics::GCI
 		MTLGraphicsPipelineStateController( MetalCommandList & pMetalCommandList );
 		~MTLGraphicsPipelineStateController();
 
-		virtual bool applyStateChanges() override final;
+		virtual bool ApplyStateChanges() override final;
 
-		virtual bool setGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO ) override;
-		virtual bool resetGraphicsPipelineStateObject() override;
+		virtual bool SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO ) override;
+		virtual bool ResetGraphicsPipelineStateObject() override;
 
-		virtual bool setIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState ) override;
-		virtual bool setIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState ) override;
-		virtual bool resetIAVertexStreamState() override;
+		virtual bool SetIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState ) override;
+		virtual bool SetIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState ) override;
+		virtual bool ResetIAVertexStreamState() override;
 
-		virtual bool setRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState ) override;
-		virtual bool setRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState ) override;
-		virtual bool resetRenderTargetBindingState() override;
+		virtual bool SetRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState ) override;
+		virtual bool SetRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState ) override;
+		virtual bool ResetRenderTargetBindingState() override;
 
-		virtual bool setViewport( const ViewportDesc & pViewportDesc ) override;
-		virtual bool setShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData ) override;
-		virtual bool setShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer ) override;
-		virtual bool setShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture ) override;
-		virtual bool setShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler ) override;
+		virtual bool SetViewport( const ViewportDesc & pViewportDesc ) override;
+		virtual bool SetShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData ) override;
+		virtual bool SetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer ) override;
+		virtual bool SetShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture ) override;
+		virtual bool SetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler ) override;
 	};
 
 } // namespace Ic3::Graphics::GCI

@@ -10,15 +10,15 @@ namespace Ic3::Graphics::GCI
 
 	GLSamplerObject::~GLSamplerObject() = default;
 
-	GLSamplerObjectHandle GLSamplerObject::create( const GLSamplerState & pSamplerState )
+	GLSamplerObjectHandle GLSamplerObject::Create( const GLSamplerState & pSamplerState )
 	{
 		GLuint samplerHandle = 0;
 
 		glGenSamplers( 1, &samplerHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		GLSamplerObjectHandle openglSamplerObject{ new GLSamplerObject( samplerHandle ) };
-		if( !openglSamplerObject->setSamplerState( pSamplerState ) )
+		if( !openglSamplerObject->SetSamplerState( pSamplerState ) )
 		{
 			return nullptr;
 		}
@@ -26,63 +26,63 @@ namespace Ic3::Graphics::GCI
 		return openglSamplerObject;
 	}
 
-	bool GLSamplerObject::release()
+	bool GLSamplerObject::Release()
 	{
 		glDeleteSamplers( 1, &mGLHandle );
-		ic3OpenGLHandleLastError();
+		Ic3OpenGLHandleLastError();
 
 		return true;
 	}
 
-	bool GLSamplerObject::validateHandle() const
+	bool GLSamplerObject::ValidateHandle() const
 	{
 		GLboolean checkResult = glIsSampler( mGLHandle );
 		return checkResult == GL_TRUE;
 	}
 
-	bool GLSamplerObject::setSamplerState( const GLSamplerState & pSamplerState )
+	bool GLSamplerObject::SetSamplerState( const GLSamplerState & pSamplerState )
 	{
 		glSamplerParameteri( mGLHandle, GL_TEXTURE_WRAP_S, pSamplerState.addressModeS );
-		ic3OpenGLCheckLastResult();
+		Ic3OpenGLCheckLastResult();
 
 		glSamplerParameteri( mGLHandle, GL_TEXTURE_WRAP_T, pSamplerState.addressModeT );
-		ic3OpenGLCheckLastResult();
+		Ic3OpenGLCheckLastResult();
 
 		glSamplerParameteri( mGLHandle, GL_TEXTURE_WRAP_R, pSamplerState.addressModeR );
-		ic3OpenGLCheckLastResult();
+		Ic3OpenGLCheckLastResult();
 
 		glSamplerParameteri( mGLHandle, GL_TEXTURE_MAG_FILTER, pSamplerState.magFilter );
-		ic3OpenGLCheckLastResult();
+		Ic3OpenGLCheckLastResult();
 
 		glSamplerParameteri( mGLHandle, GL_TEXTURE_MIN_FILTER, pSamplerState.minFilter );
-		ic3OpenGLCheckLastResult();
+		Ic3OpenGLCheckLastResult();
 
-	#if( ICFGX_GL_FEATURE_SUPPORT_TEXTURE_ANISOTROPIC_FILTER )
+	#if( IC3_GX_GL_FEATURE_SUPPORT_TEXTURE_ANISOTROPIC_FILTER )
 		if( pSamplerState.anisotropyLevel > 0 )
 		{
 			glSamplerParameteri( mGLHandle, GL_TEXTURE_MAX_ANISOTROPY, pSamplerState.anisotropyLevel );
-			ic3OpenGLCheckLastResult();
+			Ic3OpenGLCheckLastResult();
 		}
 	#endif
 
 		glSamplerParameterf( mGLHandle, GL_TEXTURE_MIN_LOD, pSamplerState.mipLODRange.first );
-		ic3OpenGLCheckLastResult();
+		Ic3OpenGLCheckLastResult();
 
 		glSamplerParameterf( mGLHandle, GL_TEXTURE_MAX_LOD, pSamplerState.mipLODRange.second );
-		ic3OpenGLCheckLastResult();
+		Ic3OpenGLCheckLastResult();
 
-	#if( ICFGX_GL_FEATURE_SUPPORT_TEXTURE_EXTENDED_ADDRESS_MODE )
-		glSamplerParameterfv( mGLHandle, GL_TEXTURE_BORDER_COLOR, &( pSamplerState.borderColor.rgbaArray[0] ) );
-		ic3OpenGLCheckLastResult();
+	#if( IC3_GX_GL_FEATURE_SUPPORT_TEXTURE_EXTENDED_ADDRESS_MODE )
+		glSamplerParameterfv( mGLHandle, GL_TEXTURE_BORDER_COLOR, &( pSamplerState.borderColor.mRGBA[0] ) );
+		Ic3OpenGLCheckLastResult();
 	#endif
 
 		glSamplerParameteri( mGLHandle, GL_TEXTURE_COMPARE_MODE, pSamplerState.textureCompareMode );
-		ic3OpenGLCheckLastResult();
+		Ic3OpenGLCheckLastResult();
 
 		if( pSamplerState.textureCompareMode == GL_COMPARE_REF_TO_TEXTURE )
 		{
 			glSamplerParameteri( mGLHandle, GL_TEXTURE_COMPARE_FUNC, pSamplerState.textureCompareFunc );
-			ic3OpenGLCheckLastResult();
+			Ic3OpenGLCheckLastResult();
 		}
 
 		return true;

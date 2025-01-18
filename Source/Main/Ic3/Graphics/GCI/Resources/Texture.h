@@ -31,20 +31,21 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~Texture();
 
-		IC3_ATTR_NO_DISCARD virtual const GPUResourceProperties & getProperties() const override final;
+		CPPX_ATTR_NO_DISCARD virtual const GPUResourceProperties & GetProperties() const override final;
 
-		IC3_ATTR_NO_DISCARD TextureSubResource getAllSubResourcesRef() const;
+		CPPX_ATTR_NO_DISCARD TextureSubResource GetAllSubResourcesRef() const;
 
-		IC3_ATTR_NO_DISCARD TextureSubResource getDefaultSubResourceRef() const;
+		CPPX_ATTR_NO_DISCARD TextureSubResource GetDefaultSubResourceRef() const;
 
-		static RenderTargetTextureHandle createDefaultRenderTargetTextureView( GPUDevice & pGPUDevice, const RenderTargetTextureCreateInfo & pCreateInfo );
+		static RenderTargetTextureHandle CreateDefaultRenderTargetTextureView(
+				GPUDevice & pGPUDevice,
+				const RenderTargetTextureCreateInfo & pCreateInfo );
 	};
 
-
-	namespace rcutil
+	namespace RCU
 	{
 
-		IC3_ATTR_NO_DISCARD TextureDimensions getValidTextureDimensions( ETextureClass pTexClass, const TextureDimensions & pDimensions );
+		CPPX_ATTR_NO_DISCARD TextureDimensions GetValidTextureDimensions( ETextureClass pTexClass, const TextureDimensions & pDimensions );
 
 	}
 

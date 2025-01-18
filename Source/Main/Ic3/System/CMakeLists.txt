@@ -242,13 +242,12 @@ target_compile_definitions( Ic3.System PUBLIC
         )
 
 target_link_libraries( Ic3.System PUBLIC
-        ${IC3_LINK_INPUT}
         Ic3.CoreLib
         )
 
 if( "${CM_EBS_SYSCONF_TARGET_SYSTEM}" STREQUAL "WinDesktop" )
     target_link_libraries( Ic3.System PUBLIC
-            ExtLib.GLEW
+            ext-glew
             opengl32.lib
             DXGI.lib
             )
@@ -265,7 +264,7 @@ endif()
 
 if( "${CM_EBS_SYSCONF_TARGET_SYSTEM}" STREQUAL "Linux" )
     target_link_libraries( Ic3.System PUBLIC
-            ExtLib.GLEW
+            ext-glew
             X11
             Xrandr
             GL
@@ -282,7 +281,7 @@ find_library(FrmLib_QuartzCore QuartzCore)
 
 if( "${CM_EBS_SYSCONF_TARGET_SYSTEM}" STREQUAL "macOS" )
     target_link_libraries( Ic3.System PUBLIC
-            ExtLib.GLEW
+            ext-glew
             ${FrmLib_AppKit}
             ${FrmLib_CoreFoundation}
             ${FrmLib_Foundation}

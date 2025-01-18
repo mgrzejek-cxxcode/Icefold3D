@@ -12,26 +12,26 @@ namespace Ic3::Graphics::GCI
 
 	using display_system_id_t = uint64;
 
-	constexpr display_system_id_t cvDisplaySystemIDDefault = QLimits<display_system_id_t>::maxValue;
+	constexpr display_system_id_t cvDisplaySystemIDDefault = cppx::meta::limits<display_system_id_t>::max_value;
 	constexpr display_system_id_t cvDisplaySystemIDInvalid = cvDisplaySystemIDDefault - 1;
 
 	enum EAdapterFlags : uint32
 	{
-		E_ADAPTER_FLAG_PRIMARY_BIT = static_cast<uint32>( System::E_DISPLAY_ADAPTER_FLAG_PRIMARY_BIT ),
-		E_ADAPTER_FLAG_MULTI_NODE_BIT = static_cast<uint32>( System::E_DISPLAY_ADAPTER_FLAG_MULTI_NODE_BIT ),
-		E_ADAPTER_FLAG_SOFTWARE_BIT = static_cast<uint32>( System::E_DISPLAY_ADAPTER_FLAG_SOFTWARE_BIT ),
+		EAdapterFlagPrimaryBit = static_cast<uint32>( System::eDisplayAdapterFlagPrimaryBit ),
+		EAdapterFlagMultiNodeBit = static_cast<uint32>( System::eDisplayAdapterFlagMultiNodeBit ),
+		EAdapterFlagSoftwareBit = static_cast<uint32>( System::eDisplayAdapterFlagSoftwareBit ),
 	};
 
 	enum EOutputFlags : uint32
 	{
-		E_OUTPUT_FLAG_PRIMARY_BIT = static_cast<uint32>( System::E_DISPLAY_OUTPUT_FLAG_PRIMARY_BIT )
+		E_OUTPUT_FLAG_PRIMARY_BIT = static_cast<uint32>( System::eDisplayOutputFlagPrimaryBit )
 	};
 
 	enum EVideoSettingsFlags : uint16
 	{
-		E_VIDEO_SETTINGS_FLAG_SCAN_INTERLACED_BIT = static_cast<uint32>( System::E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_INTERLACED_BIT ),
-		E_VIDEO_SETTINGS_FLAG_SCAN_PROGRESSIVE_BIT = static_cast<uint32>( System::E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_PROGRESSIVE_BIT ),
-		E_VIDEO_SETTINGS_FLAG_STEREO_BIT = static_cast<uint32>( System::E_DISPLAY_VIDEO_SETTINGS_FLAG_STEREO_BIT )
+		EVideoSettingsFlagScanInterlacedBit = static_cast<uint32>( System::eDisplayVideoSettingsFlagScanInterlacedBit ),
+		EVideoSettingsFlagScanProgressiveBit = static_cast<uint32>( System::eDisplayVideoSettingsFlagScanProgressiveBit ),
+		E_VIDEO_SETTINGS_FLAG_STEREO_BIT = static_cast<uint32>( System::eDisplayVideoSettingsFlagStereoBit )
 	};
 
 	enum EDisplayConfigurationFlags : uint32
@@ -52,14 +52,14 @@ namespace Ic3::Graphics::GCI
 	{
 		Math::Size2u resolution;
 		uint16 refreshRate = 0u;
-		Bitmask<EVideoSettingsFlags> flags = 0u;
+		cppx::bitmask<EVideoSettingsFlags> flags = 0u;
 	};
 
 	struct AdapterDesc
 	{
 		display_system_id_t id = cvDisplaySystemIDInvalid;
 		std::string name;
-		Bitmask<EAdapterFlags> flags = 0u;
+		cppx::bitmask<EAdapterFlags> flags = 0u;
 	};
 
 	struct OutputDesc
@@ -67,7 +67,7 @@ namespace Ic3::Graphics::GCI
 		display_system_id_t id = cvDisplaySystemIDInvalid;
 		std::string name;
 		System::ScreenRect screenRect;
-		Bitmask<EOutputFlags> flags = 0u;
+		cppx::bitmask<EOutputFlags> flags = 0u;
 	};
 
 	struct VideoModeDesc
@@ -77,46 +77,46 @@ namespace Ic3::Graphics::GCI
 		VideoSettings settings;
 	};
 
-	inline EAdapterFlags translateSysAdapterFlags( Bitmask<System::EDisplayAdapterFlags> pSysAdapterFlags )
+	inline EAdapterFlags translateSysAdapterFlags( cppx::bitmask<System::EDisplayAdapterFlags> pSysAdapterFlags )
 	{
-		Bitmask<EAdapterFlags> result = 0;
-		if( pSysAdapterFlags.isSet( System::E_DISPLAY_ADAPTER_FLAG_PRIMARY_BIT ) )
+		cppx::bitmask<EAdapterFlags> result = 0;
+		if( pSysAdapterFlags.is_set( System::eDisplayAdapterFlagPrimaryBit ) )
 		{
-			result.set( E_ADAPTER_FLAG_PRIMARY_BIT );
+			result.set( EAdapterFlagPrimaryBit );
 		}
-		if( pSysAdapterFlags.isSet( System::E_DISPLAY_ADAPTER_FLAG_MULTI_NODE_BIT ) )
+		if( pSysAdapterFlags.is_set( System::eDisplayAdapterFlagMultiNodeBit ) )
 		{
-			result.set( E_ADAPTER_FLAG_MULTI_NODE_BIT );
+			result.set( EAdapterFlagMultiNodeBit );
 		}
-		if( pSysAdapterFlags.isSet( System::E_DISPLAY_ADAPTER_FLAG_SOFTWARE_BIT ) )
+		if( pSysAdapterFlags.is_set( System::eDisplayAdapterFlagSoftwareBit ) )
 		{
-			result.set( E_ADAPTER_FLAG_SOFTWARE_BIT );
+			result.set( EAdapterFlagSoftwareBit );
 		}
 		return result;
 	}
 
-	inline EOutputFlags translateSysOutputFlags( Bitmask<System::EDisplayOutputFlags> pSysOutputFlags )
+	inline EOutputFlags translateSysOutputFlags( cppx::bitmask<System::EDisplayOutputFlags> pSysOutputFlags )
 	{
-		Bitmask<EOutputFlags> result = 0;
-		if( pSysOutputFlags.isSet( System::E_DISPLAY_OUTPUT_FLAG_PRIMARY_BIT ) )
+		cppx::bitmask<EOutputFlags> result = 0;
+		if( pSysOutputFlags.is_set( System::eDisplayOutputFlagPrimaryBit ) )
 		{
 			result.set( E_OUTPUT_FLAG_PRIMARY_BIT );
 		}
 		return result;
 	}
 
-	inline EVideoSettingsFlags translateSysVideoSettingsFlags( Bitmask<System::EDisplayVideoSettingsFlags> pSysVideoSettingsFlags )
+	inline EVideoSettingsFlags translateSysVideoSettingsFlags( cppx::bitmask<System::EDisplayVideoSettingsFlags> pSysVideoSettingsFlags )
 	{
-		Bitmask<EVideoSettingsFlags> result = 0;
-		if( pSysVideoSettingsFlags.isSet( System::E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_INTERLACED_BIT ) )
+		cppx::bitmask<EVideoSettingsFlags> result = 0;
+		if( pSysVideoSettingsFlags.is_set( System::eDisplayVideoSettingsFlagScanInterlacedBit ) )
 		{
-			result.set( E_VIDEO_SETTINGS_FLAG_SCAN_INTERLACED_BIT );
+			result.set( EVideoSettingsFlagScanInterlacedBit );
 		}
-		if( pSysVideoSettingsFlags.isSet( System::E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_PROGRESSIVE_BIT ) )
+		if( pSysVideoSettingsFlags.is_set( System::eDisplayVideoSettingsFlagScanProgressiveBit ) )
 		{
-			result.set( E_VIDEO_SETTINGS_FLAG_SCAN_PROGRESSIVE_BIT );
+			result.set( EVideoSettingsFlagScanProgressiveBit );
 		}
-		if( pSysVideoSettingsFlags.isSet( System::E_DISPLAY_VIDEO_SETTINGS_FLAG_STEREO_BIT ) )
+		if( pSysVideoSettingsFlags.is_set( System::eDisplayVideoSettingsFlagStereoBit ) )
 		{
 			result.set( E_VIDEO_SETTINGS_FLAG_STEREO_BIT );
 		}

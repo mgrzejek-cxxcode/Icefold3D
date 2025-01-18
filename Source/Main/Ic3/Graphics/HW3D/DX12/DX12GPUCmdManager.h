@@ -11,7 +11,7 @@ namespace Ic3::Graphics::GCI
 {
 
 	/// @brief
-	class ICFGX_DX12_CLASS DX12GPUCmdManager final : public GPUCmdManager
+	class IC3_GX_DX12_CLASS DX12GPUCmdManager final : public GPUCmdManager
 	{
 	public:
 		ComPtr<ID3D12Device> const mD3D12Device = nullptr;
@@ -19,20 +19,20 @@ namespace Ic3::Graphics::GCI
 		explicit DX12GPUCmdManager( DX12GPUDevice & pGPUDevice );
 		virtual ~DX12GPUCmdManager();
 
-		virtual bool initialize() override;
+		virtual bool Initialize() override;
 
-		virtual CommandContext * acquireContext( const CommandContextProperties & pContextProperties ) override;
+		virtual CommandContext * AcquireContext( const CommandContextProperties & pContextProperties ) override;
 
-		virtual bool executeContext( gpu_cmd_device_queue_id_t pQueueID, CommandContext & pContext ) override;
+		virtual bool ExecuteContext( gpu_cmd_device_queue_id_t pQueueID, CommandContext & pContext ) override;
 
-		virtual bool initializeDeviceQueue( gpu_cmd_device_queue_id_t pQueueID, const DeviceCommandQueueProperties & pQueueProperties ) override;
+		virtual bool InitializeDeviceQueue( gpu_cmd_device_queue_id_t pQueueID, const DeviceCommandQueueProperties & pQueueProperties ) override;
 
-		virtual bool isQueueAvailable( gpu_cmd_device_queue_id_t pQueueID ) const override;
+		virtual bool IsQueueAvailable( gpu_cmd_device_queue_id_t pQueueID ) const override;
 
-		ID3D12CommandQueue * getD3D12DeviceQueue( gpu_cmd_device_queue_id_t pQueueID ) const;
+		ID3D12CommandQueue * GetD3D12DeviceQueue( gpu_cmd_device_queue_id_t pQueueID ) const;
 
 	private:
-		DX12CommandContext * createCmdContext( D3D12_COMMAND_LIST_TYPE pD3D12CommandListType, bool pAutoAcquire );
+		DX12CommandContext * CreateCmdContext( D3D12_COMMAND_LIST_TYPE pD3D12CommandListType, bool pAutoAcquire );
 
 	private:
 		struct DeviceQueueData

@@ -17,10 +17,10 @@ namespace Ic3::Graphics::GCI
 		ID3D11Query * d3d11SyncQuery = nullptr;
 	};
 
-	ICFGX_DX11_API void releaseDX11CommandSyncData( void * pSyncData );
+	IC3_GX_DX11_API void releaseDX11CommandSyncData( void * pSyncData );
 
 	/// @brief
-	class ICFGX_DX11_CLASS DX11CommandSystem final : public CommandSystem
+	class IC3_GX_DX11_CLASS DX11CommandSystem final : public CommandSystem
 	{
 	public:
 		ComPtr<ID3D11Device1> const mD3D11Device1 = nullptr;
@@ -28,14 +28,14 @@ namespace Ic3::Graphics::GCI
 		explicit DX11CommandSystem( DX11GPUDevice & pDX11GPUDevice );
 		virtual ~DX11CommandSystem();
 
-		virtual std::unique_ptr<CommandContext> acquireCommandContext( ECommandContextType pContextType ) override;
+		virtual std::unique_ptr<CommandContext> AcquireCommandContext( ECommandContextType pContextType ) override;
 
-		virtual CommandSync submitContext( CommandContextDirect & pContext, const CommandContextSubmitInfo & pSubmitInfo ) override;
+		virtual CommandSync SubmitContext( CommandContextDirect & pContext, const CommandContextSubmitInfo & pSubmitInfo ) override;
 
 	private:
-		DX11CommandList * acquireCommandList( ECommandExecutionMode pCommandExecutionMode );
-		bool initializeDirectCommandList();
-		bool createDeferredCommandList();
+		DX11CommandList * AcquireCommandList( ECommandExecutionMode pCommandExecutionMode );
+		bool InitializeDirectCommandList();
+		bool CreateDeferredCommandList();
 
 	private:
 		DX11CommandListHandle _directCommandList;

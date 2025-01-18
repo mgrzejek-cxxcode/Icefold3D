@@ -29,12 +29,12 @@ namespace Ic3::Graphics::GCI
 	public:
 		DX11BlendImmutableState(
 				DX11GPUDevice & pGPUDevice,
-				Bitmask<EBlendConfigFlags> pBlendFlags,
+				cppx::bitmask<EBlendConfigFlags> pBlendFlags,
 				ComPtr<ID3D11BlendState> pD3D11BlendState );
 
 		virtual ~DX11BlendImmutableState();
 
-		static GpaHandle<DX11BlendImmutableState> createInstance( DX11GPUDevice & pGPUDevice, const BlendConfig & pBlendConfig );
+		static GpaHandle<DX11BlendImmutableState> CreateInstance( DX11GPUDevice & pGPUDevice, const BlendConfig & pBlendConfig );
 	};
 
 	///
@@ -46,12 +46,12 @@ namespace Ic3::Graphics::GCI
 	public:
 		DX11DepthStencilImmutableState(
 				DX11GPUDevice & pGPUDevice,
-				Bitmask<EDepthStencilConfigFlags> pDepthStencilFlags,
+				cppx::bitmask<EDepthStencilConfigFlags> pDepthStencilFlags,
 				ComPtr<ID3D11DepthStencilState> pD3D11DepthStencilState );
 
 		virtual ~DX11DepthStencilImmutableState();
 
-		static GpaHandle<DX11DepthStencilImmutableState> createInstance( DX11GPUDevice & pGPUDevice, const DepthStencilConfig & pDepthStencilConfig );
+		static GpaHandle<DX11DepthStencilImmutableState> CreateInstance( DX11GPUDevice & pGPUDevice, const DepthStencilConfig & pDepthStencilConfig );
 	};
 
 	///
@@ -63,25 +63,25 @@ namespace Ic3::Graphics::GCI
 	public:
 		DX11RasterizerImmutableState(
 				DX11GPUDevice & pGPUDevice,
-				Bitmask<ERasterizerConfigFlags> pRasterizerFlags,
+				cppx::bitmask<ERasterizerConfigFlags> pRasterizerFlags,
 				ComPtr<ID3D11RasterizerState> pD3D11RasterizerState );
 
 		virtual ~DX11RasterizerImmutableState();
 
-		static GpaHandle<DX11RasterizerImmutableState> createInstance( DX11GPUDevice & pGPUDevice, const RasterizerConfig & pRasterizerConfig );
+		static GpaHandle<DX11RasterizerImmutableState> CreateInstance( DX11GPUDevice & pGPUDevice, const RasterizerConfig & pRasterizerConfig );
 	};
 
 
-	namespace smutil
+	namespace SMU
 	{
 
-		IC3_ATTR_NO_DISCARD DX11BlendConfig translateDX11BlendConfig( const BlendConfig & pConfig );
+		CPPX_ATTR_NO_DISCARD DX11BlendConfig TranslateDX11BlendConfig( const BlendConfig & pConfig );
 
-		IC3_ATTR_NO_DISCARD DX11DepthStencilConfig translateDX11DepthStencilConfig( const DepthStencilConfig & pConfig );
+		CPPX_ATTR_NO_DISCARD DX11DepthStencilConfig TranslateDX11DepthStencilConfig( const DepthStencilConfig & pConfig );
 
-		IC3_ATTR_NO_DISCARD DX11RasterizerConfig translateDX11RasterizerConfig( const RasterizerConfig & pConfig );
+		CPPX_ATTR_NO_DISCARD DX11RasterizerConfig TranslateDX11RasterizerConfig( const RasterizerConfig & pConfig );
 
-		IC3_ATTR_NO_DISCARD D3D11_RENDER_TARGET_BLEND_DESC translateDX11RTColorAttachmentBlendSettings(
+		CPPX_ATTR_NO_DISCARD D3D11_RENDER_TARGET_BLEND_DESC TranslateDX11RTColorAttachmentBlendSettings(
 			const RTColorAttachmentBlendSettings & pSettings );
 
 	}

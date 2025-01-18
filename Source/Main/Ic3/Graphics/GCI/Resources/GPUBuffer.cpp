@@ -14,19 +14,19 @@ namespace Ic3::Graphics::GCI
 
 	GPUBuffer::~GPUBuffer() = default;
 
-	const GPUResourceProperties & GPUBuffer::getProperties() const
+	const GPUResourceProperties & GPUBuffer::GetProperties() const
 	{
 		return mBufferProperties;
 	}
 
-	GPUMemoryRegion GPUBuffer::getWholeBufferRegion() const
+	GPUMemoryRegion GPUBuffer::GetWholeBufferRegion() const
 	{
 		return GPUMemoryRegion{ 0, mBufferProperties.byteSize };
 	}
 
-	bool GPUBuffer::validateMapRequest( const GPUMemoryRegion & pRegion, const EGPUMemoryMapMode & pMapMode )
+	bool GPUBuffer::ValidateMapRequest( const GPUMemoryRegion & pRegion, const EGPUMemoryMapMode & pMapMode )
 	{
-		if( isMapped() )
+		if( IsMapped() )
 		{
 			return false;
 		}
@@ -37,7 +37,7 @@ namespace Ic3::Graphics::GCI
 		}
 
 		const GPUMemoryRegion bufferDataRegion{ 0, mBufferProperties.byteSize };
-		if( !Ic3::rangeIsSubRangeOf( pRegion.asRange(), bufferDataRegion.asRange() ) )
+		if( !cppx::range_is_sub_range_of( pRegion.as_range(), bufferDataRegion.as_range() ) )
 		{
 			return false;
 		}
@@ -45,11 +45,11 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	bool GPUBuffer::validateBufferCreateInfo( GPUBufferCreateInfo & pCreateInfo )
+	bool GPUBuffer::ValidateBufferCreateInfo( GPUBufferCreateInfo & pCreateInfo )
 	{
 		if( pCreateInfo.memoryBaseAlignment == 0 )
 		{
-		    pCreateInfo.memoryBaseAlignment = Ic3::kMemoryCPUDefaultAlignment;
+		    pCreateInfo.memoryBaseAlignment = Ic3::cxMemoryCpuDefaultAlignment;
 		}
 
 		if( ( pCreateInfo.bufferSize == 0 ) && pCreateInfo.initDataDesc )

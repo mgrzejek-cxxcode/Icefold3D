@@ -55,12 +55,12 @@ namespace Ic3::System
 	enum class EMSAAMode : uint16
 	{
 		Unknown,
-		x1,
-		x2,
-		x4,
-		x8,
-		x16,
-		Best = static_cast< uint16 >( x16 ),
+		X1,
+		X2,
+		X4,
+		X8,
+		X16,
+		Best = static_cast< uint16 >( X16 ),
 	};
 
 	/// @brief Flags representing attributes (properties) of visuals.
@@ -72,25 +72,25 @@ namespace Ic3::System
 	enum EVisualAttribFlags : uint32
 	{
 		/// Visual supports legacy formats. Used forcreation of temporary GL surfaces.
-		E_VISUAL_ATTRIB_FLAG_LEGACY_BIT = 0x0001,
+		eVisualAttribFlagLegacyBit = 0x0001,
 
 		/// Visual supports double buffering.
-		E_VISUAL_ATTRIB_FLAG_DOUBLE_BUFFER_BIT = 0x0100,
+		eVisualAttribFlagDoubleBufferBit = 0x0100,
 
 		/// Visual does not support double buffering.
-		E_VISUAL_ATTRIB_FLAG_SINGLE_BUFFER_BIT = 0x0200,
+		eVisualAttribFlagSingleBufferBit = 0x0200,
 
 		/// Visual supports triple buffering.
-		E_VISUAL_ATTRIB_FLAG_TRIPLE_BUFFER_BIT = 0x0400,
+		eVisualAttribFlagTripleBufferBit = 0x0400,
 
 		/// Visual is sRGB-capable.
-		E_VISUAL_ATTRIB_FLAG_SRGB_CAPABLE_BIT = 0x1000,
+		eVisualAttribFlagSRGBCapableBit = 0x1000,
 
 		/// Visual has the stereoscopic display mode.
-		E_VISUAL_ATTRIB_FLAG_STEREO_DISPLAY_BIT = 0x0400,
+		eVisualAttribFlagStereoDisplayBit = 0x0400,
 
 		/// Visual has the classic, monoscopic display mode.
-		E_VISUAL_ATTRIB_FLAG_MONO_DISPLAY_BIT = 0x0800,
+		eVisualAttribFlagMonoDisplayBit = 0x0800,
 	};
 
 	struct ColorDesc
@@ -118,37 +118,43 @@ namespace Ic3::System
 	{
 		// Struct representation of the color format.
 		ColorDesc colorDesc;
+
 		// Enum ID of the color format.
 		EColorFormat colorFormat;
+
 		// Struct representation of a depth/stencil buffer description.
 		DepthStencilDesc depthStencilDesc;
+
 		// Enum ID of the depth/stencil buffer format.
 		EDepthStencilFormat depthStencilFormat;
+
 		// Struct representation of the MSAA mode.
 		MSAADesc msaaDesc;
+
 		// Enum ID of the MSAA mode.
 		EMSAAMode msaaMode;
+
 		// Additional visual config flags.
-		Bitmask<EVisualAttribFlags> flags;
+		cppx::bitmask<EVisualAttribFlags> flags;
 	};
 
 	/// @brief Returns a ColorDesc structure representation of a specified EColorFormat.
-	IC3_SYSTEM_API const std::string & vsxQueryColorFormatStr( EColorFormat pFormat );
+	IC3_SYSTEM_API const std::string & VisQueryColorFormatStr( EColorFormat pFormat );
 
 	/// @brief Returns a ColorDesc structure representation of a specified EColorFormat.
-	IC3_SYSTEM_API const ColorDesc & vsxGetDescForColorFormat( EColorFormat pFormat );
+	IC3_SYSTEM_API const ColorDesc & VisGetDescForColorFormat( EColorFormat pFormat );
 
 	/// @brief Returns a DepthStencilDesc structure representation of a specified EDepthStencilFormat.
-	IC3_SYSTEM_API const DepthStencilDesc & vsxGetDescForDepthStencilFormat( EDepthStencilFormat pFormat );
+	IC3_SYSTEM_API const DepthStencilDesc & VisGetDescForDepthStencilFormat( EDepthStencilFormat pFormat );
 
 	/// @brief Returns an MSAADesc structure representation of a specified EMSAAMode.
-	IC3_SYSTEM_API const MSAADesc & vsxGetDescForMSAAMode( EMSAAMode pMode );
+	IC3_SYSTEM_API const MSAADesc & VisGetDescForMSAAMode( EMSAAMode pMode );
 
 	/// @brief Returns a ColorDesc structure representation of a specified EColorFormat.
-	IC3_SYSTEM_API const VisualConfig & vsxGetDefaultVisualConfigForSysWindow();
+	IC3_SYSTEM_API const VisualConfig & VisGetDefaultVisualConfigForSysWindow();
 
 	///
-	IC3_SYSTEM_API bool vsxCheckColorFormatCompatibility( EColorFormat pFormat, uint8 pRed, uint8 pGreen, uint8 pBlue, uint8 pAlpha );
+	IC3_SYSTEM_API bool VisCheckColorFormatCompatibility( EColorFormat pFormat, uint8 pRed, uint8 pGreen, uint8 pBlue, uint8 pAlpha );
 
 } // namespace Ic3::System
 

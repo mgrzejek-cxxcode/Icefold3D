@@ -26,19 +26,19 @@ namespace Ic3::Graphics::GCI
 
 	GLGraphicsShaderLinkageImmutableStateCore::~GLGraphicsShaderLinkageImmutableStateCore() = default;
 
-	GpaHandle<GLGraphicsShaderLinkageImmutableStateCore> GLGraphicsShaderLinkageImmutableStateCore::createInstance(
+	TGfxHandle<GLGraphicsShaderLinkageImmutableStateCore> GLGraphicsShaderLinkageImmutableStateCore::CreateInstance(
 			GLGPUDevice & pGPUDevice,
 			const GraphicsShaderSet & pShaderSet )
 	{
-		const auto & commonProperties = smutil::getGraphicsShaderLinkageCommonPropertiesForShaderSet( pShaderSet );
+		const auto & commonProperties = SMU::GetGraphicsShaderLinkageCommonPropertiesForShaderSet( pShaderSet );
 
-		auto shaderPipelineObject = smutil::createGraphicsShaderPipelineObjectGL( pShaderSet );
+		auto shaderPipelineObject = SMU::CreateGraphicsShaderPipelineObjectGL( pShaderSet );
 		if( !shaderPipelineObject )
 		{
 			return nullptr;
 		}
 
-		auto immutableState = createGPUAPIObject<GLGraphicsShaderLinkageImmutableStateCore>(
+		auto immutableState = CreateGfxObject<GLGraphicsShaderLinkageImmutableStateCore>(
 				pGPUDevice,
 				commonProperties,
 				std::move( shaderPipelineObject ) );
@@ -57,19 +57,19 @@ namespace Ic3::Graphics::GCI
 
 	GLGraphicsShaderLinkageImmutableStateCompat::~GLGraphicsShaderLinkageImmutableStateCompat() = default;
 
-	GpaHandle<GLGraphicsShaderLinkageImmutableStateCompat> GLGraphicsShaderLinkageImmutableStateCompat::createInstance(
+	TGfxHandle<GLGraphicsShaderLinkageImmutableStateCompat> GLGraphicsShaderLinkageImmutableStateCompat::CreateInstance(
 			GLGPUDevice & pGPUDevice,
 			const GraphicsShaderSet & pShaderSet )
 	{
-		const auto & commonProperties = smutil::getGraphicsShaderLinkageCommonPropertiesForShaderSet( pShaderSet );
+		const auto & commonProperties = SMU::GetGraphicsShaderLinkageCommonPropertiesForShaderSet( pShaderSet );
 
-		auto shaderProgramObject = smutil::createGraphicsShaderProgramObjectGL( pShaderSet );
+		auto shaderProgramObject = SMU::CreateGraphicsShaderProgramObjectGL( pShaderSet );
 		if( !shaderProgramObject )
 		{
 			return nullptr;
 		}
 
-		auto immutableState = createGPUAPIObject<GLGraphicsShaderLinkageImmutableStateCompat>(
+		auto immutableState = CreateGfxObject<GLGraphicsShaderLinkageImmutableStateCompat>(
 				pGPUDevice,
 				commonProperties,
 				std::move( shaderProgramObject ) );
@@ -78,39 +78,39 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	namespace smutil
+	namespace SMU
 	{
 
-		GLShaderPipelineObjectHandle createGraphicsShaderPipelineObjectGL( const GraphicsShaderSet & pShaderSet )
+		GLShaderPipelineObjectHandle CreateGraphicsShaderPipelineObjectGL( const GraphicsShaderSet & pShaderSet )
 		{
-			auto shaderPipelineObject = GLShaderPipelineObject::create();
+			auto shaderPipelineObject = GLShaderPipelineObject::Create();
 			if( !shaderPipelineObject )
 			{
 				return nullptr;
 			}
 
 			glBindProgramPipeline( shaderPipelineObject->mGLHandle );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 
 			for( auto & shaderHandle : pShaderSet.commonShaderArray )
 			{
 				if( shaderHandle )
 				{
-					auto * openglShader = shaderHandle->queryInterface<GLShader>();
-					ic3DebugAssert( openglShader->mGLShaderProgramObject );
-					shaderPipelineObject->attachProgram( *( openglShader->mGLShaderProgramObject ) );
+					auto * openglShader = shaderHandle->QueryInterface<GLShader>();
+					Ic3DebugAssert( openglShader->mGLShaderProgramObject );
+					shaderPipelineObject->AttachProgram( *( openglShader->mGLShaderProgramObject ) );
 				}
 			}
 
 			glBindProgramPipeline( 0 );
-			ic3OpenGLHandleLastError();
+			Ic3OpenGLHandleLastError();
 
 			return shaderPipelineObject;
 		}
 
-		GLShaderProgramObjectHandle createGraphicsShaderProgramObjectGL( const GraphicsShaderSet & pShaderSet )
+		GLShaderProgramObjectHandle CreateGraphicsShaderProgramObjectGL( const GraphicsShaderSet & pShaderSet )
 		{
-			auto shaderProgramObject = GLShaderProgramObject::create( GLShaderProgramType::Combined );
+			auto shaderProgramObject = GLShaderProgramObject::Create( GLShaderProgramType::Combined );
 			if( !shaderProgramObject )
 			{
 				return nullptr;
@@ -122,21 +122,21 @@ namespace Ic3::Graphics::GCI
 			{
 				if( shaderHandle )
 				{
-					auto * openglShader = shaderHandle->queryInterface<GLShader>();
-					ic3DebugAssert( openglShader->mGLShaderObject );
-					shaderProgramObject->attachShader( *( openglShader->mGLShaderObject ) );
+					auto * openglShader = shaderHandle->QueryInterface<GLShader>();
+					Ic3DebugAssert( openglShader->mGLShaderObject );
+					shaderProgramObject->AttachShader( *( openglShader->mGLShaderObject ) );
 
-					if( const auto * shaderLayoutMap = openglShader->mGLShaderObject->getDataLayoutMap() )
+					if( const auto * shaderLayoutMap = openglShader->mGLShaderObject->GetDataLayoutMap() )
 					{
-						GLShaderProgramObject::setProgramPreLinkBindings( *shaderProgramObject, *shaderLayoutMap );
+						GLShaderProgramObject::SetProgramPreLinkBindings( *shaderProgramObject, *shaderLayoutMap );
 						useShaderLayoutMaps = true;
 					}
 				}
 			}
 
-			if( !shaderProgramObject->link() )
+			if( !shaderProgramObject->Link() )
 			{
-				ic3DebugInterrupt();
+				Ic3DebugInterrupt();
 				return nullptr;
 			}
 
@@ -146,21 +146,21 @@ namespace Ic3::Graphics::GCI
 				{
 					if( shaderHandle )
 					{
-						auto * openglShader = shaderHandle->queryInterface<GLShader>();
-						if( const auto * shaderLayoutMap = openglShader->mGLShaderObject->getDataLayoutMap() )
+						auto * openglShader = shaderHandle->QueryInterface<GLShader>();
+						if( const auto * shaderLayoutMap = openglShader->mGLShaderObject->GetDataLayoutMap() )
 						{
-							GLShaderProgramObject::setProgramPostLinkBindings( *shaderProgramObject, *shaderLayoutMap );
+							GLShaderProgramObject::SetProgramPostLinkBindings( *shaderProgramObject, *shaderLayoutMap );
 						}
 					}
 				}
 			}
 
-			shaderProgramObject->detachAllShaders();
+			shaderProgramObject->DetachAllShaders();
 
 			return shaderProgramObject;
 		}
 
-		void updateUniformDataCurrentGL(
+		void UpdateUniformDataCurrentGL(
 				GLShaderPipelineObject & pShaderPipeline,
 				uint32 pUniformIndex,
 				EBaseDataType pBaseType,
@@ -172,10 +172,10 @@ namespace Ic3::Graphics::GCI
 				return;
 			}
 
-			const auto currentPipelineHandle = GLShaderPipelineObject::queryCurrentShaderPipelineBinding();
+			const auto currentPipelineHandle = GLShaderPipelineObject::QueryCurrentShaderPipelineBinding();
 			if( currentPipelineHandle != pShaderPipeline.mGLHandle )
 			{
-				ic3Throw( 0 );
+				Ic3Throw( 0 );
 			}
 
 			if( pBaseType == EBaseDataType::Float32 )
@@ -183,10 +183,10 @@ namespace Ic3::Graphics::GCI
 				const auto * floatData = reinterpret_cast<const float *>( pData );
 				switch( pLength )
 				{
-					case 1: glUniform1fv( pUniformIndex, 1, floatData ); ic3OpenGLHandleLastError(); break;
-					case 2: glUniform2fv( pUniformIndex, 1, floatData ); ic3OpenGLHandleLastError(); break;
-					case 3: glUniform3fv( pUniformIndex, 1, floatData ); ic3OpenGLHandleLastError(); break;
-					case 4: glUniform4fv( pUniformIndex, 1, floatData ); ic3OpenGLHandleLastError(); break;
+					case 1: glUniform1fv( pUniformIndex, 1, floatData ); Ic3OpenGLHandleLastError(); break;
+					case 2: glUniform2fv( pUniformIndex, 1, floatData ); Ic3OpenGLHandleLastError(); break;
+					case 3: glUniform3fv( pUniformIndex, 1, floatData ); Ic3OpenGLHandleLastError(); break;
+					case 4: glUniform4fv( pUniformIndex, 1, floatData ); Ic3OpenGLHandleLastError(); break;
 				}
 			}
 			else if( pBaseType == EBaseDataType::Int32 )
@@ -194,10 +194,10 @@ namespace Ic3::Graphics::GCI
 				const auto * intData = reinterpret_cast<const GLint *>( pData );
 				switch( pLength )
 				{
-					case 1: glUniform1iv( pUniformIndex, 1, intData ); ic3OpenGLHandleLastError(); break;
-					case 2: glUniform2iv( pUniformIndex, 1, intData ); ic3OpenGLHandleLastError(); break;
-					case 3: glUniform3iv( pUniformIndex, 1, intData ); ic3OpenGLHandleLastError(); break;
-					case 4: glUniform4iv( pUniformIndex, 1, intData ); ic3OpenGLHandleLastError(); break;
+					case 1: glUniform1iv( pUniformIndex, 1, intData ); Ic3OpenGLHandleLastError(); break;
+					case 2: glUniform2iv( pUniformIndex, 1, intData ); Ic3OpenGLHandleLastError(); break;
+					case 3: glUniform3iv( pUniformIndex, 1, intData ); Ic3OpenGLHandleLastError(); break;
+					case 4: glUniform4iv( pUniformIndex, 1, intData ); Ic3OpenGLHandleLastError(); break;
 				}
 			}
 			else if( pBaseType == EBaseDataType::Uint32 )
@@ -205,15 +205,15 @@ namespace Ic3::Graphics::GCI
 				const auto * uintData = reinterpret_cast<const GLuint *>( pData );
 				switch( pLength )
 				{
-					case 1: glUniform1uiv( pUniformIndex, 1, uintData ); ic3OpenGLHandleLastError(); break;
-					case 2: glUniform2uiv( pUniformIndex, 1, uintData ); ic3OpenGLHandleLastError(); break;
-					case 3: glUniform3uiv( pUniformIndex, 1, uintData ); ic3OpenGLHandleLastError(); break;
-					case 4: glUniform4uiv( pUniformIndex, 1, uintData ); ic3OpenGLHandleLastError(); break;
+					case 1: glUniform1uiv( pUniformIndex, 1, uintData ); Ic3OpenGLHandleLastError(); break;
+					case 2: glUniform2uiv( pUniformIndex, 1, uintData ); Ic3OpenGLHandleLastError(); break;
+					case 3: glUniform3uiv( pUniformIndex, 1, uintData ); Ic3OpenGLHandleLastError(); break;
+					case 4: glUniform4uiv( pUniformIndex, 1, uintData ); Ic3OpenGLHandleLastError(); break;
 				}
 			}
 		}
 
-		void updateUniformDataExplicitGL(
+		void UpdateUniformDataExplicitGL(
 				GLShaderProgramObject & pShaderProgram,
 				uint32 pUniformIndex,
 				EBaseDataType pBaseType,
@@ -225,10 +225,10 @@ namespace Ic3::Graphics::GCI
 				return;
 			}
 
-			const auto currentProgramHandle = GLShaderProgramObject::queryCurrentShaderProgramBinding();
+			const auto currentProgramHandle = GLShaderProgramObject::QueryCurrentShaderProgramBinding();
 			if( currentProgramHandle != pShaderProgram.mGLHandle )
 			{
-				ic3Throw( 0 );
+				Ic3Throw( 0 );
 			}
 
 			if( pBaseType == EBaseDataType::Float32 )
@@ -236,10 +236,10 @@ namespace Ic3::Graphics::GCI
 				const auto * floatData = reinterpret_cast<const float *>( pData );
 				switch( pLength )
 				{
-					case 1: glProgramUniform1fv( pShaderProgram.mGLHandle, pUniformIndex, 1, floatData ); ic3OpenGLHandleLastError(); break;
-					case 2: glProgramUniform2fv( pShaderProgram.mGLHandle, pUniformIndex, 1, floatData ); ic3OpenGLHandleLastError(); break;
-					case 3: glProgramUniform3fv( pShaderProgram.mGLHandle, pUniformIndex, 1, floatData ); ic3OpenGLHandleLastError(); break;
-					case 4: glProgramUniform4fv( pShaderProgram.mGLHandle, pUniformIndex, 1, floatData ); ic3OpenGLHandleLastError(); break;
+					case 1: glProgramUniform1fv( pShaderProgram.mGLHandle, pUniformIndex, 1, floatData ); Ic3OpenGLHandleLastError(); break;
+					case 2: glProgramUniform2fv( pShaderProgram.mGLHandle, pUniformIndex, 1, floatData ); Ic3OpenGLHandleLastError(); break;
+					case 3: glProgramUniform3fv( pShaderProgram.mGLHandle, pUniformIndex, 1, floatData ); Ic3OpenGLHandleLastError(); break;
+					case 4: glProgramUniform4fv( pShaderProgram.mGLHandle, pUniformIndex, 1, floatData ); Ic3OpenGLHandleLastError(); break;
 				}
 			}
 			else if( pBaseType == EBaseDataType::Int32 )
@@ -247,10 +247,10 @@ namespace Ic3::Graphics::GCI
 				const auto * intData = reinterpret_cast<const GLint *>( pData );
 				switch( pLength )
 				{
-					case 1: glProgramUniform1iv( pShaderProgram.mGLHandle, pUniformIndex, 1, intData ); ic3OpenGLHandleLastError(); break;
-					case 2: glProgramUniform2iv( pShaderProgram.mGLHandle, pUniformIndex, 1, intData ); ic3OpenGLHandleLastError(); break;
-					case 3: glProgramUniform3iv( pShaderProgram.mGLHandle, pUniformIndex, 1, intData ); ic3OpenGLHandleLastError(); break;
-					case 4: glProgramUniform4iv( pShaderProgram.mGLHandle, pUniformIndex, 1, intData ); ic3OpenGLHandleLastError(); break;
+					case 1: glProgramUniform1iv( pShaderProgram.mGLHandle, pUniformIndex, 1, intData ); Ic3OpenGLHandleLastError(); break;
+					case 2: glProgramUniform2iv( pShaderProgram.mGLHandle, pUniformIndex, 1, intData ); Ic3OpenGLHandleLastError(); break;
+					case 3: glProgramUniform3iv( pShaderProgram.mGLHandle, pUniformIndex, 1, intData ); Ic3OpenGLHandleLastError(); break;
+					case 4: glProgramUniform4iv( pShaderProgram.mGLHandle, pUniformIndex, 1, intData ); Ic3OpenGLHandleLastError(); break;
 				}
 			}
 			else if( pBaseType == EBaseDataType::Uint32 )
@@ -258,10 +258,10 @@ namespace Ic3::Graphics::GCI
 				const auto * uintData = reinterpret_cast<const GLuint *>( pData );
 				switch( pLength )
 				{
-					case 1: glProgramUniform1uiv( pShaderProgram.mGLHandle, pUniformIndex, 1, uintData ); ic3OpenGLHandleLastError(); break;
-					case 2: glProgramUniform2uiv( pShaderProgram.mGLHandle, pUniformIndex, 1, uintData ); ic3OpenGLHandleLastError(); break;
-					case 3: glProgramUniform3uiv( pShaderProgram.mGLHandle, pUniformIndex, 1, uintData ); ic3OpenGLHandleLastError(); break;
-					case 4: glProgramUniform4uiv( pShaderProgram.mGLHandle, pUniformIndex, 1, uintData ); ic3OpenGLHandleLastError(); break;
+					case 1: glProgramUniform1uiv( pShaderProgram.mGLHandle, pUniformIndex, 1, uintData ); Ic3OpenGLHandleLastError(); break;
+					case 2: glProgramUniform2uiv( pShaderProgram.mGLHandle, pUniformIndex, 1, uintData ); Ic3OpenGLHandleLastError(); break;
+					case 3: glProgramUniform3uiv( pShaderProgram.mGLHandle, pUniformIndex, 1, uintData ); Ic3OpenGLHandleLastError(); break;
+					case 4: glProgramUniform4uiv( pShaderProgram.mGLHandle, pUniformIndex, 1, uintData ); Ic3OpenGLHandleLastError(); break;
 				}
 			}
 		}

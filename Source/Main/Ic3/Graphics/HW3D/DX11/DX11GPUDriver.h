@@ -14,20 +14,20 @@ namespace Ic3::Graphics::GCI
 	{
 	};
 
-	class ICFGX_DX11_CLASS DX11GPUDriver final : public DXGPUDriver
+	class IC3_GX_DX11_CLASS DX11GPUDriver final : public DXGPUDriver
 	{
 	public:
 		explicit DX11GPUDriver( System::SysContextHandle pSysContext ) noexcept;
 		virtual ~DX11GPUDriver() noexcept;
 
-		virtual EGPUDriverID queryGPUDriverID() const noexcept override final;
+		virtual EGPUDriverID QueryGPUDriverID() const noexcept override final;
 
-		static DX11GPUDriverHandle create( const DX11GPUDriverCreateInfo & pCreateInfo );
+		static DX11GPUDriverHandle Create( const DX11GPUDriverCreateInfo & pCreateInfo );
 
 	private:
-		virtual DisplayManagerHandle _drvCreateDefaultDisplayManager() override;
+		virtual DisplayManagerHandle _DrvCreateDefaultDisplayManager() override;
 
-		virtual GPUDeviceHandle _drvCreateDevice( const GPUDeviceCreateInfo & pCreateInfo ) override;
+		virtual GPUDeviceHandle _DrvCreateDevice( const GPUDeviceCreateInfo & pCreateInfo ) override;
 	};
 
 } // namespace Ic3::Graphics::GCI

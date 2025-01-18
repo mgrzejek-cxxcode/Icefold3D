@@ -1,7 +1,7 @@
 
 #include "DX11presentationLayer.h"
 #include "DX11CommandList.h"
-#include "DX11APITranslationLayer.h"
+#include "DX11ApiTranslationLayer.h"
 #include "DX11GPUDevice.h"
 #include "State/DX11RenderTarget.h"
 #include <Ic3/Graphics/GCI/CommandContext.h>
@@ -21,19 +21,19 @@ namespace Ic3::Graphics::GCI
 
 	DX11ScreenPresentationLayer::~DX11ScreenPresentationLayer() = default;
 
-	DX11ScreenPresentationLayerHandle DX11ScreenPresentationLayer::create( DX11GPUDevice & pDevice, const DX11PresentationLayerCreateInfo & pCreateInfo )
+	DX11ScreenPresentationLayerHandle DX11ScreenPresentationLayer::Create( DX11GPUDevice & pDevice, const DX11PresentationLayerCreateInfo & pCreateInfo )
 	{
 		auto sysWindow = createSysWindow( pDevice, pCreateInfo );
-		ic3DebugAssert( sysWindow );
+		Ic3DebugAssert( sysWindow );
 
-		auto dxgiSwapChain = ATL::createD3D11SwapChainForSystemWindow( pDevice, sysWindow.get() );
-		ic3DebugAssert( dxgiSwapChain );
+		auto dxgiSwapChain = ATL::CreateD3D11SwapChainForSystemWindow( pDevice, sysWindow.get() );
+		Ic3DebugAssert( dxgiSwapChain );
 
 		ComPtr<ID3D11Texture2D> backBufferRTTexture;
 		auto hResult = dxgiSwapChain->GetBuffer( 0, IID_PPV_ARGS( &backBufferRTTexture ) );
 		if( FAILED( hResult ) )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return nullptr;
 		}
 
@@ -41,63 +41,63 @@ namespace Ic3::Graphics::GCI
 		backBufferRTTexture->GetDesc( &backBufferDSTextureDesc );
 		backBufferDSTextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 		backBufferDSTextureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		backBufferDSTextureDesc.CPUAccessFlags = 0;
+		backBufferDSTextureDesc.CpuAccessFlags = 0;
 
 		ComPtr<ID3D11Texture2D> backBufferDSTexture;
 		hResult = pDevice.mD3D11Device1->CreateTexture2D( &backBufferDSTextureDesc, nullptr, backBufferDSTexture.GetAddressOf() );
 		if( FAILED( hResult ) )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
-		auto renderTargetState = DX11RenderTargetBindingImmutableState::createForScreen( pDevice, backBufferRTTexture, backBufferDSTexture );
-		ic3DebugAssert( renderTargetState );
+		auto renderTargetState = DX11RenderTargetBindingImmutableState::CreateForScreen( pDevice, backBufferRTTexture, backBufferDSTexture );
+		Ic3DebugAssert( renderTargetState );
 
-		auto presentationLayer = createGPUAPIObject<DX11ScreenPresentationLayer>( pDevice, sysWindow, std::move( dxgiSwapChain ), renderTargetState );
+		auto presentationLayer = CreateGfxObject<DX11ScreenPresentationLayer>( pDevice, sysWindow, std::move( dxgiSwapChain ), renderTargetState );
 
 		return presentationLayer;
 	}
 
-	void DX11ScreenPresentationLayer::bindRenderTarget( CommandContext * pCmdContext )
+	void DX11ScreenPresentationLayer::BindRenderTarget( CommandContext * pCmdContext )
 	{
-		auto * directGraphicsContext = pCmdContext->queryInterface<CommandContextDirectGraphics>();
-		directGraphicsContext->setRenderTargetBindingState( *mScreenRenderTargetBindingState );
+		auto * directGraphicsContext = pCmdContext->QueryInterface<CommandContextDirectGraphics>();
+		directGraphicsContext->SetRenderTargetBindingState( *mScreenRenderTargetBindingState );
 
-		// auto * dx11CommandList = pCmdContext->mCommandList->queryInterface<DX11CommandList>();
-		// auto * backBufferRTView = getBackBufferRTView();
-		// auto * backBufferDSView = getBackBufferDSView();
+		// auto * dx11CommandList = pCmdContext->mCommandList->QueryInterface<DX11CommandList>();
+		// auto * backBufferRTView = GetBackBufferRTView();
+		// auto * backBufferDSView = GetBackBufferDSView();
 		// dx11CommandList->mD3D11DeviceContext1->OMSetRenderTargets( 1, &backBufferRTView, backBufferDSView );
 	}
 
-	void DX11ScreenPresentationLayer::invalidateRenderTarget( CommandContext * pCmdContext )
+	void DX11ScreenPresentationLayer::InvalidateRenderTarget( CommandContext * pCmdContext )
 	{
 	}
 
-	void DX11ScreenPresentationLayer::present()
+	void DX11ScreenPresentationLayer::Present()
 	{
 		mDXGISwapChain1->Present( 0, 0 );
 	}
 
-	ID3D11RenderTargetView * DX11ScreenPresentationLayer::getBackBufferRTView()
+	ID3D11RenderTargetView * DX11ScreenPresentationLayer::GetBackBufferRTView()
 	{
 		if( !_backBufferRTView )
 		{
-			_createBackBufferResources();
+			_CreateBackBufferResources();
 		}
 		return _backBufferRTView.Get();
 	}
 
-	ID3D11DepthStencilView * DX11ScreenPresentationLayer::getBackBufferDSView()
+	ID3D11DepthStencilView * DX11ScreenPresentationLayer::GetBackBufferDSView()
 	{
 		if( !_backBufferRTView )
 		{
-			_createBackBufferResources();
+			_CreateBackBufferResources();
 		}
 		return _backBufferDSView.Get();
 	}
 
-	bool DX11ScreenPresentationLayer::_createBackBufferResources()
+	bool DX11ScreenPresentationLayer::_CreateBackBufferResources()
 	{
 		ComPtr<ID3D11Texture2D> backBufferRTTexture;
 		auto hResult = mDXGISwapChain1->GetBuffer( 0, IID_PPV_ARGS( &backBufferRTTexture ) );
@@ -110,7 +110,7 @@ namespace Ic3::Graphics::GCI
 		backBufferRTTexture->GetDesc( & backBufferDSTextureDesc );
 		backBufferDSTextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 		backBufferDSTextureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		backBufferDSTextureDesc.CPUAccessFlags = 0;
+		backBufferDSTextureDesc.CpuAccessFlags = 0;
 
 		ComPtr<ID3D11Texture2D> backBufferDSTexture;
 		hResult = mD3D11Device1->CreateTexture2D( &backBufferDSTextureDesc, nullptr, backBufferDSTexture.GetAddressOf() );

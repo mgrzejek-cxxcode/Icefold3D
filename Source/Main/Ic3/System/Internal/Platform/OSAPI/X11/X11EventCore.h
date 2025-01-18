@@ -30,24 +30,24 @@ namespace Ic3::System
 
 		enum EX11SystemWindowFlags : uint32
 		{
-			E_X11_SYSTEM_WINDOW_FLAG_WM_STATE_FULLSCREEN = 0x8000
+			eX11SystemWindowFlagWMStateFullscreen = 0x8000
 		};
 
 		struct X11EventSourceNativeData : public X11NativeDataCommon
 		{
-			XWindow windowXID = E_X11_XID_NONE;
+			XWindow mWindowXID = eXIDNone;
 
-			Bitmask<uint32> sysWindowFlags = 0;
+			cppx::bitmask<uint32> mSysWindowFlags = 0;
 		};
 
 		struct NativeEventType
 		{
-			XEvent xEvent;
+			XEvent mXEvent;
 		};
 
-		IC3_SYSTEM_API_NODISCARD EventSource * x11FindEventSourceByXWindow( X11EventController & pEventController, XWindow pWindowXID );
+		EventSource * X11FindEventSourceByXWindow(X11EventController & pEventController, XWindow pWindowXID );
 
-		bool x11TranslateEvent( EventSource & pEventSource, const XEvent & pXEvent, EventObject & pOutEvent );
+		bool X11TranslateEvent( EventSource & pEventSource, const XEvent & pXEvent, EventObject & pOutEvent );
 
 	}
 
@@ -58,17 +58,17 @@ namespace Ic3::System
 		virtual ~X11EventController() noexcept;
 
 	private:
-		/// @copybrief EventController::_nativeRegisterEventSource
-		virtual void _nativeRegisterEventSource( EventSource & pEventSource ) override final;
+		/// @copybrief EventController::_NativeRegisterEventSource
+		virtual void _NativeRegisterEventSource( EventSource & pEventSource ) override final;
 
-		/// @copybrief EventController::_nativeUnregisterEventSource
-		virtual void _nativeUnregisterEventSource( EventSource & pEventSource ) override final;
+		/// @copybrief EventController::_NativeUnRegisterEventSource
+		virtual void _NativeUnRegisterEventSource( EventSource & pEventSource ) override final;
 
-		/// @copybrief EventController::_nativeDispatchPendingEvents
-		virtual bool _nativeDispatchPendingEvents() override final;
+		/// @copybrief EventController::_NativeDispatchPendingEvents
+		virtual bool _NativeDispatchPendingEvents() override final;
 
-		/// @copybrief EventController::_nativeDispatchPendingEventsWait
-		virtual bool _nativeDispatchPendingEventsWait() override final;
+		/// @copybrief EventController::_NativeDispatchPendingEventsWait
+		virtual bool _NativeDispatchPendingEventsWait() override final;
 	};
 
 } // namespace Ic3::System

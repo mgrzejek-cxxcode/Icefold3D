@@ -1,8 +1,8 @@
 
-#include "fontTypeDynamic.h"
-#include "ftdFreeTypeFontFace.h"
-#include "ftdFreeTypeFontObject.h"
-#include <Ic3/CoreLib/graphics/rectAllocator.h>
+#include "FontTypeDynamic.h"
+#include "FTDFreeTypeFontFace.h"
+#include "FTDFreeTypeFontObject.h"
+#include <Ic3/CoreLib/Utility/RectAllocator.h>
 #include <unordered_map>
 
 namespace Ic3
@@ -38,7 +38,7 @@ namespace Ic3
 	FontHandle DynamicFontLoader::createFont( const DynamicFontCreateInfo & pFontCreateInfo )
 	{
 		auto * ftFontObject = createFreeTypeFontObject( pFontCreateInfo );
-		if( !ftFontObject || !ftFontObject->setActiveFace( pFontCreateInfo.fontDesc.fontSize, pFontCreateInfo.fontResolutionHint ) )
+		if( !ftFontObject || !ftFontObject->SetActiveFace( pFontCreateInfo.fontDesc.fontSize, pFontCreateInfo.fontResolutionHint ) )
 		{
 			return nullptr;
 		}
@@ -55,7 +55,7 @@ namespace Ic3
 			return nullptr;
 		}
 
-		ftFontObject->resetActiveGlyphCache();
+		ftFontObject->ResetActiveGlyphCache();
 
 		return nullptr;
 	}
@@ -128,7 +128,7 @@ namespace Ic3
 	bool DynamicFontLoader::processFontInitData( FreeTypeFontObject * pFTFontObject, const DynamicFontCreateInfo & pFontCreateInfo, FTInternalFontData & pFontData )
 	{
 		// Size, in bytes, of a single pixel of a texture/glyph image.
-		const uint32 cxPixelByteSize = GCI::CxDef::getTextureFormatByteSize( pFontCreateInfo.fontDesc.textureFormat );
+		const uint32 cxPixelByteSize = GCI::CxDef::GetTextureFormatByteSize( pFontCreateInfo.fontDesc.textureFormat );
 
 		const auto cxTextureWidth = pFontCreateInfo.fontDesc.textureDimensions.x;  // Width of a single font texture, in pixels.
 		const auto cxTextureHeight = pFontCreateInfo.fontDesc.textureDimensions.y; // Height of a single font texture, in pixels.
@@ -157,15 +157,15 @@ namespace Ic3
 				// Glyph image - the image itself (pointer to the data, information about size, row pitch, etc).
 				auto & glyphSourceImage = ftGlyphData.glyphImage;
 
-				if( !currentTextureLayer || !textureLayerAllocator.checkFreeSpace( glyphSourceImage.dimensions ) )
+				if( !currentTextureLayer || !textureLayerAllocator.CheckFreeSpace( glyphSourceImage.dimensions ) )
 				{
 					// No space left in the current layer or no layer at all. Append a new layer...
 					pFontData.textureLayerInitDataArray.emplace_back();
 					// ...and reset the allocator.
-					textureLayerAllocator.reset();
+					textureLayerAllocator.Reset();
 
 					currentTextureLayer = &( pFontData.textureLayerInitDataArray.back() );
-					currentTextureLayer->layerIndex = numeric_cast<uint32>( pFontData.textureLayerInitDataArray.size() ) - 1;
+					currentTextureLayer->layerIndex = cppx::numeric_cast<uint32>( pFontData.textureLayerInitDataArray.size() ) - 1;
 					currentTextureLayer->initDataBuffer.resize( cxTextureSize );
 					currentTextureLayer->initDataBuffer.fill( 0 );
 				}
@@ -173,7 +173,7 @@ namespace Ic3
 				Math::Vec2u32 glyphImageTextureOffset;
 				// This should never fail, because we already checked the available space (checkFreeSpace() above).
 				// If this assertion triggers, it means, that the current glyph is bigger than the texture rect itself.
-				if( !textureLayerAllocator.addRect( glyphSourceImage.dimensions, &glyphImageTextureOffset ) )
+				if( !textureLayerAllocator.AddRect( glyphSourceImage.dimensions, &glyphImageTextureOffset ) )
 				{
 					return false;
 				}
@@ -188,7 +188,7 @@ namespace Ic3
 					const auto srcByteOffset = imageRowIndex * glyphSourceImage.dataRowPitch;
 					const auto targetByteOffset = ( baseTargetPixelOffset + ( imageRowIndex * cxTextureWidth ) ) * cxPixelByteSize;
 					auto * targetBufferBtr = currentTextureLayer->initDataBuffer.dataOffset( targetByteOffset );
-					memCopy( targetBufferBtr, cxTextureSize, glyphSourceImage.data + srcByteOffset, srcDataRowSize );
+					cppx::mem_copy( targetBufferBtr, cxTextureSize, glyphSourceImage.data + srcByteOffset, srcDataRowSize );
 				}
 
 				glyphImageRef.imageIndex = currentTextureLayer->layerIndex;
@@ -206,7 +206,7 @@ namespace Ic3
 
 	FontTextureCreateInfo DynamicFontLoader::setupTextureCreateInfo( const DynamicFontCreateInfo & pFontCreateInfo, FTInternalFontData & pFontData )
 	{
-		const auto cxStaticSubTexturesNum = numeric_cast<uint32>( pFontData.textureLayerInitDataArray.size() );
+		const auto cxStaticSubTexturesNum = cppx::numeric_cast<uint32>( pFontData.textureLayerInitDataArray.size() );
 		const auto cxDynamicSubTexturesNum = pFontCreateInfo.fontDesc.dynamicLayersNum;
 		const auto cxTotalSubTexturesNum = cxStaticSubTexturesNum + cxDynamicSubTexturesNum;
 
@@ -222,13 +222,13 @@ namespace Ic3
 
 		if( cxDynamicSubTexturesNum == 0 )
 		{
-			textureCreateInfo.gpuTextureCreateInfo.memoryFlags = GCI::E_GPU_MEMORY_ACCESS_FLAG_GPU_READ_BIT;
-			textureCreateInfo.gpuTextureCreateInfo.resourceFlags = GCI::E_GPU_RESOURCE_CONTENT_FLAG_STATIC_BIT;
+			textureCreateInfo.gpuTextureCreateInfo.memoryFlags = GCI::eGPUMemoryAccessFlagGPUReadBit;
+			textureCreateInfo.gpuTextureCreateInfo.resourceFlags = GCI::eGPUResourceContentFlagStaticBit;
 		}
 		else
 		{
-			textureCreateInfo.gpuTextureCreateInfo.memoryFlags = GCI::E_GPU_MEMORY_ACCESS_FLAG_CPU_WRITE_BIT | GCI::E_GPU_MEMORY_ACCESS_FLAG_GPU_READ_BIT;
-			textureCreateInfo.gpuTextureCreateInfo.resourceFlags = GCI::E_GPU_RESOURCE_CONTENT_FLAG_DYNAMIC_BIT;
+			textureCreateInfo.gpuTextureCreateInfo.memoryFlags = GCI::eGPUMemoryAccessFlagCpuWriteBit | GCI::eGPUMemoryAccessFlagGPUReadBit;
+			textureCreateInfo.gpuTextureCreateInfo.resourceFlags = GCI::eGPUResourceContentFlagDynamicBit;
 		}
 
 		if( cxTotalSubTexturesNum == 1 )
@@ -242,8 +242,8 @@ namespace Ic3
 			textureCreateInfo.gpuTextureCreateInfo.dimensions.arraySize = cxTotalSubTexturesNum;
 		}
 
-		auto & gpuTextureInitDataDesc = textureCreateInfo.gpuTextureCreateInfo.initDataDesc;
-		gpuTextureInitDataDesc.initialize( textureCreateInfo.gpuTextureCreateInfo.dimensions );
+		auto & gpuTextureInitDataDesc = textureCreateInfo.gpuTextureCreateInfo.mInitDataDesc;
+		gpuTextureInitDataDesc.Initialize( textureCreateInfo.gpuTextureCreateInfo.dimensions );
 
 		for( uint32 staticSubTextureIndex = 0; staticSubTextureIndex < cxStaticSubTexturesNum; ++staticSubTextureIndex )
 		{

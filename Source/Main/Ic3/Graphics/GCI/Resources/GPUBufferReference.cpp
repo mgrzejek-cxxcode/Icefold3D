@@ -7,40 +7,40 @@ namespace Ic3::Graphics::GCI
 
 	GPUBufferReference::GPUBufferReference( GPUBufferHandle pGPUBuffer )
 	: _refBufferObject( pGPUBuffer )
-	, _refSubRegion{ pGPUBuffer->getWholeBufferRegion() }
+	, _refSubRegion{ pGPUBuffer->GetWholeBufferRegion() }
 	{}
 
 	GPUBufferReference::GPUBufferReference( GPUBufferHandle pGPUBuffer, const GPUMemoryRegion & pReferencedSubRegion )
 	{
-		_setRefBufferInternal( pGPUBuffer, rcutil::validateGPUBufferRegion( pGPUBuffer, pReferencedSubRegion ) );
+		_SetRefBufferInternal( pGPUBuffer, RCU::ValidateGPUBufferRegion( pGPUBuffer, pReferencedSubRegion ) );
 	}
 
 	GPUBufferReference::GPUBufferReference( GPUBufferHandle pGPUBuffer, gpu_memory_size_t pOffset, gpu_memory_size_t pSize )
 	{
-		_setRefBufferInternal( pGPUBuffer, rcutil::validateGPUBufferRegion( pGPUBuffer, pOffset, pSize ) );
+		_SetRefBufferInternal( pGPUBuffer, RCU::ValidateGPUBufferRegion( pGPUBuffer, pOffset, pSize ) );
 	}
 
-	bool GPUBufferReference::setRefBuffer( GPUBufferHandle pGPUBuffer )
+	bool GPUBufferReference::SetRefBuffer( GPUBufferHandle pGPUBuffer )
 	{
-		return _setRefBufferInternal( pGPUBuffer, pGPUBuffer->getWholeBufferRegion() );
+		return _SetRefBufferInternal( pGPUBuffer, pGPUBuffer->GetWholeBufferRegion() );
 	}
 
-	bool GPUBufferReference::setRefBuffer( GPUBufferHandle pGPUBuffer, const GPUMemoryRegion & pReferencedSubRegion )
+	bool GPUBufferReference::SetRefBuffer( GPUBufferHandle pGPUBuffer, const GPUMemoryRegion & pReferencedSubRegion )
 	{
-		return _setRefBufferInternal( pGPUBuffer, rcutil::validateGPUBufferRegion( pGPUBuffer, pReferencedSubRegion ) );
+		return _SetRefBufferInternal( pGPUBuffer, RCU::ValidateGPUBufferRegion( pGPUBuffer, pReferencedSubRegion ) );
 	}
 
-	bool GPUBufferReference::setRefBuffer( GPUBufferHandle pGPUBuffer, gpu_memory_size_t pOffset, gpu_memory_size_t pSize )
+	bool GPUBufferReference::SetRefBuffer( GPUBufferHandle pGPUBuffer, gpu_memory_size_t pOffset, gpu_memory_size_t pSize )
 	{
-		return _setRefBufferInternal( pGPUBuffer, rcutil::validateGPUBufferRegion( pGPUBuffer, pOffset, pSize ) );
+		return _SetRefBufferInternal( pGPUBuffer, RCU::ValidateGPUBufferRegion( pGPUBuffer, pOffset, pSize ) );
 	}
 
-	bool GPUBufferReference::reset()
+	bool GPUBufferReference::Reset()
 	{
-		return _setRefBufferInternal( nullptr );
+		return _SetRefBufferInternal( nullptr );
 	}
 
-	bool GPUBufferReference::_setRefBufferInternal( GPUBufferHandle pGPUBuffer, const GPUMemoryRegion & pReferencedSubRegion )
+	bool GPUBufferReference::_SetRefBufferInternal( GPUBufferHandle pGPUBuffer, const GPUMemoryRegion & pReferencedSubRegion )
 	{
 		bool referenceUpdated = false;
 
@@ -51,9 +51,9 @@ namespace Ic3::Graphics::GCI
 			// Of course, assuming there is something to reset in the first place.
 			if( _refBufferObject )
 			{
-				_refBufferObject->releaseActiveRef();
+				_refBufferObject->ReleaseActiveRef();
 				_refBufferObject = nullptr;
-				_refSubRegion.setEmpty();
+				_refSubRegion.set_empty();
 
 				referenceUpdated = true;
 			}
@@ -63,7 +63,7 @@ namespace Ic3::Graphics::GCI
 		else if( ( pGPUBuffer != _refBufferObject ) || ( pReferencedSubRegion != _refSubRegion ) )
 		{
 			// Validate if the specified subregion is valid for the given buffer object.
-			if( rcutil::checkGPUBufferRegion( pGPUBuffer, pReferencedSubRegion ) )
+			if( RCU::CheckGPUBufferRegion( pGPUBuffer, pReferencedSubRegion ) )
 			{
 				// Update the buffer only if necessary.
 				if( pGPUBuffer != _refBufferObject )
@@ -71,12 +71,12 @@ namespace Ic3::Graphics::GCI
 					// This can be null (empty reference).
 					if( _refBufferObject )
 					{
-						_refBufferObject->releaseActiveRef();
+						_refBufferObject->ReleaseActiveRef();
 						_refBufferObject = nullptr;
 					}
 
 					_refBufferObject = pGPUBuffer;
-					_refBufferObject->addActiveRef();
+					_refBufferObject->AddActiveRef();
 				}
 
 				// Update the referenced subregion.

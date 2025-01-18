@@ -20,35 +20,35 @@ namespace Ic3::Graphics::GCI
 
 		~RenderTargetBindingDynamicState();
 
-		IC3_ATTR_NO_DISCARD bool empty() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept;
 
-		IC3_ATTR_NO_DISCARD native_uint countActiveColorAttachments() const noexcept;
+		CPPX_ATTR_NO_DISCARD native_uint CountActiveColorAttachments() const noexcept;
 
-		IC3_ATTR_NO_DISCARD const RenderTargetBindingDefinition & getBindingDefinition() const noexcept;
+		CPPX_ATTR_NO_DISCARD const RenderTargetBindingDefinition & GetBindingDefinition() const noexcept;
 
 		void assign( const RenderTargetBindingDefinition & pDefinition );
 
-		RenderTargetAttachmentBinding & setColorAttachmentBinding( native_uint pIndex );
+		RenderTargetAttachmentBinding & SetColorAttachmentBinding( native_uint pIndex );
 
-		void setColorAttachmentBinding( native_uint pIndex, const RenderTargetAttachmentBinding & pRPCAttachmentBinding );
-		void setColorAttachmentBindings( const RenderTargetColorAttachmentBindingArray & pRPCAttachmentBindings );
-		void setColorAttachmentBindings( native_uint pFirstIndex, native_uint pCount, const RenderTargetAttachmentBinding * pRPCAttachmentBindings );
+		void SetColorAttachmentBinding( native_uint pIndex, const RenderTargetAttachmentBinding & pRPCAttachmentBinding );
+		void SetColorAttachmentBindings( const RenderTargetColorAttachmentBindingArray & pRPCAttachmentBindings );
+		void SetColorAttachmentBindings( native_uint pFirstIndex, native_uint pCount, const RenderTargetAttachmentBinding * pRPCAttachmentBindings );
 
-		RenderTargetAttachmentBinding & setDepthStencilAttachmentBinding();
+		RenderTargetAttachmentBinding & SetDepthStencilAttachmentBinding();
 
-		void setDepthStencilAttachmentBinding( const RenderTargetAttachmentBinding & pRPDSAttachmentBinding );
+		void SetDepthStencilAttachmentBinding( const RenderTargetAttachmentBinding & pRPDSAttachmentBinding );
 
-		void resetColorAttachmentBinding( native_uint pIndex );
-		void resetColorAttachmentBindings( native_uint pFirstIndex, native_uint pCount );
-		void resetColorAttachmentBindings();
+		void ResetColorAttachmentBinding( native_uint pIndex );
+		void ResetColorAttachmentBindings( native_uint pFirstIndex, native_uint pCount );
+		void ResetColorAttachmentBindings();
 
-		void resetDepthStencilAttachmentBinding();
+		void ResetDepthStencilAttachmentBinding();
 
-		void resetAllAttachmentBindings();
+		void ResetAllAttachmentBindings();
 
 	private:
-		void _setColorAttachmentBindings( native_uint pFirstIndex, native_uint pCount, const RenderTargetAttachmentBinding * pRPCAttachmentBindings );
-		void _resetColorAttachmentBindings( native_uint pFirstIndex, native_uint pCount );
+		void _SetColorAttachmentBindings( native_uint pFirstIndex, native_uint pCount, const RenderTargetAttachmentBinding * pRPCAttachmentBindings );
+		void _ResetColorAttachmentBindings( native_uint pFirstIndex, native_uint pCount );
 
 	private:
 		RenderTargetBindingDefinition _renderTargetBindingDefinition;
@@ -65,35 +65,35 @@ namespace Ic3::Graphics::GCI
 
 		~RenderPassConfigurationDynamicState();
 
-		IC3_ATTR_NO_DISCARD bool empty() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept;
 
-		IC3_ATTR_NO_DISCARD native_uint countActiveColorAttachments() const noexcept;
+		CPPX_ATTR_NO_DISCARD native_uint CountActiveColorAttachments() const noexcept;
 
-		IC3_ATTR_NO_DISCARD const RenderPassConfiguration & getRenderPassConfiguration() const noexcept;
+		CPPX_ATTR_NO_DISCARD const RenderPassConfiguration & GetRenderPassConfiguration() const noexcept;
 
-		void assign( const RenderPassConfiguration & pConfiguration );
+		void Assign( const RenderPassConfiguration & pConfiguration );
 
-		RenderPassAttachmentConfig & setColorAttachmentUsage( native_uint pIndex );
+		RenderPassAttachmentConfig & SetColorAttachmentUsage( native_uint pIndex );
 
-		void setColorAttachmentUsage( native_uint pIndex, const RenderPassAttachmentConfig & pRPCAttachmentUsage );
-		void setColorAttachmentUsages( const RenderPassColorAttachmentConfigArray & pRPCAttachmentUsages );
-		void setColorAttachmentBindings( native_uint pFirstIndex, native_uint pCount, const RenderPassAttachmentConfig * pRPCAttachmentUsages );
+		void SetColorAttachmentUsage( native_uint pIndex, const RenderPassAttachmentConfig & pRPCAttachmentUsage );
+		void SetColorAttachmentUsages( const RenderPassColorAttachmentConfigArray & pRPCAttachmentUsages );
+		void SetColorAttachmentBindings( native_uint pFirstIndex, native_uint pCount, const RenderPassAttachmentConfig * pRPCAttachmentUsages );
 
-		RenderPassAttachmentConfig & setDepthStencilAttachmentUsage();
+		RenderPassAttachmentConfig & SetDepthStencilAttachmentUsage();
 
-		void setDepthStencilAttachmentUsage( const RenderPassAttachmentConfig & pRPDSAttachmentUsage );
+		void SetDepthStencilAttachmentUsage( const RenderPassAttachmentConfig & pRPDSAttachmentUsage );
 
-		void resetColorAttachmentUsage( native_uint pIndex );
-		void resetColorAttachmentUsages( native_uint pFirstIndex, native_uint pCount );
-		void resetColorAttachmentUsages();
+		void ResetColorAttachmentUsage( native_uint pIndex );
+		void ResetColorAttachmentUsages( native_uint pFirstIndex, native_uint pCount );
+		void ResetColorAttachmentUsages();
 
-		void resetDepthStencilAttachmentUsage();
+		void ResetDepthStencilAttachmentUsage();
 
-		void resetAllAttachmentUsages();
+		void ResetAllAttachmentUsages();
 
 	private:
-		void _setColorAttachmentUsages( native_uint pFirstIndex, native_uint pCount, const RenderPassAttachmentConfig * pRPCAttachmentUsages );
-		void _resetColorAttachmentUsages( native_uint pFirstIndex, native_uint pCount );
+		void _SetColorAttachmentUsages( native_uint pFirstIndex, native_uint pCount, const RenderPassAttachmentConfig * pRPCAttachmentUsages );
+		void _ResetColorAttachmentUsages( native_uint pFirstIndex, native_uint pCount );
 
 	private:
 		RenderPassConfiguration _renderPassConfiguration;

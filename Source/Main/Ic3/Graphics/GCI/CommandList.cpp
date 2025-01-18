@@ -27,31 +27,31 @@ namespace Ic3::Graphics::GCI
 
 	CommandList::~CommandList() = default;
 
-	bool CommandList::checkCommandClassSupport( ECommandQueueClass pQueueClass ) const noexcept
+	bool CommandList::CheckCommandClassSupport( ECommandQueueClass pQueueClass ) const noexcept
 	{
-		return checkFeatureSupport( static_cast<ECommandObjectPropertyFlags>( pQueueClass ) );
+		return CheckFeatureSupport( static_cast<ECommandObjectPropertyFlags>( pQueueClass ) );
 	}
 
-	bool CommandList::checkFeatureSupport( Bitmask<ECommandObjectPropertyFlags> pCommandListFlags ) const noexcept
+	bool CommandList::CheckFeatureSupport( cppx::bitmask<ECommandObjectPropertyFlags> pCommandListFlags ) const noexcept
 	{
 		// Command list type (its value) is basically a bitwise OR of all supported bits.
-		Bitmask<ECommandObjectPropertyFlags> commandListPropertyFlags = static_cast<ECommandObjectPropertyFlags>( mListType );
+		cppx::bitmask<ECommandObjectPropertyFlags> commandListPropertyFlags = static_cast<ECommandObjectPropertyFlags>( mListType );
 
 		// Check if the specified command classes and/or execution type matches those supported by the list.
-		return commandListPropertyFlags.isSet( pCommandListFlags & E_COMMAND_OBJECT_PROPERTY_MASK_ALL );
+		return commandListPropertyFlags.is_set( pCommandListFlags & ECommandObjectPropertyMaskAll );
 	}
 
-	bool CommandList::isRenderPassActive() const noexcept
+	bool CommandList::IsRenderPassActive() const noexcept
 	{
-		return _internalStateMask.isSet( E_COMMAND_LIST_INTERNAL_STATE_FLAG_ACTIVE_RENDER_PASS_BIT );
+		return _internalStateMask.is_set( E_COMMAND_LIST_INTERNAL_STATE_FLAG_ACTIVE_RENDER_PASS_BIT );
 	}
 
-	bool CommandList::hasPendingGraphicsPipelineStateChanges() const noexcept
+	bool CommandList::HasPendingGraphicsPipelineStateChanges() const noexcept
 	{
-		return _graphicsPipelineStateController->hasPendingStateChanges();
+		return _graphicsPipelineStateController->HasPendingStateChanges();
 	}
 
-	bool CommandList::acquireList()
+	bool CommandList::AcquireList()
 	{
 		auto listLockStatus = false;
 		auto acquireSuccessful = _listLockStatus.compare_exchange_strong(
@@ -63,289 +63,289 @@ namespace Ic3::Graphics::GCI
 		return acquireSuccessful;
 	}
 
-	void CommandList::releaseList()
+	void CommandList::ReleaseList()
 	{
 		_listLockStatus.store( false, std::memory_order_release );
 	}
 
-	bool CommandList::applyGraphicsPipelineStateChanges()
+	bool CommandList::ApplyGraphicsPipelineStateChanges()
 	{
-		return _graphicsPipelineStateController->applyStateChanges();
+		return _graphicsPipelineStateController->ApplyStateChanges();
 	}
 
-	void CommandList::beginCommandSequence()
+	void CommandList::BeginCommandSequence()
 	{}
 
-	void CommandList::endCommandSequence()
+	void CommandList::EndCommandSequence()
 	{}
 
-	bool CommandList::mapBuffer( GPUBuffer & pBuffer, EGPUMemoryMapMode pMapMode )
+	bool CommandList::MapBuffer( GPUBuffer & pBuffer, EGPUMemoryMapMode pMapMode )
 	{
-		return mapBufferRegion( pBuffer, GPUMemoryRegion{ 0, pBuffer.mBufferProperties.byteSize }, pMapMode );
+		return MapBufferRegion( pBuffer, GPUMemoryRegion{ 0, pBuffer.mBufferProperties.byteSize }, pMapMode );
 	}
 
-	bool CommandList::mapBufferRegion( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion, EGPUMemoryMapMode pMapMode )
+	bool CommandList::MapBufferRegion( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion, EGPUMemoryMapMode pMapMode )
 	{
-		if( !pBuffer.validateMapRequest( pRegion, pMapMode ) )
+		if( !pBuffer.ValidateMapRequest( pRegion, pMapMode ) )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
-		return pBuffer.mapRegion( this, pRegion, pMapMode );
+		return pBuffer.MapRegion( this, pRegion, pMapMode );
 	}
 
-	bool CommandList::unmapBuffer( GPUBuffer & pBuffer )
+	bool CommandList::UnmapBuffer( GPUBuffer & pBuffer )
 	{
-		if( !pBuffer.isMapped() )
+		if( !pBuffer.IsMapped() )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
-		pBuffer.unmap( this );
+		pBuffer.Unmap( this );
 
 		return true;
 	}
 
-	bool CommandList::flushMappedBuffer( GPUBuffer & pBuffer )
+	bool CommandList::FlushMappedBuffer( GPUBuffer & pBuffer )
 	{
 		GPUMemoryRegion flushRegion;
 		flushRegion.offset = 0;
 		flushRegion.size = pBuffer.mBufferProperties.byteSize;
 
-		return flushMappedBufferRegion( pBuffer, flushRegion );
+		return FlushMappedBufferRegion( pBuffer, flushRegion );
 	}
 
-	bool CommandList::flushMappedBufferRegion( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion )
+	bool CommandList::FlushMappedBufferRegion( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion )
 	{
-		if( !pBuffer.isMapped() )
+		if( !pBuffer.IsMapped() )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
-		pBuffer.flushMappedRegion( this, pRegion );
+		pBuffer.FlushMappedRegion( this, pRegion );
 
 		return true;
 	}
 
-	bool CommandList::invalidateBuffer( GPUBuffer & pBuffer )
+	bool CommandList::InvalidateBuffer( GPUBuffer & pBuffer )
 	{
-		GPUMemoryRegion invalidateRegion;
-		invalidateRegion.offset = 0;
-		invalidateRegion.size = pBuffer.mBufferProperties.byteSize;
+		GPUMemoryRegion InvalidateRegion;
+		InvalidateRegion.offset = 0;
+		InvalidateRegion.size = pBuffer.mBufferProperties.byteSize;
 
-		return invalidateBufferRegion( pBuffer, invalidateRegion );
+		return InvalidateBufferRegion( pBuffer, InvalidateRegion );
 	}
 
-	bool CommandList::invalidateBufferRegion( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion )
+	bool CommandList::InvalidateBufferRegion( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion )
 	{
-		pBuffer.invalidateRegion( this, pRegion );
+		pBuffer.InvalidateRegion( this, pRegion );
 		return true;
 	}
 
-	bool CommandList::updateBufferDataCopy( GPUBuffer & pBuffer, GPUBuffer & pSourceBuffer, const GPUBufferDataCopyDesc & pCopyDesc )
+	bool CommandList::UpdateBufferDataCopy( GPUBuffer & pBuffer, GPUBuffer & pSourceBuffer, const GPUBufferDataCopyDesc & pCopyDesc )
 	{
 		GPUBufferSubDataCopyDesc subDataCopyDesc;
 		subDataCopyDesc.flags = pCopyDesc.flags;
-		subDataCopyDesc.flags.set( E_GPU_BUFFER_DATA_COPY_FLAG_MODE_INVALIDATE_BIT );
-		subDataCopyDesc.flags.unset( E_GPU_BUFFER_DATA_COPY_FLAG_MODE_APPEND_BIT );
+		subDataCopyDesc.flags.set( eGPUBufferDataCopyFlagModeInvalidateBit );
+		subDataCopyDesc.flags.unset( eGPUBufferDataCopyFlagModeAppendBit );
 		subDataCopyDesc.sourceBufferRegion.offset = 0;
 		subDataCopyDesc.sourceBufferRegion.size = pSourceBuffer.mBufferProperties.byteSize;
 		subDataCopyDesc.targetBufferOffset = 0;
 
-		return updateBufferSubDataCopy( pBuffer, pSourceBuffer, subDataCopyDesc );
+		return UpdateBufferSubDataCopy( pBuffer, pSourceBuffer, subDataCopyDesc );
 	}
 
-	bool CommandList::updateBufferSubDataCopy( GPUBuffer & pBuffer, GPUBuffer & pSourceBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc )
+	bool CommandList::UpdateBufferSubDataCopy( GPUBuffer & pBuffer, GPUBuffer & pSourceBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc )
 	{
-		if( pBuffer.isMapped() || pSourceBuffer.isMapped() )
+		if( pBuffer.IsMapped() || pSourceBuffer.IsMapped() )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
 		if( pBuffer.mBufferProperties.byteSize != pSourceBuffer.mBufferProperties.byteSize )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
-		pBuffer.updateSubDataCopy( this, pSourceBuffer, pCopyDesc );
+		pBuffer.UpdateSubDataCopy( this, pSourceBuffer, pCopyDesc );
 
 		return true;
 	}
 
-	bool CommandList::updateBufferDataUpload( GPUBuffer & pBuffer, const GPUBufferDataUploadDesc & pUploadDesc )
+	bool CommandList::UpdateBufferDataUpload( GPUBuffer & pBuffer, const GPUBufferDataUploadDesc & pUploadDesc )
 	{
 		GPUBufferSubDataUploadDesc subDataUploadDesc;
 		subDataUploadDesc.flags = pUploadDesc.flags;
-		subDataUploadDesc.flags.set( E_GPU_BUFFER_DATA_COPY_FLAG_MODE_INVALIDATE_BIT );
-		subDataUploadDesc.flags.unset( E_GPU_BUFFER_DATA_COPY_FLAG_MODE_APPEND_BIT );
+		subDataUploadDesc.flags.set( eGPUBufferDataCopyFlagModeInvalidateBit );
+		subDataUploadDesc.flags.unset( eGPUBufferDataCopyFlagModeAppendBit );
 		subDataUploadDesc.bufferRegion.offset = 0;
-		subDataUploadDesc.bufferRegion.size = getMinOf( pUploadDesc.inputDataDesc.size, pBuffer.mBufferProperties.byteSize );
+		subDataUploadDesc.bufferRegion.size = cppx::get_min_of( pUploadDesc.inputDataDesc.size, pBuffer.mBufferProperties.byteSize );
 		subDataUploadDesc.inputDataDesc = pUploadDesc.inputDataDesc;
 
-		return updateBufferSubDataUpload( pBuffer, subDataUploadDesc );
+		return UpdateBufferSubDataUpload( pBuffer, subDataUploadDesc );
 	}
 
-	bool CommandList::updateBufferSubDataUpload( GPUBuffer & pBuffer, const GPUBufferSubDataUploadDesc & pUploadDesc )
+	bool CommandList::UpdateBufferSubDataUpload( GPUBuffer & pBuffer, const GPUBufferSubDataUploadDesc & pUploadDesc )
 	{
 		if( !pUploadDesc.inputDataDesc )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
-		if( pBuffer.isMapped() )
+		if( pBuffer.IsMapped() )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
-		pBuffer.updateSubDataUpload( this, pUploadDesc );
+		pBuffer.UpdateSubDataUpload( this, pUploadDesc );
 
 		return true;
 	}
 
-	bool CommandList::beginRenderPass(
+	bool CommandList::BeginRenderPass(
 			const RenderPassConfigurationImmutableState & pRenderPassState,
-			Bitmask<ECommandListActionFlags> pFlags )
+			cppx::bitmask<ECommandListActionFlags> pFlags )
 	{
-		return onBeginRenderPass( pFlags );
+		return OnBeginRenderPass( pFlags );
 	}
 	
-	bool CommandList::beginRenderPass(
+	bool CommandList::BeginRenderPass(
 			const RenderPassConfigurationDynamicState & pRenderPassState,
-			Bitmask<ECommandListActionFlags> pFlags )
+			cppx::bitmask<ECommandListActionFlags> pFlags )
 	{
-		return onBeginRenderPass( pFlags );
+		return OnBeginRenderPass( pFlags );
 	}
 
-	void CommandList::endRenderPass()
+	void CommandList::EndRenderPass()
 	{
-		onEndRenderPass();
+		OnEndRenderPass();
 	}
 
-	void CommandList::setRenderPassDynamicState( const GraphicsPipelineDynamicState & pDynamicState )
+	void CommandList::SetRenderPassDynamicState( const GraphicsPipelineDynamicState & pDynamicState )
 	{
-		_graphicsPipelineStateController->setRenderPassDynamicState( pDynamicState );
+		_graphicsPipelineStateController->SetRenderPassDynamicState( pDynamicState );
 	}
 
-	void CommandList::resetRenderPassDynamicState()
+	void CommandList::ResetRenderPassDynamicState()
 	{
-		_graphicsPipelineStateController->resetRenderPassDynamicState();
+		_graphicsPipelineStateController->ResetRenderPassDynamicState();
 	}
 
-	bool CommandList::setGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO )
+	bool CommandList::SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO )
 	{
-		return _graphicsPipelineStateController->setGraphicsPipelineStateObject( pGraphicsPSO );
+		return _graphicsPipelineStateController->SetGraphicsPipelineStateObject( pGraphicsPSO );
 	}
 
-	bool CommandList::setIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState )
+	bool CommandList::SetIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState )
 	{
-		return _graphicsPipelineStateController->setIAVertexStreamState( pIAVertexStreamState );
+		return _graphicsPipelineStateController->SetIAVertexStreamState( pIAVertexStreamState );
 	}
 
-	bool CommandList::setIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState )
+	bool CommandList::SetIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState )
 	{
-		return _graphicsPipelineStateController->setIAVertexStreamState( pIAVertexStreamState );
+		return _graphicsPipelineStateController->SetIAVertexStreamState( pIAVertexStreamState );
 	}
 
-	bool CommandList::setRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState )
+	bool CommandList::SetRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState )
 	{
-		return _graphicsPipelineStateController->setRenderTargetBindingState( pRenderTargetBindingState );
+		return _graphicsPipelineStateController->SetRenderTargetBindingState( pRenderTargetBindingState );
 	}
 
-	bool CommandList::setRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState )
+	bool CommandList::SetRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState )
 	{
-		return _graphicsPipelineStateController->setRenderTargetBindingState( pRenderTargetBindingState );
+		return _graphicsPipelineStateController->SetRenderTargetBindingState( pRenderTargetBindingState );
 	}
 
-	bool CommandList::cmdSetViewport( const ViewportDesc & pViewportDesc )
+	bool CommandList::CmdSetViewport( const ViewportDesc & pViewportDesc )
 	{
-		if( !isRenderPassActive() )
+		if( !IsRenderPassActive() )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
-		return _graphicsPipelineStateController->setViewport( pViewportDesc );
+		return _graphicsPipelineStateController->SetViewport( pViewportDesc );
 	}
 
-	bool CommandList::cmdSetShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData )
+	bool CommandList::CmdSetShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData )
 	{
-		if( !isRenderPassActive() )
+		if( !IsRenderPassActive() )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
-		return _graphicsPipelineStateController->setShaderConstant( pParamRefID, pData );
+		return _graphicsPipelineStateController->SetShaderConstant( pParamRefID, pData );
 	}
 
-	bool CommandList::cmdSetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer )
+	bool CommandList::CmdSetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer )
 	{
-		if( !isRenderPassActive() )
+		if( !IsRenderPassActive() )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
-		return _graphicsPipelineStateController->setShaderConstantBuffer( pParamRefID, pConstantBuffer );
+		return _graphicsPipelineStateController->SetShaderConstantBuffer( pParamRefID, pConstantBuffer );
 	}
 
-	bool CommandList::cmdSetShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture )
+	bool CommandList::CmdSetShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture )
 	{
-		if( !isRenderPassActive() )
+		if( !IsRenderPassActive() )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
-		return _graphicsPipelineStateController->setShaderTextureImage( pParamRefID, pTexture );
+		return _graphicsPipelineStateController->SetShaderTextureImage( pParamRefID, pTexture );
 	}
 
-	bool CommandList::cmdSetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler )
+	bool CommandList::CmdSetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler )
 	{
-		if( !isRenderPassActive() )
+		if( !IsRenderPassActive() )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return false;
 		}
 
-		return _graphicsPipelineStateController->setShaderTextureSampler( pParamRefID, pSampler );
+		return _graphicsPipelineStateController->SetShaderTextureSampler( pParamRefID, pSampler );
 	}
 
-	bool CommandList::onBeginRenderPass( Bitmask<ECommandListActionFlags> pFlags )
+	bool CommandList::OnBeginRenderPass( cppx::bitmask<ECommandListActionFlags> pFlags )
 	{
-		if( isRenderPassActive() )
+		if( IsRenderPassActive() )
 		{
 			return false;
 		}
 
 		_internalStateMask.set( E_COMMAND_LIST_INTERNAL_STATE_FLAG_ACTIVE_RENDER_PASS_BIT );
 
-		_internalStateMask.setOrUnset(
-				E_COMMAND_LIST_ACTION_FLAG_RENDER_PASS_PRESERVE_DYNAMIC_STATE_BIT,
-				pFlags.isSet( E_COMMAND_LIST_ACTION_FLAG_RENDER_PASS_PRESERVE_DYNAMIC_STATE_BIT ) );
+		_internalStateMask.set_or_unset(
+				eCommandListActionFlagRenderPassPreserveDynamicStateBit,
+				pFlags.is_set( eCommandListActionFlagRenderPassPreserveDynamicStateBit ));
 
-		if( pFlags.isSet( E_COMMAND_LIST_ACTION_FLAG_RENDER_PASS_APPLY_PIPELINE_STATE_BIT ) )
+		if( pFlags.is_set( eCommandListActionFlagRenderPassApplyPipelineStateBit ) )
 		{
-			_graphicsPipelineStateController->applyStateChanges();
+			_graphicsPipelineStateController->ApplyStateChanges();
 		}
 
 		return true;
 	}
 
-	void CommandList::onEndRenderPass()
+	void CommandList::OnEndRenderPass()
 	{
-		ic3DebugAssert( isRenderPassActive() );
+		Ic3DebugAssert( IsRenderPassActive() );
 
-		if( !_internalStateMask.isSet( E_COMMAND_LIST_ACTION_FLAG_RENDER_PASS_PRESERVE_DYNAMIC_STATE_BIT ) )
+		if( !_internalStateMask.is_set( eCommandListActionFlagRenderPassPreserveDynamicStateBit ) )
 		{
-			_graphicsPipelineStateController->resetRenderPassDynamicState();
+			_graphicsPipelineStateController->ResetRenderPassDynamicState();
 		}
 
 		_internalStateMask.unset( E_COMMAND_LIST_INTERNAL_STATE_FLAG_ACTIVE_RENDER_PASS_BIT );
@@ -361,23 +361,23 @@ namespace Ic3::Graphics::GCI
 
 	CommandListRenderPassDefault::~CommandListRenderPassDefault() = default;
 
-	const RenderPassConfiguration & CommandListRenderPassDefault::getRenderPassConfiguration() const noexcept
+	const RenderPassConfiguration & CommandListRenderPassDefault::GetRenderPassConfiguration() const noexcept
 	{
 		return _currentRenderPassConfiguration;
 	}
 
-	bool CommandListRenderPassDefault::beginRenderPass(
+	bool CommandListRenderPassDefault::BeginRenderPass(
 			const RenderPassConfigurationImmutableState & pRenderPassState,
-			Bitmask<ECommandListActionFlags> pFlags )
+			cppx::bitmask<ECommandListActionFlags> pFlags )
 	{
-		if( CommandList::beginRenderPass( pRenderPassState, pFlags ) )
+		if( CommandList::BeginRenderPass( pRenderPassState, pFlags ) )
 		{
-			const auto * defaultRenderPassState = pRenderPassState.queryInterface<RenderPassConfigurationImmutableStateDefault>();
+			const auto * defaultRenderPassState = pRenderPassState.QueryInterface<RenderPassConfigurationImmutableStateDefault>();
 			_currentRenderPassConfiguration = defaultRenderPassState->mRenderPassConfiguration;
 
-			executeRenderPassLoadActions(
+			ExecuteRenderPassLoadActions(
 					_currentRenderPassConfiguration,
-					_graphicsPipelineStateController->getRenderPassDynamicState() );
+					_graphicsPipelineStateController->GetRenderPassDynamicState() );
 
 			return true;
 		}
@@ -385,17 +385,17 @@ namespace Ic3::Graphics::GCI
 		return false;
 	}
 
-	bool CommandListRenderPassDefault::beginRenderPass(
+	bool CommandListRenderPassDefault::BeginRenderPass(
 			const RenderPassConfigurationDynamicState & pRenderPassState,
-			Bitmask<ECommandListActionFlags> pFlags )
+			cppx::bitmask<ECommandListActionFlags> pFlags )
 	{
-		if( CommandList::beginRenderPass( pRenderPassState, pFlags ) )
+		if( CommandList::BeginRenderPass( pRenderPassState, pFlags ) )
 		{
-			_currentRenderPassConfiguration = pRenderPassState.getRenderPassConfiguration();
+			_currentRenderPassConfiguration = pRenderPassState.GetRenderPassConfiguration();
 
-			executeRenderPassLoadActions(
+			ExecuteRenderPassLoadActions(
 					_currentRenderPassConfiguration,
-					_graphicsPipelineStateController->getRenderPassDynamicState() );
+					_graphicsPipelineStateController->GetRenderPassDynamicState() );
 
 			return true;
 		}
@@ -403,15 +403,15 @@ namespace Ic3::Graphics::GCI
 		return false;
 	}
 
-	void CommandListRenderPassDefault::endRenderPass()
+	void CommandListRenderPassDefault::EndRenderPass()
 	{
-		if( isRenderPassActive() )
+		if( IsRenderPassActive() )
 		{
-			executeRenderPassStoreActions(
+			ExecuteRenderPassStoreActions(
 					_currentRenderPassConfiguration,
-					_graphicsPipelineStateController->getRenderPassDynamicState() );
+					_graphicsPipelineStateController->GetRenderPassDynamicState() );
 
-			CommandList::endRenderPass();
+			CommandList::EndRenderPass();
 		}
 	}
 

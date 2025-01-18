@@ -10,12 +10,12 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3GLDeclareOpenGLObjectHandle( GLTextureObject );
+	Ic3GLDeclareOpenGLObjectHandle( GLTextureObject );
 
 	struct GLTextureInitDataDesc
 	{
 		TextureSubTextureInitDataDesc * subTextureInitDataPtr = nullptr;
-		Bitmask<ETextureInitFlags> textureInitFlags = 0;
+		cppx::bitmask<ETextureInitFlags> textureInitFlags = 0;
 		GLenum openglPixelDataLayout = 0;
 		GLenum openglPixelDataType = 0;
 
@@ -39,9 +39,9 @@ namespace Ic3::Graphics::GCI
 		GLuint msaaLevel = 0;
 		GLTextureInitDataDesc openglInitDataDesc;
 
-		uint32 getInitMipLevelsNum() const
+		uint32 GetInitMipLevelsNum() const
 		{
-			return openglInitDataDesc.textureInitFlags.isSet( E_TEXTURE_INIT_FLAG_GENERATE_MIPMAPS_BIT ) ? 1u : dimensions.mipLevelsNum;
+			return openglInitDataDesc.textureInitFlags.is_set( eTextureInitFlagGenerateMipmapsBit ) ? 1u : dimensions.mipLevelsNum;
 		}
 	};
 
@@ -55,7 +55,7 @@ namespace Ic3::Graphics::GCI
 	class GLTextureObject : public GLObject
 	{
 	public:
-		TextureDimensions const mDimensions;
+		TextureDimensions const dimensions;
 		GLenum const mGLTextureBindTarget = CX_GL_BIND_TARGET_UNKNOWN;
 		GLenum const mGLInternalFormat;
 		GLuint const mMultisampleLevel;
@@ -63,51 +63,51 @@ namespace Ic3::Graphics::GCI
 		GLTextureObject( GLuint pHandle, const GLTextureCreateInfo & pGLCreateInfo );
 		virtual ~GLTextureObject();
 
-		bool isAutoMipGenerationEnabled() const;
-		GLenum queryInternalFormat( GLenum pActiveBindTarget = 0 ) const;
-		memory_size_t querySize( GLenum pActiveBindTarget = 0 ) const;
+		bool IsAutoMipGenerationEnabled() const;
+		GLenum QueryInternalFormat( GLenum pActiveBindTarget = 0 ) const;
+		memory_size_t QuerySize( GLenum pActiveBindTarget = 0 ) const;
 
-		virtual bool release();
-		virtual bool validateHandle() const;
+		virtual bool Release();
+		virtual bool ValidateHandle() const;
 
-		void updateCopy2D( GLTextureObject & pSrcTexture, const TextureSubDataCopyDesc & pCopyDesc, GLenum pActiveBindTarget = 0 );
-		void updateCopy2DArray( GLTextureObject & pSrcTexture, const TextureSubDataCopyDesc & pCopyDesc, GLenum pActiveBindTarget = 0 );
-		void updateCopy3D( GLTextureObject & pSrcTexture, const TextureSubDataCopyDesc & pCopyDesc, GLenum pActiveBindTarget = 0 );
-		void updateCopyCubeMap( GLTextureObject & pSrcTexture, const TextureSubDataCopyDesc & pCopyDesc, GLenum pActiveBindTarget = 0 );
+		void UpdateCopy2D( GLTextureObject & pSrcTexture, const TextureSubDataCopyDesc & pCopyDesc, GLenum pActiveBindTarget = 0 );
+		void UpdateCopy2DArray( GLTextureObject & pSrcTexture, const TextureSubDataCopyDesc & pCopyDesc, GLenum pActiveBindTarget = 0 );
+		void UpdateCopy3D( GLTextureObject & pSrcTexture, const TextureSubDataCopyDesc & pCopyDesc, GLenum pActiveBindTarget = 0 );
+		void UpdateCopyCubeMap( GLTextureObject & pSrcTexture, const TextureSubDataCopyDesc & pCopyDesc, GLenum pActiveBindTarget = 0 );
 
-		void updateUpload2D( const GLTextureSubDataUploadDesc & pGLUploadDesc, GLenum pActiveBindTarget = 0 );
-		void updateUpload2DArray( const GLTextureSubDataUploadDesc & pGLUploadDesc, GLenum pActiveBindTarget = 0 );
-		void updateUpload3D( const GLTextureSubDataUploadDesc & pGLUploadDesc, GLenum pActiveBindTarget = 0 );
-		void updateUploadCubeMap( const GLTextureSubDataUploadDesc & pGLUploadDesc, GLenum pActiveBindTarget = 0 );
+		void UpdateUpload2D( const GLTextureSubDataUploadDesc & pGLUploadDesc, GLenum pActiveBindTarget = 0 );
+		void UpdateUpload2DArray( const GLTextureSubDataUploadDesc & pGLUploadDesc, GLenum pActiveBindTarget = 0 );
+		void UpdateUpload3D( const GLTextureSubDataUploadDesc & pGLUploadDesc, GLenum pActiveBindTarget = 0 );
+		void UpdateUploadCubeMap( const GLTextureSubDataUploadDesc & pGLUploadDesc, GLenum pActiveBindTarget = 0 );
 
-		static GLTextureObjectHandle createCore( const GLTextureCreateInfo & pGLCreateInfo );
-		static GLTextureObjectHandle createCompat( const GLTextureCreateInfo & pGLCreateInfo );
+		static GLTextureObjectHandle CreateCore( const GLTextureCreateInfo & pGLCreateInfo );
+		static GLTextureObjectHandle CreateCompat( const GLTextureCreateInfo & pGLCreateInfo );
 
 	private:
-		void setAutoMipGeneration( bool pEnable );
+		void SetAutoMipGeneration( bool pEnable );
 
-		bool initializeCore( const GLTextureCreateInfo & pGLCreateInfo );
-		bool initializeCore2D( const GLTextureCreateInfo & pGLCreateInfo );
-		bool initializeCore2DArray( const GLTextureCreateInfo & pGLCreateInfo );
-		bool initializeCore2DMS( const GLTextureCreateInfo & pGLCreateInfo );
-		bool initializeCore3D( const GLTextureCreateInfo & pGLCreateInfo );
-		bool initializeCoreCubeMap( const GLTextureCreateInfo & pGLCreateInfo );
+		bool InitializeCore( const GLTextureCreateInfo & pGLCreateInfo );
+		bool InitializeCore2D( const GLTextureCreateInfo & pGLCreateInfo );
+		bool InitializeCore2DArray( const GLTextureCreateInfo & pGLCreateInfo );
+		bool InitializeCore2DMS( const GLTextureCreateInfo & pGLCreateInfo );
+		bool InitializeCore3D( const GLTextureCreateInfo & pGLCreateInfo );
+		bool InitializeCoreCubeMap( const GLTextureCreateInfo & pGLCreateInfo );
 
-		bool initializeCompat( const GLTextureCreateInfo & pGLCreateInfo );
-		bool initializeCompat2D( const GLTextureCreateInfo & pGLCreateInfo );
-		bool initializeCompat2DArray( const GLTextureCreateInfo & pGLCreateInfo );
-		bool initializeCompat2DMS( const GLTextureCreateInfo & pGLCreateInfo );
-		bool initializeCompat3D( const GLTextureCreateInfo & pGLCreateInfo );
-		bool initializeCompatCubeMap( const GLTextureCreateInfo & pGLCreateInfo );
+		bool InitializeCompat( const GLTextureCreateInfo & pGLCreateInfo );
+		bool InitializeCompat2D( const GLTextureCreateInfo & pGLCreateInfo );
+		bool InitializeCompat2DArray( const GLTextureCreateInfo & pGLCreateInfo );
+		bool InitializeCompat2DMS( const GLTextureCreateInfo & pGLCreateInfo );
+		bool InitializeCompat3D( const GLTextureCreateInfo & pGLCreateInfo );
+		bool InitializeCompatCubeMap( const GLTextureCreateInfo & pGLCreateInfo );
 
-		void initializeData2D( const GLTextureCreateInfo & pGLCreateInfo, bool pAllocateMipMapStorage = false );
-		void initializeData2DArray( const GLTextureCreateInfo & pGLCreateInfo, bool pAllocateMipMapStorage = false );
-		void initializeData3D( const GLTextureCreateInfo & pGLCreateInfo, bool pAllocateMipMapStorage = false );
-		void initializeDataCubeMap( const GLTextureCreateInfo & pGLCreateInfo, bool pAllocateMipMapStorage = false );
+		void InitializeData2D( const GLTextureCreateInfo & pGLCreateInfo, bool pAllocateMipMapStorage = false );
+		void InitializeData2DArray( const GLTextureCreateInfo & pGLCreateInfo, bool pAllocateMipMapStorage = false );
+		void InitializeData3D( const GLTextureCreateInfo & pGLCreateInfo, bool pAllocateMipMapStorage = false );
+		void InitializeDataCubeMap( const GLTextureCreateInfo & pGLCreateInfo, bool pAllocateMipMapStorage = false );
 
-		GLenum checkActiveBindTarget( GLenum pBindTarget ) const;
+		GLenum CheckActiveBindTarget( GLenum pBindTarget ) const;
 
-		static GLuint computeInputPixelDataAlignment( GLenum pPixelDataLayout, GLenum pPixelDataType );
+		static GLuint ComputeInputPixelDataAlignment( GLenum pPixelDataLayout, GLenum pPixelDataType );
 
 	private:
 		bool _autoMipGenerationStatus = false;

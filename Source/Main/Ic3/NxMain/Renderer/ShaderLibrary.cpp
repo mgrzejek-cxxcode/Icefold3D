@@ -12,15 +12,15 @@ namespace Ic3
 
 	ShaderLibrary::~ShaderLibrary() = default;
 
-	GCI::ShaderHandle ShaderLibrary::getShader( GpaUniqueObjectID pShaderID ) const noexcept
+	GCI::ShaderHandle ShaderLibrary::getShader( GfxObjectID pShaderID ) const noexcept
 	{
 		const auto shaderIter = _shaderMap.find( pShaderID );
 		return ( shaderIter != _shaderMap.end() ) ? shaderIter->second : nullptr;
 	}
 
-	GCI::ShaderHandle ShaderLibrary::getShader( const GpaUniqueObjectName & pShaderName ) const noexcept
+	GCI::ShaderHandle ShaderLibrary::getShader( const GfxObjectName & pShaderName ) const noexcept
 	{
-		const auto uniqueShaderID = GCI::generateUniqueGPUObjectID( pShaderName );
+		const auto uniqueShaderID = Graphics::GenerateGfxObjectID( pShaderName );
 		return getShader( uniqueShaderID );
 	}
 
@@ -39,11 +39,11 @@ namespace Ic3
 		return addedShadersNum;
 	}
 
-	bool ShaderLibrary::registerShader( GpaUniqueObjectID pShaderID, GCI::ShaderHandle pShaderObject )
+	bool ShaderLibrary::registerShader( GfxObjectID pShaderID, GCI::ShaderHandle pShaderObject )
 	{
 		if( !pShaderID || !pShaderObject )
 		{
-			ic3DebugOutput( "Cannot register shader: empty name or shader handle" );
+			Ic3DebugOutput( "Cannot register shader: empty name or shader handle" );
 			return false;
 		}
 
@@ -58,9 +58,9 @@ namespace Ic3
 		return true;
 	}
 
-	bool ShaderLibrary::registerShader( const GpaUniqueObjectName & pShaderName, GCI::ShaderHandle pShaderObject )
+	bool ShaderLibrary::registerShader( const GfxObjectName & pShaderName, GCI::ShaderHandle pShaderObject )
 	{
-		const auto uniqueShaderID = GCI::generateUniqueGPUObjectID( pShaderName );
+		const auto uniqueShaderID = Graphics::GenerateGfxObjectID( pShaderName );
 		return registerShader( uniqueShaderID, pShaderObject );
 	}
 

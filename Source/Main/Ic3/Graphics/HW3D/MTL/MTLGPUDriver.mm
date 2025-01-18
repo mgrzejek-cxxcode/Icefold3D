@@ -8,7 +8,7 @@ namespace Ic3::Graphics::GCI
 	{
 		try
 		{
-			auto sysDisplayManager = pSysContext->createDisplayManager();
+			auto sysDisplayManager = pSysContext->CreateDisplayManager();
 			auto sysMetalDriver = pSysContext->createMetalSystemDriver( sysDisplayManager, {} );
 
 			sysMetalDriver->initializeDefaultDevice();

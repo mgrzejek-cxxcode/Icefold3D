@@ -16,40 +16,40 @@ namespace Ic3::Graphics::GCI
 	GLGPUDevice::GLGPUDevice( GLGPUDriver & pGPUDriver, GLPipelineImmutableStateFactory & pImmutableStateFactory )
 	: GPUDevice( pGPUDriver )
 	, mSysGLDriver( pGPUDriver.mSysGLDriver )
-	, mSysGLSupportInfo( mSysGLDriver->getVersionSupportInfo() )
-	, mGLRuntimeSupportFlags( coreutil::queryGLRuntimeSupportFlags( mSysGLSupportInfo ) )
+	, mSysGLSupportInfo( mSysGLDriver->GetVersionSupportInfo() )
+	, mGLRuntimeSupportFlags( QueryGLRuntimeSupportFlags( mSysGLSupportInfo ) )
 	, _immutableStateFactoryGL( &pImmutableStateFactory )
 	, _immutableStateCache( pImmutableStateFactory )
 	{
-		setImmutableStateCache( _immutableStateCache );
+		SetImmutableStateCache( _immutableStateCache );
 	}
 
 	GLGPUDevice::~GLGPUDevice() = default;
 
-	GLDebugOutput * GLGPUDevice::getDebugOutputInterface() const
+	GLDebugOutput * GLGPUDevice::GetDebugOutputInterface() const
 	{
 		return _glDebugOutput.get();
 	}
 
-	void GLGPUDevice::waitForCommandSync( CommandSync & pCommandSync )
+	void GLGPUDevice::WaitForCommandSync( CommandSync & pCommandSync )
 	{
 		if( pCommandSync )
 		{
 			auto * glcCommandSyncData = static_cast<GLCommandSyncData *>( pCommandSync.syncData );
 
-			glClientWaitSync( glcCommandSyncData->openglSyncFence, 0, QLimits<GLuint64>::maxValue );
-			ic3OpenGLCheckLastResult();
+			glClientWaitSync( glcCommandSyncData->openglSyncFence, 0, cppx::meta::limits<GLuint64>::max_value );
+			Ic3OpenGLCheckLastResult();
 
 			releaseGLCommandSyncData( pCommandSync.syncData );
 			pCommandSync.syncData = nullptr;
 		}
 	}
 
-	bool GLGPUDevice::initializeGLDebugOutput()
+	bool GLGPUDevice::InitializeGLDebugOutput()
 	{
 		if( !_glDebugOutput )
 		{
-			auto glcDebugOutput = GLDebugOutput::createInterface( GLDebugOutputVersion::ARBExt );
+			auto glcDebugOutput = GLDebugOutput::CreateInterface( GLDebugOutputVersion::ARBExt );
 			if( glcDebugOutput )
 			{
 				_glDebugOutput = std::move( glcDebugOutput );
@@ -58,72 +58,72 @@ namespace Ic3::Graphics::GCI
 		return _glDebugOutput ? true : false;
 	}
 
-	void GLGPUDevice::initializeCommandSystem()
+	void GLGPUDevice::InitializeCommandSystem()
 	{
-		ic3DebugAssert( !_commandSystem );
-		_commandSystem = createGPUAPIObject<GLCommandSystem>( *this );
+		Ic3DebugAssert( !_commandSystem );
+		_commandSystem = CreateGfxObject<GLCommandSystem>( *this );
 	}
 
-	bool GLGPUDevice::_drvOnSetPresentationLayer( PresentationLayerHandle pPresentationLayer )
+	bool GLGPUDevice::_DrvOnSetPresentationLayer( PresentationLayerHandle pPresentationLayer )
 	{
-	    auto * glcPresentationLayer = pPresentationLayer->queryInterface<GLPresentationLayer>();
+	    auto * glcPresentationLayer = pPresentationLayer->QueryInterface<GLPresentationLayer>();
 	    if ( !glcPresentationLayer->mSysGLDisplaySurface )
 	    {
 	        return false;
 	    }
 
-	    auto * glcCommandSystem = _commandSystem->queryInterface<GLCommandSystem>();
-	    glcCommandSystem->setTargetGLSurface( glcPresentationLayer->mSysGLDisplaySurface );
+	    auto * glcCommandSystem = _commandSystem->QueryInterface<GLCommandSystem>();
+	    glcCommandSystem->SetTargetGLSurface( glcPresentationLayer->mSysGLDisplaySurface );
 
 	    return true;
 	}
 
-	GPUBufferHandle GLGPUDevice::_drvCreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo )
+	GPUBufferHandle GLGPUDevice::_DrvCreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo )
 	{
-	    auto glcBuffer = GLGPUBuffer::createInstance( *this, pCreateInfo );
-	    ic3DebugAssert( glcBuffer );
+	    auto glcBuffer = GLGPUBuffer::CreateInstance( *this, pCreateInfo );
+	    Ic3DebugAssert( glcBuffer );
 	    return glcBuffer;
 	}
 
-	SamplerHandle GLGPUDevice::_drvCreateSampler( const SamplerCreateInfo & pCreateInfo )
+	SamplerHandle GLGPUDevice::_DrvCreateSampler( const SamplerCreateInfo & pCreateInfo )
 	{
-	    auto glcSampler = GLSampler::createSampler( *this, pCreateInfo );
-	    ic3DebugAssert( glcSampler );
+	    auto glcSampler = GLSampler::CreateSampler( *this, pCreateInfo );
+	    Ic3DebugAssert( glcSampler );
 	    return glcSampler;
 	}
 
-	ShaderHandle GLGPUDevice::_drvCreateShader( const ShaderCreateInfo & pCreateInfo )
+	ShaderHandle GLGPUDevice::_DrvCreateShader( const ShaderCreateInfo & pCreateInfo )
 	{
 		ShaderHandle glcShader;
-		glcShader = GLShader::createInstance( *this, pCreateInfo );
+		glcShader = GLShader::CreateInstance( *this, pCreateInfo );
 	    return glcShader;
 	}
 
-	TextureHandle GLGPUDevice::_drvCreateTexture( const TextureCreateInfo & pCreateInfo )
+	TextureHandle GLGPUDevice::_DrvCreateTexture( const TextureCreateInfo & pCreateInfo )
 	{
-	    auto glcTexture = GLTexture::createDefault( *this, pCreateInfo );
-	    ic3DebugAssert( glcTexture );
+	    auto glcTexture = GLTexture::CreateDefault( *this, pCreateInfo );
+	    Ic3DebugAssert( glcTexture );
 	    return glcTexture;
 	}
 
-	RenderTargetTextureHandle GLGPUDevice::_drvCreateRenderTargetTexture(
+	RenderTargetTextureHandle GLGPUDevice::_DrvCreateRenderTargetTexture(
 			const RenderTargetTextureCreateInfo & pCreateInfo )
 	{
-		auto glcRTTextureView = GLTexture::createRenderTargetTextureView( *this, pCreateInfo );
-		ic3DebugAssert( glcRTTextureView );
+		auto glcRTTextureView = GLTexture::CreateRenderTargetTextureView( *this, pCreateInfo );
+		Ic3DebugAssert( glcRTTextureView );
 		return glcRTTextureView;
 	}
 
-	GraphicsPipelineStateObjectHandle GLGPUDevice::_drvCreateGraphicsPipelineStateObject(
+	GraphicsPipelineStateObjectHandle GLGPUDevice::_DrvCreateGraphicsPipelineStateObject(
 			const GraphicsPipelineStateObjectCreateInfo & pCreateInfo )
 	{
 		if( !pCreateInfo.shaderLinkageState )
 		{
-			pCreateInfo.shaderLinkageState = _immutableStateFactoryGL->createGraphicsShaderLinkageState( pCreateInfo.shaderSet );
+			pCreateInfo.shaderLinkageState = _immutableStateFactoryGL->CreateGraphicsShaderLinkageState( pCreateInfo.shaderSet );
 		}
 
-		auto glcGraphicsPSO = GLGraphicsPipelineStateObject::create( *this, pCreateInfo );
-		ic3DebugAssert( glcGraphicsPSO );
+		auto glcGraphicsPSO = GLGraphicsPipelineStateObject::Create( *this, pCreateInfo );
+		Ic3DebugAssert( glcGraphicsPSO );
 
 		return glcGraphicsPSO;
 	}
@@ -136,7 +136,7 @@ namespace Ic3::Graphics::GCI
 
 	GLGPUDeviceCore::~GLGPUDeviceCore() = default;
 
-	bool GLGPUDeviceCore::isCompatibilityDevice() const noexcept
+	bool GLGPUDeviceCore::IsCompatibilityDevice() const noexcept
 	{
 		return false;
 	}
@@ -149,7 +149,7 @@ namespace Ic3::Graphics::GCI
 
 	GLGPUDeviceCompat::~GLGPUDeviceCompat() = default;
 
-	bool GLGPUDeviceCompat::isCompatibilityDevice() const noexcept
+	bool GLGPUDeviceCompat::IsCompatibilityDevice() const noexcept
 	{
 		return true;
 	}

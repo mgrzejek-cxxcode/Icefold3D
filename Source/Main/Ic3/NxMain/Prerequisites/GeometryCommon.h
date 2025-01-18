@@ -2,7 +2,7 @@
 #ifndef __IC3_NXMAIN_GEOMETRY_COMMON_H__
 #define __IC3_NXMAIN_GEOMETRY_COMMON_H__
 
-#include <Ic3/Graphics/GCI/Resources/GPUBufferCommon.h>
+#include <Ic3/Graphics/GCI/Resources/GpuBufferCommon.h>
 
 namespace Ic3
 {
@@ -38,11 +38,11 @@ namespace Ic3
 	using GeometrySubDataRefReadOnly = InterleavedBufferElementRefReadOnly;
 	using GeometrySubDataRefReadWrite = InterleavedBufferElementRefReadWrite;
 
-	template <typename TValue>
+	template <typename TPValue>
 	class InterleavedBufferElementIterator
 	{
 	public:
-		using ByteType = typename ValueByteType<TValue>::Type;
+		using ByteType = typename Cppx::ValueByteType<TPValue>::Type;
 		using ElementRef = InterleavedBufferElementRef<ByteType>;
 
 		InterleavedBufferElementIterator() = default;
@@ -51,7 +51,7 @@ namespace Ic3
 		InterleavedBufferElementIterator( const InterleavedBufferElementRef<TByte> & pRef )
 		: _elementBytePtr( pRef.baseDataPtr )
 		, _elementSizeInBytes( pRef.elementSizeInBytes )
-		, _elementStrideInBytes( pRef.elementStrideInBytes )
+		, _elementStrideInBytes( pRef.mElementStrideInBytes )
 		{}
 
 		ByteType * bytePtr() const noexcept
@@ -59,17 +59,17 @@ namespace Ic3
 			return _elementBytePtr;
 		}
 
-		TValue * valuePtr() const noexcept
+		TPValue * valuePtr() const noexcept
 		{
-			return reinterpret_cast<TValue *>( _elementBytePtr );
+			return reinterpret_cast<TPValue *>( _elementBytePtr );
 		}
 
-		TValue * operator->() const noexcept
+		TPValue * operator->() const noexcept
 		{
 			return valuePtr();
 		}
 
-		TValue & operator*() const noexcept
+		TPValue & operator*() const noexcept
 		{
 			return *( valuePtr() );
 		}

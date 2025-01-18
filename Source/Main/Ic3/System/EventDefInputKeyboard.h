@@ -12,21 +12,21 @@ namespace Ic3::System
 
 	enum EKeyModifierFlags : uint32
 	{
-		E_KEY_MODIFIER_FLAG_CONTROL_LEFT_BIT = 0x01,
-		E_KEY_MODIFIER_FLAG_CONTROL_RIGHT_BIT = 0x02,
-		E_KEY_MODIFIER_FLAG_ALT_LEFT_BIT = 0x04,
-		E_KEY_MODIFIER_FLAG_ALT_RIGHT_BIT = 0x08,
-		E_KEY_MODIFIER_FLAG_SHIFT_LEFT_BIT = 0x10,
-		E_KEY_MODIFIER_FLAG_SHIFT_RIGHT_BIT = 0x20,
-		E_KEY_MODIFIER_FLAG_GUI_LEFT_BIT = 0x40,
-		E_KEY_MODIFIER_FLAG_GUI_RIGHT_BIT = 0x80,
+		eKeyModifierFlagControlLeftBit = 0x01,
+		eKeyModifierFlagControlRightBit = 0x02,
+		eKeyModifierFlagAltLeftBit = 0x04,
+		eKeyModifierFlagAltRightBit = 0x08,
+		eKeyModifierFlagShiftLeftBit = 0x10,
+		eKeyModifierFlagShiftRightBit = 0x20,
+		eKeyModifierFlagGUILeftBit = 0x40,
+		eKeyModifierFlagGUIRightBit = 0x80,
 
-		E_KEY_MODIFIER_MASK_CONTROL_ANY = E_KEY_MODIFIER_FLAG_CONTROL_LEFT_BIT | E_KEY_MODIFIER_FLAG_CONTROL_RIGHT_BIT,
-		E_KEY_MODIFIER_MASK_ALT_ANY = E_KEY_MODIFIER_FLAG_ALT_LEFT_BIT | E_KEY_MODIFIER_FLAG_ALT_RIGHT_BIT,
-		E_KEY_MODIFIER_MASK_SHIFT_ANY = E_KEY_MODIFIER_FLAG_SHIFT_LEFT_BIT | E_KEY_MODIFIER_FLAG_SHIFT_RIGHT_BIT,
-		E_KEY_MODIFIER_MASK_GUI_ANY = E_KEY_MODIFIER_FLAG_GUI_LEFT_BIT | E_KEY_MODIFIER_FLAG_GUI_RIGHT_BIT,
+		eKeyModifierMaskControlAny = eKeyModifierFlagControlLeftBit | eKeyModifierFlagControlRightBit,
+		eKeyModifierMaskAltAny = eKeyModifierFlagAltLeftBit | eKeyModifierFlagAltRightBit,
+		eKeyModifierMaskShiftAny = eKeyModifierFlagShiftLeftBit | eKeyModifierFlagShiftRightBit,
+		eKeyModifierMaskGUIAny = eKeyModifierFlagGUILeftBit | eKeyModifierFlagGUIRightBit,
 
-		E_KEY_MODIFIER_MASK_ALL = 0xFF
+		eKeyModifierMaskAll = 0xFF
 	};
 
 	enum class EKeyActionType : enum_default_value_t
@@ -37,7 +37,7 @@ namespace Ic3::System
 
 	enum class EKeyCode : uint32
 	{
-		Unknown = Cppx::CX_UINT32_MAX,
+		Unknown = cppx::cve::uint32_max,
 
 		Num0 = 0, // 0x00
 		Num1 = 1, // 0x01
@@ -66,27 +66,27 @@ namespace Ic3::System
 		NumPadDiv  = 23, // 0x17
 		NumPadDot  = 24, // 0x18
 
-		Escape	   = 27, // 0x1B
+		Escape	    = 27, // 0x1B
 		ArrowLeft  = 28, // 0x1C
-		ArrowUp	   = 29, // 0x1D
+		ArrowUp	= 29, // 0x1D
 		ArrowRight = 30, // 0x1E
 		ArrowDown  = 31, // 0x1F
-		Space	   = 32, // 0x20
-		Enter	   = 33, // 0x21
-		Backspace  = 34, // 0x22
-		Tab		   = 35, // 0x23
-		End		   = 36, // 0x24
-		Home	   = 37, // 0x25
-		Insert	   = 38, // 0x26
-		Delete	   = 39, // 0x27
+		Space	    = 32, // 0x20
+		Enter	    = 33, // 0x21
+		Backspace   = 34, // 0x22
+		Tab		    = 35, // 0x23
+		End		    = 36, // 0x24
+		Home	    = 37, // 0x25
+		Insert	    = 38, // 0x26
+		Delete	    = 39, // 0x27
 		CapsLock   = 40, // 0x28
-		PageUp	   = 41, // 0x29
+		PageUp	    = 41, // 0x29
 		PageDown   = 42, // 0x2A
 		CtrlLeft   = 43, // 0x2B
 		CtrlRight  = 44, // 0x2C
 		ShiftLeft  = 45, // 0x2D
 		ShiftRight = 46, // 0x2E
-		AltLeft	   = 47, // 0x2F
+		AltLeft    = 47, // 0x2F
 		AltRight   = 48, // 0x30
 
 		F1  = 49, // 0x31
@@ -129,13 +129,13 @@ namespace Ic3::System
 		CharY = 89, // 0x59
 		CharZ = 90, // 0x5A
 
-		GuiLeft  = 91, // 0x5B
-		GuiRight = 92, // 0x5C
+		GUILeft  = 91, // 0x5B
+		GUIRight = 92, // 0x5C
 
-		_ReservedMax,
+		_Reserved,
 	};
 
-	inline constexpr auto CX_ENUM_KEY_CODE_COUNT = static_cast< size_t >( EKeyCode::_ReservedMax );
+	inline constexpr auto CX_ENUM_KEY_CODE_COUNT = static_cast< size_t >( EKeyCode::_Reserved );
 
 	struct KeyStateMap
 	{
@@ -145,30 +145,30 @@ namespace Ic3::System
 	public:
 		KeyStateMap()
 		{
-			reset();
+			Reset();
 		}
 
 		bool & operator[]( size_t pIndex )
 		{
-			return Cppx::staticArrayElement( stateArray, pIndex );
+			return cppx::static_array_element( stateArray, pIndex );
 		}
 
 		bool operator[]( size_t pIndex ) const
 		{
-			return Cppx::staticArrayElement( stateArray, pIndex );
+			return cppx::static_array_element( stateArray, pIndex );
 		}
 
 		bool & operator[]( EKeyCode pKeyCode )
 		{
-			return Cppx::staticArrayElement( stateArray, pKeyCode );
+			return cppx::static_array_element( stateArray, pKeyCode );
 		}
 
 		bool operator[]( EKeyCode pKeyCode ) const
 		{
-			return Cppx::staticArrayElement( stateArray, pKeyCode );
+			return cppx::static_array_element( stateArray, pKeyCode );
 		}
 
-		void reset()
+		void Reset()
 		{
 			for( auto & state : stateArray )
 			{
@@ -179,41 +179,43 @@ namespace Ic3::System
 
 	struct EvtSharedInputKeyboardState
 	{
-		KeyStateMap keyStateMap;
+		KeyStateMap mKeyStateMap;
 
-		Bitmask<EKeyModifierFlags> activeModifiersMask = 0;
+		cppx::bitmask<EKeyModifierFlags> mActiveModifiersMask = 0;
 	};
 
 	struct EvtInputKeyboard : public EvtInput
 	{
 		//
-		EKeyActionType keyAction;
+		EKeyActionType mKeyAction;
+
 		//
-		EKeyCode keyCode;
+		EKeyCode mKeyCode;
+
 		//
-		const EvtSharedInputKeyboardState * inputKeyboardState;
+		const EvtSharedInputKeyboardState * mInputKeyboardState;
 	};
 
-	namespace evt
+	namespace Evt
 	{
 
-		inline EKeyCode getModifierKeyCodeFromModifierFlags( Bitmask<EKeyModifierFlags> pModifierFlags )
+		inline EKeyCode GetModifierKeyCodeFromModifierFlags( cppx::bitmask<EKeyModifierFlags> pModifierFlags )
 		{
-			const auto maskValue = static_cast<uint32>( pModifierFlags & E_KEY_MODIFIER_MASK_ALL );
-			const auto setBitsNum = Cppx::popCount( maskValue );
+			const auto maskValue = static_cast<uint32>( pModifierFlags & eKeyModifierMaskAll );
+			const auto setBitsNum = cppx::pop_count( maskValue );
 
-			ic3DebugAssert( setBitsNum <= 1 );
+			Ic3DebugAssert( setBitsNum <= 1 );
 
 			switch( maskValue )
 			{
-				ic3CaseReturn( E_KEY_MODIFIER_FLAG_CONTROL_LEFT_BIT, EKeyCode::CtrlLeft );
-				ic3CaseReturn( E_KEY_MODIFIER_FLAG_CONTROL_RIGHT_BIT, EKeyCode::CtrlRight );
-				ic3CaseReturn( E_KEY_MODIFIER_FLAG_ALT_LEFT_BIT, EKeyCode::AltLeft );
-				ic3CaseReturn( E_KEY_MODIFIER_FLAG_ALT_RIGHT_BIT, EKeyCode::AltRight );
-				ic3CaseReturn( E_KEY_MODIFIER_FLAG_SHIFT_LEFT_BIT, EKeyCode::ShiftLeft );
-				ic3CaseReturn( E_KEY_MODIFIER_FLAG_SHIFT_RIGHT_BIT, EKeyCode::ShiftRight );
-				ic3CaseReturn( E_KEY_MODIFIER_FLAG_GUI_LEFT_BIT, EKeyCode::GuiLeft );
-				ic3CaseReturn( E_KEY_MODIFIER_FLAG_GUI_RIGHT_BIT, EKeyCode::GuiRight );
+				Ic3CaseReturn( eKeyModifierFlagControlLeftBit, EKeyCode::CtrlLeft );
+				Ic3CaseReturn( eKeyModifierFlagControlRightBit, EKeyCode::CtrlRight );
+				Ic3CaseReturn( eKeyModifierFlagAltLeftBit, EKeyCode::AltLeft );
+				Ic3CaseReturn( eKeyModifierFlagAltRightBit, EKeyCode::AltRight );
+				Ic3CaseReturn( eKeyModifierFlagShiftLeftBit, EKeyCode::ShiftLeft );
+				Ic3CaseReturn( eKeyModifierFlagShiftRightBit, EKeyCode::ShiftRight );
+				Ic3CaseReturn( eKeyModifierFlagGUILeftBit, EKeyCode::GUILeft );
+				Ic3CaseReturn( eKeyModifierFlagGUIRightBit, EKeyCode::GUIRight );
 			}
 
 			return EKeyCode::Unknown;

@@ -36,36 +36,36 @@ namespace Ic3::System
 		AndroidSysContext( AndroidAppState * pAppState );
 		virtual ~AndroidSysContext() noexcept;
 
-		/// @copybrief SysContext::createAssetLoader
-		virtual AssetLoaderHandle createAssetLoader( const AssetLoaderCreateInfo & pCreateInfo ) override final;
+		/// @copybrief SysContext::CreateAssetLoader
+		virtual AssetLoaderHandle CreateAssetLoader( const AssetLoaderCreateInfo & pCreateInfo ) override final;
 
-		/// @copybrief SysContext::createDisplayManager
-		virtual DisplayManagerHandle createDisplayManager() override final;
+		/// @copybrief SysContext::CreateDisplayManager
+		virtual DisplayManagerHandle CreateDisplayManager() override final;
 
-		/// @copybrief SysContext::createEventController
-		virtual EventControllerHandle createEventController() override final;
+		/// @copybrief SysContext::CreateEventController
+		virtual EventControllerHandle CreateEventController() override final;
 
-		/// @copybrief SysContext::createFileManager
-		virtual FileManagerHandle createFileManager() override final;
+		/// @copybrief SysContext::CreateFileManager
+		virtual FileManagerHandle CreateFileManager() override final;
 
-		/// @copybrief SysContext::createOpenGLSystemDriver
-		virtual OpenGLSystemDriverHandle createOpenGLSystemDriver( DisplayManagerHandle pDisplayManager ) override final;
+		/// @copybrief SysContext::CreateOpenGLSystemDriver
+		virtual OpenGLSystemDriverHandle CreateOpenGLSystemDriver( DisplayManagerHandle pDisplayManager ) override final;
 
-		/// @copybrief SysContext::createWindowManager
-		virtual WindowManagerHandle createWindowManager( DisplayManagerHandle pDisplayManager ) override final;
+		/// @copybrief SysContext::CreateWindowManager
+		virtual WindowManagerHandle CreateWindowManager( DisplayManagerHandle pDisplayManager ) override final;
 
-		/// @copybrief SysContext::queryCurrentProcessExecutableFilePath
-		virtual std::string queryCurrentProcessExecutableFilePath() const override final;
+		/// @copybrief SysContext::QueryCurrentProcessExecutableFilePath
+		virtual std::string QueryCurrentProcessExecutableFilePath() const override final;
 
-		void updateANativeWindowReference( ANativeWindow * pANativeWindow );
+		void UpdateANativeWindowReference( ANativeWindow * pANativeWindow );
 
-		Platform::ASessionData & getASessionData();
+		Platform::ASessionData & GetASessionData();
 
-		const Platform::ASessionData & getASessionData() const;
+		const Platform::ASessionData & GetASessionData() const;
 
 	private:
-		void _initializeAndroidContextState( AndroidAppState * pAppState );
-		void _releaseAndroidContextState();
+		void _InitializeAndroidContextState( AndroidAppState * pAppState );
+		void _ReleaseAndroidContextState();
 	};
 
 } // namespace Ic3::System

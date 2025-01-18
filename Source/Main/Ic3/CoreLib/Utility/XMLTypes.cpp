@@ -1,7 +1,7 @@
 
 #include "XMLTypes.h"
 #include "RXMLParser.h"
-#include <Ic3/Cppx/STLHelperAlgo.h>
+#include <cppx/stdHelperAlgo.h>
 
 namespace Ic3
 {
@@ -16,33 +16,33 @@ namespace Ic3
 
 	XMLAttribute::operator bool() const
 	{
-		return valid();
+		return IsValid();
 	}
 
 	XMLNode XMLAttribute::parent() const
 	{
-		ic3DebugAssert( valid() );
+		Ic3DebugAssert( IsValid() );
 		return XMLNode{ _rxmlAttribute->parent() };
 	}
 
 	std::string XMLAttribute::name() const
 	{
-		ic3DebugAssert( valid() );
+		Ic3DebugAssert( IsValid() );
 		return RxmlParser::getAttributeName( _rxmlAttribute );
 	}
 
 	std::string XMLAttribute::value() const
 	{
-		ic3DebugAssert( valid() );
+		Ic3DebugAssert( IsValid() );
 		return RxmlParser::getAttributeValue( _rxmlAttribute );
 	}
 
-	bool XMLAttribute::empty() const
+	bool XMLAttribute::IsEmpty() const
 	{
 		return !_rxmlAttribute || ( _rxmlAttribute->value_size() == 0 );
 	}
 
-	bool XMLAttribute::valid() const
+	bool XMLAttribute::IsValid() const
 	{
 		return _rxmlAttribute != nullptr;
 	}
@@ -58,100 +58,100 @@ namespace Ic3
 
 	XMLNode::operator bool() const
 	{
-		return valid();
+		return IsValid();
 	}
 
-	XMLAttribute XMLNode::attribute( const StringView<char> & pAttribName ) const
+	XMLAttribute XMLNode::attribute( const cppx::string_view & pAttribName ) const
 	{
-		ic3DebugAssert( valid() );
+		Ic3DebugAssert( IsValid() );
 		return XMLAttribute{ _rxmlNode->first_attribute( pAttribName.str(), pAttribName.length() ) };
 	}
 
 	XMLNode XMLNode::firstSubNode() const
 	{
-		ic3DebugAssert( valid() );
+		Ic3DebugAssert( IsValid() );
 		return XMLNode{ _rxmlNode->first_node() };
 	}
 
-	XMLNode XMLNode::firstSubNode( const StringView<char> & pNodeName ) const
+	XMLNode XMLNode::firstSubNode( const cppx::string_view & pNodeName ) const
 	{
-		ic3DebugAssert( valid() );
+		Ic3DebugAssert( IsValid() );
 		return XMLNode{ _rxmlNode->first_node( pNodeName.str(), pNodeName.length() ) };
 	}
 
 	size_t XMLNode::countSubNodes() const
 	{
-		ic3DebugAssert( valid() );
+		Ic3DebugAssert( IsValid() );
 		return RxmlParser::countSubNodes( _rxmlNode );
 	}
 
-	size_t XMLNode::countSubNodes( const StringView<char> & pNodeName ) const
+	size_t XMLNode::countSubNodes( const cppx::string_view & pNodeName ) const
 	{
-		ic3DebugAssert( valid() );
+		Ic3DebugAssert( IsValid() );
 		return RxmlParser::countSubNodes( _rxmlNode, pNodeName.str(), pNodeName.length() );
 	}
 
 	XMLNode XMLNode::nextSibling() const
 	{
-		ic3DebugAssert( valid() );
+		Ic3DebugAssert( IsValid() );
 		return XMLNode{ _rxmlNode->next_sibling() };
 	}
 
-	XMLNode XMLNode::nextSibling( const StringView<char> & pNodeName ) const
+	XMLNode XMLNode::nextSibling( const cppx::string_view & pNodeName ) const
 	{
-		ic3DebugAssert( valid() );
+		Ic3DebugAssert( IsValid() );
 		return XMLNode{ _rxmlNode->next_sibling( pNodeName.str(), pNodeName.length() ) };
 	}
 
 	XMLNode XMLNode::parent() const
 	{
-		ic3DebugAssert( valid() );
+		Ic3DebugAssert( IsValid() );
 		return XMLNode{ _rxmlNode->parent() };
 	}
 
 	std::string XMLNode::name() const
 	{
-		ic3DebugAssert( valid() );
+		Ic3DebugAssert( IsValid() );
 		return RxmlParser::getNodeName( _rxmlNode );
 	}
 
 	std::string XMLNode::value() const
 	{
-		ic3DebugAssert( valid() );
+		Ic3DebugAssert( IsValid() );
 		return RxmlParser::getNodeValue( _rxmlNode );
 	}
 
-	bool XMLNode::hasAttribute( const StringView<char> & pAttribName ) const
+	bool XMLNode::hasAttribute( const cppx::string_view & pAttribName ) const
 	{
-		ic3DebugAssert( valid() );
+		Ic3DebugAssert( IsValid() );
 		return _rxmlNode->first_attribute( pAttribName.str(), pAttribName.length() );
 	}
 
-	bool XMLNode::hasSubNode( const StringView<char> & pNodeName ) const
+	bool XMLNode::hasSubNode( const cppx::string_view & pNodeName ) const
 	{
-		ic3DebugAssert( valid() );
+		Ic3DebugAssert( IsValid() );
 		return _rxmlNode->first_node( pNodeName.str(), pNodeName.length() );
 	}
 
 	bool XMLNode::hasSubNodes() const
 	{
-		ic3DebugAssert( valid() );
+		Ic3DebugAssert( IsValid() );
 		return _rxmlNode->first_attribute() != nullptr;
 	}
 
 	bool XMLNode::hasValue() const
 	{
-		ic3DebugAssert( valid() );
+		Ic3DebugAssert( IsValid() );
 		return RxmlParser::checkNodeHasValue( _rxmlNode );
 	}
 
-	bool XMLNode::empty() const
+	bool XMLNode::IsEmpty() const
 	{
-		ic3DebugAssert( valid() );
+		Ic3DebugAssert( IsValid() );
 		return !hasValue() && !hasSubNodes();
 	}
 
-	bool XMLNode::valid() const
+	bool XMLNode::IsValid() const
 	{
 		return _rxmlNode != nullptr;
 	}
@@ -168,22 +168,22 @@ namespace Ic3
 
 	XMLTree::operator bool() const
 	{
-		return valid();
+		return IsValid();
 	}
 
 	XMLNode XMLTree::rootNode() const
 	{
-		ic3DebugAssert( valid() );
+		Ic3DebugAssert( IsValid() );
 		return XMLNode{ _rxmlData.rootNode };
 	}
 
-	bool XMLTree::empty() const
+	bool XMLTree::IsEmpty() const
 	{
-		ic3DebugAssert( valid() );
+		Ic3DebugAssert( IsValid() );
 		return !_rxmlData.rootNode->first_node();
 	}
 
-	bool XMLTree::valid() const
+	bool XMLTree::IsValid() const
 	{
 		return _rxmlData && _rxmlData.rootNode;
 	}

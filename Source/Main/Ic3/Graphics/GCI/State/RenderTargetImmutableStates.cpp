@@ -14,7 +14,7 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~RenderTargetBindingImmutableStateDynamicOverride() = default;
 
-		bool isDynamicOverrideState() const noexcept override final
+		bool IsDynamicOverrideState() const noexcept override final
 		{
 			return true;
 		}
@@ -30,7 +30,7 @@ namespace Ic3::Graphics::GCI
 
 	RenderTargetBindingImmutableState::~RenderTargetBindingImmutableState() = default;
 
-	const RenderTargetBindingImmutableState & RenderTargetBindingImmutableState::getDynamicOverrideState()
+	const RenderTargetBindingImmutableState & RenderTargetBindingImmutableState::GetDynamicOverrideState()
 	{
 		static const RenderTargetBindingImmutableStateDynamicOverride sDynamicOverrideState{};
 		return sDynamicOverrideState;
@@ -54,11 +54,11 @@ namespace Ic3::Graphics::GCI
 
 	RenderPassConfigurationImmutableStateDefault::~RenderPassConfigurationImmutableStateDefault() = default;
 
-	GpaHandle<RenderPassConfigurationImmutableStateDefault> RenderPassConfigurationImmutableStateDefault::createInstance(
+	TGfxHandle<RenderPassConfigurationImmutableStateDefault> RenderPassConfigurationImmutableStateDefault::CreateInstance(
 			GPUDevice & pGPUDevice,
 			const RenderPassConfiguration & pConfiguration )
 	{
-		auto immutableState = createGPUAPIObject<RenderPassConfigurationImmutableStateDefault>(
+		auto immutableState = CreateGfxObject<RenderPassConfigurationImmutableStateDefault>(
 				pGPUDevice,
 				pConfiguration );
 

@@ -3,40 +3,40 @@
 #define __IC3_CORELIB_HFS_IDENTIFIER_H__
 
 #include "../Prerequisites.h"
-#include <Ic3/Cppx/Hash.h>
+#include <cppx/hash.h>
 
 namespace Ic3
 {
 
-	/// @brief Hybrid FNV1A32 + SDBM identifier for string-based IDs.
-	struct HFSIdentifier
+	/// @brief [H]ybrid [F]NV1A32 + [S]DBM identifier for string-based IDs.
+	struct HfsIdentifier
 	{
 	public:
-		static constexpr auto sHashAlgo1 = Cppx::EHashAlgo::FNV1A32;
-		static constexpr auto sHashAlgo2 = Cppx::EHashAlgo::SDBM;
+		static constexpr auto hashAlgo1 = cppx::hash_algo::fnv1a32;
+		static constexpr auto hashAlgo2 = cppx::hash_algo::sdbm;
 
-		using Hash1 = Cppx::SHashObject<sHashAlgo1>;
-		using Hash2 = Cppx::SHashObject<sHashAlgo2>;
+		using Hash1 = cppx::hash_object<hashAlgo1>;
+		using Hash2 = cppx::hash_object<hashAlgo2>;
 		using ValueType = uint64;
 
 		uint64 idValue;
 		
 	public:
-		HFSIdentifier() = default;
+		HfsIdentifier() = default;
 
-		HFSIdentifier( const HFSIdentifier & ) = default;
-		HFSIdentifier & operator=( const HFSIdentifier & ) = default;
+		HfsIdentifier( const HfsIdentifier & ) = default;
+		HfsIdentifier & operator=( const HfsIdentifier & ) = default;
 
-		explicit constexpr HFSIdentifier( uint64 p64Value ) noexcept
+		explicit constexpr HfsIdentifier( uint64 p64Value ) noexcept
 		: idValue( p64Value )
 		{}
 
-		constexpr HFSIdentifier( uint32 pHashValue1, uint32 pHashValue2 ) noexcept
-		: idValue( makeU64Value( pHashValue1, pHashValue2 ) )
+		constexpr HfsIdentifier( uint32 pHashValue1, uint32 pHashValue2 ) noexcept
+		: idValue( MakeU64Value( pHashValue1, pHashValue2 ) )
 		{}
 
-		constexpr HFSIdentifier( const Hash1 & pHash1, const Hash2 & pHash2 ) noexcept
-		: idValue( makeU64Value( pHash1.hashValue, pHash2.hashValue ) )
+		constexpr HfsIdentifier( const Hash1 & pHash1, const Hash2 & pHash2 ) noexcept
+		: idValue( MakeU64Value( pHash1.value, pHash2.value ) )
 		{}
 
 		constexpr operator uint64() const noexcept
@@ -46,51 +46,51 @@ namespace Ic3
 
 		explicit constexpr operator bool() const noexcept
 		{
-			return !empty();
+			return !IsEmpty();
 		}
 
-		constexpr bool empty() const noexcept
+		constexpr bool IsEmpty() const noexcept
 		{
 			return idValue == 0;
 		}
 
-		constexpr ValueType asValue() const noexcept
+		constexpr ValueType AsValue() const noexcept
 		{
 			return idValue;
 		}
 
-		constexpr void set( uint32 pHashValue1, uint32 pHashValue2 ) noexcept
+		constexpr void Set( uint32 pHashValue1, uint32 pHashValue2 ) noexcept
 		{
-			idValue = makeU64Value( pHashValue1, pHashValue2 );
+			idValue = MakeU64Value( pHashValue1, pHashValue2 );
 		}
 
-		constexpr void set( const Hash1 & pHash1, const Hash2 & pHash2 ) noexcept
+		constexpr void Set( const Hash1 & pHash1, const Hash2 & pHash2 ) noexcept
 		{
-			set( pHash1.hashValue, pHash2.hashValue );
+			Set( pHash1.value, pHash2.value );
 		}
 
-		static constexpr uint64 makeU64Value( uint32 pHashValue1, uint32 pHashValue2 ) noexcept
+		static constexpr uint64 MakeU64Value( uint32 pHashValue1, uint32 pHashValue2 ) noexcept
 		{
 			return ( static_cast<uint64>( pHashValue1 ) << 32 ) | pHashValue2;
 		}
 	};
 
-	template <typename TInput, typename... TRest>
-	inline HFSIdentifier generateHFSIdentifier( const TInput & pInput, const TRest & ...pRest )
+	template <typename TPInput, typename... TRest>
+	inline HfsIdentifier GenerateHfsIdentifier( const TPInput & pInput, const TRest & ...pRest )
 	{
-		const auto hash1 = Cppx::hashCompute<Cppx::EHashAlgo::FNV1A32>( pInput, pRest... );
-		const auto hash2 = Cppx::hashCompute<Cppx::EHashAlgo::SDBM>( pInput, pRest... );
-		return HFSIdentifier{ hash1, hash2 };
+		const auto hash1 = cppx::hash_compute<cppx::hash_algo::fnv1a32>( pInput, pRest... );
+		const auto hash2 = cppx::hash_compute<cppx::hash_algo::sdbm>( pInput, pRest... );
+		return HfsIdentifier{ hash1, hash2 };
 	}
 
 } // namespace Ic3
 
 template<>
-struct std::hash<Ic3::HFSIdentifier>
+struct std::hash<Ic3::HfsIdentifier>
 {
-	std::size_t operator()( const Ic3::HFSIdentifier & pHFSIdentifier ) const noexcept
+	std::size_t operator()( const Ic3::HfsIdentifier & pHfsIdentifier ) const noexcept
 	{
-		return pHFSIdentifier.asValue();
+		return pHfsIdentifier.AsValue();
 	}
 };
 

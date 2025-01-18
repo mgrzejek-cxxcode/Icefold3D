@@ -1,8 +1,8 @@
 
 #include "DX11Shader.h"
-#include <Ic3/Graphics/HW3D/DX11/DX11APITranslationLayer.h>
+#include <Ic3/Graphics/HW3D/DX11/DX11ApiTranslationLayer.h>
 #include <Ic3/Graphics/HW3D/DX11/DX11GPUDevice.h>
-#include <Ic3/Cppx/Memory.h>
+#include <cppx/memory.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -45,16 +45,16 @@ namespace Ic3::Graphics::GCI
 
 	DX11Shader::~DX11Shader() = default;
 
-	DX11ShaderHandle DX11Shader::create( DX11GPUDevice & pDX11GPUDevice, const ShaderCreateInfo & pCreateInfo )
+	DX11ShaderHandle DX11Shader::Create( DX11GPUDevice & pDX11GPUDevice, const ShaderCreateInfo & pCreateInfo )
 	{
 		const char * entryPoint = pCreateInfo.entryPointName ? pCreateInfo.entryPointName : "main";
 
-		auto compileFlags = ATL::translateShaderCompileFlagsDX( pCreateInfo.createFlags, pDX11GPUDevice.isDebugDevice() );
+		auto compileFlags = ATL::TranslateDXShaderCompileFlags( pCreateInfo.createFlags, pDX11GPUDevice.IsDebugDevice() );
 		auto shaderSourceView = pCreateInfo.shaderSourceView;
 
 		if( !shaderSourceView )
 		{
-			shaderSourceView = bindMemoryView( pCreateInfo.shaderSource.data(), pCreateInfo.shaderSource.size() );
+			shaderSourceView = bind_memory_view( pCreateInfo.shaderSource.data(), pCreateInfo.shaderSource.size() );
 			if( !shaderSourceView )
 			{
 				return nullptr;
@@ -65,7 +65,7 @@ namespace Ic3::Graphics::GCI
 
 		if( pCreateInfo.shaderType == EShaderType::GSVertex )
 		{
-			if( auto shaderBinary = rcutil::compileShader( shaderSourceView.data(), shaderSourceView.size(), entryPoint, DXShaderTarget::SM_5_0_VS, compileFlags ) )
+			if( auto shaderBinary = RCU::CompileShader( shaderSourceView.data(), shaderSourceView.size(), entryPoint, DXShaderTarget::SM_5_0_VS, compileFlags ) )
 			{
 				ComPtr<ID3D11VertexShader> d3d11VertexShader;
 				auto hResult = pDX11GPUDevice.mD3D11Device1->CreateVertexShader(
@@ -76,13 +76,13 @@ namespace Ic3::Graphics::GCI
 
 				if( SUCCEEDED( hResult ) )
 				{
-					dx11Shader = createDynamicInterfaceObject<DX11Shader>( pDX11GPUDevice, d3d11VertexShader, std::move( shaderBinary ) );
+					dx11Shader = CreateDynamicObject<DX11Shader>( pDX11GPUDevice, d3d11VertexShader, std::move( shaderBinary ) );
 				}
 			}
 		}
 		else if( pCreateInfo.shaderType == EShaderType::GSHull )
 		{
-			if( auto shaderBinary = rcutil::compileShader( shaderSourceView.data(), shaderSourceView.size(), entryPoint, DXShaderTarget::SM_5_0_HS, compileFlags ) )
+			if( auto shaderBinary = RCU::CompileShader( shaderSourceView.data(), shaderSourceView.size(), entryPoint, DXShaderTarget::SM_5_0_HS, compileFlags ) )
 			{
 				ComPtr<ID3D11HullShader> d3d11HullShader;
 				auto hResult = pDX11GPUDevice.mD3D11Device1->CreateHullShader(
@@ -93,13 +93,13 @@ namespace Ic3::Graphics::GCI
 
 				if( SUCCEEDED( hResult ) )
 				{
-					dx11Shader = createDynamicInterfaceObject<DX11Shader>( pDX11GPUDevice, d3d11HullShader, std::move( shaderBinary ) );
+					dx11Shader = CreateDynamicObject<DX11Shader>( pDX11GPUDevice, d3d11HullShader, std::move( shaderBinary ) );
 				}
 			}
 		}
 		else if( pCreateInfo.shaderType == EShaderType::GSDomain )
 		{
-			if( auto shaderBinary = rcutil::compileShader( shaderSourceView.data(), shaderSourceView.size(), entryPoint, DXShaderTarget::SM_5_0_DS, compileFlags ) )
+			if( auto shaderBinary = RCU::CompileShader( shaderSourceView.data(), shaderSourceView.size(), entryPoint, DXShaderTarget::SM_5_0_DS, compileFlags ) )
 			{
 				ComPtr<ID3D11DomainShader> d3d11DomainShader;
 				auto hResult = pDX11GPUDevice.mD3D11Device1->CreateDomainShader(
@@ -110,13 +110,13 @@ namespace Ic3::Graphics::GCI
 
 				if( SUCCEEDED( hResult ) )
 				{
-					dx11Shader = createDynamicInterfaceObject<DX11Shader>( pDX11GPUDevice, d3d11DomainShader, std::move( shaderBinary ) );
+					dx11Shader = CreateDynamicObject<DX11Shader>( pDX11GPUDevice, d3d11DomainShader, std::move( shaderBinary ) );
 				}
 			}
 		}
 		else if( pCreateInfo.shaderType == EShaderType::GSGeometry )
 		{
-			if( auto shaderBinary = rcutil::compileShader( shaderSourceView.data(), shaderSourceView.size(), entryPoint, DXShaderTarget::SM_5_0_GS, compileFlags ) )
+			if( auto shaderBinary = RCU::CompileShader( shaderSourceView.data(), shaderSourceView.size(), entryPoint, DXShaderTarget::SM_5_0_GS, compileFlags ) )
 			{
 				ComPtr<ID3D11GeometryShader> d3d11GeometryShader;
 				auto hResult = pDX11GPUDevice.mD3D11Device1->CreateGeometryShader(
@@ -127,13 +127,13 @@ namespace Ic3::Graphics::GCI
 
 				if( SUCCEEDED( hResult ) )
 				{
-					dx11Shader = createDynamicInterfaceObject<DX11Shader>( pDX11GPUDevice, d3d11GeometryShader, std::move( shaderBinary ) );
+					dx11Shader = CreateDynamicObject<DX11Shader>( pDX11GPUDevice, d3d11GeometryShader, std::move( shaderBinary ) );
 				}
 			}
 		}
 		else if( pCreateInfo.shaderType == EShaderType::GSPixel )
 		{
-			if( auto shaderBinary = rcutil::compileShader( shaderSourceView.data(), shaderSourceView.size(), entryPoint, DXShaderTarget::SM_5_0_PS, compileFlags ) )
+			if( auto shaderBinary = RCU::CompileShader( shaderSourceView.data(), shaderSourceView.size(), entryPoint, DXShaderTarget::SM_5_0_PS, compileFlags ) )
 			{
 				ComPtr<ID3D11PixelShader> d3d11PixelShader;
 				auto hResult = pDX11GPUDevice.mD3D11Device1->CreatePixelShader(
@@ -144,13 +144,13 @@ namespace Ic3::Graphics::GCI
 
 				if( SUCCEEDED( hResult ) )
 				{
-					dx11Shader = createDynamicInterfaceObject<DX11Shader>( pDX11GPUDevice, d3d11PixelShader, std::move( shaderBinary ) );
+					dx11Shader = CreateDynamicObject<DX11Shader>( pDX11GPUDevice, d3d11PixelShader, std::move( shaderBinary ) );
 				}
 			}
 		}
 		else if( pCreateInfo.shaderType == EShaderType::CSCompute )
 		{
-			if( auto shaderBinary = rcutil::compileShader( shaderSourceView.data(), shaderSourceView.size(), entryPoint, DXShaderTarget::SM_5_0_CS, compileFlags ) )
+			if( auto shaderBinary = RCU::CompileShader( shaderSourceView.data(), shaderSourceView.size(), entryPoint, DXShaderTarget::SM_5_0_CS, compileFlags ) )
 			{
 				ComPtr<ID3D11ComputeShader> d3d11ComputeShader;
 				auto hResult = pDX11GPUDevice.mD3D11Device1->CreateComputeShader(
@@ -161,7 +161,7 @@ namespace Ic3::Graphics::GCI
 
 				if( SUCCEEDED( hResult ) )
 				{
-					dx11Shader = createDynamicInterfaceObject<DX11Shader>( pDX11GPUDevice, d3d11ComputeShader, std::move( shaderBinary ) );
+					dx11Shader = CreateDynamicObject<DX11Shader>( pDX11GPUDevice, d3d11ComputeShader, std::move( shaderBinary ) );
 				}
 			}
 		}
@@ -170,17 +170,17 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	namespace rcutil
+	namespace RCU
 	{
 
-		std::unique_ptr<ShaderBinary> compileShader(
+		std::unique_ptr<ShaderBinary> CompileShader(
 				const void * pCode,
 				size_t pCodeLength,
 				const char * pEntryPoint,
 				DXShaderTarget pShaderTarget,
-				Bitmask<UINT> pCompileFlags )
+				cppx::bitmask<UINT> pCompileFlags )
 		{
-			const char * shaderTargetStr = ATL::getDXShaderTargetStr( pShaderTarget );
+			const char * shaderTargetStr = ATL::GetDXShaderTargetStr( pShaderTarget );
 
 			ComPtr<ID3DBlob> compiledBinaryBuffer;
 			ComPtr<ID3DBlob> errorMessagesBuffer;
@@ -204,8 +204,8 @@ namespace Ic3::Graphics::GCI
 				{
 					auto * errorStr = (const char *)errorMessagesBuffer->GetBufferPointer();
 					std::string err{ errorStr };;
-					ic3DebugOutput( errorStr );
-					ic3DebugInterrupt();
+					Ic3DebugOutput( errorStr );
+					Ic3DebugInterrupt();
 				}
 
 				return nullptr;
@@ -217,11 +217,11 @@ namespace Ic3::Graphics::GCI
 				return nullptr;
 			}
 
-			auto shaderBinary = ShaderBinary::create( binarySize );
+			auto shaderBinary = ShaderBinary::Create( binarySize );
 			shaderBinary->driverSpecificID = 0;
 			shaderBinary->driverSpecificType = static_cast<uint64>( pShaderTarget );
-			shaderBinary->dataSizeInBytes = numeric_cast<uint32>( binarySize );
-			memCopy( shaderBinary->dataBuffer, shaderBinary->dataSizeInBytes, compiledBinaryBuffer->GetBufferPointer(), binarySize );
+			shaderBinary->dataSizeInBytes = cppx::numeric_cast<uint32>( binarySize );
+			mem_copy( shaderBinary->dataBuffer, shaderBinary->dataSizeInBytes, compiledBinaryBuffer->GetBufferPointer(), binarySize );
 
 			return shaderBinary;
 		}

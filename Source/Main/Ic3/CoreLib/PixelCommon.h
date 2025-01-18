@@ -12,14 +12,14 @@ namespace Ic3
 	namespace CxDef
 	{
 
-		inline constexpr uint32 declarePixelDataLayout( uint8 pIndex, uint8 pChannelsNum )
+		inline constexpr uint16 declarePixelDataLayout( uint8 pIndex, uint8 pChannelsNum )
 		{
-			return ( ( ( uint32 )pChannelsNum ) << 8 ) | ( uint32 )pIndex;
+			return ( ( ( uint16 )pChannelsNum ) << 8 ) | ( uint16 )pIndex;
 		}
 
 	}
 
-	enum class EPixelDataLayout : uint32
+	enum class EPixelDataLayout : uint16
 	{
 		Undefined = 0,
 		Alpha     = CxDef::declarePixelDataLayout( 0x1, 1 ),
@@ -37,9 +37,9 @@ namespace Ic3
 	namespace CxDef
 	{
 
-		inline constexpr uint32 getPixelDataLayoutChannelsNum( EPixelDataLayout pPixelDataLayout )
+		inline constexpr uint16 getPixelDataLayoutChannelsNum( EPixelDataLayout pPixelDataLayout )
 		{
-			return ( ( uint32 )pPixelDataLayout >> 8 ) & 0xFF;
+			return ( ( uint16 )pPixelDataLayout >> 8 ) & 0xFF;
 		}
 
 	}

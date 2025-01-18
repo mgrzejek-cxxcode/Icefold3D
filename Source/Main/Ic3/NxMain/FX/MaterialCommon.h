@@ -36,7 +36,7 @@ namespace Ic3
 		MaterialTextureArray _textureArray;
 
 	public:
-		const MaterialTextureArray & commonShaderArray;
+		const MaterialTextureArray & commonTextureArray;
 
 		GCI::TextureHandle & albedoTexture;
 		
@@ -57,11 +57,11 @@ namespace Ic3
 
 		MaterialTextureSet & operator=( const MaterialTextureArray & pRhs );
 
-		IC3_ATTR_NO_DISCARD GCI::Texture * operator[]( size_t pIndex ) const noexcept;
+		CPPX_ATTR_NO_DISCARD GCI::Texture * operator[]( size_t pIndex ) const noexcept;
 
-		IC3_ATTR_NO_DISCARD GCI::Texture * operator[]( EMaterialTextureID pTextureID ) const noexcept;
+		CPPX_ATTR_NO_DISCARD GCI::Texture * operator[]( EMaterialTextureID pTextureID ) const noexcept;
 
-		IC3_ATTR_NO_DISCARD bool empty() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool empty() const noexcept;
 	};
 
 } // namespace Ic3

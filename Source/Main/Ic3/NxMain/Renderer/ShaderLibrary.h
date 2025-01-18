@@ -5,7 +5,7 @@
 #define __IC3_NXMAIN_SHADER_LIBRARY_H__
 
 #include "CommonRendererDefs.h"
-#include <Ic3/Graphics/GCI/Resources/shaderCommon.h>
+#include <Ic3/Graphics/GCI/Resources/ShaderCommon.h>
 #include <unordered_map>
 
 namespace Ic3
@@ -17,20 +17,20 @@ namespace Ic3
 		explicit ShaderLibrary( const CoreEngineState & pCES );
 		~ShaderLibrary();
 
-		IC3_ATTR_NO_DISCARD bool empty() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool empty() const noexcept;
 
-		IC3_ATTR_NO_DISCARD GCI::ShaderHandle getShader( GpaUniqueObjectID pShaderID ) const noexcept;
+		CPPX_ATTR_NO_DISCARD GCI::ShaderHandle getShader( GfxObjectID pShaderID ) const noexcept;
 
-		IC3_ATTR_NO_DISCARD GCI::ShaderHandle getShader( const GpaUniqueObjectName & pShaderName ) const noexcept;
+		CPPX_ATTR_NO_DISCARD GCI::ShaderHandle getShader( const GfxObjectName & pShaderName ) const noexcept;
 
 		uint32 append( const ShaderLibrary & pOtherLibrary );
 
-		bool registerShader( GpaUniqueObjectID pShaderID, GCI::ShaderHandle pShaderObject );
+		bool registerShader( GfxObjectID pShaderID, GCI::ShaderHandle pShaderObject );
 
-		bool registerShader( const GpaUniqueObjectName & pShaderName, GCI::ShaderHandle pShaderObject );
+		bool registerShader( const GfxObjectName & pShaderName, GCI::ShaderHandle pShaderObject );
 
 	private:
-		std::unordered_map<GpaUniqueObjectID, GCI::ShaderHandle> _shaderMap;
+		std::unordered_map<GfxObjectID, GCI::ShaderHandle> _shaderMap;
 	};
 
 	inline bool ShaderLibrary::empty() const noexcept

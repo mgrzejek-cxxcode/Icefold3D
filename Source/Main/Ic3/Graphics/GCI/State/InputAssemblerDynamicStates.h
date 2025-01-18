@@ -21,35 +21,35 @@ namespace Ic3::Graphics::GCI
 
 		~IAVertexStreamDynamicState();
 
-		IC3_ATTR_NO_DISCARD bool empty() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept;
 
-		IC3_ATTR_NO_DISCARD native_uint countActiveVertexBuffers() const noexcept;
+		CPPX_ATTR_NO_DISCARD native_uint CountActiveVertexBuffers() const noexcept;
 
-		IC3_ATTR_NO_DISCARD const IAVertexStreamDefinition & getVertexStreamDefinition() const noexcept;
+		CPPX_ATTR_NO_DISCARD const IAVertexStreamDefinition & GetVertexStreamDefinition() const noexcept;
 
-		void assign( const IAVertexStreamDefinition & pDefinition );
+		void Assign( const IAVertexStreamDefinition & pDefinition );
 
-		IAVertexBufferReference & setVertexBufferRef( native_uint pIndex );
+		IAVertexBufferReference & SetVertexBufferRef( native_uint pIndex );
 
-		void setVertexBufferRef( native_uint pIndex, const IAVertexBufferReference & pVBReference );
-		void setVertexBufferRefs( const IAVertexBufferReferenceArray & pVBReferences );
-		void setVertexBufferRefs( native_uint pFirstIndex, native_uint pCount, const IAVertexBufferReference * pVBReferences );
+		void SetVertexBufferRef( native_uint pIndex, const IAVertexBufferReference & pVBReference );
+		void SetVertexBufferRefs( const IAVertexBufferReferenceArray & pVBReferences );
+		void SetVertexBufferRefs( native_uint pFirstIndex, native_uint pCount, const IAVertexBufferReference * pVBReferences );
 
-		IAIndexBufferReference & setIndexBufferRef();
+		IAIndexBufferReference & SetIndexBufferRef();
 
-		void setIndexBufferRef( const IAIndexBufferReference & pIBReference );
+		void SetIndexBufferRef( const IAIndexBufferReference & pIBReference );
 
-		void resetVertexBufferRef( native_uint pIndex );
-		void resetVertexBufferRefs( native_uint pFirstIndex, native_uint pCount );
-		void resetVertexBufferRefs();
+		void ResetVertexBufferRef( native_uint pIndex );
+		void ResetVertexBufferRefs( native_uint pFirstIndex, native_uint pCount );
+		void ResetVertexBufferRefs();
 
-		void resetIndexBufferRef();
+		void ResetIndexBufferRef();
 
-		void resetAllBufferRefs();
+		void ResetAllBufferRefs();
 
 	private:
-		void _setVertexBufferRefs( native_uint pFirstIndex, native_uint pCount, const IAVertexBufferReference * pVBReferences );
-		void _resetVertexBufferRefs( native_uint pFirstIndex, native_uint pCount );
+		void _SetVertexBufferRefs( native_uint pFirstIndex, native_uint pCount, const IAVertexBufferReference * pVBReferences );
+		void _ResetVertexBufferRefs( native_uint pFirstIndex, native_uint pCount );
 
 	private:
 		IAVertexStreamDefinition _vertexStreamDefinition;

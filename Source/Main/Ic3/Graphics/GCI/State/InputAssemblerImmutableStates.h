@@ -14,7 +14,7 @@ namespace Ic3::Graphics::GCI
 	{
 		/// Active attributes mask. It contains all bits corresponding to attributes active as part of this descriptor.
 		/// @see EIAVertexAttributeFlags
-		Bitmask<EIAVertexAttributeFlags> activeAttributesMask;
+		cppx::bitmask<EIAVertexAttributeFlags> activeAttributesMask;
 
 		/// Number of active attributes enabled for the IA stage.
 		native_uint activeAttributesNum;
@@ -40,7 +40,7 @@ namespace Ic3::Graphics::GCI
 		IAInputLayoutImmutableState( GPUDevice & pGPUDevice, const IAInputLayoutStateCommonProperties & pCommonProperties );
 		virtual ~IAInputLayoutImmutableState();
 
-		IC3_ATTR_NO_DISCARD virtual EGraphicsPipelineImmutableStateType queryStateType() const noexcept override final;
+		CPPX_ATTR_NO_DISCARD virtual EGraphicsPipelineImmutableStateType QueryStateType() const noexcept override final;
 	};
 
 	/// @brief
@@ -56,18 +56,18 @@ namespace Ic3::Graphics::GCI
 		IAVertexStreamImmutableState( GPUDevice & pGPUDevice, const IAVertexStreamStateCommonProperties & pCommonProperties );
 		virtual ~IAVertexStreamImmutableState();
 
-		IC3_ATTR_NO_DISCARD virtual EGraphicsPipelineImmutableStateType queryStateType() const noexcept override final;
+		CPPX_ATTR_NO_DISCARD virtual EGraphicsPipelineImmutableStateType QueryStateType() const noexcept override final;
 
-		IC3_ATTR_NO_DISCARD static const IAVertexStreamImmutableState & getDynamicOverrideState();
+		CPPX_ATTR_NO_DISCARD static const IAVertexStreamImmutableState & GetDynamicOverrideState();
 	};
 
-	namespace smutil
+	namespace SMU
 	{
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD IAInputLayoutStateCommonProperties getIAInputLayoutStateCommonProperties(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD IAInputLayoutStateCommonProperties GetIAInputLayoutStateCommonProperties(
 				const IAInputLayoutDefinition & pInputLayoutDefinition );
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD IAVertexStreamStateCommonProperties getIAVertexStreamStateCommonProperties(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD IAVertexStreamStateCommonProperties GetIAVertexStreamStateCommonProperties(
 				const IAVertexStreamDefinition & pVertexStreamDefinition );
 
 	}

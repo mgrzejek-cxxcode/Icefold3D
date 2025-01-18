@@ -10,7 +10,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3DeclareClassHandle( DX11Shader );
+	Ic3DeclareClassHandle( DX11Shader );
 
 	class  DX11Shader : public Shader
 	{
@@ -34,19 +34,19 @@ namespace Ic3::Graphics::GCI
 		DX11Shader( DX11GPUDevice & pGPUDevice, ComPtr<ID3D11ComputeShader> pD3D11ComputeShader, std::unique_ptr<ShaderBinary> pShaderBinary );
 		virtual ~DX11Shader();
 
-		static DX11ShaderHandle create( DX11GPUDevice & pDX11GPUDevice, const ShaderCreateInfo & pCreateInfo );
+		static DX11ShaderHandle Create( DX11GPUDevice & pDX11GPUDevice, const ShaderCreateInfo & pCreateInfo );
 	};
 
 
-	namespace rcutil
+	namespace RCU
 	{
 
-		IC3_ATTR_NO_DISCARD std::unique_ptr<ShaderBinary> compileShader(
+		CPPX_ATTR_NO_DISCARD std::unique_ptr<ShaderBinary> CompileShader(
 				const void * pCode,
 				size_t pCodeLength,
 				const char * pEntryPoint,
 				DXShaderTarget pShaderTarget,
-				Bitmask<UINT> pCompileFlags );
+				cppx::bitmask<UINT> pCompileFlags );
 
 	}
 

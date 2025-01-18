@@ -1,6 +1,6 @@
 
 #include "GLRenderBuffer.h"
-#include <Ic3/Graphics/HW3D/GL/GLAPITranslationLayer.h>
+#include <Ic3/Graphics/HW3D/GL/GLApiTranslationLayer.h>
 #include <Ic3/Graphics/HW3D/GL/GLGPUDevice.h>
 
 namespace Ic3::Graphics::GCI
@@ -20,7 +20,7 @@ namespace Ic3::Graphics::GCI
 	, mGLTextureObject( std::move( pGLTextureObject ) )
 	{}
 
-	GpaHandle<GLInternalRenderBuffer> GLInternalRenderBuffer::createInstance(
+	TGfxHandle<GLInternalRenderBuffer> GLInternalRenderBuffer::CreateInstance(
 			GLGPUDevice & pGPUDevice,
 			const RenderTargetTextureCreateInfo & pCreateInfo )
 	{
@@ -29,15 +29,15 @@ namespace Ic3::Graphics::GCI
 		openglRenderbufferCreateInfo.dimensions.y = pCreateInfo.rtTextureLayout.imageRect.height;
 		openglRenderbufferCreateInfo.msaaLevel = pCreateInfo.rtTextureLayout.msaaLevel;
 		openglRenderbufferCreateInfo.internalFormat =
-				ATL::translateGLTextureInternalFormat( pCreateInfo.rtTextureLayout.internalFormat );
+				ATL::TranslateGLTextureInternalFormat( pCreateInfo.rtTextureLayout.internalFormat );
 
-		auto openglRenderbuffer = GLRenderbufferObject::create( openglRenderbufferCreateInfo );
+		auto openglRenderbuffer = GLRenderbufferObject::Create( openglRenderbufferCreateInfo );
 		if( !openglRenderbuffer )
 		{
 			return nullptr;
 		}
 
-		auto renderBuffer = createGPUAPIObject<GLInternalRenderBuffer>( pGPUDevice, std::move( openglRenderbuffer ) );
+		auto renderBuffer = CreateGfxObject<GLInternalRenderBuffer>( pGPUDevice, std::move( openglRenderbuffer ) );
 
 		return renderBuffer;
 	}

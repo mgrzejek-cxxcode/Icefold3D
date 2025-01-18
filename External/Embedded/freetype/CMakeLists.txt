@@ -41,17 +41,17 @@ set( IC3_EXTLIB_FREETYPE_SCR_FILES
 		"src/type42/type42.c"
 		"src/winfonts/winfnt.c" )
 
-add_library( ExtLib.FreeType STATIC
+add_library( ext-freetype STATIC
         ${IC3_EXTLIB_FREETYPE_SCR_FILES} )
 
-set_target_properties( ExtLib.FreeType PROPERTIES
+set_target_properties( ext-freetype PROPERTIES
         OUTPUT_NAME "freetype" )
 
-target_include_directories( ExtLib.FreeType PUBLIC
+target_include_directories( ext-freetype PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
 		${CMAKE_CURRENT_SOURCE_DIR}/include )
 
-target_compile_definitions( ExtLib.FreeType PUBLIC
+target_compile_definitions( ext-freetype PUBLIC
 		_CRT_SECURE_NO_DEPRECATE=1
 		_CRT_SECURE_NO_WARNINGS=1
 		_LIB=1

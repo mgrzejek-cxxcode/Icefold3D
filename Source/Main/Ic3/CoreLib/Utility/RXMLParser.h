@@ -16,7 +16,7 @@ namespace Ic3
 
 		static bool checkNodeNameEquals( RxmlNode * pRxmlNode, const char * pName, size_t pNameLength )
 		{
-			return strncmp( pRxmlNode->name(), pName, Cppx::getMinOf( pRxmlNode->name_size(), pNameLength ) ) == 0;
+			return strncmp( pRxmlNode->name(), pName, cppx::get_min_of( pRxmlNode->name_size(), pNameLength ) ) == 0;
 		}
 
 		template <size_t tNameLength>

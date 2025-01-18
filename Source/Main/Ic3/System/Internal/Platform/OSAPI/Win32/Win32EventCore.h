@@ -17,16 +17,16 @@ namespace Ic3::System
 
 		struct Win32EventSourceNativeData
 		{
-			HWND hwnd = nullptr;
+			HWND mHWND = nullptr;
 
-			Bitmask<uint32> sysWindowFlags = 0;
+			cppx::bitmask<uint32> mSysWindowFlags = 0;
 		};
 
 		struct Win32EventSourceState
 		{
-			LONG_PTR savedEventCallback = 0;
-			LONG_PTR savedEventCallbackUserData = 0;
-			EventController * eventController = nullptr;
+			LONG_PTR mSavedEventCallback = 0;
+			LONG_PTR mSavedEventCallbackUserData = 0;
+			EventController * mEventController = nullptr;
 		};
 
 		struct NativeEventType : public MSG
@@ -37,7 +37,7 @@ namespace Ic3::System
 		bool win32TranslateEvent( Win32EventController & pEventController, const MSG & pMSG, EventObject & pOutEvent );
 
 		// Default event procedure for all windows created by the system.
-		LRESULT __stdcall win32DefaultWindowEventCallback( HWND pHWND, UINT pMessage, WPARAM pWparam, LPARAM pLparam );
+		LRESULT __stdcall Win32DefaultWindowEventCallback( HWND pHWND, UINT pMessage, WPARAM pWparam, LPARAM pLparam );
 
 	}
 
@@ -48,17 +48,17 @@ namespace Ic3::System
 		virtual ~Win32EventController() noexcept;
 
 	private:
-		/// @copybrief EventController::_nativeRegisterEventSource
-		virtual void _nativeRegisterEventSource( EventSource & pEventSource ) override final;
+		/// @copybrief EventController::_NativeRegisterEventSource
+		virtual void _NativeRegisterEventSource( EventSource & pEventSource ) override final;
 
-		/// @copybrief EventController::_nativeUnregisterEventSource
-		virtual void _nativeUnregisterEventSource( EventSource & pEventSource ) override final;
+		/// @copybrief EventController::_NativeUnRegisterEventSource
+		virtual void _NativeUnRegisterEventSource( EventSource & pEventSource ) override final;
 
-		/// @copybrief EventController::_nativeDispatchPendingEvents
-		virtual bool _nativeDispatchPendingEvents() override final;
+		/// @copybrief EventController::_NativeDispatchPendingEvents
+		virtual bool _NativeDispatchPendingEvents() override final;
 
-		/// @copybrief EventController::_nativeDispatchPendingEventsWait
-		virtual bool _nativeDispatchPendingEventsWait() override final;
+		/// @copybrief EventController::_NativeDispatchPendingEventsWait
+		virtual bool _NativeDispatchPendingEventsWait() override final;
 	};
 
 } // namespace Ic3::System

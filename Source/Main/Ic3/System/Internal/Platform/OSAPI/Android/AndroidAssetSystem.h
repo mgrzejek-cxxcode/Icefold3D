@@ -9,28 +9,28 @@
 namespace Ic3::System
 {
 
-	ic3DeclareClassHandle( AndroidAssetLoader );
-	ic3DeclareClassHandle( AndroidAssetDirectory );
-	ic3DeclareClassHandle( AndroidAsset );
+	Ic3DeclareClassHandle( AndroidAssetLoader );
+	Ic3DeclareClassHandle( AndroidAssetDirectory );
+	Ic3DeclareClassHandle( AndroidAsset );
 
 	namespace Platform
 	{
 
 		struct AndroidAssetNativeData : public AndroidNativeDataCommon
 		{
-			AAssetManager * aAssetManager = nullptr;
-			AAsset * aAsset = nullptr;
+			AAssetManager * mAndrAssetManager = nullptr;
+			AAsset * mAndrAsset = nullptr;
 		};
 
 		struct AndroidAssetDirectoryNativeData : public AndroidNativeDataCommon
 		{
-			AAssetManager * aAssetManager = nullptr;
-			AAssetDir * aAssetDir = nullptr;
+			AAssetManager * mAndrAssetManager = nullptr;
+			AAssetDir * mAndrAssetDir = nullptr;
 		};
 
 		struct AndroidAssetLoaderNativeData : public AndroidNativeDataCommon
 		{
-			AAssetManager * aAssetManager = nullptr;
+			AAssetManager * mAndrAssetManager = nullptr;
 		};
 
 		struct AssetLoaderCreateInfoNativeParams
@@ -46,18 +46,18 @@ namespace Ic3::System
 		virtual ~AndroidAssetLoader() noexcept;
 
 	private:
-		void _initializeAndroidAssetLoaderData();
-		void _releaseAndroidAssetLoaderData();
+		void _InitializeAndroidAssetLoaderData();
+		void _ReleaseAndroidAssetLoaderData();
 
-		/// @copybrief AssetLoader::_nativeOpenSubAsset
-		virtual AssetHandle _nativeOpenSubAsset( Cppx::FilePathInfo pAssetPathInfo,
-		                                         Bitmask<EAssetOpenFlags> pFlags ) override final;
+		/// @copybrief AssetLoader::_NativeOpenSubAsset
+		virtual AssetHandle _NativeOpenSubAsset( cppx::file_path_info pAssetPathInfo,
+		                                         cppx::bitmask<EAssetOpenFlags> pFlags ) override final;
 
-		/// @copybrief AssetLoader::_nativeOpenDirectory
-		virtual AssetDirectoryHandle _nativeOpenDirectory( std::string pDirectoryName ) override final;
+		/// @copybrief AssetLoader::_NativeOpenDirectory
+		virtual AssetDirectoryHandle _NativeOpenDirectory( std::string pDirectoryName ) override final;
 
-		/// @copybrief AssetLoader::_nativeCheckDirectoryExists
-		virtual bool _nativeCheckDirectoryExists( const std::string & pDirectoryName ) const override final;
+		/// @copybrief AssetLoader::_NativeCheckDirectoryExists
+		virtual bool _NativeCheckDirectoryExists( const std::string & pDirectoryName ) const override final;
 	};
 
 	class AndroidAssetDirectory : public AndroidNativeObject<AssetDirectory, Platform::AndroidAssetDirectoryNativeData>
@@ -72,20 +72,20 @@ namespace Ic3::System
 		virtual ~AndroidAssetDirectory() noexcept;
 
 		using AssetDirectory::addAsset;
-		using AssetDirectory::setDirName;
+		using AssetDirectory::SetDirName;
 
 	private:
-		void _initializeAndroidAssetDirectoryData( AAssetManager * pAssetManager );
-		void _releaseAndroidAssetDirectoryData();
+		void _InitializeAndroidAssetDirectoryData( AAssetManager * pAssetManager );
+		void _ReleaseAndroidAssetDirectoryData();
 
-		/// @copybrief AssetDirectory::_nativeRefreshAssetList
-		virtual void _nativeRefreshAssetList() override final;
+		/// @copybrief AssetDirectory::_NativeRefreshAssetList
+		virtual void _NativeRefreshAssetList() override final;
 
-		/// @copybrief AssetDirectory::_nativeOpenAsset
-		virtual AssetHandle _nativeOpenAsset( std::string pAssetName, Bitmask<EAssetOpenFlags> pFlags ) override final;
+		/// @copybrief AssetDirectory::_NativeOpenAsset
+		virtual AssetHandle _NativeOpenAsset( std::string pAssetName, cppx::bitmask<EAssetOpenFlags> pFlags ) override final;
 
-		/// @copybrief AssetDirectory::_nativeCheckAssetExists
-		virtual bool _nativeCheckAssetExists( const std::string & pAssetName ) const override final;
+		/// @copybrief AssetDirectory::_NativeCheckAssetExists
+		virtual bool _NativeCheckAssetExists( const std::string & pAssetName ) const override final;
 	};
 
 	class AndroidAsset : public AndroidNativeObject<Asset, Platform::AndroidAssetNativeData>
@@ -97,19 +97,19 @@ namespace Ic3::System
 		explicit AndroidAsset( AndroidAssetDirectoryHandle pAssetDirectory );
 		virtual ~AndroidAsset() noexcept;
 
-		using Asset::setName;
+		using Asset::SetName;
 
 	private:
-		void _releaseAndroidAssetData();
+		void _ReleaseAndroidAssetData();
 
-		/// @copybrief Asset::_nativeReadData
-		virtual file_size_t _nativeReadData( void * pTargetBuffer, file_size_t pReadSize ) override final;
+		/// @copybrief Asset::_NativeReadData
+		virtual file_size_t _NativeReadData( void * pTargetBuffer, file_size_t pReadSize ) override final;
 
-		/// @copybrief Asset::_nativeSetReadPointer
-		virtual file_offset_t _nativeSetReadPointer( file_offset_t pOffset, EFilePointerRefPos pRefPos ) override final;
+		/// @copybrief Asset::_NativeSetReadPointer
+		virtual file_offset_t _NativeSetReadPointer( file_offset_t pOffset, EFilePointerRefPos pRefPos ) override final;
 
-		/// @copybrief Asset::_nativeGetSize
-		virtual file_size_t _nativeGetSize() const override final;
+		/// @copybrief Asset::_NativeGetSize
+		virtual file_size_t _NativeGetSize() const override final;
 	};
 
 } // namespace Ic3::System

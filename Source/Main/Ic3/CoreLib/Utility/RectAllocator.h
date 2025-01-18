@@ -11,7 +11,7 @@ namespace Ic3
 	{
 		struct HorizontalLayout
 		{
-			uint32 hLineAdvanceThreshold = Cppx::QLimits<uint32>::maxValue;
+			uint32 hLineAdvanceThreshold = cppx::meta::limits<uint32>::max_value;
 			uint32 hSpacing = 0;
 		};
 		struct VerticalLayout
@@ -29,17 +29,17 @@ namespace Ic3
 		RectAllocator( const Math::Vec2u32 & pBoundingRectDimensions, const RectAllocatorConfig & pAllocatorConfig );
 		~RectAllocator();
 
-		bool addRect( const Math::Vec2u32 & pRect, Math::Vec2u32 * pOutPosition );
+		bool AddRect( const Math::Vec2u32 & pRect, Math::Vec2u32 * pOutPosition );
 
-		void updateHorizontalLayout( RectAllocatorConfig::HorizontalLayout & pHorizontalLayout );
-		void updateVerticalLayout( RectAllocatorConfig::VerticalLayout & pVerticalLayout );
+		void UpdateHorizontalLayout( RectAllocatorConfig::HorizontalLayout & pHorizontalLayout );
+		void UpdateVerticalLayout( RectAllocatorConfig::VerticalLayout & pVerticalLayout );
 
-		void reset();
+		void Reset();
 
-		IC3_ATTR_NO_DISCARD bool checkFreeSpace( const Math::Vec2u32 & pRect ) const;
-        IC3_ATTR_NO_DISCARD bool empty() const;
+		CPPX_ATTR_NO_DISCARD bool CheckFreeSpace( const Math::Vec2u32 & pRect ) const;
+        CPPX_ATTR_NO_DISCARD bool IsEmpty() const;
 
-        IC3_ATTR_NO_DISCARD const RectAllocatorConfig & getConfig() const
+        CPPX_ATTR_NO_DISCARD const RectAllocatorConfig & getConfig() const
 		{
 			return _config;
 		}

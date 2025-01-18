@@ -1,24 +1,24 @@
 
-#include <Ic3/CoreLib/reflection/enumTypeInfo.h>
+#include <Ic3/CoreLib/Reflection/EnumTypeInfo.h>
 
 namespace Ic3
 {
 
-	ic3TypeInfoEnumDefine( EActiveState )
+	Ic3TypeInfoEnumDefine( EActiveState )
 	{
-		ic3TypeInfoEnumBegin( EActiveState );
-		ic3TypeInfoEnumRegisterClassConstant( EActiveState::Disabled );
-		ic3TypeInfoEnumRegisterClassConstant( EActiveState::Enabled ) ;
-		ic3TypeInfoEnumRegisterClassConstant( EActiveState::Unknown  );
+		Ic3TypeInfoEnumBegin( EActiveState );
+		Ic3TypeInfoEnumRegisterClassConstant( EActiveState::Disabled );
+		Ic3TypeInfoEnumRegisterClassConstant( EActiveState::Enabled ) ;
+		Ic3TypeInfoEnumRegisterClassConstant( EActiveState::Unknown  );
 	}
 
-	ic3TypeInfoEnumDefine( EAccessModeFlags )
+	Ic3TypeInfoEnumDefine( EAccessModeFlags )
 	{
-		ic3TypeInfoEnumBegin( EAccessModeFlags );
-		ic3TypeInfoEnumRegisterUnscopedConstant( E_ACCESS_MODE_FLAG_READ_BIT );
-		ic3TypeInfoEnumRegisterUnscopedConstant( E_ACCESS_MODE_FLAG_WRITE_BIT ) ;
-		ic3TypeInfoEnumRegisterUnscopedConstant( E_ACCESS_MODE_FLAGS_FULL_ACCESS );
-		ic3TypeInfoEnumRegisterUnscopedConstant( E_ACCESS_MODE_FLAGS_NONE );
+		Ic3TypeInfoEnumBegin( EAccessModeFlags );
+		Ic3TypeInfoEnumRegisterUnscopedConstant( eAccessModeFlagReadBit );
+		Ic3TypeInfoEnumRegisterUnscopedConstant( eAccessModeFlagWriteBit ) ;
+		Ic3TypeInfoEnumRegisterUnscopedConstant( eAccessModeFlagsFullAccess );
+		Ic3TypeInfoEnumRegisterUnscopedConstant( eAccessModeFlagsNone );
 	}
 
 }

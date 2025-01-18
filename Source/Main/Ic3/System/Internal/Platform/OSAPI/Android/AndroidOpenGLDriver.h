@@ -10,10 +10,10 @@
 namespace Ic3::System
 {
 
-	ic3SysDeclareHandle( AndroidDisplayManager );
-	ic3SysDeclareHandle( AndroidOpenGLSystemDriver );
-	ic3SysDeclareHandle( AndroidOpenGLRenderContext );
-	ic3SysDeclareHandle( AndroidOpenGLRenderContext );
+	Ic3SysDeclareHandle( AndroidDisplayManager );
+	Ic3SysDeclareHandle( AndroidOpenGLSystemDriver );
+	Ic3SysDeclareHandle( AndroidOpenGLRenderContext );
+	Ic3SysDeclareHandle( AndroidOpenGLRenderContext );
 
 	namespace Platform
 	{
@@ -40,50 +40,54 @@ namespace Ic3::System
 		virtual ~AndroidOpenGLSystemDriver() noexcept;
 
 	private:
-		void _initializeAndroidDriverState();
+		void _InitializeAndroidDriverState();
 
-		void _releaseAndroidDriverState();
+		void _ReleaseAndroidDriverState();
 
-		/// @copybrief OpenGLSystemDriver::_nativeInitializePlatform
-		virtual void _nativeInitializePlatform() override final;
+		/// @copybrief OpenGLSystemDriver::_NativeInitializePlatform
+		virtual void _NativeInitializePlatform() override final;
 
-		/// @copybrief OpenGLSystemDriver::_nativeReleaseInitState
-		virtual void _nativeReleaseInitState() noexcept override final;
+		/// @copybrief OpenGLSystemDriver::_NativeReleaseInitState
+		virtual void _NativeReleaseInitState() noexcept override final;
 
-		/// @copybrief OpenGLSystemDriver::_nativeCreateDisplaySurface
-		virtual OpenGLDisplaySurfaceHandle _nativeCreateDisplaySurface( const OpenGLDisplaySurfaceCreateInfo & pCreateInfo ) override final;
+		/// @copybrief OpenGLSystemDriver::_NativeCreateDisplaySurface
+		virtual OpenGLDisplaySurfaceHandle _NativeCreateDisplaySurface(
+				const OpenGLDisplaySurfaceCreateInfo & pCreateInfo ) override final;
 
-		/// @copybrief OpenGLSystemDriver::_nativeCreateDisplaySurfaceForCurrentThread
-		virtual OpenGLDisplaySurfaceHandle _nativeCreateDisplaySurfaceForCurrentThread() override final;
+		/// @copybrief OpenGLSystemDriver::_NativeCreateDisplaySurfaceForCurrentThread
+		virtual OpenGLDisplaySurfaceHandle _NativeCreateDisplaySurfaceForCurrentThread() override final;
 
-		/// @copybrief OpenGLSystemDriver::_nativeDestroyDisplaySurface
-		virtual void _nativeDestroyDisplaySurface( OpenGLDisplaySurface & pDisplaySurface ) override final;
+		/// @copybrief OpenGLSystemDriver::_NativeDestroyDisplaySurface
+		virtual void _NativeDestroyDisplaySurface( OpenGLDisplaySurface & pDisplaySurface ) override final;
 
-		/// @copybrief OpenGLSystemDriver::_nativeCreateRenderContext
-		virtual OpenGLRenderContextHandle _nativeCreateRenderContext( OpenGLDisplaySurface & pDisplaySurface,
-		                                                              const OpenGLRenderContextCreateInfo & pCreateInfo ) override final;
+		/// @copybrief OpenGLSystemDriver::_NativeCreateRenderContext
+		virtual OpenGLRenderContextHandle _NativeCreateRenderContext(
+				OpenGLDisplaySurface & pDisplaySurface,
+				const OpenGLRenderContextCreateInfo & pCreateInfo ) override final;
 
-		/// @copybrief OpenGLSystemDriver::_nativeCreateRenderContextForCurrentThread
-		virtual OpenGLRenderContextHandle _nativeCreateRenderContextForCurrentThread() override final;
+		/// @copybrief OpenGLSystemDriver::_NativeCreateRenderContextForCurrentThread
+		virtual OpenGLRenderContextHandle _NativeCreateRenderContextForCurrentThread() override final;
 
-		/// @copybrief OpenGLSystemDriver::_nativeDestroyDisplaySurface
-		virtual void _nativeDestroyRenderContext( OpenGLRenderContext & pRenderContext ) override final;
+		/// @copybrief OpenGLSystemDriver::_NativeDestroyDisplaySurface
+		virtual void _NativeDestroyRenderContext( OpenGLRenderContext & pRenderContext ) override final;
 
-		/// @copybrief OpenGLSystemDriver::_nativeResetContextBinding
-		virtual void _nativeResetContextBinding() override final;
+		/// @copybrief OpenGLSystemDriver::_NativeResetContextBinding
+		virtual void _NativeResetContextBinding() override final;
 
-		/// @copybrief OpenGLSystemDriver::_nativeQuerySupportedDepthStencilFormats
-		virtual std::vector<EDepthStencilFormat> _nativeQuerySupportedDepthStencilFormats( EColorFormat pColorFormat ) const override final;
+		/// @copybrief OpenGLSystemDriver::_NativeQuerySupportedDepthStencilFormats
+		virtual std::vector<EDepthStencilFormat> _NativeQuerySupportedDepthStencilFormats(
+				EColorFormat pColorFormat ) const override final;
 
-		/// @copybrief OpenGLSystemDriver::_nativeQuerySupportedMSAAModes
-		virtual std::vector<EMSAAMode> _nativeQuerySupportedMSAAModes( EColorFormat pColorFormat,
-		                                                               EDepthStencilFormat pDepthStencilFormat ) const override final;
+		/// @copybrief OpenGLSystemDriver::_NativeQuerySupportedMSAAModes
+		virtual std::vector<EMSAAMode> _NativeQuerySupportedMSAAModes(
+				EColorFormat pColorFormat,
+				EDepthStencilFormat pDepthStencilFormat ) const override final;
 
-		/// @copybrief OpenGLSystemDriver::_nativeIssAPIClassSupported
-		virtual bool _nativeIsAPIClassSupported( EOpenGLAPIClass pAPIClass ) const override final;;
+		/// @copybrief OpenGLSystemDriver::_NativeIssAPIClassSupported
+		virtual bool _NativeIsAPIClassSupported( EOpenGLAPIClass pAPIClass ) const override final;;
 
-		/// @copybrief OpenGLSystemDriver::_nativeIsRenderContextBound
-		virtual bool _nativeIsRenderContextBound() const override final;
+		/// @copybrief OpenGLSystemDriver::_NativeIsRenderContextBound
+		virtual bool _NativeIsRenderContextBound() const override final;
 	};
 
 	/// @brief Android-specific implementation of the OpenGLDisplaySurface class.
@@ -94,32 +98,33 @@ namespace Ic3::System
 		virtual ~AndroidOpenGLDisplaySurface() noexcept;
 
 	private:
-		void _releaseAndroidSurfaceState();
+		void _ReleaseAndroidSurfaceState();
 
-		/// @copybrief OpenGLDisplaySurface::_nativeSwapBuffers
-		virtual void _nativeSwapBuffers() override final;
+		/// @copybrief OpenGLDisplaySurface::_NativeSwapBuffers
+		virtual void _NativeSwapBuffers() override final;
 
-		/// @copybrief OpenGLDisplaySurface::_nativeQueryRenderAreaSize
-		virtual FrameSize _nativeQueryRenderAreaSize() const override final;
+		/// @copybrief OpenGLDisplaySurface::_NativeQueryRenderAreaSize
+		virtual FrameSize _NativeQueryRenderAreaSize() const override final;
 
-		/// @copybrief OpenGLDisplaySurface::_nativeSysValidate
-		virtual bool _nativeSysValidate() const override final;
+		/// @copybrief OpenGLDisplaySurface::_NativeSysValidate
+		virtual bool _NativeSysValidate() const override final;
 
-		/// @copybrief OpenGLDisplaySurface::_nativeResize
-		virtual void _nativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode ) override final;
+		/// @copybrief OpenGLDisplaySurface::_NativeResize
+		virtual void _NativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode ) override final;
 
-		/// @copybrief OpenGLDisplaySurface::_nativeSetFullscreenMode
-		virtual void _nativeSetFullscreenMode( bool pEnable ) override final;
+		/// @copybrief OpenGLDisplaySurface::_NativeSetFullscreenMode
+		virtual void _NativeSetFullscreenMode( bool pEnable ) override final;
 
-		/// @copybrief OpenGLDisplaySurface::_nativeSetTitle
-		virtual void _nativeSetTitle( const std::string & pTitle ) override final;
+		/// @copybrief OpenGLDisplaySurface::_NativeSetTitle
+		virtual void _NativeSetTitle( const std::string & pTitle ) override final;
 
-		/// @copybrief OpenGLDisplaySurface::_nativeUpdateGeometry
-		virtual void _nativeUpdateGeometry( const FrameGeometry & pFrameGeometry,
-		                                    Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
+		/// @copybrief OpenGLDisplaySurface::_NativeUpdateGeometry
+		virtual void _NativeUpdateGeometry(
+				const FrameGeometry & pFrameGeometry,
+				cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) override final;
 
-		/// @copybrief OpenGLDisplaySurface::_nativeGetSize
-		virtual FrameSize _nativeGetSize( EFrameSizeMode pSizeMode ) const override final;
+		/// @copybrief OpenGLDisplaySurface::_NativeGetSize
+		virtual FrameSize _NativeGetSize( EFrameSizeMode pSizeMode ) const override final;
 	};
 
 	/// @brief Android-specific implementation of the OpenGLRenderContext class.
@@ -130,16 +135,16 @@ namespace Ic3::System
 		virtual ~AndroidOpenGLRenderContext() noexcept;
 
 	private:
-		void _releaseAndroidContextState();
+		void _ReleaseAndroidContextState();
 
-		/// @copybrief OpenGLRenderContext::_nativeBindForCurrentThread
-		virtual void _nativeBindForCurrentThread( const OpenGLDisplaySurface & pTargetSurface ) override final;
+		/// @copybrief OpenGLRenderContext::_NativeBindForCurrentThread
+		virtual void _NativeBindForCurrentThread( const OpenGLDisplaySurface & pTargetSurface ) override final;
 
-		/// @copybrief OpenGLRenderContext::_nativeIsCurrent
-		virtual bool _nativeIsCurrent() const override final;
+		/// @copybrief OpenGLRenderContext::_NativeIsCurrent
+		virtual bool _NativeIsCurrent() const override final;
 
-		/// @copybrief OpenGLRenderContext::_nativeSysValidate
-		virtual bool _nativeSysValidate() const override final;
+		/// @copybrief OpenGLRenderContext::_NativeSysValidate
+		virtual bool _NativeSysValidate() const override final;
 	};
 
 } // namespace Ic3::System

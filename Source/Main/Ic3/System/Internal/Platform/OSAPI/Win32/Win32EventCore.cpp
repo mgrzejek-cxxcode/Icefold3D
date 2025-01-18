@@ -3,38 +3,40 @@
 #include <Ic3/System/Internal/EventCorePrivate.h>
 #include <Ic3/Math/VectorOps.h>
 
-#if( IC3_PCL_TARGET_SYSAPI == IC3_PCL_TARGET_SYSAPI_WIN32 )
+#if( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_WIN32 )
 namespace Ic3::System
 {
 
 	namespace Platform
 	{
 
-		LRESULT __stdcall _win32EventSourceProxyEventProc( HWND pHWND, UINT pMessage, WPARAM pWparam, LPARAM pLparam );
+		LRESULT __stdcall _Win32EventSourceProxyEventProc( HWND pHWND, UINT pMessage, WPARAM pWparam, LPARAM pLparam );
 
-		bool _win32TranslateAppOrWindowEvent( Win32EventController & pEventControlle,
-		                                      EventSource & pEventSource,
-											  const MSG & pMSG,
-											  EventObject & pOutEvent );
+		bool _Win32TranslateAppOrWindowEvent(
+				Win32EventController & pEventControlle,
+				EventSource & pEventSource,
+				const MSG & pMSG,
+				EventObject & pOutEvent );
 
-		bool _win32TranslateInputEvent( Win32EventController & pEventController,
-		                                EventSource & pEventSource,
-										const MSG & pMSG,
-										EventObject & pOutEvent );
+		bool _Win32TranslateInputEvent(
+				Win32EventController & pEventController,
+				EventSource & pEventSource,
+				const MSG & pMSG,
+				EventObject & pOutEvent );
 
-		bool _win32TranslateInputEventKeyboard( Win32EventController & pEventController, const MSG & pMSG, EventObject & pOutEvent );
+		bool _Win32TranslateInputEventKeyboard( Win32EventController & pEventController, const MSG & pMSG, EventObject & pOutEvent );
 
-		bool _win32TranslateInputEventMouse( Win32EventController & pEventController, const MSG & pMSG, EventObject & pOutEvent );
+		bool _Win32TranslateInputEventMouse( Win32EventController & pEventController, const MSG & pMSG, EventObject & pOutEvent );
 
-		bool _win32TranslateInputEventTouch( Win32EventController & pEventController, const MSG & pMSG, EventObject & pOutEvent );
+		bool _Win32TranslateInputEventTouch( Win32EventController & pEventController, const MSG & pMSG, EventObject & pOutEvent );
 
-		bool _win32TranslateInputEventGesture( Win32EventController & pEventController, const MSG & pMSG, EventObject & pOutEvent );
+		bool _Win32TranslateInputEventGesture( Win32EventController & pEventController, const MSG & pMSG, EventObject & pOutEvent );
 
-		EWindowVisibilityState _win32TranslateWindowVisibility( WPARAM pWparam );
+		EWindowVisibilityState _Win32TranslateWindowVisibility( WPARAM pWparam );
 
-		EKeyCode _win32GetSysKeyCode( WPARAM pWparam );
+		EKeyCode _Win32GetSysKeyCode( WPARAM pWparam );
 
-		Bitmask<EMouseButtonFlagBits> _win32GetMouseButtonStateMask( WPARAM pWparam );
+		cppx::bitmask<EMouseButtonFlagBits> _Win32GetMouseButtonStateMask( WPARAM pWparam );
 
 	}
 	
@@ -46,45 +48,45 @@ namespace Ic3::System
 	Win32EventController::~Win32EventController() noexcept
 	{}
 
-	void Win32EventController::_nativeRegisterEventSource( EventSource & pEventSource )
+	void Win32EventController::_NativeRegisterEventSource( EventSource & pEventSource )
 	{
 		auto * eventSourceNativeData = pEventSource.getEventSourceNativeDataAs<Platform::Win32EventSourceNativeData>();
-		ic3DebugAssert( eventSourceNativeData != nullptr );
+		Ic3DebugAssert( eventSourceNativeData != nullptr );
 
 		auto * win32EventSourceState = new Platform::Win32EventSourceState();
 		win32EventSourceState->eventController = this;
-		win32EventSourceState->savedEventCallback = ::GetWindowLongPtrA( eventSourceNativeData->hwnd, GWLP_WNDPROC );
-		win32EventSourceState->savedEventCallbackUserData = ::GetWindowLongPtrA( eventSourceNativeData->hwnd, GWLP_USERDATA );
+		win32EventSourceState->mSavedEventCallback = ::GetWindowLongPtrA( eventSourceNativeData->hwnd, GWLP_WNDPROC );
+		win32EventSourceState->mSavedEventCallbackUserData = ::GetWindowLongPtrA( eventSourceNativeData->hwnd, GWLP_USERDATA );
 
 		auto win32EventSourceStateAddress = reinterpret_cast<LONG_PTR>( win32EventSourceState );
 		::SetWindowLongPtrA( eventSourceNativeData->hwnd, GWLP_USERDATA, win32EventSourceStateAddress );
 
-		auto eventSourceProcAddress = reinterpret_cast<LONG_PTR>( Platform::_win32EventSourceProxyEventProc );
+		auto eventSourceProcAddress = reinterpret_cast<LONG_PTR>( Platform::_Win32EventSourceProxyEventProc );
 		::SetWindowLongPtrA( eventSourceNativeData->hwnd, GWLP_WNDPROC, eventSourceProcAddress );
 
 		// Trigger the update of the window to ensure changes are visible.
 		::SetWindowPos( eventSourceNativeData->hwnd, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED );
 	}
 
-	void Win32EventController::_nativeUnregisterEventSource( EventSource & pEventSource )
+	void Win32EventController::_NativeUnRegisterEventSource( EventSource & pEventSource )
 	{
         auto * eventSourceNativeData = pEventSource.getEventSourceNativeDataAs<Platform::Win32EventSourceNativeData>();
-        ic3DebugAssert( eventSourceNativeData != nullptr );
+        Ic3DebugAssert( eventSourceNativeData != nullptr );
 
 		LONG_PTR windowUserData = ::GetWindowLongPtrA( eventSourceNativeData->hwnd, GWLP_USERDATA );
 
 		if( auto * win32EventSourceState = reinterpret_cast<Platform::Win32EventSourceState *>( windowUserData ) )
 		{
-            ::SetWindowLongPtrA( eventSourceNativeData->hwnd, GWLP_WNDPROC, win32EventSourceState->savedEventCallback );
+            ::SetWindowLongPtrA( eventSourceNativeData->hwnd, GWLP_WNDPROC, win32EventSourceState->mSavedEventCallback );
 
-            ::SetWindowLongPtrA( eventSourceNativeData->hwnd, GWLP_USERDATA, win32EventSourceState->savedEventCallbackUserData );
+            ::SetWindowLongPtrA( eventSourceNativeData->hwnd, GWLP_USERDATA, win32EventSourceState->mSavedEventCallbackUserData );
 
             // Trigger the update of the window to ensure changes are visible.
             ::SetWindowPos( eventSourceNativeData->hwnd, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED );
 		}
 	}
 
-	bool Win32EventController::_nativeDispatchPendingEvents()
+	bool Win32EventController::_NativeDispatchPendingEvents()
 	{
 		MSG pMSG;
 		if( ::PeekMessageA( &pMSG, nullptr, 0, 0, PM_REMOVE ) != FALSE )
@@ -98,7 +100,7 @@ namespace Ic3::System
 		return false;
 	}
 
-	bool Win32EventController::_nativeDispatchPendingEventsWait()
+	bool Win32EventController::_NativeDispatchPendingEventsWait()
 	{
 		MSG pMSG;
 		if( ::GetMessageA( &pMSG, nullptr, 0, 0 ) != FALSE )
@@ -116,36 +118,36 @@ namespace Ic3::System
 	namespace Platform
 	{
 
-		bool nativeEventTranslate( EventController & pEventController, const NativeEventType & pNativeEvent, EventObject & pOutEvent )
+		bool NativeEventTranslate( EventController & pEventController, const NativeEventType & pNativeEvent, EventObject & pOutEvent )
 		{
-			auto * win32EventController = pEventController.queryInterface<Win32EventController>();
+			auto * win32EventController = pEventController.QueryInterface<Win32EventController>();
 
-			return win32TranslateEvent( *win32EventController, pNativeEvent, pOutEvent );
+			return Win32TranslateEvent( *win32EventController, pNativeEvent, pOutEvent );
 		}
 
-		EventSource * win32FindEventSourceByHWND( Win32EventController & pEventController, HWND pHWND )
+		EventSource * Win32FindEventSourceByHWND( Win32EventController & pEventController, HWND pHWND )
 		{
-			auto * eventSource = pEventController.findEventSource( [pHWND]( const EventSource & pEventSource ) -> bool {
+			auto * eventSource = pEventController.FindEventSource( [pHWND]( const EventSource & pEventSource ) -> bool {
 				const auto * eventSourceNativeData = pEventSource.getEventSourceNativeDataAs<Platform::Win32EventSourceNativeData>();
 				return eventSourceNativeData->hwnd == pHWND;
 			});
 			return eventSource;
 		}
 
-		bool win32TranslateEvent( Win32EventController & pEventController, const MSG & pMSG, EventObject & pOutEvent )
+		bool Win32TranslateEvent( Win32EventController & pEventController, const MSG & pMSG, EventObject & pOutEvent )
 		{
-			auto * eventSource = win32FindEventSourceByHWND( pEventController, pMSG.hwnd );
+			auto * eventSource = Win32FindEventSourceByHWND( pEventController, pMSG.mHWND );
 
 			if( pMSG.message >= WM_KEYFIRST && pMSG.message <= WM_TOUCH )
 			{
-				if( eventSource && _win32TranslateInputEvent( pEventController, *eventSource, pMSG, pOutEvent ) )
+				if( eventSource && _Win32TranslateInputEvent( pEventController, *eventSource, pMSG, pOutEvent ) )
 				{
 					return true;
 				}
 			}
 			else
 			{
-				if( eventSource && _win32TranslateAppOrWindowEvent( pEventController, *eventSource, pMSG, pOutEvent ) )
+				if( eventSource && _Win32TranslateAppOrWindowEvent( pEventController, *eventSource, pMSG, pOutEvent ) )
 				{
 					return true;
 				}
@@ -154,7 +156,7 @@ namespace Ic3::System
 			return false;
 		}
 
-		LRESULT __stdcall win32DefaultWindowEventCallback( HWND pHWND, UINT pMessage, WPARAM pWparam, LPARAM pLparam )
+		LRESULT __stdcall Win32DefaultWindowEventCallback( HWND pHWND, UINT pMessage, WPARAM pWparam, LPARAM pLparam )
 		{
 			switch( pMessage )
 			{
@@ -164,7 +166,7 @@ namespace Ic3::System
 					if( windowUserData != 0 )
 					{
 						// TODO: Log this!
-						ic3DebugInterrupt();
+						Ic3DebugInterrupt();
 					}
 					auto * win32EventSourceState = new Platform::Win32EventSourceState();
 					auto win32EventSourceStateAddress = reinterpret_cast<LONG_PTR>( win32EventSourceState );
@@ -186,7 +188,7 @@ namespace Ic3::System
 			return ::DefWindowProcA( pHWND, pMessage, pWparam, pLparam );
 		}
 
-		LRESULT __stdcall _win32EventSourceProxyEventProc( HWND pHWND, UINT pMessage, WPARAM pWparam, LPARAM pLparam )
+		LRESULT __stdcall _Win32EventSourceProxyEventProc( HWND pHWND, UINT pMessage, WPARAM pWparam, LPARAM pLparam )
 		{
 			// The UserData value is a pointer to the internal EventState of the current window.
 			// It is created before this callback gets injected and released when NCDESTROY message arrives.
@@ -199,7 +201,7 @@ namespace Ic3::System
 				auto * win32EventSourceState = reinterpret_cast<Win32EventSourceState *>( windowUserData );
 
 				NativeEventType nativeEvent;
-				nativeEvent.hwnd = pHWND;
+				nativeEvent.mHWND = pHWND;
 				nativeEvent.message = pMessage;
 				nativeEvent.wParam = pWparam;
 				nativeEvent.lParam = pLparam;
@@ -210,10 +212,11 @@ namespace Ic3::System
 			return ::DefWindowProcA( pHWND, pMessage, pWparam, pLparam );
 		}
 
-		bool _win32TranslateAppOrWindowEvent( Win32EventController & pEventController,
-		                                      EventSource & pEventSource,
-											  const MSG & pMSG,
-											  EventObject & pOutEvent )
+		bool _Win32TranslateAppOrWindowEvent(
+				Win32EventController & pEventController,
+				EventSource & pEventSource,
+				const MSG & pMSG,
+				EventObject & pOutEvent )
 		{
 			switch ( pMSG.message )
 			{
@@ -221,7 +224,7 @@ namespace Ic3::System
 				{
 					auto & eWindowUpdateVisibility = pOutEvent.eWindowUpdateVisibility;
 					eWindowUpdateVisibility.eventCode = E_EVENT_CODE_WINDOW_UPDATE_VISIBILITY;
-					eWindowUpdateVisibility.newVisibilityState = _win32TranslateWindowVisibility( pMSG.wParam );
+					eWindowUpdateVisibility.newVisibilityState = _Win32TranslateWindowVisibility( pMSG.wParam );
 					eWindowUpdateVisibility.eventSource = &pEventSource;
 					break;
 				}
@@ -254,15 +257,15 @@ namespace Ic3::System
 
 					// Fullscreen state is encoded in the WPARAM argument. Note, that it will always differ
 					// from the current fullscreen state (this is checked upfront before sending the message).
-					const auto isFullscreenEnabled = ( pMSG.wParam != 0 );
+					const auto IsFullscreenEnabled = ( pMSG.wParam != 0 );
 
 					// The actual update. Sets proper window geometry, updates the style.
 					// This is handled automatically by the WM on X11, but here we need to explicitly do it.
-					Platform::win32UpdateWindowFullscreenState( *win32WindowNativeData, isFullscreenEnabled );
+					Platform::Win32UpdateWindowFullscreenState( *win32WindowNativeData, IsFullscreenEnabled );
 
 					auto & eWindowUpdateFullscreen = pOutEvent.eWindowUpdateFullscreen;
 					eWindowUpdateFullscreen.eventCode = E_EVENT_CODE_WINDOW_UPDATE_FULLSCREEN;
-					eWindowUpdateFullscreen.fullscreenState = isFullscreenEnabled ? EActiveState::Enabled : EActiveState::Disabled;
+					eWindowUpdateFullscreen.fullscreenState = IsFullscreenEnabled ? EActiveState::ENABLED : EActiveState::DISABLED;
 					eWindowUpdateFullscreen.eventSource = &pEventSource;
 
 					break;
@@ -276,28 +279,29 @@ namespace Ic3::System
 			return true;
 		}
 
-		bool _win32TranslateInputEvent( Win32EventController & pEventController,
-		                                EventSource & pEventSource,
-										const MSG & pMSG,
-										EventObject & pOutEvent )
+		bool _Win32TranslateInputEvent(
+				Win32EventController & pEventController,
+				EventSource & pEventSource,
+				const MSG & pMSG,
+				EventObject & pOutEvent )
 		{
 			if( ( pMSG.message >= WM_KEYFIRST ) && ( pMSG.message <= WM_KEYLAST ) )
 			{
-				return _win32TranslateInputEventKeyboard( pEventController, pMSG, pOutEvent );
+				return _Win32TranslateInputEventKeyboard( pEventController, pMSG, pOutEvent );
 			}
 			else if( ( pMSG.message >= WM_MOUSEFIRST ) && ( pMSG.message <= WM_MOUSELAST ) )
 			{
-				return _win32TranslateInputEventMouse( pEventController, pMSG, pOutEvent );
+				return _Win32TranslateInputEventMouse( pEventController, pMSG, pOutEvent );
 			}
 		#if( WINVER >= 0x0602 )
 			else if( pMSG.message == WM_TOUCH )
 			{
-				return _win32TranslateInputEventTouch( pEventController, pMSG, pOutEvent );
+				return _Win32TranslateInputEventTouch( pEventController, pMSG, pOutEvent );
 			}
 		#endif
 			else if( ( pMSG.message == WM_GESTURE ) || ( pMSG.message == WM_GESTURENOTIFY ) )
 			{
-				return _win32TranslateInputEventGesture( pEventController, pMSG, pOutEvent );
+				return _Win32TranslateInputEventGesture( pEventController, pMSG, pOutEvent );
 			}
 			else
 			{
@@ -305,7 +309,7 @@ namespace Ic3::System
 			}
 		}
 
-		bool _win32TranslateInputEventKeyboard( Win32EventController & pEventController, const MSG & pMSG, EventObject & pOutEvent )
+		bool _Win32TranslateInputEventKeyboard( Win32EventController & pEventController, const MSG & pMSG, EventObject & pOutEvent )
 		{
 			auto & inputKeyboardState = pEventController.getEventSystemSharedState().inputKeyboardState;
 
@@ -318,7 +322,7 @@ namespace Ic3::System
 					eInputKeyboard.eventCode = E_EVENT_CODE_INPUT_KEYBOARD;
 					eInputKeyboard.inputKeyboardState = &inputKeyboardState;
 					eInputKeyboard.keyAction = EKeyActionType::Press;
-					eInputKeyboard.keyCode = _win32GetSysKeyCode( pMSG.wParam );
+					eInputKeyboard.keyCode = _Win32GetSysKeyCode( pMSG.wParam );
 					break;
 				}
 				case WM_KEYUP:
@@ -328,7 +332,7 @@ namespace Ic3::System
 					eInputKeyboard.eventCode = E_EVENT_CODE_INPUT_KEYBOARD;
 					eInputKeyboard.inputKeyboardState = &inputKeyboardState;
 					eInputKeyboard.keyAction = EKeyActionType::Release;
-					eInputKeyboard.keyCode = _win32GetSysKeyCode( pMSG.wParam );
+					eInputKeyboard.keyCode = _Win32GetSysKeyCode( pMSG.wParam );
 					break;
 				}
 				default:
@@ -340,7 +344,7 @@ namespace Ic3::System
 			return true;
 		}
 
-		bool _win32TranslateInputEventMouse( Win32EventController & pEventController, const MSG & pMSG, EventObject & pOutEvent )
+		bool _Win32TranslateInputEventMouse( Win32EventController & pEventController, const MSG & pMSG, EventObject & pOutEvent )
 		{
 			const auto cursorPos = Math::Vec2i32{
 				GET_X_LPARAM( pMSG.lParam ),
@@ -361,7 +365,7 @@ namespace Ic3::System
 					auto & eInputMouseMove = pOutEvent.eInputMouseMove;
 					eInputMouseMove.eventCode = E_EVENT_CODE_INPUT_MOUSE_MOVE;
 					eInputMouseMove.cursorPos = cursorPos;
-					eInputMouseMove.buttonStateMask = _win32GetMouseButtonStateMask( pMSG.wParam );
+					eInputMouseMove.buttonStateMask = _Win32GetMouseButtonStateMask( pMSG.wParam );
 					eInputMouseMove.movementDelta = cursorPos - inputMouseState.lastCursorPos;
 					eInputMouseMove.inputMouseState = &inputMouseState;
 					inputMouseState.lastCursorPos = cursorPos;
@@ -374,7 +378,7 @@ namespace Ic3::System
 					eInputMouseButton.cursorPos = cursorPos;
 					eInputMouseButton.buttonAction = EMouseButtonActionType::Click;
 					eInputMouseButton.buttonID = EMouseButtonID::Left;
-					eInputMouseButton.buttonStateMask = _win32GetMouseButtonStateMask( pMSG.wParam );
+					eInputMouseButton.buttonStateMask = _Win32GetMouseButtonStateMask( pMSG.wParam );
 					break;
 				}
 				case WM_LBUTTONUP:
@@ -384,7 +388,7 @@ namespace Ic3::System
 					eInputMouseButton.cursorPos = cursorPos;
 					eInputMouseButton.buttonAction = EMouseButtonActionType::Release;
 					eInputMouseButton.buttonID = EMouseButtonID::Left;
-					eInputMouseButton.buttonStateMask = _win32GetMouseButtonStateMask( pMSG.wParam );
+					eInputMouseButton.buttonStateMask = _Win32GetMouseButtonStateMask( pMSG.wParam );
 					break;
 				}
 				case WM_LBUTTONDBLCLK:
@@ -399,7 +403,7 @@ namespace Ic3::System
 					eInputMouseButton.cursorPos = cursorPos;
 					eInputMouseButton.buttonAction = EMouseButtonActionType::Click;
 					eInputMouseButton.buttonID = EMouseButtonID::Right;
-					eInputMouseButton.buttonStateMask = _win32GetMouseButtonStateMask( pMSG.wParam );
+					eInputMouseButton.buttonStateMask = _Win32GetMouseButtonStateMask( pMSG.wParam );
 					break;
 				}
 				case WM_RBUTTONUP:
@@ -409,7 +413,7 @@ namespace Ic3::System
 					eInputMouseButton.cursorPos = cursorPos;
 					eInputMouseButton.buttonAction = EMouseButtonActionType::Release;
 					eInputMouseButton.buttonID = EMouseButtonID::Right;
-					eInputMouseButton.buttonStateMask = _win32GetMouseButtonStateMask( pMSG.wParam );
+					eInputMouseButton.buttonStateMask = _Win32GetMouseButtonStateMask( pMSG.wParam );
 					break;
 				}
 				case WM_RBUTTONDBLCLK:
@@ -424,7 +428,7 @@ namespace Ic3::System
 					eInputMouseButton.cursorPos = cursorPos;
 					eInputMouseButton.buttonAction = EMouseButtonActionType::Click;
 					eInputMouseButton.buttonID = EMouseButtonID::Middle;
-					eInputMouseButton.buttonStateMask = _win32GetMouseButtonStateMask( pMSG.wParam );
+					eInputMouseButton.buttonStateMask = _Win32GetMouseButtonStateMask( pMSG.wParam );
 					break;
 				}
 				case WM_MBUTTONUP:
@@ -434,7 +438,7 @@ namespace Ic3::System
 					eInputMouseButton.cursorPos = cursorPos;
 					eInputMouseButton.buttonAction = EMouseButtonActionType::Release;
 					eInputMouseButton.buttonID = EMouseButtonID::Middle;
-					eInputMouseButton.buttonStateMask = _win32GetMouseButtonStateMask( pMSG.wParam );
+					eInputMouseButton.buttonStateMask = _Win32GetMouseButtonStateMask( pMSG.wParam );
 					break;
 				}
 				case WM_MBUTTONDBLCLK:
@@ -459,7 +463,7 @@ namespace Ic3::System
 					eInputMouseButton.buttonAction = EMouseButtonActionType::Click;
 					const auto xButtonID = GET_XBUTTON_WPARAM( pMSG.wParam );
 					eInputMouseButton.buttonID = ( xButtonID == XBUTTON1 ) ? EMouseButtonID::XB1 : EMouseButtonID::XB2;
-					eInputMouseButton.buttonStateMask = _win32GetMouseButtonStateMask( pMSG.wParam );
+					eInputMouseButton.buttonStateMask = _Win32GetMouseButtonStateMask( pMSG.wParam );
 					break;
 				}
 				case WM_XBUTTONUP:
@@ -470,7 +474,7 @@ namespace Ic3::System
 					eInputMouseButton.buttonAction = EMouseButtonActionType::Release;
 					const auto xButtonID = GET_XBUTTON_WPARAM( pMSG.wParam );
 					eInputMouseButton.buttonID = ( xButtonID == XBUTTON1 ) ? EMouseButtonID::XB1 : EMouseButtonID::XB2;
-					eInputMouseButton.buttonStateMask = _win32GetMouseButtonStateMask( pMSG.wParam );
+					eInputMouseButton.buttonStateMask = _Win32GetMouseButtonStateMask( pMSG.wParam );
 					break;
 				}
 				case WM_XBUTTONDBLCLK:
@@ -491,25 +495,25 @@ namespace Ic3::System
 			return pOutEvent.code != E_EVENT_CODE_UNDEFINED;
 		}
 
-		bool _win32TranslateInputEventTouch( Win32EventController & pEventController, const MSG & pMSG, EventObject & pOutEvent )
+		bool _Win32TranslateInputEventTouch( Win32EventController & pEventController, const MSG & pMSG, EventObject & pOutEvent )
 		{
 			return false;
 		}
 
-		bool _win32TranslateInputEventGesture( Win32EventController & pEventController, const MSG & pMSG, EventObject & pOutEvent )
+		bool _Win32TranslateInputEventGesture( Win32EventController & pEventController, const MSG & pMSG, EventObject & pOutEvent )
 		{
 			return false;
 		}
 
-		EWindowVisibilityState _win32TranslateWindowVisibility( WPARAM pWparam )
+		EWindowVisibilityState _Win32TranslateWindowVisibility( WPARAM pWparam )
 		{
 			if( pWparam != FALSE )
 			{
-				return EWindowVisibilityState::Visible;
+				return EWindowVisibilityState::VISIBLE;
 			}
 			else
 			{
-				return EWindowVisibilityState::Hidden;
+				return EWindowVisibilityState::HIDDEN;
 			}
 		}
 
@@ -643,7 +647,7 @@ namespace Ic3::System
 			/* 0x00A5 */ EKeyCode::AltRight,
 		};
 
-		EKeyCode _win32GetSysKeyCode( WPARAM pWparam )
+		EKeyCode _Win32GetSysKeyCode( WPARAM pWparam )
 		{
 			if( ( pWparam >= 0x0008 ) && ( pWparam <= 0x007B ) )
 			{
@@ -660,7 +664,7 @@ namespace Ic3::System
 			return EKeyCode::Unknown;
 		}
 
-		Bitmask<EMouseButtonFlagBits> _win32GetMouseButtonStateMask( WPARAM pWparam )
+		cppx::bitmask<EMouseButtonFlagBits> _Win32GetMouseButtonStateMask( WPARAM pWparam )
 		{
 			return static_cast<EMouseButtonFlagBits>( static_cast<uint32>( pWparam ) & E_MOUSE_BUTTON_FLAG_ALL_BIT );
 		}
@@ -668,4 +672,4 @@ namespace Ic3::System
 	}
 
 } // namespace Ic3::System
-#endif // IC3_PCL_TARGET_SYSAPI_WIN32
+#endif // PCL_TARGET_SYSAPI_WIN32

@@ -13,108 +13,110 @@ namespace Ic3::Graphics::GCI
 
 	IAVertexStreamDynamicState::~IAVertexStreamDynamicState() = default;
 
-	bool IAVertexStreamDynamicState::empty() const noexcept
+	bool IAVertexStreamDynamicState::IsEmpty() const noexcept
 	{
 		return _vertexStreamDefinition.activeBindingsMask.empty();
 	}
 
-	native_uint IAVertexStreamDynamicState::countActiveVertexBuffers() const noexcept
+	native_uint IAVertexStreamDynamicState::CountActiveVertexBuffers() const noexcept
 	{
-		return popCount( _vertexStreamDefinition.activeBindingsMask & E_IA_VERTEX_STREAM_BINDING_MASK_VERTEX_BUFFER_ALL_BITS );
+		return pop_count( _vertexStreamDefinition.activeBindingsMask & eIAVertexStreamBindingMaskVertexBufferAllBits );
 	}
 
-	const IAVertexStreamDefinition & IAVertexStreamDynamicState::getVertexStreamDefinition() const noexcept
+	const IAVertexStreamDefinition & IAVertexStreamDynamicState::GetVertexStreamDefinition() const noexcept
 	{
 		return _vertexStreamDefinition;
 	}
 
-	void IAVertexStreamDynamicState::assign( const IAVertexStreamDefinition & pDefinition )
+	void IAVertexStreamDynamicState::Assign( const IAVertexStreamDefinition & pDefinition )
 	{
 		_vertexStreamDefinition = pDefinition;
 	}
 
-	IAVertexBufferReference & IAVertexStreamDynamicState::setVertexBufferRef( native_uint pIndex )
+	IAVertexBufferReference & IAVertexStreamDynamicState::SetVertexBufferRef( native_uint pIndex )
 	{
-		ic3DebugAssert( CxDef::isIAVertexBufferIndexValid( pIndex ) );
+		Ic3DebugAssert( CxDef::IsIAVertexBufferIndexValid( pIndex ) );
 		_vertexStreamDefinition.activeBindingsMask.set( CxDef::makeIAVertexBufferFlag( pIndex ) );
 		return _vertexStreamDefinition.vertexBufferReferences[pIndex];
 
 	}
 
-	void IAVertexStreamDynamicState::setVertexBufferRef( native_uint pIndex, const IAVertexBufferReference & pVBReference )
+	void IAVertexStreamDynamicState::SetVertexBufferRef( native_uint pIndex, const IAVertexBufferReference & pVBReference )
 	{
-		_setVertexBufferRefs( pIndex, 1u, &pVBReference );
+		_SetVertexBufferRefs( pIndex, 1u, &pVBReference );
 	}
 
-	void IAVertexStreamDynamicState::setVertexBufferRefs( const IAVertexBufferReferenceArray & pVBReferences )
+	void IAVertexStreamDynamicState::SetVertexBufferRefs( const IAVertexBufferReferenceArray & pVBReferences )
 	{
-		_setVertexBufferRefs( 0, pVBReferences.size(), pVBReferences.data() );
+		_SetVertexBufferRefs( 0, pVBReferences.size(), pVBReferences.data() );
 	}
 
-	void IAVertexStreamDynamicState::setVertexBufferRefs( native_uint pFirstIndex, native_uint pCount, const IAVertexBufferReference * pVBReferences )
+	void IAVertexStreamDynamicState::SetVertexBufferRefs( native_uint pFirstIndex, native_uint pCount, const IAVertexBufferReference * pVBReferences )
 	{
-		_setVertexBufferRefs( pFirstIndex, pCount, pVBReferences );
+		_SetVertexBufferRefs( pFirstIndex, pCount, pVBReferences );
 	}
 
-	IAIndexBufferReference & IAVertexStreamDynamicState::setIndexBufferRef()
+	IAIndexBufferReference & IAVertexStreamDynamicState::SetIndexBufferRef()
 	{
-		_vertexStreamDefinition.activeBindingsMask.set( E_IA_VERTEX_STREAM_BINDING_FLAG_INDEX_BUFFER_BIT );
+		_vertexStreamDefinition.activeBindingsMask.set( eIAVertexStreamBindingFlagIndexBufferBit );
 		return _vertexStreamDefinition.indexBufferReference;
 	}
 
-	void IAVertexStreamDynamicState::setIndexBufferRef( const IAIndexBufferReference & pIBReference )
+	void IAVertexStreamDynamicState::SetIndexBufferRef( const IAIndexBufferReference & pIBReference )
 	{
-		_vertexStreamDefinition.activeBindingsMask.setOrUnset( E_IA_VERTEX_STREAM_BINDING_FLAG_INDEX_BUFFER_BIT, !pIBReference.empty() );
+		_vertexStreamDefinition.activeBindingsMask.set_or_unset(
+				eIAVertexStreamBindingFlagIndexBufferBit,
+				!pIBReference.IsEmpty());
 		_vertexStreamDefinition.indexBufferReference = pIBReference;
 	}
 
-	void IAVertexStreamDynamicState::resetVertexBufferRef( native_uint pIndex )
+	void IAVertexStreamDynamicState::ResetVertexBufferRef( native_uint pIndex )
 	{
-		_resetVertexBufferRefs( pIndex, 1 );
+		_ResetVertexBufferRefs( pIndex, 1 );
 	}
 
-	void IAVertexStreamDynamicState::resetVertexBufferRefs( native_uint pFirstIndex, native_uint pCount )
+	void IAVertexStreamDynamicState::ResetVertexBufferRefs( native_uint pFirstIndex, native_uint pCount )
 	{
-		_resetVertexBufferRefs( pFirstIndex, pCount );
+		_ResetVertexBufferRefs( pFirstIndex, pCount );
 	}
 
-	void IAVertexStreamDynamicState::resetVertexBufferRefs()
+	void IAVertexStreamDynamicState::ResetVertexBufferRefs()
 	{
-		_resetVertexBufferRefs( 0, GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM );
+		_ResetVertexBufferRefs( 0, GCM::cxIAMaxVertexBufferBindingsNum );
 	}
 
-	void IAVertexStreamDynamicState::resetIndexBufferRef()
+	void IAVertexStreamDynamicState::ResetIndexBufferRef()
 	{
-		_vertexStreamDefinition.activeBindingsMask.unset( E_IA_VERTEX_STREAM_BINDING_FLAG_INDEX_BUFFER_BIT );
-		_vertexStreamDefinition.indexBufferReference.reset();
+		_vertexStreamDefinition.activeBindingsMask.unset( eIAVertexStreamBindingFlagIndexBufferBit );
+		_vertexStreamDefinition.indexBufferReference.Reset();
 	}
 
-	void IAVertexStreamDynamicState::resetAllBufferRefs()
+	void IAVertexStreamDynamicState::ResetAllBufferRefs()
 	{
-		resetIndexBufferRef();
-		resetVertexBufferRefs();
+		ResetIndexBufferRef();
+		ResetVertexBufferRefs();
 	}
 
-	void IAVertexStreamDynamicState::_setVertexBufferRefs( native_uint pFirstIndex, native_uint pCount, const IAVertexBufferReference * pVBReferences )
+	void IAVertexStreamDynamicState::_SetVertexBufferRefs( native_uint pFirstIndex, native_uint pCount, const IAVertexBufferReference * pVBReferences )
 	{
-		for( native_uint vbIndex = pFirstIndex; ( vbIndex < GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM ) && ( pCount != 0 ); ++vbIndex, --pCount )
+		for( native_uint vbIndex = pFirstIndex; ( vbIndex < GCM::cxIAMaxVertexBufferBindingsNum ) && (pCount != 0 ); ++vbIndex, --pCount )
 		{
 			const auto & sourceVBReference = pVBReferences[vbIndex - pFirstIndex];
 
 			const auto vertexBufferBit = CxDef::makeIAVertexBufferFlag( vbIndex );
 
 			_vertexStreamDefinition.vertexBufferReferences[vbIndex] = sourceVBReference;
-			_vertexStreamDefinition.activeBindingsMask.setOrUnset( vertexBufferBit, !sourceVBReference.empty() );
+			_vertexStreamDefinition.activeBindingsMask.set_or_unset( vertexBufferBit, !sourceVBReference.IsEmpty() );
 		}
 	}
 
-	void IAVertexStreamDynamicState::_resetVertexBufferRefs( native_uint pFirstIndex, native_uint pCount )
+	void IAVertexStreamDynamicState::_ResetVertexBufferRefs( native_uint pFirstIndex, native_uint pCount )
 	{
-		for( native_uint vbIndex = pFirstIndex; ( vbIndex < GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM ) && ( pCount != 0 ); ++vbIndex, --pCount )
+		for( native_uint vbIndex = pFirstIndex; ( vbIndex < GCM::cxIAMaxVertexBufferBindingsNum ) && (pCount != 0 ); ++vbIndex, --pCount )
 		{
 			const auto vertexBufferBit = CxDef::makeIAVertexBufferFlag( vbIndex );
 
-			_vertexStreamDefinition.vertexBufferReferences[vbIndex].reset();
+			_vertexStreamDefinition.vertexBufferReferences[vbIndex].Reset();
 			_vertexStreamDefinition.activeBindingsMask.unset( vertexBufferBit );
 		}
 	}

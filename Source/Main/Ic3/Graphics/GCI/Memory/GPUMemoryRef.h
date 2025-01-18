@@ -5,8 +5,6 @@
 #define __IC3_GRAPHICS_GCI_GPU_MEMORY_POOL_H__
 
 #include "CommonGPUMemoryDefs.h"
-#include <Ic3/CoreLib/Sync/SpinLock.h>
-#include <Ic3/CoreLib/Sync/SyncInterface.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -19,19 +17,19 @@ namespace Ic3::Graphics::GCI
 		GPUMemoryRef( GPUMemoryPool & pSourcePool, const GPUMemoryRegion & pPoolSubRegion );
 		~GPUMemoryRef();
 
+		CPPX_ATTR_NO_DISCARD bool empty() const;
+
+		CPPX_ATTR_NO_DISCARD bool IsMemoryLocked() const;
+
 		void lockMemory();
 
 		bool tryLockMemory();
 
 		void unlockMemory();
 
-		IC3_ATTR_NO_DISCARD bool empty() const;
-
-		IC3_ATTR_NO_DISCARD bool isMemoryLocked() const;
-
 	private:
 		GPUMemoryRegion _poolSubRegion;
-		Sync::AutoSharedLock<Sync::SharedSpinLock> _poolMemoryLock;
+		//Sync::TAutoSharedLock<Sync::SharedSpinLock> _poolMemoryLock;
 		std::atomic<uint32_t> _poolMemoryLockStatus;
 	};
 

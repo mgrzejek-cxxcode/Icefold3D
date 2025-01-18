@@ -3,6 +3,7 @@
 #include "NSIEventListener.h"
 #include "NSIWindow.h"
 #include "NSIKeyboardSupport.h"
+#include <cppx/range.h>
 #include <Ic3/System/Internal/EventCorePrivate.h>
 #include <AppKit/NSScreen.h>
 
@@ -30,33 +31,33 @@ namespace Ic3::System
 
 	OSXEventController::~OSXEventController() noexcept = default;
 
-	void OSXEventController::_nativeRegisterEventSource( EventSource & pEventSource )
+	void OSXEventController::_NativeRegisterEventSource( EventSource & pEventSource )
 	{
 	@autoreleasepool
 	{
 		auto * eventSourceNativeData =
-			pEventSource.getEventSourceNativeDataAs<Platform::OSXEventSourceNativeData>();
+			pEventSource.GetEventSourceNativeDataAs<Platform::OSXEventSourceNativeData>();
 
-		auto * nsEventListener = ( NSOSXEventListener * )eventSourceNativeData->nsEventListener;
+		auto * nsEventListener = ( NSOSXEventListener * )eventSourceNativeData->mNSEventListener;
 
 		[nsEventListener bind:this];
 	}
 	}
 
-	void OSXEventController::_nativeUnregisterEventSource( EventSource & pEventSource )
+	void OSXEventController::_NativeUnRegisterEventSource( EventSource & pEventSource )
 	{
 	@autoreleasepool
 	{
 		auto * eventSourceNativeData =
-				pEventSource.getEventSourceNativeDataAs<Platform::OSXEventSourceNativeData>();
+				pEventSource.GetEventSourceNativeDataAs<Platform::OSXEventSourceNativeData>();
 
-		auto * nsEventListener = ( NSOSXEventListener * )eventSourceNativeData->nsEventListener;
+		auto * nsEventListener = ( NSOSXEventListener * )eventSourceNativeData->mNSEventListener;
 
 		[nsEventListener unbind];
 	}
 	}
 
-	bool OSXEventController::_nativeDispatchPendingEvents()
+	bool OSXEventController::_NativeDispatchPendingEvents()
 	{
 		for( NSEvent * nsEvent = nullptr; ; )
 		{
@@ -76,7 +77,7 @@ namespace Ic3::System
 		return true;
 	}
 
-	bool OSXEventController::_nativeDispatchPendingEventsWait()
+	bool OSXEventController::_NativeDispatchPendingEventsWait()
 	{
 		for( NSEvent * nsEvent = nullptr; ; )
 		{
@@ -99,11 +100,11 @@ namespace Ic3::System
 	namespace Platform
 	{
 
-		bool nativeEventTranslate( EventController & pEventController, const NativeEventType & pNativeEvent, EventObject & pOutEvent )
+		bool NativeEventTranslate( EventController & pEventController, const NativeEventType & pNativeEvent, EventObject & pOutEvent )
 		{
-			auto * osxEventController = pEventController.queryInterface<OSXEventController>();
+			auto * osxEventController = pEventController.QueryInterface<OSXEventController>();
 
-			if( auto * eventSource = osxFindEventSourceByNSWindow( *osxEventController, pNativeEvent.nsSourceWindow ) )
+			if( auto * eventSource = osxFindEventSourceByNSWindow( *osxEventController, pNativeEvent.mNSSourceWindow ) )
 			{
 				return osxTranslateEvent( pEventController, *eventSource, pNativeEvent, pOutEvent );
 			}
@@ -113,81 +114,81 @@ namespace Ic3::System
 
 		EventSource * osxFindEventSourceByNSWindow( OSXEventController & pEventController, NSWindow * pNSWindow )
 		{
-			auto * eventSource = pEventController.findEventSource( [pNSWindow]( const EventSource & pEventSource ) -> bool {
-				const auto * eventSourceNativeData = pEventSource.getEventSourceNativeDataAs<Platform::OSXEventSourceNativeData>();
-				return eventSourceNativeData->nsWindow == pNSWindow;
+			auto * eventSource = pEventController.FindEventSource( [pNSWindow]( const EventSource & pEventSource ) -> bool {
+				const auto * eventSourceNativeData = pEventSource.GetEventSourceNativeDataAs<Platform::OSXEventSourceNativeData>();
+				return eventSourceNativeData->mNSWindow == pNSWindow;
 			});
 			return eventSource;
 		}
 
-		void osxCreateEventListener( OSXEventSourceNativeData & pEventSourceNativeData )
+		void OSXCreateEventListener( OSXEventSourceNativeData & pEventSourceNativeData )
 		{
 		@autoreleasepool
 		{
-			if( ![( id )pEventSourceNativeData.nsWindow isKindOfClass:[NSOSXWindow class]] )
+			if( ![( id )pEventSourceNativeData.mNSWindow IsKindOfClass:[NSOSXWindow class]] )
 			{
 				return;
 			}
 
-			auto * nsWindow = ( NSOSXWindow * )( pEventSourceNativeData.nsWindow );
+			auto * nsWindow = ( NSOSXWindow * )( pEventSourceNativeData.mNSWindow );
 
 			@try
 			{
 				auto * nsEventListener = [[NSOSXEventListener alloc] initForNSWindow:nsWindow];
-				pEventSourceNativeData.nsEventListener = nsEventListener;
+				pEventSourceNativeData.mNSEventListener = nsEventListener;
 			}
 			@catch( NSException * pException )
 			{
 				const auto message = [[pException reason] UTF8String];
-				ic3DebugInterrupt();
+				Ic3DebugInterrupt();
 			}
 		}
 		}
 
 		bool osxTranslateEvent( EventController & pEventController, EventSource & pEventSource, const NativeEventType & pNativeEvent, EventObject & pOutEvent )
 		{
-			if( osxIsEventTypeInputKeyboard( pNativeEvent.nsAppEventID ) )
+			if( osxIsEventTypeInputKeyboard( pNativeEvent.mNSAppEventID ) )
 			{
 				_osxTranslateEventInputKeyboard( pEventController, pEventSource, pNativeEvent, pOutEvent );
 			}
-			else if( osxIsEventTypeInputMouse( pNativeEvent.nsAppEventID ) )
+			else if( osxIsEventTypeInputMouse( pNativeEvent.mNSAppEventID ) )
 			{
 				_osxTranslateEventInputMouse( pEventController, pEventSource, pNativeEvent, pOutEvent );
 			}
-			else if( osxIsEventTypeInputOther( pNativeEvent.nsAppEventID ) )
+			else if( osxIsEventTypeInputOther( pNativeEvent.mNSAppEventID ) )
 			{
 				_osxTranslateEventInputOther( pEventController, pEventSource, pNativeEvent, pOutEvent );
 			}
-			else if( osxIsEventTypeWindow( pNativeEvent.nsAppEventID ) )
+			else if( osxIsEventTypeWindow( pNativeEvent.mNSAppEventID ) )
 			{
 				_osxTranslateEventWindow( pEventController, pEventSource, pNativeEvent, pOutEvent );
 			}
 
-			return pOutEvent.code != E_EVENT_CODE_UNDEFINED;
+			return pOutEvent.uCode != eEventCodeUndefined;
 		}
 
-		bool osxIsEventTypeInputKeyboard( OSXEventID pEventID )
+		bool osxIsEventTypeInputKeyboard( EOSXEventID pEventID )
 		{
-			return ( pEventID >= OSXEventIDGenericKeyDown ) && ( pEventID <= OSXEventIDGenericFlagsChanged );
+			return ( pEventID >= eOSXEventIDGenericKeyDown ) && ( pEventID <= eOSXEventIDGenericFlagsChanged );
 		}
 
-		bool osxIsEventTypeInputMouse( OSXEventID pEventID )
+		bool osxIsEventTypeInputMouse( EOSXEventID pEventID )
 		{
-			return ( ( pEventID >= OSXEventIDGenericLeftMouseDown ) && ( pEventID <= OSXEventIDGenericMouseExited ) ) ||
-			       ( ( pEventID >= OSXEventIDGenericScrollWheel ) && ( pEventID <= OSXEventIDGenericOtherMouseDragged ) );
+			return ( ( pEventID >= eOSXEventIDGenericLeftMouseDown ) && ( pEventID <= eOSXEventIDGenericMouseExited ) ) ||
+			       ( ( pEventID >= eOSXEventIDGenericScrollWheel ) && ( pEventID <= eOSXEventIDGenericOtherMouseDragged ) );
 		}
 
-		bool osxIsEventTypeInputOther( OSXEventID pEventID )
+		bool osxIsEventTypeInputOther( EOSXEventID pEventID )
 		{
-			return ( pEventID >= OSXEventIDGenericGesture ) && ( pEventID <= OSXEventIDGenericPressure );
+			return ( pEventID >= eOSXEventIDGenericGesture ) && ( pEventID <= eOSXEventIDGenericPressure );
 		}
 
-		bool osxIsEventTypeWindow( OSXEventID pEventID )
+		bool osxIsEventTypeWindow( EOSXEventID pEventID )
 		{
-			return ( pEventID >= OSXEventIDWindowDidExpose ) && ( pEventID <= OSXEventIDWindowWillClose );
+			return ( pEventID >= eOSXEventIDWindowDidExpose ) && ( pEventID <= eOSXEventIDWindowWillClose );
 		}
 
-		EMouseButtonID osxQueryMouseButtonID( NSEvent * pNSEvent )
+		EMouseButtonID OSXQueryMouseButtonID( NSEvent * pNSEvent )
 		{
 			static constexpr EMouseButtonID sMouseButtonIDArray[] =
 			{
@@ -197,7 +198,7 @@ namespace Ic3::System
 				/* 3 */ EMouseButtonID::XB1,
 				/* 4 */ EMouseButtonID::XB2,
 			};
-			return Cppx::staticArrayElement( sMouseButtonIDArray, [pNSEvent buttonNumber] );
+			return cppx::static_array_element( sMouseButtonIDArray, [pNSEvent buttonNumber] );
 		}
 
 		struct OSXMouseCursorState
@@ -207,7 +208,7 @@ namespace Ic3::System
 			bool isInsideWindowFrame = false;
 			bool isInsideWindowClientArea = false;
 
-			bool isInsideWindow() const noexcept
+			bool IsInsideWindow() const noexcept
 			{
 				return isInsideWindowClientArea;
 			}
@@ -229,7 +230,7 @@ namespace Ic3::System
 			}
 		};
 
-		OSXMouseCursorState osxQueryMouseCursorState( NSEvent * pNSEvent )
+		OSXMouseCursorState OSXQueryMouseCursorState( NSEvent * pNSEvent )
 		{
 			auto * nsSourceWindow = [pNSEvent window];
 
@@ -246,14 +247,14 @@ namespace Ic3::System
 			bool mouseIsInsideWindowFrame = false;
 			bool mouseIsInsideWindowClientArea = false;
 
-			if( Cppx::rangeContains( { 0.0, nsWindowClientAreaSize.size.width }, mousePositionWindowSpace.x ) &&
-			    Cppx::rangeContains( { 0.0, nsWindowClientAreaSize.size.height }, mousePositionWindowSpace.y ) )
+			if( cppx::range_contains( { 0.0, nsWindowClientAreaSize.size.width }, mousePositionWindowSpace.x ) &&
+			    cppx::range_contains( { 0.0, nsWindowClientAreaSize.size.height }, mousePositionWindowSpace.y ) )
 			{
 				mouseIsInsideWindowFrame = true;
 				mouseIsInsideWindowClientArea = true;
 			}
-			else if( Cppx::rangeContains( { 0.0, nsWindowFrame.size.width }, mousePositionWindowSpace.x ) &&
-			         Cppx::rangeContains( { 0.0, nsWindowFrame.size.height }, mousePositionWindowSpace.y ) )
+			else if( cppx::range_contains( { 0.0, nsWindowFrame.size.width }, mousePositionWindowSpace.x ) &&
+			         cppx::range_contains( { 0.0, nsWindowFrame.size.height }, mousePositionWindowSpace.y ) )
 			{
 				mouseIsInsideWindowFrame = true;
 			}
@@ -269,109 +270,109 @@ namespace Ic3::System
 			return osxCursorState;
 		}
 
-		Bitmask<EMouseButtonFlagBits> queryMouseButtonsActiveMask( NSEvent * pNSEvent )
+		cppx::bitmask<EMouseButtonFlagBits> QueryMouseButtonsActiveMask( NSEvent * pNSEvent )
 		{
 			const auto nsButtonMask = [NSEvent pressedMouseButtons];
-			ic3DebugOutputFmt( "MouseButtonMask: %d", nsButtonMask );
+			Ic3DebugOutputFmt( "MouseButtonMask: %d", nsButtonMask );
 			return nsButtonMask;
 		}
 
-		Bitmask<EOSXMouseScrollEventFlags> osxQueryMouseScrollEventFlags( const NativeEventType & pNativeEvent )
+		cppx::bitmask<EOSXMouseScrollEventFlags> OSXQueryMouseScrollEventFlags( const NativeEventType & pNativeEvent )
 		{
-			Bitmask<EOSXMouseScrollEventFlags> scrollEventMask = 0;
+			cppx::bitmask<EOSXMouseScrollEventFlags> scrollEventMask = 0;
 
-			if( [pNativeEvent.nsEvent respondsToSelector:@selector(hasPreciseScrollingDeltas)] )
+			if( [pNativeEvent.mNSEvent respondsToSelector:@selector(hasPreciseScrollingDeltas)] )
 			{
-				if( [pNativeEvent.nsEvent hasPreciseScrollingDeltas] )
+				if( [pNativeEvent.mNSEvent HasPreciseScrollingDeltas] )
 				{
-					scrollEventMask.set( E_OSX_MOUSE_SCROLL_EVENT_FLAG_SCROLLING_MODE_PRECISE_BIT );
+					scrollEventMask.set( eOSXMouseScrollEventFlagScrollingModePreciseBit );
 				}
 				else
 				{
-					scrollEventMask.set( E_OSX_MOUSE_SCROLL_EVENT_FLAG_SCROLLING_MODE_NORMAL_BIT );
+					scrollEventMask.set( eOSXMouseScrollEventFlagScrollingModeNormalBit );
 				}
 			}
 
-			if( [pNativeEvent.nsEvent respondsToSelector:@selector(isDirectionInvertedFromDevice)] )
+			if( [pNativeEvent.mNSEvent respondsToSelector:@selector(isDirectionInvertedFromDevice)] )
 			{
-				if( [pNativeEvent.nsEvent isDirectionInvertedFromDevice] )
+				if( [pNativeEvent.mNSEvent IsDirectionInvertedFromDevice] )
 				{
-					scrollEventMask.set( E_OSX_MOUSE_SCROLL_EVENT_FLAG_SCROLLING_DIRECTION_INVERTED_BIT );
+					scrollEventMask.set( eOSXMouseScrollEventFlagScrollingDirectionInvertedBit );
 				}
 				else
 				{
-					scrollEventMask.set( E_OSX_MOUSE_SCROLL_EVENT_FLAG_SCROLLING_DIRECTION_NORMAL_BIT );
+					scrollEventMask.set( eOSXMouseScrollEventFlagScrollingDirectionNormalBit );
 				}
 			}
 
 			return scrollEventMask;
 		}
 
-		EKeyCode _osxGetSysKeyCodeV1( unsigned short pNSKeyCode );
-		EKeyCode _osxGetSysKeyCodeV2( unsigned short pNSKeyCode );
+		EKeyCode _OSXGetSysKeyCodeV1( unsigned short pNSKeyCode );
+		EKeyCode _OSXGetSysKeyCodeV2( unsigned short pNSKeyCode );
 
 		void _osxTranslateEventInputKeyboard( EventController & pEventController, EventSource & pEventSource, const NativeEventType & pNativeEvent, EventObject & pOutEvent )
 		{
-			auto & inputKeyboardState = pEventController.getEventSystemSharedState().inputKeyboardState;
+			auto & inputKeyboardState = pEventController.GetEventSystemSharedState().inputKeyboardState;
 
-			switch( pNativeEvent.nsAppEventID )
+			switch( pNativeEvent.mNSAppEventID )
 			{
-				case OSXEventIDGenericKeyDown:
+				case eOSXEventIDGenericKeyDown:
 				{
-					auto & eInputKeyboard = pOutEvent.eInputKeyboard;
-					eInputKeyboard.eventCode = E_EVENT_CODE_INPUT_KEYBOARD;
-					inputKeyboardState.activeModifiersMask = osxTranslateModifierKeyFlags( [pNativeEvent.nsEvent modifierFlags] );
-					eInputKeyboard.inputKeyboardState = &inputKeyboardState;
-					eInputKeyboard.keyAction = EKeyActionType::Press;
-					eInputKeyboard.keyCode = _osxGetSysKeyCodeV1( [pNativeEvent.nsEvent keyCode] );
+					auto & eInputKeyboard = pOutEvent.uEvtInputKeyboard;
+					eInputKeyboard.eventCode = eEventCodeInputKeyboard;
+					inputKeyboardState.mActiveModifiersMask = OSXTranslateModifierKeyFlags( [pNativeEvent.mNSEvent modifierFlags] );
+					eInputKeyboard.mInputKeyboardState = &inputKeyboardState;
+					eInputKeyboard.mKeyAction = EKeyActionType::Press;
+					eInputKeyboard.mKeyCode = _OSXGetSysKeyCodeV1( [pNativeEvent.mNSEvent keyCode] );
 					break;
 				}
-				case OSXEventIDGenericKeyUp:
+				case eOSXEventIDGenericKeyUp:
 				{
-					auto & eInputKeyboard = pOutEvent.eInputKeyboard;
-					eInputKeyboard.eventCode = E_EVENT_CODE_INPUT_KEYBOARD;
-					inputKeyboardState.activeModifiersMask = osxTranslateModifierKeyFlags( [pNativeEvent.nsEvent modifierFlags] );
-					eInputKeyboard.inputKeyboardState = &inputKeyboardState;
-					eInputKeyboard.keyAction = EKeyActionType::Release;
-					eInputKeyboard.keyCode = _osxGetSysKeyCodeV1( [pNativeEvent.nsEvent keyCode] );
+					auto & eInputKeyboard = pOutEvent.uEvtInputKeyboard;
+					eInputKeyboard.eventCode = eEventCodeInputKeyboard;
+					inputKeyboardState.mActiveModifiersMask = OSXTranslateModifierKeyFlags( [pNativeEvent.mNSEvent modifierFlags] );
+					eInputKeyboard.mInputKeyboardState = &inputKeyboardState;
+					eInputKeyboard.mKeyAction = EKeyActionType::Release;
+					eInputKeyboard.mKeyCode = _OSXGetSysKeyCodeV1( [pNativeEvent.mNSEvent keyCode] );
 					break;
 				}
-				case OSXEventIDGenericFlagsChanged:
+				case eOSXEventIDGenericFlagsChanged:
 				{
-					const auto currentModifierFlags = osxTranslateModifierKeyFlags( [pNativeEvent.nsEvent modifierFlags] );
-					const auto previousModifierFlags = inputKeyboardState.activeModifiersMask;
+					const auto currentModifierFlags = OSXTranslateModifierKeyFlags( [pNativeEvent.mNSEvent modifierFlags] );
+					const auto previousModifierFlags = inputKeyboardState.mActiveModifiersMask;
 					const auto modifierDiff = currentModifierFlags ^ previousModifierFlags;
-					const auto modifierKeyCode = evt::getModifierKeyCodeFromModifierFlags( modifierDiff );
+					const auto modifierKeyCode = Evt::GetModifierKeyCodeFromModifierFlags( modifierDiff );
 
-					auto & eInputKeyboard = pOutEvent.eInputKeyboard;
-					eInputKeyboard.eventCode = E_EVENT_CODE_INPUT_KEYBOARD;
-					inputKeyboardState.activeModifiersMask = currentModifierFlags;
-					eInputKeyboard.inputKeyboardState = &inputKeyboardState;
-					eInputKeyboard.keyCode = evt::getModifierKeyCodeFromModifierFlags( modifierDiff );
+					auto & eInputKeyboard = pOutEvent.uEvtInputKeyboard;
+					eInputKeyboard.eventCode = eEventCodeInputKeyboard;
+					inputKeyboardState.mActiveModifiersMask = currentModifierFlags;
+					eInputKeyboard.mInputKeyboardState = &inputKeyboardState;
+					eInputKeyboard.mKeyCode = Evt::GetModifierKeyCodeFromModifierFlags( modifierDiff );
 
-					if( !previousModifierFlags.isSet( modifierDiff ) )
+					if( !previousModifierFlags.is_set( modifierDiff ) )
 					{
-						eInputKeyboard.keyAction = EKeyActionType::Press;
+						eInputKeyboard.mKeyAction = EKeyActionType::Press;
 					}
 					else
 					{
-						eInputKeyboard.keyAction = EKeyActionType::Release;
+						eInputKeyboard.mKeyAction = EKeyActionType::Release;
 					}
 
 					break;
 				}
 				default:
 				{
-					ic3DebugInterrupt();
+					Ic3DebugInterrupt();
 				}
 			}
 		}
 
 		EvtInputMouseScroll & osxProcessMouseScrollEvent( EventController & pEventController, const OSXMouseCursorState & pCursorState, EventObject & pOutEvent )
 		{
-			auto & controllerNativeData = pEventController.getInterface<OSXEventController>()->mNativeData;
-			auto & inputMouseState = pEventController.getEventSystemSharedState().inputMouseState;
-			auto & eInputMouseScroll = pOutEvent.eInputMouseScroll;
+			auto & controllerNativeData = pEventController.GetInterface<OSXEventController>()->mNativeData;
+			auto & inputMouseState = pEventController.GetEventSystemSharedState().inputMouseState;
+			auto & eInputMouseScroll = pOutEvent.uEvtInputMouseScroll;
 
 			if( inputMouseState.lastCursorPos == CX_EVENT_MOUSE_POS_INVALID )
 			{
@@ -379,7 +380,7 @@ namespace Ic3::System
 				inputMouseState.lastCursorPos = pCursorState.positionScreenSpaceI32();
 			}
 
-			eInputMouseScroll.eventCode = E_EVENT_CODE_INPUT_MOUSE_BUTTON;
+			eInputMouseScroll.eventCode = eEventCodeInputMouseButton;
 			eInputMouseScroll.cursorPos = pCursorState.positionScreenSpaceI32();
 			eInputMouseScroll.inputMouseState = &inputMouseState;
 
@@ -391,9 +392,9 @@ namespace Ic3::System
 
 		EvtInputMouseButton & osxProcessMouseButtonEvent( EventController & pEventController, const OSXMouseCursorState & pCursorState, EventObject & pOutEvent )
 		{
-			auto & controllerNativeData = pEventController.getInterface<OSXEventController>()->mNativeData;
-			auto & inputMouseState = pEventController.getEventSystemSharedState().inputMouseState;
-			auto & eInputMouseButton = pOutEvent.eInputMouseButton;
+			auto & controllerNativeData = pEventController.GetInterface<OSXEventController>()->mNativeData;
+			auto & inputMouseState = pEventController.GetEventSystemSharedState().inputMouseState;
+			auto & eInputMouseButton = pOutEvent.uEvtInputMouseButton;
 
 			if( inputMouseState.lastCursorPos == CX_EVENT_MOUSE_POS_INVALID )
 			{
@@ -401,7 +402,7 @@ namespace Ic3::System
 				inputMouseState.lastCursorPos = pCursorState.positionScreenSpaceI32();
 			}
 
-			eInputMouseButton.eventCode = E_EVENT_CODE_INPUT_MOUSE_BUTTON;
+			eInputMouseButton.eventCode = eEventCodeInputMouseButton;
 			eInputMouseButton.cursorPos = pCursorState.positionScreenSpaceI32();
 			eInputMouseButton.inputMouseState = &inputMouseState;
 
@@ -413,9 +414,9 @@ namespace Ic3::System
 
 		EvtInputMouseMove & osxProcessMouseMoveEvent( EventController & pEventController, const OSXMouseCursorState & pCursorState, EventObject & pOutEvent )
 		{
-			auto & controllerNativeData = pEventController.getInterface<OSXEventController>()->mNativeData;
-			auto & inputMouseState = pEventController.getEventSystemSharedState().inputMouseState;
-			auto & eInputMouseMove = pOutEvent.eInputMouseMove;
+			auto & controllerNativeData = pEventController.GetInterface<OSXEventController>()->mNativeData;
+			auto & inputMouseState = pEventController.GetEventSystemSharedState().inputMouseState;
+			auto & eInputMouseMove = pOutEvent.uEvtInputMouseMove;
 
 			if( inputMouseState.lastCursorPos == CX_EVENT_MOUSE_POS_INVALID )
 			{
@@ -423,7 +424,7 @@ namespace Ic3::System
 				inputMouseState.lastCursorPos = pCursorState.positionScreenSpaceI32();
 			}
 
-			eInputMouseMove.eventCode = E_EVENT_CODE_INPUT_MOUSE_MOVE;
+			eInputMouseMove.eventCode = eEventCodeInputMouseMove;
 			eInputMouseMove.cursorPos = pCursorState.positionScreenSpaceI32();
 			eInputMouseMove.movementDelta.x = static_cast<int32>( std::round( pCursorState.positionScreenSpace.x - inputMouseState.lastCursorPos.x ) );
 			eInputMouseMove.movementDelta.y = static_cast<int32>( std::round( pCursorState.positionScreenSpace.y - inputMouseState.lastCursorPos.y ) );
@@ -437,178 +438,178 @@ namespace Ic3::System
 
 		void _osxTranslateEventInputMouse( EventController & pEventController, EventSource & pEventSource, const NativeEventType & pNativeEvent, EventObject & pOutEvent )
 		{
-			const auto mouseCursorState = osxQueryMouseCursorState( pNativeEvent.nsEvent );
+			const auto mouseCursorState = OSXQueryMouseCursorState( pNativeEvent.mNSEvent );
 
-			if( !mouseCursorState.isInsideWindow() )
+			if( !mouseCursorState.IsInsideWindow() )
 			{
-				auto & inputMouseState = pEventController.getEventSystemSharedState().inputMouseState;
+				auto & inputMouseState = pEventController.GetEventSystemSharedState().inputMouseState;
 				inputMouseState.lastCursorPos = CX_EVENT_MOUSE_POS_INVALID;
 				return;
 			}
 
-			switch( pNativeEvent.nsAppEventID )
+			switch( pNativeEvent.mNSAppEventID )
 			{
-				case OSXEventIDGenericLeftMouseDown:
+				case eOSXEventIDGenericLeftMouseDown:
 				{
 					auto & eInputMouseButton = osxProcessMouseButtonEvent( pEventController, mouseCursorState, pOutEvent );
 					eInputMouseButton.buttonAction = EMouseButtonActionType::Click;
 					eInputMouseButton.buttonID = EMouseButtonID::Left;
 					break;
 				}
-				case OSXEventIDGenericLeftMouseUp:
+				case eOSXEventIDGenericLeftMouseUp:
 				{
 					auto & eInputMouseButton = osxProcessMouseButtonEvent( pEventController, mouseCursorState, pOutEvent );
 					eInputMouseButton.buttonAction = EMouseButtonActionType::Release;
 					eInputMouseButton.buttonID = EMouseButtonID::Left;
 					break;
 				}
-				case OSXEventIDGenericRightMouseDown:
+				case eOSXEventIDGenericRightMouseDown:
 				{
 					auto & eInputMouseButton = osxProcessMouseButtonEvent( pEventController, mouseCursorState, pOutEvent );
 					eInputMouseButton.buttonAction = EMouseButtonActionType::Click;
 					eInputMouseButton.buttonID = EMouseButtonID::Right;
 					break;
 				}
-				case OSXEventIDGenericRightMouseUp:
+				case eOSXEventIDGenericRightMouseUp:
 				{
 					auto & eInputMouseButton = osxProcessMouseButtonEvent( pEventController, mouseCursorState, pOutEvent );
 					eInputMouseButton.buttonAction = EMouseButtonActionType::Release;
 					eInputMouseButton.buttonID = EMouseButtonID::Right;
 					break;
 				}
-				case OSXEventIDGenericMouseMoved:
+				case eOSXEventIDGenericMouseMoved:
 				{
 					auto & eInputMouseMove = osxProcessMouseMoveEvent( pEventController, mouseCursorState, pOutEvent );
 					eInputMouseMove.buttonStateMask = 0;
 					break;
 				}
-				case OSXEventIDGenericLeftMouseDragged:
+				case eOSXEventIDGenericLeftMouseDragged:
 				{
 					auto & eInputMouseMove = osxProcessMouseMoveEvent( pEventController, mouseCursorState, pOutEvent );
-					eInputMouseMove.buttonStateMask = E_MOUSE_BUTTON_FLAG_LEFT_BIT;
+					eInputMouseMove.buttonStateMask = eMouseButtonFlagLeftBit;
 					break;
 				}
-				case OSXEventIDGenericRightMouseDragged:
+				case eOSXEventIDGenericRightMouseDragged:
 				{
 					auto & eInputMouseMove = osxProcessMouseMoveEvent( pEventController, mouseCursorState, pOutEvent );
-					eInputMouseMove.buttonStateMask = E_MOUSE_BUTTON_FLAG_RIGHT_BIT;
+					eInputMouseMove.buttonStateMask = eMouseButtonFlagRightBit;
 					break;
 				}
-				case OSXEventIDGenericMouseEntered:
-				case OSXEventIDGenericMouseExited:
+				case eOSXEventIDGenericMouseEntered:
+				case eOSXEventIDGenericMouseExited:
 				{
 					break;
 				}
-				case OSXEventIDGenericScrollWheel:
+				case eOSXEventIDGenericScrollWheel:
 				{
 					auto & eInputMouseScroll = osxProcessMouseScrollEvent( pEventController, mouseCursorState, pOutEvent );
 					{
-						const auto scrollDeltaX = [pNativeEvent.nsEvent scrollingDeltaX];
-						const auto scrollDeltaY = [pNativeEvent.nsEvent scrollingDeltaY];
+						const auto scrollDeltaX = [pNativeEvent.mNSEvent scrollingDeltaX];
+						const auto scrollDeltaY = [pNativeEvent.mNSEvent scrollingDeltaY];
 
 						eInputMouseScroll.scrollDelta.x = -scrollDeltaX;
 						eInputMouseScroll.scrollDelta.y = scrollDeltaY;
 						eInputMouseScroll.scrollDirection = EMouseScrollDirection::Normal;
 
-						const auto scrollEventMask = osxQueryMouseScrollEventFlags( pNativeEvent );
+						const auto scrollEventMask = OSXQueryMouseScrollEventFlags( pNativeEvent );
 
-						if( scrollEventMask.isSet( E_OSX_MOUSE_SCROLL_EVENT_FLAG_SCROLLING_MODE_NORMAL_BIT ) )
+						if( scrollEventMask.is_set( eOSXMouseScrollEventFlagScrollingModeNormalBit ) )
 						{
 							eInputMouseScroll.scrollDelta.x *= 0.1;
 							eInputMouseScroll.scrollDelta.y *= 0.1;
 						}
 
-						if( scrollEventMask.isSet( E_OSX_MOUSE_SCROLL_EVENT_FLAG_SCROLLING_DIRECTION_INVERTED_BIT ) )
+						if( scrollEventMask.is_set( eOSXMouseScrollEventFlagScrollingDirectionInvertedBit ) )
 						{
 							eInputMouseScroll.scrollDirection = EMouseScrollDirection::Inverted;
 						}
 					}
 					break;
 				}
-				case OSXEventIDGenericTabletPoint:
-				case OSXEventIDGenericTabletProximity:
+				case eOSXEventIDGenericTabletPoint:
+				case eOSXEventIDGenericTabletProximity:
 				{
 					break;
 				}
-				case OSXEventIDGenericOtherMouseDown:
+				case eOSXEventIDGenericOtherMouseDown:
 				{
 					auto & eInputMouseButton = osxProcessMouseButtonEvent( pEventController, mouseCursorState, pOutEvent );
 					eInputMouseButton.buttonAction = EMouseButtonActionType::Click;
-					eInputMouseButton.buttonID = osxQueryMouseButtonID( pNativeEvent.nsEvent );
+					eInputMouseButton.buttonID = OSXQueryMouseButtonID( pNativeEvent.mNSEvent );
 					break;
 				}
-				case OSXEventIDGenericOtherMouseUp:
+				case eOSXEventIDGenericOtherMouseUp:
 				{
 					auto & eInputMouseButton = osxProcessMouseButtonEvent( pEventController, mouseCursorState, pOutEvent );
 					eInputMouseButton.buttonAction = EMouseButtonActionType::Release;
-					eInputMouseButton.buttonID = osxQueryMouseButtonID( pNativeEvent.nsEvent );
+					eInputMouseButton.buttonID = OSXQueryMouseButtonID( pNativeEvent.mNSEvent );
 					break;
 				}
-				case OSXEventIDGenericOtherMouseDragged:
+				case eOSXEventIDGenericOtherMouseDragged:
 				{
 					auto & eInputMouseMove = osxProcessMouseMoveEvent( pEventController, mouseCursorState, pOutEvent );
-					const auto buttonID = osxQueryMouseButtonID( pNativeEvent.nsEvent );
-					const auto buttonFlag = CxDef::getMouseButtonFlagFromButtonID( buttonID );
+					const auto buttonID = OSXQueryMouseButtonID( pNativeEvent.mNSEvent );
+					const auto buttonFlag = CxDef::GetMouseButtonFlagFromButtonID( buttonID );
 					eInputMouseMove.buttonStateMask = buttonFlag;
 					break;
 				}
 				default:
 				{
-					ic3DebugInterrupt();
+					Ic3DebugInterrupt();
 				}
 			}
 		}
 
 		void _osxTranslateEventInputOther( EventController & pEventController, EventSource & pEventSource, const NativeEventType & pNativeEvent, EventObject & pOutEvent )
 		{
-			switch( pNativeEvent.nsAppEventID )
+			switch( pNativeEvent.mNSAppEventID )
 			{
-				case OSXEventIDGenericGesture:
-				case OSXEventIDGenericMagnify:
-				case OSXEventIDGenericSwipe:
-				case OSXEventIDGenericSmartMagnify:
-				case OSXEventIDGenericQuickLook:
-				case OSXEventIDGenericPressure:
+				case eOSXEventIDGenericGesture:
+				case eOSXEventIDGenericMagnify:
+				case eOSXEventIDGenericSwipe:
+				case eOSXEventIDGenericSmartMagnify:
+				case eOSXEventIDGenericQuickLook:
+				case eOSXEventIDGenericPressure:
 				{
 					break;
 				}
 				default:
 				{
-					ic3DebugInterrupt();
+					Ic3DebugInterrupt();
 				}
 			}
 		}
 
 		void _osxTranslateEventWindow( EventController & pEventController, EventSource & pEventSource, const NativeEventType & pNativeEvent, EventObject & pOutEvent )
 		{
-			switch( pNativeEvent.nsAppEventID )
+			switch( pNativeEvent.mNSAppEventID )
 			{
-				case OSXEventIDWindowDidExpose:
-				case OSXEventIDWindowDidMove:
-				case OSXEventIDWindowDidResize:
-				case OSXEventIDWindowMiniaturize:
-				case OSXEventIDWindowDidDeminiaturize:
-				case OSXEventIDWindowDidBecomeKey:
-				case OSXEventIDWindowDidResignKey:
-				case OSXEventIDWindowDidChangeBackingProperties:
-				case OSXEventIDWindowDidChangeScreenProfile:
-				case OSXEventIDWindowWillEnterFullScreen:
-				case OSXEventIDWindowDidEnterFullScreen:
-				case OSXEventIDWindowWillExitFullScreen:
-				case OSXEventIDWindowDidExitFullScreen:
+				case eOSXEventIDWindowDidExpose:
+				case eOSXEventIDWindowDidMove:
+				case eOSXEventIDWindowDidResize:
+				case eOSXEventIDWindowMiniaturize:
+				case eOSXEventIDWindowDidDeminiaturize:
+				case eOSXEventIDWindowDidBecomeKey:
+				case eOSXEventIDWindowDidResignKey:
+				case eOSXEventIDWindowDidChangeBackingProperties:
+				case eOSXEventIDWindowDidChangeScreenProfile:
+				case eOSXEventIDWindowWillEnterFullScreen:
+				case eOSXEventIDWindowDidEnterFullScreen:
+				case eOSXEventIDWindowWillExitFullScreen:
+				case eOSXEventIDWindowDidExitFullScreen:
 				{
 					break;
 				}
-				case OSXEventIDWindowWillClose:
+				case eOSXEventIDWindowWillClose:
 				{
-					auto & eWindowUpdateDestroy = pOutEvent.eWindowUpdateDestroy;
-					eWindowUpdateDestroy.eventCode = E_EVENT_CODE_WINDOW_UPDATE_DESTROY;
+					auto & eWindowUpdateDestroy = pOutEvent.uEvtWindowUpdateDestroy;
+					eWindowUpdateDestroy.eventCode = eEventCodeWindowUpdateDestroy;
 					eWindowUpdateDestroy.eventSource = &pEventSource;
 					break;
 				}
 				default:
 				{
-					ic3DebugInterrupt();
+					Ic3DebugInterrupt();
 				}
 			}
 		}
@@ -748,7 +749,7 @@ namespace Ic3::System
 			/* 0x7F 127 */ EKeyCode::Unknown,
 		};
 
-		EKeyCode _osxGetSysKeyCodeV1( unsigned short pNSKeyCode )
+		EKeyCode _OSXGetSysKeyCodeV1( unsigned short pNSKeyCode )
 		{
 			if( ( pNSKeyCode >= 0x00 ) && ( pNSKeyCode <= 0x7F ) )
 			{
@@ -814,7 +815,7 @@ namespace Ic3::System
 			/* 0x32 */ /* Non-US # and ~ */ EKeyCode::Unknown,
 			/* 0x33 */ /* ; and :        */ EKeyCode::Unknown,
 			/* 0x34 */ /* ' and "        */ EKeyCode::Unknown,
-			/* 0x35 */ /*   Tilde        */ EKeyCode::Unknown,
+			/* 0x35 */ /* Tilde          */ EKeyCode::Unknown,
 			/* 0x36 */ /* , and "<"      */ EKeyCode::Unknown,
 			/* 0x37 */ /* . and ">"      */ EKeyCode::Unknown,
 			/* 0x38 */ /* / and ?        */ EKeyCode::Unknown,
@@ -869,14 +870,14 @@ namespace Ic3::System
 			/* 0xE0 */ EKeyCode::CtrlLeft,
 			/* 0xE1 */ EKeyCode::ShiftLeft,
 			/* 0xE2 */ EKeyCode::AltLeft,
-			/* 0xE3 */ /* Keyboard Left GUI       */ EKeyCode::Unknown,
+			/* 0xE3 */ /* Keyboard Left GUI */ EKeyCode::Unknown,
 			/* 0xE4 */ EKeyCode::CtrlRight,
 			/* 0xE5 */ EKeyCode::ShiftRight,
 			/* 0xE6 */ EKeyCode::AltRight,
-			/* 0xE7 */ /* Keyboard Right GUI      */ EKeyCode::Unknown,
+			/* 0xE7 */ /* Keyboard Right GUI */ EKeyCode::Unknown,
 		};
 
-		EKeyCode _osxGetSysKeyCodeV2( unsigned short pNSKeyCode )
+		EKeyCode _OSXGetSysKeyCodeV2( unsigned short pNSKeyCode )
 		{
 			if( ( pNSKeyCode >= 0x04 ) && ( pNSKeyCode <= 0x73 ) )
 			{

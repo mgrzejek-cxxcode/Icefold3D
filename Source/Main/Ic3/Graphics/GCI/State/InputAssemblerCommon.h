@@ -11,121 +11,145 @@
 namespace Ic3::Graphics::GCI
 {
 
-	ic3GpaDeclareClassHandle( GPUBuffer );
+	Ic3GCIDeclareClassHandle( GPUBuffer );
 
 	/// @brief
-	using input_assembler_index_t = uint16;
+	using input_assembler_index_t = uint8;
 
 	/// @brief
 	using vertex_attribute_offset_t = uint16;
 
+	///
+	constexpr auto cxIAVertexAttributeIndexUndefined = cppx::meta::limits<input_assembler_index_t>::max_value;
+
+	///
+	constexpr auto cxIAVertexAttributeOffsetAppend = cppx::meta::limits<vertex_attribute_offset_t>::max_value;
+
+	///
+	constexpr auto cxIAVertexAttributeOffsetAppend16 = cppx::static_numeric_cast<vertex_attribute_offset_t>( cxIAVertexAttributeOffsetAppend - 1 );
+
+	///
+	constexpr auto cxIAVertexStreamIndexUndefined = cppx::meta::limits<input_assembler_index_t>::max_value;
+
+	///
+	constexpr auto cxIAVertexAttributeMaskAll = cppx::make_lsfb_bitmask<input_assembler_index_t>( GCM::cxIAMaxVertexAttributesNum );
+
+	///
+	constexpr auto cxIAVertexBufferBindingMaskAll = cppx::make_lsfb_bitmask<input_assembler_index_t>( GCM::cxIAMaxVertexBufferBindingsNum );
+
+	///
+	constexpr auto cxIAInputStreamBindingMaskAll = cxIAVertexBufferBindingMaskAll | 0x10000u;
+
 	namespace CxDef
 	{
 
-		///
-		constexpr auto IA_VERTEX_ATTRIBUTE_INDEX_UNDEFINED = QLimits<input_assembler_index_t>::maxValue;
-
-		///
-		constexpr auto IA_VERTEX_ATTRIBUTE_OFFSET_APPEND = QLimits<vertex_attribute_offset_t>::maxValue;
-
-		///
-		constexpr auto IA_VERTEX_ATTRIBUTE_OFFSET_APPEND16 = static_numeric_cast<vertex_attribute_offset_t>( IA_VERTEX_ATTRIBUTE_OFFSET_APPEND - 1 );
-
-		///
-		constexpr auto IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED = QLimits<input_assembler_index_t>::maxValue;
-
-		///
-		constexpr auto IA_VERTEX_STREAM_INSTANCE_RATE_UNDEFINED = QLimits<uint16>::maxValue;
-
-		///
-		constexpr auto IA_VERTEX_STREAM_INDEX_UNDEFINED = IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED;
-
-		///
-		constexpr auto IA_VERTEX_ATTRIBUTE_MASK_ALL = makeLSFBitmask<input_assembler_index_t>( GCM::IA_MAX_VERTEX_ATTRIBUTES_NUM );
-
-		///
-		constexpr auto IA_VERTEX_BUFFER_BINDING_MASK_ALL = makeLSFBitmask<input_assembler_index_t>( GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM );
-
-		///
-		constexpr auto IA_INPUT_STREAM_BINDING_MASK_ALL = IA_VERTEX_BUFFER_BINDING_MASK_ALL | 0x10000u;
-
 		/// @brief
-		inline constexpr bool isIAVertexAttributeIndexValid( native_uint pIndex )
+		inline constexpr bool IsIAVertexAttributeIndexValid( native_uint pIndex )
 		{
-			return pIndex < GCM::IA_MAX_VERTEX_ATTRIBUTES_NUM;
+			return pIndex < GCM::cxIAMaxVertexAttributesNum;
 		}
 
 		/// @brief
 		inline constexpr uint32 makeIAVertexAttributeFlag( native_uint pAttribIndex )
 		{
-			return ( pAttribIndex < GCM::IA_MAX_VERTEX_ATTRIBUTES_NUM ) ? ( 1 << static_cast<input_assembler_index_t>( pAttribIndex ) ) : 0u;
+			return ( pAttribIndex < GCM::cxIAMaxVertexAttributesNum ) ? ( 1 << static_cast<input_assembler_index_t>( pAttribIndex ) ) : 0u;
 		}
 
 		/// @brief
-		inline constexpr bool isIAVertexBufferIndexValid( native_uint pStreamIndex )
+		inline constexpr bool IsIAVertexBufferIndexValid( native_uint pStreamIndex )
 		{
-			return pStreamIndex < GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM;
+			return pStreamIndex < GCM::cxIAMaxVertexBufferBindingsNum;
 		}
 
 		/// @brief Returns
 		inline constexpr uint32 makeIAVertexBufferFlag( native_uint pStreamIndex )
 		{
-			return ( pStreamIndex < GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM ) ? ( 1 << static_cast<input_assembler_index_t> ( pStreamIndex ) ) : 0u;
+			return ( pStreamIndex < GCM::cxIAMaxVertexBufferBindingsNum ) ? ( 1 << static_cast<input_assembler_index_t> ( pStreamIndex ) ) : 0u;
 		}
 
 		/// @brief Returns
 		inline constexpr uint32 makeIAIndexBufferFlag()
 		{
-			return ( 1 << static_cast<input_assembler_index_t>( GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM ) );
+			return ( 1 << static_cast<input_assembler_index_t>( GCM::cxIAMaxVertexBufferBindingsNum ) );
 		}
 
 	}
 
 	/// @brief
-	enum EIAVertexAttributeFlags : uint32
+	enum EIAVertexAttributeFlags : uint16
 	{
-		E_IA_VERTEX_ATTRIBUTE_FLAG_ATTR_0_BIT = CxDef::makeIAVertexAttributeFlag( 0 ),
-		E_IA_VERTEX_ATTRIBUTE_FLAG_ATTR_1_BIT = CxDef::makeIAVertexAttributeFlag( 1 ),
-		E_IA_VERTEX_ATTRIBUTE_FLAG_ATTR_2_BIT = CxDef::makeIAVertexAttributeFlag( 2 ),
-		E_IA_VERTEX_ATTRIBUTE_FLAG_ATTR_3_BIT = CxDef::makeIAVertexAttributeFlag( 3 ),
-		E_IA_VERTEX_ATTRIBUTE_FLAG_ATTR_4_BIT = CxDef::makeIAVertexAttributeFlag( 4 ),
-		E_IA_VERTEX_ATTRIBUTE_FLAG_ATTR_5_BIT = CxDef::makeIAVertexAttributeFlag( 5 ),
-		E_IA_VERTEX_ATTRIBUTE_FLAG_ATTR_6_BIT = CxDef::makeIAVertexAttributeFlag( 6 ),
-		E_IA_VERTEX_ATTRIBUTE_FLAG_ATTR_7_BIT = CxDef::makeIAVertexAttributeFlag( 7 ),
-		E_IA_VERTEX_ATTRIBUTE_MASK_ALL = makeLSFBitmask<uint32>( GCM::IA_MAX_VERTEX_ATTRIBUTES_NUM ),
+		eIAVertexAttributeFlagAttr0Bit  = CxDef::makeIAVertexAttributeFlag( 0 ),
+		eIAVertexAttributeFlagAttr1Bit  = CxDef::makeIAVertexAttributeFlag( 1 ),
+		eIAVertexAttributeFlagAttr2Bit  = CxDef::makeIAVertexAttributeFlag( 2 ),
+		eIAVertexAttributeFlagAttr3Bit  = CxDef::makeIAVertexAttributeFlag( 3 ),
+		eIAVertexAttributeFlagAttr4Bit  = CxDef::makeIAVertexAttributeFlag( 4 ),
+		eIAVertexAttributeFlagAttr5Bit  = CxDef::makeIAVertexAttributeFlag( 5 ),
+		eIAVertexAttributeFlagAttr6Bit  = CxDef::makeIAVertexAttributeFlag( 6 ),
+		eIAVertexAttributeFlagAttr7Bit  = CxDef::makeIAVertexAttributeFlag( 7 ),
+		eIAVertexAttributeFlagAttr8Bit  = CxDef::makeIAVertexAttributeFlag( 8 ),
+		eIAVertexAttributeFlagAttr9Bit  = CxDef::makeIAVertexAttributeFlag( 9 ),
+		eIAVertexAttributeFlagAttr10Bit = CxDef::makeIAVertexAttributeFlag( 10 ),
+		eIAVertexAttributeFlagAttr11Bit = CxDef::makeIAVertexAttributeFlag( 11 ),
+		eIAVertexAttributeFlagAttr12Bit = CxDef::makeIAVertexAttributeFlag( 12 ),
+		eIAVertexAttributeFlagAttr13Bit = CxDef::makeIAVertexAttributeFlag( 13 ),
+		eIAVertexAttributeFlagAttr14Bit = CxDef::makeIAVertexAttributeFlag( 14 ),
+		eIAVertexAttributeFlagAttr15Bit = CxDef::makeIAVertexAttributeFlag( 15 ),
+		eIAVertexAttributeMaskAll       = cppx::make_lsfb_bitmask<uint32>( GCM::cxIAMaxVertexAttributesNum ),
 	};
 
 	/// @brief
 	enum EIAVertexStreamBindingFlags : uint32
 	{
-		E_IA_VERTEX_STREAM_BINDING_FLAG_VERTEX_BUFFER_0_BIT = CxDef::makeIAVertexBufferFlag( 0 ),
-		E_IA_VERTEX_STREAM_BINDING_FLAG_VERTEX_BUFFER_1_BIT = CxDef::makeIAVertexBufferFlag( 1 ),
-		E_IA_VERTEX_STREAM_BINDING_FLAG_VERTEX_BUFFER_2_BIT = CxDef::makeIAVertexBufferFlag( 2 ),
-		E_IA_VERTEX_STREAM_BINDING_FLAG_VERTEX_BUFFER_3_BIT = CxDef::makeIAVertexBufferFlag( 3 ),
-		E_IA_VERTEX_STREAM_BINDING_FLAG_VERTEX_BUFFER_4_BIT = CxDef::makeIAVertexBufferFlag( 4 ),
-		E_IA_VERTEX_STREAM_BINDING_FLAG_VERTEX_BUFFER_5_BIT = CxDef::makeIAVertexBufferFlag( 5 ),
-		E_IA_VERTEX_STREAM_BINDING_FLAG_VERTEX_BUFFER_6_BIT = CxDef::makeIAVertexBufferFlag( 6 ),
-		E_IA_VERTEX_STREAM_BINDING_FLAG_VERTEX_BUFFER_7_BIT = CxDef::makeIAVertexBufferFlag( 7 ),
+		eIAVertexStreamBindingFlagVertexBuffer0Bit  = CxDef::makeIAVertexBufferFlag( 0 ),
+		eIAVertexStreamBindingFlagVertexBuffer1Bit  = CxDef::makeIAVertexBufferFlag( 1 ),
+		eIAVertexStreamBindingFlagVertexBuffer2Bit  = CxDef::makeIAVertexBufferFlag( 2 ),
+		eIAVertexStreamBindingFlagVertexBuffer3Bit  = CxDef::makeIAVertexBufferFlag( 3 ),
+		eIAVertexStreamBindingFlagVertexBuffer4Bit  = CxDef::makeIAVertexBufferFlag( 4 ),
+		eIAVertexStreamBindingFlagVertexBuffer5Bit  = CxDef::makeIAVertexBufferFlag( 5 ),
+		eIAVertexStreamBindingFlagVertexBuffer6Bit  = CxDef::makeIAVertexBufferFlag( 6 ),
+		eIAVertexStreamBindingFlagVertexBuffer7Bit  = CxDef::makeIAVertexBufferFlag( 7 ),
+		eIAVertexStreamBindingFlagVertexBuffer8Bit  = CxDef::makeIAVertexBufferFlag( 8 ),
+		eIAVertexStreamBindingFlagVertexBuffer9Bit  = CxDef::makeIAVertexBufferFlag( 9 ),
+		eIAVertexStreamBindingFlagVertexBuffer10Bit = CxDef::makeIAVertexBufferFlag( 10 ),
+		eIAVertexStreamBindingFlagVertexBuffer11Bit = CxDef::makeIAVertexBufferFlag( 11 ),
+		eIAVertexStreamBindingFlagVertexBuffer12Bit = CxDef::makeIAVertexBufferFlag( 12 ),
+		eIAVertexStreamBindingFlagVertexBuffer13Bit = CxDef::makeIAVertexBufferFlag( 13 ),
+		eIAVertexStreamBindingFlagVertexBuffer14Bit = CxDef::makeIAVertexBufferFlag( 14 ),
+		eIAVertexStreamBindingFlagVertexBuffer15Bit = CxDef::makeIAVertexBufferFlag( 15 ),
 
-		E_IA_VERTEX_STREAM_BINDING_FLAG_INDEX_BUFFER_BIT = CxDef::makeIAIndexBufferFlag(),
+		eIAVertexStreamBindingFlagIndexBufferBit = CxDef::makeIAIndexBufferFlag(),
 
-		E_IA_VERTEX_STREAM_BINDING_MASK_VERTEX_BUFFER_ALL_BITS =
-				makeLSFBitmask<uint32>( GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM ),
+		eIAVertexStreamBindingMaskVertexBufferAllBits =
+			cppx::make_lsfb_bitmask<uint32>( GCM::cxIAMaxVertexBufferBindingsNum ),
 
-		E_IA_VERTEX_STREAM_BINDING_MASK_ALL =
-				E_IA_VERTEX_STREAM_BINDING_MASK_VERTEX_BUFFER_ALL_BITS | E_IA_VERTEX_STREAM_BINDING_FLAG_INDEX_BUFFER_BIT
+		eIAVertexStreamBindingMaskAll =
+			eIAVertexStreamBindingMaskVertexBufferAllBits | eIAVertexStreamBindingFlagIndexBufferBit
+	};
+
+	struct IAVertexAttributeSemantics
+	{
+		std::string_view SemanticName;
+		input_assembler_index_t SemanticIndex = 0;
+
+		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept
+		{
+			return SemanticName.empty();
+		}
+
+		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept
+		{
+			return !IsEmpty();
+		}
 	};
 
 	/// @brief Definition of a vertex input attribute.
 	struct IAVertexAttributeInfo
 	{
-		input_assembler_index_t streamIndex{ CxDef::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED };
+		IAVertexAttributeSemantics inputSemantics;
 
-		std::string semanticName;
+		EVertexAttribFormat format = EVertexAttribFormat::Undefined;
 
-		input_assembler_index_t semanticIndex;
-
-		EVertexAttribFormat format{ EVertexAttribFormat::Undefined };
+		input_assembler_index_t streamIndex = cxIAVertexStreamIndexUndefined;
 
 		/// An offset of the attribute from the start of the vertex data.
 		/// VERTEX_ATTRIBUTE_OFFSET_APPEND can be specified if the attribute is placed directly after previous one.
@@ -134,20 +158,20 @@ namespace Ic3::Graphics::GCI
 		uint16 instanceRate;
 
 		/// @brief Returns true if this instance represents a valid vertex attribute.
-		IC3_ATTR_NO_DISCARD bool active() const noexcept
+		CPPX_ATTR_NO_DISCARD bool IsActive() const noexcept
 		{
-			return !semanticName.empty() && CxDef::isIAVertexBufferIndexValid( streamIndex ) && ( format != EVertexAttribFormat::Undefined );
+			return inputSemantics && CxDef::IsIAVertexBufferIndexValid( streamIndex ) && ( format != EVertexAttribFormat::Undefined );
 		}
 	};
 
 	/// @brief Typedef for ordered, fixed-size array of vertex attribute definitions.
-	using IAVertexAttributeInfoArray = std::array<IAVertexAttributeInfo, GCM::IA_MAX_VERTEX_ATTRIBUTES_NUM>;
+	using IAVertexAttributeInfoArray = std::array<IAVertexAttributeInfo, GCM::cxIAMaxVertexAttributesNum>;
 
 	/// @brief
 	struct IAInputLayoutDefinition
 	{
 		EPrimitiveTopology primitiveTopology;
-		Bitmask<EIAVertexAttributeFlags> activeAttributesMask;
+		cppx::bitmask<EIAVertexAttributeFlags> activeAttributesMask;
 		IAVertexAttributeInfoArray attributeArray;
 	};
 
@@ -156,24 +180,24 @@ namespace Ic3::Graphics::GCI
 		GPUBufferReference sourceBuffer;
 		gpu_memory_size_t relativeOffset;
 
-		bool empty() const noexcept
+		bool IsEmpty() const noexcept
 		{
-			return sourceBuffer.empty();
+			return sourceBuffer.IsEmpty();
 		}
 
-		gpu_memory_size_t dataOffset() const noexcept
+		gpu_memory_size_t DataOffset() const noexcept
 		{
-			return sourceBuffer.getRefSubRegion().offset + relativeOffset;
+			return sourceBuffer.GetRefSubRegion().offset + relativeOffset;
 		}
 
 		explicit operator bool() const noexcept
 		{
-			return !empty();
+			return !IsEmpty();
 		}
 
-		void reset()
+		void Reset()
 		{
-			sourceBuffer.reset();
+			sourceBuffer.Reset();
 			relativeOffset = 0;
 		}
 	};
@@ -191,12 +215,12 @@ namespace Ic3::Graphics::GCI
 	};
 
 	/// @brief
-	using IAVertexBufferReferenceArray = std::array<IAVertexBufferReference, GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM>;
+	using IAVertexBufferReferenceArray = std::array<IAVertexBufferReference, GCM::cxIAMaxVertexBufferBindingsNum>;
 
 	/// @brief
 	struct IAVertexStreamDefinition
 	{
-		Bitmask<EIAVertexStreamBindingFlags> activeBindingsMask;
+		cppx::bitmask<EIAVertexStreamBindingFlags> activeBindingsMask;
 		IAVertexBufferReferenceArray vertexBufferReferences;
 		IAIndexBufferReference indexBufferReference;
 	};
@@ -206,7 +230,7 @@ namespace Ic3::Graphics::GCI
 	struct IAVertexBufferRange
 	{
 		/// First index of the vertex buffer binding this range defines.
-		input_assembler_index_t firstIndex = CxDef::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED;
+		input_assembler_index_t firstIndex = cxIAVertexStreamIndexUndefined;
 
 		/// Length of this range, i.e. number of vertex buffers within the range.
 		uint16 length = 0;
@@ -217,19 +241,19 @@ namespace Ic3::Graphics::GCI
 	using IAVertexBufferRangeList = std::vector<IAVertexBufferRange>;
 
 	// State Management Utility API
-	namespace smutil
+	namespace SMU
 	{
 
 		/// @brief Returns
-		IC3_GRAPHICS_GCI_API_NO_DISCARD Bitmask<EIAVertexAttributeFlags> getIAVertexInputActiveAttributesMask(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD cppx::bitmask<EIAVertexAttributeFlags> GetIAVertexInputActiveAttributesMask(
 				const IAVertexAttributeInfoArray & pVertexAttributes ) noexcept;
 
 		/// @brief
-		IC3_GRAPHICS_GCI_API_NO_DISCARD uint32 getIAVertexInputActiveAttributesNum(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD uint32 GetIAVertexInputActiveAttributesNum(
 				const IAVertexAttributeInfoArray & pVertexAttributes ) noexcept;
 
 		/// @brief
-		IC3_GRAPHICS_GCI_API_NO_DISCARD IAVertexBufferRangeList generateActiveVertexBufferRanges(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD IAVertexBufferRangeList GenerateActiveVertexBufferRanges(
 				const IAVertexBufferReferenceArray & pVBReferences ) noexcept;
 
 	}

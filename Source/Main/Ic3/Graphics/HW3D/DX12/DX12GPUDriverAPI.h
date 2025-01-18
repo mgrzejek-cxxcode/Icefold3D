@@ -13,8 +13,8 @@ namespace Ic3::Graphics::GCI
 	class DX12GPUDriverInterface : public GPUDriverInterface
 	{
 	public:
-		virtual GPUDriverHandle createDriver( const GPUDriverCreateInfo & pCreateInfo ) override final;
-		virtual PresentationLayerHandle createScreenPresentationLayer( GPUDevice & pDevice, const PresentationLayerCreateInfo & pCreateInfo ) override final;
+		virtual GPUDriverHandle CreateDriver( const GPUDriverCreateInfo & pCreateInfo ) override final;
+		virtual PresentationLayerHandle CreateScreenPresentationLayer( GPUDevice & pDevice, const PresentationLayerCreateInfo & pCreateInfo ) override final;
 	};
 
 } // namespace Ic3::Graphics::GCI

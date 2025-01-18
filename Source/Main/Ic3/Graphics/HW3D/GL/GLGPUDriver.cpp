@@ -14,12 +14,12 @@ namespace Ic3::Graphics::GCI
 
 	GLGPUDriver::~GLGPUDriver() = default;
 
-	System::OpenGLSystemDriverHandle GLGPUDriver::initializeSysGLDriver( System::SysContextHandle pSysContext )
+	System::OpenGLSystemDriverHandle GLGPUDriver::InitializeSysGLDriver( System::SysContextHandle pSysContext )
 	{
 		try
 		{
-		    auto sysDisplayManager = pSysContext->createDisplayManager();
-		    auto sysGLDriver = pSysContext->createOpenGLSystemDriver( sysDisplayManager );
+		    auto sysDisplayManager = pSysContext->CreateDisplayManager();
+		    auto sysGLDriver = pSysContext->CreateOpenGLSystemDriver( sysDisplayManager );
 
 			sysGLDriver->initializePlatform();
 

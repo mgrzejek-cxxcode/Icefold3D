@@ -35,8 +35,6 @@ set( IC3_GRAPHICS_GCI_SRC_FILES
         "GPUCapabilities.h"
         "PresentationLayer.h"
         "PresentationLayer.cpp"
-        # "systemDisplayManager.h"
-        # "systemDisplayManager.cpp"
 
         "Memory/CommonGPUMemoryDefs.h"
         "Memory/CommonGPUMemoryDefs.cpp"
@@ -144,5 +142,4 @@ target_include_directories( Ic3.Graphics.GCI PUBLIC
 target_link_libraries( Ic3.Graphics.GCI PUBLIC
         Ic3.CoreLib
         Ic3.Math
-        Ic3.Cppx
         )

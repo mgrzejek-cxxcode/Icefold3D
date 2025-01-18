@@ -56,7 +56,7 @@ namespace Ic3::Graphics::GCI
 	/// @brief
 	struct DX11IAVertexStreamDefinition
 	{
-		Bitmask<EIAVertexStreamBindingFlags> activeBindingsMask;
+		cppx::bitmask<EIAVertexStreamBindingFlags> activeBindingsMask;
 
 		DX11IAVertexBuffersBindings vertexBufferBindings;
 
@@ -80,7 +80,7 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~DX11IAInputLayoutImmutableState();
 
-		static GpaHandle<DX11IAInputLayoutImmutableState> createInstance(
+		static GpaHandle<DX11IAInputLayoutImmutableState> CreateInstance(
 				DX11GPUDevice & pGPUDevice,
 				const IAInputLayoutDefinition & pInputLayoutDefinition,
 				const ShaderBinary & pVertexShaderBinary );
@@ -100,22 +100,22 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~DX11IAVertexStreamImmutableState();
 
-		static GpaHandle<DX11IAVertexStreamImmutableState> createInstance(
+		static GpaHandle<DX11IAVertexStreamImmutableState> CreateInstance(
 				DX11GPUDevice & pGPUDevice,
 				const IAVertexStreamDefinition & pVertexStreamDefinition );
 	};
 	
 	
-	namespace smutil
+	namespace SMU
 	{
 
-		IC3_ATTR_NO_DISCARD D3D11_INPUT_ELEMENT_DESC translateIAVertexAttributeInfoDX11(
+		CPPX_ATTR_NO_DISCARD D3D11_INPUT_ELEMENT_DESC TranslateDX11IAVertexAttributeInfo(
 				const IAVertexAttributeInfo & pAttributeInfo );
 
-		IC3_ATTR_NO_DISCARD DX11IAInputLayoutDefinition translateIAInputLayoutDefinitionDX11(
+		CPPX_ATTR_NO_DISCARD DX11IAInputLayoutDefinition TranslateDX11IAInputLayoutDefinition(
 				const IAInputLayoutDefinition & pDefinition );
 		
-		IC3_ATTR_NO_DISCARD DX11IAVertexStreamDefinition translateIAVertexStreamDefinitionDX11(
+		CPPX_ATTR_NO_DISCARD DX11IAVertexStreamDefinition TranslateDX11IAVertexStreamDefinition(
 				const IAVertexStreamDefinition & pDefinition );
 		
 	}

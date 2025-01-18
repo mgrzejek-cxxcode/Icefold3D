@@ -17,7 +17,7 @@ namespace Ic3::Graphics::GCI
 	};
 
 	/// @brief
-	class ICFGX_DX11_CLASS DX11GPUDevice : public DXGPUDevice
+	class IC3_GX_DX11_CLASS DX11GPUDevice : public DXGPUDevice
 	{
 		friend class DX11CommandList;
 		friend class DX11GraphicsPipelineStateObject;
@@ -33,22 +33,22 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~DX11GPUDevice();
 
-		void waitForCommandSync( CommandSync & pCommandSync ) override final;
+		void WaitForCommandSync( CommandSync & pCommandSync ) override final;
 
-		static DX11GPUDeviceHandle create( DX11GPUDriver & pDX11Driver, const DX11GPUDeviceCreateInfo & pCreateInfo );
+		static DX11GPUDeviceHandle Create( DX11GPUDriver & pDX11Driver, const DX11GPUDeviceCreateInfo & pCreateInfo );
 
 	private:
-		virtual void initializeCommandSystem() override;
+		virtual void InitializeCommandSystem() override;
 
-		virtual GPUBufferHandle _drvCreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo ) override final;
-		virtual SamplerHandle _drvCreateSampler( const SamplerCreateInfo & pCreateInfo ) override final;
-		virtual ShaderHandle _drvCreateShader( const ShaderCreateInfo & pCreateInfo ) override final;
-		virtual TextureHandle _drvCreateTexture( const TextureCreateInfo & pCreateInfo ) override final;
+		virtual GPUBufferHandle _DrvCreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo ) override final;
+		virtual SamplerHandle _DrvCreateSampler( const SamplerCreateInfo & pCreateInfo ) override final;
+		virtual ShaderHandle _DrvCreateShader( const ShaderCreateInfo & pCreateInfo ) override final;
+		virtual TextureHandle _DrvCreateTexture( const TextureCreateInfo & pCreateInfo ) override final;
 
-		virtual RenderTargetTextureHandle _drvCreateRenderTargetTexture(
+		virtual RenderTargetTextureHandle _DrvCreateRenderTargetTexture(
 				const RenderTargetTextureCreateInfo & pCreateInfo ) override final;
 
-		virtual GraphicsPipelineStateObjectHandle _drvCreateGraphicsPipelineStateObject(
+		virtual GraphicsPipelineStateObjectHandle _DrvCreateGraphicsPipelineStateObject(
 				const GraphicsPipelineStateObjectCreateInfo & pCreateInfo ) override final;
 
 	private:

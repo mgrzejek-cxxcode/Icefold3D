@@ -4,24 +4,24 @@
 namespace Ic3::System
 {
 
-	perf_counter_value_t nativePerfCounterQueryValue();
-	perf_counter_res_t nativePerfCounterQueryResolution();
+	perf_counter_value_t NativePerfCounterQueryValue();
+	perf_counter_res_t NativePerfCounterQueryResolution();
 
-	perf_counter_value_t PerfCounter::queryCurrentStamp()
+	perf_counter_value_t PerfCounter::QueryCurrentStamp()
 	{
-		return nativePerfCounterQueryValue();
+		return NativePerfCounterQueryValue();
 	}
 
-	perf_counter_res_t PerfCounter::queryResolution()
+	perf_counter_res_t PerfCounter::QueryResolution()
 	{
-		return nativePerfCounterQueryResolution();
+		return NativePerfCounterQueryResolution();
 	}
 
-	long double PerfCounter::convertToDuration( perf_counter_value_t pStampDiff, const perf_counter_ratio_t & pUnitRatio )
+	long double PerfCounter::ConvertToDuration( perf_counter_value_t pStampDiff, const perf_counter_ratio_t & pUnitRatio )
 	{
 		// This is the resolution of the perf counter. It yields a value representing the number
 		// of "ticks" per second. This is needed to compute the time from the stamp difference.
-		auto perfCounterResolution = queryResolution();
+		auto perfCounterResolution = QueryResolution();
 
 		// Now:
 		// > NumberOfSeconds = pStampDiff / perfCounterResolution
@@ -39,9 +39,9 @@ namespace Ic3::System
 		return resultNum / resultDenom;
 	}
 
-	perf_counter_value_t PerfCounter::convertFromDuration( long double pDuration, const perf_counter_ratio_t & pUnitRatio )
+	perf_counter_value_t PerfCounter::ConvertFromDuration( long double pDuration, const perf_counter_ratio_t & pUnitRatio )
 	{
-		auto perfCounterResolution = queryResolution();
+		auto perfCounterResolution = QueryResolution();
 
 		// Looking at the last line of the above calculations:
 		// > Duration = (pStampDiff * pUnitRatio.second) / (perfCounterResolution * pUnitRatio.first)

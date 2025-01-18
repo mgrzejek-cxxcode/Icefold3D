@@ -14,25 +14,25 @@ namespace Ic3::System
 
 	MetalDevice::~MetalDevice() = default;
 
-	MetalDeviceHandle MetalDevice::createDefault( SysContextHandle pSysContext )
+	MetalDeviceHandle MetalDevice::CreateDefault( SysContextHandle pSysContext )
 	{
 	@autoreleasepool
 	{
 		id<MTLDevice> defaultMTLDevice = MTLCreateSystemDefaultDevice();
 		if( defaultMTLDevice == nil )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return nullptr;
 		}
 
 		id<MTLCommandQueue> mainMTLCommandQueue = [defaultMTLDevice newCommandQueue];
 		if( mainMTLCommandQueue == nil )
 		{
-			ic3DebugInterrupt();
+			Ic3DebugInterrupt();
 			return nullptr;
 		}
 
-		auto metalDevice = createSysObject<MetalDevice>( std::move( pSysContext ) );
+		auto metalDevice = CreateSysObject<MetalDevice>( std::move( pSysContext ) );
 		metalDevice->mDeviceData->mtlDevice = defaultMTLDevice;
 		metalDevice->mDeviceData->mtlMainCmdQueue = mainMTLCommandQueue;
 
@@ -49,56 +49,56 @@ namespace Ic3::System
 
 	MetalSystemDriver::~MetalSystemDriver() noexcept = default;
 
-	MetalDevice & MetalSystemDriver::initializeDefaultDevice()
+	MetalDevice & MetalSystemDriver::InitializeDefaultDevice()
 	{
-		ic3DebugAssert( !_defaultMetalDevice );
-		_defaultMetalDevice = MetalDevice::createDefault( mSysContext );
+		Ic3DebugAssert( !_defaultMetalDevice );
+		_defaultMetalDevice = MetalDevice::CreateDefault( mSysContext );
 		return *_defaultMetalDevice;
 	}
 
-	MetalDevice & MetalSystemDriver::getDefaultDevice() noexcept
+	MetalDevice & MetalSystemDriver::GetDefaultDevice() noexcept
 	{
 		if( !_defaultMetalDevice )
 		{
-			_defaultMetalDevice = MetalDevice::createDefault( mSysContext );
+			_defaultMetalDevice = MetalDevice::CreateDefault( mSysContext );
 		}
 
 		return *_defaultMetalDevice;
 	}
 
-	MetalDevice & MetalSystemDriver::getDefaultDevice() const
+	MetalDevice & MetalSystemDriver::GetDefaultDevice() const
 	{
 		if( !_defaultMetalDevice )
 		{
-			ic3Throw( 0 );
+			Ic3Throw( 0 );
 		}
 		return *_defaultMetalDevice;
 	}
 
-	MetalDisplaySurfaceHandle MetalSystemDriver::createDisplaySurface(
+	MetalDisplaySurfaceHandle MetalSystemDriver::CreateDisplaySurface(
 			MetalDevice & pMetalDevice,
 			const MetalDisplaySurfaceCreateInfo & pCreateInfo )
 	{
 		MetalDisplaySurfaceCreateInfo surfaceCreateInfo = pCreateInfo;
 
-		if( pCreateInfo.flags.isSet( E_METAL_DISPLAY_SURFACE_CREATE_FLAG_FULLSCREEN_BIT ) )
+		if( pCreateInfo.flags.is_set( eMetalDisplaySurfaceCreateFlagFullscreenBit ) )
 		{
-			surfaceCreateInfo.frameGeometry.size = CX_FRAME_SIZE_MAX;
-			surfaceCreateInfo.frameGeometry.style = EFrameStyle::Overlay;
+			surfaceCreateInfo.frameGeometry.size = cxFrameSizeMax;
+			surfaceCreateInfo.frameGeometry.mStyle = EFrameStyle::Overlay;
 		}
 		else
 		{
-			surfaceCreateInfo.frameGeometry.position = pCreateInfo.frameGeometry.position;
+			surfaceCreateInfo.frameGeometry.mPosition = pCreateInfo.frameGeometry.mPosition;
 			surfaceCreateInfo.frameGeometry.size = pCreateInfo.frameGeometry.size;
-			surfaceCreateInfo.frameGeometry.style = pCreateInfo.frameGeometry.style;
+			surfaceCreateInfo.frameGeometry.mStyle = pCreateInfo.frameGeometry.mStyle;
 		}
 
-		surfaceCreateInfo.frameGeometry = mDisplayManager->validateFrameGeometry( surfaceCreateInfo.frameGeometry );
+		surfaceCreateInfo.frameGeometry = mDisplayManager->ValidateFrameGeometry( surfaceCreateInfo.frameGeometry );
 
-		auto displaySurface = _nativeCreateDisplaySurface( pMetalDevice, surfaceCreateInfo );
+		auto displaySurface = _NativeCreateDisplaySurface( pMetalDevice, surfaceCreateInfo );
 
-		auto * caMetalLayer = displaySurface->mSurfaceData->caMetalLayer;
-		ic3DebugAssert( caMetalLayer != nil );
+		auto * caMetalLayer = displaySurface->surfaceData->caMetalLayer;
+		Ic3DebugAssert( caMetalLayer != nil );
 
 		auto mtlDevice = pMetalDevice.mDeviceData->mtlDevice;
 		[caMetalLayer setDevice:mtlDevice];
@@ -109,24 +109,24 @@ namespace Ic3::System
 
 	MetalDisplaySurface::MetalDisplaySurface( MetalSystemDriverHandle pMTLSystemDriver, void * pNativeData )
 	: Frame( pMTLSystemDriver->mSysContext )
-	, mSurfaceData( std::make_unique<MetalDisplaySurfaceData>() )
+	, surfaceData( std::make_unique<MetalDisplaySurfaceData>() )
 	, mMetalDriver( std::move( pMTLSystemDriver ) )
 	{
-		setEventSourceNativeData( pNativeData );
+		SetEventSourceNativeData( pNativeData );
 	}
 
 	MetalDisplaySurface::~MetalDisplaySurface() noexcept
 	{
-		resetEventSourceNativeData();
+		ResetEventSourceNativeData();
 	}
 
-	void MetalDisplaySurface::clearColorBuffer()
+	void MetalDisplaySurface::ClearColorBuffer()
 	{
 	@autoreleasepool
 	{
 		auto mtlDevice = mMetalDevice->mDeviceData->mtlDevice;
 		auto mtlCommandQueue = mMetalDevice->mDeviceData->mtlMainCmdQueue;
-		auto caMetalLayer = mSurfaceData->caMetalLayer;
+		auto caMetalLayer = surfaceData->caMetalLayer;
 
 		id<CAMetalDrawable> currentDrawable = [caMetalLayer nextDrawable];
 		id<MTLTexture> texture = currentDrawable.texture;
@@ -146,61 +146,62 @@ namespace Ic3::System
 	}
 	}
 
-	void MetalDisplaySurface::resizeClientArea( const FrameSize & pSize )
+	void MetalDisplaySurface::ResizeClientArea( const FrameSize & pSize )
 	{
 		FrameGeometry newFrameGeometry{};
-		newFrameGeometry.position = CX_FRAME_POS_AUTO;
+		newFrameGeometry.mPosition = cxFramePosAuto;
 		newFrameGeometry.size = pSize;
-		newFrameGeometry.style = EFrameStyle::Unspecified;
+		newFrameGeometry.mStyle = EFrameStyle::Unspecified;
 
-		newFrameGeometry = mMetalDriver->mDisplayManager->validateFrameGeometry( newFrameGeometry );
+		newFrameGeometry = mMetalDriver->mDisplayManager->ValidateFrameGeometry( newFrameGeometry );
 
-		const auto updateFlags = E_FRAME_GEOMETRY_UPDATE_FLAG_POSITION_BIT | E_FRAME_GEOMETRY_UPDATE_FLAG_SIZE_CLIENT_AREA_BIT;
-		_nativeUpdateGeometry( newFrameGeometry, updateFlags );
+		const auto updateFlags = eFrameGeometryUpdateFlagPositionBit | eFrameGeometryUpdateFlagSizeClientAreaBit;
+		_NativeUpdateGeometry( newFrameGeometry, updateFlags );
 	}
 
-	void MetalDisplaySurface::resizeFrame( const FrameSize & pSize )
+	void MetalDisplaySurface::ResizeFrame( const FrameSize & pSize )
 	{
 		FrameGeometry newFrameGeometry{};
-		newFrameGeometry.position = CX_FRAME_POS_AUTO;
+		newFrameGeometry.mPosition = cxFramePosAuto;
 		newFrameGeometry.size = pSize;
-		newFrameGeometry.style = EFrameStyle::Unspecified;
+		newFrameGeometry.mStyle = EFrameStyle::Unspecified;
 
-		newFrameGeometry = mMetalDriver->mDisplayManager->validateFrameGeometry( newFrameGeometry );
+		newFrameGeometry = mMetalDriver->mDisplayManager->ValidateFrameGeometry( newFrameGeometry );
 
-		const auto updateFlags = E_FRAME_GEOMETRY_UPDATE_FLAG_POSITION_BIT | E_FRAME_GEOMETRY_UPDATE_FLAG_SIZE_OUTER_RECT_BIT;
-		_nativeUpdateGeometry( newFrameGeometry, updateFlags );
+		const auto updateFlags = eFrameGeometryUpdateFlagPositionBit | eFrameGeometryUpdateFlagSizeOuterRectBit;
+		_NativeUpdateGeometry( newFrameGeometry, updateFlags );
 	}
 
-	void MetalDisplaySurface::setFullscreenMode( bool pEnable )
+	void MetalDisplaySurface::SetFullscreenMode( bool pEnable )
 	{
-		_nativeSetFullscreenMode( pEnable );
+		_NativeSetFullscreenMode( pEnable );
 	}
 
-	void MetalDisplaySurface::setTitle( const std::string & pTitleText )
+	void MetalDisplaySurface::SetTitle( const std::string & pTitleText )
 	{
-		_nativeSetTitle( pTitleText );
+		_NativeSetTitle( pTitleText );
 	}
 
-	void MetalDisplaySurface::updateGeometry( const FrameGeometry & pFrameGeometry,
-	                                           Bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
+	void MetalDisplaySurface::UpdateGeometry(
+			const FrameGeometry & pFrameGeometry,
+			cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
 	{
-		_nativeUpdateGeometry( pFrameGeometry, pUpdateFlags );
+		_NativeUpdateGeometry( pFrameGeometry, pUpdateFlags );
 	}
 
-	FrameSize MetalDisplaySurface::getClientAreaSize() const
+	FrameSize MetalDisplaySurface::GetClientAreaSize() const
 	{
-		return _nativeGetSize( EFrameSizeMode::ClientArea );
+		return _NativeGetSize( EFrameSizeMode::ClientArea );
 	}
 
-	FrameSize MetalDisplaySurface::getFrameSize() const
+	FrameSize MetalDisplaySurface::GetFrameSize() const
 	{
-		return _nativeGetSize( EFrameSizeMode::OuterRect );
+		return _NativeGetSize( EFrameSizeMode::OuterRect );
 	}
 
-	bool MetalDisplaySurface::isFullscreen() const
+	bool MetalDisplaySurface::IsFullscreen() const
 	{
-		return _nativeIsFullscreen();
+		return _NativeIsFullscreen();
 	}
 
 }
