@@ -1,6 +1,6 @@
 
 #include "DX11GPUBuffer.h"
-#include <Ic3/Graphics/HW3D/DX11/DX11ApiTranslationLayer.h>
+#include <Ic3/Graphics/HW3D/DX11/DX11APITranslationLayer.h>
 #include <Ic3/Graphics/HW3D/DX11/DX11GPUDevice.h>
 #include <Ic3/Graphics/HW3D/DX11/DX11CommandList.h>
 

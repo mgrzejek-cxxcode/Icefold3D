@@ -1,7 +1,9 @@
 
-include( "cmake/CMakeApi.Core.cmake" )
-include( "cmake/CMakeApi.Sysconf.cmake" )
-include( "cmake/CMakeApi.Workspace.cmake" )
+message("/CMake: ${CMAKE_CURRENT_SOURCE_DIR}")
+
+include( "CMake/CMakeApi.Core.cmake" )
+include( "CMake/CMakeApi.Sysconf.cmake" )
+include( "CMake/CMakeApi.Workspace.cmake" )
 
 function( setDllDependencyCopyCommand pExeTarget pDllTarget )
     add_custom_command( TARGET ${pExeTarget} POST_BUILD

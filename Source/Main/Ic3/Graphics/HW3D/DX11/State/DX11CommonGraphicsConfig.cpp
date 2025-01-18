@@ -1,6 +1,6 @@
 
 #include "DX11CommonGraphicsConfig.h"
-#include "../DX11ApiTranslationLayer.h"
+#include "../DX11APITranslationLayer.h"
 #include "../DX11gpuDevice.h"
 #include <Ic3/Graphics/GCI/State/RenderTargetCommon.h>
 

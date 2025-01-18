@@ -9,7 +9,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	// API Translation Layer
+	// OpenGL API Translation Layer
 	namespace ATL
 	{
 

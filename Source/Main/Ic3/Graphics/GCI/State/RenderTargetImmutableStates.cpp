@@ -9,7 +9,7 @@ namespace Ic3::Graphics::GCI
 	{
 	public:
 		RenderTargetBindingImmutableStateDynamicOverride()
-		: RenderTargetBindingImmutableState( GPUDevice::nullDevice(), {} )
+		: RenderTargetBindingImmutableState( GPUDevice::GetNullDevice(), {} )
 		{}
 
 		virtual ~RenderTargetBindingImmutableStateDynamicOverride() = default;

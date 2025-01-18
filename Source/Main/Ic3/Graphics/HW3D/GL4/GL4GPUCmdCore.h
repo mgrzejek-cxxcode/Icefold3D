@@ -8,4 +8,5 @@
 #include <Ic3/Graphics/HW3D/GL/GLCommandList.h>
 #include <Ic3/Graphics/HW3D/GL/GLCommandSystem.h>
 
+
 #endif // __IC3_GRAPHICS_HW3D_GL4_GPU_CMD_CORE_H__

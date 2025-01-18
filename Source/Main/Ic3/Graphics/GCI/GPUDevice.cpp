@@ -7,7 +7,7 @@
 #include "Resources/RenderTargetTexture.h"
 #include "State/GraphicsShaderLinkageImmutableState.h"
 #include "State/PipelineStateObject.h"
-#include "State/SharedImmutableStateCache.h"
+#include "State/PipelineImmutableStateCache.h"
 
 namespace Ic3::Graphics::GCI
 {

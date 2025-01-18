@@ -9,7 +9,7 @@ namespace Ic3::Graphics::GCI
 	{
 	public:
 		IAVertexStreamImmutableStateDynamicOverride()
-		: IAVertexStreamImmutableState( GPUDevice::nullDevice(), {} )
+		: IAVertexStreamImmutableState( GPUDevice::GetNullDevice(), {} )
 		{}
 
 		virtual ~IAVertexStreamImmutableStateDynamicOverride() = default;

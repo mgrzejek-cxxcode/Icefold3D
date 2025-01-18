@@ -34,7 +34,7 @@
 #define IC3_GRAPHICS_GCI_API_NO_DISCARD \
 	IC3_GRAPHICS_GCI_API CPPX_ATTR_NO_DISCARD
 
-#define Ic3driverApi( access ) access
+#define _Ic3DriverAPI( access ) access
 
 #include "Prerequisites/CommonDefs.h"
 #include "Prerequisites/CommonTypes.h"

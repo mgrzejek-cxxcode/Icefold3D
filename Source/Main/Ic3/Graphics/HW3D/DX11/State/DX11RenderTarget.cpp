@@ -1,6 +1,6 @@
 
 #include "DX11RenderTarget.h"
-#include "../DX11ApiTranslationLayer.h"
+#include "../DX11APITranslationLayer.h"
 #include "../DX11gpuDevice.h"
 #include "../Resources/DX11Texture.h"
 #include <Ic3/Graphics/GCI/Resources/RenderTargetTexture.h>

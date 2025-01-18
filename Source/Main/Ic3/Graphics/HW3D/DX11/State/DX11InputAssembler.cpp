@@ -1,6 +1,6 @@
 
 #include "DX11inputAssembler.h"
-#include "../DX11ApiTranslationLayer.h"
+#include "../DX11APITranslationLayer.h"
 #include "../DX11gpuDevice.h"
 #include "../Resources/DX11GPUBuffer.h"
 #include "../Resources/DX11Shader.h"

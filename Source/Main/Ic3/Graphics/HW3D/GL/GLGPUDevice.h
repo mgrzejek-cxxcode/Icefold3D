@@ -4,7 +4,7 @@
 #ifndef __IC3_GRAPHICS_HW3D_GLCOMMON_GPU_DEVICE_H__
 #define __IC3_GRAPHICS_HW3D_GLCOMMON_GPU_DEVICE_H__
 
-#include "GLApiTranslationLayer.h"
+#include "GLAPITranslationLayer.h"
 #include "State/GLPipelineImmutableStateFactory.h"
 #include <Ic3/Graphics/GCI/GPUDevice.h>
 #include <Ic3/Graphics/GCI/State/SharedImmutableStateCache.h>

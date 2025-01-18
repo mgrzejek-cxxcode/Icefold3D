@@ -1,7 +1,7 @@
 
 #include "DX11presentationLayer.h"
 #include "DX11CommandList.h"
-#include "DX11ApiTranslationLayer.h"
+#include "DX11APITranslationLayer.h"
 #include "DX11GPUDevice.h"
 #include "State/DX11RenderTarget.h"
 #include <Ic3/Graphics/GCI/CommandContext.h>

@@ -2,7 +2,7 @@
 #ifndef __CPPX_PATH_NAME_ITERATOR_H__
 #define __CPPX_PATH_NAME_ITERATOR_H__
 
-#include "Prerequisites.h"
+#include "prerequisites.h"
 #include <string>
 
 namespace cppx

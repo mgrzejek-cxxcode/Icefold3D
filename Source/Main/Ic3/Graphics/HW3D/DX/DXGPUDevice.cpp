@@ -1,7 +1,7 @@
 
 #include "DXGPUDevice.h"
 #include "DXGPUDriver.h"
-#include "DXApiTranslationLayer.h"
+#include "DXAPITranslationLayer.h"
 
 namespace Ic3::Graphics::GCI
 {

@@ -1,6 +1,6 @@
 
 #include "../GLPrerequisites.h"
-#include "../GLApiTranslationLayer.h"
+#include "../GLAPITranslationLayer.h"
 
 namespace Ic3::Graphics::GCI
 {

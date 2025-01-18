@@ -1,6 +1,6 @@
 
 #include "DX11Sampler.h"
-#include "../DX11ApiTranslationLayer.h"
+#include "../DX11APITranslationLayer.h"
 #include "../DX11gpuDevice.h"
 
 namespace Ic3::Graphics::GCI

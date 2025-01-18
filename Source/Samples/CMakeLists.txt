@@ -21,5 +21,7 @@ if( TARGET Ic3.Graphics.HW3D.GLES3 )
     set( IC3_SAMPLES_LINK_INPUT ${IC3_SAMPLES_LINK_INPUT} "Ic3.Graphics.HW3D.GLES3" )
 endif()
 
+message("/Samples: ${CMAKE_CURRENT_SOURCE_DIR}")
+
 add_subdirectory( "Render01" )
 add_subdirectory( "Script01" )

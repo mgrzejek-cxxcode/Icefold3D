@@ -2,7 +2,7 @@
 #ifndef __CPPX_OPTIONAL_H__
 #define __CPPX_OPTIONAL_H__
 
-#include "StaticAlgo.h"
+#include "staticAlgo.h"
 
 namespace cppx
 {

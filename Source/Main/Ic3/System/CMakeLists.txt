@@ -49,8 +49,8 @@ set( IC3_SYSTEM_SRC_FILES
         "WindowSystem.cpp"
         "WindowNative.h"
 
-        "internal/displaySystemPrivate.h"
-        "internal/EventCorePrivate.h"
+        "Internal/DisplaySystemPrivate.h"
+        "Internal/EventCorePrivate.h"
         )
 
 if( ${CM_EBS_SYSCONF_TARGET_FLAG_OSINFO_MSE} )

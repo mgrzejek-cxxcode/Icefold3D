@@ -61,6 +61,8 @@ set( IC3_GRAPHICS_GCI_SRC_FILES
         "Resources/Shader.h"
         "Resources/Shader.cpp"
         "Resources/ShaderCommon.h"
+        "Resources/ShaderInputTexture.cpp"
+        "Resources/ShaderInputTexture.h"
         "Resources/Texture.h"
         "Resources/Texture.cpp"
         "Resources/TextureCommon.h"
@@ -117,8 +119,6 @@ set( IC3_GRAPHICS_GCI_SRC_FILES
         "State/Sampler.cpp"
         "State/SamplerCommon.h"
         "State/SamplerCommon.cpp"
-        "resources/ShaderInputTexture.cpp"
-        "resources/ShaderInputTexture.h"
         )
 
 if( "${IC3_COMPONENTS_BUILD_MODE}" STREQUAL "STATIC" )
