@@ -1,8 +1,8 @@
 
 #pragma once
 
-#ifndef __IC3_GRAPHICS_GCI_GRAPHICS_SHADER_STATE_H__
-#define __IC3_GRAPHICS_GCI_GRAPHICS_SHADER_STATE_H__
+#ifndef __IC3_GRAPHICS_GCI_GRAPHICS_SHADER_DEFS_H__
+#define __IC3_GRAPHICS_GCI_GRAPHICS_SHADER_DEFS_H__
 
 #include "CommonGPUStateDefs.h"
 #include "../Resources/ShaderCommon.h"
@@ -10,7 +10,32 @@
 namespace Ic3::Graphics::GCI
 {
 
-	struct GraphicsShaderSet
+	struct GraphicsShaderBindingCommonConfig
+	{
+		///
+		cppx::bitmask<EShaderStageFlags> activeStagesMask;
+
+		///
+		uint32 activeStagesNum;
+
+		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept
+		{
+			return !IsEmpty();
+		}
+
+		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept
+		{
+			return activeStagesMask.empty() || ( activeStagesNum == 0 );
+		}
+
+		void ResetActiveStagesInfo() noexcept
+		{
+			activeStagesMask.clear();
+			activeStagesNum = 0;
+		}
+	};
+
+	struct GraphicsShaderBinding : public GraphicsShaderBindingCommonConfig
 	{
 	public:
 		using ShaderRefType = GraphicsShaderArray::reference;
@@ -35,51 +60,87 @@ namespace Ic3::Graphics::GCI
 		ShaderRefType pixelShader;
 
 	public:
-		GraphicsShaderSet();
+		GraphicsShaderBinding()
+		: vertexShader( commonShaderArray[kShaderStageIndexGraphicsVertex] )
+		, hullShader( commonShaderArray[kShaderStageIndexGraphicsTessHull] )
+		, domainShader( commonShaderArray[kShaderStageIndexGraphicsTessDomain] )
+		, geometryShader( commonShaderArray[kShaderStageIndexGraphicsGeometry] )
+		, pixelShader( commonShaderArray[kShaderStageIndexGraphicsPixel] )
+		{}
 
-		GraphicsShaderSet( const GraphicsShaderSet & pSource );
+		GraphicsShaderBinding( const GraphicsShaderBinding & pSource )
+		: commonShaderArray( pSource.commonShaderArray )
+		, vertexShader( commonShaderArray[kShaderStageIndexGraphicsVertex] )
+		, hullShader( commonShaderArray[kShaderStageIndexGraphicsTessHull] )
+		, domainShader( commonShaderArray[kShaderStageIndexGraphicsTessDomain] )
+		, geometryShader( commonShaderArray[kShaderStageIndexGraphicsGeometry] )
+		, pixelShader( commonShaderArray[kShaderStageIndexGraphicsPixel] )
+		{}
 
-		explicit GraphicsShaderSet( const GraphicsShaderArray & pShaderArray );
+		GraphicsShaderBinding & operator=( const GraphicsShaderBinding & pRhs )
+		{
+			if( &pRhs != this )
+			{
+				commonShaderArray = pRhs.commonShaderArray;
+				activeStagesMask = pRhs.activeStagesMask;
+				activeStagesNum = pRhs.activeStagesNum;
+			}
+			return *this;
+		}
 
-		GraphicsShaderSet & operator=( const GraphicsShaderSet & pRhs );
+		CPPX_ATTR_NO_DISCARD ShaderHandle & operator[]( size_t pStageIndex ) noexcept
+		{
+			Ic3DebugAssert( CXU::SHIsShaderStageIndexValid( pStageIndex ) );
+			return commonShaderArray[pStageIndex];
+		}
 
-		GraphicsShaderSet & operator=( const GraphicsShaderArray & pRhs );
+		CPPX_ATTR_NO_DISCARD const ShaderHandle & operator[]( size_t pStageIndex ) const noexcept
+		{
+			Ic3DebugAssert( CXU::SHIsShaderStageIndexValid( pStageIndex ) );
+			return commonShaderArray[pStageIndex];
+		}
 
-		CPPX_ATTR_NO_DISCARD Shader * operator[]( size_t pIndex ) const noexcept;
+		CPPX_ATTR_NO_DISCARD ShaderHandle & operator[]( EShaderType pShaderType ) noexcept
+		{
+			Ic3DebugAssert( CXU::SHIsShaderTypeGraphics( pShaderType ) );
+			const auto stageIndex = CXU::SHGetShaderStageIndex( pShaderType );
+			return commonShaderArray[stageIndex];
+		}
 
-		CPPX_ATTR_NO_DISCARD Shader * operator[]( EShaderType pShaderType ) const noexcept;
+		CPPX_ATTR_NO_DISCARD const ShaderHandle & operator[]( EShaderType pShaderType ) const noexcept
+		{
+			Ic3DebugAssert( CXU::SHIsShaderTypeGraphics( pShaderType ) );
+			const auto stageIndex = CXU::SHGetShaderStageIndex( pShaderType );
+			return commonShaderArray[stageIndex];
+		}
 
-		CPPX_ATTR_NO_DISCARD cppx::bitmask<EShaderStageFlags> GetActiveShaderStagesMask() const noexcept;
+		IC3_GRAPHICS_GCI_API void AddShader( Shader & pShader );
 
-		CPPX_ATTR_NO_DISCARD uint32 GetActiveShaderStagesNum() const noexcept;
+		IC3_GRAPHICS_GCI_API void AddShader( ShaderHandle pShader );
 
-		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept;
+		IC3_GRAPHICS_GCI_API void SetShaders( const GraphicsShaderArray & pShaderArray );
 
-		CPPX_ATTR_NO_DISCARD bool ValidateShaders() const noexcept;
+		IC3_GRAPHICS_GCI_API void Reset() noexcept;
 
-		void AddShader( ShaderHandle pShader ) noexcept;
+		IC3_GRAPHICS_GCI_API void ResetStage( uint32 pStageIndex ) noexcept;
 
-		void SetShaders( const GraphicsShaderArray & pShaderArray ) noexcept;
+		IC3_GRAPHICS_GCI_API void ResetStage( EShaderType pShaderType ) noexcept;
 
-		void ResetStage( uint32 pStageIndex ) noexcept;
-
-		void ResetStage( EShaderType pShaderType ) noexcept;
+		IC3_GRAPHICS_GCI_API void UpdateActiveStagesInfo() noexcept;
 	};
 
-	// State Management Utility API
-	namespace SMU
+	namespace GCU
 	{
 
 		/// @brief
-		IC3_GRAPHICS_GCI_API_NO_DISCARD cppx::bitmask<EShaderStageFlags> GetActiveShaderStagesMask(
-				const GraphicsShaderArray & pShaderArray ) noexcept;
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool SHValidateGraphicsShaderArray( const GraphicsShaderArray & pShaderArray ) noexcept;
 
 		/// @brief
-		IC3_GRAPHICS_GCI_API_NO_DISCARD uint32 GetActiveShaderStagesNum(
-				const GraphicsShaderArray & pShaderArray ) noexcept;
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool SHValidateGraphicsShaderBinding(
+				const GraphicsShaderBinding & pBindingConfiguration ) noexcept;
 
 	}
 
 } // namespace Ic3::Graphics::GCI
 
-#endif // __IC3_GRAPHICS_GCI_GRAPHICS_SHADER_STATE_H__
+#endif // __IC3_GRAPHICS_GCI_GRAPHICS_SHADER_DEFS_H__

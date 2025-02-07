@@ -5,7 +5,7 @@
 #define __IC3_GRAPHICS_GCI_SEPARABLE_PIPELINE_STATE_H__
 
 #include "GraphicsPipelineStateController.h"
-#include "PipelineStateObject.h"
+#include "GraphicsPipelineStateCommon.h"
 
 namespace Ic3::Graphics::GCI
 {
@@ -39,20 +39,20 @@ namespace Ic3::Graphics::GCI
 
 	struct SeparablePSOStateSet
 	{
-		BlendImmutableStateHandle blendState;
-		DepthStencilImmutableStateHandle depthStencilState;
-		RasterizerImmutableStateHandle rasterizerState;
-		IAInputLayoutImmutableStateHandle iaInputLayoutState;
-		GraphicsShaderLinkageImmutableStateHandle shaderLinkageState;
+		BlendStateDescriptorHandle blendState;
+		DepthStencilStateDescriptorHandle depthStencilState;
+		RasterizerStateDescriptorHandle rasterizerState;
+		IAInputLayoutStateDescriptorHandle iaInputLayoutState;
+		GraphicsShaderLinkageStateDescriptorHandle shaderLinkageState;
 	};
 
 	struct SeparablePSOStateCache
 	{
-		BlendImmutableState * blendState = nullptr;
-		DepthStencilImmutableState * depthStencilState = nullptr;
-		RasterizerImmutableState * rasterizerState = nullptr;
-		IAInputLayoutImmutableState * iaInputLayoutState = nullptr;
-		GraphicsShaderLinkageImmutableState * shaderLinkageState = nullptr;
+		BlendStateDescriptor * blendState = nullptr;
+		DepthStencilStateDescriptor * depthStencilState = nullptr;
+		RasterizerStateDescriptor * rasterizerState = nullptr;
+		IAInputLayoutStateDescriptor * iaInputLayoutState = nullptr;
+		GraphicsShaderLinkageStateDescriptor * shaderLinkageState = nullptr;
 
 		void reset()
 		{
@@ -104,7 +104,7 @@ namespace Ic3::Graphics::GCI
 		GraphicsPipelineStateObjectSeparable(
 				GPUDevice & pGPUDevice,
 				RenderTargetLayout pRenderTargetLayout,
-				ShaderInputSignature pShaderInputSignature,
+				ShaderRootSignature pShaderRootSignature,
 				const SeparablePSOStateSet & pSeparableStates );
 
 		virtual ~GraphicsPipelineStateObjectSeparable();
@@ -120,7 +120,7 @@ namespace Ic3::Graphics::GCI
 		GraphicsPipelineStateObjectSeparableShader(
 				GPUDevice & pGPUDevice,
 				RenderTargetLayout pRenderTargetLayout,
-				ShaderInputSignature pShaderInputSignature,
+				ShaderRootSignature pShaderRootSignature,
 				const SeparablePSOStateSet & pSeparableStates,
 				const GraphicsShaderSet & pSeparableShaders );
 

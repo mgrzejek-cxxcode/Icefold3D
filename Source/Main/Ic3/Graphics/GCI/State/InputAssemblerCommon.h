@@ -20,136 +20,47 @@ namespace Ic3::Graphics::GCI
 	using vertex_attribute_offset_t = uint16;
 
 	///
-	constexpr auto cxIAVertexAttributeIndexUndefined = cppx::meta::limits<input_assembler_index_t>::max_value;
+	constexpr auto kIAVertexAttributeIndexUndefined = cppx::meta::limits<input_assembler_index_t>::max_value;
 
 	///
-	constexpr auto cxIAVertexAttributeOffsetAppend = cppx::meta::limits<vertex_attribute_offset_t>::max_value;
+	constexpr auto kIAVertexAttributeOffsetAppend = cppx::meta::limits<vertex_attribute_offset_t>::max_value;
 
 	///
-	constexpr auto cxIAVertexAttributeOffsetAppend16 = cppx::static_numeric_cast<vertex_attribute_offset_t>( cxIAVertexAttributeOffsetAppend - 1 );
+	constexpr auto kIAVertexStreamIndexUndefined = cppx::meta::limits<input_assembler_index_t>::max_value;
 
-	///
-	constexpr auto cxIAVertexStreamIndexUndefined = cppx::meta::limits<input_assembler_index_t>::max_value;
-
-	///
-	constexpr auto cxIAVertexAttributeMaskAll = cppx::make_lsfb_bitmask<input_assembler_index_t>( GCM::cxIAMaxVertexAttributesNum );
-
-	///
-	constexpr auto cxIAVertexBufferBindingMaskAll = cppx::make_lsfb_bitmask<input_assembler_index_t>( GCM::cxIAMaxVertexBufferBindingsNum );
-
-	///
-	constexpr auto cxIAInputStreamBindingMaskAll = cxIAVertexBufferBindingMaskAll | 0x10000u;
-
-	namespace CxDef
-	{
-
-		/// @brief
-		inline constexpr bool IsIAVertexAttributeIndexValid( native_uint pIndex )
-		{
-			return pIndex < GCM::cxIAMaxVertexAttributesNum;
-		}
-
-		/// @brief
-		inline constexpr uint32 makeIAVertexAttributeFlag( native_uint pAttribIndex )
-		{
-			return ( pAttribIndex < GCM::cxIAMaxVertexAttributesNum ) ? ( 1 << static_cast<input_assembler_index_t>( pAttribIndex ) ) : 0u;
-		}
-
-		/// @brief
-		inline constexpr bool IsIAVertexBufferIndexValid( native_uint pStreamIndex )
-		{
-			return pStreamIndex < GCM::cxIAMaxVertexBufferBindingsNum;
-		}
-
-		/// @brief Returns
-		inline constexpr uint32 makeIAVertexBufferFlag( native_uint pStreamIndex )
-		{
-			return ( pStreamIndex < GCM::cxIAMaxVertexBufferBindingsNum ) ? ( 1 << static_cast<input_assembler_index_t> ( pStreamIndex ) ) : 0u;
-		}
-
-		/// @brief Returns
-		inline constexpr uint32 makeIAIndexBufferFlag()
-		{
-			return ( 1 << static_cast<input_assembler_index_t>( GCM::cxIAMaxVertexBufferBindingsNum ) );
-		}
-
-	}
-
-	/// @brief
-	enum EIAVertexAttributeFlags : uint16
-	{
-		eIAVertexAttributeFlagAttr0Bit  = CxDef::makeIAVertexAttributeFlag( 0 ),
-		eIAVertexAttributeFlagAttr1Bit  = CxDef::makeIAVertexAttributeFlag( 1 ),
-		eIAVertexAttributeFlagAttr2Bit  = CxDef::makeIAVertexAttributeFlag( 2 ),
-		eIAVertexAttributeFlagAttr3Bit  = CxDef::makeIAVertexAttributeFlag( 3 ),
-		eIAVertexAttributeFlagAttr4Bit  = CxDef::makeIAVertexAttributeFlag( 4 ),
-		eIAVertexAttributeFlagAttr5Bit  = CxDef::makeIAVertexAttributeFlag( 5 ),
-		eIAVertexAttributeFlagAttr6Bit  = CxDef::makeIAVertexAttributeFlag( 6 ),
-		eIAVertexAttributeFlagAttr7Bit  = CxDef::makeIAVertexAttributeFlag( 7 ),
-		eIAVertexAttributeFlagAttr8Bit  = CxDef::makeIAVertexAttributeFlag( 8 ),
-		eIAVertexAttributeFlagAttr9Bit  = CxDef::makeIAVertexAttributeFlag( 9 ),
-		eIAVertexAttributeFlagAttr10Bit = CxDef::makeIAVertexAttributeFlag( 10 ),
-		eIAVertexAttributeFlagAttr11Bit = CxDef::makeIAVertexAttributeFlag( 11 ),
-		eIAVertexAttributeFlagAttr12Bit = CxDef::makeIAVertexAttributeFlag( 12 ),
-		eIAVertexAttributeFlagAttr13Bit = CxDef::makeIAVertexAttributeFlag( 13 ),
-		eIAVertexAttributeFlagAttr14Bit = CxDef::makeIAVertexAttributeFlag( 14 ),
-		eIAVertexAttributeFlagAttr15Bit = CxDef::makeIAVertexAttributeFlag( 15 ),
-		eIAVertexAttributeMaskAll       = cppx::make_lsfb_bitmask<uint32>( GCM::cxIAMaxVertexAttributesNum ),
-	};
-
-	/// @brief
-	enum EIAVertexStreamBindingFlags : uint32
-	{
-		eIAVertexStreamBindingFlagVertexBuffer0Bit  = CxDef::makeIAVertexBufferFlag( 0 ),
-		eIAVertexStreamBindingFlagVertexBuffer1Bit  = CxDef::makeIAVertexBufferFlag( 1 ),
-		eIAVertexStreamBindingFlagVertexBuffer2Bit  = CxDef::makeIAVertexBufferFlag( 2 ),
-		eIAVertexStreamBindingFlagVertexBuffer3Bit  = CxDef::makeIAVertexBufferFlag( 3 ),
-		eIAVertexStreamBindingFlagVertexBuffer4Bit  = CxDef::makeIAVertexBufferFlag( 4 ),
-		eIAVertexStreamBindingFlagVertexBuffer5Bit  = CxDef::makeIAVertexBufferFlag( 5 ),
-		eIAVertexStreamBindingFlagVertexBuffer6Bit  = CxDef::makeIAVertexBufferFlag( 6 ),
-		eIAVertexStreamBindingFlagVertexBuffer7Bit  = CxDef::makeIAVertexBufferFlag( 7 ),
-		eIAVertexStreamBindingFlagVertexBuffer8Bit  = CxDef::makeIAVertexBufferFlag( 8 ),
-		eIAVertexStreamBindingFlagVertexBuffer9Bit  = CxDef::makeIAVertexBufferFlag( 9 ),
-		eIAVertexStreamBindingFlagVertexBuffer10Bit = CxDef::makeIAVertexBufferFlag( 10 ),
-		eIAVertexStreamBindingFlagVertexBuffer11Bit = CxDef::makeIAVertexBufferFlag( 11 ),
-		eIAVertexStreamBindingFlagVertexBuffer12Bit = CxDef::makeIAVertexBufferFlag( 12 ),
-		eIAVertexStreamBindingFlagVertexBuffer13Bit = CxDef::makeIAVertexBufferFlag( 13 ),
-		eIAVertexStreamBindingFlagVertexBuffer14Bit = CxDef::makeIAVertexBufferFlag( 14 ),
-		eIAVertexStreamBindingFlagVertexBuffer15Bit = CxDef::makeIAVertexBufferFlag( 15 ),
-
-		eIAVertexStreamBindingFlagIndexBufferBit = CxDef::makeIAIndexBufferFlag(),
-
-		eIAVertexStreamBindingMaskVertexBufferAllBits =
-			cppx::make_lsfb_bitmask<uint32>( GCM::cxIAMaxVertexBufferBindingsNum ),
-
-		eIAVertexStreamBindingMaskAll =
-			eIAVertexStreamBindingMaskVertexBufferAllBits | eIAVertexStreamBindingFlagIndexBufferBit
-	};
 
 	struct IAVertexAttributeSemantics
 	{
-		std::string_view SemanticName;
-		input_assembler_index_t SemanticIndex = 0;
-
-		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept
-		{
-			return SemanticName.empty();
-		}
+		std::string_view semanticName;
+		input_assembler_index_t semanticIndex = 0;
 
 		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept
 		{
 			return !IsEmpty();
 		}
+
+		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept
+		{
+			return semanticName.empty();
+		}
+
+		void Clear()
+		{
+			semanticName = {};
+			semanticIndex = 0;
+		}
 	};
 
-	/// @brief Definition of a vertex input attribute.
+	/**
+	 * Definition of a vertex input attribute.
+	 */
 	struct IAVertexAttributeInfo
 	{
 		IAVertexAttributeSemantics inputSemantics;
 
 		EVertexAttribFormat format = EVertexAttribFormat::Undefined;
 
-		input_assembler_index_t streamIndex = cxIAVertexStreamIndexUndefined;
+		input_assembler_index_t streamIndex = kIAVertexStreamIndexUndefined;
 
 		/// An offset of the attribute from the start of the vertex data.
 		/// VERTEX_ATTRIBUTE_OFFSET_APPEND can be specified if the attribute is placed directly after previous one.
@@ -157,28 +68,100 @@ namespace Ic3::Graphics::GCI
 
 		uint16 instanceRate;
 
+		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept
+		{
+			return IsActive();
+		}
+
 		/// @brief Returns true if this instance represents a valid vertex attribute.
 		CPPX_ATTR_NO_DISCARD bool IsActive() const noexcept
 		{
-			return inputSemantics && CxDef::IsIAVertexBufferIndexValid( streamIndex ) && ( format != EVertexAttribFormat::Undefined );
+			return inputSemantics && ( format != EVertexAttribFormat::Undefined ) && CXU::IAIsDataStreamVertexBufferIndexValid( streamIndex );
+		}
+
+		void Reset()
+		{
+			inputSemantics.Clear();
+			format = EVertexAttribFormat::Undefined;
+			streamIndex = kIAVertexStreamIndexUndefined;
 		}
 	};
 
 	/// @brief Typedef for ordered, fixed-size array of vertex attribute definitions.
-	using IAVertexAttributeInfoArray = std::array<IAVertexAttributeInfo, GCM::cxIAMaxVertexAttributesNum>;
+	using IAVertexAttributeInfoArray = std::array<IAVertexAttributeInfo, GCM::kIAMaxVertexAttributesNum>;
 
-	/// @brief
-	struct IAInputLayoutDefinition
+	/**
+	 *
+	 */
+	struct IAInputLayoutCommonConfig
 	{
-		EPrimitiveTopology primitiveTopology;
+		/**
+		 * Active attributes mask. It contains all bits corresponding to attributes active as part of this descriptor.
+		 * @see EIAVertexAttributeFlags
+		 */
 		cppx::bitmask<EIAVertexAttributeFlags> activeAttributesMask;
+
+		/**
+		 * Number of active attributes enabled for the IA stage.
+		 */
+		native_uint activeAttributesNum;
+
+		/**
+		 * Primitive topology used to render vertices.
+		 * @see EPrimitiveTopology
+		 */
+		EPrimitiveTopology primitiveTopology;
+
+		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept
+		{
+			return !IsEmpty();
+		}
+
+		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept
+		{
+			return activeAttributesMask.empty() || ( activeAttributesNum == 0 );
+		}
+
+		void ResetActiveAttributesInfo() noexcept
+		{
+			activeAttributesMask.clear();
+			activeAttributesNum = 0;
+		}
+
+		CPPX_ATTR_NO_DISCARD bool IsAttributeActive( native_uint pAttributeIndex ) const noexcept
+		{
+			const auto attributeBit = CXU::IAMakeVertexAttributeFlag( pAttributeIndex );
+			return activeAttributesMask.is_set( attributeBit );
+		}
+	};
+
+	/**
+	 *
+	 */
+	struct IAInputLayoutDefinition : public IAInputLayoutCommonConfig
+	{
 		IAVertexAttributeInfoArray attributeArray;
+
+		void Reset() noexcept
+		{
+			for( auto & attributeInfo : attributeArray )
+			{
+				attributeInfo.Reset();
+			}
+
+			ResetActiveAttributesInfo();
+		}
 	};
 
 	struct IAVertexStreamBufferReference
 	{
 		GPUBufferReference sourceBuffer;
 		gpu_memory_size_t relativeOffset;
+
+		explicit operator bool() const noexcept
+		{
+			return !IsEmpty();
+		}
 
 		bool IsEmpty() const noexcept
 		{
@@ -190,11 +173,6 @@ namespace Ic3::Graphics::GCI
 			return sourceBuffer.GetRefSubRegion().offset + relativeOffset;
 		}
 
-		explicit operator bool() const noexcept
-		{
-			return !IsEmpty();
-		}
-
 		void Reset()
 		{
 			sourceBuffer.Reset();
@@ -202,59 +180,139 @@ namespace Ic3::Graphics::GCI
 		}
 	};
 
-	/// @brief
-	struct IAIndexBufferReference : public IAVertexStreamBufferReference
+	/**
+	 *
+	 */
+	struct IAIndexBufferRefParams
 	{
 		EIndexDataFormat indexFormat;
 	};
 
-	/// @brief
-	struct IAVertexBufferReference : public IAVertexStreamBufferReference
+	/**
+	 *
+	 */
+	struct IAIndexBufferReference : public IAVertexStreamBufferReference
+	{
+		IAIndexBufferRefParams refParams;
+	};
+
+	/**
+	 *
+	 */
+	struct IAVertexBufferRefParams
 	{
 		gpu_memory_size_t vertexStride;
 	};
 
-	/// @brief
-	using IAVertexBufferReferenceArray = std::array<IAVertexBufferReference, GCM::cxIAMaxVertexBufferBindingsNum>;
-
-	/// @brief
-	struct IAVertexStreamDefinition
+	/**
+	 *
+	 */
+	struct IAVertexBufferReference : public IAVertexStreamBufferReference
 	{
-		cppx::bitmask<EIAVertexStreamBindingFlags> activeBindingsMask;
-		IAVertexBufferReferenceArray vertexBufferReferences;
-		IAIndexBufferReference indexBufferReference;
+		IAVertexBufferRefParams refParams;
 	};
 
-	/// @brief Describes a single, continuous range of vertex buffer binding points in the vertex stream.
-	/// Used by drivers with support for range-based binding (D3D11, GL4) to reduce the number of API calls.
-	struct IAVertexBufferRange
+	/// @brief
+	using IAVertexStreamVertexBufferReferenceArray = std::array<IAVertexBufferReference, GCM::kIAMaxDataStreamVertexBuffersNum>;
+
+	/**
+	 *
+	 */
+	struct IAVertexStreamCommonConfig
+	{
+		cppx::bitmask<EIAVertexStreamBindingFlags> activeStreamsMask;
+
+		uint32 activeStreamsNum;
+
+		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept
+		{
+			return !IsEmpty();
+		}
+
+		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept
+		{
+			return activeStreamsMask.empty() || ( activeStreamsNum == 0 );
+		}
+
+		void ResetActiveStreamsInfo() noexcept
+		{
+			activeStreamsMask.clear();
+			activeStreamsNum = 0;
+		}
+
+		CPPX_ATTR_NO_DISCARD bool IsVertexBufferActive( native_uint pVertexBufferIndex ) const noexcept
+		{
+			const auto vertexBufferBit = CXU::IAMakeDataStreamVertexBufferBindingFlag( pVertexBufferIndex );
+			return activeStreamsMask.is_set( vertexBufferBit );
+		}
+	};
+
+	/**
+	 *
+	 */
+	struct IAVertexStreamConfiguration : public IAVertexStreamCommonConfig
+	{
+		IAVertexStreamVertexBufferReferenceArray vertexBufferReferences;
+
+		IAIndexBufferReference indexBufferReference;
+
+		void Reset() noexcept
+		{
+			for( auto & vertexBufferRef : vertexBufferReferences )
+			{
+				vertexBufferRef.Reset();
+			}
+			indexBufferReference.Reset();
+
+			ResetActiveStreamsInfo();
+		}
+	};
+
+	/**
+	 * Describes a single, continuous range of vertex buffer binding points in the vertex stream.
+	 * Used by drivers with support for range-based binding (D3D11, GL4) to reduce the number of API calls.
+	 */
+	struct IAVertexStreamArrayRange
 	{
 		/// First index of the vertex buffer binding this range defines.
-		input_assembler_index_t firstIndex = cxIAVertexStreamIndexUndefined;
+		input_assembler_index_t firstIndex = kIAVertexStreamIndexUndefined;
 
 		/// Length of this range, i.e. number of vertex buffers within the range.
 		uint16 length = 0;
 	};
 
-	using IAVertexBufferBindingIndexList = std::vector<input_assembler_index_t>;
+	/**
+	 * An alias for a dynamic array with the bound vertex buffer indices.
+	 */
+	using IAVertexStreamBindingIndexList = std::vector<input_assembler_index_t>;
 
-	using IAVertexBufferRangeList = std::vector<IAVertexBufferRange>;
+	/**
+	 * An alias for a dynamic array with the ranges of bound vertex buffers.
+	 */
+	using IAVertexStreamBindingRageList = std::vector<IAVertexStreamArrayRange>;
 
-	// State Management Utility API
-	namespace SMU
+	namespace GCU
 	{
 
 		/// @brief Returns
-		IC3_GRAPHICS_GCI_API_NO_DISCARD cppx::bitmask<EIAVertexAttributeFlags> GetIAVertexInputActiveAttributesMask(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD cppx::bitmask<EIAVertexAttributeFlags> IAGetActiveVertexAttributesMask(
 				const IAVertexAttributeInfoArray & pVertexAttributes ) noexcept;
 
 		/// @brief
-		IC3_GRAPHICS_GCI_API_NO_DISCARD uint32 GetIAVertexInputActiveAttributesNum(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD uint32 IAGetActiveVertexAttributesNum(
 				const IAVertexAttributeInfoArray & pVertexAttributes ) noexcept;
 
 		/// @brief
-		IC3_GRAPHICS_GCI_API_NO_DISCARD IAVertexBufferRangeList GenerateActiveVertexBufferRanges(
-				const IAVertexBufferReferenceArray & pVBReferences ) noexcept;
+		IC3_GRAPHICS_GCI_API_NO_DISCARD uint32 IAGetActiveVertexBuffersNum(
+				const IAVertexStreamVertexBufferReferenceArray & pVertexBufferReferences ) noexcept;
+
+		/// @brief
+		IC3_GRAPHICS_GCI_API_NO_DISCARD IAVertexStreamBindingIndexList IAGenerateActiveVertexBuffersIndexList(
+				const IAVertexStreamVertexBufferReferenceArray & pVertexBufferReferences ) noexcept;
+
+		/// @brief
+		IC3_GRAPHICS_GCI_API_NO_DISCARD IAVertexStreamBindingRageList IAGenerateActiveVertexBuffersRanges(
+				const IAVertexStreamVertexBufferReferenceArray & pVertexBufferReferences ) noexcept;
 
 	}
 

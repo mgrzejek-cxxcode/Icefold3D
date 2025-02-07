@@ -1,8 +1,8 @@
 
 #pragma once
 
-#ifndef __IC3_GRAPHICS_GCI_SHADER_INPUT_SIGNATURE_H__
-#define __IC3_GRAPHICS_GCI_SHADER_INPUT_SIGNATURE_H__
+#ifndef __IC3_GRAPHICS_GCI_SHADER_ROOT_SIGNATURE_H__
+#define __IC3_GRAPHICS_GCI_SHADER_ROOT_SIGNATURE_H__
 
 #include "CommonGPUStateDefs.h"
 #include "../Resources/ShaderCommon.h"
@@ -298,4 +298,4 @@ namespace Ic3::Graphics::GCI
 
 } // namespace Ic3::Graphics::GCI
 
-#endif // __IC3_GRAPHICS_GCI_SHADER_INPUT_SIGNATURE_H__
+#endif // __IC3_GRAPHICS_GCI_SHADER_ROOT_SIGNATURE_H__

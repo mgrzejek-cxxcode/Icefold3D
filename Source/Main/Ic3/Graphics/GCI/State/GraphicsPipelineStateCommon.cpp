@@ -1,33 +1,19 @@
 
-#include "PipelineStateObject.h"
+#include "GraphicsPipelineStateCommon.h"
 #include <Ic3/Graphics/GCI/State/RenderTargetCommon.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	PipelineStateObject::PipelineStateObject( GPUDevice & pGPUDevice )
-	: GPUDeviceChildObject( pGPUDevice )
-	{}
-
-	PipelineStateObject::~PipelineStateObject() = default;
-
-
-	ComputePipelineStateObject::ComputePipelineStateObject( GPUDevice & pGPUDevice )
+	GraphicsPipelineStateObject::GraphicsPipelineStateObject( GPUDevice & pGPUDevice )
 	: PipelineStateObject( pGPUDevice )
-	{}
-
-	ComputePipelineStateObject::~ComputePipelineStateObject() = default;
-
-
-	GraphicsPipelineStateObject::GraphicsPipelineStateObject(
-			GPUDevice & pGPUDevice,
-			RenderTargetLayout pRenderTargetLayout,
-			ShaderInputSignature pShaderInputSignature )
-	: PipelineStateObject( pGPUDevice )
-	, mRenderTargetLayout( std::move( pRenderTargetLayout ) )
-	, mShaderInputSignature( std::move( pShaderInputSignature ) )
 	{}
 
 	GraphicsPipelineStateObject::~GraphicsPipelineStateObject() = default;
+
+	EPipelineType GraphicsPipelineStateObject::GetPipelineType() const noexcept
+	{
+		return EPipelineType::Compute;
+	}
 
 } // namespace Ic3::Graphics::GCI

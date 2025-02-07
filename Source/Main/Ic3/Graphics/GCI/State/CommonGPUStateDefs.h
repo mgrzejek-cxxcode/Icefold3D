@@ -1,8 +1,8 @@
 
 #pragma once
 
-#ifndef __IC3_GRAPHICS_GCI_COMMON_STATE_DEFS_H__
-#define __IC3_GRAPHICS_GCI_COMMON_STATE_DEFS_H__
+#ifndef __IC3_GRAPHICS_GCI_COMMON_GPU_STATE_DEFS_H__
+#define __IC3_GRAPHICS_GCI_COMMON_GPU_STATE_DEFS_H__
 
 #include "../Memory/CommonGPUMemoryDefs.h"
 #include "../Resources/CommonGPUResourceDefs.h"
@@ -13,119 +13,181 @@ namespace Ic3::Graphics::GCI
 
 	struct BlendConfig;
 	struct DepthStencilConfig;
-	struct GraphicsShaderSet;
+	struct GraphicsShaderBinding;
 	struct IAInputLayoutDefinition;
-	struct IAVertexStreamDefinition;
+	struct IAVertexStreamConfiguration;
+	struct MultiSamplingConfig;
 	struct RasterizerConfig;
-	struct RenderTargetBindingDefinition;
 	struct RenderPassConfiguration;
-	struct ShaderInputSignature;
+	struct ShaderRootSignatureDesc;
 
 	struct ComputePipelineStateObjectCreateInfo;
 	struct GraphicsPipelineStateObjectCreateInfo;
 
-	class IAVertexStreamDynamicState;
-	class RenderTargetBindingDynamicState;
-	class RenderPassConfigurationDynamicState;
-
-	class PipelineImmutableStateFactory;
+	class GraphicsPipelineStateDescriptorFactory;
 
 	Ic3GCIDeclareClassHandle( GPUDeviceChildObject );
 	Ic3GCIDeclareClassHandle( PipelineStateObject );
 	Ic3GCIDeclareClassHandle( ComputePipelineStateObject );
 	Ic3GCIDeclareClassHandle( GraphicsPipelineStateObject );
 
-	Ic3GCIDeclareClassHandle( BlendImmutableState );
-	Ic3GCIDeclareClassHandle( DepthStencilImmutableState );
-	Ic3GCIDeclareClassHandle( GraphicsShaderLinkageImmutableState );
-	Ic3GCIDeclareClassHandle( IAInputLayoutImmutableState );
-	Ic3GCIDeclareClassHandle( IAVertexStreamImmutableState );
-	Ic3GCIDeclareClassHandle( RasterizerImmutableState );
-	Ic3GCIDeclareClassHandle( RenderTargetBindingImmutableState );
-	Ic3GCIDeclareClassHandle( RenderPassConfigurationImmutableState );
+	Ic3GCIDeclareClassHandle( BlendStateDescriptor );
+	Ic3GCIDeclareClassHandle( DepthStencilStateDescriptor );
+	Ic3GCIDeclareClassHandle( GraphicsShaderLinkageStateDescriptor );
+	Ic3GCIDeclareClassHandle( IAInputLayoutStateDescriptor );
+	Ic3GCIDeclareClassHandle( IAVertexStreamStateDescriptor );
+	Ic3GCIDeclareClassHandle( MultiSamplingStateDescriptor );
+	Ic3GCIDeclareClassHandle( RasterizerStateDescriptor );
+	Ic3GCIDeclareClassHandle( RenderPassConfigStateDescriptor );
+	Ic3GCIDeclareClassHandle( ShaderRootSignatureStateDescriptor );
 
-	using render_target_index_t = uint16;
 	using shader_input_ref_id_t = uint64;
 	using shader_input_index_t = uint32;
 
-	using GraphicsShaderArray = std::array<ShaderHandle, GCM::cxShaderGraphicsStagesNum>;
+	using GraphicsShaderArray = std::array<ShaderHandle, GCM::kShaderGraphicsStagesNum>;
 
-	///
-	constexpr auto cxPipelineInternalStateIDInvalid = 0u;
-
-	///
-	constexpr auto cxRRAttachmentMSAALevelInvalid = cppx::meta::limits<uint32>::max_value;
-
-	///
-	constexpr auto cxPipelineImmutableStateTypesNum = 8u;
-
-	namespace CxDef
+	namespace CXU
 	{
 
 		/// @brief
-		inline constexpr uint32 makeRTAttachmentFlag( native_uint pAttachmentIndex )
+		inline constexpr uint32 IAMakeVertexAttributeFlag( native_uint pAttribIndex )
 		{
-			return ( pAttachmentIndex < GCM::cxRTMaxCombinedAttachmentsNum ) ? ( 1 << static_cast<render_target_index_t>( pAttachmentIndex ) ) : 0u;
+			return ( pAttribIndex < GCM::kIAMaxVertexAttributesNum ) ? ( 1 << pAttribIndex ) : 0u;
+		}
+
+		/// @brief Returns
+		inline constexpr uint32 IAMakeDataStreamBufferBindingFlag( native_uint pStreamIndex )
+		{
+			return ( pStreamIndex < GCM::kIAMaxDataStreamCombinedBuffersNum ) ? ( 1 << pStreamIndex ) : 0u;
 		}
 
 		/// @brief
-		inline constexpr bool IsRTAttachmentIndexValid( native_uint pIndex )
+		inline constexpr uint32 IAMakeDataStreamVertexBufferBindingFlag( native_uint pStreamIndex )
 		{
-			return pIndex < GCM::cxRTMaxCombinedAttachmentsNum;
+			return ( pStreamIndex < GCM::kIAMaxDataStreamVertexBuffersNum ) ? ( 1 << pStreamIndex ) : 0u;
+		}
+
+		/// @brief Returns
+		inline constexpr uint32 IAMakeDataStreamIndexBufferBindingFlag()
+		{
+			return ( 1 << GCM::kIAMaxDataStreamVertexBuffersNum );
 		}
 
 		/// @brief
-		inline constexpr bool IsRTColorAttachmentIndexValid( native_uint pIndex )
+		inline constexpr uint32 RTOMakeAttachmentFlag( native_uint pAttachmentIndex )
 		{
-			return pIndex < GCM::cxRTMaxColorAttachmentsNum;
+			return ( pAttachmentIndex < GCM::kRTOMaxCombinedAttachmentsNum ) ? ( 1 << pAttachmentIndex ) : 0u;
+		}
+
+		/// @brief
+		inline constexpr uint32 RTOMakeColorAttachmentFlag( native_uint pColorAttachmentIndex )
+		{
+			return ( pColorAttachmentIndex < GCM::kRTOMaxColorAttachmentsNum ) ? ( 1 << pColorAttachmentIndex ) : 0u;
+		}
+
+		/// @brief
+		inline constexpr uint32 RTOMakeDepthStencilAttachmentFlag()
+		{
+			return ( 1 << GCM::kRTOMaxColorAttachmentsNum );
+		}
+
+		/// @brief
+		inline constexpr bool IAIsVertexAttributeIndexValid( native_uint pAttribIndex )
+		{
+			return pAttribIndex < GCM::kIAMaxVertexAttributesNum;
+		}
+
+		/// @brief
+		inline constexpr bool IAIsDataStreamVertexBufferIndexValid( native_uint pBufferIndex )
+		{
+			return pBufferIndex < GCM::kIAMaxDataStreamVertexBuffersNum;
+		}
+
+		/// @brief
+		inline constexpr bool RTOIsAttachmentIndexValid( native_uint pAttachmentIndex )
+		{
+			return pAttachmentIndex < GCM::kRTOMaxCombinedAttachmentsNum;
+		}
+
+		/// @brief
+		inline constexpr bool RTOIsColorAttachmentIndexValid( native_uint pColorAttachmentIndex )
+		{
+			return pColorAttachmentIndex < GCM::kRTOMaxColorAttachmentsNum;
 		}
 
 	}
 
-	enum EPipelineImmutableStateTypeFlags : uint32
+	///
+	inline constexpr auto kIAVertexStreamSlotVertexBufferMax = static_cast<native_uint>( GCM::kIAMaxDataStreamVertexBuffersNum - 1 );
+
+	///
+	inline constexpr auto kIAVertexStreamSlotIndexBuffer = static_cast<native_uint>( GCM::kIAMaxDataStreamVertexBuffersNum );
+
+	///
+	inline constexpr auto kRTOAttachmentIndexDepthStencil = static_cast<native_uint>( GCM::kRTOMaxColorAttachmentsNum );
+
+	enum class EPipelineType : uint32
 	{
-		ePipelineImmutableStateTypeFlagBlendBit = 0x0001,
-		ePipelineImmutableStateTypeFlagDepthStencilBit = 0x0002,
-		ePipelineImmutableStateTypeFlagGraphicsShaderLinkageBit = 0x0008,
-		ePipelineImmutableStateTypeFlagIAInputLayoutBit = 0x0010,
-		ePipelineImmutableStateTypeFlagIAVertexStreamBit = 0x0020,
-		ePipelineImmutableStateTypeFlagRasterizerBit = 0x0004,
-		ePipelineImmutableStateTypeFlagRenderTargetBindingBit = 0x0040,
-		ePipelineImmutableStateTypeFlagRenderPassBit = 0x0080,
-		ePipelineImmutableStateTypeMaskAll = 0x00FF,
+		Compute,
+		Graphics
 	};
 
 	/// @brief
-	enum ERTAttachmentIndex : render_target_index_t
+	enum EIAVertexStreamBindingFlags : uint32
 	{
-		eRTAttachmentIndexColor0,
-		eRTAttachmentIndexColor1,
-		eRTAttachmentIndexColor2,
-		eRTAttachmentIndexColor3,
-		eRTAttachmentIndexColor4,
-		eRTAttachmentIndexColor5,
-		eRTAttachmentIndexColor6,
-		eRTAttachmentIndexColor7,
-		eRTAttachmentIndexDepthStencil
+		eIAVertexStreamBindingFlagVertexBuffer0Bit  = CXU::IAMakeDataStreamVertexBufferBindingFlag( 0 ),
+		eIAVertexStreamBindingFlagVertexBuffer1Bit  = CXU::IAMakeDataStreamVertexBufferBindingFlag( 1 ),
+		eIAVertexStreamBindingFlagVertexBuffer2Bit  = CXU::IAMakeDataStreamVertexBufferBindingFlag( 2 ),
+		eIAVertexStreamBindingFlagVertexBuffer3Bit  = CXU::IAMakeDataStreamVertexBufferBindingFlag( 3 ),
+		eIAVertexStreamBindingFlagVertexBuffer4Bit  = CXU::IAMakeDataStreamVertexBufferBindingFlag( 4 ),
+		eIAVertexStreamBindingFlagVertexBuffer5Bit  = CXU::IAMakeDataStreamVertexBufferBindingFlag( 5 ),
+		eIAVertexStreamBindingFlagVertexBuffer6Bit  = CXU::IAMakeDataStreamVertexBufferBindingFlag( 6 ),
+		eIAVertexStreamBindingFlagVertexBuffer7Bit  = CXU::IAMakeDataStreamVertexBufferBindingFlag( 7 ),
+		eIAVertexStreamBindingFlagVertexBuffer8Bit  = CXU::IAMakeDataStreamVertexBufferBindingFlag( 8 ),
+		eIAVertexStreamBindingFlagIndexBufferBit    = CXU::IAMakeDataStreamIndexBufferBindingFlag(),
+
+		eIAVertexStreamBindingMaskVertexBufferAllBits = cppx::make_lsfb_bitmask<uint32>( GCM::kIAMaxDataStreamVertexBuffersNum ),
+
+		eIAVertexStreamBindingMaskAll = eIAVertexStreamBindingMaskVertexBufferAllBits | eIAVertexStreamBindingFlagIndexBufferBit
+	};
+
+	/// @brief
+	enum EIAVertexAttributeFlags : uint16
+	{
+		eIAVertexAttributeFlagAttr0Bit  = CXU::IAMakeVertexAttributeFlag( 0 ),
+		eIAVertexAttributeFlagAttr1Bit  = CXU::IAMakeVertexAttributeFlag( 1 ),
+		eIAVertexAttributeFlagAttr2Bit  = CXU::IAMakeVertexAttributeFlag( 2 ),
+		eIAVertexAttributeFlagAttr3Bit  = CXU::IAMakeVertexAttributeFlag( 3 ),
+		eIAVertexAttributeFlagAttr4Bit  = CXU::IAMakeVertexAttributeFlag( 4 ),
+		eIAVertexAttributeFlagAttr5Bit  = CXU::IAMakeVertexAttributeFlag( 5 ),
+		eIAVertexAttributeFlagAttr6Bit  = CXU::IAMakeVertexAttributeFlag( 6 ),
+		eIAVertexAttributeFlagAttr7Bit  = CXU::IAMakeVertexAttributeFlag( 7 ),
+		eIAVertexAttributeFlagAttr8Bit  = CXU::IAMakeVertexAttributeFlag( 8 ),
+		eIAVertexAttributeMaskAll       = cppx::make_lsfb_bitmask<uint32>( GCM::kIAMaxVertexAttributesNum ),
+	};
+
+	enum EPipelineStateDescriptorTypeFlags : uint32
+	{
+		ePipelineStateDescriptorTypeFlagBlendBit = 0x0001,
+		ePipelineStateDescriptorTypeFlagDepthStencilBit = 0x0002,
+		ePipelineStateDescriptorTypeFlagRasterizerBit = 0x0004,
+		ePipelineStateDescriptorTypeFlagIAInputLayoutBit = 0x0008,
+		ePipelineStateDescriptorTypeFlagGraphicsShaderLinkageBit = 0x0010,
+		ePipelineStateDescriptorTypeFlagShaderRootSignatureBit = 0x0020,
+		ePipelineStateDescriptorTypeFlagMultiSamplingBit = 0x0040,
+		ePipelineStateDescriptorTypeFlagRenderTargetLayoutBit = 0x0080,
+		ePipelineStateDescriptorTypeMaskAll = 0x00FF,
 	};
 
 	/// @brief A set of bit flags representing render target attachments.
 	enum ERTAttachmentFlags : uint32
 	{
-		eRTAttachmentFlagColor0Bit       = CxDef::makeRTAttachmentFlag( eRTAttachmentIndexColor0 ),
-		eRTAttachmentFlagColor1Bit       = CxDef::makeRTAttachmentFlag( eRTAttachmentIndexColor1 ),
-		eRTAttachmentFlagColor2Bit       = CxDef::makeRTAttachmentFlag( eRTAttachmentIndexColor2 ),
-		eRTAttachmentFlagColor3Bit       = CxDef::makeRTAttachmentFlag( eRTAttachmentIndexColor3 ),
-		eRTAttachmentFlagColor4Bit       = CxDef::makeRTAttachmentFlag( eRTAttachmentIndexColor4 ),
-		eRTAttachmentFlagColor5Bit       = CxDef::makeRTAttachmentFlag( eRTAttachmentIndexColor5 ),
-		eRTAttachmentFlagColor6Bit       = CxDef::makeRTAttachmentFlag( eRTAttachmentIndexColor6 ),
-		eRTAttachmentFlagColor7Bit       = CxDef::makeRTAttachmentFlag( eRTAttachmentIndexColor7 ),
-		eRtAttachmentFlagDepthStencilBit = CxDef::makeRTAttachmentFlag( eRTAttachmentIndexDepthStencil ),
-
-		eRTAttachmentMaskColorAll      = cppx::make_lsfb_bitmask<uint32>( GCM::cxRTMaxColorAttachmentsNum ),
-		eRTAttachmentMaskAll           = eRTAttachmentMaskColorAll | eRtAttachmentFlagDepthStencilBit,
-		eRTAttachmentMaskDefaultC0DS   = eRTAttachmentFlagColor0Bit | eRtAttachmentFlagDepthStencilBit,
-		eRTAttachmentMaskDefaultDSOnly = eRTAttachmentFlagColor0Bit | eRtAttachmentFlagDepthStencilBit,
+		eRTAttachmentFlagColor0Bit       = CXU::RTOMakeAttachmentFlag( 0 ),
+		eRTAttachmentFlagDepthStencilBit = CXU::RTOMakeAttachmentFlag( kRTOAttachmentIndexDepthStencil ),
+		eRTAttachmentMaskColorAll        = cppx::make_lsfb_bitmask<uint32>( GCM::kRTOMaxColorAttachmentsNum ),
+		eRTAttachmentMaskAll             = eRTAttachmentMaskColorAll | eRTAttachmentFlagDepthStencilBit,
+		eRTAttachmentMaskDefaultC0DS     = eRTAttachmentFlagColor0Bit | eRTAttachmentFlagDepthStencilBit,
+		eRTAttachmentMaskDefaultDSOnly   = eRTAttachmentFlagDepthStencilBit,
 	};
 
 	enum EGraphicsPipelineDynamicStateFlags : uint32
@@ -190,4 +252,4 @@ namespace Ic3::Graphics::GCI
 
 } // namespace Ic3::Graphics::GCI
 
-#endif // __IC3_GRAPHICS_GCI_COMMON_STATE_DEFS_H__
+#endif // __IC3_GRAPHICS_GCI_COMMON_GPU_STATE_DEFS_H__

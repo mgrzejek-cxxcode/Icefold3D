@@ -31,8 +31,11 @@ namespace Ic3::Graphics::GCI
 		/// Indicates that the pass does not have any dependency on the previous contents of the resource.
 		/// The resource may have the previous data or some uninitialized one. No guarantees are given.
 		Discard = eRenderPassAttachmentActionFlagLoadDiscardBit,
+		///
 		Fetch = eRenderPassAttachmentActionFlagLoadFetchBit,
+		///
 		RestrictAccess = eRenderPassAttachmentActionFlagAccessRestrictBit,
+		///
 		Undefined = 0
 	};
 
@@ -45,78 +48,114 @@ namespace Ic3::Graphics::GCI
 		/// The contents of the resource is to be preserved and kept after the pass is done.
 		/// This indicates there will be a dependency on the data in the future.
 		Keep = eRenderPassAttachmentActionFlagStoreKeepBit,
+		///
 		KeepResolve = eRenderPassAttachmentActionFlagStoreKeepBit | eRenderPassAttachmentActionFlagStoreResolveBit,
+		///
 		Resolve = eRenderPassAttachmentActionFlagStoreResolveBit,
+		///
 		Undefined = 0
 	};
 
-	struct RenderPassAttachmentConfig
+	union RenderPassActionLoadParameters
 	{
-		RenderTargetAttachmentClearConfig clearConfig;
-		cppx::bitmask<ERenderTargetBufferFlags> clearMask = E_RENDER_TARGET_BUFFER_MASK_ALL;
-		ERenderPassAttachmentLoadAction renderPassLoadAction = ERenderPassAttachmentLoadAction::Undefined;
-		ERenderPassAttachmentStoreAction renderPassStoreAction = ERenderPassAttachmentStoreAction::Undefined;
-
-		void reset()
+		struct ClearParams
 		{
-			renderPassLoadAction = ERenderPassAttachmentLoadAction::Undefined;
-			renderPassStoreAction = ERenderPassAttachmentStoreAction::Undefined;
-		}
+			RenderTargetAttachmentClearConfig clearConfig;
+			cppx::bitmask<ERenderTargetBufferFlags> clearMask = ERenderTargetBufferMaskAll;
+		};
 
-		bool empty() const noexcept
+		ClearParams opClear{};
+	};
+
+	union RenderPassActionStoreParameters
+	{
+		struct ResolveParams
 		{
-			return renderPassLoadAction == ERenderPassAttachmentLoadAction::Undefined ||
-			       renderPassStoreAction == ERenderPassAttachmentStoreAction::Undefined;
-		}
+		};
+
+		ResolveParams opResolve{};
+	};
+
+	struct RenderPassAttachmentReference
+	{
+		RenderTargetTextureHandle attachmentTexture;
+
+		RenderTargetTextureHandle resolveTexture;
+
+		ERenderPassAttachmentLoadAction loadAction = ERenderPassAttachmentLoadAction::Undefined;
+
+		RenderPassActionLoadParameters loadParameters;
+
+		ERenderPassAttachmentStoreAction storeAction = ERenderPassAttachmentStoreAction::Undefined;
+
+		RenderPassActionStoreParameters storeParameters;
 
 		explicit operator bool() const noexcept
 		{
-			return !empty();
+			return !IsEmpty();
+		}
+
+		bool IsEmpty() const noexcept
+		{
+			return !attachmentTexture;
+		}
+
+		bool HasLoadActionFlags( ERenderPassAttachmentActionFlags pLoadFlags ) const noexcept
+		{
+			return cppx::make_bitmask( loadAction ).is_set( pLoadFlags );
+		}
+
+		bool HasStoreActionFlags( ERenderPassAttachmentActionFlags pLoadFlags ) const noexcept
+		{
+			return cppx::make_bitmask( storeAction ).is_set( pLoadFlags );
+		}
+
+		void Reset()
+		{
+			attachmentTexture = nullptr;
+			resolveTexture = nullptr;
+			loadAction = ERenderPassAttachmentLoadAction::Undefined;
+			storeAction = ERenderPassAttachmentStoreAction::Undefined;
 		}
 	};
 
-	using RenderPassColorAttachmentConfigArray = RenderTargetColorAttachmentPropertyArray<RenderPassAttachmentConfig>;
-
-	struct RenderPassConfiguration : public RenderTargetAttachmentConfigurationSet<RenderPassAttachmentConfig>
+	/**
+	 *
+	 */
+	struct RenderPassConfiguration : public TRenderTargetArrayConfiguration<RenderPassAttachmentReference>
 	{
-		cppx::bitmask<ERTAttachmentFlags> attachmentsAccessRestrictMask = 0;
+		IC3_GRAPHICS_GCI_API_NO_DISCARD cppx::bitmask<ERTAttachmentFlags> GetAttachmentsMaskWithLoadFlags(
+				cppx::bitmask<ERenderPassAttachmentActionFlags> pActionFlags ) const noexcept;
 
-		cppx::bitmask<ERTAttachmentFlags> attachmentsActionClearMask = 0;
+		IC3_GRAPHICS_GCI_API_NO_DISCARD cppx::bitmask<ERTAttachmentFlags> GetAttachmentsMaskWithStoreFlags(
+				cppx::bitmask<ERenderPassAttachmentActionFlags> pActionFlags ) const noexcept;
 
-		CPPX_ATTR_NO_DISCARD native_uint CountAttachmentsAccessRestrict() const noexcept
+		CPPX_ATTR_NO_DISCARD cppx::bitmask<ERTAttachmentFlags> GetAttachmentsMaskWithLoadAction(
+				ERenderPassAttachmentLoadAction pLoadAction ) const noexcept
 		{
-			return pop_count( attachmentsAccessRestrictMask & eRTAttachmentMaskAll );
+			return GetAttachmentsMaskWithLoadFlags( static_cast<ERenderPassAttachmentActionFlags>( pLoadAction ) );
 		}
 
-		CPPX_ATTR_NO_DISCARD native_uint CountAttachmentsActionClear() const noexcept
+		CPPX_ATTR_NO_DISCARD cppx::bitmask<ERTAttachmentFlags> GetAttachmentsMaskWithStoreAction(
+				ERenderPassAttachmentStoreAction pStoreAction ) const noexcept
 		{
-			return pop_count( attachmentsActionClearMask & eRTAttachmentMaskAll );
+			return GetAttachmentsMaskWithStoreFlags( static_cast<ERenderPassAttachmentActionFlags>( pStoreAction ) );
 		}
-
-		CPPX_ATTR_NO_DISCARD RenderPassConfiguration GetValidated() const noexcept
-		{
-			RenderPassConfiguration validatedConfiguration = *this;
-			validatedConfiguration.ResetAttachmentsFlags();
-			return validatedConfiguration;
-		}
-
-		IC3_GRAPHICS_GCI_API void ResetAttachmentsFlags() noexcept;
 	};
 
-	namespace SMU
+	namespace GCU
 	{
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD cppx::bitmask<ERenderPassAttachmentActionFlags> GetRenderPassAttachmentActionMask(
-				const RenderPassAttachmentConfig & pAttachmentConfig );
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool RTOValidateRenderPassConfiguration(
+				const RenderPassConfiguration & pPassConfiguration );
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD cppx::bitmask<ERTAttachmentFlags> GetRenderPassAttachmentArbitraryActionMask(
-				const RenderPassColorAttachmentConfigArray & pColorAttachments,
-				const RenderPassAttachmentConfig pDepthStencilAttachment,
-				cppx::bitmask<ERTAttachmentFlags> pActiveAttachmentsMask,
-				cppx::bitmask<ERenderPassAttachmentActionFlags> pActionMask );
+		IC3_GRAPHICS_GCI_API_NO_DISCARD RenderTargetArrayLayout RTOGetRenderTargetArrayLayoutForPassConfiguration(
+				const RenderPassConfiguration & pPassConfiguration );
 
 	}
 
 } // namespace Ic3::Graphics::GCI
+
+#include "RenderPassCommon.inl"
 
 #endif // __IC3_GRAPHICS_GCI_RENDER_PASS_COMMON_H__

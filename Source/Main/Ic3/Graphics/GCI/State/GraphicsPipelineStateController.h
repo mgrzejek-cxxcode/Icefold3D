@@ -10,7 +10,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	class PipelineImmutableStateFactory;
+	class GraphicsPipelineStateDescriptorFactory;
 
 	using graphics_state_update_mask_value_t = uint64;
 
@@ -20,7 +20,6 @@ namespace Ic3::Graphics::GCI
 		eGraphicsStateUpdateFlagCommonPSOBit = 0x01,
 		eGraphicsStateUpdateFlagCommonVertexStreamBit = 0x02,
 		eGraphicsStateUpdateFlagCommonRenderTargetBindingBit = 0x04,
-
 		eGraphicsStateUpdateMaskCommonAll = 0x07
 	};
 
@@ -33,13 +32,13 @@ namespace Ic3::Graphics::GCI
 
 		virtual bool ApplyStateChanges() = 0;
 
-		CPPX_ATTR_NO_DISCARD bool IsIAVertexStreamStateDynamic() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IAIsVertexStreamStateDynamic() const noexcept;
 
 		CPPX_ATTR_NO_DISCARD bool IsRenderTargetStateDynamic() const noexcept;
 
 		CPPX_ATTR_NO_DISCARD const GraphicsPipelineDynamicState & GetRenderPassDynamicState() const noexcept;
 
-		CPPX_ATTR_NO_DISCARD const ShaderInputSignature & GetShaderInputSignature() const noexcept;
+		CPPX_ATTR_NO_DISCARD const ShaderRootSignature & GetShaderRootSignature() const noexcept;
 
 		void SetRenderPassDynamicState( const GraphicsPipelineDynamicState & pDynamicState );
 
@@ -56,11 +55,11 @@ namespace Ic3::Graphics::GCI
 		virtual bool ResetGraphicsPipelineStateObject();
 
 		virtual bool SetIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState );
-		virtual bool SetIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState );
+		virtual bool SetIAVertexStreamState( const IAVertexStreamStateDescriptor & pIAVertexStreamState );
 		virtual bool ResetIAVertexStreamState();
 
 		virtual bool SetRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState );
-		virtual bool SetRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState );
+		virtual bool SetRenderTargetBindingState( const RenderTargetBindingStateDescriptor & pRenderTargetBindingState );
 		virtual bool ResetRenderTargetBindingState();
 
 		virtual bool SetViewport( const ViewportDesc & pViewportDesc );
@@ -96,7 +95,7 @@ namespace Ic3::Graphics::GCI
 			Ic3Throw( 0 );
 		}
 
-		template <typename TIAVertexStreamState = IAVertexStreamImmutableState>
+		template <typename TIAVertexStreamState = IAVertexStreamStateDescriptor>
 		inline const TIAVertexStreamState * GetCurrentIAVertexStreamState() const noexcept
 		{
 			if( _currentCommonState.iaVertexStreamState )
@@ -107,7 +106,7 @@ namespace Ic3::Graphics::GCI
 			return nullptr;
 		}
 
-		template <typename TIAVertexStreamState = IAVertexStreamImmutableState>
+		template <typename TIAVertexStreamState = IAVertexStreamStateDescriptor>
 		inline const TIAVertexStreamState & GetCurrentIAVertexStreamStateRef() const
 		{
 			if( const auto * stateObject = GetCurrentIAVertexStreamState<TIAVertexStreamState>() )
@@ -117,7 +116,7 @@ namespace Ic3::Graphics::GCI
 			Ic3Throw( 0 );
 		}
 
-		template <typename TRenderTargetBindingState = RenderTargetBindingImmutableState>
+		template <typename TRenderTargetBindingState = RenderTargetBindingStateDescriptor>
 		inline const TRenderTargetBindingState * GetCurrentRenderTargetBindingState() const noexcept
 		{
 			if( _currentCommonState.renderTargetBindingState )
@@ -128,7 +127,7 @@ namespace Ic3::Graphics::GCI
 			return nullptr;
 		}
 
-		template <typename TRenderTargetBindingState = RenderTargetBindingImmutableState>
+		template <typename TRenderTargetBindingState = RenderTargetBindingStateDescriptor>
 		inline const TRenderTargetBindingState & GetCurrentRenderTargetBindingStateRef() const
 		{
 			if( const auto * stateObject = GetCurrentRenderTargetBindingState<TRenderTargetBindingState>() )
@@ -145,8 +144,8 @@ namespace Ic3::Graphics::GCI
 		struct CurrentCommonState
 		{
 			const GraphicsPipelineStateObject * graphicsPSO = nullptr;
-			const IAVertexStreamImmutableState * iaVertexStreamState = nullptr;
-			const RenderTargetBindingImmutableState * renderTargetBindingState = nullptr;
+			const IAVertexStreamStateDescriptor * iaVertexStreamState = nullptr;
+			const RenderTargetBindingStateDescriptor * renderTargetBindingState = nullptr;
 		};
 
 		CurrentCommonState _currentCommonState;

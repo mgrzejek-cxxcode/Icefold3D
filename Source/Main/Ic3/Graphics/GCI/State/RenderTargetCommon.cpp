@@ -1,5 +1,5 @@
 
-#include "RenderTargetConfig.h"
+#include "RenderTargetCommon.h"
 #include <Ic3/Graphics/GCI/Resources/Texture.h>
 #include <Ic3/Graphics/GCI/Resources/RenderTargetTexture.h>
 #include <cppx/memory.h>
@@ -7,66 +7,57 @@
 namespace Ic3::Graphics::GCI
 {
 
-	namespace SMU
+	namespace GCU
 	{
 
-		bool ValidateRenderTargetArrayBindingDefinition(
-				const RenderTargetArrayBindingDefinition & pBindingDefinition )
+		EGPUResourceUsageFlags RTOGetAttachmentRequiredUsageMask(
+				native_uint pAttachmentIndex,
+				cppx::bitmask<ERenderTargetBufferFlags> pOptionalRTAMask )
 		{
-			if( const auto * firstActiveBinding = pBindingDefinition.FindFirstActiveAttachment() )
+			if( pAttachmentIndex >= GCM::kRTOMaxColorAttachmentsNum )
 			{
-				// Image Layout of the first attachment. This will serve as a reference point - all RT attachments
-				// are required to have the same layout (dimensions), so we can compare to any of the active ones.
-				const auto & commonImageLayout = firstActiveBinding->attachmentTexture->mRTTextureLayout;
-
-				// Binding resolve mask -
-				const auto bindingResolveMask = pBindingDefinition.GetResolveTargetsMask();
-
-				const auto bindingValid = ForEachRTAttachmentIndex( pBindingDefinition.activeAttachmentsMask,
-					[&]( native_uint pAttachmentIndex, ERTAttachmentFlags pAttachmentBit )
-					{
-						const auto & attachmentBinding = pBindingDefinition.attachmentConfigArray[pAttachmentIndex];
-						if( !attachmentBinding )
-						{
-							return false;
-						}
-						const auto requiredUsageFlags = CxDef::GetRTAttachmentRequiredUsageMask( pAttachmentIndex );
-						if( !attachmentBinding.attachmentTexture->mResourceFlags.is_set_any_of( requiredUsageFlags ) )
-						{
-							return false;
-						}
-						const auto & textureLayout = attachmentBinding.attachmentTexture->mRTTextureLayout;
-						if( textureLayout.imageRect != commonImageLayout.imageRect )
-						{
-							return false;
-						}
-						if( textureLayout.msaaLevel != commonImageLayout.msaaLevel )
-						{
-							return false;
-						}
-						if( bindingResolveMask.is_set( pAttachmentBit ) && !attachmentBinding.resolveTexture )
-						{
-							return false;
-						}
-						return true;
-					} );
-
-				if( bindingValid )
+				// Returned mask is used for validation - we check whether the specified resource has valid usage
+				// configured, so that it can be attached to the pipeline as an RT attachment. Thus, in case of an
+				// invalid index we return the complete mask with all usages - then, even in naive, unchecked code
+				// like: if( someResource.HasUsage( RTOGetAttachmentRequiredUsageMask( eRTIndexDepthStencil ) ) )
+				// the behaviour will be correct (in the case above the check will fail - but returning 0, for example,
+				// would make this check successful).
+				return eGPUResourceUsageMaskAll;
+			}
+			else
+			{
+				if( pAttachmentIndex < GCM::kRTOMaxColorAttachmentsNum )
 				{
-					return true;
+					// If the query is for one of the color attachments, we need eGPUResourceUsageFlagRenderTargetColorBit.
+					return eGPUResourceUsageFlagRenderTargetColorBit;
+				}
+				else
+				{
+					if( pOptionalRTAMask.is_set( ERenderTargetBufferMaskDepthStencil ) )
+					{
+						// Depth-stencil usage requires eGPUResourceUsageMaskRenderTargetDepthStencil.
+						return eGPUResourceUsageMaskRenderTargetDepthStencil;
+					}
+					else if( pOptionalRTAMask.is_set( ERenderTargetBufferFlagDepthBit ) )
+					{
+						// Depth-only usage requires eGPUResourceUsageFlagRenderTargetDepthBit.
+						return eGPUResourceUsageFlagRenderTargetDepthBit;
+					}
+					else if( pOptionalRTAMask.is_set( ERenderTargetBufferFlagStencilBit ) )
+					{
+						// Stencil-only usage requires eGPUResourceUsageFlagRenderTargetStencilBit.
+						return eGPUResourceUsageFlagRenderTargetStencilBit;
+					}
 				}
 			}
-
-			return false;
 		}
 
-		RenderTargetArrayLayoutConfiguration GetRenderTargetArrayLayoutConfigurationForBindingDefinition(
-				const RenderTargetArrayBindingDefinition & pBindingDefinition )
+		cppx::bitmask<uint32> GetRTBufferMaskForRenderTargetTextureType( ERenderTargetTextureType pRenderTargetTextureType )
 		{
+			return static_cast<uint32>( pRenderTargetTextureType ) & ERenderTargetBufferMaskAll;
 		}
 
 	}
-
 /*
 	void RenderTargetBindingDefinition::ResetAttachmentsFlags() noexcept
 	{
@@ -92,7 +83,7 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	namespace SMU
+	namespace GCU
 	{
 
 		const RenderTargetAttachmentBinding * GetRenderTargetBindingDefinitionFirstTarget(
@@ -217,7 +208,7 @@ namespace Ic3::Graphics::GCI
 		RenderTargetLayout GetRenderTargetLayoutDefaultBGRA8D24S8()
 		{
 			RenderTargetLayout rtLayout{};
-			rtLayout.activeAttachmentsMask = eRTAttachmentFlagColor0Bit | eRtAttachmentFlagDepthStencilBit;
+			rtLayout.activeAttachmentsMask = eRTAttachmentFlagColor0Bit | eRTAttachmentFlagDepthStencilBit;
 			rtLayout.sharedImageRect = cxTextureSize2DUndefined;
 			rtLayout.sharedMSAALevel = cxTextureMSAALevelUndefined;
 			rtLayout.colorAttachments[0].format = ETextureFormat::BGRA8UN;
@@ -238,7 +229,7 @@ namespace Ic3::Graphics::GCI
 		RenderTargetLayout GetRenderTargetLayoutDefaultRGBA8D24S8()
 		{
 			RenderTargetLayout rtLayout{};
-			rtLayout.activeAttachmentsMask = eRTAttachmentFlagColor0Bit | eRtAttachmentFlagDepthStencilBit;
+			rtLayout.activeAttachmentsMask = eRTAttachmentFlagColor0Bit | eRTAttachmentFlagDepthStencilBit;
 			rtLayout.sharedImageRect = cxTextureSize2DUndefined;
 			rtLayout.sharedMSAALevel = cxTextureMSAALevelUndefined;
 			rtLayout.colorAttachments[0].format = ETextureFormat::RGBA8UN;

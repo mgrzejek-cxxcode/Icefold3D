@@ -125,7 +125,7 @@ namespace Ic3::Graphics::GCI
 		           constantLayout.commonConstantArray.end(),
 		           []( const ShaderInputParameterConstant & pLeft, const ShaderInputParameterConstant & pRight ) -> bool {
 			           return ( pLeft.iAccessClass < pRight.iAccessClass ) ||
-			                  ( ( pLeft.iAccessClass < pRight.iAccessClass ) && ( pLeft.iStageIndex < pRight.iStageIndex ) );
+			                  ( ( pLeft.iAccessClass == pRight.iAccessClass ) && ( pLeft.iStageIndex < pRight.iStageIndex ) );
 		           } );
 
 		for( uint32 globalConstantIndex = 0; globalConstantIndex < constantLayout.constantsNum; ++globalConstantIndex )

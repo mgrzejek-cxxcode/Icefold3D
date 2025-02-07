@@ -1,6 +1,6 @@
 
 #include "CommonGPUStateDefs.h"
-#include "GraphicsPipelineImmutableState.h"
+#include "GraphicsPipelineStateDescriptor.h"
 
 namespace Ic3::Graphics::GCI
 {

@@ -1,8 +1,26 @@
 
-#include "GraphicsPipelineStateDescriptorRTA.h"
+#include "GraphicsPipelineStateDescriptorRTO.h"
 
 namespace Ic3::Graphics::GCI
 {
+
+	//!! RenderPassConfigStateDescriptor
+
+	RenderPassConfigStateDescriptor::RenderPassConfigStateDescriptor(
+			GPUDevice & pGPUDevice,
+			pipeline_state_descriptor_id_t pDescriptorID )
+	: PipelineStateDescriptor( pGPUDevice, pDescriptorID )
+	{}
+
+	RenderPassConfigStateDescriptor::~RenderPassConfigStateDescriptor() = default;
+
+	EPipelineStateDescriptorType RenderPassConfigStateDescriptor::GetDescriptorType() const noexcept
+	{
+		return EPipelineStateDescriptorType::DTRenderPassConfig;
+	}
+
+
+	//!! RenderPassConfigStateDescriptorDynamic
 
 	RenderPassConfigStateDescriptorDynamic::RenderPassConfigStateDescriptorDynamic(
 			GPUDevice & pGPUDevice,
@@ -238,6 +256,47 @@ namespace Ic3::Graphics::GCI
 		}
 
 		_renderPassConfiguration.depthStencilAttachmentConfig.Reset();
+	}
+
+
+	namespace PIM
+	{
+
+		//!! RenderPassConfigStateDescriptorGeneric
+
+		RenderPassConfigStateDescriptorGeneric::RenderPassConfigStateDescriptorGeneric(
+				GPUDevice & pGPUDevice,
+				pipeline_state_descriptor_id_t pDescriptorID,
+				const RenderPassConfiguration & pPassConfiguration )
+				: RenderPassConfigStateDescriptor( pGPUDevice, pDescriptorID )
+		{}
+
+		RenderPassConfigStateDescriptorGeneric::~RenderPassConfigStateDescriptorGeneric() = default;
+
+		TGfxHandle<RenderPassConfigStateDescriptorGeneric> RenderPassConfigStateDescriptorGeneric::CreateFromPassConfiguration(
+				GPUDevice & pGPUDevice,
+				const RenderPassConfiguration & pPassConfiguration,
+				pipeline_state_descriptor_id_t pDescriptorID )
+		{
+			if( !GCU::RTOValidateRenderPassConfiguration( pPassConfiguration ) )
+			{
+				return nullptr;
+			}
+
+			return CreateDynamicObject<RenderPassConfigStateDescriptorGeneric>( pGPUDevice, pDescriptorID, pPassConfiguration );
+		}
+
+
+		//!! RenderPassConfigStateDescriptor
+
+		RenderPassConfigStateDescriptorNative::RenderPassConfigStateDescriptorNative(
+				GPUDevice & pGPUDevice,
+				pipeline_state_descriptor_id_t pDescriptorID )
+		: RenderPassConfigStateDescriptor( pGPUDevice, pDescriptorID )
+		{}
+
+		RenderPassConfigStateDescriptorNative::~RenderPassConfigStateDescriptorNative() = default;
+
 	}
 
 }

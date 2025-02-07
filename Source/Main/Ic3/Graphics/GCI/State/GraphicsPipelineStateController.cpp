@@ -1,8 +1,8 @@
 
 #include "GraphicsPipelineStateController.h"
-#include "PipelineStateObject.h"
-#include "InputAssemblerImmutableStates.h"
-#include "RenderTargetImmutableStates.h"
+#include "GraphicsPipelineStateCommon.h"
+#include "GraphicsPipelineStateDescriptorIA.h"
+#include "RenderTargetStateDescriptors.h"
 
 #include <Ic3/Graphics/GCI/GPUDevice.h>
 #include <cppx/memory.h>
@@ -14,14 +14,14 @@ namespace Ic3::Graphics::GCI
 
 	GraphicsPipelineStateController::~GraphicsPipelineStateController() = default;
 
-	bool GraphicsPipelineStateController::IsIAVertexStreamStateDynamic() const noexcept
+	bool GraphicsPipelineStateController::IAIsVertexStreamStateDynamic() const noexcept
 	{
-		return _currentCommonState.iaVertexStreamState && _currentCommonState.iaVertexStreamState->IsDynamicOverrideState();
+		return _currentCommonState.iaVertexStreamState && _currentCommonState.iaVertexStreamState->IsDynamicDescriptor();
 	}
 
 	bool GraphicsPipelineStateController::IsRenderTargetStateDynamic() const noexcept
 	{
-		return _currentCommonState.renderTargetBindingState && _currentCommonState.renderTargetBindingState->IsDynamicOverrideState();
+		return _currentCommonState.renderTargetBindingState && _currentCommonState.renderTargetBindingState->IsDynamicDescriptor();
 	}
 
 	const GraphicsPipelineDynamicState & GraphicsPipelineStateController::GetRenderPassDynamicState() const noexcept
@@ -29,10 +29,10 @@ namespace Ic3::Graphics::GCI
 		return _currentRenderPassDynamicState;
 	}
 
-	const ShaderInputSignature & GraphicsPipelineStateController::GetShaderInputSignature() const noexcept
+	const ShaderRootSignature & GraphicsPipelineStateController::GetShaderRootSignature() const noexcept
 	{
 		Ic3DebugAssert( _currentCommonState.graphicsPSO );
-		return _currentCommonState.graphicsPSO->mShaderInputSignature;
+		return _currentCommonState.graphicsPSO->mShaderRootSignature;
 	}
 
 	void GraphicsPipelineStateController::SetRenderPassDynamicState( const GraphicsPipelineDynamicState & pDynamicState )
@@ -69,12 +69,12 @@ namespace Ic3::Graphics::GCI
 
 	bool GraphicsPipelineStateController::SetIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState )
 	{
-		_currentCommonState.iaVertexStreamState = &( IAVertexStreamImmutableState::GetDynamicOverrideState() );
+		_currentCommonState.iaVertexStreamState = &( IAVertexStreamStateDescriptor::GetDynamicOverrideState() );
 		_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonVertexStreamBit );
 		return true;
 	}
 
-	bool GraphicsPipelineStateController::SetIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState )
+	bool GraphicsPipelineStateController::SetIAVertexStreamState( const IAVertexStreamStateDescriptor & pIAVertexStreamState )
 	{
 		if( _currentCommonState.iaVertexStreamState != &pIAVertexStreamState )
 		{
@@ -94,12 +94,12 @@ namespace Ic3::Graphics::GCI
 
 	bool GraphicsPipelineStateController::SetRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState )
 	{
-		_currentCommonState.renderTargetBindingState = &( RenderTargetBindingImmutableState::GetDynamicOverrideState() );
+		_currentCommonState.renderTargetBindingState = &( RenderTargetBindingStateDescriptor::GetDynamicOverrideState() );
 		_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonRenderTargetBindingBit );
 		return true;
 	}
 
-	bool GraphicsPipelineStateController::SetRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState )
+	bool GraphicsPipelineStateController::SetRenderTargetBindingState( const RenderTargetBindingStateDescriptor & pRenderTargetBindingState )
 	{
 		if( _currentCommonState.renderTargetBindingState != &pRenderTargetBindingState )
 		{
