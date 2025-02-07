@@ -45,56 +45,56 @@ namespace cppx
 	};
 
 	template <typename TPChar>
-	class immutable_string
+	class immutable_base_string
 	{
 	public:
-		using self_type = immutable_string<TPChar>;
+		using self_type = immutable_base_string<TPChar>;
 		using underlying_string_type = std::basic_string<TPChar>;
 
-		immutable_string() = default;
-		~immutable_string() = default;
+		immutable_base_string() = default;
+		~immutable_base_string() = default;
 
-		immutable_string( immutable_string && ) = default;
-		immutable_string & operator=( immutable_string && ) = default;
+		immutable_base_string( immutable_base_string && ) = default;
+		immutable_base_string & operator=( immutable_base_string && ) = default;
 
-		immutable_string( const immutable_string & ) = default;
-		immutable_string & operator=( const immutable_string & ) = default;
+		immutable_base_string( const immutable_base_string & ) = default;
+		immutable_base_string & operator=( const immutable_base_string & ) = default;
 
-		immutable_string( std::nullptr_t )
+		immutable_base_string( std::nullptr_t )
 		{}
 
-		immutable_string( const TPChar * pStr, size_t pLength = cppx::cve::max_size )
+		immutable_base_string( const TPChar * pStr, size_t pLength = cppx::cve::max_size )
 		{
 			_init_str( pStr, pLength );
 		}
 
-		immutable_string( const TPChar pCh, size_t pCount = 1 )
+		immutable_base_string( const TPChar pCh, size_t pCount = 1 )
 		{
 			_init_str( pCh, pCount );
 		}
 
-		immutable_string( const string_base_view<TPChar> & pStrView )
+		immutable_base_string( const string_base_view<TPChar> & pStrView )
 		{
 			_init_str( pStrView.str(), pStrView.length() );
 		}
 
-		immutable_string( const std::basic_string_view<TPChar> & pStdStrView )
+		immutable_base_string( const std::basic_string_view<TPChar> & pStdStrView )
 		{
 			_init_str( pStdStrView.data(), pStdStrView.length() );
 		}
 
-		immutable_string( const std::basic_string<TPChar> & pStdString )
+		immutable_base_string( const std::basic_string<TPChar> & pStdString )
 		{
 			_init_str( std::move( pStdString ) );
 		}
 
-		immutable_string & operator=( std::nullptr_t )
+		immutable_base_string & operator=( std::nullptr_t )
 		{
 			_stringData.reset();
 			return *this;
 		}
 
-		immutable_string & operator=( const TPChar * pRhs )
+		immutable_base_string & operator=( const TPChar * pRhs )
 		{
 			if( !_stringData || ( _stringData->internal_str != pRhs ) )
 			{
@@ -103,7 +103,7 @@ namespace cppx
 			return *this;
 		}
 
-		immutable_string & operator=( const string_base_view<TPChar> & pRhs )
+		immutable_base_string & operator=( const string_base_view<TPChar> & pRhs )
 		{
 			if( !_stringData || ( _stringData->internal_str != pRhs ) )
 			{
@@ -112,7 +112,7 @@ namespace cppx
 			return *this;
 		}
 
-		immutable_string & operator=( const std::basic_string_view<TPChar> & pRhs )
+		immutable_base_string & operator=( const std::basic_string_view<TPChar> & pRhs )
 		{
 			if( !_stringData || ( _stringData->internal_str != pRhs ) )
 			{
@@ -121,7 +121,7 @@ namespace cppx
 			return *this;
 		}
 
-		immutable_string & operator=( const std::basic_string<TPChar> & pRhs )
+		immutable_base_string & operator=( const std::basic_string<TPChar> & pRhs )
 		{
 			if( !_stringData || ( _stringData->internal_str != pRhs ) )
 			{
@@ -227,43 +227,43 @@ namespace cppx
 
 
 	template <typename TPChar>
-	inline bool operator==( const immutable_string<TPChar> & pLhs, const immutable_string<TPChar> & pRhs ) noexcept
+	inline bool operator==( const immutable_base_string<TPChar> & pLhs, const immutable_base_string<TPChar> & pRhs ) noexcept
 	{
 		return pLhs.str() == pRhs.str();
 	}
 
 	template <typename TPChar>
-	inline bool operator!=( const immutable_string<TPChar> & pLhs, const immutable_string<TPChar> & pRhs ) noexcept
+	inline bool operator!=( const immutable_base_string<TPChar> & pLhs, const immutable_base_string<TPChar> & pRhs ) noexcept
 	{
 		return pLhs.str() != pRhs.str();
 	}
 
 	template <typename TPChar>
-	inline bool operator<( const immutable_string<TPChar> & pLhs, const immutable_string<TPChar> & pRhs ) noexcept
+	inline bool operator<( const immutable_base_string<TPChar> & pLhs, const immutable_base_string<TPChar> & pRhs ) noexcept
 	{
 		return pLhs.str() < pRhs.str();
 	}
 
 	template <typename TPChar>
-	inline bool operator<=( const immutable_string<TPChar> & pLhs, const immutable_string<TPChar> & pRhs ) noexcept
+	inline bool operator<=( const immutable_base_string<TPChar> & pLhs, const immutable_base_string<TPChar> & pRhs ) noexcept
 	{
 		return pLhs.str() <= pRhs.str();
 	}
 
 	template <typename TPChar>
-	inline bool operator>( const immutable_string<TPChar> & pLhs, const immutable_string<TPChar> & pRhs ) noexcept
+	inline bool operator>( const immutable_base_string<TPChar> & pLhs, const immutable_base_string<TPChar> & pRhs ) noexcept
 	{
 		return pLhs.str() > pRhs.str();
 	}
 
 	template <typename TPChar>
-	inline bool operator>=( const immutable_string<TPChar> & pLhs, const immutable_string<TPChar> & pRhs ) noexcept
+	inline bool operator>=( const immutable_base_string<TPChar> & pLhs, const immutable_base_string<TPChar> & pRhs ) noexcept
 	{
 		return pLhs.str() >= pRhs.str();
 	}
 
-	using ImmutableString = immutable_string<char>;
-	using ImmutableWString = immutable_string<wchar_t>;
+	using immutable_string = immutable_base_string<char>;
+	using immutable_wstring = immutable_base_string<wchar_t>;
 
 }
 
@@ -271,11 +271,11 @@ namespace std
 {
 
 	template <typename TPChar>
-	struct hash< cppx::immutable_string<TPChar> >
+	struct hash< cppx::immutable_base_string<TPChar> >
 	{
-		size_t operator()( const cppx::immutable_string<TPChar> & pString ) const noexcept
+		size_t operator()( const cppx::immutable_base_string<TPChar> & pString ) const noexcept
 		{
-			using StringType = typename cppx::immutable_string<TPChar>::underlying_string_type;
+			using StringType = typename cppx::immutable_base_string<TPChar>::underlying_string_type;
 			using HashType = hash<StringType>;
 			return pString.empty() ? HashType()( pString.str() ) : HashType()( StringType{} );
 		}

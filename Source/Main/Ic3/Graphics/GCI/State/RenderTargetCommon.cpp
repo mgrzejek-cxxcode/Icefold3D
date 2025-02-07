@@ -1,5 +1,5 @@
 
-#include "RenderTargetCommon.h"
+#include "RenderTargetConfig.h"
 #include <Ic3/Graphics/GCI/Resources/Texture.h>
 #include <Ic3/Graphics/GCI/Resources/RenderTargetTexture.h>
 #include <cppx/memory.h>
@@ -7,6 +7,67 @@
 namespace Ic3::Graphics::GCI
 {
 
+	namespace SMU
+	{
+
+		bool ValidateRenderTargetArrayBindingDefinition(
+				const RenderTargetArrayBindingDefinition & pBindingDefinition )
+		{
+			if( const auto * firstActiveBinding = pBindingDefinition.FindFirstActiveAttachment() )
+			{
+				// Image Layout of the first attachment. This will serve as a reference point - all RT attachments
+				// are required to have the same layout (dimensions), so we can compare to any of the active ones.
+				const auto & commonImageLayout = firstActiveBinding->attachmentTexture->mRTTextureLayout;
+
+				// Binding resolve mask -
+				const auto bindingResolveMask = pBindingDefinition.GetResolveTargetsMask();
+
+				const auto bindingValid = ForEachRTAttachmentIndex( pBindingDefinition.activeAttachmentsMask,
+					[&]( native_uint pAttachmentIndex, ERTAttachmentFlags pAttachmentBit )
+					{
+						const auto & attachmentBinding = pBindingDefinition.attachmentConfigArray[pAttachmentIndex];
+						if( !attachmentBinding )
+						{
+							return false;
+						}
+						const auto requiredUsageFlags = CxDef::GetRTAttachmentRequiredUsageMask( pAttachmentIndex );
+						if( !attachmentBinding.attachmentTexture->mResourceFlags.is_set_any_of( requiredUsageFlags ) )
+						{
+							return false;
+						}
+						const auto & textureLayout = attachmentBinding.attachmentTexture->mRTTextureLayout;
+						if( textureLayout.imageRect != commonImageLayout.imageRect )
+						{
+							return false;
+						}
+						if( textureLayout.msaaLevel != commonImageLayout.msaaLevel )
+						{
+							return false;
+						}
+						if( bindingResolveMask.is_set( pAttachmentBit ) && !attachmentBinding.resolveTexture )
+						{
+							return false;
+						}
+						return true;
+					} );
+
+				if( bindingValid )
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		RenderTargetArrayLayoutConfiguration GetRenderTargetArrayLayoutConfigurationForBindingDefinition(
+				const RenderTargetArrayBindingDefinition & pBindingDefinition )
+		{
+		}
+
+	}
+
+/*
 	void RenderTargetBindingDefinition::ResetAttachmentsFlags() noexcept
 	{
 		attachmentsActionResolveMask = 0;
@@ -194,7 +255,7 @@ namespace Ic3::Graphics::GCI
 		const RenderTargetLayout cvRenderTargetLayoutDefaultRGBA8D24S8 = GetRenderTargetLayoutDefaultRGBA8D24S8();
 	
 	}
-
+*/
 
 //	bool CreateRenderTargetLayout( const RenderTargetLayoutDesc & pRTLayoutDesc,
 //	                               RenderTargetLayout & pOutRTLayout )

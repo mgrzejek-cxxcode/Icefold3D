@@ -4,7 +4,7 @@
 #ifndef __IC3_GRAPHICS_GCI_INPUT_ASSEMBLER_IMMUTABLE_STATES_H__
 #define __IC3_GRAPHICS_GCI_INPUT_ASSEMBLER_IMMUTABLE_STATES_H__
 
-#include "GraphicsPipelineImmutableState.h"
+#include "GraphicsPipelineStateDescriptor.h"
 #include "InputAssemblerCommon.h"
 
 namespace Ic3::Graphics::GCI
@@ -28,37 +28,37 @@ namespace Ic3::Graphics::GCI
 	};
 
 	/// @brief
-	class IAInputLayoutImmutableState : public GraphicsPipelineImmutableState
+	class IAInputLayoutStateDescriptor : public GraphicsPipelineStateDescriptor
 	{
 	public:
 		IAInputLayoutStateCommonProperties const mCommonProperties;
 
 	public:
-		IAInputLayoutImmutableState( const IAInputLayoutImmutableState & ) = delete;
-		IAInputLayoutImmutableState & operator=( const IAInputLayoutImmutableState & ) = delete;
+		IAInputLayoutStateDescriptor( const IAInputLayoutStateDescriptor & ) = delete;
+		IAInputLayoutStateDescriptor & operator=( const IAInputLayoutStateDescriptor & ) = delete;
 
-		IAInputLayoutImmutableState( GPUDevice & pGPUDevice, const IAInputLayoutStateCommonProperties & pCommonProperties );
-		virtual ~IAInputLayoutImmutableState();
+		IAInputLayoutStateDescriptor( GPUDevice & pGPUDevice, const IAInputLayoutStateCommonProperties & pCommonProperties );
+		virtual ~IAInputLayoutStateDescriptor();
 
-		CPPX_ATTR_NO_DISCARD virtual EGraphicsPipelineImmutableStateType QueryStateType() const noexcept override final;
+		CPPX_ATTR_NO_DISCARD virtual EGraphicsPipelineStateDescriptorType QueryStateType() const noexcept override final;
 	};
 
 	/// @brief
-	class IAVertexStreamImmutableState : public GraphicsPipelineImmutableState
+	class IAVertexStreamStateDescriptor : public GraphicsPipelineStateDescriptor
 	{
 	public:
 		IAVertexStreamStateCommonProperties const mCommonProperties;
 
 	public:
-		IAVertexStreamImmutableState( const IAVertexStreamImmutableState & ) = delete;
-		IAVertexStreamImmutableState & operator=( const IAVertexStreamImmutableState & ) = delete;
+		IAVertexStreamStateDescriptor( const IAVertexStreamStateDescriptor & ) = delete;
+		IAVertexStreamStateDescriptor & operator=( const IAVertexStreamStateDescriptor & ) = delete;
 
-		IAVertexStreamImmutableState( GPUDevice & pGPUDevice, const IAVertexStreamStateCommonProperties & pCommonProperties );
-		virtual ~IAVertexStreamImmutableState();
+		IAVertexStreamStateDescriptor( GPUDevice & pGPUDevice, const IAVertexStreamStateCommonProperties & pCommonProperties );
+		virtual ~IAVertexStreamStateDescriptor();
 
-		CPPX_ATTR_NO_DISCARD virtual EGraphicsPipelineImmutableStateType QueryStateType() const noexcept override final;
+		CPPX_ATTR_NO_DISCARD virtual EGraphicsPipelineStateDescriptorType QueryStateType() const noexcept override final;
 
-		CPPX_ATTR_NO_DISCARD static const IAVertexStreamImmutableState & GetDynamicOverrideState();
+		CPPX_ATTR_NO_DISCARD static const IAVertexStreamStateDescriptor & GetDynamicOverrideState();
 	};
 
 	namespace SMU

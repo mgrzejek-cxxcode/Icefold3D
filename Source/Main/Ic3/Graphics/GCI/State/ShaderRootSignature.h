@@ -1,8 +1,8 @@
 
 #pragma once
 
-#ifndef __IC3_GRAPHICS_GCI_IS_H__
-#define __IC3_GRAPHICS_GCI_IS_H__
+#ifndef __IC3_GRAPHICS_GCI_SHADER_INPUT_SIGNATURE_H__
+#define __IC3_GRAPHICS_GCI_SHADER_INPUT_SIGNATURE_H__
 
 #include "CommonGPUStateDefs.h"
 #include "../Resources/ShaderCommon.h"
@@ -28,8 +28,10 @@ namespace Ic3::Graphics::GCI
 		// Vulkan: push constants
 		// Others: API-specific (explicit direct constants or implicit constant buffer)
 		Constant,
+
 		// CBV/SRV/UAV
 		Resource,
+
 		//
 		Sampler
 	};
@@ -44,9 +46,13 @@ namespace Ic3::Graphics::GCI
 
 	enum class EShaderInputResourceClass : uint16
 	{
+		//
 		CBV = 1,
+		//
 		SRV,
+		//
 		UAV,
+		//
 		Unknown = 0,
 	};
 
@@ -85,7 +91,7 @@ namespace Ic3::Graphics::GCI
 
 	}
 
-	struct ShaderInputSignatureDesc
+	struct ShaderRootSignatureDesc
 	{
 		struct ConstantDesc
 		{
@@ -96,7 +102,7 @@ namespace Ic3::Graphics::GCI
 
 		struct ConstantGroup
 		{
-			using ConstantList = std::array<ConstantDesc, GCM::cxISMaxConstantGroupSize>;
+			using ConstantList = std::array<ConstantDesc, GCM::kSRSMaxConstantGroupSize>;
 			EShaderConstantAccessClass accessClass;
 			ConstantList constantList;
 			uint32 constantsNum = 0;
@@ -129,14 +135,14 @@ namespace Ic3::Graphics::GCI
 
 		struct DescriptorSet
 		{
-			using DescriptorList = std::array<DescriptorDesc, GCM::cxISMaxDescriptorSetSize>;
+			using DescriptorList = std::array<DescriptorDesc, GCM::kSRSMaxDescriptorSetSize>;
 			EShaderInputDescriptorType descriptorType;
 			DescriptorList descriptorList;
 			uint32 descriptorsNum = 0;
 		};
 
-		using ConstantGroupArray = std::array<ConstantGroup, GCM::cxShaderCombinedStagesNum>;
-		using DescriptorSetArray = std::array<DescriptorSet, GCM::cxISMaxDescriptorSetsNum>;
+		using ConstantGroupArray = std::array<ConstantGroup, GCM::kShaderCombinedStagesNum>;
+		using DescriptorSetArray = std::array<DescriptorSet, GCM::kSRSMaxDescriptorSetsNum>;
 
 		cppx::bitmask<EShaderStageFlags> activeShaderStagesMask;
 		ConstantGroupArray constantGroupArray;
@@ -189,7 +195,7 @@ namespace Ic3::Graphics::GCI
 		};
 	};
 
-	struct ShaderInputSignature
+	struct ShaderRootSignature
 	{
 		struct ConstantLayout
 		{
@@ -237,14 +243,19 @@ namespace Ic3::Graphics::GCI
 		using DescriptorMap = std::unordered_map<shader_input_ref_id_t, ShaderInputParameterDescriptor *>;
 
 		cppx::bitmask<EShaderStageFlags> activeShaderStagesMask;
+
 		//
 		CommonParameterList commonParameterList;
+
 		//
 		ConstantLayout constantLayout;
+
 		//
 		ConstantMap constantMap;
+
 		//
 		DescriptorLayout descriptorLayout;
+
 		//
 		DescriptorMap descriptorMap;
 
@@ -254,9 +265,9 @@ namespace Ic3::Graphics::GCI
 		uint32 descriptorSetsNum;
 		uint32 parametersNum;
 
-		ShaderInputSignature() = default;
+		ShaderRootSignature() = default;
 
-		ShaderInputSignature( const InitEmptyTag & )
+		ShaderRootSignature( const InitEmptyTag & )
         : dwordSize( 0 )
 		{}
 
@@ -278,13 +289,13 @@ namespace Ic3::Graphics::GCI
 		}
 	};
 
-	namespace SMU
+	namespace GCU
 	{
 
-		IC3_GRAPHICS_GCI_API ShaderInputSignature CreateShaderInputSignature( const ShaderInputSignatureDesc & pSignatureDesc );
+		IC3_GRAPHICS_GCI_API ShaderRootSignature CreateShaderRootSignature( const ShaderRootSignatureDesc & pSignatureDesc );
 
 	}
 
 } // namespace Ic3::Graphics::GCI
 
-#endif // __IC3_GRAPHICS_GCI_IS_H__
+#endif // __IC3_GRAPHICS_GCI_SHADER_INPUT_SIGNATURE_H__

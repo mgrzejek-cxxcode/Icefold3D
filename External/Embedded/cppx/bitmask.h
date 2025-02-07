@@ -276,7 +276,7 @@ namespace cppx
 		return bitmask<TIntegral>( pValue );
 	}
 
-	template <typename TPBaseType, typename TPInput>
+	template <typename TPBaseType, typename TPInput = TPBaseType>
 	CPPX_ATTR_NO_DISCARD inline constexpr bitmask<TPBaseType> make_bitmask_tp( TPInput pValue = static_cast<TPInput>( 0 ) ) noexcept
 	{
 		return bitmask<TPBaseType>( pValue );
@@ -296,7 +296,7 @@ namespace cppx
 		return bitmask<TIntegral>( pValue );
 	}
 
-	template <typename TPStoreType, typename TPBaseType, typename TPInput>
+	template <typename TPStoreType, typename TPBaseType, typename TPInput = TPBaseType>
 	CPPX_ATTR_NO_DISCARD inline constexpr bitmask<TPBaseType> make_bitmask_ex_tp( TPInput pValue = static_cast<TPInput>( 0 ) ) noexcept
 	{
 		static_assert( pValue <= meta::limits<TPStoreType>::maxValue );

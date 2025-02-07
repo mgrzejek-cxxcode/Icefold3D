@@ -4,7 +4,7 @@
 #ifndef __IC3_GRAPHICS_GCI_PIPELINE_STATE_OBJECT_H__
 #define __IC3_GRAPHICS_GCI_PIPELINE_STATE_OBJECT_H__
 
-#include "GraphicsPipelineImmutableState.h"
+#include "GraphicsPipelineStateDescriptor.h"
 #include "InputAssemblerCommon.h"
 #include "GraphicsShaderState.h"
 #include "RenderTargetCommon.h"
@@ -20,19 +20,20 @@ namespace Ic3::Graphics::GCI
 	struct GraphicsPipelineStateObjectCreateInfo
 	{
 		BlendConfig blendConfig;
-		mutable BlendImmutableStateHandle blendState;
+		pipeline_state_descriptor_id_t blendDescriptorID;
+		mutable BlendStateDescriptorHandle blendState;
 
 		DepthStencilConfig depthStencilConfig;
-		mutable DepthStencilImmutableStateHandle depthStencilState;
+		mutable DepthStencilStateDescriptorHandle depthStencilState;
 
 		RasterizerConfig rasterizerConfig;
-		mutable RasterizerImmutableStateHandle rasterizerState;
+		mutable RasterizerStateDescriptorHandle rasterizerState;
 
 		GraphicsShaderSet shaderSet;
-		mutable GraphicsShaderLinkageImmutableStateHandle shaderLinkageState;
+		mutable GraphicsShaderLinkageStateDescriptorHandle shaderLinkageState;
 
 		IAInputLayoutDefinition inputLayoutDefinition;
-		mutable IAInputLayoutImmutableStateHandle inputLayoutState;
+		mutable IAInputLayoutStateDescriptorHandle inputLayoutState;
 
 		ShaderInputSignatureDesc shaderInputSignatureDesc;
 		mutable ShaderInputSignature shaderInputSignature;
@@ -85,7 +86,21 @@ namespace Ic3::Graphics::GCI
 			ShaderInputSignature pShaderInputSignature );
 
 		virtual ~GraphicsPipelineStateObject();
+
+		/**
+		 *
+		 * @return
+		 */
+		CPPX_ATTR_NO_DISCARD const GraphicsPipelineStateObjectDescriptorIDSet& GetDescriptorIDSet() const noexcept;
+
+	private:
+		GraphicsPipelineStateObjectDescriptorIDSet _descriptorIDSet;
 	};
+
+	inline const GraphicsPipelineStateObjectDescriptorIDSet& GraphicsPipelineStateObject::GetDescriptorIDSet() const noexcept
+	{
+		return  _descriptorIDSet;
+	}
 
 } // namespace Ic3::Graphics::GCI
 

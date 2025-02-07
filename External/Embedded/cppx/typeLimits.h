@@ -205,6 +205,12 @@ namespace cppx
 	namespace cve
 	{
 
+		/// @brief Represents max value which can be stored in the native_int type.
+		constexpr native_int native_int_max = meta::limits<native_int>::max_value;
+
+		/// @brief Represents max value which can be stored in the native_uint type.
+		constexpr native_uint native_uint_max = meta::limits<native_uint>::max_value;
+
 		constexpr auto int16_max = meta::limits<int16>::max_value;
 		constexpr auto int16_min = meta::limits<int16>::min_value;
 		constexpr auto uint16_max = meta::limits<uint16>::max_value;

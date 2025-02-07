@@ -125,6 +125,30 @@ namespace cppx
 		return memcmp( &pFirst, &pSecond, sizeof( TPValue ) ) != 0;
 	}
 
+	template <typename TPValue>
+	bool mem_cmp_less( const TPValue & pFirst, const TPValue & pSecond )
+	{
+		return memcmp( &pFirst, &pSecond, sizeof( TPValue ) ) < 0;
+	}
+
+	template <typename TPValue>
+	bool mem_cmp_less_equal( const TPValue & pFirst, const TPValue & pSecond )
+	{
+		return memcmp( &pFirst, &pSecond, sizeof( TPValue ) ) <= 0;
+	}
+
+	template <typename TPValue>
+	bool mem_cmp_greater( const TPValue & pFirst, const TPValue & pSecond )
+	{
+		return memcmp( &pFirst, &pSecond, sizeof( TPValue ) ) > 0;
+	}
+
+	template <typename TPValue>
+	bool mem_cmp_greater_equal( const TPValue & pFirst, const TPValue & pSecond )
+	{
+		return memcmp( &pFirst, &pSecond, sizeof( TPValue ) ) >= 0;
+	}
+
 	///
 	/// @param pMemory1
 	/// @param pSize1
