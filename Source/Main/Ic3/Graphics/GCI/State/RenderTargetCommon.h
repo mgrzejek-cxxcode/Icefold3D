@@ -4,6 +4,7 @@
 #ifndef __IC3_GRAPHICS_GCI_RENDER_TARGET_COMMON_H__
 #define __IC3_GRAPHICS_GCI_RENDER_TARGET_COMMON_H__
 
+#include "CommonGraphicsConfig.h"
 #include "RenderTargetArrayUtils.h"
 #include "../Resources/TextureCommon.h"
 
@@ -61,7 +62,7 @@ namespace Ic3::Graphics::GCI
 	{
 		TextureSize2D sharedImageSize = cxTextureSize2DUndefined;
 
-		uint32 sharedMSAALevel = 0;
+		MultiSamplingSettings sharedMultiSamplingSettings;
 	};
 
 	namespace defaults

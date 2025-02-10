@@ -2,7 +2,6 @@
 #include "GraphicsPipelineStateController.h"
 #include "GraphicsPipelineStateCommon.h"
 #include "GraphicsPipelineStateDescriptorIA.h"
-#include "RenderTargetStateDescriptors.h"
 
 #include <Ic3/Graphics/GCI/GPUDevice.h>
 #include <cppx/memory.h>
@@ -50,10 +49,10 @@ namespace Ic3::Graphics::GCI
 		if( _currentCommonState.graphicsPSO != &pGraphicsPSO )
 		{
 			_currentCommonState.graphicsPSO = &pGraphicsPSO;
-			_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonPSOBit );
+			_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonPipelineStateObjectBit );
 		}
 
-		return _stateUpdateMask.is_set( eGraphicsStateUpdateFlagCommonPSOBit );
+		return _stateUpdateMask.is_set( eGraphicsStateUpdateFlagCommonPipelineStateObjectBit );
 	}
 
 	bool GraphicsPipelineStateController::ResetGraphicsPipelineStateObject()
@@ -61,16 +60,16 @@ namespace Ic3::Graphics::GCI
 		if( _currentCommonState.graphicsPSO )
 		{
 			_currentCommonState.graphicsPSO = nullptr;
-			_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonPSOBit );
+			_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonPipelineStateObjectBit );
 		}
 
-		return _stateUpdateMask.is_set( eGraphicsStateUpdateFlagCommonPSOBit );
+		return _stateUpdateMask.is_set( eGraphicsStateUpdateFlagCommonPipelineStateObjectBit );
 	}
 
 	bool GraphicsPipelineStateController::SetIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState )
 	{
 		_currentCommonState.iaVertexStreamState = &( IAVertexStreamStateDescriptor::GetDynamicOverrideState() );
-		_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonVertexStreamBit );
+		_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonIAVertexStreamBindingBit );
 		return true;
 	}
 
@@ -79,16 +78,16 @@ namespace Ic3::Graphics::GCI
 		if( _currentCommonState.iaVertexStreamState != &pIAVertexStreamState )
 		{
 			_currentCommonState.iaVertexStreamState = &pIAVertexStreamState;
-			_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonVertexStreamBit );
+			_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonIAVertexStreamBindingBit );
 		}
 
-		return _stateUpdateMask.is_set( eGraphicsStateUpdateFlagCommonVertexStreamBit );
+		return _stateUpdateMask.is_set( eGraphicsStateUpdateFlagCommonIAVertexStreamBindingBit );
 	}
 
 	bool GraphicsPipelineStateController::ResetIAVertexStreamState()
 	{
 		_currentCommonState.iaVertexStreamState = nullptr;
-		_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonVertexStreamBit );
+		_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonIAVertexStreamBindingBit );
 		return true;
 	}
 

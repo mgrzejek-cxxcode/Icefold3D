@@ -21,7 +21,11 @@ namespace Ic3::Graphics::GCI
 	public:
 		Ic3DeclareNonCopyable( BlendStateDescriptor );
 
-		BlendStateDescriptor( GPUDevice & pGPUDevice, cppx::bitmask<EBlendConfigFlags> pBlendFlags );
+		BlendStateDescriptor(
+				GPUDevice & pGPUDevice,
+				pipeline_state_descriptor_id_t pDescriptorID,
+				cppx::bitmask<EBlendConfigFlags> pBlendFlags );
+
 		virtual ~BlendStateDescriptor();
 	};
 
@@ -36,7 +40,11 @@ namespace Ic3::Graphics::GCI
 	public:
 		Ic3DeclareNonCopyable( DepthStencilStateDescriptor );
 
-		DepthStencilStateDescriptor( GPUDevice & pGPUDevice, cppx::bitmask<EDepthStencilConfigFlags> pDepthStencilFlags );
+		DepthStencilStateDescriptor(
+				GPUDevice & pGPUDevice,
+				pipeline_state_descriptor_id_t pDescriptorID,
+				cppx::bitmask<EDepthStencilConfigFlags> pDepthStencilFlags );
+
 		virtual ~DepthStencilStateDescriptor();
 	};
 
@@ -51,23 +59,12 @@ namespace Ic3::Graphics::GCI
 	public:
 		Ic3DeclareNonCopyable( RasterizerStateDescriptor );
 
-		RasterizerStateDescriptor( GPUDevice & pGPUDevice, cppx::bitmask<ERasterizerConfigFlags> pRasterizerFlags );
+		RasterizerStateDescriptor(
+				GPUDevice & pGPUDevice,
+				pipeline_state_descriptor_id_t pDescriptorID,
+				cppx::bitmask<ERasterizerConfigFlags> pRasterizerFlags );
+
 		virtual ~RasterizerStateDescriptor();
-	};
-
-	/**
-	 *
-	 */
-	class MultiSamplingStateDescriptor : public PipelineStateDescriptor
-	{
-	public:
-		MultiSamplingConfig const mMSConfig;
-
-	public:
-		Ic3DeclareNonCopyable( MultiSamplingStateDescriptor );
-
-		MultiSamplingStateDescriptor( GPUDevice & pGPUDevice, const MultiSamplingConfig & pMSConfig );
-		virtual ~MultiSamplingStateDescriptor();
 	};
 
 } // namespace Ic3::Graphics::GCI

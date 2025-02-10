@@ -15,10 +15,11 @@ namespace Ic3::Graphics::GCI
 		eGraphicsStateUpdateFlagSeparableStateBlendBit = 0x0100,
 		eGraphicsStateUpdateFlagSeparableStateDepthStencilBit = 0x0200,
 		eGraphicsStateUpdateFlagSeparableStateRasterizerBit = 0x0400,
-		eGraphicsStateUpdateFlagSeparableStateIAInputLayoutBit = 0x0800,
+		eGraphicsStateUpdateFlagSeparableStateIAVertexAttributeLayoutBit = 0x0800,
 		eGraphicsStateUpdateFlagSeparableStateShaderLinkageBit = 0x1000,
+		eGraphicsStateUpdateFlagSeparableStateShaderRootSignatureBit = 0x2000,
 
-		eGraphicsStateUpdateMaskSeparableStatesAll = 0x1F00,
+		eGraphicsStateUpdateMaskSeparableStatesAll = 0x3F00,
 		
 		eGraphicsStateUpdateFlagSeparableShaderVertexBit = 0x010000,
 		eGraphicsStateUpdateFlagSeparableShaderHullBit = 0x020000,
@@ -33,96 +34,101 @@ namespace Ic3::Graphics::GCI
 			eGraphicsStateUpdateMaskSeparableShadersAll,
 		
 		eGraphicsStateUpdateMaskCombinedInputAssembler =
-			eGraphicsStateUpdateFlagCommonVertexStreamBit |
-			eGraphicsStateUpdateFlagSeparableStateIAInputLayoutBit,
+			eGraphicsStateUpdateFlagCommonIAVertexStreamBindingBit |
+			eGraphicsStateUpdateFlagSeparableStateIAVertexAttributeLayoutBit,
 	};
 
-	struct SeparablePSOStateSet
+	struct SeparableGraphicsPSDSet
 	{
-		BlendStateDescriptorHandle blendState;
-		DepthStencilStateDescriptorHandle depthStencilState;
-		RasterizerStateDescriptorHandle rasterizerState;
-		IAInputLayoutStateDescriptorHandle iaInputLayoutState;
-		GraphicsShaderLinkageStateDescriptorHandle shaderLinkageState;
+		BlendStateDescriptorHandle blendStateDescriptor;
+		DepthStencilStateDescriptorHandle depthStencilStateDescriptor;
+		RasterizerStateDescriptorHandle rasterizerStateDescriptor;
+		IAVertexAttributeLayoutStateDescriptorHandle iaVertexAttributeLayoutStateDescriptor;
+		GraphicsShaderLinkageStateDescriptorHandle shaderLinkageStateDescriptor;
+		ShaderRootSignatureStateDescriptorHandle shaderRootSignatureStateDescriptor;
 	};
 
-	struct SeparablePSOStateCache
+	struct SeparableGraphicsPSDCache
 	{
-		BlendStateDescriptor * blendState = nullptr;
-		DepthStencilStateDescriptor * depthStencilState = nullptr;
-		RasterizerStateDescriptor * rasterizerState = nullptr;
-		IAInputLayoutStateDescriptor * iaInputLayoutState = nullptr;
-		GraphicsShaderLinkageStateDescriptor * shaderLinkageState = nullptr;
+		BlendStateDescriptor * blendStateDescriptor = nullptr;
+		DepthStencilStateDescriptor * depthStencilStateDescriptor = nullptr;
+		RasterizerStateDescriptor * rasterizerStateDescriptor = nullptr;
+		IAVertexAttributeLayoutStateDescriptor * iaVertexAttributeLayoutStateDescriptor = nullptr;
+		GraphicsShaderLinkageStateDescriptor * shaderLinkageStateDescriptor = nullptr;
+		ShaderRootSignatureStateDescriptor * shaderRootSignatureStateDescriptor = nullptr;
 
-		void reset()
+		void Reset()
 		{
-			blendState = nullptr;
-			depthStencilState = nullptr;
-			rasterizerState = nullptr;
-			iaInputLayoutState = nullptr;
-			shaderLinkageState = nullptr;
+			blendStateDescriptor = nullptr;
+			depthStencilStateDescriptor = nullptr;
+			rasterizerStateDescriptor = nullptr;
+			iaVertexAttributeLayoutStateDescriptor = nullptr;
+			shaderLinkageStateDescriptor = nullptr;
+			shaderRootSignatureStateDescriptor = nullptr;
 		}
 	};
 
 	struct SeparableShaderCache
 	{
 		Shader * vertexShader = nullptr;
-		Shader * hullShader = nullptr;
-		Shader * domainShader = nullptr;
+		Shader * tessHullShader = nullptr;
+		Shader * tessDomainShader = nullptr;
 		Shader * geometryShader = nullptr;
 		Shader * pixelShader = nullptr;
 
-		void reset()
+		void Reset()
 		{
 			vertexShader = nullptr;
-			hullShader = nullptr;
-			domainShader = nullptr;
+			tessHullShader = nullptr;
+			tessDomainShader = nullptr;
 			geometryShader = nullptr;
 			pixelShader = nullptr;
 		}
 	};
 
-	/// @brief A more specific type of GraphicsPSO for drivers without monolithic state object support.
+	/// @brief A more specific type of GraphicsPipelineStateObject for drivers without monolithic PSO support.
 	///
 	/// This class has been introduced for drivers which do not have the concept of monolithic PSOs, including:
 	/// (1) DirectX 11 (with its ID3D11BlendState, ID3D11DepthStencilState, etc),
 	/// (2) OpenGL Core/ES (with no concept of state objects at all).
 	/// For those drivers, PSOs contain an explicit "state descriptor" for each: blend, depth/stencil, rasterizer and
-	/// vertex input state. Those objects are, of course, driver-specific (for DX11 they will have ID3D11XXXState
-	/// interfaces, for OpenGL - bunch of translated state stored as a group of GL constants), but their IDs are stored
-	/// at this common level. This, combined with a neat GraphicsPipelineStateDescriptorCache class, enables writing
-	/// single implementation for caching and general state handling which can be used by the mentioned drivers.
-	/// Additionally, separable PSOs also contain an explicit per-stage shader binding (which is part of the combined
-	/// state in monolithic PSOs). This is another thing we can handle here instead of doing it per-driver.
+	/// vertex attribute layout, shader linkage and root signature. Those objects are, of course, driver-specific
+	/// (for DX11 they will have ID3D11XXXState interfaces, for OpenGL - bunch of translated state stored as a group
+	/// of GL constants), but their IDs are stored at this common level. This, combined with a neat
+	/// GraphicsPipelineStateDescriptorCache class, enables writing single implementation for caching and general
+	/// state handling which can be used by the mentioned drivers.
 	class IC3_GRAPHICS_GCI_CLASS GraphicsPipelineStateObjectSeparable : public GraphicsPipelineStateObject
 	{
 	public:
 		///
-		SeparablePSOStateSet const mSeparableStates;
+		SeparableGraphicsPSDSet const mSeparableDescriptors;
 
 	public:
 		GraphicsPipelineStateObjectSeparable(
 				GPUDevice & pGPUDevice,
-				RenderTargetLayout pRenderTargetLayout,
-				ShaderRootSignature pShaderRootSignature,
-				const SeparablePSOStateSet & pSeparableStates );
+				pipeline_state_object_id_t pStateObjectID,
+				const SeparableGraphicsPSDSet & pSeparableDescriptors );
 
 		virtual ~GraphicsPipelineStateObjectSeparable();
 	};
 
+	/// @brief Even more specific type of GraphicsPipelineStateObject for drivers without monolithic shader linkage.
+	///
+	/// GraphicsPipelineStateObjectSeparableShader is designed for APIs that do not incorporate the flow of linking
+	/// multiple shader stages into a single binary object (either as a part of monolithic PSOs (VK/DX12) or an API-specific
+	/// programs (OpenGL). This type of PSO simply contains a set of shaders bound to their pipeline stages.
 	class IC3_GRAPHICS_GCI_CLASS GraphicsPipelineStateObjectSeparableShader : public GraphicsPipelineStateObjectSeparable
 	{
 	public:
 		///
-		const GraphicsShaderSet & mSeparableShaders;
+		const GraphicsShaderBinding & mSeparableShaders;
 
 	public:
 		GraphicsPipelineStateObjectSeparableShader(
 				GPUDevice & pGPUDevice,
-				RenderTargetLayout pRenderTargetLayout,
-				ShaderRootSignature pShaderRootSignature,
-				const SeparablePSOStateSet & pSeparableStates,
-				const GraphicsShaderSet & pSeparableShaders );
+				pipeline_state_object_id_t pStateObjectID,
+				const SeparableGraphicsPSDSet & pSeparableDescriptors,
+				const GraphicsShaderBinding & pSeparableShaders );
 
 		virtual ~GraphicsPipelineStateObjectSeparableShader();
 	};
@@ -134,19 +140,19 @@ namespace Ic3::Graphics::GCI
 		GraphicsPipelineStateControllerSeparable();
 		virtual ~GraphicsPipelineStateControllerSeparable();
 
-		CPPX_ATTR_NO_DISCARD const SeparablePSOStateCache & GetCurrentSeparableStates() const noexcept;
+		CPPX_ATTR_NO_DISCARD const SeparableGraphicsPSDCache & GetSeparableDescriptors() const noexcept;
 
-		/// @see GraphicsPipelineStateController::setGraphicsPipelineStateObject
+		/// @see GraphicsPipelineStateController::SetGraphicsPipelineStateObject
 		virtual bool SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO ) override;
 
-		/// @see GraphicsPipelineStateController::resetGraphicsPipelineStateObject
+		/// @see GraphicsPipelineStateController::ResetGraphicsPipelineStateObject
 		virtual bool ResetGraphicsPipelineStateObject() override;
 
 	private:
-		cppx::bitmask<uint64> SetSeparablePSOStates( const GraphicsPipelineStateObjectSeparable & pGraphicsPSOSeparable );
+		cppx::bitmask<uint64> SetSeparableDescriptors( const GraphicsPipelineStateObjectSeparable & pGraphicsPSOSeparable );
 
 	private:
-		SeparablePSOStateCache _currentSeparableStates;
+		SeparableGraphicsPSDCache _separableDescriptorsCache;
 	};
 
 	/// @brief
@@ -156,19 +162,19 @@ namespace Ic3::Graphics::GCI
 		GraphicsPipelineStateControllerSeparableShader();
 		virtual ~GraphicsPipelineStateControllerSeparableShader();
 
-		CPPX_ATTR_NO_DISCARD const SeparableShaderCache & GetCurrentSeparableShaders() const noexcept;
+		CPPX_ATTR_NO_DISCARD const SeparableShaderCache & GetSeparableShaders() const noexcept;
 
-		/// @see GraphicsPipelineStateController::setGraphicsPipelineStateObject
+		/// @see GraphicsPipelineStateController::SetGraphicsPipelineStateObject
 		virtual bool SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO ) override;
 
-		/// @see GraphicsPipelineStateController::resetGraphicsPipelineStateObject
+		/// @see GraphicsPipelineStateController::ResetGraphicsPipelineStateObject
 		virtual bool ResetGraphicsPipelineStateObject() override;
 
 	private:
 		cppx::bitmask<uint64> SetSeparableShaders( const GraphicsPipelineStateObjectSeparableShader & pGraphicsPSOSeparableShader );
 
 	private:
-		SeparableShaderCache _currentSeparableShaders;
+		SeparableShaderCache _separableShadersCache;
 	};
 
 } // namespace Ic3::Graphics::GCI

@@ -11,7 +11,7 @@ namespace Ic3::Graphics::GCI
 {
 
 	class RenderPassConfigurationDynamicState;
-	class RenderPassConfigurationImmutableState;
+	class RenderPassConfigurationStateDescriptor;
 
 	enum ECommandListActionFlags : uint32;
 
@@ -146,7 +146,7 @@ namespace Ic3::Graphics::GCI
 		~CommandContextDirectGraphics() = default;
 		
 		bool BeginRenderPass(
-				const RenderPassConfigurationImmutableState & pRenderPassState,
+				const RenderPassConfigurationStateDescriptor & pRenderPassState,
 				cppx::bitmask<ECommandListActionFlags> pFlags = eCommandListActionFlagsDefault );
 
 		bool BeginRenderPass(
@@ -156,9 +156,9 @@ namespace Ic3::Graphics::GCI
 		void EndRenderPass();
 
 		bool SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO );
-		bool SetIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState );
+		bool SetIAVertexStreamDescriptor( const IAVertexStreamBindingStateDescriptor & pIAVertexStreamState );
 		bool SetIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState );
-		bool SetRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState );
+		bool SetRenderPassConfig( const RenderTargetBindingStateDescriptor & pRenderTargetBindingState );
 		bool SetRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState );
 
 		bool CmdSetViewport( const ViewportDesc & pViewportDesc );
@@ -201,7 +201,7 @@ namespace Ic3::Graphics::GCI
 		virtual ~CommandContextDeferredGraphics() = default;
 
 		bool BeginRenderPass(
-				const RenderPassConfigurationImmutableState & pRenderPassState,
+				const RenderPassConfigurationStateDescriptor & pRenderPassState,
 				cppx::bitmask<ECommandListActionFlags> pFlags = eCommandListActionFlagsDefault );
 
 		bool BeginRenderPass(
@@ -211,9 +211,9 @@ namespace Ic3::Graphics::GCI
 		void EndRenderPass();
 
 		bool SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO );
-		bool SetIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState );
+		bool SetIAVertexStreamState( const IAVertexStreamStateDescriptor & pIAVertexStreamState );
 		bool SetIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState );
-		bool SetRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState );
+		bool SetRenderTargetBindingState( const RenderTargetBindingStateDescriptor & pRenderTargetBindingState );
 		bool SetRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState );
 
 		bool CmdSetViewport( const ViewportDesc & pViewportDesc );

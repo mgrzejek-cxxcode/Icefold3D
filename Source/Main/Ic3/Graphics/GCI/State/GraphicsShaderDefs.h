@@ -88,30 +88,17 @@ namespace Ic3::Graphics::GCI
 			return *this;
 		}
 
-		CPPX_ATTR_NO_DISCARD ShaderHandle & operator[]( size_t pStageIndex ) noexcept
+		CPPX_ATTR_NO_DISCARD Shader * operator[]( size_t pStageIndex ) const noexcept
 		{
 			Ic3DebugAssert( CXU::SHIsShaderStageIndexValid( pStageIndex ) );
-			return commonShaderArray[pStageIndex];
+			return commonShaderArray[pStageIndex].get();
 		}
 
-		CPPX_ATTR_NO_DISCARD const ShaderHandle & operator[]( size_t pStageIndex ) const noexcept
-		{
-			Ic3DebugAssert( CXU::SHIsShaderStageIndexValid( pStageIndex ) );
-			return commonShaderArray[pStageIndex];
-		}
-
-		CPPX_ATTR_NO_DISCARD ShaderHandle & operator[]( EShaderType pShaderType ) noexcept
+		CPPX_ATTR_NO_DISCARD Shader * operator[]( EShaderType pShaderType ) const noexcept
 		{
 			Ic3DebugAssert( CXU::SHIsShaderTypeGraphics( pShaderType ) );
 			const auto stageIndex = CXU::SHGetShaderStageIndex( pShaderType );
-			return commonShaderArray[stageIndex];
-		}
-
-		CPPX_ATTR_NO_DISCARD const ShaderHandle & operator[]( EShaderType pShaderType ) const noexcept
-		{
-			Ic3DebugAssert( CXU::SHIsShaderTypeGraphics( pShaderType ) );
-			const auto stageIndex = CXU::SHGetShaderStageIndex( pShaderType );
-			return commonShaderArray[stageIndex];
+			return commonShaderArray[stageIndex].get();
 		}
 
 		IC3_GRAPHICS_GCI_API void AddShader( Shader & pShader );
@@ -127,6 +114,19 @@ namespace Ic3::Graphics::GCI
 		IC3_GRAPHICS_GCI_API void ResetStage( EShaderType pShaderType ) noexcept;
 
 		IC3_GRAPHICS_GCI_API void UpdateActiveStagesInfo() noexcept;
+	};
+
+	struct GraphicsShaderLinkageStateDescriptorCreateInfo : public PipelineStateDescriptorCreateInfoBase
+	{
+		GraphicsShaderBinding shaderBinding;
+
+		CPPX_ATTR_NO_DISCARD pipeline_config_hash_t GetConfigHash() const noexcept
+		{
+			return cppx::hash_compute<pipeline_config_hash_t::hash_algo>(
+					shaderBinding.commonShaderArray,
+					shaderBinding.activeStagesMask,
+					shaderBinding.activeStagesNum );
+		}
 	};
 
 	namespace GCU

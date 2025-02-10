@@ -70,78 +70,78 @@ namespace Ic3::Graphics::GCI
 
 	void CommandContextDirect::Submit()
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirect ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirect ) );
 		mCommandSystem->SubmitContext( *this, cxCommandContextSubmitDefault );
 	}
 
 	CommandSync CommandContextDirect::Submit( const CommandContextSubmitInfo & pSubmitInfo )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirect ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirect ) );
 		return mCommandSystem->SubmitContext( *this, pSubmitInfo );
 	}
 
 	void CommandContextDirect::CmdExecuteDeferredContext( CommandContextDeferred & pDeferredContext )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirect ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirect ) );
 		return mCommandList->CmdExecuteDeferredContext( pDeferredContext );
 	}
 
 	bool CommandContextDirect::InvalidateBuffer( GPUBuffer & pBuffer )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirect ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirect ) );
 		return mCommandList->InvalidateBuffer( pBuffer );
 	}
 
 	bool CommandContextDirect::InvalidateBufferRegion( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirect ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirect ) );
 		return mCommandList->InvalidateBufferRegion( pBuffer, pRegion );
 	}
 
 
 	bool CommandContextDirectTransfer::UpdateBufferDataCopy( GPUBuffer & pBuffer, GPUBuffer & pSourceBuffer, const GPUBufferDataCopyDesc & pCopyDesc )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirectTransfer ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirectTransfer ) );
 		return mCommandList->UpdateBufferDataCopy( pBuffer, pSourceBuffer, pCopyDesc );
 	}
 
 	bool CommandContextDirectTransfer::UpdateBufferSubDataCopy( GPUBuffer & pBuffer, GPUBuffer & pSourceBuffer, const GPUBufferSubDataCopyDesc & pCopyDesc )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirectTransfer ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirectTransfer ) );
 		return mCommandList->UpdateBufferSubDataCopy( pBuffer, pSourceBuffer, pCopyDesc );
 	}
 
 	bool CommandContextDirectTransfer::UpdateBufferDataUpload( GPUBuffer & pBuffer, const GPUBufferDataUploadDesc & pUploadDesc )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirectTransfer ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirectTransfer ) );
 		return mCommandList->UpdateBufferDataUpload( pBuffer, pUploadDesc );
 	}
 
 	bool CommandContextDirectTransfer::UpdateBufferSubDataUpload( GPUBuffer & pBuffer, const GPUBufferSubDataUploadDesc & pUploadDesc )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirectTransfer ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirectTransfer ) );
 		return mCommandList->UpdateBufferSubDataUpload( pBuffer, pUploadDesc );
 	}
 
 
 	void CommandContextDirectCompute::CmdDispatchCompute( uint32 pThrGroupSizeX, uint32 pThrGroupSizeY, uint32 pThrGroupSizeZ )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirectCompute ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirectCompute ) );
 		return mCommandList->CmdDispatchCompute( pThrGroupSizeX, pThrGroupSizeY, pThrGroupSizeZ );
 	}
 
 	void CommandContextDirectCompute::CmdDispatchComputeIndirect( uint32 pIndirectBufferOffset )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirectCompute ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirectCompute ) );
 		return mCommandList->CmdDispatchComputeIndirect( pIndirectBufferOffset );
 	}
 
 
 	bool CommandContextDirectGraphics::BeginRenderPass(
-		const RenderPassConfigurationImmutableState & pRenderPassState,
+		const RenderPassConfigurationStateDescriptor & pRenderPassState,
 		cppx::bitmask<ECommandListActionFlags> pFlags )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirectGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirectGraphics ) );
 		return mCommandList->BeginRenderPass( pRenderPassState, pFlags );
 	}
 
@@ -149,125 +149,125 @@ namespace Ic3::Graphics::GCI
 		const RenderPassConfigurationDynamicState & pRenderPassState,
 		cppx::bitmask<ECommandListActionFlags> pFlags )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirectGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirectGraphics ) );
 		return mCommandList->BeginRenderPass( pRenderPassState, pFlags );
 	}
 
 	void CommandContextDirectGraphics::EndRenderPass()
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirectGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirectGraphics ) );
 		return mCommandList->EndRenderPass();
 	}
 
 	bool CommandContextDirectGraphics::CmdSetViewport( const ViewportDesc & pViewportDesc )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirectGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirectGraphics ) );
 		return mCommandList->CmdSetViewport( pViewportDesc );
 	}
 
 	bool CommandContextDirectGraphics::SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirectGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirectGraphics ) );
 		return mCommandList->SetGraphicsPipelineStateObject( pGraphicsPSO );
 	}
 
-	bool CommandContextDirectGraphics::SetIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState )
+	bool CommandContextDirectGraphics::SetIAVertexStreamState( const IAVertexStreamStateDescriptor & pIAVertexStreamState )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirectGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirectGraphics ) );
 		return mCommandList->SetIAVertexStreamState( pIAVertexStreamState );
 	}
 
 	bool CommandContextDirectGraphics::SetIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirectGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirectGraphics ) );
 		return mCommandList->SetIAVertexStreamState( pIAVertexStreamState );
 	}
 
-	bool CommandContextDirectGraphics::SetRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState )
+	bool CommandContextDirectGraphics::SetRenderTargetBindingState( const RenderTargetBindingStateDescriptor & pRenderTargetBindingState )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirectGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirectGraphics ) );
 		return mCommandList->SetRenderTargetBindingState( pRenderTargetBindingState );
 	}
 
 	bool CommandContextDirectGraphics::SetRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirectGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirectGraphics ) );
 		return mCommandList->SetRenderTargetBindingState( pRenderTargetBindingState );
 	}
 
 	bool CommandContextDirectGraphics::CmdSetShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirectGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirectGraphics ) );
 		return mCommandList->CmdSetShaderConstant( pParamRefID, pData );
 	}
 
 	bool CommandContextDirectGraphics::CmdSetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirectGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirectGraphics ) );
 		return mCommandList->CmdSetShaderConstantBuffer( pParamRefID, pConstantBuffer );
 	}
 
 	bool CommandContextDirectGraphics::CmdSetShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirectGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirectGraphics ) );
 		return mCommandList->CmdSetShaderTextureImage( pParamRefID, pTexture );
 	}
 
 	bool CommandContextDirectGraphics::CmdSetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirectGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirectGraphics ) );
 		return mCommandList->CmdSetShaderTextureSampler( pParamRefID, pSampler );
 	}
 
 	void CommandContextDirectGraphics::CmdDrawDirectIndexed( native_uint pIndicesNum, native_uint pIndicesOffset, native_uint pBaseVertexIndex )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirectGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirectGraphics ) );
 		return mCommandList->CmdDrawDirectIndexed( pIndicesNum, pIndicesOffset, pBaseVertexIndex );
 	}
 
 	void CommandContextDirectGraphics::CmdDrawDirectIndexedInstanced( native_uint pIndicesNumPerInstance, native_uint pInstancesNum, native_uint pIndicesOffset )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirectGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirectGraphics ) );
 		return mCommandList->CmdDrawDirectIndexedInstanced( pIndicesNumPerInstance, pInstancesNum, pIndicesOffset );
 	}
 
 	void CommandContextDirectGraphics::CmdDrawDirectNonIndexed( native_uint pVerticesNum, native_uint pVerticesOffset )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirectGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirectGraphics ) );
 		return mCommandList->CmdDrawDirectNonIndexed( pVerticesNum, pVerticesOffset );
 	}
 
 	void CommandContextDirectGraphics::CmdDrawDirectNonIndexedInstanced( native_uint pVerticesNumPerInstance, native_uint pInstancesNum, native_uint pVerticesOffset )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDirectGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirectGraphics ) );
 		return mCommandList->CmdDrawDirectNonIndexedInstanced( pVerticesNumPerInstance, pInstancesNum, pVerticesOffset );
 	}
 
 
 	bool CommandContextDeferred::MapBufferDeferred( GPUBuffer & pBuffer )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDeferred ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDeferred ) );
 		return mCommandList->MapBuffer( pBuffer, EGPUMemoryMapMode::WriteAppend );
 	}
 
 	bool CommandContextDeferred::MapBufferRegionDeferred( GPUBuffer & pBuffer, const GPUMemoryRegion & pRegion )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDeferred ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDeferred ) );
 		return mCommandList->MapBufferRegion( pBuffer, pRegion, EGPUMemoryMapMode::WriteAppend );
 	}
 
 	bool CommandContextDeferred::UnmapBufferDeferred( GPUBuffer & pBuffer )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDeferred ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDeferred ) );
 		return mCommandList->UnmapBuffer( pBuffer );
 	}
 
 
 	bool CommandContextDeferredGraphics::BeginRenderPass(
-		const RenderPassConfigurationImmutableState & pRenderPassState,
+		const RenderPassConfigurationStateDescriptor & pRenderPassState,
 		cppx::bitmask<ECommandListActionFlags> pFlags )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDeferredGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDeferredGraphics ) );
 		return mCommandList->BeginRenderPass( pRenderPassState, pFlags );
 	}
 
@@ -275,73 +275,73 @@ namespace Ic3::Graphics::GCI
 		const RenderPassConfigurationDynamicState & pRenderPassState,
 		cppx::bitmask<ECommandListActionFlags> pFlags )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDeferredGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDeferredGraphics ) );
 		return mCommandList->BeginRenderPass( pRenderPassState, pFlags );
 	}
 
 	void CommandContextDeferredGraphics::EndRenderPass()
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDeferredGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDeferredGraphics ) );
 		return mCommandList->EndRenderPass();
 	}
 
 	bool CommandContextDeferredGraphics::CmdSetViewport( const ViewportDesc & pViewportDesc )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDeferredGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDeferredGraphics ) );
 		return mCommandList->CmdSetViewport( pViewportDesc );
 	}
 
 	bool CommandContextDeferredGraphics::SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDeferredGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDeferredGraphics ) );
 		return mCommandList->SetGraphicsPipelineStateObject( pGraphicsPSO );
 	}
 
 	bool CommandContextDeferredGraphics::CmdSetShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDeferredGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDeferredGraphics ) );
 		return mCommandList->CmdSetShaderConstant( pParamRefID, pData );
 	}
 
 	bool CommandContextDeferredGraphics::CmdSetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDeferredGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDeferredGraphics ) );
 		return mCommandList->CmdSetShaderConstantBuffer( pParamRefID, pConstantBuffer );
 	}
 
 	bool CommandContextDeferredGraphics::CmdSetShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDeferredGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDeferredGraphics ) );
 		return mCommandList->CmdSetShaderTextureImage( pParamRefID, pTexture );
 	}
 
 	bool CommandContextDeferredGraphics::CmdSetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDeferredGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDeferredGraphics ) );
 		return mCommandList->CmdSetShaderTextureSampler( pParamRefID, pSampler );
 	}
 
 	void CommandContextDeferredGraphics::CmdDrawDirectIndexed( native_uint pIndicesNum, native_uint pIndicesOffset, native_uint pBaseVertexIndex )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDeferredGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDeferredGraphics ) );
 		return mCommandList->CmdDrawDirectIndexed( pIndicesNum, pIndicesOffset, pBaseVertexIndex );
 	}
 
 	void CommandContextDeferredGraphics::CmdDrawDirectIndexedInstanced( native_uint pIndicesNumPerInstance, native_uint pInstancesNum, native_uint pIndicesOffset, EIndexDataFormat pIndexFormat )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDeferredGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDeferredGraphics ) );
 		return mCommandList->CmdDrawDirectIndexedInstanced( pIndicesNumPerInstance, pInstancesNum, pIndicesOffset );
 	}
 
 	void CommandContextDeferredGraphics::CmdDrawDirectNonIndexed( native_uint pVerticesNum, native_uint pVerticesOffset )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDeferredGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDeferredGraphics ) );
 		return mCommandList->CmdDrawDirectNonIndexed( pVerticesNum, pVerticesOffset );
 	}
 
 	void CommandContextDeferredGraphics::CmdDrawDirectNonIndexedInstanced( native_uint pVerticesNumPerInstance, native_uint pInstancesNum, native_uint pVerticesOffset )
 	{
-		Ic3DebugAssert( CheckCommandListSupport( ECommandObjectPropertyMaskContextFamilyDeferredGraphics ) );
+		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDeferredGraphics ) );
 		return mCommandList->CmdDrawDirectNonIndexedInstanced( pVerticesNumPerInstance, pInstancesNum, pVerticesOffset );
 	}
 

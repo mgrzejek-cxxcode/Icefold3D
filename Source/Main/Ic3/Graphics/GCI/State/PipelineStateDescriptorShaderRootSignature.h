@@ -1,8 +1,8 @@
 
 #pragma once
 
-#ifndef __IC3_GRAPHICS_GCI_SHADER_ROOT_SIGNATURE_STATE_DESCRIPTOR_H__
-#define __IC3_GRAPHICS_GCI_SHADER_ROOT_SIGNATURE_STATE_DESCRIPTOR_H__
+#ifndef __IC3_GRAPHICS_GCI_PIPELINE_STATE_DESCRIPTOR_SHADER_ROOT_SIGNATURE_H__
+#define __IC3_GRAPHICS_GCI_PIPELINE_STATE_DESCRIPTOR_SHADER_ROOT_SIGNATURE_H__
 
 #include "PipelineStateCommon.h"
 #include "ShaderRootSignature.h"
@@ -48,10 +48,15 @@ namespace Ic3::Graphics::GCI
 					const ShaderRootSignature & pShaderRootSignature );
 
 			virtual ~ShaderRootSignatureStateDescriptorGeneric();
+
+			static TGfxHandle<ShaderRootSignatureStateDescriptorGeneric> CreateFromSignatureDesc(
+					GPUDevice & pGPUDevice,
+					const ShaderRootSignatureDesc & pPassConfiguration,
+					pipeline_state_descriptor_id_t pDescriptorID = kPipelineStateDescriptorIDAuto );
 		};
 
 	} // namespace PIM
 
 } // namespace Ic3::Graphics::GCI
 
-#endif // __IC3_GRAPHICS_GCI_SHADER_ROOT_SIGNATURE_STATE_DESCRIPTOR_H__
+#endif // __IC3_GRAPHICS_GCI_PIPELINE_STATE_DESCRIPTOR_SHADER_ROOT_SIGNATURE_H__

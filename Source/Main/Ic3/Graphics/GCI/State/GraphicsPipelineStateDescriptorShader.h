@@ -70,11 +70,6 @@ namespace Ic3::Graphics::GCI
 				pipeline_state_descriptor_id_t pDescriptorID = kPipelineStateDescriptorIDAuto ) noexcept;
 	};
 
-	class ShaderRootSignature
-	{
-		// ?
-	};
-
 } // namespace Ic3::Graphics::GCI
 
 #include "GraphicsPipelineStateDescriptorShader.inl"

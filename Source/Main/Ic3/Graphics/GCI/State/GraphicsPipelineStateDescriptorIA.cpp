@@ -5,26 +5,26 @@
 namespace Ic3::Graphics::GCI
 {
 
-	IAInputLayoutStateDescriptor::IAInputLayoutStateDescriptor(
+	IAVertexAttributeLayoutStateDescriptor::IAVertexAttributeLayoutStateDescriptor(
 			GPUDevice & pGPUDevice,
 			pipeline_state_descriptor_id_t pDescriptorID,
-			const IAInputLayoutCommonConfig & pCommonInputLayoutConfig )
+			const IAVertexAttributeLayoutCommonConfig & pCommonInputLayoutConfig )
 	: PipelineStateDescriptor( pGPUDevice, pDescriptorID )
 	, mCommonInputLayoutConfig( pCommonInputLayoutConfig )
 	{}
 
-	IAInputLayoutStateDescriptor::~IAInputLayoutStateDescriptor() = default;
+	IAVertexAttributeLayoutStateDescriptor::~IAVertexAttributeLayoutStateDescriptor() = default;
 
-	EPipelineStateDescriptorType IAInputLayoutStateDescriptor::GetDescriptorType() const noexcept
+	EPipelineStateDescriptorType IAVertexAttributeLayoutStateDescriptor::GetDescriptorType() const noexcept
 	{
-		return EPipelineStateDescriptorType::DTIAInputLayout;
+		return EPipelineStateDescriptorType::DTIAVertexAttributeLayout;
 	}
 
 
 	IAVertexStreamStateDescriptor::IAVertexStreamStateDescriptor(
 			GPUDevice & pGPUDevice,
 			pipeline_state_descriptor_id_t pDescriptorID,
-			const IAVertexStreamCommonConfig & pCommonVertexStreamConfig )
+			const IAVertexStreamBindingCommonConfig & pCommonVertexStreamConfig )
 	: PipelineStateDescriptor( pGPUDevice, pDescriptorID )
 	, mCommonVertexStreamConfig( pCommonVertexStreamConfig )
 	{}
@@ -65,7 +65,7 @@ namespace Ic3::Graphics::GCI
 		return ( _vertexStreamConfiguration.activeStreamsMask & eIAVertexStreamBindingMaskVertexBufferAllBits ).count_bits();
 	}
 
-	const IAVertexStreamConfiguration & IAVertexStreamStateDescriptorDynamic::GetStreamArrayConfiguration() const noexcept
+	const IAVertexStreamBindingDefinition & IAVertexStreamStateDescriptorDynamic::GetStreamArrayConfiguration() const noexcept
 	{
 		return _vertexStreamConfiguration;
 	}
@@ -81,7 +81,7 @@ namespace Ic3::Graphics::GCI
 	}
 
 	void IAVertexStreamStateDescriptorDynamic::SetStreamArrayConfiguration(
-			const IAVertexStreamConfiguration & pStreamArrayConfiguration )
+			const IAVertexStreamBindingDefinition & pStreamArrayConfiguration )
 	{
 		_SetVertexBufferReferences( 0, GCM::kIAMaxDataStreamVertexBuffersNum, pStreamArrayConfiguration.vertexBufferReferences.data() );
 		_SetIndexBufferReference( pStreamArrayConfiguration.indexBufferReference );
@@ -277,16 +277,16 @@ namespace Ic3::Graphics::GCI
 	namespace PIM
 	{
 
-		//!! IAInputLayoutStateDescriptorNative
+		//!! IAVertexAttributeLayoutStateDescriptorNative
 
-		IAInputLayoutStateDescriptorNative::IAInputLayoutStateDescriptorNative(
+		IAVertexAttributeLayoutStateDescriptorNative::IAVertexAttributeLayoutStateDescriptorNative(
 				GPUDevice & pGPUDevice,
 				pipeline_state_descriptor_id_t pDescriptorID,
-				const IAInputLayoutCommonConfig & pCommonInputLayoutConfig )
-		: IAInputLayoutStateDescriptor( pGPUDevice, pDescriptorID, pCommonInputLayoutConfig )
+				const IAVertexAttributeLayoutCommonConfig & pCommonInputLayoutConfig )
+		: IAVertexAttributeLayoutStateDescriptor( pGPUDevice, pDescriptorID, pCommonInputLayoutConfig )
 		{}
 
-		IAInputLayoutStateDescriptorNative::~IAInputLayoutStateDescriptorNative() = default;
+		IAVertexAttributeLayoutStateDescriptorNative::~IAVertexAttributeLayoutStateDescriptorNative() = default;
 
 
 		//!! IAVertexStreamStateDescriptorNative
@@ -294,7 +294,7 @@ namespace Ic3::Graphics::GCI
 		IAVertexStreamStateDescriptorNative::IAVertexStreamStateDescriptorNative(
 				GPUDevice & pGPUDevice,
 				pipeline_state_descriptor_id_t pDescriptorID,
-				const IAVertexStreamCommonConfig & pCommonVertexStreamConfig )
+				const IAVertexStreamBindingCommonConfig & pCommonVertexStreamConfig )
 		: IAVertexStreamStateDescriptor( pGPUDevice, pDescriptorID, pCommonVertexStreamConfig )
 		{}
 

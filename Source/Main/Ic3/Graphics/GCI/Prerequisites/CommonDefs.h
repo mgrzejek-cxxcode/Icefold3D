@@ -24,6 +24,13 @@ namespace Ic3::Graphics::GCI
 	///
 	inline constexpr GfxObjectID cxGPUObjectIDEmpty { 0 };
 
+	/**
+	 * GCU Namespace (Constant Expressions Utils).
+	 * Contains utilities used to define and analyse compile-time expressions (constants, enum values, flags, etc).
+	 */
+	namespace CXU
+	{}
+
 	namespace CxDef
 	{
 
@@ -61,31 +68,54 @@ namespace Ic3::Graphics::GCI
 		eGPU_DRIVER_CONFIG_MASK_DEFAULT
 	};
 
-	/// @brief A set of index values for supported shader stages.
-	///
-	/// @see EPipelineStageIndex
-	enum EShaderStageIndex : uint32
+	inline constexpr uint32 kShaderStageIndexGraphicsVertex = 0;
+	inline constexpr uint32 kShaderStageIndexGraphicsTessHull = 1;
+	inline constexpr uint32 kShaderStageIndexGraphicsTessDomain = 2;
+	inline constexpr uint32 kShaderStageIndexGraphicsGeometry = 3;
+	inline constexpr uint32 kShaderStageIndexGraphicsPixel = 4;
+	inline constexpr uint32 kShaderStageIndexCompute = 5;
+
+	/// Base stage index, i.e. index of the first supported stage. Values below this one are not valid stage indexes.
+	/// To compute a zero-based index, subtract this from a valid stage index or use CxDef::GetShaderStageAbsoluteIndex().
+	inline constexpr uint32 kShaderStageIndexBase = kShaderStageIndexGraphicsVertex;
+
+	/// Index of the last graphics stage. Used to verify if a specified index is a valid graphics stage index.
+	inline constexpr uint32 kShaderStageIndexMaxGraphics = kShaderStageIndexGraphicsPixel;
+
+	/// Index of the last stage (in the whole pipeline). Values above this one are not valid stage indexes.
+	inline constexpr uint32 kShaderStageIndexMax = kShaderStageIndexCompute;
+
+	/// An explicitly invalid stage index.
+	inline constexpr uint32 kShaderStageIndexInvalid = 0xFFFFu;
+
+	namespace CXU
 	{
-		eShaderStageIndexGraphicsVertex,
-		eShaderStageIndexGraphicsHull,
-		eShaderStageIndexGraphicsDomain,
-		eShaderStageIndexGraphicsGeometry,
-		eShaderStageIndexGraphicsPixel,
-		eShaderStageIndexCompute,
 
-		/// Base stage index, i.e. index of the first supported stage. Values below this one are not valid stage indexes.
-		/// To compute a zero-based index, subtract this from a valid stage index or use CxDef::GetShaderStageAbsoluteIndex().
-		eShaderStageIndexBase = eShaderStageIndexGraphicsVertex,
+		CPPX_ATTR_NO_DISCARD inline constexpr bool SHIsShaderStageIndexValid( native_uint pStageIndex )
+		{
+			return ( pStageIndex >= kShaderStageIndexBase ) && ( pStageIndex <= kShaderStageIndexMax );
+		}
 
-		/// Index of the last graphics stage. Used to verify if a specified index is a valid graphics stage index.
-		eShaderStageIndexMaxGraphics = eShaderStageIndexGraphicsPixel,
+		CPPX_ATTR_NO_DISCARD inline constexpr bool SHIsGraphicsShaderStageIndexValid( native_uint pGraphicsStageIndex )
+		{
+			return ( pGraphicsStageIndex >= kShaderStageIndexBase ) && ( pGraphicsStageIndex <= kShaderStageIndexMaxGraphics );
+		}
 
-		/// Index of the last stage (in the whole pipeline). Values above this one are not valid stage indexes.
-		eShaderStageIndexMax = eShaderStageIndexCompute,
+		/// @brief Returns a 32-bit value which is a bit flag matching any (graphics or compute) shader stage specified using its index.
+		/// @return One of eShaderStageFlagXXXBit values for a valid stage index or 0 otherwise, returned as uint32.
+		CPPX_ATTR_NO_DISCARD inline constexpr uint32 SHMakeShaderStageBit( native_uint pStageIndex )
+		{
+			return ( pStageIndex < GCM::kShaderCombinedStagesNum ) ? ( 1 << pStageIndex ) : 0u;
+		}
 
-		/// An explicitly invalid stage index.
-		eShaderStageIndexInvalid = 0xFFFFu
-	};
+		/// @brief Returns a 32-bit value which is a bit flag matching the graphics shader stage specified using its index.
+		/// @return One of eShaderStageFlagGraphicsXXXBit values for a valid graphics stage index or 0 otherwise, returned as uint32.
+		CPPX_ATTR_NO_DISCARD inline constexpr uint32 SHMakeGraphicsShaderStageBit( native_uint pGraphicsStageIndex )
+		{
+			return ( pGraphicsStageIndex < GCM::kShaderGraphicsStagesNum ) ? ( 1 << pGraphicsStageIndex ) : 0u;
+		}
+
+	}
 
 	/// @brief Bit flags for all supported shader stages.
 	///
@@ -99,18 +129,18 @@ namespace Ic3::Graphics::GCI
 		// 16-bit value range and have values up to 0xFFFF (no shifting is performed). In case of any alterations,
 		// update that part of the functionality accordingly (see shaderCommon.h).
 
-		eShaderStageFlagGraphicsVertexBit   = 1u << eShaderStageIndexGraphicsVertex,
-		eShaderStageFlagGraphicsHullBit     = 1u << eShaderStageIndexGraphicsHull,
-		eShaderStageFlagGraphicsDomainBit   = 1u << eShaderStageIndexGraphicsDomain,
-		eShaderStageFlagGraphicsGeometryBit = 1u << eShaderStageIndexGraphicsGeometry,
-		eShaderStageFlagGraphicsPixelBit    = 1u << eShaderStageIndexGraphicsPixel,
-		eShaderStageFlagComputeBit          = 1u << eShaderStageIndexCompute,
+		eShaderStageFlagGraphicsVertexBit   = CXU::SHMakeShaderStageBit( kShaderStageIndexGraphicsVertex ),
+		eShaderStageFlagGraphicsHullBit     = CXU::SHMakeShaderStageBit( kShaderStageIndexGraphicsTessHull ),
+		eShaderStageFlagGraphicsDomainBit   = CXU::SHMakeShaderStageBit( kShaderStageIndexGraphicsTessDomain ),
+		eShaderStageFlagGraphicsGeometryBit = CXU::SHMakeShaderStageBit( kShaderStageIndexGraphicsGeometry ),
+		eShaderStageFlagGraphicsPixelBit    = CXU::SHMakeShaderStageBit( kShaderStageIndexGraphicsPixel ),
+		eShaderStageFlagComputeBit          = CXU::SHMakeShaderStageBit( kShaderStageIndexCompute ),
 
 		/// Mask with all graphics stages bits set.
-		eShaderStageMaskGraphicsAll = 0x007F,
+		eShaderStageMaskGraphicsAll = cppx::make_lsfb_bitmask<uint32>( GCM::kShaderGraphicsStagesNum ),
 
 		/// Mask with required stages for vertex-based shader setup (vertex shader and pixel shader).
-		eShaderStageMaskGraphicsVsPs = eShaderStageFlagGraphicsVertexBit | eShaderStageFlagGraphicsPixelBit,
+		eShaderStageMaskGraphicsRequiredVB = eShaderStageFlagGraphicsVertexBit | eShaderStageFlagGraphicsPixelBit,
 
 		/// Mask with all bits for all supported stages (for both graphics and compute) set.
 		eShaderStageMaskAll = eShaderStageMaskGraphicsAll | eShaderStageFlagComputeBit,
@@ -118,41 +148,6 @@ namespace Ic3::Graphics::GCI
 		/// Mask with no valid bits set (integral value is 0).
 		eShaderStageMaskNone = 0u,
 	};
-
-	static_assert( eShaderStageMaskAll < 0xFFFF );
-
-	/// Constant Expressions
-	namespace CxDef
-	{
-
-		/// @brief Returns an EShaderStageIndex matching the specified shader stage index value.
-		/// @return Corresponding EShaderStageIndex for valid index values or E_SHADER_STAGE_INDEX_INVALID otherwise.
-		CPPX_ATTR_NO_DISCARD inline constexpr EShaderStageIndex GetShaderStageIndexFromValue( native_uint pStageIndex )
-		{
-			return (pStageIndex <= eShaderStageIndexMax ) ? static_cast<EShaderStageIndex>( pStageIndex ) : eShaderStageIndexInvalid;
-		}
-
-		/// @brief Returns a 32-bit value which is a bit flag matching the shader stage specified using its index.
-		/// @return One of E_SHADER_STAGE_FLAG_xxx values for a valid stage index or 0 otherwise, returned as uint32.
-		CPPX_ATTR_NO_DISCARD inline constexpr uint32 makeShaderStageBit( native_uint pStageIndex )
-		{
-			return ( 1 << static_cast<EShaderStageIndex>( pStageIndex ) ) & eShaderStageMaskAll;
-		}
-
-		/// @brief Returns a 32-bit value which is a bit flag matching the graphics shader stage specified using its index.
-		/// @return One of E_SHADER_STAGE_FLAG_GRAPHICS_xxx values for a valid stage index or 0 otherwise, returned as uint32.
-		CPPX_ATTR_NO_DISCARD inline constexpr uint32 makeGraphicsShaderStageBit( native_uint pGraphicsStageIndex )
-		{
-			return ( 1 << static_cast<EShaderStageIndex>( pGraphicsStageIndex ) ) & eShaderStageMaskGraphicsAll;
-		}
-
-		/// @brief
-		CPPX_ATTR_NO_DISCARD inline constexpr EShaderStageFlags makeGraphicsShaderStageFlag( native_uint pGraphicsStageIndex )
-		{
-			return static_cast<EShaderStageFlags>( makeGraphicsShaderStageBit( static_cast<EShaderStageIndex>( pGraphicsStageIndex ) ) );
-		}
-
-	}
 
 	/// @brief A set of index values for supported pipeline stages.
 	///
@@ -165,13 +160,13 @@ namespace Ic3::Graphics::GCI
 	/// EShaderStageIndex counterparts (eShaderIndexShaderXXX). That of course means that are 0-based too.
 	enum EPipelineStageIndex : uint32
 	{
-		ePipelineStageIndexShaderGraphicsVertex   = eShaderStageIndexGraphicsVertex,
-		ePipelineStageIndexShaderGraphicsHull     = eShaderStageIndexGraphicsHull,
-		ePipelineStageIndexShaderGraphicsDomain   = eShaderStageIndexGraphicsDomain,
-		ePipelineStageIndexShaderGraphicsGeometry = eShaderStageIndexGraphicsGeometry,
-		ePipelineStageIndexShaderGraphicsPixel    = eShaderStageIndexGraphicsPixel,
-		ePipelineStageIndexShaderCompute          = eShaderStageIndexCompute,
-		ePipelineStageIndexShaderMax              = eShaderStageIndexMax,
+		ePipelineStageIndexShaderGraphicsVertex   = kShaderStageIndexGraphicsVertex,
+		ePipelineStageIndexShaderGraphicsHull     = kShaderStageIndexGraphicsTessHull,
+		ePipelineStageIndexShaderGraphicsDomain   = kShaderStageIndexGraphicsTessDomain,
+		ePipelineStageIndexShaderGraphicsGeometry = kShaderStageIndexGraphicsGeometry,
+		ePipelineStageIndexShaderGraphicsPixel    = kShaderStageIndexGraphicsPixel,
+		ePipelineStageIndexShaderCompute          = kShaderStageIndexCompute,
+		ePipelineStageIndexShaderMax              = kShaderStageIndexMax,
 
 		ePipelineStageIndexGenericHostAccess,
 		ePipelineStageIndexGenericResolve,
@@ -192,7 +187,7 @@ namespace Ic3::Graphics::GCI
 	/// The position of this bit is the EShaderStageIndex value for the particular stage.
 	///
 	/// @see EShaderStageIndex
-	enum ExPipelineStageFlags : uint32
+	enum EPipelineStageFlags : uint32
 	{
 		ePipelineStageFlagShaderGraphicsVertexBit      = eShaderStageFlagGraphicsVertexBit,
 		ePipelineStageFlagShaderGraphicsHullBit        = eShaderStageFlagGraphicsHullBit,

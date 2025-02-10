@@ -11,12 +11,12 @@ namespace Ic3::Graphics::GCI
 
 	GraphicsPipelineStateDescriptorFactoryCacheAdapter::~GraphicsPipelineStateDescriptorFactoryCacheAdapter() = default;
 
-	BlendStateDescriptorHandle GraphicsPipelineStateDescriptorFactoryCacheAdapter::CreateState( const BlendConfig & pConfig )
+	BlendStateDescriptorHandle GraphicsPipelineStateDescriptorFactoryCacheAdapter::CreateState( const BlendSettings & pConfig )
 	{
 		return _stateFactory->CreateBlendState( pConfig );
 	}
 
-	DepthStencilStateDescriptorHandle GraphicsPipelineStateDescriptorFactoryCacheAdapter::CreateState( const DepthStencilConfig & pConfig )
+	DepthStencilStateDescriptorHandle GraphicsPipelineStateDescriptorFactoryCacheAdapter::CreateState( const DepthStencilSettings & pConfig )
 	{
 		return _stateFactory->CreateDepthStencilState( pConfig );
 	}
@@ -26,17 +26,17 @@ namespace Ic3::Graphics::GCI
 		return _stateFactory->CreateGraphicsShaderLinkageState( pShaderSet );
 	}
 
-	IAInputLayoutStateDescriptorHandle GraphicsPipelineStateDescriptorFactoryCacheAdapter::CreateState( const IAInputLayoutDefinition & pDefinition, Shader & pVertexShaderWithBinary )
+	IAVertexAttributeLayoutStateDescriptorHandle GraphicsPipelineStateDescriptorFactoryCacheAdapter::CreateState( const IAVertexAttributeLayoutDefinition & pDefinition, Shader & pVertexShaderWithBinary )
 	{
-		return _stateFactory->CreateIAInputLayoutState( pDefinition, pVertexShaderWithBinary );
+		return _stateFactory->CreateIAVertexAttributeLayoutState( pDefinition, pVertexShaderWithBinary );
 	}
 
-	IAVertexStreamStateDescriptorHandle GraphicsPipelineStateDescriptorFactoryCacheAdapter::CreateState( const IAVertexStreamConfiguration & pDefinition )
+	IAVertexStreamStateDescriptorHandle GraphicsPipelineStateDescriptorFactoryCacheAdapter::CreateState( const IAVertexStreamBindingDefinition & pDefinition )
 	{
 		return _stateFactory->CreateIAVertexStreamState( pDefinition );
 	}
 
-	RasterizerStateDescriptorHandle GraphicsPipelineStateDescriptorFactoryCacheAdapter::CreateState( const RasterizerConfig & pConfig )
+	RasterizerStateDescriptorHandle GraphicsPipelineStateDescriptorFactoryCacheAdapter::CreateState( const RasterizerSettings & pConfig )
 	{
 		return _stateFactory->CreateRasterizerState( pConfig );
 	}
@@ -46,7 +46,7 @@ namespace Ic3::Graphics::GCI
 		return _stateFactory->CreateRenderTargetBindingState( pDefinition );
 	}
 
-	RenderPassConfigStateDescriptorHandle GraphicsPipelineStateDescriptorFactoryCacheAdapter::CreateState( const RenderPassConfiguration & pConfiguration )
+	RenderPassConfigurationStateDescriptorHandle GraphicsPipelineStateDescriptorFactoryCacheAdapter::CreateState( const RenderPassConfiguration & pConfiguration )
 	{
 		return _stateFactory->CreateRenderPassState( pConfiguration );
 	}

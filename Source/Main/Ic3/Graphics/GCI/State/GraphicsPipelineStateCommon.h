@@ -4,10 +4,10 @@
 #ifndef __IC3_GRAPHICS_GCI_GRAPHICS_PIPELINE_STATE_COMMON_H__
 #define __IC3_GRAPHICS_GCI_GRAPHICS_PIPELINE_STATE_COMMON_H__
 
-#include "PipelineStateCommon.h"
 #include "CommonGraphicsConfig.h"
-#include "InputAssemblerCommon.h"
 #include "GraphicsShaderDefs.h"
+#include "InputAssemblerCommon.h"
+#include "PipelineStateCommon.h"
 #include "RenderTargetCommon.h"
 #include "ShaderRootSignature.h"
 
@@ -16,46 +16,42 @@ namespace Ic3::Graphics::GCI
 
 	struct GraphicsPipelineStateObjectCreateInfo
 	{
-		BlendConfig blendConfig;
-		pipeline_state_descriptor_id_t blendDescriptorID;
-		mutable BlendStateDescriptorHandle blendState;
+		pipeline_state_descriptor_id_t blendStateDescriptorID;
+		pipeline_state_descriptor_id_t depthStencilStateDescriptorID;
+		pipeline_state_descriptor_id_t rasterizerStateDescriptorID;
+		pipeline_state_descriptor_id_t shaderLinkageStateDescriptorID;
+		pipeline_state_descriptor_id_t vertexAttributeLayoutStateDescriptorID;
+		pipeline_state_descriptor_id_t shaderRootSignatureStateDescriptorID;
 
-		DepthStencilConfig depthStencilConfig;
-		mutable DepthStencilStateDescriptorHandle depthStencilState;
+		BlendStateDescriptorHandle blendStateDescriptor;
+		DepthStencilStateDescriptorHandle depthStencilStateDescriptor;
+		RasterizerStateDescriptorHandle rasterizerStateDescriptor;
+		GraphicsShaderLinkageStateDescriptorHandle shaderLinkageStateDescriptor;
+		IAVertexAttributeLayoutStateDescriptorHandle vertexAttributeLayoutStateDescriptor;
+		ShaderRootSignatureStateDescriptorHandle shaderRootSignatureStateDescriptor;
 
-		RasterizerConfig rasterizerConfig;
-		mutable RasterizerStateDescriptorHandle rasterizerState;
-
-		GraphicsShaderSet shaderSet;
-		mutable GraphicsShaderLinkageStateDescriptorHandle shaderLinkageState;
-
-		IAInputLayoutDefinition inputLayoutDefinition;
-		mutable IAInputLayoutStateDescriptorHandle inputLayoutState;
-
-		ShaderRootSignatureDesc shaderRootSignatureDesc;
-		mutable ShaderRootSignature shaderRootSignature;
-
-		RenderTargetLayout renderTargetLayout;
-
+		RenderTargetArrayLayout renderTargetLayout;
 	};
 
 	struct GraphicsPipelineStateObjectDescriptorIDSet
 	{
-		pipeline_state_descriptor_id_t descIDIAInputLayout = kPipelineStateDescriptorIDInvalid;
+		pipeline_state_descriptor_id_t descIDIAVertexAttributeLayout = kPipelineStateDescriptorIDInvalid;
 		pipeline_state_descriptor_id_t descIDGraphicsShaderLinkage = kPipelineStateDescriptorIDInvalid;
 		pipeline_state_descriptor_id_t descIDShaderRootSignature = kPipelineStateDescriptorIDInvalid;
 		pipeline_state_descriptor_id_t descIDBlend = kPipelineStateDescriptorIDInvalid;
 		pipeline_state_descriptor_id_t descIDDepthStencil = kPipelineStateDescriptorIDInvalid;
 		pipeline_state_descriptor_id_t descIDRasterizer = kPipelineStateDescriptorIDInvalid;
-		pipeline_state_descriptor_id_t descIDMultiSampling = kPipelineStateDescriptorIDInvalid;
-		pipeline_state_descriptor_id_t _padding = 0;
+		pipeline_state_descriptor_id_t _padding[2]{};
 	};
 
 	/// @brief PSO for the graphics pipeline.
 	class IC3_GRAPHICS_GCI_CLASS GraphicsPipelineStateObject : public PipelineStateObject
 	{
 	public:
-		GraphicsPipelineStateObject( GPUDevice & pGPUDevice );
+		GraphicsPipelineStateObject(
+				GPUDevice & pGPUDevice,
+				pipeline_state_object_id_t pStateObjectID );
+
 		virtual ~GraphicsPipelineStateObject();
 
 		/**
@@ -76,6 +72,37 @@ namespace Ic3::Graphics::GCI
 	inline const GraphicsPipelineStateObjectDescriptorIDSet & GraphicsPipelineStateObject::GetDescriptorIDSet() const noexcept
 	{
 		return  _descriptorIDSet;
+	}
+
+
+	inline bool operator==( const GraphicsPipelineStateObjectDescriptorIDSet & pLhs, const GraphicsPipelineStateObjectDescriptorIDSet & pRhs ) noexcept
+	{
+		return cppx::mem_cmp_equal( pLhs, pRhs );
+	}
+
+	inline bool operator!=( const GraphicsPipelineStateObjectDescriptorIDSet & pLhs, const GraphicsPipelineStateObjectDescriptorIDSet & pRhs ) noexcept
+	{
+		return cppx::mem_cmp_not_equal( pLhs, pRhs );
+	}
+
+	inline bool operator<( const GraphicsPipelineStateObjectDescriptorIDSet & pLhs, const GraphicsPipelineStateObjectDescriptorIDSet & pRhs ) noexcept
+	{
+		return cppx::mem_cmp_less( pLhs, pRhs );
+	}
+
+	inline bool operator<=( const GraphicsPipelineStateObjectDescriptorIDSet & pLhs, const GraphicsPipelineStateObjectDescriptorIDSet & pRhs ) noexcept
+	{
+		return cppx::mem_cmp_less_equal( pLhs, pRhs );
+	}
+
+	inline bool operator>( const GraphicsPipelineStateObjectDescriptorIDSet & pLhs, const GraphicsPipelineStateObjectDescriptorIDSet & pRhs ) noexcept
+	{
+		return cppx::mem_cmp_greater( pLhs, pRhs );
+	}
+
+	inline bool operator>=( const GraphicsPipelineStateObjectDescriptorIDSet & pLhs, const GraphicsPipelineStateObjectDescriptorIDSet & pRhs ) noexcept
+	{
+		return cppx::mem_cmp_greater_equal( pLhs, pRhs );
 	}
 
 } // namespace Ic3::Graphics::GCI

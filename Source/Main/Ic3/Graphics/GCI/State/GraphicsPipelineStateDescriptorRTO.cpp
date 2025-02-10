@@ -4,81 +4,81 @@
 namespace Ic3::Graphics::GCI
 {
 
-	//!! RenderPassConfigStateDescriptor
+	//!! RenderPassConfigurationStateDescriptor
 
-	RenderPassConfigStateDescriptor::RenderPassConfigStateDescriptor(
+	RenderPassConfigurationStateDescriptor::RenderPassConfigurationStateDescriptor(
 			GPUDevice & pGPUDevice,
 			pipeline_state_descriptor_id_t pDescriptorID )
 	: PipelineStateDescriptor( pGPUDevice, pDescriptorID )
 	{}
 
-	RenderPassConfigStateDescriptor::~RenderPassConfigStateDescriptor() = default;
+	RenderPassConfigurationStateDescriptor::~RenderPassConfigurationStateDescriptor() = default;
 
-	EPipelineStateDescriptorType RenderPassConfigStateDescriptor::GetDescriptorType() const noexcept
+	EPipelineStateDescriptorType RenderPassConfigurationStateDescriptor::GetDescriptorType() const noexcept
 	{
 		return EPipelineStateDescriptorType::DTRenderPassConfig;
 	}
 
 
-	//!! RenderPassConfigStateDescriptorDynamic
+	//!! RenderPassConfigurationStateDescriptorDynamic
 
-	RenderPassConfigStateDescriptorDynamic::RenderPassConfigStateDescriptorDynamic(
+	RenderPassConfigurationStateDescriptorDynamic::RenderPassConfigurationStateDescriptorDynamic(
 			GPUDevice & pGPUDevice,
 			pipeline_state_descriptor_id_t pDescriptorID )
-	: RenderPassConfigStateDescriptor( pGPUDevice, pDescriptorID )
+	: RenderPassConfigurationStateDescriptor( pGPUDevice, pDescriptorID )
 	{}
 
-	RenderPassConfigStateDescriptorDynamic::~RenderPassConfigStateDescriptorDynamic() = default;
+	RenderPassConfigurationStateDescriptorDynamic::~RenderPassConfigurationStateDescriptorDynamic() = default;
 
-	bool RenderPassConfigStateDescriptorDynamic::IsDynamicDescriptor() const noexcept
+	bool RenderPassConfigurationStateDescriptorDynamic::IsDynamicDescriptor() const noexcept
 	{
 		return true;
 	}
 
-	bool RenderPassConfigStateDescriptorDynamic::IsEmpty() const noexcept
+	bool RenderPassConfigurationStateDescriptorDynamic::IsEmpty() const noexcept
 	{
 		return _renderPassConfiguration.IsEmpty();
 	}
 
-	bool RenderPassConfigStateDescriptorDynamic::IsDepthStencilAttachmentActive() const noexcept
+	bool RenderPassConfigurationStateDescriptorDynamic::IsDepthStencilAttachmentActive() const noexcept
 	{
 		return _renderPassConfiguration.activeAttachmentsMask.is_set( eRTAttachmentFlagDepthStencilBit );
 	}
 
-	native_uint RenderPassConfigStateDescriptorDynamic::CountActiveColorAttachments() const noexcept
+	native_uint RenderPassConfigurationStateDescriptorDynamic::CountActiveColorAttachments() const noexcept
 	{
 		return ( _renderPassConfiguration.activeAttachmentsMask & eRTAttachmentMaskColorAll ).count_bits();
 	}
 
-	const RenderPassConfiguration & RenderPassConfigStateDescriptorDynamic::GetRenderPassConfiguration() const noexcept
+	const RenderPassConfiguration & RenderPassConfigurationStateDescriptorDynamic::GetRenderPassConfiguration() const noexcept
 	{
 		return _renderPassConfiguration;
 	}
 
-	RenderPassAttachmentReference * RenderPassConfigStateDescriptorDynamic::UpdateActiveColorAttachment( native_uint pColorAttachmentIndex )
+	RenderPassAttachmentReference * RenderPassConfigurationStateDescriptorDynamic::UpdateActiveColorAttachment( native_uint pColorAttachmentIndex )
 	{
 		return _SetColorAttachmentActive( pColorAttachmentIndex );
 	}
 
-	RenderPassAttachmentReference * RenderPassConfigStateDescriptorDynamic::UpdateActiveDepthStencilAttachment()
+	RenderPassAttachmentReference * RenderPassConfigurationStateDescriptorDynamic::UpdateActiveDepthStencilAttachment()
 	{
 		return _SetDepthStencilAttachmentActive();
 	}
 
-	void RenderPassConfigStateDescriptorDynamic::SetRenderPassConfiguration( const RenderPassConfiguration & pRenderPassConfiguration ) noexcept
+	void RenderPassConfigurationStateDescriptorDynamic::SetRenderPassConfiguration( const RenderPassConfiguration & pRenderPassConfiguration ) noexcept
 	{
 		_SetColorAttachmentRefs( 0, GCM::kRTOMaxColorAttachmentsNum, pRenderPassConfiguration.colorAttachmentConfigArray.data() );
 		_SetDepthStencilAttachmentRef( pRenderPassConfiguration.depthStencilAttachmentConfig );
 	}
 
-	void RenderPassConfigStateDescriptorDynamic::SetColorAttachmentRef(
+	void RenderPassConfigurationStateDescriptorDynamic::SetColorAttachmentRef(
 			native_uint pColorAttachmentIndex,
 			const RenderPassAttachmentReference & pAttachmentRef )
 	{
 		_SetColorAttachmentRefs( pColorAttachmentIndex, 1, &pAttachmentRef );
 	}
 
-	void RenderPassConfigStateDescriptorDynamic::SetColorAttachmentRefs(
+	void RenderPassConfigurationStateDescriptorDynamic::SetColorAttachmentRefs(
 			const cppx::array_view<const RenderPassAttachmentReference> & pAttachmentRefs,
 			native_uint pColorAttachmentFirstIndex,
 			native_uint pColorAttachmentCount )
@@ -86,41 +86,41 @@ namespace Ic3::Graphics::GCI
 		_SetColorAttachmentRefs( pColorAttachmentFirstIndex, pColorAttachmentCount, pAttachmentRefs.data() );
 	}
 
-	void RenderPassConfigStateDescriptorDynamic::SetDepthStencilAttachmentRef( const RenderPassAttachmentReference & pAttachmentRef )
+	void RenderPassConfigurationStateDescriptorDynamic::SetDepthStencilAttachmentRef( const RenderPassAttachmentReference & pAttachmentRef )
 	{
 		_SetDepthStencilAttachmentRef( pAttachmentRef );
 	}
 
-	void RenderPassConfigStateDescriptorDynamic::ResetAll()
+	void RenderPassConfigurationStateDescriptorDynamic::ResetAll()
 	{
 		_ResetColorAttachmentRefs( 0, GCM::kRTOMaxColorAttachmentsNum );
 		_ResetDepthStencilAttachmentRef();
 	}
 
-	void RenderPassConfigStateDescriptorDynamic::ResetAllFlags()
+	void RenderPassConfigurationStateDescriptorDynamic::ResetAllFlags()
 	{
 		_renderPassConfiguration.activeAttachmentsMask.clear();
 		_renderPassConfiguration.activeAttachmentsNum = 0;
 	}
 
-	void RenderPassConfigStateDescriptorDynamic::ResetColorAttachmentRef( native_uint pColorAttachmentIndex )
+	void RenderPassConfigurationStateDescriptorDynamic::ResetColorAttachmentRef( native_uint pColorAttachmentIndex )
 	{
 		_ResetColorAttachmentRefs( pColorAttachmentIndex, 1 );
 	}
 
-	void RenderPassConfigStateDescriptorDynamic::ResetColorAttachmentRefs(
+	void RenderPassConfigurationStateDescriptorDynamic::ResetColorAttachmentRefs(
 			native_uint pColorAttachmentFirstIndex,
 			native_uint pColorAttachmentCount )
 	{
 		_ResetColorAttachmentRefs( pColorAttachmentFirstIndex, pColorAttachmentCount );
 	}
 
-	void RenderPassConfigStateDescriptorDynamic::ResetDepthStencilAttachmentRef()
+	void RenderPassConfigurationStateDescriptorDynamic::ResetDepthStencilAttachmentRef()
 	{
 		_ResetDepthStencilAttachmentRef();
 	}
 
-	RenderPassAttachmentReference * RenderPassConfigStateDescriptorDynamic::_SetColorAttachmentActive( native_uint pColorAttachmentIndex )
+	RenderPassAttachmentReference * RenderPassConfigurationStateDescriptorDynamic::_SetColorAttachmentActive( native_uint pColorAttachmentIndex )
 	{
 		if( CXU::RTOIsAttachmentIndexValid( pColorAttachmentIndex ) )
 		{
@@ -140,7 +140,7 @@ namespace Ic3::Graphics::GCI
 		return nullptr;
 	}
 
-	void RenderPassConfigStateDescriptorDynamic::_SetColorAttachmentRefs(
+	void RenderPassConfigurationStateDescriptorDynamic::_SetColorAttachmentRefs(
 			native_uint pColorAttachmentFirstIndex,
 			native_uint pColorAttachmentCount,
 			const RenderPassAttachmentReference * pAttachmentRefs )
@@ -183,7 +183,7 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	RenderPassAttachmentReference * RenderPassConfigStateDescriptorDynamic::_SetDepthStencilAttachmentActive()
+	RenderPassAttachmentReference * RenderPassConfigurationStateDescriptorDynamic::_SetDepthStencilAttachmentActive()
 	{
 		if( !_renderPassConfiguration.activeAttachmentsMask.is_set( eRTAttachmentFlagDepthStencilBit ) )
 		{
@@ -194,7 +194,7 @@ namespace Ic3::Graphics::GCI
 		return &( _renderPassConfiguration.depthStencilAttachmentConfig );
 	}
 
-	void RenderPassConfigStateDescriptorDynamic::_SetDepthStencilAttachmentRef( const RenderPassAttachmentReference & pAttachmentRef )
+	void RenderPassConfigurationStateDescriptorDynamic::_SetDepthStencilAttachmentRef( const RenderPassAttachmentReference & pAttachmentRef )
 	{
 		if( pAttachmentRef )
 		{
@@ -218,7 +218,7 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	void RenderPassConfigStateDescriptorDynamic::_ResetColorAttachmentRefs(
+	void RenderPassConfigurationStateDescriptorDynamic::_ResetColorAttachmentRefs(
 			native_uint pColorAttachmentFirstIndex,
 			native_uint pColorAttachmentCount )
 	{
@@ -247,7 +247,7 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	void RenderPassConfigStateDescriptorDynamic::_ResetDepthStencilAttachmentRef()
+	void RenderPassConfigurationStateDescriptorDynamic::_ResetDepthStencilAttachmentRef()
 	{
 		if( _renderPassConfiguration.activeAttachmentsMask.is_set( eRTAttachmentFlagDepthStencilBit ) )
 		{
@@ -262,18 +262,18 @@ namespace Ic3::Graphics::GCI
 	namespace PIM
 	{
 
-		//!! RenderPassConfigStateDescriptorGeneric
+		//!! RenderPassConfigurationStateDescriptorGeneric
 
-		RenderPassConfigStateDescriptorGeneric::RenderPassConfigStateDescriptorGeneric(
+		RenderPassConfigurationStateDescriptorGeneric::RenderPassConfigurationStateDescriptorGeneric(
 				GPUDevice & pGPUDevice,
 				pipeline_state_descriptor_id_t pDescriptorID,
 				const RenderPassConfiguration & pPassConfiguration )
-				: RenderPassConfigStateDescriptor( pGPUDevice, pDescriptorID )
+				: RenderPassConfigurationStateDescriptor( pGPUDevice, pDescriptorID )
 		{}
 
-		RenderPassConfigStateDescriptorGeneric::~RenderPassConfigStateDescriptorGeneric() = default;
+		RenderPassConfigurationStateDescriptorGeneric::~RenderPassConfigurationStateDescriptorGeneric() = default;
 
-		TGfxHandle<RenderPassConfigStateDescriptorGeneric> RenderPassConfigStateDescriptorGeneric::CreateFromPassConfiguration(
+		TGfxHandle<RenderPassConfigurationStateDescriptorGeneric> RenderPassConfigurationStateDescriptorGeneric::CreateFromPassConfiguration(
 				GPUDevice & pGPUDevice,
 				const RenderPassConfiguration & pPassConfiguration,
 				pipeline_state_descriptor_id_t pDescriptorID )
@@ -283,19 +283,19 @@ namespace Ic3::Graphics::GCI
 				return nullptr;
 			}
 
-			return CreateDynamicObject<RenderPassConfigStateDescriptorGeneric>( pGPUDevice, pDescriptorID, pPassConfiguration );
+			return CreateDynamicObject<RenderPassConfigurationStateDescriptorGeneric>( pGPUDevice, pDescriptorID, pPassConfiguration );
 		}
 
 
-		//!! RenderPassConfigStateDescriptor
+		//!! RenderPassConfigurationStateDescriptor
 
-		RenderPassConfigStateDescriptorNative::RenderPassConfigStateDescriptorNative(
+		RenderPassConfigurationStateDescriptorNative::RenderPassConfigurationStateDescriptorNative(
 				GPUDevice & pGPUDevice,
 				pipeline_state_descriptor_id_t pDescriptorID )
-		: RenderPassConfigStateDescriptor( pGPUDevice, pDescriptorID )
+		: RenderPassConfigurationStateDescriptor( pGPUDevice, pDescriptorID )
 		{}
 
-		RenderPassConfigStateDescriptorNative::~RenderPassConfigStateDescriptorNative() = default;
+		RenderPassConfigurationStateDescriptorNative::~RenderPassConfigurationStateDescriptorNative() = default;
 
 	}
 

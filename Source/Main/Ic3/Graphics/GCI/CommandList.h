@@ -59,7 +59,7 @@ namespace Ic3::Graphics::GCI
 		bool UpdateBufferSubDataUpload( GPUBuffer & pBuffer, const GPUBufferSubDataUploadDesc & pUploadDesc );
 
 		virtual bool BeginRenderPass(
-				const RenderPassConfigurationImmutableState & pRenderPassState,
+				const RenderPassConfigurationStateDescriptor & pRenderPassState,
 				cppx::bitmask<ECommandListActionFlags> pFlags );
 
 		virtual bool BeginRenderPass(
@@ -72,9 +72,9 @@ namespace Ic3::Graphics::GCI
 		void ResetRenderPassDynamicState();
 
 		bool SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO );
-		bool SetIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState );
+		bool SetIAVertexStreamState( const IAVertexStreamStateDescriptor & pIAVertexStreamState );
 		bool SetIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState );
-		bool SetRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState );
+		bool SetRenderTargetBindingState( const RenderTargetBindingStateDescriptor & pRenderTargetBindingState );
 		bool SetRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState );
 
 		bool CmdSetViewport( const ViewportDesc & pViewportDesc );
@@ -118,7 +118,7 @@ namespace Ic3::Graphics::GCI
 		CPPX_ATTR_NO_DISCARD const RenderPassConfiguration & GetRenderPassConfiguration() const noexcept;
 
 		virtual bool BeginRenderPass(
-				const RenderPassConfigurationImmutableState & pRenderPassState,
+				const RenderPassConfigurationStateDescriptor & pRenderPassState,
 				cppx::bitmask<ECommandListActionFlags> pFlags ) override;
 
 		virtual bool BeginRenderPass(

@@ -4,7 +4,7 @@
 #ifndef __IC3_GRAPHICS_GCI_PIPELINE_STATE_DESCRIPTOR_CACHE_UNIT_H__
 #define __IC3_GRAPHICS_GCI_PIPELINE_STATE_DESCRIPTOR_CACHE_UNIT_H__
 
-#include "PipelineStateIDDefs.h"
+#include "CommonGPUStateDefs.h"
 
 #include <cppx/hash.h>
 #include <cppx/immutableString.h>
@@ -17,11 +17,11 @@ namespace Ic3::Graphics::GCI
 	 *
 	 * @tparam TPDescriptor
 	 */
-	template <typename TPStateDescriptor>
+	template <typename TPDescriptorType>
 	struct PipelineStateDescriptorTraits
 	{
-		using DescriptorType = TPStateDescriptor;
-		using DescriptorHandle = TGfxHandle<TPStateDescriptor>;
+		using DescriptorType = TPDescriptorType;
+		using DescriptorHandle = TGfxHandle<TPDescriptorType>;
 		using InputConfigType = void;
 		using FactoryInterface = void;
 	};
@@ -32,188 +32,246 @@ namespace Ic3::Graphics::GCI
 	#define Ic3DefinePipelineStateDescriptorTraits( pDescriptorType, pInputConfig, pFactoryInterface ) \
 		template <> struct PipelineStateDescriptorTraits<pDescriptorType##StateDescriptor> { \
 			using DescriptorType = pDescriptorType##StateDescriptor; \
-			using DescriptorHandle = TGfxHandle<pDescriptorType##StateDescriptor>; \
+            using CreateInfoType = pDescriptorType##StateDescriptorCreateInfo; \
 			using InputConfigType = pInputConfig; \
 			using FactoryInterface = pFactoryInterface; \
+            static inline constexpr auto sDescriptorType = EPipelineStateDescriptorType::DT##pDescriptorType; \
 		};
 
 	/**
 	 * A cache unit ("sub-cache") used by the actual compute/graphics cache. Manages state descriptors of a single type.
-	 * @tparam TPStateDescriptor
+	 * @tparam TPDescriptorType
 	 */
-	template <typename TPStateDescriptor>
+	template <typename TPDescriptorType>
 	class PipelineStateDescriptorCacheUnit
 	{
 	public:
-		using DescriptorTraits = PipelineStateDescriptorTraits<TPStateDescriptor>;
+		using DescriptorTraits = PipelineStateDescriptorTraits<TPDescriptorType>;
+		using CreateInfoType = typename DescriptorTraits::CreateInfoType;
 		using InputConfigType = typename DescriptorTraits::InputConfigType;
 		using FactoryInterface = typename DescriptorTraits::FactoryInterface;
-		using InputConfigHashType = cppx::hash_object<cppx::hash_algo::fnv1a64>;
-		using InputConfigHashValue = InputConfigHashType::value_type;
+
+		static inline constexpr auto sDescriptorType = DescriptorTraits::sDescriptorType;
 
 	public:
 		PipelineStateDescriptorCacheUnit( FactoryInterface & pFactoryInterface )
-		: _stateFactoryInterface( pFactoryInterface )
+		: _descriptorFactoryInterface( pFactoryInterface )
 		{}
 
 		~PipelineStateDescriptorCacheUnit() = default;
 
-		CPPX_ATTR_NO_DISCARD TGfxHandle<TPStateDescriptor> GetStateDescriptor( pipeline_state_descriptor_id_t pStateID ) const noexcept
+		CPPX_ATTR_NO_DISCARD TGfxHandle<TPDescriptorType> GetDescriptorByID( pipeline_state_descriptor_id_t pDescriptorID ) const noexcept
 		{
-			const auto stateObjectIter = _stateIDToObjectMap.find( pStateID );
-			if( stateObjectIter != _stateIDToObjectMap.end() )
+			const auto stateObjectIter = _descriptorIDToObjectMap.find( pDescriptorID );
+			if( stateObjectIter != _descriptorIDToObjectMap.end() )
 			{
-				return stateObjectIter->second.compiledStateObject;
+				return stateObjectIter->second.cachedStateDescriptor;
 			}
 
 			return nullptr;
 		}
 
-		CPPX_ATTR_NO_DISCARD TGfxHandle<TPStateDescriptor> GetStateDescriptor( const cppx::string_view & pStateName ) const noexcept
+		CPPX_ATTR_NO_DISCARD TGfxHandle<TPDescriptorType> GetDescriptorByName( const cppx::string_view & pDescriptorName ) const noexcept
 		{
-			const auto stateIDIter = _nameToStateIDMap.find( pStateName );
-			if( stateIDIter != _nameToStateIDMap.end() )
+			const auto descriptorIDIter = _nameToDescriptorIDMap.find( pDescriptorName );
+			if( descriptorIDIter != _nameToDescriptorIDMap.end() )
 			{
-				const auto stateObjectIter = _stateIDToObjectMap.find( stateIDIter->second );
-				if( stateObjectIter != _stateIDToObjectMap.end() )
+				const auto stateObjectIter = _descriptorIDToObjectMap.find( descriptorIDIter->second );
+				if( stateObjectIter != _descriptorIDToObjectMap.end() )
 				{
-					return stateObjectIter->second.compiledStateObject;
+					return stateObjectIter->second.cachedStateDescriptor;
 				}
 			}
 
 			return nullptr;
 		}
 
-		CPPX_ATTR_NO_DISCARD TGfxHandle<TPStateDescriptor> GetStateDescriptorForConfig( const InputConfigType & pConfig ) const noexcept
+		CPPX_ATTR_NO_DISCARD TGfxHandle<TPDescriptorType> GetDescriptorForConfig( const InputConfigType & pConfig ) const noexcept
 		{
 			const auto configHash = cppx::hash_compute<cppx::hash_algo::fnv1a64>( pConfig );
 
-			const auto stateIDIter = _configHashToStateIDMap.find( configHash );
-			if( stateIDIter != _configHashToStateIDMap.end() )
+			const auto descriptorIDIter = _configHashToDescriptorIDMap.find( configHash );
+			if( descriptorIDIter != _configHashToDescriptorIDMap.end() )
 			{
-				const auto stateObjectIter = _stateIDToObjectMap.find( stateIDIter->second );
-				if( stateObjectIter != _stateIDToObjectMap.end() )
+				const auto stateObjectIter = _descriptorIDToObjectMap.find( descriptorIDIter->second );
+				if( stateObjectIter != _descriptorIDToObjectMap.end() )
 				{
-					return stateObjectIter->second.compiledStateObject;
+					return stateObjectIter->second.cachedStateDescriptor;
 				}
 			}
 
 			return nullptr;
 		}
 
-		CPPX_ATTR_NO_DISCARD bool HasStateDescriptorWithID( pipeline_state_descriptor_id_t pStateID ) const noexcept
+		CPPX_ATTR_NO_DISCARD bool HasDescriptorWithConfigHash( pipeline_config_hash_value_t pConfigHash ) const noexcept
 		{
-			const auto stateObjectIter = _stateIDToObjectMap.find( pStateID );
-			return stateObjectIter != _stateIDToObjectMap.end();
+			const auto stateObjectIter = _configHashToDescriptorIDMap.find( pConfigHash );
+			return stateObjectIter != _configHashToDescriptorIDMap.end();
 		}
 
-		CPPX_ATTR_NO_DISCARD bool HasStateDescriptorWithName( const cppx::string_view & pStateName ) const noexcept
+		CPPX_ATTR_NO_DISCARD bool HasDescriptorWithID( pipeline_state_descriptor_id_t pDescriptorID ) const noexcept
 		{
-			const auto stateIDIter = _nameToStateIDMap.find( pStateName );
-			return stateIDIter != _nameToStateIDMap.end();
+			const auto stateObjectIter = _descriptorIDToObjectMap.find( pDescriptorID );
+			return stateObjectIter != _descriptorIDToObjectMap.end();
 		}
 
-		template <typename... TArgs>
-		TGfxHandle<TPStateDescriptor> CreateStateDescriptor(
-				pipeline_state_descriptor_id_t pStateID,
-				const InputConfigType & pConfig,
-				TArgs && ...pArgs )
+		CPPX_ATTR_NO_DISCARD bool HasDescriptorWithName( const cppx::string_view & pDescriptorName ) const noexcept
 		{
-			if( HasStateDescriptorWithID( pStateID ) )
-			{
-				return nullptr;
-			}
-
-			//
-			auto newStateDescriptor = _stateFactoryInterface.CreateState( pConfig, std::forward<TArgs>( pArgs )... );
-
-			if( newStateDescriptor )
-			{
-				//
-				const auto configHash = cppx::hash_compute<cppx::hash_algo::fnv1a64>( pConfig );
-
-				_stateIDToObjectMap[pStateID] = newStateDescriptor;
-				_configHashToStateIDMap[configHash] = pStateID;
-			}
-
-			return newStateDescriptor;
+			const auto descriptorIDIter = _nameToDescriptorIDMap.find( pDescriptorName );
+			return descriptorIDIter != _nameToDescriptorIDMap.end();
 		}
 
-		template <typename... TArgs>
-		TGfxHandle<TPStateDescriptor> CreateNamedStateDescriptor(
-				pipeline_state_descriptor_id_t pStateID,
-				cppx::immutable_string pName,
-				const InputConfigType & pConfig,
-				TArgs && ...pArgs )
+		TGfxHandle<TPDescriptorType> CreateDescriptor( const CreateInfoType & pCreateInfo, cppx::immutable_string pDescriptorName )
 		{
-			if( HasStateDescriptorWithID( pStateID ) )
-			{
-				return nullptr;
-			}
-
-			if( HasStateDescriptorWithName( pName ) )
-			{
-				return nullptr;
-			}
-
-			//
-			auto newStateDescriptor = _stateFactoryInterface.CreateState( pConfig, std::forward<TArgs>( pArgs )... );
-
-			if( newStateDescriptor )
-			{
-				//
-				const auto configHash = cppx::hash_compute<cppx::hash_algo::fnv1a64>( pConfig );
-
-				CachedStateData stateData{};
-				stateData.inputConfigHash = configHash;
-				stateData.name = pName;
-				stateData.compiledStateObject = newStateDescriptor;
-
-				_stateIDToObjectMap[pStateID] = std::move( stateData );
-				_configHashToStateIDMap[configHash] = pStateID;
-				_nameToStateIDMap[pName] = pStateID;
-			}
-
-			return newStateDescriptor;
+			return _CreateNewCachedDescriptor( pCreateInfo, pDescriptorName );
 		}
 
 		void Reset()
 		{
-			_stateIDToObjectMap.clear();
-			_configHashToStateIDMap.clear();
-			_nameToStateIDMap.clear();
+			_descriptorIDToObjectMap.clear();
+			_configHashToDescriptorIDMap.clear();
+			_nameToDescriptorIDMap.clear();
 		}
 
 	private:
 		// The data stored internally for every cached state object.
-		struct CachedStateData
+		struct CachedDescriptorData
 		{
 			// Control hash which is a hash of the inputDesc (passed inside the createInfo struct).
-			InputConfigHashValue inputConfigHash;
+			pipeline_config_hash_t inputConfigHash;
 
 			//
 			cppx::immutable_string name;
 
 			// The actual compiled state.
-			TGfxHandle<TPStateDescriptor> compiledStateObject;
+			TGfxHandle<TPDescriptorType> cachedStateDescriptor;
 		};
 
-		using StateIDToObjectMap = std::unordered_map<pipeline_state_descriptor_id_t, CachedStateData>;
-		using ConfigHashToStateIDMap = std::unordered_map<InputConfigHashValue, pipeline_state_descriptor_id_t>;
-		using NameToStateIDMap = std::unordered_map<cppx::immutable_string , pipeline_state_descriptor_id_t>;
+		using DescriptorIDToObjectMap = std::unordered_map<pipeline_state_descriptor_id_t, CachedDescriptorData>;
+		using NameToDescriptorIDMap = std::unordered_map<cppx::immutable_string , pipeline_state_descriptor_id_t>;
+		using ConfigHashToDescriptorIDMap = std::unordered_map<pipeline_config_hash_value_t, pipeline_state_descriptor_id_t>;
 
 	private:
-		// Adapter for the state factory. Allows the cache to simply call CreateState() for every state type.
-		FactoryInterface & _stateFactoryInterface;
+		static bool _ValidateDescriptorID( pipeline_state_descriptor_id_t pDescriptorID ) noexcept
+		{
+			if( CXU::IsPipelineStateDescriptorIDValid( pDescriptorID ) )
+			{
+				const auto typeComponent = CXU::GetPipelineStateDescriptorIDTypeComponent( pDescriptorID );
+				if( ( typeComponent == EPipelineStateDescriptorType::Unknown ) && ( typeComponent == sDescriptorType ) )
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		bool _CheckDescriptorCreateRequest(
+				const PipelineStateDescriptorCreateInfoBase & pCreateInfo,
+				const cppx::immutable_string & pDescriptorName,
+				pipeline_config_hash_value_t pConfigHash ) const noexcept
+		{
+			if( !_ValidateDescriptorID( pCreateInfo.descriptorID ) )
+			{
+				Ic3DebugOutputFmt(
+					"Specified descriptor ID (%#x) is either invalid or does not match requested type.",
+					pCreateInfo.descriptorID );
+
+				return false;
+			}
+
+			if( HasDescriptorWithID( pCreateInfo.descriptorID ) )
+			{
+				Ic3DebugOutputFmt(
+					"PSD with the specified ID (%#x) is already registered in the cache.",
+					pCreateInfo.descriptorID );
+
+				return false;
+
+			}
+
+			if( pDescriptorName && HasDescriptorWithName( pDescriptorName ) )
+			{
+				Ic3DebugOutputFmt(
+					"PSD with the specified name (%s) is already registered in the cache.",
+					pDescriptorName.data() );
+
+				return false;
+
+			}
+
+			const auto configHashFound = HasDescriptorWithConfigHash( pConfigHash );
+			if( configHashFound )
+			{
+				if( !pCreateInfo.flags.is_set( ePipelineStateDescriptorCreateFlagCachePolicyOverwriteConfig ) )
+				{
+					Ic3DebugOutputFmt(
+						"PSD with ConfigHash = %#x (specified ID: %#x) has been already created and cached. Possible collision?",
+						pConfigHash,
+						pCreateInfo.descriptorID );
+
+					return false;
+				}
+				else
+				{
+					Ic3DebugOutputFmt(
+						"PSD with ID %#x will overwrite %#x for config hash = %#x",
+						pCreateInfo.descriptorID,
+						_configHashToDescriptorIDMap.at( pConfigHash ),
+						pConfigHash );
+				}
+			}
+
+			return true;
+		}
+
+		TGfxHandle<TPDescriptorType> _CreateNewCachedDescriptor( const CreateInfoType & pCreateInfo, cppx::immutable_string pDescriptorName ) noexcept
+		{
+			// Cast the createInfo object to the required base type - compile-time check in case of future refactoring.
+			const auto & baseCreateInfo = static_cast<const PipelineStateDescriptorCreateInfoBase &>( pCreateInfo );
+
+			const auto configHash = pCreateInfo.GetConfigHash();
+
+			if( _CheckDescriptorCreateRequest( baseCreateInfo, pDescriptorName, configHash.value ) )
+			{
+				//
+				auto newStateDescriptor = _descriptorFactoryInterface.CreateDescriptor( pCreateInfo );
+
+				CachedDescriptorData descriptorData{};
+				descriptorData.inputConfigHash = configHash;
+				descriptorData.name = pDescriptorName;
+				descriptorData.cachedStateDescriptor = newStateDescriptor;
+
+				// Save the descriptor in the cache, referenced by its ID. This action may overwrite the existing
+				// descriptor, as determined by _DetermineCacheStoreAction() function. See the documentation of
+				// ePipelineStateDescriptorCreateFlagCachePolicyOverwriteConfig for details.
+				_descriptorIDToObjectMap[baseCreateInfo.descriptorID] = std::move( descriptorData );
+
+				_configHashToDescriptorIDMap[configHash.value] = baseCreateInfo.descriptorID;
+
+				if( pDescriptorName )
+				{
+					_nameToDescriptorIDMap[pDescriptorName] = baseCreateInfo.descriptorID;
+				}
+
+				return newStateDescriptor;
+			}
+
+			return nullptr;
+		}
+
+	private:
+		// Adapter for the state factory. Allows the cache to simply call Create() for every state type.
+		FactoryInterface & _descriptorFactoryInterface;
 
 		// The actual Map which serves as a storage for cached objects.
-		StateIDToObjectMap _stateIDToObjectMap;
+		DescriptorIDToObjectMap _descriptorIDToObjectMap;
 
 		//
-		ConfigHashToStateIDMap _configHashToStateIDMap;
+		ConfigHashToDescriptorIDMap _configHashToDescriptorIDMap;
 
 		//
-		NameToStateIDMap _nameToStateIDMap;
+		NameToDescriptorIDMap _nameToDescriptorIDMap;
 	};
 
 } // namespace Ic3::Graphics::GCI

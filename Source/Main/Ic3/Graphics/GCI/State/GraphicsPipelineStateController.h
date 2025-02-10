@@ -17,8 +17,8 @@ namespace Ic3::Graphics::GCI
 	/// @brief Defines bit flags describing what kind of changes are pending for
 	enum EGraphicsStateUpdateCommonFlags : graphics_state_update_mask_value_t
 	{
-		eGraphicsStateUpdateFlagCommonPSOBit = 0x01,
-		eGraphicsStateUpdateFlagCommonVertexStreamBit = 0x02,
+		eGraphicsStateUpdateFlagCommonPipelineStateObjectBit = 0x01,
+		eGraphicsStateUpdateFlagCommonIAVertexStreamBindingBit = 0x02,
 		eGraphicsStateUpdateFlagCommonRenderTargetBindingBit = 0x04,
 		eGraphicsStateUpdateMaskCommonAll = 0x07
 	};

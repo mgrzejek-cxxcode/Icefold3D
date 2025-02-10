@@ -143,6 +143,19 @@ namespace Ic3::Graphics::GCI
 		}
 	};
 
+	struct RenderPassConfigurationStateDescriptorCreateInfo : public PipelineStateDescriptorCreateInfoBase
+	{
+		RenderPassConfiguration passConfiguration;
+
+		CPPX_ATTR_NO_DISCARD pipeline_config_hash_t GetConfigHash() const noexcept
+		{
+			return cppx::hash_compute<pipeline_config_hash_t::hash_algo>(
+					passConfiguration.attachmentConfigArray,
+					passConfiguration.activeAttachmentsMask,
+					passConfiguration.activeAttachmentsNum );
+		}
+	};
+
 	namespace GCU
 	{
 

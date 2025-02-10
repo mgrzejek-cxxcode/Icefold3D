@@ -1,5 +1,6 @@
 
 #include "PipelineStateCommon.h"
+#include "../GPUDevice.h"
 
 namespace Ic3::Graphics::GCI
 {
@@ -31,86 +32,64 @@ namespace Ic3::Graphics::GCI
 
 	/// #PipelineStateDescriptorFactoryNull
 
-	BlendStateDescriptorHandle PipelineStateDescriptorFactoryNull::CreateBlendStateDescriptor(
-			pipeline_state_descriptor_id_t pDescriptorID,
-			const BlendConfig & pBlendConfig )
+	GPUDevice & PipelineStateDescriptorFactoryNull::GetGPUDevice() const noexcept
 	{
-		Ic3UnusedParam( pDescriptorID );
-		Ic3UnusedParam( pBlendConfig );
+		return GPUDevice::GetNullDevice();
+	}
+
+	BlendStateDescriptorHandle PipelineStateDescriptorFactoryNull::CreateBlendStateDescriptor(
+			const BlendStateDescriptorCreateInfo & pCreateInfo )
+	{
+		Ic3UnusedParam( pCreateInfo );
 		return nullptr;
 	}
 
 	DepthStencilStateDescriptorHandle PipelineStateDescriptorFactoryNull::CreateDepthStencilStateDescriptor(
-			pipeline_state_descriptor_id_t pDescriptorID,
-			const DepthStencilConfig & pDepthStencilConfig )
+			const DepthStencilStateDescriptorCreateInfo & pCreateInfo )
 	{
-		Ic3UnusedParam( pDescriptorID );
-		Ic3UnusedParam( pDepthStencilConfig );
-		return nullptr;
-	}
-
-	MultiSamplingStateDescriptorHandle PipelineStateDescriptorFactoryNull::CreateMultiSamplingStateDescriptor(
-			pipeline_state_descriptor_id_t pDescriptorID,
-			const MultiSamplingConfig & pMultiSamplingConfig )
-	{
-		Ic3UnusedParam( pDescriptorID );
-		Ic3UnusedParam( pMultiSamplingConfig );
+		Ic3UnusedParam( pCreateInfo );
 		return nullptr;
 	}
 
 	RasterizerStateDescriptorHandle PipelineStateDescriptorFactoryNull::CreateRasterizerStateDescriptor(
-			pipeline_state_descriptor_id_t pDescriptorID,
-			const RasterizerConfig & pRasterizerConfig )
+			const RasterizerStateDescriptorCreateInfo & pCreateInfo )
 	{
-		Ic3UnusedParam( pDescriptorID );
-		Ic3UnusedParam( pRasterizerConfig );
+		Ic3UnusedParam( pCreateInfo );
 		return nullptr;
 	}
 
 	GraphicsShaderLinkageStateDescriptorHandle PipelineStateDescriptorFactoryNull::CreateGraphicsShaderLinkageStateDescriptor(
-			pipeline_state_descriptor_id_t pDescriptorID,
-			const GraphicsShaderBinding & pShaderBinding )
+			const GraphicsShaderLinkageStateDescriptorCreateInfo & pCreateInfo )
 	{
-		Ic3UnusedParam( pDescriptorID );
-		Ic3UnusedParam( pShaderBinding );
+		Ic3UnusedParam( pCreateInfo );
 		return nullptr;
 	}
 
-	IAInputLayoutStateDescriptorHandle PipelineStateDescriptorFactoryNull::CreateIAInputLayoutStateDescriptor(
-			pipeline_state_descriptor_id_t pDescriptorID,
-			const IAInputLayoutDefinition & pInputLayoutDefinition,
-			Shader & pVertexShaderWithBinary )
+	IAVertexAttributeLayoutStateDescriptorHandle PipelineStateDescriptorFactoryNull::CreateIAVertexAttributeLayoutStateDescriptor(
+			const IAVertexAttributeLayoutStateDescriptorCreateInfo & pCreateInfo )
 	{
-		Ic3UnusedParam( pDescriptorID );
-		Ic3UnusedParam( pInputLayoutDefinition );
-		Ic3UnusedParam( pVertexShaderWithBinary );
-		return nullptr;
-	}
-
-	IAVertexStreamStateDescriptorHandle PipelineStateDescriptorFactoryNull::CreateIAVertexStreamStateDescriptor(
-			pipeline_state_descriptor_id_t pDescriptorID,
-			const IAVertexStreamConfiguration & pVertexStreamDefinition )
-	{
-		Ic3UnusedParam( pDescriptorID );
-		Ic3UnusedParam( pVertexStreamDefinition );
-		return nullptr;
-	}
-
-	RenderPassConfigStateDescriptorHandle PipelineStateDescriptorFactoryNull::CreateRenderPassConfigStateDescriptor(
-			pipeline_state_descriptor_id_t pDescriptorID,
-			const RenderPassConfiguration & pPassConfiguration )
-	{
-		Ic3UnusedParam( pDescriptorID );
-		Ic3UnusedParam( pPassConfiguration );
+		Ic3UnusedParam( pCreateInfo );
 		return nullptr;
 	}
 
 	ShaderRootSignatureStateDescriptorHandle PipelineStateDescriptorFactoryNull::CreateShaderRootSignatureStateDescriptor(
-			pipeline_state_descriptor_id_t pDescriptorID,
-			const ShaderRootSignatureDesc & pRootSignatureDesc )
+			const ShaderRootSignatureStateDescriptorCreateInfo & pCreateInfo )
 	{
-		Ic3UnusedParam( pDescriptorID );
-		Ic3UnusedParam( pBlendConfig );
+		Ic3UnusedParam( pCreateInfo );
+		return nullptr;
+	}
+
+	IAVertexStreamBindingStateDescriptorHandle PipelineStateDescriptorFactoryNull::CreateIAVertexStreamBindingStateDescriptor(
+			const IAVertexStreamBindingStateDescriptorCreateInfo & pCreateInfo )
+	{
+		Ic3UnusedParam( pCreateInfo );
+		return nullptr;
+	}
+
+	RenderPassConfigurationStateDescriptorHandle PipelineStateDescriptorFactoryNull::CreateRenderPassConfigurationStateDescriptor(
+			const RenderPassConfigurationStateDescriptorCreateInfo & pCreateInfo )
+	{
+		Ic3UnusedParam( pCreateInfo );
 		return nullptr;
 	}
 

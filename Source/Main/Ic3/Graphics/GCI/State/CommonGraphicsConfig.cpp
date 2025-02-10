@@ -7,7 +7,7 @@ namespace Ic3::Graphics::GCI
 	namespace defaults
 	{
 
-		const RTColorAttachmentBlendSettings cvCommonRTColorAttachmentBlendSettingsDefault =
+		const RenderTargetColorAttachmentBlendSettings cvCommonRenderTargetColorAttachmentBlendSettingsDefault =
 		{
 				EBlendFactor::One,
 				EBlendFactor::One,
@@ -42,31 +42,31 @@ namespace Ic3::Graphics::GCI
 			0xFF
 		};
 
-		const BlendConfig cvPipelineBlendConfigDefault =
+		const BlendSettings cvPipelineBlendSettingsDefault =
 		{
 				eRTAttachmentFlagColor0Bit,
 				eBlendConfigMaskDefault,
 				{
-				cvCommonRTColorAttachmentBlendSettingsDefault
+				cvCommonRenderTargetColorAttachmentBlendSettingsDefault
 			},
 				Math::RGBAColorR32Norm{ 0.0f, 0.0f, 0.0f, 0.0f },
 		};
 
-		const DepthStencilConfig cvPipelineDepthStencilConfigDefault =
+		const DepthStencilSettings cvPipelineDepthStencilSettingsDefault =
 		{
 			0u,
 			cvCommonDepthTestSettingsDefault,
 			cvCommonStencilTestSettingsDefault
 		};
 
-		const DepthStencilConfig cvPipelineDepthStencilConfigEnableDepthTest =
+		const DepthStencilSettings cvPipelineDepthStencilSettingsEnableDepthTest =
 		{
 				eDepthStencilConfigFlagEnableDepthTestBit,
 				cvCommonDepthTestSettingsDefault,
 				cvCommonStencilTestSettingsDefault
 		};
 
-		const RasterizerConfig cvPipelineRasterizerConfigDefault =
+		const RasterizerSettings cvPipelineRasterizerSettingsDefault =
 		{
 			0u,
 			ECullMode::Back,

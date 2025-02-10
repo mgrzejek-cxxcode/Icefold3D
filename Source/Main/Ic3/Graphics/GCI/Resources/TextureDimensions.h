@@ -74,7 +74,7 @@ namespace Ic3::Graphics::GCI
 		uint32 depth;
 		/// Size of the texture array. Used for T2DArray and T2DMSArray textures. For other classes, this is always 1.
 		uint32 arraySize;
-		/// Number of mip levels within a single texture image/layer. Valid values are from 1 to GCM::cxTextureMaxMipLevelsNum.
+		/// Number of mip levels within a single texture image/layer. Valid values are from 1 to GCM::kTextureMaxMipLevelsNum.
 		uint32 mipLevelsNum;
 	};
 

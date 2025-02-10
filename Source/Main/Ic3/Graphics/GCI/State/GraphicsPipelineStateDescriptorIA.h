@@ -14,20 +14,20 @@ namespace Ic3::Graphics::GCI
 	 * Represents an IA input layout state (vertex attribute layout) for the graphics pipeline.
 	 * This descriptor is always an API-specific one (compiled), so there are no Compiled/Dynamic sub-classes.
 	 */
-	class IAInputLayoutStateDescriptor : public PipelineStateDescriptor
+	class IAVertexAttributeLayoutStateDescriptor : public PipelineStateDescriptor
 	{
 	public:
-		const IAInputLayoutCommonConfig & mCommonInputLayoutConfig;
+		const IAVertexAttributeLayoutCommonConfig & mCommonInputLayoutConfig;
 
 	public:
-		Ic3DeclareNonCopyable( IAInputLayoutStateDescriptor );
+		Ic3DeclareNonCopyable( IAVertexAttributeLayoutStateDescriptor );
 
-		IAInputLayoutStateDescriptor(
+		IAVertexAttributeLayoutStateDescriptor(
 				GPUDevice & pGPUDevice,
 				pipeline_state_descriptor_id_t pDescriptorID,
-				const IAInputLayoutCommonConfig & pCommonInputLayoutConfig );
+				const IAVertexAttributeLayoutCommonConfig & pCommonInputLayoutConfig );
 
-		virtual ~IAInputLayoutStateDescriptor();
+		virtual ~IAVertexAttributeLayoutStateDescriptor();
 
 		CPPX_ATTR_NO_DISCARD virtual EPipelineStateDescriptorType GetDescriptorType() const noexcept override final;
 	};
@@ -41,7 +41,7 @@ namespace Ic3::Graphics::GCI
 	class IAVertexStreamStateDescriptor : public PipelineStateDescriptor
 	{
 	public:
-		const IAVertexStreamCommonConfig & mCommonVertexStreamConfig;
+		const IAVertexStreamBindingCommonConfig & mCommonVertexStreamConfig;
 
 	public:
 		Ic3DeclareNonCopyable( IAVertexStreamStateDescriptor );
@@ -49,7 +49,7 @@ namespace Ic3::Graphics::GCI
 		IAVertexStreamStateDescriptor(
 				GPUDevice & pGPUDevice,
 				pipeline_state_descriptor_id_t pDescriptorID,
-				const IAVertexStreamCommonConfig & pCommonVertexStreamConfig );
+				const IAVertexStreamBindingCommonConfig & pCommonVertexStreamConfig );
 
 		virtual ~IAVertexStreamStateDescriptor();
 
@@ -84,13 +84,13 @@ namespace Ic3::Graphics::GCI
 
 		CPPX_ATTR_NO_DISCARD native_uint CountActiveVertexBuffers() const noexcept;
 
-		CPPX_ATTR_NO_DISCARD const IAVertexStreamConfiguration & GetStreamArrayConfiguration() const noexcept;
+		CPPX_ATTR_NO_DISCARD const IAVertexStreamBindingDefinition & GetStreamArrayConfiguration() const noexcept;
 
 		IAVertexBufferReference * UpdateActiveVertexBuffer( native_uint pVertexBufferIndex );
 
 		IAIndexBufferReference * UpdateActiveIndexBuffer();
 
-		void SetStreamArrayConfiguration( const IAVertexStreamConfiguration & pStreamArrayConfiguration );
+		void SetStreamArrayConfiguration( const IAVertexStreamBindingDefinition & pStreamArrayConfiguration );
 
 		void SetVertexBufferReference(
 				native_uint pVertexBufferIndex,
@@ -116,7 +116,7 @@ namespace Ic3::Graphics::GCI
 		void ResetIndexBufferReference();
 
 		TGfxHandle<IAVertexStreamStateDescriptorDynamic> CreateFromStreamArrayDefinition(
-				const IAVertexStreamConfiguration & pStreamArrayDefinition );
+				const IAVertexStreamBindingDefinition & pStreamArrayDefinition );
 
 	private:
 		IAVertexBufferReference * _SetVertexBufferActive( native_uint pVertexBufferIndex );
@@ -135,7 +135,7 @@ namespace Ic3::Graphics::GCI
 		void _ResetIndexBufferReference();
 
 	private:
-		IAVertexStreamConfiguration _vertexStreamConfiguration;
+		IAVertexStreamBindingDefinition _vertexStreamConfiguration;
 	};
 
 	/// namespace PIM: Private Implementation
@@ -146,17 +146,17 @@ namespace Ic3::Graphics::GCI
 		 * Represents an IA input data stream state which has been pre-processed and compiled into the API-specific representation.
 		 * @see IAVertexStreamStateDescriptor
 		 */
-		class IC3_GRAPHICS_GCI_CLASS IAInputLayoutStateDescriptorNative : public IAInputLayoutStateDescriptor
+		class IC3_GRAPHICS_GCI_CLASS IAVertexAttributeLayoutStateDescriptorNative : public IAVertexAttributeLayoutStateDescriptor
 		{
-			Ic3DeclareNonCopyable( IAInputLayoutStateDescriptorNative );
+			Ic3DeclareNonCopyable( IAVertexAttributeLayoutStateDescriptorNative );
 
 		public:
-			IAInputLayoutStateDescriptorNative(
+			IAVertexAttributeLayoutStateDescriptorNative(
 					GPUDevice & pGPUDevice,
 					pipeline_state_descriptor_id_t pDescriptorID,
-					const IAInputLayoutCommonConfig & pCommonInputLayoutConfig );
+					const IAVertexAttributeLayoutCommonConfig & pCommonInputLayoutConfig );
 
-			virtual ~IAInputLayoutStateDescriptorNative();
+			virtual ~IAVertexAttributeLayoutStateDescriptorNative();
 		};
 
 		/**
@@ -171,7 +171,7 @@ namespace Ic3::Graphics::GCI
 			IAVertexStreamStateDescriptorNative(
 					GPUDevice & pGPUDevice,
 					pipeline_state_descriptor_id_t pDescriptorID,
-					const IAVertexStreamCommonConfig & pCommonVertexStreamConfig );
+					const IAVertexStreamBindingCommonConfig & pCommonVertexStreamConfig );
 
 			virtual ~IAVertexStreamStateDescriptorNative();
 		};

@@ -61,7 +61,7 @@ namespace Ic3::Graphics::GCI
 	/// @namespace RCU
 	/// @brief Resource Utilities, used to interact with resources and provide additional, common functionalities.
 
-	/// @namespace SMU
+	/// @namespace GCU
 	/// @brief State Management Utilities, used to provide helper methods related to GPU state management.
 
 	// Same for all drivers. A top-level interface for querying capabilities and

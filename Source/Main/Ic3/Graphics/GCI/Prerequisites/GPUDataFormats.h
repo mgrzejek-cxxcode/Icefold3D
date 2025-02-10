@@ -302,7 +302,7 @@ namespace Ic3::Graphics::GCI
 
 	}
 
-	namespace SMU
+	namespace GCU
 	{
 
 		inline ETextureFormat GetTextureFormatForGraphicsPixelLayout( EPixelDataLayout pPixelLayout )

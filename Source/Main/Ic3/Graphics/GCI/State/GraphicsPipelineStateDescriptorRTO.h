@@ -12,35 +12,35 @@ namespace Ic3::Graphics::GCI
 
 	/**
 	 * Represents render pass configuration state that controls operations executed on RT attachments when an RP begins/ends.
-	 * @see RenderPassConfigStateDescriptorNative
-	 * @see RenderPassConfigStateDescriptorDynamic
+	 * @see RenderPassConfigurationStateDescriptorNative
+	 * @see RenderPassConfigurationStateDescriptorDynamic
 	 */
-	class RenderPassConfigStateDescriptor : public PipelineStateDescriptor
+	class RenderPassConfigurationStateDescriptor : public PipelineStateDescriptor
 	{
 	public:
-		RenderPassConfigStateDescriptor(
+		RenderPassConfigurationStateDescriptor(
 				GPUDevice & pGPUDevice,
 				pipeline_state_descriptor_id_t pDescriptorID );
 
-		virtual ~RenderPassConfigStateDescriptor();
+		virtual ~RenderPassConfigurationStateDescriptor();
 
 		CPPX_ATTR_NO_DISCARD virtual EPipelineStateDescriptorType GetDescriptorType() const noexcept override final;
 	};
 
 	/**
 	 * Represents a dynamic render pass configuration state (API-agnostic and modifiable)
-	 * @see RenderPassConfigStateDescriptor
+	 * @see RenderPassConfigurationStateDescriptor
 	 */
-	class RenderPassConfigStateDescriptorDynamic : public RenderPassConfigStateDescriptor
+	class RenderPassConfigurationStateDescriptorDynamic : public RenderPassConfigurationStateDescriptor
 	{
 	public:
-		Ic3DeclareNonCopyable( RenderPassConfigStateDescriptorDynamic );
+		Ic3DeclareNonCopyable( RenderPassConfigurationStateDescriptorDynamic );
 
-		RenderPassConfigStateDescriptorDynamic(
+		RenderPassConfigurationStateDescriptorDynamic(
 				GPUDevice & pGPUDevice,
 				pipeline_state_descriptor_id_t pDescriptorID = kPipelineStateDescriptorIDAuto );
 
-		~RenderPassConfigStateDescriptorDynamic();
+		~RenderPassConfigurationStateDescriptorDynamic();
 
 		/**
 		 * @see GraphicsPipelineStateDescriptor::IsDynamicDescriptor()
@@ -84,7 +84,7 @@ namespace Ic3::Graphics::GCI
 
 		void ResetDepthStencilAttachmentRef();
 
-		TGfxHandle<RenderPassConfigStateDescriptorDynamic> CreateFromPassConfiguration(
+		TGfxHandle<RenderPassConfigurationStateDescriptorDynamic> CreateFromPassConfiguration(
 				const RenderPassConfiguration & pRenderPassConfiguration );
 
 	private:
@@ -115,22 +115,22 @@ namespace Ic3::Graphics::GCI
 		 * Represents a static render pass configuration state for APIs without explicit support for render passes functionality.
 		 * This type of RP descriptor simply wraps RenderPassConfiguration object, used to execute required attachments actions.
 		 * @note This descriptor type is created automatically by compatible APIs when an RP descriptor is requested.
-		 * @see RenderPassConfigStateDescriptor
+		 * @see RenderPassConfigurationStateDescriptor
 		 */
-		class RenderPassConfigStateDescriptorGeneric : public RenderPassConfigStateDescriptor
+		class RenderPassConfigurationStateDescriptorGeneric : public RenderPassConfigurationStateDescriptor
 		{
 		public:
 			RenderPassConfiguration const mPassConfiguration;
 
 		public:
-			RenderPassConfigStateDescriptorGeneric(
+			RenderPassConfigurationStateDescriptorGeneric(
 					GPUDevice & pGPUDevice,
 					pipeline_state_descriptor_id_t pDescriptorID,
 					const RenderPassConfiguration & pPassConfiguration );
 
-			virtual ~RenderPassConfigStateDescriptorGeneric();
+			virtual ~RenderPassConfigurationStateDescriptorGeneric();
 
-			static TGfxHandle<RenderPassConfigStateDescriptorGeneric> CreateFromPassConfiguration(
+			static TGfxHandle<RenderPassConfigurationStateDescriptorGeneric> CreateFromPassConfiguration(
 					GPUDevice & pGPUDevice,
 					const RenderPassConfiguration & pPassConfiguration,
 					pipeline_state_descriptor_id_t pDescriptorID = kPipelineStateDescriptorIDAuto );
@@ -139,18 +139,18 @@ namespace Ic3::Graphics::GCI
 		/**
 		 * Represents a static render pass configuration state translated into the API-specific format.
 		 * @note This descriptor type is created automatically by compatible APIs when an RP descriptor is requested.
-		 * @see RenderPassConfigStateDescriptor
+		 * @see RenderPassConfigurationStateDescriptor
 		 */
-		class RenderPassConfigStateDescriptorNative : public RenderPassConfigStateDescriptor
+		class RenderPassConfigurationStateDescriptorNative : public RenderPassConfigurationStateDescriptor
 		{
-			Ic3DeclareNonCopyable( RenderPassConfigStateDescriptorNative );
+			Ic3DeclareNonCopyable( RenderPassConfigurationStateDescriptorNative );
 
 		public:
-			RenderPassConfigStateDescriptorNative(
+			RenderPassConfigurationStateDescriptorNative(
 					GPUDevice & pGPUDevice,
 					pipeline_state_descriptor_id_t pDescriptorID );
 
-			virtual ~RenderPassConfigStateDescriptorNative();
+			virtual ~RenderPassConfigurationStateDescriptorNative();
 		};
 
 	} // namespace PIM

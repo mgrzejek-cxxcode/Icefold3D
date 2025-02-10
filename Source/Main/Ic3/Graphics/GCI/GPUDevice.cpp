@@ -5,9 +5,9 @@
 #include "PresentationLayer.h"
 #include "Resources/Texture.h"
 #include "Resources/RenderTargetTexture.h"
-#include "State/GraphicsShaderLinkageImmutableState.h"
-#include "State/PipelineStateObject.h"
-#include "State/PipelineImmutableStateCache.h"
+#include "State/GraphicsPipelineStateDescriptorShader.h"
+#include "State/GraphicsPipelineStateCommon.h"
+#include "State/PipelineStateDescriptorManager.h"
 
 namespace Ic3::Graphics::GCI
 {
@@ -22,9 +22,9 @@ namespace Ic3::Graphics::GCI
 
 	enum EGPUDeviceInternalStateFlags : uint32
 	{
-		E_GPU_DEVICE_INTERNAL_STATE_FLAG_DEBUG_DEVICE_BIT = 0x0001,
-		E_GPU_DEVICE_INTERNAL_STATE_FLAG_MULTI_THREAD_ACCESS_BIT = 0x0002,
-		E_GPU_DEVICE_INTERNAL_STATE_FLAG_ENABLE_RESOURCE_ACTIVE_REFS_TRACKING_BIT = 0x0008
+		EGPUDeviceInternalStateFlagDebugDeviceBit = 0x0001,
+		EGPUDeviceInternalStateFlagMultiThreadAccessBit = 0x0002,
+		EGPUDeviceInternalStateFlagEnableResourceActiveRefsTrackingBit = 0x0008
 	};
 
 	
@@ -35,7 +35,7 @@ namespace Ic3::Graphics::GCI
 	{
 		if( pDriver.IsDebugFunctionalityRequested() )
 		{
-			_internalStateFlags.set( E_GPU_DEVICE_INTERNAL_STATE_FLAG_DEBUG_DEVICE_BIT );
+			_internalStateFlags.set( EGPUDeviceInternalStateFlagDebugDeviceBit );
 		}
 	}
 
@@ -48,27 +48,22 @@ namespace Ic3::Graphics::GCI
 
 	bool GPUDevice::IsDebugDevice() const noexcept
 	{
-		return _internalStateFlags.is_set( E_GPU_DEVICE_INTERNAL_STATE_FLAG_DEBUG_DEVICE_BIT );
+		return _internalStateFlags.is_set( EGPUDeviceInternalStateFlagDebugDeviceBit );
 	}
 
 	bool GPUDevice::IsMultiThreadAccessSupported() const noexcept
 	{
-		return _internalStateFlags.is_set( E_GPU_DEVICE_INTERNAL_STATE_FLAG_MULTI_THREAD_ACCESS_BIT );
+		return _internalStateFlags.is_set( EGPUDeviceInternalStateFlagMultiThreadAccessBit );
 	}
 
 	bool GPUDevice::IsResourceActiveRefsTrackingEnabled() const noexcept
 	{
-		return _internalStateFlags.is_set( E_GPU_DEVICE_INTERNAL_STATE_FLAG_ENABLE_RESOURCE_ACTIVE_REFS_TRACKING_BIT );
+		return _internalStateFlags.is_set( EGPUDeviceInternalStateFlagEnableResourceActiveRefsTrackingBit );
 	}
 
 	CommandSystem & GPUDevice::GetCommandSystem() const noexcept
 	{
 		return *_commandSystem;
-	}
-
-	PipelineImmutableStateFactory & GPUDevice::GetPipelineStateFactory() const noexcept
-	{
-		return *_immutableStateFactoryBase;
 	}
 
 	PresentationLayer * GPUDevice::GetPresentationLayer() const noexcept
@@ -157,99 +152,170 @@ namespace Ic3::Graphics::GCI
 		return _DrvCreateRenderTargetTexture( pCreateInfo );
 	}
 
-	GraphicsPipelineStateObjectHandle GPUDevice::CreateGraphicsPipelineStateObject( const GraphicsPipelineStateObjectCreateInfo & pCreateInfo )
+	GraphicsPipelineStateObjectHandle GPUDevice::CreateGraphicsPipelineStateObject(
+			const GraphicsPipelineStateObjectCreateInfo & pCreateInfo )
 	{
-		if( pCreateInfo.renderTargetLayout.IsEmpty() )
+		GraphicsPipelineStateObjectCreateInfo psoCreateInfo{};
+
 		{
-			return nullptr;
+			if( pCreateInfo.renderTargetLayout.IsEmpty() )
+			{
+				return nullptr;
+			}
+			psoCreateInfo.renderTargetLayout = pCreateInfo.renderTargetLayout;
 		}
 
-		if( !pCreateInfo.shaderInputSignature )
 		{
-			pCreateInfo.shaderInputSignature = SMU::CreateShaderInputSignature( pCreateInfo.shaderInputSignatureDesc );
+			auto blendStateDescriptor = pCreateInfo.blendStateDescriptor;
+			if( !blendStateDescriptor && CXU::IsPipelineStateDescriptorIDValid( pCreateInfo.blendStateDescriptorID ) )
+			{
+				blendStateDescriptor =
+					_pipelineStateDescriptorManager->GetCachedDescriptorByID<BlendStateDescriptor>(
+						pCreateInfo.depthStencilStateDescriptorID );
+
+				if( !blendStateDescriptor )
+				{
+					return nullptr;
+				}
+			}
+			psoCreateInfo.blendStateDescriptor = blendStateDescriptor;
 		}
 
-		if( !pCreateInfo.blendState )
 		{
-			pCreateInfo.blendState = _immutableStateFactoryBase->CreateBlendState( pCreateInfo.blendConfig );
+			auto depthStencilStateDescriptor = pCreateInfo.depthStencilStateDescriptor;
+			if( !depthStencilStateDescriptor && CXU::IsPipelineStateDescriptorIDValid( pCreateInfo.depthStencilStateDescriptorID ) )
+			{
+				depthStencilStateDescriptor =
+					_pipelineStateDescriptorManager->GetCachedDescriptorByID<DepthStencilStateDescriptor>(
+						pCreateInfo.depthStencilStateDescriptorID );
+
+				if( !depthStencilStateDescriptor )
+				{
+					return nullptr;
+				}
+			}
+			psoCreateInfo.depthStencilStateDescriptor = depthStencilStateDescriptor;
 		}
 
-		if( !pCreateInfo.depthStencilState )
 		{
-			pCreateInfo.depthStencilState = _immutableStateFactoryBase->CreateDepthStencilState( pCreateInfo.depthStencilConfig );
+			auto rasterizerStateDescriptor = pCreateInfo.rasterizerStateDescriptor;
+			if( !rasterizerStateDescriptor && CXU::IsPipelineStateDescriptorIDValid( pCreateInfo.rasterizerStateDescriptorID ) )
+			{
+				rasterizerStateDescriptor =
+					_pipelineStateDescriptorManager->GetCachedDescriptorByID<RasterizerStateDescriptor>(
+						pCreateInfo.rasterizerStateDescriptorID );
+
+				if( !rasterizerStateDescriptor )
+				{
+					return nullptr;
+				}
+			}
+			psoCreateInfo.rasterizerStateDescriptor = rasterizerStateDescriptor;
 		}
 
-		if( !pCreateInfo.rasterizerState )
 		{
-			pCreateInfo.rasterizerState = _immutableStateFactoryBase->CreateRasterizerState( pCreateInfo.rasterizerConfig );
+			auto shaderLinkageStateDescriptor = pCreateInfo.shaderLinkageStateDescriptor;
+			if( !shaderLinkageStateDescriptor && CXU::IsPipelineStateDescriptorIDValid( pCreateInfo.shaderLinkageStateDescriptorID ) )
+			{
+				shaderLinkageStateDescriptor =
+					_pipelineStateDescriptorManager->GetCachedDescriptorByID<GraphicsShaderLinkageStateDescriptor>(
+						pCreateInfo.shaderLinkageStateDescriptorID );
+
+				if( !shaderLinkageStateDescriptor )
+				{
+					return nullptr;
+				}
+			}
+			psoCreateInfo.shaderLinkageStateDescriptor = shaderLinkageStateDescriptor;
 		}
 
-		if( !pCreateInfo.shaderLinkageState )
 		{
-			pCreateInfo.shaderLinkageState = _immutableStateFactoryBase->CreateGraphicsShaderLinkageState( pCreateInfo.shaderSet );
+			auto vertexAttributeLayoutStateDescriptor = pCreateInfo.vertexAttributeLayoutStateDescriptor;
+			if( !vertexAttributeLayoutStateDescriptor && CXU::IsPipelineStateDescriptorIDValid( pCreateInfo.vertexAttributeLayoutStateDescriptorID ) )
+			{
+				vertexAttributeLayoutStateDescriptor =
+					_pipelineStateDescriptorManager->GetCachedDescriptorByID<IAVertexAttributeLayoutStateDescriptor>(
+						pCreateInfo.vertexAttributeLayoutStateDescriptorID );
+
+				if( !vertexAttributeLayoutStateDescriptor )
+				{
+					return nullptr;
+				}
+			}
+			psoCreateInfo.vertexAttributeLayoutStateDescriptor = vertexAttributeLayoutStateDescriptor;
 		}
 
-		if( !pCreateInfo.inputLayoutState )
 		{
-			auto * vertexShader = pCreateInfo.shaderLinkageState->GetShader( EShaderType::GSVertex );
-			pCreateInfo.inputLayoutState = _immutableStateFactoryBase->CreateIAInputLayoutState( pCreateInfo.inputLayoutDefinition, *vertexShader );
+			auto shaderRootSignatureStateDescriptor = pCreateInfo.shaderRootSignatureStateDescriptor;
+			if( !shaderRootSignatureStateDescriptor && CXU::IsPipelineStateDescriptorIDValid( pCreateInfo.shaderRootSignatureStateDescriptorID ) )
+			{
+				shaderRootSignatureStateDescriptor =
+					_pipelineStateDescriptorManager->GetCachedDescriptorByID<ShaderRootSignatureStateDescriptor>(
+						pCreateInfo.shaderRootSignatureStateDescriptorID );
+
+				if( !shaderRootSignatureStateDescriptor )
+				{
+					return nullptr;
+				}
+			}
+			psoCreateInfo.shaderRootSignatureStateDescriptor = shaderRootSignatureStateDescriptor;
 		}
 
 		return _DrvCreateGraphicsPipelineStateObject( pCreateInfo );
 	}
-
-	BlendImmutableStateHandle GPUDevice::CreateBlendImmutableState( const BlendConfig & pConfig )
+	
+	BlendStateDescriptorHandle GPUDevice::CreateBlendStateDescriptor(
+			const BlendStateDescriptorCreateInfo & pCreateInfo )
 	{
-		Ic3DebugAssert( _immutableStateFactoryBase );
-		return _immutableStateFactoryBase->CreateBlendState( pConfig );
+		return _pipelineStateDescriptorManager->CreateBlendStateDescriptor( pCreateInfo );
 	}
 
-	DepthStencilImmutableStateHandle GPUDevice::CreateDepthStencilImmutableState( const DepthStencilConfig & pConfig )
+	DepthStencilStateDescriptorHandle GPUDevice::CreateDepthStencilStateDescriptor(
+			const DepthStencilStateDescriptorCreateInfo & pCreateInfo )
 	{
-		Ic3DebugAssert( _immutableStateFactoryBase );
-		return _immutableStateFactoryBase->CreateDepthStencilState( pConfig );
+		return _pipelineStateDescriptorManager->CreateDepthStencilStateDescriptor( pCreateInfo );
 	}
 
-	GraphicsShaderLinkageImmutableStateHandle GPUDevice::CreateGraphicsShaderLinkageImmutableState( const GraphicsShaderSet & pShaderSet )
+	RasterizerStateDescriptorHandle GPUDevice::CreateRasterizerStateDescriptor(
+			const RasterizerStateDescriptorCreateInfo & pCreateInfo )
 	{
-		Ic3DebugAssert( _immutableStateFactoryBase );
-		return _immutableStateFactoryBase->CreateGraphicsShaderLinkageState( pShaderSet );
+		return _pipelineStateDescriptorManager->CreateRasterizerStateDescriptor( pCreateInfo );
 	}
 
-	IAInputLayoutImmutableStateHandle GPUDevice::CreateIAInputLayoutImmutableState( const IAInputLayoutDefinition & pDefinition, Shader & pVertexShaderWithBinary )
+	GraphicsShaderLinkageStateDescriptorHandle GPUDevice::CreateGraphicsShaderLinkageStateDescriptor(
+			const GraphicsShaderLinkageStateDescriptorCreateInfo & pCreateInfo )
 	{
-		Ic3DebugAssert( _immutableStateFactoryBase );
-		return _immutableStateFactoryBase->CreateIAInputLayoutState( pDefinition, pVertexShaderWithBinary );
+		return _pipelineStateDescriptorManager->CreateGraphicsShaderLinkageStateDescriptor( pCreateInfo );
 	}
 
-	IAVertexStreamImmutableStateHandle GPUDevice::CreateIAVertexStreamImmutableState( const IAVertexStreamDefinition & pDefinition )
+	IAVertexAttributeLayoutStateDescriptorHandle GPUDevice::CreateIAVertexAttributeLayoutStateDescriptor(
+			const IAVertexAttributeLayoutStateDescriptorCreateInfo & pCreateInfo )
 	{
-		Ic3DebugAssert( _immutableStateFactoryBase );
-		return _immutableStateFactoryBase->CreateIAVertexStreamState( pDefinition );
+		return _pipelineStateDescriptorManager->CreateIAVertexAttributeLayoutStateDescriptor( pCreateInfo );
 	}
 
-	RasterizerImmutableStateHandle GPUDevice::CreateRasterizerImmutableState( const RasterizerConfig & pConfig )
+	ShaderRootSignatureStateDescriptorHandle GPUDevice::CreateShaderRootSignatureStateDescriptor(
+			const ShaderRootSignatureStateDescriptorCreateInfo & pCreateInfo )
 	{
-		Ic3DebugAssert( _immutableStateFactoryBase );
-		return _immutableStateFactoryBase->CreateRasterizerState( pConfig );
+		return _pipelineStateDescriptorManager->CreateShaderRootSignatureStateDescriptor( pCreateInfo );
 	}
 
-	RenderTargetBindingImmutableStateHandle GPUDevice::CreateRenderTargetBindingImmutableState( const RenderTargetBindingDefinition & pDefinition )
+	IAVertexStreamBindingStateDescriptorHandle GPUDevice::CreateIAVertexStreamBindingStateDescriptor(
+			const IAVertexStreamBindingStateDescriptorCreateInfo & pCreateInfo )
 	{
-		Ic3DebugAssert( _immutableStateFactoryBase );
-		return _immutableStateFactoryBase->CreateRenderTargetBindingState( pDefinition );
+		return _pipelineStateDescriptorManager->CreateIAVertexStreamBindingStateDescriptor( pCreateInfo );
 	}
 
-	RenderPassConfigurationImmutableStateHandle GPUDevice::CreateRenderPassConfigurationImmutableState( const RenderPassConfiguration & pConfiguration )
+	RenderPassConfigurationStateDescriptorHandle GPUDevice::CreateRenderPassConfigurationStateDescriptor(
+			const RenderPassConfigurationStateDescriptorCreateInfo & pCreateInfo )
 	{
-		Ic3DebugAssert( _immutableStateFactoryBase );
-		return _immutableStateFactoryBase->CreateRenderPassState( pConfiguration.GetValidated() );
+		return _pipelineStateDescriptorManager->CreateRenderPassConfigurationStateDescriptor( pCreateInfo );
 	}
 
-	void GPUDevice::ResetImmutableStateCache( cppx::bitmask<EPipelineImmutableStateTypeFlags> pResetMask )
+	void GPUDevice::ResetStateDescriptorCache( cppx::bitmask<EPipelineStateDescriptorTypeFlags> pResetMask )
 	{
-		Ic3DebugAssert( _immutableStateCachePtr );
-		_immutableStateCachePtr->Reset( pResetMask );
+		Ic3DebugAssert( _pipelineStateDescriptorManager );
+		_pipelineStateDescriptorManager->Reset( pResetMask );
 	}
 
 	void GPUDevice::SetPresentationLayer( PresentationLayerHandle pPresentationLayer )
@@ -272,10 +338,19 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	void GPUDevice::SetImmutableStateCache( SharedImmutableStateCache & pStateCache )
+	bool GPUDevice::InitializePipelineStateDescriptorManager( PipelineStateDescriptorFactory & pDescriptorFactory )
 	{
-		_immutableStateCachePtr = &pStateCache;
-		_immutableStateFactoryBase = &( pStateCache.mStateFactory );
+		Ic3DebugAssert( !_pipelineStateDescriptorManager );
+
+		_pipelineStateDescriptorManager = std::make_unique<PipelineStateDescriptorManager>( *this, pDescriptorFactory );
+		if( _pipelineStateDescriptorManager->CreateDefaultStateDescriptors() )
+		{
+			return true;
+		}
+
+		_pipelineStateDescriptorManager.reset();
+
+		return false;
 	}
 
 	bool GPUDevice::_DrvOnSetPresentationLayer( PresentationLayerHandle pPresentationLayer )

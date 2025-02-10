@@ -40,7 +40,7 @@ namespace Ic3::Graphics::GCI
 
 	bool RenderTargetTexture::IsDepthStencilTexture() const noexcept
 	{
-		return mRTBufferMask.is_set_any_of( E_RENDER_TARGET_BUFFER_MASK_DEPTH_STENCIL );
+		return mRTBufferMask.is_set_any_of( ERenderTargetBufferMaskDepthStencil );
 	}
 
 	bool RenderTargetTexture::IsDepthStencilRenderBuffer() const noexcept

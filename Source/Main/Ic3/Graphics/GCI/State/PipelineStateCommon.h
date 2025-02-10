@@ -9,35 +9,6 @@
 namespace Ic3::Graphics::GCI
 {
 
-	using pipeline_state_descriptor_id_t = uint16;
-	using pipeline_state_object_id_t = uint64;
-
-	enum class EPipelineStateDescriptorType : uint16
-	{
-		//!! Embedded within the PSO, created solely on the HW3D API level.
-
-		//
-		DTBlend,
-		DTDepthStencil,
-		DTMultiSampling,
-		DTRasterizer,
-		DTGraphicsShaderLinkage,
-		DTIAInputLayout,
-		DTShaderRootSignature,
-
-		//!! Not included in the PSO, can be either API-native or dynamic.
-
-		//
-		DTIAVertexStream,
-		DTRenderPassConfig,
-
-		Unknown
-	};
-
-	inline constexpr auto kPipelineStateDescriptorIDAuto = static_cast<pipeline_state_descriptor_id_t>( 0u );
-
-	inline constexpr auto kPipelineStateDescriptorIDInvalid = cppx::meta::limits<pipeline_state_descriptor_id_t>::max_value;
-
 	/*
 	 *
 	 */
@@ -62,7 +33,7 @@ namespace Ic3::Graphics::GCI
 		 * that does not contain any API-specific properties (i.e. it is defined fully at the GCI abstraction level).
 		 * The following classes are implementations of dynamic descriptors:
 		 * - IAVertexStreamStateDescriptorDynamic
-		 * - RenderPassConfigStateDescriptorDynamic
+		 * - RenderPassConfigurationStateDescriptorDynamic
 		 * - RenderTargetBindingStateDescriptorDynamic
 		 * @return
 		 */
@@ -100,42 +71,31 @@ namespace Ic3::Graphics::GCI
 		PipelineStateDescriptorFactory() = default;
 		virtual ~PipelineStateDescriptorFactory() = default;
 
+		virtual GPUDevice & GetGPUDevice() const noexcept = 0;
+
 		virtual BlendStateDescriptorHandle CreateBlendStateDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
-				const BlendConfig & pBlendConfig ) = 0;
+				const BlendStateDescriptorCreateInfo & pCreateInfo ) = 0;
 
 		virtual DepthStencilStateDescriptorHandle CreateDepthStencilStateDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
-				const DepthStencilConfig & pDepthStencilConfig ) = 0;
-
-		virtual MultiSamplingStateDescriptorHandle CreateMultiSamplingStateDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
-				const MultiSamplingConfig & pMultiSamplingConfig ) = 0;
+				const DepthStencilStateDescriptorCreateInfo & pCreateInfo ) = 0;
 
 		virtual RasterizerStateDescriptorHandle CreateRasterizerStateDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
-				const RasterizerConfig & pRasterizerConfig ) = 0;
+				const RasterizerStateDescriptorCreateInfo & pCreateInfo ) = 0;
 
 		virtual GraphicsShaderLinkageStateDescriptorHandle CreateGraphicsShaderLinkageStateDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
-				const GraphicsShaderBinding & pShaderBinding ) = 0;
+				const GraphicsShaderLinkageStateDescriptorCreateInfo & pCreateInfo ) = 0;
 
-		virtual IAInputLayoutStateDescriptorHandle CreateIAInputLayoutStateDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
-				const IAInputLayoutDefinition & pDefinition,
-				Shader & pVertexShaderWithBinary ) = 0;
-
-		virtual IAVertexStreamStateDescriptorHandle CreateIAVertexStreamStateDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
-				const IAVertexStreamConfiguration & pDefinition ) = 0;
-
-		virtual RenderPassConfigStateDescriptorHandle CreateRenderPassConfigStateDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
-				const RenderPassConfiguration & pPassConfiguration ) = 0;
+		virtual IAVertexAttributeLayoutStateDescriptorHandle CreateIAVertexAttributeLayoutStateDescriptor(
+				const IAVertexAttributeLayoutStateDescriptorCreateInfo & pCreateInfo ) = 0;
 
 		virtual ShaderRootSignatureStateDescriptorHandle CreateShaderRootSignatureStateDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
-				const ShaderRootSignatureDesc & pRootSignatureDesc ) = 0;
+				const ShaderRootSignatureStateDescriptorCreateInfo & pCreateInfo) = 0;
+
+		virtual IAVertexStreamBindingStateDescriptorHandle CreateIAVertexStreamBindingStateDescriptor(
+				const IAVertexStreamBindingStateDescriptorCreateInfo & pCreateInfo ) = 0;
+
+		virtual RenderPassConfigurationStateDescriptorHandle CreateRenderPassConfigurationStateDescriptor(
+				const RenderPassConfigurationStateDescriptorCreateInfo & pCreateInfo ) = 0;
 	};
 
 	/**
@@ -147,42 +107,31 @@ namespace Ic3::Graphics::GCI
 		PipelineStateDescriptorFactoryNull() = default;
 		virtual ~PipelineStateDescriptorFactoryNull() = default;
 
+		virtual GPUDevice & GetGPUDevice() const noexcept override final;
+
 		virtual BlendStateDescriptorHandle CreateBlendStateDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
-				const BlendConfig & pBlendConfig ) override final;
+				const BlendStateDescriptorCreateInfo & pCreateInfo ) override final;
 
 		virtual DepthStencilStateDescriptorHandle CreateDepthStencilStateDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
-				const DepthStencilConfig & pDepthStencilConfig ) override final;
-
-		virtual MultiSamplingStateDescriptorHandle CreateMultiSamplingStateDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
-				const MultiSamplingConfig & pMultiSamplingConfig ) override final;
+				const DepthStencilStateDescriptorCreateInfo & pCreateInfo ) override final;
 
 		virtual RasterizerStateDescriptorHandle CreateRasterizerStateDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
-				const RasterizerConfig & pRasterizerConfig ) override final;
+				const RasterizerStateDescriptorCreateInfo & pCreateInfo ) override final;
 
 		virtual GraphicsShaderLinkageStateDescriptorHandle CreateGraphicsShaderLinkageStateDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
-				const GraphicsShaderBinding & pShaderBinding ) override final;
+				const GraphicsShaderLinkageStateDescriptorCreateInfo & pCreateInfo ) override final;
 
-		virtual IAInputLayoutStateDescriptorHandle CreateIAInputLayoutStateDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
-				const IAInputLayoutDefinition & pInputLayoutDefinition,
-				Shader & pVertexShaderWithBinary ) override final;
-
-		virtual IAVertexStreamStateDescriptorHandle CreateIAVertexStreamStateDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
-				const IAVertexStreamConfiguration & pVertexStreamDefinition ) override final;
-
-		virtual RenderPassConfigStateDescriptorHandle CreateRenderPassConfigStateDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
-				const RenderPassConfiguration & pPassConfiguration ) override final;
+		virtual IAVertexAttributeLayoutStateDescriptorHandle CreateIAVertexAttributeLayoutStateDescriptor(
+				const IAVertexAttributeLayoutStateDescriptorCreateInfo & pCreateInfo ) override final;
 
 		virtual ShaderRootSignatureStateDescriptorHandle CreateShaderRootSignatureStateDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
-				const ShaderRootSignatureDesc & pRootSignatureDesc ) override final;
+				const ShaderRootSignatureStateDescriptorCreateInfo & pCreateInfo ) override final;
+
+		virtual IAVertexStreamBindingStateDescriptorHandle CreateIAVertexStreamBindingStateDescriptor(
+				const IAVertexStreamBindingStateDescriptorCreateInfo & pCreateInfo ) override final;
+
+		virtual RenderPassConfigurationStateDescriptorHandle CreateRenderPassConfigurationStateDescriptor(
+				const RenderPassConfigurationStateDescriptorCreateInfo & pCreateInfo ) override final;
 	};
 
 } // namespace Ic3::Graphics::GCI

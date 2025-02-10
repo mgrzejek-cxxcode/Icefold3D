@@ -64,9 +64,9 @@ namespace Ic3::Graphics::GCI
 
 		/// An offset of the attribute from the start of the vertex data.
 		/// VERTEX_ATTRIBUTE_OFFSET_APPEND can be specified if the attribute is placed directly after previous one.
-		uint16 relativeOffset;
+		uint16 relativeOffset = 0;
 
-		uint16 instanceRate;
+		uint16 instanceRate = 0;
 
 		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept
 		{
@@ -93,7 +93,7 @@ namespace Ic3::Graphics::GCI
 	/**
 	 *
 	 */
-	struct IAInputLayoutCommonConfig
+	struct IAVertexAttributeLayoutCommonConfig
 	{
 		/**
 		 * Active attributes mask. It contains all bits corresponding to attributes active as part of this descriptor.
@@ -104,13 +104,13 @@ namespace Ic3::Graphics::GCI
 		/**
 		 * Number of active attributes enabled for the IA stage.
 		 */
-		native_uint activeAttributesNum;
+		native_uint activeAttributesNum = 0;
 
 		/**
 		 * Primitive topology used to render vertices.
 		 * @see EPrimitiveTopology
 		 */
-		EPrimitiveTopology primitiveTopology;
+		EPrimitiveTopology primitiveTopology = EPrimitiveTopology::Undefined;
 
 		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept
 		{
@@ -138,7 +138,7 @@ namespace Ic3::Graphics::GCI
 	/**
 	 *
 	 */
-	struct IAInputLayoutDefinition : public IAInputLayoutCommonConfig
+	struct IAVertexAttributeLayoutDefinition : public IAVertexAttributeLayoutCommonConfig
 	{
 		IAVertexAttributeInfoArray attributeArray;
 
@@ -156,7 +156,7 @@ namespace Ic3::Graphics::GCI
 	struct IAVertexStreamBufferReference
 	{
 		GPUBufferReference sourceBuffer;
-		gpu_memory_size_t relativeOffset;
+		gpu_memory_size_t relativeOffset = 0;
 
 		explicit operator bool() const noexcept
 		{
@@ -185,7 +185,7 @@ namespace Ic3::Graphics::GCI
 	 */
 	struct IAIndexBufferRefParams
 	{
-		EIndexDataFormat indexFormat;
+		EIndexDataFormat indexFormat = EIndexDataFormat::Undefined;
 	};
 
 	/**
@@ -201,7 +201,7 @@ namespace Ic3::Graphics::GCI
 	 */
 	struct IAVertexBufferRefParams
 	{
-		gpu_memory_size_t vertexStride;
+		gpu_memory_size_t vertexStride = 0;
 	};
 
 	/**
@@ -218,11 +218,11 @@ namespace Ic3::Graphics::GCI
 	/**
 	 *
 	 */
-	struct IAVertexStreamCommonConfig
+	struct IAVertexStreamBindingCommonConfig
 	{
 		cppx::bitmask<EIAVertexStreamBindingFlags> activeStreamsMask;
 
-		uint32 activeStreamsNum;
+		uint32 activeStreamsNum = 0;
 
 		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept
 		{
@@ -250,7 +250,7 @@ namespace Ic3::Graphics::GCI
 	/**
 	 *
 	 */
-	struct IAVertexStreamConfiguration : public IAVertexStreamCommonConfig
+	struct IAVertexStreamBindingDefinition : public IAVertexStreamBindingCommonConfig
 	{
 		IAVertexStreamVertexBufferReferenceArray vertexBufferReferences;
 
@@ -265,6 +265,28 @@ namespace Ic3::Graphics::GCI
 			indexBufferReference.Reset();
 
 			ResetActiveStreamsInfo();
+		}
+	};
+
+	struct IAVertexAttributeLayoutStateDescriptorCreateInfo : public PipelineStateDescriptorCreateInfoBase
+	{
+		IAVertexAttributeLayoutDefinition layoutDefinition;
+
+		Shader * vertexShaderWithBinary = nullptr;
+
+		CPPX_ATTR_NO_DISCARD pipeline_config_hash_t GetConfigHash() const noexcept
+		{
+			return cppx::hash_compute<pipeline_config_hash_t::hash_algo>( layoutDefinition );
+		}
+	};
+
+	struct IAVertexStreamBindingStateDescriptorCreateInfo : public PipelineStateDescriptorCreateInfoBase
+	{
+		IAVertexStreamBindingDefinition bindingDefinition;
+
+		CPPX_ATTR_NO_DISCARD pipeline_config_hash_t GetConfigHash() const noexcept
+		{
+			return cppx::hash_compute<pipeline_config_hash_t::hash_algo>( bindingDefinition );
 		}
 	};
 
