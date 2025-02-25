@@ -20,10 +20,10 @@ namespace Ic3::Graphics::GCI
 	: DXGPUDevice( pDriver, ATL::QueryDXGIFactoryForD3D11Device( pD3D11Device1 ) )
 	, mD3D11Device1( std::move( pD3D11Device1 ) )
 	, mD3D11DebugInterface( std::move( pD3D11Debug ) )
-	, _immutableStateFactoryDX11( *this )
-	, _immutableStateCache( _immutableStateFactoryDX11 )
+	, _immutableDescriptorFactoryDX11( *this )
+	, _stateDescriptorCache( _immutableDescriptorFactoryDX11 )
 	{
-		SetImmutableStateCache( _immutableStateCache );
+		SetCompiledStateCache( _stateDescriptorCache );
 	}
 
 	DX11GPUDevice::~DX11GPUDevice() = default;

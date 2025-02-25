@@ -1,8 +1,8 @@
 
 #pragma once
 
-#ifndef __IC3_GRAPHICS_HW3D_GLCOMMON_SHADER_COMMON_H__
-#define __IC3_GRAPHICS_HW3D_GLCOMMON_SHADER_COMMON_H__
+#ifndef __IC3_GRAPHICS_HW3D_GLC_SHADER_COMMON_H__
+#define __IC3_GRAPHICS_HW3D_GLC_SHADER_COMMON_H__
 
 #include "../GLPrerequisites.h"
 #include <map>
@@ -36,4 +36,4 @@ namespace Ic3::Graphics::GCI
 
 } // namespace Ic3::Graphics::GCI
 
-#endif // __IC3_GRAPHICS_HW3D_GLCOMMON_SHADER_COMMON_H__
+#endif // __IC3_GRAPHICS_HW3D_GLC_SHADER_COMMON_H__

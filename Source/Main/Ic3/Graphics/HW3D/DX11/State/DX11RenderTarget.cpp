@@ -8,38 +8,38 @@
 namespace Ic3::Graphics::GCI
 {
 
-	DX11RenderTargetBindingImmutableState::DX11RenderTargetBindingImmutableState(
+	DX11RenderTargetBindingCompiledState::DX11RenderTargetBindingCompiledState(
 			DX11GPUDevice & pGPUDevice,
 			const RenderTargetLayout & pRenderTargetLayout,
-			DX11RenderTargetBindingData pDX11RTBindingData )
-	: RenderTargetBindingImmutableState( pGPUDevice, pRenderTargetLayout )
+			DX11RenderTargetBinding pDX11RTBindingData )
+	: RenderTargetBindingCompiledState( pGPUDevice, pRenderTargetLayout )
 	, mDX11RTBindingData( std::move( pDX11RTBindingData ) )
 	{}
 
-	DX11RenderTargetBindingImmutableState::~DX11RenderTargetBindingImmutableState() = default;
+	DX11RenderTargetBindingCompiledState::~DX11RenderTargetBindingCompiledState() = default;
 
-	GpaHandle<DX11RenderTargetBindingImmutableState> DX11RenderTargetBindingImmutableState::CreateInstance(
+	GpaHandle<DX11RenderTargetBindingCompiledState> DX11RenderTargetBindingCompiledState::CreateInstance(
 			DX11GPUDevice & pGPUDevice,
 			const RenderTargetBindingDefinition & pBindingDefinition )
 	{
-		const auto renderTargetLayout = SMU::GetRenderTargetLayoutForBindingDefinition( pBindingDefinition );
+		const auto renderTargetLayout = GCU::GetRenderTargetLayoutForBindingDefinition( pBindingDefinition );
 
-		auto dx11RTBindingData = SMU::CreateRenderTargetBindingDataDX11( pGPUDevice, pBindingDefinition );
+		auto dx11RTBindingData = GCU::CreateRenderTargetBindingDX11( pGPUDevice, pBindingDefinition );
 
-		auto immutableState = CreateGfxObject<DX11RenderTargetBindingImmutableState>(
+		auto stateDescriptor = CreateGfxObject<DX11RenderTargetBindingCompiledState>(
 				pGPUDevice,
 				renderTargetLayout,
 				std::move( dx11RTBindingData ) );
 
-		return immutableState;
+		return stateDescriptor;
 	}
 
-	GpaHandle<DX11RenderTargetBindingImmutableState> DX11RenderTargetBindingImmutableState::CreateForScreen(
+	GpaHandle<DX11RenderTargetBindingCompiledState> DX11RenderTargetBindingCompiledState::CreateForScreen(
 			DX11GPUDevice & pGPUDevice,
 			ComPtr<ID3D11Texture2D> pColorBuffer,
 			ComPtr<ID3D11Texture2D> pDepthStencilBuffer )
 	{
-		const auto renderTargetLayout = SMU::GetRenderTargetLayoutForScreenDX11( pColorBuffer.Get(), pDepthStencilBuffer.Get() );
+		const auto renderTargetLayout = GCU::GetRenderTargetLayoutForScreenDX11( pColorBuffer.Get(), pDepthStencilBuffer.Get() );
 
 		ComPtr<ID3D11RenderTargetView> colorBufferRTView;
 		auto hResult = pGPUDevice.mD3D11Device1->CreateRenderTargetView( pColorBuffer.Get(), nullptr, colorBufferRTView.GetAddressOf() );
@@ -55,7 +55,7 @@ namespace Ic3::Graphics::GCI
 			return nullptr;
 		}
 
-		DX11RenderTargetBindingData dx11RTBindingData;
+		DX11RenderTargetBinding dx11RTBindingData;
 		mem_set_zero( dx11RTBindingData.d3d11ColorAttachmentRTViewArray );
 		dx11RTBindingData.activeAttachmentsMask = E_RT_ATTACHMENT_MASK_DEFAULT_C0_DS;
 		dx11RTBindingData.colorAttachments[0].d3d11RTView = colorBufferRTView;
@@ -67,16 +67,16 @@ namespace Ic3::Graphics::GCI
 		dx11RTBindingData.depthStencilAttachment.d3d11SubResourceIndex = 0;
 		dx11RTBindingData.d3d11DepthStencilAttachmentDSView = depthStencilBufferDSView.Get();
 
-		auto immutableState = CreateGfxObject<DX11RenderTargetBindingImmutableState>(
+		auto stateDescriptor = CreateGfxObject<DX11RenderTargetBindingCompiledState>(
 				pGPUDevice,
 				renderTargetLayout,
 				std::move( dx11RTBindingData ) );
 
-		return immutableState;
+		return stateDescriptor;
 	}
 
 
-	namespace SMU
+	namespace GCU
 	{
 
 		RenderTargetLayout GetRenderTargetLayoutForScreenDX11(
@@ -388,38 +388,38 @@ namespace Ic3::Graphics::GCI
 			return dx11ResolveAttachment;
 		}
 
-		DX11RenderTargetBindingData CreateRenderTargetBindingDataDX11(
+		DX11RenderTargetBinding CreateRenderTargetBindingDX11(
 				DX11GPUDevice & pGPUDevice,
 				const RenderTargetBindingDefinition & pBindingDefinition )
 		{
-			DX11RenderTargetBindingData dx11RenderTargetBindingData;
+			DX11RenderTargetBinding dx11RenderTargetBinding;
 
 			for( native_uint caIndex = 0; caIndex < GCM::RT_MAX_COLOR_ATTACHMENTS_NUM; ++caIndex )
 			{
-				const auto attachmentBit = CxDef::makeRTAttachmentFlag( caIndex );
+				const auto attachmentBit = CXU::MakeRTAttachmentFlag( caIndex );
 				if( pBindingDefinition.activeAttachmentsMask.is_set( attachmentBit ) )
 				{
 					if( const auto & attachmentBinding = pBindingDefinition.colorAttachments[caIndex] )
 					{
 						auto & colorAttachmentTextureRef = attachmentBinding.attachmentTexture->mTargetTexture;
-						auto dx11ColorAttachment = SMU::CreateRenderTargetColorAttachmentDX11( pGPUDevice, colorAttachmentTextureRef );
+						auto dx11ColorAttachment = GCU::CreateRenderTargetColorAttachmentDX11( pGPUDevice, colorAttachmentTextureRef );
 
-						dx11RenderTargetBindingData.colorAttachments[caIndex] = dx11ColorAttachment;
-						dx11RenderTargetBindingData.d3d11ColorAttachmentRTViewArray[caIndex] = dx11ColorAttachment.d3d11RTView.Get();
-						dx11RenderTargetBindingData.activeAttachmentsMask.set( attachmentBit );
+						dx11RenderTargetBinding.colorAttachments[caIndex] = dx11ColorAttachment;
+						dx11RenderTargetBinding.d3d11ColorAttachmentRTViewArray[caIndex] = dx11ColorAttachment.d3d11RTView.Get();
+						dx11RenderTargetBinding.activeAttachmentsMask.set( attachmentBit );
 
 						if( pBindingDefinition.attachmentsActionResolveMask.is_set( attachmentBit ) )
 						{
 							Ic3DebugAssert( attachmentBinding.resolveTexture );
 
 							auto dx11ResolveAttachmentTexture = CreateRenderTargetResolveAttachmentDX11( attachmentBinding.resolveTexture->mTargetTexture );
-							dx11RenderTargetBindingData.resolveAttachments[caIndex] = dx11ResolveAttachmentTexture;
+							dx11RenderTargetBinding.resolveAttachments[caIndex] = dx11ResolveAttachmentTexture;
 						}
 					}
 				}
 				else
 				{
-					dx11RenderTargetBindingData.d3d11ColorAttachmentRTViewArray[caIndex] = nullptr;
+					dx11RenderTargetBinding.d3d11ColorAttachmentRTViewArray[caIndex] = nullptr;
 				}
 			}
 
@@ -428,34 +428,34 @@ namespace Ic3::Graphics::GCI
 				if( const auto & attachmentBinding = pBindingDefinition.depthStencilAttachment )
 				{
 					auto & dsAttachmentTextureRef = attachmentBinding.attachmentTexture->mTargetTexture;
-					auto dx11DepthStencilAttachment = SMU::CreateRenderTargetDepthStencilAttachmentDX11( pGPUDevice, dsAttachmentTextureRef );
+					auto dx11DepthStencilAttachment = GCU::CreateRenderTargetDepthStencilAttachmentDX11( pGPUDevice, dsAttachmentTextureRef );
 
-					dx11RenderTargetBindingData.depthStencilAttachment = dx11DepthStencilAttachment;
-					dx11RenderTargetBindingData.d3d11DepthStencilAttachmentDSView = dx11DepthStencilAttachment.d3d11DSView.Get();
-					dx11RenderTargetBindingData.activeAttachmentsMask.set( E_RT_ATTACHMENT_FLAG_DEPTH_STENCIL_BIT );
+					dx11RenderTargetBinding.depthStencilAttachment = dx11DepthStencilAttachment;
+					dx11RenderTargetBinding.d3d11DepthStencilAttachmentDSView = dx11DepthStencilAttachment.d3d11DSView.Get();
+					dx11RenderTargetBinding.activeAttachmentsMask.set( E_RT_ATTACHMENT_FLAG_DEPTH_STENCIL_BIT );
 
 					if( pBindingDefinition.attachmentsActionResolveMask.is_set( E_RT_ATTACHMENT_FLAG_DEPTH_STENCIL_BIT ) )
 					{
 						Ic3DebugAssert( attachmentBinding.resolveTexture );
 
 						auto dx11ResolveAttachmentTexture = CreateRenderTargetResolveAttachmentDX11( attachmentBinding.resolveTexture->mTargetTexture );
-						dx11RenderTargetBindingData.resolveAttachments[eRTAttachmentIndexDepthStencil] = dx11ResolveAttachmentTexture;
+						dx11RenderTargetBinding.resolveAttachments[eRTAttachmentIndexDepthStencil] = dx11ResolveAttachmentTexture;
 					}
 				}
 			}
 			else
 			{
-				dx11RenderTargetBindingData.d3d11DepthStencilAttachmentDSView = nullptr;
+				dx11RenderTargetBinding.d3d11DepthStencilAttachmentDSView = nullptr;
 			}
 
-			return dx11RenderTargetBindingData;
+			return dx11RenderTargetBinding;
 		}
 
 		void RenderPassClearRenderTargetDX11(
 				ID3D11DeviceContext1 * pD3D1DeviceContext,
-				const DX11RenderTargetBindingData & pRenderTargetBinding,
+				const DX11RenderTargetBinding & pRenderTargetBinding,
 				const RenderPassConfiguration & pRenderPassConfiguration,
-				const GraphicsPipelineDynamicState & pDynamicState )
+				const GraphicsPipelineDynamicConfig & pDynamicConfig )
 		{
 			ForEachRTColorAttachmentIndex(
 					pRenderTargetBinding.activeAttachmentsMask,
@@ -489,9 +489,9 @@ namespace Ic3::Graphics::GCI
 
 		void RenderPassResolveRenderTargetDX11(
 				ID3D11DeviceContext1 * pD3D1DeviceContext,
-				const DX11RenderTargetBindingData & pRenderTargetBinding,
+				const DX11RenderTargetBinding & pRenderTargetBinding,
 				const RenderPassConfiguration & pRenderPassConfiguration,
-				const GraphicsPipelineDynamicState & pDynamicState )
+				const GraphicsPipelineDynamicConfig & pDynamicConfig )
 		{
 			ForEachRTAttachmentIndex(
 					pRenderTargetBinding.activeAttachmentsMask,

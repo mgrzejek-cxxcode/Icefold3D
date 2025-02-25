@@ -19,23 +19,23 @@ namespace cppx
 		using char_type = typename std::remove_cv<TPChar>::type;
 
 		string_base_view()
-		: _basePtr( nullptr )
+		: _basePtr( cve::str_empty<TPChar> )
 		, _length( 0 )
 		{}
 
 		string_base_view( const char_type * pStr )
-		: _basePtr( pStr )
+		: _basePtr( pStr ? pStr : cve::str_empty<TPChar> )
 		, _length( pStr ? std::char_traits<char_type>::length( pStr ) : 0u )
 		{}
 
 		string_base_view( const char_type * pBegin, const char_type * pEnd )
-		: _basePtr( pBegin )
-		, _length( pEnd - pBegin )
+		: _basePtr( pBegin ? pBegin : cve::str_empty<TPChar> )
+		, _length( pBegin ? pEnd - pBegin : 0u )
 		{}
 
 		string_base_view( const char_type * pStr, size_t pLength )
-		: _basePtr( pStr )
-		, _length( pLength )
+		: _basePtr( pStr ? pStr : cve::str_empty<TPChar> )
+		, _length( pStr ? pLength : 0u )
 		{}
 
 		string_base_view( const std::basic_string<TPChar> & pString )

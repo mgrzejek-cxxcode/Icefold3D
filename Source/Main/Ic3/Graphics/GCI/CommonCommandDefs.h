@@ -38,6 +38,7 @@ namespace Ic3::Graphics::GCI
 	enum ECommandListActionFlags : uint32
 	{
 		eCommandListActionFlagRenderPassApplyPipelineStateBit = 0x01,
+
 		eCommandListActionFlagRenderPassPreserveDynamicStateBit = 0x02,
 
 		eCommandListActionFlagsDefault =
@@ -111,7 +112,7 @@ namespace Ic3::Graphics::GCI
 	using ECommandContextType = ECommandObjectType;
 	using ECommandListType = ECommandObjectType;
 
-	namespace CxDef
+	namespace CXU
 	{
 
 		inline constexpr ECommandExecutionMode GetCommandObjectExecutionMode( ECommandObjectType pType ) noexcept

@@ -5,9 +5,9 @@
 #define __IC3_GRAPHICS_HW3D_DX11_GPU_DEVICE_H__
 
 #include "DX11Prerequisites.h"
-#include "State/DX11pipelineImmutableStateFactory.h"
+#include "State/DX11pipelineCompiledDescriptorFactory.h"
 #include <Ic3/Graphics/HW3D/DX/DXgpuDevice.h>
-#include <Ic3/Graphics/GCI/State/SharedImmutableStateCache.h>
+#include <Ic3/Graphics/GCI/State/SharedCompiledStateCache.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -52,8 +52,8 @@ namespace Ic3::Graphics::GCI
 				const GraphicsPipelineStateObjectCreateInfo & pCreateInfo ) override final;
 
 	private:
-		DX11PipelineImmutableStateFactory _immutableStateFactoryDX11;
-		PipelineImmutableStateCache _immutableStateCache;
+		DX11PipelineStateDescriptorFactory _immutableDescriptorFactoryDX11;
+		PipelineCompiledStateCache _stateDescriptorCache;
 	};
 
 } // namespace Ic3::Graphics::GCI

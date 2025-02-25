@@ -1,8 +1,8 @@
 
 #pragma once
 
-#ifndef __IC3_GRAPHICS_HW3D_GLCOMMON_DEBUG_OUTPUT_H__
-#define __IC3_GRAPHICS_HW3D_GLCOMMON_DEBUG_OUTPUT_H__
+#ifndef __IC3_GRAPHICS_HW3D_GLC_DEBUG_OUTPUT_H__
+#define __IC3_GRAPHICS_HW3D_GLC_DEBUG_OUTPUT_H__
 
 #include <unordered_set>
 
@@ -142,4 +142,4 @@ namespace Ic3::Graphics::GCI
 
 } // namespace Ic3::Graphics::GCI
 
-#endif // __IC3_GRAPHICS_HW3D_GLCOMMON_DEBUG_OUTPUT_H__
+#endif // __IC3_GRAPHICS_HW3D_GLC_DEBUG_OUTPUT_H__

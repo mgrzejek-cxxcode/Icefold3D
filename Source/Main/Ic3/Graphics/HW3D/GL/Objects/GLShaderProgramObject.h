@@ -1,8 +1,8 @@
 
 #pragma once
 
-#ifndef __IC3_GRAPHICS_HW3D_GLCOMMON_SHADER_PROGRAM_OBJECT_H__
-#define __IC3_GRAPHICS_HW3D_GLCOMMON_SHADER_PROGRAM_OBJECT_H__
+#ifndef __IC3_GRAPHICS_HW3D_GLC_SHADER_PROGRAM_OBJECT_H__
+#define __IC3_GRAPHICS_HW3D_GLC_SHADER_PROGRAM_OBJECT_H__
 
 #include "GLShaderCommon.h"
 #include <cppx/memoryBuffer.h>
@@ -73,4 +73,4 @@ namespace Ic3::Graphics::GCI
 
 } // namespace Ic3::Graphics::GCI
 
-#endif // __IC3_GRAPHICS_HW3D_GLCOMMON_SHADER_PROGRAM_OBJECT_H__
+#endif // __IC3_GRAPHICS_HW3D_GLC_SHADER_PROGRAM_OBJECT_H__

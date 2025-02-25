@@ -32,7 +32,7 @@ namespace Ic3::Graphics::GCI
 			return static_cast<uint32>( activeAttributesNum );
 		}
 
-		uint32 IAGetActiveVertexBuffersNum( const IAVertexStreamVertexBufferReferenceArray & pVertexBufferReferences ) noexcept
+		uint32 IAGetActiveVertexBuffersNum( const IAVertexBufferReferenceArray & pVertexBufferReferences ) noexcept
 		{
 			const auto activeVertexBuffersNum = std::count_if(
 				pVertexBufferReferences.begin(),
@@ -43,12 +43,12 @@ namespace Ic3::Graphics::GCI
 			return static_cast<uint32>( activeVertexBuffersNum );
 		}
 
-		IAVertexStreamBindingIndexList IAGenerateActiveVertexBuffersIndexList(
-				const IAVertexStreamVertexBufferReferenceArray & pVertexBufferReferences ) noexcept
+		VertexSourceBindingIndexList IAGenerateActiveVertexBuffersIndexList(
+				const IAVertexBufferReferenceArray & pVertexBufferReferences ) noexcept
 		{
 			const auto activeVertexBuffersNum = IAGetActiveVertexBuffersNum( pVertexBufferReferences );
 
-			IAVertexStreamBindingIndexList vertexBufferBindingList{};
+			VertexSourceBindingIndexList vertexBufferBindingList{};
 
 			if( activeVertexBuffersNum > 0 )
 			{
@@ -68,12 +68,12 @@ namespace Ic3::Graphics::GCI
 			return vertexBufferBindingList;
 		}
 
-		IAVertexStreamBindingRageList IAGenerateActiveVertexBuffersRanges(
-				const IAVertexStreamVertexBufferReferenceArray & pVertexBufferReferences ) noexcept
+		VertexSourceBindingRageList IAGenerateActiveVertexBuffersRanges(
+				const IAVertexBufferReferenceArray & pVertexBufferReferences ) noexcept
 		{
 			const auto activeVertexBuffersNum = IAGetActiveVertexBuffersNum( pVertexBufferReferences );
 
-			IAVertexStreamBindingRageList vertexBufferActiveRanges{};
+			VertexSourceBindingRageList vertexBufferActiveRanges{};
 
 			if( activeVertexBuffersNum > 0 )
 			{

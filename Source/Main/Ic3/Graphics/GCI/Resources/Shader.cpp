@@ -43,12 +43,12 @@ namespace Ic3::Graphics::GCI
 
 		uint32 GetShaderObjectStageIndex( Shader & pShader )
 		{
-			return CxDef::SHGetShaderStageIndex( pShader.mShaderType );
+			return CXU::SHGetShaderStageIndex( pShader.mShaderType );
 		}
 
 		uint32 GetShaderObjectStageBit( Shader & pShader )
 		{
-			return CxDef::SHGetShaderStageBit( pShader.mShaderType );
+			return CXU::SHGetShaderStageBit( pShader.mShaderType );
 		}
 
 	}

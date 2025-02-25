@@ -72,7 +72,7 @@ namespace Ic3::Graphics::GCI
 
 	void GraphicsShaderBinding::ResetStage( uint32 pStageIndex ) noexcept
 	{
-		Ic3DebugAssert( CXU::IsShaderStageIndexValid( pStageIndex ) );
+		Ic3DebugAssert( CXU::SHIsGraphicsShaderStageIndexValid( pStageIndex ) );
 
 		if( auto & shaderHandle = commonShaderArray[pStageIndex] )
 		{

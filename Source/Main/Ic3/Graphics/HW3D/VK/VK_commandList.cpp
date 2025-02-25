@@ -40,7 +40,7 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	void VKCommandList::clearRenderTarget( cppx::bitmask<ERenderTargetAttachmentFlags> pAttachmentMask )
+	void VKCommandList::clearRenderTarget( cppx::bitmask<ERTAttachmentFlags> pAttachmentMask )
 	{
 	}
 

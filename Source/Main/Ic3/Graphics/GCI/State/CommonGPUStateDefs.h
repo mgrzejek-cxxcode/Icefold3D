@@ -16,39 +16,46 @@ namespace Ic3::Graphics::GCI
 	struct RasterizerSettings;
 	struct GraphicsShaderBinding;
 	struct IAVertexAttributeLayoutDefinition;
-	struct ShaderRootSignatureDesc;
-	struct IAVertexStreamBindingDefinition;
-	struct RenderPassConfiguration;
+	struct RootSignatureDesc;
+	struct IAVertexSourceBindingDefinition;
 
 	struct BlendStateDescriptorCreateInfo;
 	struct DepthStencilStateDescriptorCreateInfo;
 	struct RasterizerStateDescriptorCreateInfo;
-	struct GraphicsShaderLinkageStateDescriptorCreateInfo;
-	struct IAVertexAttributeLayoutStateDescriptorCreateInfo;
-	struct ShaderRootSignatureStateDescriptorCreateInfo;
-	struct IAVertexStreamBindingStateDescriptorCreateInfo;
-	struct RenderPassConfigurationStateDescriptorCreateInfo;
+	struct GraphicsShaderLinkageDescriptorCreateInfo;
+	struct VertexAttributeLayoutDescriptorCreateInfo;
+	struct RootSignatureDescriptorCreateInfo;
+
+	struct RenderPassDescriptorCreateInfo;
+	struct RenderTargetDescriptorCreateInfo;
+	struct VertexSourceBindingDescriptorCreateInfo;
 
 	struct ComputePipelineStateObjectCreateInfo;
 	struct GraphicsPipelineStateObjectCreateInfo;
 
 	class PipelineStateDescriptor;
 	class PipelineStateDescriptorFactory;
-	class GraphicsPipelineStateDescriptorCache;
+
+	class BlendStateDescriptor;
+	class DepthStencilStateDescriptor;
+	class RasterizerStateDescriptor;
+	class GraphicsShaderLinkageDescriptor;
+	class VertexAttributeLayoutDescriptor;
+	class RootSignatureDescriptor;
+	class RenderPassDescriptor;
+	class RenderTargetDescriptor;
+	class VertexSourceBindingDescriptor;
+
+	class RenderPassDescriptorDynamic;
+	class RenderTargetDescriptorDynamic;
+	class VertexSourceBindingDescriptorDynamic;
 
 	Ic3GCIDeclareClassHandle( GPUDeviceChildObject );
 	Ic3GCIDeclareClassHandle( PipelineStateObject );
 	Ic3GCIDeclareClassHandle( ComputePipelineStateObject );
 	Ic3GCIDeclareClassHandle( GraphicsPipelineStateObject );
 
-	Ic3GCIDeclareClassHandle( BlendStateDescriptor );
-	Ic3GCIDeclareClassHandle( DepthStencilStateDescriptor );
-	Ic3GCIDeclareClassHandle( RasterizerStateDescriptor );
-	Ic3GCIDeclareClassHandle( GraphicsShaderLinkageStateDescriptor );
-	Ic3GCIDeclareClassHandle( IAVertexAttributeLayoutStateDescriptor );
-	Ic3GCIDeclareClassHandle( ShaderRootSignatureStateDescriptor );
-	Ic3GCIDeclareClassHandle( IAVertexStreamBindingStateDescriptor );
-	Ic3GCIDeclareClassHandle( RenderPassConfigurationStateDescriptor );
+	using ia_vertex_stream_binding_flag_value_t = uint32;
 
 	using pipeline_config_hash_t = cppx::hash_object<cppx::hash_algo::fnv1a64>;
 	using pipeline_config_hash_value_t = pipeline_config_hash_t::value_type;
@@ -64,6 +71,10 @@ namespace Ic3::Graphics::GCI
 
 	inline constexpr auto kPipelineStateDescriptorIDInvalid = cppx::meta::limits<pipeline_state_descriptor_id_t>::max_value;
 
+	inline constexpr auto kPipelineStateObjectIDAuto = static_cast<pipeline_state_object_id_t>( 0u );
+
+	inline constexpr auto kPipelineStateObjectIDInvalid = cppx::meta::limits<pipeline_state_object_id_t>::max_value;
+
 	namespace CXU
 	{
 
@@ -74,19 +85,19 @@ namespace Ic3::Graphics::GCI
 		}
 
 		/// @brief Returns
-		inline constexpr uint32 IAMakeDataStreamBufferBindingFlag( native_uint pStreamIndex )
+		inline constexpr uint32 IAMakeVertexSourceBufferBindingFlag( native_uint pStreamIndex )
 		{
 			return ( pStreamIndex < GCM::kIAMaxDataStreamCombinedBuffersNum ) ? ( 1 << pStreamIndex ) : 0u;
 		}
 
 		/// @brief
-		inline constexpr uint32 IAMakeDataStreamVertexBufferBindingFlag( native_uint pStreamIndex )
+		inline constexpr uint32 IAMakeVertexSourceVertexBufferBindingFlag( native_uint pStreamIndex )
 		{
 			return ( pStreamIndex < GCM::kIAMaxDataStreamVertexBuffersNum ) ? ( 1 << pStreamIndex ) : 0u;
 		}
 
 		/// @brief Returns
-		inline constexpr uint32 IAMakeDataStreamIndexBufferBindingFlag()
+		inline constexpr uint32 IAMakeVertexSourceIndexBufferBindingFlag()
 		{
 			return ( 1 << GCM::kIAMaxDataStreamVertexBuffersNum );
 		}
@@ -151,22 +162,22 @@ namespace Ic3::Graphics::GCI
 	};
 
 	/// @brief
-	enum EIAVertexStreamBindingFlags : uint32
+	enum EVertexSourceBindingFlags : uint32
 	{
-		eIAVertexStreamBindingFlagVertexBuffer0Bit  = CXU::IAMakeDataStreamVertexBufferBindingFlag( 0 ),
-		eIAVertexStreamBindingFlagVertexBuffer1Bit  = CXU::IAMakeDataStreamVertexBufferBindingFlag( 1 ),
-		eIAVertexStreamBindingFlagVertexBuffer2Bit  = CXU::IAMakeDataStreamVertexBufferBindingFlag( 2 ),
-		eIAVertexStreamBindingFlagVertexBuffer3Bit  = CXU::IAMakeDataStreamVertexBufferBindingFlag( 3 ),
-		eIAVertexStreamBindingFlagVertexBuffer4Bit  = CXU::IAMakeDataStreamVertexBufferBindingFlag( 4 ),
-		eIAVertexStreamBindingFlagVertexBuffer5Bit  = CXU::IAMakeDataStreamVertexBufferBindingFlag( 5 ),
-		eIAVertexStreamBindingFlagVertexBuffer6Bit  = CXU::IAMakeDataStreamVertexBufferBindingFlag( 6 ),
-		eIAVertexStreamBindingFlagVertexBuffer7Bit  = CXU::IAMakeDataStreamVertexBufferBindingFlag( 7 ),
-		eIAVertexStreamBindingFlagVertexBuffer8Bit  = CXU::IAMakeDataStreamVertexBufferBindingFlag( 8 ),
-		eIAVertexStreamBindingFlagIndexBufferBit    = CXU::IAMakeDataStreamIndexBufferBindingFlag(),
+		eVertexSourceBindingFlagVertexBuffer0Bit  = CXU::IAMakeVertexSourceVertexBufferBindingFlag( 0 ),
+		eVertexSourceBindingFlagVertexBuffer1Bit  = CXU::IAMakeVertexSourceVertexBufferBindingFlag( 1 ),
+		eVertexSourceBindingFlagVertexBuffer2Bit  = CXU::IAMakeVertexSourceVertexBufferBindingFlag( 2 ),
+		eVertexSourceBindingFlagVertexBuffer3Bit  = CXU::IAMakeVertexSourceVertexBufferBindingFlag( 3 ),
+		eVertexSourceBindingFlagVertexBuffer4Bit  = CXU::IAMakeVertexSourceVertexBufferBindingFlag( 4 ),
+		eVertexSourceBindingFlagVertexBuffer5Bit  = CXU::IAMakeVertexSourceVertexBufferBindingFlag( 5 ),
+		eVertexSourceBindingFlagVertexBuffer6Bit  = CXU::IAMakeVertexSourceVertexBufferBindingFlag( 6 ),
+		eVertexSourceBindingFlagVertexBuffer7Bit  = CXU::IAMakeVertexSourceVertexBufferBindingFlag( 7 ),
+		eVertexSourceBindingFlagVertexBuffer8Bit  = CXU::IAMakeVertexSourceVertexBufferBindingFlag( 8 ),
+		eVertexSourceBindingFlagIndexBufferBit    = CXU::IAMakeVertexSourceIndexBufferBindingFlag(),
 
-		eIAVertexStreamBindingMaskVertexBufferAllBits = cppx::make_lsfb_bitmask<uint32>( GCM::kIAMaxDataStreamVertexBuffersNum ),
+		eVertexSourceBindingMaskVertexBufferAllBits = cppx::make_lsfb_bitmask<uint32>( GCM::kIAMaxDataStreamVertexBuffersNum ),
 
-		eIAVertexStreamBindingMaskAll = eIAVertexStreamBindingMaskVertexBufferAllBits | eIAVertexStreamBindingFlagIndexBufferBit
+		eVertexSourceBindingMaskAll = eVertexSourceBindingMaskVertexBufferAllBits | eVertexSourceBindingFlagIndexBufferBit
 	};
 
 	/// @brief
@@ -191,13 +202,13 @@ namespace Ic3::Graphics::GCI
 		ePipelineStateDescriptorTypeFlagRasterizerBit = 0x0004,
 		ePipelineStateDescriptorTypeFlagIAVertexAttributeLayoutBit = 0x0008,
 		ePipelineStateDescriptorTypeFlagGraphicsShaderLinkageBit = 0x0010,
-		ePipelineStateDescriptorTypeFlagShaderRootSignatureBit = 0x0020,
+		ePipelineStateDescriptorTypeFlagRootSignatureBit = 0x0020,
 		ePipelineStateDescriptorTypeFlagRenderPassConfigurationBit = 0x0080,
 		ePipelineStateDescriptorTypeMaskAll = 0x00FF,
 	};
 
 	/// @brief A set of bit flags representing render target attachments.
-	enum ERTAttachmentFlags : uint32
+	enum ERTAttachmentFlags : uint16
 	{
 		eRTAttachmentFlagColor0Bit       = CXU::RTOMakeAttachmentFlag( 0 ),
 		eRTAttachmentFlagDepthStencilBit = CXU::RTOMakeAttachmentFlag( kRTOAttachmentIndexDepthStencil ),
@@ -207,11 +218,12 @@ namespace Ic3::Graphics::GCI
 		eRTAttachmentMaskDefaultDSOnly   = eRTAttachmentFlagDepthStencilBit,
 	};
 
-	enum EGraphicsPipelineDynamicStateFlags : uint32
+	enum EGraphicsPipelineDynamicConfigFlags : uint16
 	{
-		eGraphicsPipelineDynamicStateFlagBlendConstantColorBit = 0x01,
-		eGraphicsPipelineDynamicStateFlagCommonClearConfigBit = 0x02,
-		eGraphicsPipelineDynamicStateFlagStencilRefValueBit = 0x04,
+		eGraphicsPipelineDynamicConfigFlagBlendConstantColorBit = 0x01,
+		eGraphicsPipelineDynamicConfigFlagRenderTargetClearConfigBit = 0x02,
+		eGraphicsPipelineDynamicConfigFlagStencilRefValueBit = 0x04,
+		eGraphicsPipelineDynamicConfigMaskAll = 0x07
 	};
 
 	/**
@@ -278,21 +290,22 @@ namespace Ic3::Graphics::GCI
 		// Descriptors embedded within the PSO, created solely on the HW3D API level.
 
 		///
-		DTBlend,
-		DTDepthStencil,
-		DTRasterizer,
+		DTBlendState,
+		DTDepthStencilState,
+		DTRasterizerState,
 		DTGraphicsShaderLinkage,
-		DTIAVertexAttributeLayout,
-		DTShaderRootSignature,
+		DTVertexAttributeLayout,
+		DTRootSignature,
 
 		// Descriptors not included in the PSO, can be either API-native or dynamic.
 
 		///
-		DTIAVertexStreamBinding,
-		DTRenderPassConfiguration,
+		DTRenderPass,
+		DTRenderTarget,
+		DTVertexSourceBinding,
 	};
 
-	inline constexpr auto kPipelineStateDescriptorTypeMaxValue = static_cast<uint16>( EPipelineStateDescriptorType::DTRenderPassConfiguration );
+	inline constexpr auto kPipelineStateDescriptorTypeMaxValue = static_cast<uint16>( EPipelineStateDescriptorType::DTRenderTarget );
 
 	enum class EPrimitiveFillMode : uint16
 	{
@@ -335,17 +348,17 @@ namespace Ic3::Graphics::GCI
 	 * Part of the graphics pipeline configuration which can be set dynamically, i.e. without specifying at the
 	 * descriptor/PSO level. Dynamic state overrides its static counterpart.
 	 */
-	struct GraphicsPipelineDynamicState
+	struct GraphicsPipelineDynamicConfig
 	{
 		// Bitmask which describes what part of the state is active and should be used when the rendering is executed.
-		cppx::bitmask<EGraphicsPipelineDynamicStateFlags> activeStateMask = 0;
+		cppx::bitmask<EGraphicsPipelineDynamicConfigFlags> activeStateMask = 0;
 
 		// Constant color used for blending. Overrides color specified as a part of the BlendState within a PSO.
 		Math::RGBAColorR32Norm blendConstantColor;
 
 		// Global clear values used to clear attachments when a render pass starts. It overrides clear settings
 		// for *ALL* attachments for which "Clear" was defined as the "Load" action in a given render pass.
-		RenderTargetAttachmentClearConfig commonClearConfig;
+		RenderTargetAttachmentClearConfig renderTargetClearConfig;
 
 		// Ref value used for stencil testing. If this is not set and stencil testing is enabled, 0 is used by default.
 		uint8 stencilTestRefValue = 0;
@@ -364,29 +377,35 @@ namespace Ic3::Graphics::GCI
 	};
 
 	template <EPipelineStateDescriptorType>
-	struct PipelineStateDescriptorClass;
+	struct TPipelineStateDescriptorClassProxy;
 
 #define Ic3DefinePipelineStateDescriptorClassMapping( pDescriptorTypeEnum, pDescriptorClass ) \
-	template <> struct PipelineStateDescriptorClass<pDescriptorTypeEnum> { using Type = pDescriptorClass; };
+	template <> struct TPipelineStateDescriptorClassProxy<pDescriptorTypeEnum> { using Type = pDescriptorClass; };
 
-	Ic3DefinePipelineStateDescriptorClassMapping( EPipelineStateDescriptorType::DTBlend, BlendStateDescriptor );
-	Ic3DefinePipelineStateDescriptorClassMapping( EPipelineStateDescriptorType::DTDepthStencil, DepthStencilStateDescriptor );
-	Ic3DefinePipelineStateDescriptorClassMapping( EPipelineStateDescriptorType::DTRasterizer, RasterizerStateDescriptor );
-	Ic3DefinePipelineStateDescriptorClassMapping( EPipelineStateDescriptorType::DTGraphicsShaderLinkage, GraphicsShaderLinkageStateDescriptor );
-	Ic3DefinePipelineStateDescriptorClassMapping( EPipelineStateDescriptorType::DTIAVertexAttributeLayout, IAVertexAttributeLayoutStateDescriptor );
-	Ic3DefinePipelineStateDescriptorClassMapping( EPipelineStateDescriptorType::DTShaderRootSignature, ShaderRootSignatureStateDescriptor );
-	Ic3DefinePipelineStateDescriptorClassMapping( EPipelineStateDescriptorType::DTIAVertexStreamBinding, IAVertexStreamBindingStateDescriptor );
-	Ic3DefinePipelineStateDescriptorClassMapping( EPipelineStateDescriptorType::DTRenderPassConfiguration, RenderPassConfigurationStateDescriptor );
+	Ic3DefinePipelineStateDescriptorClassMapping( EPipelineStateDescriptorType::DTBlendState, BlendStateDescriptor );
+	Ic3DefinePipelineStateDescriptorClassMapping( EPipelineStateDescriptorType::DTDepthStencilState, DepthStencilStateDescriptor );
+	Ic3DefinePipelineStateDescriptorClassMapping( EPipelineStateDescriptorType::DTRasterizerState, RasterizerStateDescriptor );
+	Ic3DefinePipelineStateDescriptorClassMapping( EPipelineStateDescriptorType::DTGraphicsShaderLinkage, GraphicsShaderLinkageDescriptor );
+	Ic3DefinePipelineStateDescriptorClassMapping( EPipelineStateDescriptorType::DTVertexAttributeLayout, VertexAttributeLayoutDescriptor );
+	Ic3DefinePipelineStateDescriptorClassMapping( EPipelineStateDescriptorType::DTRootSignature, RootSignatureDescriptor );
+	Ic3DefinePipelineStateDescriptorClassMapping( EPipelineStateDescriptorType::DTRenderPass, RenderPassDescriptor );
+	Ic3DefinePipelineStateDescriptorClassMapping( EPipelineStateDescriptorType::DTRenderTarget, RenderTargetDescriptor );
+	Ic3DefinePipelineStateDescriptorClassMapping( EPipelineStateDescriptorType::DTVertexSourceBinding, VertexSourceBindingDescriptor );
 
 	template <EPipelineStateDescriptorType tpDescriptorType>
-	using PipelineStateDecriptorClass = typename PipelineStateDescriptorClass<tpDescriptorType>::Type;
+	using PipelineStateDescriptorClass = typename TPipelineStateDescriptorClassProxy<tpDescriptorType>::Type;
 
 	namespace CXU
 	{
 
+		inline constexpr uint16 MakePipelineStateDescriptorIDUserComponent( native_uint pUserIDComponent )
+		{
+			return ( static_cast<uint16>( pUserIDComponent ) & 0x00FFFFFF );
+		}
+
 		inline constexpr pipeline_state_descriptor_id_t DeclarePipelineStateDescriptorID( EPipelineStateDescriptorType pDescriptorType, uint16 pUserIDComponent )
 		{
-			return ( ( static_cast<uint16>( pDescriptorType ) << 12 ) | ( pUserIDComponent & 0x00FFFFFF ) );
+			return ( ( static_cast<uint16>( pDescriptorType ) << 12 ) | MakePipelineStateDescriptorIDUserComponent( pUserIDComponent ) );
 		}
 
 		inline constexpr EPipelineStateDescriptorType GetPipelineStateDescriptorIDTypeComponent( pipeline_state_descriptor_id_t pDescriptorID )

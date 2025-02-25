@@ -85,7 +85,7 @@ namespace Ic3
 		Error
 	};
 
-	namespace Vbm
+	namespace CXU
 	{
 
 		// Value BitMasks for result codes.
@@ -135,14 +135,14 @@ namespace Ic3
 	
 	enum : result_code_value_t
 	{
-		eResultCodeGenericSuccess = Vbm::DeclareResultCode( EResultCodeType::Success, eResultCategoryGeneric, 0 )
+		eResultCodeGenericSuccess = CXU::DeclareResultCode( EResultCodeType::Success, eResultCategoryGeneric, 0 )
 	};
 
 	struct ResultCodeErrorPredicate
 	{
 		constexpr bool operator()( result_code_value_t pResultCode ) const
 		{
-			return Vbm::GetResultCodeType( pResultCode ) == EResultCodeType::Error;
+			return CXU::GetResultCodeType( pResultCode ) == EResultCodeType::Error;
 		}
 	};
 

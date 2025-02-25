@@ -1,10 +1,12 @@
 
 #include "GraphicsPipelineStateDescriptorShader.h"
 
+#include "Ic3/Graphics/GCI/Resources/Shader.h"
+
 namespace Ic3::Graphics::GCI
 {
 
-	GraphicsShaderLinkageStateDescriptor::GraphicsShaderLinkageStateDescriptor(
+	GraphicsShaderLinkageDescriptor::GraphicsShaderLinkageDescriptor(
 			GPUDevice & pGPUDevice,
 			pipeline_state_descriptor_id_t pDescriptorID,
 			const GraphicsShaderBindingCommonConfig & pCommonShaderBindingConfig )
@@ -12,60 +14,60 @@ namespace Ic3::Graphics::GCI
 	, mCommonShaderBindingConfig( pCommonShaderBindingConfig )
 	{}
 
-	GraphicsShaderLinkageStateDescriptor::~GraphicsShaderLinkageStateDescriptor() = default;
+	GraphicsShaderLinkageDescriptor::~GraphicsShaderLinkageDescriptor() = default;
 
-	EPipelineStateDescriptorType GraphicsShaderLinkageStateDescriptor::GetDescriptorType() const noexcept
+	EPipelineStateDescriptorType GraphicsShaderLinkageDescriptor::GetDescriptorType() const noexcept
 	{
 		return EPipelineStateDescriptorType::DTGraphicsShaderLinkage;
 	}
 
-	bool GraphicsShaderLinkageStateDescriptor::IsStageActive( uint32 pStageIndex ) const noexcept
+	bool GraphicsShaderLinkageDescriptor::IsStageActive( uint32 pStageIndex ) const noexcept
 	{
 		const auto stageBit = CXU::SHMakeGraphicsShaderStageBit( pStageIndex );
 		return mCommonShaderBindingConfig.activeStagesMask.is_set( stageBit );
 	}
 
-	bool GraphicsShaderLinkageStateDescriptor::IsStageActive( EShaderType pShaderType ) const noexcept
+	bool GraphicsShaderLinkageDescriptor::IsStageActive( EShaderType pShaderType ) const noexcept
 	{
 		const auto stageBit = CXU::SHGetShaderStageBit( pShaderType );
 		return mCommonShaderBindingConfig.activeStagesMask.is_set( stageBit );
 	}
 
 
-	GraphicsShaderLinkageStateDescriptorGenericSeparable::GraphicsShaderLinkageStateDescriptorGenericSeparable(
+	GraphicsShaderLinkageDescriptorGenericSeparable::GraphicsShaderLinkageDescriptorGenericSeparable(
 			GPUDevice & pGPUDevice,
 			pipeline_state_descriptor_id_t pDescriptorID,
-			const GraphicsShaderBinding & pShaderBinding )
-	: GraphicsShaderLinkageStateDescriptor( pGPUDevice, pDescriptorID, pShaderBinding )
+			const GraphicsShaderBinding & pBindingConfiguration )
+	: GraphicsShaderLinkageDescriptor( pGPUDevice, pDescriptorID, pBindingConfiguration )
 	{}
 
-	GraphicsShaderLinkageStateDescriptorGenericSeparable::~GraphicsShaderLinkageStateDescriptorGenericSeparable() = default;
+	GraphicsShaderLinkageDescriptorGenericSeparable::~GraphicsShaderLinkageDescriptorGenericSeparable() = default;
 
-	ShaderHandle GraphicsShaderLinkageStateDescriptorGenericSeparable::GetShader( size_t pStageIndex ) const noexcept
+	ShaderHandle GraphicsShaderLinkageDescriptorGenericSeparable::GetShader( size_t pStageIndex ) const noexcept
 	{
-		return mShaderBinding[pStageIndex];
+		return mShaderBinding[pStageIndex]->GetHandle<Shader>();
 	}
 
-	ShaderHandle GraphicsShaderLinkageStateDescriptorGenericSeparable::GetShader( EShaderType pShaderType ) const noexcept
+	ShaderHandle GraphicsShaderLinkageDescriptorGenericSeparable::GetShader( EShaderType pShaderType ) const noexcept
 	{
 		const auto stageIndex = CXU::SHGetShaderStageIndex( pShaderType );
-		return mShaderBinding[stageIndex];
+		return mShaderBinding[stageIndex]->GetHandle<Shader>();
 	}
 
-	TGfxHandle<GraphicsShaderLinkageStateDescriptorGenericSeparable> GraphicsShaderLinkageStateDescriptorGenericSeparable::CreateFromBindingConfiguration(
+	TGfxHandle<GraphicsShaderLinkageDescriptorGenericSeparable> GraphicsShaderLinkageDescriptorGenericSeparable::CreateFromBindingConfiguration(
 			GPUDevice & pGPUDevice,
-			const GraphicsShaderBinding & pShaderBinding,
+			const GraphicsShaderBinding & pBindingConfiguration,
 			pipeline_state_descriptor_id_t pDescriptorID ) noexcept
 	{
-		if( !GCU::SHValidateGraphicsShaderBinding( pShaderBinding ) )
+		if( !GCU::SHValidateGraphicsShaderBinding( pBindingConfiguration ) )
 		{
 			return nullptr;
 		}
 
-		return CreateDynamicObject<GraphicsShaderLinkageStateDescriptorGenericSeparable>( pGPUDevice, pDescriptorID, pShaderBinding );
+		return CreateDynamicObject<GraphicsShaderLinkageDescriptorGenericSeparable>( pGPUDevice, pDescriptorID, pBindingConfiguration );
 	}
 
-	TGfxHandle<GraphicsShaderLinkageStateDescriptorGenericSeparable> GraphicsShaderLinkageStateDescriptorGenericSeparable::CreateFromShaderArray(
+	TGfxHandle<GraphicsShaderLinkageDescriptorGenericSeparable> GraphicsShaderLinkageDescriptorGenericSeparable::CreateFromShaderArray(
 			GPUDevice & pGPUDevice,
 			const GraphicsShaderArray & pShaderArray,
 			pipeline_state_descriptor_id_t pDescriptorID ) noexcept
@@ -83,7 +85,7 @@ namespace Ic3::Graphics::GCI
 		GraphicsShaderBinding shaderBinding{};
 		shaderBinding.SetShaders( pShaderArray );
 
-		return CreateDynamicObject<GraphicsShaderLinkageStateDescriptorGenericSeparable>( pGPUDevice, pDescriptorID, shaderBinding );
+		return CreateDynamicObject<GraphicsShaderLinkageDescriptorGenericSeparable>( pGPUDevice, pDescriptorID, shaderBinding );
 	}
 
 }

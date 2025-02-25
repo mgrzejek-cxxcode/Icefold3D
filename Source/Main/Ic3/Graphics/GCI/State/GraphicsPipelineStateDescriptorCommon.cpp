@@ -14,6 +14,11 @@ namespace Ic3::Graphics::GCI
 
 	BlendStateDescriptor::~BlendStateDescriptor() = default;
 
+	EPipelineStateDescriptorType BlendStateDescriptor::GetDescriptorType() const noexcept
+	{
+		return EPipelineStateDescriptorType::DTBlendState;
+	}
+
 
 	DepthStencilStateDescriptor::DepthStencilStateDescriptor(
 			GPUDevice & pGPUDevice,
@@ -25,6 +30,11 @@ namespace Ic3::Graphics::GCI
 
 	DepthStencilStateDescriptor::~DepthStencilStateDescriptor() = default;
 
+	EPipelineStateDescriptorType DepthStencilStateDescriptor::GetDescriptorType() const noexcept
+	{
+		return EPipelineStateDescriptorType::DTDepthStencilState;
+	}
+
 
 	RasterizerStateDescriptor::RasterizerStateDescriptor(
 			GPUDevice & pGPUDevice,
@@ -35,5 +45,10 @@ namespace Ic3::Graphics::GCI
 	{}
 
 	RasterizerStateDescriptor::~RasterizerStateDescriptor() = default;
+
+	EPipelineStateDescriptorType RasterizerStateDescriptor::GetDescriptorType() const noexcept
+	{
+		return EPipelineStateDescriptorType::DTRasterizerState;
+	}
 
 } // namespace Ic3::Graphics::GCI

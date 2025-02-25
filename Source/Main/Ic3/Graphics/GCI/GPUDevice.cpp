@@ -22,20 +22,21 @@ namespace Ic3::Graphics::GCI
 
 	enum EGPUDeviceInternalStateFlags : uint32
 	{
-		EGPUDeviceInternalStateFlagDebugDeviceBit = 0x0001,
-		EGPUDeviceInternalStateFlagMultiThreadAccessBit = 0x0002,
-		EGPUDeviceInternalStateFlagEnableResourceActiveRefsTrackingBit = 0x0008
+		eGPUDeviceInternalStateFlagDebugDeviceBit = 0x0001,
+		eGPUDeviceInternalStateFlagMultiThreadAccessBit = 0x0002,
+		eGPUDeviceInternalStateFlagEnableResourceActiveRefsTrackingBit = 0x0008
 	};
 
 	
-	GPUDevice::GPUDevice( GPUDriver & pDriver )
+	GPUDevice::GPUDevice( GPUDriver & pDriver, GPUDeviceFeatureQuery & pFeatureQueryInterface )
 	: GPUDriverChildObject( pDriver )
 	, mGPUDriverID( pDriver.QueryGPUDriverID() )
 	, mSysContext( pDriver.mSysContext )
+	, mFeatureQueryInterface( &pFeatureQueryInterface )
 	{
 		if( pDriver.IsDebugFunctionalityRequested() )
 		{
-			_internalStateFlags.set( EGPUDeviceInternalStateFlagDebugDeviceBit );
+			_internalStateFlags.set( eGPUDeviceInternalStateFlagDebugDeviceBit );
 		}
 	}
 
@@ -48,17 +49,17 @@ namespace Ic3::Graphics::GCI
 
 	bool GPUDevice::IsDebugDevice() const noexcept
 	{
-		return _internalStateFlags.is_set( EGPUDeviceInternalStateFlagDebugDeviceBit );
+		return _internalStateFlags.is_set( eGPUDeviceInternalStateFlagDebugDeviceBit );
 	}
 
 	bool GPUDevice::IsMultiThreadAccessSupported() const noexcept
 	{
-		return _internalStateFlags.is_set( EGPUDeviceInternalStateFlagMultiThreadAccessBit );
+		return _internalStateFlags.is_set( eGPUDeviceInternalStateFlagMultiThreadAccessBit );
 	}
 
 	bool GPUDevice::IsResourceActiveRefsTrackingEnabled() const noexcept
 	{
-		return _internalStateFlags.is_set( EGPUDeviceInternalStateFlagEnableResourceActiveRefsTrackingBit );
+		return _internalStateFlags.is_set( eGPUDeviceInternalStateFlagEnableResourceActiveRefsTrackingBit );
 	}
 
 	CommandSystem & GPUDevice::GetCommandSystem() const noexcept
@@ -214,11 +215,27 @@ namespace Ic3::Graphics::GCI
 		}
 
 		{
+			auto rootSignatureDescriptor = pCreateInfo.rootSignatureDescriptor;
+			if( !rootSignatureDescriptor && CXU::IsPipelineStateDescriptorIDValid( pCreateInfo.rootSignatureDescriptorID ) )
+			{
+				rootSignatureDescriptor =
+					_pipelineStateDescriptorManager->GetCachedDescriptorByID<RootSignatureDescriptor>(
+						pCreateInfo.rootSignatureDescriptorID );
+
+				if( !rootSignatureDescriptor )
+				{
+					return nullptr;
+				}
+			}
+			psoCreateInfo.rootSignatureDescriptor = rootSignatureDescriptor;
+		}
+
+		{
 			auto shaderLinkageStateDescriptor = pCreateInfo.shaderLinkageStateDescriptor;
 			if( !shaderLinkageStateDescriptor && CXU::IsPipelineStateDescriptorIDValid( pCreateInfo.shaderLinkageStateDescriptorID ) )
 			{
 				shaderLinkageStateDescriptor =
-					_pipelineStateDescriptorManager->GetCachedDescriptorByID<GraphicsShaderLinkageStateDescriptor>(
+					_pipelineStateDescriptorManager->GetCachedDescriptorByID<GraphicsShaderLinkageDescriptor>(
 						pCreateInfo.shaderLinkageStateDescriptorID );
 
 				if( !shaderLinkageStateDescriptor )
@@ -230,35 +247,19 @@ namespace Ic3::Graphics::GCI
 		}
 
 		{
-			auto vertexAttributeLayoutStateDescriptor = pCreateInfo.vertexAttributeLayoutStateDescriptor;
-			if( !vertexAttributeLayoutStateDescriptor && CXU::IsPipelineStateDescriptorIDValid( pCreateInfo.vertexAttributeLayoutStateDescriptorID ) )
+			auto vertexAttributeLayoutDescriptor = pCreateInfo.vertexAttributeLayoutDescriptor;
+			if( !vertexAttributeLayoutDescriptor && CXU::IsPipelineStateDescriptorIDValid( pCreateInfo.vertexAttributeLayoutDescriptorID ) )
 			{
-				vertexAttributeLayoutStateDescriptor =
-					_pipelineStateDescriptorManager->GetCachedDescriptorByID<IAVertexAttributeLayoutStateDescriptor>(
-						pCreateInfo.vertexAttributeLayoutStateDescriptorID );
+				vertexAttributeLayoutDescriptor =
+					_pipelineStateDescriptorManager->GetCachedDescriptorByID<VertexAttributeLayoutDescriptor>(
+						pCreateInfo.vertexAttributeLayoutDescriptorID );
 
-				if( !vertexAttributeLayoutStateDescriptor )
+				if( !vertexAttributeLayoutDescriptor )
 				{
 					return nullptr;
 				}
 			}
-			psoCreateInfo.vertexAttributeLayoutStateDescriptor = vertexAttributeLayoutStateDescriptor;
-		}
-
-		{
-			auto shaderRootSignatureStateDescriptor = pCreateInfo.shaderRootSignatureStateDescriptor;
-			if( !shaderRootSignatureStateDescriptor && CXU::IsPipelineStateDescriptorIDValid( pCreateInfo.shaderRootSignatureStateDescriptorID ) )
-			{
-				shaderRootSignatureStateDescriptor =
-					_pipelineStateDescriptorManager->GetCachedDescriptorByID<ShaderRootSignatureStateDescriptor>(
-						pCreateInfo.shaderRootSignatureStateDescriptorID );
-
-				if( !shaderRootSignatureStateDescriptor )
-				{
-					return nullptr;
-				}
-			}
-			psoCreateInfo.shaderRootSignatureStateDescriptor = shaderRootSignatureStateDescriptor;
+			psoCreateInfo.vertexAttributeLayoutDescriptor = vertexAttributeLayoutDescriptor;
 		}
 
 		return _DrvCreateGraphicsPipelineStateObject( pCreateInfo );
@@ -282,34 +283,40 @@ namespace Ic3::Graphics::GCI
 		return _pipelineStateDescriptorManager->CreateRasterizerStateDescriptor( pCreateInfo );
 	}
 
-	GraphicsShaderLinkageStateDescriptorHandle GPUDevice::CreateGraphicsShaderLinkageStateDescriptor(
-			const GraphicsShaderLinkageStateDescriptorCreateInfo & pCreateInfo )
+	GraphicsShaderLinkageDescriptorHandle GPUDevice::CreateGraphicsShaderLinkageDescriptor(
+			const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo )
 	{
-		return _pipelineStateDescriptorManager->CreateGraphicsShaderLinkageStateDescriptor( pCreateInfo );
+		return _pipelineStateDescriptorManager->CreateGraphicsShaderLinkageDescriptor( pCreateInfo );
 	}
 
-	IAVertexAttributeLayoutStateDescriptorHandle GPUDevice::CreateIAVertexAttributeLayoutStateDescriptor(
-			const IAVertexAttributeLayoutStateDescriptorCreateInfo & pCreateInfo )
+	VertexAttributeLayoutDescriptorHandle GPUDevice::CreateVertexAttributeLayoutDescriptor(
+			const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo )
 	{
-		return _pipelineStateDescriptorManager->CreateIAVertexAttributeLayoutStateDescriptor( pCreateInfo );
+		return _pipelineStateDescriptorManager->CreateVertexAttributeLayoutDescriptor( pCreateInfo );
 	}
 
-	ShaderRootSignatureStateDescriptorHandle GPUDevice::CreateShaderRootSignatureStateDescriptor(
-			const ShaderRootSignatureStateDescriptorCreateInfo & pCreateInfo )
+	RootSignatureDescriptorHandle GPUDevice::CreateRootSignatureDescriptor(
+			const RootSignatureDescriptorCreateInfo & pCreateInfo )
 	{
-		return _pipelineStateDescriptorManager->CreateShaderRootSignatureStateDescriptor( pCreateInfo );
+		return _pipelineStateDescriptorManager->CreateRootSignatureDescriptor( pCreateInfo );
 	}
 
-	IAVertexStreamBindingStateDescriptorHandle GPUDevice::CreateIAVertexStreamBindingStateDescriptor(
-			const IAVertexStreamBindingStateDescriptorCreateInfo & pCreateInfo )
+	RenderPassDescriptorHandle GPUDevice::CreateRenderPassDescriptor(
+			const RenderPassDescriptorCreateInfo & pCreateInfo )
 	{
-		return _pipelineStateDescriptorManager->CreateIAVertexStreamBindingStateDescriptor( pCreateInfo );
+		return _pipelineStateDescriptorManager->CreateRenderPassDescriptor( pCreateInfo );
 	}
 
-	RenderPassConfigurationStateDescriptorHandle GPUDevice::CreateRenderPassConfigurationStateDescriptor(
-			const RenderPassConfigurationStateDescriptorCreateInfo & pCreateInfo )
+	RenderTargetDescriptorHandle GPUDevice::CreateRenderTargetDescriptor(
+			const RenderTargetDescriptorCreateInfo & pCreateInfo )
 	{
-		return _pipelineStateDescriptorManager->CreateRenderPassConfigurationStateDescriptor( pCreateInfo );
+		return _pipelineStateDescriptorManager->CreateRenderTargetDescriptor( pCreateInfo );
+	}
+
+	VertexSourceBindingDescriptorHandle GPUDevice::CreateVertexSourceBindingDescriptor(
+			const VertexSourceBindingDescriptorCreateInfo & pCreateInfo )
+	{
+		return _pipelineStateDescriptorManager->CreateVertexSourceBindingDescriptor( pCreateInfo );
 	}
 
 	void GPUDevice::ResetStateDescriptorCache( cppx::bitmask<EPipelineStateDescriptorTypeFlags> pResetMask )
@@ -348,7 +355,7 @@ namespace Ic3::Graphics::GCI
 			return true;
 		}
 
-		_pipelineStateDescriptorManager.reset();
+		_pipelineStateDescriptorManager->Reset();
 
 		return false;
 	}

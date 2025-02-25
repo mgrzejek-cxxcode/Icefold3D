@@ -7,29 +7,64 @@
 #include "CommonGraphicsConfig.h"
 #include "RenderTargetArrayUtils.h"
 #include "../Resources/TextureCommon.h"
+#include <Ic3/System/Visual.h>
 
 namespace Ic3::Graphics::GCI
 {
 
+	struct RenderPassAttachmentConfig;
+	struct RenderTargetAttachmentBinding;
+	struct RenderTargetAttachmentLayout;
+
 	Ic3DeclareClassHandle( RenderTargetTexture );
+
+	using RenderPassConfiguration = TRenderTargetArrayConfiguration<RenderPassAttachmentConfig>;
+	using RenderTargetBinding = TRenderTargetArrayConfiguration<RenderTargetAttachmentBinding>;
+	using RenderTargetLayout = TRenderTargetArrayConfiguration<RenderTargetAttachmentLayout>;
 
 	enum ERenderTargetBufferFlags : uint32
 	{
-		ERenderTargetBufferFlagColorBit = 0x01,
-		ERenderTargetBufferFlagDepthBit = 0x02,
-		ERenderTargetBufferFlagStencilBit = 0x04,
-		ERenderTargetBufferMaskDepthStencil = ERenderTargetBufferFlagDepthBit | ERenderTargetBufferFlagStencilBit,
-		ERenderTargetBufferMaskAll = ERenderTargetBufferFlagColorBit | ERenderTargetBufferMaskDepthStencil,
+		eRenderTargetBufferFlagColorBit = 0x01,
+		eRenderTargetBufferFlagDepthBit = 0x02,
+		eRenderTargetBufferFlagStencilBit = 0x04,
+		eRenderTargetBufferMaskDepthStencil = eRenderTargetBufferFlagDepthBit | eRenderTargetBufferFlagStencilBit,
+		eRenderTargetBufferMaskAll = eRenderTargetBufferFlagColorBit | eRenderTargetBufferMaskDepthStencil,
 	};
 
 	/// @brief
 	enum class ERenderTargetTextureType : uint32
 	{
 		Unknown = 0,
-		RTColor = ERenderTargetBufferFlagColorBit,
-		RTDepthOnly = ERenderTargetBufferFlagDepthBit,
-		RTDepthStencil = ERenderTargetBufferMaskDepthStencil,
-		RTStencilOnly = ERenderTargetBufferFlagStencilBit,
+		RTColor = eRenderTargetBufferFlagColorBit,
+		RTDepthOnly = eRenderTargetBufferFlagDepthBit,
+		RTDepthStencil = eRenderTargetBufferMaskDepthStencil,
+		RTStencilOnly = eRenderTargetBufferFlagStencilBit,
+	};
+
+	/**
+	 *
+	 */
+	struct RenderTargetAttachmentBinding
+	{
+		RenderTargetTextureHandle baseTexture;
+
+		RenderTargetTextureHandle resolveTexture;
+
+		explicit operator bool() const noexcept
+		{
+			return IsActive();
+		}
+
+		bool IsActive() const noexcept
+		{
+			return baseTexture ? true : false;
+		}
+
+		void Reset()
+		{
+			baseTexture.reset();
+			resolveTexture.reset();
+		}
 	};
 
 	/**
@@ -55,23 +90,34 @@ namespace Ic3::Graphics::GCI
 		}
 	};
 
-	/**
-	 *
-	 */
-	struct RenderTargetArrayLayout : public TRenderTargetArrayConfiguration<RenderTargetAttachmentLayout>
+	template <>
+	struct TRenderTargetArrayConfiguration<RenderTargetAttachmentBinding> : public TRenderTargetArrayConfigurationBase<RenderTargetAttachmentBinding>
+	{
+		IC3_GRAPHICS_GCI_API_NO_DISCARD RenderTargetLayout GetRenderTargetLayout() const noexcept;
+
+		IC3_GRAPHICS_GCI_API_NO_DISCARD cppx::bitmask<ERTAttachmentFlags> GetResolveAttachmentsMask() const noexcept;
+	};
+
+	template <>
+	struct TRenderTargetArrayConfiguration<RenderTargetAttachmentLayout> : public TRenderTargetArrayConfigurationBase<RenderTargetAttachmentLayout>
 	{
 		TextureSize2D sharedImageSize = cxTextureSize2DUndefined;
 
 		MultiSamplingSettings sharedMultiSamplingSettings;
 	};
 
+	struct RenderTargetDescriptorCreateInfo : public PipelineStateDescriptorCreateInfoBase
+	{
+		RenderTargetBinding rtArrayBinding;
+	};
+
 	namespace defaults
 	{
 
-		IC3_GRAPHICS_GCI_OBJ const RenderTargetArrayLayout cvRenderTargetLayoutDefaultBGRA8;
-		IC3_GRAPHICS_GCI_OBJ const RenderTargetArrayLayout cvRenderTargetLayoutDefaultBGRA8D24S8;
-		IC3_GRAPHICS_GCI_OBJ const RenderTargetArrayLayout cvRenderTargetLayoutDefaultRGBA8;
-		IC3_GRAPHICS_GCI_OBJ const RenderTargetArrayLayout cvRenderTargetLayoutDefaultRGBA8D24S8;
+		IC3_GRAPHICS_GCI_OBJ const RenderTargetLayout cvRenderTargetLayoutDefaultBGRA8;
+		IC3_GRAPHICS_GCI_OBJ const RenderTargetLayout cvRenderTargetLayoutDefaultBGRA8D24S8;
+		IC3_GRAPHICS_GCI_OBJ const RenderTargetLayout cvRenderTargetLayoutDefaultRGBA8;
+		IC3_GRAPHICS_GCI_OBJ const RenderTargetLayout cvRenderTargetLayoutDefaultRGBA8D24S8;
 
 	}
 
@@ -84,6 +130,13 @@ namespace Ic3::Graphics::GCI
 
 		CPPX_ATTR_NO_DISCARD cppx::bitmask<ERenderTargetBufferFlags> RTOGetBufferMaskForRenderTargetTextureType(
 				ERenderTargetTextureType pRenderTargetTextureType );
+
+		CPPX_ATTR_NO_DISCARD RenderTargetLayout RTOGetRenderTargetLayoutForBinding( const RenderTargetBinding & pRenderTargetBinding );
+
+		CPPX_ATTR_NO_DISCARD RenderTargetLayout TranslateSystemVisualConfigToRenderTargetLayout(
+			const System::VisualConfig & pSysVisualConfig );
+
+		CPPX_ATTR_NO_DISCARD bool RTOValidateRenderTargetBinding( const RenderTargetBinding & pRenderTargetBinding );
 
 	}
 

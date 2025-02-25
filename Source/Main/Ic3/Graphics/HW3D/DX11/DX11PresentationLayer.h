@@ -23,14 +23,14 @@ namespace Ic3::Graphics::GCI
 	public:
 		ComPtr<ID3D11Device1> const mD3D11Device1;
 
-		RenderTargetBindingImmutableStateHandle const mScreenRenderTargetBindingState;
+		RenderTargetBindingCompiledStateHandle const mScreenRenderTargetBindingState;
 
 	public:
 		DX11ScreenPresentationLayer(
 				DX11GPUDevice & pDevice,
 				System::WindowHandle pSysWindow,
 				ComPtr<IDXGISwapChain1> pDXGISwapChain,
-				RenderTargetBindingImmutableStateHandle pScreenRenderTargetBindingState );
+				RenderTargetBindingCompiledStateHandle pScreenRenderTargetBindingState );
 
 		virtual ~DX11ScreenPresentationLayer();
 

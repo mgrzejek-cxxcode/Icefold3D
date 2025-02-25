@@ -18,10 +18,10 @@ namespace cppx
 	{
 
 		/// @brief Represents max value which can be stored in the size_t type.
-		constexpr size_t max_size = static_cast<size_t>( -1 );
+		inline constexpr size_t max_size = static_cast<size_t>( -1 );
 
 		/// @brief
-		constexpr size_t invalid_length = static_cast<size_t>( -1 );
+		inline constexpr size_t invalid_length = static_cast<size_t>( -1 );
 
 		/// @brief Represents and invalid position (e.g. in a container or a continuous range).
 		inline constexpr size_t invalid_position = static_cast<size_t>( -1 );

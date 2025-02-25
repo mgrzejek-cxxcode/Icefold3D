@@ -1,8 +1,8 @@
 
 #pragma once
 
-#ifndef __IC3_GRAPHICS_HW3D_GLCOMMON_PREREQUISITES_H__
-#define __IC3_GRAPHICS_HW3D_GLCOMMON_PREREQUISITES_H__
+#ifndef __IC3_GRAPHICS_HW3D_GLC_PREREQUISITES_H__
+#define __IC3_GRAPHICS_HW3D_GLC_PREREQUISITES_H__
 
 #include <Ic3/Graphics/GCI/Memory/CommonGPUMemoryDefs.h>
 #include <Ic3/System/OpenGLDriver.h>
@@ -88,7 +88,7 @@
 #  define IC3_GX_GL_CLASS
 #  define IC3_GX_GL_OBJ    extern
 #else
-#  if( IC3_DRIVER_GRAPHICS_HW3D_GLCOMMON_BUILD )
+#  if( IC3_DRIVER_GRAPHICS_HW3D_GLC_BUILD )
 #    define IC3_GX_GL_API    PCL_ATTR_DLL_EXPORT
 #    define IC3_GX_GL_CLASS  PCL_ATTR_DLL_EXPORT
 #    define IC3_GX_GL_OBJ    PCL_ATTR_DLL_EXPORT
@@ -106,15 +106,15 @@
 namespace Ic3::Graphics::GCI
 {
 
-	class RenderPassConfigurationImmutableStateDefault;
+	// class RenderPassConfigurationCompiledStateDefault;
 
-	class GLBlendImmutableState;
-	class GLDepthStencilImmutableState;
-	class GLRasterizerImmutableState;
-	class GLGraphicsShaderLinkageImmutableState;
-	class GLIAInputLayoutImmutableState;
-	class GLIAVertexStreamImmutableState;
-	class GLRenderTargetBindingImmutableState;
+	class GLBlendStateDescriptor;
+	class GLDepthStencilStateDescriptor;
+	class GLRasterizerStateDescriptor;
+	class GLGraphicsShaderLinkageDescriptor;
+	class GLVertexAttributeLayoutDescriptor;
+	class GLRenderTargetBindingCompiledState;
+	class GLVertexSourceBindingDescriptor;
 
 	Ic3GCIDeclareClassHandle( GLCommandList );
 	Ic3GCIDeclareClassHandle( GLCommandSystem );
@@ -122,8 +122,6 @@ namespace Ic3::Graphics::GCI
 	Ic3GCIDeclareClassHandle( GLGPUDriver );
 	Ic3GCIDeclareClassHandle( GLPresentationLayer );
 
-	Ic3GCIDeclareTypedefHandle( GLRenderPassConfigurationImmutableState, RenderPassConfigurationImmutableStateDefault );
-
 } // namespace Ic3::Graphics::GCI
 
-#endif // __IC3_GRAPHICS_HW3D_GLCOMMON_PREREQUISITES_H__
+#endif // __IC3_GRAPHICS_HW3D_GLC_PREREQUISITES_H__

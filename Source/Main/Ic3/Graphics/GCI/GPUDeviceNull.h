@@ -9,11 +9,20 @@
 namespace Ic3::Graphics::GCI
 {
 
+	class GPUDeviceFeatureQueryNull : public GPUDeviceFeatureQuery
+	{
+	public:
+		virtual MultiSamplingSettingsList EnumSupportedMultisamplingConfigs( ETextureFormat ) const noexcept override final
+		{
+			return {};
+		}
+	};
+
 	class GPUDeviceNull : public GPUDevice
 	{
 	public:
 		explicit GPUDeviceNull( GPUDriver & pDriver )
-		: GPUDevice( pDriver )
+		: GPUDevice( pDriver, _featureQueryImpl )
 		{}
 
 		virtual ~GPUDeviceNull() = default;
@@ -23,11 +32,11 @@ namespace Ic3::Graphics::GCI
 			return true;
 		}
 
-		virtual void WaitForCommandSync( CommandSync & pCommandSync ) override final
+		virtual void WaitForCommandSync( CommandSync & ) override final
 		{}
 
 	protected:
-		virtual bool OnGPUResourceActiveRefsZero( GPUResource & pGPUResource ) override final
+		virtual bool OnGPUResourceActiveRefsZero( GPUResource & ) override final
 		{
 			return false;
 		}
@@ -36,42 +45,45 @@ namespace Ic3::Graphics::GCI
 		virtual void InitializeCommandSystem() override final
 		{}
 
-		virtual bool _DrvOnSetPresentationLayer( PresentationLayerHandle pPresentationLayer ) override final
+		virtual bool _DrvOnSetPresentationLayer( PresentationLayerHandle ) override final
 		{
 			return false;
 		}
 
-		virtual GPUBufferHandle _DrvCreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo ) override final
+		virtual GPUBufferHandle _DrvCreateGPUBuffer( const GPUBufferCreateInfo & ) override final
 		{
 			return nullptr;
 		}
 
-		virtual SamplerHandle _DrvCreateSampler( const SamplerCreateInfo & pCreateInfo ) override final
+		virtual SamplerHandle _DrvCreateSampler( const SamplerCreateInfo & ) override final
 		{
 			return nullptr;
 		}
 
-		virtual ShaderHandle _DrvCreateShader( const ShaderCreateInfo & pCreateInfo ) override final
+		virtual ShaderHandle _DrvCreateShader( const ShaderCreateInfo & ) override final
 		{
 			return nullptr;
 		}
 
-		virtual TextureHandle _DrvCreateTexture( const TextureCreateInfo & pCreateInfo ) override final
+		virtual TextureHandle _DrvCreateTexture( const TextureCreateInfo & ) override final
 		{
 			return nullptr;
 		}
 
 		virtual RenderTargetTextureHandle _DrvCreateRenderTargetTexture(
-				const RenderTargetTextureCreateInfo & pCreateInfo ) override final
+				const RenderTargetTextureCreateInfo & ) override final
 		{
 			return nullptr;
 		}
 
 		virtual GraphicsPipelineStateObjectHandle _DrvCreateGraphicsPipelineStateObject(
-				const GraphicsPipelineStateObjectCreateInfo & pCreateInfo ) override final
+				const GraphicsPipelineStateObjectCreateInfo & ) override final
 		{
 			return nullptr;
 		}
+
+	private:
+		GPUDeviceFeatureQueryNull _featureQueryImpl;
 	};
 
 } // namespace Ic3::Graphics::GCI

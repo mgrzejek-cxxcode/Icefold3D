@@ -5,7 +5,7 @@
 #define __IC3_GRAPHICS_HW3D_MTLCOMMON_PIPELINE_STATE_OBJECT_H__
 
 #include "../MTLPrerequisites.h"
-#include <Ic3/Graphics/GCI/State/PipelineStateObject.h>
+#include <Ic3/Graphics/GCI/State/GraphicsPipelineStateCommon.h>
 
 namespace Ic3::Graphics::GCI
 {

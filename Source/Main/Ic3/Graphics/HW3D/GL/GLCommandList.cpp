@@ -5,11 +5,11 @@
 #include "Objects/GLFramebufferObject.h"
 #include "Objects/GLShaderProgramObject.h"
 #include "Objects/GLVertexArrayObject.h"
-#include "State/GLPipelineStateObject.h"
-#include "State/GLGraphicsShaderState.h"
-#include "State/GLRenderTarget.h"
+#include "State/GLGraphicsPipelineStateObject.h"
+#include "State/GLGraphicsPipelineStateShader.h"
+#include "State/GLGraphicsPipelineStateRTO.h"
 
-#include <Ic3/Graphics/GCI/State/RenderTargetDynamicStates.h>
+#include <Ic3/Graphics/GCI/State/GraphicsPipelineStateDescriptorRTO.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -19,9 +19,9 @@ namespace Ic3::Graphics::GCI
 			ECommandListType pListType,
 			System::OpenGLRenderContextHandle pSysGLRenderContext,
 			GLGraphicsPipelineStateController & pStateController )
-	: CommandListRenderPassDefault( pGLCommandSystem, pListType, pStateController )
+	: CommandListGenericRenderPass( pGLCommandSystem, pListType, pStateController )
 	, mSysGLRenderContext( pSysGLRenderContext )
-	, _graphicsPipelineStateControllerGL( &pStateController )
+	, _glcGraphicsPipelineStateController( &pStateController )
 	{}
 
 	GLCommandList::~GLCommandList() = default;
@@ -36,41 +36,52 @@ namespace Ic3::Graphics::GCI
 		CommandList::EndCommandSequence();
 	}
 
-	void GLCommandList::CmdDrawDirectIndexed( native_uint pIndicesNum, native_uint pIndicesOffset, native_uint pBaseVertexIndex )
+	void GLCommandList::CmdDrawDirectIndexed(
+			native_uint pIndicesNum,
+			native_uint pIndicesOffset,
+			native_uint pBaseVertexIndex )
 	{
-		_graphicsPipelineStateControllerGL->ApplyStateChanges();
+		_glcGraphicsPipelineStateController->ApplyStateChanges();
 
-		const auto & drawTopologyProperties = _graphicsPipelineStateControllerGL->GetGLDrawTopologyProperties();
+		const auto & drawTopologyProperties = _glcGraphicsPipelineStateController->GetCurrentDrawTopologyProperties();
 		const auto relativeIndexDataOffset = pIndicesOffset * drawTopologyProperties.indexBufferElementByteSize;
 		auto * baseIndexDataOffset = reinterpret_cast<void *>( drawTopologyProperties.indexBufferBaseOffset + relativeIndexDataOffset );
 
 		glDrawElementsBaseVertex(
-			drawTopologyProperties.primitiveTopology,
-			static_cast<GLsizei>( pIndicesNum ),
-			drawTopologyProperties.indexBufferDataType,
-			baseIndexDataOffset,
-			static_cast<GLint>( pBaseVertexIndex ) );
+				drawTopologyProperties.primitiveTopology,
+				static_cast<GLsizei>( pIndicesNum ),
+				drawTopologyProperties.indexBufferDataType,
+				baseIndexDataOffset,
+				static_cast<GLint>( pBaseVertexIndex ) );
 		Ic3OpenGLHandleLastError();
 	}
 
-	void GLCommandList::CmdDrawDirectIndexedInstanced( native_uint pIndicesNumPerInstance, native_uint pInstancesNum, native_uint pIndicesOffset )
+	void GLCommandList::CmdDrawDirectIndexedInstanced(
+			native_uint pIndicesNumPerInstance,
+			native_uint pInstancesNum,
+			native_uint pIndicesOffset )
 	{
 	}
 
-	void GLCommandList::CmdDrawDirectNonIndexed( native_uint pVerticesNum, native_uint pVerticesOffset )
+	void GLCommandList::CmdDrawDirectNonIndexed(
+			native_uint pVerticesNum,
+			native_uint pVerticesOffset )
 	{
-		_graphicsPipelineStateControllerGL->ApplyStateChanges();
+		_glcGraphicsPipelineStateController->ApplyStateChanges();
 
-		const auto & drawTopologyProperties = _graphicsPipelineStateControllerGL->GetGLDrawTopologyProperties();
+		const auto & drawTopologyProperties = _glcGraphicsPipelineStateController->GetCurrentDrawTopologyProperties();
 
 		glDrawArrays(
-			drawTopologyProperties.primitiveTopology,
-			static_cast< GLint >( pVerticesOffset ),
-			static_cast< GLsizei >( pVerticesNum ) );
+				drawTopologyProperties.primitiveTopology,
+				static_cast<GLint>( pVerticesOffset ),
+				static_cast<GLsizei>( pVerticesNum ) );
 		Ic3OpenGLHandleLastError();
 	}
 
-	void GLCommandList::CmdDrawDirectNonIndexedInstanced( native_uint pVerticesNumPerInstance, native_uint pInstancesNum, native_uint pVerticesOffset )
+	void GLCommandList::CmdDrawDirectNonIndexedInstanced(
+			native_uint pVerticesNumPerInstance,
+			native_uint pInstancesNum,
+			native_uint pVerticesOffset )
 	{
 	}
 
@@ -81,23 +92,23 @@ namespace Ic3::Graphics::GCI
 
 	void GLCommandList::ExecuteRenderPassLoadActions(
 			const RenderPassConfiguration & pRenderPassConfiguration,
-			const GraphicsPipelineDynamicState & pDynamicState )
+			const GraphicsPipelineDynamicConfig & pDynamicConfig )
 	{
-		if( pRenderPassConfiguration.attachmentsActionClearMask != 0 )
+		if( pRenderPassConfiguration.GetCachedAttachmentsWithFlags( eRenderPassAttachmentActionFlagLoadClearBit ) != 0 )
 		{
-			SMU::ClearRenderPassFramebuffer( pRenderPassConfiguration, pDynamicState );
+			GCU::RTORenderPassExecuteOpLoadClearGL( pRenderPassConfiguration, pDynamicConfig );
 		}
 	}
 
 	void GLCommandList::ExecuteRenderPassStoreActions(
 			const RenderPassConfiguration & pRenderPassConfiguration,
-			const GraphicsPipelineDynamicState & pDynamicState )
+			const GraphicsPipelineDynamicConfig & pDynamicConfig )
 	{
-		if( pRenderPassConfiguration.attachmentsActionResolveMask != 0 )
+		if( pRenderPassConfiguration.GetCachedAttachmentsWithFlags( eRenderPassAttachmentActionFlagStoreResolveBit ) != 0 )
 		{
-			SMU::ResolveRenderPassFramebuffer(
-				_graphicsPipelineStateControllerGL->GetCurrentRenderTargetBindingInfo(),
-				pRenderPassConfiguration );
+			GCU::RTORenderPassExecuteOpStoreResolveGL(
+				pRenderPassConfiguration,
+				_glcGraphicsPipelineStateController->GetGLRenderTargetBinding() );
 		}
 	}
 

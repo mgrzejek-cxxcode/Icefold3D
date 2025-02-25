@@ -1,8 +1,8 @@
 
 #pragma once
 
-#ifndef __IC3_GRAPHICS_GCI_SHADER_ROOT_SIGNATURE_H__
-#define __IC3_GRAPHICS_GCI_SHADER_ROOT_SIGNATURE_H__
+#ifndef __IC3_GRAPHICS_GCI_ROOT_SIGNATURE_H__
+#define __IC3_GRAPHICS_GCI_ROOT_SIGNATURE_H__
 
 #include "CommonGPUStateDefs.h"
 #include "../Resources/ShaderCommon.h"
@@ -56,7 +56,7 @@ namespace Ic3::Graphics::GCI
 		Unknown = 0,
 	};
 
-	namespace CxDef
+	namespace CXU
 	{
 
 		inline constexpr uint16 declareShaderInputResourceType( EShaderInputResourceClass pResourceClass, uint8 pIndex )
@@ -68,15 +68,15 @@ namespace Ic3::Graphics::GCI
 
 	enum class EShaderInputResourceType : uint16
 	{
-		CBVConstantBuffer = CxDef::declareShaderInputResourceType( EShaderInputResourceClass::CBV, 0 ),
-		SRVTextureBuffer  = CxDef::declareShaderInputResourceType( EShaderInputResourceClass::SRV, 1 ),
-		SRVTextureImage   = CxDef::declareShaderInputResourceType( EShaderInputResourceClass::SRV, 2 ),
-		UAVStorageBuffer  = CxDef::declareShaderInputResourceType( EShaderInputResourceClass::UAV, 3 ),
-		UAVStorageImage   = CxDef::declareShaderInputResourceType( EShaderInputResourceClass::UAV, 4 ),
+		CBVConstantBuffer = CXU::declareShaderInputResourceType( EShaderInputResourceClass::CBV, 0 ),
+		SRVTextureBuffer  = CXU::declareShaderInputResourceType( EShaderInputResourceClass::SRV, 1 ),
+		SRVTextureImage   = CXU::declareShaderInputResourceType( EShaderInputResourceClass::SRV, 2 ),
+		UAVStorageBuffer  = CXU::declareShaderInputResourceType( EShaderInputResourceClass::UAV, 3 ),
+		UAVStorageImage   = CXU::declareShaderInputResourceType( EShaderInputResourceClass::UAV, 4 ),
 		Unknown           = 0
 	};
 
-	namespace CxDef
+	namespace CXU
 	{
 
 		inline constexpr EShaderInputResourceClass GetShaderInputResourceResourceClass( EShaderInputResourceType pResourceType )
@@ -91,7 +91,7 @@ namespace Ic3::Graphics::GCI
 
 	}
 
-	struct ShaderRootSignatureDesc
+	struct RootSignatureDesc
 	{
 		struct ConstantDesc
 		{
@@ -195,7 +195,7 @@ namespace Ic3::Graphics::GCI
 		};
 	};
 
-	struct ShaderRootSignature
+	struct RootSignature
 	{
 		struct ConstantLayout
 		{
@@ -265,9 +265,9 @@ namespace Ic3::Graphics::GCI
 		uint32 descriptorSetsNum;
 		uint32 parametersNum;
 
-		ShaderRootSignature() = default;
+		RootSignature() = default;
 
-		ShaderRootSignature( const InitEmptyTag & )
+		RootSignature( const InitEmptyTag & )
         : dwordSize( 0 )
 		{}
 
@@ -289,9 +289,9 @@ namespace Ic3::Graphics::GCI
 		}
 	};
 
-	struct ShaderRootSignatureStateDescriptorCreateInfo : public PipelineStateDescriptorCreateInfoBase
+	struct RootSignatureDescriptorCreateInfo : public PipelineStateDescriptorCreateInfoBase
 	{
-		ShaderRootSignatureDesc rootSignatureDesc;
+		RootSignatureDesc rootSignatureDesc;
 
 		CPPX_ATTR_NO_DISCARD pipeline_config_hash_t GetConfigHash() const noexcept
 		{
@@ -302,10 +302,10 @@ namespace Ic3::Graphics::GCI
 	namespace GCU
 	{
 
-		IC3_GRAPHICS_GCI_API ShaderRootSignature CreateShaderRootSignature( const ShaderRootSignatureDesc & pSignatureDesc );
+		IC3_GRAPHICS_GCI_API RootSignature CreateRootSignature( const RootSignatureDesc & pSignatureDesc );
 
 	}
 
 } // namespace Ic3::Graphics::GCI
 
-#endif // __IC3_GRAPHICS_GCI_SHADER_ROOT_SIGNATURE_H__
+#endif // __IC3_GRAPHICS_GCI_ROOT_SIGNATURE_H__

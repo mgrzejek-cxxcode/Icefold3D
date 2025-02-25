@@ -28,8 +28,8 @@ ebsSetInternal( IC3_GRAPHICS_HWAPI_MTLCOMMON_SRC_FILES
         "${CMAKE_CURRENT_SOURCE_DIR}/resources/MTLTexture.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/resources/MTLTexture.mm"
 
-        "${CMAKE_CURRENT_SOURCE_DIR}/state/MTLPipelineImmutableStateFactory.h"
-        "${CMAKE_CURRENT_SOURCE_DIR}/state/MTLPipelineImmutableStateFactory.mm"
+        "${CMAKE_CURRENT_SOURCE_DIR}/state/MTLPipelineStateDescriptorFactory.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/state/MTLPipelineStateDescriptorFactory.mm"
         "${CMAKE_CURRENT_SOURCE_DIR}/state/MTLPipelineStateController.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/state/MTLPipelineStateController.mm"
         "${CMAKE_CURRENT_SOURCE_DIR}/state/MTLPipelineStateObject.h"

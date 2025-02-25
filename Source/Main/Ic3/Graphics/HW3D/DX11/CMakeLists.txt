@@ -39,8 +39,8 @@ set( IC3_GRAPHICS_HWAPI_DX11_SRC_FILES
 
         "state/DX11_inputAssembler.cpp"
 		"state/DX11_inputAssembler.h"
-		"state/DX11_pipelineImmutableStateFactory.cpp"
-		"state/DX11_pipelineImmutableStateFactory.h"
+		"state/DX11_pipelineCompiledDescriptorFactory.cpp"
+		"state/DX11_pipelineCompiledDescriptorFactory.h"
 		"state/DX11_renderTarget.cpp"
 		"state/DX11_renderTarget.h"
 		

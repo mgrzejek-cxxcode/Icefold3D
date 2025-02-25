@@ -9,45 +9,46 @@
 namespace Ic3::Graphics
 {
 	
-	using gcm_value_t = uint32;
+	using gcm_value_t = native_uint;
 
 	// Graphics Core Metrics
 	namespace GCM
 	{
 
-		constexpr gcm_value_t cxIAGenericInputArraySize = 16;
+		constexpr gcm_value_t kIAMaxVertexAttributesNum = 16;
 
-		constexpr gcm_value_t cxIAMaxVertexAttributesNum = cxIAGenericInputArraySize;
+		constexpr gcm_value_t kIAMaxVertexAttributeComponentsNum = 4;
 
-		constexpr gcm_value_t cxIAMaxVertexAttributeComponentsNum = 4;
+		constexpr gcm_value_t kIAMaxVertexAttributeSemanticGroupSize = 4;
 
-		constexpr gcm_value_t cxIAMaxVertexAttributeSemanticGroupSize = 4;
+		constexpr gcm_value_t kIAMaxDataStreamVertexBuffersNum = 16;
 
-		constexpr gcm_value_t cxIAMaxVertexBufferBindingsNum = cxIAGenericInputArraySize;
+		constexpr gcm_value_t kIAMaxDataStreamCombinedBuffersNum = kIAMaxDataStreamVertexBuffersNum + 1;
 
-		constexpr gcm_value_t cxIAMaxVertexStreamsNum = cxIAMaxVertexBufferBindingsNum;
+		/// Maximum number of Render Target color attachments.
+		constexpr gcm_value_t kRTOMaxColorAttachmentsNum = 8;
 
-		constexpr gcm_value_t cxRTMaxColorAttachmentsNum = 8;
+		/// Maximum number of all Render Target attachments (size of the RT attachment array). This equals to the
+		/// maximum number of color attachments +1 for depth-stencil attachment.
+		constexpr gcm_value_t kRTOMaxCombinedAttachmentsNum = kRTOMaxColorAttachmentsNum + 1;
 
-		constexpr gcm_value_t cxRTMaxCombinedAttachmentsNum = 9;
+		constexpr gcm_value_t kSRSMaxConstantGroupSize = 32;
 
-		constexpr gcm_value_t cxISMaxConstantGroupSize = 32;
+		constexpr gcm_value_t kSRSMaxDescriptorSetSize = 16;
 
-		constexpr gcm_value_t cxISMaxDescriptorSetSize = 16;
+		constexpr gcm_value_t kSRSMaxDescriptorSetsNum = 4;
 
-		constexpr gcm_value_t cxISMaxDescriptorSetsNum = 4;
+		constexpr gcm_value_t kSRSMaxDwordSize = 64;
 
-		constexpr gcm_value_t cxISMaxDwordSize = 64;
+		constexpr gcm_value_t kShaderCombinedStagesNum = 6;
 
-		constexpr gcm_value_t cxShaderCombinedStagesNum = 6;
+		constexpr gcm_value_t kShaderGraphicsStagesNum = 5;
 
-		constexpr gcm_value_t cxShaderGraphicsStagesNum = 5;
+		constexpr gcm_value_t kResMaxConstantBuffersNum = 16;
 
-		constexpr gcm_value_t cxResMaxConstantBuffersNum = 16;
+		constexpr gcm_value_t kResMaxTextureUnitsNum = 16;
 
-		constexpr gcm_value_t cxResMaxTextureUnitsNum = 16;
-
-		constexpr gcm_value_t cxTextureMaxMipLevelsNum = 16;
+		constexpr gcm_value_t kTextureMaxMipLevelsNum = 16;
 
 	} // namespace GCM
 

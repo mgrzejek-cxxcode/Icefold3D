@@ -266,6 +266,8 @@ namespace Ic3
 		// either a typo (in case of manual call) or a problem with the ThrowException() function defined below.
 		Ic3DebugAssert( TException::mBaseType == CxDef::getExceptionCodeBaseType( pExceptionInfo.code ) );
 
+		Ic3DebugInterrupt();
+
 		throw TException( std::move( pExceptionInfo ), std::forward<TArgs>( pArgs )... );
 	}
 

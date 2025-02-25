@@ -72,12 +72,32 @@ namespace Ic3
 		}
 
 		template <typename TPInterfaceSubClass>
+		CPPX_ATTR_NO_DISCARD TSharedHandle<const TPInterfaceSubClass> GetHandle() const
+		{
+		#if( IC3_DEBUG )
+			return dynamic_ptr_cast_check<const TPInterfaceSubClass>( shared_from_this() );
+		#else
+			return std::static_pointer_cast<const TPInterfaceSubClass>( shared_from_this() );
+		#endif
+		}
+
+		template <typename TPInterfaceSubClass>
 		CPPX_ATTR_NO_DISCARD TSharedHandle<TPInterfaceSubClass> QueryHandle()
 		{
 		#if( IC3_DEBUG )
 			return dynamic_ptr_cast_throw<TPInterfaceSubClass>( shared_from_this() );
 		#else
 			return std::static_pointer_cast<TPInterfaceSubClass>( shared_from_this() );
+		#endif
+		}
+
+		template <typename TPInterfaceSubClass>
+		CPPX_ATTR_NO_DISCARD TSharedHandle<const TPInterfaceSubClass> QueryHandle() const
+		{
+		#if( IC3_DEBUG )
+			return dynamic_ptr_cast_throw<const TPInterfaceSubClass>( shared_from_this() );
+		#else
+			return std::static_pointer_cast<const TPInterfaceSubClass>( shared_from_this() );
 		#endif
 		}
 
@@ -150,17 +170,23 @@ namespace Ic3
 #define Ic3DeclareClassHandle( pClassName ) \
     class pClassName; \
     using pClassName##Handle = TSharedHandle<pClassName>; \
-    using pClassName##TWeakHandle = TWeakHandle<pClassName>
+    using pClassName##TWeakHandle = TWeakHandle<pClassName>; \
+    using Const##pClassName##Handle = TSharedHandle<const pClassName>; \
+    using Const##pClassName##WeakHandle = TWeakHandle<const pClassName>
 
 #define Ic3DeclareInterfaceHandle( pInterfaceName ) \
     class pInterfaceName; \
     using pInterfaceName##Handle = TSharedHandle<pInterfaceName>; \
-    using pInterfaceName##TWeakHandle = TWeakHandle<pInterfaceName>
+    using pInterfaceName##WeakHandle = TWeakHandle<pInterfaceName>; \
+    using ConstpInterfaceName##Handle = TSharedHandle<const pInterfaceName>; \
+    using ConstpInterfaceName##WeakHandle = TWeakHandle<const pInterfaceName>
 
 #define Ic3DeclareTypedefHandle( pAliasName, pTypeName ) \
     using pAliasName = pTypeName; \
     using pAliasName##Handle = TSharedHandle<pAliasName>; \
-    using pAliasName##TWeakHandle = TWeakHandle<pAliasName>
+    using pAliasName##WeakHandle = TWeakHandle<pAliasName>; \
+    using Const##pAliasName##Handle = TSharedHandle<const pAliasName>; \
+    using Const##pAliasName##WeakHandle = TWeakHandle<const pAliasName>
 
 }
 

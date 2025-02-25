@@ -213,14 +213,14 @@ namespace Ic3::Graphics::GCI
 	};
 
 	/// @brief
-	using IAVertexStreamVertexBufferReferenceArray = std::array<IAVertexBufferReference, GCM::kIAMaxDataStreamVertexBuffersNum>;
+	using IAVertexBufferReferenceArray = std::array<IAVertexBufferReference, GCM::kIAMaxDataStreamVertexBuffersNum>;
 
 	/**
 	 *
 	 */
-	struct IAVertexStreamBindingCommonConfig
+	struct IAVertexSourceBindingCommonConfig
 	{
-		cppx::bitmask<EIAVertexStreamBindingFlags> activeStreamsMask;
+		cppx::bitmask<EVertexSourceBindingFlags> activeStreamsMask;
 
 		uint32 activeStreamsNum = 0;
 
@@ -242,7 +242,7 @@ namespace Ic3::Graphics::GCI
 
 		CPPX_ATTR_NO_DISCARD bool IsVertexBufferActive( native_uint pVertexBufferIndex ) const noexcept
 		{
-			const auto vertexBufferBit = CXU::IAMakeDataStreamVertexBufferBindingFlag( pVertexBufferIndex );
+			const auto vertexBufferBit = CXU::IAMakeVertexSourceVertexBufferBindingFlag( pVertexBufferIndex );
 			return activeStreamsMask.is_set( vertexBufferBit );
 		}
 	};
@@ -250,9 +250,9 @@ namespace Ic3::Graphics::GCI
 	/**
 	 *
 	 */
-	struct IAVertexStreamBindingDefinition : public IAVertexStreamBindingCommonConfig
+	struct IAVertexSourceBindingDefinition : public IAVertexSourceBindingCommonConfig
 	{
-		IAVertexStreamVertexBufferReferenceArray vertexBufferReferences;
+		IAVertexBufferReferenceArray vertexBufferReferences;
 
 		IAIndexBufferReference indexBufferReference;
 
@@ -268,7 +268,7 @@ namespace Ic3::Graphics::GCI
 		}
 	};
 
-	struct IAVertexAttributeLayoutStateDescriptorCreateInfo : public PipelineStateDescriptorCreateInfoBase
+	struct VertexAttributeLayoutDescriptorCreateInfo : public PipelineStateDescriptorCreateInfoBase
 	{
 		IAVertexAttributeLayoutDefinition layoutDefinition;
 
@@ -280,9 +280,9 @@ namespace Ic3::Graphics::GCI
 		}
 	};
 
-	struct IAVertexStreamBindingStateDescriptorCreateInfo : public PipelineStateDescriptorCreateInfoBase
+	struct VertexSourceBindingDescriptorCreateInfo : public PipelineStateDescriptorCreateInfoBase
 	{
-		IAVertexStreamBindingDefinition bindingDefinition;
+		IAVertexSourceBindingDefinition bindingDefinition;
 
 		CPPX_ATTR_NO_DISCARD pipeline_config_hash_t GetConfigHash() const noexcept
 		{
@@ -306,12 +306,12 @@ namespace Ic3::Graphics::GCI
 	/**
 	 * An alias for a dynamic array with the bound vertex buffer indices.
 	 */
-	using IAVertexStreamBindingIndexList = std::vector<input_assembler_index_t>;
+	using VertexSourceBindingIndexList = std::vector<input_assembler_index_t>;
 
 	/**
 	 * An alias for a dynamic array with the ranges of bound vertex buffers.
 	 */
-	using IAVertexStreamBindingRageList = std::vector<IAVertexStreamArrayRange>;
+	using VertexSourceBindingRageList = std::vector<IAVertexStreamArrayRange>;
 
 	namespace GCU
 	{
@@ -326,15 +326,15 @@ namespace Ic3::Graphics::GCI
 
 		/// @brief
 		IC3_GRAPHICS_GCI_API_NO_DISCARD uint32 IAGetActiveVertexBuffersNum(
-				const IAVertexStreamVertexBufferReferenceArray & pVertexBufferReferences ) noexcept;
+				const IAVertexBufferReferenceArray & pVertexBufferReferences ) noexcept;
 
 		/// @brief
-		IC3_GRAPHICS_GCI_API_NO_DISCARD IAVertexStreamBindingIndexList IAGenerateActiveVertexBuffersIndexList(
-				const IAVertexStreamVertexBufferReferenceArray & pVertexBufferReferences ) noexcept;
+		IC3_GRAPHICS_GCI_API_NO_DISCARD VertexSourceBindingIndexList IAGenerateActiveVertexBuffersIndexList(
+				const IAVertexBufferReferenceArray & pVertexBufferReferences ) noexcept;
 
 		/// @brief
-		IC3_GRAPHICS_GCI_API_NO_DISCARD IAVertexStreamBindingRageList IAGenerateActiveVertexBuffersRanges(
-				const IAVertexStreamVertexBufferReferenceArray & pVertexBufferReferences ) noexcept;
+		IC3_GRAPHICS_GCI_API_NO_DISCARD VertexSourceBindingRageList IAGenerateActiveVertexBuffersRanges(
+				const IAVertexBufferReferenceArray & pVertexBufferReferences ) noexcept;
 
 	}
 

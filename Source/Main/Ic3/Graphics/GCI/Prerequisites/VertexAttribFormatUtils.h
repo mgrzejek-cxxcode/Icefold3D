@@ -97,7 +97,7 @@ namespace Ic3::Graphics::GCI
 		static constexpr auto sComponentSizeInBytes = sizeof( BaseDataType ) * tpSize;
 		static constexpr auto sSizeInBytes = sComponentSizeInBytes;
 
-		static constexpr auto sBaseAttribFormat = ( EVertexAttribFormat )CxDef::makeVertexAttribFormatEnumValue(
+		static constexpr auto sBaseAttribFormat = ( EVertexAttribFormat )CXU::makeVertexAttribFormatEnumValue(
 				tpSize,
 				QBaseScalarDataTypeTraits<TPScalar>::sBaseDataType,
 				QBaseScalarDataTypeTraits<TPScalar>::sBaseDataFlags );
@@ -113,7 +113,7 @@ namespace Ic3::Graphics::GCI
 		static constexpr auto sComponentSizeInBytes = sizeof( BaseDataType ) * tpColumns;
 		static constexpr auto sSizeInBytes = sComponentSizeInBytes * sAttribComponentsNum;
 
-		static constexpr auto sBaseAttribFormat = ( EVertexAttribFormat )CxDef::makeVertexAttribFormatEnumValue(
+		static constexpr auto sBaseAttribFormat = ( EVertexAttribFormat )CXU::makeVertexAttribFormatEnumValue(
 				tpColumns,
 				QBaseScalarDataTypeTraits<TPScalar>::sBaseDataType,
 				QBaseScalarDataTypeTraits<TPScalar>::sBaseDataFlags );
@@ -129,7 +129,7 @@ namespace Ic3::Graphics::GCI
 		static constexpr auto sComponentSizeInBytes = sizeof( BaseDataType ) * 4;
 		static constexpr auto sSizeInBytes = sComponentSizeInBytes * sAttribComponentsNum;
 
-		static constexpr auto sBaseAttribFormat = ( EVertexAttribFormat )CxDef::makeVertexAttribFormatEnumValue(
+		static constexpr auto sBaseAttribFormat = ( EVertexAttribFormat )CXU::makeVertexAttribFormatEnumValue(
 				4,
 				QBaseScalarDataTypeTraits<uint8>::sBaseDataType,
 				QBaseScalarDataTypeTraits<uint8>::sBaseDataFlags );
@@ -145,7 +145,7 @@ namespace Ic3::Graphics::GCI
 		static constexpr auto sComponentSizeInBytes = sizeof( BaseDataType ) * 4;
 		static constexpr auto sSizeInBytes = sComponentSizeInBytes * sAttribComponentsNum;
 
-		static constexpr auto sBaseAttribFormat = ( EVertexAttribFormat )CxDef::makeVertexAttribFormatEnumValue(
+		static constexpr auto sBaseAttribFormat = ( EVertexAttribFormat )CXU::makeVertexAttribFormatEnumValue(
 				4,
 				QBaseScalarDataTypeTraits<float>::sBaseDataType,
 				QBaseScalarDataTypeTraits<float>::sBaseDataFlags );

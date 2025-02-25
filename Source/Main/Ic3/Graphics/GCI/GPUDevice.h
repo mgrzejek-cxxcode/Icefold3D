@@ -6,10 +6,12 @@
 
 #include "CommonCommandDefs.h"
 #include "DisplayCommon.h"
+#include "GPUDeviceFeatureQuery.h"
 #include "Resources/TextureCommon.h"
 #include "State/GraphicsShaderDefs.h"
 #include "State/InputAssemblerCommon.h"
 #include "State/RenderPassCommon.h"
+#include "State/GraphicsPipelineStateCommon.h"
 #include "State/PipelineStateDescriptorCacheUnit.h"
 
 namespace Ic3::Graphics::GCI
@@ -44,10 +46,16 @@ namespace Ic3::Graphics::GCI
 		friend class GPUResource;
 
 	public:
+		/// Saved ID of the parent driver, enables easy checking what driver runtime this device is created for.
 		EGPUDriverID const mGPUDriverID;
+
+		/// Handle to a system context, enabling interaction with the system layer.
 		System::SysContextHandle const mSysContext;
 
-		explicit GPUDevice( GPUDriver & pDriver );
+		/// A pointer to the feature query interface, executing queries about the device runtime capabilities and metrics.
+		GPUDeviceFeatureQuery * const mFeatureQueryInterface;
+
+		explicit GPUDevice( GPUDriver & pDriver, GPUDeviceFeatureQuery & pFeatureQueryInterface );
 		virtual ~GPUDevice();
 
 		CPPX_ATTR_NO_DISCARD virtual bool IsNullDevice() const noexcept;
@@ -67,14 +75,16 @@ namespace Ic3::Graphics::GCI
 		CPPX_ATTR_NO_DISCARD const RenderTargetAttachmentClearConfig & GetDefaultClearConfig() const noexcept;
 
 		template <typename TPStateDescriptor>
-		CPPX_ATTR_NO_DISCARD TGfxHandle<TPStateDescriptor> GetCachedStateDescriptor( pipeline_state_descriptor_id_t pDescriptorID ) const noexcept;
+		CPPX_ATTR_NO_DISCARD TGfxHandle<TPStateDescriptor> GetCachedStateDescriptor(
+				pipeline_state_descriptor_id_t pDescriptorID ) const noexcept;
 
 		CPPX_ATTR_NO_DISCARD TGfxHandle<PipelineStateDescriptor> GetCachedStateDescriptor(
 				EPipelineStateDescriptorType pDescriptorType,
 				pipeline_state_descriptor_id_t pDescriptorID ) const noexcept;
 
 		template <typename TPStateDescriptor>
-		CPPX_ATTR_NO_DISCARD TGfxHandle<TPStateDescriptor> GetCachedStateDescriptor( const GfxObjectName & pStateObjectName ) const noexcept;
+		CPPX_ATTR_NO_DISCARD TGfxHandle<TPStateDescriptor> GetCachedStateDescriptor(
+				const GfxObjectName & pStateObjectName ) const noexcept;
 
 		CPPX_ATTR_NO_DISCARD GPUBufferHandle CreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo );
 		CPPX_ATTR_NO_DISCARD SamplerHandle CreateSampler( const SamplerCreateInfo & pCreateInfo );
@@ -100,20 +110,23 @@ namespace Ic3::Graphics::GCI
 		CPPX_ATTR_NO_DISCARD RasterizerStateDescriptorHandle CreateRasterizerStateDescriptor(
 				const RasterizerStateDescriptorCreateInfo & pCreateInfo );
 
-		CPPX_ATTR_NO_DISCARD GraphicsShaderLinkageStateDescriptorHandle CreateGraphicsShaderLinkageStateDescriptor(
-				const GraphicsShaderLinkageStateDescriptorCreateInfo & pCreateInfo );
+		CPPX_ATTR_NO_DISCARD GraphicsShaderLinkageDescriptorHandle CreateGraphicsShaderLinkageDescriptor(
+				const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo );
 
-		CPPX_ATTR_NO_DISCARD IAVertexAttributeLayoutStateDescriptorHandle CreateIAVertexAttributeLayoutStateDescriptor(
-				const IAVertexAttributeLayoutStateDescriptorCreateInfo & pCreateInfo );
+		CPPX_ATTR_NO_DISCARD VertexAttributeLayoutDescriptorHandle CreateVertexAttributeLayoutDescriptor(
+				const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo );
 
-		CPPX_ATTR_NO_DISCARD ShaderRootSignatureStateDescriptorHandle CreateShaderRootSignatureStateDescriptor(
-				const ShaderRootSignatureStateDescriptorCreateInfo & pCreateInfo );
+		CPPX_ATTR_NO_DISCARD RootSignatureDescriptorHandle CreateRootSignatureDescriptor(
+				const RootSignatureDescriptorCreateInfo & pCreateInfo );
 
-		CPPX_ATTR_NO_DISCARD IAVertexStreamBindingStateDescriptorHandle CreateIAVertexStreamBindingStateDescriptor(
-				const IAVertexStreamBindingStateDescriptorCreateInfo & pCreateInfo );
+		CPPX_ATTR_NO_DISCARD RenderPassDescriptorHandle CreateRenderPassDescriptor(
+				const RenderPassDescriptorCreateInfo & pCreateInfo );
 
-		CPPX_ATTR_NO_DISCARD RenderPassConfigurationStateDescriptorHandle CreateRenderPassConfigurationStateDescriptor(
-				const RenderPassConfigurationStateDescriptorCreateInfo & pCreateInfo );
+		CPPX_ATTR_NO_DISCARD RenderTargetDescriptorHandle CreateRenderTargetDescriptor(
+				const RenderTargetDescriptorCreateInfo & pCreateInfo );
+
+		CPPX_ATTR_NO_DISCARD VertexSourceBindingDescriptorHandle CreateVertexSourceBindingDescriptor(
+				const VertexSourceBindingDescriptorCreateInfo & pCreateInfo );
 
 		template <typename TPStateDescriptor, typename TPCreateInfo>
 		TGfxHandle<TPStateDescriptor> CreateCachedStateDescriptor(

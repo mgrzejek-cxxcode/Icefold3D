@@ -29,7 +29,7 @@ namespace Ic3::Graphics::GCI
 	{
 		std::unique_ptr<CommandContext> commandContext;
 
-		auto contextExecutionMode = CxDef::GetCommandObjectExecutionMode( pContextType );
+		const auto contextExecutionMode = CXU::GetCommandObjectExecutionMode( pContextType );
 		if( auto * commandList = AcquireCommandList( contextExecutionMode ) )
 		{
 			Ic3DebugAssert( contextExecutionMode == ECommandExecutionMode::Direct );

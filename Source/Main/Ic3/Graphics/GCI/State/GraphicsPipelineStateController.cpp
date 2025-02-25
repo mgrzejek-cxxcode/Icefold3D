@@ -1,7 +1,7 @@
 
 #include "GraphicsPipelineStateController.h"
-#include "GraphicsPipelineStateCommon.h"
-#include "GraphicsPipelineStateDescriptorIA.h"
+#include "GraphicsPipelineStateDescriptorIADynamic.h"
+#include "GraphicsPipelineStateDescriptorRTODynamic.h"
 
 #include <Ic3/Graphics/GCI/GPUDevice.h>
 #include <cppx/memory.h>
@@ -13,42 +13,12 @@ namespace Ic3::Graphics::GCI
 
 	GraphicsPipelineStateController::~GraphicsPipelineStateController() = default;
 
-	bool GraphicsPipelineStateController::IAIsVertexStreamStateDynamic() const noexcept
+	bool GraphicsPipelineStateController::SetGraphicsPipelineStateObject(
+			const GraphicsPipelineStateObject & pGraphicsPipelineStateObject )
 	{
-		return _currentCommonState.iaVertexStreamState && _currentCommonState.iaVertexStreamState->IsDynamicDescriptor();
-	}
-
-	bool GraphicsPipelineStateController::IsRenderTargetStateDynamic() const noexcept
-	{
-		return _currentCommonState.renderTargetBindingState && _currentCommonState.renderTargetBindingState->IsDynamicDescriptor();
-	}
-
-	const GraphicsPipelineDynamicState & GraphicsPipelineStateController::GetRenderPassDynamicState() const noexcept
-	{
-		return _currentRenderPassDynamicState;
-	}
-
-	const ShaderRootSignature & GraphicsPipelineStateController::GetShaderRootSignature() const noexcept
-	{
-		Ic3DebugAssert( _currentCommonState.graphicsPSO );
-		return _currentCommonState.graphicsPSO->mShaderRootSignature;
-	}
-
-	void GraphicsPipelineStateController::SetRenderPassDynamicState( const GraphicsPipelineDynamicState & pDynamicState )
-	{
-		_currentRenderPassDynamicState = pDynamicState;
-	}
-
-	void GraphicsPipelineStateController::ResetRenderPassDynamicState()
-	{
-		_currentRenderPassDynamicState.activeStateMask.clear();
-	}
-
-	bool GraphicsPipelineStateController::SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO )
-	{
-		if( _currentCommonState.graphicsPSO != &pGraphicsPSO )
+		if( _currentPipelineBindings.pipelineStateObject != &pGraphicsPipelineStateObject )
 		{
-			_currentCommonState.graphicsPSO = &pGraphicsPSO;
+			_currentPipelineBindings.pipelineStateObject = &pGraphicsPipelineStateObject;
 			_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonPipelineStateObjectBit );
 		}
 
@@ -57,63 +27,93 @@ namespace Ic3::Graphics::GCI
 
 	bool GraphicsPipelineStateController::ResetGraphicsPipelineStateObject()
 	{
-		if( _currentCommonState.graphicsPSO )
+		if( _currentPipelineBindings.pipelineStateObject )
 		{
-			_currentCommonState.graphicsPSO = nullptr;
+			_currentPipelineBindings.pipelineStateObject = nullptr;
 			_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonPipelineStateObjectBit );
 		}
 
 		return _stateUpdateMask.is_set( eGraphicsStateUpdateFlagCommonPipelineStateObjectBit );
 	}
 
-	bool GraphicsPipelineStateController::SetIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState )
+	bool GraphicsPipelineStateController::SetRenderTargetDescriptor(
+			const RenderTargetDescriptor & pRenderTargetDescriptor )
 	{
-		_currentCommonState.iaVertexStreamState = &( IAVertexStreamStateDescriptor::GetDynamicOverrideState() );
-		_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonIAVertexStreamBindingBit );
-		return true;
-	}
-
-	bool GraphicsPipelineStateController::SetIAVertexStreamState( const IAVertexStreamStateDescriptor & pIAVertexStreamState )
-	{
-		if( _currentCommonState.iaVertexStreamState != &pIAVertexStreamState )
+		if( pRenderTargetDescriptor.IsDynamicDescriptor() )
 		{
-			_currentCommonState.iaVertexStreamState = &pIAVertexStreamState;
-			_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonIAVertexStreamBindingBit );
+			throw 0;
 		}
 
-		return _stateUpdateMask.is_set( eGraphicsStateUpdateFlagCommonIAVertexStreamBindingBit );
-	}
-
-	bool GraphicsPipelineStateController::ResetIAVertexStreamState()
-	{
-		_currentCommonState.iaVertexStreamState = nullptr;
-		_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonIAVertexStreamBindingBit );
-		return true;
-	}
-
-	bool GraphicsPipelineStateController::SetRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState )
-	{
-		_currentCommonState.renderTargetBindingState = &( RenderTargetBindingStateDescriptor::GetDynamicOverrideState() );
-		_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonRenderTargetBindingBit );
-		return true;
-	}
-
-	bool GraphicsPipelineStateController::SetRenderTargetBindingState( const RenderTargetBindingStateDescriptor & pRenderTargetBindingState )
-	{
-		if( _currentCommonState.renderTargetBindingState != &pRenderTargetBindingState )
+		if( _currentPipelineBindings.renderTargetDescriptor != &pRenderTargetDescriptor )
 		{
-			_currentCommonState.renderTargetBindingState = &pRenderTargetBindingState;
-			_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonRenderTargetBindingBit );
+			_currentPipelineBindings.renderTargetDescriptor = &pRenderTargetDescriptor;
+			_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonRenderTargetDescriptorBit );
 		}
 
-		return _stateUpdateMask.is_set( eGraphicsStateUpdateFlagCommonRenderTargetBindingBit );
+		return _stateUpdateMask.is_set( eGraphicsStateUpdateFlagCommonRenderTargetDescriptorBit );
 	}
 
-	bool GraphicsPipelineStateController::ResetRenderTargetBindingState()
+	bool GraphicsPipelineStateController::SetRenderTargetDescriptorDynamic(
+			RenderTargetDescriptorDynamic & pRenderTargetDescriptor )
 	{
-		_currentCommonState.renderTargetBindingState = nullptr;
-		_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonRenderTargetBindingBit );
-		return true;
+		if( _currentPipelineBindings.renderTargetDescriptor != &pRenderTargetDescriptor )
+		{
+			_currentPipelineBindings.renderTargetDescriptor = &pRenderTargetDescriptor;
+			_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonRenderTargetDescriptorBit );
+		}
+
+		return _stateUpdateMask.is_set( eGraphicsStateUpdateFlagCommonRenderTargetDescriptorBit );
+	}
+
+	bool GraphicsPipelineStateController::ResetRenderTargetDescriptor()
+	{
+		if( _currentPipelineBindings.renderTargetDescriptor )
+		{
+			_currentPipelineBindings.renderTargetDescriptor = nullptr;
+			_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonRenderTargetDescriptorBit );
+		}
+
+		return _stateUpdateMask.is_set( eGraphicsStateUpdateFlagCommonRenderTargetDescriptorBit );
+	}
+
+	bool GraphicsPipelineStateController::SetVertexSourceBindingDescriptor(
+			const VertexSourceBindingDescriptor & pVertexSourceBindingDescriptor )
+	{
+		if( pVertexSourceBindingDescriptor.IsDynamicDescriptor() )
+		{
+			throw 0;
+		}
+
+		if( _currentPipelineBindings.vertexSourceBindingDescriptor != &pVertexSourceBindingDescriptor )
+		{
+			_currentPipelineBindings.vertexSourceBindingDescriptor = &pVertexSourceBindingDescriptor;
+			_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonVertexSourceBindingDescriptorBit );
+		}
+
+		return _stateUpdateMask.is_set( eGraphicsStateUpdateFlagCommonVertexSourceBindingDescriptorBit );
+	}
+
+	bool GraphicsPipelineStateController::SetVertexSourceBindingDescriptorDynamic(
+			VertexSourceBindingDescriptorDynamic & pVertexSourceBindingDescriptor )
+	{
+		if( _currentPipelineBindings.vertexSourceBindingDescriptor != &pVertexSourceBindingDescriptor )
+		{
+			_currentPipelineBindings.vertexSourceBindingDescriptor = &pVertexSourceBindingDescriptor;
+			_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonVertexSourceBindingDescriptorBit );
+		}
+
+		return _stateUpdateMask.is_set( eGraphicsStateUpdateFlagCommonVertexSourceBindingDescriptorBit );
+	}
+
+	bool GraphicsPipelineStateController::ResetVertexSourceBindingDescriptor()
+	{
+		if( _currentPipelineBindings.vertexSourceBindingDescriptor )
+		{
+			_currentPipelineBindings.vertexSourceBindingDescriptor = nullptr;
+			_stateUpdateMask.set( eGraphicsStateUpdateFlagCommonVertexSourceBindingDescriptorBit );
+		}
+
+		return _stateUpdateMask.is_set( eGraphicsStateUpdateFlagCommonVertexSourceBindingDescriptorBit );
 	}
 
 	bool GraphicsPipelineStateController::SetViewport( const ViewportDesc & pViewportDesc )
@@ -139,6 +139,75 @@ namespace Ic3::Graphics::GCI
 	bool GraphicsPipelineStateController::SetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler )
 	{
 		return true;
+	}
+
+	cppx::bitmask<EGraphicsPipelineDynamicConfigFlags> GraphicsPipelineStateController::SetDynamicBlendConstantColor(
+			const Math::RGBAColorR32Norm & pBlendConstantColor )
+	{
+		_currentPipelineDynamicConfig.blendConstantColor = pBlendConstantColor;
+		_currentPipelineDynamicConfig.activeStateMask.set( eGraphicsPipelineDynamicConfigFlagBlendConstantColorBit );
+		return _currentPipelineDynamicConfig.activeStateMask;
+	}
+
+	cppx::bitmask<EGraphicsPipelineDynamicConfigFlags> GraphicsPipelineStateController::SetDynamicRenderTargetClearConfig(
+			const RenderTargetAttachmentClearConfig & pClearConfig )
+	{
+		_currentPipelineDynamicConfig.renderTargetClearConfig = pClearConfig;
+		_currentPipelineDynamicConfig.activeStateMask.set( eGraphicsPipelineDynamicConfigFlagRenderTargetClearConfigBit );
+		return _currentPipelineDynamicConfig.activeStateMask;
+	}
+
+	cppx::bitmask<EGraphicsPipelineDynamicConfigFlags> GraphicsPipelineStateController::SetDynamicStencilTestRefValue(
+			uint8 pStencilRefValue )
+	{
+		_currentPipelineDynamicConfig.stencilTestRefValue = pStencilRefValue;
+		_currentPipelineDynamicConfig.activeStateMask.set( eGraphicsPipelineDynamicConfigFlagStencilRefValueBit );
+		return _currentPipelineDynamicConfig.activeStateMask;
+	}
+
+	void GraphicsPipelineStateController::ResetDynamicPipelineConfig(
+			cppx::bitmask<EGraphicsPipelineDynamicConfigFlags> pConfigMask )
+	{
+		_currentPipelineDynamicConfig.activeStateMask.unset( pConfigMask & eGraphicsPipelineDynamicConfigMaskAll );
+	}
+
+	cppx::bitmask<graphics_state_update_mask_value_t> GraphicsPipelineStateController::ResetStateUpdateMask()
+	{
+		const auto stateUpdateMaskValue = _stateUpdateMask;
+		_stateUpdateMask.clear();
+		return stateUpdateMaskValue;
+	}
+
+	bool GraphicsPipelineStateController::SetRenderPassDescriptor(
+			const RenderPassDescriptor & pRenderPassDescriptor )
+	{
+		if( pRenderPassDescriptor.IsDynamicDescriptor() )
+		{
+			throw 0;
+		}
+
+		if( _currentPipelineBindings.renderPassDescriptor != &pRenderPassDescriptor )
+		{
+			_currentPipelineBindings.renderPassDescriptor = &pRenderPassDescriptor;
+		}
+
+		return true;
+	}
+
+	bool GraphicsPipelineStateController::SetRenderPassDescriptorDynamic(
+			RenderPassDescriptorDynamic & pRenderPassDescriptor )
+	{
+		if( _currentPipelineBindings.renderPassDescriptor != &pRenderPassDescriptor )
+		{
+			_currentPipelineBindings.renderPassDescriptor = &pRenderPassDescriptor;
+		}
+
+		return true;
+	}
+
+	void GraphicsPipelineStateController::ResetRenderPassDescriptor()
+	{
+		_currentPipelineBindings.renderPassDescriptor = nullptr;
 	}
 
 } // namespace Ic3::Graphics::GCI

@@ -12,7 +12,7 @@ namespace Ic3::Graphics::GCI
 			TextureReference pTargetTexture )
 	: GPUResourceView( pGPUDevice, EGPUResourceBaseType::Texture, pTargetTexture->mTextureProperties.resourceFlags )
 	, mRTTextureType( pRTTextureType )
-	, mRTBufferMask( CxDef::GetRTBufferMaskForRenderTargetTextureType( pRTTextureType ) )
+	, mRTBufferMask( GCU::RTOGetBufferMaskForRenderTargetTextureType( pRTTextureType ) )
 	, mRTTextureLayout( pRTTextureLayout )
 	, mTargetTexture( pTargetTexture )
 	{}
@@ -25,7 +25,7 @@ namespace Ic3::Graphics::GCI
 			cppx::bitmask<resource_flags_value_t> pRenderBufferFlags )
 	: GPUResourceView( pGPUDevice, EGPUResourceBaseType::Texture, pRenderBufferFlags )
 	, mRTTextureType( pRTTextureType )
-	, mRTBufferMask( CxDef::GetRTBufferMaskForRenderTargetTextureType( pRTTextureType ) )
+	, mRTBufferMask( GCU::RTOGetBufferMaskForRenderTargetTextureType( pRTTextureType ) )
 	, mRTTextureLayout( pRTTextureLayout )
 	, mTargetTexture()
 	, _internalRenderBuffer( pInternalRenderBuffer )
@@ -40,7 +40,7 @@ namespace Ic3::Graphics::GCI
 
 	bool RenderTargetTexture::IsDepthStencilTexture() const noexcept
 	{
-		return mRTBufferMask.is_set_any_of( ERenderTargetBufferMaskDepthStencil );
+		return mRTBufferMask.is_set_any_of( eRenderTargetBufferMaskDepthStencil );
 	}
 
 	bool RenderTargetTexture::IsDepthStencilRenderBuffer() const noexcept
@@ -53,13 +53,13 @@ namespace Ic3::Graphics::GCI
 
 		ERenderTargetTextureType QueryRenderTargetTextureType( ETextureFormat pFormat )
 		{
-			const cppx::bitmask<uint8> pixelFormatFlags = CxDef::GetTextureFormatFlags( pFormat );
+			const cppx::bitmask<uint8> pixelFormatFlags = CXU::GetTextureFormatFlags( pFormat );
 
 			if( pixelFormatFlags.is_set( eGPUDataFormatFlagCompressedBit ) )
 			{
 				return ERenderTargetTextureType::Unknown;
 			}
-			else if( pixelFormatFlags.is_set( eGPUDataFormatFlagDepthStencilBit ) )
+			else if( pixelFormatFlags.is_set( eGPUDataFormatMaskDepthStencilBit ) )
 			{
 				return ERenderTargetTextureType::RTDepthStencil;
 			}
@@ -98,10 +98,10 @@ namespace Ic3::Graphics::GCI
 			const auto & targetTextureLayout = pTargetTexture->mTextureLayout;
 
 			const auto layoutMatch =
-					(pRTTextureLayout.imageRect.width == targetTextureLayout.dimensions.width ) &&
-					(pRTTextureLayout.imageRect.height == targetTextureLayout.dimensions.height ) &&
-					(pRTTextureLayout.internalFormat == targetTextureLayout.internalFormat ) &&
-					(pRTTextureLayout.msaaLevel == targetTextureLayout.msaaLevel );
+					( pRTTextureLayout.imageRect.width == targetTextureLayout.dimensions.width ) &&
+					( pRTTextureLayout.imageRect.height == targetTextureLayout.dimensions.height ) &&
+					( pRTTextureLayout.internalFormat == targetTextureLayout.internalFormat ) &&
+					( pRTTextureLayout.msaaLevel == targetTextureLayout.msaaLevel );
 
 			return layoutMatch;
 		}

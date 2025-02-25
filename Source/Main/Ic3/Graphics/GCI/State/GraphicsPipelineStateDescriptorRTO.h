@@ -4,153 +4,128 @@
 #ifndef __IC3_GRAPHICS_GCI_GRAPHICS_PIPELINE_STATE_DESCRIPTOR_RTO_H__
 #define __IC3_GRAPHICS_GCI_GRAPHICS_PIPELINE_STATE_DESCRIPTOR_RTO_H__
 
-#include "PipelineStateCommon.h"
+#include "PipelineStateDescriptor.h"
 #include "RenderPassCommon.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	/**
-	 * Represents render pass configuration state that controls operations executed on RT attachments when an RP begins/ends.
-	 * @see RenderPassConfigurationStateDescriptorNative
-	 * @see RenderPassConfigurationStateDescriptorDynamic
-	 */
-	class RenderPassConfigurationStateDescriptor : public PipelineStateDescriptor
+	class RenderTargetArrayConfigStateDescriptor : public PipelineStateDescriptor
 	{
 	public:
-		RenderPassConfigurationStateDescriptor(
+		RenderTargetArrayConfigStateDescriptor(
 				GPUDevice & pGPUDevice,
 				pipeline_state_descriptor_id_t pDescriptorID );
 
-		virtual ~RenderPassConfigurationStateDescriptor();
+		virtual ~RenderTargetArrayConfigStateDescriptor();
 
-		CPPX_ATTR_NO_DISCARD virtual EPipelineStateDescriptorType GetDescriptorType() const noexcept override final;
+		CPPX_ATTR_NO_DISCARD virtual bool IsAttachmentActive( uint32 pAttachmentIndex ) const noexcept = 0;
 	};
 
 	/**
-	 * Represents a dynamic render pass configuration state (API-agnostic and modifiable)
-	 * @see RenderPassConfigurationStateDescriptor
+	 * Represents render pass configuration state that controls operations executed on RT attachments when an RP begins/ends.
+	 * @see RenderPassDescriptorNative
+	 * @see RenderPassDescriptorDynamic
 	 */
-	class RenderPassConfigurationStateDescriptorDynamic : public RenderPassConfigurationStateDescriptor
+	class RenderPassDescriptor : public RenderTargetArrayConfigStateDescriptor
 	{
 	public:
-		Ic3DeclareNonCopyable( RenderPassConfigurationStateDescriptorDynamic );
-
-		RenderPassConfigurationStateDescriptorDynamic(
+		RenderPassDescriptor(
 				GPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID = kPipelineStateDescriptorIDAuto );
+				pipeline_state_descriptor_id_t pDescriptorID );
 
-		~RenderPassConfigurationStateDescriptorDynamic();
+		virtual ~RenderPassDescriptor();
 
-		/**
-		 * @see GraphicsPipelineStateDescriptor::IsDynamicDescriptor()
-		 */
-		CPPX_ATTR_NO_DISCARD virtual bool IsDynamicDescriptor() const noexcept override final;
+		CPPX_ATTR_NO_DISCARD virtual EPipelineStateDescriptorType GetDescriptorType() const noexcept override final;
 
-		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept;
+		CPPX_ATTR_NO_DISCARD virtual bool CheckAttachmentLoadActionFlags(
+				uint32 pAttachmentIndex,
+				cppx::bitmask<ERenderPassAttachmentActionFlags> pActionFlags ) const noexcept = 0;
 
-		CPPX_ATTR_NO_DISCARD bool IsDepthStencilAttachmentActive() const noexcept;
+		CPPX_ATTR_NO_DISCARD virtual bool CheckAttachmentStoreActionFlags(
+				uint32 pAttachmentIndex,
+				cppx::bitmask<ERenderPassAttachmentActionFlags> pActionFlags ) const noexcept = 0;
 
-		CPPX_ATTR_NO_DISCARD native_uint CountActiveColorAttachments() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool CheckAttachmentLoadAction(
+				uint32 pAttachmentIndex,
+				ERenderPassAttachmentLoadAction pAction ) const noexcept;
 
-		CPPX_ATTR_NO_DISCARD const RenderPassConfiguration & GetRenderPassConfiguration() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool CheckAttachmentStoreAction(
+				uint32 pAttachmentIndex,
+				ERenderPassAttachmentLoadAction pAction ) const noexcept;
+	};
 
-		RenderPassAttachmentReference * UpdateActiveColorAttachment( native_uint pColorAttachmentIndex );
+	/**
+	 */
+	class RenderTargetDescriptor : public RenderTargetArrayConfigStateDescriptor
+	{
+	public:
+		RenderTargetDescriptor(
+				GPUDevice & pGPUDevice,
+				pipeline_state_descriptor_id_t pDescriptorID );
 
-		RenderPassAttachmentReference * UpdateActiveDepthStencilAttachment();
+		virtual ~RenderTargetDescriptor();
 
-		void SetRenderPassConfiguration( const RenderPassConfiguration & pRenderPassConfiguration ) noexcept;
-
-		void SetColorAttachmentRef(
-				native_uint pColorAttachmentIndex,
-				const RenderPassAttachmentReference & pAttachmentRef );
-
-		void SetColorAttachmentRefs(
-				const cppx::array_view<const RenderPassAttachmentReference> & pAttachmentRefs,
-				native_uint pColorAttachmentFirstIndex = 0,
-				native_uint pColorAttachmentCount = cppx::cve::native_uint_max );
-
-		void SetDepthStencilAttachmentRef( const RenderPassAttachmentReference & pAttachmentRef );
-
-		void ResetAll();
-
-		void ResetAllFlags();
-
-		void ResetColorAttachmentRef( native_uint pColorAttachmentIndex );
-
-		void ResetColorAttachmentRefs(
-				native_uint pColorAttachmentFirstIndex = 0,
-				native_uint pColorAttachmentCount = cppx::cve::native_uint_max );
-
-		void ResetDepthStencilAttachmentRef();
-
-		TGfxHandle<RenderPassConfigurationStateDescriptorDynamic> CreateFromPassConfiguration(
-				const RenderPassConfiguration & pRenderPassConfiguration );
-
-	private:
-		RenderPassAttachmentReference * _SetColorAttachmentActive( native_uint pColorAttachmentIndex );
-
-		void _SetColorAttachmentRefs(
-				native_uint pColorAttachmentFirstIndex,
-				native_uint pColorAttachmentCount,
-				const RenderPassAttachmentReference * pAttachmentRefs );
-
-		RenderPassAttachmentReference * _SetDepthStencilAttachmentActive();
-
-		void _SetDepthStencilAttachmentRef( const RenderPassAttachmentReference & pAttachmentRef );
-
-		void _ResetColorAttachmentRefs( native_uint pColorAttachmentFirstIndex, native_uint pColorAttachmentCount );
-
-		void _ResetDepthStencilAttachmentRef();
-
-	private:
-		RenderPassConfiguration _renderPassConfiguration;
+		CPPX_ATTR_NO_DISCARD virtual EPipelineStateDescriptorType GetDescriptorType() const noexcept override final;
 	};
 
 	/// namespace PIM: Private Implementation
 	namespace PIM
 	{
 
-		/**
-		 * Represents a static render pass configuration state for APIs without explicit support for render passes functionality.
-		 * This type of RP descriptor simply wraps RenderPassConfiguration object, used to execute required attachments actions.
-		 * @note This descriptor type is created automatically by compatible APIs when an RP descriptor is requested.
-		 * @see RenderPassConfigurationStateDescriptor
-		 */
-		class RenderPassConfigurationStateDescriptorGeneric : public RenderPassConfigurationStateDescriptor
-		{
-		public:
-			RenderPassConfiguration const mPassConfiguration;
-
-		public:
-			RenderPassConfigurationStateDescriptorGeneric(
-					GPUDevice & pGPUDevice,
-					pipeline_state_descriptor_id_t pDescriptorID,
-					const RenderPassConfiguration & pPassConfiguration );
-
-			virtual ~RenderPassConfigurationStateDescriptorGeneric();
-
-			static TGfxHandle<RenderPassConfigurationStateDescriptorGeneric> CreateFromPassConfiguration(
-					GPUDevice & pGPUDevice,
-					const RenderPassConfiguration & pPassConfiguration,
-					pipeline_state_descriptor_id_t pDescriptorID = kPipelineStateDescriptorIDAuto );
-		};
 
 		/**
 		 * Represents a static render pass configuration state translated into the API-specific format.
 		 * @note This descriptor type is created automatically by compatible APIs when an RP descriptor is requested.
-		 * @see RenderPassConfigurationStateDescriptor
+		 * @see RenderPassDescriptor
 		 */
-		class RenderPassConfigurationStateDescriptorNative : public RenderPassConfigurationStateDescriptor
+		class RenderPassDescriptorNative : public RenderPassDescriptor
 		{
-			Ic3DeclareNonCopyable( RenderPassConfigurationStateDescriptorNative );
+			Ic3DeclareNonCopyable( RenderPassDescriptorNative );
 
 		public:
-			RenderPassConfigurationStateDescriptorNative(
+			RenderPassDescriptorNative(
 					GPUDevice & pGPUDevice,
 					pipeline_state_descriptor_id_t pDescriptorID );
 
-			virtual ~RenderPassConfigurationStateDescriptorNative();
+			virtual ~RenderPassDescriptorNative();
+		};
+
+		/**
+		 */
+		class RenderTargetDescriptorGeneric : public RenderTargetDescriptor
+		{
+		public:
+			RenderTargetBinding const mRenderTargetBinding;
+
+		public:
+			RenderTargetDescriptorGeneric(
+					GPUDevice & pGPUDevice,
+					pipeline_state_descriptor_id_t pDescriptorID,
+					const RenderTargetBinding & pTargetBinding );
+
+			virtual ~RenderTargetDescriptorGeneric();
+
+			CPPX_ATTR_NO_DISCARD virtual bool IsAttachmentActive( uint32 pAttachmentIndex ) const noexcept override final;
+
+			static TGfxHandle<RenderTargetDescriptorGeneric> CreateFromRenderTargetBinding(
+					GPUDevice & pGPUDevice,
+					const RenderTargetBinding & pRenderTargetBinding,
+					pipeline_state_descriptor_id_t pDescriptorID = kPipelineStateDescriptorIDAuto );
+		};
+
+		/**
+		 */
+		class RenderTargetDescriptorNative : public RenderTargetDescriptor
+		{
+			Ic3DeclareNonCopyable( RenderTargetDescriptorNative );
+
+		public:
+			RenderTargetDescriptorNative(
+					GPUDevice & pGPUDevice,
+					pipeline_state_descriptor_id_t pDescriptorID );
+
+			virtual ~RenderTargetDescriptorNative();
 		};
 
 	} // namespace PIM

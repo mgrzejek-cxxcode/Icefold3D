@@ -9,8 +9,8 @@ namespace Ic3::Graphics::GCI
 	: GPUDevice( pGPUDriver )
 	, mSysMetalDevice( std::move( pSysMetalDevice ) )
 	, mMTLDevice( mSysMetalDevice->mDeviceData->mtlDevice )
-	, _immutableStateFactoryGL( *this )
-	, _immutableStateCache( _immutableStateFactoryGL )
+	, _glcPipelineStateDescriptorFactory( *this )
+	, _stateDescriptorCache( _glcPipelineStateDescriptorFactory )
 	{}
 
 	MetalGPUDevice::~MetalGPUDevice() = default;

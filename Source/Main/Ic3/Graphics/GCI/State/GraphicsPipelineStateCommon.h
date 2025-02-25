@@ -9,48 +9,59 @@
 #include "InputAssemblerCommon.h"
 #include "PipelineStateCommon.h"
 #include "RenderTargetCommon.h"
-#include "ShaderRootSignature.h"
+#include "RootSignature.h"
 
 namespace Ic3::Graphics::GCI
 {
 
 	struct GraphicsPipelineStateObjectCreateInfo
 	{
+		pipeline_state_object_id_t baseObjectID = kPipelineStateObjectIDAuto;
+
 		pipeline_state_descriptor_id_t blendStateDescriptorID;
 		pipeline_state_descriptor_id_t depthStencilStateDescriptorID;
 		pipeline_state_descriptor_id_t rasterizerStateDescriptorID;
+		pipeline_state_descriptor_id_t rootSignatureDescriptorID;
 		pipeline_state_descriptor_id_t shaderLinkageStateDescriptorID;
-		pipeline_state_descriptor_id_t vertexAttributeLayoutStateDescriptorID;
-		pipeline_state_descriptor_id_t shaderRootSignatureStateDescriptorID;
+		pipeline_state_descriptor_id_t vertexAttributeLayoutDescriptorID;
 
-		BlendStateDescriptorHandle blendStateDescriptor;
-		DepthStencilStateDescriptorHandle depthStencilStateDescriptor;
-		RasterizerStateDescriptorHandle rasterizerStateDescriptor;
-		GraphicsShaderLinkageStateDescriptorHandle shaderLinkageStateDescriptor;
-		IAVertexAttributeLayoutStateDescriptorHandle vertexAttributeLayoutStateDescriptor;
-		ShaderRootSignatureStateDescriptorHandle shaderRootSignatureStateDescriptor;
+		mutable BlendStateDescriptorHandle blendStateDescriptor;
+		mutable DepthStencilStateDescriptorHandle depthStencilStateDescriptor;
+		mutable RasterizerStateDescriptorHandle rasterizerStateDescriptor;
+		mutable RootSignatureDescriptorHandle rootSignatureDescriptor;
+		mutable GraphicsShaderLinkageDescriptorHandle shaderLinkageStateDescriptor;
+		mutable VertexAttributeLayoutDescriptorHandle vertexAttributeLayoutDescriptor;
 
-		RenderTargetArrayLayout renderTargetLayout;
+		RenderTargetLayout renderTargetLayout;
 	};
 
 	struct GraphicsPipelineStateObjectDescriptorIDSet
 	{
-		pipeline_state_descriptor_id_t descIDIAVertexAttributeLayout = kPipelineStateDescriptorIDInvalid;
-		pipeline_state_descriptor_id_t descIDGraphicsShaderLinkage = kPipelineStateDescriptorIDInvalid;
-		pipeline_state_descriptor_id_t descIDShaderRootSignature = kPipelineStateDescriptorIDInvalid;
+		pipeline_state_descriptor_id_t descIDVertexAttributeLayout = kPipelineStateDescriptorIDInvalid;
+		pipeline_state_descriptor_id_t descIDShaderLinkage = kPipelineStateDescriptorIDInvalid;
+		pipeline_state_descriptor_id_t descIDRootSignature = kPipelineStateDescriptorIDInvalid;
 		pipeline_state_descriptor_id_t descIDBlend = kPipelineStateDescriptorIDInvalid;
 		pipeline_state_descriptor_id_t descIDDepthStencil = kPipelineStateDescriptorIDInvalid;
 		pipeline_state_descriptor_id_t descIDRasterizer = kPipelineStateDescriptorIDInvalid;
 		pipeline_state_descriptor_id_t _padding[2]{};
 	};
 
-	/// @brief PSO for the graphics pipeline.
+	/**
+	 *
+	 */
 	class IC3_GRAPHICS_GCI_CLASS GraphicsPipelineStateObject : public PipelineStateObject
 	{
 	public:
+		RenderTargetLayout const mRenderTargetLayout;
+
+		GraphicsPipelineStateObjectDescriptorIDSet const mDescriptorsIDSet;
+
+	public:
 		GraphicsPipelineStateObject(
 				GPUDevice & pGPUDevice,
-				pipeline_state_object_id_t pStateObjectID );
+				pipeline_state_object_id_t pStateObjectID,
+				const RenderTargetLayout & pRenderTargetLayout,
+				const GraphicsPipelineStateObjectDescriptorIDSet & pDescriptorsIDSet );
 
 		virtual ~GraphicsPipelineStateObject();
 

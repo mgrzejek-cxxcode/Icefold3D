@@ -9,9 +9,9 @@
 namespace Ic3::Graphics::GCI
 {
 
-	/**
-	 *
-	 */
+	template <typename TPAttachmentConfig>
+	struct TRenderTargetArrayConfigurationBase;
+
 	template <typename TPAttachmentConfig>
 	struct TRenderTargetArrayConfiguration;
 
@@ -70,34 +70,34 @@ namespace Ic3::Graphics::GCI
 	 *
 	 */
 	template <typename TPAttachmentConfig>
-	struct TRenderTargetArrayConfiguration : public RenderTargetArrayCommonConfig
+	struct TRenderTargetArrayConfigurationBase : public RenderTargetArrayCommonConfig
 	{
-		TRenderTargetAttachmentPropertyArray<TPAttachmentConfig> attachmentConfigArray;
+		TRenderTargetAttachmentPropertyArray<TPAttachmentConfig> attachments;
 
-		cppx::array_view<TPAttachmentConfig> const colorAttachmentConfigArray;
+		cppx::array_view<TPAttachmentConfig> const colorAttachments;
 
-		TPAttachmentConfig & depthStencilAttachmentConfig;
+		TPAttachmentConfig & depthStencilAttachment;
 
-		TRenderTargetArrayConfiguration()
+		TRenderTargetArrayConfigurationBase()
 		: RenderTargetArrayCommonConfig()
-		, colorAttachmentConfigArray( cppx::bind_array_view( attachmentConfigArray.data(), GCM::kRTOMaxColorAttachmentsNum ) )
-		, depthStencilAttachmentConfig( attachmentConfigArray[kRTOAttachmentIndexDepthStencil] )
+		, colorAttachments( cppx::bind_array_view( attachments.data(), GCM::kRTOMaxColorAttachmentsNum ) )
+		, depthStencilAttachment( attachments[kRTOAttachmentIndexDepthStencil] )
 		{}
 
-		TRenderTargetArrayConfiguration( const TRenderTargetArrayConfiguration & pSource )
+		TRenderTargetArrayConfigurationBase( const TRenderTargetArrayConfigurationBase & pSource )
 		: RenderTargetArrayCommonConfig( pSource )
-		, attachmentConfigArray( pSource.attachmentConfigArray )
-		, colorAttachmentConfigArray( cppx::bind_array_view( attachmentConfigArray.data(), GCM::kRTOMaxColorAttachmentsNum ) )
-		, depthStencilAttachmentConfig( attachmentConfigArray[kRTOAttachmentIndexDepthStencil] )
+		, attachments( pSource.attachments )
+		, colorAttachments( cppx::bind_array_view( attachments.data(), GCM::kRTOMaxColorAttachmentsNum ) )
+		, depthStencilAttachment( attachments[kRTOAttachmentIndexDepthStencil] )
 		{}
 
-		TRenderTargetArrayConfiguration & operator=( const TRenderTargetArrayConfiguration & pRhs ) noexcept
+		TRenderTargetArrayConfigurationBase & operator=( const TRenderTargetArrayConfigurationBase & pRhs ) noexcept
 		{
 			if( &pRhs != this )
 			{
 				activeAttachmentsMask = pRhs.activeAttachmentsMask;
 				activeAttachmentsNum = pRhs.activeAttachmentsNum;
-				attachmentConfigArray = pRhs.attachmentConfigArray;
+				attachments = pRhs.attachments;
 			}
 
 			return *this;
@@ -106,37 +106,37 @@ namespace Ic3::Graphics::GCI
 		CPPX_ATTR_NO_DISCARD TPAttachmentConfig & operator[]( native_uint pAttachmentIndex ) noexcept
 		{
 			Ic3DebugAssert( CXU::RTOIsAttachmentIndexValid( pAttachmentIndex ) );
-			return attachmentConfigArray[pAttachmentIndex];
+			return attachments[pAttachmentIndex];
 		}
 
 		CPPX_ATTR_NO_DISCARD const TPAttachmentConfig & operator[]( native_uint pAttachmentIndex ) const noexcept
 		{
 			Ic3DebugAssert( CXU::RTOIsAttachmentIndexValid( pAttachmentIndex ) );
-			return attachmentConfigArray[pAttachmentIndex];
+			return attachments[pAttachmentIndex];
 		}
 
 		CPPX_ATTR_NO_DISCARD TPAttachmentConfig * GetAttachment( native_uint pAttachmentIndex ) noexcept
 		{
 			Ic3DebugAssert( CXU::RTOIsAttachmentIndexValid( pAttachmentIndex ) );
-			return &( attachmentConfigArray[pAttachmentIndex] );
+			return &( attachments[pAttachmentIndex] );
 		}
 
 		CPPX_ATTR_NO_DISCARD const TPAttachmentConfig * GetAttachment( native_uint pAttachmentIndex ) const noexcept
 		{
 			Ic3DebugAssert( CXU::RTOIsAttachmentIndexValid( pAttachmentIndex ) );
-			return &( attachmentConfigArray[pAttachmentIndex] );
+			return &( attachments[pAttachmentIndex] );
 		}
 
 		CPPX_ATTR_NO_DISCARD const TPAttachmentConfig * FindFirstActiveAttachment( native_uint pFirstIndex = 0 ) const noexcept
 		{
 			const auto attachmentBaseIndex = cppx::get_min_of( pFirstIndex, GCM::kRTOMaxCombinedAttachmentsNum );
 			const auto activeAttachmentIter = std::find_if(
-					attachmentConfigArray.begin() + attachmentBaseIndex,
-					attachmentConfigArray.end(),
+					attachments.begin() + attachmentBaseIndex,
+					attachments.end(),
 					[]( const auto & pAttachmentConfig ) -> bool {
 						return pAttachmentConfig ? true : false;
 					});
-			return ( activeAttachmentIter != attachmentConfigArray.end() ) ? &( *activeAttachmentIter ) : nullptr;
+			return ( activeAttachmentIter != attachments.end() ) ? &( *activeAttachmentIter ) : nullptr;
 		}
 
 		void UpdateActiveAttachmentInfo() noexcept
@@ -147,7 +147,7 @@ namespace Ic3::Graphics::GCI
 			ForEachRTAttachmentIndex( eRTAttachmentMaskAll,
 				[&]( native_uint pIndex, ERTAttachmentFlags pAttachmentBit )
 				{
-					if( const auto & attachmentConfig = attachmentConfigArray[pIndex] )
+					if( const auto & attachmentConfig = attachments[pIndex] )
 					{
 						activeAttachmentsMask.set( pAttachmentBit );
 						activeAttachmentsNum += 1;
@@ -158,7 +158,7 @@ namespace Ic3::Graphics::GCI
 
 		void Reset() noexcept
 		{
-			for( auto & attachmentConfig : attachmentConfigArray )
+			for( auto & attachmentConfig : attachments )
 			{
 				attachmentConfig.Reset();
 			}

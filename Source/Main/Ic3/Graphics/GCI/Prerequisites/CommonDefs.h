@@ -31,7 +31,7 @@ namespace Ic3::Graphics::GCI
 	namespace CXU
 	{}
 
-	namespace CxDef
+	namespace CXU
 	{
 
 		// constexpr uint32 GPU_SYSTEM_METRIC_IA_MAX_VERTEX_ATTRIBUTES_NUM = 16;
@@ -76,7 +76,7 @@ namespace Ic3::Graphics::GCI
 	inline constexpr uint32 kShaderStageIndexCompute = 5;
 
 	/// Base stage index, i.e. index of the first supported stage. Values below this one are not valid stage indexes.
-	/// To compute a zero-based index, subtract this from a valid stage index or use CxDef::GetShaderStageAbsoluteIndex().
+	/// To compute a zero-based index, subtract this from a valid stage index or use CXU::GetShaderStageAbsoluteIndex().
 	inline constexpr uint32 kShaderStageIndexBase = kShaderStageIndexGraphicsVertex;
 
 	/// Index of the last graphics stage. Used to verify if a specified index is a valid graphics stage index.
@@ -125,7 +125,7 @@ namespace Ic3::Graphics::GCI
 	/// @see EShaderStageIndex
 	enum EShaderStageFlags : uint32
 	{
-		// Note: CxDef::declareShaderType() and other enum utility functions assume, that shader-related bits will fit
+		// Note: CXU::declareShaderType() and other enum utility functions assume, that shader-related bits will fit
 		// 16-bit value range and have values up to 0xFFFF (no shifting is performed). In case of any alterations,
 		// update that part of the functionality accordingly (see shaderCommon.h).
 

@@ -1,16 +1,16 @@
 
-#ifndef __IC3_GRAPHICS_HW3D_GLCOMMON_GLOBAL_STATE_CACHE_H__
-#define __IC3_GRAPHICS_HW3D_GLCOMMON_GLOBAL_STATE_CACHE_H__
+#ifndef __IC3_GRAPHICS_HW3D_GLC_GLOBAL_STATE_CACHE_H__
+#define __IC3_GRAPHICS_HW3D_GLC_GLOBAL_STATE_CACHE_H__
 
-#include "GLCommonGraphicsConfig.h"
-#include "GLInputAssembler.h"
+#include "GLGraphicsPipelineStateCommon.h"
+#include "GLGraphicsPipelineStateIA.h"
 
 namespace Ic3::Graphics::GCI
 {
 
 	struct GLGlobalState
 	{
-		struct BlendConfig : public GLBlendConfig
+		struct BlendSettings : public GLBlendSettings
 		{
 			uint32 blendActiveGlobal;
 		};
@@ -21,17 +21,17 @@ namespace Ic3::Graphics::GCI
 			GLuint textureHandle;
 		};
 
-		using SamplerBindings = std::array<GLuint, GCM::cxResMaxTextureUnitsNum>;
-		using TextureUnitBindings = std::array<TextureUnitBinding, GCM::cxResMaxTextureUnitsNum>;
+		using SamplerBindings = std::array<GLuint, GCM::kResMaxTextureUnitsNum>;
+		using TextureUnitBindings = std::array<TextureUnitBinding, GCM::kResMaxTextureUnitsNum>;
 
 		GLuint shaderPipelineBinding;
 		GLuint shaderProgramBinding;
 		GLuint vertexArrayObjectBinding;
 		GLuint indexBufferBinding;
 
-		BlendConfig blendConfig;
-		GLDepthStencilConfig depthStencilConfig;
-		GLRasterizerConfig rasterizerConfig;
+		BlendSettings blendSettings;
+		GLDepthStencilSettings depthStencilSettings;
+		GLRasterizerSettings rasterizerSettings;
 		SamplerBindings samplerBindings;
 		TextureUnitBindings textureUnitBindings;
 	};
@@ -45,16 +45,18 @@ namespace Ic3::Graphics::GCI
 		GLGlobalStateCache();
 		~GLGlobalStateCache() = default;
 
-		void Reset();
-
 		void ApplyShaderPipelineBinding( GLuint pShaderPipelineHandle );
 		void ApplyShaderProgramBinding( GLuint pShaderProgramHandle );
 		void ApplyIndexBufferBinding( GLuint pIndexBufferObjectHandle );
 		void ApplyVertexArrayObjectBinding( GLuint pVertexArrayObjectHandle );
 
-		void ApplyBlendState( const GLBlendConfig & pBlendConfig );
-		void ApplyDepthStencilState( const GLDepthStencilConfig & pDepthStencilConfig, uint8 pStencilRefValue );
-		void ApplyRasterizerState( const GLRasterizerConfig & pRasterizerConfig );
+		void ApplyBlendSettings( const GLBlendSettings & pBlendSettings, bool pSetConstantColor );
+		void ApplyDepthStencilSettings( const GLDepthStencilSettings & pDepthStencilSettings, uint8 pStencilTestRefValueO );
+		void ApplyRasterizerSettings( const GLRasterizerSettings & pRasterizerSettings );
+
+		void SetBlendConstantColor( const Math::RGBAColorR32Norm & pConstantColor );
+
+		void Reset();
 
 		static GLGlobalState GetDefaultGlobalState();
 
@@ -64,4 +66,4 @@ namespace Ic3::Graphics::GCI
 
 }
 
-#endif // __IC3_GRAPHICS_HW3D_GLCOMMON_GLOBAL_STATE_CACHE_H__
+#endif // __IC3_GRAPHICS_HW3D_GLC_GLOBAL_STATE_CACHE_H__

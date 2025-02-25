@@ -12,7 +12,7 @@ namespace Ic3::Graphics::GCI
 {
 
 	/// @brief
-	class  DX11CommandList : public CommandListRenderPassDefault
+	class  DX11CommandList : public CommandListGenericRenderPass
 	{
 		friend class DX11CommandSystem;
 
@@ -39,11 +39,11 @@ namespace Ic3::Graphics::GCI
 	private:
 		virtual void ExecuteRenderPassLoadActions(
 				const RenderPassConfiguration & pRenderPassConfiguration,
-				const GraphicsPipelineDynamicState & pDynamicState ) override;
+				const GraphicsPipelineDynamicConfig & pDynamicConfig ) override;
 
 		virtual void ExecuteRenderPassStoreActions(
 				const RenderPassConfiguration & pRenderPassConfiguration,
-				const GraphicsPipelineDynamicState & pDynamicState ) override;
+				const GraphicsPipelineDynamicConfig & pDynamicConfig ) override;
 
 		static ComPtr<ID3D11Query> _CreateExecutionSyncQuery( ComPtr<ID3D11Device1> pD3D11Device );
 

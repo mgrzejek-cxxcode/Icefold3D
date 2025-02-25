@@ -75,28 +75,32 @@ namespace Ic3::Graphics::GCI
 				const DepthStencilStateDescriptorCreateInfo & pCreateInfo,
 				const cppx::immutable_string & pOptionalDescriptorName = {} );
 
-		CPPX_ATTR_NO_DISCARD GraphicsShaderLinkageStateDescriptorHandle CreateGraphicsShaderLinkageStateDescriptor(
-				const GraphicsShaderLinkageStateDescriptorCreateInfo & pCreateInfo,
-				const cppx::immutable_string & pOptionalDescriptorName = {} );
-
-		CPPX_ATTR_NO_DISCARD IAVertexAttributeLayoutStateDescriptorHandle CreateIAVertexAttributeLayoutStateDescriptor(
-				const IAVertexAttributeLayoutStateDescriptorCreateInfo & pCreateInfo,
-				const cppx::immutable_string & pOptionalDescriptorName = {} );
-
 		CPPX_ATTR_NO_DISCARD RasterizerStateDescriptorHandle CreateRasterizerStateDescriptor(
 				const RasterizerStateDescriptorCreateInfo & pCreateInfo,
 				const cppx::immutable_string & pOptionalDescriptorName = {} );
 
-		CPPX_ATTR_NO_DISCARD ShaderRootSignatureStateDescriptorHandle CreateShaderRootSignatureStateDescriptor(
-				const ShaderRootSignatureStateDescriptorCreateInfo & pCreateInfo,
+		CPPX_ATTR_NO_DISCARD GraphicsShaderLinkageDescriptorHandle CreateGraphicsShaderLinkageDescriptor(
+				const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo,
 				const cppx::immutable_string & pOptionalDescriptorName = {} );
 
-		CPPX_ATTR_NO_DISCARD IAVertexStreamBindingStateDescriptorHandle CreateIAVertexStreamBindingStateDescriptor(
-				const IAVertexStreamBindingStateDescriptorCreateInfo & pCreateInfo,
+		CPPX_ATTR_NO_DISCARD VertexAttributeLayoutDescriptorHandle CreateVertexAttributeLayoutDescriptor(
+				const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo,
 				const cppx::immutable_string & pOptionalDescriptorName = {} );
 
-		CPPX_ATTR_NO_DISCARD RenderPassConfigurationStateDescriptorHandle CreateRenderPassConfigurationStateDescriptor(
-				const RenderPassConfigurationStateDescriptorCreateInfo & pCreateInfo,
+		CPPX_ATTR_NO_DISCARD RootSignatureDescriptorHandle CreateRootSignatureDescriptor(
+				const RootSignatureDescriptorCreateInfo & pCreateInfo,
+				const cppx::immutable_string & pOptionalDescriptorName = {} );
+
+		CPPX_ATTR_NO_DISCARD RenderPassDescriptorHandle CreateRenderPassDescriptor(
+				const RenderPassDescriptorCreateInfo & pCreateInfo,
+				const cppx::immutable_string & pOptionalDescriptorName = {} );
+
+		CPPX_ATTR_NO_DISCARD RenderTargetDescriptorHandle CreateRenderTargetDescriptor(
+				const RenderTargetDescriptorCreateInfo & pCreateInfo,
+				const cppx::immutable_string & pOptionalDescriptorName = {} );
+
+		CPPX_ATTR_NO_DISCARD VertexSourceBindingDescriptorHandle CreateVertexSourceBindingDescriptor(
+				const VertexSourceBindingDescriptorCreateInfo & pCreateInfo,
 				const cppx::immutable_string & pOptionalDescriptorName = {} );
 
 		template <typename TPDescriptorType, typename TPCreateInfo>

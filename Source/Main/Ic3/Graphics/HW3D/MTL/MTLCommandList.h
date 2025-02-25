@@ -29,11 +29,8 @@ namespace Ic3::Graphics::GCI
 		virtual ~MetalCommandList();
 
 		virtual bool BeginRenderPass(
-				const RenderPassConfigurationImmutableState & pRenderPassState,
-				cppx::bitmask<ECommandListActionFlags> pFlags ) override;
-
-		virtual bool BeginRenderPass(
-				const RenderPassConfigurationDynamicState & pRenderPassState,
+				const RenderTargetDescriptor & pRenderTargetDescriptor,
+				const RenderPassDescriptor & pRenderPassDescriptor,
 				cppx::bitmask<ECommandListActionFlags> pFlags ) override;
 
 		virtual void EndRenderPass() override;

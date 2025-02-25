@@ -4,15 +4,14 @@
 #include "GPUDevice.h"
 #include "Resources/GPUBuffer.h"
 #include "State/GraphicsPipelineStateController.h"
-#include "State/GraphicsPipelineStateDescriptorRTO.h"
-#include "State/RenderTargetStateDescriptors.h"
+#include "State/GraphicsPipelineStateDescriptorRTODynamic.h"
 
 namespace Ic3::Graphics::GCI
 {
 
 	enum ECommandListInternalStateFlags : uint32
 	{
-		E_COMMAND_LIST_INTERNAL_STATE_FLAG_ACTIVE_RENDER_PASS_BIT = 0x10000
+		eCommandListInternalStateFlagActiveRenderPassBit = 0x10000
 	};
 
 	CommandList::CommandList(
@@ -43,7 +42,7 @@ namespace Ic3::Graphics::GCI
 
 	bool CommandList::IsRenderPassActive() const noexcept
 	{
-		return _internalStateMask.is_set( E_COMMAND_LIST_INTERNAL_STATE_FLAG_ACTIVE_RENDER_PASS_BIT );
+		return _internalStateMask.is_set( eCommandListInternalStateFlagActiveRenderPassBit );
 	}
 
 	bool CommandList::HasPendingGraphicsPipelineStateChanges() const noexcept
@@ -209,58 +208,77 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	bool CommandList::BeginRenderPass(
-			const RenderPassConfigurationStateDescriptor & pRenderPassState,
-			cppx::bitmask<ECommandListActionFlags> pFlags )
+	bool CommandList::BeginRenderPass( const RenderPassDescriptor & pRenderPassDescriptor, cppx::bitmask<ECommandListActionFlags> pFlags )
 	{
-		return OnBeginRenderPass( pFlags );
+		Ic3DebugAssert( !IsRenderPassActive() );
+
+		_graphicsPipelineStateController->SetRenderPassDescriptor( pRenderPassDescriptor );
+
+		return OnBeginRenderPass( pRenderPassDescriptor, pFlags );
 	}
-	
-	bool CommandList::BeginRenderPass(
-			const RenderPassConfigurationDynamicState & pRenderPassState,
-			cppx::bitmask<ECommandListActionFlags> pFlags )
+
+	bool CommandList::BeginRenderPassDynamic( RenderPassDescriptorDynamic & pRenderPassDescriptor, cppx::bitmask<ECommandListActionFlags> pFlags )
 	{
-		return OnBeginRenderPass( pFlags );
+		Ic3DebugAssert( !IsRenderPassActive() );
+
+		_graphicsPipelineStateController->SetRenderPassDescriptorDynamic( pRenderPassDescriptor );
+
+		return OnBeginRenderPassDynamic( pRenderPassDescriptor, pFlags );
 	}
 
 	void CommandList::EndRenderPass()
 	{
+		Ic3DebugAssert( IsRenderPassActive() );
+
 		OnEndRenderPass();
+
+		_graphicsPipelineStateController->ResetRenderPassDescriptor();
 	}
 
-	void CommandList::SetRenderPassDynamicState( const GraphicsPipelineDynamicState & pDynamicState )
+	bool CommandList::SetGraphicsPipelineStateObject(
+			const GraphicsPipelineStateObject & pGraphicsPipelineStateObject )
 	{
-		_graphicsPipelineStateController->SetRenderPassDynamicState( pDynamicState );
+		return _graphicsPipelineStateController->SetGraphicsPipelineStateObject( pGraphicsPipelineStateObject );
 	}
 
-	void CommandList::ResetRenderPassDynamicState()
+	bool CommandList::SetRenderTargetDescriptor(
+			const RenderTargetDescriptor & pRenderTargetDescriptor )
 	{
-		_graphicsPipelineStateController->ResetRenderPassDynamicState();
+		return _graphicsPipelineStateController->SetRenderTargetDescriptor( pRenderTargetDescriptor );
 	}
 
-	bool CommandList::SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO )
+	bool CommandList::SetRenderTargetDescriptorDynamic(
+			RenderTargetDescriptorDynamic & pRenderTargetDescriptor )
 	{
-		return _graphicsPipelineStateController->SetGraphicsPipelineStateObject( pGraphicsPSO );
+		return _graphicsPipelineStateController->SetRenderTargetDescriptorDynamic( pRenderTargetDescriptor );
 	}
 
-	bool CommandList::SetIAVertexStreamState( const IAVertexStreamStateDescriptor & pIAVertexStreamState )
+	bool CommandList::SetVertexSourceBindingDescriptor(
+			const VertexSourceBindingDescriptor & pVertexSourceBindingDescriptor )
 	{
-		return _graphicsPipelineStateController->SetIAVertexStreamState( pIAVertexStreamState );
+		return _graphicsPipelineStateController->SetVertexSourceBindingDescriptor( pVertexSourceBindingDescriptor );
 	}
 
-	bool CommandList::SetIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState )
+	bool CommandList::SetVertexSourceBindingDescriptorDynamic(
+			VertexSourceBindingDescriptorDynamic & pVertexSourceBindingDescriptor )
 	{
-		return _graphicsPipelineStateController->SetIAVertexStreamState( pIAVertexStreamState );
+		return _graphicsPipelineStateController->SetVertexSourceBindingDescriptorDynamic( pVertexSourceBindingDescriptor );
 	}
 
-	bool CommandList::SetRenderTargetBindingState( const RenderTargetBindingStateDescriptor & pRenderTargetBindingState )
+	void CommandList::CmdSetDynamicBlendConstantColor( const Math::RGBAColorR32Norm & pBlendConstantColor )
 	{
-		return _graphicsPipelineStateController->SetRenderTargetBindingState( pRenderTargetBindingState );
 	}
 
-	bool CommandList::SetRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState )
+	void CommandList::CmdSetDynamicRenderTargetClearConfig( const RenderTargetAttachmentClearConfig & pClearConfig )
 	{
-		return _graphicsPipelineStateController->SetRenderTargetBindingState( pRenderTargetBindingState );
+	}
+
+	void CommandList::CmdSetDynamicStencilTestRefValue( uint8 pStencilRefValue )
+	{
+	}
+
+	void CommandList::CmdResetDynamicPipelineConfig( cppx::bitmask<EGraphicsPipelineDynamicConfigFlags> pConfigMask )
+	{
 	}
 
 	bool CommandList::CmdSetViewport( const ViewportDesc & pViewportDesc )
@@ -318,101 +336,58 @@ namespace Ic3::Graphics::GCI
 		return _graphicsPipelineStateController->SetShaderTextureSampler( pParamRefID, pSampler );
 	}
 
-	bool CommandList::OnBeginRenderPass( cppx::bitmask<ECommandListActionFlags> pFlags )
+	void CommandList::ValidateActiveRenderPassOrThrow() const
 	{
-		if( IsRenderPassActive() )
+		if( !ValidateActiveRenderPass() )
 		{
-			return false;
+			throw 0;
+		}
+	}
+
+	bool CommandList::ValidateActiveRenderPass() const noexcept
+	{
+		return IsRenderPassActive() && _graphicsPipelineStateController->IsRenderPassDescriptorSet();
+	}
+
+	bool CommandList::OnBeginRenderPass(
+			const RenderPassDescriptor & pRenderPassDescriptor,
+			cppx::bitmask<ECommandListActionFlags> pFlags )
+	{
+		OnBeginRenderPassUpdateInternal( pFlags );
+		return ValidateActiveRenderPass();
+	}
+
+
+	bool CommandList::OnBeginRenderPassDynamic(
+			RenderPassDescriptorDynamic & pRenderPassDescriptor,
+			cppx::bitmask<ECommandListActionFlags> pFlags )
+	{
+		OnBeginRenderPassUpdateInternal( pFlags );
+		return ValidateActiveRenderPass();
+	}
+
+	void CommandList::OnEndRenderPass()
+	{
+		if( !_internalStateMask.is_set( eCommandListActionFlagRenderPassPreserveDynamicStateBit ) )
+		{
+			_graphicsPipelineStateController->ResetDynamicPipelineConfig();
 		}
 
-		_internalStateMask.set( E_COMMAND_LIST_INTERNAL_STATE_FLAG_ACTIVE_RENDER_PASS_BIT );
+		_internalStateMask.unset( eCommandListInternalStateFlagActiveRenderPassBit );
+	}
 
-		const auto preserveDynamicState = pFlags.is_set( eCommandListActionFlagRenderPassPreserveDynamicStateBit );
-		_internalStateMask.set_or_unset( eCommandListActionFlagRenderPassPreserveDynamicStateBit, preserveDynamicState );
+	void CommandList::OnBeginRenderPassUpdateInternal( cppx::bitmask<ECommandListActionFlags> pFlags )
+	{
+		_internalStateMask.set( eCommandListInternalStateFlagActiveRenderPassBit );
+
+		_internalStateMask.set_or_unset(
+				eCommandListActionFlagRenderPassPreserveDynamicStateBit,
+				pFlags.is_set( eCommandListActionFlagRenderPassPreserveDynamicStateBit ) );
 
 		if( pFlags.is_set( eCommandListActionFlagRenderPassApplyPipelineStateBit ) )
 		{
 			_graphicsPipelineStateController->ApplyStateChanges();
 		}
-
-		return true;
 	}
-
-	void CommandList::OnEndRenderPass()
-	{
-		Ic3DebugAssert( IsRenderPassActive() );
-
-		if( !_internalStateMask.is_set( eCommandListActionFlagRenderPassPreserveDynamicStateBit ) )
-		{
-			_graphicsPipelineStateController->ResetRenderPassDynamicState();
-		}
-
-		_internalStateMask.unset( E_COMMAND_LIST_INTERNAL_STATE_FLAG_ACTIVE_RENDER_PASS_BIT );
-	}
-
-
-	CommandListRenderPassDefault::CommandListRenderPassDefault(
-			CommandSystem & pCommandSystem,
-			ECommandListType pListType,
-			GraphicsPipelineStateController & pPipelineStateController )
-	: CommandList( pCommandSystem, pListType, pPipelineStateController )
-	{}
-
-	CommandListRenderPassDefault::~CommandListRenderPassDefault() = default;
-
-	const RenderPassConfiguration & CommandListRenderPassDefault::GetRenderPassConfiguration() const noexcept
-	{
-		return _currentRenderPassConfiguration;
-	}
-
-	bool CommandListRenderPassDefault::BeginRenderPass(
-			const RenderPassConfigurationStateDescriptor & pRenderPassState,
-			cppx::bitmask<ECommandListActionFlags> pFlags )
-	{
-		if( CommandList::BeginRenderPass( pRenderPassState, pFlags ) )
-		{
-			const auto * defaultRenderPassState = pRenderPassState.QueryInterface<RenderPassConfigurationStateDescriptorGeneric>();
-			_currentRenderPassConfiguration = defaultRenderPassState->mRenderPassConfiguration;
-
-			ExecuteRenderPassLoadActions(
-					_currentRenderPassConfiguration,
-					_graphicsPipelineStateController->GetRenderPassDynamicState() );
-
-			return true;
-		}
-
-		return false;
-	}
-
-	bool CommandListRenderPassDefault::BeginRenderPass(
-			const RenderPassConfigurationDynamicState & pRenderPassState,
-			cppx::bitmask<ECommandListActionFlags> pFlags )
-	{
-		if( CommandList::BeginRenderPass( pRenderPassState, pFlags ) )
-		{
-			_currentRenderPassConfiguration = pRenderPassState.GetRenderPassConfiguration();
-
-			ExecuteRenderPassLoadActions(
-					_currentRenderPassConfiguration,
-					_graphicsPipelineStateController->GetRenderPassDynamicState() );
-
-			return true;
-		}
-
-		return false;
-	}
-
-	void CommandListRenderPassDefault::EndRenderPass()
-	{
-		if( IsRenderPassActive() )
-		{
-			ExecuteRenderPassStoreActions(
-					_currentRenderPassConfiguration,
-					_graphicsPipelineStateController->GetRenderPassDynamicState() );
-
-			CommandList::EndRenderPass();
-		}
-	}
-
 
 } // namespace Ic3::Graphics::GCI

@@ -1,5 +1,5 @@
 
-#include "ShaderRootSignature.h"
+#include "RootSignature.h"
 #include "../Resources/Shader.h"
 
 namespace Ic3::Graphics::GCI
@@ -18,19 +18,19 @@ namespace Ic3::Graphics::GCI
 	};
 
 	static bool CreateRootSignatureConstantLayout(
-			const ShaderRootSignatureDesc & pRootSignatureDesc,
-			ShaderRootSignature & pOutSignature );
+			const RootSignatureDesc & pRootSignatureDesc,
+			RootSignature & pOutSignature );
 	
 	static bool CreateRootSignatureDescriptorLayout(
-			const ShaderRootSignatureDesc & pRootSignatureDesc,
-			ShaderRootSignature & pOutSignature );
+			const RootSignatureDesc & pRootSignatureDesc,
+			RootSignature & pOutSignature );
 	
 	static bool ValidateRootSignatureConstantLayoutDesc(
-			const ShaderRootSignatureDesc & pRootSignatureDesc,
+			const RootSignatureDesc & pRootSignatureDesc,
 			InputConstantLayoutInfo & pOutConstantLayoutInfo );
 	
 	static bool ValidateRootSignatureDescriptorLayoutDesc(
-			const ShaderRootSignatureDesc & pRootSignatureDesc,
+			const RootSignatureDesc & pRootSignatureDesc,
 			InputDescriptorLayoutInfo & pOutDescriptorLayoutInfo );
 	
 	static uint32 ComputeConstantDwordSize( size_t pByteSize );
@@ -38,9 +38,9 @@ namespace Ic3::Graphics::GCI
 	namespace GCU
 	{
 
-		ShaderRootSignature CreateShaderRootSignature( const ShaderRootSignatureDesc & pRootSignatureDesc )
+		RootSignature CreateRootSignature( const RootSignatureDesc & pRootSignatureDesc )
 		{
-			ShaderRootSignature rootSignature;
+			RootSignature rootSignature;
 			rootSignature.dwordSize = 0;
 			rootSignature.constantsNum = 0;
 			rootSignature.descriptorsNum = 0;
@@ -85,8 +85,8 @@ namespace Ic3::Graphics::GCI
 	}
 
 	bool CreateRootSignatureConstantLayout(
-			const ShaderRootSignatureDesc & pRootSignatureDesc,
-			ShaderRootSignature & pOutSignature )
+			const RootSignatureDesc & pRootSignatureDesc,
+			RootSignature & pOutSignature )
 	{
 		InputConstantLayoutInfo constantLayoutInfo;
 		if( !ValidateRootSignatureConstantLayoutDesc( pRootSignatureDesc, constantLayoutInfo ) )
@@ -94,7 +94,7 @@ namespace Ic3::Graphics::GCI
 			return false;
 		}
 
-		ShaderRootSignature::ConstantLayout constantLayout;
+		RootSignature::ConstantLayout constantLayout;
 		constantLayout.constantsNum = 0;
 		constantLayout.dwordSize = 0;
 		constantLayout.commonConstantArray.reserve( constantLayoutInfo.constantsNum );
@@ -112,7 +112,7 @@ namespace Ic3::Graphics::GCI
 				constantParameter.cParamType = EShaderInputParameterType::Constant;
 				constantParameter.iFormat = constantDesc.format;
 				constantParameter.iStageIndex = constantDesc.bindingIndex;
-				constantParameter.iByteSize = CxDef::GetVertexAttribFormatByteSize( constantDesc.format );
+				constantParameter.iByteSize = CXU::GetVertexAttribFormatByteSize( constantDesc.format );
 				constantParameter.iDwordSize = ComputeConstantDwordSize( constantParameter.iByteSize );
 				constantParameter.iAccessClass = constantGroupDesc.accessClass;
 
@@ -139,7 +139,7 @@ namespace Ic3::Graphics::GCI
 			}
 			else
 			{
-				constant.iVisibilityMask = CxDef::GetShaderConstantVisibilityStageMask( constant.iAccessClass );
+				constant.iVisibilityMask = CXU::GetShaderConstantVisibilityStageMask( constant.iAccessClass );
 			}
 		}
 
@@ -149,8 +149,8 @@ namespace Ic3::Graphics::GCI
 	}
 
 	bool CreateRootSignatureDescriptorLayout(
-			const ShaderRootSignatureDesc & pRootSignatureDesc,
-			ShaderRootSignature & pOutSignature )
+			const RootSignatureDesc & pRootSignatureDesc,
+			RootSignature & pOutSignature )
 	{
 		InputDescriptorLayoutInfo descriptorLayoutInfo;
 		if( !ValidateRootSignatureDescriptorLayoutDesc( pRootSignatureDesc, descriptorLayoutInfo ) )
@@ -158,7 +158,7 @@ namespace Ic3::Graphics::GCI
 			return false;
 		}
 
-		ShaderRootSignature::DescriptorLayout descriptorLayout;
+		RootSignature::DescriptorLayout descriptorLayout;
 		descriptorLayout.descriptorSetsNum = descriptorLayoutInfo.descriptorSetsNum;
 		descriptorLayout.totalDescriptorsNum = descriptorLayoutInfo.descriptorsNum;
 		descriptorLayout.commonDescriptorArray.reserve( descriptorLayout.totalDescriptorsNum );
@@ -189,7 +189,7 @@ namespace Ic3::Graphics::GCI
 					descriptor.cParamType = EShaderInputParameterType::Resource;
 					descriptor.uResourceInfo.resourceArraySize = descriptorDesc.uResourceDesc.resourceArraySize;
 					descriptor.uResourceInfo.resourceType = descriptorDesc.uResourceDesc.resourceType;
-					descriptor.uResourceInfo.resourceClass = CxDef::GetShaderInputResourceResourceClass( descriptorDesc.uResourceDesc.resourceType );
+					descriptor.uResourceInfo.resourceClass = CXU::GetShaderInputResourceResourceClass( descriptorDesc.uResourceDesc.resourceType );
 					descriptor.uResourceInfo.resourceBaseRegisterIndex = descriptorDesc.uResourceDesc.resourceBaseRegisterIndex;
 				}
 				else if( descriptorSetDesc.descriptorType == EShaderInputDescriptorType::Sampler )
@@ -217,7 +217,7 @@ namespace Ic3::Graphics::GCI
 	}
 
 	bool ValidateRootSignatureConstantLayoutDesc(
-			const ShaderRootSignatureDesc & pRootSignatureDesc,
+			const RootSignatureDesc & pRootSignatureDesc,
 			InputConstantLayoutInfo & pOutConstantLayoutInfo )
 	{
 		size_t constantsNum = 0;
@@ -232,7 +232,7 @@ namespace Ic3::Graphics::GCI
 		for( uint32 inputConstantGroupIndex = 0; inputConstantGroupIndex < pRootSignatureDesc.constantGroupsNum; ++inputConstantGroupIndex )
 		{
 			const auto & constantGroupDesc = pRootSignatureDesc.constantGroupArray[inputConstantGroupIndex];
-			auto groupShaderStageMask = CxDef::GetShaderConstantVisibilityStageMask( constantGroupDesc.accessClass );
+			auto groupShaderStageMask = CXU::GetShaderConstantVisibilityStageMask( constantGroupDesc.accessClass );
 
 			constantsNum += constantGroupDesc.constantsNum;
 
@@ -246,7 +246,7 @@ namespace Ic3::Graphics::GCI
 			{
 				const auto & constantDesc = constantGroupDesc.constantList[inputConstantIndex];
 
-				auto constantByteSize = CxDef::GetVertexAttribFormatByteSize( constantDesc.format );
+				auto constantByteSize = CXU::GetVertexAttribFormatByteSize( constantDesc.format );
 				auto constantDwordSize = ComputeConstantDwordSize( constantByteSize );
 				totalDwordSize += constantDwordSize;
 
@@ -265,7 +265,7 @@ namespace Ic3::Graphics::GCI
 	}
 
 	bool ValidateRootSignatureDescriptorLayoutDesc(
-			const ShaderRootSignatureDesc & pRootSignatureDesc,
+			const RootSignatureDesc & pRootSignatureDesc,
 			InputDescriptorLayoutInfo & pOutDescriptorLayoutInfo )
 	{
 		size_t descriptorsNum = 0;

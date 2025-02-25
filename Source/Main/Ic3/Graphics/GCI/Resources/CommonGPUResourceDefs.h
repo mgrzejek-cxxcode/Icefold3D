@@ -28,7 +28,7 @@ namespace Ic3::Graphics::GCI
 	using resource_flags_value_t = uint32;
 	using resource_id_t = uint64;
 
-	namespace CxDef
+	namespace CXU
 	{
 
 		/// A special constant which can be used for resources IDs to indicate that ID should be assigned automatically.

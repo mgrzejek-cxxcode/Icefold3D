@@ -71,30 +71,35 @@ namespace Ic3::Graphics::GCI
 
 
 	GLScreenPresentationLayer::GLScreenPresentationLayer(
-		GLGPUDevice & pGPUDevice,
-		System::OpenGLDisplaySurfaceHandle pSysGLDisplaySurface,
-		RenderTargetBindingImmutableStateHandle pScreenRenderTargetBindingState )
+			GLGPUDevice & pGPUDevice,
+			System::OpenGLDisplaySurfaceHandle pSysGLDisplaySurface,
+			GLRenderTargetDescriptorHandle pScreenRenderTargetDescriptor )
 	: GLPresentationLayer( pGPUDevice, pSysGLDisplaySurface )
-	, mScreenRenderTargetBindingState( pScreenRenderTargetBindingState )
+	, mScreenRenderTargetDescriptor( pScreenRenderTargetDescriptor )
 	{ }
 
 	GLScreenPresentationLayer::~GLScreenPresentationLayer() = default;
 
-	GLScreenPresentationLayerHandle GLScreenPresentationLayer::Create( GLGPUDevice & pDevice, const GLPresentationLayerCreateInfo & pCreateInfo )
+	GLScreenPresentationLayerHandle GLScreenPresentationLayer::Create( GLGPUDevice & pGPUDevice, const GLPresentationLayerCreateInfo & pCreateInfo )
 	{
-		auto sysGLSurface = createSysGLSurface( pDevice.mSysGLDriver, pCreateInfo );
+		auto sysGLSurface = createSysGLSurface( pGPUDevice.mSysGLDriver, pCreateInfo );
 		Ic3DebugAssert( sysGLSurface );
 
 		const auto surfaceVisualConfig = sysGLSurface->QueryVisualConfig();
 		const auto surfaceSize = sysGLSurface->GetClientAreaSize();
 
-		auto screenRTLayout = SMU::TranslateSystemVisualConfigToRenderTargetLayout( surfaceVisualConfig );
-		screenRTLayout.sharedImageRect = { surfaceSize.x, surfaceSize.y };
+		auto rtoLayoutForSceen = GCU::TranslateSystemVisualConfigToRenderTargetLayout( surfaceVisualConfig );
+		rtoLayoutForSceen.sharedImageSize = { surfaceSize.x, surfaceSize.y };
+		rtoLayoutForSceen.sharedMultiSamplingSettings.sampleCount = pCreateInfo.visualConfig.msaaDesc.bufferCount;
+		rtoLayoutForSceen.sharedMultiSamplingSettings.sampleQuality = pCreateInfo.visualConfig.msaaDesc.quality;
 
-		auto renderTargetState = GLRenderTargetBindingImmutableState::CreateForScreen( pDevice, screenRTLayout );
-		Ic3DebugAssert( renderTargetState );
+		auto renderTargetDescriptor = GLRenderTargetDescriptor::CreateForScreen(
+				pGPUDevice,
+				kSDIRenderTargetDescriptorScreenDefault,
+				rtoLayoutForSceen );
+		Ic3DebugAssert( renderTargetDescriptor );
 		
-		auto presentationLayer = CreateGfxObject<GLScreenPresentationLayer>( pDevice, sysGLSurface, renderTargetState );
+		auto presentationLayer = CreateGfxObject<GLScreenPresentationLayer>( pGPUDevice, sysGLSurface, renderTargetDescriptor );
 
 		return presentationLayer;
 	}
@@ -102,7 +107,7 @@ namespace Ic3::Graphics::GCI
 	void GLScreenPresentationLayer::BindRenderTarget( CommandContext * pCmdContext )
 	{
 		auto * directGraphicsContext = pCmdContext->QueryInterface<CommandContextDirectGraphics>();
-		directGraphicsContext->SetRenderTargetBindingState( *mScreenRenderTargetBindingState );
+		directGraphicsContext->SetRenderTargetDescriptor( *mScreenRenderTargetDescriptor );
 
 		glBindFramebuffer( GL_DRAW_FRAMEBUFFER, 0 );
 		Ic3OpenGLHandleLastError();

@@ -5,29 +5,29 @@
 #define __IC3_GRAPHICS_HW3D_DX11_PIPELINE_IMMUTABLE_STATE_FACTORY_H__
 
 #include "../DX11Prerequisites.h"
-#include <Ic3/Graphics/GCI/State/SharedImmutableStateCache.h>
+#include <Ic3/Graphics/GCI/State/SharedCompiledStateCache.h>
 
 namespace Ic3::Graphics::GCI
 {
 
 	struct RenderTargetLayout;
 
-	class DX11PipelineImmutableStateFactory : public PipelineImmutableStateFactorySeparableShader
+	class DX11PipelineStateDescriptorFactory : public PipelineStateDescriptorFactorySeparableShader
 	{
 	public:
 		DX11GPUDevice & mDX11GPUDevice;
 
 	public:
-		DX11PipelineImmutableStateFactory( DX11GPUDevice & pGPUDevice );
-		virtual ~DX11PipelineImmutableStateFactory();
+		DX11PipelineStateDescriptorFactory( DX11GPUDevice & pGPUDevice );
+		virtual ~DX11PipelineStateDescriptorFactory();
 
-		virtual BlendImmutableStateHandle CreateBlendState( const BlendConfig & pConfig ) override final;
-		virtual DepthStencilImmutableStateHandle CreateDepthStencilState( const DepthStencilConfig & pConfig ) override final;
-		virtual IAInputLayoutImmutableStateHandle CreateIAInputLayoutState( const IAInputLayoutDefinition & pDefinition, Shader & pVertexShaderWithBinary ) override final;
-		virtual IAVertexStreamImmutableStateHandle CreateIAVertexStreamState( const IAVertexStreamDefinition & pDefinition ) override final;
-		virtual RasterizerImmutableStateHandle CreateRasterizerState( const RasterizerConfig & pConfig ) override final;
-		virtual RenderTargetBindingImmutableStateHandle CreateRenderTargetBindingState( const RenderTargetBindingDefinition & pDefinition ) override final;
-		virtual RenderPassConfigurationImmutableStateHandle CreateRenderPassState( const RenderPassConfiguration & pConfiguration ) override final;
+		virtual BlendStateDescriptorHandle CreateBlendState( const BlendSettings & pSettings ) override final;
+		virtual DepthStencilStateDescriptorHandle CreateDepthStencilState( const DepthStencilSettings & pSettings ) override final;
+		virtual VertexAttributeLayoutDescriptorHandle CreateIAVertexAttributeLayout( const IAVertexAttributeLayoutDefinition & pDefinition, Shader & pVertexShaderWithBinary ) override final;
+		virtual VertexSourceBindingDescriptorHandle CreateVertexSourceBindingDescriptor( const IADataStreamArrayConfiguration & pDefinition ) override final;
+		virtual RasterizerStateDescriptorHandle CreateRasterizerState( const RasterizerSettings & pSettings ) override final;
+		virtual RenderTargetBindingCompiledStateHandle CreateRenderTargetBindingState( const RenderTargetBindingDefinition & pDefinition ) override final;
+		virtual RenderPassConfigurationCompiledStateHandle CreateRenderPassState( const RenderPassConfiguration & pConfiguration ) override final;
 	};
 	
 } // namespace Ic3::Graphics::GCI

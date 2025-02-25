@@ -440,8 +440,8 @@ namespace Ic3::Graphics::GCI
 			Ic3CaseReturn( EShaderType::GSGeometry , GL_GEOMETRY_SHADER );
         #endif
 		#if( IC3_GX_GL_FEATURE_SUPPORT_SHADER_TYPE_TESSELATION )
-			Ic3CaseReturn( EShaderType::GSHull   , GL_TESS_CONTROL_SHADER );
-			Ic3CaseReturn( EShaderType::GSDomain , GL_TESS_EVALUATION_SHADER );
+			Ic3CaseReturn( EShaderType::GSTessHull   , GL_TESS_CONTROL_SHADER );
+			Ic3CaseReturn( EShaderType::GSTessDomain , GL_TESS_EVALUATION_SHADER );
         #endif
 		#if( IC3_GX_GL_FEATURE_SUPPORT_SHADER_TYPE_COMPUTE )
 			Ic3CaseReturn( EShaderType::CSCompute , GL_COMPUTE_SHADER );
@@ -503,7 +503,7 @@ namespace Ic3::Graphics::GCI
 	{
 		switch( pTextureFormat )
 		{
-			Ic3CaseReturn( ETextureFormat::Undefined    , GL_INVALID_ENUM );
+			Ic3CaseReturn( ETextureFormat::Undefined  , GL_INVALID_ENUM );
 			Ic3CaseReturn( ETextureFormat::R32F       , GL_R32F         );
 			Ic3CaseReturn( ETextureFormat::R32I       , GL_R32I         );
 			Ic3CaseReturn( ETextureFormat::R32U       , GL_R32UI        );

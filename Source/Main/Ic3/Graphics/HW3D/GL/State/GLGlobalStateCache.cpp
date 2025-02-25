@@ -11,11 +11,6 @@ namespace Ic3::Graphics::GCI
 		Reset();
 	}
 
-	void GLGlobalStateCache::Reset()
-	{
-		_cachedState = sDefaultState;
-	}
-
 	void GLGlobalStateCache::ApplyShaderPipelineBinding( GLuint pShaderPipelineHandle )
 	{
 		if( pShaderPipelineHandle != _cachedState.shaderPipelineBinding )
@@ -57,41 +52,41 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	void GLGlobalStateCache::ApplyBlendState( const GLBlendConfig & pBlendConfig )
+	void GLGlobalStateCache::ApplyBlendSettings( const GLBlendSettings & pBlendSettings, bool pSetConstantColor )
 	{
-		auto & cachedBlendConfig = _cachedState.blendConfig;
+		auto & cachedBlendSettings = _cachedState.blendSettings;
 
-		if( !pBlendConfig.attachmentsMask.is_set_any_of( eRTAttachmentMaskColorAll ) )
+		if( !pBlendSettings.attachmentsMask.is_set_any_of( eRTAttachmentMaskColorAll ) )
 		{
-			if( cachedBlendConfig.blendActiveGlobal )
+			if( cachedBlendSettings.blendActiveGlobal )
 			{
 				glDisable( GL_BLEND );
 				Ic3OpenGLHandleLastError();
 
-				cachedBlendConfig.blendActiveGlobal = false;
+				cachedBlendSettings.blendActiveGlobal = false;
 			}
 		}
 		else
 		{
-			const bool isSeparateBlendingEnabled = cachedBlendConfig.flags.is_set(
+			const bool isSeparateBlendingEnabled = cachedBlendSettings.flags.is_set(
 					eBlendConfigFlagEnableMRTIndependentBlendingBit );
-			const bool isSeparateBlendingRequested = pBlendConfig.flags.is_set(
+			const bool isSeparateBlendingRequested = pBlendSettings.flags.is_set(
 					eBlendConfigFlagEnableMRTIndependentBlendingBit );
 
 			if( isSeparateBlendingRequested )
 			{
 				bool compareCurrentState = isSeparateBlendingEnabled;
 
-				for( uint32 caIndex = 0; CxDef::IsRTColorAttachmentIndexValid( caIndex ); ++caIndex )
+				for( uint32 colorAttachmentIndex = 0; CXU::RTOIsAttachmentIndexValid( colorAttachmentIndex ); ++colorAttachmentIndex )
 				{
-					auto & cachedBlendProps = cachedBlendConfig.attachments[caIndex];
-					const auto & blendProps = pBlendConfig.attachments[caIndex];
+					auto & cachedBlendProps = cachedBlendSettings.attachments[colorAttachmentIndex];
+					const auto & blendProps = pBlendSettings.attachments[colorAttachmentIndex];
 
 					if( !blendProps.blendActive )
 					{
 						if( !compareCurrentState || cachedBlendProps.blendActive )
 						{
-							glDisablei( GL_BLEND, caIndex );
+							glDisablei( GL_BLEND, colorAttachmentIndex );
 							Ic3OpenGLHandleLastError();
 							cachedBlendProps.blendActive = 0;
 						}
@@ -100,21 +95,26 @@ namespace Ic3::Graphics::GCI
 					{
 						if( !compareCurrentState || !cachedBlendProps.blendActive )
 						{
-							glEnablei( GL_BLEND, caIndex );
+							glEnablei( GL_BLEND, colorAttachmentIndex );
 							Ic3OpenGLHandleLastError();
 							cachedBlendProps.blendActive = 1;
 						}
 
 						if( !compareCurrentState || cppx::mem_cmp_not_equal( blendProps.equation, cachedBlendProps.equation ) )
 						{
-							glBlendEquationSeparatei( caIndex, blendProps.equation.rgb, blendProps.equation.alpha );
+							glBlendEquationSeparatei( colorAttachmentIndex, blendProps.equation.rgb, blendProps.equation.alpha );
 							Ic3OpenGLHandleLastError();
 							cachedBlendProps.equation = blendProps.equation;
 						}
 
 						if( !compareCurrentState || cppx::mem_cmp_not_equal( blendProps.factor, cachedBlendProps.factor ) )
 						{
-							glBlendFuncSeparatei( caIndex, blendProps.factor.rgbSrc, blendProps.factor.rgbDst, blendProps.factor.alphaSrc, blendProps.factor.alphaDst );
+							glBlendFuncSeparatei(
+								colorAttachmentIndex,
+								blendProps.factor.rgbSrc,
+								blendProps.factor.rgbDst,
+								blendProps.factor.alphaSrc,
+								blendProps.factor.alphaDst );
 							Ic3OpenGLHandleLastError();
 							cachedBlendProps.factor = blendProps.factor;
 						}
@@ -125,15 +125,15 @@ namespace Ic3::Graphics::GCI
 			{
 				bool compareCurrentState = !isSeparateBlendingEnabled;
 
-				if( !compareCurrentState || !cachedBlendConfig.blendActiveGlobal  )
+				if( !compareCurrentState || !cachedBlendSettings.blendActiveGlobal  )
 				{
 					glEnable( GL_BLEND );
 					Ic3OpenGLHandleLastError();
-					cachedBlendConfig.blendActiveGlobal = true;
+					cachedBlendSettings.blendActiveGlobal = true;
 				}
 
-				auto & cachedBlendProps = cachedBlendConfig.attachments[0];
-				const auto & blendProps = pBlendConfig.attachments[0];
+				auto & cachedBlendProps = cachedBlendSettings.attachments[0];
+				const auto & blendProps = pBlendSettings.attachments[0];
 
 				if( !compareCurrentState || cppx::mem_cmp_not_equal( blendProps.equation, cachedBlendProps.equation ) )
 				{
@@ -144,87 +144,95 @@ namespace Ic3::Graphics::GCI
 
 				if( !compareCurrentState || cppx::mem_cmp_not_equal( blendProps.factor, cachedBlendProps.factor ) )
 				{
-					glBlendFuncSeparate( blendProps.factor.rgbSrc, blendProps.factor.rgbDst, blendProps.factor.alphaSrc, blendProps.factor.alphaDst );
+					glBlendFuncSeparate(
+						blendProps.factor.rgbSrc,
+						blendProps.factor.rgbDst,
+						blendProps.factor.alphaSrc,
+						blendProps.factor.alphaDst );
 					Ic3OpenGLHandleLastError();
 					cachedBlendProps.factor = blendProps.factor;
 				}
 			}
 
-			if( pBlendConfig.flags.is_set_any_of( eBlendConfigFlagSetFixedBlendConstantsBit ) )
+			if( pSetConstantColor )
 			{
-				const auto & blendConstantColor = pBlendConfig.constantColor;
+				const auto & blendConstantColor = pBlendSettings.constantColor;
 
-				if( cppx::mem_cmp_not_equal( blendConstantColor, cachedBlendConfig.constantColor ) )
+				if( cppx::mem_cmp_not_equal( blendConstantColor, cachedBlendSettings.constantColor ) )
 				{
-					glBlendColor( blendConstantColor.fpRed, blendConstantColor.fpGreen, blendConstantColor.fpBlue, blendConstantColor.fpAlpha );
+					glBlendColor(
+						blendConstantColor.fpRed,
+						blendConstantColor.fpGreen,
+						blendConstantColor.fpBlue,
+						blendConstantColor.fpAlpha );
 					Ic3OpenGLHandleLastError();
-					cachedBlendConfig.constantColor = pBlendConfig.constantColor;
+					cachedBlendSettings.constantColor = pBlendSettings.constantColor;
 				}
 			}
 		}
 	}
 
-	void GLGlobalStateCache::ApplyDepthStencilState( const GLDepthStencilConfig & pDepthStencilConfig, uint8 pStencilRefValue )
+	void GLGlobalStateCache::ApplyDepthStencilSettings( const GLDepthStencilSettings & pDepthStencilSettings, uint8 pStencilTestRefValue )
 	{
-		auto & cachedDepthStencilConfig = _cachedState.depthStencilConfig;
-		auto & cachedDepthSettings = cachedDepthStencilConfig.depthSettings;
-		auto & cachedStencilSettings = cachedDepthStencilConfig.stencilSettings;
+		auto & cachedDepthStencilSettings = _cachedState.depthStencilSettings;
+		auto & cachedDepthSettings = cachedDepthStencilSettings.depthSettings;
+		auto & cachedStencilSettings = cachedDepthStencilSettings.stencilSettings;
 
-		if( !pDepthStencilConfig.depthTestActive )
+		if( !pDepthStencilSettings.depthTestActive )
 		{
-			if( cachedDepthStencilConfig.depthTestActive )
+			if( cachedDepthStencilSettings.depthTestActive )
 			{
 				glDisable( GL_DEPTH_TEST );
 				Ic3OpenGLHandleLastError();
-				cachedDepthStencilConfig.depthTestActive = false;
+				cachedDepthStencilSettings.depthTestActive = false;
 			}
 		}
 		else
 		{
-			if( !cachedDepthStencilConfig.depthTestActive )
+			if( !cachedDepthStencilSettings.depthTestActive )
 			{
 				glEnable( GL_DEPTH_TEST );
 				Ic3OpenGLHandleLastError();
-				cachedDepthStencilConfig.depthTestActive = true;
+				cachedDepthStencilSettings.depthTestActive = true;
 			}
 
-			if( cachedDepthSettings.depthCompFunc != pDepthStencilConfig.depthSettings.depthCompFunc )
+			if( cachedDepthSettings.depthCompFunc != pDepthStencilSettings.depthSettings.depthCompFunc )
 			{
-				glDepthFunc( pDepthStencilConfig.depthSettings.depthCompFunc );
+				glDepthFunc( pDepthStencilSettings.depthSettings.depthCompFunc );
 				Ic3OpenGLHandleLastError();
-				cachedDepthSettings.depthCompFunc = pDepthStencilConfig.depthSettings.depthCompFunc;
+				cachedDepthSettings.depthCompFunc = pDepthStencilSettings.depthSettings.depthCompFunc;
 			}
 
-			if( cachedDepthSettings.writeMask != pDepthStencilConfig.depthSettings.writeMask )
+			if( cachedDepthSettings.writeMask != pDepthStencilSettings.depthSettings.writeMask )
 			{
-				glDepthMask( pDepthStencilConfig.depthSettings.writeMask ? GL_TRUE : GL_FALSE );
+				glDepthMask( pDepthStencilSettings.depthSettings.writeMask ? GL_TRUE : GL_FALSE );
 				Ic3OpenGLHandleLastError();
-				cachedDepthSettings.writeMask = pDepthStencilConfig.depthSettings.writeMask;
+				cachedDepthSettings.writeMask = pDepthStencilSettings.depthSettings.writeMask;
 			}
 		}
 
-		if( !pDepthStencilConfig.stencilTestActive )
+		if( !pDepthStencilSettings.stencilTestActive )
 		{
-			if( cachedDepthStencilConfig.stencilTestActive )
+			if( cachedDepthStencilSettings.stencilTestActive )
 			{
 				glDisable( GL_STENCIL_TEST );
 				Ic3OpenGLHandleLastError();
-				cachedDepthStencilConfig.stencilTestActive = false;
+				cachedDepthStencilSettings.stencilTestActive = false;
 			}
 		}
 		else
 		{
-			if( !cachedDepthStencilConfig.stencilTestActive )
+			if( !cachedDepthStencilSettings.stencilTestActive )
 			{
 				glEnable( GL_STENCIL_TEST );
 				Ic3OpenGLHandleLastError();
-				cachedDepthStencilConfig.stencilTestActive = true;
+				cachedDepthStencilSettings.stencilTestActive = true;
 			}
 
-			const auto & frontFace = pDepthStencilConfig.stencilSettings.frontFace;
+			const auto & frontFace = pDepthStencilSettings.stencilSettings.frontFace;
 			if( !cppx::mem_cmp_equal( frontFace, cachedStencilSettings.frontFace ) )
 			{
-				glStencilFuncSeparate( GL_FRONT, frontFace.compFunc, pStencilRefValue, frontFace.readMask );
+				glStencilFuncSeparate( GL_FRONT, frontFace.compFunc, pStencilTestRefValue, frontFace.readMask );
 				Ic3OpenGLHandleLastError();
 
 				glStencilOpSeparate( GL_FRONT, frontFace.opFail, frontFace.opPassDepthFail, frontFace.opPassDepthPass );
@@ -236,10 +244,10 @@ namespace Ic3::Graphics::GCI
 				cppx::mem_copy( cachedStencilSettings.frontFace, frontFace );
 			}
 
-			const auto & backFace = pDepthStencilConfig.stencilSettings.backFace;
+			const auto & backFace = pDepthStencilSettings.stencilSettings.backFace;
 			if( !cppx::mem_cmp_equal( backFace, cachedStencilSettings.backFace ) )
 			{
-				glStencilFuncSeparate( GL_FRONT, backFace.compFunc, pStencilRefValue, backFace.readMask );
+				glStencilFuncSeparate( GL_FRONT, backFace.compFunc, pStencilTestRefValue, backFace.readMask );
 				Ic3OpenGLHandleLastError();
 
 				glStencilOpSeparate( GL_FRONT, backFace.opFail, backFace.opPassDepthFail, backFace.opPassDepthPass );
@@ -253,118 +261,139 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	void GLGlobalStateCache::ApplyRasterizerState( const GLRasterizerConfig & pRasterizerConfig )
+	void GLGlobalStateCache::ApplyRasterizerSettings( const GLRasterizerSettings & pRasterizerSettings )
 	{
-		auto & cachedRasterizerConfig = _cachedState.rasterizerConfig;
+		auto & cachedRasterizerSettings = _cachedState.rasterizerSettings;
 
-		if( pRasterizerConfig.scissorTestActive != cachedRasterizerConfig.scissorTestActive )
+		if( pRasterizerSettings.scissorTestActive != cachedRasterizerSettings.scissorTestActive )
 		{
-			if( pRasterizerConfig.scissorTestActive )
+			if( pRasterizerSettings.scissorTestActive )
 			{
 				glEnable( GL_SCISSOR_TEST );
 				Ic3OpenGLHandleLastError();
-				cachedRasterizerConfig.scissorTestActive = true;
+				cachedRasterizerSettings.scissorTestActive = true;
 			}
 			else
 			{
 				glDisable( GL_SCISSOR_TEST );
 				Ic3OpenGLHandleLastError();
-				cachedRasterizerConfig.scissorTestActive = false;
+				cachedRasterizerSettings.scissorTestActive = false;
 			}
 		}
 
-		if( pRasterizerConfig.cullMode != cachedRasterizerConfig.cullMode )
+		if( pRasterizerSettings.cullMode != cachedRasterizerSettings.cullMode )
 		{
-			if( pRasterizerConfig.cullMode != GL_NONE )
+			if( pRasterizerSettings.cullMode != GL_NONE )
 			{
 				glEnable( GL_CULL_FACE );
 				Ic3OpenGLHandleLastError();
 
-				glCullFace( pRasterizerConfig.cullMode );
+				glCullFace( pRasterizerSettings.cullMode );
 				Ic3OpenGLHandleLastError();
 
-				cachedRasterizerConfig.cullMode = pRasterizerConfig.cullMode;
+				cachedRasterizerSettings.cullMode = pRasterizerSettings.cullMode;
 			}
 			else
 			{
 				glDisable( GL_CULL_FACE );
 				Ic3OpenGLHandleLastError();
 
-				cachedRasterizerConfig.cullMode = GL_NONE;
+				cachedRasterizerSettings.cullMode = GL_NONE;
 			}
 		}
 
-		if( pRasterizerConfig.frontFaceVerticesOrder != cachedRasterizerConfig.frontFaceVerticesOrder )
+		if( pRasterizerSettings.frontFaceVerticesOrder != cachedRasterizerSettings.frontFaceVerticesOrder )
 		{
-			glFrontFace( pRasterizerConfig.frontFaceVerticesOrder );
+			glFrontFace( pRasterizerSettings.frontFaceVerticesOrder );
 			Ic3OpenGLHandleLastError();
 
-			cachedRasterizerConfig.frontFaceVerticesOrder = pRasterizerConfig.frontFaceVerticesOrder;
+			cachedRasterizerSettings.frontFaceVerticesOrder = pRasterizerSettings.frontFaceVerticesOrder;
 		}
 
 	#if( IC3_GX_GL_FEATURE_SUPPORT_PRIMITIVE_FILL_MODE )
-		if( pRasterizerConfig.primitiveFillMode != cachedRasterizerConfig.primitiveFillMode )
+		if( pRasterizerSettings.primitiveFillMode != cachedRasterizerSettings.primitiveFillMode )
 		{
-			glPolygonMode( GL_FRONT_AND_BACK, pRasterizerConfig.primitiveFillMode );
+			glPolygonMode( GL_FRONT_AND_BACK, pRasterizerSettings.primitiveFillMode );
 			Ic3OpenGLHandleLastError();
 
-			cachedRasterizerConfig.frontFaceVerticesOrder = pRasterizerConfig.frontFaceVerticesOrder;
+			cachedRasterizerSettings.frontFaceVerticesOrder = pRasterizerSettings.frontFaceVerticesOrder;
 		}
 	#endif
+	}
+
+	void GLGlobalStateCache::SetBlendConstantColor( const Math::RGBAColorR32Norm & pConstantColor )
+	{
+		auto & cachedBlendSettings = _cachedState.blendSettings;
+		if( cppx::mem_cmp_not_equal( pConstantColor, cachedBlendSettings.constantColor ) )
+		{
+			glBlendColor(
+					pConstantColor.fpRed,
+					pConstantColor.fpGreen,
+					pConstantColor.fpBlue,
+					pConstantColor.fpAlpha );
+			Ic3OpenGLHandleLastError();
+			cachedBlendSettings.constantColor = pConstantColor;
+		}
+	}
+
+	void GLGlobalStateCache::Reset()
+	{
+		_cachedState = sDefaultState;
 	}
 
 	GLGlobalState GLGlobalStateCache::GetDefaultGlobalState()
 	{
 		GLGlobalState defaultGlobalState;
 
+		defaultGlobalState.indexBufferBinding = 0;
 		defaultGlobalState.shaderPipelineBinding = 0;
 		defaultGlobalState.shaderProgramBinding = 0;
 		defaultGlobalState.vertexArrayObjectBinding = 0;
 
-		// BlendConfig
+		// BlendSettings
 		{
-			defaultGlobalState.blendConfig.blendActiveGlobal = false;
-			defaultGlobalState.blendConfig.flags = 0;
-			defaultGlobalState.blendConfig.attachmentsMask = 0;
-			defaultGlobalState.blendConfig.constantColor = { 0.0f, 0.0f, 0.0f, 0.0f };
-			defaultGlobalState.blendConfig.attachments[0].blendActive = false;
-			defaultGlobalState.blendConfig.attachments[0].equation.rgb = GL_FUNC_ADD;
-			defaultGlobalState.blendConfig.attachments[0].equation.alpha = GL_FUNC_ADD;
-			defaultGlobalState.blendConfig.attachments[0].factor.rgbSrc = GL_ONE;
-			defaultGlobalState.blendConfig.attachments[0].factor.alphaSrc = GL_ONE;
-			defaultGlobalState.blendConfig.attachments[0].factor.rgbDst = GL_ZERO;
-			defaultGlobalState.blendConfig.attachments[0].factor.alphaDst = GL_ZERO;
-			defaultGlobalState.blendConfig.attachments[1] = defaultGlobalState.blendConfig.attachments[0];
-			defaultGlobalState.blendConfig.attachments[2] = defaultGlobalState.blendConfig.attachments[0];
-			defaultGlobalState.blendConfig.attachments[3] = defaultGlobalState.blendConfig.attachments[0];
-			defaultGlobalState.blendConfig.attachments[4] = defaultGlobalState.blendConfig.attachments[0];
-			defaultGlobalState.blendConfig.attachments[5] = defaultGlobalState.blendConfig.attachments[0];
-			defaultGlobalState.blendConfig.attachments[6] = defaultGlobalState.blendConfig.attachments[0];
-			defaultGlobalState.blendConfig.attachments[7] = defaultGlobalState.blendConfig.attachments[0];
+			defaultGlobalState.blendSettings.blendActiveGlobal = false;
+			defaultGlobalState.blendSettings.flags = 0;
+			defaultGlobalState.blendSettings.attachmentsMask = 0;
+			defaultGlobalState.blendSettings.constantColor = { 0.0f, 0.0f, 0.0f, 0.0f };
+			defaultGlobalState.blendSettings.attachments[0].blendActive = false;
+			defaultGlobalState.blendSettings.attachments[0].equation.rgb = GL_FUNC_ADD;
+			defaultGlobalState.blendSettings.attachments[0].equation.alpha = GL_FUNC_ADD;
+			defaultGlobalState.blendSettings.attachments[0].factor.rgbSrc = GL_ONE;
+			defaultGlobalState.blendSettings.attachments[0].factor.alphaSrc = GL_ONE;
+			defaultGlobalState.blendSettings.attachments[0].factor.rgbDst = GL_ZERO;
+			defaultGlobalState.blendSettings.attachments[0].factor.alphaDst = GL_ZERO;
+			defaultGlobalState.blendSettings.attachments[1] = defaultGlobalState.blendSettings.attachments[0];
+			defaultGlobalState.blendSettings.attachments[2] = defaultGlobalState.blendSettings.attachments[0];
+			defaultGlobalState.blendSettings.attachments[3] = defaultGlobalState.blendSettings.attachments[0];
+			defaultGlobalState.blendSettings.attachments[4] = defaultGlobalState.blendSettings.attachments[0];
+			defaultGlobalState.blendSettings.attachments[5] = defaultGlobalState.blendSettings.attachments[0];
+			defaultGlobalState.blendSettings.attachments[6] = defaultGlobalState.blendSettings.attachments[0];
+			defaultGlobalState.blendSettings.attachments[7] = defaultGlobalState.blendSettings.attachments[0];
 		}
 
-		// DepthStencilConfig
+		// DepthStencilSettings
 		{
-			defaultGlobalState.depthStencilConfig.depthTestActive = false;
-			defaultGlobalState.depthStencilConfig.depthSettings.depthCompFunc = GL_LESS;
-			defaultGlobalState.depthStencilConfig.depthSettings.writeMask = GL_TRUE;
+			defaultGlobalState.depthStencilSettings.depthTestActive = false;
+			defaultGlobalState.depthStencilSettings.depthSettings.depthCompFunc = GL_LESS;
+			defaultGlobalState.depthStencilSettings.depthSettings.writeMask = GL_TRUE;
 
-			defaultGlobalState.depthStencilConfig.stencilTestActive = false;
-			defaultGlobalState.depthStencilConfig.stencilSettings.frontFace.compFunc = GL_ALWAYS;
-			defaultGlobalState.depthStencilConfig.stencilSettings.frontFace.writeMask = 0xFFFFFFFF;
-			defaultGlobalState.depthStencilConfig.stencilSettings.frontFace.opFail = GL_KEEP;
-			defaultGlobalState.depthStencilConfig.stencilSettings.frontFace.opPassDepthFail = GL_KEEP;
-			defaultGlobalState.depthStencilConfig.stencilSettings.frontFace.opPassDepthPass = GL_KEEP;
-			defaultGlobalState.depthStencilConfig.stencilSettings.frontFace = defaultGlobalState.depthStencilConfig.stencilSettings.backFace;
+			defaultGlobalState.depthStencilSettings.stencilTestActive = false;
+			defaultGlobalState.depthStencilSettings.stencilSettings.frontFace.compFunc = GL_ALWAYS;
+			defaultGlobalState.depthStencilSettings.stencilSettings.frontFace.writeMask = 0xFFFFFFFF;
+			defaultGlobalState.depthStencilSettings.stencilSettings.frontFace.opFail = GL_KEEP;
+			defaultGlobalState.depthStencilSettings.stencilSettings.frontFace.opPassDepthFail = GL_KEEP;
+			defaultGlobalState.depthStencilSettings.stencilSettings.frontFace.opPassDepthPass = GL_KEEP;
+			defaultGlobalState.depthStencilSettings.stencilSettings.frontFace = defaultGlobalState.depthStencilSettings.stencilSettings.backFace;
 		}
 
-		// RasterizerConfig
+		// RasterizerSettings
 		{
-			defaultGlobalState.rasterizerConfig.scissorTestActive = false;
-			defaultGlobalState.rasterizerConfig.cullMode = GL_NONE; // This is initially GL_BACK, but culling itself is disabled!
-			defaultGlobalState.rasterizerConfig.frontFaceVerticesOrder = GL_CCW;
+			defaultGlobalState.rasterizerSettings.scissorTestActive = false;
+			defaultGlobalState.rasterizerSettings.cullMode = GL_NONE; // This is initially GL_BACK, but culling itself is disabled!
+			defaultGlobalState.rasterizerSettings.frontFaceVerticesOrder = GL_CCW;
 		#if( IC3_GX_GL_FEATURE_SUPPORT_PRIMITIVE_FILL_MODE )
-			defaultGlobalState.rasterizerConfig.primitiveFillMode = GL_FILL;
+			defaultGlobalState.rasterizerSettings.primitiveFillMode = GL_FILL;
 		#endif
 		}
 

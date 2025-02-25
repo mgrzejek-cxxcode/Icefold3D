@@ -4,7 +4,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	namespace SMU
+	namespace GCU
 	{
 
 		ID3D11DeviceContext1 * GetD3D11DeviceContextFromCommandList( void * pDX11CommandList )

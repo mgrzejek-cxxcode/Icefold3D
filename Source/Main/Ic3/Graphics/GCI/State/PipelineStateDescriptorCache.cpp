@@ -1,58 +1,53 @@
 
 #include "PipelineStateDescriptorCache.h"
+#include "PipelineStateDescriptorFactory.h"
 #include "GraphicsPipelineStateCommon.h"
 
 namespace Ic3::Graphics::GCI
 {
 
 
-	GraphicsPipelineStateDescriptorFactoryCacheAdapter::GraphicsPipelineStateDescriptorFactoryCacheAdapter( PipelineStateDescriptorFactory & pStateFactory )
-	: _stateFactory( &pStateFactory )
+	GraphicsPipelineStateDescriptorFactoryCacheAdapter::GraphicsPipelineStateDescriptorFactoryCacheAdapter(
+			PipelineStateDescriptorFactory & pDescriptorFactory )
+	: _descriptorFactory( &pDescriptorFactory )
 	{}
 
 	GraphicsPipelineStateDescriptorFactoryCacheAdapter::~GraphicsPipelineStateDescriptorFactoryCacheAdapter() = default;
 
-	BlendStateDescriptorHandle GraphicsPipelineStateDescriptorFactoryCacheAdapter::CreateStateDescriptor(
-			const BlendSettings & pBlendSettings )
+	BlendStateDescriptorHandle GraphicsPipelineStateDescriptorFactoryCacheAdapter::CreateDescriptor(
+			const BlendStateDescriptorCreateInfo & pCreateInfo )
 	{
-		return _stateFactory->CreateBlendStateDescriptor( pBlendSettings );
+		return _descriptorFactory->CreateBlendStateDescriptor( pCreateInfo );
 	}
 
-	DepthStencilStateDescriptorHandle GraphicsPipelineStateDescriptorFactoryCacheAdapter::CreateStateDescriptor(
-			const DepthStencilSettings & pDepthStencilSettings )
+	DepthStencilStateDescriptorHandle GraphicsPipelineStateDescriptorFactoryCacheAdapter::CreateDescriptor(
+			const DepthStencilStateDescriptorCreateInfo & pCreateInfo )
 	{
-		return _stateFactory->CreateDepthStencilStateDescriptor( pDepthStencilSettings );
+		return _descriptorFactory->CreateDepthStencilStateDescriptor( pCreateInfo );
 	}
 
-	RasterizerStateDescriptorHandle GraphicsPipelineStateDescriptorFactoryCacheAdapter::CreateStateDescriptor(
-			const RasterizerSettings & pRasterizerSettings )
+	RasterizerStateDescriptorHandle GraphicsPipelineStateDescriptorFactoryCacheAdapter::CreateDescriptor(
+			const RasterizerStateDescriptorCreateInfo & pCreateInfo )
 	{
-		return _stateFactory->CreateRasterizerStateDescriptor( pRasterizerSettings );
+		return _descriptorFactory->CreateRasterizerStateDescriptor( pCreateInfo );
 	}
 
-	GraphicsShaderLinkageStateDescriptorHandle GraphicsPipelineStateDescriptorFactoryCacheAdapter::CreateStateDescriptor( const GraphicsShaderSet & pShaderSet )
+	GraphicsShaderLinkageDescriptorHandle GraphicsPipelineStateDescriptorFactoryCacheAdapter::CreateDescriptor(
+			const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo )
 	{
-		return _stateFactory->CreateGraphicsShaderLinkageStateDescriptor( pShaderSet );
+		return _descriptorFactory->CreateGraphicsShaderLinkageDescriptor( pCreateInfo );
 	}
 
-	IAVertexAttributeLayoutStateDescriptorHandle GraphicsPipelineStateDescriptorFactoryCacheAdapter::CreateStateDescriptor( const IAVertexAttributeLayoutDefinition & pDefinition, Shader & pVertexShaderWithBinary )
+	VertexAttributeLayoutDescriptorHandle GraphicsPipelineStateDescriptorFactoryCacheAdapter::CreateDescriptor(
+			const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo )
 	{
-		return _stateFactory->CreateIAVertexAttributeLayoutStateDescriptor( pDefinition, pVertexShaderWithBinary );
+		return _descriptorFactory->CreateVertexAttributeLayoutDescriptor( pCreateInfo );
 	}
 
-	IAVertexStreamStateDescriptorHandle GraphicsPipelineStateDescriptorFactoryCacheAdapter::CreateStateDescriptor( const IAVertexStreamBindingDefinition & pDefinition )
+	RootSignatureDescriptorHandle GraphicsPipelineStateDescriptorFactoryCacheAdapter::CreateDescriptor(
+			const RootSignatureDescriptorCreateInfo & pCreateInfo )
 	{
-		return _stateFactory->CreateIAVertexStreamBindingStateDescriptor( pDefinition );
-	}
-
-	RenderTargetBindingStateDescriptorHandle GraphicsPipelineStateDescriptorFactoryCacheAdapter::CreateStateDescriptor( const RenderTargetBindingDefinition & pDefinition )
-	{
-		return _stateFactory->CreateRenderTargetBindingState( pDefinition );
-	}
-
-	RenderPassConfigurationStateDescriptorHandle GraphicsPipelineStateDescriptorFactoryCacheAdapter::CreateStateDescriptor( const RenderPassConfiguration & pConfiguration )
-	{
-		return _stateFactory->CreateRenderPassState( pConfiguration );
+		return _descriptorFactory->CreateRootSignatureDescriptor( pCreateInfo );
 	}
 
 } // namespace Ic3::Graphics::GCI

@@ -40,9 +40,9 @@
 
 #define friendapi protected
 
+#include "Prerequisites/DebugLayer.h"
 #include "Prerequisites/CoreDefs.h"
 #include "Prerequisites/CoreEnums.h"
-#include "Prerequisites/DebugLayer.h"
 #include "Prerequisites/ResultCode.h"
 #include "Prerequisites/DynamicInterface.h"
 

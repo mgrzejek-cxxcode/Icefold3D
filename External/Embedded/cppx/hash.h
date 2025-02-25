@@ -91,7 +91,7 @@ namespace cppx
 		: value( pValue )
 		{}
 
-		constexpr explicit operator value_type() const noexcept
+		constexpr operator value_type() const noexcept
 		{
 			return value;
 		}

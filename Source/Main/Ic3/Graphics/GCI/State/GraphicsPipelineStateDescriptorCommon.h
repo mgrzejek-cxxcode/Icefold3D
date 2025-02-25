@@ -5,7 +5,7 @@
 #define __IC3_GRAPHICS_GCI_COMMON_GRAPHICS_CONFIG_IMMUTABLE_STATES_H__
 
 #include "CommonGraphicsConfig.h"
-#include "PipelineStateCommon.h"
+#include "PipelineStateDescriptor.h"
 
 namespace Ic3::Graphics::GCI
 {
@@ -27,6 +27,8 @@ namespace Ic3::Graphics::GCI
 				cppx::bitmask<EBlendConfigFlags> pBlendFlags );
 
 		virtual ~BlendStateDescriptor();
+
+		CPPX_ATTR_NO_DISCARD virtual EPipelineStateDescriptorType GetDescriptorType() const noexcept override final;
 	};
 
 	/**
@@ -46,6 +48,8 @@ namespace Ic3::Graphics::GCI
 				cppx::bitmask<EDepthStencilConfigFlags> pDepthStencilFlags );
 
 		virtual ~DepthStencilStateDescriptor();
+
+		CPPX_ATTR_NO_DISCARD virtual EPipelineStateDescriptorType GetDescriptorType() const noexcept override final;
 	};
 
 	/**
@@ -65,6 +69,8 @@ namespace Ic3::Graphics::GCI
 				cppx::bitmask<ERasterizerConfigFlags> pRasterizerFlags );
 
 		virtual ~RasterizerStateDescriptor();
+
+		CPPX_ATTR_NO_DISCARD virtual EPipelineStateDescriptorType GetDescriptorType() const noexcept override final;
 	};
 
 } // namespace Ic3::Graphics::GCI

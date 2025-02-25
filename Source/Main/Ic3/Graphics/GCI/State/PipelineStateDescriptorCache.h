@@ -24,20 +24,20 @@ namespace Ic3::Graphics::GCI
 		BlendStateDescriptorHandle CreateDescriptor( const BlendStateDescriptorCreateInfo & pCreateInfo );
 		DepthStencilStateDescriptorHandle CreateDescriptor( const DepthStencilStateDescriptorCreateInfo & pCreateInfo );
 		RasterizerStateDescriptorHandle CreateDescriptor( const RasterizerStateDescriptorCreateInfo & pCreateInfo );
-		GraphicsShaderLinkageStateDescriptorHandle CreateDescriptor( const GraphicsShaderLinkageStateDescriptorCreateInfo & pCreateInfo );
-		IAVertexAttributeLayoutStateDescriptorHandle CreateDescriptor( const IAVertexAttributeLayoutStateDescriptorCreateInfo & pCreateInfo );
-		ShaderRootSignatureStateDescriptorHandle CreateDescriptor( const ShaderRootSignatureStateDescriptorCreateInfo & pCreateInfo );
+		GraphicsShaderLinkageDescriptorHandle CreateDescriptor( const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo );
+		VertexAttributeLayoutDescriptorHandle CreateDescriptor( const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo );
+		RootSignatureDescriptorHandle CreateDescriptor( const RootSignatureDescriptorCreateInfo & pCreateInfo );
 
 	private:
 		PipelineStateDescriptorFactory * _descriptorFactory;
 	};
 
-	Ic3DefinePipelineStateDescriptorTraits( Blend, BlendSettings, GraphicsPipelineStateDescriptorFactoryCacheAdapter );
-	Ic3DefinePipelineStateDescriptorTraits( DepthStencil, DepthStencilSettings, GraphicsPipelineStateDescriptorFactoryCacheAdapter );
-	Ic3DefinePipelineStateDescriptorTraits( Rasterizer, RasterizerSettings, GraphicsPipelineStateDescriptorFactoryCacheAdapter );
+	Ic3DefinePipelineStateDescriptorTraits( BlendState, BlendSettings, GraphicsPipelineStateDescriptorFactoryCacheAdapter );
+	Ic3DefinePipelineStateDescriptorTraits( DepthStencilState, DepthStencilSettings, GraphicsPipelineStateDescriptorFactoryCacheAdapter );
+	Ic3DefinePipelineStateDescriptorTraits( RasterizerState, RasterizerSettings, GraphicsPipelineStateDescriptorFactoryCacheAdapter );
 	Ic3DefinePipelineStateDescriptorTraits( GraphicsShaderLinkage, GraphicsShaderBinding, GraphicsPipelineStateDescriptorFactoryCacheAdapter );
-	Ic3DefinePipelineStateDescriptorTraits( IAVertexAttributeLayout, IAVertexAttributeLayoutDefinition, GraphicsPipelineStateDescriptorFactoryCacheAdapter );
-	Ic3DefinePipelineStateDescriptorTraits( ShaderRootSignature, ShaderRootSignatureDesc, GraphicsPipelineStateDescriptorFactoryCacheAdapter );
+	Ic3DefinePipelineStateDescriptorTraits( VertexAttributeLayout, IAVertexAttributeLayoutDefinition, GraphicsPipelineStateDescriptorFactoryCacheAdapter );
+	Ic3DefinePipelineStateDescriptorTraits( RootSignature, RootSignatureDesc, GraphicsPipelineStateDescriptorFactoryCacheAdapter );
 
 	/**
 	 * 
@@ -54,12 +54,12 @@ namespace Ic3::Graphics::GCI
 		GraphicsPipelineStateDescriptorCache( PipelineStateDescriptorFactory & pDescriptorFactory )
 		: mDescriptorFactory( pDescriptorFactory )
 		, _descriptorFactoryAdapter( pDescriptorFactory )
-		, _stateCacheUnitBlend( _descriptorFactoryAdapter )
-		, _stateCacheUnitDepthStencil( _descriptorFactoryAdapter )
-		, _stateCacheUnitRasterizer( _descriptorFactoryAdapter )
-		, _stateCacheUnitGraphicsShaderLinkage( _descriptorFactoryAdapter )
-		, _stateCacheUnitIAVertexAttributeLayout( _descriptorFactoryAdapter )
-		, _stateCacheUnitShaderRootSignature( _descriptorFactoryAdapter )
+		, _cacheUnitBlendState( _descriptorFactoryAdapter )
+		, _cacheUnitDepthStencilState( _descriptorFactoryAdapter )
+		, _cacheUnitRasterizerState( _descriptorFactoryAdapter )
+		, _cacheUnitGraphicsShaderLinkage( _descriptorFactoryAdapter )
+		, _cacheUnitVertexAttributeLayout( _descriptorFactoryAdapter )
+		, _cacheUnitRootSignature( _descriptorFactoryAdapter )
 		{}
 
 		template <typename TPDescriptorType>
@@ -124,32 +124,32 @@ namespace Ic3::Graphics::GCI
 		{
 			if( pResetMask.is_set( ePipelineStateDescriptorTypeFlagBlendBit ) )
 			{
-				_stateCacheUnitBlend.Reset();
+				_cacheUnitBlendState.Reset();
 			}
 
 			if( pResetMask.is_set( ePipelineStateDescriptorTypeFlagDepthStencilBit ) )
 			{
-				_stateCacheUnitDepthStencil.Reset();
+				_cacheUnitDepthStencilState.Reset();
 			}
 
 			if( pResetMask.is_set( ePipelineStateDescriptorTypeFlagRasterizerBit ) )
 			{
-				_stateCacheUnitRasterizer.Reset();
+				_cacheUnitRasterizerState.Reset();
 			}
 
 			if( pResetMask.is_set( ePipelineStateDescriptorTypeFlagGraphicsShaderLinkageBit ) )
 			{
-				_stateCacheUnitGraphicsShaderLinkage.Reset();
+				_cacheUnitGraphicsShaderLinkage.Reset();
 			}
 
 			if( pResetMask.is_set( ePipelineStateDescriptorTypeFlagIAVertexAttributeLayoutBit ) )
 			{
-				_stateCacheUnitIAVertexAttributeLayout.Reset();
+				_cacheUnitVertexAttributeLayout.Reset();
 			}
 
-			if( pResetMask.is_set( ePipelineStateDescriptorTypeFlagShaderRootSignatureBit ) )
+			if( pResetMask.is_set( ePipelineStateDescriptorTypeFlagRootSignatureBit ) )
 			{
-				_stateCacheUnitShaderRootSignature.Reset();
+				_cacheUnitRootSignature.Reset();
 			}
 		}
 
@@ -161,38 +161,38 @@ namespace Ic3::Graphics::GCI
 		GraphicsPipelineStateDescriptorFactoryCacheAdapter _descriptorFactoryAdapter;
 
 		using BlendStateCacheUnit = PipelineStateDescriptorCacheUnit<BlendStateDescriptor>;
-		mutable BlendStateCacheUnit _stateCacheUnitBlend;
+		mutable BlendStateCacheUnit _cacheUnitBlendState;
 
 		using DepthStencilStateCacheUnit = PipelineStateDescriptorCacheUnit<DepthStencilStateDescriptor>;
-		mutable DepthStencilStateCacheUnit _stateCacheUnitDepthStencil;
+		mutable DepthStencilStateCacheUnit _cacheUnitDepthStencilState;
 
 		using RasterizerStateCacheUnit = PipelineStateDescriptorCacheUnit<RasterizerStateDescriptor>;
-		mutable RasterizerStateCacheUnit _stateCacheUnitRasterizer;
+		mutable RasterizerStateCacheUnit _cacheUnitRasterizerState;
 
-		using GraphicsShaderLinkageStateCacheUnit = PipelineStateDescriptorCacheUnit<GraphicsShaderLinkageStateDescriptor>;
-		mutable GraphicsShaderLinkageStateCacheUnit _stateCacheUnitGraphicsShaderLinkage;
+		using GraphicsShaderLinkageStateCacheUnit = PipelineStateDescriptorCacheUnit<GraphicsShaderLinkageDescriptor>;
+		mutable GraphicsShaderLinkageStateCacheUnit _cacheUnitGraphicsShaderLinkage;
 
-		using IAVertexAttributeLayoutStateCacheUnit = PipelineStateDescriptorCacheUnit<IAVertexAttributeLayoutStateDescriptor>;
-		mutable IAVertexAttributeLayoutStateCacheUnit _stateCacheUnitIAVertexAttributeLayout;
+		using VertexAttributeLayoutCacheUnit = PipelineStateDescriptorCacheUnit<VertexAttributeLayoutDescriptor>;
+		mutable VertexAttributeLayoutCacheUnit _cacheUnitVertexAttributeLayout;
 
-		using ShaderRootSignatureStateCacheUnit = PipelineStateDescriptorCacheUnit<ShaderRootSignatureStateDescriptor>;
-		mutable ShaderRootSignatureStateCacheUnit _stateCacheUnitShaderRootSignature;
+		using RootSignatureCacheUnit = PipelineStateDescriptorCacheUnit<RootSignatureDescriptor>;
+		mutable RootSignatureCacheUnit _cacheUnitRootSignature;
 	};
 
 #define Ic3GCIPipelineStateCacheDefineUnitAccessProxy( pStateName ) \
 	template <> \
-	inline PipelineStateDescriptorCacheUnit<pStateName##StateDescriptor> & \
-	GraphicsPipelineStateDescriptorCache::_GetCacheUnit<pStateName##StateDescriptor>() const \
+	inline PipelineStateDescriptorCacheUnit<pStateName##Descriptor> & \
+	GraphicsPipelineStateDescriptorCache::_GetCacheUnit<pStateName##Descriptor>() const \
 	{ \
-		return _stateCacheUnit##pStateName; \
+		return _cacheUnit##pStateName; \
 	}
 
-	Ic3GCIPipelineStateCacheDefineUnitAccessProxy( Blend );
-	Ic3GCIPipelineStateCacheDefineUnitAccessProxy( DepthStencil );
-	Ic3GCIPipelineStateCacheDefineUnitAccessProxy( Rasterizer );
+	Ic3GCIPipelineStateCacheDefineUnitAccessProxy( BlendState );
+	Ic3GCIPipelineStateCacheDefineUnitAccessProxy( DepthStencilState );
+	Ic3GCIPipelineStateCacheDefineUnitAccessProxy( RasterizerState );
 	Ic3GCIPipelineStateCacheDefineUnitAccessProxy( GraphicsShaderLinkage );
-	Ic3GCIPipelineStateCacheDefineUnitAccessProxy( IAVertexAttributeLayout );
-	Ic3GCIPipelineStateCacheDefineUnitAccessProxy( ShaderRootSignature );
+	Ic3GCIPipelineStateCacheDefineUnitAccessProxy( VertexAttributeLayout );
+	Ic3GCIPipelineStateCacheDefineUnitAccessProxy( RootSignature );
 
 } // namespace Ic3::Graphics::GCI
 

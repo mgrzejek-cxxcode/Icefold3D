@@ -61,7 +61,7 @@ namespace Ic3::Graphics::GCI
 		struct ClearParams
 		{
 			RenderTargetAttachmentClearConfig clearConfig;
-			cppx::bitmask<ERenderTargetBufferFlags> clearMask = ERenderTargetBufferMaskAll;
+			cppx::bitmask<ERenderTargetBufferFlags> clearMask = eRenderTargetBufferMaskAll;
 		};
 
 		ClearParams opClear{};
@@ -76,12 +76,8 @@ namespace Ic3::Graphics::GCI
 		ResolveParams opResolve{};
 	};
 
-	struct RenderPassAttachmentReference
+	struct RenderPassAttachmentConfig
 	{
-		RenderTargetTextureHandle attachmentTexture;
-
-		RenderTargetTextureHandle resolveTexture;
-
 		ERenderPassAttachmentLoadAction loadAction = ERenderPassAttachmentLoadAction::Undefined;
 
 		RenderPassActionLoadParameters loadParameters;
@@ -90,40 +86,53 @@ namespace Ic3::Graphics::GCI
 
 		RenderPassActionStoreParameters storeParameters;
 
-		explicit operator bool() const noexcept
+		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept
 		{
 			return !IsEmpty();
 		}
 
-		bool IsEmpty() const noexcept
+		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept
 		{
-			return !attachmentTexture;
+			return ( loadAction == ERenderPassAttachmentLoadAction::Undefined ) && ( storeAction == ERenderPassAttachmentStoreAction::Undefined );
 		}
 
-		bool HasLoadActionFlags( ERenderPassAttachmentActionFlags pLoadFlags ) const noexcept
+		CPPX_ATTR_NO_DISCARD bool IsLoadActionDefined() const noexcept
+		{
+			return cppx::make_bitmask( loadAction ).is_set_any_of( eRenderPassAttachmentActionMaskLoadAll );
+		}
+
+		CPPX_ATTR_NO_DISCARD bool IsStoreActionDefined() const noexcept
+		{
+			return cppx::make_bitmask( storeAction ).is_set_any_of( eRenderPassAttachmentActionMaskStoreAll );
+		}
+
+		CPPX_ATTR_NO_DISCARD bool HasLoadActionFlags( ERenderPassAttachmentActionFlags pLoadFlags ) const noexcept
 		{
 			return cppx::make_bitmask( loadAction ).is_set( pLoadFlags );
 		}
 
-		bool HasStoreActionFlags( ERenderPassAttachmentActionFlags pLoadFlags ) const noexcept
+		CPPX_ATTR_NO_DISCARD bool HasStoreActionFlags( ERenderPassAttachmentActionFlags pLoadFlags ) const noexcept
 		{
 			return cppx::make_bitmask( storeAction ).is_set( pLoadFlags );
 		}
 
 		void Reset()
 		{
-			attachmentTexture = nullptr;
-			resolveTexture = nullptr;
 			loadAction = ERenderPassAttachmentLoadAction::Undefined;
 			storeAction = ERenderPassAttachmentStoreAction::Undefined;
 		}
 	};
 
-	/**
-	 *
-	 */
-	struct RenderPassConfiguration : public TRenderTargetArrayConfiguration<RenderPassAttachmentReference>
+	template <>
+	struct TRenderTargetArrayConfiguration<RenderPassAttachmentConfig> : public TRenderTargetArrayConfigurationBase<RenderPassAttachmentConfig>
 	{
+		using CachedAttachmentsInfoMap = std::unordered_map<ERenderPassAttachmentActionFlags, ERTAttachmentFlags>;
+
+		CachedAttachmentsInfoMap cachedAttachmentsMap;
+
+		IC3_GRAPHICS_GCI_API_NO_DISCARD cppx::bitmask<ERTAttachmentFlags> GetCachedAttachmentsWithFlags(
+				cppx::bitmask<ERenderPassAttachmentActionFlags> pActionFlags ) const noexcept;
+
 		IC3_GRAPHICS_GCI_API_NO_DISCARD cppx::bitmask<ERTAttachmentFlags> GetAttachmentsMaskWithLoadFlags(
 				cppx::bitmask<ERenderPassAttachmentActionFlags> pActionFlags ) const noexcept;
 
@@ -141,16 +150,23 @@ namespace Ic3::Graphics::GCI
 		{
 			return GetAttachmentsMaskWithStoreFlags( static_cast<ERenderPassAttachmentActionFlags>( pStoreAction ) );
 		}
+
+		void SaveCachedAttachmentsInfo( cppx::bitmask<ERenderPassAttachmentActionFlags> pActionFlags );
 	};
 
-	struct RenderPassConfigurationStateDescriptorCreateInfo : public PipelineStateDescriptorCreateInfoBase
+	/**
+	 *
+	 */
+	using RenderPassConfiguration = TRenderTargetArrayConfiguration<RenderPassAttachmentConfig>;
+
+	struct RenderPassDescriptorCreateInfo : public PipelineStateDescriptorCreateInfoBase
 	{
 		RenderPassConfiguration passConfiguration;
 
 		CPPX_ATTR_NO_DISCARD pipeline_config_hash_t GetConfigHash() const noexcept
 		{
 			return cppx::hash_compute<pipeline_config_hash_t::hash_algo>(
-					passConfiguration.attachmentConfigArray,
+					passConfiguration.attachments,
 					passConfiguration.activeAttachmentsMask,
 					passConfiguration.activeAttachmentsNum );
 		}
@@ -159,11 +175,8 @@ namespace Ic3::Graphics::GCI
 	namespace GCU
 	{
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD bool RTOValidateRenderPassConfiguration(
-				const RenderPassConfiguration & pPassConfiguration );
-
-		IC3_GRAPHICS_GCI_API_NO_DISCARD RenderTargetArrayLayout RTOGetRenderTargetArrayLayoutForPassConfiguration(
-				const RenderPassConfiguration & pPassConfiguration );
+		CPPX_ATTR_NO_DISCARD bool RTOValidateRenderPassConfiguration(
+				const RenderPassConfiguration & pRenderPassConfiguration );
 
 	}
 

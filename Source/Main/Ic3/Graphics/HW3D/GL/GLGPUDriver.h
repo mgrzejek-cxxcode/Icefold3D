@@ -1,8 +1,8 @@
 
 #pragma once
 
-#ifndef __IC3_GRAPHICS_HW3D_GLCOMMON_GPU_DRIVER_H__
-#define __IC3_GRAPHICS_HW3D_GLCOMMON_GPU_DRIVER_H__
+#ifndef __IC3_GRAPHICS_HW3D_GLC_GPU_DRIVER_H__
+#define __IC3_GRAPHICS_HW3D_GLC_GPU_DRIVER_H__
 
 #include "GLPrerequisites.h"
 #include <Ic3/Graphics/GCI/GPUDriver.h>
@@ -32,4 +32,4 @@ namespace Ic3::Graphics::GCI
 
 } // namespace Ic3::Graphics::GCI
 
-#endif // __IC3_GRAPHICS_HW3D_GLCOMMON_GPU_DRIVER_H__
+#endif // __IC3_GRAPHICS_HW3D_GLC_GPU_DRIVER_H__

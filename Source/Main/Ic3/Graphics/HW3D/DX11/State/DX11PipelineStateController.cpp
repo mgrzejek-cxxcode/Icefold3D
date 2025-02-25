@@ -12,7 +12,7 @@
 #include "../Resources/DX11Texture.h"
 
 #include <Ic3/Graphics/GCI/State/InputAssemblerDynamicStates.h>
-#include <Ic3/Graphics/GCI/State/RenderTargetDynamicStates.h>
+#include <Ic3/Graphics/GCI/State/GraphicsPipelineStateDescriptorRTO.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -26,28 +26,28 @@ namespace Ic3::Graphics::GCI
 
 	DX11GraphicsPipelineStateController::~DX11GraphicsPipelineStateController() = default;
 
-	const DX11IAVertexStreamDefinition & DX11GraphicsPipelineStateController::GetCurrentIAVertexStreamDefinition() const noexcept
+	const DX11IASourceBindingDefinition & DX11GraphicsPipelineStateController::GetCurrentIASourceBindingDefinition() const noexcept
 	{
-		if( IsIAVertexStreamStateDynamic() )
+		if( IsVertexSourceBindingDescriptorDynamic() )
 		{
-			return _dynamicIAVertexStreamDefinitionDX11;
+			return _dynamicIASourceBindingDefinitionDX11;
 		}
 		else
 		{
-			const auto * dx11VertexStreamState = _currentCommonState.iaVertexStreamState->QueryInterface<DX11IAVertexStreamImmutableState>();
-			return dx11VertexStreamState->mDX11VertexStreamDefinition;
+			const auto * dx11VertexStreamState = _currentCommonState.vertexSourceBinding->QueryInterface<DX11VertexSourceBindingDescriptor>();
+			return dx11VertexStreamState->mDX11SourceBindingDefinition;
 		}
 	}
 
-	DX11RenderTargetBindingData DX11GraphicsPipelineStateController::GetCurrentRenderTargetBinding() const noexcept
+	DX11RenderTargetBinding DX11GraphicsPipelineStateController::GetCurrentRenderTargetBinding() const noexcept
 	{
 		if( IsRenderTargetStateDynamic() )
 		{
-			return _dynamicRenderTargetBindingDataDX11;
+			return _dynamicRenderTargetBindingDX11;
 		}
 		else
 		{
-			const auto * dx11RTBindingState = _currentCommonState.renderTargetBindingState->QueryInterface<DX11RenderTargetBindingImmutableState>();
+			const auto * dx11RTBindingState = _currentCommonState.renderTargetBindingState->QueryInterface<DX11RenderTargetBindingCompiledState>();
 			return dx11RTBindingState->mDX11RTBindingData;
 		}
 	}
@@ -75,8 +75,8 @@ namespace Ic3::Graphics::GCI
 
 		if( _stateUpdateMask.is_set( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_VERTEX_STREAM_BIT ) )
 		{
-			const auto & currentVertexStreamDefinition = GetCurrentIAVertexStreamDefinition();
-			ApplyIAVertexStreamState( currentVertexStreamDefinition );
+			const auto & currentSourceBindingDefinition = GetCurrentIASourceBindingDefinition();
+			ApplyVertexSourceBindingDescriptor( currentSourceBindingDefinition );
 			executedUpdatesMask.set( E_GRAPHICS_STATE_UPDATE_FLAG_COMMON_VERTEX_STREAM_BIT );
 		}
 
@@ -90,9 +90,9 @@ namespace Ic3::Graphics::GCI
 		return !executedUpdatesMask.empty();
 	}
 
-	bool DX11GraphicsPipelineStateController::SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO )
+	bool DX11GraphicsPipelineStateController::SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPipelineStateObject )
 	{
-		return GraphicsPipelineStateControllerSeparableShader::SetGraphicsPipelineStateObject( pGraphicsPSO );
+		return GraphicsPipelineStateControllerSeparableShader::SetGraphicsPipelineStateObject( pGraphicsPipelineStateObject );
 	}
 
 	bool DX11GraphicsPipelineStateController::ResetGraphicsPipelineStateObject()
@@ -100,29 +100,29 @@ namespace Ic3::Graphics::GCI
 		return GraphicsPipelineStateControllerSeparableShader::ResetGraphicsPipelineStateObject();
 	}
 
-	bool DX11GraphicsPipelineStateController::SetIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState )
+	bool DX11GraphicsPipelineStateController::SetVertexSourceBindingDescriptor( const IAVertexStreamDynamicState & pVertexSourceBinding )
 	{
-		bool updateResult = GraphicsPipelineStateControllerSeparableShader::SetIAVertexStreamState( pIAVertexStreamState );
+		bool updateResult = GraphicsPipelineStateControllerSeparableShader::SetVertexSourceBindingDescriptor( pVertexSourceBinding );
 
 		if( updateResult )
 		{
-			auto dx11VertexStreamDefinition =
-					SMU::TranslateDX11IAVertexStreamDefinition( pIAVertexStreamState.GetVertexStreamDefinition() );
+			auto dx11SourceBindingDefinition =
+					GCU::TranslateDX11IASourceBindingDefinition( pVertexSourceBinding.GetSourceBindingDefinition() );
 
-			_dynamicIAVertexStreamDefinitionDX11 = dx11VertexStreamDefinition;
+			_dynamicIASourceBindingDefinitionDX11 = dx11SourceBindingDefinition;
 		}
 
 		return updateResult;
 	}
 
-	bool DX11GraphicsPipelineStateController::SetIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState )
+	bool DX11GraphicsPipelineStateController::SetVertexSourceBindingDescriptor( const VertexSourceBindingDescriptor & pVertexSourceBinding )
 	{
-		return GraphicsPipelineStateControllerSeparableShader::SetIAVertexStreamState( pIAVertexStreamState );
+		return GraphicsPipelineStateControllerSeparableShader::SetVertexSourceBindingDescriptor( pVertexSourceBinding );
 	}
 
-	bool DX11GraphicsPipelineStateController::ResetIAVertexStreamState()
+	bool DX11GraphicsPipelineStateController::ResetVertexSourceBindingDescriptor()
 	{
-		return GraphicsPipelineStateControllerSeparableShader::ResetIAVertexStreamState();
+		return GraphicsPipelineStateControllerSeparableShader::ResetVertexSourceBindingDescriptor();
 	}
 
 	bool DX11GraphicsPipelineStateController::SetRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState )
@@ -132,15 +132,15 @@ namespace Ic3::Graphics::GCI
 		if( updateResult )
 		{
 			auto dx11RenderTargetBinding =
-					SMU::CreateRenderTargetBindingDataDX11( *mGPUDevice.QueryInterface<DX11GPUDevice>(), pRenderTargetBindingState.GetBindingDefinition() );
+					GCU::CreateRenderTargetBindingDX11( *mGPUDevice.QueryInterface<DX11GPUDevice>(), pRenderTargetBindingState.GetBindingDefinition() );
 
-			_dynamicRenderTargetBindingDataDX11 = dx11RenderTargetBinding;
+			_dynamicRenderTargetBindingDX11 = dx11RenderTargetBinding;
 		}
 
 		return updateResult;
 	}
 
-	bool DX11GraphicsPipelineStateController::SetRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState )
+	bool DX11GraphicsPipelineStateController::SetRenderTargetBindingState( const RenderTargetBindingCompiledState & pRenderTargetBindingState )
 	{
 		return GraphicsPipelineStateControllerSeparableShader::SetRenderTargetBindingState( pRenderTargetBindingState );
 	}
@@ -316,14 +316,14 @@ namespace Ic3::Graphics::GCI
 		return !updatedStagesMask.empty();
 	}
 
-	cppx::bitmask<uint32> DX11GraphicsPipelineStateController::ApplyCommonGraphicsConfigState( const DX11GraphicsPipelineStateObject & pGraphicsPSO )
+	cppx::bitmask<uint32> DX11GraphicsPipelineStateController::ApplyCommonGraphicsConfigState( const DX11GraphicsPipelineStateObject & pGraphicsPipelineStateObject )
 	{
 		cppx::bitmask<uint32> executedUpdatesMask = 0;
 
 		if( _stateUpdateMask.is_set( eGraphicsStateUpdateFlagSeparableStateBLEND_BIT ) )
 		{
-			const auto & blendState = pGraphicsPSO.GetBlendState();
-			const auto & dynamicState = GetRenderPassDynamicState();
+			const auto & blendState = pGraphicsPipelineStateObject.GetBlendState();
+			const auto & dynamicState = GetPipelineDynamicConfig();
 
 			if( dynamicState.activeStateMask.is_set( E_GRAPHICS_PIPELINE_DYNAMIC_STATE_FLAG_BLEND_CONSTANT_COLOR_BIT ) )
 			{
@@ -345,8 +345,8 @@ namespace Ic3::Graphics::GCI
 
 		if( _stateUpdateMask.is_set( eGraphicsStateUpdateFlagSeparableStateDEPTH_STENCIL_BIT ) )
 		{
-			const auto & depthStencilState = pGraphicsPSO.GetDepthStencilState();
-			const auto & dynamicState = GetRenderPassDynamicState();
+			const auto & depthStencilState = pGraphicsPipelineStateObject.GetDepthStencilState();
+			const auto & dynamicState = GetPipelineDynamicConfig();
 
 			if( dynamicState.activeStateMask.is_set( E_GRAPHICS_PIPELINE_DYNAMIC_STATE_FLAG_STENCIL_REF_VALUE_BIT ) )
 			{
@@ -366,8 +366,8 @@ namespace Ic3::Graphics::GCI
 
 		if( _stateUpdateMask.is_set( eGraphicsStateUpdateFlagSeparableStateRASTERIZER_BIT ) )
 		{
-			const auto & rasterizerState = pGraphicsPSO.GetRasterizerState();
-			const auto & dynamicState = GetRenderPassDynamicState();
+			const auto & rasterizerState = pGraphicsPipelineStateObject.GetRasterizerState();
+			const auto & dynamicState = GetPipelineDynamicConfig();
 
 			mDX11CommandList->mD3D11DeviceContext1->RSSetState( rasterizerState.mD3D11RasterizerState.Get() );
 
@@ -376,11 +376,11 @@ namespace Ic3::Graphics::GCI
 
 		if( _stateUpdateMask.is_set( eGraphicsStateUpdateFlagSeparableStateIA_INPUT_LAYOUT_BIT ) )
 		{
-			const auto & iaInputLayoutState = pGraphicsPSO.GetIAInputLayoutState();
-			const auto & dynamicState = GetRenderPassDynamicState();
+			const auto & iaInputLayout = pGraphicsPipelineStateObject.GetIAVertexAttributeLayout();
+			const auto & dynamicState = GetPipelineDynamicConfig();
 
-			mDX11CommandList->mD3D11DeviceContext1->IASetPrimitiveTopology( iaInputLayoutState.mD3D11PrimitiveTopology );
-			mDX11CommandList->mD3D11DeviceContext1->IASetInputLayout( iaInputLayoutState.mD3D11InputLayout.Get() );
+			mDX11CommandList->mD3D11DeviceContext1->IASetPrimitiveTopology( iaInputLayout.mD3D11PrimitiveTopology );
+			mDX11CommandList->mD3D11DeviceContext1->IASetInputLayout( iaInputLayout.mD3D11InputLayout.Get() );
 
 			executedUpdatesMask.set( eGraphicsStateUpdateFlagSeparableStateIA_INPUT_LAYOUT_BIT );
 		}
@@ -430,10 +430,10 @@ namespace Ic3::Graphics::GCI
 		return executedUpdatesMask;
 	}
 
-	void DX11GraphicsPipelineStateController::ApplyIAVertexStreamState( const DX11IAVertexStreamDefinition & pVertexStreamDefinition )
+	void DX11GraphicsPipelineStateController::ApplyVertexSourceBindingDescriptor( const DX11IASourceBindingDefinition & pSourceBindingDefinition )
 	{
-		const auto & indexBufferBinding = pVertexStreamDefinition.indexBufferBinding;
-		const auto & vertexBufferBindings = pVertexStreamDefinition.vertexBufferBindings;
+		const auto & indexBufferBinding = pSourceBindingDefinition.indexBufferBinding;
+		const auto & vertexBufferBindings = pSourceBindingDefinition.vertexBufferBindings;
 
 		mDX11CommandList->mD3D11DeviceContext1->IASetIndexBuffer(
 				indexBufferBinding.buffer,
@@ -451,21 +451,21 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	void DX11GraphicsPipelineStateController::ApplyRenderTargetBinding( const DX11RenderTargetBindingData & pRenderTargetBindingData )
+	void DX11GraphicsPipelineStateController::ApplyRenderTargetBinding( const DX11RenderTargetBinding & pRenderTargetBinding )
 	{
-		if( !pRenderTargetBindingData.activeAttachmentsMask.is_set_any_of( E_RT_ATTACHMENT_MASK_COLOR_ALL ) )
+		if( !pRenderTargetBinding.activeAttachmentsMask.is_set_any_of( E_RT_ATTACHMENT_MASK_COLOR_ALL ) )
 		{
 			mDX11CommandList->mD3D11DeviceContext1->OMSetRenderTargets(
 				0u,
 				nullptr,
-				pRenderTargetBindingData.d3d11DepthStencilAttachmentDSView );
+				pRenderTargetBinding.d3d11DepthStencilAttachmentDSView );
 		}
 		else
 		{
 			mDX11CommandList->mD3D11DeviceContext1->OMSetRenderTargets(
 				GCM::RT_MAX_COLOR_ATTACHMENTS_NUM,
-				pRenderTargetBindingData.d3d11ColorAttachmentRTViewArray,
-				pRenderTargetBindingData.d3d11DepthStencilAttachmentDSView );
+				pRenderTargetBinding.d3d11ColorAttachmentRTViewArray,
+				pRenderTargetBinding.d3d11DepthStencilAttachmentDSView );
 		}
 	}
 

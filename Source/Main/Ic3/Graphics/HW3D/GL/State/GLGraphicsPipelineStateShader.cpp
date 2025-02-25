@@ -1,5 +1,5 @@
 
-#include "GLGraphicsShaderState.h"
+#include "GLGraphicsPipelineStateShader.h"
 #include <Ic3/Graphics/HW3D/GL/GLGPUDevice.h>
 #include <Ic3/Graphics/HW3D/GL/Resources/GLShader.h>
 #include <Ic3/Graphics/HW3D/GL/Objects/GLShaderPipelineObject.h>
@@ -7,81 +7,83 @@
 namespace Ic3::Graphics::GCI
 {
 
-	GLGraphicsShaderLinkageImmutableState::GLGraphicsShaderLinkageImmutableState(
+	GLGraphicsShaderLinkageDescriptor::GLGraphicsShaderLinkageDescriptor(
 			GLGPUDevice & pGPUDevice,
-			const GraphicsShaderLinkageCommonProperties & pCommonProperties )
-	: GraphicsShaderLinkageImmutableState( pGPUDevice, pCommonProperties )
+			pipeline_state_descriptor_id_t pDescriptorID,
+			const GraphicsShaderBindingCommonConfig & pCommonShaderBindingConfig )
+	: GraphicsShaderLinkageDescriptorNative( pGPUDevice, pDescriptorID, _commonShaderBindingConfig )
+	, _commonShaderBindingConfig( pCommonShaderBindingConfig )
 	{}
 
-	GLGraphicsShaderLinkageImmutableState::~GLGraphicsShaderLinkageImmutableState() = default;
+	GLGraphicsShaderLinkageDescriptor::~GLGraphicsShaderLinkageDescriptor() = default;
 
 
-	GLGraphicsShaderLinkageImmutableStateCore::GLGraphicsShaderLinkageImmutableStateCore(
+	GLGraphicsShaderLinkageDescriptorCore::GLGraphicsShaderLinkageDescriptorCore(
 			GLGPUDevice & pGPUDevice,
-			const GraphicsShaderLinkageCommonProperties & pCommonProperties,
+			pipeline_state_descriptor_id_t pDescriptorID,
+			const GraphicsShaderBindingCommonConfig & pCommonShaderBindingConfig,
 			GLShaderPipelineObjectHandle pGLShaderPipelineObject )
-	: GLGraphicsShaderLinkageImmutableState( pGPUDevice, pCommonProperties )
+	: GLGraphicsShaderLinkageDescriptor( pGPUDevice, pDescriptorID, pCommonShaderBindingConfig )
 	, mGLShaderPipelineObject( std::move( pGLShaderPipelineObject ) )
 	{}
 
-	GLGraphicsShaderLinkageImmutableStateCore::~GLGraphicsShaderLinkageImmutableStateCore() = default;
+	GLGraphicsShaderLinkageDescriptorCore::~GLGraphicsShaderLinkageDescriptorCore() = default;
 
-	TGfxHandle<GLGraphicsShaderLinkageImmutableStateCore> GLGraphicsShaderLinkageImmutableStateCore::CreateInstance(
+	TGfxHandle<GLGraphicsShaderLinkageDescriptorCore> GLGraphicsShaderLinkageDescriptorCore::CreateInstance(
 			GLGPUDevice & pGPUDevice,
-			const GraphicsShaderSet & pShaderSet )
+			const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo )
 	{
-		const auto & commonProperties = SMU::GetGraphicsShaderLinkageCommonPropertiesForShaderSet( pShaderSet );
-
-		auto shaderPipelineObject = SMU::CreateGraphicsShaderPipelineObjectGL( pShaderSet );
+		auto shaderPipelineObject = GCU::CreateGraphicsShaderPipelineObjectGL( pCreateInfo.shaderBinding );
 		if( !shaderPipelineObject )
 		{
 			return nullptr;
 		}
 
-		auto immutableState = CreateGfxObject<GLGraphicsShaderLinkageImmutableStateCore>(
+		auto stateDescriptor = CreateGfxObject<GLGraphicsShaderLinkageDescriptorCore>(
 				pGPUDevice,
-				commonProperties,
+				pCreateInfo.descriptorID,
+				pCreateInfo.shaderBinding,
 				std::move( shaderPipelineObject ) );
 
-		return immutableState;
+		return stateDescriptor;
 	}
 
 
-	GLGraphicsShaderLinkageImmutableStateCompat::GLGraphicsShaderLinkageImmutableStateCompat(
+	GLGraphicsShaderLinkageDescriptorCompat::GLGraphicsShaderLinkageDescriptorCompat(
 			GLGPUDevice & pGPUDevice,
-			const GraphicsShaderLinkageCommonProperties & pCommonProperties,
+			pipeline_state_descriptor_id_t pDescriptorID,
+			const GraphicsShaderBindingCommonConfig & pCommonShaderBindingConfig,
 			GLShaderProgramObjectHandle pGLShaderProgramObject )
-	: GLGraphicsShaderLinkageImmutableState( pGPUDevice, pCommonProperties )
+	: GLGraphicsShaderLinkageDescriptor( pGPUDevice, pDescriptorID, pCommonShaderBindingConfig )
 	, mGLShaderProgramObject( std::move( pGLShaderProgramObject ) )
 	{}
 
-	GLGraphicsShaderLinkageImmutableStateCompat::~GLGraphicsShaderLinkageImmutableStateCompat() = default;
+	GLGraphicsShaderLinkageDescriptorCompat::~GLGraphicsShaderLinkageDescriptorCompat() = default;
 
-	TGfxHandle<GLGraphicsShaderLinkageImmutableStateCompat> GLGraphicsShaderLinkageImmutableStateCompat::CreateInstance(
+	TGfxHandle<GLGraphicsShaderLinkageDescriptorCompat> GLGraphicsShaderLinkageDescriptorCompat::CreateInstance(
 			GLGPUDevice & pGPUDevice,
-			const GraphicsShaderSet & pShaderSet )
+			const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo )
 	{
-		const auto & commonProperties = SMU::GetGraphicsShaderLinkageCommonPropertiesForShaderSet( pShaderSet );
-
-		auto shaderProgramObject = SMU::CreateGraphicsShaderProgramObjectGL( pShaderSet );
+		auto shaderProgramObject = GCU::CreateGraphicsShaderProgramObjectGL( pCreateInfo.shaderBinding );
 		if( !shaderProgramObject )
 		{
 			return nullptr;
 		}
 
-		auto immutableState = CreateGfxObject<GLGraphicsShaderLinkageImmutableStateCompat>(
+		auto stateDescriptor = CreateGfxObject<GLGraphicsShaderLinkageDescriptorCompat>(
 				pGPUDevice,
-				commonProperties,
+				pCreateInfo.descriptorID,
+				pCreateInfo.shaderBinding,
 				std::move( shaderProgramObject ) );
 
-		return immutableState;
+		return stateDescriptor;
 	}
 
 
-	namespace SMU
+	namespace GCU
 	{
 
-		GLShaderPipelineObjectHandle CreateGraphicsShaderPipelineObjectGL( const GraphicsShaderSet & pShaderSet )
+		GLShaderPipelineObjectHandle CreateGraphicsShaderPipelineObjectGL( const GraphicsShaderBinding & pBindingConfiguration )
 		{
 			auto shaderPipelineObject = GLShaderPipelineObject::Create();
 			if( !shaderPipelineObject )
@@ -92,7 +94,7 @@ namespace Ic3::Graphics::GCI
 			glBindProgramPipeline( shaderPipelineObject->mGLHandle );
 			Ic3OpenGLHandleLastError();
 
-			for( auto & shaderHandle : pShaderSet.commonShaderArray )
+			for( auto & shaderHandle : pBindingConfiguration.commonShaderArray )
 			{
 				if( shaderHandle )
 				{
@@ -108,7 +110,7 @@ namespace Ic3::Graphics::GCI
 			return shaderPipelineObject;
 		}
 
-		GLShaderProgramObjectHandle CreateGraphicsShaderProgramObjectGL( const GraphicsShaderSet & pShaderSet )
+		GLShaderProgramObjectHandle CreateGraphicsShaderProgramObjectGL( const GraphicsShaderBinding & pBindingConfiguration )
 		{
 			auto shaderProgramObject = GLShaderProgramObject::Create( GLShaderProgramType::Combined );
 			if( !shaderProgramObject )
@@ -118,7 +120,7 @@ namespace Ic3::Graphics::GCI
 
 			bool useShaderLayoutMaps = false;
 
-			for( auto & shaderHandle : pShaderSet.commonShaderArray )
+			for( auto & shaderHandle : pBindingConfiguration.commonShaderArray )
 			{
 				if( shaderHandle )
 				{
@@ -142,7 +144,7 @@ namespace Ic3::Graphics::GCI
 
 			if( useShaderLayoutMaps )
 			{
-				for( auto & shaderHandle : pShaderSet.commonShaderArray )
+				for( auto & shaderHandle : pBindingConfiguration.commonShaderArray )
 				{
 					if( shaderHandle )
 					{

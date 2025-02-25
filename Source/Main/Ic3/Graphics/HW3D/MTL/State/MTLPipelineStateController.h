@@ -22,15 +22,15 @@ namespace Ic3::Graphics::GCI
 
 		virtual bool ApplyStateChanges() override final;
 
-		virtual bool SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO ) override;
+		virtual bool SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPipelineStateObject ) override;
 		virtual bool ResetGraphicsPipelineStateObject() override;
 
-		virtual bool SetIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState ) override;
-		virtual bool SetIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState ) override;
-		virtual bool ResetIAVertexStreamState() override;
+		virtual bool SetVertexSourceBindingDescriptor( const IAVertexStreamDynamicState & pVertexSourceBinding ) override;
+		virtual bool SetVertexSourceBindingDescriptor( const VertexSourceBindingDescriptor & pVertexSourceBinding ) override;
+		virtual bool ResetVertexSourceBindingDescriptor() override;
 
 		virtual bool SetRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState ) override;
-		virtual bool SetRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState ) override;
+		virtual bool SetRenderTargetBindingState( const RenderTargetBindingCompiledState & pRenderTargetBindingState ) override;
 		virtual bool ResetRenderTargetBindingState() override;
 
 		virtual bool SetViewport( const ViewportDesc & pViewportDesc ) override;

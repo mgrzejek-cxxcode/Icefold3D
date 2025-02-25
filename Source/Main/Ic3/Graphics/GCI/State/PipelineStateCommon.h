@@ -9,36 +9,26 @@
 namespace Ic3::Graphics::GCI
 {
 
-	/*
-	 *
-	 */
-	class PipelineStateDescriptor : public GPUDeviceChildObject
-	{
-	public:
-		pipeline_state_descriptor_id_t const mDescriptorID;
+	Ic3GCIDeclareClassHandle( BlendStateDescriptor );
+	Ic3GCIDeclareClassHandle( DepthStencilStateDescriptor );
+	Ic3GCIDeclareClassHandle( RasterizerStateDescriptor );
+	Ic3GCIDeclareClassHandle( GraphicsShaderLinkageDescriptor );
+	Ic3GCIDeclareClassHandle( VertexAttributeLayoutDescriptor );
+	Ic3GCIDeclareClassHandle( RootSignatureDescriptor );
 
-	public:
-		PipelineStateDescriptor( GPUDevice & pGPUDevice, pipeline_state_descriptor_id_t pDescriptorID );
-		virtual ~PipelineStateDescriptor();
+	Ic3GCIDeclareClassHandle( RenderPassDescriptor );
+	Ic3GCIDeclareClassHandle( RenderPassDescriptorDynamic );
 
-		/**
-		 * Queries the dynamic type of the descriptor, expressed as one of the possible values defined in
-		 * EPipelineStateDescriptorType enumeration. Implemented by the child descriptor classes.
-		 * @return The dynamic type of this descriptor instance.
-		 */
-		CPPX_ATTR_NO_DISCARD virtual EPipelineStateDescriptorType GetDescriptorType() const noexcept;
+	Ic3GCIDeclareClassHandle( RenderTargetDescriptor );
+	Ic3GCIDeclareClassHandle( RenderTargetDescriptorDynamic );
 
-		/**
-		 * Returns true if this descriptor is a dynamic descriptor. Dynamic descriptor is a descriptor class
-		 * that does not contain any API-specific properties (i.e. it is defined fully at the GCI abstraction level).
-		 * The following classes are implementations of dynamic descriptors:
-		 * - IAVertexStreamStateDescriptorDynamic
-		 * - RenderPassConfigurationStateDescriptorDynamic
-		 * - RenderTargetBindingStateDescriptorDynamic
-		 * @return
-		 */
-		CPPX_ATTR_NO_DISCARD virtual bool IsDynamicDescriptor() const noexcept;
-	};
+	Ic3GCIDeclareClassHandle( VertexSourceBindingDescriptor );
+	Ic3GCIDeclareClassHandle( VertexSourceBindingDescriptorDynamic );
+
+	inline constexpr auto kSDIRenderTargetDescriptorScreenDefaultUID = CXU::MakePipelineStateDescriptorIDUserComponent( 0u );
+
+	inline constexpr auto kSDIRenderTargetDescriptorScreenDefault =
+			CXU::DeclarePipelineStateDescriptorID( EPipelineStateDescriptorType::DTRenderTarget, kSDIRenderTargetDescriptorScreenDefaultUID );
 
 	/*
 	 * @brief A monolithic state object, containing complete state information for the relative pipeline functionality.
@@ -60,78 +50,6 @@ namespace Ic3::Graphics::GCI
 		 *
 		 */
 		CPPX_ATTR_NO_DISCARD virtual EPipelineType GetPipelineType() const noexcept = 0;
-	};
-
-	/**
-	 *
-	 */
-	class PipelineStateDescriptorFactory
-	{
-	public:
-		PipelineStateDescriptorFactory() = default;
-		virtual ~PipelineStateDescriptorFactory() = default;
-
-		virtual GPUDevice & GetGPUDevice() const noexcept = 0;
-
-		virtual BlendStateDescriptorHandle CreateBlendStateDescriptor(
-				const BlendStateDescriptorCreateInfo & pCreateInfo ) = 0;
-
-		virtual DepthStencilStateDescriptorHandle CreateDepthStencilStateDescriptor(
-				const DepthStencilStateDescriptorCreateInfo & pCreateInfo ) = 0;
-
-		virtual RasterizerStateDescriptorHandle CreateRasterizerStateDescriptor(
-				const RasterizerStateDescriptorCreateInfo & pCreateInfo ) = 0;
-
-		virtual GraphicsShaderLinkageStateDescriptorHandle CreateGraphicsShaderLinkageStateDescriptor(
-				const GraphicsShaderLinkageStateDescriptorCreateInfo & pCreateInfo ) = 0;
-
-		virtual IAVertexAttributeLayoutStateDescriptorHandle CreateIAVertexAttributeLayoutStateDescriptor(
-				const IAVertexAttributeLayoutStateDescriptorCreateInfo & pCreateInfo ) = 0;
-
-		virtual ShaderRootSignatureStateDescriptorHandle CreateShaderRootSignatureStateDescriptor(
-				const ShaderRootSignatureStateDescriptorCreateInfo & pCreateInfo) = 0;
-
-		virtual IAVertexStreamBindingStateDescriptorHandle CreateIAVertexStreamBindingStateDescriptor(
-				const IAVertexStreamBindingStateDescriptorCreateInfo & pCreateInfo ) = 0;
-
-		virtual RenderPassConfigurationStateDescriptorHandle CreateRenderPassConfigurationStateDescriptor(
-				const RenderPassConfigurationStateDescriptorCreateInfo & pCreateInfo ) = 0;
-	};
-
-	/**
-	 *
-	 */
-	class PipelineStateDescriptorFactoryNull : public PipelineStateDescriptorFactory
-	{
-	public:
-		PipelineStateDescriptorFactoryNull() = default;
-		virtual ~PipelineStateDescriptorFactoryNull() = default;
-
-		virtual GPUDevice & GetGPUDevice() const noexcept override final;
-
-		virtual BlendStateDescriptorHandle CreateBlendStateDescriptor(
-				const BlendStateDescriptorCreateInfo & pCreateInfo ) override final;
-
-		virtual DepthStencilStateDescriptorHandle CreateDepthStencilStateDescriptor(
-				const DepthStencilStateDescriptorCreateInfo & pCreateInfo ) override final;
-
-		virtual RasterizerStateDescriptorHandle CreateRasterizerStateDescriptor(
-				const RasterizerStateDescriptorCreateInfo & pCreateInfo ) override final;
-
-		virtual GraphicsShaderLinkageStateDescriptorHandle CreateGraphicsShaderLinkageStateDescriptor(
-				const GraphicsShaderLinkageStateDescriptorCreateInfo & pCreateInfo ) override final;
-
-		virtual IAVertexAttributeLayoutStateDescriptorHandle CreateIAVertexAttributeLayoutStateDescriptor(
-				const IAVertexAttributeLayoutStateDescriptorCreateInfo & pCreateInfo ) override final;
-
-		virtual ShaderRootSignatureStateDescriptorHandle CreateShaderRootSignatureStateDescriptor(
-				const ShaderRootSignatureStateDescriptorCreateInfo & pCreateInfo ) override final;
-
-		virtual IAVertexStreamBindingStateDescriptorHandle CreateIAVertexStreamBindingStateDescriptor(
-				const IAVertexStreamBindingStateDescriptorCreateInfo & pCreateInfo ) override final;
-
-		virtual RenderPassConfigurationStateDescriptorHandle CreateRenderPassConfigurationStateDescriptor(
-				const RenderPassConfigurationStateDescriptorCreateInfo & pCreateInfo ) override final;
 	};
 
 } // namespace Ic3::Graphics::GCI

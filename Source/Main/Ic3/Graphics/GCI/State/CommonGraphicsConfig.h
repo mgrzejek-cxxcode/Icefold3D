@@ -9,6 +9,8 @@
 namespace Ic3::Graphics::GCI
 {
 
+	inline constexpr uint8 kPipelineConfigDefaultStencilTestRefValue = 0u;
+
 	enum EBlendConfigFlags : uint16
 	{
 		eBlendConfigFlagEnableAlphaToCoverageBit        = 0x01,
@@ -210,8 +212,8 @@ namespace Ic3::Graphics::GCI
 	 */
 	struct MultiSamplingSettings
 	{
-		uint16 sampleCount;
-		uint16 sampleQuality;
+		uint16 sampleCount = 1;
+		uint16 sampleQuality = 0;
 	};
 
 	struct BlendStateDescriptorCreateInfo : public PipelineStateDescriptorCreateInfoBase

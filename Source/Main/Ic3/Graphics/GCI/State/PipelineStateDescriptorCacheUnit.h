@@ -30,9 +30,9 @@ namespace Ic3::Graphics::GCI
 	 *
 	 */
 	#define Ic3DefinePipelineStateDescriptorTraits( pDescriptorType, pInputConfig, pFactoryInterface ) \
-		template <> struct PipelineStateDescriptorTraits<pDescriptorType##StateDescriptor> { \
-			using DescriptorType = pDescriptorType##StateDescriptor; \
-            using CreateInfoType = pDescriptorType##StateDescriptorCreateInfo; \
+		template <> struct PipelineStateDescriptorTraits<pDescriptorType##Descriptor> { \
+			using DescriptorType = pDescriptorType##Descriptor; \
+            using CreateInfoType = pDescriptorType##DescriptorCreateInfo; \
 			using InputConfigType = pInputConfig; \
 			using FactoryInterface = pFactoryInterface; \
             static inline constexpr auto sDescriptorType = EPipelineStateDescriptorType::DT##pDescriptorType; \

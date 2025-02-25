@@ -24,7 +24,7 @@ namespace Ic3::Graphics::GCI
 
 		virtual void executeDeferredContext( CommandContextDeferred & pDeferredContext ) override;
 
-		virtual void clearRenderTarget( cppx::bitmask<ERenderTargetAttachmentFlags> pAttachmentMask ) override;
+		virtual void clearRenderTarget( cppx::bitmask<ERTAttachmentFlags> pAttachmentMask ) override;
 		virtual void SetViewport( const ViewportDesc & pViewportDesc ) override;
 		virtual bool SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPipelineSO ) override;
 		virtual bool SetVertexStreamStateObject( const VertexStreamStateObject & pVertexStreamSO ) override;

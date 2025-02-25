@@ -30,21 +30,6 @@ namespace cppx
 	};
 
 	template <typename TPChar>
-	struct empty_cstr;
-
-	template <>
-	struct empty_cstr<char>
-	{
-		static constexpr const char * str_ptr = "\0";
-	};
-
-	template <>
-	struct empty_cstr<wchar_t>
-	{
-		static constexpr const wchar_t * str_ptr = L"\0";
-	};
-
-	template <typename TPChar>
 	class immutable_base_string
 	{
 	public:
@@ -135,6 +120,11 @@ namespace cppx
 			return !empty();
 		}
 
+		CPPX_ATTR_NO_DISCARD operator cppx::string_base_view<TPChar>() const noexcept
+		{
+			return strView();
+		}
+
 		CPPX_ATTR_NO_DISCARD TPChar operator[]( size_t pIndex ) const noexcept
 		{
 			cppx_debug_assert( pIndex < length() );
@@ -143,7 +133,7 @@ namespace cppx
 
 		CPPX_ATTR_NO_DISCARD const TPChar * data() const noexcept
 		{
-			return _stringData ? _stringData->internal_str.data() : empty_cstr<TPChar>::sBuffer;
+			return _stringData ? _stringData->internal_str.data() : cve::str_empty<TPChar>;
 		}
 
 		CPPX_ATTR_NO_DISCARD const TPChar * begin() const noexcept

@@ -116,7 +116,7 @@ namespace Ic3::Graphics::GCI
 		IC3_GRAPHICS_GCI_API void UpdateActiveStagesInfo() noexcept;
 	};
 
-	struct GraphicsShaderLinkageStateDescriptorCreateInfo : public PipelineStateDescriptorCreateInfoBase
+	struct GraphicsShaderLinkageDescriptorCreateInfo : public PipelineStateDescriptorCreateInfoBase
 	{
 		GraphicsShaderBinding shaderBinding;
 

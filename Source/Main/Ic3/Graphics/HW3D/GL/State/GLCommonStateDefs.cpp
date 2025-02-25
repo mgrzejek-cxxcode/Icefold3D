@@ -4,7 +4,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	namespace SMU
+	namespace GCU
 	{
 
 		GLenum GetFramebufferDepthStencilAttachmentIDForRTBufferMask( cppx::bitmask<ERenderTargetBufferFlags> pRTBufferMask )

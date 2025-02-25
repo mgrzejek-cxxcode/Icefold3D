@@ -13,7 +13,7 @@ namespace Ic3::Graphics::GCI
 			DX11GPUDevice & pDevice,
 			System::WindowHandle pSysWindow,
 			ComPtr<IDXGISwapChain1> pDXGISwapChain1,
-			RenderTargetBindingImmutableStateHandle pScreenRenderTargetBindingState )
+			RenderTargetBindingCompiledStateHandle pScreenRenderTargetBindingState )
 	: DXScreenPresentationLayer( pDevice, pSysWindow, std::move( pDXGISwapChain1 ) )
 	, mD3D11Device1( pDevice.mD3D11Device1 )
 	, mScreenRenderTargetBindingState( pScreenRenderTargetBindingState )
@@ -51,7 +51,7 @@ namespace Ic3::Graphics::GCI
 			return false;
 		}
 
-		auto renderTargetState = DX11RenderTargetBindingImmutableState::CreateForScreen( pDevice, backBufferRTTexture, backBufferDSTexture );
+		auto renderTargetState = DX11RenderTargetBindingCompiledState::CreateForScreen( pDevice, backBufferRTTexture, backBufferDSTexture );
 		Ic3DebugAssert( renderTargetState );
 
 		auto presentationLayer = CreateGfxObject<DX11ScreenPresentationLayer>( pDevice, sysWindow, std::move( dxgiSwapChain ), renderTargetState );

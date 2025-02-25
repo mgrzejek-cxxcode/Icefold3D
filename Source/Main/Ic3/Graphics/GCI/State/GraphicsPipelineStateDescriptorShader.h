@@ -1,11 +1,11 @@
 
 #pragma once
 
-#ifndef __IC3_GRAPHICS_GCI_GRAPHICS_SHADER_BINDING_IMMUTABLE_STATE_H__
-#define __IC3_GRAPHICS_GCI_GRAPHICS_SHADER_BINDING_IMMUTABLE_STATE_H__
+#ifndef __IC3_GRAPHICS_GCI_GRAPHICS_PIPELINE_STATE_DESCRIPTOR_SHADER_H__
+#define __IC3_GRAPHICS_GCI_GRAPHICS_PIPELINE_STATE_DESCRIPTOR_SHADER_H__
 
 #include "GraphicsShaderDefs.h"
-#include "PipelineStateCommon.h"
+#include "PipelineStateDescriptor.h"
 
 namespace Ic3::Graphics::GCI
 {
@@ -13,26 +13,22 @@ namespace Ic3::Graphics::GCI
 	/**
 	 *
 	 */
-	class GraphicsShaderLinkageStateDescriptor : public PipelineStateDescriptor
+	class GraphicsShaderLinkageDescriptor : public PipelineStateDescriptor
 	{
-		Ic3DeclareNonCopyable( GraphicsShaderLinkageStateDescriptor );
+		Ic3DeclareNonCopyable( GraphicsShaderLinkageDescriptor );
 
 	public:
 		const GraphicsShaderBindingCommonConfig & mCommonShaderBindingConfig;
 
 	public:
-		GraphicsShaderLinkageStateDescriptor(
+		GraphicsShaderLinkageDescriptor(
 				GPUDevice & pGPUDevice,
 				pipeline_state_descriptor_id_t pDescriptorID,
 				const GraphicsShaderBindingCommonConfig & pCommonShaderBindingConfig );
 
-		virtual ~GraphicsShaderLinkageStateDescriptor();
+		virtual ~GraphicsShaderLinkageDescriptor();
 
 		CPPX_ATTR_NO_DISCARD virtual EPipelineStateDescriptorType GetDescriptorType() const noexcept override final;
-
-		CPPX_ATTR_NO_DISCARD virtual ShaderHandle GetShader( size_t pStageIndex ) const noexcept = 0;
-
-		CPPX_ATTR_NO_DISCARD virtual ShaderHandle GetShader( EShaderType pShaderType ) const noexcept = 0;
 
 		CPPX_ATTR_NO_DISCARD bool IsStageActive( uint32 pStageIndex ) const noexcept;
 
@@ -42,36 +38,52 @@ namespace Ic3::Graphics::GCI
 	/**
 	 *
 	 */
-	class GraphicsShaderLinkageStateDescriptorGenericSeparable : public GraphicsShaderLinkageStateDescriptor
+	class GraphicsShaderLinkageDescriptorGenericSeparable : public GraphicsShaderLinkageDescriptor
 	{
 	public:
 		GraphicsShaderBinding const mShaderBinding;
 
 	public:
-		GraphicsShaderLinkageStateDescriptorGenericSeparable(
+		GraphicsShaderLinkageDescriptorGenericSeparable(
 				GPUDevice & pGPUDevice,
 				pipeline_state_descriptor_id_t pDescriptorID,
-				const GraphicsShaderBinding & pShaderBinding );
+				const GraphicsShaderBinding & pBindingConfiguration );
 
-		virtual ~GraphicsShaderLinkageStateDescriptorGenericSeparable();
+		virtual ~GraphicsShaderLinkageDescriptorGenericSeparable();
 
-		CPPX_ATTR_NO_DISCARD virtual ShaderHandle GetShader( size_t pStageIndex ) const noexcept override final;
+		CPPX_ATTR_NO_DISCARD ShaderHandle GetShader( size_t pStageIndex ) const noexcept;
 
-		CPPX_ATTR_NO_DISCARD virtual ShaderHandle GetShader( EShaderType pShaderType ) const noexcept override final;
+		CPPX_ATTR_NO_DISCARD ShaderHandle GetShader( EShaderType pShaderType ) const noexcept;
 
-		CPPX_ATTR_NO_DISCARD static TGfxHandle<GraphicsShaderLinkageStateDescriptorGenericSeparable> CreateFromBindingConfiguration(
+		CPPX_ATTR_NO_DISCARD static TGfxHandle<GraphicsShaderLinkageDescriptorGenericSeparable> CreateFromBindingConfiguration(
 				GPUDevice & pGPUDevice,
-				const GraphicsShaderBinding & pShaderBinding,
+				const GraphicsShaderBinding & pBindingConfiguration,
 				pipeline_state_descriptor_id_t pDescriptorID = kPipelineStateDescriptorIDAuto ) noexcept;
 
-		CPPX_ATTR_NO_DISCARD static TGfxHandle<GraphicsShaderLinkageStateDescriptorGenericSeparable> CreateFromShaderArray(
+		CPPX_ATTR_NO_DISCARD static TGfxHandle<GraphicsShaderLinkageDescriptorGenericSeparable> CreateFromShaderArray(
 				GPUDevice & pGPUDevice,
 				const GraphicsShaderArray & pShaderArray,
 				pipeline_state_descriptor_id_t pDescriptorID = kPipelineStateDescriptorIDAuto ) noexcept;
 	};
 
+	namespace PIM
+	{
+
+		class GraphicsShaderLinkageDescriptorNative : public GraphicsShaderLinkageDescriptor
+		{
+		public:
+			GraphicsShaderLinkageDescriptorNative(
+					GPUDevice & pGPUDevice,
+					pipeline_state_descriptor_id_t pDescriptorID,
+					const GraphicsShaderBindingCommonConfig & pCommonShaderBindingConfig );
+
+			virtual ~GraphicsShaderLinkageDescriptorNative();
+		};
+
+	} // namespace PIM
+
 } // namespace Ic3::Graphics::GCI
 
 #include "GraphicsPipelineStateDescriptorShader.inl"
 
-#endif // __IC3_GRAPHICS_GCI_GRAPHICS_SHADER_BINDING_IMMUTABLE_STATE_H__
+#endif // __IC3_GRAPHICS_GCI_GRAPHICS_PIPELINE_STATE_DESCRIPTOR_SHADER_H__

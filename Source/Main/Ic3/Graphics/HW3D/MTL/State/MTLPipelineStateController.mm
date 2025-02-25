@@ -13,25 +13,25 @@ namespace Ic3::Graphics::GCI
 	bool MTLGraphicsPipelineStateController::ApplyStateChanges()
 	{}
 
-	bool MTLGraphicsPipelineStateController::SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO )
+	bool MTLGraphicsPipelineStateController::SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPipelineStateObject )
 	{}
 
 	bool MTLGraphicsPipelineStateController::ResetGraphicsPipelineStateObject()
 	{}
 
-	bool MTLGraphicsPipelineStateController::SetIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState )
+	bool MTLGraphicsPipelineStateController::SetVertexSourceBindingDescriptor( const IAVertexStreamDynamicState & pVertexSourceBinding )
 	{}
 
-	bool MTLGraphicsPipelineStateController::SetIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState )
+	bool MTLGraphicsPipelineStateController::SetVertexSourceBindingDescriptor( const VertexSourceBindingDescriptor & pVertexSourceBinding )
 	{}
 
-	bool MTLGraphicsPipelineStateController::ResetIAVertexStreamState()
+	bool MTLGraphicsPipelineStateController::ResetVertexSourceBindingDescriptor()
 	{}
 
 	bool MTLGraphicsPipelineStateController::SetRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState )
 	{}
 
-	bool MTLGraphicsPipelineStateController::SetRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState )
+	bool MTLGraphicsPipelineStateController::SetRenderTargetBindingState( const RenderTargetBindingCompiledState & pRenderTargetBindingState )
 	{}
 
 	bool MTLGraphicsPipelineStateController::ResetRenderTargetBindingState()

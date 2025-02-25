@@ -90,8 +90,11 @@ set( IC3_GRAPHICS_GCI_SRC_FILES
         "State/GraphicsPipelineStateDescriptorCommon.cpp"
         "State/GraphicsPipelineStateDescriptorIA.h"
         "State/GraphicsPipelineStateDescriptorIA.cpp"
+        "State/GraphicsPipelineStateDescriptorRTArrayCommon.h"
         "State/GraphicsPipelineStateDescriptorRTO.h"
         "State/GraphicsPipelineStateDescriptorRTO.cpp"
+        "State/GraphicsPipelineStateDescriptorRTODynamic.h"
+        "State/GraphicsPipelineStateDescriptorRTODynamic.cpp"
         "State/GraphicsPipelineStateDescriptorShader.h"
         "State/GraphicsPipelineStateDescriptorShader.cpp"
         "State/GraphicsShaderDefs.h"
@@ -108,23 +111,39 @@ set( IC3_GRAPHICS_GCI_SRC_FILES
         "State/Sampler.cpp"
         "State/SamplerCommon.h"
         "State/SamplerCommon.cpp"
-        "State/ShaderRootSignature.h"
-        "State/ShaderRootSignature.cpp"
-        "State/PipelineStateDescriptorShaderRootSignature.h"
-        "State/PipelineStateDescriptorShaderRootSignature.cpp"
+        "State/RootSignature.h"
+        "State/RootSignature.cpp"
+        "State/PipelineStateDescriptorRootSignature.h"
+        "State/PipelineStateDescriptorRootSignature.cpp"
 
         "State/PipelineStateCommon.h"
         "State/PipelineStateCommon.cpp"
         "State/PipelineStateDescriptorCacheUnit.h"
         "State/PipelineStateDescriptorCacheUnit.cpp"
+        "State/PipelineStateDescriptorFactory.h"
+        "State/PipelineStateDescriptorFactory.cpp"
         "State/PipelineStateDescriptorManager.h"
         "State/PipelineStateDescriptorManager.cpp"
         "State/GraphicsPipelineStateCommon.h"
         "State/GraphicsPipelineStateCommon.cpp"
-        "State/SeparablePipelineState.h"
-        "State/SeparablePipelineState.cpp"
+        "State/GraphicsPipelineStateImplSeparableState.h"
+        "State/GraphicsPipelineStateImplSeparableState.cpp"
+        State/PipelineStateDescriptor.cpp
+        State/PipelineStateDescriptor.h
+        State/PipelineStateController.cpp
+        State/PipelineStateController.h
+        State/PipelineStateDescriptorDynamic.h
+        State/GraphicsPipelineStateDescriptorIADynamic.cpp
+        State/GraphicsPipelineStateDescriptorIADynamic.h
+        GPUDeviceFeatureQuery.h
+        GPUDeviceFeatureQuery.cpp
+        State/GraphicsPipelineStateController.inl
+        State/GraphicsPipelineStateImplGenericRenderPass.h
+        State/GraphicsPipelineStateImplGenericRenderPass.cpp
+        State/GraphicsPipelineStateImplSeparableState.inl
+        CommandListImplGenericRenderPass.h
 
-        )
+)
 
 if( "${IC3_COMPONENTS_BUILD_MODE}" STREQUAL "STATIC" )
     add_library( Ic3.Graphics.GCI STATIC ${IC3_GRAPHICS_GCI_SRC_FILES} )

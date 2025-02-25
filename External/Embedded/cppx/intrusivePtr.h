@@ -16,7 +16,7 @@ namespace cppx
 
 	public:
 		using self_type = ref_counted_base<TPCounter>;
-		using CounterType = TPCounter;
+		using counter_type = TPCounter;
 
 	public:
 		ref_counted_base( const ref_counted_base & ) = delete;
@@ -41,7 +41,7 @@ namespace cppx
 		}
 
 	private:
-		mutable CounterType _counter;
+		mutable counter_type _counter;
 	};
 
 

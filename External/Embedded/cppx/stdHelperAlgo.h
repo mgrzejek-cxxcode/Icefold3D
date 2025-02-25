@@ -7,20 +7,20 @@
 namespace cppx
 {
 
-	template <typename TPValue, size_t tpSourceSize, size_t tpTargetSize>
+	template <typename TPValue>
 	size_t copy_array(
-			const TPValue * pSourceData,
-			TPValue * pTargetData,
+			cppx::array_view<const TPValue> pSource,
+			cppx::array_view<TPValue> pTarget,
 			size_t pElemCount = cve::max_size )
 	{
-		const auto sourceRegion = get_valid_region( pSourceOffset, pElemCount, tpSourceSize );
-		const auto targetRegion = get_valid_region( pTargetOffset, pElemCount, tpTargetSize );
+		const auto sourceRegion = get_valid_region( 0, pElemCount, pSource.size() );
+		const auto targetRegion = get_valid_region( 0, pElemCount, pTarget.size() );
 		const auto copySize = get_min_of( sourceRegion.size, targetRegion.size );
 		if( copySize > 0 )
 		{
 			for( size_t iElement = 0; iElement < copySize; ++iElement )
 			{
-				pTargetArray[targetRegion.offset + iElement] = pSourceArray[sourceRegion.offset + iElement];
+				pSource[targetRegion.offset + iElement] = pTarget[sourceRegion.offset + iElement];
 			}
 		}
 		return copySize;
