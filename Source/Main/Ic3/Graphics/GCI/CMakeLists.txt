@@ -128,6 +128,7 @@ set( IC3_GRAPHICS_GCI_SRC_FILES
         "State/GraphicsPipelineStateCommon.cpp"
         "State/GraphicsPipelineStateImplSeparableState.h"
         "State/GraphicsPipelineStateImplSeparableState.cpp"
+
         State/PipelineStateDescriptor.cpp
         State/PipelineStateDescriptor.h
         State/PipelineStateController.cpp

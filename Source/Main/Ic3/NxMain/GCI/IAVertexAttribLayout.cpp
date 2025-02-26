@@ -5,17 +5,19 @@
 namespace Ic3
 {
 
-	bool VertexAttributeArrayLayout::CheckAttributeArraySpace( native_uint pBaseIASlot, size_t pSemanticGroupSize ) const noexcept
+	bool VertexInputAttributeArrayConfig::CheckAttributeArraySpace(
+			native_uint pBaseAttributeSlot,
+			size_t pSemanticGroupSize ) const noexcept
 	{
 		// First, check if the specified attribute range is valid at all.
-		if( !GCU::IsAttributeLocationAndSizeValid( pBaseIASlot, pSemanticGroupSize ) )
+		if( !GCU::IsAttributeLocationAndSizeValid( pBaseAttributeSlot, pSemanticGroupSize ) )
 		{
 			return false;
 		}
 
 		// Quick check: if the specified attribute range is completely outside the range of active attributes,
 		// we can immediately return with success (no attribute outside this range is an active attribute).
-		if( !_activeAttributesRange.overlaps_with( cppx::make_range<uint32>( pBaseIASlot, pBaseIASlot + pSemanticGroupSize ) ) )
+		if( !_activeAttributesRange.overlaps_with( cppx::make_range<uint32>( pBaseAttributeSlot, pBaseAttributeSlot + pSemanticGroupSize ) ) )
 		{
 			return true;
 		}
@@ -27,8 +29,8 @@ namespace Ic3
 		// However, there are 4 unused attributes in that range that can be used.
 		for( uint32 iSubAttribute = 0; iSubAttribute < pSemanticGroupSize; ++iSubAttribute )
 		{
-			const auto attributeSlotIndex = pBaseIASlot + iSubAttribute;
-			const auto & attributeRef = _attributeArray[attributeSlotIndex];
+			const auto attributeIndex = pBaseAttributeSlot + iSubAttribute;
+			const auto & attributeRef = _attributeArray[attributeIndex];
 
 			if( attributeRef.IsActive() )
 			{
@@ -39,15 +41,15 @@ namespace Ic3
 		return true;
 	}
 
-	bool VertexAttributeArrayLayout::CheckAttributeDefinitionCompatibility(
-			const VertexAttributeDefinition & pAttributeDefinition ) const noexcept
+	bool VertexInputAttributeArrayConfig::CheckAttributeDefinitionCompatibility(
+			const VertexInputAttributeDefinition & pAttributeDefinition ) const noexcept
 	{
 		if( !pAttributeDefinition.IsValid() )
 		{
 			return false;
 		}
 
-		if( !CheckAttributeArraySpace( pAttributeDefinition.attributeIASlot, pAttributeDefinition.semanticGroupSize ) )
+		if( !CheckAttributeArraySpace( pAttributeDefinition.attributeSlot, pAttributeDefinition.semanticGroupSize ) )
 		{
 			return false;
 		}
@@ -55,7 +57,8 @@ namespace Ic3
 		return true;
 	}
 
-	GenericVertexAttribute * VertexAttributeArrayLayout::AddActiveAttribute( VertexAttributeDefinition pAttributeDefinition )
+	GenericVertexInputAttribute * VertexInputAttributeArrayConfig::AddActiveAttribute(
+			const VertexInputAttributeDefinition & pAttributeDefinition )
 	{
 		if( !CheckAttributeDefinitionCompatibility( pAttributeDefinition ) )
 		{
@@ -64,35 +67,51 @@ namespace Ic3
 		
 		_activeAttributesSlots.reserve( _activeAttributesSlots.size() + pAttributeDefinition.semanticGroupSize );
 
-		const auto baseAttributeSlotIndex = pAttributeDefinition.attributeIASlot;
+		const auto baseAttributeSlot = pAttributeDefinition.attributeSlot;
 		const auto semanticGroupSize = pAttributeDefinition.semanticGroupSize;
 
-		auto & baseAttribute = _attributeArray[baseAttributeSlotIndex];
+		auto & baseAttribute = _attributeArray[baseAttributeSlot];
 		baseAttribute.InitBaseAttributeFromDefinition( pAttributeDefinition );
 
 		_activeBaseAttributesNum += 1;
 		_activeAttributeSlotsNum += 1;
-		_activeAttributesMask.set( GCI::CxDef::makeIAVertexAttributeFlag( baseAttributeSlotIndex ) );
+		_activeAttributesMask.set( GCI::CXU::IAMakeVertexAttributeFlag( baseAttributeSlot ) );
 		_activeAttributeSemanticsMask.set( baseAttribute.shaderSemantics.systemSemanticFlags );
-		_activeAttributesSlots.insert( baseAttributeSlotIndex );
-		_semanticNameMap[baseAttribute.shaderSemantics.semanticName.strView()] = baseAttributeSlotIndex;
+		_activeAttributesSlots.insert( baseAttributeSlot );
+		_semanticNameMap[baseAttribute.shaderSemantics.semanticName.strView()] = baseAttributeSlot;
 
 		for( uint32 nSemanticComponent = 1; nSemanticComponent < semanticGroupSize; ++nSemanticComponent )
 		{
-			const auto subAttributeSlotIndex = baseAttributeSlotIndex + nSemanticComponent;
+			const auto subAttributeSlot = baseAttributeSlot + nSemanticComponent;
 
-			auto & subAttribute = _attributeArray[subAttributeSlotIndex];
+			auto & subAttribute = _attributeArray[subAttributeSlot];
 			subAttribute.InitSemanticSubAttributeFromBaseAttribute( baseAttribute, nSemanticComponent );
 
 			_activeAttributeSlotsNum += 1;
-			_activeAttributesMask.set( GCI::CxDef::makeIAVertexAttributeFlag( subAttributeSlotIndex ) );
-			_activeAttributesSlots.insert( subAttributeSlotIndex );
+			_activeAttributesMask.set( GCI::CXU::IAMakeVertexAttributeFlag( subAttributeSlot ) );
+			_activeAttributesSlots.insert( subAttributeSlot );
 		}
 
-		const auto lastAttributeSlotIndex = baseAttributeSlotIndex + semanticGroupSize - 1;
-		_activeAttributesRange.add( InputAssemblerSlotRange{ baseAttributeSlotIndex, lastAttributeSlotIndex } );
+		const auto lastAttributeIndex = baseAttributeSlot + semanticGroupSize - 1;
+		_activeAttributesRange.add( InputAssemblerSlotRange{ baseAttributeSlot, lastAttributeIndex } );
 
 		return &baseAttribute;
+	}
+
+	void VertexInputAttributeArrayConfig::Reset()
+	{
+		for( auto & attribute : _attributeArray )
+		{
+			attribute.Reset();
+		}
+
+		_activeBaseAttributesNum = 0;
+		_activeAttributeSlotsNum = 0;
+		_activeAttributesMask.clear();
+		_activeAttributeSemanticsMask.clear();
+		_activeAttributesRange = InputAssemblerSlotRange::empty_range();
+		_activeAttributesSlots.clear();
+		_semanticNameMap.clear();
 	}
 
 
@@ -140,7 +159,7 @@ namespace Ic3
 					{
 						baseDataType = GCI::EBaseDataType::Float16;
 					}
-					else if( formatComponentsNum == 32 )
+					else if( formatComponentBitSize == 32 )
 					{
 						baseDataType = GCI::EBaseDataType::Float32;
 					}
@@ -157,7 +176,7 @@ namespace Ic3
 					{
 						baseDataType = GCI::EBaseDataType::Int16;
 					}
-					else if( formatComponentsNum == 32 )
+					else if( formatComponentBitSize == 32 )
 					{
 						baseDataType = GCI::EBaseDataType::Int32;
 					}
@@ -174,7 +193,7 @@ namespace Ic3
 					{
 						baseDataType = GCI::EBaseDataType::Uint16;
 					}
-					else if( formatComponentsNum == 32 )
+					else if( formatComponentBitSize == 32 )
 					{
 						baseDataType = GCI::EBaseDataType::Uint32;
 					}
@@ -190,7 +209,7 @@ namespace Ic3
 				if( baseDataType != GCI::EBaseDataType::Undefined )
 				{
 					const auto vertexAttributeFormatValue =
-							GCI::CxDef::makeVertexAttribFormatEnumValue( formatComponentsNum, baseDataType, dataFormatFlags );
+							GCI::CXU::MakeVertexAttribFormatEnumValue( formatComponentsNum, baseDataType, dataFormatFlags );
 
 					vertexAttributeFormat = static_cast<GCI::EVertexAttribFormat>( vertexAttributeFormatValue );
 				}
@@ -302,12 +321,12 @@ namespace Ic3
 			return nullptr;
 		}
 
-		std::string GenerateVertexAttributeFormatString( const GenericVertexAttribute & pAttribute )
+		std::string GenerateVertexAttributeFormatString( const GenericVertexInputAttribute & pAttribute )
 		{
 			std::string formatStr;
 			formatStr.reserve( 16 );
 			formatStr.append( 1, 'A' );
-			formatStr.append( std::to_string( pAttribute.attributeIASlot ) );
+			formatStr.append( std::to_string( pAttribute.attributeSlot ) );
 
 			if( const auto semanticsIDCStr = GetShaderSemanticShortName( pAttribute.shaderSemantics.semanticName.strView() ) )
 			{
@@ -356,13 +375,13 @@ namespace Ic3
 				return GCI::EVertexAttribFormat::Undefined;
 			}
 
-			const auto format1BaseComponentsNum = GCI::CxDef::getVertexAttribFormatComponentsNum( pFormat1 );
-			const auto format1BaseDataType = GCI::CxDef::getVertexAttribFormatBaseDataType( pFormat1 );
-			const auto format1DataTypeFlags = GCI::CxDef::getVertexAttribFormatFlags( pFormat1 );
+			const auto format1BaseComponentsNum = GCI::CXU::getVertexAttribFormatComponentsNum( pFormat1 );
+			const auto format1BaseDataType = GCI::CXU::getVertexAttribFormatBaseDataType( pFormat1 );
+			const auto format1DataTypeFlags = GCI::CXU::getVertexAttribFormatFlags( pFormat1 );
 
-			const auto format2BaseComponentsNum = GCI::CxDef::getVertexAttribFormatComponentsNum( pFormat2 );
-			const auto format2BaseDataType = GCI::CxDef::getVertexAttribFormatBaseDataType( pFormat2 );
-			const auto format2DataTypeFlags = GCI::CxDef::getVertexAttribFormatFlags( pFormat2 );
+			const auto format2BaseComponentsNum = GCI::CXU::getVertexAttribFormatComponentsNum( pFormat2 );
+			const auto format2BaseDataType = GCI::CXU::getVertexAttribFormatBaseDataType( pFormat2 );
+			const auto format2DataTypeFlags = GCI::CXU::getVertexAttribFormatFlags( pFormat2 );
 
 			const auto combinedBaseComponentsNum = format1BaseComponentsNum + format2BaseComponentsNum;
 
@@ -376,7 +395,7 @@ namespace Ic3
 				return GCI::EVertexAttribFormat::Undefined;
 			}
 
-			const auto combinedVertexAttribFormatValue = GCI::CxDef::makeVertexAttribFormatEnumValue(
+			const auto combinedVertexAttribFormatValue = GCI::CXU::MakeVertexAttribFormatEnumValue(
 					static_cast<uint8>( combinedBaseComponentsNum ),
 					format1BaseDataType,
 					static_cast<uint8>( format2DataTypeFlags ) );
@@ -407,9 +426,9 @@ namespace Ic3
 					continue;
 				}
 
-				const auto formatBaseComponentsNum = GCI::CxDef::getVertexAttribFormatComponentsNum( format );
-				const auto formatBaseDataType = GCI::CxDef::getVertexAttribFormatBaseDataType( format );
-				const auto formatDataTypeFlags = GCI::CxDef::getVertexAttribFormatFlags( format );
+				const auto formatBaseComponentsNum = GCI::CXU::getVertexAttribFormatComponentsNum( format );
+				const auto formatBaseDataType = GCI::CXU::getVertexAttribFormatBaseDataType( format );
+				const auto formatDataTypeFlags = GCI::CXU::getVertexAttribFormatFlags( format );
 
 				if( combinedBaseDataType == GCI::EBaseDataType::Undefined )
 				{
@@ -446,7 +465,7 @@ namespace Ic3
 				return GCI::EVertexAttribFormat::Undefined;
 			}
 
-			const auto combinedVertexAttribFormatValue = GCI::CxDef::makeVertexAttribFormatEnumValue(
+			const auto combinedVertexAttribFormatValue = GCI::CXU::MakeVertexAttribFormatEnumValue(
 					static_cast<uint8>( combinedBaseComponentsNum ),
 					combinedBaseDataType,
 					static_cast<uint8>( combinedDataTypeFlags ) );
@@ -467,14 +486,14 @@ namespace Ic3
 
 			if( pFormat1 != GCI::EVertexAttribFormat::Undefined )
 			{
-				numOfBaseTypeComponents = GCI::CxDef::getVertexAttribFormatComponentsNum( pFormat1 );
-				baseDataType = GCI::CxDef::getVertexAttribFormatBaseDataType( pFormat1 );
+				numOfBaseTypeComponents = GCI::CXU::getVertexAttribFormatComponentsNum( pFormat1 );
+				baseDataType = GCI::CXU::getVertexAttribFormatBaseDataType( pFormat1 );
 			}
 
 			if( pFormat2 != GCI::EVertexAttribFormat::Undefined )
 			{
-				numOfBaseTypeComponents = GCI::CxDef::getVertexAttribFormatComponentsNum( pFormat1 );
-				baseDataType = GCI::CxDef::getVertexAttribFormatBaseDataType( pFormat1 );
+				numOfBaseTypeComponents = GCI::CXU::getVertexAttribFormatComponentsNum( pFormat1 );
+				baseDataType = GCI::CXU::getVertexAttribFormatBaseDataType( pFormat1 );
 			}
 		}
 
@@ -486,7 +505,7 @@ namespace Ic3
 	{
 		CPPX_ATTR_NO_DISCARD bool operator()( const VertexAttributeComponent & pLhs, size_t pRhs ) const noexcept
 		{
-			return pLhs.attributeIASlot == pRhs;
+			return pLhs.attributeSlot == pRhs;
 		}
 	};
 
@@ -494,17 +513,17 @@ namespace Ic3
 	{
 		CPPX_ATTR_NO_DISCARD bool operator()( const VertexAttributeComponent & pLhs, size_t pRhs ) const noexcept
 		{
-			return pLhs.attributeIASlot < pRhs;
+			return pLhs.attributeSlot < pRhs;
 		}
 	};
 
-	size_t VertexAttributeArrayLayout::findAttributeAtSlot( gci_input_assembler_slot_t pAttribIASlot ) const noexcept
+	size_t VertexInputAttributeArrayConfig::findAttributeAtSlot( gci_input_assembler_slot_t pAttributeSlot ) const noexcept
 	{
-		auto attribIter = _attributeArray.find( pAttribIASlot, VertexAttributeIndexCmpLess{}, VertexAttributeIndexCmpEqual{} );
+		auto attribIter = _attributeArray.find( pAttributeSlot, VertexAttributeIndexCmpLess{}, VertexAttributeIndexCmpEqual{} );
 		return ( attribIter != _attributeArray.end() ) ? ( attribIter - _attributeArray.begin() ) : cxInvalidPosition;
 	}
 
-	bool VertexAttributeArrayLayout::CheckAttributeArraySpace(
+	bool VertexInputAttributeArrayConfig::CheckAttributeArraySpace(
 			gci_input_assembler_slot_t pAttribBaseIASlot,
 			size_t pComponentsNum ) const noexcept
 	{
@@ -515,7 +534,7 @@ namespace Ic3
 
 			if( attributeArrayIndex != cxInvalidPosition )
 			{
-				Ic3DebugAssert( _activeAttributesMask.is_set( GCI::CxDef::makeIAVertexAttributeFlag( vertexPropertySlot ) ) );
+				Ic3DebugAssert( _activeAttributesMask.is_set( GCI::CXU::MakeIAVertexAttributeFlag( vertexPropertySlot ) ) );
 				Ic3DebugAssert( _activeAttributesRange.contains( vertexPropertySlot ) );
 				Ic3DebugAssert( _activeAttributesSlots.hasValue( vertexPropertySlot ) );
 				return false;
@@ -525,7 +544,7 @@ namespace Ic3
 		return true;
 	}
 
-	bool VertexAttributeArrayLayout::CheckAttributeDefinitionCompatibility(
+	bool VertexInputAttributeArrayConfig::CheckAttributeDefinitionCompatibility(
 			const VertexAttributeDefinition & pAttributeDefinition ) const noexcept
 	{
 		if( !pAttributeDefinition.valid() )
@@ -533,7 +552,7 @@ namespace Ic3
 			return false;
 		}
 
-		if( !CheckAttributeArraySpace( pAttributeDefinition.attributeIASlot, pAttributeDefinition.semanticComponentsNum ) )
+		if( !CheckAttributeArraySpace( pAttributeDefinition.attributeSlot, pAttributeDefinition.semanticComponentsNum ) )
 		{
 			return false;
 		}
@@ -541,9 +560,9 @@ namespace Ic3
 		return true;
 	}
 
-	VertexAttributeComponent * VertexAttributeArrayLayout::AddActiveAttribute( VertexAttributeDefinition pAttributeDefinition )
+	VertexAttributeComponent * VertexInputAttributeArrayConfig::AddActiveAttribute( VertexAttributeDefinition pAttributeDefinition )
 	{
-		auto attributeArrayIndex = findAttributeAtSlot( pAttributeDefinition.attributeIASlot );
+		auto attributeArrayIndex = findAttributeAtSlot( pAttributeDefinition.attributeSlot );
 		if( attributeArrayIndex != cxInvalidPosition )
 		{
 			Ic3DebugInterrupt();
@@ -553,16 +572,16 @@ namespace Ic3
 		_attributeArray.reserve( _attributeArray.size() + pAttributeDefinition.semanticComponentsNum );
 		_activeAttributesSlots.reserve( _activeAttributesSlots.size() + pAttributeDefinition.semanticComponentsNum );
 
-		auto baseAttribIter = _attributeArray.insert( VertexAttributeComponent{ pAttributeDefinition.attributeIASlot } );
+		auto baseAttribIter = _attributeArray.insert( VertexAttributeComponent{ pAttributeDefinition.attributeSlot } );
 		baseAttribIter->InitBaseAttributeFromDefinition( std::move( pAttributeDefinition ) );
 
-		const auto baseAttribute = pAttributeDefinition.attributeIASlot;
+		const auto baseAttribute = pAttributeDefinition.attributeSlot;
 		const auto attribComponentsNum = pAttributeDefinition.semanticComponentsNum;
 		const auto baseAttributeArrayIndex = baseAttribIter - _attributeArray.begin();
 
 		_activeAttributesNum += 1;
-		_activeAttributesMask.set( GCI::CxDef::makeIAVertexAttributeFlag( baseAttribute) );
-		_activeAttributeSemanticsMask.set( CxDef::getShaderInputSemanticIDFlags( baseAttribIter->shaderSemantics.smtID ) );
+		_activeAttributesMask.set( GCI::CXU::MakeIAVertexAttributeFlag( baseAttribute) );
+		_activeAttributeSemanticsMask.set( CXU::getShaderInputSemanticIDFlags( baseAttribIter->shaderSemantics.smtID ) );
 		_activeAttributesSlots.insert( baseAttribute );
 		_semanticNameMap[baseAttribIter->shaderSemantics.smtName] = baseAttribute;
 
@@ -574,7 +593,7 @@ namespace Ic3
 			attribComponentIter->initSubComponentFromBaseAttribute( *baseAttribIter, nSemanticComponent );
 
 			_activeAttributesNum += 1;
-			_activeAttributesMask.set( GCI::CxDef::makeIAVertexAttributeFlag( attribComponentSlot ) );
+			_activeAttributesMask.set( GCI::CXU::MakeIAVertexAttributeFlag( attribComponentSlot ) );
 			_activeAttributesSlots.insert( attribComponentSlot );
 		}
 
@@ -584,16 +603,16 @@ namespace Ic3
 		return &( _attributeArray[baseAttributeArrayIndex] );
 	}
 
-	void VertexAttributeArrayLayout::reserveAttributeArraySpace( size_t pActiveAttributesNum )
+	void VertexInputAttributeArrayConfig::reserveAttributeArraySpace( size_t pActiveAttributesNum )
 	{
 		_attributeArray.reserve( pActiveAttributesNum );
 	}
 
-	void VertexAttributeArrayLayout::reset()
+	void VertexInputAttributeArrayConfig::Reset()
 	{
 		for( auto & attributeInfo : _attributeArray )
 		{
-			attributeInfo.reset();
+			attributeInfo.Reset();
 		}
 
 		_activeAttributesRange = InputAssemblerSlotRange::empty_range();
@@ -698,7 +717,7 @@ namespace Ic3
 				if( baseDataType != GCI::EBaseDataType::Undefined )
 				{
 					const auto vertexAttributeFormatValue =
-							GCI::CxDef::makeVertexAttribFormatEnumValue( baseDataType, formatComponentsNum, dataFormatFlags );
+							GCI::CXU::MakeVertexAttribFormatEnumValue( baseDataType, formatComponentsNum, dataFormatFlags );
 
 					vertexAttributeFormat = static_cast<GCI::EVertexAttribFormat>( vertexAttributeFormatValue );
 				}
@@ -807,7 +826,7 @@ namespace Ic3
 			std::string formatStr;
 			formatStr.reserve( 16 );
 			formatStr.append( 1, 'A' );
-			formatStr.append( std::to_string( pAttribute.attributeIASlot ) );
+			formatStr.append( std::to_string( pAttribute.attributeSlot ) );
 
 			if( const auto semanticsIDCStr = GetShaderSemanticShortName( pAttribute.shaderSemantics.smtName ) )
 			{

@@ -29,7 +29,7 @@ namespace Ic3
 	using RGeometryReferenceKey = uint64;
 
 	template <typename TElement>
-	using RGeometryVertexBufferGenericArray = std::array<TElement, GCM::cxIAMaxVertexBufferBindingsNum>;
+	using RGeometryVertexBufferGenericArray = std::array<TElement, GCM::kIAMaxDataStreamVertexBuffersNum>;
 
 	struct GeometryBufferInfo
 	{

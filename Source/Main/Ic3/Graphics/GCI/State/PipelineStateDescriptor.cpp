@@ -34,6 +34,26 @@ namespace Ic3::Graphics::GCI
 		return nullptr;
 	}
 
+	void PipelineStateDescriptor::SetInternalFlags( cppx::bitmask<descriptor_internal_flags_value_t> pInternalFlags ) noexcept
+	{
+		_internalFlags.set( pInternalFlags );
+	}
+
+	void PipelineStateDescriptor::ResetInternalFlags( cppx::bitmask<descriptor_internal_flags_value_t> pInternalFlags ) noexcept
+	{
+		_internalFlags.unset( pInternalFlags );
+	}
+
+	bool PipelineStateDescriptor::CheckInternalFlags( cppx::bitmask<descriptor_internal_flags_value_t> pInternalFlags ) const noexcept
+	{
+		return _internalFlags.is_set( pInternalFlags );
+	}
+
+	cppx::bitmask<PipelineStateDescriptor::descriptor_internal_flags_value_t> PipelineStateDescriptor::GetInternalFlags() const noexcept
+	{
+		return _internalFlags;
+	}
+
 	void PipelineStateDescriptor::SetDynamicDriverState( DynamicDescriptorDriverState * pDynamicDriverState ) noexcept
 	{
 		Ic3UnusedParam( pDynamicDriverState );

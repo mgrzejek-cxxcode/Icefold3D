@@ -6,54 +6,52 @@
 namespace Ic3
 {
 
-	bool ShaderSemantics::resolve() noexcept
+	bool ShaderSemantics::Resolve() noexcept
 	{
-		Ic3DebugInterrupt();
-
-		/*
-		if( smtID == EShaderInputSemanticID::Custom )
+		if( systemSemanticFlags.is_set( eSystemAttributeSemanticFlagCustomAttributeBit ) )
 		{
 			// Custom semantics, so a non-empty semantic name is required.
-			if( smtName.empty() )
+			if( semanticName.empty() )
 			{
 				return false;
 			}
 		}
-		else if( CxDef::isStandardShaderInputSemanticID( smtID )  )
+		else if( GCU::IsStandardShaderInputAttribute( systemSemanticFlags )  )
 		{
 			// One of the standard semantic IDs, semantic name resolved from the ID.
-			smtName = GCU::getShaderInputSemanticNameFromID( smtID );
+			semanticName = GCU::GetStandardSemanticNameFromSystemFlags( systemSemanticFlags );
 		}
 		else
 		{
-			if( smtName.empty() )
+			if( semanticName.empty() )
 			{
 				return false;
 			}
 
-			smtID = GCU::getShaderInputSemanticIDFromName( smtName );
+			systemSemanticFlags = GCU::GetAttributeSystemSemanticFlagsFromName( semanticName );
 		}
-		 */
 
-		return true;
+		return !semanticName.empty() && !systemSemanticFlags.empty();
 	}
 
-	ShaderSemantics ShaderSemantics::resolveSemantics( const ShaderSemantics & pSemantics )
+	ShaderSemantics ShaderSemantics::ResolveSemantics( const ShaderSemantics & pSemantics )
 	{
 		ShaderSemantics resolvedSemantics{ pSemantics };
-		if( !resolvedSemantics.resolve() )
+		if( !resolvedSemantics.Resolve() )
 		{
-			resolvedSemantics.clear();
+			resolvedSemantics.Clear();
 		}
 		return resolvedSemantics;
 	}
 
-	//ShaderSemantics ShaderSemantics::fromVertexAttributeKey( VertexAttributeKey pAttributeKey, uint32 pSmtIndex )
-	//{
-	//	const auto smtID = CxDef::getVertexAttributeKeySystemSemanticFlags( pAttributeKey );
-	//	auto smtName = GCU::getShaderInputSemanticNameFromID( smtID );
-	//	return ShaderSemantics{ smtID, std::move( smtName ), pSmtIndex };
-	//}
+	ShaderSemantics ShaderSemantics::FromVertexAttributeKey(
+			vertex_attribute_key_value_t pAttributeKeyValue,
+			uint32 pSemanticIndex )
+	{
+		const auto attributeKey = VertexAttributeKey( pAttributeKeyValue );
+		auto semanticName = GCU::GetStandardSemanticNameFromSystemFlags( attributeKey.GetFlags() );
+		return ShaderSemantics{ std::move( semanticName ), pSemanticIndex, attributeKey.GetFlags() };
+	}
 
 	namespace GCU
 	{
@@ -62,39 +60,39 @@ namespace Ic3
 		using AttribSemanticNameToFlagsMap = std::unordered_map<AttribSemanticNameHash, uint32>;
 		using AttribSemanticFlagsToNameMap = std::unordered_map<uint32, std::string_view>;
 
-		AttribSemanticNameHash computeAttribSemanticNameHash( const std::string_view & pSemanticName )
+		AttribSemanticNameHash ComputeAttribSemanticNameHash( const std::string_view & pSemanticName )
 		{
 			return cppx::hash_compute<cppx::hash_algo::sdbm>( pSemanticName );
 		}
 
-		AttribSemanticNameToFlagsMap buildAttribSemanticNameToFlagsMap()
+		AttribSemanticNameToFlagsMap BuildAttribSemanticNameToFlagsMap()
 		{
 			AttribSemanticNameToFlagsMap resultMap{};
 
-			resultMap.insert( { computeAttribSemanticNameHash( "POSITION"   )      , eSystemAttributeSemanticFlagPositionBit         } );
-			resultMap.insert( { computeAttribSemanticNameHash( "NORMAL"     )      , eSystemAttributeSemanticFlagNormalBit           } );
-			resultMap.insert( { computeAttribSemanticNameHash( "TANGENT"    )      , eSystemAttributeSemanticFlagTangentBit          } );
-			resultMap.insert( { computeAttribSemanticNameHash( "BITANGENT"  )      , eSystemAttributeSemanticFlagBiTangentBit        } );
-			resultMap.insert( { computeAttribSemanticNameHash( "COLOR"      )      , eSystemAttributeSemanticFlagFixedColorBit       } );
-			resultMap.insert( { computeAttribSemanticNameHash( "TEXCOORD0"  )      , eSystemAttributeSemanticFlagTexCoord0Bit        } );
-			resultMap.insert( { computeAttribSemanticNameHash( "TEXCOORD1"  )      , eSystemAttributeSemanticFlagTexCoord1Bit        } );
-			resultMap.insert( { computeAttribSemanticNameHash( "TEXCOORD2"  )      , eSystemAttributeSemanticFlagTexCoord2Bit        } );
-			resultMap.insert( { computeAttribSemanticNameHash( "TEXCOORD3"  )      , eSystemAttributeSemanticFlagTexCoord3Bit        } );
-			resultMap.insert( { computeAttribSemanticNameHash( "TEXCOORD4"  )      , eSystemAttributeSemanticFlagTexCoord4Bit        } );
-			resultMap.insert( { computeAttribSemanticNameHash( "TEXCOORD5"  )      , eSystemAttributeSemanticFlagTexCoord5Bit        } );
-			resultMap.insert( { computeAttribSemanticNameHash( "TEXCOORD6"  )      , eSystemAttributeSemanticFlagTexCoord6Bit        } );
-			resultMap.insert( { computeAttribSemanticNameHash( "TEXCOORD7"  )      , eSystemAttributeSemanticFlagTexCoord7Bit        } );
-			resultMap.insert( { computeAttribSemanticNameHash( "TEXCOORD01" )      , eSystemAttributeSemanticMaskTexCoord01Packed    } );
-			resultMap.insert( { computeAttribSemanticNameHash( "TEXCOORD23" )      , eSystemAttributeSemanticMaskTexCoord23Packed    } );
-			resultMap.insert( { computeAttribSemanticNameHash( "BLEND_INDICES"   ) , eSystemAttributeSemanticFlagBlendIndicesBit     } );
-			resultMap.insert( { computeAttribSemanticNameHash( "BLEND_WEIGHTS"   ) , eSystemAttributeSemanticFlagBlendWeightsBit     } );
-			resultMap.insert( { computeAttribSemanticNameHash( "INSTANCE_MATRIX" ) , eSystemAttributeSemanticFlagInstanceMatrixBit   } );
-			resultMap.insert( { computeAttribSemanticNameHash( "INSTANCE_UDATA"  ) , eSystemAttributeSemanticFlagInstanceUserDataBit } );
+			resultMap.insert( { ComputeAttribSemanticNameHash( "POSITION"   )      , eSystemAttributeSemanticFlagPositionBit         } );
+			resultMap.insert( { ComputeAttribSemanticNameHash( "NORMAL"     )      , eSystemAttributeSemanticFlagNormalBit           } );
+			resultMap.insert( { ComputeAttribSemanticNameHash( "TANGENT"    )      , eSystemAttributeSemanticFlagTangentBit          } );
+			resultMap.insert( { ComputeAttribSemanticNameHash( "BITANGENT"  )      , eSystemAttributeSemanticFlagBiTangentBit        } );
+			resultMap.insert( { ComputeAttribSemanticNameHash( "COLOR"      )      , eSystemAttributeSemanticFlagFixedColorBit       } );
+			resultMap.insert( { ComputeAttribSemanticNameHash( "TEXCOORD0"  )      , eSystemAttributeSemanticFlagTexCoord0Bit        } );
+			resultMap.insert( { ComputeAttribSemanticNameHash( "TEXCOORD1"  )      , eSystemAttributeSemanticFlagTexCoord1Bit        } );
+			resultMap.insert( { ComputeAttribSemanticNameHash( "TEXCOORD2"  )      , eSystemAttributeSemanticFlagTexCoord2Bit        } );
+			resultMap.insert( { ComputeAttribSemanticNameHash( "TEXCOORD3"  )      , eSystemAttributeSemanticFlagTexCoord3Bit        } );
+			resultMap.insert( { ComputeAttribSemanticNameHash( "TEXCOORD4"  )      , eSystemAttributeSemanticFlagTexCoord4Bit        } );
+			resultMap.insert( { ComputeAttribSemanticNameHash( "TEXCOORD5"  )      , eSystemAttributeSemanticFlagTexCoord5Bit        } );
+			resultMap.insert( { ComputeAttribSemanticNameHash( "TEXCOORD6"  )      , eSystemAttributeSemanticFlagTexCoord6Bit        } );
+			resultMap.insert( { ComputeAttribSemanticNameHash( "TEXCOORD7"  )      , eSystemAttributeSemanticFlagTexCoord7Bit        } );
+			resultMap.insert( { ComputeAttribSemanticNameHash( "TEXCOORD01" )      , eSystemAttributeSemanticMaskTexCoord01Packed    } );
+			resultMap.insert( { ComputeAttribSemanticNameHash( "TEXCOORD23" )      , eSystemAttributeSemanticMaskTexCoord23Packed    } );
+			resultMap.insert( { ComputeAttribSemanticNameHash( "BLEND_INDICES"   ) , eSystemAttributeSemanticFlagBlendIndicesBit     } );
+			resultMap.insert( { ComputeAttribSemanticNameHash( "BLEND_WEIGHTS"   ) , eSystemAttributeSemanticFlagBlendWeightsBit     } );
+			resultMap.insert( { ComputeAttribSemanticNameHash( "INSTANCE_MATRIX" ) , eSystemAttributeSemanticFlagInstanceMatrixBit   } );
+			resultMap.insert( { ComputeAttribSemanticNameHash( "INSTANCE_UDATA"  ) , eSystemAttributeSemanticFlagInstanceUserDataBit } );
 
 			return resultMap;
 		}
 
-		AttribSemanticFlagsToNameMap buildAttribSemanticFlagsToNameMap()
+		AttribSemanticFlagsToNameMap BuildAttribSemanticFlagsToNameMap()
 		{
 			AttribSemanticFlagsToNameMap resultMap{};
 
@@ -121,17 +119,26 @@ namespace Ic3
 			return resultMap;
 		}
 
-		cppx::bitmask<ESystemAttributeSemanticFlags> getAttributeSystemSemanticFlagsFromName( const cppx::string_view & pSemanticName )
+		cppx::bitmask<ESystemAttributeSemanticFlags> GetAttributeSystemSemanticFlagsFromName( const cppx::string_view & pSemanticName )
 		{
-			static const auto attribSemanticNameToFlagsMap = buildAttribSemanticNameToFlagsMap();
-			const auto semanticNameHash = computeAttribSemanticNameHash( pSemanticName );
-			return cppx::get_map_value_ref_or_default( attribSemanticNameToFlagsMap, semanticNameHash, eSystemAttributeSemanticFlagCustomAttributeBit );
+			static const auto attribSemanticNameToFlagsMap = BuildAttribSemanticNameToFlagsMap();
+
+			const auto semanticNameHash = ComputeAttribSemanticNameHash( pSemanticName );
+
+			return cppx::get_map_value_ref_or_default(
+					attribSemanticNameToFlagsMap,
+					semanticNameHash,
+					eSystemAttributeSemanticFlagCustomAttributeBit );
 		}
 
-		cppx::string_view getStandardSemanticNameFromSystemFlags( cppx::bitmask<ESystemAttributeSemanticFlags> pSystemSemanticFlags )
+		cppx::string_view GetStandardSemanticNameFromSystemFlags( cppx::bitmask<ESystemAttributeSemanticFlags> pSystemSemanticFlags )
 		{
-			static const auto attribSemanticFlagsToNameMap = buildAttribSemanticFlagsToNameMap();
-			return cppx::get_map_value_ref_or_default( attribSemanticFlagsToNameMap, pSystemSemanticFlags, "" );
+			static const auto attribSemanticFlagsToNameMap = BuildAttribSemanticFlagsToNameMap();
+
+			return cppx::get_map_value_ref_or_default(
+					attribSemanticFlagsToNameMap,
+					pSystemSemanticFlags,
+					cppx::string_view{} );
 		}
 
 	}

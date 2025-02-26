@@ -86,7 +86,7 @@ namespace Ic3::Graphics::GCI
 
 		RenderTargetDescriptorGeneric::~RenderTargetDescriptorGeneric() = default;
 
-		bool RenderTargetDescriptorGeneric::IsAttachmentActive( uint32 pAttachmentIndex ) const noexcept
+		bool RenderTargetDescriptorGeneric::IsAttachmentActive( native_uint pAttachmentIndex ) const noexcept
 		{
 			const auto * attachmentBinding = mRenderTargetBinding.GetAttachment( pAttachmentIndex );
 			return attachmentBinding->IsActive();

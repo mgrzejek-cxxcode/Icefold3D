@@ -37,7 +37,7 @@
 
 -( void ) updateExplicit
 {
-	if( [NSThread IsMainThread] )
+	if( [NSThread isMainThread] )
 	{
 		[super update];
 	}

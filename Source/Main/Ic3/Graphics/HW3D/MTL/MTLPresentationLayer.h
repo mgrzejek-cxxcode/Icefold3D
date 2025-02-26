@@ -36,9 +36,9 @@ namespace Ic3::Graphics::GCI
 		GLScreenPresentationLayer( MetalGPUDevice & pGPUDevice, System::MetalDisplaySurfaceHandle pSysMetalDisplaySurface );
 		virtual ~GLScreenPresentationLayer();
 
-		virtual void BindRenderTarget( CommandContext * pCmdContext ) override;
+		virtual void BindRenderTarget( CommandContext & pCommandContext ) override;
 
-		virtual void InvalidateRenderTarget( CommandContext * pCmdContext ) override;
+		virtual void InvalidateRenderTarget( CommandContext & pCommandContext ) override;
 
 		virtual void Present() override;
 

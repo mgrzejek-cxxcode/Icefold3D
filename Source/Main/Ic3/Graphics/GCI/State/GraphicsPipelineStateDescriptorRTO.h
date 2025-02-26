@@ -19,7 +19,7 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~RenderTargetArrayConfigStateDescriptor();
 
-		CPPX_ATTR_NO_DISCARD virtual bool IsAttachmentActive( uint32 pAttachmentIndex ) const noexcept = 0;
+		CPPX_ATTR_NO_DISCARD virtual bool IsAttachmentActive( native_uint pAttachmentIndex ) const noexcept = 0;
 	};
 
 	/**
@@ -106,7 +106,7 @@ namespace Ic3::Graphics::GCI
 
 			virtual ~RenderTargetDescriptorGeneric();
 
-			CPPX_ATTR_NO_DISCARD virtual bool IsAttachmentActive( uint32 pAttachmentIndex ) const noexcept override final;
+			CPPX_ATTR_NO_DISCARD virtual bool IsAttachmentActive( native_uint pAttachmentIndex ) const noexcept override final;
 
 			static TGfxHandle<RenderTargetDescriptorGeneric> CreateFromRenderTargetBinding(
 					GPUDevice & pGPUDevice,

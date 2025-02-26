@@ -367,7 +367,7 @@ namespace Ic3::System
 					result.append( 1, '\n' );
 				}
 				result.append( pLinePrefix );
-				result.append( adapterDesc.toString() );
+				result.append( adapterDesc.ToString() );
 
 				if( !adapter->HasAnyOutputs() )
 				{
@@ -385,7 +385,7 @@ namespace Ic3::System
 						result.append( 1, '\n' );
 						result.append( pLinePrefix );
 						result.append( 1, '\t' );
-						result.append( outputDesc.toString() );
+						result.append( outputDesc.ToString() );
 
 						auto colorFormats = output->GetSupportedColorFormatList();
 						for( auto colorFormat : colorFormats )
@@ -412,7 +412,7 @@ namespace Ic3::System
 									result.append( 1, '\n' );
 									result.append( pLinePrefix );
 									result.append( 3, '\t' );
-									result.append( videoModeDesc.toString() );
+									result.append( videoModeDesc.ToString() );
 								}
 							}
 						}

@@ -78,6 +78,16 @@ namespace Ic3::Graphics::GCI
 	namespace CXU
 	{
 
+		inline constexpr bool IAIsVertexAttributeComponentsNumValid( native_uint pComponentsNum ) noexcept
+		{
+			return ( pComponentsNum > 0 ) && ( pComponentsNum <= GCM::kIAMaxVertexAttributeComponentsNum );
+		}
+
+		inline constexpr bool IAIsVertexAttributeSemanticGroupSizeValid( native_uint pSemanticGroupSize ) noexcept
+		{
+			return ( pSemanticGroupSize > 0 ) && ( pSemanticGroupSize <= GCM::kIAMaxVertexAttributeSemanticGroupSize );
+		}
+
 		/// @brief
 		inline constexpr uint32 IAMakeVertexAttributeFlag( native_uint pAttribIndex )
 		{

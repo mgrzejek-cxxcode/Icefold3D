@@ -59,9 +59,9 @@ namespace Ic3::Graphics::GCI
 		return presentationLayer;
 	}
 
-	void DX11ScreenPresentationLayer::BindRenderTarget( CommandContext * pCmdContext )
+	void DX11ScreenPresentationLayer::BindRenderTarget( CommandContext & pCommandContext )
 	{
-		auto * directGraphicsContext = pCmdContext->QueryInterface<CommandContextDirectGraphics>();
+		auto * directGraphicsContext = pCommandContext.QueryInterface<CommandContextDirectGraphics>();
 		directGraphicsContext->SetRenderTargetBindingState( *mScreenRenderTargetBindingState );
 
 		// auto * dx11CommandList = pCmdContext->mCommandList->QueryInterface<DX11CommandList>();
@@ -70,7 +70,7 @@ namespace Ic3::Graphics::GCI
 		// dx11CommandList->mD3D11DeviceContext1->OMSetRenderTargets( 1, &backBufferRTView, backBufferDSView );
 	}
 
-	void DX11ScreenPresentationLayer::InvalidateRenderTarget( CommandContext * pCmdContext )
+	void DX11ScreenPresentationLayer::InvalidateRenderTarget( CommandContext & pCommandContext )
 	{
 	}
 

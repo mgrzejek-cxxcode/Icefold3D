@@ -40,7 +40,7 @@ namespace Ic3
 {
 
 	template <typename TData>
-	using GeometryVertexStreamGenericArray = std::array<TData, GCM::cxIAMaxVertexStreamsNum>;
+	using GeometryVertexStreamGenericArray = std::array<TData, GCM::kIAMaxDataStreamVertexBuffersNum>;
 
 	class CoreEngineObject : public IDynamicObject
 	{

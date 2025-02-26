@@ -13,27 +13,29 @@ namespace Ic3
 	/**
 	 * @brief
 	 */
-	class VertexAttributeArrayLayout
+	class VertexInputAttributeArrayConfig
 	{
 		friend class VertexFormatDescriptor;
 
 	public:
-		VertexAttributeArrayLayout() = default;
-		~VertexAttributeArrayLayout() = default;
+		VertexInputAttributeArrayConfig() = default;
+		~VertexInputAttributeArrayConfig() = default;
 
 		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept;
 
-		CPPX_ATTR_NO_DISCARD const GenericVertexAttribute & operator[]( native_uint pAttribIASlot ) const noexcept;
+		CPPX_ATTR_NO_DISCARD const GenericVertexInputAttribute & operator[]( native_uint pAttributeSlot ) const noexcept;
 
-		CPPX_ATTR_NO_DISCARD const GenericVertexAttribute & AttributeAt( native_uint pAttribIASlot ) const;
+		CPPX_ATTR_NO_DISCARD const GenericVertexInputAttribute & AttributeAt( native_uint pAttributeSlot ) const;
 
-		CPPX_ATTR_NO_DISCARD const GenericVertexAttribute * AttributePtr( native_uint pAttribIASlot ) const noexcept;
+		CPPX_ATTR_NO_DISCARD const GenericVertexInputAttribute * AttributePtr( native_uint pAttributeSlot ) const noexcept;
 
-		CPPX_ATTR_NO_DISCARD bool IsAttributeActive( native_uint pAttribIASlot ) const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsAttributeActive( native_uint pAttributeSlot ) const noexcept;
 
-		CPPX_ATTR_NO_DISCARD gci_input_assembler_slot_t QueryBaseAttributeBySemantics( cppx::string_view pSemanticName ) const noexcept;
+		CPPX_ATTR_NO_DISCARD gci_input_assembler_slot_t QueryBaseAttributeBySemantics(
+				cppx::string_view pSemanticName ) const noexcept;
 
-		CPPX_ATTR_NO_DISCARD gci_input_assembler_slot_t QueryBaseAttributeBySemantics( cppx::bitmask<ESystemAttributeSemanticFlags> pSysSmtFlags ) const noexcept;
+		CPPX_ATTR_NO_DISCARD gci_input_assembler_slot_t QueryBaseAttributeBySemantics(
+				cppx::bitmask<ESystemAttributeSemanticFlags> pSystemSemanticFlags ) const noexcept;
 
 		CPPX_ATTR_NO_DISCARD const GenericVertexAttributeArray & GetAttributeArray() const noexcept;
 
@@ -51,11 +53,15 @@ namespace Ic3
 
 		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept;
 
-		IC3_NXMAIN_API_NO_DISCARD bool CheckAttributeArraySpace( native_uint pBaseIASlot, size_t pSemanticGroupSize = 1 ) const noexcept;
+		IC3_NXMAIN_API_NO_DISCARD bool CheckAttributeArraySpace(
+				native_uint pBaseAttributeSlot,
+				size_t pSemanticGroupSize = 1 ) const noexcept;
 
-		IC3_NXMAIN_API_NO_DISCARD bool CheckAttributeDefinitionCompatibility( const VertexAttributeDefinition & pAttributeDefinition ) const noexcept;
+		IC3_NXMAIN_API_NO_DISCARD bool CheckAttributeDefinitionCompatibility(
+				const VertexInputAttributeDefinition & pAttributeDefinition ) const noexcept;
 
-		IC3_NXMAIN_API GenericVertexAttribute * AddActiveAttribute( VertexAttributeDefinition pAttributeDefinition );
+		IC3_NXMAIN_API GenericVertexInputAttribute * AddActiveAttribute(
+				const VertexInputAttributeDefinition & pAttributeDefinition );
 
 		IC3_NXMAIN_API void Reset();
 
@@ -82,22 +88,6 @@ namespace Ic3
 	namespace GCU
 	{
 
-		/*
-		IC3_NXMAIN_API_NO_DISCARD GCI::EVertexAttribFormat getCombinedVertexAttribFormat(
-				GCI::EVertexAttribFormat pFormat1,
-				GCI::EVertexAttribFormat pFormat2 );
-
-		IC3_NXMAIN_API_NO_DISCARD GCI::EVertexAttribFormat getCombinedVertexAttribFormat(
-				const GCI::EVertexAttribFormat * pFormatArray,
-				size_t pFormatsNum );
-
-		template <size_t tpFormatsNum>
-		CPPX_ATTR_NO_DISCARD inline GCI::EVertexAttribFormat getCombinedVertexAttribFormat( GCI::EVertexAttribFormat ( &pFormats )[tpFormatsNum] )
-		{
-			return getCombinedVertexAttribFormat( &( pFormats[0] ), tpFormatsNum );
-		}
-		 */
-
 		IC3_NXMAIN_API_NO_DISCARD GCI::EVertexAttribFormat GetAttributeFormatFromStringIdentifier( const std::string & pAttribFormatStringID );
 
 		IC3_NXMAIN_API_NO_DISCARD cppx::string_view GetAttributeFormatStringIdentifier( GCI::EVertexAttribFormat pGCIAttributeFormat );
@@ -106,7 +96,7 @@ namespace Ic3
 
 		IC3_NXMAIN_API_NO_DISCARD cppx::string_view ResolveShaderSemanticShortName( const cppx::string_view & pSemanticName );
 
-		IC3_NXMAIN_API_NO_DISCARD std::string GenerateVertexAttributeFormatString( const GenericVertexAttribute & pAttribute );
+		IC3_NXMAIN_API_NO_DISCARD std::string GenerateVertexAttributeFormatString( const GenericVertexInputAttribute & pAttribute );
 
 		template <typename TPAttributeTraits>
 		CPPX_ATTR_NO_DISCARD inline bool CheckAttributeAutoDataFormat(
@@ -123,7 +113,7 @@ namespace Ic3
 				return false;
 			}
 
-			const auto specifiedComponentByteSize = GCI::CxDef::GetVertexAttribFormatByteSize( pAttributeBaseFormat );
+			const auto specifiedComponentByteSize = GCI::CXU::GetVertexAttribFormatByteSize( pAttributeBaseFormat );
 			const auto specifiedAttributeByteSize = specifiedComponentByteSize * pAttributeComponentsNum;
 
 			if( specifiedAttributeByteSize != TPAttributeTraits::sSizeInBytes )

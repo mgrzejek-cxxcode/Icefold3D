@@ -17,14 +17,14 @@ namespace Ic3
 		_Reserved
 	};
 
-	namespace CxDef
+	namespace CXU
 	{
 
 		constexpr uint32 MATERIAL_MAX_TEXTURES_NUM = static_cast<uint32>( EMaterialTextureID::_Reserved );
 
 	}
 
-	using MaterialTextureArray = std::array<GCI::TextureHandle, CxDef::MATERIAL_MAX_TEXTURES_NUM>;
+	using MaterialTextureArray = std::array<GCI::TextureHandle, CXU::MATERIAL_MAX_TEXTURES_NUM>;
 
 	struct MaterialParameters
 	{

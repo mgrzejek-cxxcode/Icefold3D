@@ -129,7 +129,7 @@ namespace Ic3::System
 		_Win32DestroyGLSurface( tmpSurfaceNativeData );
 		Platform::Win32DestroyWindow( tmpSurfaceNativeData );
 
-		mNativeData.initState.reset();
+		mNativeData.initState.Reset();
 	}
 
 	OpenGLDisplaySurfaceHandle Win32OpenGLSystemDriver::_NativeCreateDisplaySurface(
@@ -385,10 +385,6 @@ namespace Ic3::System
 		else if( ( pixelFormatDesc.cDepthBits == 32 ) && ( pixelFormatDesc.cStencilBits == 0 ) )
 		{
 			visualConfig.depthStencilFormat = EDepthStencilFormat::D32F;
-		}
-		else if( ( pixelFormatDesc.cDepthBits == 32 ) && ( pixelFormatDesc.cStencilBits == 8 ) )
-		{
-			visualConfig.depthStencilFormat = EDepthStencilFormat::D32FS8;
 		}
 		else
 		{

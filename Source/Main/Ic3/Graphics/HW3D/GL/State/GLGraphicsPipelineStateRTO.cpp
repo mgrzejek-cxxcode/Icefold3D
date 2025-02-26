@@ -19,7 +19,7 @@ namespace Ic3::Graphics::GCI
 
 	GLRenderTargetDescriptor::~GLRenderTargetDescriptor() = default;
 
-	bool GLRenderTargetDescriptor::IsAttachmentActive( uint32 pAttachmentIndex ) const noexcept
+	bool GLRenderTargetDescriptor::IsAttachmentActive( native_uint pAttachmentIndex ) const noexcept
 	{
 		Ic3DebugAssert( CXU::RTOIsAttachmentIndexValid( pAttachmentIndex ) );
 		return mGLRenderTargetBinding.activeAttachmentsMask.is_set( CXU::RTOMakeAttachmentFlag( pAttachmentIndex ) );

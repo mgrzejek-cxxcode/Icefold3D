@@ -6,7 +6,7 @@
 namespace Ic3
 {
 
-    std::string ExceptionInfo::toString() const
+    std::string ExceptionInfo::ToString() const
 	{
 		std::ostringstream strStream;
 		strStream << "[Exception]\n";

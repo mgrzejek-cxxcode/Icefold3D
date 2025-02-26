@@ -338,10 +338,12 @@ namespace Ic3::Graphics::GCI
 
 	const GLRenderTargetBinding & GLGraphicsPipelineStateController::GetGLRenderTargetBinding() const noexcept
 	{
+		return *( _glcCurrentPipelineBindings.renderTargetBinding );
 	}
 
 	const GLIAVertexSourceBinding & GLGraphicsPipelineStateController::GetGLIAVertexSourceBinding() const noexcept
 	{
+		return *(_glcCurrentPipelineBindings.vertexSourceBinding);
 	}
 
 	cppx::bitmask<uint32> GLGraphicsPipelineStateController::BindCommonConfigDescriptors(

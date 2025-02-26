@@ -77,7 +77,7 @@ namespace Ic3
 
 	Ic3TypeInfoEnumDeclare( EExceptionBaseType );
 
-	namespace CxDef
+	namespace CXU
 	{
 
 		/// Number of total enum values. Used for validation.

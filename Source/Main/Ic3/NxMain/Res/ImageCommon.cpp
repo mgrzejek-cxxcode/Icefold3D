@@ -4,7 +4,7 @@
 namespace Ic3
 {
 
-	void ImageData::reset()
+	void ImageData::Reset()
 	{
 		sizeInBytes = 0;
 		formatInfo.pixelLayout = EPixelDataLayout::Undefined;
@@ -12,7 +12,7 @@ namespace Ic3
 
 	void ImageData::release()
 	{
-		reset();
+		Reset();
 		pixelBuffer.release();
 	}
 

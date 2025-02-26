@@ -354,7 +354,8 @@ namespace Ic3::Graphics::GCI
 			cppx::bitmask<ECommandListActionFlags> pFlags )
 	{
 		OnBeginRenderPassUpdateInternal( pFlags );
-		return ValidateActiveRenderPass();
+
+		return IsRenderPassActive();
 	}
 
 
@@ -363,7 +364,8 @@ namespace Ic3::Graphics::GCI
 			cppx::bitmask<ECommandListActionFlags> pFlags )
 	{
 		OnBeginRenderPassUpdateInternal( pFlags );
-		return ValidateActiveRenderPass();
+
+		return IsRenderPassActive();
 	}
 
 	void CommandList::OnEndRenderPass()

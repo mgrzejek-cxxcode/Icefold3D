@@ -4,7 +4,7 @@
 
 #include "../Prerequisites.h"
 #include <Ic3/Graphics/GCI/State/InputAssemblerCommon.h>
-#include <Ic3/Graphics/GCI/State/ShaderInputSignature.h>
+#include <Ic3/Graphics/GCI/State/RootSignature.h>
 
 namespace Ic3
 {

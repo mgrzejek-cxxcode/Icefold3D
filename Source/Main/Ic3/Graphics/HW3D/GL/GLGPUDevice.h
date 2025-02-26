@@ -40,7 +40,7 @@ namespace Ic3::Graphics::GCI
 		cppx::bitmask<EGLRuntimeSupportFlags> const mGLRuntimeSupportFlags;
 
 	public:
-		explicit GLGPUDevice( GLGPUDriver & pGPUDriver, GLPipelineStateDescriptorFactory & pCompiledDescriptorFactory );
+		explicit GLGPUDevice( GLGPUDriver & pGPUDriver, GLPipelineStateDescriptorFactory & pStateDescriptorFactory );
 		virtual ~GLGPUDevice();
 
 		CPPX_ATTR_NO_DISCARD virtual bool IsCompatibilityDevice() const noexcept = 0;

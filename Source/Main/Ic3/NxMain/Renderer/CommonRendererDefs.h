@@ -20,10 +20,10 @@ namespace Ic3
 	using GfxObjectName = Graphics::GfxObjectName;
 
 	/// @brief
-	constexpr uint32 cxGCIShaderBindingMetricCBMaxNum = GCM::cxResMaxConstantBuffersNum;
+	constexpr uint32 cxGCIShaderBindingMetricCBMaxNum = GCM::kResMaxConstantBuffersNum;
 
 	/// @brief
-	constexpr uint32 cxGCIShaderBindingMetricTexMaxNum = GCM::cxResMaxTextureUnitsNum;
+	constexpr uint32 cxGCIShaderBindingMetricTexMaxNum = GCM::kResMaxTextureUnitsNum;
 
 	struct TextureUnitBinding
 	{

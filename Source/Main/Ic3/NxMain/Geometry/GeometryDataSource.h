@@ -125,7 +125,7 @@ namespace Ic3
 		};
 
 		using AttributeMap = std::unordered_map<std::string, SGeometryInputAttributeInfo>;
-		using LocalVertexBufferArray = std::array<LocalVertexBuffer, GCM::cxIAMaxVertexBufferBindingsNum>;
+		using LocalVertexBufferArray = std::array<LocalVertexBuffer, GCM::kIAMaxDataStreamVertexBuffersNum>;
 		using GeometryRefList = std::deque<GeometryInputDataLocation>;
 
 	private:

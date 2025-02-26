@@ -15,8 +15,8 @@ namespace Ic3::Graphics::GCI
 	class PipelineStateController : public GfxObject
 	{
 	public:
-		PipelineStateController();
-		virtual ~PipelineStateController();
+		PipelineStateController() = default;
+		virtual ~PipelineStateController() = default;
 
 	protected:
 		/**

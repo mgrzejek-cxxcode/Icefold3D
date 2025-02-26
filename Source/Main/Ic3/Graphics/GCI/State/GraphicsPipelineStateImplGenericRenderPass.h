@@ -29,7 +29,7 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~RenderPassDescriptorGeneric();
 
-		CPPX_ATTR_NO_DISCARD virtual bool IsAttachmentActive( uint32 pAttachmentIndex ) const noexcept override final;
+		CPPX_ATTR_NO_DISCARD virtual bool IsAttachmentActive( native_uint pAttachmentIndex ) const noexcept override final;
 
 		CPPX_ATTR_NO_DISCARD virtual bool CheckAttachmentLoadActionFlags(
 				uint32 pAttachmentIndex,

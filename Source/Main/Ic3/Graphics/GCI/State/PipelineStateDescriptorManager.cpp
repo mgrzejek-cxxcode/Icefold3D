@@ -151,6 +151,50 @@ namespace Ic3::Graphics::GCI
 		return false;
 	}
 
+	const BlendSettings & PipelineStateDescriptorManager::GetDefaultBlendSettings()
+	{
+		static const BlendSettings defaultBlendSettings{};
+		return defaultBlendSettings;
+	}
+
+	BlendStateDescriptorHandle PipelineStateDescriptorManager::GetDefaultBlendStateDescriptor()
+	{
+		return nullptr;
+	}
+
+	const DepthStencilSettings & PipelineStateDescriptorManager::GetDefaultDepthStencilSettings()
+	{
+		static const DepthStencilSettings defaultDepthStencilSettings{};
+		return defaultDepthStencilSettings;
+	}
+
+	DepthStencilStateDescriptorHandle PipelineStateDescriptorManager::GetDefaultDepthStencilStateDescriptor()
+	{
+		return nullptr;
+	}
+
+	const DepthStencilSettings & PipelineStateDescriptorManager::GetDefaultDepthStencilSettingsWithDepthTestEnabled()
+	{
+		static const DepthStencilSettings defaultDepthStencilSettingsWithDepthTestEnabled{};
+		return defaultDepthStencilSettingsWithDepthTestEnabled;
+	}
+
+	DepthStencilStateDescriptorHandle PipelineStateDescriptorManager::GetDefaultDepthStencilStateDescriptorWithDepthTestEnabled()
+	{
+		return nullptr;
+	}
+
+	const RasterizerSettings & PipelineStateDescriptorManager::GetDefaultRasterizerSettings()
+	{
+		static const RasterizerSettings defaultRasterizerSettings{};
+		return defaultRasterizerSettings;
+	}
+
+	RasterizerStateDescriptorHandle PipelineStateDescriptorManager::GetDefaultRasterizerStateDescriptor()
+	{
+		return nullptr;
+	}
+
 	BlendStateDescriptorHandle PipelineStateDescriptorManager::CreateBlendStateDescriptor(
 			const BlendStateDescriptorCreateInfo & pCreateInfo,
 			const cppx::immutable_string & pOptionalName )
@@ -242,6 +286,72 @@ namespace Ic3::Graphics::GCI
 			const cppx::immutable_string & pOptionalName )
 	{
 		return _descriptorFactory.CreateVertexSourceBindingDescriptor( pCreateInfo );
+	}
+
+	void PipelineStateDescriptorManager::ResetDescriptorCache( EPipelineStateDescriptorType pDescriptorType )
+	{
+		switch( pDescriptorType )
+		{
+		case EPipelineStateDescriptorType::DTBlendState:
+			_graphicsPipelineStateDescriptorCache.ResetSubCache<BlendStateDescriptor>();
+			break;
+
+		case EPipelineStateDescriptorType::DTDepthStencilState:
+			_graphicsPipelineStateDescriptorCache.ResetSubCache<DepthStencilStateDescriptor>();
+			break;
+
+		case EPipelineStateDescriptorType::DTRasterizerState:
+			_graphicsPipelineStateDescriptorCache.ResetSubCache<RasterizerStateDescriptor>();
+			break;
+
+		case EPipelineStateDescriptorType::DTGraphicsShaderLinkage:
+			_graphicsPipelineStateDescriptorCache.ResetSubCache<GraphicsShaderLinkageDescriptor>();
+			break;
+
+		case EPipelineStateDescriptorType::DTVertexAttributeLayout:
+			_graphicsPipelineStateDescriptorCache.ResetSubCache<VertexAttributeLayoutDescriptor>();
+			break;
+
+		case EPipelineStateDescriptorType::DTRootSignature:
+			_graphicsPipelineStateDescriptorCache.ResetSubCache<RootSignatureDescriptor>();
+			break;
+
+		default:
+			break;
+		}
+	}
+
+	void PipelineStateDescriptorManager::Reset( cppx::bitmask<EPipelineStateDescriptorTypeFlags> pResetMask )
+	{
+		if( pResetMask.is_set( ePipelineStateDescriptorTypeFlagBlendBit ) )
+		{
+			_graphicsPipelineStateDescriptorCache.ResetSubCache<BlendStateDescriptor>();
+		}
+		if( pResetMask.is_set( ePipelineStateDescriptorTypeFlagDepthStencilBit ) )
+		{
+			_graphicsPipelineStateDescriptorCache.ResetSubCache<DepthStencilStateDescriptor>();
+		}
+		if( pResetMask.is_set( ePipelineStateDescriptorTypeFlagRasterizerBit ) )
+		{
+			_graphicsPipelineStateDescriptorCache.ResetSubCache<RasterizerStateDescriptor>();
+		}
+		if( pResetMask.is_set( ePipelineStateDescriptorTypeFlagGraphicsShaderLinkageBit ) )
+		{
+			_graphicsPipelineStateDescriptorCache.ResetSubCache<GraphicsShaderLinkageDescriptor>();
+		}
+		if( pResetMask.is_set( ePipelineStateDescriptorTypeFlagIAVertexAttributeLayoutBit ) )
+		{
+			_graphicsPipelineStateDescriptorCache.ResetSubCache<VertexAttributeLayoutDescriptor>();
+		}
+		if( pResetMask.is_set( ePipelineStateDescriptorTypeFlagRootSignatureBit ) )
+		{
+			_graphicsPipelineStateDescriptorCache.ResetSubCache<RootSignatureDescriptor>();
+		}
+	}
+
+	bool PipelineStateDescriptorManager::CreateDefaultStateDescriptors()
+	{
+		return true;
 	}
 	
 } // namespace Ic3::graphics::GCI

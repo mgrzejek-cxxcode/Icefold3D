@@ -19,24 +19,24 @@
 #include <Ic3/Graphics/GCI/Resources/Texture.h>
 #include <Ic3/Graphics/GCI/Resources/RenderTargetTexture.h>
 #include <Ic3/Graphics/GCI/State/Sampler.h>
-#include <Ic3/Graphics/GCI/State/ShaderInputSignature.h>
-#include <Ic3/Graphics/GCI/State/PipelineStateObject.h>
-#include <Ic3/Graphics/GCI/State/RenderTargetDynamicStates.h>
-#include <Ic3/Graphics/GCI/State/RenderTargetImmutableStates.h>
-#include <Ic3/Graphics/GCI/State/InputAssemblerDynamicStates.h>
-#include <Ic3/Graphics/GCI/State/InputAssemblerImmutableStates.h>
+#include <Ic3/Graphics/GCI/State/RootSignature.h>
+#include <Ic3/Graphics/GCI/State/GraphicsPipelineStateCommon.h>
+#include <Ic3/Graphics/GCI/State/GraphicsPipelineStateDescriptorRTO.h>
+#include <Ic3/Graphics/GCI/State/GraphicsPipelineStateDescriptorIA.h>
 
+/*
 #include <Ic3/NxMain/Camera/CameraController.h>
-#include <Ic3/NxMain/Res/image/BitmapCommon.h>
+#include <Ic3/NxMain/Res/Image/BitmapCommon.h>
 #include <Ic3/NxMain/Geometry/MeshGroup.h>
 #include <Ic3/NxMain/Geometry/MeshLoader.h>
 
 #include <Ic3/NxMain/Renderer/ShaderLibrary.h>
 #include <Ic3/NxMain/Renderer/ShaderLoader.h>
-#include <Ic3/NxMain/Renderer/Effects/shadowRenderer.h>
+#include <Ic3/NxMain/Renderer/Effects/ShadowRenderer.h>
 #include <Ic3/NxMain/Geometry/GeometrySystem.h>
 #include <Ic3/NxMain/Geometry/GeometryStorageGPU.h>
 #include <Ic3/NxMain/Geometry/GeometryDataTransfer.h>
+*/
 
 #include <chrono>
 #include <thread>
@@ -75,13 +75,13 @@ struct CB0Data
 	math::Mat4x4f projectionMatrix;
 };
 
-dynamic_memory_buffer loadShaderSourceDefault( AssetLoader & pAssetLoader, const std::string & pShaderFile )
+cppx::`dynamic_memory_buffer loadShaderSourceDefault( AssetLoader & pAssetLoader, const std::string & pShaderFile )
 {
 	auto psAsset = pAssetLoader.openSubAsset(
 			"shaders/" + sGxDriverName + "/" + pShaderFile,
-			E_ASSET_OPEN_FLAG_NO_EXTENSION_BIT );
+			eAsset );
 
-	dynamic_memory_buffer resultBuffer;
+	cppx::dynamic_memory_buffer resultBuffer;
 	const auto sourceLength = psAsset->readAll( resultBuffer, 1 );
 
 	resultBuffer[sourceLength] = 0;
@@ -89,11 +89,11 @@ dynamic_memory_buffer loadShaderSourceDefault( AssetLoader & pAssetLoader, const
 	return resultBuffer;
 }
 
-dynamic_memory_buffer loadFileDefault( AssetLoader & pAssetLoader, const std::string & pFilename )
+cppx::dynamic_memory_buffer loadFileDefault( AssetLoader & pAssetLoader, const std::string & pFilename )
 {
 	auto psAsset = pAssetLoader.openSubAsset( pFilename, 0 );
 
-	dynamic_memory_buffer resultBuffer;
+	cppx::dynamic_memory_buffer resultBuffer;
 	const auto sourceLength = psAsset->readAll( resultBuffer );
 
 	return resultBuffer;
@@ -106,10 +106,10 @@ std::function<dynamic_memory_buffer()> bindShaderSourceLoadCallbackDefault( Asse
 
 #if( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_ANDROID )
 
-#include <ic3/GPUapiGLES3/GLES3_gpuDriverAPI.h>
+#include <Ic3/GPUapiGLES3/GLES3_gpuDriverAPI.h>
 #include "../../engine/components/Ic3/Graphics/GCI/GPUDriver.h"
 
-int ic3AndroidAppMain( int argc, char ** argv, AndroidAppState * pAppState )
+int Ic3AndroidAppMain( int argc, char ** argv, AndroidAppState * pAppState )
 {
     sGxDriverName = "GLES3";
 
@@ -130,10 +130,10 @@ int ic3AndroidAppMain( int argc, char ** argv, AndroidAppState * pAppState )
 #define ENABLE_IC3DRV_D3D11 1
 
 #if( ENABLE_IC3DRV_GL4 )
-# include <ic3/GPUapiGL4/GL4_gpuDriverAPI.h>
+# include <Ic3/GPUapiGL4/GL4_gpuDriverAPI.h>
 #endif
 #if( ENABLE_IC3DRV_D3D11 )
-#  include <ic3/GPUapiDX11/DX11_gpuDriverAPI.h>
+#  include <Ic3/GPUapiDX11/DX11_gpuDriverAPI.h>
 #endif
 
 int main( int pArgc, const char ** pArgv )
@@ -168,11 +168,11 @@ int main( int pArgc, const char ** pArgv )
     }
 #endif
 
-    ic3DebugAssert( gxDriverState.driverInterface );
+    Ic3DebugAssert( gxDriverState.driverInterface );
 
 #elif( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_X11 )
 
-#include <ic3/GPUapiGL4/GL4_gpuDriverAPI.h>
+#include <Ic3/GPUapiGL4/GL4_gpuDriverAPI.h>
 
 int main( int pArgc, const char ** pArgv )
 {
@@ -289,12 +289,12 @@ int main( int pArgc, const char ** pArgv )
 				else if( keyMap[EKeyCode::Enter] )
 				{
 					isFullscreen = !isFullscreen;
-					ic3DebugInterrupt();
+					Ic3DebugInterrupt();
 					// gxDriverState.presentationLayer->setFullscreenMode( isFullscreen );
 				}
 				if( keyMap[EKeyCode::CtrlLeft] )
 				{
-					ic3DebugOutput("CTRL_LEFT");
+					Ic3DebugOutput("CTRL_LEFT");
 				}
 				if( keyMap[EKeyCode::CharW] )
 				{
@@ -476,7 +476,7 @@ int main( int pArgc, const char ** pArgv )
 		psoci.rasterizerConfig.primitiveFillMode = GCI::EPrimitiveFillMode::Wireframe;
 		psoci.rasterizerConfig.frontFaceVerticesOrder = GCI::ETriangleVerticesOrder::Clockwise;
 		psoci.renderTargetLayout = rtLayout;
-		psoci.inputLayoutDefinition = gdf.generateGpaInputLayoutDefinition();
+		psoci.inputLayoutDefinition = gdf.generateGpaAttributeLayoutDefinition();
 		psoci.shaderSet.addShader( vertexShader );
 		psoci.shaderSet.addShader( pixelShader );
 		psoci.shaderInputSignatureDesc.activeShaderStagesMask = GCI::E_SHADER_STAGE_FLAG_GRAPHICS_VERTEX_BIT | GCI::E_SHADER_STAGE_FLAG_GRAPHICS_PIXEL_BIT;
@@ -515,15 +515,15 @@ int main( int pArgc, const char ** pArgv )
 	vpDescTexture.depthRange.zNear = 0.0f;
 	vpDescTexture.depthRange.zFar = 1.0f;
 
-	const auto ic3ViewTexture = lookAtLH(
+	const auto Ic3ViewTexture = lookAtLH(
 			math::Vec3f{ 0.0f, 3.0f,  -1.0f },
 			math::Vec3f{ 0.0f, 0.0f,  5.0f },
 			math::Vec3f{ 0.0f, 1.0f,  0.0f } );
 
-	const auto ic3ProjectionTexture = math::perspectiveAspectLH<float>(
+	const auto Ic3ProjectionTexture = math::perspectiveAspectLH<float>(
 			cameraController.getPerspectiveFOVAngle(), ( float )rtSize.x / ( float )rtSize.y, 0.1f, 1000.0f );
 
-	const auto ic3CameraProjection = math::perspectiveAspectLH<float>(
+	const auto Ic3CameraProjection = math::perspectiveAspectLH<float>(
 			cameraController.getPerspectiveFOVAngle(), ( float )rtSize.x / ( float )rtSize.y, 1.0f, 1000.0f );
 
 	CB0Data cb0DataBase =
@@ -624,7 +624,7 @@ int main( int pArgc, const char ** pArgv )
 			gxDriverState.cmdContext->setGraphicsPipelineStateObject( *mainPSO );
 			gxDriverState.cmdContext->setIAVertexStreamState( *meshGroup->getGeometryStorage().getGpaVertexStreamState() );
 
-			cb0DataBase.projectionMatrix = ic3CameraProjection;
+			cb0DataBase.projectionMatrix = Ic3CameraProjection;
 			cb0DataBase.viewMatrix = cameraViewMatrix;
 
 			gxDriverState.presentationLayer->bindRenderTarget( gxDriverState.cmdContext.get() );

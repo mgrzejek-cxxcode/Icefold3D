@@ -24,7 +24,7 @@ else()
 endif()
 
 set_target_properties( Ic3.Graphics.HW3D.GL4 PROPERTIES
-        OUTPUT_NAME "ts3dx-driver-gx-GL4" )
+        OUTPUT_NAME "Ic3.Graphics.HW3D.GL4" )
 
 target_compile_definitions( Ic3.Graphics.HW3D.GL4 PRIVATE
         #"GLEW_STATIC=1"
@@ -37,4 +37,4 @@ target_include_directories( Ic3.Graphics.HW3D.GL4 PUBLIC
 
 target_link_libraries( Ic3.Graphics.HW3D.GL4 PUBLIC
         Ic3.Graphics.GCI
-        ts3-system )
+        Ic3.System )

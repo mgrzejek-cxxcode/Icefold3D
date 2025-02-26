@@ -34,9 +34,9 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~DX11ScreenPresentationLayer();
 
-		virtual void BindRenderTarget( CommandContext * pCmdContext ) override;
+		virtual void BindRenderTarget( CommandContext & pCommandContext ) override;
 
-		virtual void InvalidateRenderTarget( CommandContext * pCmdContext ) override;
+		virtual void InvalidateRenderTarget( CommandContext & pCommandContext ) override;
 
 		virtual void Present() override;
 

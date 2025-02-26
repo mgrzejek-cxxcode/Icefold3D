@@ -180,10 +180,10 @@ namespace Ic3
 	#define Ic3ResultGetCode( pResult ) ( pResult )
 
 	/// @brief
-	#define Ic3ResultGetCodeStr( pResult ) CxDef::STR_CHAR_EMPTY
+	#define Ic3ResultGetCodeStr( pResult ) CXU::STR_CHAR_EMPTY
 
 	/// @brief
-	#define Ic3ResultGetInfoStr( pResult ) CxDef::STR_CHAR_EMPTY
+	#define Ic3ResultGetInfoStr( pResult ) CXU::STR_CHAR_EMPTY
 
 #endif
 

@@ -45,7 +45,7 @@ namespace cppx
 	struct to_string_proxy<char>
 	{
 		template <class TPValue>
-		static std::basic_string<char> toString( const TPValue & pValue )
+		static std::basic_string<char> ToString( const TPValue & pValue )
 		{
 			return std::to_string( pValue );
 		}
@@ -55,7 +55,7 @@ namespace cppx
 	struct to_string_proxy<wchar_t>
 	{
 		template <class TPValue>
-		static std::basic_string<wchar_t> toString( const TPValue & pValue )
+		static std::basic_string<wchar_t> ToString( const TPValue & pValue )
 		{
 			return std::to_wstring( pValue );
 		}
@@ -299,9 +299,9 @@ namespace cppx
 
 	/// @brief
 	template <typename TPChar, typename TPValue>
-	std::basic_string<TPChar> toString( const TPValue & pValue )
+	std::basic_string<TPChar> ToString( const TPValue & pValue )
 	{
-		return to_string_proxy<TPChar>::toString( pValue );
+		return to_string_proxy<TPChar>::ToString( pValue );
 	}
 
 	/// @brief

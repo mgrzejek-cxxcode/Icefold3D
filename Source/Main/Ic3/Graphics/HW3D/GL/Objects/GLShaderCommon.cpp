@@ -104,8 +104,8 @@ namespace Ic3::Graphics::GCI
 			}
 
 			std::string versionStr{ "#version " };
-			versionStr.append( cppx::toString<char>( pSupportedAPIVersion.num_major ) );
-			versionStr.append( cppx::toString<char>( pSupportedAPIVersion.num_minor ) );
+			versionStr.append( cppx::ToString<char>( pSupportedAPIVersion.num_major ) );
+			versionStr.append( cppx::ToString<char>( pSupportedAPIVersion.num_minor ) );
 			versionStr.append( 1, '0' );
 			pShaderSource = std::regex_replace( pShaderSource, cvRegexUtilVersion, versionStr );
 

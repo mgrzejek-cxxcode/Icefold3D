@@ -13,13 +13,15 @@
 namespace Ic3::Graphics::GCI
 {
 
-	GLGPUDevice::GLGPUDevice( GLGPUDriver & pGPUDriver, GLPipelineStateDescriptorFactory & pCompiledDescriptorFactory )
+	GLGPUDevice::GLGPUDevice( GLGPUDriver & pGPUDriver, GLPipelineStateDescriptorFactory & pStateDescriptorFactory )
 	: GPUDevice( pGPUDriver, _glcDeviceFeatureQueryInterface )
 	, mSysGLDriver( pGPUDriver.mSysGLDriver )
 	, mSysGLSupportInfo( mSysGLDriver->GetVersionSupportInfo() )
 	, mGLRuntimeSupportFlags( QueryGLRuntimeSupportFlags( mSysGLSupportInfo ) )
-	, _glcPipelineStateDescriptorFactory( &pCompiledDescriptorFactory )
-	{}
+	, _glcPipelineStateDescriptorFactory( &pStateDescriptorFactory )
+	{
+		InitializePipelineStateDescriptorManager( pStateDescriptorFactory );
+	}
 
 	GLGPUDevice::~GLGPUDevice() = default;
 

@@ -6,82 +6,84 @@
 namespace Ic3
 {
 
-	inline VertexAttributeArrayLayout::operator bool() const noexcept
+	inline VertexInputAttributeArrayConfig::operator bool() const noexcept
 	{
 		return !IsEmpty();
 	}
 	
-	inline const GenericVertexAttribute & VertexAttributeArrayLayout::operator[]( native_uint pAttribIASlot ) const noexcept
+	inline const GenericVertexInputAttribute & VertexInputAttributeArrayConfig::operator[]( native_uint pAttributeSlot ) const noexcept
 	{
-		Ic3DebugAssert( cxGCIValidInputAssemblerSlotIndexRange.contains( pAttribIASlot ) );
-		return _attributeArray[pAttribIASlot];
+		Ic3DebugAssert( GCI::CXU::IAIsVertexAttributeIndexValid( pAttributeSlot ) );
+		return _attributeArray[pAttributeSlot];
 	}
 
-	inline const GenericVertexAttribute & VertexAttributeArrayLayout::AttributeAt( native_uint pAttribIASlot ) const
+	inline const GenericVertexInputAttribute & VertexInputAttributeArrayConfig::AttributeAt( native_uint pAttributeSlot ) const
 	{
-		Ic3DebugAssert( cxGCIValidInputAssemblerSlotIndexRange.contains( pAttribIASlot ) );
-		return _attributeArray.at( pAttribIASlot );
+		Ic3DebugAssert( GCI::CXU::IAIsVertexAttributeIndexValid( pAttributeSlot ) );
+		return _attributeArray.at( pAttributeSlot );
 	}
 
-	inline const GenericVertexAttribute * VertexAttributeArrayLayout::AttributePtr( native_uint pAttribIASlot ) const noexcept
+	inline const GenericVertexInputAttribute * VertexInputAttributeArrayConfig::AttributePtr( native_uint pAttributeSlot ) const noexcept
 	{
-		return cxGCIValidInputAssemblerSlotIndexRange.contains( pAttribIASlot ) ? &( _attributeArray[pAttribIASlot] ) : nullptr;
+		return GCI::CXU::IAIsVertexAttributeIndexValid( pAttributeSlot ) ? &( _attributeArray[pAttributeSlot] ) : nullptr;
 	}
 
-	inline bool VertexAttributeArrayLayout::IsAttributeActive( native_uint pAttribIASlot ) const noexcept
+	inline bool VertexInputAttributeArrayConfig::IsAttributeActive( native_uint pAttributeSlot ) const noexcept
 	{
-		Ic3DebugAssert( cxGCIValidInputAssemblerSlotIndexRange.contains( pAttribIASlot ) );
-		return _attributeArray[pAttribIASlot].IsActive();
+		Ic3DebugAssert( GCI::CXU::IAIsVertexAttributeIndexValid( pAttributeSlot ) );
+		return _attributeArray[pAttributeSlot].IsActive();
 	}
 
-	inline gci_input_assembler_slot_t VertexAttributeArrayLayout::QueryBaseAttributeBySemantics( cppx::string_view pSemanticName ) const noexcept
+	inline gci_input_assembler_slot_t VertexInputAttributeArrayConfig::QueryBaseAttributeBySemantics(
+			cppx::string_view pSemanticName ) const noexcept
 	{
-		const auto attributeIndex = cppx::get_map_value_ref_or_default( _semanticNameMap, pSemanticName, cxGCIVertexAttributeIndexUndefined );
+		const auto attributeIndex = cppx::get_map_value_ref_or_default( _semanticNameMap, pSemanticName, kGCIVertexInputAttributeSlotUndefined );
 		return cppx::numeric_cast<gci_input_assembler_slot_t>( attributeIndex );
 	}
 
-	inline gci_input_assembler_slot_t VertexAttributeArrayLayout::QueryBaseAttributeBySemantics( cppx::bitmask<ESystemAttributeSemanticFlags> pSysSmtFlags ) const noexcept
+	inline gci_input_assembler_slot_t VertexInputAttributeArrayConfig::QueryBaseAttributeBySemantics(
+			cppx::bitmask<ESystemAttributeSemanticFlags> pSystemSemanticFlags ) const noexcept
 	{
-		const auto semanticName = GCU::getStandardSemanticNameFromSystemFlags( pSysSmtFlags );
+		const auto semanticName = GCU::GetStandardSemanticNameFromSystemFlags( pSystemSemanticFlags );
 		return QueryBaseAttributeBySemantics( semanticName );
 	}
 
-	inline const GenericVertexAttributeArray & VertexAttributeArrayLayout::GetAttributeArray() const noexcept
+	inline const GenericVertexAttributeArray & VertexInputAttributeArrayConfig::GetAttributeArray() const noexcept
 	{
 		return _attributeArray;
 	}
 
-	inline uint32 VertexAttributeArrayLayout::GetActiveBaseAttributesNum() const noexcept
+	inline uint32 VertexInputAttributeArrayConfig::GetActiveBaseAttributesNum() const noexcept
 	{
 		return _activeBaseAttributesNum;
 	}
 
-	inline uint32 VertexAttributeArrayLayout::GetActiveAttributeSlotsNum() const noexcept
+	inline uint32 VertexInputAttributeArrayConfig::GetActiveAttributeSlotsNum() const noexcept
 	{
 		return _activeAttributeSlotsNum;
 	}
 
-	inline cppx::bitmask<GCI::EIAVertexAttributeFlags> VertexAttributeArrayLayout::GetActiveAttributesMask() const noexcept
+	inline cppx::bitmask<GCI::EIAVertexAttributeFlags> VertexInputAttributeArrayConfig::GetActiveAttributesMask() const noexcept
 	{
 		return _activeAttributesMask;
 	}
 
-	inline const InputAssemblerSlotRange & VertexAttributeArrayLayout::GetActiveAttributesRange() const noexcept
+	inline const InputAssemblerSlotRange & VertexInputAttributeArrayConfig::GetActiveAttributesRange() const noexcept
 	{
 		return _activeAttributesRange;
 	}
 
-	inline const InputAssemblerSlotArray & VertexAttributeArrayLayout::GetActiveAttributesSlots() const noexcept
+	inline const InputAssemblerSlotArray & VertexInputAttributeArrayConfig::GetActiveAttributesSlots() const noexcept
 	{
 		return _activeAttributesSlots;
 	}
 
-	inline bool VertexAttributeArrayLayout::IsActiveAttributesRangeContinuous() const noexcept
+	inline bool VertexInputAttributeArrayConfig::IsActiveAttributesRangeContinuous() const noexcept
 	{
 		return !IsEmpty() && ( _activeAttributesRange.length() == _activeAttributeSlotsNum );
 	}
 
-	inline bool VertexAttributeArrayLayout::IsEmpty() const noexcept
+	inline bool VertexInputAttributeArrayConfig::IsEmpty() const noexcept
 	{
 		return _activeAttributeSlotsNum == 0;
 	}

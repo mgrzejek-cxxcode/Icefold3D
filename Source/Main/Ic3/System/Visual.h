@@ -48,8 +48,7 @@ namespace Ic3::System
 		D16,
 		D24S8,
 		D24X8,
-		D32F,
-		D32FS8
+		D32F
 	};
 
 	enum class EMSAAMode : uint16

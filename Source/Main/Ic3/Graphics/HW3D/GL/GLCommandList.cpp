@@ -94,7 +94,7 @@ namespace Ic3::Graphics::GCI
 			const RenderPassConfiguration & pRenderPassConfiguration,
 			const GraphicsPipelineDynamicConfig & pDynamicConfig )
 	{
-		if( pRenderPassConfiguration.GetCachedAttachmentsWithFlags( eRenderPassAttachmentActionFlagLoadClearBit ) != 0 )
+		if( pRenderPassConfiguration.GetAttachmentsMaskWithFlags( eRenderPassAttachmentActionFlagLoadClearBit ) != 0 )
 		{
 			GCU::RTORenderPassExecuteOpLoadClearGL( pRenderPassConfiguration, pDynamicConfig );
 		}
@@ -104,11 +104,11 @@ namespace Ic3::Graphics::GCI
 			const RenderPassConfiguration & pRenderPassConfiguration,
 			const GraphicsPipelineDynamicConfig & pDynamicConfig )
 	{
-		if( pRenderPassConfiguration.GetCachedAttachmentsWithFlags( eRenderPassAttachmentActionFlagStoreResolveBit ) != 0 )
+		if( pRenderPassConfiguration.GetAttachmentsMaskWithFlags( eRenderPassAttachmentActionFlagStoreResolveBit ) != 0 )
 		{
 			GCU::RTORenderPassExecuteOpStoreResolveGL(
-				pRenderPassConfiguration,
-				_glcGraphicsPipelineStateController->GetGLRenderTargetBinding() );
+					pRenderPassConfiguration,
+					_glcGraphicsPipelineStateController->GetGLRenderTargetBinding());
 		}
 	}
 

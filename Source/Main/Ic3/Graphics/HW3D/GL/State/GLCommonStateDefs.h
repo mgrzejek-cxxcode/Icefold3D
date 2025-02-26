@@ -11,7 +11,7 @@ namespace Ic3::Graphics::GCI
 	namespace GCU
 	{
 
-		CPPX_ATTR_NO_DISCARD GLenum GetFramebufferDepthStencilAttachmentIDForRTBufferMask(
+		CPPX_ATTR_NO_DISCARD GLenum RTOGetGLFramebufferDepthStencilAttachmentIDForRTBufferMask(
 				cppx::bitmask<ERenderTargetBufferFlags> pRTBufferMask );
 
 	}

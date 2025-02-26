@@ -120,7 +120,7 @@
 	// Get the window that will be closed
 	auto * nsWindowToClose = ( NSWindow * )[pNotification object];
 
-	if( ![nsWindowToClose IsKeyWindow] )
+	if( ![nsWindowToClose isKeyWindow] )
 	{
 		// If the window is not a key one, there is nothing to do here.
 		return;
@@ -134,7 +134,7 @@
 			continue;
 		}
 
-		if( [nsWindow IsOnActiveSpace] )
+		if( [nsWindow isOnActiveSpace] )
 		{
 			[nsWindow makeKeyAndOrderFront:self];
 			return;

@@ -48,7 +48,7 @@ namespace Ic3::System
 		if( XEventsQueued( xSessionData.displayHandle, QueuedAfterReading ) > 0 )
 		{
 			XNextEvent( xSessionData.displayHandle, &( x11NativeEvent.mXEvent ) );
-			Platform::nativeEventDispatch( *this, x11NativeEvent );
+			Platform::NativeEventDispatch( *this, x11NativeEvent );
 			return true;
 		}
 
@@ -63,7 +63,7 @@ namespace Ic3::System
 		if( XEventsQueued( xSessionData.displayHandle, QueuedAfterFlush ) > 0 )
 		{
 			XNextEvent( xSessionData.displayHandle, &( x11NativeEvent.mXEvent ) );
-			Platform::nativeEventDispatch( *this, x11NativeEvent );
+			Platform::NativeEventDispatch( *this, x11NativeEvent );
 			return true;
 		}
 
@@ -89,7 +89,7 @@ namespace Ic3::System
 		EventSource * X11FindEventSourceByXWindow( X11EventController & pEventController, XWindow pWindowXID )
 		{
 			auto * eventSource = pEventController.FindEventSource( [pWindowXID]( const EventSource & pEventSource ) -> bool {
-				const auto * eventSourceNativeData = pEventSource.getEventSourceNativeDataAs<Platform::X11EventSourceNativeData>();
+				const auto * eventSourceNativeData = pEventSource.GetEventSourceNativeDataAs<Platform::X11EventSourceNativeData>();
 				return eventSourceNativeData->mWindowXID == pWindowXID;
 			});
 			return eventSource;
@@ -216,7 +216,7 @@ namespace Ic3::System
 
 				case PropertyNotify:
 				{
-					auto * eventSourceNativeData = pEventSource.getEventSourceNativeDataAs<Platform::X11EventSourceNativeData>();
+					auto * eventSourceNativeData = pEventSource.GetEventSourceNativeDataAs<Platform::X11EventSourceNativeData>();
 					auto & xSessionData = X11GetXSessionData( *eventSourceNativeData );
 
 					if( pXEvent.xproperty.atom == xSessionData.atomCache.wmState )

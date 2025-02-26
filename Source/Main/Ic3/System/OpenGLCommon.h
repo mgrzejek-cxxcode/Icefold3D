@@ -96,8 +96,8 @@ namespace Ic3::System
 	enum : exception_code_value_t
 	{
 		///
-		eEXCSystemOpenGLAPIVersionNotSupported = Ic3::CxDef::declareExceptionCode( eExceptionCategorySystemOpenGL, 0x03 ),
-		eEXCSystemOpenGLAPIProfileNotSupported = Ic3::CxDef::declareExceptionCode( eExceptionCategorySystemOpenGL, 0x04 ),
+		eEXCSystemOpenGLAPIVersionNotSupported = Ic3::CXU::declareExceptionCode( eExceptionCategorySystemOpenGL, 0x03 ),
+		eEXCSystemOpenGLAPIProfileNotSupported = Ic3::CXU::declareExceptionCode( eExceptionCategorySystemOpenGL, 0x04 ),
 	};
 
 	inline constexpr cppx::version cxGLVersionBestSupported{cppx::cve::uint16_max, cppx::cve::uint16_max };
@@ -139,7 +139,7 @@ namespace Ic3::System
 		std::string vendorName;
 
 	public:
-		CPPX_ATTR_NO_DISCARD	std::string toString() const;
+		CPPX_ATTR_NO_DISCARD	std::string ToString() const;
 	};
 
 	struct OpenGLErrorInfo

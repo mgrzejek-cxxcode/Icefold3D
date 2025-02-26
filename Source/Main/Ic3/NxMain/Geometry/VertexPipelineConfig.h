@@ -14,11 +14,11 @@ namespace Ic3
 	{
 		TSharedHandle<VertexFormatDescriptor> dataLayout;
 
-		GCI::IAInputLayoutImmutableStateHandle gciInputLayoutDefault;
+		GCI::IAInputLayoutCompiledStateHandle gciInputLayoutDefault;
 
-		GCI::IAInputLayoutImmutableStateHandle gciInputLayoutPosition;
+		GCI::IAInputLayoutCompiledStateHandle gciInputLayoutPosition;
 
-		GCI::IAInputLayoutImmutableStateHandle gciInputLayoutPositionNormal;
+		GCI::IAInputLayoutCompiledStateHandle gciInputLayoutPositionNormal;
 	};
 
 } // namespace Ic3

@@ -96,7 +96,7 @@ namespace Ic3::System
 	};
 
 
-	namespace CxDef
+	namespace CXU
 	{
 
 		///
@@ -172,33 +172,33 @@ namespace Ic3::System
 	{
 		eEventCodeUndefined = 0,
 
-		eEventCodeAppActivityDisplayInit = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityDisplayInit ),
-		eEventCodeAppActivityDisplayTerm = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityDisplayTerm ),
-		eEventCodeAppActivityFocusGained = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityFocusGained ),
-		eEventCodeAppActivityFocusLost   = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityFocusLost ),
-		eEventCodeAppActivityPause       = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityPause ),
-		eEventCodeAppActivityResume      = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityResume ),
-		eEventCodeAppActivityStart       = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityStart ),
-		eEventCodeAppActivityStop        = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityStop ),
-		eEventCodeAppActivityQuit        = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityQuit ),
-		eEventCodeAppActivityTerminate   = CxDef::declareEventCodeAppActivity( EEventCodeIndex::AppActivityTerminate ),
+		eEventCodeAppActivityDisplayInit = CXU::declareEventCodeAppActivity( EEventCodeIndex::AppActivityDisplayInit ),
+		eEventCodeAppActivityDisplayTerm = CXU::declareEventCodeAppActivity( EEventCodeIndex::AppActivityDisplayTerm ),
+		eEventCodeAppActivityFocusGained = CXU::declareEventCodeAppActivity( EEventCodeIndex::AppActivityFocusGained ),
+		eEventCodeAppActivityFocusLost   = CXU::declareEventCodeAppActivity( EEventCodeIndex::AppActivityFocusLost ),
+		eEventCodeAppActivityPause       = CXU::declareEventCodeAppActivity( EEventCodeIndex::AppActivityPause ),
+		eEventCodeAppActivityResume      = CXU::declareEventCodeAppActivity( EEventCodeIndex::AppActivityResume ),
+		eEventCodeAppActivityStart       = CXU::declareEventCodeAppActivity( EEventCodeIndex::AppActivityStart ),
+		eEventCodeAppActivityStop        = CXU::declareEventCodeAppActivity( EEventCodeIndex::AppActivityStop ),
+		eEventCodeAppActivityQuit        = CXU::declareEventCodeAppActivity( EEventCodeIndex::AppActivityQuit ),
+		eEventCodeAppActivityTerminate   = CXU::declareEventCodeAppActivity( EEventCodeIndex::AppActivityTerminate ),
 
-		eEventCodeInputGamepadAxis   = CxDef::declareEventCodeInputGamepad( EEventCodeIndex::InputGamepadAxis ),
-		eEventCodeInputGamepadButton = CxDef::declareEventCodeInputGamepad( EEventCodeIndex::InputGamepadButton ),
-		eEventCodeInputGamepadState  = CxDef::declareEventCodeInputGamepad( EEventCodeIndex::InputGamepadState ),
-		eEventCodeInputKeyboard      = CxDef::declareEventCodeInputKeyboard( EEventCodeIndex::InputKeyboard ),
-		eEventCodeInputMouseButton   = CxDef::declareEventCodeInputMouse( EEventCodeIndex::InputMouseButton ),
-		eEventCodeInputMouseMove     = CxDef::declareEventCodeInputMouse( EEventCodeIndex::InputMouseMove ),
-		eEventCodeInputMouseScroll   = CxDef::declareEventCodeInputMouse( EEventCodeIndex::InputMouseScroll ),
-		eEventCodeInputTouchDown     = CxDef::declareEventCodeInputTouch( EEventCodeIndex::InputTouchDown ),
-		eEventCodeInputTouchMove     = CxDef::declareEventCodeInputTouch( EEventCodeIndex::InputTouchMove ),
-		eEventCodeInputTouchUp       = CxDef::declareEventCodeInputTouch( EEventCodeIndex::InputTouchUp ),
+		eEventCodeInputGamepadAxis   = CXU::declareEventCodeInputGamepad( EEventCodeIndex::InputGamepadAxis ),
+		eEventCodeInputGamepadButton = CXU::declareEventCodeInputGamepad( EEventCodeIndex::InputGamepadButton ),
+		eEventCodeInputGamepadState  = CXU::declareEventCodeInputGamepad( EEventCodeIndex::InputGamepadState ),
+		eEventCodeInputKeyboard      = CXU::declareEventCodeInputKeyboard( EEventCodeIndex::InputKeyboard ),
+		eEventCodeInputMouseButton   = CXU::declareEventCodeInputMouse( EEventCodeIndex::InputMouseButton ),
+		eEventCodeInputMouseMove     = CXU::declareEventCodeInputMouse( EEventCodeIndex::InputMouseMove ),
+		eEventCodeInputMouseScroll   = CXU::declareEventCodeInputMouse( EEventCodeIndex::InputMouseScroll ),
+		eEventCodeInputTouchDown     = CXU::declareEventCodeInputTouch( EEventCodeIndex::InputTouchDown ),
+		eEventCodeInputTouchMove     = CXU::declareEventCodeInputTouch( EEventCodeIndex::InputTouchMove ),
+		eEventCodeInputTouchUp       = CXU::declareEventCodeInputTouch( EEventCodeIndex::InputTouchUp ),
 
-		eEventCodeWindowUpdateCreate     = CxDef::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateCreate ),
-		eEventCodeWindowUpdateDestroy    = CxDef::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateDestroy ),
-		eEventCodeWindowUpdateFullscreen = CxDef::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateFullscreen ),
-		eEventCodeWindowUpdateResize     = CxDef::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateResize ),
-		eEventCodeWindowUpdateVisibility = CxDef::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateVisibility )
+		eEventCodeWindowUpdateCreate     = CXU::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateCreate ),
+		eEventCodeWindowUpdateDestroy    = CXU::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateDestroy ),
+		eEventCodeWindowUpdateFullscreen = CXU::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateFullscreen ),
+		eEventCodeWindowUpdateResize     = CXU::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateResize ),
+		eEventCodeWindowUpdateVisibility = CXU::declareEventCodeWindowUpdate( EEventCodeIndex::WindowUpdateVisibility )
 	};
 
 } // namespace Ic3::System

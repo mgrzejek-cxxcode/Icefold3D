@@ -104,9 +104,9 @@ namespace Ic3::Graphics::GCI
 		return presentationLayer;
 	}
 
-	void GLScreenPresentationLayer::BindRenderTarget( CommandContext * pCmdContext )
+	void GLScreenPresentationLayer::BindRenderTarget( CommandContext & pCommandContext )
 	{
-		auto * directGraphicsContext = pCmdContext->QueryInterface<CommandContextDirectGraphics>();
+		auto * directGraphicsContext = pCommandContext.QueryInterface<CommandContextDirectGraphics>();
 		directGraphicsContext->SetRenderTargetDescriptor( *mScreenRenderTargetDescriptor );
 
 		glBindFramebuffer( GL_DRAW_FRAMEBUFFER, 0 );
@@ -116,7 +116,7 @@ namespace Ic3::Graphics::GCI
 		Ic3OpenGLHandleLastError();
 	}
 
-	void GLScreenPresentationLayer::InvalidateRenderTarget( CommandContext * pCmdContext )
+	void GLScreenPresentationLayer::InvalidateRenderTarget( CommandContext & pCommandContext )
 	{
 	}
 

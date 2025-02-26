@@ -23,5 +23,4 @@ endif()
 
 message("/Samples: ${CMAKE_CURRENT_SOURCE_DIR}")
 
-add_subdirectory( "Render01" )
-add_subdirectory( "Script01" )
+add_subdirectory("GfxTest")

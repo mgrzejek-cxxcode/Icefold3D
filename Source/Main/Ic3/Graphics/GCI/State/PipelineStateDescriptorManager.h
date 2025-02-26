@@ -173,6 +173,12 @@ namespace Ic3::Graphics::GCI
 		return HasCachedDescriptorWithID( CXU::GetPipelineStateDescriptorIDTypeComponent( pDescriptorID ), pDescriptorID );
 	}
 
+	template<typename TPDescriptorType>
+	inline void PipelineStateDescriptorManager::ResetDescriptorCache()
+	{
+		return _graphicsPipelineStateDescriptorCache.ResetSubCache<TPDescriptorType>();
+	}
+
 }
 
 #endif // __IC3_GRAPHICS_GCI_SHARED_IMMUTABLE_STATE_MANAGER_H__

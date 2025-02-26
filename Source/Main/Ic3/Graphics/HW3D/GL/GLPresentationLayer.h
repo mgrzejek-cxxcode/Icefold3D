@@ -8,6 +8,7 @@
 #include <Ic3/Graphics/GCI/PresentationLayer.h>
 #include <Ic3/Graphics/GCI/State/CommonGPUStateDefs.h>
 
+
 namespace Ic3::Graphics::GCI
 {
 
@@ -47,9 +48,9 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~GLScreenPresentationLayer();
 
-		virtual void BindRenderTarget( CommandContext * pCmdContext ) override;
+		virtual void BindRenderTarget( CommandContext & pCommandContext ) override;
 
-		virtual void InvalidateRenderTarget( CommandContext * pCmdContext ) override;
+		virtual void InvalidateRenderTarget( CommandContext & pCommandContext ) override;
 
 		virtual void Present() override;
 

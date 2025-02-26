@@ -13,7 +13,7 @@ namespace Ic3
 
 	GeometryStorage::~GeometryStorage() = default;
 
-	GCI::IAVertexStreamImmutableStateHandle GeometryStorage::getGpaVertexStreamState() const noexcept
+	GCI::VertexSourceBindingDescriptorHandle GeometryStorage::getGpaVertexStreamState() const noexcept
 	{
 		return _gpaVertexStreamState;
 	}
@@ -94,7 +94,7 @@ namespace Ic3
 						bufferSizeInBytes,
 						bufferUsagePolicy );
 
-				_vertexStreamBindingMask.set( GCI::CxDef::makeIAVertexBufferFlag( iVertexStream ) );
+				_vertexStreamBindingMask.set( GCI::CXU::MakeIADataStreamVertexBufferBindingFlag( iVertexStream ) );
 			}
 		}
 
@@ -123,7 +123,7 @@ namespace Ic3
 			if( pCreateInfo.vertexBufferDescArray[iVertexStream].allocationMode == EGeometryBufferAllocationMode::ShareExternal )
 			{
 				_vertexBufferArray[iVertexStream] = pSharedStorage.getVertexBuffer( iVertexStream );
-				_vertexStreamBindingMask.set( GCI::CxDef::makeIAVertexBufferFlag( iVertexStream ) );
+				_vertexStreamBindingMask.set( GCI::CXU::MakeIADataStreamVertexBufferBindingFlag( iVertexStream ) );
 			}
 		}
 
@@ -136,8 +136,8 @@ namespace Ic3
 
 	void GeometryStorage::initializeVertexStreamState( const CoreEngineState & pCES )
 	{
-		GCI::IAVertexStreamDefinition vertexStreamDefinition;
-		vertexStreamDefinition.activeBindingsMask = _vertexStreamBindingMask;
+		GCI::IADataStreamArrayConfiguration vertexStreamDefinition;
+		vertexStreamDefinition.activeStreamsMask = _vertexStreamBindingMask;
 
 		for( auto iVertexStream : mDataFormat.activeVertexStreams() )
 		{
@@ -158,7 +158,7 @@ namespace Ic3
 			indexBufferReference.indexFormat = mDataFormat.indexDataFormat();
 		}
 
-		_gpaVertexStreamState = pCES.mGPUDevice->createIAVertexStreamImmutableState( vertexStreamDefinition );
+		_gpaVertexStreamState = pCES.mGPUDevice->createVertexSourceBindingDescriptor( vertexStreamDefinition );
 	}
 
 	GeometryReference * GeometryStorage::addGeometry( uint32 pVertexElementsNum, uint32 pIndexElementsNum )
@@ -202,8 +202,8 @@ namespace Ic3
 	{
 		GCI::GPUBufferCreateInfo bufferCreateInfo;
 		bufferCreateInfo.bufferSize = pBufferSize;
-		bufferCreateInfo.memoryFlags = CxDef::getGPUBufferUsagePolicyMemoryFlags( pUsagePolicy );
-		bufferCreateInfo.resourceFlags = CxDef::getGPUBufferUsagePolicyResourceFlags( pUsagePolicy );
+		bufferCreateInfo.memoryFlags = CXU::getGPUBufferUsagePolicyMemoryFlags( pUsagePolicy );
+		bufferCreateInfo.resourceFlags = CXU::getGPUBufferUsagePolicyResourceFlags( pUsagePolicy );
 		bufferCreateInfo.resourceFlags.unset( GCI::E_GPU_BUFFER_BIND_MASK_ALL );
 		bufferCreateInfo.resourceFlags.set( GCI::E_GPU_BUFFER_BIND_FLAG_INDEX_BUFFER_BIT );
 
@@ -220,8 +220,8 @@ namespace Ic3
 	{
 		GCI::GPUBufferCreateInfo bufferCreateInfo;
 		bufferCreateInfo.bufferSize = pBufferSize;
-		bufferCreateInfo.memoryFlags = CxDef::getGPUBufferUsagePolicyMemoryFlags( pUsagePolicy );
-		bufferCreateInfo.resourceFlags = CxDef::getGPUBufferUsagePolicyResourceFlags( pUsagePolicy );
+		bufferCreateInfo.memoryFlags = CXU::getGPUBufferUsagePolicyMemoryFlags( pUsagePolicy );
+		bufferCreateInfo.resourceFlags = CXU::getGPUBufferUsagePolicyResourceFlags( pUsagePolicy );
 		bufferCreateInfo.resourceFlags.unset( GCI::E_GPU_BUFFER_BIND_MASK_ALL );
 		bufferCreateInfo.resourceFlags.set( GCI::E_GPU_BUFFER_BIND_FLAG_VERTEX_BUFFER_BIT );
 

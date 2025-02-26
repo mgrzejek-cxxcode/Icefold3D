@@ -20,7 +20,7 @@ else()
 endif()
 
 set_target_properties( Ic3.Graphics.HW3D.MTL2 PROPERTIES
-        OUTPUT_NAME "ts3dx-driver-gx-MTL2" )
+        OUTPUT_NAME "Ic3.Graphics.HW3D.MTL2" )
 
 target_compile_definitions( Ic3.Graphics.HW3D.MTL2 PRIVATE
         "IC3_GRAPHICS_HWAPI_MTL_BUILD=1"
@@ -31,4 +31,4 @@ target_include_directories( Ic3.Graphics.HW3D.MTL2 PUBLIC
 
 target_link_libraries( Ic3.Graphics.HW3D.MTL2 PUBLIC
         Ic3.Graphics.GCI
-        ts3-system )
+        Ic3.System )

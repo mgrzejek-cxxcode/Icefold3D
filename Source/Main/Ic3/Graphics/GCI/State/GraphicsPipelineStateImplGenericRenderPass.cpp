@@ -9,11 +9,12 @@ namespace Ic3::Graphics::GCI
 			pipeline_state_descriptor_id_t pDescriptorID,
 			const RenderPassConfiguration & pRenderPassConfiguration )
 	: RenderPassDescriptor( pGPUDevice, pDescriptorID )
+	, mPassConfiguration( pRenderPassConfiguration )
 	{}
 
 	RenderPassDescriptorGeneric::~RenderPassDescriptorGeneric() = default;
 
-	bool RenderPassDescriptorGeneric::IsAttachmentActive( uint32 pAttachmentIndex ) const noexcept
+	bool RenderPassDescriptorGeneric::IsAttachmentActive( native_uint pAttachmentIndex ) const noexcept
 	{
 		const auto * attachmentConfig = mPassConfiguration.GetAttachment( pAttachmentIndex );
 		return !attachmentConfig->IsEmpty();
@@ -50,7 +51,7 @@ namespace Ic3::Graphics::GCI
 			auto renderPassConfigurationCopy = pCreateInfo.passConfiguration;
 			for( const auto attachmentActionFlags : pCachedAttachmentsWithFlags )
 			{
-				renderPassConfigurationCopy.SaveCachedAttachmentsInfo( attachmentActionFlags );
+				renderPassConfigurationCopy.CacheAttachmentsWithActionFlags( attachmentActionFlags );
 			}
 
 			return CreateDynamicObject<RenderPassDescriptorGeneric>(

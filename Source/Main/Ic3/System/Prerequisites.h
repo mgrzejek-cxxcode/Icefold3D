@@ -50,18 +50,18 @@ namespace Ic3::System
 
 	enum : exception_category_value_t
 	{
-		eExceptionCategorySystemCore    = CxDef::declareExceptionCategory( EExceptionBaseType::System, 0x01 ),
-		eExceptionCategorySystemDisplay = CxDef::declareExceptionCategory( EExceptionBaseType::System, 0x02 ),
-		eExceptionCategorySystemEvent   = CxDef::declareExceptionCategory( EExceptionBaseType::System, 0x03 ),
-		eExceptionCategorySystemFile    = CxDef::declareExceptionCategory( EExceptionBaseType::System, 0x04 ),
-		eExceptionCategorySystemMetal   = CxDef::declareExceptionCategory( EExceptionBaseType::System, 0x05 ),
-		eExceptionCategorySystemOpenGL  = CxDef::declareExceptionCategory( EExceptionBaseType::System, 0x07 ),
-		eExceptionCategorySystemWindow  = CxDef::declareExceptionCategory( EExceptionBaseType::System, 0x09 ),
+		eExceptionCategorySystemCore    = CXU::declareExceptionCategory( EExceptionBaseType::System, 0x01 ),
+		eExceptionCategorySystemDisplay = CXU::declareExceptionCategory( EExceptionBaseType::System, 0x02 ),
+		eExceptionCategorySystemEvent   = CXU::declareExceptionCategory( EExceptionBaseType::System, 0x03 ),
+		eExceptionCategorySystemFile    = CXU::declareExceptionCategory( EExceptionBaseType::System, 0x04 ),
+		eExceptionCategorySystemMetal   = CXU::declareExceptionCategory( EExceptionBaseType::System, 0x05 ),
+		eExceptionCategorySystemOpenGL  = CXU::declareExceptionCategory( EExceptionBaseType::System, 0x07 ),
+		eExceptionCategorySystemWindow  = CXU::declareExceptionCategory( EExceptionBaseType::System, 0x09 ),
 	};
 
 	enum : exception_code_value_t
 	{
-		eEXCSystemInterfaceNotSupported = CxDef::declareExceptionCode( eExceptionCategorySystemCore, 0x04 ),
+		eEXCSystemInterfaceNotSupported = CXU::declareExceptionCode( eExceptionCategorySystemCore, 0x04 ),
 	};
 
 	/// @brief Helper proxy-like base class for platform-specific types.

@@ -24,8 +24,8 @@ namespace Ic3::Graphics::GCI
 
 	enum EGPUDeviceCreateFlags : uint32
 	{
-		E_GPU_DEVICE_CREATE_FLAG_INIT_DEFAULT_PRESENT_QUEUE_BIT = 0x0004,
-		E_GPU_DEVICE_CREATE_FLAGS_DEFAULT = E_GPU_DEVICE_CREATE_FLAG_INIT_DEFAULT_PRESENT_QUEUE_BIT
+		eGPUDeviceCreateFlagInitDefaultPresentQueueBit = 0x0004,
+		eGPUDeviceCreateFlagsDefault = eGPUDeviceCreateFlagInitDefaultPresentQueueBit
 	};
 
 	enum EGPUDeviceStateFlags : uint32
@@ -37,7 +37,7 @@ namespace Ic3::Graphics::GCI
 		// DisplayManager * displayManager = nullptr;
 		// display_system_id_t adapterOutputID = cvDisplaySystemIDDefault;
 		display_system_id_t adapterID = cvDisplaySystemIDDefault;
-		cppx::bitmask<EGPUDeviceCreateFlags> flags = E_GPU_DEVICE_CREATE_FLAGS_DEFAULT;
+		cppx::bitmask<EGPUDeviceCreateFlags> flags = eGPUDeviceCreateFlagsDefault;
 	};
 
 	class IC3_GRAPHICS_GCI_CLASS GPUDevice : public GPUDriverChildObject

@@ -337,11 +337,11 @@ namespace Ic3::System
 
 			if((pCreateInfo.targetAPIClass == EOpenGLAPIClass::Desktop ) && (pCreateInfo.minimumAPIVersion <= cppx::version{4, 1 } ) )
 			{
-				if((pCreateInfo.minimumAPIVersion > cppx::version{3, 2 } ) && (pNSMaxSupportedVersion == NSOpenGLProfileVersion4_1Core ) )
+				if( ( pCreateInfo.minimumAPIVersion > cppx::version{3, 2 } ) && ( pNSMaxSupportedVersion == NSOpenGLProfileVersion4_1Core ) )
 				{
 					nsOpenGLProfile = NSOpenGLProfileVersion4_1Core;
 				}
-				else if((pCreateInfo.minimumAPIVersion >= cppx::version{3, 0 } ) && (pNSMaxSupportedVersion == NSOpenGLProfileVersion3_2Core ) )
+				else if( ( pCreateInfo.minimumAPIVersion >= cppx::version{3, 0 } ) && ( pNSMaxSupportedVersion == NSOpenGLProfileVersion3_2Core ) )
 				{
 					nsOpenGLProfile = NSOpenGLProfileVersion3_2Core;
 				}
@@ -380,7 +380,7 @@ namespace Ic3::System
 				Ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFAStereo );
 			}
 
-			if(( pVisualConfig.msaaDesc.bufferCount != 0 ) && ( pVisualConfig.msaaDesc.quality != 0 ) )
+			if( ( pVisualConfig.msaaDesc.bufferCount != 0 ) && ( pVisualConfig.msaaDesc.quality != 0 ) )
 			{
 				Ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFASampleBuffers );
 				Ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, pVisualConfig.msaaDesc.bufferCount );

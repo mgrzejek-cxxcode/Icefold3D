@@ -153,7 +153,7 @@ namespace cppx
 
 		CPPX_ATTR_NO_DISCARD cppx::string_base_view<TPChar> strView() const noexcept
 		{
-			return _stringData ? _stringData->internal_str : cppx::string_base_view < TPChar > {};
+			return _stringData ? _stringData->internal_str : cppx::string_base_view<TPChar>{};
 		}
 
 		CPPX_ATTR_NO_DISCARD uint32 length() const noexcept
@@ -211,7 +211,7 @@ namespace cppx
 	private:
 		intrusive_ptr<StringDataType> _stringData;
 	#if( PCL_DEBUG && CPPX_ENABLE_IMMUTABLE_STRING_DEBUG_VIEW )
-		const TPChar * _debugView = empty_cstr<TPChar>::sBuffer;
+		const TPChar * _debugView = cve::str_empty<TPChar>;
 	#endif
 	};
 

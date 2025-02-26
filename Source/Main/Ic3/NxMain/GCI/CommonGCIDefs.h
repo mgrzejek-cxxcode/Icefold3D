@@ -11,6 +11,8 @@ namespace Ic3
 
 	namespace GCM = Graphics::GCM;
 
+	using vertex_attribute_key_value_t = uint64;
+
 	enum class EGPUBufferUsagePolicy : uint64
 	{
 		Undefined = 0,
@@ -60,31 +62,31 @@ namespace Ic3
 
 	enum EGCIGeometryBufferFlags : uint32
 	{
-		eGCIGeometryBufferFlagVertexBuffer0Bit  = GCI::eIAVertexStreamBindingFlagVertexBuffer0Bit,
-		eGCIGeometryBufferFlagVertexBuffer1Bit  = GCI::eIAVertexStreamBindingFlagVertexBuffer1Bit,
-		eGCIGeometryBufferFlagVertexBuffer2Bit  = GCI::eIAVertexStreamBindingFlagVertexBuffer2Bit,
-		eGCIGeometryBufferFlagVertexBuffer3Bit  = GCI::eIAVertexStreamBindingFlagVertexBuffer3Bit,
-		eGCIGeometryBufferFlagVertexBuffer4Bit  = GCI::eIAVertexStreamBindingFlagVertexBuffer4Bit,
-		eGCIGeometryBufferFlagVertexBuffer5Bit  = GCI::eIAVertexStreamBindingFlagVertexBuffer5Bit,
-		eGCIGeometryBufferFlagVertexBuffer6Bit  = GCI::eIAVertexStreamBindingFlagVertexBuffer6Bit,
-		eGCIGeometryBufferFlagVertexBuffer7Bit  = GCI::eIAVertexStreamBindingFlagVertexBuffer7Bit,
-		eGCIGeometryBufferFlagVertexBuffer8Bit  = GCI::eIAVertexStreamBindingFlagVertexBuffer8Bit,
-		eGCIGeometryBufferFlagVertexBuffer9Bit  = GCI::eIAVertexStreamBindingFlagVertexBuffer9Bit,
-		eGCIGeometryBufferFlagVertexBuffer10Bit = GCI::eIAVertexStreamBindingFlagVertexBuffer10Bit,
-		eGCIGeometryBufferFlagVertexBuffer11Bit = GCI::eIAVertexStreamBindingFlagVertexBuffer11Bit,
-		eGCIGeometryBufferFlagVertexBuffer12Bit = GCI::eIAVertexStreamBindingFlagVertexBuffer12Bit,
-		eGCIGeometryBufferFlagVertexBuffer13Bit = GCI::eIAVertexStreamBindingFlagVertexBuffer13Bit,
-		eGCIGeometryBufferFlagVertexBuffer14Bit = GCI::eIAVertexStreamBindingFlagVertexBuffer14Bit,
-		eGCIGeometryBufferFlagVertexBuffer15Bit = GCI::eIAVertexStreamBindingFlagVertexBuffer15Bit,
-		eGCIGeometryBufferFlagIndexBufferBit    = GCI::eIAVertexStreamBindingFlagIndexBufferBit,
+		//eGCIGeometryBufferFlagVertexBuffer0Bit  = GCI::eIADataStreamBindingFlagVertexBuffer0Bit,
+		//eGCIGeometryBufferFlagVertexBuffer1Bit  = GCI::eIADataStreamBindingFlagVertexBuffer1Bit,
+		//eGCIGeometryBufferFlagVertexBuffer2Bit  = GCI::eIADataStreamBindingFlagVertexBuffer2Bit,
+		//eGCIGeometryBufferFlagVertexBuffer3Bit  = GCI::eIADataStreamBindingFlagVertexBuffer3Bit,
+		//eGCIGeometryBufferFlagVertexBuffer4Bit  = GCI::eIADataStreamBindingFlagVertexBuffer4Bit,
+		//eGCIGeometryBufferFlagVertexBuffer5Bit  = GCI::eIADataStreamBindingFlagVertexBuffer5Bit,
+		//eGCIGeometryBufferFlagVertexBuffer6Bit  = GCI::eIADataStreamBindingFlagVertexBuffer6Bit,
+		//eGCIGeometryBufferFlagVertexBuffer7Bit  = GCI::eIADataStreamBindingFlagVertexBuffer7Bit,
+		//eGCIGeometryBufferFlagVertexBuffer8Bit  = GCI::eIADataStreamBindingFlagVertexBuffer8Bit,
+		//eGCIGeometryBufferFlagVertexBuffer9Bit  = GCI::eIADataStreamBindingFlagVertexBuffer9Bit,
+		//eGCIGeometryBufferFlagVertexBuffer10Bit = GCI::eIADataStreamBindingFlagVertexBuffer10Bit,
+		//eGCIGeometryBufferFlagVertexBuffer11Bit = GCI::eIADataStreamBindingFlagVertexBuffer11Bit,
+		//eGCIGeometryBufferFlagVertexBuffer12Bit = GCI::eIADataStreamBindingFlagVertexBuffer12Bit,
+		//eGCIGeometryBufferFlagVertexBuffer13Bit = GCI::eIADataStreamBindingFlagVertexBuffer13Bit,
+		//eGCIGeometryBufferFlagVertexBuffer14Bit = GCI::eIADataStreamBindingFlagVertexBuffer14Bit,
+		//eGCIGeometryBufferFlagVertexBuffer15Bit = GCI::eIADataStreamBindingFlagVertexBuffer15Bit,
+		//eGCIGeometryBufferFlagIndexBufferBit    = GCI::eIADataStreamBindingFlagIndexBufferBit,
 	};
 
-	namespace CxDef
+	namespace CXU
 	{
 
 		CPPX_ATTR_NO_DISCARD inline constexpr uint16 getIndexDataFormatByteSize( GCI::EIndexDataFormat pIndexFormat ) noexcept
 		{
-			return GCI::CxDef::GetIndexDataFormatByteSize( pIndexFormat );
+			return GCI::CXU::GetIndexDataFormatByteSize( pIndexFormat );
 		}
 
 		inline constexpr GCI::gpu_memory_flags_value_t getGPUBufferUsagePolicyMemoryFlags( EGPUBufferUsagePolicy pUsagePolicy )
@@ -120,7 +122,7 @@ namespace Ic3
 //
 //		GPUBufferRef( std::nullptr_t )
 //		: buffer{ nullptr }
-//		, memoryRegion{ 0, GCI::CxDef::GPU_MEMORY_SIZE_MAX }
+//		, memoryRegion{ 0, GCI::CXU::GPU_MEMORY_SIZE_MAX }
 //		{}
 //
 //		explicit operator bool() const

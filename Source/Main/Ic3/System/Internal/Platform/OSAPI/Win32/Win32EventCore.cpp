@@ -50,7 +50,7 @@ namespace Ic3::System
 
 	void Win32EventController::_NativeRegisterEventSource( EventSource & pEventSource )
 	{
-		auto * eventSourceNativeData = pEventSource.getEventSourceNativeDataAs<Platform::Win32EventSourceNativeData>();
+		auto * eventSourceNativeData = pEventSource.GetEventSourceNativeDataAs<Platform::Win32EventSourceNativeData>();
 		Ic3DebugAssert( eventSourceNativeData != nullptr );
 
 		auto * win32EventSourceState = new Platform::Win32EventSourceState();
@@ -70,7 +70,7 @@ namespace Ic3::System
 
 	void Win32EventController::_NativeUnRegisterEventSource( EventSource & pEventSource )
 	{
-        auto * eventSourceNativeData = pEventSource.getEventSourceNativeDataAs<Platform::Win32EventSourceNativeData>();
+        auto * eventSourceNativeData = pEventSource.GetEventSourceNativeDataAs<Platform::Win32EventSourceNativeData>();
         Ic3DebugAssert( eventSourceNativeData != nullptr );
 
 		LONG_PTR windowUserData = ::GetWindowLongPtrA( eventSourceNativeData->hwnd, GWLP_USERDATA );
@@ -88,11 +88,11 @@ namespace Ic3::System
 
 	bool Win32EventController::_NativeDispatchPendingEvents()
 	{
-		MSG pMSG;
-		if( ::PeekMessageA( &pMSG, nullptr, 0, 0, PM_REMOVE ) != FALSE )
+		MSG win32Message;
+		if( ::PeekMessageA( &win32Message, nullptr, 0, 0, PM_REMOVE ) != FALSE )
 		{
-			::TranslateMessage( &pMSG );
-			::DispatchMessageA( &pMSG );
+			::TranslateMessage( &win32Message );
+			::DispatchMessageA( &win32Message );
 
 			return true;
 		}
@@ -102,11 +102,11 @@ namespace Ic3::System
 
 	bool Win32EventController::_NativeDispatchPendingEventsWait()
 	{
-		MSG pMSG;
-		if( ::GetMessageA( &pMSG, nullptr, 0, 0 ) != FALSE )
+		MSG win32Message;
+		if( ::GetMessageA( &win32Message, nullptr, 0, 0 ) != FALSE )
 		{
-			::TranslateMessage( &pMSG );
-			::DispatchMessageA( &pMSG );
+			::TranslateMessage( &win32Message );
+			::DispatchMessageA( &win32Message );
 
 			return true;
 		}
@@ -128,7 +128,7 @@ namespace Ic3::System
 		EventSource * Win32FindEventSourceByHWND( Win32EventController & pEventController, HWND pHWND )
 		{
 			auto * eventSource = pEventController.FindEventSource( [pHWND]( const EventSource & pEventSource ) -> bool {
-				const auto * eventSourceNativeData = pEventSource.getEventSourceNativeDataAs<Platform::Win32EventSourceNativeData>();
+				const auto * eventSourceNativeData = pEventSource.GetEventSourceNativeDataAs<Platform::Win32EventSourceNativeData>();
 				return eventSourceNativeData->hwnd == pHWND;
 			});
 			return eventSource;
@@ -206,7 +206,7 @@ namespace Ic3::System
 				nativeEvent.wParam = pWparam;
 				nativeEvent.lParam = pLparam;
 
-				nativeEventDispatch( *( win32EventSourceState->eventController ), nativeEvent );
+				NativeEventDispatch( *( win32EventSourceState->eventController ), nativeEvent );
 			}
 
 			return ::DefWindowProcA( pHWND, pMessage, pWparam, pLparam );
@@ -253,7 +253,7 @@ namespace Ic3::System
 				// This is our custom message for fullscreen state changes.
 				case Platform::CX_WIN32_MESSAGE_ID_FULLSCREEN_STATE_CHANGE:
 				{
-					auto * win32WindowNativeData = pEventSource.getEventSourceNativeDataAs<Platform::Win32WindowNativeData>();
+					auto * win32WindowNativeData = pEventSource.GetEventSourceNativeDataAs<Platform::Win32WindowNativeData>();
 
 					// Fullscreen state is encoded in the WPARAM argument. Note, that it will always differ
 					// from the current fullscreen state (this is checked upfront before sending the message).

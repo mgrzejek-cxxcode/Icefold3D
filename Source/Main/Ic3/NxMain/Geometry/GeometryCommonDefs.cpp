@@ -43,14 +43,14 @@ namespace Ic3
 	uint32 GeometryReferenceBase::vertexDataOffsetInElementsNum() const noexcept
 	{
 		const auto firstActiveStream = dataFormat->firstActiveVertexStream();
-		Ic3DebugAssert( firstActiveStream != GCI::CxDef::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED );
+		Ic3DebugAssert( firstActiveStream != GCI::CXU::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED );
 		return vertexStreamDataRegions[firstActiveStream].offsetInElementsNum;
 	}
 
 	uint32 GeometryReferenceBase::vertexDataSizeInElementsNum() const noexcept
 	{
 		const auto firstActiveStream = dataFormat->firstActiveVertexStream();
-		Ic3DebugAssert( firstActiveStream != GCI::CxDef::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED );
+		Ic3DebugAssert( firstActiveStream != GCI::CXU::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED );
 		return vertexStreamDataRegions[firstActiveStream].sizeInElementsNum;
 	}
 
@@ -67,7 +67,7 @@ namespace Ic3
 	GeometrySize GeometryReferenceBase::calculateGeometrySize() const noexcept
 	{
 		const auto firstActiveStream = dataFormat->firstActiveVertexStream();
-		Ic3DebugAssert( firstActiveStream != GCI::CxDef::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED );
+		Ic3DebugAssert( firstActiveStream != GCI::CXU::IA_VERTEX_BUFFER_BINDING_INDEX_UNDEFINED );
 
 		return {
 			vertexStreamDataRegions[firstActiveStream].sizeInElementsNum,
@@ -88,7 +88,7 @@ namespace Ic3
 
 	GeometryReference::GeometryReference( GeometryStorage & pStorage )
 	: storage( &pStorage )
-	, geometryIndex( CxDef::GEOMETRY_INDEX_INVALID )
+	, geometryIndex( CXU::GEOMETRY_INDEX_INVALID )
 	, dataReference( pStorage.mDataFormat )
 	{}
 

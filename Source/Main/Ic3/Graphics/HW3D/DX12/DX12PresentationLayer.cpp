@@ -47,9 +47,9 @@ namespace Ic3::Graphics::GCI
 		return presentationLayer;
 	}
 
-	void DX12ScreenPresentationLayer::BindRenderTarget( CommandContext * pCmdContext )
+	void DX12ScreenPresentationLayer::BindRenderTarget( CommandContext & pCommandContext )
 	{
-		auto * dx12CmdContext = pCmdContext->GetInterface<DX12CommandContext>();
+		auto * dx12CmdContext = pCmdContext.GetInterface<DX12CommandContext>();
 		Ic3DebugAssert( dx12CmdContext->mD3D12GraphicsCommandList );
 
 		auto & currentFrameResource = _frameResourceArray.at( _currentFrameIndex );
@@ -70,7 +70,7 @@ namespace Ic3::Graphics::GCI
 		dx12CmdContext->SetRenderTargetState( renderTargetState );
 	}
 
-	void DX12ScreenPresentationLayer::InvalidateRenderTarget( CommandContext * pCmdContext )
+	void DX12ScreenPresentationLayer::InvalidateRenderTarget( CommandContext & pCommandContext )
 	{
 		auto * dx12CmdContext = pCmdContext->GetInterface<DX12CommandContext>();
 		Ic3DebugAssert( dx12CmdContext->mD3D12GraphicsCommandList );

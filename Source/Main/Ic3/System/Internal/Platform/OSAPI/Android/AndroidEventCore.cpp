@@ -142,7 +142,7 @@ namespace Ic3::System
 			// framework state is released, so the null-check is necessary.
 			if( auto * eventController = pAppState->Ic3GetUserDataAs<EventController>( eAndroidAppStateUserDataIndexEventController ) )
 			{
-				nativeEventDispatch( *eventController, androidEvent );
+				NativeEventDispatch( *eventController, androidEvent );
 			}
 		}
 
@@ -154,7 +154,7 @@ namespace Ic3::System
 
 			if( auto * eventController = pAppState->Ic3GetUserDataAs<EventController>( eAndroidAppStateUserDataIndexEventController ) )
 			{
-				if( nativeEventDispatch( *eventController, androidEvent ) )
+				if( NativeEventDispatch( *eventController, androidEvent ) )
 				{
 					return 1;
 				}

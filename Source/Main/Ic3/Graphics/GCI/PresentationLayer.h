@@ -33,9 +33,9 @@ namespace Ic3::Graphics::GCI
 
 		virtual System::EventSource * GetInternalSystemEventSource() const noexcept;
 
-		virtual void BindRenderTarget( CommandContext * pCmdContext ) = 0;
+		virtual void BindRenderTarget( CommandContext & pCommandContext ) = 0;
 
-		virtual void InvalidateRenderTarget( CommandContext * pCmdContext ) = 0;
+		virtual void InvalidateRenderTarget( CommandContext & pCommandContext ) = 0;
 
 		virtual void Present() = 0;
 

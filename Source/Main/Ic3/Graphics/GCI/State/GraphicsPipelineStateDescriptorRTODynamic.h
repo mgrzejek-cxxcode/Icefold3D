@@ -23,11 +23,21 @@ namespace Ic3::Graphics::GCI
 
 		RenderPassDescriptorDynamic(
 				GPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID = kPipelineStateDescriptorIDAuto );
+				pipeline_state_descriptor_id_t pDescriptorID );
 
 		virtual ~RenderPassDescriptorDynamic();
 
-		static TGfxHandle<RenderPassDescriptorDynamic> CreateNew( GPUDevice & pGPUDevice );
+		CPPX_ATTR_NO_DISCARD virtual bool CheckAttachmentLoadActionFlags(
+				uint32 pAttachmentIndex,
+				cppx::bitmask<ERenderPassAttachmentActionFlags> pActionFlags ) const noexcept override final;
+
+		CPPX_ATTR_NO_DISCARD virtual bool CheckAttachmentStoreActionFlags(
+				uint32 pAttachmentIndex,
+				cppx::bitmask<ERenderPassAttachmentActionFlags> pActionFlags ) const noexcept override final;
+
+		static TGfxHandle<RenderPassDescriptorDynamic> CreateNew(
+				GPUDevice & pGPUDevice,
+				pipeline_state_descriptor_id_t pDescriptorID = kPipelineStateDescriptorIDAuto );
 	};
 
 	/**
@@ -41,11 +51,13 @@ namespace Ic3::Graphics::GCI
 
 		RenderTargetDescriptorDynamic(
 				GPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID = kPipelineStateDescriptorIDAuto );
+				pipeline_state_descriptor_id_t pDescriptorID );
 
 		virtual ~RenderTargetDescriptorDynamic();
 
-		static TGfxHandle<RenderTargetDescriptorDynamic> CreateNew( GPUDevice & pGPUDevice );
+		static TGfxHandle<RenderTargetDescriptorDynamic> CreateNew(
+				GPUDevice & pGPUDevice,
+				pipeline_state_descriptor_id_t pDescriptorID = kPipelineStateDescriptorIDAuto );
 	};
 
 } // namespace Ic3::Graphics::GCI

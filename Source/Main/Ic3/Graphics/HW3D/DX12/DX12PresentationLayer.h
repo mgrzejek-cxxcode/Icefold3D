@@ -29,9 +29,9 @@ namespace Ic3::Graphics::GCI
 		DX12ScreenPresentationLayer( DX12GPUDevice & pDevice, ComPtr<IDXGISwapChain3> pDXGISwapChain3, uint32 pFrameQueueSize = sMinFrameQueueSize );
 		virtual ~DX12ScreenPresentationLayer();
 
-		virtual void BindRenderTarget( CommandContext * pCmdContext ) override;
+		virtual void BindRenderTarget( CommandContext & pCommandContext ) override;
 
-		virtual void InvalidateRenderTarget( CommandContext * pCmdContext ) override;
+		virtual void InvalidateRenderTarget( CommandContext & pCommandContext ) override;
 
 		virtual void Present() override;
 

@@ -75,9 +75,11 @@ namespace Ic3::Graphics::GCI
 			GraphicsShaderLinkageDescriptorNative(
 					GPUDevice & pGPUDevice,
 					pipeline_state_descriptor_id_t pDescriptorID,
-					const GraphicsShaderBindingCommonConfig & pCommonShaderBindingConfig );
+					const GraphicsShaderBindingCommonConfig & pCommonShaderBindingConfig )
+			: GraphicsShaderLinkageDescriptor( pGPUDevice, pDescriptorID, pCommonShaderBindingConfig )
+			{}
 
-			virtual ~GraphicsShaderLinkageDescriptorNative();
+			virtual ~GraphicsShaderLinkageDescriptorNative() = default;
 		};
 
 	} // namespace PIM

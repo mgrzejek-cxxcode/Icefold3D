@@ -20,19 +20,19 @@ namespace Ic3
 			return false;
 		}
 
-		if( pBufferIndex >= GCM::cxIAMaxVertexBufferBindingsNum )
+		if( pBufferIndex >= GCM::kIAMaxDataStreamVertexBuffersNum )
 		{
 			return false;
 		}
 
-		if( ( pComponentsNum > 4 ) || ( _activeAttributeSlotsNum + pComponentsNum >= GCM::cxIAMaxVertexAttributesNum ) )
+		if( ( pComponentsNum > 4 ) || ( _activeAttributeSlotsNum + pComponentsNum >= GCM::kIAMaxVertexAttributesNum ) )
 		{
 			return false;
 		}
 
 		auto & targetBuffer = _localVertexBufferArray[pBufferIndex];
 
-		if( pBufferRelativeOffset == GCI::cxIAVertexAttributeOffsetAppend )
+		if( pBufferRelativeOffset == GCI::kIAVertexAttributeOffsetAppend )
 		{
 			pBufferRelativeOffset = targetBuffer.elementSizeInBytes;
 		}
@@ -40,7 +40,7 @@ namespace Ic3
 		SGeometryInputAttributeInfo attribDesc;
 		attribDesc.attributeBaseFormat = pBaseFormat;
 		attribDesc.attributeComponentsNum = pComponentsNum;
-		attribDesc.attributeSizeInBytes = GCI::CxDef::getVertexAttribFormatByteSize( pBaseFormat ) * pComponentsNum;
+		attribDesc.attributeSizeInBytes = GCI::CXU::getVertexAttribFormatByteSize( pBaseFormat ) * pComponentsNum;
 		attribDesc.bufferIndex = pBufferIndex;
 		attribDesc.bufferRelativeOffset = pBufferRelativeOffset;
 		attribDesc.mSemantics = std::move( pAttributeSemantics );
@@ -71,7 +71,7 @@ namespace Ic3
 		if( pIndexFormat != GCI::EIndexDataFormat::Undefined )
 		{
 			_localIndexBuffer.indexElementFormat = pIndexFormat;
-			_localIndexBuffer.elementSizeInBytes = GCI::CxDef::getIndexDataFormatByteSize( pIndexFormat );
+			_localIndexBuffer.elementSizeInBytes = GCI::CXU::getIndexDataFormatByteSize( pIndexFormat );
 		}
 		else
 		{

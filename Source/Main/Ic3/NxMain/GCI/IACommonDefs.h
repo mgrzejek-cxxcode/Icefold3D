@@ -11,8 +11,8 @@
 namespace Ic3
 {
 
-	struct GenericVertexAttribute;
-	struct VertexAttributeDefinition;
+	struct GenericVertexInputAttribute;
+	struct VertexInputAttributeDefinition;
 	struct VertexInputStream;
 
 	using gci_input_assembler_slot_t = GCI::input_assembler_index_t;
@@ -20,33 +20,24 @@ namespace Ic3
 	using InputAssemblerSlotArray = cppx::sorted_array<gci_input_assembler_slot_t>;
 	using InputAssemblerSlotRange = cppx::range<gci_input_assembler_slot_t>;
 
-	using GenericVertexAttributeArray = std::array<GenericVertexAttribute, GCM::cxIAMaxVertexAttributesNum>; // cppx::sorted_array<VertexAttributeComponent>;
-	using VertexInputStreamArray = std::array<VertexInputStream, GCM::cxIAMaxVertexStreamsNum>; // cppx::sorted_array<VertexInputStream>;
+	using GenericVertexAttributeArray = std::array<GenericVertexInputAttribute, GCM::kIAMaxVertexAttributesNum>; // cppx::sorted_array<VertexAttributeComponent>;
+	using VertexInputStreamArray = std::array<VertexInputStream, GCM::kIAMaxDataStreamVertexBuffersNum>; // cppx::sorted_array<VertexInputStream>;
 
 	/**
 	 * [Constant] Represents an invalid vertex attribute slot.
 	 */
-	constexpr auto cxGCIVertexAttributeIndexUndefined = GCI::cxIAVertexAttributeIndexUndefined;
+	constexpr auto kGCIVertexInputAttributeSlotUndefined = GCI::kIAVertexAttributeIndexUndefined;
 
 	/**
 	 * [Constant] Represents an invalid vertex stream slot.
 	 */
-	constexpr auto cxGCIVertexStreamIndexUndefined = GCI::cxIAVertexStreamIndexUndefined;
+	constexpr auto kGCIVertexInputStreamSlotUndefined = GCI::kIAVertexStreamIndexUndefined;
 
 	/// Represents an invalid offset value for vertex attribute.
-	constexpr auto cxGCIVertexAttributeOffsetInvalid = cppx::meta::limits<uint32>::max_value;
+	constexpr auto kGCIVertexAttributeOffsetInvalid = cppx::meta::limits<uint32>::max_value;
 
 	///
-	constexpr auto cxGCIVertexAttributeOffsetAppend = GCI::cxIAVertexAttributeOffsetAppend;
-
-	///
-	inline constexpr InputAssemblerSlotRange cxGCIValidInputAssemblerSlotIndexRange{ 0u, GCM::cxIAGenericInputArraySize - 1 };
-
-	///
-	inline constexpr InputAssemblerSlotRange cxGCIValidVertexAttributeComponentsNumRange{ 1u, GCM::cxIAMaxVertexAttributeComponentsNum };
-
-	///
-	inline constexpr InputAssemblerSlotRange cxGCIValidVertexAttributeSemanticGroupSizeRange{ 1u, GCM::cxIAMaxVertexAttributeSemanticGroupSize };
+	constexpr auto kGCIVertexAttributeOffsetAppend = GCI::kIAVertexAttributeOffsetAppend;
 
 	/**
 	 *
@@ -61,13 +52,13 @@ namespace Ic3
 	/**
 	 *
 	 */
-	struct VertexAttributeDefinition
+	struct VertexInputAttributeDefinition
 	{
-		gci_input_assembler_slot_t attributeIASlot = cxGCIVertexAttributeIndexUndefined;
-
-		gci_input_assembler_slot_t streamIASlot = cxGCIVertexStreamIndexUndefined;
-
 		GCI::EVertexAttribFormat dataFormat = GCI::EVertexAttribFormat::Undefined;
+
+		uint16 attributeSlot = kGCIVertexInputAttributeSlotUndefined;
+
+		uint16 streamSlot = kGCIVertexInputStreamSlotUndefined;
 
 		uint16 dataPadding = 0;
 
@@ -87,7 +78,7 @@ namespace Ic3
 	/**
 	 * Represents a generic vertex attribute, i.e. contents of a single IA-level attribute slot.
 	 */
-	struct GenericVertexAttribute
+	struct GenericVertexInputAttribute
 	{
 		/**
 		 * Format of the attribute's data.
@@ -95,15 +86,26 @@ namespace Ic3
 		GCI::EVertexAttribFormat dataFormat = GCI::EVertexAttribFormat::Undefined;
 
 		/**
+		 * Base attribute index. Allowed values are from 0 to (GCM::IA_MAX_VERTEX_ATTRIBUTES_NUM - 1).
+		 * For multi-component attributes, this is the index of the first occupied attribute slot.
+		 */
+		gci_input_assembler_slot_t attributeSlot;
+
+		/**
+		 * An index of a vertex buffer slot this attribute is fetched from.
+		 */
+		gci_input_assembler_slot_t streamSlot;
+
+		/**
 		 * Data padding placed after the attribute's data in its data stream. The final data stride for an attribute
 		 * is calculated as: (size of dataFormat in bytes) + dataPadding.
 		 */
-		uint16 dataPadding;
+		uint8 dataPadding;
 
 		/**
 		 * Size of the semantic group this attribute belongs to. If this is 1, the attribute is a
 		 * single-slot attribute with unique semantic name. If >1, this is one of up to 4 attributes
-		 * that share the same semantic name and occupy adjacent slot range.
+		 * that share the same semantic name and occupy adjacent slots.
 		 * @see semanticGroupIndex
 		 */
 		 uint8 semanticGroupSize;
@@ -116,17 +118,6 @@ namespace Ic3
 		 * each of type Vec4 and with semantic indices 0, 1, 2 and 3 (and identical semantic name).
 		 */
 		uint8 semanticIndex;
-
-		/**
-		 * Base attribute index. Allowed values are from 0 to (GCM::IA_MAX_VERTEX_ATTRIBUTES_NUM - 1).
-		 * For multi-component attributes, this is the index of the first occupied attribute slot.
-		 */
-		gci_input_assembler_slot_t attributeIASlot;
-
-		/**
-		 * An index of a vertex buffer slot this attribute is fetched from.
-		 */
-		gci_input_assembler_slot_t streamIASlot;
 
 		/**
 		 * An offset from the start of the vertex buffer data to the beginning of the attribute's data.
@@ -163,19 +154,19 @@ namespace Ic3
 		 *
 		 * @return
 		 */
-		CPPX_ATTR_NO_DISCARD bool IsSameAs( const GenericVertexAttribute & pOther ) const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsSameAs( const GenericVertexInputAttribute & pOther ) const noexcept;
 
 		/**
 		 *
 		 * @return
 		 */
-		CPPX_ATTR_NO_DISCARD bool HasSameFormatAs( const GenericVertexAttribute & pOther ) const noexcept;
+		CPPX_ATTR_NO_DISCARD bool HasSameFormatAs( const GenericVertexInputAttribute & pOther ) const noexcept;
 
 		/**
 		 *
 		 * @return
 		 */
-		CPPX_ATTR_NO_DISCARD bool HasSameSemanticsAs( const GenericVertexAttribute & pOther ) const noexcept;
+		CPPX_ATTR_NO_DISCARD bool HasSameSemanticsAs( const GenericVertexInputAttribute & pOther ) const noexcept;
 
 		/**
 		 *
@@ -195,12 +186,12 @@ namespace Ic3
 		/**
 		 *
 		 */
-		void InitBaseAttributeFromDefinition( const VertexAttributeDefinition & pDefinition );
+		void InitBaseAttributeFromDefinition( const VertexInputAttributeDefinition & pDefinition );
 
 		/**
 		 *
 		 */
-		void InitSemanticSubAttributeFromBaseAttribute( const GenericVertexAttribute & pBaseAttribute, uint32 pSemanticIndex );
+		void InitSemanticSubAttributeFromBaseAttribute( const GenericVertexInputAttribute & pBaseAttribute, uint32 pSemanticIndex );
 
 		/**
 		 *

@@ -7,7 +7,7 @@
 namespace Ic3::System
 {
 
-	std::string OpenGLSystemVersionInfo::toString() const
+	std::string OpenGLSystemVersionInfo::ToString() const
 	{
 		std::ostringstream strStream;
 		strStream << "[OpenGL Rendering Context Information]\n";

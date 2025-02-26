@@ -132,7 +132,7 @@ namespace Ic3::System
 			tmpSurfaceNativeData.mVisualInfo = nullptr;
 		}
 
-		mNativeData.initState.reset();
+		mNativeData.initState.Reset();
 	}
 
 	OpenGLDisplaySurfaceHandle X11OpenGLSystemDriver::_NativeCreateDisplaySurface(
@@ -390,10 +390,6 @@ namespace Ic3::System
 		else if( ( glxFBDepthBits == 32 ) && ( glxFBStencilBits == 0 ) )
 		{
 			visualConfig.depthStencilFormat = EDepthStencilFormat::D32F;
-		}
-		else if( ( glxFBDepthBits == 32 ) && ( glxFBStencilBits == 8 ) )
-		{
-			visualConfig.depthStencilFormat = EDepthStencilFormat::D32FS8;
 		}
 		else
 		{

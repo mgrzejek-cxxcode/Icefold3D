@@ -32,7 +32,12 @@ namespace Ic3::Graphics::GCI
 		: PipelineStateDescriptorDynamic<TPBaseDescriptor>( pGPUDevice, pDescriptorID )
 		{}
 
-		~RTArrayDescriptorDynamicProxy() = default;
+		virtual ~RTArrayDescriptorDynamicProxy() = default;
+
+		CPPX_ATTR_NO_DISCARD virtual bool IsAttachmentActive( native_uint pAttachmentIndex ) const noexcept override final
+		{
+			return _renderTargetArrayConfiguration.activeAttachmentsMask.is_set( CXU::RTOMakeAttachmentFlag( pAttachmentIndex ) );
+		}
 
 		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept
 		{
@@ -47,11 +52,6 @@ namespace Ic3::Graphics::GCI
 		CPPX_ATTR_NO_DISCARD bool IsColorAttachmentActive( native_uint pColorAttachmentIndex ) const noexcept
 		{
 			return _renderTargetArrayConfiguration.activeAttachmentsMask.is_set( CXU::RTOMakeColorAttachmentFlag( pColorAttachmentIndex ) );
-		}
-
-		CPPX_ATTR_NO_DISCARD bool IsAttachmentActive( native_uint pAttachmentIndex ) const noexcept
-		{
-			return _renderTargetArrayConfiguration.activeAttachmentsMask.is_set( CXU::RTOMakeAttachmentFlag( pAttachmentIndex ) );
 		}
 
 		CPPX_ATTR_NO_DISCARD native_uint CountActiveColorAttachments() const noexcept
