@@ -8,26 +8,6 @@
 
 namespace Ic3::Graphics::GCI
 {
-
-    namespace utils
-    {
-
-        IC3_GRAPHICS_GCI_API ShaderHandle CreateShaderFromSource( GPUDevice & pGPUDevice, EShaderType pShaderType, const void * pSource, size_t pSourceLength );
-
-        inline ShaderHandle CreateShaderFromSource( GPUDevice & pGPUDevice, EShaderType pShaderType, const std::string & pSource )
-        {
-            return CreateShaderFromSource( pGPUDevice, pShaderType, pSource.c_str(), pSource.length() );
-        }
-
-        IC3_GRAPHICS_GCI_API ShaderHandle CreateShaderFromFile( GPUDevice & pGPUDevice, EShaderType pShaderType, const char * pFilename );
-
-        inline ShaderHandle CreateShaderFromFile( GPUDevice & pGPUDevice, EShaderType pShaderType, const std::string & pFilename )
-        {
-            return CreateShaderFromFile( pGPUDevice, pShaderType, pFilename.c_str() );
-        }
-
-    }
-
 } // namespace Ic3::Graphics::GCI
 
 #endif // __IC3_GRAPHICS_GCI_GPU_UTILS_H__

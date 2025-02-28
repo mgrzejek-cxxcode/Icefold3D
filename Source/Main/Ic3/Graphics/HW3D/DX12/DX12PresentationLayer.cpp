@@ -66,7 +66,7 @@ namespace Ic3::Graphics::GCI
 		DX12RenderTargetState renderTargetState;
 		renderTargetState.rtvDescriptorArray[0] = currentFrameResource.backBufferTextureRTVDescriptor;
 		renderTargetState.rtvDescriptorsNum = 1;
-		renderTargetState.dsvDescriptor = cvD3D12CpuDescriptorEmpty;
+		renderTargetState.dsvDescriptor = cvD3D12CPUDescriptorEmpty;
 		dx12CmdContext->SetRenderTargetState( renderTargetState );
 	}
 
@@ -160,7 +160,7 @@ namespace Ic3::Graphics::GCI
 
 		// Get the CPU handle for our previously created descriptor heap. Using the base pointer and the size of a
 		// single descriptor (_rtvDescriptorSize) we can then manually compute offsets for all pdesc (see below).
-		D3D12_CPU_DESCRIPTOR_HANDLE rtvDescriptorHandle = _rtvDescriptorHeap->GetCpuDescriptorHandleForHeapStart();
+		D3D12_CPU_DESCRIPTOR_HANDLE rtvDescriptorHandle = _rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 
 		_frameResourceArray.resize( _frameQueueSize );
 

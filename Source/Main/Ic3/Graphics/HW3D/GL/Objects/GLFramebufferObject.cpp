@@ -41,10 +41,10 @@ namespace Ic3::Graphics::GCI
 
 	bool GLFramebufferObject::ValidateHandle() const
 	{
-		auto isBuffer = glIsFramebuffer( mGLHandle );
+		const auto checkResult = glIsFramebuffer( mGLHandle );
 		Ic3OpenGLHandleLastError();
 
-		return isBuffer != GL_FALSE;
+		return checkResult != GL_FALSE;
 	}
 
 	void GLFramebufferObject::BindColorRenderbuffer(

@@ -9,8 +9,6 @@ set( IC3_GRAPHICS_HWAPI_GL4_SRC_FILES
         "GL4GPUDriver.cpp"
         "GL4GPUDriverAPI.h"
         "GL4GPUDriverAPI.cpp"
-        ../GL/GLGPUDeviceFeatureQuery.cpp
-        ../GL/GLGPUDeviceFeatureQuery.h
 )
 
 message("${IC3_GRAPHICS_HWAPI_GL4_SRC_FILES}")

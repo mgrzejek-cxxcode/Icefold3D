@@ -51,7 +51,7 @@ namespace Ic3::Graphics::GCI
 
 		uint64 driverSpecificID;
 
-		uint64 driverSpecificType;
+		uint64 driverSpecificFormatTag;
 
 		uint32 dataSizeInBytes;
 
@@ -130,17 +130,6 @@ namespace Ic3::Graphics::GCI
 			return SHIsShaderStageIndexValid( pStageIndex ) ? static_cast<EShaderType>( SHMakeShaderType( pStageIndex ) ) : EShaderType::Unknown;
 		}
 		
-	}
-
-	namespace RCU
-	{
-
-		IC3_GRAPHICS_GCI_API_NO_DISCARD EShaderType GetShaderObjectType( Shader & pShader );
-
-		IC3_GRAPHICS_GCI_API_NO_DISCARD uint32 GetShaderObjectStageIndex( Shader & pShader );
-
-		IC3_GRAPHICS_GCI_API_NO_DISCARD uint32 GetShaderObjectStageBit( Shader & pShader );
-
 	}
 
 } // namespace Ic3::Graphics::GCI

@@ -50,7 +50,7 @@ namespace Ic3::System
 		/// invoked when the last handle of an object goes out of scope and before calling this object's destructor.
 		/// This method itself IS NOT a part of the dtor! Of course this fact automatically implies the following things:
 		/// - if an object is managed by a raw pointer, this needs to be called before destroying that object
-		/// - if an object should be destroyed "remotely" (e.g. custom OS-level stuff), this can be used to do that.
+		/// - if an object should be destroyed "remotely" (e.g. custom OS-level stuff), it can be used to do that.
 		bool DestroySystemObject();
 
 		CPPX_ATTR_NO_DISCARD bool IsStateMaskSet( cppx::bitmask<ESysObjectStateFlags> pMask ) const

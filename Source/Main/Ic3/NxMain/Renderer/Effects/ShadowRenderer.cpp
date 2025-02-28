@@ -233,8 +233,8 @@ namespace Ic3
 		using namespace Ic3::Graphics::GCI;
 
 		{
-			auto vertexShaderPass1 = _shaderLibrary.getShader( "SID_SHADOW_0_PASS1_LIGHT_VS" );
-			auto pixelShaderPass1 = _shaderLibrary.getShader( "SID_SHADOW_0_PASS1_LIGHT_PS" );
+			auto vertexShaderPass1 = _shaderLibrary.GetShader( "SID_SHADOW_0_PASS1_LIGHT_VS" );
+			auto pixelShaderPass1 = _shaderLibrary.GetShader( "SID_SHADOW_0_PASS1_LIGHT_PS" );
 
 			GCI::GraphicsPipelineStateObjectCreateInfo psoPass1LightCreateInfo;
 			psoPass1LightCreateInfo.renderTargetLayout.activeAttachmentsMask = eRTAttachmentMaskDefaultDSOnly;
@@ -278,8 +278,8 @@ namespace Ic3
 		}
 
 		{
-			auto vertexShaderPass2 = _shaderLibrary.getShader( "SID_SHADOW_0_PASS2_SHADOW_VS" );
-			auto pixelShaderPass2 = _shaderLibrary.getShader( "SID_SHADOW_0_PASS2_SHADOW_PS" );
+			auto vertexShaderPass2 = _shaderLibrary.GetShader( "SID_SHADOW_0_PASS2_SHADOW_VS" );
+			auto pixelShaderPass2 = _shaderLibrary.GetShader( "SID_SHADOW_0_PASS2_SHADOW_PS" );
 
 			GCI::GraphicsPipelineStateObjectCreateInfo psoPass2ShadowCreateInfo;
 			psoPass2ShadowCreateInfo.renderTargetLayout.activeAttachmentsMask = eRTAttachmentMaskDefaultC0DS;

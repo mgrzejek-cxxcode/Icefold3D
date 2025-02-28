@@ -75,9 +75,9 @@ struct CB0Data
 	math::Mat4x4f projectionMatrix;
 };
 
-cppx::`dynamic_memory_buffer loadShaderSourceDefault( AssetLoader & pAssetLoader, const std::string & pShaderFile )
+cppx::dynamic_memory_buffer loadShaderSourceDefault( AssetLoader & pAssetLoader, const std::string & pShaderFile )
 {
-	auto psAsset = pAssetLoader.openSubAsset(
+	auto psAsset = pAssetLoader.OpenSubAsset(
 			"shaders/" + sGxDriverName + "/" + pShaderFile,
 			eAsset );
 
@@ -91,7 +91,7 @@ cppx::`dynamic_memory_buffer loadShaderSourceDefault( AssetLoader & pAssetLoader
 
 cppx::dynamic_memory_buffer loadFileDefault( AssetLoader & pAssetLoader, const std::string & pFilename )
 {
-	auto psAsset = pAssetLoader.openSubAsset( pFilename, 0 );
+	auto psAsset = pAssetLoader.OpenSubAsset( pFilename, 0 );
 
 	cppx::dynamic_memory_buffer resultBuffer;
 	const auto sourceLength = psAsset->readAll( resultBuffer );

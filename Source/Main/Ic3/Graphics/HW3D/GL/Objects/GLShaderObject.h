@@ -27,9 +27,9 @@ namespace Ic3::Graphics::GCI
 		bool CompileSource( const void * pShaderSource, size_t pSourceLength );
 		bool LoadBinary( GLenum pFormat, const void * pBinary, size_t pBinarySize );
 
-		void SetDataLayoutMap( GLShaderDataLayoutMap pLayoutMap );
+		void SetBindingLayout( std::unique_ptr<GLShaderBindingLayout> pBindingLayout );
 
-		CPPX_ATTR_NO_DISCARD GLShaderDataLayoutMap * GetDataLayoutMap() const noexcept;
+		CPPX_ATTR_NO_DISCARD GLShaderBindingLayout * GetBindingLayout() const noexcept;
 
 		CPPX_ATTR_NO_DISCARD GLint QueryParameter( GLenum pParameter ) const;
 
@@ -52,7 +52,7 @@ namespace Ic3::Graphics::GCI
 		static GLShaderObjectHandle CreateWithSource( GLenum pGLShaderType, const void * pShaderSource, size_t pSourceLength );
 
 	private:
-		std::unique_ptr<GLShaderDataLayoutMap> _dataLayoutMap;
+		std::unique_ptr<GLShaderBindingLayout> _bindingLayout;
 	};
 
 } // namespace Ic3::Graphics::GCI

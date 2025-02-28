@@ -45,17 +45,17 @@ namespace Ic3
 		CPPX_ATTR_NO_DISCARD const void * getIndexBaseDataPtr() const noexcept;
 
 		CPPX_ATTR_NO_DISCARD InterleavedBufferElementRefReadOnly getIndexDataSubRegionReadOnly(
-				const CpuGeometryDataReferenceBase & pMeshDataRef ) const noexcept;
+				const CPUGeometryDataReferenceBase & pMeshDataRef ) const noexcept;
 
 		CPPX_ATTR_NO_DISCARD InterleavedBufferElementRefReadOnly getVertexAttributeDataSubRegionReadOnly(
-				const CpuGeometryDataReferenceBase & pMeshDataRef,
+				const CPUGeometryDataReferenceBase & pMeshDataRef,
 				uint32 pAttributeIndex ) const noexcept;
 
 		CPPX_ATTR_NO_DISCARD InterleavedBufferElementRefReadWrite getIndexDataSubRegionReadWrite(
-				const CpuGeometryDataReferenceBase & pMeshDataRef ) noexcept;
+				const CPUGeometryDataReferenceBase & pMeshDataRef ) noexcept;
 
 		CPPX_ATTR_NO_DISCARD InterleavedBufferElementRefReadWrite getVertexAttributeDataSubRegionReadWrite(
-				const CpuGeometryDataReferenceBase & pMeshDataRef,
+				const CPUGeometryDataReferenceBase & pMeshDataRef,
 				uint32 pAttributeIndex ) noexcept;
 
 		void initializeStorage( uint32 pVertexElementsNum, uint32 pIndexElementsNum );

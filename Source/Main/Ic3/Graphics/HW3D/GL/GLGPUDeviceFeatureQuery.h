@@ -1,8 +1,0 @@
-//
-// Created by Mateusz Grzejek on 24/02/2025.
-//
-
-#ifndef GLGPUDEVICEFEATUREQUERY_H
-#define GLGPUDEVICEFEATUREQUERY_H
-
-#endif //GLGPUDEVICEFEATUREQUERY_H

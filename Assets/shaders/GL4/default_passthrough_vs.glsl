@@ -1,12 +1,14 @@
 
 #version 430 core
 
-layout( location = 0 ) in vec3 vPosition;
-layout( location = 1 ) in vec3 vNormal;
-layout( location = 4 ) in vec4 vColor;
-layout( location = 5 ) in vec2 vTexCoord0;
+layout( location = 7, semantic = SKIN_MATRIX ) in mat3x4 xSkinMat;
+layout( location = 12, semantic = BONE_MATRIX ) in mat3 xBoneMat;
+layout( location = 0, semantic = POSITION ) in vec3 vPosition;
+layout( location = 1, semantic = NORMAL ) in vec3 vNormal;
+layout( location = 4, semantic = COLOR ) in vec4 vColor;
+layout( location = 5, semantic = TEXCOORD0 ) in vec2 vTexCoord0;
 
-layout( std140, binding = 0 ) uniform CB0
+layout( binding = 0, std140 ) uniform CB0
 {
 	layout(row_major) mat4 cb0ModelMatrix;
 	layout(row_major) mat4 cb0ViewMatrix;

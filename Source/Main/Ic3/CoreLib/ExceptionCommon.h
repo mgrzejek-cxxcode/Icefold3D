@@ -32,43 +32,43 @@ namespace Ic3
         Unknown,
 
         // For debug-specific errors and messages, debug-only assertions etc.
-        // Exception codes prefix: E_EXC_DEBUG
+        // Exception codes prefix: eExcDebug
         Debug,
 
         // Dedicated exception type for top-level engine components (graphics, scripting, etc).
         // Usually each component provides its own base class which derives from EngineSubModuleException class.
-        // Exception codes prefix: E_EXC_ESM_%SubmoduleName%
+        // Exception codes prefix: eExcSm%SubmoduleName%
         EngineSubmodule,
 
         // For all normal, error-like exceptions, intended to be used by lower-level components of the engine
         // (hence the 'framework' keyword). Defined primarily in the common ::Core component of the project.
-        // Exception codes prefix: E_EXC_CORE
+        // Exception codes prefix: eExcCore
         FrameworkCore,
 
         // Internal, implementation-details exception used by the framework. Used primarily for signalling errors
         // between parts of the framework, without exposing them to the user. Those exceptions should never leave
         // the "implementation detail" level of the project.
-        // Exception codes prefix: E_EXC_INTERNAL
+        // Exception codes prefix: eExcInternal
         Internal,
 
         // For exceptions used as an interrupts (for example in thread proc).
-        // Exception codes prefix: E_EXC_INTERRUPT
+        // Exception codes prefix: eExcInterrupt
         Interrupt,
 
         // Defined primarily within the ::Math component.
-        // Exception codes prefix: E_EXC_MATH
+        // Exception codes prefix: eExcMath
         Math,
 
         // Dedicated type for exceptions carrying ResultInfo as an error indicator.
-        // Exception codes prefix: E_EXC_RESULT
+        // Exception codes prefix: eExcResult
         Result,
 
         // System-specific exceptions, extended in platform-specific manner. Defined within the ::System component.
-        // Exception codes prefix: E_EXC_SYSTEM
+        // Exception codes prefix: eExcSystem
         System,
 
         // All exceptions defined by the client libraries and frameworks.
-        // Exception codes prefix: E_EXC_USREXT
+        // Exception codes prefix: eExcUserExt
         UserExternal,
 
         // Reserved value, used to count all enumerators. Must always be defined as the last one.
@@ -81,65 +81,65 @@ namespace Ic3
 	{
 
 		/// Number of total enum values. Used for validation.
-		constexpr auto ENUM_EXCEPTION_BASE_TYPE_COUNT = static_cast<exception_base_type_value_t>( EExceptionBaseType::Reserved );
+		inline constexpr auto kEnumExceptionBaseTypeCount = static_cast<exception_base_type_value_t>( EExceptionBaseType::Reserved );
 
 		/// Exception code: control key for validation.
-		constexpr auto VBM_EXCEPTION_CODE_CONTROL_KEY = static_cast<exception_code_value_t>( 0xE7000000u );
+		inline constexpr auto kVbmExceptionCodeControlKey = static_cast<exception_code_value_t>( 0xE7000000 );
 
 		/// Exception code: mask for type component (EExceptionBaseType, 8-bit integer).
-		constexpr auto VBM_EXCEPTION_CODE_BASE_TYPE_MASK = static_cast<exception_code_value_t>( 0x00FF0000u );
+		inline constexpr auto kVbmExceptionCodeBaseTypeMask = static_cast<exception_code_value_t>( 0x00FF0000 );
 
 		/// Exception code: mask for category component (16-bit integer). Includes base type.
-		constexpr auto VBM_EXCEPTION_CODE_CATEGORY_MASK = static_cast<exception_code_value_t>( 0x00FFFF00u );
+		inline constexpr auto kVbmExceptionCodeCategoryMask = static_cast<exception_code_value_t>( 0x00FFFF00 );
 
 		/// Exception code: mask for IID (internal ID) component (8-bit integer).
-		constexpr auto VBM_EXCEPTION_CODE_IID_MASK = static_cast<exception_code_value_t>( 0x000000FFu );
+		inline constexpr auto kVbmExceptionCodeIIDMask = static_cast<exception_code_value_t>( 0x000000FF );
 
 		/// Exception category: mask for base type component (8-bit integer).
-		constexpr auto VBM_EXCEPTION_CATEGORY_BASE_TYPE_MASK = static_cast<exception_category_value_t>( 0xFF00u );
+		inline constexpr auto kVbmExceptionCategoryBaseTypeMask = static_cast<exception_category_value_t>( 0xFF00 );
 
 	    /// @brief Checks whether the specified value is a valid EExceptionBaseType.
 	    /// Used primarily by the library in the template-based mappings.
-	    inline constexpr bool isExceptionBaseTypeValid( EExceptionBaseType pBaseType )
+	    inline constexpr bool IsExceptionBaseTypeValid( EExceptionBaseType pBaseType )
 	    {
 			using value_type = exception_base_type_value_t;
-		    return ( ( value_type )( pBaseType ) > 0u ) && ( ( value_type )( pBaseType ) < ENUM_EXCEPTION_BASE_TYPE_COUNT );
+		    return ( ( value_type )( pBaseType ) > 0u ) && ( ( value_type )( pBaseType ) < kEnumExceptionBaseTypeCount );
 	    }
 
 		/// @brief
-	    inline constexpr exception_category_value_t declareExceptionCategory( EExceptionBaseType pBaseType, uint8 pCategoryIID )
+	    inline constexpr exception_category_value_t DeclareExceptionCategory( EExceptionBaseType pBaseType, uint8 pCategoryIID )
 	    {
 		    return ( ( ( exception_base_type_value_t )( pBaseType ) << 8 ) | pCategoryIID );
 	    }
 
 		/// @brief
-	    inline constexpr exception_code_value_t declareExceptionCode( exception_category_value_t pCategory, uint8 pCodeIID )
+	    inline constexpr exception_code_value_t DeclareExceptionCode( exception_category_value_t pCategory, uint8 pCodeIID )
 	    {
-		    return ( VBM_EXCEPTION_CODE_CONTROL_KEY | ( ( exception_code_value_t )( pCategory ) << 8 ) | pCodeIID );
+		    return ( kVbmExceptionCodeControlKey | ( ( exception_code_value_t )( pCategory ) << 8 ) | pCodeIID );
 	    }
 
 		/// @brief
-	    inline constexpr EExceptionBaseType getExceptionCategoryBaseType( exception_category_value_t pCategory )
+	    inline constexpr EExceptionBaseType GetExceptionCategoryBaseType( exception_category_value_t pCategory )
 	    {
 		    return ( EExceptionBaseType )( ( pCategory & 0xFF00 ) >> 8 );
 	    }
 
 		/// @brief
-	    inline constexpr EExceptionBaseType getExceptionCodeBaseType( exception_code_value_t pCode )
+	    inline constexpr EExceptionBaseType GetExceptionCodeBaseType( exception_code_value_t pCode )
 	    {
-		    return ( EExceptionBaseType )( ( pCode & VBM_EXCEPTION_CODE_BASE_TYPE_MASK ) >> 16 );
+		    return ( EExceptionBaseType )( ( pCode & kVbmExceptionCodeBaseTypeMask ) >> 16 );
 	    }
 
 		/// @brief
-	    inline constexpr exception_category_value_t getExceptionCodeCategory( exception_code_value_t pCode )
+	    inline constexpr exception_category_value_t GetExceptionCodeCategory( exception_code_value_t pCode )
 	    {
-		    return ( exception_category_value_t )( ( pCode & VBM_EXCEPTION_CODE_CATEGORY_MASK ) >> 8 );
+		    return ( exception_category_value_t )( ( pCode & kVbmExceptionCodeCategoryMask ) >> 8 );
 	    }
 
 		/// @brief
-	    inline constexpr bool validateExceptionCode( exception_code_value_t pCode )
+	    inline constexpr bool ValidateExceptionCode( exception_code_value_t pCode )
 	    {
-		    return ( pCode & VBM_EXCEPTION_CODE_CONTROL_KEY ) == VBM_EXCEPTION_CODE_CONTROL_KEY;
+		    return ( pCode & kVbmExceptionCodeControlKey ) == kVbmExceptionCodeControlKey;
 	    }
 
 	}

@@ -93,7 +93,7 @@ namespace Ic3
 			inputLayoutDefinition.attributeArray[2] = { 0, "NORMAL", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec3F32, Ic3::Graphics::GCI::CXU::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND };
 			inputLayoutDefinition.attributeArray[3] = { 0, "TEXCOORD", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec2F32, Ic3::Graphics::GCI::CXU::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND };
 
-			const auto shaderPassthroughIADefaultVS = mShaderLibrary->getShader( CXU::GPA_RESOURCE_ID_SHADER_PASSTHROUGH_IA_DEFAULT_VS );
+			const auto shaderPassthroughIADefaultVS = mShaderLibrary->GetShader( CXU::GPA_RESOURCE_ID_SHADER_PASSTHROUGH_IA_DEFAULT_VS );
 
 			mCES.mGPUDevice->createCachedCompiledState<GCI::IAInputLayoutCompiledState>(
 					CXU::GPA_STATE_ID_IA_INPUT_LAYOUT_DEFAULT,
@@ -113,7 +113,7 @@ namespace Ic3
 			inputLayoutDefinition.attributeArray[2] = { 0, "NORMAL", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec3F32, Ic3::Graphics::GCI::CXU::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND16 };
 			inputLayoutDefinition.attributeArray[3] = { 0, "TEXCOORD", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec2F32, Ic3::Graphics::GCI::CXU::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND16 };
 
-			const auto shaderPassthroughIADefaultVS = mShaderLibrary->getShader( CXU::GPA_RESOURCE_ID_SHADER_PASSTHROUGH_IA_DEFAULT_VS );
+			const auto shaderPassthroughIADefaultVS = mShaderLibrary->GetShader( CXU::GPA_RESOURCE_ID_SHADER_PASSTHROUGH_IA_DEFAULT_VS );
 
 			mCES.mGPUDevice->createCachedCompiledState<GCI::IAInputLayoutCompiledState>(
 					CXU::GPA_STATE_ID_IA_INPUT_LAYOUT_DEFAULT_16B,

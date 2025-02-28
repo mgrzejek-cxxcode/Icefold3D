@@ -172,7 +172,7 @@ namespace Ic3::Graphics::GCI
 
 	bool DX11GraphicsPipelineStateController::SetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer )
 	{
-		const auto & shaderInputSignature = GetShaderInputSignature();
+		const auto & shaderInputSignature = GetRootSignature();
 		const auto & descriptorInfo = shaderInputSignature.GetDescriptorInfo( pParamRefID );
 
 		Ic3DebugAssert( descriptorInfo.dDescriptorType == EShaderInputDescriptorType::Resource );
@@ -221,7 +221,7 @@ namespace Ic3::Graphics::GCI
 
 	bool DX11GraphicsPipelineStateController::SetShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture )
 	{
-		const auto & shaderInputSignature = GetShaderInputSignature();
+		const auto & shaderInputSignature = GetRootSignature();
 		const auto & descriptorInfo = shaderInputSignature.GetDescriptorInfo( pParamRefID );
 
 		Ic3DebugAssert( descriptorInfo.dDescriptorType == EShaderInputDescriptorType::Resource );
@@ -270,7 +270,7 @@ namespace Ic3::Graphics::GCI
 
 	bool DX11GraphicsPipelineStateController::SetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler )
 	{
-		const auto & shaderInputSignature = GetShaderInputSignature();
+		const auto & shaderInputSignature = GetRootSignature();
 		const auto & descriptorInfo = shaderInputSignature.GetDescriptorInfo( pParamRefID );
 
 		Ic3DebugAssert( descriptorInfo.dDescriptorType == EShaderInputDescriptorType::Sampler );

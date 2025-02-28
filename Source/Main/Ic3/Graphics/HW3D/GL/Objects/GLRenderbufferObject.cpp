@@ -44,10 +44,10 @@ namespace Ic3::Graphics::GCI
 
 	bool GLRenderbufferObject::ValidateHandle() const
 	{
-		auto isBuffer = glIsRenderbuffer( mGLHandle );
+		const auto checkResult = glIsRenderbuffer( mGLHandle );
 		Ic3OpenGLHandleLastError();
 
-		return isBuffer != GL_FALSE;
+		return checkResult != GL_FALSE;
 	}
 
 	bool GLRenderbufferObject::Initialize( const GLRenderbufferCreateInfo & pGLCreateInfo )

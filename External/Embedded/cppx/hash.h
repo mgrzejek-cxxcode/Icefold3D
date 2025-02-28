@@ -3,6 +3,8 @@
 #define __CPPX_HASH_OBJECT_H__
 
 #include "arrayView.h"
+#include "immutableString.h"
+#include "stringView.h"
 #include <string>
 
 namespace cppx
@@ -25,15 +27,27 @@ namespace cppx
 		size_t dataSize;
 
 		template <typename TChar>
-		explicit hash_input( const std::basic_string<TChar> & pString )
+		explicit hash_input( const string_base_view<TChar> & pStrView )
+		: data( pStrView.data() )
+		, dataSize( pStrView.length() * sizeof( TChar ) )
+		{}
+
+		template <typename TChar>
+		explicit hash_input( const immutable_base_string<TChar> & pString )
 		: data( pString.data() )
 		, dataSize( pString.length() * sizeof( TChar ) )
 		{}
 
-		template <typename TChar>
+		template<typename TChar>
 		explicit hash_input( const std::basic_string_view<TChar> & pStrView )
 		: data( pStrView.data() )
 		, dataSize( pStrView.length() * sizeof( TChar ) )
+		{}
+
+		template <typename TChar>
+		explicit hash_input( const std::basic_string<TChar> & pString )
+		: data( pString.data() )
+		, dataSize( pString.length() * sizeof( TChar ) )
 		{}
 
 		explicit hash_input( const char * pCStr )

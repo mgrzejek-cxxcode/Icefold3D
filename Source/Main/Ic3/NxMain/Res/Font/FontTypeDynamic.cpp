@@ -227,7 +227,7 @@ namespace Ic3
 		}
 		else
 		{
-			textureCreateInfo.gpuTextureCreateInfo.memoryFlags = GCI::eGPUMemoryAccessFlagCpuWriteBit | GCI::eGPUMemoryAccessFlagGPUReadBit;
+			textureCreateInfo.gpuTextureCreateInfo.memoryFlags = GCI::eGPUMemoryAccessFlagCPUWriteBit | GCI::eGPUMemoryAccessFlagGPUReadBit;
 			textureCreateInfo.gpuTextureCreateInfo.resourceFlags = GCI::eGPUResourceContentFlagDynamicBit;
 		}
 

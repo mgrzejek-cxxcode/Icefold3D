@@ -31,16 +31,16 @@ namespace Ic3::Graphics::GCI
 			surfaceCreateInfo.runtimeVersionDesc.apiVersion.mNumMinor = 1;
         #endif
 
-			if( pPLCreateInfo.displayConfigFlags.is_set( E_DISPLAY_CONFIGURATION_FLAG_FULLSCREEN_BIT ) )
+			if( pPLCreateInfo.displayConfigFlags.is_set( eDisplayConfigurationFlagFullscreenBit ) )
 			{
 				surfaceCreateInfo.flags.set( System::eOpenGLDisplaySurfaceCreateFlagFullscreenBit );
 			}
 
-			if( pPLCreateInfo.displayConfigFlags.is_set( E_DISPLAY_CONFIGURATION_FLAG_SYNC_MODE_ADAPTIVE_BIT ) )
+			if( pPLCreateInfo.displayConfigFlags.is_set( eDisplayConfigurationFlagSyncModeAdaptiveBit ) )
 			{
 				surfaceCreateInfo.flags.set( System::eOpenGLDisplaySurfaceCreateFlagSyncAdaptiveBit );
 			}
-			else if( pPLCreateInfo.displayConfigFlags.is_set( E_DISPLAY_CONFIGURATION_FLAG_SYNC_MODE_VERTICAL_BIT ) )
+			else if( pPLCreateInfo.displayConfigFlags.is_set( eDisplayConfigurationFlagSyncModeVerticalBit ) )
 			{
 				surfaceCreateInfo.flags.set( System::eOpenGLDisplaySurfaceCreateFlagSyncVerticalBit );
 			}

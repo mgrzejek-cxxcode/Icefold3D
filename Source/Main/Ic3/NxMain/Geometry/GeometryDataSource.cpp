@@ -40,7 +40,7 @@ namespace Ic3
 		SGeometryInputAttributeInfo attribDesc;
 		attribDesc.attributeBaseFormat = pBaseFormat;
 		attribDesc.attributeComponentsNum = pComponentsNum;
-		attribDesc.attributeSizeInBytes = GCI::CXU::getVertexAttribFormatByteSize( pBaseFormat ) * pComponentsNum;
+		attribDesc.attributeSizeInBytes = GCI::CXU::GetVertexAttribFormatByteSize( pBaseFormat ) * pComponentsNum;
 		attribDesc.bufferIndex = pBufferIndex;
 		attribDesc.bufferRelativeOffset = pBufferRelativeOffset;
 		attribDesc.mSemantics = std::move( pAttributeSemantics );
@@ -71,7 +71,7 @@ namespace Ic3
 		if( pIndexFormat != GCI::EIndexDataFormat::Undefined )
 		{
 			_localIndexBuffer.indexElementFormat = pIndexFormat;
-			_localIndexBuffer.elementSizeInBytes = GCI::CXU::getIndexDataFormatByteSize( pIndexFormat );
+			_localIndexBuffer.elementSizeInBytes = GCI::CXU::GetIndexDataFormatByteSize( pIndexFormat );
 		}
 		else
 		{

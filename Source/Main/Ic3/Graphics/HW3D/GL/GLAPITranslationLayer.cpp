@@ -25,15 +25,15 @@ namespace Ic3::Graphics::GCI
 		{
 			storageFlags.set( GL_CLIENT_STORAGE_BIT );
 		}
-		if( pMemoryFlags.is_set( eGPUMemoryAccessFlagCpuReadBit ) )
+		if( pMemoryFlags.is_set( eGPUMemoryAccessFlagCPUReadBit ) )
 		{
 			storageFlags.set( GL_MAP_READ_BIT );
 		}
-		if( pMemoryFlags.is_set( eGPUMemoryAccessFlagCpuWriteBit ) )
+		if( pMemoryFlags.is_set( eGPUMemoryAccessFlagCPUWriteBit ) )
 		{
 			storageFlags.set( GL_MAP_WRITE_BIT );
 		}
-		if( pMemoryFlags.is_set( eGPUMemoryHeapPropertyFlagCpuCachedBit ) )
+		if( pMemoryFlags.is_set( eGPUMemoryHeapPropertyFlagCPUCachedBit ) )
 		{
 			storageFlags.set( GL_CLIENT_STORAGE_BIT );
 		}
@@ -41,7 +41,7 @@ namespace Ic3::Graphics::GCI
 		{
 			storageFlags.set( GL_MAP_PERSISTENT_BIT );
 			if( pMemoryFlags.is_set_any_of(
-					eGPUMemoryHeapPropertyFlagCpuCoherentBit | eGPUMemoryHeapPropertyFlagGPUCoherentBit ) )
+					eGPUMemoryHeapPropertyFlagCPUCoherentBit | eGPUMemoryHeapPropertyFlagGPUCoherentBit ) )
 			{
 				storageFlags.set( GL_MAP_COHERENT_BIT );
 			}
@@ -340,7 +340,7 @@ namespace Ic3::Graphics::GCI
 		{
 			openglMapFlags.set( GL_MAP_PERSISTENT_BIT );
 		}
-		if( pMemoryFlags.is_set( eGPUMemoryHeapPropertyFlagCpuCoherentBit ) )
+		if( pMemoryFlags.is_set( eGPUMemoryHeapPropertyFlagCPUCoherentBit ) )
 		{
 			openglMapFlags.set( GL_MAP_COHERENT_BIT );
 		}

@@ -15,7 +15,7 @@ namespace Ic3::Graphics::GCI
 
 	Ic3DeclareClassHandle( GLShader );
 
-	class GLShader : public GCI::Shader
+	class GLShader : public Shader
 	{
 	public:
 		GLShaderObjectHandle const mGLShaderObject;

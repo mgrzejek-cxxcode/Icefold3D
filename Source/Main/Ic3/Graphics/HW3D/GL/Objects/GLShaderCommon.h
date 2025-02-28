@@ -5,14 +5,24 @@
 #define __IC3_GRAPHICS_HW3D_GLC_SHADER_COMMON_H__
 
 #include "../GLPrerequisites.h"
-#include <map>
+#include <Ic3/Graphics/GCI/State/ShaderInputSignature.h>
+#include <unordered_map>
 
 namespace Ic3::Graphics::GCI
 {
 
-	struct GLShaderDataLayoutMap
+	enum EGLShaderProcessingFlags : enum_default_value_t
 	{
-		using ElementBindingMap = std::map<std::string, GLuint>;
+		eGLShaderProcessingFlagGenerateBindingLayoutBit = 0x0001,
+		eGLShaderProcessingFlagGenerateInputSignatureBit = 0x0002,
+		eGLShaderProcessingMaskGenerateAll =
+			eGLShaderProcessingFlagGenerateBindingLayoutBit |
+			eGLShaderProcessingFlagGenerateInputSignatureBit,
+	};
+
+	struct GLShaderBindingLayout
+	{
+		using ElementBindingMap = std::unordered_map<std::string, GLuint>;
 		ElementBindingMap attributeLocations;
 		ElementBindingMap fragDataLocations;
 		ElementBindingMap samplerBindings;
@@ -27,10 +37,19 @@ namespace Ic3::Graphics::GCI
 	namespace RCU
 	{
 
-		bool ProcessGLShaderSourceExplicitLayoutQualifiers(
+		bool ProcessGLShaderSource(
 				const cppx::version & pSupportedAPIVersion,
 				std::string & pShaderSource,
-				GLShaderDataLayoutMap & pOutputLayoutMap );
+				ShaderInputSignature & pInputSignature,
+				GLShaderBindingLayout * pBindingLayout = nullptr );
+
+		void GenerateShaderInputSignatureAndRemoveSemanticsInfo(
+				const cppx::array_view<std::string> & pShaderSourceLines,
+				ShaderInputSignature & pInputSignature );
+
+		void GenerateGLShaderBindingLayoutAndRemoveExplicitLayoutSpecifiers(
+				const cppx::array_view<std::string> & pShaderSourceLines,
+				GLShaderBindingLayout & pBindingLayout );
 
 	}
 

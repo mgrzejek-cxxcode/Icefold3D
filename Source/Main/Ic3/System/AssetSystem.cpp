@@ -10,7 +10,7 @@ namespace Ic3::System
 
 	AssetLoader::~AssetLoader() noexcept = default;
 
-	AssetHandle AssetLoader::openSubAsset( const std::string & pAssetRefName, cppx::bitmask<EAssetOpenFlags> pFlags )
+	AssetHandle AssetLoader::OpenSubAsset( const std::string & pAssetRefName, cppx::bitmask<EAssetOpenFlags> pFlags )
 	{
 		if( pAssetRefName.empty() )
 		{
@@ -23,7 +23,7 @@ namespace Ic3::System
 		return _NativeOpenSubAsset( std::move( assetPathInfo ), pFlags );
 	}
 
-	AssetDirectoryHandle AssetLoader::openDirectory( std::string pDirectoryName )
+	AssetDirectoryHandle AssetLoader::OpenDirectory( std::string pDirectoryName )
 	{
 		if( pDirectoryName.empty() )
 		{
@@ -46,6 +46,28 @@ namespace Ic3::System
 			return false;
 		}
 		return _NativeCheckDirectoryExists( pDirectoryName );
+	}
+
+	cppx::dynamic_memory_buffer AssetLoader::LoadAsset(
+			System::AssetLoader & pAssetLoader,
+			const std::string & pAssetPath,
+			bool pAppendNullTerm )
+	{
+		auto psAsset = pAssetLoader.OpenSubAsset(
+				pAssetPath,
+				System::eAssetOpenFlagNoExtensionBit );
+
+		cppx::dynamic_memory_buffer resultBuffer{};
+
+		const auto extraAllocSize = pAppendNullTerm ? 1u : 0u;
+		const auto sourceLength = psAsset->ReadAll( resultBuffer, extraAllocSize );
+
+		if( pAppendNullTerm )
+		{
+			resultBuffer[sourceLength] = 0;
+		}
+
+		return resultBuffer;
 	}
 
 

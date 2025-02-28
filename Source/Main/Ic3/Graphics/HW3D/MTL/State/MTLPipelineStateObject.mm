@@ -10,12 +10,12 @@ namespace Ic3::Graphics::GCI
 	MetalGraphicsPipelineStateObject::MetalGraphicsPipelineStateObject(
 			MetalGPUDevice & pGPUDevice,
 			RenderTargetLayout pRenderTargetLayout,
-			ShaderInputSignature pShaderInputSignature,
+			RootSignature pRootSignature,
 			id<MTLRenderPipelineState> pMTLPipelineState )
 	: GraphicsPipelineStateObject(
 		pGPUDevice,
 		std::move( pRenderTargetLayout ),
-		std::move( pShaderInputSignature ) )
+		std::move( pRootSignature ) )
 	, mMTLPipelineState( pMTLPipelineState )
 	{}
 

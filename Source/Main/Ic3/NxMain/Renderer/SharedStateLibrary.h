@@ -44,8 +44,8 @@ namespace Ic3
 		explicit GpaSharedStateLibrary( const CoreEngineState & pCES, ShaderLibraryHandle pShaderLibrary = nullptr );
 		~GpaSharedStateLibrary();
 
-		CPPX_ATTR_NO_DISCARD GCI::ShaderHandle getShader( GfxObjectID pShaderID ) const noexcept;
-		CPPX_ATTR_NO_DISCARD GCI::ShaderHandle getShader( const GpaUniqueObjectName & pShaderName ) const noexcept;
+		CPPX_ATTR_NO_DISCARD GCI::ShaderHandle GetShader( GfxObjectID pShaderID ) const noexcept;
+		CPPX_ATTR_NO_DISCARD GCI::ShaderHandle GetShader( const GpaUniqueObjectName & pShaderName ) const noexcept;
 
 		void initialize();
 

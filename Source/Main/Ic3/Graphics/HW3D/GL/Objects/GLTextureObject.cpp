@@ -143,10 +143,10 @@ namespace Ic3::Graphics::GCI
 
 	bool GLTextureObject::ValidateHandle() const
 	{
-		auto isBuffer = glIsTexture( mGLHandle );
+		const auto checkResult = glIsTexture( mGLHandle );
 		Ic3OpenGLHandleLastError();
 
-		return isBuffer != GL_FALSE;
+		return checkResult != GL_FALSE;
 	}
 
 	void GLTextureObject::UpdateCopy2D( GLTextureObject & pSrcTexture, const TextureSubDataCopyDesc & pCopyDesc, GLenum pActiveBindTarget )

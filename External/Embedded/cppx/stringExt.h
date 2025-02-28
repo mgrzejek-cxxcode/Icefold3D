@@ -45,7 +45,7 @@ namespace cppx
 	struct to_string_proxy<char>
 	{
 		template <class TPValue>
-		static std::basic_string<char> ToString( const TPValue & pValue )
+		static std::basic_string<char> to_string( const TPValue & pValue )
 		{
 			return std::to_string( pValue );
 		}
@@ -55,7 +55,7 @@ namespace cppx
 	struct to_string_proxy<wchar_t>
 	{
 		template <class TPValue>
-		static std::basic_string<wchar_t> ToString( const TPValue & pValue )
+		static std::basic_string<wchar_t> to_string( const TPValue & pValue )
 		{
 			return std::to_wstring( pValue );
 		}
@@ -299,9 +299,9 @@ namespace cppx
 
 	/// @brief
 	template <typename TPChar, typename TPValue>
-	std::basic_string<TPChar> ToString( const TPValue & pValue )
+	std::basic_string<TPChar> to_string( const TPValue & pValue )
 	{
-		return to_string_proxy<TPChar>::ToString( pValue );
+		return to_string_proxy<TPChar>::to_string( pValue );
 	}
 
 	/// @brief
@@ -338,7 +338,7 @@ namespace cppx
 
 	/// @brief
 	template <typename TPValue, typename TPChar>
-	TPValue fromStringOrDefault( const TPChar * pInputStr, const TPValue pDefault = static_cast<TPValue>( 0 ) )
+	TPValue from_string_or_default( const TPChar * pInputStr, const TPValue pDefault = static_cast<TPValue>( 0 ) )
 	{
 		const auto convResult = from_string_proxy<TPValue>::from_string( pInputStr );
 		return convResult ? static_cast<TPValue>( convResult ) : pDefault;
@@ -346,7 +346,7 @@ namespace cppx
 
 	/// @brief
 	template <typename TPValue, typename TPChar>
-	TPValue fromStringOrDefault( const TPChar * pInputStr, integer_base pBase, const TPValue pDefault = static_cast<TPValue>( 0 ) )
+	TPValue from_string_or_default( const TPChar * pInputStr, integer_base pBase, const TPValue pDefault = static_cast<TPValue>( 0 ) )
 	{
 		const auto convResult = from_string_proxy<TPValue>::from_string( pInputStr, pBase );
 		return convResult ? static_cast<TPValue>( convResult ) : pDefault;
@@ -354,7 +354,7 @@ namespace cppx
 
 	/// @brief
 	template <typename TPValue, typename TPChar>
-	TPValue fromStringOrDefault( const std::basic_string<TPChar> & pInputStr, const TPValue pDefault = static_cast<TPValue>( 0 ), uintptr_t pOffset = 0u )
+	TPValue from_string_or_default( const std::basic_string<TPChar> & pInputStr, const TPValue pDefault = static_cast<TPValue>( 0 ), uintptr_t pOffset = 0u )
 	{
 		const auto convResult = from_string_proxy<TPValue>::from_string( pInputStr, pOffset );
 		return convResult ? static_cast<TPValue>( convResult ) : pDefault;
@@ -362,7 +362,7 @@ namespace cppx
 
 	/// @brief
 	template <typename TPValue, typename TPChar>
-	TPValue fromStringOrDefault( const std::basic_string<TPChar> & pInputStr, integer_base pBase, const TPValue pDefault = static_cast<TPValue>( 0 ), uintptr_t pOffset = 0u )
+	TPValue from_string_or_default( const std::basic_string<TPChar> & pInputStr, integer_base pBase, const TPValue pDefault = static_cast<TPValue>( 0 ), uintptr_t pOffset = 0u )
 	{
 		const auto convResult = from_string_proxy<TPValue>::from_string( pInputStr, pBase, pOffset );
 		return convResult ? static_cast<TPValue>( convResult ) : pDefault;

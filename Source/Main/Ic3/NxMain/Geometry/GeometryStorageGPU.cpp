@@ -202,8 +202,8 @@ namespace Ic3
 	{
 		GCI::GPUBufferCreateInfo bufferCreateInfo;
 		bufferCreateInfo.bufferSize = pBufferSize;
-		bufferCreateInfo.memoryFlags = CXU::getGPUBufferUsagePolicyMemoryFlags( pUsagePolicy );
-		bufferCreateInfo.resourceFlags = CXU::getGPUBufferUsagePolicyResourceFlags( pUsagePolicy );
+		bufferCreateInfo.memoryFlags = CXU::GetGPUBufferUsagePolicyMemoryFlags( pUsagePolicy );
+		bufferCreateInfo.resourceFlags = CXU::GetGPUBufferUsagePolicyResourceFlags( pUsagePolicy );
 		bufferCreateInfo.resourceFlags.unset( GCI::E_GPU_BUFFER_BIND_MASK_ALL );
 		bufferCreateInfo.resourceFlags.set( GCI::E_GPU_BUFFER_BIND_FLAG_INDEX_BUFFER_BIT );
 
@@ -220,8 +220,8 @@ namespace Ic3
 	{
 		GCI::GPUBufferCreateInfo bufferCreateInfo;
 		bufferCreateInfo.bufferSize = pBufferSize;
-		bufferCreateInfo.memoryFlags = CXU::getGPUBufferUsagePolicyMemoryFlags( pUsagePolicy );
-		bufferCreateInfo.resourceFlags = CXU::getGPUBufferUsagePolicyResourceFlags( pUsagePolicy );
+		bufferCreateInfo.memoryFlags = CXU::GetGPUBufferUsagePolicyMemoryFlags( pUsagePolicy );
+		bufferCreateInfo.resourceFlags = CXU::GetGPUBufferUsagePolicyResourceFlags( pUsagePolicy );
 		bufferCreateInfo.resourceFlags.unset( GCI::E_GPU_BUFFER_BIND_MASK_ALL );
 		bufferCreateInfo.resourceFlags.set( GCI::E_GPU_BUFFER_BIND_FLAG_VERTEX_BUFFER_BIT );
 

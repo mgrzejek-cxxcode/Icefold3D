@@ -12,7 +12,7 @@ namespace Ic3::Graphics::GCI
 
 	Ic3DeclareClassHandle( GLSampler );
 
-	class  GLSampler : public Sampler
+	class GLSampler : public Sampler
 	{
 	public:
 		GLSamplerObjectHandle const mGLSamplerObject;

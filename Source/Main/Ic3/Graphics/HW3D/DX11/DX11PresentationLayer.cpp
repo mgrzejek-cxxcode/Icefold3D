@@ -41,7 +41,7 @@ namespace Ic3::Graphics::GCI
 		backBufferRTTexture->GetDesc( &backBufferDSTextureDesc );
 		backBufferDSTextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 		backBufferDSTextureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		backBufferDSTextureDesc.CpuAccessFlags = 0;
+		backBufferDSTextureDesc.CPUAccessFlags = 0;
 
 		ComPtr<ID3D11Texture2D> backBufferDSTexture;
 		hResult = pDevice.mD3D11Device1->CreateTexture2D( &backBufferDSTextureDesc, nullptr, backBufferDSTexture.GetAddressOf() );
@@ -110,7 +110,7 @@ namespace Ic3::Graphics::GCI
 		backBufferRTTexture->GetDesc( & backBufferDSTextureDesc );
 		backBufferDSTextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 		backBufferDSTextureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		backBufferDSTextureDesc.CpuAccessFlags = 0;
+		backBufferDSTextureDesc.CPUAccessFlags = 0;
 
 		ComPtr<ID3D11Texture2D> backBufferDSTexture;
 		hResult = mD3D11Device1->CreateTexture2D( &backBufferDSTextureDesc, nullptr, backBufferDSTexture.GetAddressOf() );

@@ -20,7 +20,7 @@ namespace Ic3
 		ConstantBufferDynamic =
 				GCI::eGPUBufferBindFlagConstantBufferBit |
 				GCI::eGPUResourceContentFlagDynamicBit |
-				cppx::bsh_left<uint64, 32>( GCI::eGPUMemoryAccessFlagCpuWriteBit ),
+				cppx::bsh_left<uint64, 32>( GCI::eGPUMemoryAccessFlagCPUWriteBit ),
 
 		ConstantBufferStatic =
 				GCI::eGPUBufferBindFlagConstantBufferBit |
@@ -35,7 +35,7 @@ namespace Ic3
 				GCI::eGPUBufferBindFlagIndexBufferBit |
 				GCI::eGPUBufferBindFlagVertexBufferBit |
 				GCI::eGPUResourceContentFlagDynamicBit |
-				cppx::bsh_left<uint64, 32>( GCI::eGPUMemoryAccessFlagCpuWriteBit ),
+				cppx::bsh_left<uint64, 32>( GCI::eGPUMemoryAccessFlagCPUWriteBit ),
 
 		GeometryBufferImmutable =
 				GCI::eGPUBufferBindFlagIndexBufferBit |

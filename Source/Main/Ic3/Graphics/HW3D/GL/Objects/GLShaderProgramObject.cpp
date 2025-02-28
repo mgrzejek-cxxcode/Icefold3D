@@ -48,35 +48,35 @@ namespace Ic3::Graphics::GCI
 		return programObject;
 	}
 
-	GLShaderProgramObjectHandle GLShaderProgramObject::CreateSeparableModule( GLShaderObject & pShader, const GLShaderDataLayoutMap & pLayoutMap )
+	GLShaderProgramObjectHandle GLShaderProgramObject::CreateSeparableModule( GLShaderObject & pShader, const GLShaderBindingLayout & pBindingLayout )
 	{
 		auto programObject = GLShaderProgramObject::Create( GLShaderProgramType::Separable );
 		programObject->AttachShader( pShader );
-		SetProgramPreLinkBindings( *programObject, pLayoutMap );
+		SetProgramPreLinkBindings( *programObject, pBindingLayout );
 		programObject->Link();
-		SetProgramPostLinkBindings( *programObject, pLayoutMap );
+		SetProgramPostLinkBindings( *programObject, pBindingLayout );
 		programObject->DetachShader( pShader );
 		return programObject;
 	}
 
-	void GLShaderProgramObject::SetProgramPreLinkBindings( GLShaderProgramObject & pProgram, const GLShaderDataLayoutMap & pLayoutMap )
+	void GLShaderProgramObject::SetProgramPreLinkBindings( GLShaderProgramObject & pProgram, const GLShaderBindingLayout & pBindingLayout )
 	{
-		for( const auto & attributeLocation : pLayoutMap.attributeLocations )
+		for( const auto & attributeLocation : pBindingLayout.attributeLocations )
 		{
 			glBindAttribLocation( pProgram.mGLHandle, attributeLocation.second, attributeLocation.first.data() );
 			Ic3OpenGLHandleLastError();
 		}
 
-		for( const auto & fragDataLocation : pLayoutMap.fragDataLocations )
+		for( const auto & fragDataLocation : pBindingLayout.fragDataLocations )
 		{
 			glBindFragDataLocation( pProgram.mGLHandle, fragDataLocation.second, fragDataLocation.first.data() );
 			Ic3OpenGLHandleLastError();
 		}
 	}
 
-	void GLShaderProgramObject::SetProgramPostLinkBindings( GLShaderProgramObject & pProgram, const GLShaderDataLayoutMap & pLayoutMap )
+	void GLShaderProgramObject::SetProgramPostLinkBindings( GLShaderProgramObject & pProgram, const GLShaderBindingLayout & pBindingLayout )
 	{
-		for( const auto & samplerBinding : pLayoutMap.samplerBindings )
+		for( const auto & samplerBinding : pBindingLayout.samplerBindings )
 		{
 			GLint samplerVariableLocation = glGetUniformLocation( pProgram.mGLHandle, samplerBinding.first.data() );
 			Ic3OpenGLHandleLastError();
@@ -88,7 +88,7 @@ namespace Ic3::Graphics::GCI
 			}
 		}
 
-		for( const auto & uniformBlockBinding : pLayoutMap.uniformBlockBindings )
+		for( const auto & uniformBlockBinding : pBindingLayout.uniformBlockBindings )
 		{
 			GLint blockIndex = glGetUniformBlockIndex( pProgram.mGLHandle, uniformBlockBinding.first.data() );
 			Ic3OpenGLHandleLastError();
@@ -117,10 +117,10 @@ namespace Ic3::Graphics::GCI
 
 	bool GLShaderProgramObject::ValidateHandle() const
 	{
-		auto isProgram = glIsProgram( mGLHandle );
+		const auto checkResult = glIsProgram( mGLHandle );
 		Ic3OpenGLHandleLastError();
 
-		return isProgram != GL_FALSE;
+		return checkResult != GL_FALSE;
 	}
 
 	void GLShaderProgramObject::AttachShader( GLuint pShaderHandle )
@@ -159,7 +159,7 @@ namespace Ic3::Graphics::GCI
 
 	bool GLShaderProgramObject::Link()
 	{
-		auto attachedShadersStageMask = queryShaderStageMask();
+		auto attachedShadersStageMask = QueryShaderStageMask();
 
 		glLinkProgram( mGLHandle );
 		Ic3OpenGLHandleLastError();
@@ -258,7 +258,7 @@ namespace Ic3::Graphics::GCI
 		return static_cast<GLuint>( attribLocation );
 	}
 
-	cppx::bitmask<GLbitfield> GLShaderProgramObject::queryShaderStageMask() const
+	cppx::bitmask<GLbitfield> GLShaderProgramObject::QueryShaderStageMask() const
 	{
 		cppx::bitmask<GLbitfield> shaderStageMask = 0;
 
@@ -278,9 +278,9 @@ namespace Ic3::Graphics::GCI
 
 	std::string GLShaderProgramObject::GetInfoLog() const
 	{
-		std::string infoLog {};
+		std::string infoLog{};
 
-		auto infoLogLength = GetInfoLogLength();
+		const auto infoLogLength = GetInfoLogLength();
 		if ( infoLogLength > 0 )
 		{
 			cppx::dynamic_byte_array infoLogBuffer;
@@ -294,6 +294,27 @@ namespace Ic3::Graphics::GCI
 		}
 
 		return infoLog;
+	}
+
+	bool GLShaderProgramObject::GetBinary( ShaderBinary & pBinary ) const
+	{
+		const auto binarySize = QueryParameter( GL_PROGRAM_BINARY_LENGTH );
+		if( binarySize > 0 )
+		{
+			Ic3DebugAssert( pBinary.dataSizeInBytes == binarySize );
+
+			GLenum binaryFormatTag = 0u;
+			GLsizei writtenDataSize = 0u;
+
+			glGetProgramBinary( mGLHandle, static_cast<GLsizei>( binarySize ), &writtenDataSize, &binaryFormatTag, pBinary.dataBuffer );
+			Ic3OpenGLHandleLastError();
+
+			pBinary.driverSpecificFormatTag = binaryFormatTag;
+
+			return true;
+		}
+
+		return false;
 	}
 
 	std::vector<GLuint> GLShaderProgramObject::GetAttachedShaders() const

@@ -111,8 +111,8 @@ namespace Ic3
 	{
 		using Traits = GCI::QVertexAttribFormatDataTypeTraits<TPAttribute>;
 
-		const auto fixedAttributeFormat = CXU::getVertexAttributeKeyBaseFormat( pAttributeKey );
-		const auto fixedAttributeComponentsNum = CXU::getVertexAttributeKeyComponentsNum( pAttributeKey );
+		const auto fixedAttributeFormat = CXU::GetVertexAttributeKeyBaseFormat( pAttributeKey );
+		const auto fixedAttributeComponentsNum = CXU::GetVertexAttributeKeyComponentsNum( pAttributeKey );
 
 		if( !GCU::CheckAttributeAutoDataFormat<Traits>( fixedAttributeFormat, fixedAttributeComponentsNum ) )
 		{
@@ -121,13 +121,13 @@ namespace Ic3
 		else
 		{
 			VertexAttributeDefinition attributeDefinition{};
-			attributeDefinition.attributeSlot = CXU::getVertexAttributeKeyBaseIndex( pAttributeKey );
+			attributeDefinition.attributeSlot = CXU::GetVertexAttributeKeyBaseIndex( pAttributeKey );
 			attributeDefinition.baseFormat = Traits::sBaseAttribFormat;
 			attributeDefinition.vertexStreamIASlot = cppx::numeric_cast<uint16>( streamSlot );
 			attributeDefinition.vertexStreamRelativeOffset = pStreamRelativeOffset;
 			attributeDefinition.semanticComponentsNum = 0;
 			attributeDefinition.dataRate = EVertexDataRate::PerVertex;
-			const auto attributeSemanticsID = CXU::getVertexAttributeKeySystemSemanticFlags( pAttributeKey );
+			const auto attributeSemanticsID = CXU::GetVertexAttributeKeySystemSemanticFlags( pAttributeKey );
 			attributeDefinition.shaderSemantics = ShaderSemantics{ attributeSemanticsID };
 			attributeDefinition.componentPadding = Traits::sAttribComponentsNum;
 
@@ -152,7 +152,7 @@ namespace Ic3
 			return false;
 		}
 
-		const auto specifiedComponentByteSize = GCI::CXU::getVertexAttribFormatByteSize( pAttributeBaseFormat );
+		const auto specifiedComponentByteSize = GCI::CXU::GetVertexAttribFormatByteSize( pAttributeBaseFormat );
 		const auto specifiedAttributeByteSize = specifiedComponentByteSize * pAttributeComponentsNum;
 
 		if( specifiedAttributeByteSize != TPAttributeTraits::sSizeInBytes )

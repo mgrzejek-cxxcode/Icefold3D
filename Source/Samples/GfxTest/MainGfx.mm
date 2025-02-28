@@ -25,9 +25,10 @@
 #include <Ic3/Graphics/GCI/State/GraphicsPipelineStateDescriptorIA.h>
 
 #include <Ic3/NxMain/Camera/CameraController.h>
-
 #include <Ic3/NxMain/GCI/VertexFormatDescriptor.h>
 #include <Ic3/NxMain/GCI/VertexFormatDescriptorUtils.h>
+#include <Ic3/NxMain/Renderer/ShaderLibrary.h>
+#include <Ic3/NxMain/Renderer/ShaderLoader.h>
 
 #include <chrono>
 #include <thread>
@@ -92,7 +93,7 @@ int main( int pArgc, const char ** pArgv )
 	auto sysContext = Platform::CreateSysContext( sysContextCreateInfo );
 
 	Platform::AssetLoaderCreateInfoNativeParams aslCreateInfoNP;
-	aslCreateInfoNP.relativeAssetRootDir = "assets";
+	aslCreateInfoNP.relativeAssetRootDir = "Assets";
 	AssetLoaderCreateInfo aslCreateInfo;
 	aslCreateInfo.nativeParams = &aslCreateInfoNP;
 	auto assetLoader = sysContext->CreateAssetLoader( aslCreateInfo );
@@ -189,6 +190,11 @@ int main( int pArgc, const char ** pArgv )
 	}
 
 	CoreEngineState ces{sysContext, gxDriverState.device};
+
+	auto shaderLibrary = ShaderLoaderFileBased::CreateLoader( ces, assetLoader, "shaders/" + sGxDriverName )->LoadShadersIntoNewLibrary( {
+			ShaderLoadDescFile{ Ic3ShaderLoadDescVSAutoID( "SID_DEFAULT_PASSTHROUGH_VS" ), "default_passthrough_vs" },
+			ShaderLoadDescFile{ Ic3ShaderLoadDescPSAutoID( "SID_DEFAULT_PASSTHROUGH_PS" ), "default_passthrough_ps" }
+	} );
 
 	auto * gpuDevicePtr = gxDriverState.device.get();
 

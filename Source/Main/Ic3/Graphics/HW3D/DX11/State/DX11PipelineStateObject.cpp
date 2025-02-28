@@ -13,13 +13,13 @@ namespace Ic3::Graphics::GCI
 	DX11GraphicsPipelineStateObject::DX11GraphicsPipelineStateObject(
 			DX11GPUDevice & pGPUDevice,
 			RenderTargetLayout pRenderTargetLayout,
-			ShaderInputSignature pShaderInputSignature,
+			RootSignature pRootSignature,
 			const SeparableGraphicsPSDSet & pPSOCompiledStates,
 			const GraphicsShaderSet & pSeparableShaders )
 	: GraphicsPipelineStateObjectSeparableShader(
 			pGPUDevice,
 			std::move( pRenderTargetLayout ),
-			std::move( pShaderInputSignature ),
+			std::move( pRootSignature ),
 			pPSOCompiledStates,
 			pSeparableShaders )
 	{}

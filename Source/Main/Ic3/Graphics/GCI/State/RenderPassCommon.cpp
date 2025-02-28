@@ -66,7 +66,7 @@ namespace Ic3::Graphics::GCI
 
 		if( pActionFlags & eRenderPassAttachmentActionMaskLoadAll )
 		{
-			GCU::ForEachRTColorAttachmentIndex( activeAttachmentsMask,
+			GCU::ForEachRTAttachmentIndex( activeAttachmentsMask,
 				[&]( native_uint pAttachmentIndex, ERTAttachmentFlags pAttachmentBit )
 				{
 					if( const auto * attachmentConfig = GetAttachment( pAttachmentIndex ) )

@@ -143,6 +143,8 @@ set( IC3_GRAPHICS_GCI_SRC_FILES
         State/GraphicsPipelineStateImplGenericRenderPass.cpp
         State/GraphicsPipelineStateImplSeparableState.inl
         CommandListImplGenericRenderPass.h
+        State/ShaderInputSignature.cpp
+        State/ShaderInputSignature.h
 
 )
 

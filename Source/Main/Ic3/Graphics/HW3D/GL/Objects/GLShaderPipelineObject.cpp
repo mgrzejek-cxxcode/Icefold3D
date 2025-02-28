@@ -41,10 +41,10 @@ namespace Ic3::Graphics::GCI
 
 	bool GLShaderPipelineObject::ValidateHandle() const
 	{
-		auto isProgram = glIsProgramPipeline( mGLHandle );
+		const auto checkResult = glIsProgramPipeline( mGLHandle );
 		Ic3OpenGLHandleLastError();
 
-		return isProgram != GL_FALSE;
+		return checkResult != GL_FALSE;
 	}
 
 	void GLShaderPipelineObject::AttachProgram( GLShaderProgramObject & pProgram )

@@ -2,7 +2,7 @@
 #ifndef __CPPX_STRING_UTILS_H__
 #define __CPPX_STRING_UTILS_H__
 
-#include "stringExt.h"
+#include "bitmask.h"
 #include <cctype>
 #include <cwctype>
 #include <functional>

@@ -46,9 +46,10 @@ namespace Ic3::Graphics::GCI
 
 		GLint QueryParameter( GLenum pParameter ) const;
 		GLuint QueryVertexAttributeLocation( const char * pAttribName ) const;
-		cppx::bitmask<GLbitfield> queryShaderStageMask() const;
+		cppx::bitmask<GLbitfield> QueryShaderStageMask() const;
 
 		std::string GetInfoLog() const;
+		bool GetBinary( ShaderBinary & pBinary ) const;
 		std::vector<GLuint> GetAttachedShaders() const;
 		size_t GetAttachedShadersNum() const;
 		size_t GetInfoLogLength() const;
@@ -62,10 +63,10 @@ namespace Ic3::Graphics::GCI
 		static GLShaderProgramObjectHandle Create( GLShaderProgramType pProgramType );
 
 		static GLShaderProgramObjectHandle CreateSeparableModule( GLShaderObject & pShader );
-		static GLShaderProgramObjectHandle CreateSeparableModule( GLShaderObject & pShader, const GLShaderDataLayoutMap & pLayoutMap );
+		static GLShaderProgramObjectHandle CreateSeparableModule( GLShaderObject & pShader, const GLShaderBindingLayout & pBindingLayout );
 
-		static void SetProgramPreLinkBindings( GLShaderProgramObject & pProgram, const GLShaderDataLayoutMap & pLayoutMap );
-		static void SetProgramPostLinkBindings( GLShaderProgramObject & pProgram, const GLShaderDataLayoutMap & pLayoutMap );
+		static void SetProgramPreLinkBindings( GLShaderProgramObject & pProgram, const GLShaderBindingLayout & pBindingLayout );
+		static void SetProgramPostLinkBindings( GLShaderProgramObject & pProgram, const GLShaderBindingLayout & pBindingLayout );
 
 	private:
 		GLbitfield _linkedShadersStageMask;

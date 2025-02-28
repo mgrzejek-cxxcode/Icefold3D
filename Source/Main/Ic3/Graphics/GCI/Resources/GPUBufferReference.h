@@ -25,28 +25,38 @@ namespace Ic3::Graphics::GCI
 
 		GPUBuffer * operator->() const noexcept;
 
-		/// @brief Returns a pointer to the referenced GPU buffer. This can be null if the reference is empty().
+		/**
+		 * @brief Returns a pointer to the referenced GPU buffer. This can be null if the reference IsEmpty().
+		 */
 		CPPX_ATTR_NO_DISCARD GPUBufferHandle GetRefBuffer() const noexcept;
 
-		/// @brief
+		/**
+		 */
 		CPPX_ATTR_NO_DISCARD const GPUMemoryRegion & GetRefSubRegion() const noexcept;
 
-		/// @brief Returns true if this instance represents a valid binding.
+		/**
+		 * @brief Returns true if this instance represents a valid binding.
+		 */
 		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept;
 
-		/// @brief
+		/**
+		 */
 		CPPX_ATTR_NO_DISCARD bool IsValid() const noexcept;
 
-		/// @brief
+		/**
+		 */
 		bool SetRefBuffer( GPUBufferHandle pGPUBuffer );
 
-		/// @brief
+		/**
+		 */
 		bool SetRefBuffer( GPUBufferHandle pGPUBuffer, const GPUMemoryRegion & pReferencedSubRegion );
 
-		/// @brief
+		/**
+		 */
 		bool SetRefBuffer( GPUBufferHandle pGPUBuffer, gpu_memory_size_t pOffset, gpu_memory_size_t pSize = cxGPUMemorySizeMax );
 
-		/// @brief
+		/**
+		 */
 		bool Reset();
 
 	private:

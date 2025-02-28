@@ -215,7 +215,7 @@ namespace Ic3::Graphics::GCI
 			d3d11Texture2DDesc.ArraySize = pCreateInfo.dimensions.arraySize;
 			d3d11Texture2DDesc.MipLevels = pCreateInfo.dimensions.mipLevelsNum;
 			d3d11Texture2DDesc.BindFlags = pCreateInfo.dx11UsageDesc.bindFlags;
-			d3d11Texture2DDesc.CpuAccessFlags = pCreateInfo.dx11UsageDesc.cpuAccessFlags;
+			d3d11Texture2DDesc.CPUAccessFlags = pCreateInfo.dx11UsageDesc.cpuAccessFlags;
 			d3d11Texture2DDesc.MiscFlags = pCreateInfo.dx11UsageDesc.resourceMiscFlags;
 			d3d11Texture2DDesc.Usage = pCreateInfo.dx11UsageDesc.usage;
 			d3d11Texture2DDesc.SampleDesc.Count = 1;

@@ -8,7 +8,7 @@ namespace Ic3
 {
 
 	InterleavedBufferElementRefReadWrite MeshData::getIndexDataSubRegionReadWrite(
-			const CpuGeometryDataReferenceBase & pMeshDataRef ) noexcept
+			const CPUGeometryDataReferenceBase & pMeshDataRef ) noexcept
 	{
 		return InterleavedBufferElementRefReadWrite {
 				_indexDataBuffer.data() + ( pMeshDataRef.indexDataRegion.offsetInElementsNum * pMeshDataRef.indexDataRegion.elementSize ),
@@ -18,7 +18,7 @@ namespace Ic3
 	}
 
 	InterleavedBufferElementRefReadWrite MeshData::getVertexAttributeDataSubRegionReadWrite(
-			const CpuGeometryDataReferenceBase & pMeshDataRef,
+			const CPUGeometryDataReferenceBase & pMeshDataRef,
 			uint32 pAttributeIndex ) noexcept
 	{
 		const auto & attributeFormat = mDataFormat.attribute( pAttributeIndex );

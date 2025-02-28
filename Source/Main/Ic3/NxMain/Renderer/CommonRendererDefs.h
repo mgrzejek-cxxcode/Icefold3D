@@ -5,7 +5,6 @@
 #define __IC3_NXMAIN_COMMON_RENDERER_DEFS_H__
 
 #include "../Prerequisites.h"
-
 #include <Ic3/Graphics/GCI/Resources/TextureCommon.h>
 #include <Ic3/Graphics/GCI/State/CommonGPUStateDefs.h>
 

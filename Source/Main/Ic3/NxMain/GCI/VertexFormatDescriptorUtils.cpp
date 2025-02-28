@@ -259,7 +259,7 @@ namespace Ic3
 					continue;
 				}
 
-				const auto streamSlot = cppx::fromStringOrDefault<uint32>( streamSlotStr, kGCIVertexInputStreamSlotUndefined );
+				const auto streamSlot = cppx::from_string_or_default<uint32>( streamSlotStr, kGCIVertexInputStreamSlotUndefined );
 				if( !GCI::CXU::IAIsDataStreamVertexBufferIndexValid( streamSlot ) )
 				{
 					continue;
@@ -307,10 +307,10 @@ namespace Ic3
 							continue;
 						}
 
-						const auto attribIASlot = cppx::fromStringOrDefault<uint32>( attribIASlotStr, kGCIVertexInputAttributeSlotUndefined );
-						const auto attribRelativeOffset = cppx::fromStringOrDefault<uint32>( attribIASlotStr, kGCIVertexInputAttributeSlotUndefined );
-						const auto semanticGroupSize = cppx::fromStringOrDefault<uint32>( semanticGroupSizeValueStr, 1u );
-						const auto dataPadding = cppx::fromStringOrDefault<uint32>( dataPaddingValueStr, 0u );
+						const auto attribIASlot = cppx::from_string_or_default<uint32>( attribIASlotStr, kGCIVertexInputAttributeSlotUndefined );
+						const auto attribRelativeOffset = cppx::from_string_or_default<uint32>( attribIASlotStr, kGCIVertexInputAttributeSlotUndefined );
+						const auto semanticGroupSize = cppx::from_string_or_default<uint32>( semanticGroupSizeValueStr, 1u );
+						const auto dataPadding = cppx::from_string_or_default<uint32>( dataPaddingValueStr, 0u );
 
 						if( !GCU::IsAttributeLocationAndSizeValid( attribIASlot, semanticGroupSize ) ||
 						    ( attribRelativeOffset == kGCIVertexAttributeOffsetInvalid ) )

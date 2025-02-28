@@ -86,15 +86,17 @@ namespace Ic3::Graphics::GCI
 	enum class EBaseDataType : base_data_type_value_t
 	{
 		Undefined    = CXU::makeBaseDataTypeEnumValue( 0 , 0 , 0 ),
-		Byte         = CXU::makeBaseDataTypeEnumValue( 1 , 1 , eGPUDataFormatFlagTypeSignedBit   ),
-		Ubyte        = CXU::makeBaseDataTypeEnumValue( 2 , 1 , eGPUDataFormatFlagTypeUnsignedBit ),
-		Int16        = CXU::makeBaseDataTypeEnumValue( 3 , 2 , eGPUDataFormatFlagTypeSignedBit   ),
-		Uint16       = CXU::makeBaseDataTypeEnumValue( 4 , 2 , eGPUDataFormatFlagTypeUnsignedBit ),
-		Int32        = CXU::makeBaseDataTypeEnumValue( 5 , 4 , eGPUDataFormatFlagTypeSignedBit   ),
-		Uint32       = CXU::makeBaseDataTypeEnumValue( 6 , 4 , eGPUDataFormatFlagTypeUnsignedBit ),
-		Float16      = CXU::makeBaseDataTypeEnumValue( 7 , 2 , eGPUDataFormatFlagTypeSignedBit   ),
-		Float32      = CXU::makeBaseDataTypeEnumValue( 8 , 4 , eGPUDataFormatFlagTypeSignedBit   ),
-		Uint24S8     = CXU::makeBaseDataTypeEnumValue( 9 , 4 , eGPUDataFormatFlagTypeUnsignedBit ),
+		Bool         = CXU::makeBaseDataTypeEnumValue( 1 , 1 , 0 ),
+		Byte         = CXU::makeBaseDataTypeEnumValue( 2 , 1 , eGPUDataFormatFlagTypeSignedBit   ),
+		Ubyte        = CXU::makeBaseDataTypeEnumValue( 3 , 1 , eGPUDataFormatFlagTypeUnsignedBit ),
+		Int16        = CXU::makeBaseDataTypeEnumValue( 4 , 2 , eGPUDataFormatFlagTypeSignedBit   ),
+		Uint16       = CXU::makeBaseDataTypeEnumValue( 5 , 2 , eGPUDataFormatFlagTypeUnsignedBit ),
+		Int32        = CXU::makeBaseDataTypeEnumValue( 6 , 4 , eGPUDataFormatFlagTypeSignedBit   ),
+		Uint32       = CXU::makeBaseDataTypeEnumValue( 7 , 4 , eGPUDataFormatFlagTypeUnsignedBit ),
+		Float16      = CXU::makeBaseDataTypeEnumValue( 8 , 2 , eGPUDataFormatFlagTypeSignedBit   ),
+		Float32      = CXU::makeBaseDataTypeEnumValue( 9 , 4 , eGPUDataFormatFlagTypeSignedBit   ),
+		Double       = CXU::makeBaseDataTypeEnumValue( 10, 8 , eGPUDataFormatFlagTypeSignedBit   ),
+		Uint24S8     = CXU::makeBaseDataTypeEnumValue( 11, 4 , eGPUDataFormatFlagTypeUnsignedBit ),
 	};
 
 	enum class EIndexDataFormat : base_data_type_value_t

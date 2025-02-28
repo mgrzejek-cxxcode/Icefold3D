@@ -43,8 +43,10 @@ set( IC3_ENGINE_SRC_FILES
 		#"Renderer/CommonRendererDefs.h"
 		#"Renderer/Renderer.h"
 		#"Renderer/Renderer.cpp"
-		#"Renderer/ShaderLibrary.h"
-		#"Renderer/ShaderLibrary.cpp"
+		"Renderer/ShaderLibrary.h"
+		"Renderer/ShaderLibrary.cpp"
+		"Renderer/ShaderLoader.h"
+		"Renderer/ShaderLoader.cpp"
 		#"Renderer/Effects/ShadowRenderer.h"
 		#"Renderer/Effects/ShadowRenderer.cpp"
 
@@ -75,6 +77,8 @@ set( IC3_ENGINE_SRC_FILES
 		"Res/ResourceManager.cpp"
 
         "TypeInfo/TPIEngineEnum.cpp"
+		GCI/ShaderUtils.h
+		GCI/ShaderUtils.cpp
 
 		#"Geometry/IndexedMeshDataBufferBuilder.h"
 		#"Geometry/MeshData.h"

@@ -49,12 +49,12 @@ namespace Ic3::Graphics::GCI
 
 			if( !CreateRootSignatureConstantLayout( pRootSignatureDesc, rootSignature ) )
 			{
-				return cxInitEmpty;
+				return kInitEmpty;
 			}
 
 			if( !CreateRootSignatureDescriptorLayout( pRootSignatureDesc, rootSignature ) )
 			{
-				return cxInitEmpty;
+				return kInitEmpty;
 			}
 
 			rootSignature.constantsNum = rootSignature.constantLayout.constantsNum;

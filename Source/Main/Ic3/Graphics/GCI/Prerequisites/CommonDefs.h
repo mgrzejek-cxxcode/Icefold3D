@@ -25,36 +25,8 @@ namespace Ic3::Graphics::GCI
 	inline constexpr GfxObjectID cxGPUObjectIDEmpty { 0 };
 
 	/**
-	 * GCU Namespace (Constant Expressions Utils).
-	 * Contains utilities used to define and analyse compile-time expressions (constants, enum values, flags, etc).
+	 *
 	 */
-	namespace CXU
-	{}
-
-	namespace CXU
-	{
-
-		// constexpr uint32 GPU_SYSTEM_METRIC_IA_MAX_VERTEX_ATTRIBUTES_NUM = 16;
-		// constexpr uint32 GPU_SYSTEM_METRIC_IA_MAX_VERTEX_BUFFER_BINDINGS_NUM = 16;
-		// constexpr uint32 GPU_SYSTEM_METRIC_RT_MAX_COLOR_ATTACHMENTS_NUM = 8;
-		// constexpr uint32 GPU_SYSTEM_METRIC_RT_MAX_COMBINED_ATTACHMENTS_NUM = 9;
-		// constexpr uint32 GPU_SYSTEM_METRIC_SHADER_COMBINED_STAGES_NUM = 6;
-		// constexpr uint32 GPU_SYSTEM_METRIC_SHADER_GRAPHICS_STAGES_NUM = 5;
-		// constexpr uint32 GPU_SYSTEM_METRIC_IS_MAX_CONSTANT_GROUP_SIZE = 32;
-		// constexpr uint32 GPU_SYSTEM_METRIC_IS_MAX_DESCRIPTOR_SET_SIZE = 16;
-		// constexpr uint32 GPU_SYSTEM_METRIC_IS_MAX_DESCRIPTOR_SETS_NUM = 4;
-		// constexpr uint32 GPU_SYSTEM_METRIC_IS_MAX_DWORD_SIZE = 64;
-		// constexpr uint32 GPU_SYSTEM_METRIC_RES_MAX_TEXTURE_UNITS_NUM = 32;
-		// constexpr uint32 GPU_SYSTEM_METRIC_TEXTURE_MAX_MIP_LEVELS_NUM = 16;
-
-		///
-		inline constexpr bool IsGfxObjectIDValid( GfxObjectID pUniqueID ) noexcept
-		{
-			return ( pUniqueID != cxGPUObjectIDInvalid ) && ( pUniqueID != cxGPUObjectIDEmpty );
-		}
-
-	}
-
 	enum EGPUDriverConfigFlags : uint32
 	{
 		eGPUDriverConfigFlagEnableDebugLayerBit         = 0x0001,
@@ -64,8 +36,6 @@ namespace Ic3::Graphics::GCI
 		eGPUDriverConfigFlagForceCoreProfileBit         = 0x0200,
 		eGPUDriverConfigFlagUseReferenceDriverBit       = 0x8000,
 		eGPUDriverConfigMaskDefault                     = 0,
-		
-		eGPU_DRIVER_CONFIG_MASK_DEFAULT
 	};
 
 	inline constexpr uint32 kShaderStageIndexGraphicsVertex = 0;
@@ -91,44 +61,52 @@ namespace Ic3::Graphics::GCI
 	namespace CXU
 	{
 
+		/**
+		 *
+	 	 */
 		CPPX_ATTR_NO_DISCARD inline constexpr bool SHIsShaderStageIndexValid( native_uint pStageIndex )
 		{
 			return ( pStageIndex >= kShaderStageIndexBase ) && ( pStageIndex <= kShaderStageIndexMax );
 		}
 
+		/**
+		 *
+		  */
 		CPPX_ATTR_NO_DISCARD inline constexpr bool SHIsGraphicsShaderStageIndexValid( native_uint pGraphicsStageIndex )
 		{
 			return ( pGraphicsStageIndex >= kShaderStageIndexBase ) && ( pGraphicsStageIndex <= kShaderStageIndexMaxGraphics );
 		}
 
-		/// @brief Returns a 32-bit value which is a bit flag matching any (graphics or compute) shader stage specified using its index.
-		/// @return One of eShaderStageFlagXXXBit values for a valid stage index or 0 otherwise, returned as uint32.
+		/**
+		 * @brief Returns a 32-bit value which is a bit flag matching any (graphics or compute) shader stage specified using its index.
+		 * @return One of eShaderStageFlagXXXBit values for a valid stage index or 0 otherwise, returned as uint32.
+	 	 */
 		CPPX_ATTR_NO_DISCARD inline constexpr uint32 SHMakeShaderStageBit( native_uint pStageIndex )
 		{
 			return ( pStageIndex < GCM::kShaderCombinedStagesNum ) ? ( 1 << pStageIndex ) : 0u;
 		}
 
-		/// @brief Returns a 32-bit value which is a bit flag matching the graphics shader stage specified using its index.
-		/// @return One of eShaderStageFlagGraphicsXXXBit values for a valid graphics stage index or 0 otherwise, returned as uint32.
+		/**
+		 * @brief Returns a 32-bit value which is a bit flag matching the graphics shader stage specified using its index.
+		 * @return One of eShaderStageFlagGraphicsXXXBit values for a valid graphics stage index or 0 otherwise, returned as uint32.
+	 	 */
 		CPPX_ATTR_NO_DISCARD inline constexpr uint32 SHMakeGraphicsShaderStageBit( native_uint pGraphicsStageIndex )
 		{
 			return ( pGraphicsStageIndex < GCM::kShaderGraphicsStagesNum ) ? ( 1 << pGraphicsStageIndex ) : 0u;
 		}
 
-	}
+	} // namespace CXU
 
-	/// @brief Bit flags for all supported shader stages.
-	///
-	/// Each flag is a value with a single bit set, uniquely identifying the corresponding shader stage.
-	/// The position of this bit is the EShaderStageIndex value for the particular stage.
-	///
-	/// @see EShaderStageIndex
+	/**
+	 * @brief Bit flags for all supported shader stages.
+	 *
+	 * Each flag is a value with a single bit set, uniquely identifying the corresponding shader stage.
+	 * The position of this bit is the EShaderStageIndex value for the particular stage.
+	 *
+	 * @see EShaderStageIndex
+	 */
 	enum EShaderStageFlags : uint32
 	{
-		// Note: CXU::declareShaderType() and other enum utility functions assume, that shader-related bits will fit
-		// 16-bit value range and have values up to 0xFFFF (no shifting is performed). In case of any alterations,
-		// update that part of the functionality accordingly (see shaderCommon.h).
-
 		eShaderStageFlagGraphicsVertexBit   = CXU::SHMakeShaderStageBit( kShaderStageIndexGraphicsVertex ),
 		eShaderStageFlagGraphicsHullBit     = CXU::SHMakeShaderStageBit( kShaderStageIndexGraphicsTessHull ),
 		eShaderStageFlagGraphicsDomainBit   = CXU::SHMakeShaderStageBit( kShaderStageIndexGraphicsTessDomain ),
@@ -149,15 +127,17 @@ namespace Ic3::Graphics::GCI
 		eShaderStageMaskNone = 0u,
 	};
 
-	/// @brief A set of index values for supported pipeline stages.
-	///
-	/// Just like EShaderStageIndex defines indexes for shader stages, this is a set of values for the whole pipeline
-	/// (including shader stages as well). Not all of the defined stages may refer to the actual, hardware-reflected
-	/// subset of the pipeline. Some of the values may be "pseudo-stages", indicating execution of some host-side commands.
-	///
-	/// @note
-	/// Values for shader stages (ePipelineStageIndexShaderXXX) are guaranteed to be the same as their
-	/// EShaderStageIndex counterparts (eShaderIndexShaderXXX). That of course means that are 0-based too.
+	/**
+	 * @brief A set of index values for supported pipeline stages.
+	 *
+	 * Just like EShaderStageIndex defines indexes for shader stages, this is a set of values for the whole pipeline
+	 * (including shader stages as well). Not all the defined stages may refer to the actual, hardware-reflected
+	 * subset of the pipeline. Some of the values may be "pseudo-stages", indicating execution of some host-side commands.
+	 *
+	 * @note
+	 * Values for shader stages (ePipelineStageIndexShaderXXX) are guaranteed to be the same as their
+	 * EShaderStageIndex counterparts (eShaderStageIndexXXX). That of course means both sets are zero-based.
+	 */
 	enum EPipelineStageIndex : uint32
 	{
 		ePipelineStageIndexShaderGraphicsVertex   = kShaderStageIndexGraphicsVertex,
@@ -181,12 +161,14 @@ namespace Ic3::Graphics::GCI
 		ePipelineStageIndexMax = ePipelineStageIndexRTColorOutput
 	};
 
-	/// @brief Bit flags for all supported shader stages.
-	///
-	/// Each flag is a value with a single bit set, uniquely identifying the corresponding shader stage.
-	/// The position of this bit is the EShaderStageIndex value for the particular stage.
-	///
-	/// @see EShaderStageIndex
+	/**
+	 * @brief Bit flags for all supported shader stages.
+	 *
+	 * Each flag is a value with a single bit set, uniquely identifying the corresponding shader stage.
+	 * The position of this bit is the EShaderStageIndex value for the particular stage.
+	 *
+	 * @see EShaderStageIndex
+	 */
 	enum EPipelineStageFlags : uint32
 	{
 		ePipelineStageFlagShaderGraphicsVertexBit      = eShaderStageFlagGraphicsVertexBit,
@@ -209,3 +191,5 @@ namespace Ic3::Graphics::GCI
 } // namespace Ic3::Graphics::GCI
 
 #endif // __IC3_GRAPHICS_GCI_COMMON_DEFS_H__
+
+

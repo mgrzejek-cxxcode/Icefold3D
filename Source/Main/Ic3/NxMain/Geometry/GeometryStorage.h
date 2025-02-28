@@ -58,7 +58,7 @@ namespace Ic3
 		CPPX_ATTR_NO_DISCARD virtual GeometryMemoryReference allocateGeometryMemory( const GeometryMemoryAllocationDesc & pAllocationDesc ) = 0;
 
 
-		CPPX_ATTR_NO_DISCARD bool isCpuMemoryStorage() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool isCPUMemoryStorage() const noexcept;
 
 		CPPX_ATTR_NO_DISCARD bool isGPUMemoryStorage() const noexcept;
 
@@ -93,7 +93,7 @@ namespace Ic3
 	};
 
 	/// @brief
-	class IC3_NXMAIN_CLASS IGeometryDataStorageCpu : public IGeometryDataStorage
+	class IC3_NXMAIN_CLASS IGeometryDataStorageCPU : public IGeometryDataStorage
 	{
 	public:
 		CPPX_ATTR_NO_DISCARD virtual EGeometryMemoryPool getMemoryPoolType() const noexcept override final;

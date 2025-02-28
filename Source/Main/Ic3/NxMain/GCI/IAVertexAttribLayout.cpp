@@ -133,8 +133,8 @@ namespace Ic3
 				const auto & formatComponentBitSizeStr = regexMatch[3].str();
 				const auto & formatNormalizedStr = regexMatch[4].str();
 
-				const auto formatComponentsNum = cppx::fromStringOrDefault<uint32>( formatComponentsNumStr );
-				const auto formatComponentBitSize = cppx::fromStringOrDefault<uint32>( formatComponentBitSizeStr );
+				const auto formatComponentsNum = cppx::from_string_or_default<uint32>( formatComponentsNumStr );
+				const auto formatComponentBitSize = cppx::from_string_or_default<uint32>( formatComponentBitSizeStr );
 				const auto isNormalized = !formatNormalizedStr.empty();
 				const auto isFloat = ( formatBaseTypeStr == "F" );
 				const auto isSignedInt = !isFloat && ( formatBaseTypeStr == "I" );
@@ -375,13 +375,13 @@ namespace Ic3
 				return GCI::EVertexAttribFormat::Undefined;
 			}
 
-			const auto format1BaseComponentsNum = GCI::CXU::getVertexAttribFormatComponentsNum( pFormat1 );
-			const auto format1BaseDataType = GCI::CXU::getVertexAttribFormatBaseDataType( pFormat1 );
-			const auto format1DataTypeFlags = GCI::CXU::getVertexAttribFormatFlags( pFormat1 );
+			const auto format1BaseComponentsNum = GCI::CXU::GetVertexAttribFormatComponentsNum( pFormat1 );
+			const auto format1BaseDataType = GCI::CXU::GetVertexAttribFormatBaseDataType( pFormat1 );
+			const auto format1DataTypeFlags = GCI::CXU::GetVertexAttribFormatFlags( pFormat1 );
 
-			const auto format2BaseComponentsNum = GCI::CXU::getVertexAttribFormatComponentsNum( pFormat2 );
-			const auto format2BaseDataType = GCI::CXU::getVertexAttribFormatBaseDataType( pFormat2 );
-			const auto format2DataTypeFlags = GCI::CXU::getVertexAttribFormatFlags( pFormat2 );
+			const auto format2BaseComponentsNum = GCI::CXU::GetVertexAttribFormatComponentsNum( pFormat2 );
+			const auto format2BaseDataType = GCI::CXU::GetVertexAttribFormatBaseDataType( pFormat2 );
+			const auto format2DataTypeFlags = GCI::CXU::GetVertexAttribFormatFlags( pFormat2 );
 
 			const auto combinedBaseComponentsNum = format1BaseComponentsNum + format2BaseComponentsNum;
 
@@ -426,9 +426,9 @@ namespace Ic3
 					continue;
 				}
 
-				const auto formatBaseComponentsNum = GCI::CXU::getVertexAttribFormatComponentsNum( format );
-				const auto formatBaseDataType = GCI::CXU::getVertexAttribFormatBaseDataType( format );
-				const auto formatDataTypeFlags = GCI::CXU::getVertexAttribFormatFlags( format );
+				const auto formatBaseComponentsNum = GCI::CXU::GetVertexAttribFormatComponentsNum( format );
+				const auto formatBaseDataType = GCI::CXU::GetVertexAttribFormatBaseDataType( format );
+				const auto formatDataTypeFlags = GCI::CXU::GetVertexAttribFormatFlags( format );
 
 				if( combinedBaseDataType == GCI::EBaseDataType::Undefined )
 				{
@@ -486,14 +486,14 @@ namespace Ic3
 
 			if( pFormat1 != GCI::EVertexAttribFormat::Undefined )
 			{
-				numOfBaseTypeComponents = GCI::CXU::getVertexAttribFormatComponentsNum( pFormat1 );
-				baseDataType = GCI::CXU::getVertexAttribFormatBaseDataType( pFormat1 );
+				numOfBaseTypeComponents = GCI::CXU::GetVertexAttribFormatComponentsNum( pFormat1 );
+				baseDataType = GCI::CXU::GetVertexAttribFormatBaseDataType( pFormat1 );
 			}
 
 			if( pFormat2 != GCI::EVertexAttribFormat::Undefined )
 			{
-				numOfBaseTypeComponents = GCI::CXU::getVertexAttribFormatComponentsNum( pFormat1 );
-				baseDataType = GCI::CXU::getVertexAttribFormatBaseDataType( pFormat1 );
+				numOfBaseTypeComponents = GCI::CXU::GetVertexAttribFormatComponentsNum( pFormat1 );
+				baseDataType = GCI::CXU::GetVertexAttribFormatBaseDataType( pFormat1 );
 			}
 		}
 
@@ -581,7 +581,7 @@ namespace Ic3
 
 		_activeAttributesNum += 1;
 		_activeAttributesMask.set( GCI::CXU::MakeIAVertexAttributeFlag( baseAttribute) );
-		_activeAttributeSemanticsMask.set( CXU::getShaderInputSemanticIDFlags( baseAttribIter->shaderSemantics.smtID ) );
+		_activeAttributeSemanticsMask.set( CXU::GetShaderInputSemanticIDFlags( baseAttribIter->shaderSemantics.smtID ) );
 		_activeAttributesSlots.insert( baseAttribute );
 		_semanticNameMap[baseAttribIter->shaderSemantics.smtName] = baseAttribute;
 
@@ -641,8 +641,8 @@ namespace Ic3
 				const auto & formatComponentBitSizeStr = regexMatch[3].str();
 				const auto & formatNormalizedStr = regexMatch[4].str();
 
-				const auto formatComponentsNum = cppx::fromStringOrDefault<uint32>( formatComponentsNumStr );
-				const auto formatComponentBitSize = cppx::fromStringOrDefault<uint32>( formatComponentBitSizeStr );
+				const auto formatComponentsNum = cppx::from_string_or_default<uint32>( formatComponentsNumStr );
+				const auto formatComponentBitSize = cppx::from_string_or_default<uint32>( formatComponentBitSizeStr );
 				const auto isNormalized = !formatNormalizedStr.empty();
 				const auto isFloat = ( formatBaseTypeStr == "F" );
 				const auto isSignedInt = !isFloat && ( formatBaseTypeStr == "I" );

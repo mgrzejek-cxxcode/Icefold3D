@@ -19,7 +19,7 @@ namespace Ic3::Graphics::GCI
 		MetalGraphicsPipelineStateObject(
 				MetalGPUDevice & pGPUDevice,
 				RenderTargetLayout pRenderTargetLayout,
-				ShaderInputSignature pShaderInputSignature,
+				RootSignature pRootSignature,
 				id<MTLRenderPipelineState> pMTLPipelineState );
 
 		virtual ~MetalGraphicsPipelineStateObject();

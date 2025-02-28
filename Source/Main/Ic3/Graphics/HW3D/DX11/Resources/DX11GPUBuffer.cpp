@@ -31,7 +31,7 @@ namespace Ic3::Graphics::GCI
 		D3D11_BUFFER_DESC d3d11BufferDesc;
 		d3d11BufferDesc.ByteWidth = cppx::numeric_cast<UINT>( createInfo.bufferSize );
 		d3d11BufferDesc.BindFlags = dx11GPUBufferDesc.bindFlags;
-		d3d11BufferDesc.CpuAccessFlags = dx11GPUBufferDesc.cpuAccessFlags;
+		d3d11BufferDesc.CPUAccessFlags = dx11GPUBufferDesc.cpuAccessFlags;
 		d3d11BufferDesc.MiscFlags = dx11GPUBufferDesc.resourceMiscFlags;
 		d3d11BufferDesc.Usage = dx11GPUBufferDesc.usage;
 		d3d11BufferDesc.StructureByteStride = 0;

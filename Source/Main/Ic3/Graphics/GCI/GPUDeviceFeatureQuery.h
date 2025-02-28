@@ -11,7 +11,7 @@ namespace Ic3::Graphics::GCI
 
 	using MultiSamplingSettingsList = std::vector<MultiSamplingSettings>;
 
-	class GPUDeviceFeatureQuery
+	class IC3_GRAPHICS_GCI_CLASS GPUDeviceFeatureQuery
 	{
 	public:
 		GPUDeviceFeatureQuery() = default;

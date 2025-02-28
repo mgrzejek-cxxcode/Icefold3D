@@ -6,7 +6,7 @@
 #include "stringView.h"
 #include "stringUtils.h"
 
-#define CPPX_ENABLE_IMMUTABLE_STRING_DEBUG_VIEW 1
+#define CPPX_ENABLE_IMMUTABLE_STRING_DEBUG_VIEW 0
 
 namespace cppx
 {

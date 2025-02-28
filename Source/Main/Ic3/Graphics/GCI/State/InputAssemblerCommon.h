@@ -28,10 +28,12 @@ namespace Ic3::Graphics::GCI
 	///
 	constexpr auto kIAVertexStreamIndexUndefined = cppx::meta::limits<input_assembler_index_t>::max_value;
 
-
+	/**
+	 *
+	 */
 	struct IAVertexAttributeSemantics
 	{
-		std::string_view semanticName;
+		cppx::immutable_string semanticName;
 		input_assembler_index_t semanticIndex = 0;
 
 		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept
@@ -46,7 +48,7 @@ namespace Ic3::Graphics::GCI
 
 		void Clear()
 		{
-			semanticName = {};
+			semanticName.clear();
 			semanticIndex = 0;
 		}
 	};

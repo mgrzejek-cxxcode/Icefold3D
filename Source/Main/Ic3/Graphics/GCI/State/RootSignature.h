@@ -59,7 +59,7 @@ namespace Ic3::Graphics::GCI
 	namespace CXU
 	{
 
-		inline constexpr uint16 declareShaderInputResourceType( EShaderInputResourceClass pResourceClass, uint8 pIndex )
+		inline constexpr uint16 DeclareShaderInputResourceType( EShaderInputResourceClass pResourceClass, uint8 pIndex )
 		{
 			return ( ( static_cast<uint16>( pResourceClass ) << 8u ) | pIndex );
 		}
@@ -68,11 +68,11 @@ namespace Ic3::Graphics::GCI
 
 	enum class EShaderInputResourceType : uint16
 	{
-		CBVConstantBuffer = CXU::declareShaderInputResourceType( EShaderInputResourceClass::CBV, 0 ),
-		SRVTextureBuffer  = CXU::declareShaderInputResourceType( EShaderInputResourceClass::SRV, 1 ),
-		SRVTextureImage   = CXU::declareShaderInputResourceType( EShaderInputResourceClass::SRV, 2 ),
-		UAVStorageBuffer  = CXU::declareShaderInputResourceType( EShaderInputResourceClass::UAV, 3 ),
-		UAVStorageImage   = CXU::declareShaderInputResourceType( EShaderInputResourceClass::UAV, 4 ),
+		CBVConstantBuffer = CXU::DeclareShaderInputResourceType( EShaderInputResourceClass::CBV, 0 ),
+		SRVTextureBuffer  = CXU::DeclareShaderInputResourceType( EShaderInputResourceClass::SRV, 1 ),
+		SRVTextureImage   = CXU::DeclareShaderInputResourceType( EShaderInputResourceClass::SRV, 2 ),
+		UAVStorageBuffer  = CXU::DeclareShaderInputResourceType( EShaderInputResourceClass::UAV, 3 ),
+		UAVStorageImage   = CXU::DeclareShaderInputResourceType( EShaderInputResourceClass::UAV, 4 ),
 		Unknown           = 0
 	};
 

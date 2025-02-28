@@ -118,7 +118,7 @@ namespace Ic3::Graphics::GCI
 				return nullptr;
 			}
 
-			bool useShaderLayoutMaps = false;
+			bool applyExplicitShaderBindings = false;
 
 			for( auto & shaderHandle : pBindingConfiguration.commonShaderArray )
 			{
@@ -128,10 +128,10 @@ namespace Ic3::Graphics::GCI
 					Ic3DebugAssert( openglShader->mGLShaderObject );
 					shaderProgramObject->AttachShader( *( openglShader->mGLShaderObject ) );
 
-					if( const auto * shaderLayoutMap = openglShader->mGLShaderObject->GetDataLayoutMap() )
+					if( const auto * shaderBindingLayout = openglShader->mGLShaderObject->GetBindingLayout() )
 					{
-						GLShaderProgramObject::SetProgramPreLinkBindings( *shaderProgramObject, *shaderLayoutMap );
-						useShaderLayoutMaps = true;
+						GLShaderProgramObject::SetProgramPreLinkBindings( *shaderProgramObject, *shaderBindingLayout );
+						applyExplicitShaderBindings = true;
 					}
 				}
 			}
@@ -142,16 +142,16 @@ namespace Ic3::Graphics::GCI
 				return nullptr;
 			}
 
-			if( useShaderLayoutMaps )
+			if( applyExplicitShaderBindings )
 			{
 				for( auto & shaderHandle : pBindingConfiguration.commonShaderArray )
 				{
 					if( shaderHandle )
 					{
 						auto * openglShader = shaderHandle->QueryInterface<GLShader>();
-						if( const auto * shaderLayoutMap = openglShader->mGLShaderObject->GetDataLayoutMap() )
+						if( const auto * shaderBindingLayout = openglShader->mGLShaderObject->GetBindingLayout() )
 						{
-							GLShaderProgramObject::SetProgramPostLinkBindings( *shaderProgramObject, *shaderLayoutMap );
+							GLShaderProgramObject::SetProgramPostLinkBindings( *shaderProgramObject, *shaderBindingLayout );
 						}
 					}
 				}

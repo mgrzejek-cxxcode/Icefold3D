@@ -25,7 +25,7 @@ namespace Ic3::System
 	/// @brief
 	enum : exception_code_value_t
 	{
-		eEXCSystemFileOpenError = Ic3::CXU::declareExceptionCode( eExceptionCategorySystemFile, 1 )
+		eEXCSystemFileOpenError = Ic3::CXU::DeclareExceptionCode( eExceptionCategorySystemFile, 1 )
 	};
 
 	/// @brief

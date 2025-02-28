@@ -20,11 +20,12 @@ namespace Ic3::Graphics::GCI
 		GLTextureObjectHandle const mGLTextureObject = nullptr;
 
 	public:
-		GLTexture( GLGPUDevice & pGPUDevice,
-		           const ResourceMemoryInfo & pResourceMemory,
-		           const TextureProperties & pTextureProperties,
-		           const TextureLayout & pTextureLayout,
-		           GLTextureObjectHandle pGLTextureObject );
+		GLTexture(
+			GLGPUDevice & pGPUDevice,
+			const ResourceMemoryInfo & pResourceMemory,
+			const TextureProperties & pTextureProperties,
+			const TextureLayout & pTextureLayout,
+			GLTextureObjectHandle pGLTextureObject );
 
 		virtual ~GLTexture();
 

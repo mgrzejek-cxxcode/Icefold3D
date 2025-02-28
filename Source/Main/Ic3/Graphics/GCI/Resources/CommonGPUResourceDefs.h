@@ -152,25 +152,25 @@ namespace Ic3::Graphics::GCI
 	{
 		eGPUResourceMemoryMaskDefault =
 			eGPUMemoryAccessFlagGPUReadBit |
-			eGPUMemoryHeapPropertyFlagCpuCachedBit,
+			eGPUMemoryHeapPropertyFlagCPUCachedBit,
 
 		eGPUResourceMemoryMaskConstantBuffer =
-			eGPUMemoryAccessFlagCpuWriteBit |
+			eGPUMemoryAccessFlagCPUWriteBit |
 			eGPUMemoryAccessFlagGPUReadBit |
-			eGPUMemoryHeapPropertyFlagCpuCoherentBit,
+			eGPUMemoryHeapPropertyFlagCPUCoherentBit,
 
 		eGPUResourceMemoryMaskVertexStreamBufferDynamic =
-			eGPUMemoryAccessFlagCpuWriteBit |
+			eGPUMemoryAccessFlagCPUWriteBit |
 			eGPUMemoryAccessFlagGPUReadBit |
-			eGPUMemoryHeapPropertyFlagCpuCachedBit,
+			eGPUMemoryHeapPropertyFlagCPUCachedBit,
 
 		eGPUResourceMemoryMaskVertexStreamBufferStatic =
 			eGPUMemoryAccessFlagGPUReadBit |
-			eGPUMemoryHeapPropertyFlagCpuCachedBit,
+			eGPUMemoryHeapPropertyFlagCPUCachedBit,
 
 		eGPUResourceMemoryMaskTransferSourceBuffer =
-			eGPUMemoryAccessFlagCpuWriteBit |
-			eGPUMemoryHeapPropertyFlagCpuCachedBit,
+			eGPUMemoryAccessFlagCPUWriteBit |
+			eGPUMemoryHeapPropertyFlagCPUCachedBit,
 
 		eGPUResourceMemoryMaskTransferTargetBuffer =
 			eGPUMemoryAccessFlagGPUReadBit,
@@ -203,7 +203,7 @@ namespace Ic3::Graphics::GCI
 	{
 		cppx::bitmask<resource_flags_value_t> resourceFlags = 0;
 
-		memory_align_t memoryBaseAlignment = cxMemoryCpuDefaultAlignment;
+		memory_align_t memoryBaseAlignment = kMemoryCPUDefaultAlignment;
 
 		cppx::bitmask<EGPUMemoryFlags> memoryFlags = eGPUResourceMemoryMaskDefault;
 	};
