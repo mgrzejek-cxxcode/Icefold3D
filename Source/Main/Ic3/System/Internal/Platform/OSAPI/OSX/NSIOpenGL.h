@@ -4,6 +4,9 @@
 
 #include "OSXWindowSystem.h"
 #include <Ic3/System/WindowCommon.h>
+
+#define GL_SILENCE_DEPRECATION 1
+
 #import <AppKit/NSOpenGL.h>
 #import <AppKit/NSOpenGLView.h>
 #import <stdatomic.h>

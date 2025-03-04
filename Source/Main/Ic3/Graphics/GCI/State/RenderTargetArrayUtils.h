@@ -177,7 +177,7 @@ namespace Ic3::Graphics::GCI
 			// are removed, so when the value reaches 0, we can immediately stop further processing.
 			auto activeAttachmentsMask = pActiveAttachmentsMask;
 
-			for( // Iterate using RTA (Render Target Attachment) index value.
+			for( // Iterate over the valid RTA (Render Target Attachment) index range.
 			     native_uint attachmentIndex = 0;
 			     // Stop after reaching the limit or when there are no active attachments to process.
 			     CXU::RTOIsAttachmentIndexValid( attachmentIndex ) && !activeAttachmentsMask.empty();
@@ -190,7 +190,7 @@ namespace Ic3::Graphics::GCI
 				{
 					// The function returns false if there was some internal error condition
 					// and the processing should be aborted.
-					if( !pFunction( attachmentIndex, cppx::make_bitmask_tp<ERTAttachmentFlags>( attachmentBit ) ) )
+					if( !pFunction( attachmentIndex, static_cast<ERTAttachmentFlags>( attachmentBit ) ) )
 					{
 						return false;
 					}
@@ -204,13 +204,13 @@ namespace Ic3::Graphics::GCI
 		}
 
 		template <typename TPFunction>
-		inline bool ForEachRTColorAttachmentIndex( cppx::bitmask<ERTAttachmentFlags> pActiveAttachmentsMask, TPFunction pFunction )
+		inline bool ForEachRTColorAttachmentIndex( cppx::bitmask<ERTAttachmentFlags> pActiveColorAttachmentsMask, TPFunction pFunction )
 		{
 			// A local copy of the active attachments mask. Bits of already processed attachments
 			// are removed, so when the value reaches 0, we can immediately stop further processing.
-			auto activeColorAttachmentsMask = pActiveAttachmentsMask & eRTAttachmentMaskColorAll;
+			auto activeColorAttachmentsMask = pActiveColorAttachmentsMask & eRTAttachmentMaskColorAll;
 
-			for( // Iterate using RTA (Render Target Attachment) index value.
+			for( // Iterate over the valid RTA (Render Target Attachment) index range.
 			     native_uint colorAttachmentIndex = 0;
 			     // Stop after reaching the limit or when there are no active attachments to process.
 			     CXU::RTOIsColorAttachmentIndexValid( colorAttachmentIndex ) && !activeColorAttachmentsMask.empty();
@@ -223,7 +223,7 @@ namespace Ic3::Graphics::GCI
 				{
 					// The function returns false if there was some internal error condition
 					// and the processing should be aborted.
-					if( !pFunction( colorAttachmentIndex, cppx::make_bitmask_tp<ERTAttachmentFlags>( colorAttachmentBit ) ) )
+					if( !pFunction( colorAttachmentIndex, static_cast<ERTAttachmentFlags>( colorAttachmentBit ) ) )
 					{
 						return false;
 					}

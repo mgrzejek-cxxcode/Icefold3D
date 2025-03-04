@@ -90,6 +90,11 @@ namespace Ic3::Graphics::GCI
 		virtual bool SetShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture ) override;
 		virtual bool SetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler ) override;
 
+	protected:
+		CPPX_ATTR_NO_DISCARD const GLRenderTargetBinding & GetGLRenderTargetBinding() const noexcept;
+
+		CPPX_ATTR_NO_DISCARD const GLIAVertexSourceBinding & GetGLIAVertexSourceBinding() const noexcept;
+
 	private:
 		using BaseStateControllerType = GraphicsPipelineStateControllerGenericRenderPass<GraphicsPipelineStateControllerSeparable>;
 
@@ -97,10 +102,6 @@ namespace Ic3::Graphics::GCI
 				const GLGraphicsShaderLinkageDescriptor & pShaderLinkageDescriptor,
 				const ShaderInputParameterConstant & pConstantInfo,
 				const void * pConstantData ) = 0;
-
-		CPPX_ATTR_NO_DISCARD const GLRenderTargetBinding & GetGLRenderTargetBinding() const noexcept;
-
-		CPPX_ATTR_NO_DISCARD const GLIAVertexSourceBinding & GetGLIAVertexSourceBinding() const noexcept;
 
 		cppx::bitmask<uint32> BindCommonConfigDescriptors( const GLGraphicsPipelineStateObject & pGraphicsPipelineStateObject );
 
@@ -147,8 +148,8 @@ namespace Ic3::Graphics::GCI
 				const void * pConstantData ) override final;
 
 		const GLVertexArrayObject & GetCachedVertexArrayObject(
-				const GLVertexAttributeLayoutDescriptorCompat & pVertexAttributeLayoutDescriptor,
-				const GLVertexSourceBindingDescriptor & pVertexSourceBindingDescriptor );
+				const GLIAVertexAttributeLayout & pGLVertexAttributeLayout,
+				const GLIAVertexSourceBinding & pGLVertexSourceBinding );
 
 	private:
 		GLVertexArrayObjectCache _vaoCache;

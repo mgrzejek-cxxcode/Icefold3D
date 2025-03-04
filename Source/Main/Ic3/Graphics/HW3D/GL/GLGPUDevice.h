@@ -7,6 +7,7 @@
 #include "GLAPITranslationLayer.h"
 #include "State/GLPipelineStateDescriptorFactory.h"
 #include <Ic3/Graphics/GCI/GPUDevice.h>
+#include <Ic3/Graphics/GCI/State/PipelineStateDescriptorManager.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -40,7 +41,10 @@ namespace Ic3::Graphics::GCI
 		cppx::bitmask<EGLRuntimeSupportFlags> const mGLRuntimeSupportFlags;
 
 	public:
-		explicit GLGPUDevice( GLGPUDriver & pGPUDriver, GLPipelineStateDescriptorFactory & pStateDescriptorFactory );
+		explicit GLGPUDevice(
+				GLGPUDriver & pGPUDriver,
+				GLPipelineStateDescriptorFactory & pStateDescriptorFactory );
+
 		virtual ~GLGPUDevice();
 
 		CPPX_ATTR_NO_DISCARD virtual bool IsCompatibilityDevice() const noexcept = 0;
@@ -73,6 +77,7 @@ namespace Ic3::Graphics::GCI
 
 	private:
 		GLPipelineStateDescriptorFactory * _glcPipelineStateDescriptorFactory;
+		PipelineStateDescriptorManager _pipelineStateDescriptorManager;
 		GLGPUDeviceFeatureQuery _glcDeviceFeatureQueryInterface;
 		std::unique_ptr<GLDebugOutput> _glcDebugOutput;
 	};

@@ -155,7 +155,7 @@ namespace Ic3::Graphics::GCI
 
 	private:
 		template <typename TPDescriptorType>
-		CPPX_ATTR_NO_DISCARD PipelineStateDescriptorCacheUnit<TPDescriptorType> & _GetCacheUnit() const;
+		CPPX_ATTR_NO_DISCARD PipelineStateDescriptorCacheUnit<TPDescriptorType> & _GetCacheUnit() const noexcept;
 
 	private:
 		GraphicsPipelineStateDescriptorFactoryCacheAdapter _descriptorFactoryAdapter;
@@ -182,7 +182,7 @@ namespace Ic3::Graphics::GCI
 #define Ic3GCIPipelineStateCacheDefineUnitAccessProxy( pStateName ) \
 	template <> \
 	inline PipelineStateDescriptorCacheUnit<pStateName##Descriptor> & \
-	GraphicsPipelineStateDescriptorCache::_GetCacheUnit<pStateName##Descriptor>() const \
+	GraphicsPipelineStateDescriptorCache::_GetCacheUnit<pStateName##Descriptor>() const noexcept \
 	{ \
 		return _cacheUnit##pStateName; \
 	}

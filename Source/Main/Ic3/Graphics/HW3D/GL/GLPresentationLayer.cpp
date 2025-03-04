@@ -88,15 +88,15 @@ namespace Ic3::Graphics::GCI
 		const auto surfaceVisualConfig = sysGLSurface->QueryVisualConfig();
 		const auto surfaceSize = sysGLSurface->GetClientAreaSize();
 
-		auto rtoLayoutForSceen = GCU::TranslateSystemVisualConfigToRenderTargetLayout( surfaceVisualConfig );
-		rtoLayoutForSceen.sharedImageSize = { surfaceSize.x, surfaceSize.y };
-		rtoLayoutForSceen.sharedMultiSamplingSettings.sampleCount = pCreateInfo.visualConfig.msaaDesc.bufferCount;
-		rtoLayoutForSceen.sharedMultiSamplingSettings.sampleQuality = pCreateInfo.visualConfig.msaaDesc.quality;
+		auto rtoLayoutForScreen = GCU::TranslateSystemVisualConfigToRenderTargetLayout( surfaceVisualConfig );
+		rtoLayoutForScreen.sharedImageSize = { surfaceSize.x, surfaceSize.y };
+		rtoLayoutForScreen.sharedMultiSamplingSettings.sampleCount = pCreateInfo.visualConfig.msaaDesc.bufferCount;
+		rtoLayoutForScreen.sharedMultiSamplingSettings.sampleQuality = pCreateInfo.visualConfig.msaaDesc.quality;
 
 		auto renderTargetDescriptor = GLRenderTargetDescriptor::CreateForScreen(
 				pGPUDevice,
 				kSDIRenderTargetDescriptorScreenDefault,
-				rtoLayoutForSceen );
+				rtoLayoutForScreen );
 		Ic3DebugAssert( renderTargetDescriptor );
 		
 		auto presentationLayer = CreateGfxObject<GLScreenPresentationLayer>( pGPUDevice, sysGLSurface, renderTargetDescriptor );

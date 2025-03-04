@@ -4,10 +4,8 @@
 namespace Ic3::Graphics::GCI
 {
 
-	VertexSourceBindingDescriptorDynamic::VertexSourceBindingDescriptorDynamic(
-			GPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID )
-	: PipelineStateDescriptorDynamic<VertexSourceBindingDescriptor>( pGPUDevice, pDescriptorID, _vertexSourceBinding )
+	VertexSourceBindingDescriptorDynamic::VertexSourceBindingDescriptorDynamic( GPUDevice & pGPUDevice )
+	: PipelineStateDescriptorDynamic<VertexSourceBindingDescriptor>( pGPUDevice, kPipelineStateDescriptorIDAuto, _vertexSourceBinding )
 	{}
 
 	VertexSourceBindingDescriptorDynamic::~VertexSourceBindingDescriptorDynamic() = default;
@@ -108,6 +106,11 @@ namespace Ic3::Graphics::GCI
 		_ResetIndexBufferReference();
 	}
 
+	TGfxHandle<VertexSourceBindingDescriptorDynamic> VertexSourceBindingDescriptorDynamic::CreateNew( GPUDevice & pGPUDevice )
+	{
+		return CreateDynamicObject<VertexSourceBindingDescriptorDynamic>( pGPUDevice );
+	}
+
 	IAVertexBufferReference * VertexSourceBindingDescriptorDynamic::_SetVertexBufferActive( native_uint pVertexBufferIndex )
 	{
 		if( CXU::IAIsDataStreamVertexBufferSlotValid( pVertexBufferIndex ) )
@@ -135,7 +138,7 @@ namespace Ic3::Graphics::GCI
 	{
 		if( ( pVertexBufferCount > 0 ) && CXU::IAIsDataStreamVertexBufferSlotValid( pVertexBufferFirstIndex ) )
 		{
-			for( uint32 nVertexBuffer = 0; nVertexBuffer < pVertexBufferCount; ++nVertexBuffer )
+			for( uint32 nVertexBuffer = 0; nVertexBuffer < pVertexBufferCount ; ++nVertexBuffer )
 			{
 				const auto vertexBufferIndex = pVertexBufferFirstIndex + nVertexBuffer;
 				if( !CXU::IAIsDataStreamVertexBufferSlotValid( vertexBufferIndex ) )

@@ -280,7 +280,7 @@ namespace Ic3::Graphics::GCI
 		uint32 IAUpdateVertexBufferReferencesGL(
 				const IAVertexBufferReferenceArray & pVertexBufferReferences,
 				cppx::bitmask<EVertexSourceBindingFlags> pBindingMask,
-				GLIAVertexBufferArrayBindings & pOutGLBindings)
+				GLIAVertexBufferArrayBindings & pOutGLBindings )
 		{
 			uint32 activeBindingsNum = 0;
 
@@ -290,7 +290,43 @@ namespace Ic3::Graphics::GCI
 			pOutGLBindings.InitializeSeparate();
 		#endif
 
-			for( native_uint streamIndex = 0; streamIndex < GCM::kIAMaxDataStreamVertexBuffersNum; ++streamIndex )
+//			GCU::ForEachVertexBufferIndex(
+//					pBindingMask,
+//					[&pVertexBufferReferences, &pOutGLBindings, &activeBindingsNum]( native_uint pVertexBufferIndex, EVertexSourceBindingFlags pVertexBufferBit ) -> bool {
+//						const auto & inputVertexBufferRef = pVertexBufferReferences[pVertexBufferIndex];
+//						if( inputVertexBufferRef )
+//						{
+//							const auto * glcVertexBuffer = inputVertexBufferRef.sourceBuffer->QueryInterface<GLGPUBuffer>();
+//
+//						#if( IC3_GX_GL_PLATFORM_TYPE == IC3_GX_GL_PLATFORM_TYPE_ES )
+//							pOutGLBindings.interleavedBindings[pVertexBufferIndex].handle = glcVertexBuffer->mGLBufferObject->mGLHandle;
+//							pOutGLBindings.interleavedBindings[pVertexBufferIndex].offset = cppx::numeric_cast<GLintptr>( inputVertexBufferRef.DataOffset() );
+//							pOutGLBindings.interleavedBindings[pVertexBufferIndex].stride = cppx::numeric_cast<GLsizei>( inputVertexBufferRef.refParams.vertexStride );
+//						#else
+//							pOutGLBindings.separateBindings.handleArray[pVertexBufferIndex] = glcVertexBuffer->mGLBufferObject->mGLHandle;
+//							pOutGLBindings.separateBindings.offsetArray[pVertexBufferIndex] = cppx::numeric_cast<GLintptr>( inputVertexBufferRef.DataOffset() );
+//							pOutGLBindings.separateBindings.strideArray[pVertexBufferIndex] = cppx::numeric_cast<GLsizei>( inputVertexBufferRef.refParams.vertexStride );
+//						#endif
+//
+//							++activeBindingsNum;
+//						}
+//						else
+//						{
+//						#if( IC3_GX_GL_PLATFORM_TYPE == IC3_GX_GL_PLATFORM_TYPE_ES )
+//							pOutGLBindings.interleavedBindings[pVertexBufferIndex].handle = 0u;
+//							pOutGLBindings.interleavedBindings[pVertexBufferIndex].offset = 0u;
+//							pOutGLBindings.interleavedBindings[pVertexBufferIndex].stride = 0u;
+//						#else
+//							pOutGLBindings.separateBindings.handleArray[pVertexBufferIndex] = 0u;
+//							pOutGLBindings.separateBindings.offsetArray[pVertexBufferIndex] = 0u;
+//							pOutGLBindings.separateBindings.strideArray[pVertexBufferIndex] = 0u;
+//						#endif
+//						}
+//
+//						return true;
+//					});
+
+			for( native_uint streamIndex = 0; CXU::IAIsDataStreamVertexBufferSlotValid( streamIndex ) && pBindingMask; ++streamIndex )
 			{
 				const auto & inputVertexBufferRef = pVertexBufferReferences[streamIndex];
 				const auto bufferBindingBit = CXU::IAMakeVertexSourceVertexBufferBindingFlag( streamIndex );

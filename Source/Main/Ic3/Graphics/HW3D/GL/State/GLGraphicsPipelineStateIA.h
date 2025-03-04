@@ -237,7 +237,7 @@ namespace Ic3::Graphics::GCI
 
 		CPPX_ATTR_NO_DISCARD GLIAVertexBufferArrayBindings IATranslateVertexBufferReferencesGL(
 				const IAVertexBufferReferenceArray & pVertexBufferReferences,
-				cppx::bitmask<EVertexSourceBindingFlags> pBindingMask);
+				cppx::bitmask<EVertexSourceBindingFlags> pBindingMask );
 
 		uint32 IAUpdateVertexBufferReferencesGL(
 				const IAVertexBufferReferenceArray & pVertexBufferReferences,

@@ -21,9 +21,7 @@ namespace Ic3::Graphics::GCI
 	public:
 		Ic3DeclareNonCopyable( VertexSourceBindingDescriptorDynamic );
 
-		VertexSourceBindingDescriptorDynamic(
-				GPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID = kPipelineStateDescriptorIDAuto );
+		VertexSourceBindingDescriptorDynamic( GPUDevice & pGPUDevice );
 
 		~VertexSourceBindingDescriptorDynamic();
 
@@ -68,8 +66,7 @@ namespace Ic3::Graphics::GCI
 
 		void ResetIndexBufferReference();
 
-		TGfxHandle<VertexSourceBindingDescriptorDynamic> CreateFromStreamArrayDefinition(
-				const IAVertexSourceBindingDefinition & pStreamArrayDefinition );
+		static TGfxHandle<VertexSourceBindingDescriptorDynamic> CreateNew( GPUDevice & pGPUDevice );
 
 	private:
 		IAVertexBufferReference * _SetVertexBufferActive( native_uint pVertexBufferIndex );

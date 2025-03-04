@@ -438,6 +438,74 @@ namespace Ic3::Graphics::GCI
 		IC3_GRAPHICS_GCI_API_NO_DISCARD VertexSourceBindingRageList IAGenerateActiveVertexBuffersRanges(
 				const IAVertexBufferReferenceArray & pVertexBufferReferences ) noexcept;
 
+		template <typename TPFunction>
+		inline bool ForEachVertexBufferIndex( cppx::bitmask<EVertexSourceBindingFlags> pActiveVertexBuffersMask, TPFunction pFunction )
+		{
+			// A local copy of the active attachments mask. Bits of already processed attachments
+			// are removed, so when the value reaches 0, we can immediately stop further processing.
+			auto activeVertexBuffersMask = pActiveVertexBuffersMask & eVertexSourceBindingMaskVertexBufferAllBits;
+
+			for( // Iterate over the valid vertex buffer index range.
+			     native_uint vertexBufferIndex = 0;
+			     CXU::IAIsDataStreamVertexBufferSlotValid( vertexBufferIndex ) && !activeVertexBuffersMask.empty();
+			     ++vertexBufferIndex )
+			{
+				const auto vertexBufferBit = CXU::IAMakeVertexSourceVertexBufferBindingFlag( vertexBufferIndex );
+				// Check if the attachments mask has this bit set.
+				if( activeVertexBuffersMask.is_set( vertexBufferBit ) )
+				{
+					// The function returns false if there was some internal error condition
+					// and the processing should be aborted.
+					if( !pFunction( vertexBufferIndex, static_cast<EVertexSourceBindingFlags>( vertexBufferBit ) ) )
+					{
+						return false;
+					}
+
+					// Update the control mask.
+					activeVertexBuffersMask.unset( vertexBufferBit );
+				}
+			}
+
+			return true;
+		}
+
+		template <typename TPFunction>
+		inline bool ForEachVertexBufferIndexInRange(
+				native_uint pFirstVertexBufferIndex,
+				native_uint pVertexBufferCount,
+				cppx::bitmask<EVertexSourceBindingFlags> pActiveVertexBuffersMask,
+				TPFunction pFunction )
+		{
+			// A local copy of the active attachments mask. Bits of already processed attachments
+			// are removed, so when the value reaches 0, we can immediately stop further processing.
+			auto activeVertexBuffersMask = pActiveVertexBuffersMask & eVertexSourceBindingMaskVertexBufferAllBits;
+
+			const auto lastVertexBufferIndex = pFirstVertexBufferIndex + pVertexBufferCount - 1;
+
+			for( // Iterate over the valid vertex buffer index range.
+			     native_uint vertexBufferIndex = pFirstVertexBufferIndex;
+			     CXU::IAIsDataStreamVertexBufferSlotValid( vertexBufferIndex ) && ( vertexBufferIndex < lastVertexBufferIndex ) && !activeVertexBuffersMask.empty();
+			     ++vertexBufferIndex )
+			{
+				const auto vertexBufferBit = CXU::IAMakeVertexSourceVertexBufferBindingFlag( vertexBufferIndex );
+				// Check if the attachments mask has this bit set.
+				if( activeVertexBuffersMask.is_set( vertexBufferBit ) )
+				{
+					// The function returns false if there was some internal error condition
+					// and the processing should be aborted.
+					if( !pFunction( vertexBufferIndex, vertexBufferBit ) )
+					{
+						return false;
+					}
+
+					// Update the control mask.
+					activeVertexBuffersMask.unset( vertexBufferBit );
+				}
+			}
+
+			return true;
+		}
+
 	}
 
 } // namespace Ic3::Graphics::GCI

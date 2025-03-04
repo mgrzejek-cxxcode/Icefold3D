@@ -8,5 +8,5 @@ layout( location = 0 ) out vec4 outPixelColor;
 
 void main()
 {
-	outPixelColor = vec4( 1.0f ); // psColor;
+	outPixelColor = psColor;
 }

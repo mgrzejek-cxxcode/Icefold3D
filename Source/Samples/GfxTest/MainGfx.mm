@@ -22,7 +22,9 @@
 #include <Ic3/Graphics/GCI/State/RootSignature.h>
 #include <Ic3/Graphics/GCI/State/GraphicsPipelineStateCommon.h>
 #include <Ic3/Graphics/GCI/State/GraphicsPipelineStateDescriptorRTO.h>
+#include <Ic3/Graphics/GCI/State/GraphicsPipelineStateDescriptorRTODynamic.h>
 #include <Ic3/Graphics/GCI/State/GraphicsPipelineStateDescriptorIA.h>
+#include <Ic3/Graphics/GCI/State/GraphicsPipelineStateDescriptorIADynamic.h>
 
 #include <Ic3/NxMain/Camera/CameraController.h>
 #include <Ic3/NxMain/GCI/VertexFormatSignature.h>
@@ -54,6 +56,13 @@ struct GraphicsDriverState
 };
 
 void InitializeGraphicsDriver( SysContextHandle pSysContext, GraphicsDriverState & pGxDriverState );
+
+struct CB0Data
+{
+	Math::Mat4x4f modelMatrix;
+	Math::Mat4x4f viewMatrix;
+	Math::Mat4x4f projectionMatrix;
+};
 
 #include <Ic3/Graphics/HW3D/GL4/GL4GPUDriverAPI.h>
 
@@ -205,6 +214,89 @@ int main( int pArgc, const char ** pArgv )
 	gciSharedStateLibrary->Initialize();
 
 	auto * gpuDevicePtr = gxDriverState.device.get();
+	const auto rtSize = gxDriverState.presentationLayer->QueryRenderTargetSize();
+
+	GCI::GPUBufferHandle cbuffer0;
+	{
+		GCI::GPUBufferCreateInfo cbci;
+		cbci.memoryFlags = GCI::eGPUMemoryAccessFlagGPUReadBit;
+		cbci.resourceFlags = GCI::eGPUResourceContentFlagDynamicBit;
+		cbci.resourceFlags |= GCI::eGPUBufferBindFlagConstantBufferBit;
+		cbci.bufferSize = sizeof( CB0Data );
+		cbuffer0 = gxDriverState.device->CreateGPUBuffer( cbci );
+	}
+
+	const auto vtx0ElementsNum = cppx::static_array_size( cvMeshTexUnitCubeVertexData );
+	GCI::GPUBufferHandle vbuffer0;
+	{
+		const auto vtxDataSize = sizeof( cvMeshTexUnitCubeVertexData );
+		GCI::GPUBufferCreateInfo vbci;
+		vbci.memoryFlags = GCI::eGPUMemoryAccessFlagGPUReadBit;
+		vbci.resourceFlags = GCI::eGPUResourceContentFlagStaticBit;
+		vbci.resourceFlags |= GCI::eGPUBufferBindFlagVertexBufferBit;
+		vbci.bufferSize = vtxDataSize;
+		vbuffer0 = gxDriverState.device->CreateGPUBuffer( vbci );
+	}
+
+	const auto idx0ElementsNum = cppx::static_array_size( cvMeshTexUnitCubeIndexData );
+	GCI::GPUBufferHandle ibuffer0;
+	{
+		const auto idxDataSize = sizeof( cvMeshTexUnitCubeIndexData );
+		GCI::GPUBufferCreateInfo ibci;
+		ibci.memoryFlags = GCI::eGPUMemoryAccessFlagGPUReadBit;
+		ibci.resourceFlags = GCI::eGPUResourceContentFlagStaticBit;
+		ibci.resourceFlags |= GCI::eGPUBufferBindFlagIndexBufferBit;
+		ibci.bufferSize = idxDataSize;
+		ibuffer0 = gxDriverState.device->CreateGPUBuffer( ibci );
+	}
+
+	auto vsbDescriptor = VertexSourceBindingDescriptorDynamic::CreateNew( *gxDriverState.device );
+	IAVertexBufferReference vbRef{};
+	vbRef.sourceBuffer = vbuffer0;
+	vbRef.relativeOffset = 0;
+	vbRef.refParams.vertexStride = sizeof( VertexPNT0 );
+	IAIndexBufferReference ibRef{};
+	ibRef.sourceBuffer = ibuffer0;
+	ibRef.relativeOffset = 0;
+	ibRef.refParams.indexFormat = EIndexDataFormat::Uint32;
+	vsbDescriptor->SetVertexBufferReference( 0, vbRef );
+	vsbDescriptor->SetIndexBufferReference( ibRef );
+
+	GCI::TextureHandle texRTColor0;
+	GCI::RenderTargetTextureHandle texRTColor0RT;
+	{
+		GCI::TextureCreateInfo texRTColor0CI;
+		texRTColor0CI.texClass = GCI::ETextureClass::T2D;
+		texRTColor0CI.dimensions.width = rtSize.x;
+		texRTColor0CI.dimensions.height = rtSize.y;
+		texRTColor0CI.memoryFlags = GCI::eGPUMemoryAccessFlagGPUReadBit;
+		texRTColor0CI.resourceFlags = GCI::eGPUResourceUsageFlagRenderTargetColorBit | GCI::eGPUResourceUsageFlagShaderInputBit;
+		texRTColor0CI.internalFormat = GCI::ETextureFormat::RGBA8UN;
+		texRTColor0 = gpuDevicePtr->CreateTexture( texRTColor0CI );
+
+		GCI::RenderTargetTextureCreateInfo texRTColor0RTCI;
+		texRTColor0RTCI.targetTexture = texRTColor0;
+		texRTColor0RTCI.bindFlags = GCI::eTextureBindFlagRenderTargetColorAttachmentBit | GCI::eTextureBindFlagShaderInputSampledImageBit;
+		texRTColor0RT = gpuDevicePtr->CreateRenderTargetTexture( texRTColor0RTCI );
+	}
+
+	GCI::TextureHandle texRTDepthStencil;
+	GCI::RenderTargetTextureHandle texRTDepthStencilRT;
+	{
+		GCI::TextureCreateInfo texRTDepthStencilCI;
+		texRTDepthStencilCI.texClass = GCI::ETextureClass::T2D;
+		texRTDepthStencilCI.dimensions.width = rtSize.x;
+		texRTDepthStencilCI.dimensions.height = rtSize.y;
+		texRTDepthStencilCI.memoryFlags = GCI::eGPUMemoryAccessFlagGPUReadBit;
+		texRTDepthStencilCI.resourceFlags = GCI::eGPUResourceUsageMaskRenderTargetDepthStencil;
+		texRTDepthStencilCI.internalFormat = GCI::ETextureFormat::D24UNS8U;
+		texRTDepthStencil = gpuDevicePtr->CreateTexture( texRTDepthStencilCI );
+
+		GCI::RenderTargetTextureCreateInfo texRTDepthStencilRTCI;
+		texRTDepthStencilRTCI.targetTexture = texRTDepthStencil;
+		texRTDepthStencilRTCI.bindFlags = GCI::eTextureBindFlagRenderTargetDepthStencilAttachmentBit;
+		texRTDepthStencilRT = gpuDevicePtr->CreateRenderTargetTexture( texRTDepthStencilRTCI );
+	}
 
 	GCI::RenderPassDescriptorHandle scrRenderPassDescriptor;
 	{
@@ -225,6 +317,143 @@ int main( int pArgc, const char ** pArgv )
 		scrRenderPassDescriptor = gpuDevicePtr->CreateRenderPassDescriptor( rpdCreateInfo );
 	}
 
+	GCI::RenderPassDescriptorHandle offScrRenderPassDescriptor;
+	{
+		RenderPassDescriptorCreateInfo rpdCreateInfo;
+		auto & rpConfig = rpdCreateInfo.passConfiguration;
+		rpConfig.activeAttachmentsMask = eRTAttachmentMaskDefaultC0DS;
+		rpConfig.activeAttachmentsNum = 2;
+		rpConfig.colorAttachments[0].loadAction = ERenderPassAttachmentLoadAction::Clear;
+		rpConfig.colorAttachments[0].storeAction = ERenderPassAttachmentStoreAction::Keep;
+		rpConfig.colorAttachments[0].loadParameters.opClear.clearConfig.colorValue = Math::RGBAColorR32Norm{ 0.6f, 0.6f, 0.6, 1.0f };
+		rpConfig.colorAttachments[0].loadParameters.opClear.clearMask = eRenderTargetBufferFlagColorBit;
+		rpConfig.depthStencilAttachment.loadAction = ERenderPassAttachmentLoadAction::Clear;
+		rpConfig.depthStencilAttachment.storeAction = ERenderPassAttachmentStoreAction::Keep;
+		rpConfig.depthStencilAttachment.loadParameters.opClear.clearConfig.depthValue = 1.0f;
+		rpConfig.depthStencilAttachment.loadParameters.opClear.clearConfig.stencilValue = 0xFF;
+		rpConfig.depthStencilAttachment.loadParameters.opClear.clearMask = eRenderTargetBufferMaskDepthStencil;
+
+		offScrRenderPassDescriptor = gpuDevicePtr->CreateRenderPassDescriptor( rpdCreateInfo );
+	}
+
+	const auto kSDIDRootSignatureDefault = GCI::CXU::DeclarePipelineStateDescriptorIDRootSignature( 0x001 );
+	RootSignatureDescriptorHandle rsDescriptor;
+	{
+		RootSignatureDescriptorCreateInfo rsDescriptorCI;
+		rsDescriptorCI.descriptorID = kSDIDRootSignatureDefault;
+		rsDescriptorCI.rootSignatureDesc.activeShaderStagesMask = GCI::eShaderStageFlagGraphicsVertexBit | GCI::eShaderStageFlagGraphicsPixelBit;
+		rsDescriptorCI.rootSignatureDesc.descriptorSetsNum = 1;
+		rsDescriptorCI.rootSignatureDesc.descriptorSetArray[0].descriptorType = GCI::EShaderInputDescriptorType::Resource;
+		rsDescriptorCI.rootSignatureDesc.descriptorSetArray[0].descriptorsNum = 1;
+		rsDescriptorCI.rootSignatureDesc.descriptorSetArray[0].descriptorList[0] = {0, GCI::EShaderInputDescriptorType::Resource, GCI::eShaderStageFlagGraphicsVertexBit};
+		rsDescriptorCI.rootSignatureDesc.descriptorSetArray[0].descriptorList[0].uResourceDesc = {GCI::EShaderInputResourceType::CBVConstantBuffer, 0, 1};
+		rsDescriptor = gpuDevicePtr->CreateRootSignatureDescriptor( rsDescriptorCI );
+	}
+
+	const auto kSDIDGraphicsShaderLinkageDefault = GCI::CXU::DeclarePipelineStateDescriptorIDGraphicsShaderLinkage( 0x001 );
+	GraphicsShaderLinkageDescriptorHandle gslDescriptor;
+	{
+		GraphicsShaderLinkageDescriptorCreateInfo gslDescriptorCI;
+		gslDescriptorCI.descriptorID = kSDIDGraphicsShaderLinkageDefault;
+		gslDescriptorCI.shaderBinding.AddShader( shaderLibrary->GetShader( "SID_DEFAULT_PASSTHROUGH_VS" ) );
+		gslDescriptorCI.shaderBinding.AddShader( shaderLibrary->GetShader( "SID_DEFAULT_PASSTHROUGH_PS" ) );
+		gslDescriptor = gpuDevicePtr->CreateGraphicsShaderLinkageDescriptor( gslDescriptorCI );
+	}
+
+	GraphicsPipelineStateObjectHandle mainPSO;
+	{
+		GraphicsPipelineStateObjectCreateInfo psoCI;
+		psoCI.blendStateDescriptorID = GID::kGfxIDStateDescriptorBlendDefault;
+		psoCI.depthStencilStateDescriptorID = GID::kGfxIDStateDescriptorDepthStencilDepthTestEnable;
+		psoCI.rasterizerStateDescriptorID = GID::kGfxIDStateDescriptorRasterizerSolidCullBackCCW;
+		psoCI.vertexAttributeLayoutDescriptorID = GID::kGfxIDStateDescriptorIAVertexAttributeLayoutDefault;
+
+		psoCI.shaderLinkageStateDescriptor = gslDescriptor;
+		psoCI.rootSignatureDescriptor = rsDescriptor;
+
+		psoCI.renderTargetLayout.activeAttachmentsMask = eRTAttachmentMaskDefaultC0DS;
+		psoCI.renderTargetLayout.activeAttachmentsNum = 2;
+		psoCI.renderTargetLayout.colorAttachments[0].format = ETextureFormat::BGRA8UN;
+		psoCI.renderTargetLayout.depthStencilAttachment.format = ETextureFormat::D24UNS8U;
+		mainPSO = gpuDevicePtr->CreateGraphicsPipelineStateObject( psoCI );
+	}
+
+	Math::Vec3f cameraOriginPoint{0.0f, 2.0f, -4.0f};
+	Math::Vec3f cameraTargetPoint{0.0f, 0.0f, 4.0f};
+	cameraController.Initialize( cameraOriginPoint, cameraTargetPoint, 60.0f );
+
+	GCI::ViewportDesc vpDescScreen{};
+	vpDescScreen.origin.x = 0;
+	vpDescScreen.origin.y = 0;
+	vpDescScreen.size.x = rtSize.x;
+	vpDescScreen.size.y = rtSize.y;
+	vpDescScreen.depthRange.zNear = 0.0f;
+	vpDescScreen.depthRange.zFar = 1.0f;
+
+	GCI::ViewportDesc vpDescTexture{};
+	vpDescTexture.origin.x = 0;
+	vpDescTexture.origin.y = 0;
+	vpDescTexture.size.x = rtSize.x;
+	vpDescTexture.size.y = rtSize.y;
+	vpDescTexture.depthRange.zNear = 0.0f;
+	vpDescTexture.depthRange.zFar = 1.0f;
+
+	const auto Ic3ViewTexture = lookAtLH(
+			Math::Vec3f{0.0f, 3.0f, -1.0f},
+			Math::Vec3f{0.0f, 0.0f, 5.0f},
+			Math::Vec3f{0.0f, 1.0f, 0.0f} );
+
+	const auto Ic3ProjectionTexture = Math::perspectiveAspectLH<float>(
+			cameraController.GetPerspectiveFOVAngle(), (float) rtSize.x / (float) rtSize.y, 0.1f, 1000.0f );
+
+	const auto Ic3CameraProjection = Math::perspectiveAspectLH<float>(
+			cameraController.GetPerspectiveFOVAngle(), (float) rtSize.x / (float) rtSize.y, 1.0f, 1000.0f );
+
+	CB0Data cb0DataBase =
+	{
+		Math::identity4<float>(),
+        Math::identity4<float>(),
+        Math::identity4<float>()
+    };
+
+	GPUBufferDataUploadDesc cb0DataUploadDesc;
+	cb0DataUploadDesc.inputDataDesc.pointer = &cb0DataBase;
+	cb0DataUploadDesc.inputDataDesc.size = sizeof( CB0Data );
+
+	bool rotate = false;
+
+	evtDispatcher->SetEventHandler(
+			System::EEventCodeIndex::InputMouseButton,
+			[&rotate]( const System::EventObject & pEvt ) -> bool {
+				const auto & eButton = pEvt.uEvtInputMouseButton;
+				if( eButton.buttonAction == EMouseButtonActionType::Click )
+				{
+					rotate = true;
+				}
+				else if( eButton.buttonAction == EMouseButtonActionType::Release )
+				{
+					rotate = false;
+				}
+				return true;
+			});
+	evtDispatcher->SetEventHandler(
+			System::EEventCodeIndex::InputMouseMove,
+			[&cameraController,&rotate]( const System::EventObject & pEvt ) -> bool {
+				//if( rotate )
+				{
+					const auto & emove = pEvt.uEvtInputMouseMove;
+					if( emove.buttonStateMask.is_set( System::eMouseButtonFlagLeftBit ) )
+					{
+						cameraController.RotateAroundOrigin( emove.movementDelta.x, emove.movementDelta.y );
+					}
+					else if( emove.buttonStateMask.is_set( System::eMouseButtonFlagRightBit ) )
+					{
+						cameraController.RotateAroundTarget( emove.movementDelta.x, emove.movementDelta.y );
+					}
+				}
+				return true;
+			});
+
 	while( runApp )
 	{
 		if( gxDriverState.pauseAnimation )
@@ -236,10 +465,20 @@ int main( int pArgc, const char ** pArgv )
 		{
 			evtController->DispatchPendingEventsAuto();
 
+			cb0DataBase.projectionMatrix = Ic3CameraProjection;
+			cb0DataBase.viewMatrix = cameraController.ComputeViewMatrixLH();
+
 			gxDriverState.cmdContext->BeginCommandSequence();
 			gxDriverState.presentationLayer->BindRenderTarget( *gxDriverState.cmdContext );
 			gxDriverState.cmdContext->BeginRenderPass( *scrRenderPassDescriptor );
 			{
+				gxDriverState.cmdContext->UpdateBufferDataUpload( *cbuffer0, cb0DataBase );
+
+				gxDriverState.cmdContext->SetVertexSourceBindingDescriptorDynamic( *vsbDescriptor );
+				gxDriverState.cmdContext->SetGraphicsPipelineStateObject( *mainPSO );
+
+				gxDriverState.cmdContext->CmdDrawDirectIndexed( 6, 36 );
+
 				gxDriverState.presentationLayer->InvalidateRenderTarget( *gxDriverState.cmdContext );
 			}
 			gxDriverState.cmdContext->EndRenderPass();

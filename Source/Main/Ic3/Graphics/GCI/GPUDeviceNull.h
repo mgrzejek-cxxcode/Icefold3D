@@ -22,7 +22,7 @@ namespace Ic3::Graphics::GCI
 	{
 	public:
 		explicit GPUDeviceNull( GPUDriver & pDriver )
-		: GPUDevice( pDriver, _featureQueryImpl )
+		: GPUDevice( pDriver, nullptr, nullptr )
 		{}
 
 		virtual ~GPUDeviceNull() = default;
@@ -44,46 +44,6 @@ namespace Ic3::Graphics::GCI
 	private:
 		virtual void InitializeCommandSystem() override final
 		{}
-
-		virtual bool _DrvOnSetPresentationLayer( PresentationLayerHandle ) override final
-		{
-			return false;
-		}
-
-		virtual GPUBufferHandle _DrvCreateGPUBuffer( const GPUBufferCreateInfo & ) override final
-		{
-			return nullptr;
-		}
-
-		virtual SamplerHandle _DrvCreateSampler( const SamplerCreateInfo & ) override final
-		{
-			return nullptr;
-		}
-
-		virtual ShaderHandle _DrvCreateShader( const ShaderCreateInfo & ) override final
-		{
-			return nullptr;
-		}
-
-		virtual TextureHandle _DrvCreateTexture( const TextureCreateInfo & ) override final
-		{
-			return nullptr;
-		}
-
-		virtual RenderTargetTextureHandle _DrvCreateRenderTargetTexture(
-				const RenderTargetTextureCreateInfo & ) override final
-		{
-			return nullptr;
-		}
-
-		virtual GraphicsPipelineStateObjectHandle _DrvCreateGraphicsPipelineStateObject(
-				const GraphicsPipelineStateObjectCreateInfo & ) override final
-		{
-			return nullptr;
-		}
-
-	private:
-		GPUDeviceFeatureQueryNull _featureQueryImpl;
 	};
 
 } // namespace Ic3::Graphics::GCI

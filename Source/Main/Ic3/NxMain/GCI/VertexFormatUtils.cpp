@@ -234,14 +234,15 @@ namespace Ic3
 			}
 		}
 
-		if( pAttributeDefinition.dataPadding == GCI::kIAVertexAttributePaddingAlign16 )
+		if( pAttributeDefinition.dataPadding > 0 )
 		{
 			const auto attributeSizeInBytes = pAttributeDefinition.GetDataSizeInBytes();
-			if( attributeSizeInBytes < 16 )
-			{
-				const auto sizeDiffToAligned = 16 - attributeSizeInBytes;
-				pAttributeDefinition.dataPadding = cppx::numeric_cast<decltype( pAttributeDefinition.dataPadding )>( sizeDiffToAligned );
-			}
+			Ic3DebugAssert( attributeSizeInBytes <= 16 );
+
+			const auto maxAllowedPaddingToFit = 16 - attributeSizeInBytes;
+			const auto correctPaddingValue = cppx::get_min_of( pAttributeDefinition.dataPadding, maxAllowedPaddingToFit );
+
+			pAttributeDefinition.dataPadding = cppx::numeric_cast<decltype( pAttributeDefinition.dataPadding )>( correctPaddingValue );
 		}
 
 		return true;

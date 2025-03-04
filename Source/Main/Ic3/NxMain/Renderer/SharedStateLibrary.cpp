@@ -145,7 +145,7 @@ namespace Ic3
 			descriptorCreateInfo.descriptorID = GID::kGfxIDStateDescriptorIAVertexAttributeLayoutDefault16B;
         	GCIVertexAttributeLayoutBuilder gciAttributeLayoutBuilder{};
             gciAttributeLayoutBuilder.AddAttribute( 0, kVertexAttributeKeySysPosition, GCI::kIAVertexAttributePaddingAlign16 );
-            gciAttributeLayoutBuilder.AddAttribute( 0, kVertexAttributeKeySysFixedColorU8N, GCI::kIAVertexAttributePaddingAlign16 );
+            gciAttributeLayoutBuilder.AddAttribute( 0, kVertexAttributeKeySysFixedColorF32, GCI::kIAVertexAttributePaddingAlign16 );
             gciAttributeLayoutBuilder.AddAttribute( 0, kVertexAttributeKeySysNormal, GCI::kIAVertexAttributePaddingAlign16 );
             gciAttributeLayoutBuilder.AddAttribute( 0, kVertexAttributeKeySysTexCoord2D0, GCI::kIAVertexAttributePaddingAlign16 );
             descriptorCreateInfo.layoutDefinition =

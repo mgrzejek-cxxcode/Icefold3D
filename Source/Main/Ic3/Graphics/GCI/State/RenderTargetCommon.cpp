@@ -136,6 +136,7 @@ namespace Ic3::Graphics::GCI
 				case System::EDepthStencilFormat::D24S8:  depthStencilAttachmentFormat = ETextureFormat::D24UNS8U; break;
 				case System::EDepthStencilFormat::D24X8:  depthStencilAttachmentFormat = ETextureFormat::D24UNX8;  break;
 				case System::EDepthStencilFormat::D32F:   depthStencilAttachmentFormat = ETextureFormat::D32F;     break;
+				case System::EDepthStencilFormat::D32FS8: depthStencilAttachmentFormat = ETextureFormat::D32F;     break;
 				default:
 					break;
 			}

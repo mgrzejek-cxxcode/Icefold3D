@@ -55,8 +55,17 @@ namespace Ic3::Graphics::GCI
 		/// A pointer to the feature query interface, executing queries about the device runtime capabilities and metrics.
 		GPUDeviceFeatureQuery * const mFeatureQueryInterface;
 
-		explicit GPUDevice( GPUDriver & pDriver, GPUDeviceFeatureQuery & pFeatureQueryInterface );
+		/// A pointer to the descriptor state manager, responsible for creating and caching all descriptors.
+		PipelineStateDescriptorManager * const mPipelineStateDescriptorManager;
+
+		GPUDevice(
+				GPUDriver & pDriver,
+				GPUDeviceFeatureQuery * pFeatureQueryInterface,
+				PipelineStateDescriptorManager * pPipelineStateDescriptorManager );
+
 		virtual ~GPUDevice();
+
+		virtual void WaitForCommandSync( CommandSync & pCommandSync ) = 0;
 
 		CPPX_ATTR_NO_DISCARD virtual bool IsNullDevice() const noexcept;
 
@@ -67,8 +76,6 @@ namespace Ic3::Graphics::GCI
 		CPPX_ATTR_NO_DISCARD bool IsResourceActiveRefsTrackingEnabled() const noexcept;
 
 		CPPX_ATTR_NO_DISCARD CommandSystem & GetCommandSystem() const noexcept;
-
-		CPPX_ATTR_NO_DISCARD PipelineStateDescriptorManager & GetDescriptorManager() const noexcept;
 
 		CPPX_ATTR_NO_DISCARD PresentationLayer * GetPresentationLayer() const noexcept;
 
@@ -85,69 +92,182 @@ namespace Ic3::Graphics::GCI
 		CPPX_ATTR_NO_DISCARD TGfxHandle<TPStateDescriptor> GetCachedStateDescriptor(
 				pipeline_state_descriptor_id_t pDescriptorID ) const noexcept;
 
-		CPPX_ATTR_NO_DISCARD TGfxHandle<PipelineStateDescriptor> GetCachedStateDescriptor(
-				EPipelineStateDescriptorType pDescriptorType,
-				pipeline_state_descriptor_id_t pDescriptorID ) const noexcept;
-
 		template <typename TPStateDescriptor>
 		CPPX_ATTR_NO_DISCARD TGfxHandle<TPStateDescriptor> GetCachedStateDescriptor(
 				const GfxObjectName & pStateObjectName ) const noexcept;
 
+		CPPX_ATTR_NO_DISCARD TGfxHandle<PipelineStateDescriptor> GetCachedStateDescriptor(
+				EPipelineStateDescriptorType pDescriptorType,
+				pipeline_state_descriptor_id_t pDescriptorID ) const noexcept;
+
+		CPPX_ATTR_NO_DISCARD TGfxHandle<PipelineStateDescriptor> GetCachedStateDescriptor(
+				EPipelineStateDescriptorType pDescriptorType,
+				const GfxObjectName & pStateObjectName ) const noexcept;
+
+		/**
+		 *
+		 * @param pCreateInfo
+		 * @return
+		 */
 		CPPX_ATTR_NO_DISCARD GPUBufferHandle CreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo );
+
+		/**
+		 *
+		 * @param pCreateInfo
+		 * @return
+		 */
 		CPPX_ATTR_NO_DISCARD SamplerHandle CreateSampler( const SamplerCreateInfo & pCreateInfo );
+
+		/**
+		 *
+		 * @param pCreateInfo
+		 * @return
+		 */
 		CPPX_ATTR_NO_DISCARD ShaderHandle CreateShader( const ShaderCreateInfo & pCreateInfo );
+
+		/**
+		 *
+		 * @param pCreateInfo
+		 * @return
+		 */
 		CPPX_ATTR_NO_DISCARD TextureHandle CreateTexture( const TextureCreateInfo & pCreateInfo );
 
-		/// @brief Creates an RTT using the provided CIS.
-		/// This function will automatically Create a required resource, depending on the specified layout and usage.
-		/// It can either be an explicit texture object which can be retrieved later or an implicit render buffer
-		/// (e.g. if the RTT is supposed to be only a depth/stencil attachment used for depth and/or stencil testing).
+		/**
+		 * @brief Creates an RTT using the provided CreateInfo object.
+		 * This function will automatically Create a required resource, depending on the specified layout and usage.
+		 * It can either be an explicit texture object which can be retrieved later or an implicit render buffer
+		 * (e.g. if the RTT is supposed to be only a depth/stencil attachment used for depth and/or stencil testing).
+		 * @param pCreateInfo
+		 * @return
+		 */
 		CPPX_ATTR_NO_DISCARD RenderTargetTextureHandle CreateRenderTargetTexture( const RenderTargetTextureCreateInfo & pCreateInfo );
 
-		/// @brief
+		/**
+		 *
+		 * @param pCreateInfo
+		 * @return
+		 */
 		CPPX_ATTR_NO_DISCARD GraphicsPipelineStateObjectHandle CreateGraphicsPipelineStateObject(
 				const GraphicsPipelineStateObjectCreateInfo & pCreateInfo );
 
+		/**
+		 *
+		 * @param pCreateInfo
+		 * @param pOptionalDescriptorName
+		 * @return
+		 */
 		CPPX_ATTR_NO_DISCARD BlendStateDescriptorHandle CreateBlendStateDescriptor(
-				const BlendStateDescriptorCreateInfo & pCreateInfo );
+				const BlendStateDescriptorCreateInfo & pCreateInfo,
+				const cppx::immutable_string & pOptionalDescriptorName = {} );
 
+		/**
+		 *
+		 * @param pCreateInfo
+		 * @param pOptionalDescriptorName
+		 * @return
+		 */
 		CPPX_ATTR_NO_DISCARD DepthStencilStateDescriptorHandle CreateDepthStencilStateDescriptor(
-				const DepthStencilStateDescriptorCreateInfo & pCreateInfo );
+				const DepthStencilStateDescriptorCreateInfo & pCreateInfo,
+				const cppx::immutable_string & pOptionalDescriptorName = {} );
 
+		/**
+		 *
+		 * @param pCreateInfo
+		 * @param pOptionalDescriptorName
+		 * @return
+		 */
 		CPPX_ATTR_NO_DISCARD RasterizerStateDescriptorHandle CreateRasterizerStateDescriptor(
-				const RasterizerStateDescriptorCreateInfo & pCreateInfo );
+				const RasterizerStateDescriptorCreateInfo & pCreateInfo,
+				const cppx::immutable_string & pOptionalDescriptorName = {} );
 
+		/**
+		 *
+		 * @param pCreateInfo
+		 * @param pOptionalDescriptorName
+		 * @return
+		 */
 		CPPX_ATTR_NO_DISCARD GraphicsShaderLinkageDescriptorHandle CreateGraphicsShaderLinkageDescriptor(
-				const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo );
+				const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo,
+				const cppx::immutable_string & pOptionalDescriptorName = {} );
 
+		/**
+		 *
+		 * @param pCreateInfo
+		 * @param pOptionalDescriptorName
+		 * @return
+		 */
 		CPPX_ATTR_NO_DISCARD VertexAttributeLayoutDescriptorHandle CreateVertexAttributeLayoutDescriptor(
-				const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo );
+				const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo,
+				const cppx::immutable_string & pOptionalDescriptorName = {} );
 
+		/**
+		 *
+		 * @param pCreateInfo
+		 * @param pOptionalDescriptorName
+		 * @return
+		 */
 		CPPX_ATTR_NO_DISCARD RootSignatureDescriptorHandle CreateRootSignatureDescriptor(
-				const RootSignatureDescriptorCreateInfo & pCreateInfo );
+				const RootSignatureDescriptorCreateInfo & pCreateInfo,
+				const cppx::immutable_string & pOptionalDescriptorName = {} );
 
+		/**
+		 *
+		 * @param pCreateInfo
+		 * @return
+		 */
 		CPPX_ATTR_NO_DISCARD RenderPassDescriptorHandle CreateRenderPassDescriptor(
 				const RenderPassDescriptorCreateInfo & pCreateInfo );
 
+		/**
+		 *
+		 * @param pCreateInfo
+		 * @return
+		 */
 		CPPX_ATTR_NO_DISCARD RenderTargetDescriptorHandle CreateRenderTargetDescriptor(
 				const RenderTargetDescriptorCreateInfo & pCreateInfo );
 
+		/**
+		 *
+		 * @param pCreateInfo
+		 * @return
+		 */
 		CPPX_ATTR_NO_DISCARD VertexSourceBindingDescriptorHandle CreateVertexSourceBindingDescriptor(
 				const VertexSourceBindingDescriptorCreateInfo & pCreateInfo );
 
+		/**
+		 *
+		 * @tparam TContext
+		 * @return
+		 */
+		template <typename TContext>
+		std::unique_ptr<TContext> AcquireCommandContext();
+
+		/**
+		 *
+		 * @param pContextType
+		 * @return
+		 */
+		std::unique_ptr<CommandContext> AcquireCommandContext( ECommandContextType pContextType );
+
+		/**
+		 *
+		 * @param pPresentationLayer
+		 */
 		void SetPresentationLayer( PresentationLayerHandle pPresentationLayer );
 
-		virtual void WaitForCommandSync( CommandSync & pCommandSync ) = 0;
-
+		/**
+		 *
+		 * @return
+		 */
 		CPPX_ATTR_NO_DISCARD static GPUDevice & GetNullDevice();
 
 	protected:
 		virtual bool OnGPUResourceActiveRefsZero( GPUResource & pGPUResource );
 
-		bool InitializePipelineStateDescriptorManager( PipelineStateDescriptorFactory & pDescriptorFactory );
-
 	private:
-		/// @brief API-level initialization of the command system. Called by the parent driver when a device is created.
+		/**
+		 * @brief API-level initialization of the command system. Called by the parent driver when a device is created.
+		 */
 		virtual void InitializeCommandSystem() = 0;
 
 	_Ic3DriverAPI( private ):
@@ -174,15 +294,15 @@ namespace Ic3::Graphics::GCI
 		///
 		PresentationLayerHandle _presentationLayer;
 
-		/// Factory used to Create immutable states. Set by the actual driver class during initialization.
-		/// This decouples the state creation from the GPUDevice class so it's easier to manage and extend.
-		PipelineStateDescriptorFactory * _pipelineStateDescriptorFactoryBase = nullptr;
-
 		///
-		std::unique_ptr<PipelineStateDescriptorManager> _pipelineStateDescriptorManager;
-
 		cppx::bitmask<uint32> _internalStateFlags;
 	};
+
+	template <typename TContext>
+	inline std::unique_ptr<TContext> GPUDevice::AcquireCommandContext()
+	{
+		return MoveInterfaceUniquePtr<TContext>( AcquireCommandContext( TContext::sContextType ) );
+	}
 
 } // namespace Ic3::Graphics::GCI
 

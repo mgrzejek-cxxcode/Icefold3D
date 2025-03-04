@@ -146,13 +146,13 @@ namespace Ic3::Graphics::GCI
 
 	BlendStateDescriptorHandle PipelineStateDescriptorManager::CreateBlendStateDescriptor(
 			const BlendStateDescriptorCreateInfo & pCreateInfo,
-			const cppx::immutable_string & pOptionalName )
+			const cppx::immutable_string & pOptionalDescriptorName )
 	{
 		if( !_ValidateDescriptorCreateInfo( pCreateInfo ) )
 		{
 			return nullptr;
 		}
-		auto stateDescriptor = CreateCachedDescriptor<BlendStateDescriptor>( pCreateInfo, pOptionalName );
+		auto stateDescriptor = CreateCachedDescriptor<BlendStateDescriptor>( pCreateInfo, pOptionalDescriptorName );
 		if( !stateDescriptor )
 		{
 			stateDescriptor = _descriptorFactory.CreateBlendStateDescriptor( pCreateInfo );
@@ -162,13 +162,13 @@ namespace Ic3::Graphics::GCI
 
 	DepthStencilStateDescriptorHandle PipelineStateDescriptorManager::CreateDepthStencilStateDescriptor(
 			const DepthStencilStateDescriptorCreateInfo & pCreateInfo,
-			const cppx::immutable_string & pOptionalName )
+			const cppx::immutable_string & pOptionalDescriptorName )
 	{
 		if( !_ValidateDescriptorCreateInfo( pCreateInfo ) )
 		{
 			return nullptr;
 		}
-		auto stateDescriptor = CreateCachedDescriptor<DepthStencilStateDescriptor>( pCreateInfo, pOptionalName );
+		auto stateDescriptor = CreateCachedDescriptor<DepthStencilStateDescriptor>( pCreateInfo, pOptionalDescriptorName );
 		if( !stateDescriptor )
 		{
 			stateDescriptor = _descriptorFactory.CreateDepthStencilStateDescriptor( pCreateInfo );
@@ -178,13 +178,13 @@ namespace Ic3::Graphics::GCI
 
 	RasterizerStateDescriptorHandle PipelineStateDescriptorManager::CreateRasterizerStateDescriptor(
 			const RasterizerStateDescriptorCreateInfo & pCreateInfo,
-			const cppx::immutable_string & pOptionalName )
+			const cppx::immutable_string & pOptionalDescriptorName )
 	{
 		if( !_ValidateDescriptorCreateInfo( pCreateInfo ) )
 		{
 			return nullptr;
 		}
-		auto stateDescriptor = CreateCachedDescriptor<RasterizerStateDescriptor>( pCreateInfo, pOptionalName );
+		auto stateDescriptor = CreateCachedDescriptor<RasterizerStateDescriptor>( pCreateInfo, pOptionalDescriptorName );
 		if( !stateDescriptor )
 		{
 			stateDescriptor = _descriptorFactory.CreateRasterizerStateDescriptor( pCreateInfo );
@@ -194,13 +194,13 @@ namespace Ic3::Graphics::GCI
 
 	GraphicsShaderLinkageDescriptorHandle PipelineStateDescriptorManager::CreateGraphicsShaderLinkageDescriptor(
 			const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo,
-			const cppx::immutable_string & pOptionalName )
+			const cppx::immutable_string & pOptionalDescriptorName )
 	{
 		if( !_ValidateDescriptorCreateInfo( pCreateInfo ) )
 		{
 			return nullptr;
 		}
-		auto stateDescriptor = CreateCachedDescriptor<GraphicsShaderLinkageDescriptor>( pCreateInfo, pOptionalName );
+		auto stateDescriptor = CreateCachedDescriptor<GraphicsShaderLinkageDescriptor>( pCreateInfo, pOptionalDescriptorName );
 		if( !stateDescriptor )
 		{
 			stateDescriptor = _descriptorFactory.CreateGraphicsShaderLinkageDescriptor( pCreateInfo );
@@ -210,13 +210,13 @@ namespace Ic3::Graphics::GCI
 
 	VertexAttributeLayoutDescriptorHandle PipelineStateDescriptorManager::CreateVertexAttributeLayoutDescriptor(
 			const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo,
-			const cppx::immutable_string & pOptionalName )
+			const cppx::immutable_string & pOptionalDescriptorName )
 	{
 		if( !_ValidateDescriptorCreateInfo( pCreateInfo ) )
 		{
 			return nullptr;
 		}
-		auto stateDescriptor = CreateCachedDescriptor<VertexAttributeLayoutDescriptor>( pCreateInfo, pOptionalName );
+		auto stateDescriptor = CreateCachedDescriptor<VertexAttributeLayoutDescriptor>( pCreateInfo, pOptionalDescriptorName );
 		if( !stateDescriptor )
 		{
 			stateDescriptor = _descriptorFactory.CreateVertexAttributeLayoutDescriptor( pCreateInfo );
@@ -226,13 +226,13 @@ namespace Ic3::Graphics::GCI
 
 	RootSignatureDescriptorHandle PipelineStateDescriptorManager::CreateRootSignatureDescriptor(
 			const RootSignatureDescriptorCreateInfo & pCreateInfo,
-			const cppx::immutable_string & pOptionalName )
+			const cppx::immutable_string & pOptionalDescriptorName )
 	{
 		if( !_ValidateDescriptorCreateInfo( pCreateInfo ) )
 		{
 			return nullptr;
 		}
-		auto stateDescriptor = CreateCachedDescriptor<RootSignatureDescriptor>( pCreateInfo, pOptionalName );
+		auto stateDescriptor = CreateCachedDescriptor<RootSignatureDescriptor>( pCreateInfo, pOptionalDescriptorName );
 		if( !stateDescriptor )
 		{
 			stateDescriptor = _descriptorFactory.CreateRootSignatureDescriptor( pCreateInfo );
@@ -242,7 +242,7 @@ namespace Ic3::Graphics::GCI
 
 	RenderPassDescriptorHandle PipelineStateDescriptorManager::CreateRenderPassDescriptor(
 			const RenderPassDescriptorCreateInfo & pCreateInfo,
-			const cppx::immutable_string & pOptionalName )
+			const cppx::immutable_string & pOptionalDescriptorName )
 	{
 		if( !_ValidateDescriptorCreateInfo( pCreateInfo ) )
 		{
@@ -264,7 +264,7 @@ namespace Ic3::Graphics::GCI
 
 	VertexSourceBindingDescriptorHandle PipelineStateDescriptorManager::CreateVertexSourceBindingDescriptor(
 			const VertexSourceBindingDescriptorCreateInfo & pCreateInfo,
-			const cppx::immutable_string & pOptionalName )
+			const cppx::immutable_string & pOptionalDescriptorName )
 	{
 		if( !_ValidateDescriptorCreateInfo( pCreateInfo ) )
 		{

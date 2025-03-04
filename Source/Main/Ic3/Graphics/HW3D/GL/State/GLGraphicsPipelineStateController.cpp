@@ -173,12 +173,12 @@ namespace Ic3::Graphics::GCI
 
 		if( updateResult )
 		{
-			auto * glcVertexSourceBindingDriverState = pVertexSourceBindingDescriptor.GetDynamicDriverStateAs<GLIAVertexSourceBinding>();
-			if( !glcVertexSourceBindingDriverState )
+			if( !pVertexSourceBindingDescriptor.IsDynamicDriverStateInitialized() )
 			{
-				Ic3DebugAssert( !pVertexSourceBindingDescriptor.IsDynamicDriverStateInitialized() );
-				glcVertexSourceBindingDriverState = InitializeDynamicDriverStateForDescriptor<GLIAVertexSourceBinding>( pVertexSourceBindingDescriptor );
+				InitializeDynamicDriverStateForDescriptor<GLIAVertexSourceBinding>( pVertexSourceBindingDescriptor );
 			}
+
+			auto * glcVertexSourceBindingDriverState = pVertexSourceBindingDescriptor.GetDynamicDriverStateAs<GLIAVertexSourceBinding>();
 
 			auto & glcVertexSourceBinding = glcVertexSourceBindingDriverState->mDriverData;
 			if( &glcVertexSourceBinding != _glcCurrentPipelineBindings.vertexSourceBinding )
@@ -343,7 +343,7 @@ namespace Ic3::Graphics::GCI
 
 	const GLIAVertexSourceBinding & GLGraphicsPipelineStateController::GetGLIAVertexSourceBinding() const noexcept
 	{
-		return *(_glcCurrentPipelineBindings.vertexSourceBinding);
+		return *( _glcCurrentPipelineBindings.vertexSourceBinding );
 	}
 
 	cppx::bitmask<uint32> GLGraphicsPipelineStateController::BindCommonConfigDescriptors(
@@ -534,7 +534,7 @@ namespace Ic3::Graphics::GCI
 			if( _stateUpdateMask.is_set_any_of( eGraphicsStateUpdateFlagSeparableStateShaderLinkageBit ) )
 			{
 				const auto & glcShaderLinkageState =
-						GetCurrentPSORootSignatureDescriptor<GLGraphicsShaderLinkageDescriptorCompat>();
+						GetCurrentPSOShaderLinkageDescriptor<GLGraphicsShaderLinkageDescriptorCompat>();
 
 				_glcGlobalStateCache.ApplyShaderProgramBinding( glcShaderLinkageState.mGLShaderProgramObject->mGLHandle );
 
@@ -546,12 +546,11 @@ namespace Ic3::Graphics::GCI
 				const auto & glcVertexAttributeLayoutDescriptor =
 						GetCurrentPSOVertexAttributeLayoutDescriptor<GLVertexAttributeLayoutDescriptorCompat>();
 
-				const auto & glcVertexSourceBindingDescriptor =
-						GetCurrentVertexSourceBindingDescriptorRef<GLVertexSourceBindingDescriptor>();
+				const auto & glcVertexSourceBinding = GetGLIAVertexSourceBinding();
 
 				const auto & vertexArrayObject = GetCachedVertexArrayObject(
-						glcVertexAttributeLayoutDescriptor,
-						glcVertexSourceBindingDescriptor );
+						glcVertexAttributeLayoutDescriptor.mGLVertexAttributeLayout,
+						glcVertexSourceBinding );
 
 				_glcGlobalStateCache.ApplyVertexArrayObjectBinding( vertexArrayObject.mGLHandle );
 
@@ -559,16 +558,16 @@ namespace Ic3::Graphics::GCI
 						glcVertexAttributeLayoutDescriptor.mGLVertexAttributeLayout.glcPrimitiveTopology;
 
 				_glcGlobalStateCache.ApplyIndexBufferBinding(
-						glcVertexSourceBindingDescriptor.mGLVertexSourceBinding.indexBufferBinding.handle );
+						glcVertexSourceBinding.indexBufferBinding.handle );
 
 				_glcCurrentDrawTopologyProperties.indexBufferBaseOffset =
-						glcVertexSourceBindingDescriptor.mGLVertexSourceBinding.indexBufferBinding.offset;
+						glcVertexSourceBinding.indexBufferBinding.offset;
 
 				_glcCurrentDrawTopologyProperties.indexBufferDataType =
-						glcVertexSourceBindingDescriptor.mGLVertexSourceBinding.indexBufferBinding.format;
+						glcVertexSourceBinding.indexBufferBinding.format;
 
 				_glcCurrentDrawTopologyProperties.indexBufferElementByteSize =
-						glcVertexSourceBindingDescriptor.mGLVertexSourceBinding.indexBufferBinding.elementByteSize;
+						glcVertexSourceBinding.indexBufferBinding.elementByteSize;
 
 				executedUpdatesMask.set( eGraphicsStateUpdateMaskCombinedInputAssembler );
 			}
@@ -599,10 +598,10 @@ namespace Ic3::Graphics::GCI
 	}
 
 	const GLVertexArrayObject & GLGraphicsPipelineStateControllerCompat::GetCachedVertexArrayObject(
-			const GLVertexAttributeLayoutDescriptorCompat & pVertexAttributeLayoutDescriptor,
-			const GLVertexSourceBindingDescriptor & pVertexSourceBindingDescriptor )
+			const GLIAVertexAttributeLayout & pGLVertexAttributeLayout,
+			const GLIAVertexSourceBinding & pGLVertexSourceBinding )
 	{
-		return _vaoCache.GetOrCreate( pVertexAttributeLayoutDescriptor, pVertexSourceBindingDescriptor );
+		return _vaoCache.GetOrCreate( pGLVertexAttributeLayout, pGLVertexSourceBinding );
 	}
 
 } // namespace Ic3::Graphics::GCI
