@@ -4,7 +4,7 @@
 #ifndef __IC3_NXMAIN_GEOMETRY_COMMON_DEFS_H__
 #define __IC3_NXMAIN_GEOMETRY_COMMON_DEFS_H__
 
-#include "../GCI/ShaderInputSemantics.h"
+#include "../GCI/VertexAttributeShaderSemantics.h"
 #include <Ic3/Graphics/GCI/State/InputAssemblerCommon.h>
 #include <Ic3/Graphics/GCI/Resources/GPUBufferReference.h>
 #include <list>

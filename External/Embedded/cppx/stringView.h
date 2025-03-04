@@ -18,22 +18,22 @@ namespace cppx
 	public:
 		using char_type = typename std::remove_cv<TPChar>::type;
 
-		string_base_view()
+		constexpr string_base_view()
 		: _basePtr( cve::str_empty<TPChar> )
 		, _length( 0 )
 		{}
 
-		string_base_view( const char_type * pStr )
+		constexpr string_base_view( const char_type * pStr )
 		: _basePtr( pStr ? pStr : cve::str_empty<TPChar> )
 		, _length( pStr ? std::char_traits<char_type>::length( pStr ) : 0u )
 		{}
 
-		string_base_view( const char_type * pBegin, const char_type * pEnd )
+		constexpr string_base_view( const char_type * pBegin, const char_type * pEnd )
 		: _basePtr( pBegin ? pBegin : cve::str_empty<TPChar> )
 		, _length( pBegin ? pEnd - pBegin : 0u )
 		{}
 
-		string_base_view( const char_type * pStr, size_t pLength )
+		constexpr string_base_view( const char_type * pStr, size_t pLength )
 		: _basePtr( pStr ? pStr : cve::str_empty<TPChar> )
 		, _length( pStr ? pLength : 0u )
 		{}
@@ -55,12 +55,12 @@ namespace cppx
 		{}
 
 		template <size_t tpSize>
-		explicit string_base_view( char_type( &pArray )[tpSize] )
+		constexpr explicit string_base_view( char_type( &pArray )[tpSize] )
 		: string_base_view( &( pArray[0] ), tpSize )
 		{}
 
 		template <size_t tpSize>
-		explicit string_base_view( const char_type( &pArray )[tpSize] )
+		constexpr explicit string_base_view( const char_type( &pArray )[tpSize] )
 		: string_base_view( &( pArray[0] ), tpSize )
 		{}
 

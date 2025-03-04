@@ -11,7 +11,7 @@ namespace Ic3::Graphics::GCI
 			auto sysDisplayManager = pSysContext->CreateDisplayManager();
 			auto sysMetalDriver = pSysContext->createMetalSystemDriver( sysDisplayManager, {} );
 
-			sysMetalDriver->initializeDefaultDevice();
+			sysMetalDriver->InitializeDefaultDevice();
 
 			return sysMetalDriver;
 		}

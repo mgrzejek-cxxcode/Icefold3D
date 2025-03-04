@@ -4,7 +4,7 @@
 #ifndef __IC3_NXMAIN_GEOMETRY_CONTAINER_H__
 #define __IC3_NXMAIN_GEOMETRY_CONTAINER_H__
 
-#include "../GCI/VertexFormatDescriptor.h"
+#include "../GCI/VertexFormatSignature.h"
 #include "GeometryBuffer.h"
 
 namespace Ic3

@@ -3,6 +3,7 @@
 #include "GPUDeviceNull.h"
 #include "GPUDriver.h"
 #include "PresentationLayer.h"
+#include "Resources/Shader.h"
 #include "Resources/Texture.h"
 #include "Resources/RenderTargetTexture.h"
 #include "State/GraphicsPipelineStateDescriptorShader.h"
@@ -12,13 +13,13 @@
 namespace Ic3::Graphics::GCI
 {
 	
-	static const Math::RGBAColorU8 sDefaultClearColorDriver0     { 0x11, 0x66, 0xCC, 0xFF };
-	static const Math::RGBAColorU8 sDefaultClearColorDriverDX11  { 0x77, 0xAA, 0x5F, 0xFF };
-	static const Math::RGBAColorU8 sDefaultClearColorDriverDX12  { 0x22, 0x88, 0x3F, 0xFF };
-	static const Math::RGBAColorU8 sDefaultClearColorDriverMTL2  { 0xFF, 0x99, 0x66, 0xFF };
-	static const Math::RGBAColorU8 sDefaultClearColorDriverGL4   { 0x55, 0x88, 0xAA, 0xFF };
-	static const Math::RGBAColorU8 sDefaultClearColorDriverGLES3 { 0x7A, 0x00, 0x4D, 0xFF };
-	static const Math::RGBAColorU8 sDefaultClearColorDriverVK1   { 0x8F, 0x0F, 0x1F, 0xFF };
+	static const Math::RGBAColorU8 kDefaultClearColorDriver0     { 0x11, 0x66, 0xCC, 0xFF };
+	static const Math::RGBAColorU8 kDefaultClearColorDriverDX11  { 0x77, 0xAA, 0x5F, 0xFF };
+	static const Math::RGBAColorU8 kDefaultClearColorDriverDX12  { 0x22, 0x88, 0x3F, 0xFF };
+	static const Math::RGBAColorU8 kDefaultClearColorDriverMTL2  { 0xFF, 0x99, 0x66, 0xFF };
+	static const Math::RGBAColorU8 kDefaultClearColorDriverGL4   { 0x55, 0x88, 0xAA, 0xFF };
+	static const Math::RGBAColorU8 kDefaultClearColorDriverGLES3 { 0x7A, 0x00, 0x4D, 0xFF };
+	static const Math::RGBAColorU8 kDefaultClearColorDriverVK1   { 0x8F, 0x0F, 0x1F, 0xFF };
 
 	enum EGPUDeviceInternalStateFlags : uint32
 	{
@@ -67,6 +68,11 @@ namespace Ic3::Graphics::GCI
 		return *_commandSystem;
 	}
 
+	PipelineStateDescriptorManager & GPUDevice::GetDescriptorManager() const noexcept
+	{
+		return *_pipelineStateDescriptorManager;
+	}
+
 	PresentationLayer * GPUDevice::GetPresentationLayer() const noexcept
 	{
 		return _presentationLayer.get();
@@ -77,38 +83,128 @@ namespace Ic3::Graphics::GCI
 		switch( mGPUDriverID )
 		{
 			case EGPUDriverID::GDIDirectX11:
-				return sDefaultClearColorDriverDX11;
+				return kDefaultClearColorDriverDX11;
 
 			case EGPUDriverID::GDIDirectX12:
-				return sDefaultClearColorDriverDX12;
+				return kDefaultClearColorDriverDX12;
 
 			case EGPUDriverID::GDIMetal1:
-				return sDefaultClearColorDriverMTL2;
+				return kDefaultClearColorDriverMTL2;
 
 			case EGPUDriverID::GDIOpenGLDesktop4:
-				return sDefaultClearColorDriverGL4;
+				return kDefaultClearColorDriverGL4;
 
 			case EGPUDriverID::GDIOpenGLES3:
-				return sDefaultClearColorDriverGLES3;
+				return kDefaultClearColorDriverGLES3;
 
 			case EGPUDriverID::GDIVulkan10:
-				return sDefaultClearColorDriverVK1;
+				return kDefaultClearColorDriverVK1;
 
 			default:
 				break;
 		}
-		return sDefaultClearColorDriver0;
+		return kDefaultClearColorDriver0;
 	}
 
 	const RenderTargetAttachmentClearConfig & GPUDevice::GetDefaultClearConfig() const noexcept
 	{
-		static const RenderTargetAttachmentClearConfig sDefaultClearConfig =
+		static const RenderTargetAttachmentClearConfig kDefaultClearConfig =
 		{
 			GetDefaultClearColor(),
 			1.0f,
 			0
 		};
-		return sDefaultClearConfig;
+		return kDefaultClearConfig;
+	}
+
+	const BlendSettings & GPUDevice::GetDefaultBlendSettings()
+	{
+		static const BlendSettings kDefaultBlendSettings =
+		{
+			eRTAttachmentMaskDefaultC0DS,
+			eBlendConfigMaskDefault,
+			Math::kColorBlackOpaque,
+			{
+				EBlendFactor::One,
+				EBlendFactor::Zero,
+				EBlendOp::Add,
+				EBlendFactor::One,
+				EBlendFactor::Zero,
+				EBlendOp::Add,
+				eBlendWriteMaskAll
+			}
+		};
+		return kDefaultBlendSettings;
+	}
+
+	const DepthStencilSettings & GPUDevice::GetDefaultDepthStencilSettings()
+	{
+		static const DepthStencilSettings kDefaultDepthStencilSettings =
+		{
+			eDepthStencilConfigMaskNone,
+			{
+				ECompFunc::Less,
+				EDepthWriteMask::All
+			},
+			{
+				{
+					ECompFunc::Always,
+					EStencilOp::Keep,
+					EStencilOp::Keep,
+					EStencilOp::Keep
+				},
+				{
+					ECompFunc::Always,
+					EStencilOp::Keep,
+					EStencilOp::Keep,
+					EStencilOp::Keep
+				},
+				0,
+				0
+			}
+		};
+		return kDefaultDepthStencilSettings;
+	}
+
+	const DepthStencilSettings & GPUDevice::GetDefaultDepthStencilSettingsWithDepthTestEnabled()
+	{
+		static const DepthStencilSettings kDefaultDepthStencilSettingsWithDepthTestEnabled =
+		{
+			eDepthStencilConfigFlagEnableDepthTestBit,
+			{
+				ECompFunc::Less,
+				EDepthWriteMask::All
+			},
+			{
+				{
+					ECompFunc::Always,
+					EStencilOp::Keep,
+					EStencilOp::Keep,
+					EStencilOp::Keep
+				},
+				{
+					ECompFunc::Always,
+					EStencilOp::Keep,
+					EStencilOp::Keep,
+					EStencilOp::Keep
+				},
+				0,
+				0
+			}
+		};
+		return kDefaultDepthStencilSettingsWithDepthTestEnabled;
+	}
+
+	const RasterizerSettings & GPUDevice::GetDefaultRasterizerSettings()
+	{
+		static const RasterizerSettings kDefaultRasterizerSettings =
+		{
+			eRasterizerConfigMaskNone,
+			ECullMode::Back,
+			EPrimitiveFillMode::Solid,
+			ETriangleVerticesOrder::CounterClockwise
+		};
+		return kDefaultRasterizerSettings;
 	}
 
 	GPUBufferHandle GPUDevice::CreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo )
@@ -319,12 +415,6 @@ namespace Ic3::Graphics::GCI
 		return _pipelineStateDescriptorManager->CreateVertexSourceBindingDescriptor( pCreateInfo );
 	}
 
-	void GPUDevice::ResetStateDescriptorCache( cppx::bitmask<EPipelineStateDescriptorTypeFlags> pResetMask )
-	{
-		Ic3DebugAssert( _pipelineStateDescriptorManager );
-		_pipelineStateDescriptorManager->Reset( pResetMask );
-	}
-
 	void GPUDevice::SetPresentationLayer( PresentationLayerHandle pPresentationLayer )
 	{
 		if( !_DrvOnSetPresentationLayer( pPresentationLayer ) )
@@ -348,16 +438,8 @@ namespace Ic3::Graphics::GCI
 	bool GPUDevice::InitializePipelineStateDescriptorManager( PipelineStateDescriptorFactory & pDescriptorFactory )
 	{
 		Ic3DebugAssert( !_pipelineStateDescriptorManager );
-
 		_pipelineStateDescriptorManager = std::make_unique<PipelineStateDescriptorManager>( *this, pDescriptorFactory );
-		if( _pipelineStateDescriptorManager->CreateDefaultStateDescriptors() )
-		{
-			return true;
-		}
-
-		_pipelineStateDescriptorManager->Reset();
-
-		return false;
+		return true;
 	}
 
 	bool GPUDevice::_DrvOnSetPresentationLayer( PresentationLayerHandle pPresentationLayer )

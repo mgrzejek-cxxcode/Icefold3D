@@ -68,11 +68,18 @@ namespace Ic3::Graphics::GCI
 
 		CPPX_ATTR_NO_DISCARD CommandSystem & GetCommandSystem() const noexcept;
 
+		CPPX_ATTR_NO_DISCARD PipelineStateDescriptorManager & GetDescriptorManager() const noexcept;
+
 		CPPX_ATTR_NO_DISCARD PresentationLayer * GetPresentationLayer() const noexcept;
 
 		CPPX_ATTR_NO_DISCARD const Math::RGBAColorU8 & GetDefaultClearColor() const noexcept;
 
 		CPPX_ATTR_NO_DISCARD const RenderTargetAttachmentClearConfig & GetDefaultClearConfig() const noexcept;
+
+		CPPX_ATTR_NO_DISCARD const BlendSettings & GetDefaultBlendSettings();
+		CPPX_ATTR_NO_DISCARD const DepthStencilSettings & GetDefaultDepthStencilSettings();
+		CPPX_ATTR_NO_DISCARD const DepthStencilSettings & GetDefaultDepthStencilSettingsWithDepthTestEnabled();
+		CPPX_ATTR_NO_DISCARD const RasterizerSettings & GetDefaultRasterizerSettings();
 
 		template <typename TPStateDescriptor>
 		CPPX_ATTR_NO_DISCARD TGfxHandle<TPStateDescriptor> GetCachedStateDescriptor(
@@ -127,13 +134,6 @@ namespace Ic3::Graphics::GCI
 
 		CPPX_ATTR_NO_DISCARD VertexSourceBindingDescriptorHandle CreateVertexSourceBindingDescriptor(
 				const VertexSourceBindingDescriptorCreateInfo & pCreateInfo );
-
-		template <typename TPStateDescriptor, typename TPCreateInfo>
-		TGfxHandle<TPStateDescriptor> CreateCachedStateDescriptor(
-				const TPCreateInfo & pCreateInfo,
-				cppx::immutable_string pOptionalName = {} );
-
-		void ResetStateDescriptorCache( cppx::bitmask<EPipelineStateDescriptorTypeFlags> pResetMask = ePipelineStateDescriptorTypeMaskAll );
 
 		void SetPresentationLayer( PresentationLayerHandle pPresentationLayer );
 

@@ -118,17 +118,17 @@ namespace Ic3::Graphics::GCI
 
 		if( selectedColor == ETextureBorderPredefinedColor::Undefined )
 		{
-			const auto u8Color = pCustomColor.toU8Color();
+			const auto u8Color = pCustomColor.ToU8Color();
 
-			if( u8Color == Ic3::Math::colors::CX_COLOR_BLACK_OPAQUE )
+			if( u8Color == Ic3::Math::CX_COLOR_BLACK_OPAQUE )
 			{
 				selectedColor = ETextureBorderPredefinedColor::OpaqueBlack;
 			}
-			else if( u8Color == Ic3::Math::colors::CX_COLOR_BLACK_TRANSPARENT )
+			else if( u8Color == Ic3::Math::CX_COLOR_BLACK_TRANSPARENT )
 			{
 				selectedColor = ETextureBorderPredefinedColor::TransparentBlack;
 			}
-			else if( u8Color == Ic3::Math::colors::CX_COLOR_WHITE_OPAQUE )
+			else if( u8Color == Ic3::Math::CX_COLOR_WHITE_OPAQUE )
 			{
 				selectedColor = ETextureBorderPredefinedColor::OpaqueWhite;
 			}

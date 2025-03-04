@@ -14,7 +14,7 @@ namespace Ic3::Graphics::GCI
 	struct QBaseScalarDataTypeTraits<int8>
 	{
 		static constexpr auto sBaseDataType = EBaseDataType::Byte;
-		static constexpr auto sBaseDataFlags = eGPUDataFormatFlagTypeSignedBit;
+		static constexpr auto sBaseDataFlags = eGPUDataFormatMaskSInt;
 		static constexpr auto sByteSize = 1;
 	};
 
@@ -22,7 +22,7 @@ namespace Ic3::Graphics::GCI
 	struct QBaseScalarDataTypeTraits<uint8>
 	{
 		static constexpr auto sBaseDataType = EBaseDataType::Ubyte;
-		static constexpr auto sBaseDataFlags = eGPUDataFormatFlagTypeUnsignedBit;
+		static constexpr auto sBaseDataFlags = eGPUDataFormatMaskUInt;
 		static constexpr auto sByteSize = 1;
 	};
 
@@ -30,7 +30,7 @@ namespace Ic3::Graphics::GCI
 	struct QBaseScalarDataTypeTraits<int16>
 	{
 		static constexpr auto sBaseDataType = EBaseDataType::Int16;
-		static constexpr auto sBaseDataFlags = eGPUDataFormatFlagTypeSignedBit;
+		static constexpr auto sBaseDataFlags = eGPUDataFormatMaskSInt;
 		static constexpr auto sByteSize = 2;
 	};
 
@@ -38,7 +38,7 @@ namespace Ic3::Graphics::GCI
 	struct QBaseScalarDataTypeTraits<uint16>
 	{
 		static constexpr auto sBaseDataType = EBaseDataType::Uint16;
-		static constexpr auto sBaseDataFlags = eGPUDataFormatFlagTypeUnsignedBit;
+		static constexpr auto sBaseDataFlags = eGPUDataFormatMaskUInt;
 		static constexpr auto sByteSize = 2;
 	};
 
@@ -46,7 +46,7 @@ namespace Ic3::Graphics::GCI
 	struct QBaseScalarDataTypeTraits<int32>
 	{
 		static constexpr auto sBaseDataType = EBaseDataType::Int32;
-		static constexpr auto sBaseDataFlags = eGPUDataFormatFlagTypeSignedBit;
+		static constexpr auto sBaseDataFlags = eGPUDataFormatMaskSInt;
 		static constexpr auto sByteSize = 4;
 	};
 
@@ -54,7 +54,7 @@ namespace Ic3::Graphics::GCI
 	struct QBaseScalarDataTypeTraits<uint32>
 	{
 		static constexpr auto sBaseDataType = EBaseDataType::Uint32;
-		static constexpr auto sBaseDataFlags = eGPUDataFormatFlagTypeUnsignedBit;
+		static constexpr auto sBaseDataFlags = eGPUDataFormatMaskUInt;
 		static constexpr auto sByteSize = 4;
 	};
 
@@ -62,7 +62,7 @@ namespace Ic3::Graphics::GCI
 	struct QBaseScalarDataTypeTraits<float>
 	{
 		static constexpr auto sBaseDataType = EBaseDataType::Float32;
-		static constexpr auto sBaseDataFlags = eGPUDataFormatFlagTypeSignedBit;
+		static constexpr auto sBaseDataFlags = eGPUDataFormatFlagTypeFloatingPointBit;
 		static constexpr auto sByteSize = 4;
 	};
 

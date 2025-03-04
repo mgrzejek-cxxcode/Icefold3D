@@ -11,12 +11,12 @@
 namespace Ic3::Graphics::GCI
 {
 
-	using DX11IAVertexAttributeInfoArray = std::array<D3D11_INPUT_ELEMENT_DESC, GCM::IA_MAX_VERTEX_ATTRIBUTES_NUM>;
+	using DX11IAVertexAttributeDescArray = std::array<D3D11_INPUT_ELEMENT_DESC, GCM::IA_MAX_VERTEX_ATTRIBUTES_NUM>;
 
 	struct DX11IAVertexAttributeLayoutDefinition
 	{
 		uint32 activeAttributesNum;
-		DX11IAVertexAttributeInfoArray attributeArray;
+		DX11IAVertexAttributeDescArray attributeArray;
 		D3D11_PRIMITIVE_TOPOLOGY primitiveTopology;
 	};
 

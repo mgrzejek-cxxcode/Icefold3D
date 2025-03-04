@@ -15,32 +15,33 @@ namespace Ic3
 	/**
 	 *
 	 */
-	struct VertexInputStream
+	#pragma pack( push, 1 )
+	struct __attribute__(( packed )) VertexInputStream
 	{
-		/**
-		 * Index of the slot within the Input Assembler Array (IAA) this stream is bound to.
-		 */
-		GCI::input_assembler_index_t streamSlot = kGCIVertexInputStreamSlotUndefined;
-
 		/**
 		 *
 		 */
 		cppx::bitmask<GCI::EIAVertexAttributeFlags> activeAttributesMask {};
 
 		/**
-		 *
+		 * Index of the slot within the Input Assembler Array (IAA) this stream is bound to.
 		 */
-		uint16 activeAttributesNum = 0;
+		GCI::input_assembler_index_t streamSlot = GCI::kIAVertexStreamSlotUndefined;
 
 		/**
 		 *
 		 */
-		uint16 dataStrideInBytes = 0;
+		uint8 activeAttributesNum = 0;
 
 		/**
 		 *
 		 */
-		EVertexDataRate streamDataRate = EVertexDataRate::Undefined;
+		uint8 dataStrideInBytes = 0;
+
+		/**
+		 *
+		 */
+		GCI::EIAVertexAttributeDataRate streamDataRate = GCI::EIAVertexAttributeDataRate::Undefined;
 
 		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept;
 
@@ -50,17 +51,18 @@ namespace Ic3
 
 		CPPX_ATTR_NO_DISCARD bool CheckAttributeCompatibility( const VertexInputAttributeDefinition & pAttributeDefinition ) const noexcept;
 
-		void Init( uint16 pStreamSlot, EVertexDataRate pDataRate );
+		void Init( uint16 pStreamSlot, GCI::EIAVertexAttributeDataRate pDataRate );
 
 		void Reset();
 	};
+	#pragma pack( pop )
 
 	/**
 	 *
 	 */
 	class VertexInputStreamArrayConfig
 	{
-		friend class VertexFormatDescriptor;
+		friend class VertexFormatSignature;
 
 	public:
 		VertexInputStreamArrayConfig() = default;
@@ -95,7 +97,7 @@ namespace Ic3
 
 		IC3_NXMAIN_API bool AddActiveStream(
 				gci_input_assembler_slot_t pStreamSlot,
-				EVertexDataRate pStreamDataRate );
+				GCI::EIAVertexAttributeDataRate pStreamDataRate );
 
 		IC3_NXMAIN_API bool AppendAttribute(
 				gci_input_assembler_slot_t pStreamSlot,
@@ -103,13 +105,13 @@ namespace Ic3
 
 		IC3_NXMAIN_API bool AppendAttributeAuto(
 				gci_input_assembler_slot_t pStreamSlot,
-				EVertexDataRate pStreamDataRate,
+				GCI::EIAVertexAttributeDataRate pStreamDataRate,
 				const GenericVertexInputAttribute & pAttribute );
 
 		IC3_NXMAIN_API void Reset();
 
 	private:
-		void _AddStreamImpl( gci_input_assembler_slot_t pStreamSlot, EVertexDataRate pStreamDataRate );
+		void _AddStreamImpl( gci_input_assembler_slot_t pStreamSlot, GCI::EIAVertexAttributeDataRate pStreamDataRate );
 
 		void _AppendAttributeImpl( VertexInputStream & pStream, const GenericVertexInputAttribute & pAttribute );
 

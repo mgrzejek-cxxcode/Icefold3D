@@ -290,6 +290,4 @@ namespace Ic3::Graphics::GCI
 
 } // namespace Ic3::Graphics::GCI
 
-#include "RenderPassCommon.inl"
-
 #endif // __IC3_GRAPHICS_GCI_RENDER_PASS_COMMON_H__

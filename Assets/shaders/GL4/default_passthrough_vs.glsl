@@ -1,8 +1,6 @@
 
 #version 430 core
 
-layout( location = 7, semantic = SKIN_MATRIX ) in mat3x4 xSkinMat;
-layout( location = 12, semantic = BONE_MATRIX ) in mat3 xBoneMat;
 layout( location = 0, semantic = POSITION ) in vec3 vPosition;
 layout( location = 1, semantic = NORMAL ) in vec3 vNormal;
 layout( location = 4, semantic = COLOR ) in vec4 vColor;

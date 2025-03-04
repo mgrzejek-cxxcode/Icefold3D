@@ -1,14 +1,25 @@
 
 #include "InputAssemblerCommon.h"
+#include "ShaderInputSignature.h"
+#include "../Resources/Shader.h"
 
 namespace Ic3::Graphics::GCI
 {
+
+	bool VertexAttributeLayoutDescriptorCreateInfo::Validate() const noexcept
+	{
+		if( auto * shaderInputSignature = vertexShaderWithBinary->GetShaderInputSignature() )
+		{
+			return GCU::ValidateVertexAttributeLayoutDefinitionWithShaderInputSignature( layoutDefinition, *shaderInputSignature );
+		}
+		return true;
+	}
 
 	namespace GCU
 	{
 
 		cppx::bitmask<EIAVertexAttributeFlags> IAGetActiveVertexAttributesMask(
-				const IAVertexAttributeInfoArray & pVertexAttributes ) noexcept
+				const IAVertexAttributeDescArray & pVertexAttributes ) noexcept
 		{
 			cppx::bitmask<EIAVertexAttributeFlags> activeAttributesMask = 0;
 			for( uint32 attributeIndex = 0; attributeIndex < GCM::kIAMaxVertexAttributesNum; ++attributeIndex )
@@ -21,7 +32,7 @@ namespace Ic3::Graphics::GCI
 			return activeAttributesMask;
 		}
 
-		uint32 IAGetActiveVertexAttributesNum( const IAVertexAttributeInfoArray & pVertexAttributes ) noexcept
+		uint32 IAGetActiveVertexAttributesNum( const IAVertexAttributeDescArray & pVertexAttributes ) noexcept
 		{
 			const auto activeAttributesNum = std::count_if(
 				pVertexAttributes.begin(),
@@ -85,7 +96,7 @@ namespace Ic3::Graphics::GCI
 				vertexBufferActiveRanges.reserve( optimalActiveRangesNumPreAllocSize );
 
 				IAVertexStreamArrayRange currentRange{};
-				currentRange.firstIndex = kIAVertexStreamIndexUndefined;
+				currentRange.firstIndex = kIAVertexStreamSlotUndefined;
 				currentRange.length = 0;
 
 				for( input_assembler_index_t streamIndex = 0; streamIndex < GCM::kIAMaxDataStreamVertexBuffersNum; ++streamIndex )
@@ -96,7 +107,7 @@ namespace Ic3::Graphics::GCI
 					{
 						// If the range is not valid, "open" it.
 						// Set the current stream as the first stream in the range and range size to 0.
-						if( currentRange.firstIndex == kIAVertexStreamIndexUndefined )
+						if( currentRange.firstIndex == kIAVertexStreamSlotUndefined )
 						{
 							currentRange.firstIndex = streamIndex;
 							currentRange.length = 0;
@@ -115,7 +126,7 @@ namespace Ic3::Graphics::GCI
 						}
 
 						// Reset the range by setting the first index to an invalid value and clear the length
-						currentRange.firstIndex = kIAVertexStreamIndexUndefined;
+						currentRange.firstIndex = kIAVertexStreamSlotUndefined;
 						currentRange.length = 0;
 					}
 				}

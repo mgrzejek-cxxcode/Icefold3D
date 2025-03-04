@@ -25,15 +25,15 @@ set( IC3_ENGINE_SRC_FILES
 		"GCI/IAVertexAttribLayout.h"
 		"GCI/IAVertexAttribLayout.inl"
 		"GCI/IAVertexAttribLayout.cpp"
-		"GCI/ShaderInputSemantics.h"
-		"GCI/ShaderInputSemantics.cpp"
+		"GCI/VertexAttributeShaderSemantics.h"
+		"GCI/VertexAttributeShaderSemantics.cpp"
 		"GCI/ShaderResourceDefs.h"
-		"GCI/VertexAttributeCommonDefs.h"
-        "GCI/VertexFormatDescriptor.h"
-		"GCI/VertexFormatDescriptor.inl"
-		"GCI/VertexFormatDescriptor.cpp"
-		"GCI/VertexFormatDescriptorUtils.h"
-		"GCI/VertexFormatDescriptorUtils.cpp"
+		"GCI/VertexAttributeKey.h"
+        "GCI/VertexFormatSignature.h"
+		"GCI/VertexFormatSignature.inl"
+		"GCI/VertexFormatSignature.cpp"
+		"GCI/VertexFormatUtils.h"
+		"GCI/VertexFormatUtils.cpp"
 
 		#"Geometry/VertexPipelineConfig.h"
 		#"Geometry/VertexPipelineConfig.cpp"
@@ -47,6 +47,8 @@ set( IC3_ENGINE_SRC_FILES
 		"Renderer/ShaderLibrary.cpp"
 		"Renderer/ShaderLoader.h"
 		"Renderer/ShaderLoader.cpp"
+		"Renderer/SharedStateLibrary.h"
+		"Renderer/SharedStateLibrary.cpp"
 		#"Renderer/Effects/ShadowRenderer.h"
 		#"Renderer/Effects/ShadowRenderer.cpp"
 
@@ -79,6 +81,7 @@ set( IC3_ENGINE_SRC_FILES
         "TypeInfo/TPIEngineEnum.cpp"
 		GCI/ShaderUtils.h
 		GCI/ShaderUtils.cpp
+		GCI/IACommonDefs.cpp
 
 		#"Geometry/IndexedMeshDataBufferBuilder.h"
 		#"Geometry/MeshData.h"

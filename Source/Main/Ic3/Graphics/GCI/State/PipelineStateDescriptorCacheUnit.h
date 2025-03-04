@@ -157,7 +157,7 @@ namespace Ic3::Graphics::GCI
 			if( CXU::IsPipelineStateDescriptorIDValid( pDescriptorID ) )
 			{
 				const auto typeComponent = CXU::GetPipelineStateDescriptorIDTypeComponent( pDescriptorID );
-				if( ( typeComponent == EPipelineStateDescriptorType::Unknown ) && ( typeComponent == sDescriptorType ) )
+				if( ( typeComponent != EPipelineStateDescriptorType::Unknown ) && ( typeComponent == sDescriptorType ) )
 				{
 					return true;
 				}

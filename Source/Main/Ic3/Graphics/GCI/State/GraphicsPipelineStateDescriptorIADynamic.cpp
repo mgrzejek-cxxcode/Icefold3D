@@ -110,7 +110,7 @@ namespace Ic3::Graphics::GCI
 
 	IAVertexBufferReference * VertexSourceBindingDescriptorDynamic::_SetVertexBufferActive( native_uint pVertexBufferIndex )
 	{
-		if( CXU::IAIsDataStreamVertexBufferIndexValid( pVertexBufferIndex ) )
+		if( CXU::IAIsDataStreamVertexBufferSlotValid( pVertexBufferIndex ) )
 		{
 			const auto vertexBufferBit = CXU::IAMakeVertexSourceVertexBufferBindingFlag( pVertexBufferIndex );
 
@@ -133,12 +133,12 @@ namespace Ic3::Graphics::GCI
 			native_uint pVertexBufferCount,
 			const IAVertexBufferReference * pBufferReferences )
 	{
-		if( ( pVertexBufferCount > 0 ) && CXU::IAIsDataStreamVertexBufferIndexValid( pVertexBufferFirstIndex ) )
+		if( ( pVertexBufferCount > 0 ) && CXU::IAIsDataStreamVertexBufferSlotValid( pVertexBufferFirstIndex ) )
 		{
 			for( uint32 nVertexBuffer = 0; nVertexBuffer < pVertexBufferCount; ++nVertexBuffer )
 			{
 				const auto vertexBufferIndex = pVertexBufferFirstIndex + nVertexBuffer;
-				if( !CXU::IAIsDataStreamVertexBufferIndexValid( vertexBufferIndex ) )
+				if( !CXU::IAIsDataStreamVertexBufferSlotValid( vertexBufferIndex ) )
 				{
 					break;
 				}
@@ -210,12 +210,12 @@ namespace Ic3::Graphics::GCI
 			native_uint pVertexBufferFirstIndex,
 			native_uint pVertexBufferCount )
 	{
-		if( ( pVertexBufferCount > 0 ) && CXU::IAIsDataStreamVertexBufferIndexValid( pVertexBufferFirstIndex ) )
+		if( ( pVertexBufferCount > 0 ) && CXU::IAIsDataStreamVertexBufferSlotValid( pVertexBufferFirstIndex ) )
 		{
 			for( uint32 nVertexBuffer = 0; nVertexBuffer < pVertexBufferCount; ++nVertexBuffer )
 			{
 				const auto vertexBufferIndex = pVertexBufferFirstIndex + nVertexBuffer;
-				if( !CXU::IAIsDataStreamVertexBufferIndexValid( vertexBufferIndex ) )
+				if( !CXU::IAIsDataStreamVertexBufferSlotValid( vertexBufferIndex ) )
 				{
 					break;
 				}

@@ -36,19 +36,9 @@ namespace Ic3::Graphics::GCI
 				native_uint pAttachmentIndex,
 				cppx::bitmask<ERenderTargetBufferFlags> pOptionalRTAMask )
 		{
-			if( pAttachmentIndex >= GCM::kRTOMaxCombinedAttachmentsNum )
+			if( CXU::RTOIsAttachmentIndexValid( pAttachmentIndex ) )
 			{
-				// Returned mask is used for validation - we check whether the specified resource has valid usage
-				// configured, so that it can be attached to the pipeline as an RT attachment. Thus, in case of an
-				// invalid index we return the complete mask with all usages - then, even in naive, unchecked code
-				// like: if( someResource.HasUsage( RTOGetAttachmentRequiredUsageMask( eRTIndexDepthStencil ) ) )
-				// the behaviour will be correct (in the case above the check will fail - but returning 0, for example,
-				// would make this check successful).
-				return eGPUResourceUsageMaskAll;
-			}
-			else
-			{
-				if( pAttachmentIndex < GCM::kRTOMaxColorAttachmentsNum )
+				if( CXU::RTOIsColorAttachmentIndexValid( pAttachmentIndex ) )
 				{
 					// If the query is for one of the color attachments, we need eGPUResourceUsageFlagRenderTargetColorBit.
 					return eGPUResourceUsageFlagRenderTargetColorBit;
@@ -72,6 +62,14 @@ namespace Ic3::Graphics::GCI
 					}
 				}
 			}
+
+			// Returned mask is used for validation - we check whether the specified resource has valid usage
+			// configured, so that it can be attached to the pipeline as an RT attachment. Thus, in case of an
+			// invalid index we return the complete mask with all usages - then, even in naive, unchecked code
+			// like: if( someResource.HasUsage( RTOGetAttachmentRequiredUsageMask( eRTIndexDepthStencil ) ) )
+			// the behaviour will be correct (in the case above the check will fail - but returning 0, for example,
+			// would make this check successful).
+			return eGPUResourceUsageMaskAll;
 		}
 
 		cppx::bitmask<ERenderTargetBufferFlags> RTOGetBufferMaskForRenderTargetTextureType( ERenderTargetTextureType pRenderTargetTextureType )

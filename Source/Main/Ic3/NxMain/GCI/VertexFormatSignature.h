@@ -1,18 +1,17 @@
 
 #pragma once
 
-#ifndef __IC3_NXMAIN_VERTEX_FORMAT_DESCRIPTOR_H__
-#define __IC3_NXMAIN_VERTEX_FORMAT_DESCRIPTOR_H__
+#ifndef __IC3_NXMAIN_VERTEX_FORMAT_SIGNATURE_H__
+#define __IC3_NXMAIN_VERTEX_FORMAT_SIGNATURE_H__
 
 #include "IAVertexAttribLayout.h"
 #include "IAVertexStreamLayout.h"
-#include "VertexAttributeCommonDefs.h"
 #include <cppx/hash.h>
 
 namespace Ic3
 {
 
-	class VertexFormatDescriptor;
+	class VertexFormatSignature;
 
 	/// @brief Stores the layout configuration for the vertex data, i.e. attribute array and stream usage.
 	///
@@ -23,20 +22,21 @@ namespace Ic3
 	/// - stream layout data (VertexDataInputConfig),
 	/// - format of the index data (GCI::EIndexDataFormat),
 	/// - primitive topology (GCI::EPrimitiveTopology).
-	/// Note, that VertexFormatDescriptor does not describe the location of the vertex data - it only refers to how the data
+	/// Note, that VertexFormatSignature does not describe the location of the vertex data - it only refers to how the data
 	/// is laid out in memory, which attributes are fetched from which stream, what are their offsets, strides, rates
 	/// at which they are read by the input pipeline and so on. Consequently, the vertex stream layout describes the
 	/// usage of each stream, but not their data directly.
-	/// One VertexFormatDescriptor can be used with multiple geometry buffer sets, as long as their internal layout
+	/// One VertexFormatSignature can be used with multiple geometry buffer sets, as long as their internal layout
 	/// matches the one described by the descriptor.
 	/// @see VertexInputAttributeArrayConfig
 	/// @see VertexInputStreamArrayConfig
 	/// @see GCI::EIndexDataFormat
 	/// @see GCI::EPrimitiveTopology
-	class IC3_NXMAIN_CLASS VertexFormatDescriptor final : public IDynamicObject
+	class IC3_NXMAIN_CLASS VertexFormatSignature final : public IDynamicObject
 	{
-		friend class VertexFormatDescriptorBuilder;
-		
+		friend class VertexFormatBuilderBase;
+		friend class VertexFormatSignatureBuilder;
+
 	public:
 		/// Read-only reference to the format of the index data.
 		const GCI::EIndexDataFormat & mIndexDataFormat;
@@ -51,15 +51,15 @@ namespace Ic3
 		const VertexInputStreamArrayConfig & mInputStreamArrayConfig;
 
 	public:
-		VertexFormatDescriptor();
+		VertexFormatSignature();
 
-		VertexFormatDescriptor( VertexFormatDescriptor && pSource ) noexcept;
-		VertexFormatDescriptor & operator=( VertexFormatDescriptor && pRhs ) noexcept;
+		VertexFormatSignature( VertexFormatSignature && pSource ) noexcept;
+		VertexFormatSignature & operator=( VertexFormatSignature && pRhs ) noexcept;
 
-		VertexFormatDescriptor( const VertexFormatDescriptor & pSource );
-		VertexFormatDescriptor & operator=( const VertexFormatDescriptor & pRhs );
+		VertexFormatSignature( const VertexFormatSignature & pSource );
+		VertexFormatSignature & operator=( const VertexFormatSignature & pRhs );
 
-		virtual ~VertexFormatDescriptor();
+		virtual ~VertexFormatSignature();
 
 		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept;
 
@@ -70,7 +70,7 @@ namespace Ic3
 		CPPX_ATTR_NO_DISCARD bool IsValid() const noexcept;
 
 		/// @brief
-		CPPX_ATTR_NO_DISCARD bool Equals( const VertexFormatDescriptor & pOther ) const noexcept;
+		CPPX_ATTR_NO_DISCARD bool Equals( const VertexFormatSignature & pOther ) const noexcept;
 
 		/// @brief Returns true if the layout describes an indexed geometry, or false otherwise.
 		CPPX_ATTR_NO_DISCARD bool IsIndexedVertexFormat() const noexcept;
@@ -89,7 +89,7 @@ namespace Ic3
 				VertexAttributeKey pAttributeKey ) const noexcept;
 
 		CPPX_ATTR_NO_DISCARD uint32 GetElementStrideForAttribute(
-				cppx::bitmask<ESystemAttributeSemanticFlags> pSystemSemanticFlags ) const noexcept;
+				cppx::bitmask<EVertexAttributeSemanticFlags> pAttributeSemanticFlags ) const noexcept;
 
 		/// @brief
 		CPPX_ATTR_NO_DISCARD uint32 GetElementStrideForAttributeUnchecked( native_uint pAttributeSlot ) const noexcept;
@@ -100,14 +100,14 @@ namespace Ic3
 				cppx::string_view pSemanticName ) const noexcept;
 
 		CPPX_ATTR_NO_DISCARD bool HasAttributeWithSemantics(
-				const ShaderSemantics & pSemantics ) const noexcept;
+				const VertexAttributeShaderSemantics & pSemantics ) const noexcept;
 
 		CPPX_ATTR_NO_DISCARD bool HasAttributeWithSemantics(
-				cppx::bitmask<ESystemAttributeSemanticFlags> pSystemSemanticFlags ) const noexcept;
+				cppx::bitmask<EVertexAttributeSemanticFlags> pAttributeSemanticFlags ) const noexcept;
 
 		/// @brief Returns a zero-based index in the attribute array that refers to the attribute with the specified properties.
 		CPPX_ATTR_NO_DISCARD uint32 ResolveAttributeRef(
-				const ShaderSemantics & pSemantics ) const noexcept;
+				const VertexAttributeShaderSemantics & pSemantics ) const noexcept;
 
 		CPPX_ATTR_NO_DISCARD uint32 ResolveAttributeRef(
 				cppx::string_view pSemanticName,
@@ -118,7 +118,7 @@ namespace Ic3
 				uint32 pSemanticIndex = 0 ) const noexcept;
 
 		CPPX_ATTR_NO_DISCARD uint32 ResolveAttributeRef(
-				cppx::bitmask<ESystemAttributeSemanticFlags> pSystemSemanticFlags,
+				cppx::bitmask<EVertexAttributeSemanticFlags> pAttributeSemanticFlags,
 				uint32 pSemanticIndex = 0 ) const noexcept;
 
 		/// @brief Returns the usage info of a vertex stream with the specified index. If the index is not valid, a null pointer is returned.
@@ -127,7 +127,7 @@ namespace Ic3
 				native_uint pAttributeSlot ) const noexcept;
 
 		CPPX_ATTR_NO_DISCARD const GenericVertexInputAttribute * GetAttribute(
-				const ShaderSemantics & pSemantics ) const noexcept;
+				const VertexAttributeShaderSemantics & pSemantics ) const noexcept;
 
 		CPPX_ATTR_NO_DISCARD const GenericVertexInputAttribute * GetAttribute(
 				cppx::string_view pSemanticName,
@@ -138,21 +138,21 @@ namespace Ic3
 				uint32 pSemanticIndex = 0 ) const noexcept;
 
 		CPPX_ATTR_NO_DISCARD const GenericVertexInputAttribute * GetAttribute(
-				cppx::bitmask<ESystemAttributeSemanticFlags> pSystemSemanticFlags,
+				cppx::bitmask<EVertexAttributeSemanticFlags> pAttributeSemanticFlags,
 				uint32 pSemanticIndex = 0 ) const noexcept;
 
 		/// @brief Returns the usage info of a vertex stream which contains the described vertex attribute.
 		/// @return A pointer to the described attribute's stream or a null pointer if such attribute does not exist.
 		CPPX_ATTR_NO_DISCARD const VertexInputStream * GetStreamForAttribute( native_uint pAttributeSlot ) const noexcept;
-		CPPX_ATTR_NO_DISCARD const VertexInputStream * GetStreamForAttribute( const ShaderSemantics & pSemantics ) const noexcept;
+		CPPX_ATTR_NO_DISCARD const VertexInputStream * GetStreamForAttribute( const VertexAttributeShaderSemantics & pSemantics ) const noexcept;
 		CPPX_ATTR_NO_DISCARD const VertexInputStream * GetStreamForAttribute( cppx::string_view pSemanticName ) const noexcept;
 		CPPX_ATTR_NO_DISCARD const VertexInputStream * GetStreamForAttribute( VertexAttributeKey pAttributeKey ) const noexcept;
 
 		CPPX_ATTR_NO_DISCARD const VertexInputStream * GetStreamForAttribute(
-				cppx::bitmask<ESystemAttributeSemanticFlags> pSystemSemanticFlags ) const noexcept;
+				cppx::bitmask<EVertexAttributeSemanticFlags> pAttributeSemanticFlags ) const noexcept;
 
 		/// @brief Returns the usage info of a vertex stream with the specified index. If the index is not valid, a null pointer is returned.
-		/// @param pAttributeSlot A zero-based index of a vertex attribute to retrieve.
+		/// @param pStreamSlot A zero-based index of a vertex attribute to retrieve.
 		CPPX_ATTR_NO_DISCARD const VertexInputStream * GetStream( native_uint pStreamSlot ) const noexcept;
 
 		/// @brief
@@ -168,7 +168,7 @@ namespace Ic3
 		CPPX_ATTR_NO_DISCARD bool IsVertexStreamActive( native_uint pStreamSlot ) const;
 
 		/// @brief Returns the string representation of the attribute layout.
-		CPPX_ATTR_NO_DISCARD std::string GenerateVertexFormatStringID() const noexcept;
+		CPPX_ATTR_NO_DISCARD std::string GenerateSerialString() const noexcept;
 
 		/// @brief Returns an array of VertexAttributeDefinition values which can be used to re-Create the current attribute/stream layout.
 		///
@@ -184,7 +184,7 @@ namespace Ic3
 				uint32 pSemanticIndex ) const noexcept;
 
 		uint32 _ResolveAttributeRefImpl(
-				cppx::bitmask<ESystemAttributeSemanticFlags> pSystemSemanticFlags,
+				cppx::bitmask<EVertexAttributeSemanticFlags> pAttributeSemanticFlags,
 				uint32 pSemanticIndex ) const noexcept;
 
 	private:
@@ -201,17 +201,20 @@ namespace Ic3
 		VertexInputStreamArrayConfig _inputStreamArrayConfig;
 	};
 
-	namespace GCU
+	namespace GCIUtils
 	{
 
-		IC3_NXMAIN_API_NO_DISCARD std::string GenerateVertexFormatLayoutString(
-				const VertexInputAttributeArrayConfig & pAttributeLayout,
-				const VertexInputStreamArrayConfig & pStreamConfig );
+		IC3_NXMAIN_API_NO_DISCARD std::string GenerateVertexFormatSignatureSerialString(
+				const VertexInputAttributeArrayConfig & pAttributeArrayConfig,
+				const VertexInputStreamArrayConfig & pStreamArrayConfig );
+
+		IC3_NXMAIN_API_NO_DISCARD std::vector<VertexInputAttributeDefinition> ParseVertexFormatSignatureSerialString(
+				const std::string_view & pVertexFormatString );
 
 	}
 
 } // namespace Ic3
 
-#include "VertexFormatDescriptor.inl"
+#include "VertexFormatSignature.inl"
 
-#endif // __IC3_NXMAIN_VERTEX_FORMAT_DESCRIPTOR_H__
+#endif // __IC3_NXMAIN_VERTEX_FORMAT_SIGNATURE_H__

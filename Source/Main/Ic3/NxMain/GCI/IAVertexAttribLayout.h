@@ -4,7 +4,7 @@
 #ifndef __IC3_NXMAIN_IA_VERTEX_ATTRIB_LAYOUT_H__
 #define __IC3_NXMAIN_IA_VERTEX_ATTRIB_LAYOUT_H__
 
-#include "IACommonDefs.h"
+#include "VertexAttributeShaderSemantics.h"
 #include <cppx/stdHelperAlgo.h>
 
 namespace Ic3
@@ -13,9 +13,9 @@ namespace Ic3
 	/**
 	 * @brief
 	 */
-	class VertexInputAttributeArrayConfig
+	class IC3_NXMAIN_CLASS VertexInputAttributeArrayConfig
 	{
-		friend class VertexFormatDescriptor;
+		friend class VertexFormatSignature;
 
 	public:
 		VertexInputAttributeArrayConfig() = default;
@@ -35,7 +35,7 @@ namespace Ic3
 				cppx::string_view pSemanticName ) const noexcept;
 
 		CPPX_ATTR_NO_DISCARD gci_input_assembler_slot_t QueryBaseAttributeBySemantics(
-				cppx::bitmask<ESystemAttributeSemanticFlags> pSystemSemanticFlags ) const noexcept;
+				cppx::bitmask<EVertexAttributeSemanticFlags> pAttributeSemanticFlags ) const noexcept;
 
 		CPPX_ATTR_NO_DISCARD const GenericVertexAttributeArray & GetAttributeArray() const noexcept;
 
@@ -53,17 +53,21 @@ namespace Ic3
 
 		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept;
 
-		IC3_NXMAIN_API_NO_DISCARD bool CheckAttributeArraySpace(
+		CPPX_ATTR_NO_DISCARD bool CheckAttributeArraySpace(
 				native_uint pBaseAttributeSlot,
 				size_t pSemanticGroupSize = 1 ) const noexcept;
 
-		IC3_NXMAIN_API_NO_DISCARD bool CheckAttributeDefinitionCompatibility(
+		CPPX_ATTR_NO_DISCARD bool CheckAttributeDefinitionCompatibility(
 				const VertexInputAttributeDefinition & pAttributeDefinition ) const noexcept;
 
-		IC3_NXMAIN_API GenericVertexInputAttribute * AddActiveAttribute(
+		GenericVertexInputAttribute * AddAttribute(
 				const VertexInputAttributeDefinition & pAttributeDefinition );
 
-		IC3_NXMAIN_API void Reset();
+		void Reset();
+
+	private:
+		GenericVertexInputAttribute * _AddAttributeImpl(
+				const VertexInputAttributeDefinition & pAttributeDefinition );
 
 	private:
 		using SemanticNameMap = std::unordered_map<std::string_view, gci_input_assembler_slot_t>;
@@ -76,7 +80,7 @@ namespace Ic3
 
 		cppx::bitmask<GCI::EIAVertexAttributeFlags> _activeAttributesMask;
 
-		cppx::bitmask<ESystemAttributeSemanticFlags> _activeAttributeSemanticsMask;
+		cppx::bitmask<EVertexAttributeSemanticFlags> _activeAttributeSemanticsMask;
 
 		InputAssemblerSlotRange _activeAttributesRange = InputAssemblerSlotRange::empty_range();
 
@@ -85,8 +89,14 @@ namespace Ic3
 		SemanticNameMap _semanticNameMap;
 	};
 
-	namespace GCU
+	namespace GCIUtils
 	{
+		using namespace GCI::CXU;
+
+		IC3_NXMAIN_API_NO_DISCARD GCI::IAVertexAttributeDesc MakeGCIAttributeDesc(
+				VertexAttributeKey pAttributeKey,
+				uint32 pVertexStreamSlot,
+				uint32 pVertexStreamRelativeOffset );
 
 		IC3_NXMAIN_API_NO_DISCARD GCI::EVertexAttribFormat GetAttributeFormatFromStringIdentifier( const std::string & pAttribFormatStringID );
 

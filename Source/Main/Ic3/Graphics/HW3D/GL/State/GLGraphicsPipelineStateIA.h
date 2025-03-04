@@ -30,12 +30,12 @@ namespace Ic3::Graphics::GCI
 		uint32 instanceRate;
 	};
 
-	using GLIAVertexAttributeInfoArray = std::array<GLIAVertexAttributeInfo, GCM::kIAMaxVertexAttributesNum>;
+	using GLIAVertexAttributeDescArray = std::array<GLIAVertexAttributeInfo, GCM::kIAMaxVertexAttributesNum>;
 
 	struct GLIAVertexAttributeLayout : public IAVertexAttributeLayoutCommonConfig
 	{
-		GLIAVertexAttributeInfoArray attributeArray;
-		GLenum primitiveTopology;
+		GLIAVertexAttributeDescArray glcAttributeArray;
+		GLenum glcPrimitiveTopology;
 
 		void Reset();
 	};
@@ -221,7 +221,7 @@ namespace Ic3::Graphics::GCI
 		// VertexAttributeLayout
 
 		CPPX_ATTR_NO_DISCARD GLIAVertexAttributeInfo IATranslateVertexAttributeInfoGL(
-				const IAVertexAttributeInfo & pVertexAttributeInfo );
+				const IAVertexAttributeDesc & pVertexAttributeDesc );
 
 		CPPX_ATTR_NO_DISCARD GLIAVertexAttributeLayout IATranslateVertexAttributeLayoutDefinitionGL(
 				const IAVertexAttributeLayoutDefinition & pVertexAttributeLayoutDefinition );

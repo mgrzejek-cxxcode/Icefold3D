@@ -18,29 +18,29 @@ namespace Ic3
 
 	inline bool VertexInputStream::IsInitialized() const noexcept
 	{
-		return ( streamSlot != kGCIVertexInputStreamSlotUndefined ) && ( streamDataRate != EVertexDataRate::Undefined );
+		return ( streamSlot != GCI::kIAVertexStreamSlotUndefined ) && ( streamDataRate != GCI::EIAVertexAttributeDataRate::Undefined );
 	}
 
 	inline bool VertexInputStream::CheckAttributeCompatibility( const VertexInputAttributeDefinition & pAttributeDefinition ) const noexcept
 	{
-		return ( streamDataRate == EVertexDataRate::Undefined ) || ( streamDataRate == pAttributeDefinition.dataRate );
+		return ( streamDataRate == GCI::EIAVertexAttributeDataRate::Undefined ) || ( streamDataRate == pAttributeDefinition.dataRate );
 	}
 
-	inline void VertexInputStream::Init( uint16 pStreamSlot, EVertexDataRate pDataRate )
+	inline void VertexInputStream::Init( uint16 pStreamSlot, GCI::EIAVertexAttributeDataRate pDataRate )
 	{
-		Ic3DebugAssert( streamSlot == kGCIVertexInputStreamSlotUndefined );
-		Ic3DebugAssert( streamDataRate == EVertexDataRate::Undefined );
+		Ic3DebugAssert( streamSlot == GCI::kIAVertexStreamSlotUndefined );
+		Ic3DebugAssert( streamDataRate == GCI::EIAVertexAttributeDataRate::Undefined );
 		streamSlot = pStreamSlot;
 		streamDataRate = pDataRate;
 	}
 
 	inline void VertexInputStream::Reset()
 	{
-		streamSlot = kGCIVertexInputStreamSlotUndefined;
+		streamSlot = GCI::kIAVertexStreamSlotUndefined;
 		activeAttributesMask.clear();
 		activeAttributesNum = 0;
 		dataStrideInBytes = 0;
-		streamDataRate = EVertexDataRate::Undefined;
+		streamDataRate = GCI::EIAVertexAttributeDataRate::Undefined;
 	}
 
 
@@ -51,24 +51,24 @@ namespace Ic3
 
 	inline const VertexInputStream & VertexInputStreamArrayConfig::operator[]( native_uint pStreamSlot ) const noexcept
 	{
-		Ic3DebugAssert( GCI::CXU::IAIsDataStreamVertexBufferIndexValid( pStreamSlot ) );
+		Ic3DebugAssert( GCI::CXU::IAIsDataStreamVertexBufferSlotValid( pStreamSlot ) );
 		return _streamArray[pStreamSlot];
 	}
 
 	inline const VertexInputStream & VertexInputStreamArrayConfig::StreamAt( native_uint pStreamSlot ) const
 	{
-		Ic3DebugAssert( GCI::CXU::IAIsDataStreamVertexBufferIndexValid( pStreamSlot ) );
+		Ic3DebugAssert( GCI::CXU::IAIsDataStreamVertexBufferSlotValid( pStreamSlot ) );
 		return _streamArray.at( pStreamSlot );
 	}
 
 	inline const VertexInputStream * VertexInputStreamArrayConfig::StreamPtr( native_uint pStreamSlot ) const noexcept
 	{
-		return GCI::CXU::IAIsDataStreamVertexBufferIndexValid( pStreamSlot ) ? &( _streamArray[pStreamSlot] ) : nullptr;
+		return GCI::CXU::IAIsDataStreamVertexBufferSlotValid( pStreamSlot ) ? &( _streamArray[pStreamSlot] ) : nullptr;
 	}
 
 	inline bool VertexInputStreamArrayConfig::IsStreamActive( native_uint pStreamSlot ) const noexcept
 	{
-		Ic3DebugAssert( GCI::CXU::IAIsDataStreamVertexBufferIndexValid( pStreamSlot ) );
+		Ic3DebugAssert( GCI::CXU::IAIsDataStreamVertexBufferSlotValid( pStreamSlot ) );
 		return _streamArray[pStreamSlot].IsActive();
 	}
 

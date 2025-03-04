@@ -5,6 +5,7 @@
 #define __IC3_GRAPHICS_GCI_SHARED_IMMUTABLE_STATE_MANAGER_H__
 
 #include "PipelineStateDescriptorCache.h"
+#include <cppx/stdHelperAlgo.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -16,6 +17,16 @@ namespace Ic3::Graphics::GCI
 	public:
 		PipelineStateDescriptorManager( GPUDevice & pGPUDevice, PipelineStateDescriptorFactory & pDescriptorFactory );
 		virtual ~PipelineStateDescriptorManager();
+
+		CPPX_ATTR_NO_DISCARD PipelineStateDescriptorHandle GetDescriptorByID(
+				pipeline_state_descriptor_id_t pDescriptorID ) const noexcept;
+
+		CPPX_ATTR_NO_DISCARD PipelineStateDescriptorHandle GetDescriptorByName(
+				const cppx::string_view & pDescriptorName ) const noexcept;
+
+		CPPX_ATTR_NO_DISCARD bool HasDescriptorWithID( pipeline_state_descriptor_id_t pDescriptorID ) const noexcept;
+
+		CPPX_ATTR_NO_DISCARD bool HasDescriptorWithName( const cppx::string_view & pDescriptorName ) const noexcept;
 
 		template <typename TPDescriptorType>
 		CPPX_ATTR_NO_DISCARD TGfxHandle<TPDescriptorType> GetCachedDescriptorByID(
@@ -37,12 +48,10 @@ namespace Ic3::Graphics::GCI
 				pipeline_state_descriptor_id_t pDescriptorID ) const noexcept;
 
 		template <typename TPDescriptorType>
-		CPPX_ATTR_NO_DISCARD bool HasCachedDescriptorWithID(
-				pipeline_state_descriptor_id_t pDescriptorID ) const noexcept;
+		CPPX_ATTR_NO_DISCARD bool HasCachedDescriptorWithID( pipeline_state_descriptor_id_t pDescriptorID ) const noexcept;
 
 		template <typename TPDescriptorType>
-		CPPX_ATTR_NO_DISCARD bool HasCachedDescriptorWithName(
-				const cppx::string_view & pDescriptorName ) const noexcept;
+		CPPX_ATTR_NO_DISCARD bool HasCachedDescriptorWithName( const cppx::string_view & pDescriptorName ) const noexcept;
 
 		CPPX_ATTR_NO_DISCARD bool HasCachedDescriptorWithID(
 				EPipelineStateDescriptorType pDescriptorType,
@@ -54,18 +63,6 @@ namespace Ic3::Graphics::GCI
 
 		CPPX_ATTR_NO_DISCARD bool HasCachedDescriptorWithIDAuto(
 				pipeline_state_descriptor_id_t pDescriptorID ) const noexcept;
-
-		CPPX_ATTR_NO_DISCARD const BlendSettings & GetDefaultBlendSettings();
-		CPPX_ATTR_NO_DISCARD BlendStateDescriptorHandle GetDefaultBlendStateDescriptor();
-
-		CPPX_ATTR_NO_DISCARD const DepthStencilSettings & GetDefaultDepthStencilSettings();
-		CPPX_ATTR_NO_DISCARD DepthStencilStateDescriptorHandle GetDefaultDepthStencilStateDescriptor();
-
-		CPPX_ATTR_NO_DISCARD const DepthStencilSettings & GetDefaultDepthStencilSettingsWithDepthTestEnabled();
-		CPPX_ATTR_NO_DISCARD DepthStencilStateDescriptorHandle GetDefaultDepthStencilStateDescriptorWithDepthTestEnabled();
-
-		CPPX_ATTR_NO_DISCARD const RasterizerSettings & GetDefaultRasterizerSettings();
-		CPPX_ATTR_NO_DISCARD RasterizerStateDescriptorHandle GetDefaultRasterizerStateDescriptor();
 
 		CPPX_ATTR_NO_DISCARD BlendStateDescriptorHandle CreateBlendStateDescriptor(
 				const BlendStateDescriptorCreateInfo & pCreateInfo,
@@ -108,20 +105,23 @@ namespace Ic3::Graphics::GCI
 				const TPCreateInfo & pCreateInfo,
 				const cppx::immutable_string & pOptionalDescriptorName = {} );
 
-		template <typename TPDescriptorType>
-		void ResetDescriptorCache();
-
-		void ResetDescriptorCache( EPipelineStateDescriptorType pDescriptorType );
-
-		void Reset( cppx::bitmask<EPipelineStateDescriptorTypeFlags> pResetMask = ePipelineStateDescriptorTypeMaskAll );
-
-	friendapi:
-		///
-		bool CreateDefaultStateDescriptors();
+		void ResetCache();
 
 	private:
+		CPPX_ATTR_NO_DISCARD bool _ValidateDescriptorCreateInfo( const PipelineStateDescriptorCreateInfoBase & pCreateInfoBase ) const noexcept;
+
+		void _RegisterDescriptorInCommonMap(
+				PipelineStateDescriptorHandle pStateDescriptor,
+				pipeline_state_descriptor_id_t pDescriptorID,
+				cppx::immutable_string pDescriptorName );
+
+	private:
+		using CommonCachedDescriptorMapByID = std::unordered_map<pipeline_state_descriptor_id_t, PipelineStateDescriptorHandle>;
+		using CommonCachedDescriptorMapByName = std::unordered_map<cppx::immutable_string, PipelineStateDescriptorHandle>;
 		PipelineStateDescriptorFactory & _descriptorFactory;
 		GraphicsPipelineStateDescriptorCache _graphicsPipelineStateDescriptorCache;
+		CommonCachedDescriptorMapByID _commonCachedDescriptorMapByID;
+		CommonCachedDescriptorMapByName _commonCachedDescriptorMapByName;
 	};
 
 	template <typename TPDescriptorType, typename TPCreateInfo>
@@ -130,6 +130,30 @@ namespace Ic3::Graphics::GCI
 			const cppx::immutable_string & pOptionalDescriptorName )
 	{
 		return _graphicsPipelineStateDescriptorCache.CreateDescriptor<TPDescriptorType>( pCreateInfo, pOptionalDescriptorName );
+	}
+
+	inline PipelineStateDescriptorHandle PipelineStateDescriptorManager::GetDescriptorByID(
+			pipeline_state_descriptor_id_t pDescriptorID ) const noexcept
+	{
+		return cppx::get_map_value_ref_or_default( _commonCachedDescriptorMapByID, pDescriptorID, nullptr );
+	}
+
+	inline PipelineStateDescriptorHandle PipelineStateDescriptorManager::GetDescriptorByName(
+			const cppx::string_view & pDescriptorName ) const noexcept
+	{
+		return cppx::get_map_value_ref_or_default( _commonCachedDescriptorMapByName, pDescriptorName, nullptr );
+	}
+
+	inline bool PipelineStateDescriptorManager::HasDescriptorWithID( pipeline_state_descriptor_id_t pDescriptorID ) const noexcept
+	{
+		const auto descriptorPtr = cppx::get_map_value_ptr_or_null( _commonCachedDescriptorMapByID, pDescriptorID );
+		return descriptorPtr != nullptr;
+	}
+
+	inline bool PipelineStateDescriptorManager::HasDescriptorWithName( const cppx::string_view & pDescriptorName ) const noexcept
+	{
+		const auto descriptorPtr = cppx::get_map_value_ptr_or_null( _commonCachedDescriptorMapByName, pDescriptorName );
+		return descriptorPtr != nullptr;
 	}
 
 	template <typename TPDescriptorType>
@@ -153,15 +177,13 @@ namespace Ic3::Graphics::GCI
 	}
 
 	template <typename TPDescriptorType>
-	inline bool PipelineStateDescriptorManager::HasCachedDescriptorWithID(
-			pipeline_state_descriptor_id_t pDescriptorID ) const noexcept
+	inline bool PipelineStateDescriptorManager::HasCachedDescriptorWithID( pipeline_state_descriptor_id_t pDescriptorID ) const noexcept
 	{
 		return _graphicsPipelineStateDescriptorCache.HasDescriptorWithID<TPDescriptorType>( pDescriptorID );
 	}
 
 	template <typename TPDescriptorType>
-	inline bool PipelineStateDescriptorManager::HasCachedDescriptorWithName(
-			const cppx::string_view & pDescriptorName ) const noexcept
+	inline bool PipelineStateDescriptorManager::HasCachedDescriptorWithName( const cppx::string_view & pDescriptorName ) const noexcept
 	{
 		return _graphicsPipelineStateDescriptorCache.HasDescriptorWithName<TPDescriptorType>( pDescriptorName );
 	}
@@ -171,12 +193,6 @@ namespace Ic3::Graphics::GCI
 			pipeline_state_descriptor_id_t pDescriptorID ) const noexcept
 	{
 		return HasCachedDescriptorWithID( CXU::GetPipelineStateDescriptorIDTypeComponent( pDescriptorID ), pDescriptorID );
-	}
-
-	template<typename TPDescriptorType>
-	inline void PipelineStateDescriptorManager::ResetDescriptorCache()
-	{
-		return _graphicsPipelineStateDescriptorCache.ResetSubCache<TPDescriptorType>();
 	}
 
 }

@@ -1,5 +1,6 @@
 
 set( IC3_SAMPLES_SRC_GfxTest
+        "MeshDefs.h"
         "MainGfx.mm"
         )
 

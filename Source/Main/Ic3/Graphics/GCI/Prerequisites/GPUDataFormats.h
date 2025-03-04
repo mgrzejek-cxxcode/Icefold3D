@@ -17,19 +17,22 @@ namespace Ic3::Graphics::GCI
 
 	enum EGPUDataFormatFlags : uint8
 	{
-		eGPUDataFormatFlagNormalizedBit   = 0x01,
-		eGPUDataFormatFlagTypeSignedBit   = 0x02,
-		eGPUDataFormatFlagTypeUnsignedBit = 0x04,
-		eGPUDataFormatFlagSRGBBit         = 0x08,
-		eGPUDataFormatFlagDepthBit        = 0x10,
-		eGPUDataFormatFlagStencilBit      = 0x20,
-		eGPUDataFormatFlagCompressedBit   = 0x80,
-		eGPUDataFormatMaskDepthStencilBit = eGPUDataFormatFlagDepthBit | eGPUDataFormatFlagStencilBit,
-		eGPUDataFormatMaskDepthNorm       = eGPUDataFormatFlagDepthBit | eGPUDataFormatFlagNormalizedBit,
-		eGPUDataFormatMaskSNorm           = eGPUDataFormatFlagNormalizedBit | eGPUDataFormatFlagTypeSignedBit,
-		eGPUDataFormatMaskUNorm           = eGPUDataFormatFlagNormalizedBit | eGPUDataFormatFlagTypeUnsignedBit,
-		eGPUDataFormatMaskCompressedSRGB  = eGPUDataFormatFlagCompressedBit | eGPUDataFormatFlagSRGBBit,
-		eGPUDataFormatMaskAll             = 0xFF
+		eGPUDataFormatFlagNormalizedBit        = 0x01,
+		eGPUDataFormatFlagTypeSignedBit        = 0x02,
+		eGPUDataFormatFlagTypeIntegralBit      = 0x04,
+		eGPUDataFormatFlagTypeFloatingPointBit = 0x08 | eGPUDataFormatFlagTypeSignedBit,
+		eGPUDataFormatFlagSRGBBit              = 0x10,
+		eGPUDataFormatFlagDepthBit             = 0x20,
+		eGPUDataFormatFlagStencilBit           = 0x40,
+		eGPUDataFormatFlagCompressedBit        = 0x80,
+		eGPUDataFormatMaskDepthStencilBit      = eGPUDataFormatFlagDepthBit | eGPUDataFormatFlagStencilBit,
+		eGPUDataFormatMaskDepthNorm            = eGPUDataFormatFlagDepthBit | eGPUDataFormatFlagNormalizedBit,
+		eGPUDataFormatMaskSInt                 = eGPUDataFormatFlagTypeIntegralBit | eGPUDataFormatFlagTypeSignedBit,
+		eGPUDataFormatMaskUInt                 = eGPUDataFormatFlagTypeIntegralBit,
+		eGPUDataFormatMaskSNorm                = eGPUDataFormatFlagNormalizedBit | eGPUDataFormatFlagTypeSignedBit,
+		eGPUDataFormatMaskUNorm                = eGPUDataFormatFlagNormalizedBit,
+		eGPUDataFormatMaskCompressedSRGB       = eGPUDataFormatFlagCompressedBit | eGPUDataFormatFlagSRGBBit,
+		eGPUDataFormatMaskAll                  = 0xFF
 	};
 
 	namespace CXU
@@ -45,12 +48,11 @@ namespace Ic3::Graphics::GCI
 		 * @param pFlg
 		 * @return
 		 */
-		CPPX_ATTR_NO_DISCARD inline constexpr base_data_type_value_t makeBaseDataTypeEnumValue(
-				uint8 pIdx, uint8 pBsz, uint8 pFlg = 0 ) noexcept
+		CPPX_ATTR_NO_DISCARD inline constexpr base_data_type_value_t makeBaseDataTypeEnumValue( uint8 pBsz, uint8 pFlg = 0 ) noexcept
 		{
 			// Note: EVertexAttribFormat (and related functionality) relies on the fact that last 8 bits are flags (this
 			// is shared with other enums to fit into certain size limits). Plan carefully before changing the bit layout.
-			return ( ( ( uint16 )pBsz & 0xF ) << 12 ) | ( ( ( uint16 )pIdx & 0xF ) << 8 ) | ( pFlg & eGPUDataFormatMaskAll );
+			return ( ( ( uint16 )pBsz & 0xF ) << 8 ) | ( pFlg & eGPUDataFormatMaskAll );
 		}
 
 		/**
@@ -78,25 +80,25 @@ namespace Ic3::Graphics::GCI
 		CPPX_ATTR_NO_DISCARD inline constexpr vertex_attrib_format_value_t MakeVertexAttribFormatEnumValue(
 				uint8 pBcn, EBaseDataType pBdt, uint8 pFlg = 0 ) noexcept
 		{
-			return ( ( uint32 )VBM_ATTRIB_FMT_CONTROL_KEY << 24 ) | ( ( ( uint32 )pBcn ) << 16 ) | ( ( uint32 )pBdt ) | ( ( uint32 )pFlg & eGPUDataFormatMaskAll );
+			return ( ( uint32 )VBM_ATTRIB_FMT_CONTROL_KEY << 24 ) | ( ( ( uint32 )pBcn & 0xF ) << 20 ) | ( ( ( uint32 ) pBdt & 0xFFF ) << 8 ) | ( ( uint32 )pFlg & eGPUDataFormatMaskAll );
 		}
 
 	}
 
 	enum class EBaseDataType : base_data_type_value_t
 	{
-		Undefined    = CXU::makeBaseDataTypeEnumValue( 0 , 0 , 0 ),
-		Bool         = CXU::makeBaseDataTypeEnumValue( 1 , 1 , 0 ),
-		Byte         = CXU::makeBaseDataTypeEnumValue( 2 , 1 , eGPUDataFormatFlagTypeSignedBit   ),
-		Ubyte        = CXU::makeBaseDataTypeEnumValue( 3 , 1 , eGPUDataFormatFlagTypeUnsignedBit ),
-		Int16        = CXU::makeBaseDataTypeEnumValue( 4 , 2 , eGPUDataFormatFlagTypeSignedBit   ),
-		Uint16       = CXU::makeBaseDataTypeEnumValue( 5 , 2 , eGPUDataFormatFlagTypeUnsignedBit ),
-		Int32        = CXU::makeBaseDataTypeEnumValue( 6 , 4 , eGPUDataFormatFlagTypeSignedBit   ),
-		Uint32       = CXU::makeBaseDataTypeEnumValue( 7 , 4 , eGPUDataFormatFlagTypeUnsignedBit ),
-		Float16      = CXU::makeBaseDataTypeEnumValue( 8 , 2 , eGPUDataFormatFlagTypeSignedBit   ),
-		Float32      = CXU::makeBaseDataTypeEnumValue( 9 , 4 , eGPUDataFormatFlagTypeSignedBit   ),
-		Double       = CXU::makeBaseDataTypeEnumValue( 10, 8 , eGPUDataFormatFlagTypeSignedBit   ),
-		Uint24S8     = CXU::makeBaseDataTypeEnumValue( 11, 4 , eGPUDataFormatFlagTypeUnsignedBit ),
+		Undefined    = CXU::makeBaseDataTypeEnumValue( 0 , 0 ),
+		Bool         = CXU::makeBaseDataTypeEnumValue( 1 , 0 ),
+		Byte         = CXU::makeBaseDataTypeEnumValue( 1 , eGPUDataFormatMaskSInt ),
+		Ubyte        = CXU::makeBaseDataTypeEnumValue( 1 , eGPUDataFormatMaskUInt ),
+		Int16        = CXU::makeBaseDataTypeEnumValue( 2 , eGPUDataFormatMaskSInt ),
+		Uint16       = CXU::makeBaseDataTypeEnumValue( 2 , eGPUDataFormatMaskUInt ),
+		Int32        = CXU::makeBaseDataTypeEnumValue( 4 , eGPUDataFormatMaskSInt ),
+		Uint32       = CXU::makeBaseDataTypeEnumValue( 4 , eGPUDataFormatMaskUInt ),
+		Float16      = CXU::makeBaseDataTypeEnumValue( 2 , eGPUDataFormatFlagTypeFloatingPointBit ),
+		Float32      = CXU::makeBaseDataTypeEnumValue( 4 , eGPUDataFormatFlagTypeFloatingPointBit ),
+		Double       = CXU::makeBaseDataTypeEnumValue( 8 , eGPUDataFormatFlagTypeFloatingPointBit ),
+		Uint24S8     = CXU::makeBaseDataTypeEnumValue( 4 , 0 ),
 	};
 
 	enum class EIndexDataFormat : base_data_type_value_t
@@ -232,12 +234,22 @@ namespace Ic3::Graphics::GCI
 
 		CPPX_ATTR_NO_DISCARD inline constexpr uint16 GetBaseDataTypeByteSize( EBaseDataType pBaseType ) noexcept
 		{
-			return ( uint16 )( ( ( base_data_type_value_t )pBaseType >> 12 ) & 0xF );
+			return ( uint16 )( ( ( base_data_type_value_t )pBaseType >> 8 ) & 0xF );
 		}
 
 		CPPX_ATTR_NO_DISCARD inline constexpr cppx::bitmask<EGPUDataFormatFlags> GetBaseDataTypeFlags( EBaseDataType pBaseType ) noexcept
 		{
-			return cppx::make_bitmask<uint8>( ( base_data_type_value_t )pBaseType & 0xF );
+			return cppx::make_bitmask<uint8>( ( base_data_type_value_t )pBaseType & 0xFF );
+		}
+
+		CPPX_ATTR_NO_DISCARD inline constexpr bool IsBaseDataTypeFloatingPoint( EBaseDataType pBaseType ) noexcept
+		{
+			return GetBaseDataTypeFlags( pBaseType ).is_set( eGPUDataFormatFlagTypeFloatingPointBit );
+		}
+
+		CPPX_ATTR_NO_DISCARD inline constexpr bool IsBaseDataTypeIntegral( EBaseDataType pBaseType ) noexcept
+		{
+			return GetBaseDataTypeFlags( pBaseType ).is_set( eGPUDataFormatFlagTypeIntegralBit );
 		}
 
 		CPPX_ATTR_NO_DISCARD inline constexpr uint16 GetIndexDataFormatByteSize( EIndexDataFormat pFormat ) noexcept
@@ -267,12 +279,12 @@ namespace Ic3::Graphics::GCI
 
 		CPPX_ATTR_NO_DISCARD inline constexpr uint8 GetVertexAttribFormatComponentsNum( EVertexAttribFormat pFormat ) noexcept
 		{
-			return ( uint8 )( ( ( vertex_attrib_format_value_t )pFormat >> 16 ) & 0xFF );
+			return ( uint8 )( ( ( vertex_attrib_format_value_t )pFormat >> 20 ) & 0xF );
 		}
 
 		CPPX_ATTR_NO_DISCARD inline constexpr EBaseDataType GetVertexAttribFormatBaseDataType( EVertexAttribFormat pFormat ) noexcept
 		{
-			return ( EBaseDataType )( ( vertex_attrib_format_value_t )pFormat & 0xFFFF );
+			return ( EBaseDataType )( ( ( vertex_attrib_format_value_t )pFormat >> 8 ) & 0xFFF );
 		}
 
 		CPPX_ATTR_NO_DISCARD inline constexpr cppx::bitmask<EGPUDataFormatFlags> GetVertexAttribFormatFlags( EVertexAttribFormat pFormat )

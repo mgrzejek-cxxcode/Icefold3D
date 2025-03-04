@@ -13,84 +13,182 @@ namespace Ic3::Graphics::GCI
 
 	Ic3GCIDeclareClassHandle( GPUBuffer );
 
-	/// @brief
+	/**
+	 *
+	 */
 	using input_assembler_index_t = uint8;
-
-	/// @brief
-	using vertex_attribute_offset_t = uint16;
-
-	///
-	constexpr auto kIAVertexAttributeIndexUndefined = cppx::meta::limits<input_assembler_index_t>::max_value;
-
-	///
-	constexpr auto kIAVertexAttributeOffsetAppend = cppx::meta::limits<vertex_attribute_offset_t>::max_value;
-
-	///
-	constexpr auto kIAVertexStreamIndexUndefined = cppx::meta::limits<input_assembler_index_t>::max_value;
 
 	/**
 	 *
 	 */
-	struct IAVertexAttributeSemantics
+	using vertex_attribute_offset_t = uint32;
+
+	/**
+	 *
+	 */
+	using vertex_attribute_padding_t = uint8;
+
+
+	/**
+	 * Represents an invalid vertex attribute slot index.
+	 */
+	constexpr auto kIAVertexAttributeSlotUndefined = cppx::meta::limits<input_assembler_index_t>::max_value;
+
+	/**
+	 *
+	 */
+	constexpr auto kIAVertexAttributeOffsetAppend = cppx::meta::limits<vertex_attribute_offset_t>::max_value;
+
+	/**
+	 *
+	 */
+	constexpr auto kIAVertexAttributeOffsetInvalid = cppx::meta::limits<vertex_attribute_offset_t>::max_value - 2;
+
+	/**
+	 *
+	 */
+	constexpr auto kIAVertexAttributePaddingAlign16 = cppx::meta::limits<vertex_attribute_padding_t>::max_value;
+
+	/**
+	 * Represents an invalid vertex stream slot index.
+	 */
+	constexpr auto kIAVertexStreamSlotUndefined = cppx::meta::limits<input_assembler_index_t>::max_value;
+
+	/**
+	 *
+	 */
+	enum EIAVertexAttributeDataRate : uint8
 	{
-		cppx::immutable_string semanticName;
-		input_assembler_index_t semanticIndex = 0;
-
-		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept
-		{
-			return !IsEmpty();
-		}
-
-		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept
-		{
-			return semanticName.empty();
-		}
-
-		void Clear()
-		{
-			semanticName.clear();
-			semanticIndex = 0;
-		}
+		PerVertex,
+		PerInstance,
+		Undefined = cppx::meta::limits<uint8>::max_value
 	};
 
 	/**
 	 * Definition of a vertex input attribute.
 	 */
-	struct IAVertexAttributeInfo
+	#pragma pack( push, 1 )
+	struct __attribute__(( packed )) IAVertexAttributeInfo
 	{
-		IAVertexAttributeSemantics inputSemantics;
+		/**
+		 * Base attribute index. Allowed values are from 0 to (GCM::kIAMaxVertexAttributesNum - 1).
+		 * For multi-component attributes, this is the index of the first occupied attribute slot.
+		 */
+		input_assembler_index_t attributeSlot = kIAVertexAttributeSlotUndefined;
 
-		EVertexAttribFormat format = EVertexAttribFormat::Undefined;
+		/**
+		 * Format of the attribute's data.
+		 */
+		EVertexAttribFormat dataFormat = EVertexAttribFormat::Undefined;
 
-		input_assembler_index_t streamIndex = kIAVertexStreamIndexUndefined;
-
-		/// An offset of the attribute from the start of the vertex data.
-		/// VERTEX_ATTRIBUTE_OFFSET_APPEND can be specified if the attribute is placed directly after previous one.
-		uint16 relativeOffset = 0;
-
-		uint16 instanceRate = 0;
+		/**
+		 *
+		 */
+		EIAVertexAttributeDataRate dataRate = EIAVertexAttributeDataRate::Undefined;
 
 		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept
 		{
 			return IsActive();
 		}
 
-		/// @brief Returns true if this instance represents a valid vertex attribute.
+		/**
+		 * @brief Returns true if this instance represents a valid vertex attribute.
+		 * @return
+		 */
 		CPPX_ATTR_NO_DISCARD bool IsActive() const noexcept
 		{
-			return inputSemantics && ( format != EVertexAttribFormat::Undefined ) && CXU::IAIsDataStreamVertexBufferIndexValid( streamIndex );
+			return CXU::IAIsVertexAttributeSlotValid( attributeSlot ) && ( dataFormat != EVertexAttribFormat::Undefined );
+		}
+
+		/**
+		 * @brief
+		 */
+		void Reset()
+		{
+			attributeSlot = kIAVertexStreamSlotUndefined;
+			dataFormat = EVertexAttribFormat::Undefined;
+		}
+	};
+	#pragma pack( pop )
+
+	#pragma pack( push, 1 )
+	struct __attribute__(( packed )) IAVertexAttributeSemantics
+	{
+		/**
+		 * Semantic name of the attribute. This is the name that identifies the attribute in the shader.
+		 * Multiple attributes can share the same name (meaning they are part of the same semantic group),
+		 * as long as their semanticIndex is different. Attribute with the same semantic must be placed
+		 * in an adjacent slot range (no gaps allowed).
+		 */
+		cppx::immutable_string semanticName;
+
+		/**
+		 * Semantic index of the attribute. Semantic group is a group of 2, 3 or 4 attributes that
+		 * share the same semantic name. Semantic group occupies continuous range of IA slots and
+		 * each of the attributes must have a different semantic index.
+		 * An example could be an 4x4 instance matrix, that would be stored as 4 vertex attributes,
+		 * each of type Vec4 and with semantic indices 0, 1, 2 and 3 (and identical semantic name).
+		 */
+		input_assembler_index_t semanticIndex = 0;
+
+		/**
+		 *
+		 */
+		void Reset()
+		{
+			semanticName.clear();
+			semanticIndex = 0;
+		}
+	};
+	#pragma pack( pop )
+
+	#pragma pack( push, 1 )
+	struct __attribute__(( packed )) IAVertexAttributeStreamBinding
+	{
+		/**
+		 *
+		 */
+		uint32 streamRelativeOffset = 0;
+
+		/**
+		 * An index of a vertex buffer slot this attribute is fetched from.
+		 */
+		input_assembler_index_t streamSlot = kIAVertexStreamSlotUndefined;
+
+		void Reset()
+		{
+			streamRelativeOffset = 0;
+			streamSlot = kIAVertexStreamSlotUndefined;
+		}
+	};
+	#pragma pack( pop )
+
+	struct IAVertexAttributeDesc
+	{
+		IAVertexAttributeInfo attribInfo;
+		IAVertexAttributeSemantics semantics;
+		IAVertexAttributeStreamBinding streamBinding;
+
+		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept
+		{
+			return IsActive();
+		}
+
+		CPPX_ATTR_NO_DISCARD bool IsActive() const noexcept
+		{
+			return attribInfo.IsActive();
 		}
 
 		void Reset()
 		{
-			inputSemantics.Clear();
-			format = EVertexAttribFormat::Undefined;
-			streamIndex = kIAVertexStreamIndexUndefined;
+			attribInfo.Reset();
+			semantics.Reset();
+			streamBinding.Reset();
 		}
 	};
 
 	/// @brief Typedef for ordered, fixed-size array of vertex attribute definitions.
-	using IAVertexAttributeInfoArray = std::array<IAVertexAttributeInfo, GCM::kIAMaxVertexAttributesNum>;
+	using IAVertexAttributeDescArray = std::array<IAVertexAttributeDesc, GCM::kIAMaxVertexAttributesNum>;
 
 	/**
 	 *
@@ -98,15 +196,15 @@ namespace Ic3::Graphics::GCI
 	struct IAVertexAttributeLayoutCommonConfig
 	{
 		/**
+		 * Number of active attributes enabled for the IA stage.
+		 */
+		native_uint activeAttributesNum = 0;
+
+		/**
 		 * Active attributes mask. It contains all bits corresponding to attributes active as part of this descriptor.
 		 * @see EIAVertexAttributeFlags
 		 */
 		cppx::bitmask<EIAVertexAttributeFlags> activeAttributesMask;
-
-		/**
-		 * Number of active attributes enabled for the IA stage.
-		 */
-		native_uint activeAttributesNum = 0;
 
 		/**
 		 * Primitive topology used to render vertices.
@@ -142,13 +240,13 @@ namespace Ic3::Graphics::GCI
 	 */
 	struct IAVertexAttributeLayoutDefinition : public IAVertexAttributeLayoutCommonConfig
 	{
-		IAVertexAttributeInfoArray attributeArray;
+		IAVertexAttributeDescArray attributeArray;
 
 		void Reset() noexcept
 		{
-			for( auto & attributeInfo : attributeArray )
+			for( auto & attributeDesc : attributeArray )
 			{
-				attributeInfo.Reset();
+				attributeDesc.Reset();
 			}
 
 			ResetActiveAttributesInfo();
@@ -276,6 +374,8 @@ namespace Ic3::Graphics::GCI
 
 		Shader * vertexShaderWithBinary = nullptr;
 
+		CPPX_ATTR_NO_DISCARD virtual bool Validate() const noexcept override final;
+
 		CPPX_ATTR_NO_DISCARD pipeline_config_hash_t GetConfigHash() const noexcept
 		{
 			return cppx::hash_compute<pipeline_config_hash_t::hash_algo>( layoutDefinition );
@@ -299,7 +399,7 @@ namespace Ic3::Graphics::GCI
 	struct IAVertexStreamArrayRange
 	{
 		/// First index of the vertex buffer binding this range defines.
-		input_assembler_index_t firstIndex = kIAVertexStreamIndexUndefined;
+		input_assembler_index_t firstIndex = kIAVertexStreamSlotUndefined;
 
 		/// Length of this range, i.e. number of vertex buffers within the range.
 		uint16 length = 0;
@@ -320,11 +420,11 @@ namespace Ic3::Graphics::GCI
 
 		/// @brief Returns
 		IC3_GRAPHICS_GCI_API_NO_DISCARD cppx::bitmask<EIAVertexAttributeFlags> IAGetActiveVertexAttributesMask(
-				const IAVertexAttributeInfoArray & pVertexAttributes ) noexcept;
+				const IAVertexAttributeDescArray & pVertexAttributes ) noexcept;
 
 		/// @brief
 		IC3_GRAPHICS_GCI_API_NO_DISCARD uint32 IAGetActiveVertexAttributesNum(
-				const IAVertexAttributeInfoArray & pVertexAttributes ) noexcept;
+				const IAVertexAttributeDescArray & pVertexAttributes ) noexcept;
 
 		/// @brief
 		IC3_GRAPHICS_GCI_API_NO_DISCARD uint32 IAGetActiveVertexBuffersNum(

@@ -120,10 +120,10 @@ namespace Ic3::Graphics::GCI
 	struct RenderTargetColorAttachmentBlendSettings
 	{
 		EBlendFactor factorSrcColor;
-		EBlendFactor factorSrcAlpha;
 		EBlendFactor factorDstColor;
-		EBlendFactor factorDstAlpha;
 		EBlendOp opColor;
+		EBlendFactor factorSrcAlpha;
+		EBlendFactor factorDstAlpha;
 		EBlendOp opAlpha;
 		cppx::bitmask<EBlendWriteMaskFlags> writeMask;
 	};
@@ -177,13 +177,13 @@ namespace Ic3::Graphics::GCI
 		/// Blending flags.
 		cppx::bitmask<EBlendConfigFlags> flags = 0;
 
+		Math::RGBAColorR32Norm constantColor;
+
 		/// An array of blend settings for each RT attachment.
 		/// If eBlendConfigFlagEnableMRTIndependentBlendingBit is set, each active target uses its corresponding entry.
 		/// Otherwise, attachments[0] is used for all targets and rest of the array is ignored.
 		/// @see EBlendConfigFlags
 		RenderTargetColorAttachmentBlendSettings attachments[GCM::kRTOMaxColorAttachmentsNum];
-
-		Math::RGBAColorR32Norm constantColor;
 	};
 
 	/**
@@ -246,8 +246,8 @@ namespace Ic3::Graphics::GCI
 		}
 	};
 
-	namespace defaults
-	{
+	//namespace defaults
+	//{
 
 		/// @brief A default blend configuration for an RT attachment.
 		/// This default config represents default set of options used for blending. The config is as follows:
@@ -260,13 +260,13 @@ namespace Ic3::Graphics::GCI
 		/// - opAlpha:               EBlendOp::Add
 		/// - renderTargetWriteMask: E_BLEND_WRITE_MASK_ALL
 		/// @see RTAttachmentBlendSettings
-		IC3_GRAPHICS_GCI_OBJ const RenderTargetColorAttachmentBlendSettings cvCommonRenderTargetColorAttachmentBlendSettingsDefault;
+		//IC3_GRAPHICS_GCI_OBJ const RenderTargetColorAttachmentBlendSettings cvCommonRenderTargetColorAttachmentBlendSettingsDefault;
 
 		/// @brief A default configuration for the depth test.
 		/// This default config represents default set of options used for depth testing. The config is as follows:
 		/// - depthCompFunc:  ECompFunc::Less
 		/// - depthWriteMask: EDepthWriteMask::All
-		IC3_GRAPHICS_GCI_OBJ const DepthTestSettings cvCommonDepthTestSettingsDefault;
+		//IC3_GRAPHICS_GCI_OBJ const DepthTestSettings cvCommonDepthTestSettingsDefault;
 
 		/// @brief A default configuration for the stencil test.
 		/// This default config represents default set of options used for stencil testing. The config is as follows:
@@ -281,21 +281,21 @@ namespace Ic3::Graphics::GCI
 		/// - refValue:                  0
 		/// - readMask:                  E_STENCIL_MASK_READ_DEFAULT
 		/// - writeMask:                 E_STENCIL_MASK_WRITE_DEFAULT
-		IC3_GRAPHICS_GCI_OBJ const StencilTestSettings cvCommonStencilTestSettingsDefault;
+		//IC3_GRAPHICS_GCI_OBJ const StencilTestSettings cvCommonStencilTestSettingsDefault;
 
 		///
-		IC3_GRAPHICS_GCI_OBJ const BlendSettings cvPipelineBlendSettingsDefault;
+		//IC3_GRAPHICS_GCI_OBJ const BlendSettings cvPipelineBlendSettingsDefault;
 
 		///
-		IC3_GRAPHICS_GCI_OBJ const DepthStencilSettings cvPipelineDepthStencilSettingsDefault;
+		//IC3_GRAPHICS_GCI_OBJ const DepthStencilSettings cvPipelineDepthStencilSettingsDefault;
 
 		///
-		IC3_GRAPHICS_GCI_OBJ const DepthStencilSettings cvPipelineDepthStencilSettingsEnableDepthTest;
+		//IC3_GRAPHICS_GCI_OBJ const DepthStencilSettings cvPipelineDepthStencilSettingsEnableDepthTest;
 
 		///
-		IC3_GRAPHICS_GCI_OBJ const RasterizerSettings cvPipelineRasterizerSettingsDefault;
+		//IC3_GRAPHICS_GCI_OBJ const RasterizerSettings cvPipelineRasterizerSettingsDefault;
 
-	}
+	//}
 
 	namespace GCU
 	{

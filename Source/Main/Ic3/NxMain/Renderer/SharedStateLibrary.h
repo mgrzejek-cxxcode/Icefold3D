@@ -5,57 +5,83 @@
 #define __IC3_NXMAIN_GPA_SHARED_STATE_LIBRARY_H__
 
 #include "CommonRendererDefs.h"
-#include <Ic3/Graphics/GCI/State/commonGPUStateDefs.h>
-#include <Ic3/Graphics/GCI/Resources/shaderCommon.h>
+#include <Ic3/Graphics/GCI/State/CommonGPUStateDefs.h>
+#include <Ic3/Graphics/GCI/Resources/ShaderCommon.h>
 #include <unordered_map>
 
 namespace Ic3
 {
 
-	namespace CXU
+	namespace GID
 	{
 
-		constexpr GfxObjectID GPA_RESOURCE_ID_SHADER_PASSTHROUGH_IA_DEFAULT_VS { 0xFF007001 };
-		constexpr GfxObjectID GPA_RESOURCE_ID_SHADER_PASSTHROUGH_IA_DEFAULT_PS { 0xFF007002 };
+		inline constexpr cppx::string_view kShaderNamePassthroughIADefaultVS = "SH_PASSTHROUGH_IA_DEFAULT_VS";
+		inline constexpr cppx::string_view kShaderNamePassthroughIADefaultPS = "SH_PASSTHROUGH_IA_DEFAULT_PS";
 
-		constexpr GfxObjectID GPA_STATE_ID_BLEND_DEFAULT { 0xFF00BB01 };
+		inline constexpr GfxObjectID kShaderIDPassthroughIADefaultVS = 0xFF770001;
+		inline constexpr GfxObjectID kShaderIDPassthroughIADefaultPS = 0xFF770002;
 
-		constexpr GfxObjectID GPA_STATE_ID_DEPTH_STENCIL_DEFAULT { 0xFF00DD01 };
-		constexpr GfxObjectID GPA_STATE_ID_DEPTH_STENCIL_DEPTH_TEST_ENABLE { 0xFF00DD02 };
+		inline constexpr auto kGfxIDStateDescriptorBlendDefault =
+				GCI::CXU::DeclarePipelineStateDescriptorIDBlendState( 0x001 );
 
-		constexpr GfxObjectID GPA_STATE_ID_RASTERIZER_DEFAULT_CULL_BACK_CCW { 0xFF00CC01 };
-		constexpr GfxObjectID GPA_STATE_ID_RASTERIZER_DEFAULT_CULL_BACK_CW { 0xFF00CC02 };
-		constexpr GfxObjectID GPA_STATE_ID_RASTERIZER_DEFAULT_CULL_FRONT_CCW { 0xFF00CC03 };
-		constexpr GfxObjectID GPA_STATE_ID_RASTERIZER_DEFAULT_CULL_FRONT_CW { 0xFF00CC04 };
+		inline constexpr auto kGfxIDStateDescriptorDepthStencilDefault =
+				GCI::CXU::DeclarePipelineStateDescriptorIDDepthStencilState( 0x001 );
 
-		constexpr GfxObjectID GPA_STATE_ID_IA_INPUT_LAYOUT_DEFAULT { 0xFF00AA01 };
-		constexpr GfxObjectID GPA_STATE_ID_IA_INPUT_LAYOUT_DEFAULT_16B { 0xFF00AA02 };
+		inline constexpr auto kGfxIDStateDescriptorDepthStencilDepthTestEnable =
+				GCI::CXU::DeclarePipelineStateDescriptorIDDepthStencilState( 0x002 );
 
-		constexpr GfxObjectID GPA_STATE_ID_GRAPHICS_SHADER_LINKAGE_PASSTHROUGH_IA_DEFAULT { 0xFF00EE01 };
+		inline constexpr auto kGfxIDStateDescriptorRasterizerSolidCullBackCCW =
+				GCI::CXU::DeclarePipelineStateDescriptorIDRasterizerState( 0x001 );
+
+		inline constexpr auto kGfxIDStateDescriptorRasterizerSolidCullBackCW =
+				GCI::CXU::DeclarePipelineStateDescriptorIDRasterizerState( 0x002 );
+
+		inline constexpr auto kGfxIDStateDescriptorRasterizerSolidCullNoneCCW =
+				GCI::CXU::DeclarePipelineStateDescriptorIDRasterizerState( 0x003 );
+
+		inline constexpr auto kGfxIDStateDescriptorRasterizerSolidCullNoneCW =
+				GCI::CXU::DeclarePipelineStateDescriptorIDRasterizerState( 0x004 );
+
+		inline constexpr auto kGfxIDStateDescriptorRasterizerWireframeCCW =
+				GCI::CXU::DeclarePipelineStateDescriptorIDRasterizerState( 0x005 );
+
+		inline constexpr auto kGfxIDStateDescriptorRasterizerWireframeCW =
+				GCI::CXU::DeclarePipelineStateDescriptorIDRasterizerState( 0x006 );
+
+		inline constexpr auto kGfxIDStateDescriptorIAVertexAttributeLayoutDefault =
+				GCI::CXU::DeclarePipelineStateDescriptorIDVertexAttributeLayout( 0x001 );
+
+		inline constexpr auto kGfxIDStateDescriptorIAVertexAttributeLayoutDefault16B =
+				GCI::CXU::DeclarePipelineStateDescriptorIDVertexAttributeLayout( 0x001 );
+
+		inline constexpr auto kGfxIDStateDescriptorGraphicsShaderLinkagePassthroughIADefault =
+				GCI::CXU::DeclarePipelineStateDescriptorIDGraphicsShaderLinkage( 0x001 );
 
 	}
 
-	class GpaSharedStateLibrary : public CoreEngineObject
+
+	class GCISharedStateLibrary : public CoreEngineObject
 	{
 	public:
 		ShaderLibraryHandle const mShaderLibrary;
 
 	public:
-		explicit GpaSharedStateLibrary( const CoreEngineState & pCES, ShaderLibraryHandle pShaderLibrary = nullptr );
-		~GpaSharedStateLibrary();
+		explicit GCISharedStateLibrary( ShaderLibrary & pShaderLibrary );
+		~GCISharedStateLibrary();
 
 		CPPX_ATTR_NO_DISCARD GCI::ShaderHandle GetShader( GfxObjectID pShaderID ) const noexcept;
-		CPPX_ATTR_NO_DISCARD GCI::ShaderHandle GetShader( const GpaUniqueObjectName & pShaderName ) const noexcept;
 
-		void initialize();
+		CPPX_ATTR_NO_DISCARD GCI::ShaderHandle GetShader( const GfxObjectName & pShaderName ) const noexcept;
+
+		void Initialize();
 
 	private:
 		void CreateDefaultShaders();
-		void initializeDefaultImmutableBlendStates();
-		void initializeDefaultImmutableDepthStencilStates();
-		void initializeDefaultImmutableRasterizerStates();
-		void initializeDefaultImmutableInputLayoutStates();
-		void initializeDefaultPipelineStateObjects();
+		void InitializeDefaultBlendStateDescriptors();
+		void InitializeDefaultDepthStencilStateDescriptors();
+		void InitializeDefaultRasterizerStateDescriptors();
+		void InitializeDefaultInputLayoutStateDescriptors();
+		void InitializeDefaultPipelineStateObjects();
 	};
 
 } // namespace Ic3

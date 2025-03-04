@@ -10,9 +10,9 @@ namespace Ic3::Graphics::GCI
 
 	void GLIAVertexAttributeLayout::Reset()
 	{
-		activeAttributesMask = 0;
-		primitiveTopology = 0;
-		cppx::mem_set_zero( attributeArray );
+		ResetActiveAttributesInfo();
+		glcPrimitiveTopology = 0;
+		cppx::mem_set_zero( glcAttributeArray );
 	}
 
 
@@ -113,7 +113,7 @@ namespace Ic3::Graphics::GCI
 			pCreateInfo.descriptorID,
 			glcAttributeLayoutData,
 			std::move( vertexArrayObject ),
-			glcAttributeLayoutData.primitiveTopology);
+			glcAttributeLayoutData.glcPrimitiveTopology );
 
 		return attributeLayoutDescriptor;
 	}
@@ -172,22 +172,22 @@ namespace Ic3::Graphics::GCI
 	{
 
 		GLIAVertexAttributeInfo IATranslateVertexAttributeInfoGL(
-				const IAVertexAttributeInfo & pVertexAttributeInfo )
+				const IAVertexAttributeDesc & pVertexAttributeDesc )
 		{
 			GLIAVertexAttributeInfo glcAttributeInfo{};
 
-			glcAttributeInfo.streamIndex = static_cast<GLuint>( pVertexAttributeInfo.streamIndex );
-			glcAttributeInfo.instanceRate = pVertexAttributeInfo.instanceRate;
-			glcAttributeInfo.relativeOffset = static_cast<uint32>( pVertexAttributeInfo.relativeOffset );
-			glcAttributeInfo.byteSize = CXU::GetVertexAttribFormatByteSize( pVertexAttributeInfo.format );
+			glcAttributeInfo.streamIndex = static_cast<GLuint>( pVertexAttributeDesc.streamBinding.streamSlot );
+			glcAttributeInfo.instanceRate = ( pVertexAttributeDesc.attribInfo.dataRate == EIAVertexAttributeDataRate::PerInstance ) ? 1 : 0;
+			glcAttributeInfo.relativeOffset = static_cast<uint32>( pVertexAttributeDesc.streamBinding.streamRelativeOffset );
+			glcAttributeInfo.byteSize = CXU::GetVertexAttribFormatByteSize( pVertexAttributeDesc.attribInfo.dataFormat );
 
-			const auto attributeBaseType = CXU::GetVertexAttribFormatBaseDataType( pVertexAttributeInfo.format );
+			const auto attributeBaseType = CXU::GetVertexAttribFormatBaseDataType( pVertexAttributeDesc.attribInfo.dataFormat );
 			glcAttributeInfo.baseType = ATL::TranslateGLBaseDataType( attributeBaseType );
 
-			const auto attributeComponentsNum = CXU::GetVertexAttribFormatComponentsNum( pVertexAttributeInfo.format );
+			const auto attributeComponentsNum = CXU::GetVertexAttribFormatComponentsNum( pVertexAttributeDesc.attribInfo.dataFormat );
 			glcAttributeInfo.componentsNum = static_cast<uint32>( attributeComponentsNum );
 
-			const auto attributeFormatFlags = CXU::GetVertexAttribFormatFlags( pVertexAttributeInfo.format );
+			const auto attributeFormatFlags = CXU::GetVertexAttribFormatFlags( pVertexAttributeDesc.attribInfo.dataFormat );
 			glcAttributeInfo.normalized = attributeFormatFlags.is_set( eGPUDataFormatFlagNormalizedBit ) ? GL_TRUE : GL_FALSE;
 
 			return glcAttributeInfo;
@@ -201,27 +201,17 @@ namespace Ic3::Graphics::GCI
 			const auto activeVertexAttributesNum = pVertexAttributeLayoutDefinition.activeAttributesNum;
 
 			uint32 currentVertexAttributesNum = 0;
-			uint64 currentAttributePackedRelativeOffset = 0;
 
 			for( uint32 attributeIndex = 0; attributeIndex < GCM::kIAMaxVertexAttributesNum; ++attributeIndex )
 			{
 				const auto attributeBit = CXU::IAMakeVertexAttributeFlag( attributeIndex );
 				if( pVertexAttributeLayoutDefinition.activeAttributesMask.is_set( attributeBit ) )
 				{
-					const auto & inputAttributeInfo = pVertexAttributeLayoutDefinition.attributeArray[attributeIndex];
-					auto & glcAttributeInfo = glcAttributeLayoutData.attributeArray[attributeIndex];
+					const auto & inputAttributeDesc = pVertexAttributeLayoutDefinition.attributeArray[attributeIndex];
+					auto & glcAttributeInfo = glcAttributeLayoutData.glcAttributeArray[attributeIndex];
 
 					// Translate the attribute data. This includes the relative offset.
-					glcAttributeInfo = IATranslateVertexAttributeInfoGL( inputAttributeInfo );
-
-					if( inputAttributeInfo.relativeOffset == kIAVertexAttributeOffsetAppend )
-					{
-						// If the offset is APPEND, update it with the current packed offset calculated.
-						glcAttributeInfo.relativeOffset = cppx::numeric_cast<uint32>( currentAttributePackedRelativeOffset );
-					}
-
-					// Update the current packed offset.
-					currentAttributePackedRelativeOffset = glcAttributeInfo.relativeOffset + glcAttributeInfo.byteSize;
+					glcAttributeInfo = IATranslateVertexAttributeInfoGL( inputAttributeDesc );
 
 					++currentVertexAttributesNum;
 
@@ -234,7 +224,8 @@ namespace Ic3::Graphics::GCI
 
 			glcAttributeLayoutData.activeAttributesMask = pVertexAttributeLayoutDefinition.activeAttributesMask;
 			glcAttributeLayoutData.activeAttributesNum = pVertexAttributeLayoutDefinition.activeAttributesNum;
-			glcAttributeLayoutData.primitiveTopology = ATL::TranslateGLPrimitiveTopology( pVertexAttributeLayoutDefinition.primitiveTopology );
+			glcAttributeLayoutData.primitiveTopology = pVertexAttributeLayoutDefinition.primitiveTopology;
+			glcAttributeLayoutData.glcPrimitiveTopology = ATL::TranslateGLPrimitiveTopology( pVertexAttributeLayoutDefinition.primitiveTopology );
 
 			return glcAttributeLayoutData;
 		}
@@ -404,7 +395,7 @@ namespace Ic3::Graphics::GCI
 				const auto attributeBit = CXU::IAMakeVertexAttributeFlag( attributeIndex );
 				if( pGLVertexAttributeLayout.activeAttributesMask.is_set( attributeBit ) )
 				{
-					const auto & glcAttribute = pGLVertexAttributeLayout.attributeArray[attributeIndex];
+					const auto & glcAttribute = pGLVertexAttributeLayout.glcAttributeArray[attributeIndex];
 
 					glEnableVertexAttribArray( attributeIndex );
 					Ic3OpenGLHandleLastError();
@@ -475,7 +466,7 @@ namespace Ic3::Graphics::GCI
 				const auto attributeBit = CXU::IAMakeVertexAttributeFlag( attributeIndex );
 				if( pGLVertexAttributeLayout.activeAttributesMask.is_set( attributeBit ) )
 				{
-					const auto & glcAttribute = pGLVertexAttributeLayout.attributeArray[attributeIndex];
+					const auto & glcAttribute = pGLVertexAttributeLayout.glcAttributeArray[attributeIndex];
 					const auto & glcVertexBufferBinding = pSourceBindingDefinition.vertexBufferBindings.GetBinding( glcAttribute.streamIndex );
 
 					Ic3DebugAssert( glcVertexBufferBinding );

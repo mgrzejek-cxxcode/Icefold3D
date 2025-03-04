@@ -24,11 +24,21 @@ namespace Ic3::Graphics::GCI
 
 	struct ShaderAttributeSignature
 	{
-		EVertexAttribFormat format;
+		EVertexAttribFormat format = EVertexAttribFormat::Undefined;
 
 		uint16 semanticIndex = 0;
 
 		cppx::immutable_string semanticName;
+
+		CPPX_ATTR_NO_DISCARD explicit operator bool() const
+		{
+			return IsActive();
+		}
+
+		CPPX_ATTR_NO_DISCARD bool IsActive() const
+		{
+			return ( format != EVertexAttribFormat::Undefined ) && !semanticName.empty();
+		}
 	};
 
 	struct ShaderInputSignature
@@ -49,6 +59,20 @@ namespace Ic3::Graphics::GCI
 			return activeAttributesMask.empty();
 		}
 	};
+
+	namespace GCU
+	{
+
+		/// @brief
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool ValidateVertexAttributeLayoutDefinitionWithShaderInputSignature(
+				const IAVertexAttributeLayoutDefinition & pLayoutDefinition,
+				const ShaderInputSignature & pShaderInputSignature );
+
+		/// @brief
+		IC3_GRAPHICS_GCI_API_NO_DISCARD cppx::immutable_string GenerateShaderInputSignatureSerialString(
+				const ShaderInputSignature & pShaderInputSignature );
+
+	}
 
 } // namespace Ic3::Graphics::GCI
 

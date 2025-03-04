@@ -51,6 +51,7 @@ namespace Ic3::Graphics::GCI
 	class VertexSourceBindingDescriptorDynamic;
 
 	Ic3GCIDeclareClassHandle( GPUDeviceChildObject );
+	Ic3GCIDeclareClassHandle( PipelineStateDescriptor );
 	Ic3GCIDeclareClassHandle( PipelineStateObject );
 	Ic3GCIDeclareClassHandle( ComputePipelineStateObject );
 	Ic3GCIDeclareClassHandle( GraphicsPipelineStateObject );
@@ -131,15 +132,15 @@ namespace Ic3::Graphics::GCI
 		}
 
 		/// @brief
-		inline constexpr bool IAIsVertexAttributeIndexValid( native_uint pAttribIndex )
+		inline constexpr bool IAIsVertexAttributeSlotValid( native_uint pAttributeSlot )
 		{
-			return pAttribIndex < GCM::kIAMaxVertexAttributesNum;
+			return pAttributeSlot < GCM::kIAMaxVertexAttributesNum;
 		}
 
 		/// @brief
-		inline constexpr bool IAIsDataStreamVertexBufferIndexValid( native_uint pBufferIndex )
+		inline constexpr bool IAIsDataStreamVertexBufferSlotValid( native_uint pVertexBufferSlor )
 		{
-			return pBufferIndex < GCM::kIAMaxDataStreamVertexBuffersNum;
+			return pVertexBufferSlor < GCM::kIAMaxDataStreamVertexBuffersNum;
 		}
 
 		/// @brief
@@ -289,12 +290,12 @@ namespace Ic3::Graphics::GCI
 		ePipelineStateDescriptorCreateFlagCachePolicyOverwriteConfig = 0x0008,
 
 		/// Default mask used for creation process.
-		ePipelineStateDescriptorCreateMaskDefault = ePipelineStateDescriptorCreateFlagCacheStoreAuto
+		ePipelineStateDescriptorCreateMaskDefault = 0
 	};
 
 	enum class EPipelineStateDescriptorType : uint16
 	{
-		Invalid = 0xFF,
+		Invalid = 0xF,
 		Unknown = 0,
 
 		// Descriptors embedded within the PSO, created solely on the HW3D API level.
@@ -313,9 +314,13 @@ namespace Ic3::Graphics::GCI
 		DTRenderPass,
 		DTRenderTarget,
 		DTVertexSourceBinding,
+
+		_Reserved
 	};
 
-	inline constexpr auto kPipelineStateDescriptorTypeMaxValue = static_cast<uint16>( EPipelineStateDescriptorType::DTRenderTarget );
+	inline constexpr auto kPipelineStateDescriptorTypeMaxValue = static_cast<uint16>( EPipelineStateDescriptorType::_Reserved ) - 1;
+
+	static_assert( kPipelineStateDescriptorTypeMaxValue <= cppx::meta::limits<uint8>::max_value );
 
 	enum class EPrimitiveFillMode : uint16
 	{
@@ -384,6 +389,13 @@ namespace Ic3::Graphics::GCI
 
 		/// Flags that control the creation process.
 		cppx::bitmask<EPipelineStateDescriptorCreateFlags> flags = ePipelineStateDescriptorCreateMaskDefault;
+
+		virtual ~PipelineStateDescriptorCreateInfoBase() = default;
+
+		CPPX_ATTR_NO_DISCARD virtual bool Validate() const noexcept
+		{
+			return true;
+		}
 	};
 
 	template <EPipelineStateDescriptorType>
@@ -410,7 +422,7 @@ namespace Ic3::Graphics::GCI
 
 		inline constexpr uint16 MakePipelineStateDescriptorIDUserComponent( native_uint pUserIDComponent )
 		{
-			return ( static_cast<uint16>( pUserIDComponent ) & 0x00FFFFFF );
+			return ( static_cast<uint16>( pUserIDComponent ) & 0x0FFF );
 		}
 
 		inline constexpr pipeline_state_descriptor_id_t DeclarePipelineStateDescriptorID( EPipelineStateDescriptorType pDescriptorType, uint16 pUserIDComponent )
@@ -418,9 +430,54 @@ namespace Ic3::Graphics::GCI
 			return ( ( static_cast<uint16>( pDescriptorType ) << 12 ) | MakePipelineStateDescriptorIDUserComponent( pUserIDComponent ) );
 		}
 
+		inline constexpr pipeline_state_descriptor_id_t DeclarePipelineStateDescriptorIDBlendState( uint16 pUserIDComponent )
+		{
+			return DeclarePipelineStateDescriptorID( EPipelineStateDescriptorType::DTBlendState, pUserIDComponent );
+		}
+
+		inline constexpr pipeline_state_descriptor_id_t DeclarePipelineStateDescriptorIDDepthStencilState( uint16 pUserIDComponent )
+		{
+			return DeclarePipelineStateDescriptorID( EPipelineStateDescriptorType::DTDepthStencilState, pUserIDComponent );
+		}
+
+		inline constexpr pipeline_state_descriptor_id_t DeclarePipelineStateDescriptorIDRasterizerState( uint16 pUserIDComponent )
+		{
+			return DeclarePipelineStateDescriptorID( EPipelineStateDescriptorType::DTRasterizerState, pUserIDComponent );
+		}
+
+		inline constexpr pipeline_state_descriptor_id_t DeclarePipelineStateDescriptorIDGraphicsShaderLinkage( uint16 pUserIDComponent )
+		{
+			return DeclarePipelineStateDescriptorID( EPipelineStateDescriptorType::DTGraphicsShaderLinkage, pUserIDComponent );
+		}
+
+		inline constexpr pipeline_state_descriptor_id_t DeclarePipelineStateDescriptorIDVertexAttributeLayout( uint16 pUserIDComponent )
+		{
+			return DeclarePipelineStateDescriptorID( EPipelineStateDescriptorType::DTVertexAttributeLayout, pUserIDComponent );
+		}
+
+		inline constexpr pipeline_state_descriptor_id_t DeclarePipelineStateDescriptorIDRootSignature( uint16 pUserIDComponent )
+		{
+			return DeclarePipelineStateDescriptorID( EPipelineStateDescriptorType::DTRootSignature, pUserIDComponent );
+		}
+
+		inline constexpr pipeline_state_descriptor_id_t DeclarePipelineStateDescriptorIDRenderPass( uint16 pUserIDComponent )
+		{
+			return DeclarePipelineStateDescriptorID( EPipelineStateDescriptorType::DTRenderPass, pUserIDComponent );
+		}
+
+		inline constexpr pipeline_state_descriptor_id_t DeclarePipelineStateDescriptorIDRenderTarget( uint16 pUserIDComponent )
+		{
+			return DeclarePipelineStateDescriptorID( EPipelineStateDescriptorType::DTRenderTarget, pUserIDComponent );
+		}
+
+		inline constexpr pipeline_state_descriptor_id_t DeclarePipelineStateDescriptorIDVertexSourceBinding( uint16 pUserIDComponent )
+		{
+			return DeclarePipelineStateDescriptorID( EPipelineStateDescriptorType::DTVertexSourceBinding, pUserIDComponent );
+		}
+
 		inline constexpr EPipelineStateDescriptorType GetPipelineStateDescriptorIDTypeComponent( pipeline_state_descriptor_id_t pDescriptorID )
 		{
-			const auto descriptorTypeComponent = ( ( pDescriptorID & 0xFF000000 ) >> 12 );
+			const auto descriptorTypeComponent = ( ( pDescriptorID & 0xF000 ) >> 12 );
 
 			return ( descriptorTypeComponent <= kPipelineStateDescriptorTypeMaxValue ) ?
 			       static_cast<EPipelineStateDescriptorType>( descriptorTypeComponent ) :
@@ -429,7 +486,7 @@ namespace Ic3::Graphics::GCI
 
 		inline constexpr uint16 GetPipelineStateDescriptorIDUserIDComponent( pipeline_state_descriptor_id_t pDescriptorID )
 		{
-			return ( pDescriptorID & 0x00FFFFFF );
+			return ( pDescriptorID & 0x0FFF );
 		}
 
 		inline constexpr bool IsPipelineStateDescriptorIDValid( pipeline_state_descriptor_id_t pDescriptorID )

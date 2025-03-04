@@ -7,7 +7,7 @@
 
 #define V3( pVal ) ts3::math::Vec3f{ pVal, pVal, pVal }
 #define V4( pVal ) ts3::math::Vec4f{ pVal, pVal, pVal, pVal }
-#define VCOL() ts3::math::colorVector(ts3::math::colors::cxColorBlueSignatory)
+#define VCOL() ts3::math::ColorVector(ts3::math::kColorBlueSignatory)
 
 struct VertexPNT0
 {

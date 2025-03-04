@@ -11,7 +11,7 @@
 namespace Ic3
 {
 
-	Ic3DeclareClassHandle( GpaSharedStateLibrary );
+	Ic3DeclareClassHandle( GCISharedStateLibrary );
 	Ic3DeclareClassHandle( ShaderLibrary );
 	Ic3DeclareClassHandle( ShaderLoader );
 

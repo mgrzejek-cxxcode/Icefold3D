@@ -24,58 +24,58 @@ namespace cppx
 	{
 		const void * data;
 
-		size_t dataSize;
+		size_t data_size;
 
 		template <typename TChar>
 		explicit hash_input( const string_base_view<TChar> & pStrView )
 		: data( pStrView.data() )
-		, dataSize( pStrView.length() * sizeof( TChar ) )
+		, data_size( pStrView.length() * sizeof( TChar ) )
 		{}
 
 		template <typename TChar>
 		explicit hash_input( const immutable_base_string<TChar> & pString )
 		: data( pString.data() )
-		, dataSize( pString.length() * sizeof( TChar ) )
+		, data_size( pString.length() * sizeof( TChar ) )
 		{}
 
 		template<typename TChar>
 		explicit hash_input( const std::basic_string_view<TChar> & pStrView )
 		: data( pStrView.data() )
-		, dataSize( pStrView.length() * sizeof( TChar ) )
+		, data_size( pStrView.length() * sizeof( TChar ) )
 		{}
 
 		template <typename TChar>
 		explicit hash_input( const std::basic_string<TChar> & pString )
 		: data( pString.data() )
-		, dataSize( pString.length() * sizeof( TChar ) )
+		, data_size( pString.length() * sizeof( TChar ) )
 		{}
 
 		explicit hash_input( const char * pCStr )
 		: data( pCStr )
-		, dataSize( std::strlen( pCStr ) )
+		, data_size( std::strlen( pCStr ) )
 		{}
 
 		explicit hash_input( const wchar_t * pWCStr )
 		: data( pWCStr )
-		, dataSize( std::wcslen( pWCStr ) )
+		, data_size( std::wcslen( pWCStr ) )
 		{}
 
 		template <typename TPValue>
 		explicit hash_input( const array_view<TPValue> & pArrayView )
 		: data( pArrayView.data() )
-		, dataSize( pArrayView.size() * sizeof( TPValue ) )
+		, data_size( pArrayView.size() * sizeof( TPValue ) )
 		{}
 
 		template <typename TPValue>
 		explicit hash_input( const TPValue & pObject )
 		: data( &pObject )
-		, dataSize( sizeof( TPValue ) )
+		, data_size( sizeof( TPValue ) )
 		{}
 
 		template <typename TPInput>
 		explicit hash_input( const TPInput * pData, size_t pCount )
 		: data( pData )
-		, dataSize( pCount * sizeof( TPInput ) )
+		, data_size( pCount * sizeof( TPInput ) )
 		{}
 	};
 
@@ -173,7 +173,7 @@ namespace cppx
 	template <hash_algo tpHashAlgo>
 	CPPX_ATTR_NO_DISCARD inline hash_object<tpHashAlgo> hash_compute( const hash_input & pInput )
 	{
-		return hash_compute<tpHashAlgo>( pInput.data, pInput.dataSize );
+		return hash_compute<tpHashAlgo>( pInput.data, pInput.data_size );
 	}
 
 	template <hash_algo tpHashAlgo, typename TPValue>
@@ -191,7 +191,7 @@ namespace cppx
 	template <hash_algo tpHashAlgo>
 	CPPX_ATTR_NO_DISCARD inline hash_object<tpHashAlgo> hash_compute_ex( const hash_object<tpHashAlgo> & pInitHash, const hash_input & pInput )
 	{
-		return hash_compute_ex<tpHashAlgo>( pInitHash, pInput.data, pInput.dataSize );
+		return hash_compute_ex<tpHashAlgo>( pInitHash, pInput.data, pInput.data_size );
 	}
 
 	template <hash_algo tpHashAlgo, typename TPValue>
@@ -222,7 +222,7 @@ namespace cppx
 	template <hash_algo tpHashAlgo>
 	inline void hash_compute_inplace( hash_object<tpHashAlgo> & pOutput, const hash_input & pInput )
 	{
-		hash_compute_inplace<tpHashAlgo>( pOutput, pInput.data, pInput.dataSize );
+		hash_compute_inplace<tpHashAlgo>( pOutput, pInput.data, pInput.data_size );
 	}
 
 	template <hash_algo tpHashAlgo, typename TPValue>
@@ -240,7 +240,7 @@ namespace cppx
 	template <hash_algo tpHashAlgo>
 	inline void hash_compute_inplace_ex( hash_object<tpHashAlgo> & pOutput, const hash_object<tpHashAlgo> & pInitHash, const hash_input & pInput )
 	{
-		hash_compute_inplace_ex<tpHashAlgo>( pOutput, pInitHash, pInput.data, pInput.dataSize );
+		hash_compute_inplace_ex<tpHashAlgo>( pOutput, pInitHash, pInput.data, pInput.data_size );
 	}
 
 	template <hash_algo tpHashAlgo, typename TPValue>

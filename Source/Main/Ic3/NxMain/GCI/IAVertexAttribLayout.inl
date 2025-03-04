@@ -13,38 +13,41 @@ namespace Ic3
 	
 	inline const GenericVertexInputAttribute & VertexInputAttributeArrayConfig::operator[]( native_uint pAttributeSlot ) const noexcept
 	{
-		Ic3DebugAssert( GCI::CXU::IAIsVertexAttributeIndexValid( pAttributeSlot ) );
+		Ic3DebugAssert( GCI::CXU::IAIsVertexAttributeSlotValid( pAttributeSlot ) );
 		return _attributeArray[pAttributeSlot];
 	}
 
 	inline const GenericVertexInputAttribute & VertexInputAttributeArrayConfig::AttributeAt( native_uint pAttributeSlot ) const
 	{
-		Ic3DebugAssert( GCI::CXU::IAIsVertexAttributeIndexValid( pAttributeSlot ) );
+		Ic3DebugAssert( GCI::CXU::IAIsVertexAttributeSlotValid( pAttributeSlot ) );
 		return _attributeArray.at( pAttributeSlot );
 	}
 
 	inline const GenericVertexInputAttribute * VertexInputAttributeArrayConfig::AttributePtr( native_uint pAttributeSlot ) const noexcept
 	{
-		return GCI::CXU::IAIsVertexAttributeIndexValid( pAttributeSlot ) ? &( _attributeArray[pAttributeSlot] ) : nullptr;
+		return GCI::CXU::IAIsVertexAttributeSlotValid( pAttributeSlot ) ? &( _attributeArray[pAttributeSlot] ) : nullptr;
 	}
 
 	inline bool VertexInputAttributeArrayConfig::IsAttributeActive( native_uint pAttributeSlot ) const noexcept
 	{
-		Ic3DebugAssert( GCI::CXU::IAIsVertexAttributeIndexValid( pAttributeSlot ) );
+		Ic3DebugAssert( GCI::CXU::IAIsVertexAttributeSlotValid( pAttributeSlot ) );
 		return _attributeArray[pAttributeSlot].IsActive();
 	}
 
 	inline gci_input_assembler_slot_t VertexInputAttributeArrayConfig::QueryBaseAttributeBySemantics(
 			cppx::string_view pSemanticName ) const noexcept
 	{
-		const auto attributeIndex = cppx::get_map_value_ref_or_default( _semanticNameMap, pSemanticName, kGCIVertexInputAttributeSlotUndefined );
-		return cppx::numeric_cast<gci_input_assembler_slot_t>( attributeIndex );
+		const auto attributeSlot = cppx::get_map_value_ref_or_default(
+				_semanticNameMap,
+				pSemanticName,
+				GCI::kIAVertexAttributeSlotUndefined );
+		return cppx::numeric_cast<gci_input_assembler_slot_t>( attributeSlot );
 	}
 
 	inline gci_input_assembler_slot_t VertexInputAttributeArrayConfig::QueryBaseAttributeBySemantics(
-			cppx::bitmask<ESystemAttributeSemanticFlags> pSystemSemanticFlags ) const noexcept
+			cppx::bitmask<EVertexAttributeSemanticFlags> pAttributeSemanticFlags ) const noexcept
 	{
-		const auto semanticName = GCU::GetStandardSemanticNameFromSystemFlags( pSystemSemanticFlags );
+		const auto semanticName = GCIUtils::GetSemanticNameFromAttributeFlags( pAttributeSemanticFlags );
 		return QueryBaseAttributeBySemantics( semanticName );
 	}
 

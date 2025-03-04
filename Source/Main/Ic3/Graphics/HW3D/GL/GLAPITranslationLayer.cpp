@@ -250,6 +250,7 @@ namespace Ic3::Graphics::GCI
 		switch( pBaseDataType )
 		{
 			Ic3CaseReturn( EBaseDataType::Undefined, GL_INVALID_ENUM      );
+			Ic3CaseReturn( EBaseDataType::Bool     , GL_BYTE              );
 			Ic3CaseReturn( EBaseDataType::Byte     , GL_BYTE              );
 			Ic3CaseReturn( EBaseDataType::Ubyte    , GL_UNSIGNED_BYTE     );
 			Ic3CaseReturn( EBaseDataType::Int16    , GL_SHORT             );

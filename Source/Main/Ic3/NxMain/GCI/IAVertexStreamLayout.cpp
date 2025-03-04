@@ -8,7 +8,7 @@ namespace Ic3
 	bool VertexInputStreamArrayConfig::CheckAttributeDefinitionCompatibility(
 			const VertexInputAttributeDefinition & pAttributeDefinition ) const noexcept
 	{
-		if( const auto & targetAttributeStream = StreamAt( pAttributeDefinition.streamSlot ) )
+		if( const auto & targetAttributeStream = StreamAt( pAttributeDefinition.vertexStreamSlot ) )
 		{
 			return targetAttributeStream.CheckAttributeCompatibility( pAttributeDefinition );
 		}
@@ -18,9 +18,9 @@ namespace Ic3
 
 	bool VertexInputStreamArrayConfig::AddActiveStream(
 			gci_input_assembler_slot_t pStreamSlot,
-			EVertexDataRate pStreamDataRate )
+			GCI::EIAVertexAttributeDataRate pStreamDataRate )
 	{
-		if( pStreamDataRate == EVertexDataRate::Undefined )
+		if( pStreamDataRate == GCI::EIAVertexAttributeDataRate::Undefined )
 		{
 			return false;
 		}
@@ -39,7 +39,7 @@ namespace Ic3
 			gci_input_assembler_slot_t pStreamSlot,
 			const GenericVertexInputAttribute & pAttribute )
 	{
-		if( !GCI::CXU::IAIsDataStreamVertexBufferIndexValid( pStreamSlot ) )
+		if( !GCI::CXU::IAIsDataStreamVertexBufferSlotValid( pStreamSlot ) )
 		{
 			return false;
 		}
@@ -56,10 +56,10 @@ namespace Ic3
 
 	bool VertexInputStreamArrayConfig::AppendAttributeAuto(
 			gci_input_assembler_slot_t pStreamSlot,
-			EVertexDataRate pStreamDataRate,
+			GCI::EIAVertexAttributeDataRate pStreamDataRate,
 			const GenericVertexInputAttribute & pAttribute )
 	{
-		if( !GCI::CXU::IAIsDataStreamVertexBufferIndexValid( pStreamSlot ) )
+		if( !GCI::CXU::IAIsDataStreamVertexBufferSlotValid( pStreamSlot ) )
 		{
 			return false;
 		}
@@ -87,7 +87,7 @@ namespace Ic3
 		_activeStreamsSlots.clear();
 	}
 
-	void VertexInputStreamArrayConfig::_AddStreamImpl( gci_input_assembler_slot_t pStreamSlot, EVertexDataRate pStreamDataRate )
+	void VertexInputStreamArrayConfig::_AddStreamImpl( gci_input_assembler_slot_t pStreamSlot, GCI::EIAVertexAttributeDataRate pStreamDataRate )
 	{
 		auto & vertexStream = _streamArray[pStreamSlot];
 		vertexStream.Init( pStreamSlot, pStreamDataRate );
@@ -103,10 +103,11 @@ namespace Ic3
 		for( uint32 nComponent = 0; nComponent < pAttribute.semanticGroupSize; ++nComponent )
 		{
 			const auto genericAttributeSlot = pAttribute.attributeSlot + nComponent;
+			const auto genericAttributeDataStride = pAttribute.GetDataStride();;
 
 			pStream.activeAttributesNum += 1;
 			pStream.activeAttributesMask.set( GCI::CXU::IAMakeVertexAttributeFlag( genericAttributeSlot ) );
-			pStream.dataStrideInBytes += pAttribute.GetDataStride();
+			pStream.dataStrideInBytes += genericAttributeDataStride;
 		}
 	}
 

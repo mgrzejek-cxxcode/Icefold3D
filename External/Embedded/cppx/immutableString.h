@@ -122,7 +122,7 @@ namespace cppx
 
 		CPPX_ATTR_NO_DISCARD operator cppx::string_base_view<TPChar>() const noexcept
 		{
-			return strView();
+			return str_view();
 		}
 
 		CPPX_ATTR_NO_DISCARD TPChar operator[]( size_t pIndex ) const noexcept
@@ -151,7 +151,7 @@ namespace cppx
 			return _stringData->internal_str;
 		}
 
-		CPPX_ATTR_NO_DISCARD cppx::string_base_view<TPChar> strView() const noexcept
+		CPPX_ATTR_NO_DISCARD cppx::string_base_view<TPChar> str_view() const noexcept
 		{
 			return _stringData ? _stringData->internal_str : cppx::string_base_view<TPChar>{};
 		}
@@ -266,8 +266,7 @@ namespace std
 		size_t operator()( const cppx::immutable_base_string<TPChar> & pString ) const noexcept
 		{
 			using StringType = typename cppx::immutable_base_string<TPChar>::underlying_string_type;
-			using HashType = hash<StringType>;
-			return pString.empty() ? HashType()( pString.str() ) : HashType()( StringType{} );
+			return !pString.empty() ? hash<StringType>()( pString.str() ) : hash<StringType>()( StringType{} );
 		}
 	};
 

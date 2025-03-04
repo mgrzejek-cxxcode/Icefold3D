@@ -53,7 +53,7 @@ namespace Ic3
 	public:
 		void setVertexData(
 				geometry_input_ref_id_t pGeometryRefID,
-				ShaderSemantics pVertexAttribSemantics,
+				VertexAttributeShaderSemantics pVertexAttribSemantics,
 				const void * pVertexAttribDataPtr,
 				size_t pAttributeSize );
 
@@ -65,7 +65,7 @@ namespace Ic3
 	public:
 		CPPX_ATTR_NO_DISCARD GeometrySubDataRefReadWrite setVertexData(
 				geometry_input_ref_id_t pGeometryRefID,
-				ShaderSemantics pVertexAttribSemantics );
+				VertexAttributeShaderSemantics pVertexAttribSemantics );
 
 		CPPX_ATTR_NO_DISCARD GeometrySubDataRefReadWrite setIndexData( geometry_input_ref_id_t pGeometryRefID );
 	};

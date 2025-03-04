@@ -9,9 +9,9 @@ namespace Ic3
 	XXGeometryInputSourceBase::~XXGeometryInputSourceBase() = default;
 
 	bool XXGeometryInputSourceBase::addVertexAttribute(
-			ShaderSemantics pAttributeSemantics,
+			VertexAttributeShaderSemantics pAttributeSemantics,
 			uint32 pBufferIndex,
-			GCI::EVertexAttribFormat pBaseFormat,
+			GCI::EVertexAttribFormat pBaseDataFormat,
 			uint32 pComponentsNum,
 			uint32 pBufferRelativeOffset )
 	{
@@ -56,7 +56,7 @@ namespace Ic3
 
 	bool XXGeometryInputSourceBase::addVertexAttribute(
 			EStandardVertexAttributeID pStandardAttribute,
-			GCI::EVertexAttribFormat pBaseFormat,
+			GCI::EVertexAttribFormat pBaseDataFormat,
 			uint32 pBufferRelativeOffset )
 	{
 	}

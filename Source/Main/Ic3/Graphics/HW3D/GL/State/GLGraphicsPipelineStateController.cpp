@@ -556,7 +556,7 @@ namespace Ic3::Graphics::GCI
 				_glcGlobalStateCache.ApplyVertexArrayObjectBinding( vertexArrayObject.mGLHandle );
 
 				_glcCurrentDrawTopologyProperties.primitiveTopology =
-						glcVertexAttributeLayoutDescriptor.mGLVertexAttributeLayout.primitiveTopology;
+						glcVertexAttributeLayoutDescriptor.mGLVertexAttributeLayout.glcPrimitiveTopology;
 
 				_glcGlobalStateCache.ApplyIndexBufferBinding(
 						glcVertexSourceBindingDescriptor.mGLVertexSourceBinding.indexBufferBinding.handle );

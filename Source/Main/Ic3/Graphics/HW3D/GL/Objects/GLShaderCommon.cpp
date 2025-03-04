@@ -23,7 +23,7 @@
 #define RE_STR_FULL_VAR_UNIFORM_SAMPLER    RE_STR_BASE_LAYOUT_BINDING      R"(\s*)" RE_STR_BASE_VAR_UNIFORM_SAMPLER R"(\s*)"
 
 #define RE_STR_ATTRIBUTE_FORMAT_BASE       R"(bool|int|uint|float|double)"
-#define RE_STR_ATTRIBUTE_FORMAT_VEC        R"((b|i|u|d)vec(2|3|4))"
+#define RE_STR_ATTRIBUTE_FORMAT_VEC        R"((b|i|u|d)?vec(2|3|4))"
 #define RE_STR_ATTRIBUTE_FORMAT_MAT        R"(mat(2|3|4)(x(2|3|4))?)"
 
 #define RE_STR_UTIL_LAYOUT_WORD_ONLY       R"(layout)"
@@ -118,6 +118,7 @@ namespace Ic3::Graphics::GCI
 				}
 
 				attributeFormatDesc.baseComponentsNum = cppx::from_string<uint32>( vectorSizeStr );
+				attributeFormatDesc.semanticGroupSize = 1;
 			}
 			else if( std::regex_search( pAttributeFormatStr, regexMatch, reAttribFormatMat ) )
 			{

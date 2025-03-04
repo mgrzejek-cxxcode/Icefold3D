@@ -6,7 +6,7 @@
 namespace Ic3::Math
 {
 
-	RGBAColorU8 generateRandomColor()
+	RGBAColorU8 GenerateRandomColor()
 	{
 		return RGBAColorU8{
 			static_cast<uint8>( rand() % 256 ),

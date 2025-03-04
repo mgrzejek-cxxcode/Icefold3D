@@ -25,13 +25,16 @@
 #include <Ic3/Graphics/GCI/State/GraphicsPipelineStateDescriptorIA.h>
 
 #include <Ic3/NxMain/Camera/CameraController.h>
-#include <Ic3/NxMain/GCI/VertexFormatDescriptor.h>
-#include <Ic3/NxMain/GCI/VertexFormatDescriptorUtils.h>
+#include <Ic3/NxMain/GCI/VertexFormatSignature.h>
+#include <Ic3/NxMain/GCI/VertexFormatUtils.h>
 #include <Ic3/NxMain/Renderer/ShaderLibrary.h>
 #include <Ic3/NxMain/Renderer/ShaderLoader.h>
+#include <Ic3/NxMain/Renderer/SharedStateLibrary.h>
 
 #include <chrono>
 #include <thread>
+
+#include "MeshDefs.h"
 
 using namespace Ic3;
 using namespace GCI;
@@ -56,36 +59,36 @@ void InitializeGraphicsDriver( SysContextHandle pSysContext, GraphicsDriverState
 
 int main( int pArgc, const char ** pArgv )
 {
-    {
-		VertexFormatDescriptorBuilder vfdBuilder{};
-		vfdBuilder.AddAttribute( 0, kStandardVertexAttributeKeyPosition );
-		vfdBuilder.AddAttribute( 0, kStandardVertexAttributeKeyNormal );
-		vfdBuilder.AddAttribute( 0, kStandardVertexAttributeKeyTangent );
-		vfdBuilder.AddAttribute( 0, kStandardVertexAttributeKeyBiTangent );
-		vfdBuilder.AddAttribute( 0, kStandardVertexAttributeKeyTexCoord0 );
-		vfdBuilder.AddAttribute( 0, 6, { "CustomPosRef" }, GCI::EVertexAttribFormat::Vec4F32 );
-		vfdBuilder.AddAttribute( 1, kStandardVertexAttributeKeyInstanceMatrix );
-		vfdBuilder.AddAttribute( 2, kStandardVertexAttributeKeyInstanceUserData );
-		auto vfd = vfdBuilder.CreateVertexFormatDescriptor( GCI::EPrimitiveTopology::TriangleList, GCI::EIndexDataFormat::Uint32 );
-
-		const auto sid1 = vfd->GenerateVertexFormatStringID();
-		const auto defArray0 = vfd->GenerateAttributeDefinitionArray();
-		const auto defArray1 = VertexFormatDescriptorBuilder::ParseVertexFormatString( sid1 );
-
-		VertexFormatDescriptorBuilder vfdBuilder0{};
-		vfdBuilder0.AddAttributeList( cppx::bind_array_view( defArray0 ) );
-		auto vfdCopy0 = vfdBuilder0.CreateVertexFormatDescriptor( GCI::EPrimitiveTopology::TriangleList, GCI::EIndexDataFormat::Uint32 );
-		const auto sidCopy0 = vfd->GenerateVertexFormatStringID();
-
-		VertexFormatDescriptorBuilder vfdBuilder1{};
-		vfdBuilder1.AddAttributeList( cppx::bind_array_view( defArray1 ) );
-		auto vfdCopy1 = vfdBuilder1.CreateVertexFormatDescriptor( GCI::EPrimitiveTopology::TriangleList, GCI::EIndexDataFormat::Uint32 );
-		const auto sidCopy1 = vfd->GenerateVertexFormatStringID();
-
-		Ic3DebugOutput( sid1.c_str() );
-		Ic3DebugOutput( sidCopy0.c_str() );
-		Ic3DebugOutput( sidCopy1.c_str() );
-    }
+//    {
+//		VertexFormatSignatureBuilder vfsBuilder{};
+//		vfsBuilder.AddAttribute( 0, kVertexAttributeKeySysPosition );
+//		vfsBuilder.AddAttribute( 0, kVertexAttributeKeySysNormal );
+//		vfsBuilder.AddAttribute( 0, kVertexAttributeKeySysTangent );
+//		vfsBuilder.AddAttribute( 0, kVertexAttributeKeySysBiTangent );
+//		vfsBuilder.AddAttribute( 0, kVertexAttributeKeySysTexCoord2D0 );
+//		vfsBuilder.AddAttribute( 0, 6, { "CustomPosRef" }, GCI::EVertexAttribFormat::Vec4F32 );
+//		vfsBuilder.AddAttribute( 1, kVertexAttributeKeySysInstanceMatrix );
+//		vfsBuilder.AddAttribute( 2, kVertexAttributeKeySysInstanceUserData );
+//		auto vfd = vfsBuilder.CreateVertexFormatSignature( GCI::EPrimitiveTopology::TriangleList, GCI::EIndexDataFormat::Uint32 );
+//
+//		const auto sid1 = vfd->GenerateSerialString();
+//		const auto defArray0 = vfd->GenerateAttributeDefinitionArray();
+//		const auto defArray1 = GCIUtils::ParseVertexFormatSignatureSerialString( sid1 );
+//
+//		VertexFormatSignatureBuilder vfsBuilder0{};
+//		vfsBuilder0.AddAttributeList( cppx::bind_array_view( defArray0 ) );
+//		auto vfdCopy0 = vfsBuilder0.CreateVertexFormatSignature( GCI::EPrimitiveTopology::TriangleList, GCI::EIndexDataFormat::Uint32 );
+//		const auto sidCopy0 = vfd->GenerateSerialString();
+//
+//		VertexFormatSignatureBuilder vfsBuilder1{};
+//		vfsBuilder1.AddAttributeList( cppx::bind_array_view( defArray1 ) );
+//		auto vfdCopy1 = vfsBuilder1.CreateVertexFormatSignature( GCI::EPrimitiveTopology::TriangleList, GCI::EIndexDataFormat::Uint32 );
+//		const auto sidCopy1 = vfd->GenerateSerialString();
+//
+//		Ic3DebugOutput( sid1.c_str() );
+//		Ic3DebugOutput( sidCopy0.c_str() );
+//		Ic3DebugOutput( sidCopy1.c_str() );
+//    }
 
 	sGxDriverName = "GL4";
 
@@ -196,6 +199,11 @@ int main( int pArgc, const char ** pArgv )
 			ShaderLoadDescFile{ Ic3ShaderLoadDescPSAutoID( "SID_DEFAULT_PASSTHROUGH_PS" ), "default_passthrough_ps" }
 	} );
 
+    auto shader = shaderLibrary->GetShader( "SID_DEFAULT_PASSTHROUGH_VS" );
+
+	auto gciSharedStateLibrary = CreateDynamicObject<GCISharedStateLibrary>( *shaderLibrary );
+	gciSharedStateLibrary->Initialize();
+
 	auto * gpuDevicePtr = gxDriverState.device.get();
 
 	GCI::RenderPassDescriptorHandle scrRenderPassDescriptor;
@@ -206,7 +214,7 @@ int main( int pArgc, const char ** pArgv )
 		rpConfig.activeAttachmentsNum = 2;
 		rpConfig.colorAttachments[0].loadAction = ERenderPassAttachmentLoadAction::Clear;
 		rpConfig.colorAttachments[0].storeAction = ERenderPassAttachmentStoreAction::Keep;
-		rpConfig.colorAttachments[0].loadParameters.opClear.clearConfig.colorValue = {0.12f, 0.36f, 0.88f, 1.0f};
+		rpConfig.colorAttachments[0].loadParameters.opClear.clearConfig.colorValue = gpuDevicePtr->GetDefaultClearColor();
 		rpConfig.colorAttachments[0].loadParameters.opClear.clearMask = eRenderTargetBufferFlagColorBit;
 		rpConfig.depthStencilAttachment.loadAction = ERenderPassAttachmentLoadAction::Clear;
 		rpConfig.depthStencilAttachment.storeAction = ERenderPassAttachmentStoreAction::Keep;
