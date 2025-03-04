@@ -686,19 +686,19 @@ namespace Ic3::System
 
 	bool EventDispatcher::_PreProcessEventKeyboard( EvtInputKeyboard & pKeyboardEvent, EventSystemSharedState & pSharedState )
 	{
-		if( pKeyboardEvent.mKeyCode == EKeyCode::Unknown )
+		if( pKeyboardEvent.keyCode == EKeyCode::Unknown )
 		{
 			// Discard unknown key events
 			return false;
 		}
 
-		if( pKeyboardEvent.mKeyAction == EKeyActionType::Press )
+		if( pKeyboardEvent.keyAction == EKeyActionType::Press )
 		{
-			pSharedState.inputKeyboardState.mKeyStateMap[pKeyboardEvent.mKeyCode] = true;
+			pSharedState.inputKeyboardState.keyStateMap[pKeyboardEvent.keyCode] = true;
 		}
 		else
 		{
-			pSharedState.inputKeyboardState.mKeyStateMap[pKeyboardEvent.mKeyCode] = false;
+			pSharedState.inputKeyboardState.keyStateMap[pKeyboardEvent.keyCode] = false;
 		}
 
 		return true;

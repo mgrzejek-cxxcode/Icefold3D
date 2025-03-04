@@ -189,7 +189,6 @@ namespace Ic3::System
 			}
 
 			auto assetDirectory = pSysContext->QueryCurrentProcessWorkingDirectory();
-			// auto assetDirectory = pSysContext->queryCurrentProcessExecutableDirectory();
 			assetDirectory.append( 1, PCL_ENV_DEFAULT_PATH_DELIMITER );
 			assetDirectory.append( pRelativeAssetDirectory );
 			assetDirectory = cppx::fs_normalize_path( assetDirectory );

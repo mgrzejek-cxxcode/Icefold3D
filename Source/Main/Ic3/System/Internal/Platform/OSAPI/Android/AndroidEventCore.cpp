@@ -135,7 +135,7 @@ namespace Ic3::System
 		{
 			AndroidNativeEvent androidEvent {};
 			androidEvent.type = AndroidNativeEventType::AppCommand;
-			androidEvent.eAppCommand = pCommand;
+			androidEvent.uEvtAppCommand = pCommand;
 
 			// Event controller is always accessible through the user data within AndroidAppState.
 			// We set it inside nativeInitializeEventController(). Events may be emitted after the
@@ -172,7 +172,7 @@ namespace Ic3::System
 
 			if( pNativeEvent.type == AndroidNativeEventType::AppCommand )
 			{
-				if( _androidTranslateAppCommand( aSessionData.aCommonAppState, pNativeEvent.eAppCommand, pOutEvent ) )
+				if( _androidTranslateAppCommand( aSessionData.aCommonAppState, pNativeEvent.uEvtAppCommand, pOutEvent ) )
 				{
 					return true;
 				}

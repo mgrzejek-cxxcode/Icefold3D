@@ -179,7 +179,7 @@ namespace Ic3
 			std::string pShaderBaseSubDirectory )
 	{
 		return [pAssetLoader, shaderSubDir = std::move( pShaderBaseSubDirectory )]( const auto & pShaderFileName ) {
-				return System::AssetLoader::LoadAsset( *pAssetLoader, shaderSubDir + "/" + pShaderFileName );
+				return System::AssetLoader::LoadAsset( *pAssetLoader, shaderSubDir + "/" + pShaderFileName, true );
 			};
 	}
 

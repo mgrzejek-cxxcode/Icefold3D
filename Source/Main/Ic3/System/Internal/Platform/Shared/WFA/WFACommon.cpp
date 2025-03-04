@@ -1,9 +1,9 @@
 
 #include <Ic3/System/Prerequisites.h>
-#include "MSECommon.h"
+#include "WFACommon.h"
 #include <comdef.h>
 
-#if( PCL_TARGET_OS & PCL_TARGET_FLAG_OS_MSE )
+#if( PCL_TARGET_OS & PCL_TARGET_FLAG_OS_WFA )
 namespace Ic3::System
 {
 
@@ -50,7 +50,6 @@ namespace Ic3::System
 
 			return errorMessage;
 		}
-
 
 	}
 

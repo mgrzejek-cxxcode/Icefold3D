@@ -45,8 +45,8 @@ namespace Ic3::System
 	class DXGIDisplayDriver : public NativeObject<DisplayDriver, Platform::DXGIDisplayDriverNativeData>
 	{
 	public:
-		explicit DisplayDriverDXGI( DisplayManagerHandle pDisplayManager );
-		virtual ~DisplayDriverDXGI() noexcept;
+		explicit DXGIDisplayDriver( DisplayManagerHandle pDisplayManager );
+		virtual ~DXGIDisplayDriver() noexcept;
 
 	private:
 		void _InitializeDXGIDriverState();

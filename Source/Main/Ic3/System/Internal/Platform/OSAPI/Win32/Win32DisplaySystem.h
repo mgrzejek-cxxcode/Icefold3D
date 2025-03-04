@@ -21,22 +21,22 @@ namespace Ic3::System
 
 		struct Win32DisplayAdapterNativeData
 		{
-			std::string mDeviceUUID;
-			std::string mDeviceName;
-			DISPLAY_DEVICEA mGDIDeviceInfo;
-			std::string mDisplayDeviceID;
+			std::string deviceUUID;
+			std::string deviceName;
+			DISPLAY_DEVICEA gdiDeviceInfo;
+			std::string displayDeviceID;
 		};
 
 		struct Win32DisplayOutputNativeData
 		{
-			HMONITOR mGDIMonitorHandle;
-			std::string mDisplayDeviceName;
+			HMONITOR gdiMonitorHandle;
+			std::string displayDeviceName;
 			std::string outputID;
 		};
 
 		struct Win32DisplayVideoModeNativeData
 		{
-			DEVMODEA mGDIModeInfo;
+			DEVMODEA gdiModeInfo;
 		};
 
 	}

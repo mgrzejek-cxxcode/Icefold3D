@@ -54,8 +54,8 @@ namespace Ic3
 		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept;
 
 		CPPX_ATTR_NO_DISCARD bool CheckAttributeArraySpace(
-				native_uint pBaseAttributeSlot,
-				size_t pSemanticGroupSize = 1 ) const noexcept;
+				uint32 pBaseAttributeSlot,
+				uint32 pSemanticGroupSize = 1 ) const noexcept;
 
 		CPPX_ATTR_NO_DISCARD bool CheckAttributeDefinitionCompatibility(
 				const VertexInputAttributeDefinition & pAttributeDefinition ) const noexcept;

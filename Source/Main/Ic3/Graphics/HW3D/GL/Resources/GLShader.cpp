@@ -68,7 +68,7 @@ namespace Ic3::Graphics::GCI
 					shaderSource,
 					*shaderInputSignature );
 
-			auto openglShaderObject = GLShaderObject::CreateWithSource( openglShaderType, pSource, pSourceLength );
+			auto openglShaderObject = GLShaderObject::CreateWithSource( openglShaderType, shaderSource.data(), shaderSource.length() );
 			if( !openglShaderObject )
 			{
 				return nullptr;
@@ -83,10 +83,10 @@ namespace Ic3::Graphics::GCI
 			const auto programBinarySize = openglProgramObject->QueryParameter( GL_PROGRAM_BINARY_LENGTH );
 
 			shaderObject = std::make_unique<GLShader>( pGPUDevice, pShaderType, std::move( openglProgramObject ) );
-			auto * shaderBinary = shaderObject->InitializeShaderBinaryStorage( programBinarySize );
 			shaderObject->SetShaderInputSignature( std::move( shaderInputSignature ) );
 
-			openglProgramObject->GetBinary( *shaderBinary );
+			auto * shaderBinary = shaderObject->InitializeShaderBinaryStorage( programBinarySize );
+			shaderObject->mGLShaderProgramObject->GetBinary( *shaderBinary );
 		}
 
 		return shaderObject;

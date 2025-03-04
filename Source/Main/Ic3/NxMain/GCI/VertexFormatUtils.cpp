@@ -30,11 +30,11 @@ namespace Ic3
 		attributeDefinition.attributeSlot = pAttributeKey.uBaseSlot;
 		attributeDefinition.semanticGroupSize = pAttributeKey.uSemanticGroupSize;
 		attributeDefinition.baseDataFormat = pAttributeKey.uBaseDataFormat;
-		attributeDefinition.dataPadding = pDataPadding;
+		attributeDefinition.dataPadding = cppx::numeric_cast<decltype( attributeDefinition.dataPadding )>( pDataPadding );
 		attributeDefinition.semanticName = GCIUtils::GetSemanticNameFromAttributeFlags( pAttributeKey.uSemanticFlags );
 		attributeDefinition.semanticFlags = pAttributeKey.uSemanticFlags;
 		attributeDefinition.dataRate = pAttributeKey.GetDataRate();
-		attributeDefinition.vertexStreamSlot = pVertexStreamSlot;
+		attributeDefinition.vertexStreamSlot = cppx::numeric_cast<decltype( attributeDefinition.vertexStreamSlot )>( pVertexStreamSlot );
 		attributeDefinition.vertexStreamRelativeOffset = pVertexStreamRelativeOffset;
 
 		return AddAttribute( std::move( attributeDefinition ) );
@@ -48,14 +48,14 @@ namespace Ic3
 			uint32 pVertexStreamRelativeOffset )
 	{
 		VertexInputAttributeDefinition attributeDefinition{};
-		attributeDefinition.attributeSlot = pAttributeKey.uBaseSlot;
+		attributeDefinition.attributeSlot = cppx::numeric_cast<decltype( attributeDefinition.attributeSlot )>( pAttributeKey.uBaseSlot );
 		attributeDefinition.semanticGroupSize = pAttributeKey.uSemanticGroupSize;
 		attributeDefinition.baseDataFormat = pAttributeKey.uBaseDataFormat;
-		attributeDefinition.dataPadding = pDataPadding;
+		attributeDefinition.dataPadding = cppx::numeric_cast<decltype( attributeDefinition.dataPadding )>( pDataPadding );
 		attributeDefinition.semanticName = pAttributeShaderSemantics.semanticName;
 		attributeDefinition.semanticFlags = pAttributeShaderSemantics.semanticFlags;
 		attributeDefinition.dataRate = pAttributeKey.GetDataRate();
-		attributeDefinition.vertexStreamSlot = pVertexStreamSlot;
+		attributeDefinition.vertexStreamSlot = cppx::numeric_cast<decltype( attributeDefinition.vertexStreamSlot )>( pVertexStreamSlot );
 		attributeDefinition.vertexStreamRelativeOffset = pVertexStreamRelativeOffset;
 
 		return AddAttribute( std::move( attributeDefinition ) );
@@ -74,11 +74,11 @@ namespace Ic3
 		attributeDefinition.attributeSlot = cppx::numeric_cast<decltype( attributeDefinition.attributeSlot )>( pAttributeSlot );
 		attributeDefinition.semanticGroupSize = 1;
 		attributeDefinition.baseDataFormat = pDataFormat;
-		attributeDefinition.dataPadding = pDataPadding;
+		attributeDefinition.dataPadding = cppx::numeric_cast<decltype( attributeDefinition.dataPadding )>( pDataPadding );
 		attributeDefinition.semanticName = pAttributeShaderSemantics.semanticName;
 		attributeDefinition.semanticFlags = pAttributeShaderSemantics.semanticFlags;
 		attributeDefinition.dataRate = pDataRate;
-		attributeDefinition.vertexStreamSlot = pVertexStreamSlot;
+		attributeDefinition.vertexStreamSlot = cppx::numeric_cast<decltype( attributeDefinition.vertexStreamSlot )>( pVertexStreamSlot );
 		attributeDefinition.vertexStreamRelativeOffset = pVertexStreamRelativeOffset;
 
 		return AddAttribute( std::move( attributeDefinition ) );
@@ -102,7 +102,7 @@ namespace Ic3
 		attributeDefinition.semanticName = pAttributeShaderSemantics.semanticName;
 		attributeDefinition.semanticFlags = pAttributeShaderSemantics.semanticFlags;
 		attributeDefinition.dataRate = pDataRate;
-		attributeDefinition.vertexStreamSlot = pVertexStreamSlot;
+		attributeDefinition.vertexStreamSlot = cppx::numeric_cast<decltype( attributeDefinition.vertexStreamSlot )>( pVertexStreamSlot );
 		attributeDefinition.vertexStreamRelativeOffset = pVertexStreamRelativeOffset;
 
 		return AddAttribute( std::move( attributeDefinition ) );

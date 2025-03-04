@@ -2,7 +2,7 @@
 #include <Ic3/System/PerfCounter.h>
 #include "WFAPerfCounter.h"
 
-#if( PCL_TARGET_OS & PCL_TARGET_FLAG_OS_MSE )
+#if( PCL_TARGET_OS & PCL_TARGET_FLAG_OS_WFA )
 namespace Ic3::System
 {
 

@@ -87,9 +87,9 @@ namespace Ic3::System
 		legacyVisualConfig.flags.set( eVisualAttribFlagLegacyBit );
 
 		Platform::X11WindowCreateInfo windowCreateInfo;
-		windowCreateInfo.frameGeometry.mPosition = { 0, 0 };
+		windowCreateInfo.frameGeometry.position = { 0, 0 };
 		windowCreateInfo.frameGeometry.size = { 600, 600 };
-		windowCreateInfo.frameGeometry.mStyle = EFrameStyle::Overlay;
+		windowCreateInfo.frameGeometry.style = EFrameStyle::Overlay;
 
 		auto & tmpSurfaceNativeData = mNativeData.initState->surfaceData;
 		tmpSurfaceNativeData.SetSessionData( xSessionData );

@@ -53,15 +53,15 @@ set( IC3_SYSTEM_SRC_FILES
         "Internal/EventCorePrivate.h"
         )
 
-if( ${CM_EBS_SYSCONF_TARGET_FLAG_OSINFO_MSE} )
+if( ${CM_EBS_SYSCONF_TARGET_FLAG_OSINFO_WFA} )
     set( IC3_SYSTEM_SRC_FILES
             ${IC3_SYSTEM_SRC_FILES}
             "Internal/Platform/Shared/DXGI/DXGIDisplaySystem.h"
             "Internal/Platform/Shared/DXGI/DXGIDisplaySystem.cpp"
-            "Internal/Platform/Shared/MSE/MSECommon.h"
-            "Internal/Platform/Shared/MSE/MSECommon.cpp"
-            "Internal/Platform/Shared/MSE/MSEPerfCounter.h"
-            "Internal/Platform/Shared/MSE/MSEPerfCounter.cpp"
+            "Internal/Platform/Shared/WFA/WFACommon.h"
+            "Internal/Platform/Shared/WFA/WFACommon.cpp"
+            "Internal/Platform/Shared/WFA/WFAPerfCounter.h"
+            "Internal/Platform/Shared/WFA/WFAPerfCounter.cpp"
             )
 endif()
 

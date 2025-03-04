@@ -330,8 +330,8 @@ namespace Ic3
 						continue;
 					}
 
-					const auto streamIndex = cppx::from_string_or_default<uint32>( streamIndexStr, GCI::kIAVertexStreamSlotUndefined );
-					if( !GCI::CXU::IAIsDataStreamVertexBufferSlotValid( streamIndex ) )
+					const auto streamIndex = cppx::from_string_or_default<uint8>( streamIndexStr, GCI::kIAVertexStreamSlotUndefined );
+					if( !IAIsDataStreamVertexBufferSlotValid( streamIndex ) )
 					{
 						continue;
 					}
@@ -379,16 +379,16 @@ namespace Ic3
 							}
 
 							const auto attributeSlot =
-								cppx::from_string_or_default<uint32>( attributeSlotStr, GCI::kIAVertexAttributeSlotUndefined );
+								cppx::from_string_or_default<uint8>( attributeSlotStr, GCI::kIAVertexAttributeSlotUndefined );
 							
 							const auto attribRelativeOffset =
-								cppx::from_string_or_default<uint32>( attributeSlotStr, GCI::kIAVertexAttributeOffsetInvalid );
+								cppx::from_string_or_default<uint32>( attribRelativeOffsetStr, GCI::kIAVertexAttributeOffsetInvalid );
 							
 							const auto semanticGroupSize =
-								cppx::from_string_or_default<uint32>( semanticGroupSizeValueStr, 1u );
+								cppx::from_string_or_default<uint8>( semanticGroupSizeValueStr, 1u );
 							
 							const auto dataPadding =
-								cppx::from_string_or_default<uint32>( dataPaddingValueStr, 0u );
+								cppx::from_string_or_default<uint8>( dataPaddingValueStr, 0u );
 
 							if( !IsAttributeLocationAndSizeValid( attributeSlot, semanticGroupSize ) || ( attribRelativeOffset == GCI::kIAVertexAttributeOffsetInvalid ) )
 							{
@@ -397,7 +397,7 @@ namespace Ic3
 
 							auto & attributeDefinition = vertexAttribsDefinitions.emplace_back();
 							attributeDefinition.attributeSlot = attributeSlot;
-							attributeDefinition.vertexStreamSlot = attributeSlot;
+							attributeDefinition.vertexStreamSlot = streamIndex;
 							attributeDefinition.baseDataFormat = GetAttributeFormatFromStringIdentifier( attribBaseFormatStr );
 							attributeDefinition.semanticGroupSize = semanticGroupSize;
 							attributeDefinition.dataPadding = dataPadding;

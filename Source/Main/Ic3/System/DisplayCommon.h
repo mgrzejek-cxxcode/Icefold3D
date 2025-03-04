@@ -23,7 +23,7 @@
 #endif
 
 #if !defined( IC3_SYSTEM_DSM_DRIVER_TYPE_SUPPORT_DXGI )
-#  if( PCL_TARGET_OS & PCL_TARGET_FLAG_OS_MSE )
+#  if( PCL_TARGET_OS & PCL_TARGET_FLAG_OS_WFA )
 #    define IC3_SYSTEM_DSM_DRIVER_TYPE_SUPPORT_DXGI 1
 #  else
 #    define IC3_SYSTEM_DSM_DRIVER_TYPE_SUPPORT_DXGI 0
@@ -33,9 +33,6 @@
 #if !defined( IC3_SYSTEM_DSM_DRIVER_TYPE_SUPPORT_SDL )
 #  define IC3_SYSTEM_DSM_DRIVER_TYPE_SUPPORT_SDL 0
 #endif
-
-#pragma push
-#undef INTEL
 
 namespace Ic3::System
 {
@@ -272,8 +269,6 @@ namespace Ic3::System
 
 
 } // namespace Ic3::System
-
-#pragma pop
 
 #if( PCL_COMPILER & PCL_COMPILER_CLANG )
 #  pragma clang diagnostic pop

@@ -69,9 +69,9 @@ namespace Ic3::System
 	/// @brief
 	struct FrameGeometry
 	{
-		FramePos mPosition;
+		FramePos position;
 		FrameSize size;
-		EFrameStyle mStyle;
+		EFrameStyle style;
 	};
 
 	inline constexpr FrameGeometry CX_FRAME_GEOMETRY_DEFAULT{cxFramePosAuto, cxFrameSizeAuto, EFrameStyle::Default };

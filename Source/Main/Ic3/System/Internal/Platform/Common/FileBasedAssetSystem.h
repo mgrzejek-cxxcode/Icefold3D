@@ -33,9 +33,7 @@ namespace Ic3::System
 		struct AssetLoaderCreateInfoNativeParams
 		{
 			FileManagerHandle fileManager = nullptr;
-
 			std::string absoluteAssetRootDir;
-
 			std::string relativeAssetRootDir;
 		};
 

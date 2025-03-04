@@ -30,7 +30,7 @@ namespace Ic3
 	{
 		Ic3DebugAssert( streamSlot == GCI::kIAVertexStreamSlotUndefined );
 		Ic3DebugAssert( streamDataRate == GCI::EIAVertexAttributeDataRate::Undefined );
-		streamSlot = pStreamSlot;
+		streamSlot = cppx::numeric_cast<uint8>( pStreamSlot );
 		streamDataRate = pDataRate;
 	}
 

@@ -37,6 +37,8 @@ namespace Ic3::Graphics::GCI
 			return nullptr;
 		}
 
+		Ic3DebugOutput( (const char*)pSource );
+
 		auto shaderObject = Create( pGLShaderType );
 		if( !shaderObject )
 		{

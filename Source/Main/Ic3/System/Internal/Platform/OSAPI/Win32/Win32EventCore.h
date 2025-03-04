@@ -17,16 +17,15 @@ namespace Ic3::System
 
 		struct Win32EventSourceNativeData
 		{
-			HWND mHWND = nullptr;
-
-			cppx::bitmask<uint32> mSysWindowFlags = 0;
+			HWND hwnd = nullptr;
+			cppx::bitmask<uint32> sysWindowFlags = 0;
 		};
 
 		struct Win32EventSourceState
 		{
-			LONG_PTR mSavedEventCallback = 0;
-			LONG_PTR mSavedEventCallbackUserData = 0;
-			EventController * mEventController = nullptr;
+			LONG_PTR savedEventCallback = 0;
+			LONG_PTR savedEventCallbackUserData = 0;
+			EventController * eventController = nullptr;
 		};
 
 		struct NativeEventType : public MSG

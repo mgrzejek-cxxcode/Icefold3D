@@ -69,9 +69,9 @@ namespace Ic3::System
 	void Window::ResizeClientArea( const FrameSize & pSize )
 	{
 		FrameGeometry newFrameGeometry{};
-		newFrameGeometry.mPosition = cxFramePosAuto;
+		newFrameGeometry.position = cxFramePosAuto;
 		newFrameGeometry.size = pSize;
-		newFrameGeometry.mStyle = EFrameStyle::Unspecified;
+		newFrameGeometry.style = EFrameStyle::Unspecified;
 
 		newFrameGeometry = mWindowManager->ValidateFrameGeometry( newFrameGeometry );
 
@@ -82,9 +82,9 @@ namespace Ic3::System
 	void Window::ResizeFrame( const FrameSize & pSize )
 	{
 		FrameGeometry newFrameGeometry{};
-		newFrameGeometry.mPosition = cxFramePosAuto;
+		newFrameGeometry.position = cxFramePosAuto;
 		newFrameGeometry.size = pSize;
-		newFrameGeometry.mStyle = EFrameStyle::Unspecified;
+		newFrameGeometry.style = EFrameStyle::Unspecified;
 
 		newFrameGeometry = mWindowManager->ValidateFrameGeometry( newFrameGeometry );
 

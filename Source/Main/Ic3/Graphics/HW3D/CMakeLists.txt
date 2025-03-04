@@ -34,11 +34,11 @@ elseif( "${CM_EBS_SYSCONF_TARGET_SYSTEM}" STREQUAL "WinDesktop" )
     set( _IC3_GRAPHICS_HW3D_TARGET_LIST
             "GL"
             "GL4"
-            "DX"
-            "DX11"
+            #"DX"
+            #"DX11"
             #"DX12"
             )
-elseif( "${CM_EBS_SYSCONF_TARGET_FLAG_OSINFO_MSE}" )
+elseif( "${CM_EBS_SYSCONF_TARGET_FLAG_OSINFO_WFA}" )
     set( _IC3_GRAPHICS_HW3D_TARGET_LIST
             "DX"
             "DX11"

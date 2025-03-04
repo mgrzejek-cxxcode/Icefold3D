@@ -430,7 +430,7 @@ namespace Ic3::Graphics::GCI
 
 			if( _stateUpdateMask.is_set( eGraphicsStateUpdateFlagSeparableStateVertexAttributeLayoutBit ) )
 			{
-				const auto & glcVertexAttributeLayoutDescriptor = GetCurrentPSOShaderLinkageDescriptor<GLVertexAttributeLayoutDescriptorCore>();
+				const auto & glcVertexAttributeLayoutDescriptor = GetCurrentPSOVertexAttributeLayoutDescriptor<GLVertexAttributeLayoutDescriptorCore>();
 
 				_glcGlobalStateCache.ApplyVertexArrayObjectBinding( glcVertexAttributeLayoutDescriptor.mGLVertexArrayObject->mGLHandle );
 				_glcCurrentDrawTopologyProperties.primitiveTopology = glcVertexAttributeLayoutDescriptor.mGLPrimitiveTopology;
@@ -439,17 +439,18 @@ namespace Ic3::Graphics::GCI
 
 			if( _stateUpdateMask.is_set_any_of( eGraphicsStateUpdateMaskCombinedInputAssembler ) )
 			{
-				// Get the currently set VertexSourceBindingDescriptor, stored in this StateController.
-				const auto & glcVertexSourceBindingDescriptor = GetCurrentVertexSourceBindingDescriptorRef<GLVertexSourceBindingDescriptor>();
+				const auto & glcVertexSourceBinding = GetGLIAVertexSourceBinding();
 
 				// Execute bindings for vertex buffers.
-				const auto & vertexBufferBindings = glcVertexSourceBindingDescriptor.mGLVertexSourceBinding.vertexBufferBindings;
+				const auto & vertexBufferBindings = glcVertexSourceBinding.vertexBufferBindings;
+				// Vertex buffer bindings are executed directly by the state controller - no caching is done here..
 				ApplyVertexBufferBindings( vertexBufferBindings );
 
 				// Execute the binding for the index buffer.
-				const auto & indexBufferBinding = glcVertexSourceBindingDescriptor.mGLVertexSourceBinding.indexBufferBinding;
-				// Index buffer binding is also propagated through the global state cache.
+				const auto & indexBufferBinding = glcVertexSourceBinding.indexBufferBinding;
+				// Index buffer binding is propagated through the global state cache.
 				_glcGlobalStateCache.ApplyIndexBufferBinding( indexBufferBinding.handle );
+
 				_glcCurrentDrawTopologyProperties.indexBufferBaseOffset = indexBufferBinding.offset;
 				_glcCurrentDrawTopologyProperties.indexBufferDataType = indexBufferBinding.format;
 				_glcCurrentDrawTopologyProperties.indexBufferElementByteSize = indexBufferBinding.elementByteSize;

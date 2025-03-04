@@ -18,7 +18,7 @@ set( CM_EBS_SYSCONF__VARLIST
         CM_EBS_SYSCONF_TARGET_PLATFORM
         CM_EBS_SYSCONF_TARGET_FLAG_ENABLE_DEBUGINFO
         CM_EBS_SYSCONF_TARGET_FLAG_OSINFO_APPLE
-        CM_EBS_SYSCONF_TARGET_FLAG_OSINFO_MSE
+        CM_EBS_SYSCONF_TARGET_FLAG_OSINFO_WFA
         CM_EBS_SYSCONF_TARGET_FLAG_OSINFO_POSIX
         CM_EBS_SYSCONF_TARGET_PROP_SHARED_LIB_EXT
         CM_EBS_SYSCONF_TARGET_PROP_SHARED_LIB_PREFIX
@@ -273,7 +273,7 @@ function( _ebsSysconfDetectTargetPlatform )
         ebsSetInternal( CM_EBS_SYSCONF_TARGET_ARCH_DEFAULT_64  "x86_64" )
         ebsSetInternal( CM_EBS_SYSCONF_TARGET_ARCH_DEFAULT_BIT "64" )
         ebsSetInternal( CM_EBS_SYSCONF_TARGET_FLAG_OSINFO_GLAPI "WGL" )
-        ebsSetInternal( CM_EBS_SYSCONF_TARGET_FLAG_OSINFO_MSE TRUE )
+        ebsSetInternal( CM_EBS_SYSCONF_TARGET_FLAG_OSINFO_WFA TRUE )
         ebsSetInternal( CM_EBS_SYSCONF_TARGET_FLAG_OSINFO_VULKAN TRUE )
     elseif( "${CM_EBS_SYSCONF_TARGET_SYSTEM}" STREQUAL "WinPhone" )
         ebsSetInternal( CM_EBS_SYSCONF_TARGET_PLATFORM  "Windows" )
@@ -281,21 +281,21 @@ function( _ebsSysconfDetectTargetPlatform )
         ebsSetInternal( CM_EBS_SYSCONF_TARGET_ARCH_DEFAULT_32  "x86" )
         ebsSetInternal( CM_EBS_SYSCONF_TARGET_ARCH_DEFAULT_64  "x86_64" )
         ebsSetInternal( CM_EBS_SYSCONF_TARGET_ARCH_DEFAULT_BIT "64" )
-        ebsSetInternal( CM_EBS_SYSCONF_TARGET_FLAG_OSINFO_MSE TRUE )
+        ebsSetInternal( CM_EBS_SYSCONF_TARGET_FLAG_OSINFO_WFA TRUE )
     elseif( "${CM_EBS_SYSCONF_TARGET_SYSTEM}" STREQUAL "WinRT" )
         ebsSetInternal( CM_EBS_SYSCONF_TARGET_PLATFORM  "Windows" )
         ebsSetInternal( CM_EBS_SYSCONF_TARGET_LIBRARY_SUBDIR  "winrt" )
         ebsSetInternal( CM_EBS_SYSCONF_TARGET_ARCH_DEFAULT_32  "arm32v7a" )
         ebsSetInternal( CM_EBS_SYSCONF_TARGET_ARCH_DEFAULT_64  "" ) # WinRT is specifically desgined for 32-bit armv7
         ebsSetInternal( CM_EBS_SYSCONF_TARGET_ARCH_DEFAULT_BIT "32" )
-        ebsSetInternal( CM_EBS_SYSCONF_TARGET_FLAG_OSINFO_MSE TRUE )
+        ebsSetInternal( CM_EBS_SYSCONF_TARGET_FLAG_OSINFO_WFA TRUE )
     elseif( "${CM_EBS_SYSCONF_TARGET_SYSTEM}" STREQUAL "WinUWP" )
         ebsSetInternal( CM_EBS_SYSCONF_TARGET_LIBRARY_SUBDIR  "winuwp" )
         ebsSetInternal( CM_EBS_SYSCONF_TARGET_PLATFORM  "Windows" )
         ebsSetInternal( CM_EBS_SYSCONF_TARGET_ARCH_DEFAULT_32  "x86" )
         ebsSetInternal( CM_EBS_SYSCONF_TARGET_ARCH_DEFAULT_64  "x86_64" )
         ebsSetInternal( CM_EBS_SYSCONF_TARGET_ARCH_DEFAULT_BIT "64" )
-        ebsSetInternal( CM_EBS_SYSCONF_TARGET_FLAG_OSINFO_MSE TRUE )
+        ebsSetInternal( CM_EBS_SYSCONF_TARGET_FLAG_OSINFO_WFA TRUE )
     endif()
 
     if( "${CM_EBS_SYSCONF_TARGET_SYSTEM}" MATCHES "Android|Linux" )
