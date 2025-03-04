@@ -24,7 +24,7 @@ namespace Ic3::Graphics::GCI
 		RootSignatureDescriptorGeneric::RootSignatureDescriptorGeneric(
 				GPUDevice & pGPUDevice,
 				pipeline_state_descriptor_id_t pDescriptorID,
-				const RootSignature & pRootSignature  )
+				RootSignature pRootSignature  )
 		: RootSignatureDescriptor( pGPUDevice, pDescriptorID )
 		, mRootSignature( std::move( pRootSignature ) )
 		{}

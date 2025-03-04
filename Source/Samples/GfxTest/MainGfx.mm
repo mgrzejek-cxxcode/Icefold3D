@@ -234,7 +234,8 @@ int main( int pArgc, const char ** pArgv )
 		vbci.memoryFlags = GCI::eGPUMemoryAccessFlagGPUReadBit;
 		vbci.resourceFlags = GCI::eGPUResourceContentFlagStaticBit;
 		vbci.resourceFlags |= GCI::eGPUBufferBindFlagVertexBufferBit;
-		vbci.bufferSize = vtxDataSize;
+		vbci.initDataDesc.pointer = cvMeshTexUnitCubeVertexData;
+		vbci.initDataDesc.size = vtxDataSize;
 		vbuffer0 = gxDriverState.device->CreateGPUBuffer( vbci );
 	}
 
@@ -246,7 +247,8 @@ int main( int pArgc, const char ** pArgv )
 		ibci.memoryFlags = GCI::eGPUMemoryAccessFlagGPUReadBit;
 		ibci.resourceFlags = GCI::eGPUResourceContentFlagStaticBit;
 		ibci.resourceFlags |= GCI::eGPUBufferBindFlagIndexBufferBit;
-		ibci.bufferSize = idxDataSize;
+		ibci.initDataDesc.pointer = cvMeshTexUnitCubeIndexData;
+		ibci.initDataDesc.size = idxDataSize;
 		ibuffer0 = gxDriverState.device->CreateGPUBuffer( ibci );
 	}
 
@@ -477,7 +479,10 @@ int main( int pArgc, const char ** pArgv )
 				gxDriverState.cmdContext->SetVertexSourceBindingDescriptorDynamic( *vsbDescriptor );
 				gxDriverState.cmdContext->SetGraphicsPipelineStateObject( *mainPSO );
 
-				gxDriverState.cmdContext->CmdDrawDirectIndexed( 6, 36 );
+				gxDriverState.cmdContext->CmdSetViewport( vpDescScreen );
+				gxDriverState.cmdContext->CmdSetShaderConstantBuffer( 0, *cbuffer0 );
+
+				gxDriverState.cmdContext->CmdDrawDirectIndexed( 36, 0 );
 
 				gxDriverState.presentationLayer->InvalidateRenderTarget( *gxDriverState.cmdContext );
 			}

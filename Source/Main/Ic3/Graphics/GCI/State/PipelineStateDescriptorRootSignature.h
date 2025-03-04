@@ -45,7 +45,7 @@ namespace Ic3::Graphics::GCI
 			RootSignatureDescriptorGeneric(
 					GPUDevice & pGPUDevice,
 					pipeline_state_descriptor_id_t pDescriptorID,
-					const RootSignature & pRootSignature );
+					RootSignature pRootSignature );
 
 			virtual ~RootSignatureDescriptorGeneric();
 

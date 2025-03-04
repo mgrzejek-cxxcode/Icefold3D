@@ -553,21 +553,13 @@ namespace Ic3::Graphics::GCI
 						glcVertexSourceBinding );
 
 				_glcGlobalStateCache.ApplyVertexArrayObjectBinding( vertexArrayObject.mGLHandle );
+				_glcGlobalStateCache.ApplyIndexBufferBinding( glcVertexSourceBinding.indexBufferBinding.handle );
 
-				_glcCurrentDrawTopologyProperties.primitiveTopology =
-						glcVertexAttributeLayoutDescriptor.mGLVertexAttributeLayout.glcPrimitiveTopology;
+				_glcCurrentDrawTopologyProperties.indexBufferBaseOffset = glcVertexSourceBinding.indexBufferBinding.offset;
+				_glcCurrentDrawTopologyProperties.indexBufferDataType = glcVertexSourceBinding.indexBufferBinding.format;
+				_glcCurrentDrawTopologyProperties.indexBufferElementByteSize = glcVertexSourceBinding.indexBufferBinding.elementByteSize;
 
-				_glcGlobalStateCache.ApplyIndexBufferBinding(
-						glcVertexSourceBinding.indexBufferBinding.handle );
-
-				_glcCurrentDrawTopologyProperties.indexBufferBaseOffset =
-						glcVertexSourceBinding.indexBufferBinding.offset;
-
-				_glcCurrentDrawTopologyProperties.indexBufferDataType =
-						glcVertexSourceBinding.indexBufferBinding.format;
-
-				_glcCurrentDrawTopologyProperties.indexBufferElementByteSize =
-						glcVertexSourceBinding.indexBufferBinding.elementByteSize;
+				_glcCurrentDrawTopologyProperties.primitiveTopology = glcVertexAttributeLayoutDescriptor.mGLVertexAttributeLayout.glcPrimitiveTopology;
 
 				executedUpdatesMask.set( eGraphicsStateUpdateMaskCombinedInputAssembler );
 			}

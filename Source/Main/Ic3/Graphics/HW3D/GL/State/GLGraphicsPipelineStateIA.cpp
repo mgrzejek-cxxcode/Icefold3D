@@ -520,7 +520,7 @@ namespace Ic3::Graphics::GCI
 					glEnableVertexAttribArray( attributeIndex );
 					Ic3OpenGLHandleLastError();
 
-					// Unlike in IAUpdateGLVertexArrayObjectLayoutOnly can safely use glVertexAttribDivisor() here,
+					// Unlike in IAUpdateGLVertexArrayObjectLayoutOnly we can safely use glVertexAttribDivisor() here,
 					// because this is the combined binding+layout setup created using older glVertexAttribPointer().
 					// In this approach, vertex buffer binding is fetched from the currently bound GL_ARRAY_BUFFER
 					// and the driver creates implicit vertex data stream for that buffer.
