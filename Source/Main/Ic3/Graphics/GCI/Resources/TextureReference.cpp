@@ -46,7 +46,7 @@ namespace Ic3::Graphics::GCI
 				_refTextureObject->ReleaseActiveRef();
 				_refTextureObject = nullptr;
 				_refTextureFormat = ETextureFormat::Undefined;
-				_refSubResource.reset();
+				_refSubResource.Reset();
 
 				referenceUpdated = true;
 			}

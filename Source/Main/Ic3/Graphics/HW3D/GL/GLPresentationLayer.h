@@ -1,18 +1,20 @@
 
 #pragma once
 
-#ifndef __IC3_GRAPHICS_HW3D_GLCOMMON_PRESENTATION_LAYER_H__
-#define __IC3_GRAPHICS_HW3D_GLCOMMON_PRESENTATION_LAYER_H__
+#ifndef __IC3_GRAPHICS_HW3D_GLC_PRESENTATION_LAYER_H__
+#define __IC3_GRAPHICS_HW3D_GLC_PRESENTATION_LAYER_H__
 
 #include "GLPrerequisites.h"
 #include <Ic3/Graphics/GCI/PresentationLayer.h>
 #include <Ic3/Graphics/GCI/State/CommonGPUStateDefs.h>
+
 
 namespace Ic3::Graphics::GCI
 {
 
 	Ic3DeclareClassHandle( GLPresentationLayer );
 	Ic3DeclareClassHandle( GLScreenPresentationLayer );
+	Ic3DeclareClassHandle( GLRenderTargetDescriptor );
 
 	struct GLPresentationLayerCreateInfo : public PresentationLayerCreateInfo
 	{
@@ -36,19 +38,19 @@ namespace Ic3::Graphics::GCI
 		friend GLGPUDevice;
 
 	public:
-		RenderTargetBindingImmutableStateHandle const mScreenRenderTargetBindingState;
+		GLRenderTargetDescriptorHandle const mScreenRenderTargetDescriptor;
 
 	public:
-	    GLScreenPresentationLayer(
-			GLGPUDevice & pGPUDevice,
-			System::OpenGLDisplaySurfaceHandle pSysGLDisplaySurface,
-			RenderTargetBindingImmutableStateHandle pScreenRenderTargetBindingState );
+		GLScreenPresentationLayer(
+				GLGPUDevice & pGPUDevice,
+				System::OpenGLDisplaySurfaceHandle pSysGLDisplaySurface,
+				GLRenderTargetDescriptorHandle pScreenRenderTargetDescriptor );
 
 		virtual ~GLScreenPresentationLayer();
 
-		virtual void BindRenderTarget( CommandContext * pCmdContext ) override;
+		virtual void BindRenderTarget( CommandContext & pCommandContext ) override;
 
-		virtual void InvalidateRenderTarget( CommandContext * pCmdContext ) override;
+		virtual void InvalidateRenderTarget( CommandContext & pCommandContext ) override;
 
 		virtual void Present() override;
 
@@ -64,4 +66,4 @@ namespace Ic3::Graphics::GCI
 
 } // namespace Ic3::Graphics::GCI
 
-#endif // __IC3_GRAPHICS_HW3D_GLCOMMON_PRESENTATION_LAYER_H__
+#endif // __IC3_GRAPHICS_HW3D_GLC_PRESENTATION_LAYER_H__

@@ -33,14 +33,20 @@ namespace Ic3::Graphics::GCI
 		const auto openglShaderType = ATL::translateShaderType( pShaderType );
 		const auto runtimeVersion = pGPUDevice.mSysGLSupportInfo.apiVersion;
 
+		std::string shaderSource{ reinterpret_cast<const char *>( pSource ), pSourceLength };
+
 		GLShaderHandle shaderObject = nullptr;
 
 		if( pGPUDevice.IsCompatibilityDevice() )
 		{
-			GLShaderDataLayoutMap shaderLayoutMap{};
-			std::string shaderSource{ reinterpret_cast<const char *>( pSource ), pSourceLength };
+			auto shaderBindingLayout = std::make_unique<GLShaderBindingLayout>();
+			auto shaderInputSignature = std::make_unique<ShaderInputSignature>();
 
-			RCU::ProcessGLShaderSourceExplicitLayoutQualifiers( runtimeVersion, shaderSource, shaderLayoutMap );
+			RCU::ProcessGLShaderSource(
+					runtimeVersion,
+					shaderSource,
+					*shaderInputSignature,
+					shaderBindingLayout.get() );
 
 			auto openglShaderObject = GLShaderObject::CreateWithSource( openglShaderType, shaderSource.data(), shaderSource.length() );
 			if( !openglShaderObject )
@@ -48,12 +54,20 @@ namespace Ic3::Graphics::GCI
 				return nullptr;
 			}
 
-			openglShaderObject->SetDataLayoutMap( std::move( shaderLayoutMap ) );
+			openglShaderObject->SetBindingLayout( std::move( shaderBindingLayout ) );
 
 			shaderObject = std::make_unique<GLShader>( pGPUDevice, pShaderType, std::move( openglShaderObject ) );
+			shaderObject->SetShaderInputSignature( std::move( shaderInputSignature ) );
 		}
 		else
 		{
+			auto shaderInputSignature = std::make_unique<ShaderInputSignature>();
+
+			RCU::ProcessGLShaderSource(
+					runtimeVersion,
+					shaderSource,
+					*shaderInputSignature );
+
 			auto openglShaderObject = GLShaderObject::CreateWithSource( openglShaderType, pSource, pSourceLength );
 			if( !openglShaderObject )
 			{
@@ -66,7 +80,13 @@ namespace Ic3::Graphics::GCI
 				return nullptr;
 			}
 
+			const auto programBinarySize = openglProgramObject->QueryParameter( GL_PROGRAM_BINARY_LENGTH );
+
 			shaderObject = std::make_unique<GLShader>( pGPUDevice, pShaderType, std::move( openglProgramObject ) );
+			auto * shaderBinary = shaderObject->InitializeShaderBinaryStorage( programBinarySize );
+			shaderObject->SetShaderInputSignature( std::move( shaderInputSignature ) );
+
+			openglProgramObject->GetBinary( *shaderBinary );
 		}
 
 		return shaderObject;

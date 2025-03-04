@@ -102,7 +102,7 @@ namespace Ic3::Graphics::GCI
 
 		id<MTLBuffer> uploadBuffer = [mMTLDevice newBufferWithBytes:pUploadDesc.inputDataDesc.pointer
 									                         length:pUploadDesc.inputDataDesc.size
-									                        options:MTLResourceStorageModePrivate | MTLResourceCpuCacheModeDefaultCache];
+									                        options:MTLResourceStorageModePrivate | MTLResourceCPUCacheModeDefaultCache];
 
 		id<MTLBlitCommandEncoder> blitCommandEncoder = [metalCommandList->mMTLCommandBuffer blitCommandEncoder];
 

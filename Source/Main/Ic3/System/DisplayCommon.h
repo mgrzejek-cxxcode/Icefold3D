@@ -243,7 +243,7 @@ namespace Ic3::System
 		cppx::bitmask<EDisplayAdapterFlags> flags = 0u;
 		std::string name;
 
-		std::string toString() const;
+		std::string ToString() const;
 	};
 
 	struct DisplayOutputDesc
@@ -255,7 +255,7 @@ namespace Ic3::System
 		std::string name;
 		ScreenRect screenRect;
 
-		std::string toString() const;
+		std::string ToString() const;
 	};
 
 	struct DisplayVideoModeDesc
@@ -267,7 +267,7 @@ namespace Ic3::System
 		EColorFormat colorFormat = EColorFormat::Unknown;
 		DisplayVideoSettings settings;
 
-		std::string toString() const;
+		std::string ToString() const;
 	};
 
 

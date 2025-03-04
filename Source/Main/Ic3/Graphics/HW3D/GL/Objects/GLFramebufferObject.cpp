@@ -20,14 +20,12 @@ namespace Ic3::Graphics::GCI
 		glGenFramebuffers( 1, &framebufferHandle );
 		Ic3OpenGLHandleLastError();
 
-		GLFramebufferObjectHandle openglFramebufferObject{ new GLFramebufferObject( framebufferHandle ) };
-
-		return openglFramebufferObject;
+		return CreateGLObject<GLFramebufferObject>( framebufferHandle );
 	}
 
 	GLFramebufferObjectHandle GLFramebufferObject::CreateForDefaultFramebuffer()
 	{
-		return GLFramebufferObjectHandle{ new GLFramebufferObject( 0u ) };
+		return CreateGLObject<GLFramebufferObject>( 0u );
 	}
 
 	bool GLFramebufferObject::Release()
@@ -43,10 +41,10 @@ namespace Ic3::Graphics::GCI
 
 	bool GLFramebufferObject::ValidateHandle() const
 	{
-		auto isBuffer = glIsFramebuffer( mGLHandle );
+		const auto checkResult = glIsFramebuffer( mGLHandle );
 		Ic3OpenGLHandleLastError();
 
-		return isBuffer != GL_FALSE;
+		return checkResult != GL_FALSE;
 	}
 
 	void GLFramebufferObject::BindColorRenderbuffer(
@@ -70,7 +68,7 @@ namespace Ic3::Graphics::GCI
 			GLenum pActiveBindTarget )
 	{
 		const auto framebufferBindTarget = CheckActiveBindTarget( pActiveBindTarget );
-		const auto fboAttachmentID = SMU::GetFramebufferDepthStencilAttachmentIDForRTBufferMask( pBufferMask );
+		const auto fboAttachmentID = GCU::RTOGetGLFramebufferDepthStencilAttachmentIDForRTBufferMask( pBufferMask );
 
 		glFramebufferRenderbuffer(
 				framebufferBindTarget,
@@ -155,7 +153,7 @@ namespace Ic3::Graphics::GCI
 			GLenum pActiveBindTarget )
 	{
 		const auto framebufferBindTarget = CheckActiveBindTarget( pActiveBindTarget );
-		const auto fboAttachmentID = SMU::GetFramebufferDepthStencilAttachmentIDForRTBufferMask( pBufferMask );
+		const auto fboAttachmentID = GCU::RTOGetGLFramebufferDepthStencilAttachmentIDForRTBufferMask( pBufferMask );
 
 		switch( pGLTexture.mGLTextureBindTarget )
 		{

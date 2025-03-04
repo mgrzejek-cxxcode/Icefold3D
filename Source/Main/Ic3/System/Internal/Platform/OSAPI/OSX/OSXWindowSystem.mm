@@ -111,7 +111,8 @@ namespace Ic3::System
 			}
 			@catch( NSException * pException )
 			{
-				const auto message = [[pException reason] UTF8String];
+				const auto * exceptionDescription = [[pException reason] UTF8String];
+                Ic3DebugOutput( exceptionDescription );
 				Ic3DebugInterrupt();
 			}
 		}
@@ -121,7 +122,7 @@ namespace Ic3::System
 		{
 		@autoreleasepool
 		{
-			if( ![( id )pWindowNativeData.mNSWindow IsKindOfClass:[NSOSXWindow class]] )
+			if( ![( id )pWindowNativeData.mNSWindow isKindOfClass:[NSOSXWindow class]] )
 			{
 				return;
 			}
@@ -143,7 +144,7 @@ namespace Ic3::System
 
 		void OSXSetInputWindow( OSXWindowNativeData & pWindowNativeData )
 		{
-			if( ![pWindowNativeData.mNSWindow IsMiniaturized] )
+			if( ![pWindowNativeData.mNSWindow isMiniaturized] )
 			{
 				[NSApp activateIgnoringOtherApps:YES];
 
@@ -163,7 +164,7 @@ namespace Ic3::System
 			}
 
 			NSString * nsTitle = [[NSString alloc] initWithUTF8String:newTitle];
-			[pNSWindow SetTitle:nsTitle];
+			[pNSWindow setTitle:nsTitle];
 		}
 		}
 

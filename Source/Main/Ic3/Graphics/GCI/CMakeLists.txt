@@ -76,50 +76,77 @@ set( IC3_GRAPHICS_GCI_SRC_FILES
         "State/CommonGPUStateDefs.cpp"
         "State/CommonGraphicsConfig.h"
         "State/CommonGraphicsConfig.cpp"
-        "State/CommonGraphicsConfigImmutableStates.h"
-        "State/CommonGraphicsConfigImmutableStates.cpp"
 
-        "State/GraphicsPipelineImmutableState.h"
-        "State/GraphicsPipelineImmutableState.cpp"
-        "State/GraphicsShaderLinkageImmutableState.h"
-        "State/GraphicsShaderLinkageImmutableState.cpp"
+        "State/ComputePipelineStateCommon.h"
+        "State/ComputePipelineStateCommon.cpp"
+
+        "State/GraphicsPipelineStateCommon.h"
+        "State/GraphicsPipelineStateCommon.cpp"
+        "State/GraphicsPipelineStateController.h"
+        "State/GraphicsPipelineStateController.cpp"
+        "State/PipelineStateDescriptorCache.h"
+        "State/PipelineStateDescriptorCache.cpp"
+        "State/GraphicsPipelineStateDescriptorCommon.h"
+        "State/GraphicsPipelineStateDescriptorCommon.cpp"
+        "State/GraphicsPipelineStateDescriptorIA.h"
+        "State/GraphicsPipelineStateDescriptorIA.cpp"
+        "State/GraphicsPipelineStateDescriptorRTArrayCommon.h"
+        "State/GraphicsPipelineStateDescriptorRTO.h"
+        "State/GraphicsPipelineStateDescriptorRTO.cpp"
+        "State/GraphicsPipelineStateDescriptorRTODynamic.h"
+        "State/GraphicsPipelineStateDescriptorRTODynamic.cpp"
+        "State/GraphicsPipelineStateDescriptorShader.h"
+        "State/GraphicsPipelineStateDescriptorShader.cpp"
+        "State/GraphicsShaderDefs.h"
+        "State/GraphicsShaderDefs.cpp"
 
         "State/InputAssemblerCommon.h"
         "State/InputAssemblerCommon.cpp"
-        "State/InputAssemblerDynamicStates.h"
-        "State/InputAssemblerDynamicStates.cpp"
-        "State/InputAssemblerImmutableStates.h"
-        "State/InputAssemblerImmutableStates.cpp"
-
         "State/RenderPassCommon.h"
         "State/RenderPassCommon.cpp"
+        "State/RenderTargetArrayUtils.h"
         "State/RenderTargetCommon.h"
         "State/RenderTargetCommon.cpp"
-        "State/RenderTargetDynamicStates.h"
-        "State/RenderTargetDynamicStates.cpp"
-        "State/RenderTargetImmutableStates.h"
-        "State/RenderTargetImmutableStates.cpp"
-
-        "State/GraphicsPipelineStateController.h"
-        "State/GraphicsPipelineStateController.cpp"
-        "State/GraphicsShaderState.h"
-        "State/GraphicsShaderState.cpp"
-        "State/PipelineStateObject.h"
-        "State/PipelineStateObject.cpp"
-        "State/PipelineImmutableStateCache.h"
-        "State/PipelineImmutableStateCache.cpp"
-        "State/PipelineImmutableStateManager.h"
-        "State/PipelineImmutableStateManager.cpp"
-        "State/SeparablePipelineState.h"
-        "State/SeparablePipelineState.cpp"
-        "State/ShaderInputSignature.h"
-        "State/ShaderInputSignature.cpp"
-
         "State/Sampler.h"
         "State/Sampler.cpp"
         "State/SamplerCommon.h"
         "State/SamplerCommon.cpp"
-        )
+        "State/RootSignature.h"
+        "State/RootSignature.cpp"
+        "State/PipelineStateDescriptorRootSignature.h"
+        "State/PipelineStateDescriptorRootSignature.cpp"
+
+        "State/PipelineStateCommon.h"
+        "State/PipelineStateCommon.cpp"
+        "State/PipelineStateDescriptorCacheUnit.h"
+        "State/PipelineStateDescriptorCacheUnit.cpp"
+        "State/PipelineStateDescriptorFactory.h"
+        "State/PipelineStateDescriptorFactory.cpp"
+        "State/PipelineStateDescriptorManager.h"
+        "State/PipelineStateDescriptorManager.cpp"
+        "State/GraphicsPipelineStateCommon.h"
+        "State/GraphicsPipelineStateCommon.cpp"
+        "State/GraphicsPipelineStateImplSeparableState.h"
+        "State/GraphicsPipelineStateImplSeparableState.cpp"
+
+        State/PipelineStateDescriptor.cpp
+        State/PipelineStateDescriptor.h
+        State/PipelineStateController.cpp
+        State/PipelineStateController.h
+        State/PipelineStateDescriptorDynamic.h
+        State/GraphicsPipelineStateDescriptorIADynamic.cpp
+        State/GraphicsPipelineStateDescriptorIADynamic.h
+        GPUDeviceFeatureQuery.h
+        GPUDeviceFeatureQuery.cpp
+        State/GraphicsPipelineStateController.inl
+        State/GraphicsPipelineStateImplGenericRenderPass.h
+        State/GraphicsPipelineStateImplGenericRenderPass.cpp
+        State/GraphicsPipelineStateImplSeparableState.inl
+        CommandListImplGenericRenderPass.h
+        State/ShaderInputSignature.cpp
+        State/ShaderInputSignature.h
+
+)
 
 if( "${IC3_COMPONENTS_BUILD_MODE}" STREQUAL "STATIC" )
     add_library( Ic3.Graphics.GCI STATIC ${IC3_GRAPHICS_GCI_SRC_FILES} )

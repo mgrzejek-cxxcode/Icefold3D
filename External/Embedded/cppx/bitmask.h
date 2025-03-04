@@ -276,7 +276,7 @@ namespace cppx
 		return bitmask<TIntegral>( pValue );
 	}
 
-	template <typename TPBaseType, typename TPInput>
+	template <typename TPBaseType, typename TPInput = TPBaseType>
 	CPPX_ATTR_NO_DISCARD inline constexpr bitmask<TPBaseType> make_bitmask_tp( TPInput pValue = static_cast<TPInput>( 0 ) ) noexcept
 	{
 		return bitmask<TPBaseType>( pValue );
@@ -285,21 +285,21 @@ namespace cppx
 	template <typename TPStoreType, typename TEnum, typename std::enable_if<std::is_enum<TEnum>::value, int>::type = 0>
 	CPPX_ATTR_NO_DISCARD inline constexpr bitmask<TEnum> make_bitmask_ex( TEnum pValue ) noexcept
 	{
-		static_assert( pValue <= meta::limits<TPStoreType>::maxValue );
+		cppx_debug_assert( pValue <= meta::limits<TPStoreType>::max_value );
 		return bitmask<TEnum>( pValue );
 	}
 
 	template <typename TPStoreType, typename TIntegral, typename std::enable_if<std::is_integral<TIntegral>::value, int>::type = 0>
 	CPPX_ATTR_NO_DISCARD inline constexpr bitmask<TIntegral> make_bitmask_ex( TIntegral pValue ) noexcept
 	{
-		static_assert( pValue <= meta::limits<TPStoreType>::maxValue );
+		cppx_debug_assert( pValue <= meta::limits<TPStoreType>::max_value );
 		return bitmask<TIntegral>( pValue );
 	}
 
-	template <typename TPStoreType, typename TPBaseType, typename TPInput>
+	template <typename TPStoreType, typename TPBaseType, typename TPInput = TPBaseType>
 	CPPX_ATTR_NO_DISCARD inline constexpr bitmask<TPBaseType> make_bitmask_ex_tp( TPInput pValue = static_cast<TPInput>( 0 ) ) noexcept
 	{
-		static_assert( pValue <= meta::limits<TPStoreType>::maxValue );
+		cppx_debug_assert( pValue <= meta::limits<TPStoreType>::max_value );
 		return bitmask<TPBaseType>( pValue );
 	}
 

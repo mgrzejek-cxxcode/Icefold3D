@@ -30,10 +30,10 @@ namespace Ic3::Graphics::GCI
 
 	bool GLVertexArrayObject::ValidateHandle() const
 	{
-		auto isProgram = glIsVertexArray( mGLHandle );
+		const auto checkResult = glIsVertexArray( mGLHandle );
 		Ic3OpenGLHandleLastError();
 
-		return isProgram != GL_FALSE;
+		return checkResult != GL_FALSE;
 	}
 
 } // namespace Ic3::Graphics::GCI

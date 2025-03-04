@@ -74,7 +74,7 @@ namespace Ic3::Graphics::GCI
 		uint32 depth;
 		/// Size of the texture array. Used for T2DArray and T2DMSArray textures. For other classes, this is always 1.
 		uint32 arraySize;
-		/// Number of mip levels within a single texture image/layer. Valid values are from 1 to GCM::cxTextureMaxMipLevelsNum.
+		/// Number of mip levels within a single texture image/layer. Valid values are from 1 to GCM::kTextureMaxMipLevelsNum.
 		uint32 mipLevelsNum;
 	};
 
@@ -343,7 +343,7 @@ namespace Ic3::Graphics::GCI
 
 	struct TextureSubResource2DArray : public TextureSubResource2D
 	{
-		/// An index within a texture array. Use CxDef::TEX_SUBRESOURCE_INDEX_MIP_VERTICAL_SLICE for a vertical mip slice.
+		/// An index within a texture array. Use CXU::TEX_SUBRESOURCE_INDEX_MIP_VERTICAL_SLICE for a vertical mip slice.
 		uint32 arrayIndex;
 	};
 
@@ -355,7 +355,7 @@ namespace Ic3::Graphics::GCI
 
 	struct TextureSubResourceCubeMap : public TextureSubResource2D
 	{
-		/// An index of the cube Map face. Use CxDef::TEX_SUBRESOURCE_INDEX_MIP_VERTICAL_SLICE for a vertical mip slice.
+		/// An index of the cube Map face. Use CXU::TEX_SUBRESOURCE_INDEX_MIP_VERTICAL_SLICE for a vertical mip slice.
 		uint32 faceIndex;
 	};
 
@@ -398,7 +398,7 @@ namespace Ic3::Graphics::GCI
 			return texClass != ETextureClass::Unknown;
 		}
 
-		void reset()
+		void Reset()
 		{
 			texClass = ETextureClass::Unknown;
 		}

@@ -125,7 +125,7 @@ namespace Ic3::System
 		{
 		@autoreleasepool
 		{
-			if( ![( id )pEventSourceNativeData.mNSWindow IsKindOfClass:[NSOSXWindow class]] )
+			if( ![( id )pEventSourceNativeData.mNSWindow isKindOfClass:[NSOSXWindow class]] )
 			{
 				return;
 			}
@@ -283,7 +283,7 @@ namespace Ic3::System
 
 			if( [pNativeEvent.mNSEvent respondsToSelector:@selector(hasPreciseScrollingDeltas)] )
 			{
-				if( [pNativeEvent.mNSEvent HasPreciseScrollingDeltas] )
+				if( [pNativeEvent.mNSEvent hasPreciseScrollingDeltas] )
 				{
 					scrollEventMask.set( eOSXMouseScrollEventFlagScrollingModePreciseBit );
 				}
@@ -295,7 +295,7 @@ namespace Ic3::System
 
 			if( [pNativeEvent.mNSEvent respondsToSelector:@selector(isDirectionInvertedFromDevice)] )
 			{
-				if( [pNativeEvent.mNSEvent IsDirectionInvertedFromDevice] )
+				if( [pNativeEvent.mNSEvent isDirectionInvertedFromDevice] )
 				{
 					scrollEventMask.set( eOSXMouseScrollEventFlagScrollingDirectionInvertedBit );
 				}
@@ -549,7 +549,7 @@ namespace Ic3::System
 				{
 					auto & eInputMouseMove = osxProcessMouseMoveEvent( pEventController, mouseCursorState, pOutEvent );
 					const auto buttonID = OSXQueryMouseButtonID( pNativeEvent.mNSEvent );
-					const auto buttonFlag = CxDef::GetMouseButtonFlagFromButtonID( buttonID );
+					const auto buttonFlag = CXU::GetMouseButtonFlagFromButtonID( buttonID );
 					eInputMouseMove.buttonStateMask = buttonFlag;
 					break;
 				}

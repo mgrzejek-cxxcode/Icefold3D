@@ -1,56 +1,62 @@
 
 #include "Shader.h"
+#include <Ic3/CoreLib/Memory/CommonMemoryDefs.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	Shader::Shader( GPUDevice & pGPUDevice, EShaderType pShaderType )
-	: GPUDeviceChildObject( pGPUDevice )
-	, mShaderType( pShaderType )
-	, mShaderBinary()
-	{}
-
-	Shader::Shader(
-			GPUDevice & pGPUDevice,
-			EShaderType pShaderType,
-			std::unique_ptr<ShaderBinary> pShaderBinary )
-	: GPUDeviceChildObject( pGPUDevice )
-	, mShaderType( pShaderType )
-	, mShaderBinary( std::move( pShaderBinary ) )
-	{}
-
-	Shader::~Shader()
-	{
-		const_cast< std::unique_ptr<ShaderBinary> * >( &mShaderBinary )->release();
-	}
-
-
 	std::unique_ptr<ShaderBinary> ShaderBinary::Create( size_t pBinarySize )
 	{
 		const auto requiredBinaryStorageSize = pBinarySize - dataBufferFixedSize;
-		auto * shaderBinary = new ( cvAllocNewSizeExplicit, requiredBinaryStorageSize ) ShaderBinary();
+		auto * shaderBinary = new( kAllocNewSizeExplicit, requiredBinaryStorageSize ) ShaderBinary();
 		return std::unique_ptr<ShaderBinary>{ shaderBinary };
 	}
 
 
-	namespace RCU
+	Shader::Shader( GPUDevice & pGPUDevice, EShaderType pShaderType, GfxObjectID pShaderObjectID )
+	: TGfxObjectIDProxy( pShaderObjectID, pGPUDevice )
+	, mShaderType( pShaderType )
+	{}
+
+	Shader::~Shader()
 	{
-
-		EShaderType GetShaderObjectType( Shader & pShader )
+		if( _shaderBinary )
 		{
-			return pShader.mShaderType;
+			_shaderBinary.release();
 		}
 
-		uint32 GetShaderObjectStageIndex( Shader & pShader )
+		if( _shaderInputSignature )
 		{
-			return CxDef::GetShaderStageIndex( pShader.mShaderType );
+			_shaderInputSignature.release();
 		}
+	}
 
-		uint32 GetShaderObjectStageBit( Shader & pShader )
-		{
-			return CxDef::GetShaderStageBit( pShader.mShaderType );
-		}
+	ShaderBinary * Shader::InitializeShaderBinaryStorage( size_t pBinarySizeInBytes )
+	{
+		Ic3DebugAssert( !_shaderBinary );
+		_shaderBinary = ShaderBinary::Create( pBinarySizeInBytes );
+		return _shaderBinary.get();
+	}
 
+	ShaderBinary * Shader::SetShaderBinary( std::unique_ptr<ShaderBinary> pShaderBinary )
+	{
+		Ic3DebugAssert( !_shaderBinary );
+		_shaderBinary = std::move( pShaderBinary );
+		return _shaderBinary.get();
+	}
+
+	ShaderInputSignature * Shader::InitializeShaderInputSignature()
+	{
+		Ic3DebugAssert( !_shaderInputSignature );
+		_shaderInputSignature = std::make_unique<ShaderInputSignature>();
+		return _shaderInputSignature.get();
+	}
+
+	ShaderInputSignature * Shader::SetShaderInputSignature( std::unique_ptr<ShaderInputSignature> pShaderInputSignature )
+	{
+		Ic3DebugAssert( !_shaderInputSignature );
+		_shaderInputSignature = std::move( pShaderInputSignature );
+		return _shaderInputSignature.get();
 	}
 
 } // namespace Ic3::Graphics::GCI

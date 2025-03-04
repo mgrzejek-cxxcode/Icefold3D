@@ -8,175 +8,149 @@ namespace Ic3
 
 	// @VertexAttributeDefinition
 
-	inline bool VertexAttributeDefinition::IsValid() const noexcept
+	inline uint32 VertexInputAttributeDefinition::GetDataSizeInBytes() const noexcept
 	{
-		return ( attributeIASlot != cxGCIVertexAttributeIndexUndefined ) &&
-		       ( streamIASlot != cxGCIVertexStreamIndexUndefined ) &&
-		       ( dataFormat != GCI::EVertexAttribFormat::Undefined ) &&
-		       cxGCIValidVertexAttributeSemanticGroupSizeRange.contains( semanticGroupSize ) &&
-		       shaderSemantics.IsValid();
+		return GCI::CXU::GetVertexAttribFormatByteSize( baseDataFormat );
 	}
 
-	inline bool VertexAttributeDefinition::HasAppendAsRelativeOffset() const noexcept
+	inline bool VertexInputAttributeDefinition::IsValid() const noexcept
 	{
-		return vertexStreamRelativeOffset == cxGCIVertexAttributeOffsetAppend;
+		return GCIUtils::IsAttributeLocationAndSizeValid( attributeSlot, semanticGroupSize ) &&
+		       GCIUtils::IAIsDataStreamVertexBufferSlotValid( vertexStreamSlot ) &&
+		       ( baseDataFormat != GCI::EVertexAttribFormat::Undefined ) &&
+		       !semanticName.empty();
+	}
+
+	inline bool VertexInputAttributeDefinition::HasAppendAsRelativeOffset() const noexcept
+	{
+		return ( vertexStreamRelativeOffset == GCI::kIAVertexAttributeOffsetAppend );
 	}
 
 	// @GenericVertexAttribute
 
-	inline GenericVertexAttribute::operator bool() const noexcept
+	inline GenericVertexInputAttribute::operator bool() const noexcept
 	{
 		return IsActive();
 	}
 
-	inline bool GenericVertexAttribute::IsActive() const noexcept
+	inline bool GenericVertexInputAttribute::IsActive() const noexcept
 	{
 		return dataFormat != GCI::EVertexAttribFormat::Undefined;
 	}
 
-	inline bool GenericVertexAttribute::IsBaseAttribute() const noexcept
+	inline bool GenericVertexInputAttribute::IsBaseAttribute() const noexcept
 	{
 		return semanticIndex == 0;
 	}
 
-	inline bool GenericVertexAttribute::IsSemanticGroupAttribute() const noexcept
+	inline bool GenericVertexInputAttribute::IsSemanticGroupAttribute() const noexcept
 	{
-		return cxGCIValidVertexAttributeSemanticGroupSizeRange.contains( semanticGroupSize ) && ( semanticGroupSize > 1 );
+		return GCI::CXU::IAIsVertexAttributeSemanticGroupSizeValid( semanticGroupSize ) && ( semanticGroupSize > 1 );
 	}
 
-	inline bool GenericVertexAttribute::IsSameAs( const GenericVertexAttribute & pOther ) const noexcept
+	inline bool GenericVertexInputAttribute::IsSameAs( const GenericVertexInputAttribute & pOther ) const noexcept
 	{
-		/// TODO: Implement
-		return false;
+		return ( attributeSlot == pOther.attributeSlot ) &&
+		       ( dataFormat == pOther.dataFormat ) &&
+		       ( semanticIndex == pOther.semanticGroupSize ) &&
+		       ( semanticGroupSize == pOther.semanticGroupSize ) &&
+		       ( semanticName == pOther.semanticName ) &&
+		       ( semanticFlags == pOther.semanticFlags ) &&
+		       ( dataPadding == pOther.dataPadding ) &&
+		       ( vertexStreamSlot == pOther.vertexStreamSlot ) &&
+		       ( vertexStreamRelativeOffset == pOther.vertexStreamRelativeOffset );
 	}
 
-	inline bool GenericVertexAttribute::HasSameFormatAs( const GenericVertexAttribute & pOther ) const noexcept
+	inline bool GenericVertexInputAttribute::HasSameFormatAs( const GenericVertexInputAttribute & pOther ) const noexcept
 	{
 		return dataFormat == pOther.dataFormat;
 	}
 
-	inline bool GenericVertexAttribute::HasSameSemanticsAs( const GenericVertexAttribute & pOther ) const noexcept
+	inline bool GenericVertexInputAttribute::HasSameSemanticsAs( const GenericVertexInputAttribute & pOther ) const noexcept
 	{
-		return shaderSemantics == pOther.shaderSemantics;
+		return !semanticName.empty() && ( semanticName == pOther.semanticName ) && ( semanticIndex == pOther.semanticIndex );
 	}
 
-	inline GCI::EBaseDataType GenericVertexAttribute::GetBaseDataType() const noexcept
+	inline GCI::EBaseDataType GenericVertexInputAttribute::GetBaseDataType() const noexcept
 	{
-		return GCI::CxDef::GetVertexAttribFormatBaseDataType( dataFormat );
+		return GCI::CXU::GetVertexAttribFormatBaseDataType( dataFormat );
 	}
 
-	inline uint32 GenericVertexAttribute::GetDataSizeInBytes() const noexcept
+	inline uint32 GenericVertexInputAttribute::GetDataSizeInBytes() const noexcept
 	{
-		return GCI::CxDef::GetVertexAttribFormatByteSize( dataFormat );
+		return GCI::CXU::GetVertexAttribFormatByteSize( dataFormat );
 	}
 
-	inline uint32 GenericVertexAttribute::GetDataStride() const noexcept
+	inline uint32 GenericVertexInputAttribute::GetDataStride() const noexcept
 	{
 		return GetDataSizeInBytes() + dataPadding;
 	}
 
-	inline void GenericVertexAttribute::InitBaseAttributeFromDefinition( const VertexAttributeDefinition & pDefinition )
+	inline void GenericVertexInputAttribute::InitBaseAttributeFromDefinition(
+			const VertexInputAttributeDefinition & pDefinition )
 	{
-		attributeIASlot = pDefinition.attributeIASlot;
-		streamIASlot = pDefinition.streamIASlot;
-		dataFormat = pDefinition.dataFormat;
-		dataPadding = pDefinition.dataPadding;
-		semanticGroupSize = pDefinition.semanticGroupSize;
+		attributeSlot = cppx::numeric_cast<decltype( attributeSlot )>( pDefinition.attributeSlot );
+		dataFormat = pDefinition.baseDataFormat;
+		dataRate = pDefinition.dataRate;
 		semanticIndex = 0;
-		shaderSemantics = pDefinition.shaderSemantics;
+		semanticGroupSize = cppx::numeric_cast<decltype( semanticGroupSize )>( pDefinition.semanticGroupSize );
+		semanticName = pDefinition.semanticName;
+		semanticFlags = pDefinition.semanticFlags;
+		dataPadding = cppx::numeric_cast<decltype( dataPadding )>( pDefinition.dataPadding );
+		vertexStreamSlot = cppx::numeric_cast<decltype( vertexStreamSlot )>( pDefinition.vertexStreamSlot );
+		vertexStreamRelativeOffset = cppx::numeric_cast<decltype( vertexStreamRelativeOffset )>( pDefinition.vertexStreamRelativeOffset );
 	}
 
-	inline void GenericVertexAttribute::InitSemanticSubAttributeFromBaseAttribute(
-			const GenericVertexAttribute & pBaseAttribute,
+	inline void GenericVertexInputAttribute::InitSemanticSubAttributeFromBaseAttribute(
+			const GenericVertexInputAttribute & pBaseAttribute,
 			uint32 pSemanticIndex )
 	{
-		attributeIASlot = pBaseAttribute.attributeIASlot + pSemanticIndex;
-		streamIASlot = pBaseAttribute.streamIASlot;
+		attributeSlot = cppx::numeric_cast<decltype( attributeSlot )>( pBaseAttribute.attributeSlot + pSemanticIndex );
 		dataFormat = pBaseAttribute.dataFormat;
-		dataPadding = pBaseAttribute.dataPadding;
+		dataRate = pBaseAttribute.dataRate;
+		semanticIndex = cppx::numeric_cast<decltype( semanticIndex )>( pSemanticIndex );
 		semanticGroupSize = pBaseAttribute.semanticGroupSize;
-		semanticIndex = pSemanticIndex;
-		shaderSemantics = pBaseAttribute.shaderSemantics;
+		semanticName = pBaseAttribute.semanticName;
+		semanticFlags = pBaseAttribute.semanticFlags;
+		dataPadding = pBaseAttribute.dataPadding;
+		vertexStreamSlot = pBaseAttribute.vertexStreamSlot;
 
 		// To compute the offset for the next attributes in the same semantic group, we simply
 		// add the total stride to the offset of the base (first) attribute in that group.
-		vertexStreamRelativeOffset = pBaseAttribute.vertexStreamRelativeOffset + ( pBaseAttribute.GetDataStride() * pSemanticIndex );
+		const auto subAttributeRelativeOffset =
+				pBaseAttribute.vertexStreamRelativeOffset + ( pBaseAttribute.GetDataStride() * pSemanticIndex );
+
+		vertexStreamRelativeOffset = cppx::numeric_cast<decltype( vertexStreamRelativeOffset )>( subAttributeRelativeOffset );
 	}
 
-	inline void GenericVertexAttribute::Reset()
+	inline void GenericVertexInputAttribute::Reset()
 	{
-		attributeIASlot = cxGCIVertexAttributeIndexUndefined;
-		streamIASlot = cxGCIVertexStreamIndexUndefined;
+		attributeSlot = GCI::kIAVertexAttributeSlotUndefined;
 		dataFormat = GCI::EVertexAttribFormat::Undefined;
-		dataPadding = 0;
-		semanticGroupSize = 0;
 		semanticIndex = 0;
-		shaderSemantics = {};
+		semanticGroupSize = 0;
+		semanticName.clear();
+		semanticFlags = 0;
+		dataPadding = 0;
+		vertexStreamSlot = GCI::kIAVertexStreamSlotUndefined;
 		vertexStreamRelativeOffset = 0;
 	}
 
 
-	namespace GCU
+	namespace GCIUtils
 	{
 
-		inline bool IsAttributeLocationAndSizeValid( uint32 pAttributeBaseSlotIndex, uint32 pSemanticGroupSize = 1 )
+		inline bool IsAttributeLocationAndSizeValid( uint32 pAttributeBaseSlot, uint32 pSemanticGroupSize = 1 )
 		{
-			return ( pAttributeBaseSlotIndex != cxGCIVertexAttributeIndexUndefined ) &&
+			return ( pAttributeBaseSlot != GCI::kIAVertexAttributeSlotUndefined ) &&
 			       // Vertex attribute index should be in the valid range of supported values.
-			       cxGCIValidInputAssemblerSlotIndexRange.contains( pAttributeBaseSlotIndex ) &&
+			       GCI::CXU::IAIsVertexAttributeSlotValid( pAttributeBaseSlot ) &&
 			       // Each attribute has to have at least one component and no more than the GCI-level limit.
-			       cxGCIValidVertexAttributeSemanticGroupSizeRange.contains( pSemanticGroupSize ) &&
+			       GCI::CXU::IAIsVertexAttributeSemanticGroupSizeValid( pSemanticGroupSize ) &&
 			       // Attributes can have multiple components (e.g. a 4x4 matrix is a 4-component attribute, with each component
 			       // being a 4-element vector). Even though the base index is valid, we need to check all potential sub-attributes.
-			       cxGCIValidInputAssemblerSlotIndexRange.contains( pAttributeBaseSlotIndex + pSemanticGroupSize - 1 );
+			       GCI::CXU::IAIsVertexAttributeSlotValid( pAttributeBaseSlot + pSemanticGroupSize - 1 );
 		}
-
-		/*
-		inline PackedAttributeInfo checkPackedAttributeCompatibility( GCI::EVertexAttribFormat pFormat1, GCI::EVertexAttribFormat pFormat2 )
-		{
-			PackedAttributeInfo packedInfo{};
-
-			if( GCI::CxDef::isVertexAttribFormatValid( pFormat1 ) )
-			{
-				const auto baseComponentsNum = GCI::CxDef::getVertexAttribFormatComponentsNum( pFormat1 );
-				const auto baseDataType = GCI::CxDef::getVertexAttribFormatBaseDataType( pFormat1 );
-				const auto dataTypeFlags = GCI::CxDef::getVertexAttribFormatFlags( pFormat1 );
-
-				auto packedBaseComponentsNum = baseComponentsNum;
-
-				if( GCI::CxDef::isVertexAttribFormatValid( pFormat2 ) )
-				{
-					const auto format2BaseComponentsNum = GCI::CxDef::getVertexAttribFormatComponentsNum( pFormat2 );
-					const auto format2BaseDataType = GCI::CxDef::getVertexAttribFormatBaseDataType( pFormat2 );
-					const auto format2DataTypeFlags = GCI::CxDef::getVertexAttribFormatFlags( pFormat2 );
-
-					if( cxGCIValidVertexAttributeComponentsNumRange.contains( packedBaseComponentsNum + format2BaseComponentsNum ) )
-					{
-						if( ( format2BaseDataType == baseDataType ) && ( format2DataTypeFlags == dataTypeFlags ) )
-						{
-							packedBaseComponentsNum += format2BaseComponentsNum;
-						}
-					}
-				}
-
-				const auto baseFormatValue = GCI::CxDef::makeVertexAttribFormatEnumValue(
-						1,
-						baseDataType,
-						static_cast<uint8>( dataTypeFlags ) );
-
-				const auto packedFormatValue = GCI::CxDef::makeVertexAttribFormatEnumValue(
-						static_cast<uint8>( packedBaseComponentsNum ),
-						baseDataType,
-						static_cast<uint8>( dataTypeFlags ) );
-
-				packedInfo.baseDataFormat = static_cast<GCI::EVertexAttribFormat>( baseFormatValue );
-				packedInfo.packedDataFormat = static_cast<GCI::EVertexAttribFormat>( packedFormatValue );
-				packedInfo.packedComponentsNum = packedBaseComponentsNum;
-			}
-
-			return packedInfo;
-		}
-		 */
 
 	} // namespace GCU
 

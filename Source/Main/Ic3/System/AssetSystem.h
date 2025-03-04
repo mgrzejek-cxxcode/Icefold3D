@@ -23,11 +23,16 @@ namespace Ic3::System
 		explicit AssetLoader( SysContextHandle pSysContext );
 		virtual ~AssetLoader() noexcept;
 
-		AssetHandle openSubAsset( const std::string & pAssetRefName, cppx::bitmask<EAssetOpenFlags> pFlags = 0u );
+		AssetHandle OpenSubAsset( const std::string & pAssetRefName, cppx::bitmask<EAssetOpenFlags> pFlags = 0u );
 
-		AssetDirectoryHandle openDirectory( std::string pDirectoryName );
+		AssetDirectoryHandle OpenDirectory( std::string pDirectoryName );
 
 		bool CheckDirectoryExists( const std::string & pDirectoryName ) const;
+
+		static cppx::dynamic_memory_buffer LoadAsset(
+				System::AssetLoader & pAssetLoader,
+				const std::string & pAssetPath,
+				bool pAppendNullTerm = false );
 
 	private:
 		virtual AssetHandle _NativeOpenSubAsset( cppx::file_path_info pAssetPathInfo, cppx::bitmask<EAssetOpenFlags> pFlags ) = 0;

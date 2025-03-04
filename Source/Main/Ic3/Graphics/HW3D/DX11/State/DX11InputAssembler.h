@@ -6,17 +6,17 @@
 
 #include "../DX11Prerequisites.h"
 #include <Ic3/Graphics/GCI/Resources/ShaderCommon.h>
-#include <Ic3/Graphics/GCI/State/InputAssemblerImmutableStates.h>
+#include <Ic3/Graphics/GCI/State/GraphicsPipelineStateDescriptorIA.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	using DX11IAVertexAttributeInfoArray = std::array<D3D11_INPUT_ELEMENT_DESC, GCM::IA_MAX_VERTEX_ATTRIBUTES_NUM>;
+	using DX11IAVertexAttributeDescArray = std::array<D3D11_INPUT_ELEMENT_DESC, GCM::IA_MAX_VERTEX_ATTRIBUTES_NUM>;
 
-	struct DX11IAInputLayoutDefinition
+	struct DX11IAVertexAttributeLayoutDefinition
 	{
 		uint32 activeAttributesNum;
-		DX11IAVertexAttributeInfoArray attributeArray;
+		DX11IAVertexAttributeDescArray attributeArray;
 		D3D11_PRIMITIVE_TOPOLOGY primitiveTopology;
 	};
 
@@ -43,7 +43,7 @@ namespace Ic3::Graphics::GCI
 			UINT strideArray[GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM];
 		};
 
-		IAVertexBufferRangeList activeRanges;
+		IADataStreamArrayRangeList activeRanges;
 
 		BindingData bindingData;
 
@@ -54,9 +54,9 @@ namespace Ic3::Graphics::GCI
 	};
 
 	/// @brief
-	struct DX11IAVertexStreamDefinition
+	struct DX11IASourceBindingDefinition
 	{
-		cppx::bitmask<EIAVertexStreamBindingFlags> activeBindingsMask;
+		cppx::bitmask<EIADataStreamBindingFlags> activeStreamsMask;
 
 		DX11IAVertexBuffersBindings vertexBufferBindings;
 
@@ -65,58 +65,58 @@ namespace Ic3::Graphics::GCI
 	};
 
 	///
-	class DX11IAInputLayoutImmutableState : public IAInputLayoutImmutableState
+	class DX11VertexAttributeLayoutDescriptor : public VertexAttributeLayoutDescriptor
 	{
 	public:
 		ComPtr<ID3D11InputLayout> const mD3D11InputLayout;
 		D3D11_PRIMITIVE_TOPOLOGY const mD3D11PrimitiveTopology;
 
 	public:
-		DX11IAInputLayoutImmutableState(
+		DX11VertexAttributeLayoutDescriptor(
 				DX11GPUDevice & pGPUDevice,
-				const IAInputLayoutStateCommonProperties & pCommonProperties,
+				const IAVertexAttributeLayoutCommonProperties & pCommonProperties,
 				ComPtr<ID3D11InputLayout> pD3D11InputLayout,
 				D3D11_PRIMITIVE_TOPOLOGY pD3D11PrimitiveTopology );
 
-		virtual ~DX11IAInputLayoutImmutableState();
+		virtual ~DX11VertexAttributeLayoutDescriptor();
 
-		static GpaHandle<DX11IAInputLayoutImmutableState> CreateInstance(
+		static GpaHandle<DX11VertexAttributeLayoutDescriptor> CreateInstance(
 				DX11GPUDevice & pGPUDevice,
-				const IAInputLayoutDefinition & pInputLayoutDefinition,
+				const IAVertexAttributeLayoutDefinition & pAttributeLayoutDefinition,
 				const ShaderBinary & pVertexShaderBinary );
 	};
 
 	///
-	class DX11IAVertexStreamImmutableState : public IAVertexStreamImmutableState
+	class DX11VertexSourceBindingDescriptor : public VertexSourceBindingDescriptor
 	{
 	public:
-		DX11IAVertexStreamDefinition const mDX11VertexStreamDefinition;
+		DX11IASourceBindingDefinition const mDX11SourceBindingDefinition;
 
 	public:
-		DX11IAVertexStreamImmutableState(
+		DX11VertexSourceBindingDescriptor(
 				DX11GPUDevice & pGPUDevice,
-				const IAVertexStreamStateCommonProperties & pCommonProperties,
-				const DX11IAVertexStreamDefinition & pDX11VertexStreamDefinition );
+				const VertexSourceBindingDescriptorCommonProperties & pCommonProperties,
+				const DX11IASourceBindingDefinition & pDX11SourceBindingDefinition );
 
-		virtual ~DX11IAVertexStreamImmutableState();
+		virtual ~DX11VertexSourceBindingDescriptor();
 
-		static GpaHandle<DX11IAVertexStreamImmutableState> CreateInstance(
+		static GpaHandle<DX11VertexSourceBindingDescriptor> CreateInstance(
 				DX11GPUDevice & pGPUDevice,
-				const IAVertexStreamDefinition & pVertexStreamDefinition );
+				const IADataStreamArrayConfiguration & pSourceBindingDefinition );
 	};
 	
 	
-	namespace SMU
+	namespace GCU
 	{
 
 		CPPX_ATTR_NO_DISCARD D3D11_INPUT_ELEMENT_DESC TranslateDX11IAVertexAttributeInfo(
 				const IAVertexAttributeInfo & pAttributeInfo );
 
-		CPPX_ATTR_NO_DISCARD DX11IAInputLayoutDefinition TranslateDX11IAInputLayoutDefinition(
-				const IAInputLayoutDefinition & pDefinition );
+		CPPX_ATTR_NO_DISCARD DX11IAVertexAttributeLayoutDefinition TranslateDX11IAVertexAttributeLayoutDefinition(
+				const IAVertexAttributeLayoutDefinition & pDefinition );
 		
-		CPPX_ATTR_NO_DISCARD DX11IAVertexStreamDefinition TranslateDX11IAVertexStreamDefinition(
-				const IAVertexStreamDefinition & pDefinition );
+		CPPX_ATTR_NO_DISCARD DX11IASourceBindingDefinition TranslateDX11IASourceBindingDefinition(
+				const IADataStreamArrayConfiguration & pDefinition );
 		
 	}
 

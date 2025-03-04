@@ -40,9 +40,9 @@
 
 #define friendapi protected
 
+#include "Prerequisites/DebugLayer.h"
 #include "Prerequisites/CoreDefs.h"
 #include "Prerequisites/CoreEnums.h"
-#include "Prerequisites/DebugLayer.h"
 #include "Prerequisites/ResultCode.h"
 #include "Prerequisites/DynamicInterface.h"
 
@@ -55,7 +55,7 @@ namespace Ic3
 	};
 
 	/// @brief A dedicated instance of InitEmptyTag
-	inline constexpr InitEmptyTag cxInitEmpty {};
+	inline constexpr InitEmptyTag kInitEmpty {};
 
 } // namespace Ic3
 

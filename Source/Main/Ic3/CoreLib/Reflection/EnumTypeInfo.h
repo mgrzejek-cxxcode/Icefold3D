@@ -249,23 +249,23 @@ namespace Ic3
 	/// Usage and example: see below.
 	#define Ic3TypeInfoEnumDefine( TPEnum ) \
 		/* Forward declaration of an enum-specific init method which registers all constants. */ \
-		void initializeEnumTypeInfo##TPEnum( ::Ic3::EnumTypeInfo<TPEnum> & ); \
+		void InitializeEnumTypeInfo##TPEnum( ::Ic3::EnumTypeInfo<TPEnum> & ); \
 		/* Here, we implement the method declared with Ic3TypeInfoEnumDeclare. */ \
-		::Ic3::EnumTypeInfo<TPEnum> & _typeinfo::queryEnumTypeInfo##TPEnum() \
+		::Ic3::EnumTypeInfo<TPEnum> & _typeinfo::QueryEnumTypeInfo##TPEnum() \
 		{ \
-			/* Create static EnumTypeInfo object and pass initializeEnumTypeInfoXXX function declared above. */ \
+			/* Create static EnumTypeInfo object and pass InitializeEnumTypeInfoXXX function declared above. */ \
 			/* EnumTypeInfo will call this function in its ctor and pass *this as an argument for initialization. */ \
-			static Ic3::EnumTypeInfo<TPEnum> enumTypeInfo{ initializeEnumTypeInfo##TPEnum }; \
+			static Ic3::EnumTypeInfo<TPEnum> enumTypeInfo{ InitializeEnumTypeInfo##TPEnum }; \
 			return enumTypeInfo; \
 		} \
-		const std::string & _typeinfo::toString##TPEnum( TPEnum pValue ) \
+		const std::string & _typeinfo::ToString##TPEnum( TPEnum pValue ) \
 		{ \
-			return queryEnumTypeInfo##TPEnum().GetConstantName( pValue ); \
+			return QueryEnumTypeInfo##TPEnum().GetConstantName( pValue ); \
 		} \
-		void initializeEnumTypeInfo##TPEnum( Ic3::EnumTypeInfo<TPEnum> & pEnumTypeInfo )
+		void InitializeEnumTypeInfo##TPEnum( Ic3::EnumTypeInfo<TPEnum> & pEnumTypeInfo )
 
 	/// @brief This is a basic initialization of the EnumTypeInfo object (pEnumTypeInfo).
-	/// This is a continuation of initializeEnumTypeInfo##TPEnum function.
+	/// This is a continuation of InitializeEnumTypeInfo##TPEnum function.
 	/// Usage and example: see below.
 	#define Ic3TypeInfoEnumBegin( TPEnum ) \
         using EnumInitializer = Ic3::EnumTypeInfoInitializer<TPEnum>; \

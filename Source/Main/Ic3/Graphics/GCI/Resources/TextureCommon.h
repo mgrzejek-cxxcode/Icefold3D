@@ -145,7 +145,7 @@ namespace Ic3::Graphics::GCI
 
 	struct TextureSubTextureInitDataDesc
 	{
-		using MipLevelInitDataDescArray = std::array<TextureMipSubLevelInitDataDesc, GCM::cxTextureMaxMipLevelsNum>;
+		using MipLevelInitDataDescArray = std::array<TextureMipSubLevelInitDataDesc, GCM::kTextureMaxMipLevelsNum>;
 		MipLevelInitDataDescArray mipLevelInitDataArray;
 		uint32 subTextureIndex;
 	};

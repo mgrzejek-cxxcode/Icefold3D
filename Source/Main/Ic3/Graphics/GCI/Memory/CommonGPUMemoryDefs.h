@@ -34,13 +34,13 @@ namespace Ic3::Graphics::GCI
 	enum EGPUMemoryFlags : gpu_memory_flags_value_t
 	{
 		// Memory has a READ access granted to the CPU.
-		eGPUMemoryAccessFlagCpuReadBit   = 0x0001,
+		eGPUMemoryAccessFlagCPUReadBit   = 0x0001,
 
 		// Memory has a WRITE access granted to the CPU.
 		// Note: if a region of device-local memory has a WRITE access, but the READ access is (or may be) missing,
 		// the app must ensure it does not read any content of the memory (including potential compiler-issued code).
 		// This can cause a significant performance penalty.
-		eGPUMemoryAccessFlagCpuWriteBit  = 0x0002,
+		eGPUMemoryAccessFlagCPUWriteBit  = 0x0002,
 
 		// Memory has a READ access granted to the GPU.
 		eGPUMemoryAccessFlagGPUReadBit   = 0x0004,
@@ -49,10 +49,10 @@ namespace Ic3::Graphics::GCI
 		eGPUMemoryAccessFlagGPUWriteBit  = 0x0008,
 
 		// A helper constant yielding both READ and WRITE CPU access.
-		eGPUMemoryAccessMaskCpuReadWrite = eGPUMemoryAccessFlagCpuReadBit | eGPUMemoryAccessFlagCpuWriteBit,
+		eGPUMemoryAccessMaskCPUReadWrite = eGPUMemoryAccessFlagCPUReadBit | eGPUMemoryAccessFlagCPUWriteBit,
 
 		// Mask with all valid ACCESS_FLAG_CPU bits set.
-		eGPUMemoryAccessMaskCpuAll        = eGPUMemoryAccessMaskCpuReadWrite,
+		eGPUMemoryAccessMaskCPUAll        = eGPUMemoryAccessMaskCPUReadWrite,
 
 		// A helper constant yielding both READ and WRITE GPU access.
 		eGPUMemoryAccessMaskGPUReadWrite = eGPUMemoryAccessFlagGPUReadBit | eGPUMemoryAccessFlagGPUWriteBit,
@@ -61,15 +61,15 @@ namespace Ic3::Graphics::GCI
 		eGPUMemoryAccessMaskGPUAll        = eGPUMemoryAccessMaskGPUReadWrite,
 
 		// Mask with all valid ACCESS_FLAG bits set.
-		eGPUMemoryAccessMaskAll            = eGPUMemoryAccessMaskCpuAll | eGPUMemoryAccessMaskGPUAll,
+		eGPUMemoryAccessMaskAll            = eGPUMemoryAccessMaskCPUAll | eGPUMemoryAccessMaskGPUAll,
 
 		// Memory heap is CPU-cached, which means all host-side writes are not visible to the device until
 		// an explicit flush is performed on the modified memory range.
-		eGPUMemoryHeapPropertyFlagCpuCachedBit     = 0x0010,
+		eGPUMemoryHeapPropertyFlagCPUCachedBit     = 0x0010,
 
 		// Memory heap is CPU-coherent. All host accesses to this memory is automatically made visible to the device.
 		// Mapped memory without this flag will require an explicit Flush() to make CPU writes visible to the GPU.
-		eGPUMemoryHeapPropertyFlagCpuCoherentBit   = 0x0020,
+		eGPUMemoryHeapPropertyFlagCPUCoherentBit   = 0x0020,
 
 		// Memory heap is GPU-coherent. All device accesses to this memory is automatically made visible to the host.
 		// Mapped memory without this flag will require an explicit Invalidate() to make GPU writes visible to the CPU.
@@ -87,13 +87,13 @@ namespace Ic3::Graphics::GCI
 	enum EGPUMemoryMapFlags : gpu_memory_flags_value_t
 	{
 		// Memory is mapped with read-only permission.
-		eGPUMemoryMapFlagAccessReadBit       = eGPUMemoryAccessFlagCpuReadBit,
+		eGPUMemoryMapFlagAccessReadBit       = eGPUMemoryAccessFlagCPUReadBit,
 
 		// Memory is mapped with both read and write permissions.
-		eGPUMemoryMapFlagAccessReadWriteBit = eGPUMemoryAccessMaskCpuReadWrite,
+		eGPUMemoryMapFlagAccessReadWriteBit = eGPUMemoryAccessMaskCPUReadWrite,
 
 		// Resource is mapped with write-only permission.
-		eGPUMemoryMapFlagAccessWriteBit      = eGPUMemoryAccessFlagCpuWriteBit,
+		eGPUMemoryMapFlagAccessWriteBit      = eGPUMemoryAccessFlagCPUWriteBit,
 
 		// Resource is mapped with write-only permission. However, application must ensure, that sections of the
 		// resource, that could be potentially in use, will not be affected. Write operations should be performed

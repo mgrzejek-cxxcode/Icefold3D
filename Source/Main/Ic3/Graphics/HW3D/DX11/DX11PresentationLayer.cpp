@@ -13,7 +13,7 @@ namespace Ic3::Graphics::GCI
 			DX11GPUDevice & pDevice,
 			System::WindowHandle pSysWindow,
 			ComPtr<IDXGISwapChain1> pDXGISwapChain1,
-			RenderTargetBindingImmutableStateHandle pScreenRenderTargetBindingState )
+			RenderTargetBindingCompiledStateHandle pScreenRenderTargetBindingState )
 	: DXScreenPresentationLayer( pDevice, pSysWindow, std::move( pDXGISwapChain1 ) )
 	, mD3D11Device1( pDevice.mD3D11Device1 )
 	, mScreenRenderTargetBindingState( pScreenRenderTargetBindingState )
@@ -41,7 +41,7 @@ namespace Ic3::Graphics::GCI
 		backBufferRTTexture->GetDesc( &backBufferDSTextureDesc );
 		backBufferDSTextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 		backBufferDSTextureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		backBufferDSTextureDesc.CpuAccessFlags = 0;
+		backBufferDSTextureDesc.CPUAccessFlags = 0;
 
 		ComPtr<ID3D11Texture2D> backBufferDSTexture;
 		hResult = pDevice.mD3D11Device1->CreateTexture2D( &backBufferDSTextureDesc, nullptr, backBufferDSTexture.GetAddressOf() );
@@ -51,7 +51,7 @@ namespace Ic3::Graphics::GCI
 			return false;
 		}
 
-		auto renderTargetState = DX11RenderTargetBindingImmutableState::CreateForScreen( pDevice, backBufferRTTexture, backBufferDSTexture );
+		auto renderTargetState = DX11RenderTargetBindingCompiledState::CreateForScreen( pDevice, backBufferRTTexture, backBufferDSTexture );
 		Ic3DebugAssert( renderTargetState );
 
 		auto presentationLayer = CreateGfxObject<DX11ScreenPresentationLayer>( pDevice, sysWindow, std::move( dxgiSwapChain ), renderTargetState );
@@ -59,9 +59,9 @@ namespace Ic3::Graphics::GCI
 		return presentationLayer;
 	}
 
-	void DX11ScreenPresentationLayer::BindRenderTarget( CommandContext * pCmdContext )
+	void DX11ScreenPresentationLayer::BindRenderTarget( CommandContext & pCommandContext )
 	{
-		auto * directGraphicsContext = pCmdContext->QueryInterface<CommandContextDirectGraphics>();
+		auto * directGraphicsContext = pCommandContext.QueryInterface<CommandContextDirectGraphics>();
 		directGraphicsContext->SetRenderTargetBindingState( *mScreenRenderTargetBindingState );
 
 		// auto * dx11CommandList = pCmdContext->mCommandList->QueryInterface<DX11CommandList>();
@@ -70,7 +70,7 @@ namespace Ic3::Graphics::GCI
 		// dx11CommandList->mD3D11DeviceContext1->OMSetRenderTargets( 1, &backBufferRTView, backBufferDSView );
 	}
 
-	void DX11ScreenPresentationLayer::InvalidateRenderTarget( CommandContext * pCmdContext )
+	void DX11ScreenPresentationLayer::InvalidateRenderTarget( CommandContext & pCommandContext )
 	{
 	}
 
@@ -110,7 +110,7 @@ namespace Ic3::Graphics::GCI
 		backBufferRTTexture->GetDesc( & backBufferDSTextureDesc );
 		backBufferDSTextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 		backBufferDSTextureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		backBufferDSTextureDesc.CpuAccessFlags = 0;
+		backBufferDSTextureDesc.CPUAccessFlags = 0;
 
 		ComPtr<ID3D11Texture2D> backBufferDSTexture;
 		hResult = mD3D11Device1->CreateTexture2D( &backBufferDSTextureDesc, nullptr, backBufferDSTexture.GetAddressOf() );

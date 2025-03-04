@@ -27,21 +27,21 @@ namespace Ic3::Graphics::GCI
 		DX11GraphicsPipelineStateController( DX11CommandList & pDX11CommandList );
 		~DX11GraphicsPipelineStateController();
 
-		CPPX_ATTR_NO_DISCARD const DX11IAVertexStreamDefinition & GetCurrentIAVertexStreamDefinition() const noexcept;
+		CPPX_ATTR_NO_DISCARD const DX11IASourceBindingDefinition & GetCurrentIASourceBindingDefinition() const noexcept;
 
-		CPPX_ATTR_NO_DISCARD DX11RenderTargetBindingData GetCurrentRenderTargetBinding() const noexcept;
+		CPPX_ATTR_NO_DISCARD DX11RenderTargetBinding GetCurrentRenderTargetBinding() const noexcept;
 
 		virtual bool ApplyStateChanges() override;
 
-		virtual bool SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO ) override;
+		virtual bool SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPipelineStateObject ) override;
 		virtual bool ResetGraphicsPipelineStateObject() override;
 
-		virtual bool SetIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState ) override;
-		virtual bool SetIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState ) override;
-		virtual bool ResetIAVertexStreamState() override;
+		virtual bool SetVertexSourceBindingDescriptor( const IAVertexStreamDynamicState & pVertexSourceBinding ) override;
+		virtual bool SetVertexSourceBindingDescriptor( const VertexSourceBindingDescriptor & pVertexSourceBinding ) override;
+		virtual bool ResetVertexSourceBindingDescriptor() override;
 
 		virtual bool SetRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState ) override;
-		virtual bool SetRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState ) override;
+		virtual bool SetRenderTargetBindingState( const RenderTargetBindingCompiledState & pRenderTargetBindingState ) override;
 		virtual bool ResetRenderTargetBindingState() override;
 
 		virtual bool SetViewport( const ViewportDesc & pViewportDesc ) override;
@@ -51,14 +51,14 @@ namespace Ic3::Graphics::GCI
 		virtual bool SetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler ) override;
 
 	private:
-		cppx::bitmask<uint32> ApplyCommonGraphicsConfigState( const DX11GraphicsPipelineStateObject & pGraphicsPSO );
+		cppx::bitmask<uint32> ApplyCommonGraphicsConfigState( const DX11GraphicsPipelineStateObject & pGraphicsPipelineStateObject );
 		cppx::bitmask<uint32> ApplyGraphicsShaderState( const SeparableShaderCache & pSeparableShaders );
-		void ApplyIAVertexStreamState( const DX11IAVertexStreamDefinition & pVertexStreamDefinition );
-		void ApplyRenderTargetBinding( const DX11RenderTargetBindingData & pRenderTargetBindingData );
+		void ApplyVertexSourceBindingDescriptor( const DX11IASourceBindingDefinition & pSourceBindingDefinition );
+		void ApplyRenderTargetBinding( const DX11RenderTargetBinding & pRenderTargetBinding );
 
 	private:
-		DX11IAVertexStreamDefinition _dynamicIAVertexStreamDefinitionDX11;
-		DX11RenderTargetBindingData _dynamicRenderTargetBindingDataDX11;
+		DX11IASourceBindingDefinition _dynamicIASourceBindingDefinitionDX11;
+		DX11RenderTargetBinding _dynamicRenderTargetBindingDX11;
 	};
 
 } // namespace Ic3::Graphics::GCI

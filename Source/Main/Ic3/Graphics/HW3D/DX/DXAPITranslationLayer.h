@@ -14,7 +14,6 @@ namespace Ic3::Graphics::GCI
     using resource_flags_value_t = uint32;
 
     enum EGPUDriverConfigFlags : uint32;
-    enum ERenderTargetAttachmentFlags : uint32;
     enum ETextureCubeMapFace : uint32;
 
 	using DXGIGetDebugInterfaceType = HRESULT ( WINAPI * )( const GUID &, void ** );

@@ -20,11 +20,11 @@ namespace Ic3::Graphics::GCI
 
 	VKScreenPresentationLayer::~VKScreenPresentationLayer() = default;
 
-	void VKScreenPresentationLayer::BindRenderTarget( CommandContext * pCmdContext )
+	void VKScreenPresentationLayer::BindRenderTarget( CommandContext & pCommandContext )
 	{
 	}
 
-	void VKScreenPresentationLayer::InvalidateRenderTarget( CommandContext * pCmdContext )
+	void VKScreenPresentationLayer::InvalidateRenderTarget( CommandContext & pCommandContext )
 	{
 	}
 

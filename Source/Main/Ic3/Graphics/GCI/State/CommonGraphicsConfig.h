@@ -9,6 +9,8 @@
 namespace Ic3::Graphics::GCI
 {
 
+	inline constexpr uint8 kPipelineConfigDefaultStencilTestRefValue = 0u;
+
 	enum EBlendConfigFlags : uint16
 	{
 		eBlendConfigFlagEnableAlphaToCoverageBit        = 0x01,
@@ -111,30 +113,36 @@ namespace Ic3::Graphics::GCI
 		Invert,
 	};
 
-	/// @brief Blend configuration for a single render target attachment (texture/Render buffer).
-	/// @see BlendConfig
-	struct RTColorAttachmentBlendSettings
+	/**
+	 * Blend configuration for a single render target attachment (texture/Render buffer).
+	 * @see BlendSettings
+	 */
+	struct RenderTargetColorAttachmentBlendSettings
 	{
 		EBlendFactor factorSrcColor;
-		EBlendFactor factorSrcAlpha;
 		EBlendFactor factorDstColor;
-		EBlendFactor factorDstAlpha;
 		EBlendOp opColor;
+		EBlendFactor factorSrcAlpha;
+		EBlendFactor factorDstAlpha;
 		EBlendOp opAlpha;
 		cppx::bitmask<EBlendWriteMaskFlags> writeMask;
 	};
 
-	/// @brief A configuration of the depth test for the depth-stencil stage.
-	/// Together with the StencilTestSettings struct, it forms DepthStencilConfig used for depth-stencil configuration.
-	/// @see StencilTestSettings
-	/// @see DepthStencilConfig
+	/**
+	 * A configuration of the depth test for the depth-stencil stage.
+	 * Together with the StencilTestSettings struct, it forms DepthStencilSettings used for depth-stencil configuration.
+	 * @see StencilTestSettings
+	 * @see DepthStencilSettings
+	 */
 	struct DepthTestSettings
 	{
 		ECompFunc depthCompFunc;
 		EDepthWriteMask depthWriteMask;
 	};
 
-	/// @brief
+	/**
+	 *
+	 */
 	struct StencilFaceOp
 	{
 		ECompFunc compFunc;
@@ -142,11 +150,13 @@ namespace Ic3::Graphics::GCI
 		EStencilOp opPassDepthFail;
 		EStencilOp opPassDepthPass;
 	};
-	
-	/// @brief A configuration of the stencil test for the depth-stencil stage.
-	/// Together with the DepthTestSettings struct, it forms DepthStencilConfig used for depth-stencil configuration.
-	/// @see DepthTestSettings
-	/// @see DepthStencilConfig
+
+	/**
+	 * A configuration of the stencil test for the depth-stencil stage.
+	 * Together with the DepthTestSettings struct, it forms DepthStencilSettings used for depth-stencil configuration.
+	 * @see DepthTestSettings
+	 * @see DepthStencilSettings
+	 */
 	struct StencilTestSettings
 	{
 		StencilFaceOp frontFace;
@@ -155,8 +165,10 @@ namespace Ic3::Graphics::GCI
 		uint8 writeMask;
 	};
 
-	/// @brief Represents blend configuration for the graphics pipeline. Used to Create BlendStateDescriptor.
-	struct BlendConfig
+	/**
+	 * Represents blend configuration for the graphics pipeline. Used to Create BlendStateDescriptor.
+	 */
+	struct BlendSettings
 	{
 		/// A cppx::bitmask with RT attachments for which the blending is enabled.
 		/// Used to Validate the blend configuration against the RT layout.
@@ -165,25 +177,29 @@ namespace Ic3::Graphics::GCI
 		/// Blending flags.
 		cppx::bitmask<EBlendConfigFlags> flags = 0;
 
+		Math::RGBAColorR32Norm constantColor;
+
 		/// An array of blend settings for each RT attachment.
 		/// If eBlendConfigFlagEnableMRTIndependentBlendingBit is set, each active target uses its corresponding entry.
 		/// Otherwise, attachments[0] is used for all targets and rest of the array is ignored.
 		/// @see EBlendConfigFlags
-		RTColorAttachmentBlendSettings attachments[GCM::cxRTMaxColorAttachmentsNum];
-
-		Math::RGBAColorR32Norm constantColor;
+		RenderTargetColorAttachmentBlendSettings attachments[GCM::kRTOMaxColorAttachmentsNum];
 	};
 
-	/// @brief
-	struct DepthStencilConfig
+	/**
+	 *
+	 */
+	struct DepthStencilSettings
 	{
 		cppx::bitmask<EDepthStencilConfigFlags> commonFlags = 0;
-		DepthTestSettings depthTestSettings;
-		StencilTestSettings stencilTestSettings;
+		DepthTestSettings depthTest;
+		StencilTestSettings stencilTest;
 	};
 
-	/// @brief
-	struct RasterizerConfig
+	/**
+	 *
+	 */
+	struct RasterizerSettings
 	{
 		cppx::bitmask<ERasterizerConfigFlags> flags = 0;
 		ECullMode cullMode;
@@ -191,12 +207,51 @@ namespace Ic3::Graphics::GCI
 		ETriangleVerticesOrder frontFaceVerticesOrder;
 	};
 
-	namespace defaults
+	/**
+	 *
+	 */
+	struct MultiSamplingSettings
 	{
+		uint16 sampleCount = 1;
+		uint16 sampleQuality = 0;
+	};
+
+	struct BlendStateDescriptorCreateInfo : public PipelineStateDescriptorCreateInfoBase
+	{
+		BlendSettings blendSettings;
+
+		CPPX_ATTR_NO_DISCARD pipeline_config_hash_t GetConfigHash() const noexcept
+		{
+			return cppx::hash_compute<pipeline_config_hash_t::hash_algo>( blendSettings );
+		}
+	};
+
+	struct DepthStencilStateDescriptorCreateInfo : public PipelineStateDescriptorCreateInfoBase
+	{
+		DepthStencilSettings depthStencilSettings;
+
+		CPPX_ATTR_NO_DISCARD pipeline_config_hash_t GetConfigHash() const noexcept
+		{
+			return cppx::hash_compute<pipeline_config_hash_t::hash_algo>( depthStencilSettings );
+		}
+	};
+
+	struct RasterizerStateDescriptorCreateInfo : public PipelineStateDescriptorCreateInfoBase
+	{
+		RasterizerSettings rasterizerSettings;
+
+		CPPX_ATTR_NO_DISCARD pipeline_config_hash_t GetConfigHash() const noexcept
+		{
+			return cppx::hash_compute<pipeline_config_hash_t::hash_algo>( rasterizerSettings );
+		}
+	};
+
+	//namespace defaults
+	//{
 
 		/// @brief A default blend configuration for an RT attachment.
 		/// This default config represents default set of options used for blending. The config is as follows:
-		/// - constantColor:        {0,0,0,0}
+		/// - constantColor:         {0,0,0,0}
 		/// - factorSrcColor:        EBlendFactor::One
 		/// - factorSrcAlpha:        EBlendFactor::One
 		/// - factorDstColor:        EBlendFactor::Zero
@@ -204,14 +259,14 @@ namespace Ic3::Graphics::GCI
 		/// - opColor:               EBlendOp::Add
 		/// - opAlpha:               EBlendOp::Add
 		/// - renderTargetWriteMask: E_BLEND_WRITE_MASK_ALL
-		/// @see RTAttachmentBlendConfig
-		IC3_GRAPHICS_GCI_OBJ const RTColorAttachmentBlendSettings cvCommonRTColorAttachmentBlendSettingsDefault;
+		/// @see RTAttachmentBlendSettings
+		//IC3_GRAPHICS_GCI_OBJ const RenderTargetColorAttachmentBlendSettings cvCommonRenderTargetColorAttachmentBlendSettingsDefault;
 
 		/// @brief A default configuration for the depth test.
 		/// This default config represents default set of options used for depth testing. The config is as follows:
 		/// - depthCompFunc:  ECompFunc::Less
 		/// - depthWriteMask: EDepthWriteMask::All
-		IC3_GRAPHICS_GCI_OBJ const DepthTestSettings cvCommonDepthTestSettingsDefault;
+		//IC3_GRAPHICS_GCI_OBJ const DepthTestSettings cvCommonDepthTestSettingsDefault;
 
 		/// @brief A default configuration for the stencil test.
 		/// This default config represents default set of options used for stencil testing. The config is as follows:
@@ -226,28 +281,28 @@ namespace Ic3::Graphics::GCI
 		/// - refValue:                  0
 		/// - readMask:                  E_STENCIL_MASK_READ_DEFAULT
 		/// - writeMask:                 E_STENCIL_MASK_WRITE_DEFAULT
-		IC3_GRAPHICS_GCI_OBJ const StencilTestSettings cvCommonStencilTestSettingsDefault;
+		//IC3_GRAPHICS_GCI_OBJ const StencilTestSettings cvCommonStencilTestSettingsDefault;
 
 		///
-		IC3_GRAPHICS_GCI_OBJ const BlendConfig cvPipelineBlendConfigDefault;
+		//IC3_GRAPHICS_GCI_OBJ const BlendSettings cvPipelineBlendSettingsDefault;
 
 		///
-		IC3_GRAPHICS_GCI_OBJ const DepthStencilConfig cvPipelineDepthStencilConfigDefault;
+		//IC3_GRAPHICS_GCI_OBJ const DepthStencilSettings cvPipelineDepthStencilSettingsDefault;
 
 		///
-		IC3_GRAPHICS_GCI_OBJ const DepthStencilConfig cvPipelineDepthStencilConfigEnableDepthTest;
+		//IC3_GRAPHICS_GCI_OBJ const DepthStencilSettings cvPipelineDepthStencilSettingsEnableDepthTest;
 
 		///
-		IC3_GRAPHICS_GCI_OBJ const RasterizerConfig cvPipelineRasterizerConfigDefault;
+		//IC3_GRAPHICS_GCI_OBJ const RasterizerSettings cvPipelineRasterizerSettingsDefault;
 
-	}
+	//}
 
-	namespace SMU
+	namespace GCU
 	{
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD cppx::bitmask<ERTAttachmentFlags> GetBlendActiveAttachmentMask( const BlendConfig & pBlendConfig );
+		IC3_GRAPHICS_GCI_API_NO_DISCARD cppx::bitmask<ERTAttachmentFlags> GetBlendActiveAttachmentMask( const BlendSettings & pBlendSettings );
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD uint32 GetBlendActiveAttachmentsNum( const BlendConfig & pBlendConfig );
+		IC3_GRAPHICS_GCI_API_NO_DISCARD uint32 GetBlendActiveAttachmentsNum( const BlendSettings & pBlendSettings );
 
 	}
 

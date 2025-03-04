@@ -1,8 +1,8 @@
 
 #pragma once
 
-#ifndef __IC3_GRAPHICS_HW3D_GLCOMMON_TEXTURE_H__
-#define __IC3_GRAPHICS_HW3D_GLCOMMON_TEXTURE_H__
+#ifndef __IC3_GRAPHICS_HW3D_GLC_TEXTURE_H__
+#define __IC3_GRAPHICS_HW3D_GLC_TEXTURE_H__
 
 #include "../Objects/GLTextureObject.h"
 #include <Ic3/Graphics/GCI/Resources/Texture.h>
@@ -20,11 +20,12 @@ namespace Ic3::Graphics::GCI
 		GLTextureObjectHandle const mGLTextureObject = nullptr;
 
 	public:
-		GLTexture( GLGPUDevice & pGPUDevice,
-		           const ResourceMemoryInfo & pResourceMemory,
-		           const TextureProperties & pTextureProperties,
-		           const TextureLayout & pTextureLayout,
-		           GLTextureObjectHandle pGLTextureObject );
+		GLTexture(
+			GLGPUDevice & pGPUDevice,
+			const ResourceMemoryInfo & pResourceMemory,
+			const TextureProperties & pTextureProperties,
+			const TextureLayout & pTextureLayout,
+			GLTextureObjectHandle pGLTextureObject );
 
 		virtual ~GLTexture();
 
@@ -37,4 +38,4 @@ namespace Ic3::Graphics::GCI
 
 } // namespace Ic3::Graphics::GCI
 
-#endif // __IC3_GRAPHICS_HW3D_GLCOMMON_TEXTURE_H__
+#endif // __IC3_GRAPHICS_HW3D_GLC_TEXTURE_H__

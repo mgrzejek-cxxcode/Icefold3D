@@ -61,10 +61,10 @@ namespace Ic3::Graphics::GCI
 
 	bool GLBufferObject::ValidateHandle() const
 	{
-		auto isBuffer = glIsBuffer( mGLHandle );
+		const auto checkResult = glIsBuffer( mGLHandle );
 		Ic3OpenGLHandleLastError();
 
-		return isBuffer != GL_FALSE;
+		return checkResult != GL_FALSE;
 	}
 
 	bool GLBufferObject::QueryIsMapped( GLenum pActiveBindTarget ) const
@@ -360,7 +360,7 @@ namespace Ic3::Graphics::GCI
 		{
 			// Map with the access specified for the buffer storage.
 			const auto mapMode =
-		        static_cast<EGPUMemoryMapMode>( static_cast<uint32>( pGLCreateInfo.memoryFlags & eGPUMemoryAccessMaskCpuAll ) );
+		        static_cast<EGPUMemoryMapMode>( static_cast<uint32>( pGLCreateInfo.memoryFlags & eGPUMemoryAccessMaskCPUAll ) );
 
 			auto openglMapFlags = ATL::TranslateGLBufferMapFlags( mapMode, pGLCreateInfo.memoryFlags );
 			if( MapPersistent( openglMapFlags ) )

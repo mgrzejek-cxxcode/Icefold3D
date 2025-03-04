@@ -6,7 +6,7 @@
 namespace Ic3::System
 {
 
-	std::string DisplayAdapterDesc::toString() const
+	std::string DisplayAdapterDesc::ToString() const
 	{
 		std::stringstream strStream;
 		strStream << "Adapter <" << adapterIndex << "> (" << name << ")";
@@ -33,7 +33,7 @@ namespace Ic3::System
 		return strStream.str();
 	}
 
-	std::string DisplayOutputDesc::toString() const
+	std::string DisplayOutputDesc::ToString() const
 	{
 		std::stringstream strStream;
 		strStream << "Output <" << outputIndex << "> (" << name << ")";
@@ -54,7 +54,7 @@ namespace Ic3::System
 		return strStream.str();
 	}
 
-	std::string DisplayVideoModeDesc::toString() const
+	std::string DisplayVideoModeDesc::ToString() const
 	{
 		std::stringstream strStream;
 		strStream << "DisplayMode <" << videoModeIndex << "> ";

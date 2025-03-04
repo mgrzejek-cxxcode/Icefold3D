@@ -9,11 +9,20 @@
 namespace Ic3::Graphics::GCI
 {
 
+	class GPUDeviceFeatureQueryNull : public GPUDeviceFeatureQuery
+	{
+	public:
+		virtual MultiSamplingSettingsList EnumSupportedMultisamplingConfigs( ETextureFormat ) const noexcept override final
+		{
+			return {};
+		}
+	};
+
 	class GPUDeviceNull : public GPUDevice
 	{
 	public:
 		explicit GPUDeviceNull( GPUDriver & pDriver )
-		: GPUDevice( pDriver )
+		: GPUDevice( pDriver, nullptr, nullptr )
 		{}
 
 		virtual ~GPUDeviceNull() = default;
@@ -23,11 +32,11 @@ namespace Ic3::Graphics::GCI
 			return true;
 		}
 
-		virtual void WaitForCommandSync( CommandSync & pCommandSync ) override final
+		virtual void WaitForCommandSync( CommandSync & ) override final
 		{}
 
 	protected:
-		virtual bool OnGPUResourceActiveRefsZero( GPUResource & pGPUResource ) override final
+		virtual bool OnGPUResourceActiveRefsZero( GPUResource & ) override final
 		{
 			return false;
 		}
@@ -35,43 +44,6 @@ namespace Ic3::Graphics::GCI
 	private:
 		virtual void InitializeCommandSystem() override final
 		{}
-
-		virtual bool _DrvOnSetPresentationLayer( PresentationLayerHandle pPresentationLayer ) override final
-		{
-			return false;
-		}
-
-		virtual GPUBufferHandle _DrvCreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo ) override final
-		{
-			return nullptr;
-		}
-
-		virtual SamplerHandle _DrvCreateSampler( const SamplerCreateInfo & pCreateInfo ) override final
-		{
-			return nullptr;
-		}
-
-		virtual ShaderHandle _DrvCreateShader( const ShaderCreateInfo & pCreateInfo ) override final
-		{
-			return nullptr;
-		}
-
-		virtual TextureHandle _DrvCreateTexture( const TextureCreateInfo & pCreateInfo ) override final
-		{
-			return nullptr;
-		}
-
-		virtual RenderTargetTextureHandle _DrvCreateRenderTargetTexture(
-				const RenderTargetTextureCreateInfo & pCreateInfo ) override final
-		{
-			return nullptr;
-		}
-
-		virtual GraphicsPipelineStateObjectHandle _DrvCreateGraphicsPipelineStateObject(
-				const GraphicsPipelineStateObjectCreateInfo & pCreateInfo ) override final
-		{
-			return nullptr;
-		}
 	};
 
 } // namespace Ic3::Graphics::GCI

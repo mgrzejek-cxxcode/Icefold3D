@@ -47,9 +47,9 @@ namespace Ic3::Graphics::GCI
 		return presentationLayer;
 	}
 
-	void DX12ScreenPresentationLayer::BindRenderTarget( CommandContext * pCmdContext )
+	void DX12ScreenPresentationLayer::BindRenderTarget( CommandContext & pCommandContext )
 	{
-		auto * dx12CmdContext = pCmdContext->GetInterface<DX12CommandContext>();
+		auto * dx12CmdContext = pCmdContext.GetInterface<DX12CommandContext>();
 		Ic3DebugAssert( dx12CmdContext->mD3D12GraphicsCommandList );
 
 		auto & currentFrameResource = _frameResourceArray.at( _currentFrameIndex );
@@ -66,11 +66,11 @@ namespace Ic3::Graphics::GCI
 		DX12RenderTargetState renderTargetState;
 		renderTargetState.rtvDescriptorArray[0] = currentFrameResource.backBufferTextureRTVDescriptor;
 		renderTargetState.rtvDescriptorsNum = 1;
-		renderTargetState.dsvDescriptor = cvD3D12CpuDescriptorEmpty;
+		renderTargetState.dsvDescriptor = cvD3D12CPUDescriptorEmpty;
 		dx12CmdContext->SetRenderTargetState( renderTargetState );
 	}
 
-	void DX12ScreenPresentationLayer::InvalidateRenderTarget( CommandContext * pCmdContext )
+	void DX12ScreenPresentationLayer::InvalidateRenderTarget( CommandContext & pCommandContext )
 	{
 		auto * dx12CmdContext = pCmdContext->GetInterface<DX12CommandContext>();
 		Ic3DebugAssert( dx12CmdContext->mD3D12GraphicsCommandList );
@@ -160,7 +160,7 @@ namespace Ic3::Graphics::GCI
 
 		// Get the CPU handle for our previously created descriptor heap. Using the base pointer and the size of a
 		// single descriptor (_rtvDescriptorSize) we can then manually compute offsets for all pdesc (see below).
-		D3D12_CPU_DESCRIPTOR_HANDLE rtvDescriptorHandle = _rtvDescriptorHeap->GetCpuDescriptorHandleForHeapStart();
+		D3D12_CPU_DESCRIPTOR_HANDLE rtvDescriptorHandle = _rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 
 		_frameResourceArray.resize( _frameQueueSize );
 

@@ -43,7 +43,7 @@ namespace Ic3
 			return !empty() && ( formatInfo.pixelLayout != EPixelDataLayout::Undefined );
 		}
 
-		void reset();
+		void Reset();
 
 		void release();
 

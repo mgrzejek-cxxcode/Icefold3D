@@ -8,6 +8,7 @@
 
 #define w64
 #define gnoexcept
+#define __attribute__( pUnused )
 
 #define  PCL_FILE  __FILE__
 #define  PCL_FUNC  __FUNCSIG__

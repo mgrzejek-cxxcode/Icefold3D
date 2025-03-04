@@ -36,8 +36,10 @@ namespace Ic3::Graphics::GCI
 
 	bool GLSamplerObject::ValidateHandle() const
 	{
-		GLboolean checkResult = glIsSampler( mGLHandle );
-		return checkResult == GL_TRUE;
+		const auto checkResult = glIsSampler( mGLHandle );
+		Ic3OpenGLHandleLastError();
+
+		return checkResult != GL_FALSE;
 	}
 
 	bool GLSamplerObject::SetSamplerState( const GLSamplerState & pSamplerState )

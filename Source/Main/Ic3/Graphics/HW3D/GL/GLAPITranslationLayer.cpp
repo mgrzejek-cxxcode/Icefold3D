@@ -25,15 +25,15 @@ namespace Ic3::Graphics::GCI
 		{
 			storageFlags.set( GL_CLIENT_STORAGE_BIT );
 		}
-		if( pMemoryFlags.is_set( eGPUMemoryAccessFlagCpuReadBit ) )
+		if( pMemoryFlags.is_set( eGPUMemoryAccessFlagCPUReadBit ) )
 		{
 			storageFlags.set( GL_MAP_READ_BIT );
 		}
-		if( pMemoryFlags.is_set( eGPUMemoryAccessFlagCpuWriteBit ) )
+		if( pMemoryFlags.is_set( eGPUMemoryAccessFlagCPUWriteBit ) )
 		{
 			storageFlags.set( GL_MAP_WRITE_BIT );
 		}
-		if( pMemoryFlags.is_set( eGPUMemoryHeapPropertyFlagCpuCachedBit ) )
+		if( pMemoryFlags.is_set( eGPUMemoryHeapPropertyFlagCPUCachedBit ) )
 		{
 			storageFlags.set( GL_CLIENT_STORAGE_BIT );
 		}
@@ -41,7 +41,7 @@ namespace Ic3::Graphics::GCI
 		{
 			storageFlags.set( GL_MAP_PERSISTENT_BIT );
 			if( pMemoryFlags.is_set_any_of(
-					eGPUMemoryHeapPropertyFlagCpuCoherentBit | eGPUMemoryHeapPropertyFlagGPUCoherentBit ) )
+					eGPUMemoryHeapPropertyFlagCPUCoherentBit | eGPUMemoryHeapPropertyFlagGPUCoherentBit ) )
 			{
 				storageFlags.set( GL_MAP_COHERENT_BIT );
 			}
@@ -250,6 +250,7 @@ namespace Ic3::Graphics::GCI
 		switch( pBaseDataType )
 		{
 			Ic3CaseReturn( EBaseDataType::Undefined, GL_INVALID_ENUM      );
+			Ic3CaseReturn( EBaseDataType::Bool     , GL_BYTE              );
 			Ic3CaseReturn( EBaseDataType::Byte     , GL_BYTE              );
 			Ic3CaseReturn( EBaseDataType::Ubyte    , GL_UNSIGNED_BYTE     );
 			Ic3CaseReturn( EBaseDataType::Int16    , GL_SHORT             );
@@ -340,7 +341,7 @@ namespace Ic3::Graphics::GCI
 		{
 			openglMapFlags.set( GL_MAP_PERSISTENT_BIT );
 		}
-		if( pMemoryFlags.is_set( eGPUMemoryHeapPropertyFlagCpuCoherentBit ) )
+		if( pMemoryFlags.is_set( eGPUMemoryHeapPropertyFlagCPUCoherentBit ) )
 		{
 			openglMapFlags.set( GL_MAP_COHERENT_BIT );
 		}
@@ -440,8 +441,8 @@ namespace Ic3::Graphics::GCI
 			Ic3CaseReturn( EShaderType::GSGeometry , GL_GEOMETRY_SHADER );
         #endif
 		#if( IC3_GX_GL_FEATURE_SUPPORT_SHADER_TYPE_TESSELATION )
-			Ic3CaseReturn( EShaderType::GSHull   , GL_TESS_CONTROL_SHADER );
-			Ic3CaseReturn( EShaderType::GSDomain , GL_TESS_EVALUATION_SHADER );
+			Ic3CaseReturn( EShaderType::GSTessHull   , GL_TESS_CONTROL_SHADER );
+			Ic3CaseReturn( EShaderType::GSTessDomain , GL_TESS_EVALUATION_SHADER );
         #endif
 		#if( IC3_GX_GL_FEATURE_SUPPORT_SHADER_TYPE_COMPUTE )
 			Ic3CaseReturn( EShaderType::CSCompute , GL_COMPUTE_SHADER );
@@ -503,7 +504,7 @@ namespace Ic3::Graphics::GCI
 	{
 		switch( pTextureFormat )
 		{
-			Ic3CaseReturn( ETextureFormat::Undefined    , GL_INVALID_ENUM );
+			Ic3CaseReturn( ETextureFormat::Undefined  , GL_INVALID_ENUM );
 			Ic3CaseReturn( ETextureFormat::R32F       , GL_R32F         );
 			Ic3CaseReturn( ETextureFormat::R32I       , GL_R32I         );
 			Ic3CaseReturn( ETextureFormat::R32U       , GL_R32UI        );

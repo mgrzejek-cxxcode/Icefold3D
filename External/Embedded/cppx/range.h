@@ -93,7 +93,7 @@ namespace cppx
 		}
 
 		template <typename TPOther>
-		CPPX_ATTR_NO_DISCARD range & add( const range<TPOther> & pOther ) noexcept
+		range & add( const range<TPOther> & pOther ) noexcept
 		{
 			if( pOther.valid() )
 			{
@@ -113,6 +113,7 @@ namespace cppx
 					}
 				}
 			}
+
 			return *this;
 		}
 

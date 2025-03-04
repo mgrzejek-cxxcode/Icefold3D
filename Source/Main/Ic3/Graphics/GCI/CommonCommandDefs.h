@@ -38,6 +38,7 @@ namespace Ic3::Graphics::GCI
 	enum ECommandListActionFlags : uint32
 	{
 		eCommandListActionFlagRenderPassApplyPipelineStateBit = 0x01,
+
 		eCommandListActionFlagRenderPassPreserveDynamicStateBit = 0x02,
 
 		eCommandListActionFlagsDefault =
@@ -46,56 +47,56 @@ namespace Ic3::Graphics::GCI
 
 	enum ECommandObjectPropertyFlags : uint32
 	{
-		ECommandObjectPropertyFlagCommandClassCommonBit = 0x01,
-		ECommandObjectPropertyFlagCommandClassTransferBit = 0x02,
-		ECommandObjectPropertyFlagCommandClassComputeBit = 0x04,
-		ECommandObjectPropertyFlagCommandClassGraphicsBit = 0x08,
-		ECommandObjectPropertyMaskCommandClassAll = 0x0F,
+		eCommandObjectPropertyFlagCommandClassCommonBit = 0x01,
+		eCommandObjectPropertyFlagCommandClassTransferBit = 0x02,
+		eCommandObjectPropertyFlagCommandClassComputeBit = 0x04,
+		eCommandObjectPropertyFlagCommandClassGraphicsBit = 0x08,
+		eCommandObjectPropertyMaskCommandClassAll = 0x0F,
 
-		ECommandObjectPropertyFlagExecutionModeDirectBit = 0x10,
-			ECommandObjectPropertyFlagExecutionModeDeferredBit = 0x20,
-			ECommandObjectPropertyMaskExecutionModeAll = 0x30,
+		eCommandObjectPropertyFlagExecutionModeDirectBit = 0x10,
+			eCommandObjectPropertyFlagExecutionModeDeferredBit = 0x20,
+			eCommandObjectPropertyMaskExecutionModeAll = 0x30,
 
-		ECommandObjectPropertyMaskContextFamilyDirect =
-			ECommandObjectPropertyFlagCommandClassCommonBit |
-			ECommandObjectPropertyFlagExecutionModeDirectBit,
+		eCommandObjectPropertyMaskContextFamilyDirect =
+			eCommandObjectPropertyFlagCommandClassCommonBit |
+			eCommandObjectPropertyFlagExecutionModeDirectBit,
 
-		ECommandObjectPropertyMaskContextFamilyDeferred =
-			ECommandObjectPropertyFlagCommandClassCommonBit |
-			ECommandObjectPropertyFlagExecutionModeDeferredBit,
+		eCommandObjectPropertyMaskContextFamilyDeferred =
+			eCommandObjectPropertyFlagCommandClassCommonBit |
+			eCommandObjectPropertyFlagExecutionModeDeferredBit,
 
-		ECommandObjectPropertyMaskContextFamilyDirectTransfer =
-			ECommandObjectPropertyMaskContextFamilyDirect |
-			ECommandObjectPropertyFlagCommandClassTransferBit,
+		eCommandObjectPropertyMaskContextFamilyDirectTransfer =
+			eCommandObjectPropertyMaskContextFamilyDirect |
+			eCommandObjectPropertyFlagCommandClassTransferBit,
 
-		ECommandObjectPropertyMaskContextFamilyDirectCompute =
-			ECommandObjectPropertyMaskContextFamilyDirectTransfer |
-			ECommandObjectPropertyFlagCommandClassComputeBit,
+		eCommandObjectPropertyMaskContextFamilyDirectCompute =
+			eCommandObjectPropertyMaskContextFamilyDirectTransfer |
+			eCommandObjectPropertyFlagCommandClassComputeBit,
 
-		ECommandObjectPropertyMaskContextFamilyDirectGraphics =
-			ECommandObjectPropertyMaskContextFamilyDirectCompute |
-			ECommandObjectPropertyFlagCommandClassGraphicsBit,
+		eCommandObjectPropertyMaskContextFamilyDirectGraphics =
+			eCommandObjectPropertyMaskContextFamilyDirectCompute |
+			eCommandObjectPropertyFlagCommandClassGraphicsBit,
 
-		ECommandObjectPropertyMaskContextFamilyDeferredGraphics =
-			ECommandObjectPropertyMaskContextFamilyDeferred |
-			ECommandObjectPropertyFlagCommandClassGraphicsBit,
+		eCommandObjectPropertyMaskContextFamilyDeferredGraphics =
+			eCommandObjectPropertyMaskContextFamilyDeferred |
+			eCommandObjectPropertyFlagCommandClassGraphicsBit,
 
-		ECommandObjectPropertyMaskAll =
-			ECommandObjectPropertyMaskCommandClassAll |
-			ECommandObjectPropertyMaskExecutionModeAll,
+		eCommandObjectPropertyMaskAll =
+			eCommandObjectPropertyMaskCommandClassAll |
+			eCommandObjectPropertyMaskExecutionModeAll,
 	};
 
 	enum class ECommandExecutionMode : uint32
 	{
-		Direct = ECommandObjectPropertyFlagExecutionModeDirectBit,
-		Deferred = ECommandObjectPropertyFlagExecutionModeDeferredBit
+		Direct = eCommandObjectPropertyFlagExecutionModeDirectBit,
+		Deferred = eCommandObjectPropertyFlagExecutionModeDeferredBit
 	};
 
 	enum class ECommandQueueClass : uint32
 	{
-		Transfer = ECommandObjectPropertyFlagCommandClassCommonBit | ECommandObjectPropertyFlagCommandClassTransferBit,
-		Compute = static_cast<uint32>( Transfer ) | ECommandObjectPropertyFlagCommandClassComputeBit,
-		Graphics = static_cast<uint32>( Compute ) | ECommandObjectPropertyFlagCommandClassGraphicsBit,
+		Transfer = eCommandObjectPropertyFlagCommandClassCommonBit | eCommandObjectPropertyFlagCommandClassTransferBit,
+		Compute = static_cast<uint32>( Transfer ) | eCommandObjectPropertyFlagCommandClassComputeBit,
+		Graphics = static_cast<uint32>( Compute ) | eCommandObjectPropertyFlagCommandClassGraphicsBit,
 		Default = 0,
 	};
 
@@ -111,17 +112,17 @@ namespace Ic3::Graphics::GCI
 	using ECommandContextType = ECommandObjectType;
 	using ECommandListType = ECommandObjectType;
 
-	namespace CxDef
+	namespace CXU
 	{
 
 		inline constexpr ECommandExecutionMode GetCommandObjectExecutionMode( ECommandObjectType pType ) noexcept
 		{
-			return static_cast<ECommandExecutionMode>( static_cast<uint32>( pType ) & ECommandObjectPropertyMaskExecutionModeAll );
+			return static_cast<ECommandExecutionMode>( static_cast<uint32>( pType ) & eCommandObjectPropertyMaskExecutionModeAll );
 		}
 
 		inline constexpr cppx::bitmask<ECommandObjectPropertyFlags> GetCommandObjectPropertyFlags( ECommandObjectType pType ) noexcept
 		{
-			return cppx::make_bitmask<uint32>( static_cast<uint32>( pType ) & ECommandObjectPropertyMaskAll );
+			return cppx::make_bitmask<uint32>( static_cast<uint32>( pType ) & eCommandObjectPropertyMaskAll );
 		}
 
 	}

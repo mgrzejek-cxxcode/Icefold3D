@@ -231,7 +231,84 @@ namespace Ic3::System
 
 	VisualConfig OSXOpenGLDisplaySurface::_NativeQueryVisualConfig() const
 	{
-		return {};
+		GLint colorBufferSize = 0;
+		[mNativeData.mNSPixelFormat getValues:&colorBufferSize forAttribute:NSOpenGLPFAColorSize forVirtualScreen:0];
+		GLint alphaBufferSize = 0;
+		[mNativeData.mNSPixelFormat getValues:&alphaBufferSize forAttribute:NSOpenGLPFAAlphaSize forVirtualScreen:0];
+		GLint depthBufferSize = 0;
+		[mNativeData.mNSPixelFormat getValues:&depthBufferSize forAttribute:NSOpenGLPFADepthSize forVirtualScreen:0];
+		GLint stencilBufferSize = 0;
+		[mNativeData.mNSPixelFormat getValues:&stencilBufferSize forAttribute:NSOpenGLPFAStencilSize forVirtualScreen:0];
+		GLint multiSamplingEnabled = 0;
+		[mNativeData.mNSPixelFormat getValues:&multiSamplingEnabled forAttribute:NSOpenGLPFAMultisample forVirtualScreen:0];
+		GLint sampleBuffersNum = 0;
+		[mNativeData.mNSPixelFormat getValues:&sampleBuffersNum forAttribute:NSOpenGLPFASampleBuffers forVirtualScreen:0];
+		GLint doubleBufferMode = 0;
+		[mNativeData.mNSPixelFormat getValues:&doubleBufferMode forAttribute:NSOpenGLPFADoubleBuffer forVirtualScreen:0];
+		GLint tripleBufferMode = 0;
+		[mNativeData.mNSPixelFormat getValues:&tripleBufferMode forAttribute:NSOpenGLPFATripleBuffer forVirtualScreen:0];
+
+		VisualConfig visualConfig;
+
+		if( ( colorBufferSize == 32 ) && ( alphaBufferSize == 8 ) )
+		{
+			visualConfig.colorFormat = EColorFormat::B8G8R8A8;
+		}
+		else if( ( colorBufferSize == 24 ) && ( alphaBufferSize == 0 ) )
+		{
+			visualConfig.colorFormat = EColorFormat::B8G8R8;
+		}
+		else
+		{
+			visualConfig.colorFormat = EColorFormat::Unknown;
+		}
+
+		if( ( depthBufferSize == 24 ) && ( stencilBufferSize == 8 ) )
+		{
+			visualConfig.depthStencilFormat = EDepthStencilFormat::D24S8;
+		}
+		else if( ( depthBufferSize == 24 ) && ( stencilBufferSize == 0 ) )
+		{
+			visualConfig.depthStencilFormat = EDepthStencilFormat::D24X8;
+		}
+		else if( ( depthBufferSize == 32 ) && ( stencilBufferSize == 0 ) )
+		{
+			visualConfig.depthStencilFormat = EDepthStencilFormat::D32F;
+		}
+		else if( ( depthBufferSize == 32 ) && ( stencilBufferSize == 8 ) )
+		{
+			visualConfig.depthStencilFormat = EDepthStencilFormat::D32FS8;
+		}
+		else
+		{
+			visualConfig.depthStencilFormat = EDepthStencilFormat::Unknown;
+		}
+
+		if( multiSamplingEnabled )
+		{
+			visualConfig.msaaDesc.bufferCount = sampleBuffersNum;
+			visualConfig.msaaDesc.quality = 1;
+		}
+		else
+		{
+			visualConfig.msaaDesc.bufferCount = 0;
+			visualConfig.msaaDesc.quality = 0;
+		}
+
+		if( tripleBufferMode )
+		{
+			visualConfig.flags.set( eVisualAttribFlagTripleBufferBit );
+		}
+		else if( doubleBufferMode )
+		{
+			visualConfig.flags.set( eVisualAttribFlagDoubleBufferBit );
+		}
+		else
+		{
+			visualConfig.flags.set( eVisualAttribFlagSingleBufferBit );
+		}
+
+		return visualConfig;
 	}
 
 	FrameSize OSXOpenGLDisplaySurface::_NativeQueryRenderAreaSize() const
@@ -337,11 +414,11 @@ namespace Ic3::System
 
 			if((pCreateInfo.targetAPIClass == EOpenGLAPIClass::Desktop ) && (pCreateInfo.minimumAPIVersion <= cppx::version{4, 1 } ) )
 			{
-				if((pCreateInfo.minimumAPIVersion > cppx::version{3, 2 } ) && (pNSMaxSupportedVersion == NSOpenGLProfileVersion4_1Core ) )
+				if( ( pCreateInfo.minimumAPIVersion > cppx::version{3, 2 } ) && ( pNSMaxSupportedVersion == NSOpenGLProfileVersion4_1Core ) )
 				{
 					nsOpenGLProfile = NSOpenGLProfileVersion4_1Core;
 				}
-				else if((pCreateInfo.minimumAPIVersion >= cppx::version{3, 0 } ) && (pNSMaxSupportedVersion == NSOpenGLProfileVersion3_2Core ) )
+				else if( ( pCreateInfo.minimumAPIVersion >= cppx::version{3, 0 } ) && ( pNSMaxSupportedVersion == NSOpenGLProfileVersion3_2Core ) )
 				{
 					nsOpenGLProfile = NSOpenGLProfileVersion3_2Core;
 				}
@@ -380,7 +457,7 @@ namespace Ic3::System
 				Ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFAStereo );
 			}
 
-			if(( pVisualConfig.msaaDesc.bufferCount != 0 ) && ( pVisualConfig.msaaDesc.quality != 0 ) )
+			if( ( pVisualConfig.msaaDesc.bufferCount != 0 ) && ( pVisualConfig.msaaDesc.quality != 0 ) )
 			{
 				Ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, NSOpenGLPFASampleBuffers );
 				Ic3OSXOpenGLContextAttribAppend( pAttribArray, attribIndex, pVisualConfig.msaaDesc.bufferCount );

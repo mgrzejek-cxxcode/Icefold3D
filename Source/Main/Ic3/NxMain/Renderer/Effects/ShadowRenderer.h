@@ -6,7 +6,7 @@
 
 #include "../commonRendererDefs.h"
 
-#include <Ic3/Graphics/GCI/State/renderTargetDynamicStates.h>
+#include <Ic3/Graphics/GCI/State/GraphicsPipelineStateDescriptorRTO.h>
 
 namespace Ic3
 {
@@ -40,8 +40,8 @@ namespace Ic3
 			GCI::RenderTargetBindingDynamicState rtBindingPass1Light;
 			GCI::GraphicsPipelineStateObjectHandle psoPass1Light;
 			GCI::GraphicsPipelineStateObjectHandle psoPass2Shadow;
-			GCI::RenderPassConfigurationImmutableStateHandle renderPass1Light;
-			GCI::RenderPassConfigurationImmutableStateHandle renderPass2Shadow;
+			GCI::RenderPassConfigurationCompiledStateHandle renderPass1Light;
+			GCI::RenderPassConfigurationCompiledStateHandle renderPass2Shadow;
 			GCI::SamplerHandle samplerPass2Shadow;
 		};
 

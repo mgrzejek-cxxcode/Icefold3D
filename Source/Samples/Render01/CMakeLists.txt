@@ -1,7 +1,7 @@
 
 set( IC3_SAMPLES_SRC_Render01
         "MeshDefs.h"
-        "Main.mm"
+        "Main01.mm"
         )
 
 add_executable( Sample.Render01

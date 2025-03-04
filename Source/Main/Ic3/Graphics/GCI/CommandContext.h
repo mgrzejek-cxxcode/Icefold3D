@@ -10,9 +10,6 @@
 namespace Ic3::Graphics::GCI
 {
 
-	class RenderPassConfigurationDynamicState;
-	class RenderPassConfigurationImmutableState;
-
 	enum ECommandListActionFlags : uint32;
 
 	class CommandContext : public GPUDeviceChildObject
@@ -146,20 +143,27 @@ namespace Ic3::Graphics::GCI
 		~CommandContextDirectGraphics() = default;
 		
 		bool BeginRenderPass(
-				const RenderPassConfigurationImmutableState & pRenderPassState,
+				const RenderPassDescriptor & pRenderPassDescriptor,
 				cppx::bitmask<ECommandListActionFlags> pFlags = eCommandListActionFlagsDefault );
 
-		bool BeginRenderPass(
-				const RenderPassConfigurationDynamicState & pRenderPassState,
+		bool BeginRenderPassDynamic(
+				RenderPassDescriptorDynamic & pRenderPassDescriptor,
 				cppx::bitmask<ECommandListActionFlags> pFlags = eCommandListActionFlagsDefault );
 
 		void EndRenderPass();
 
-		bool SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO );
-		bool SetIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState );
-		bool SetIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState );
-		bool SetRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState );
-		bool SetRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState );
+		bool SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPipelineStateObject );
+
+		bool SetRenderTargetDescriptor( const RenderTargetDescriptor & pRenderTargetDescriptor );
+		bool SetRenderTargetDescriptorDynamic( RenderTargetDescriptorDynamic & pRenderTargetDescriptor );
+
+		bool SetVertexSourceBindingDescriptor( const VertexSourceBindingDescriptor & pVertexSourceBindingDescriptor );
+		bool SetVertexSourceBindingDescriptorDynamic( VertexSourceBindingDescriptorDynamic & pVertexSourceBindingDescriptor );
+
+		void CmdSetDynamicBlendConstantColor( const Math::RGBAColorR32Norm & pBlendConstantColor );
+		void CmdSetDynamicRenderTargetClearConfig( const RenderTargetAttachmentClearConfig & pClearConfig );
+		void CmdSetDynamicStencilTestRefValue( uint8 pStencilRefValue );
+		void CmdResetDynamicPipelineConfig( cppx::bitmask<EGraphicsPipelineDynamicConfigFlags> pConfigMask = eGraphicsPipelineDynamicConfigMaskAll );
 
 		bool CmdSetViewport( const ViewportDesc & pViewportDesc );
 		bool CmdSetShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData );
@@ -167,10 +171,21 @@ namespace Ic3::Graphics::GCI
 		bool CmdSetShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture );
 		bool CmdSetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler );
 
-		void CmdDrawDirectIndexed( native_uint pIndicesNum, native_uint pIndicesOffset, native_uint pBaseVertexIndex = 0 );
-		void CmdDrawDirectIndexedInstanced( native_uint pIndicesNumPerInstance, native_uint pInstancesNum, native_uint pIndicesOffset );
-		void CmdDrawDirectNonIndexed( native_uint pVerticesNum, native_uint pVerticesOffset );
-		void CmdDrawDirectNonIndexedInstanced( native_uint pVerticesNumPerInstance, native_uint pInstancesNum, native_uint pVerticesOffset );
+		void CmdDrawDirectIndexed(
+				native_uint pIndicesNum,
+				native_uint pIndicesOffset,
+				native_uint pBaseVertexIndex = 0 );
+		void CmdDrawDirectIndexedInstanced(
+				native_uint pIndicesNumPerInstance,
+				native_uint pInstancesNum,
+				native_uint pIndicesOffset );
+		void CmdDrawDirectNonIndexed(
+				native_uint pVerticesNum,
+				native_uint pVerticesOffset );
+		void CmdDrawDirectNonIndexedInstanced(
+				native_uint pVerticesNumPerInstance,
+				native_uint pInstancesNum,
+				native_uint pVerticesOffset );
 	};
 
 	class CommandContextDeferred : public CommandContext
@@ -201,20 +216,27 @@ namespace Ic3::Graphics::GCI
 		virtual ~CommandContextDeferredGraphics() = default;
 
 		bool BeginRenderPass(
-				const RenderPassConfigurationImmutableState & pRenderPassState,
+				const RenderPassDescriptor & pRenderPassDescriptor,
 				cppx::bitmask<ECommandListActionFlags> pFlags = eCommandListActionFlagsDefault );
 
-		bool BeginRenderPass(
-				const RenderPassConfigurationDynamicState & pRenderPassState,
+		bool BeginRenderPassDynamic(
+				RenderPassDescriptorDynamic & pRenderPassDescriptor,
 				cppx::bitmask<ECommandListActionFlags> pFlags = eCommandListActionFlagsDefault );
 
 		void EndRenderPass();
 
-		bool SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO );
-		bool SetIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState );
-		bool SetIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState );
-		bool SetRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState );
-		bool SetRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState );
+		bool SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPipelineStateObject );
+
+		bool SetRenderTargetDescriptor( const RenderTargetDescriptor & pRenderTargetDescriptor );
+		bool SetRenderTargetDescriptorDynamic( RenderTargetDescriptorDynamic & pRenderTargetDescriptor );
+
+		bool SetVertexSourceBindingDescriptor( const VertexSourceBindingDescriptor & pVertexSourceBindingDescriptor );
+		bool SetVertexSourceBindingDescriptorDynamic( VertexSourceBindingDescriptorDynamic & pVertexSourceBindingDescriptor );
+
+		void CmdSetDynamicBlendConstantColor( const Math::RGBAColorR32Norm & pBlendConstantColor );
+		void CmdSetDynamicRenderTargetClearConfig( const RenderTargetAttachmentClearConfig & pClearConfig );
+		void CmdSetDynamicStencilTestRefValue( uint8 pStencilRefValue );
+		void CmdResetDynamicPipelineConfig( cppx::bitmask<EGraphicsPipelineDynamicConfigFlags> pConfigMask = eGraphicsPipelineDynamicConfigMaskAll );
 
 		bool CmdSetViewport( const ViewportDesc & pViewportDesc );
 		bool CmdSetShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData );
@@ -222,10 +244,22 @@ namespace Ic3::Graphics::GCI
 		bool CmdSetShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture );
 		bool CmdSetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler );
 
-		void CmdDrawDirectIndexed( native_uint pIndicesNum, native_uint pIndicesOffset, native_uint pBaseVertexIndex = 0 );
-		void CmdDrawDirectIndexedInstanced( native_uint pIndicesNumPerInstance, native_uint pInstancesNum, native_uint pIndicesOffset, EIndexDataFormat pIndexFormat );
-		void CmdDrawDirectNonIndexed( native_uint pVerticesNum, native_uint pVerticesOffset );
-		void CmdDrawDirectNonIndexedInstanced( native_uint pVerticesNumPerInstance, native_uint pInstancesNum, native_uint pVerticesOffset );
+		void CmdDrawDirectIndexed(
+			native_uint pIndicesNum,
+			native_uint pIndicesOffset,
+			native_uint pBaseVertexIndex = 0 );
+		void CmdDrawDirectIndexedInstanced(
+			native_uint pIndicesNumPerInstance,
+			native_uint pInstancesNum,
+			native_uint pIndicesOffset,
+			EIndexDataFormat pIndexFormat );
+		void CmdDrawDirectNonIndexed(
+			native_uint pVerticesNum,
+			native_uint pVerticesOffset );
+		void CmdDrawDirectNonIndexedInstanced(
+			native_uint pVerticesNumPerInstance,
+			native_uint pInstancesNum,
+			native_uint pVerticesOffset );
 	};
 
 } // namespace Ic3::Graphics::GCI

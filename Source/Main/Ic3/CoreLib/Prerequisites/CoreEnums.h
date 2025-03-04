@@ -26,7 +26,7 @@ namespace Ic3
 	#define Ic3EnableEnumTypeInfoSupport() \
         /* Template function used to retrieve an EnumTypeInfo object for an enum type. */ \
         /* Not implemented, specialized for every enum using Ic3TypeInfoEnumDeclare. */  \
-        template <typename TEnum> const ::Ic3::EnumTypeInfo<TEnum> & queryEnumTypeInfo();
+        template <typename TEnum> const ::Ic3::EnumTypeInfo<TEnum> & QueryEnumTypeInfo();
 
 	/// @brief Declares an enum for which an Ic3::EnumTypeInfo object can be queried.
 	/// Extra arguments are used as a function specifier. You can pass e.g. declspec(dllexport/import) if the
@@ -38,19 +38,19 @@ namespace Ic3
 	#define Ic3TypeInfoEnumDeclare( TEnum, ... ) \
         namespace _typeinfo {                                                                              \
             /* Forward declaration of an enum-specific query function, e.g. queryEnumTypeInfoColor() */    \
-            ::Ic3::EnumTypeInfo<TEnum> & queryEnumTypeInfo##TEnum();                                       \
-            const std::string & toString##TEnum( TEnum );                                                  \
-        } // namespace _typeinfo                                                                           \
-        /* Implementation of queryEnumTypeInfo<TEnum> template function specialization. */                 \
-        template <> inline const ::Ic3::EnumTypeInfo<TEnum> & queryEnumTypeInfo<TEnum>()                   \
+            ::Ic3::EnumTypeInfo<TEnum> & QueryEnumTypeInfo##TEnum();                                       \
+            const std::string & ToString##TEnum( TEnum );                                                  \
+        }                                                                                                  \
+        /* Implementation of QueryEnumTypeInfo<TEnum> template function specialization. */                 \
+        template <> inline const ::Ic3::EnumTypeInfo<TEnum> & QueryEnumTypeInfo<TEnum>()                   \
         {                                                                                                  \
             /* Just call the enum-specific function. This allows moving the definition code to .cpp. */    \
-            return _typeinfo::queryEnumTypeInfo##TEnum();                                                  \
+            return _typeinfo::QueryEnumTypeInfo##TEnum();                                                  \
         }                                                                                                  \
-        CPPX_ATTR_NO_DISCARD inline const std::string & toString( TEnum pValue )                           \
+        CPPX_ATTR_NO_DISCARD inline const std::string & ToString( TEnum pValue )                           \
         {                                                                                                  \
         	/* Just call the enum-specific function. This allows moving the definition code to .cpp. */    \
-        	return _typeinfo::toString##TEnum( pValue );                                                   \
+        	return _typeinfo::ToString##TEnum( pValue );                                                   \
         }
 
 	// Enable support for enum type info for the whole Ic3:: namespace.

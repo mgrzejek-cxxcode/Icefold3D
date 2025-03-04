@@ -73,7 +73,7 @@ namespace Ic3
 				const VertexAttributeFormat & pAttributeFormat,
 				const DataTypeConversionFunction & pConversionFunction )
 		{
-			const auto vertexAttributeComponentsNum = GCI::CxDef::getVertexAttribFormatComponentsNum( pAttributeFormat.componentFormat );
+			const auto vertexAttributeComponentsNum = GCI::CXU::GetVertexAttribFormatComponentsNum( pAttributeFormat.componentFormat );
 
 			auto * currentWritePtr = pWriteRegion.basePtr;
 
@@ -112,7 +112,7 @@ namespace Ic3
 				if( pMeshData.mDataFormat.IsAttributeActive( iAttribute ) )
 				{
 					const auto & attributeFormat = pMeshData.mDataFormat.attribute( iAttribute );
-					const auto attributeDataBaseType = GCI::CxDef::getVertexAttribFormatBaseDataType( attributeFormat.componentFormat );
+					const auto attributeDataBaseType = GCI::CXU::GetVertexAttribFormatBaseDataType( attributeFormat.componentFormat );
 					const auto attributeDataWriteRegion = pMeshData.getVertexAttributeDataSubRegionReadWrite( meshSubComponentData->geometryDataRef, iAttribute );
 
 					switch( attributeFormat.mSemantics.mSmtID )

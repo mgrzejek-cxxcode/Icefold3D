@@ -27,7 +27,7 @@ namespace Ic3::Graphics::GCI
 
 		inline constexpr bool CheckDescriptorEmpty( const D3D12_CPU_DESCRIPTOR_HANDLE & pDescriptor )
 		{
-			return pDescriptor.ptr == cvD3D12CpuDescriptorPtrInvalid;
+			return pDescriptor.ptr == cvD3D12CPUDescriptorPtrInvalid;
 		}
 
 		ComPtr<ID3D12Debug> InitializeD3D12DebugInterface( cppx::bitmask<EGPUDriverConfigFlags> pDriverConfigFlags );

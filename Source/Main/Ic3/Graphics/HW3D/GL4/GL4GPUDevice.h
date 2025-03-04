@@ -6,7 +6,7 @@
 
 #include "GL4Prerequisites.h"
 #include <Ic3/Graphics/HW3D/GL/GLGPUDevice.h>
-#include <Ic3/Graphics/HW3D/GL/State/GLPipelineStateObject.h>
+#include <Ic3/Graphics/HW3D/GL/State/GLGraphicsPipelineStateObject.h>
 
 namespace Ic3::Graphics::GCI
 {

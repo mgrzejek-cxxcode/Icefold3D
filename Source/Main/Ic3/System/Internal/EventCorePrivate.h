@@ -117,15 +117,27 @@ namespace Ic3::System
 
 		struct NativeEventType;
 
-		/// @brief Translates a native, OS-specific event into an internal representation.
-		/// This is an internal function, implemented at the OS API level. Technically, it could be purely OS-specific,
-		/// but having it here gives us the ability to Write the dispatching helper function below and avoid duplicating.
-		IC3_SYSTEM_API bool NativeEventTranslate( EventController & pEventController,
-		                                          const NativeEventType & pNativeEvent,
-		                                          EventObject & pOutEvent );
+		/**
+		 * @brief Translates a native, OS-specific event into an internal representation.
+		 * This is an internal function, implemented at the OS API level. Technically, it could be purely OS-specific,
+		 * but having it here gives us the ability to write the dispatching helper function below and avoid duplicating.
+		 * @param pEventController
+		 * @param pNativeEvent
+		 * @param pOutEvent
+		 * @return
+		 */
+		IC3_SYSTEM_API bool NativeEventTranslate(
+				EventController & pEventController,
+				const NativeEventType & pNativeEvent,
+				EventObject & pOutEvent );
 
-		/// @brief Helper function for translating and dispatching a native event.
-		inline bool nativeEventDispatch( EventController & pEventController, const NativeEventType & pNativeEvent )
+		/**
+		 * @brief Helper function for translating and dispatching a native event.
+		 * @param pEventController EventController to be used for dispatching.
+		 * @param pNativeEvent An event to dispatch.
+		 * @return True if the event has been successfully dispatched, or false otherwise.
+		 */
+		inline bool NativeEventDispatch( EventController & pEventController, const NativeEventType & pNativeEvent )
 		{
 			EventObject eventObject;
 

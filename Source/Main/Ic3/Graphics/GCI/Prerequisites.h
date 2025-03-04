@@ -52,7 +52,7 @@ namespace Ic3::Graphics
 namespace Ic3::Graphics::GCI
 {
 
-	/// @namespace CxDef
+	/// @namespace CXU
 	/// @brief GPUAPI-level constant expressions and utility functions used by those.
 
 	/// @namespace defaults
@@ -61,7 +61,7 @@ namespace Ic3::Graphics::GCI
 	/// @namespace RCU
 	/// @brief Resource Utilities, used to interact with resources and provide additional, common functionalities.
 
-	/// @namespace SMU
+	/// @namespace GCU
 	/// @brief State Management Utilities, used to provide helper methods related to GPU state management.
 
 	// Same for all drivers. A top-level interface for querying capabilities and
@@ -107,7 +107,6 @@ namespace Ic3::Graphics::GCI
 
 	enum EBlendWriteMaskFlags : uint16;
 	enum EGPUDriverConfigFlags : uint32;
-	enum ERenderTargetAttachmentFlags : uint32;
 	enum ERenderTargetBufferFlags : uint32;
 	enum ETextureCubeMapFace : uint32;
 
@@ -139,7 +138,7 @@ namespace Ic3::Graphics::GCI
 		Unknown = 0x00
 	};
 
-	namespace CxDef
+	namespace CXU
 	{
 
 		inline constexpr uint32 makeGPUDriverID( EGPUDriverAPI pDriverAPI, uint32 pAPISubVersion )
@@ -151,14 +150,14 @@ namespace Ic3::Graphics::GCI
 
 	enum class EGPUDriverID : uint32
 	{
-		GDIDirectX11      = CxDef::makeGPUDriverID( EGPUDriverAPI::DirectX, 0x11 ),
-		GDIDirectX12      = CxDef::makeGPUDriverID( EGPUDriverAPI::DirectX, 0x12 ),
-		GDIMetal1         = CxDef::makeGPUDriverID( EGPUDriverAPI::Metal,   0x01 ),
-		GDIOpenGLDesktop4 = CxDef::makeGPUDriverID( EGPUDriverAPI::OpenGL,  0xD4 ),
-		GDIOpenGLES3      = CxDef::makeGPUDriverID( EGPUDriverAPI::OpenGL,  0xE3 ),
-		GDIVulkan10       = CxDef::makeGPUDriverID( EGPUDriverAPI::Vulkan,  0x10 ),
-		GDINull           = CxDef::makeGPUDriverID( EGPUDriverAPI::Unknown, 0xFF ),
-		GDIUnknown        = CxDef::makeGPUDriverID( EGPUDriverAPI::Unknown, 0x00 )
+		GDIDirectX11      = CXU::makeGPUDriverID( EGPUDriverAPI::DirectX, 0x11 ),
+		GDIDirectX12      = CXU::makeGPUDriverID( EGPUDriverAPI::DirectX, 0x12 ),
+		GDIMetal1         = CXU::makeGPUDriverID( EGPUDriverAPI::Metal,   0x01 ),
+		GDIOpenGLDesktop4 = CXU::makeGPUDriverID( EGPUDriverAPI::OpenGL,  0xD4 ),
+		GDIOpenGLES3      = CXU::makeGPUDriverID( EGPUDriverAPI::OpenGL,  0xE3 ),
+		GDIVulkan10       = CXU::makeGPUDriverID( EGPUDriverAPI::Vulkan,  0x10 ),
+		GDINull           = CXU::makeGPUDriverID( EGPUDriverAPI::Unknown, 0xFF ),
+		GDIUnknown        = CXU::makeGPUDriverID( EGPUDriverAPI::Unknown, 0x00 )
 	};
 
 } // namespace Ic3::Graphics::GCI

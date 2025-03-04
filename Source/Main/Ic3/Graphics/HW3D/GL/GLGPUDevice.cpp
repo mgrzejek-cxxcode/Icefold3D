@@ -7,28 +7,26 @@
 #include "Resources/GLSampler.h"
 #include "Resources/GLShader.h"
 #include "Resources/GLTexture.h"
-#include "State/GLPipelineStateObject.h"
-#include "State/GLPipelineStateController.h"
+#include "State/GLGraphicsPipelineStateObject.h"
+#include "State/GLGraphicsPipelineStateController.h"
 
 namespace Ic3::Graphics::GCI
 {
 
-	GLGPUDevice::GLGPUDevice( GLGPUDriver & pGPUDriver, GLPipelineImmutableStateFactory & pImmutableStateFactory )
-	: GPUDevice( pGPUDriver )
+	GLGPUDevice::GLGPUDevice( GLGPUDriver & pGPUDriver, GLPipelineStateDescriptorFactory & pStateDescriptorFactory )
+	: GPUDevice( pGPUDriver, &_glcDeviceFeatureQueryInterface, &_pipelineStateDescriptorManager )
 	, mSysGLDriver( pGPUDriver.mSysGLDriver )
 	, mSysGLSupportInfo( mSysGLDriver->GetVersionSupportInfo() )
 	, mGLRuntimeSupportFlags( QueryGLRuntimeSupportFlags( mSysGLSupportInfo ) )
-	, _immutableStateFactoryGL( &pImmutableStateFactory )
-	, _immutableStateCache( pImmutableStateFactory )
-	{
-		SetImmutableStateCache( _immutableStateCache );
-	}
+	, _glcPipelineStateDescriptorFactory( &pStateDescriptorFactory )
+	, _pipelineStateDescriptorManager( *this, pStateDescriptorFactory )
+	{}
 
 	GLGPUDevice::~GLGPUDevice() = default;
 
 	GLDebugOutput * GLGPUDevice::GetDebugOutputInterface() const
 	{
-		return _glDebugOutput.get();
+		return _glcDebugOutput.get();
 	}
 
 	void GLGPUDevice::WaitForCommandSync( CommandSync & pCommandSync )
@@ -47,15 +45,15 @@ namespace Ic3::Graphics::GCI
 
 	bool GLGPUDevice::InitializeGLDebugOutput()
 	{
-		if( !_glDebugOutput )
+		if( !_glcDebugOutput )
 		{
 			auto glcDebugOutput = GLDebugOutput::CreateInterface( GLDebugOutputVersion::ARBExt );
 			if( glcDebugOutput )
 			{
-				_glDebugOutput = std::move( glcDebugOutput );
+				_glcDebugOutput = std::move( glcDebugOutput );
 			}
 		}
-		return _glDebugOutput ? true : false;
+		return _glcDebugOutput ? true : false;
 	}
 
 	void GLGPUDevice::InitializeCommandSystem()
@@ -117,11 +115,6 @@ namespace Ic3::Graphics::GCI
 	GraphicsPipelineStateObjectHandle GLGPUDevice::_DrvCreateGraphicsPipelineStateObject(
 			const GraphicsPipelineStateObjectCreateInfo & pCreateInfo )
 	{
-		if( !pCreateInfo.shaderLinkageState )
-		{
-			pCreateInfo.shaderLinkageState = _immutableStateFactoryGL->CreateGraphicsShaderLinkageState( pCreateInfo.shaderSet );
-		}
-
 		auto glcGraphicsPSO = GLGraphicsPipelineStateObject::Create( *this, pCreateInfo );
 		Ic3DebugAssert( glcGraphicsPSO );
 
@@ -130,8 +123,8 @@ namespace Ic3::Graphics::GCI
 
 
 	GLGPUDeviceCore::GLGPUDeviceCore( GLGPUDriver & pGPUDriver )
-	: GLGPUDevice( pGPUDriver, _immutableStateFactoryCore )
-	, _immutableStateFactoryCore( *this )
+	: GLGPUDevice( pGPUDriver, _immutableDescriptorFactoryCore )
+	, _immutableDescriptorFactoryCore( *this )
 	{}
 
 	GLGPUDeviceCore::~GLGPUDeviceCore() = default;
@@ -143,8 +136,8 @@ namespace Ic3::Graphics::GCI
 
 
 	GLGPUDeviceCompat::GLGPUDeviceCompat( GLGPUDriver & pGPUDriver )
-	: GLGPUDevice( pGPUDriver, _immutableStateFactoryCompat )
-	, _immutableStateFactoryCompat( *this )
+	: GLGPUDevice( pGPUDriver, _immutableDescriptorFactoryCompat )
+	, _immutableDescriptorFactoryCompat( *this )
 	{}
 
 	GLGPUDeviceCompat::~GLGPUDeviceCompat() = default;
@@ -152,6 +145,50 @@ namespace Ic3::Graphics::GCI
 	bool GLGPUDeviceCompat::IsCompatibilityDevice() const noexcept
 	{
 		return true;
+	}
+
+
+	MultiSamplingSettingsList GLGPUDeviceFeatureQuery::EnumSupportedMultisamplingConfigs( ETextureFormat pFormat ) const noexcept
+	{
+		const auto textureFormatFlags = CXU::GetTextureFormatFlags( pFormat );
+
+		GLint maxSamplesNum = 0;
+		if( !textureFormatFlags.is_set( eGPUDataFormatFlagCompressedBit ) )
+		{
+		#if( IC3_GX_GL_PLATFORM_TYPE == IC3_GX_GL_PLATFORM_TYPE_DESKTOP )
+			if( textureFormatFlags.is_set_any_of( eGPUDataFormatMaskDepthStencilBit ) )
+			{
+				glGetIntegerv( GL_MAX_DEPTH_TEXTURE_SAMPLES, &maxSamplesNum );
+				Ic3OpenGLHandleLastError();
+			}
+			else
+			{
+				glGetIntegerv( GL_MAX_COLOR_TEXTURE_SAMPLES, &maxSamplesNum );
+				Ic3OpenGLHandleLastError();
+			}
+		#endif
+
+		#if( IC3_GX_GL_PLATFORM_TYPE == IC3_GX_GL_PLATFORM_TYPE_ES )
+			glGetIntegerv( GL_MAX_SAMPLES, &maxSamplesNum );
+			Ic3OpenGLHandleLastError();
+		#endif
+		}
+
+		MultiSamplingSettingsList msSettingsList{};
+
+		const auto multiSamplingConfigsNum = ( maxSamplesNum > 1 ) ? cppx::pop_count( static_cast<uint32>( maxSamplesNum - 1 ) ) : 0u;
+		if( multiSamplingConfigsNum > 0 )
+		{
+			msSettingsList.reserve( multiSamplingConfigsNum );
+			for( GLint samplesNum = 2; samplesNum <= maxSamplesNum; samplesNum <<= 2 )
+			{
+				auto & multiSamplingSettings = msSettingsList.emplace_back();
+				multiSamplingSettings.sampleCount = static_cast<uint16>( samplesNum );
+				multiSamplingSettings.sampleQuality = 1;
+			}
+		}
+
+		return msSettingsList;
 	}
 
 

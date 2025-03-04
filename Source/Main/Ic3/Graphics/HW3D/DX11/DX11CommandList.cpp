@@ -15,7 +15,7 @@ namespace Ic3::Graphics::GCI
 {
 
 	DX11CommandList::DX11CommandList( DX11CommandSystem & pDX11CommandSystem, ECommandListType pListType, ComPtr<ID3D11DeviceContext1> pD3D11DeviceContext1 )
-	: CommandListRenderPassDefault( pDX11CommandSystem, pListType, _graphicsPipelineStateControllerDX11 )
+	: CommandListGenericRenderPass( pDX11CommandSystem, pListType, _graphicsPipelineStateControllerDX11 )
 	, mD3D11Device1( pDX11CommandSystem.mD3D11Device1 )
 	, mD3D11DeviceContext1( std::move( pD3D11DeviceContext1 ) )
 	, _graphicsPipelineStateControllerDX11( *this )
@@ -87,11 +87,11 @@ namespace Ic3::Graphics::GCI
 
 	void DX11CommandList::ExecuteRenderPassLoadActions(
 			const RenderPassConfiguration & pRenderPassConfiguration,
-			const GraphicsPipelineDynamicState & pDynamicState )
+			const GraphicsPipelineDynamicConfig & pDynamicConfig )
 	{
 		if( pRenderPassConfiguration.attachmentsActionClearMask != 0 )
 		{
-			SMU::RenderPassClearRenderTargetDX11(
+			GCU::RenderPassClearRenderTargetDX11(
 					mD3D11DeviceContext1.Get(),
 					_graphicsPipelineStateControllerDX11.GetCurrentRenderTargetBinding(),
 					pRenderPassConfiguration,
@@ -101,11 +101,11 @@ namespace Ic3::Graphics::GCI
 
 	void DX11CommandList::ExecuteRenderPassStoreActions(
 			const RenderPassConfiguration & pRenderPassConfiguration,
-			const GraphicsPipelineDynamicState & pDynamicState )
+			const GraphicsPipelineDynamicConfig & pDynamicConfig )
 	{
 		if( pRenderPassConfiguration.attachmentsActionResolveMask != 0 )
 		{
-			SMU::RenderPassResolveRenderTargetDX11(
+			GCU::RenderPassResolveRenderTargetDX11(
 					mD3D11DeviceContext1.Get(),
 					_graphicsPipelineStateControllerDX11.GetCurrentRenderTargetBinding(),
 					pRenderPassConfiguration,

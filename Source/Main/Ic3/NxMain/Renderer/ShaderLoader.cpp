@@ -4,6 +4,9 @@
 #include <Ic3/Graphics/GCI/GPUUtils.h>
 #include <Ic3/System/AssetSystem.h>
 
+#include <Ic3/Graphics/GCI/Resources/Shader.h>
+#include <Ic3/NxMain/GCI/ShaderUtils.h>
+
 namespace Ic3
 {
 
@@ -13,190 +16,185 @@ namespace Ic3
 
 	ShaderLoader::~ShaderLoader() = default;
 
-	GCI::ShaderHandle ShaderLoader::loadShader( const ShaderInputDefinition & pShaderDefinition )
+	GCI::ShaderHandle ShaderLoader::CreateShaderImpl(
+			GCI::EShaderType pShaderType,
+			GfxObjectID pShaderID,
+			const GfxObjectName & pShaderName,
+			const cppx::dynamic_memory_buffer & pShaderSource )
 	{
 		GCI::ShaderHandle shaderObject = nullptr;
 
-		auto shaderSource = pShaderDefinition.inputReadCallback();
-		if( !shaderSource.empty() )
+		if( !pShaderSource.empty() )
 		{
-			shaderObject = GCI::utils::createShaderFromSource(
-					*mCES.mGPUDevice,
-					pShaderDefinition.shaderType,
-					shaderSource.data(),
-					shaderSource.size() );
+			shaderObject = GCIUtils::CreateShaderFromSource(
+					*( mCES.mGPUDevice ),
+					pShaderType,
+					pShaderSource.data(),
+					pShaderSource.size() );
+		}
+
+		if( shaderObject )
+		{
+			if( pShaderID == Graphics::kGfxObjectIDAuto )
+			{
+				Ic3DebugAssert( !pShaderName.empty() );
+				pShaderID = Graphics::GenerateGfxObjectID( pShaderName );
+			}
+
+			if( Graphics::IsGfxObjectIDValid( pShaderID ) )
+			{
+				shaderObject->SetObjectID( pShaderID );
+			}
 		}
 
 		return shaderObject;
 	}
 
-	ShaderLibraryHandle ShaderLoader::loadShaders( std::initializer_list<ShaderInputDefinition> pShaderDefinitions )
+	bool ShaderLoader::ValidateShaderLoadDescBase( const ShaderLoadDescBase & pLoadDescBase )
 	{
-		ShaderLibraryHandle shaderLibrary = nullptr;
-
-		if( pShaderDefinitions.size() > 0 )
-		{
-			shaderLibrary = CreateDynamicObject<ShaderLibrary>( mCES );
-
-			for( auto & shaderDefinition : pShaderDefinitions )
-			{
-				if( auto shaderObject = loadShader( shaderDefinition ) )
-				{
-					shaderLibrary->registerShader( shaderDefinition.shaderName, shaderObject );
-				}
-			}
-
-			if( shaderLibrary->empty() )
-			{
-				shaderLibrary = nullptr;
-			}
-		}
-
-		return shaderLibrary;
+		return
+			( pLoadDescBase.shaderType != GCI::EShaderType::Unknown ) &&
+			( !pLoadDescBase.shaderName.empty() || Graphics::IsGfxObjectIDValid( pLoadDescBase.shaderID ) );
 	}
 
-	uint32 ShaderLoader::loadShaders(
+	ShaderLibraryHandle ShaderLoader::CreateNewShaderLibrary() const
+	{
+		return CreateDynamicObject<ShaderLibrary>( mCES );
+	}
+
+	void ShaderLoader::AddShaderToLibrary(
 			ShaderLibrary & pShaderLibrary,
-			std::initializer_list<ShaderInputDefinition> pShaderDefinitions )
+			GCI::ShaderHandle pShader,
+			const cppx::immutable_string & pShaderName )
 	{
-		uint32 loadedShadersNum = 0;
-
-		if( pShaderDefinitions.size() > 0 )
+		if( Graphics::IsGfxObjectIDValid( pShader->GetObjectID() ) )
 		{
-			for( auto & shaderDefinition : pShaderDefinitions )
-			{
-				if( auto shaderObject = loadShader( shaderDefinition ) )
-				{
-					pShaderLibrary.registerShader( shaderDefinition.shaderName, shaderObject );
-					loadedShadersNum += 1;
-				}
-			}
+			pShaderLibrary.RegisterShader( pShader, pShader->GetObjectID() );
 		}
 
-		return loadedShadersNum;
-	}
-
-	ShaderLibraryHandle ShaderLoader::createShaderLibrary(
-			const CoreEngineState & pCES,
-			std::initializer_list<ShaderInputDefinition> pShaderDefinitions )
-	{
-		return ShaderLoader( pCES ).loadShaders( pShaderDefinitions );
+		if( !pShaderName.empty() )
+		{
+			pShaderLibrary.RegisterShader( pShader, pShaderName );
+		}
 	}
 
 
-	FileShaderLoader::FileShaderLoader(
-			const CoreEngineState & pCES,
-			ShaderFileLoadCallback pFileLoadCallback)
+	ShaderLoaderMemoryBased::ShaderLoaderMemoryBased( const CoreEngineState & pCES )
 	: ShaderLoader( pCES )
 	{}
 
-	FileShaderLoader::FileShaderLoader(
+	ShaderLoaderMemoryBased::~ShaderLoaderMemoryBased() = default;
+
+	GCI::ShaderHandle ShaderLoaderMemoryBased::LoadShader( const ShaderLoadDescBase & pShaderLoadDesc )
+	{
+		if( const auto * loadDescMemory = ValidateShaderLoadDescMemory( pShaderLoadDesc ) )
+		{
+			auto shaderSource = loadDescMemory->shaderSourceReadCallback();
+			if( !shaderSource.empty() )
+			{
+				return CreateShaderImpl(
+						loadDescMemory->shaderType,
+						loadDescMemory->shaderID,
+						loadDescMemory->shaderName,
+						shaderSource );
+			}
+
+		}
+
+		return nullptr;
+	}
+
+	TSharedHandle<ShaderLoaderMemoryBased> ShaderLoaderMemoryBased::CreateLoader( const CoreEngineState & pCES )
+	{
+		return CreateDynamicObject<ShaderLoaderMemoryBased>( pCES );
+	}
+
+	const ShaderLoadDescMemory * ShaderLoaderMemoryBased::ValidateShaderLoadDescMemory( const ShaderLoadDescBase & pLoadDescBase )
+	{
+		if( pLoadDescBase.descType == EShaderLoadDescType::LDMemory )
+		{
+			const auto * loadDescMemory = reinterpret_cast<const ShaderLoadDescMemory *>( &pLoadDescBase );
+			if( ValidateShaderLoadDescBase( pLoadDescBase ) && loadDescMemory->shaderSourceReadCallback )
+			{
+				return loadDescMemory;
+			}
+		}
+
+		return nullptr;
+	}
+
+
+	ShaderLoaderFileBased::ShaderLoaderFileBased(
+			const CoreEngineState & pCES,
+			ShaderFileLoadCallback pFileLoadCallback )
+	: ShaderLoader( pCES )
+	, _fileLoadCallback( std::move( pFileLoadCallback ) )
+	{}
+
+	ShaderLoaderFileBased::ShaderLoaderFileBased(
 			const CoreEngineState & pCES,
 			System::AssetLoaderHandle pAssetLoader,
 			std::string pShaderBaseSubDirectory )
-	: FileShaderLoader( pCES, bindShaderFileLoadCallback( pAssetLoader, std::move( pShaderBaseSubDirectory ) ) )
+	: ShaderLoader( pCES )
+	, _fileLoadCallback( BindShaderFileLoadCallback( pAssetLoader, std::move( pShaderBaseSubDirectory ) ) )
 	{}
 
-	FileShaderLoader::~FileShaderLoader() = default;
+	ShaderLoaderFileBased::~ShaderLoaderFileBased() = default;
 
-	GCI::ShaderHandle FileShaderLoader::loadShader( const ShaderFileDefinition & pShaderDefinition )
+	GCI::ShaderHandle ShaderLoaderFileBased::LoadShader( const ShaderLoadDescBase & pShaderLoadDesc )
 	{
-		GCI::ShaderHandle shaderObject = nullptr;
-
-		auto shaderSource = _fileLoadCallback( pShaderDefinition.shaderFileName );
-		if( !shaderSource.empty() )
+		if( const auto * loadDescFile = ValidateShaderLoadDescFile( pShaderLoadDesc ) )
 		{
-			shaderObject = GCI::utils::createShaderFromSource(
-					*mCES.mGPUDevice,
-					pShaderDefinition.shaderType,
-					shaderSource.data(),
-					shaderSource.size() );
-		}
-
-		return shaderObject;
-	}
-
-	ShaderLibraryHandle FileShaderLoader::loadShaders( std::initializer_list<ShaderFileDefinition> pShaderDefinitions )
-	{
-		ShaderLibraryHandle shaderLibrary = nullptr;
-
-		if( pShaderDefinitions.size() > 0 )
-		{
-			shaderLibrary = CreateDynamicObject<ShaderLibrary>( mCES );
-
-			for( auto & shaderDefinition : pShaderDefinitions )
+			auto shaderSource = _fileLoadCallback( loadDescFile->shaderSourceFileName );
+			if( !shaderSource.empty() )
 			{
-				if( auto shaderObject = loadShader( shaderDefinition ) )
-				{
-					shaderLibrary->registerShader( shaderDefinition.shaderName, shaderObject );
-				}
-			}
-
-			if( shaderLibrary->empty() )
-			{
-				shaderLibrary = nullptr;
+				return CreateShaderImpl(
+						loadDescFile->shaderType,
+						loadDescFile->shaderID,
+						loadDescFile->shaderName,
+						shaderSource );
 			}
 		}
 
-		return shaderLibrary;
+		return nullptr;
 	}
 
-	uint32 FileShaderLoader::loadShaders(
-			ShaderLibrary & pShaderLibrary,
-			std::initializer_list<ShaderFileDefinition> pShaderDefinitions )
-	{
-		uint32 loadedShadersNum = 0;
-
-		if( pShaderDefinitions.size() > 0 )
-		{
-			for( auto & shaderDefinition : pShaderDefinitions )
-			{
-				if( auto shaderObject = loadShader( shaderDefinition ) )
-				{
-					pShaderLibrary.registerShader( shaderDefinition.shaderName, shaderObject );
-					loadedShadersNum += 1;
-				}
-			}
-		}
-
-		return loadedShadersNum;
-	}
-
-	ShaderLibraryHandle FileShaderLoader::createShaderLibrary(
+	TSharedHandle<ShaderLoaderFileBased> ShaderLoaderFileBased::CreateLoader(
 			const CoreEngineState & pCES,
-			ShaderFileLoadCallback pFileLoadCallback,
-			std::initializer_list<ShaderFileDefinition> pShaderDefinitions )
+			ShaderFileLoadCallback pFileLoadCallback )
 	{
-		return FileShaderLoader( pCES, std::move( pFileLoadCallback ) ).loadShaders( pShaderDefinitions );
+		return CreateDynamicObject<ShaderLoaderFileBased>( pCES, std::move( pFileLoadCallback ) );
 	}
 
-	ShaderLibraryHandle FileShaderLoader::createShaderLibrary(
+	TSharedHandle<ShaderLoaderFileBased> ShaderLoaderFileBased::CreateLoader(
 			const CoreEngineState & pCES,
 			System::AssetLoaderHandle pAssetLoader,
-			std::string pShaderBaseSubDirectory,
-			std::initializer_list<ShaderFileDefinition> pShaderDefinitions )
+			std::string pShaderBaseSubDirectory )
 	{
-		return FileShaderLoader( pCES, pAssetLoader, std::move( pShaderBaseSubDirectory ) ).loadShaders( pShaderDefinitions );
+		return CreateDynamicObject<ShaderLoaderFileBased>( pCES, pAssetLoader, std::move( pShaderBaseSubDirectory ) );
 	}
 
-	ShaderFileLoadCallback FileShaderLoader::bindShaderFileLoadCallback( System::AssetLoaderHandle pAssetLoader, std::string pShaderBaseSubDirectory )
+	ShaderFileLoadCallback ShaderLoaderFileBased::BindShaderFileLoadCallback(
+			System::AssetLoaderHandle pAssetLoader,
+			std::string pShaderBaseSubDirectory )
 	{
-		return [pAssetLoader, pSubDir = std::move( pShaderBaseSubDirectory )]( const std::string & pFilename ){
-			return loadShaderFile( *pAssetLoader, pSubDir + "/" + pFilename );
-		};
+		return [pAssetLoader, shaderSubDir = std::move( pShaderBaseSubDirectory )]( const auto & pShaderFileName ) {
+				return System::AssetLoader::LoadAsset( *pAssetLoader, shaderSubDir + "/" + pShaderFileName );
+			};
 	}
 
-	dynamic_memory_buffer FileShaderLoader::loadShaderFile( System::AssetLoader & pAssetLoader, const std::string & pFilename )
+	const ShaderLoadDescFile * ShaderLoaderFileBased::ValidateShaderLoadDescFile( const ShaderLoadDescBase & pLoadDescBase )
 	{
-		auto psAsset = pAssetLoader.openSubAsset(
-				pFilename,
-				System::eAssetOpenFlagNoExtensionBit );
+		if( pLoadDescBase.descType == EShaderLoadDescType::LDFile )
+		{
+			const auto * loadDescFile = reinterpret_cast<const ShaderLoadDescFile *>( &pLoadDescBase );
+			if( ValidateShaderLoadDescBase( pLoadDescBase ) && !loadDescFile->shaderSourceFileName.empty() )
+			{
+				return loadDescFile;
+			}
+		}
 
-		dynamic_memory_buffer resultBuffer;
-		const auto sourceLength = psAsset->readAll( resultBuffer, 1 );
-		resultBuffer[sourceLength] = 0;
-
-		return resultBuffer;
+		return nullptr;
 	}
 
-}
+} // namespace Ic3

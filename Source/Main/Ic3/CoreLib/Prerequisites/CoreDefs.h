@@ -7,6 +7,9 @@
 #include <memory>
 #include <vector>
 
+#define Ic3UnusedParam( pParam ) \
+	( pParam )
+
 #define Ic3CaseReturn( pCaseValue, pReturnValue ) \
 	case pCaseValue: return pReturnValue
 
@@ -19,11 +22,23 @@
 #define Ic3CaseDefaultReturn( pReturnValue ) \
 	default: return pReturnValue
 
+#define Ic3DeclareNonCopyable( pClassName ) \
+	pClassName( const pClassName & ) = delete; \
+	pClassName & operator=( const pClassName & ) = delete;
+
+#define Ic3DeclareDefaultCopyable( pClassName ) \
+	pClassName( const pClassName & ) = default; \
+	pClassName & operator=( const pClassName & ) = default;
+
+#define Ic3DeclareDefaultMovable( pClassName ) \
+	pClassName( pClassName && ) = default; \
+	pClassName & operator=( pClassName && ) = default;
+
 namespace Ic3
 {
 
 	/// @brief Contains constants and utility functions for Value BitMasks implementation.
-	namespace Vbm
+	namespace CXU
 	{}
 
 	/// Pre-defined constant representing and empty char-based c-string.

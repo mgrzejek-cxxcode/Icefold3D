@@ -6,7 +6,7 @@
 
 #include "../Resources/DX11Texture.h"
 #include <Ic3/Graphics/GCI/Resources/TextureReference.h>
-#include <Ic3/Graphics/GCI/State/RenderTargetImmutableStates.h>
+#include <Ic3/Graphics/GCI/State/RenderTargetCompiledStates.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -49,7 +49,7 @@ namespace Ic3::Graphics::GCI
 		}
 	};
 
-	struct DX11RenderTargetBindingData
+	struct DX11RenderTargetBinding
 	{
 		cppx::bitmask<ERTAttachmentFlags> activeAttachmentsMask = 0;
 
@@ -61,31 +61,31 @@ namespace Ic3::Graphics::GCI
 		ID3D11DepthStencilView * d3d11DepthStencilAttachmentDSView;
 	};
 
-	class DX11RenderTargetBindingImmutableState : public RenderTargetBindingImmutableState
+	class DX11RenderTargetBindingCompiledState : public RenderTargetBindingCompiledState
 	{
 	public:
-		DX11RenderTargetBindingData const mDX11RTBindingData;
+		DX11RenderTargetBinding const mDX11RTBindingData;
 
 	public:
-		DX11RenderTargetBindingImmutableState(
+		DX11RenderTargetBindingCompiledState(
 				DX11GPUDevice & pGPUDevice,
 				const RenderTargetLayout & pRenderTargetLayout,
-				DX11RenderTargetBindingData pDX11RTBindingData );
+				DX11RenderTargetBinding pDX11RTBindingData );
 
-		virtual ~DX11RenderTargetBindingImmutableState();
+		virtual ~DX11RenderTargetBindingCompiledState();
 
-		static GpaHandle<DX11RenderTargetBindingImmutableState> CreateInstance(
+		static GpaHandle<DX11RenderTargetBindingCompiledState> CreateInstance(
 				DX11GPUDevice & pGPUDevice,
 				const RenderTargetBindingDefinition & pBindingDefinition );
 
-		static GpaHandle<DX11RenderTargetBindingImmutableState> CreateForScreen(
+		static GpaHandle<DX11RenderTargetBindingCompiledState> CreateForScreen(
 				DX11GPUDevice & pGPUDevice,
 				ComPtr<ID3D11Texture2D> pColorBuffer,
 				ComPtr<ID3D11Texture2D> pDepthStencilBuffer );
 	};
 
 
-	namespace SMU
+	namespace GCU
 	{
 
 		CPPX_ATTR_NO_DISCARD RenderTargetLayout GetRenderTargetLayoutForScreenDX11(
@@ -103,21 +103,21 @@ namespace Ic3::Graphics::GCI
 		CPPX_ATTR_NO_DISCARD DX11RenderTargetResolveAttachment CreateRenderTargetResolveAttachmentDX11(
 				const TextureReference & pAttachmentTextureRef );
 
-		CPPX_ATTR_NO_DISCARD DX11RenderTargetBindingData CreateRenderTargetBindingDataDX11(
+		CPPX_ATTR_NO_DISCARD DX11RenderTargetBinding CreateRenderTargetBindingDX11(
 				DX11GPUDevice & pGPUDevice,
 				const RenderTargetBindingDefinition & pBindingDefinition );
 
 		void RenderPassClearRenderTargetDX11(
 				ID3D11DeviceContext1 * pD3D1DeviceContext,
-				const DX11RenderTargetBindingData & pRenderTargetBinding,
+				const DX11RenderTargetBinding & pRenderTargetBinding,
 				const RenderPassConfiguration & pRenderPassConfiguration,
-				const GraphicsPipelineDynamicState & pDynamicState );
+				const GraphicsPipelineDynamicConfig & pDynamicConfig );
 
 		void RenderPassResolveRenderTargetDX11(
 				ID3D11DeviceContext1 * pD3D1DeviceContext,
-				const DX11RenderTargetBindingData & pRenderTargetBinding,
+				const DX11RenderTargetBinding & pRenderTargetBinding,
 				const RenderPassConfiguration & pRenderPassConfiguration,
-				const GraphicsPipelineDynamicState & pDynamicState );
+				const GraphicsPipelineDynamicConfig & pDynamicConfig );
 
 	}
 	

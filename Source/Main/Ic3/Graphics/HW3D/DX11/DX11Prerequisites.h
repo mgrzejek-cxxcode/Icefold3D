@@ -32,15 +32,15 @@
 namespace Ic3::Graphics::GCI
 {
 
-	class GraphicsShaderLinkageImmutableStateSeparable;
-	class RenderPassConfigurationImmutableStateDefault;
+	class GraphicsShaderLinkageCompiledStateSeparable;
+	class RenderPassConfigurationCompiledStateDefault;
 
-	class DX11BlendImmutableState;
-	class DX11DepthStencilImmutableState;
-	class DX11RasterizerImmutableState;
-	class DX11IAInputLayoutImmutableState;
-	class DX11IAVertexStreamImmutableState;
-	class DX11RenderTargetBindingImmutableState;
+	class DX11BlendStateDescriptor;
+	class DX11DepthStencilStateDescriptor;
+	class DX11RasterizerStateDescriptor;
+	class DX11VertexAttributeLayoutDescriptor;
+	class DX11VertexSourceBindingDescriptor;
+	class DX11RenderTargetBindingCompiledState;
 
 	Ic3GCIDeclareClassHandle( DX11CommandList );
 	Ic3GCIDeclareClassHandle( DX11CommandSystem );
@@ -48,11 +48,11 @@ namespace Ic3::Graphics::GCI
 	Ic3GCIDeclareClassHandle( DX11GPUDriver );
 	Ic3GCIDeclareClassHandle( DX11PresentationLayer );
 
-	Ic3GCIDeclareTypedefHandle( DX11GraphicsShaderLinkageImmutableState, GraphicsShaderLinkageImmutableStateSeparable );
-	Ic3GCIDeclareTypedefHandle( DX11RenderPassConfigurationImmutableState, RenderPassConfigurationImmutableStateDefault );
+	Ic3GCIDeclareTypedefHandle( DX11GraphicsShaderLinkageCompiledState, GraphicsShaderLinkageCompiledStateSeparable );
+	Ic3GCIDeclareTypedefHandle( DX11RenderPassConfigurationCompiledState, RenderPassConfigurationCompiledStateDefault );
 
 
-	namespace SMU
+	namespace GCU
 	{
 
 		CPPX_ATTR_NO_DISCARD ID3D11DeviceContext1 * GetD3D11DeviceContextFromCommandList( void * pDX11CommandList );

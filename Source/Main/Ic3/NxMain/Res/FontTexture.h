@@ -81,7 +81,7 @@ namespace Ic3
 //
 //		bool resize( size_t pCacheCapacity );
 //
-//		void reset();
+//		void Reset();
 //
 //		const PreloadedSubDataArray & getPreloadedSubData() const;
 //

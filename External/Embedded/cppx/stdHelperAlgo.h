@@ -2,10 +2,61 @@
 #ifndef __CPPX_STD_HELPER_ALGO_H__
 #define __CPPX_STD_HELPER_ALGO_H__
 
-#include "prerequisites.h"
+#include "range.h"
 
 namespace cppx
 {
+
+	template <typename TPValue>
+	size_t copy_array(
+			cppx::array_view<const TPValue> pSource,
+			cppx::array_view<TPValue> pTarget,
+			size_t pElemCount = cve::max_size )
+	{
+		const auto sourceRegion = get_valid_region( 0, pElemCount, pSource.size() );
+		const auto targetRegion = get_valid_region( 0, pElemCount, pTarget.size() );
+		const auto copySize = get_min_of( sourceRegion.size, targetRegion.size );
+		if( copySize > 0 )
+		{
+			for( size_t iElement = 0; iElement < copySize; ++iElement )
+			{
+				pSource[targetRegion.offset + iElement] = pTarget[sourceRegion.offset + iElement];
+			}
+		}
+		return copySize;
+	}
+
+	template <typename TPValue, size_t tpSourceSize, size_t tpTargetSize>
+	size_t copy_array(
+			const TPValue ( & pSourceArray )[tpSourceSize],
+			TPValue ( & pTargetArray )[tpTargetSize],
+			size_t pSourceOffset = 0,
+			size_t pTargetOffset = 0,
+			size_t pElemCount = cve::max_size )
+	{
+		const auto sourceRegion = get_valid_region( pSourceOffset, pElemCount, tpSourceSize );
+		const auto targetRegion = get_valid_region( pTargetOffset, pElemCount, tpTargetSize );
+		const auto copySize = get_min_of( sourceRegion.size, targetRegion.size );
+		if( copySize > 0 )
+		{
+			for( size_t iElement = 0; iElement < copySize; ++iElement )
+			{
+				pTargetArray[targetRegion.offset + iElement] = pSourceArray[sourceRegion.offset + iElement];
+			}
+		}
+		return copySize;
+	}
+
+	template <typename TPValue, size_t tpSourceSize, size_t tpTargetSize>
+	size_t copy_array( const TPValue ( & pSourceArray )[tpSourceSize], TPValue ( & pTargetArray )[tpTargetSize] )
+	{
+		const auto copySize = get_min_of( tpSourceSize, tpTargetSize );
+		for( size_t iElement = 0; iElement < copySize; ++iElement )
+		{
+			pTargetArray[iElement] = pSourceArray[iElement];
+		}
+		return copySize;
+	}
 
 	/// @brief Finds a value in the specified range which equals to the ref value. Returns the pointer to the element or nullptr.
 	/// @param pRange A range to search withing. Must support begin()/end().

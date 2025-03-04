@@ -10,7 +10,7 @@ namespace Ic3::System
 	namespace Platform
 	{
 
-		std::string _commonResolveFileName( FileManager & pFileManager,
+		std::string ResolveFileName( FileManager & pFileManager,
 		                                    cppx::file_path_info & pAssetPathInfo,
 		                                    cppx::bitmask<EAssetOpenFlags> pFlags );
 
@@ -41,7 +41,7 @@ namespace Ic3::System
 
 		if( mFileManager->CheckDirectoryExists( pAssetPathInfo.directory ) )
 		{
-			auto combinedFilePath = Platform::_commonResolveFileName( *mFileManager, pAssetPathInfo, pFlags );
+			auto combinedFilePath = Platform::ResolveFileName( *mFileManager, pAssetPathInfo, pFlags );
 
 			if( mFileManager->CheckFileExists( combinedFilePath ) )
 			{
@@ -108,7 +108,7 @@ namespace Ic3::System
 
 		if( mFileManager->CheckDirectoryExists( mNativeData.combinedDirPath ) )
 		{
-			auto combinedFilePath = Platform::_commonResolveFileName( *mFileManager, assetPathInfo, pFlags );
+			auto combinedFilePath = Platform::ResolveFileName( *mFileManager, assetPathInfo, pFlags );
 
 			if( mFileManager->CheckFileExists( combinedFilePath ) )
 			{
@@ -206,19 +206,25 @@ namespace Ic3::System
 
 			if( !pCreateParams.absoluteAssetRootDir.empty() )
 			{
-				return CreateFileAssetLoaderExplicit( std::move( pSysContext ), fileManager,
-				                                      pCreateParams.absoluteAssetRootDir );
+				return CreateFileAssetLoaderExplicit(
+						std::move( pSysContext ),
+						fileManager,
+						pCreateParams.absoluteAssetRootDir );
 			}
 			else
 			{
-				return CreateFileAssetLoaderResolve( std::move( pSysContext ), fileManager, pCreateParams.relativeAssetRootDir );
+				return CreateFileAssetLoaderResolve(
+						std::move( pSysContext ),
+						fileManager,
+						pCreateParams.relativeAssetRootDir );
 			}
 		}
 
 
-		std::string _commonResolveFileName( FileManager & pFileManager,
-		                                    cppx::file_path_info & pAssetPathInfo,
-		                                    cppx::bitmask<EAssetOpenFlags> pFlags )
+		std::string ResolveFileName(
+				FileManager & pFileManager,
+				cppx::file_path_info & pAssetPathInfo,
+				cppx::bitmask<EAssetOpenFlags> pFlags )
 		{
 			auto combinedFilePath = pAssetPathInfo.directory;
 			combinedFilePath.append( 1, PCL_ENV_DEFAULT_PATH_DELIMITER );

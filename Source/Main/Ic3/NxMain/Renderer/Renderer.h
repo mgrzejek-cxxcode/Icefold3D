@@ -5,7 +5,7 @@
 #define __IC3_NXMAIN_SHADOW_RENDERER_H__
 
 #include "CommonRendererDefs.h"
-#include <Ic3/Graphics/GCI/State/RenderTargetDynamicStates.h>
+#include <Ic3/Graphics/GCI/State/GraphicsPipelineStateDescriptorRTO.h>
 
 namespace Ic3
 {

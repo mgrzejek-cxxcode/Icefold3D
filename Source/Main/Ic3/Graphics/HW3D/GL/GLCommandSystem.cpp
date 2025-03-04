@@ -29,7 +29,7 @@ namespace Ic3::Graphics::GCI
 	{
 		std::unique_ptr<CommandContext> commandContext;
 
-		auto contextExecutionMode = CxDef::GetCommandObjectExecutionMode( pContextType );
+		const auto contextExecutionMode = CXU::GetCommandObjectExecutionMode( pContextType );
 		if( auto * commandList = AcquireCommandList( contextExecutionMode ) )
 		{
 			Ic3DebugAssert( contextExecutionMode == ECommandExecutionMode::Direct );
@@ -47,9 +47,9 @@ namespace Ic3::Graphics::GCI
 			auto * openglGPUDevice = mGPUDevice.QueryInterface<GLGPUDevice>();
 			auto * openglDebugOutput = openglGPUDevice->GetDebugOutputInterface();
 
-			const auto EnableDebugOutput = false;
+			const auto enableDebugOutput = false;
 
-			if( openglDebugOutput && EnableDebugOutput )
+			if( openglDebugOutput && enableDebugOutput )
 			{
 			    openglDebugOutput->EnableDebugOutput( true );
 			    openglDebugOutput->EnableBreakOnEvent( true );
@@ -160,7 +160,7 @@ namespace Ic3::Graphics::GCI
 			sysGLRenderContext->BindForCurrentThread( *pSysGLDisplaySurface );
 
 			auto sysVersionInfo = sysGLRenderContext->QuerySystemVersionInfo();
-			auto sysVersionInfoStr = sysVersionInfo.toString();
+			auto sysVersionInfoStr = sysVersionInfo.ToString();
 			Ic3DebugOutputFmt( "%s\n", sysVersionInfoStr.c_str() );
 		}
 		catch ( ... )

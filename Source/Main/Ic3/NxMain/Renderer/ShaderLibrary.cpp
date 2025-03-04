@@ -12,25 +12,31 @@ namespace Ic3
 
 	ShaderLibrary::~ShaderLibrary() = default;
 
-	GCI::ShaderHandle ShaderLibrary::getShader( GfxObjectID pShaderID ) const noexcept
+	GCI::ShaderHandle ShaderLibrary::GetShader( GfxObjectID pShaderID ) const noexcept
 	{
-		const auto shaderIter = _shaderMap.find( pShaderID );
-		return ( shaderIter != _shaderMap.end() ) ? shaderIter->second : nullptr;
+		const auto shaderIter = _shaderMapByID.find( pShaderID );
+		return ( shaderIter != _shaderMapByID.end() ) ? shaderIter->second : nullptr;
 	}
 
-	GCI::ShaderHandle ShaderLibrary::getShader( const GfxObjectName & pShaderName ) const noexcept
+	GCI::ShaderHandle ShaderLibrary::GetShader( const GfxObjectName & pShaderName ) const noexcept
 	{
-		const auto uniqueShaderID = Graphics::GenerateGfxObjectID( pShaderName );
-		return getShader( uniqueShaderID );
+		const auto shaderIter = _shaderMapByName.find( pShaderName );
+		return ( shaderIter != _shaderMapByName.end() ) ? shaderIter->second : nullptr;
 	}
 
-	uint32 ShaderLibrary::append( const ShaderLibrary & pOtherLibrary )
+	uint32 ShaderLibrary::Append( const ShaderLibrary & pOtherLibrary, bool pOverwriteExisting )
 	{
 		uint32 addedShadersNum = 0;
-
-		for( const auto & shaderDef : pOtherLibrary._shaderMap )
+		for( const auto &[shaderID, shaderHandle] : pOtherLibrary._shaderMapByID )
 		{
-			if( registerShader( shaderDef.first, shaderDef.second ) )
+			if( RegisterShader( shaderHandle, shaderID, pOverwriteExisting ) )
+			{
+				++addedShadersNum;
+			}
+		}
+		for( const auto & [shaderName, shaderHandle] : pOtherLibrary._shaderMapByName )
+		{
+			if( RegisterShader( shaderHandle, shaderName, pOverwriteExisting ) )
 			{
 				++addedShadersNum;
 			}
@@ -39,29 +45,74 @@ namespace Ic3
 		return addedShadersNum;
 	}
 
-	bool ShaderLibrary::registerShader( GfxObjectID pShaderID, GCI::ShaderHandle pShaderObject )
+	bool ShaderLibrary::RegisterShader(
+			GCI::ShaderHandle pShaderObject,
+			GfxObjectID pShaderID,
+			bool pOverwriteExisting )
 	{
-		if( !pShaderID || !pShaderObject )
+		if( !Graphics::IsGfxObjectIDValid( pShaderID ) || !pShaderObject )
 		{
-			Ic3DebugOutput( "Cannot register shader: empty name or shader handle" );
+			Ic3DebugOutput( "Cannot register shader: invalid ID or shader handle" );
 			return false;
 		}
 
-		auto existingShaderIter = _shaderMap.find( pShaderID );
-		if( existingShaderIter != _shaderMap.end() )
+		auto existingShaderIter = _shaderMapByID.find( pShaderID );
+		if( existingShaderIter != _shaderMapByID.end() )
 		{
-			return false;
-		}
+			if( !pOverwriteExisting )
+			{
+				return false;
+			}
 
-		_shaderMap.insert( { pShaderID, pShaderObject } );
+			existingShaderIter->second = pShaderObject;
+		}
+		else
+		{
+			_shaderMapByID.insert( { pShaderID, pShaderObject } );
+		}
 
 		return true;
 	}
 
-	bool ShaderLibrary::registerShader( const GfxObjectName & pShaderName, GCI::ShaderHandle pShaderObject )
+	bool ShaderLibrary::RegisterShader(
+			GCI::ShaderHandle pShaderObject,
+			const GfxObjectName & pShaderName,
+			bool pOverwriteExisting )
 	{
-		const auto uniqueShaderID = Graphics::GenerateGfxObjectID( pShaderName );
-		return registerShader( uniqueShaderID, pShaderObject );
+		if( pShaderName.empty() || !pShaderObject )
+		{
+			Ic3DebugOutput( "Cannot register shader: invalid name or shader handle" );
+			return false;
+		}
+
+		auto existingShaderIter = _shaderMapByName.find( pShaderName );
+		if( existingShaderIter != _shaderMapByName.end() )
+		{
+			if( !pOverwriteExisting )
+			{
+				return false;
+			}
+
+			existingShaderIter->second = pShaderObject;
+		}
+		else
+		{
+			_shaderMapByName.insert( { pShaderName, pShaderObject } );
+		}
+
+		return true;
+	}
+
+	bool ShaderLibrary::RegisterShader(
+			GCI::ShaderHandle pShaderObject,
+			GfxObjectID pShaderID,
+			const GfxObjectName & pShaderName,
+			bool pOverwriteExisting )
+	{
+		const auto regByIDResult = RegisterShader( pShaderObject, pShaderID, pOverwriteExisting );
+		const auto regByNameResult = RegisterShader( pShaderObject, pShaderName, pOverwriteExisting );
+
+		return regByIDResult && regByNameResult;
 	}
 
 }

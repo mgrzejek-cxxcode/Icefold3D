@@ -1,8 +1,8 @@
 
 #pragma once
 
-#ifndef __IC3_GRAPHICS_HW3D_GLCOMMON_SHADER_H__
-#define __IC3_GRAPHICS_HW3D_GLCOMMON_SHADER_H__
+#ifndef __IC3_GRAPHICS_HW3D_GLC_SHADER_H__
+#define __IC3_GRAPHICS_HW3D_GLC_SHADER_H__
 
 #include "../GLPrerequisites.h"
 #include "../Objects/GLShaderObject.h"
@@ -15,7 +15,7 @@ namespace Ic3::Graphics::GCI
 
 	Ic3DeclareClassHandle( GLShader );
 
-	class GLShader : public GCI::Shader
+	class GLShader : public Shader
 	{
 	public:
 		GLShaderObjectHandle const mGLShaderObject;
@@ -32,4 +32,4 @@ namespace Ic3::Graphics::GCI
 
 } // namespace Ic3::Graphics::GCI
 
-#endif // __IC3_GRAPHICS_HW3D_GLCOMMON_SHADER_H__
+#endif // __IC3_GRAPHICS_HW3D_GLC_SHADER_H__

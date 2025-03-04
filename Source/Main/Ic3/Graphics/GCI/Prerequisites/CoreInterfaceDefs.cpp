@@ -5,6 +5,21 @@
 namespace Ic3::Graphics::GCI
 {
 
+	GfxObject::GfxObject() = default;
+
+	GfxObject::~GfxObject() = default;
+
+	GfxObjectID GfxObject::GetObjectID() const noexcept
+	{
+		return kGfxObjectIDEmpty;
+	}
+
+	GfxObjectName GfxObject::GetObjectName() const noexcept
+	{
+		return nullptr;
+	}
+
+
 	GPUDriverChildObject::GPUDriverChildObject( GPUDriver & pGPUDriver )
 	: mGPUDriver( pGPUDriver )
 	{}
@@ -13,15 +28,9 @@ namespace Ic3::Graphics::GCI
 
 
 	GPUDeviceChildObject::GPUDeviceChildObject( GPUDevice & pGPUDevice )
-	: mGPUDriver( pGPUDevice.mGPUDriver )
-	, mGPUDevice( pGPUDevice )
+	: mGPUDevice( pGPUDevice )
 	{}
 
 	GPUDeviceChildObject::~GPUDeviceChildObject() = default;
-
-	GfxObjectID GPUDeviceChildObject::QueryObjectID() const
-	{
-		return cxGPUObjectIDEmpty;
-	}
 
 } // namespace Ic3::Graphics::GCI

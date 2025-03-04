@@ -14,10 +14,28 @@ namespace cppx
 	{
 
 		/// @brief Represents empty char* literal.
-		constexpr const char * str_char_empty = "";
+		inline constexpr const char * str_char_empty = "";
 
 		/// @brief Represents empty wchar_t* literal.
-		constexpr const wchar_t * str_wchar_empty = L"";
+		inline constexpr const wchar_t * str_wchar_empty = L"";
+
+		template <typename TPChar>
+		struct str_empty_template_proxy;
+
+		template <>
+		struct str_empty_template_proxy<char>
+		{
+			static inline constexpr const char * str_ptr = "";
+		};
+
+		template <>
+		struct str_empty_template_proxy<wchar_t>
+		{
+			static inline constexpr const wchar_t * str_ptr = L"";
+		};
+
+		template <typename TPChar>
+		inline constexpr const TPChar * str_empty = str_empty_template_proxy<TPChar>::str_ptr;
 
 	}
 	

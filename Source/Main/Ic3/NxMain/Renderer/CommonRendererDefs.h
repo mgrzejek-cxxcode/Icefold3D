@@ -5,14 +5,13 @@
 #define __IC3_NXMAIN_COMMON_RENDERER_DEFS_H__
 
 #include "../Prerequisites.h"
-
 #include <Ic3/Graphics/GCI/Resources/TextureCommon.h>
 #include <Ic3/Graphics/GCI/State/CommonGPUStateDefs.h>
 
 namespace Ic3
 {
 
-	Ic3DeclareClassHandle( GpaSharedStateLibrary );
+	Ic3DeclareClassHandle( GCISharedStateLibrary );
 	Ic3DeclareClassHandle( ShaderLibrary );
 	Ic3DeclareClassHandle( ShaderLoader );
 
@@ -20,10 +19,10 @@ namespace Ic3
 	using GfxObjectName = Graphics::GfxObjectName;
 
 	/// @brief
-	constexpr uint32 cxGCIShaderBindingMetricCBMaxNum = GCM::cxResMaxConstantBuffersNum;
+	constexpr uint32 cxGCIShaderBindingMetricCBMaxNum = GCM::kResMaxConstantBuffersNum;
 
 	/// @brief
-	constexpr uint32 cxGCIShaderBindingMetricTexMaxNum = GCM::cxResMaxTextureUnitsNum;
+	constexpr uint32 cxGCIShaderBindingMetricTexMaxNum = GCM::kResMaxTextureUnitsNum;
 
 	struct TextureUnitBinding
 	{

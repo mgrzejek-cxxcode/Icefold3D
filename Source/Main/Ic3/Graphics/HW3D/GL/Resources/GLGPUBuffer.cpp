@@ -13,9 +13,9 @@ namespace Ic3::Graphics::GCI
 #else
 	// Core supports full set of features, including immutable storage, persistent mapping and explicit flushes.
 	static constexpr uint32 sSupportedGPUMemoryFlags =
-			eGPUMemoryAccessMaskCpuReadWrite |
+			eGPUMemoryAccessMaskCPUReadWrite |
 			eGPUMemoryAccessMaskGPUReadWrite |
-			eGPUMemoryHeapPropertyFlagCpuCoherentBit |
+			eGPUMemoryHeapPropertyFlagCPUCoherentBit |
 			eGPUMemoryHeapPropertyFlagGPUCoherentBit |
 			eGPUMemoryHeapPropertyFlagPersistentMapBit;
 #endif
@@ -103,7 +103,7 @@ namespace Ic3::Graphics::GCI
 
 		if( mGLBufferObject->IsMappedPersistent() )
 		{
-			if( !mResourceMemory.memoryFlags.is_set( eGPUMemoryHeapPropertyFlagCpuCoherentBit ) )
+			if( !mResourceMemory.memoryFlags.is_set( eGPUMemoryHeapPropertyFlagCPUCoherentBit ) )
 			{
 				glMemoryBarrier( GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT );
 				Ic3OpenGLHandleLastError();
@@ -139,7 +139,7 @@ namespace Ic3::Graphics::GCI
 		{
 			if( mGLBufferObject->IsMappedPersistent() )
 			{
-				if( !mResourceMemory.memoryFlags.is_set( eGPUMemoryHeapPropertyFlagCpuCoherentBit ) )
+				if( !mResourceMemory.memoryFlags.is_set( eGPUMemoryHeapPropertyFlagCPUCoherentBit ) )
 				{
 					mGLBufferObject->FlushMappedRegion( mappedMemory.mappedRegion.offset, mappedMemory.mappedRegion.size );
 				}

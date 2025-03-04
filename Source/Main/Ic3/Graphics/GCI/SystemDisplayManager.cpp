@@ -13,7 +13,7 @@ namespace Ic3::Graphics::GCI
 
 	SystemDisplayManager::~SystemDisplayManager() = default;
 
-	void SystemDisplayManager::reset()
+	void SystemDisplayManager::Reset()
 	{
 	}
 

@@ -97,7 +97,7 @@ namespace Ic3::System
         {
         @autoreleasepool
         {
-            if( ![( id )pSurfaceNativeData.mNSWindow IsKindOfClass:[NSOSXWindow class]] )
+            if( ![( id )pSurfaceNativeData.mNSWindow isKindOfClass:[NSOSXWindow class]] )
             {
                 return;
             }

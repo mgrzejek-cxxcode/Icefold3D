@@ -7,13 +7,13 @@
 namespace Ic3::System
 {
 
-	std::string OpenGLSystemVersionInfo::toString() const
+	std::string OpenGLSystemVersionInfo::ToString() const
 	{
 		std::ostringstream strStream;
 		strStream << "[OpenGL Rendering Context Information]\n";
-		strStream << "> API cppx::version: " << apiVersion.num_major << "." << apiVersion.num_minor << "\n";
-		strStream << "> Runtime cppx::version: " << apiVersionStr << "\n";
-		strStream << "> GLSL cppx::version: " << glslVersionStr << "\n";
+		strStream << "> API version: " << apiVersion.num_major << "." << apiVersion.num_minor << "\n";
+		strStream << "> Runtime version: " << apiVersionStr << "\n";
+		strStream << "> GLSL version: " << glslVersionStr << "\n";
 		strStream << "> Renderer ID: " << rendererName << "\n";
 		strStream << "> Vendor Name: " << vendorName;
 		return strStream.str();

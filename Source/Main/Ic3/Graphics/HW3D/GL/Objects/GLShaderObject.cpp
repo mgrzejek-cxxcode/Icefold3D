@@ -67,8 +67,10 @@ namespace Ic3::Graphics::GCI
 
 	bool GLShaderObject::ValidateHandle() const
 	{
-		GLboolean checkResult = glIsShader( mGLHandle );
-		return checkResult == GL_TRUE;
+		const auto checkResult = glIsShader( mGLHandle );
+		Ic3OpenGLHandleLastError();
+
+		return checkResult != GL_FALSE;
 	}
 
 	bool GLShaderObject::CompileSource( const void * pSource, size_t pSourceLength )
@@ -107,14 +109,14 @@ namespace Ic3::Graphics::GCI
 		return true;
 	}
 
-	void GLShaderObject::SetDataLayoutMap( GLShaderDataLayoutMap pLayoutMap )
+	void GLShaderObject::SetBindingLayout( std::unique_ptr<GLShaderBindingLayout> pBindingLayout )
 	{
-		_dataLayoutMap = std::make_unique<GLShaderDataLayoutMap>( std::move( pLayoutMap ) );
+		_bindingLayout = std::move( pBindingLayout );
 	}
 
-	GLShaderDataLayoutMap * GLShaderObject::GetDataLayoutMap() const noexcept
+	GLShaderBindingLayout * GLShaderObject::GetBindingLayout() const noexcept
 	{
-		return _dataLayoutMap.get();
+		return _bindingLayout.get();
 	}
 
 	GLint GLShaderObject::QueryParameter( GLenum pParameter ) const

@@ -72,7 +72,6 @@ namespace Ic3::System
 	static const DepthStencilDesc sDepthStencilDescD24S8   { 24 , 8 };
 	static const DepthStencilDesc sDepthStencilDescD24X8   { 24 , 0 };
 	static const DepthStencilDesc sDepthStencilDescD32F    { 32 , 0 };
-	static const DepthStencilDesc sDepthStencilDescD32FS8  { 32 , 8 };
 	static const DepthStencilDesc sDepthStencilDescUnknown { 0  , 0 };
 
 	const DepthStencilDesc & VisGetDescForDepthStencilFormat( EDepthStencilFormat pFormat )
@@ -83,7 +82,6 @@ namespace Ic3::System
 			{ EDepthStencilFormat::D24S8  , sDepthStencilDescD24S8  },
 			{ EDepthStencilFormat::D24X8  , sDepthStencilDescD24X8  },
 			{ EDepthStencilFormat::D32F   , sDepthStencilDescD32F   },
-			{ EDepthStencilFormat::D32FS8 , sDepthStencilDescD32FS8 },
 		};
 		return cppx::get_map_value_ref_or_default( depthStencilDescMap, pFormat, sDepthStencilDescUnknown );
 	}

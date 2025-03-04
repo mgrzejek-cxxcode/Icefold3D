@@ -3,13 +3,16 @@
 #define __IC3_NXMAIN_PREREQUISITES_H__
 
 #include <Ic3/CoreLib/Prerequisites.h>
+
 #include <Ic3/Math/Vector.h>
 #include <Ic3/Math/VectorOps.h>
 #include <Ic3/Math/Rect.h>
 #include <Ic3/Math/Matrix.h>
 #include <Ic3/Math/MatrixOps.h>
 #include <Ic3/Math/MatrixUtils.h>
+
 #include <cppx/arrayView.h>
+#include <cppx/immutableString.h>
 
 #include <map>
 #include <set>
@@ -40,7 +43,7 @@ namespace Ic3
 {
 
 	template <typename TData>
-	using GeometryVertexStreamGenericArray = std::array<TData, GCM::cxIAMaxVertexStreamsNum>;
+	using GeometryVertexStreamGenericArray = std::array<TData, GCM::kIAMaxDataStreamVertexBuffersNum>;
 
 	class CoreEngineObject : public IDynamicObject
 	{

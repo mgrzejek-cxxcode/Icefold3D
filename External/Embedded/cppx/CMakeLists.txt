@@ -60,6 +60,7 @@ set( CPPX_SRC_FILES
         "stringView.h"
         "typeLimits.h"
         "typeTraits.h"
+        "unique_del_ptr.h"
         "utilities.h"
         "valueLimits.h"
         "variant.h"

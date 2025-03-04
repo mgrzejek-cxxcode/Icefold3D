@@ -1,128 +1,162 @@
 
-#include "gpaSharedStateLibrary.h"
+#include "SharedStateLibrary.h"
 #include "ShaderLibrary.h"
+#include "../GCI/VertexFormatUtils.h"
 #include <Ic3/Graphics/GCI/GPUDevice.h>
-#include <Ic3/Graphics/GCI/State/InputAssemblerImmutableStates.h>
-#include <Ic3/Graphics/GCI/State/SharedImmutableStateCache.h>
 
 namespace Ic3
 {
 
-	GpaSharedStateLibrary::GpaSharedStateLibrary( const CoreEngineState & pCES, ShaderLibraryHandle pShaderLibrary )
-	: CoreEngineObject( pCES )
-	, mShaderLibrary( pShaderLibrary ? pShaderLibrary : CreateDynamicObject<ShaderLibrary>( pCES ) )
+	GCISharedStateLibrary::GCISharedStateLibrary( ShaderLibrary & pShaderLibrary )
+	: CoreEngineObject( pShaderLibrary.mCES )
+	, mShaderLibrary( pShaderLibrary.GetHandle<ShaderLibrary>() )
 	{}
 
-	GpaSharedStateLibrary::~GpaSharedStateLibrary() = default;
+	GCISharedStateLibrary::~GCISharedStateLibrary() = default;
 
-	void GpaSharedStateLibrary::initializeDefaultImmutableBlendStates()
+	GCI::ShaderHandle GCISharedStateLibrary::GetShader( GfxObjectID pShaderID ) const noexcept
 	{
+		return mShaderLibrary->GetShader( pShaderID );
+	}
+
+	GCI::ShaderHandle GCISharedStateLibrary::GetShader( const GfxObjectName & pShaderName ) const noexcept
+	{
+		return mShaderLibrary->GetShader( pShaderName );
+	}
+
+	void GCISharedStateLibrary::Initialize()
+	{
+		CreateDefaultShaders();
+		InitializeDefaultBlendStateDescriptors();
+		InitializeDefaultDepthStencilStateDescriptors();
+		InitializeDefaultRasterizerStateDescriptors();
+		InitializeDefaultInputLayoutStateDescriptors();
+		InitializeDefaultPipelineStateObjects();
+	}
+
+	void GCISharedStateLibrary::CreateDefaultShaders()
+	{
+	}
+
+	void GCISharedStateLibrary::InitializeDefaultBlendStateDescriptors()
+	{
+		GCI::BlendStateDescriptorCreateInfo descriptorCreateInfo{};
+		descriptorCreateInfo.flags = GCI::ePipelineStateDescriptorCreateMaskDefault;
+		descriptorCreateInfo.blendSettings = mCES.mGPUDevice->GetDefaultBlendSettings();
 		{
-			mCES.mGPUDevice->createCachedImmutableState<GCI::BlendImmutableState>(
-					CxDef::GPA_STATE_ID_IA_INPUT_LAYOUT_DEFAULT,
-					GCI::defaults::cvPipelineBlendConfigDefault );
+			descriptorCreateInfo.descriptorID = GID::kGfxIDStateDescriptorBlendDefault;
+			mCES.mGPUDevice->CreateBlendStateDescriptor( descriptorCreateInfo );
 		}
 	}
 
-	void GpaSharedStateLibrary::initializeDefaultImmutableDepthStencilStates()
+	void GCISharedStateLibrary::InitializeDefaultDepthStencilStateDescriptors()
 	{
+		GCI::DepthStencilStateDescriptorCreateInfo descriptorCreateInfo{};
+		descriptorCreateInfo.flags = GCI::ePipelineStateDescriptorCreateMaskDefault;
 		{
-			mCES.mGPUDevice->createCachedImmutableState<GCI::DepthStencilImmutableState>(
-					CxDef::GPA_STATE_ID_IA_INPUT_LAYOUT_DEFAULT,
-					GCI::defaults::cvPipelineDepthStencilConfigDefault );
+			descriptorCreateInfo.descriptorID = GID::kGfxIDStateDescriptorDepthStencilDefault;
+			descriptorCreateInfo.depthStencilSettings = mCES.mGPUDevice->GetDefaultDepthStencilSettings();
+			mCES.mGPUDevice->CreateDepthStencilStateDescriptor( descriptorCreateInfo );
 		}
 		{
-			mCES.mGPUDevice->createCachedImmutableState<GCI::DepthStencilImmutableState>(
-					CxDef::GPA_STATE_ID_DEPTH_STENCIL_DEPTH_TEST_ENABLE,
-					GCI::defaults::cvPipelineDepthStencilConfigEnableDepthTest );
+			descriptorCreateInfo.descriptorID = GID::kGfxIDStateDescriptorDepthStencilDepthTestEnable;
+			descriptorCreateInfo.depthStencilSettings = mCES.mGPUDevice->GetDefaultDepthStencilSettingsWithDepthTestEnabled();
+			mCES.mGPUDevice->CreateDepthStencilStateDescriptor( descriptorCreateInfo );
 		}
 	}
 
-	void GpaSharedStateLibrary::initializeDefaultImmutableRasterizerStates()
+	void GCISharedStateLibrary::InitializeDefaultRasterizerStateDescriptors()
 	{
+		GCI::RasterizerStateDescriptorCreateInfo descriptorCreateInfo{};
+		descriptorCreateInfo.flags = GCI::ePipelineStateDescriptorCreateMaskDefault;
 		{
-			GCI::RasterizerConfig rasterizerConfig = GCI::defaults::cvPipelineRasterizerConfigDefault;
-			rasterizerConfig.cullMode = GCI::ECullMode::Back;
-			rasterizerConfig.frontFaceVerticesOrder = GCI::ETriangleVerticesOrder::CounterClockwise;
-
-			mCES.mGPUDevice->createCachedImmutableState<GCI::RasterizerImmutableState>(
-					CxDef::GPA_STATE_ID_RASTERIZER_DEFAULT_CULL_BACK_CCW,
-					rasterizerConfig );
+			descriptorCreateInfo.descriptorID = GID::kGfxIDStateDescriptorRasterizerSolidCullBackCCW;
+			descriptorCreateInfo.rasterizerSettings.cullMode = GCI::ECullMode::Back;
+			descriptorCreateInfo.rasterizerSettings.frontFaceVerticesOrder = GCI::ETriangleVerticesOrder::CounterClockwise;
+			descriptorCreateInfo.rasterizerSettings.primitiveFillMode = GCI::EPrimitiveFillMode::Solid;
+			mCES.mGPUDevice->CreateRasterizerStateDescriptor( descriptorCreateInfo );
 		}
 		{
-			GCI::RasterizerConfig rasterizerConfig = GCI::defaults::cvPipelineRasterizerConfigDefault;
-			rasterizerConfig.cullMode = GCI::ECullMode::Back;
-			rasterizerConfig.frontFaceVerticesOrder = GCI::ETriangleVerticesOrder::Clockwise;
-
-			mCES.mGPUDevice->createCachedImmutableState<GCI::RasterizerImmutableState>(
-					CxDef::GPA_STATE_ID_RASTERIZER_DEFAULT_CULL_BACK_CW,
-					rasterizerConfig );
+			descriptorCreateInfo.descriptorID = GID::kGfxIDStateDescriptorRasterizerSolidCullBackCW;
+			descriptorCreateInfo.rasterizerSettings.cullMode = GCI::ECullMode::Back;
+			descriptorCreateInfo.rasterizerSettings.frontFaceVerticesOrder = GCI::ETriangleVerticesOrder::Clockwise;
+			descriptorCreateInfo.rasterizerSettings.primitiveFillMode = GCI::EPrimitiveFillMode::Solid;
+			mCES.mGPUDevice->CreateRasterizerStateDescriptor( descriptorCreateInfo );
 		}
 		{
-			GCI::RasterizerConfig rasterizerConfig = GCI::defaults::cvPipelineRasterizerConfigDefault;
-			rasterizerConfig.cullMode = GCI::ECullMode::Front;
-			rasterizerConfig.frontFaceVerticesOrder = GCI::ETriangleVerticesOrder::CounterClockwise;
-
-			mCES.mGPUDevice->createCachedImmutableState<GCI::RasterizerImmutableState>(
-					CxDef::GPA_STATE_ID_RASTERIZER_DEFAULT_CULL_FRONT_CCW,
-					rasterizerConfig );
+			descriptorCreateInfo.descriptorID = GID::kGfxIDStateDescriptorRasterizerSolidCullNoneCCW;
+			descriptorCreateInfo.rasterizerSettings.cullMode = GCI::ECullMode::None;
+			descriptorCreateInfo.rasterizerSettings.frontFaceVerticesOrder = GCI::ETriangleVerticesOrder::CounterClockwise;
+			descriptorCreateInfo.rasterizerSettings.primitiveFillMode = GCI::EPrimitiveFillMode::Solid;
+			mCES.mGPUDevice->CreateRasterizerStateDescriptor( descriptorCreateInfo );
 		}
 		{
-			GCI::RasterizerConfig rasterizerConfig = GCI::defaults::cvPipelineRasterizerConfigDefault;
-			rasterizerConfig.cullMode = GCI::ECullMode::Front;
-			rasterizerConfig.frontFaceVerticesOrder = GCI::ETriangleVerticesOrder::Clockwise;
-
-			mCES.mGPUDevice->createCachedImmutableState<GCI::RasterizerImmutableState>(
-					CxDef::GPA_STATE_ID_RASTERIZER_DEFAULT_CULL_FRONT_CW,
-					rasterizerConfig );
+			descriptorCreateInfo.descriptorID = GID::kGfxIDStateDescriptorRasterizerSolidCullNoneCW;
+			descriptorCreateInfo.rasterizerSettings.cullMode = GCI::ECullMode::None;
+			descriptorCreateInfo.rasterizerSettings.frontFaceVerticesOrder = GCI::ETriangleVerticesOrder::Clockwise;
+			descriptorCreateInfo.rasterizerSettings.primitiveFillMode = GCI::EPrimitiveFillMode::Solid;
+			mCES.mGPUDevice->CreateRasterizerStateDescriptor( descriptorCreateInfo );
+		}
+		{
+			descriptorCreateInfo.descriptorID = GID::kGfxIDStateDescriptorRasterizerWireframeCCW;
+			descriptorCreateInfo.rasterizerSettings.cullMode = GCI::ECullMode::None;
+			descriptorCreateInfo.rasterizerSettings.frontFaceVerticesOrder = GCI::ETriangleVerticesOrder::CounterClockwise;
+			descriptorCreateInfo.rasterizerSettings.primitiveFillMode = GCI::EPrimitiveFillMode::Wireframe;
+			mCES.mGPUDevice->CreateRasterizerStateDescriptor( descriptorCreateInfo );
+		}
+		{
+			descriptorCreateInfo.descriptorID = GID::kGfxIDStateDescriptorRasterizerWireframeCW;
+			descriptorCreateInfo.rasterizerSettings.cullMode = GCI::ECullMode::None;
+			descriptorCreateInfo.rasterizerSettings.frontFaceVerticesOrder = GCI::ETriangleVerticesOrder::Clockwise;
+			descriptorCreateInfo.rasterizerSettings.primitiveFillMode = GCI::EPrimitiveFillMode::Wireframe;
+			mCES.mGPUDevice->CreateRasterizerStateDescriptor( descriptorCreateInfo );
 		}
 	}
 
-	void GpaSharedStateLibrary::initializeDefaultImmutableInputLayoutStates()
+	void GCISharedStateLibrary::InitializeDefaultInputLayoutStateDescriptors()
 	{
+		auto shaderPassthroughIADefaultVS = mShaderLibrary->GetShader( "SID_DEFAULT_PASSTHROUGH_VS" );
+		if( !shaderPassthroughIADefaultVS )
 		{
-			GCI::IAInputLayoutDefinition inputLayoutDefinition;
-			inputLayoutDefinition.primitiveTopology = GCI::EPrimitiveTopology::TriangleList;
-			inputLayoutDefinition.mActiveAttributesMask =
-					GCI::eIAVertexAttributeFlagAttr0Bit |
-					GCI::eIAVertexAttributeFlagAttr1Bit |
-					GCI::eIAVertexAttributeFlagAttr2Bit |
-					GCI::eIAVertexAttributeFlagAttr3Bit;
-			inputLayoutDefinition.attributeArray[0] = { 0, "POSITION", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec3F32, 0 };
-			inputLayoutDefinition.attributeArray[1] = { 0, "COLOR", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec4F32, Ic3::Graphics::GCI::CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND };
-			inputLayoutDefinition.attributeArray[2] = { 0, "NORMAL", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec3F32, Ic3::Graphics::GCI::CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND };
-			inputLayoutDefinition.attributeArray[3] = { 0, "TEXCOORD", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec2F32, Ic3::Graphics::GCI::CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND };
-
-			const auto shaderPassthroughIADefaultVS = mShaderLibrary->getShader( CxDef::GPA_RESOURCE_ID_SHADER_PASSTHROUGH_IA_DEFAULT_VS );
-
-			mCES.mGPUDevice->createCachedImmutableState<GCI::IAInputLayoutImmutableState>(
-					CxDef::GPA_STATE_ID_IA_INPUT_LAYOUT_DEFAULT,
-					inputLayoutDefinition,
-					*shaderPassthroughIADefaultVS );
+			Ic3DebugOutputFmt(
+					"[GCISharedStateLibrary] Shader %s is missing from the ShaderLibrary, default IA state will not be created.",
+					GID::kShaderNamePassthroughIADefaultVS.str() );
+			return;
 		}
-		{
-			GCI::IAInputLayoutDefinition inputLayoutDefinition;
-			inputLayoutDefinition.primitiveTopology = GCI::EPrimitiveTopology::TriangleList;
-			inputLayoutDefinition.mActiveAttributesMask =
-					GCI::eIAVertexAttributeFlagAttr0Bit |
-					GCI::eIAVertexAttributeFlagAttr1Bit |
-					GCI::eIAVertexAttributeFlagAttr2Bit |
-					GCI::eIAVertexAttributeFlagAttr3Bit;
-			inputLayoutDefinition.attributeArray[0] = { 0, "POSITION", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec3F32, 0 };
-			inputLayoutDefinition.attributeArray[1] = { 0, "COLOR", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec4F32, Ic3::Graphics::GCI::CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND16 };
-			inputLayoutDefinition.attributeArray[2] = { 0, "NORMAL", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec3F32, Ic3::Graphics::GCI::CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND16 };
-			inputLayoutDefinition.attributeArray[3] = { 0, "TEXCOORD", 0, Ic3::Graphics::GCI::EVertexAttribFormat::Vec2F32, Ic3::Graphics::GCI::CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND16 };
 
-			const auto shaderPassthroughIADefaultVS = mShaderLibrary->getShader( CxDef::GPA_RESOURCE_ID_SHADER_PASSTHROUGH_IA_DEFAULT_VS );
+		GCI::VertexAttributeLayoutDescriptorCreateInfo descriptorCreateInfo{};
+		descriptorCreateInfo.flags = GCI::ePipelineStateDescriptorCreateMaskDefault;
+		descriptorCreateInfo.vertexShaderWithBinary = shaderPassthroughIADefaultVS.get();
 
-			mCES.mGPUDevice->createCachedImmutableState<GCI::IAInputLayoutImmutableState>(
-					CxDef::GPA_STATE_ID_IA_INPUT_LAYOUT_DEFAULT_16B,
-					inputLayoutDefinition,
-					*shaderPassthroughIADefaultVS );
-		}
+        {
+			descriptorCreateInfo.descriptorID = GID::kGfxIDStateDescriptorIAVertexAttributeLayoutDefault;
+        	GCIVertexAttributeLayoutBuilder gciAttributeLayoutBuilder{};
+            gciAttributeLayoutBuilder.AddAttribute( 0, kVertexAttributeKeySysPosition );
+            gciAttributeLayoutBuilder.AddAttribute( 0, kVertexAttributeKeySysFixedColorU8N );
+            gciAttributeLayoutBuilder.AddAttribute( 0, kVertexAttributeKeySysNormal );
+            gciAttributeLayoutBuilder.AddAttribute( 0, kVertexAttributeKeySysTexCoord2D0 );
+            descriptorCreateInfo.layoutDefinition =
+                gciAttributeLayoutBuilder.CreateGCIVertexAttributeLayoutDefinition( GCI::EPrimitiveTopology::TriangleList );
+
+	        auto vtxAttrLayoutSD = mCES.mGPUDevice->CreateVertexAttributeLayoutDescriptor( descriptorCreateInfo );
+	        vtxAttrLayoutSD.reset();
+        }
+        {
+			descriptorCreateInfo.descriptorID = GID::kGfxIDStateDescriptorIAVertexAttributeLayoutDefault16B;
+        	GCIVertexAttributeLayoutBuilder gciAttributeLayoutBuilder{};
+            gciAttributeLayoutBuilder.AddAttribute( 0, kVertexAttributeKeySysPosition, GCI::kIAVertexAttributePaddingAlign16 );
+            gciAttributeLayoutBuilder.AddAttribute( 0, kVertexAttributeKeySysFixedColorF32, GCI::kIAVertexAttributePaddingAlign16 );
+            gciAttributeLayoutBuilder.AddAttribute( 0, kVertexAttributeKeySysNormal, GCI::kIAVertexAttributePaddingAlign16 );
+            gciAttributeLayoutBuilder.AddAttribute( 0, kVertexAttributeKeySysTexCoord2D0, GCI::kIAVertexAttributePaddingAlign16 );
+            descriptorCreateInfo.layoutDefinition =
+                gciAttributeLayoutBuilder.CreateGCIVertexAttributeLayoutDefinition( GCI::EPrimitiveTopology::TriangleList );
+
+	        auto vtxAttrLayoutSD = mCES.mGPUDevice->CreateVertexAttributeLayoutDescriptor( descriptorCreateInfo );
+	        vtxAttrLayoutSD.reset();
+        }
 	}
 
-	void GpaSharedStateLibrary::initializeDefaultPipelineStateObjects()
+	void GCISharedStateLibrary::InitializeDefaultPipelineStateObjects()
 	{
 	}
 

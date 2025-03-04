@@ -1,5 +1,5 @@
 
-#include <Ic3/CoreLib/reflection/enumTypeInfo.h>
+#include <Ic3/CoreLib/Reflection/EnumTypeInfo.h>
 
 namespace Ic3
 {

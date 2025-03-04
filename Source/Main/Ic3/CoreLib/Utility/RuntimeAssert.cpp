@@ -8,7 +8,7 @@ namespace Ic3
 	{
 		std::string message{ "Debug assertion failed!" };
 		message.append( "\nWhere: " );
-		message.append( pLocationInfo.toString() );
+		message.append( pLocationInfo.ToString() );
 		message.append( "\nCondition: " );
 		message.append( pConditionStr );
 
@@ -31,7 +31,7 @@ namespace Ic3
 	{
 		std::string message{ "Debug interrupt triggered!" };
 		message.append( "\nWhere: " );
-		message.append( pLocationInfo.toString() );
+		message.append( pLocationInfo.ToString() );
 
 	#if( PCL_TARGET_OS == PCL_TARGET_OS_WINDESKTOP )
 		message.append( "\n\nAbort: terminate\nRetry: break here\nIgnore: skip" );
@@ -110,7 +110,7 @@ namespace Ic3
 	{
 		std::string message{ "\n|> Debug assertion failed!" };
 		message.append( "\n|> " );
-		message.append( pLocationInfo.toString() );
+		message.append( pLocationInfo.ToString() );
 		message.append( "\n|> [ " );
 		message.append( pConditionStr );
 		message.append( " ] is false\n" );
@@ -123,7 +123,7 @@ namespace Ic3
 	{
 		std::string message{ "\n|> Debug interrupt triggered!" };
 		message.append( "\n|> " );
-		message.append( pLocationInfo.toString() );
+		message.append( pLocationInfo.ToString() );
 		message.append( "\n" );
 
 		PCL_DEBUG_OUTPUT( message.c_str() );

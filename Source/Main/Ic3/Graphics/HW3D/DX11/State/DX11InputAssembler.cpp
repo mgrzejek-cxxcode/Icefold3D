@@ -8,30 +8,30 @@
 namespace Ic3::Graphics::GCI
 {
 
-	DX11IAInputLayoutImmutableState::DX11IAInputLayoutImmutableState(
+	DX11VertexAttributeLayoutDescriptor::DX11VertexAttributeLayoutDescriptor(
 			DX11GPUDevice & pGPUDevice,
-			const IAInputLayoutStateCommonProperties & pCommonProperties,
+			const IAVertexAttributeLayoutCommonProperties & pCommonProperties,
 			ComPtr<ID3D11InputLayout> pD3D11InputLayout,
 			D3D11_PRIMITIVE_TOPOLOGY pD3D11PrimitiveTopology )
-	: IAInputLayoutImmutableState( pGPUDevice, pCommonProperties )
+	: VertexAttributeLayoutDescriptor( pGPUDevice, pCommonProperties )
 	, mD3D11InputLayout( pD3D11InputLayout )
 	, mD3D11PrimitiveTopology( pD3D11PrimitiveTopology )
 	{}
 
-	DX11IAInputLayoutImmutableState::~DX11IAInputLayoutImmutableState() = default;
+	DX11VertexAttributeLayoutDescriptor::~DX11VertexAttributeLayoutDescriptor() = default;
 
-	GpaHandle<DX11IAInputLayoutImmutableState> DX11IAInputLayoutImmutableState::CreateInstance(
+	GpaHandle<DX11VertexAttributeLayoutDescriptor> DX11VertexAttributeLayoutDescriptor::CreateInstance(
 			DX11GPUDevice & pGPUDevice,
-			const IAInputLayoutDefinition & pInputLayoutDefinition,
+			const IAVertexAttributeLayoutDefinition & pAttributeLayoutDefinition,
 			const ShaderBinary & pVertexShaderBinary )
 	{
-		const auto inputLayoutCommonProperties = SMU::GetIAInputLayoutStateCommonProperties( pInputLayoutDefinition );
-		const auto dx11InputLayoutDefinition = SMU::TranslateDX11IAInputLayoutDefinition( pInputLayoutDefinition );
+		const auto vertexAttributeLayoutCommonProperties = GCU::GetIAVertexAttributeLayoutCommonProperties( pAttributeLayoutDefinition );
+		const auto dx11AttributeLayoutDefinition = GCU::TranslateDX11IAVertexAttributeLayoutDefinition( pAttributeLayoutDefinition );
 
 		ComPtr<ID3D11InputLayout> d3d11InputLayout;
 		const auto hResult = pGPUDevice.mD3D11Device1->CreateInputLayout(
-				dx11InputLayoutDefinition.attributeArray.data(),
-				dx11InputLayoutDefinition.mActiveAttributesNum,
+				dx11AttributeLayoutDefinition.attributeArray.data(),
+				dx11AttributeLayoutDefinition.mActiveAttributesNum,
 				pVertexShaderBinary.dataBuffer,
 				pVertexShaderBinary.dataSizeInBytes,
 				d3d11InputLayout.GetAddressOf() );
@@ -42,43 +42,43 @@ namespace Ic3::Graphics::GCI
 			return nullptr;
 		}
 
-		auto immutableState = CreateGfxObject<DX11IAInputLayoutImmutableState>(
+		auto stateDescriptor = CreateGfxObject<DX11VertexAttributeLayoutDescriptor>(
 				pGPUDevice,
-				inputLayoutCommonProperties,
+				vertexAttributeLayoutCommonProperties,
 				d3d11InputLayout,
-				dx11InputLayoutDefinition.primitiveTopology );
+				dx11AttributeLayoutDefinition.primitiveTopology );
 
-		return immutableState;
+		return stateDescriptor;
 	}
 
 
-	DX11IAVertexStreamImmutableState::DX11IAVertexStreamImmutableState(
+	DX11VertexSourceBindingDescriptor::DX11VertexSourceBindingDescriptor(
 			DX11GPUDevice & pGPUDevice,
-			const IAVertexStreamStateCommonProperties & pCommonProperties,
-			const DX11IAVertexStreamDefinition & pDX11VertexStreamDefinition )
-	: IAVertexStreamImmutableState( pGPUDevice, pCommonProperties )
-	, mDX11VertexStreamDefinition( pDX11VertexStreamDefinition )
+			const VertexSourceBindingDescriptorCommonProperties & pCommonProperties,
+			const DX11IASourceBindingDefinition & pDX11SourceBindingDefinition )
+	: VertexSourceBindingDescriptor( pGPUDevice, pCommonProperties )
+	, mDX11SourceBindingDefinition( pDX11SourceBindingDefinition )
 	{}
 
-	DX11IAVertexStreamImmutableState::~DX11IAVertexStreamImmutableState() = default;
+	DX11VertexSourceBindingDescriptor::~DX11VertexSourceBindingDescriptor() = default;
 
-	GpaHandle<DX11IAVertexStreamImmutableState> DX11IAVertexStreamImmutableState::CreateInstance(
+	GpaHandle<DX11VertexSourceBindingDescriptor> DX11VertexSourceBindingDescriptor::CreateInstance(
 			DX11GPUDevice & pGPUDevice,
-			const IAVertexStreamDefinition & pVertexStreamDefinition )
+			const IADataStreamArrayConfiguration & pSourceBindingDefinition )
 	{
-		const auto vertexStreamCommonProperties = SMU::GetIAVertexStreamStateCommonProperties( pVertexStreamDefinition );
-		const auto dx11VertexStreamDefinition = SMU::TranslateDX11IAVertexStreamDefinition( pVertexStreamDefinition );
+		const auto vertexStreamCommonProperties = GCU::GetVertexSourceBindingDescriptorCommonProperties( pSourceBindingDefinition );
+		const auto dx11SourceBindingDefinition = GCU::TranslateDX11IASourceBindingDefinition( pSourceBindingDefinition );
 
-		auto immutableState = CreateGfxObject<DX11IAVertexStreamImmutableState>(
+		auto stateDescriptor = CreateGfxObject<DX11VertexSourceBindingDescriptor>(
 				pGPUDevice,
 				vertexStreamCommonProperties,
-				dx11VertexStreamDefinition );
+				dx11SourceBindingDefinition );
 
-		return immutableState;
+		return stateDescriptor;
 	}
 
 	
-	namespace SMU
+	namespace GCU
 	{
 
 		D3D11_INPUT_ELEMENT_DESC TranslateDX11IAVertexAttributeInfo(
@@ -97,10 +97,10 @@ namespace Ic3::Graphics::GCI
 			return d3D11InputElementDesc;
 		}
 
-		DX11IAInputLayoutDefinition TranslateDX11IAInputLayoutDefinition(
-				const IAInputLayoutDefinition & pDefinition )
+		DX11IAVertexAttributeLayoutDefinition TranslateDX11IAVertexAttributeLayoutDefinition(
+				const IAVertexAttributeLayoutDefinition & pDefinition )
 		{
-			DX11IAInputLayoutDefinition dx11InputLayoutDefinition;
+			DX11IAVertexAttributeLayoutDefinition dx11AttributeLayoutDefinition;
 
 			const auto definedVertexAttributesNum = pop_count( pDefinition.mActiveAttributesMask );
 
@@ -109,28 +109,28 @@ namespace Ic3::Graphics::GCI
 
 			for( uint32 attributeIndex = 0; attributeIndex < GCM::IA_MAX_VERTEX_ATTRIBUTES_NUM; ++attributeIndex )
 			{
-				const auto attributeBit = CxDef::makeIAVertexAttributeFlag( attributeIndex );
+				const auto attributeBit = CXU::MakeIAVertexAttributeFlag( attributeIndex );
 				if( pDefinition.mActiveAttributesMask.is_set( attributeBit ) )
 				{
 					const auto & inputAttributeInfo = pDefinition.attributeArray[attributeIndex];
-					auto & dx11AttributeInfo = dx11InputLayoutDefinition.attributeArray[currentVertexAttributesNum];
+					auto & dx11AttributeInfo = dx11AttributeLayoutDefinition.attributeArray[currentVertexAttributesNum];
 
 					// Translate the attribute data. This includes the relative offset.
 					dx11AttributeInfo = TranslateDX11IAVertexAttributeInfo( inputAttributeInfo );
 
-					if( inputAttributeInfo.relativeOffset == CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND )
+					if( inputAttributeInfo.relativeOffset == CXU::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND )
 					{
 						// If the offset is APPEND, update it with the current packed offset calculated.
 						dx11AttributeInfo.AlignedByteOffset = cppx::numeric_cast<uint32>( mem_get_aligned_value( currentAttributePackedRelativeOffset, 4 ) );
 					}
-					else if( inputAttributeInfo.relativeOffset == CxDef::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND16 )
+					else if( inputAttributeInfo.relativeOffset == CXU::IA_VERTEX_ATTRIBUTE_OFFSET_APPEND16 )
 					{
 						// If the offset is APPEND, update it with the current packed offset calculated.
 						dx11AttributeInfo.AlignedByteOffset = cppx::numeric_cast<uint32>( mem_get_aligned_value( currentAttributePackedRelativeOffset, 16 ) );
 					}
 
 					// Update the current packed offset.
-					const auto attributeByteSize = CxDef::GetVertexAttribFormatByteSize( inputAttributeInfo.format );
+					const auto attributeByteSize = CXU::GetVertexAttribFormatByteSize( inputAttributeInfo.format );
 					currentAttributePackedRelativeOffset = dx11AttributeInfo.AlignedByteOffset + attributeByteSize;
 
 					++currentVertexAttributesNum;
@@ -142,27 +142,27 @@ namespace Ic3::Graphics::GCI
 				}
 			}
 
-			dx11InputLayoutDefinition.mActiveAttributesNum = currentVertexAttributesNum;
-			dx11InputLayoutDefinition.primitiveTopology = ATL::TranslateDX11PrimitiveTopology( pDefinition.primitiveTopology );
+			dx11AttributeLayoutDefinition.mActiveAttributesNum = currentVertexAttributesNum;
+			dx11AttributeLayoutDefinition.primitiveTopology = ATL::TranslateDX11PrimitiveTopology( pDefinition.primitiveTopology );
 
-			return dx11InputLayoutDefinition;
+			return dx11AttributeLayoutDefinition;
 		}
 
-		DX11IAVertexStreamDefinition TranslateDX11IAVertexStreamDefinition(
-				const IAVertexStreamDefinition & pDefinition )
+		DX11IASourceBindingDefinition TranslateDX11IASourceBindingDefinition(
+				const IADataStreamArrayConfiguration & pDefinition )
 		{
-			DX11IAVertexStreamDefinition dx11IAVertexStreamDefinition;
+			DX11IASourceBindingDefinition dx11IASourceBindingDefinition;
 
 			if( pDefinition.indexBufferReference )
 			{
 				auto * dx11IndexBuffer = pDefinition.indexBufferReference.sourceBuffer->QueryInterface<DX11GPUBuffer>();
 
-				dx11IAVertexStreamDefinition.indexBufferBinding.buffer = dx11IndexBuffer->mD3D11Buffer.Get();
+				dx11IASourceBindingDefinition.indexBufferBinding.buffer = dx11IndexBuffer->mD3D11Buffer.Get();
 
-				dx11IAVertexStreamDefinition.indexBufferBinding.offset =
+				dx11IASourceBindingDefinition.indexBufferBinding.offset =
 						cppx::numeric_cast<uint32>( pDefinition.indexBufferReference.relativeOffset );
 
-				dx11IAVertexStreamDefinition.indexBufferBinding.format =
+				dx11IASourceBindingDefinition.indexBufferBinding.format =
 						ATL::TranslateDXShaderCompileFlags( static_cast<EBaseDataType>( pDefinition.indexBufferReference.indexFormat ) );
 			}
 
@@ -172,21 +172,21 @@ namespace Ic3::Graphics::GCI
 				{
 					auto * dx11VertexBuffer = vertexBufferReference.sourceBuffer->QueryInterface<DX11GPUBuffer>();
 
-					dx11IAVertexStreamDefinition.vertexBufferBindings.bindingData.bufferArray[vertexInputStreamIndex] =
+					dx11IASourceBindingDefinition.vertexBufferBindings.bindingData.bufferArray[vertexInputStreamIndex] =
 							dx11VertexBuffer->mD3D11Buffer.Get();
 
-					dx11IAVertexStreamDefinition.vertexBufferBindings.bindingData.offsetArray[vertexInputStreamIndex] =
+					dx11IASourceBindingDefinition.vertexBufferBindings.bindingData.offsetArray[vertexInputStreamIndex] =
 							cppx::numeric_cast<UINT>( vertexBufferReference.relativeOffset );
 
-					dx11IAVertexStreamDefinition.vertexBufferBindings.bindingData.strideArray[vertexInputStreamIndex] =
+					dx11IASourceBindingDefinition.vertexBufferBindings.bindingData.strideArray[vertexInputStreamIndex] =
 							cppx::numeric_cast<UINT>( vertexBufferReference.vertexStride );
 				}
 			}
 
-			dx11IAVertexStreamDefinition.activeBindingsMask = pDefinition.activeBindingsMask;
-			dx11IAVertexStreamDefinition.vertexBufferBindings.activeRanges = SMU::GenerateActiveVertexBufferRanges( pDefinition.vertexBufferReferences );
+			dx11IASourceBindingDefinition.activeStreamsMask = pDefinition.activeStreamsMask;
+			dx11IASourceBindingDefinition.vertexBufferBindings.activeRanges = GCU::GenerateActiveVertexBufferRanges( pDefinition.vertexBufferReferences );
 
-			return dx11IAVertexStreamDefinition;
+			return dx11IASourceBindingDefinition;
 		}
 
 	}

@@ -14,6 +14,9 @@ namespace Ic3::Graphics::GCI
 
 	class GraphicsPipelineStateController;
 
+	/**
+	 *
+	 */
 	class IC3_GRAPHICS_GCI_CLASS CommandList : public GPUDeviceChildObject
 	{
 	public:
@@ -58,24 +61,22 @@ namespace Ic3::Graphics::GCI
 		bool UpdateBufferDataUpload( GPUBuffer & pBuffer, const GPUBufferDataUploadDesc & pUploadDesc );
 		bool UpdateBufferSubDataUpload( GPUBuffer & pBuffer, const GPUBufferSubDataUploadDesc & pUploadDesc );
 
-		virtual bool BeginRenderPass(
-				const RenderPassConfigurationImmutableState & pRenderPassState,
-				cppx::bitmask<ECommandListActionFlags> pFlags );
+		bool BeginRenderPass( const RenderPassDescriptor & pRenderPassDescriptor, cppx::bitmask<ECommandListActionFlags> pFlags );
+		bool BeginRenderPassDynamic( RenderPassDescriptorDynamic & pRenderPassDescriptor, cppx::bitmask<ECommandListActionFlags> pFlags );
+		void EndRenderPass();
 
-		virtual bool BeginRenderPass(
-				const RenderPassConfigurationDynamicState & pRenderPassState,
-				cppx::bitmask<ECommandListActionFlags> pFlags );
+		bool SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPipelineStateObject );
 
-		virtual void EndRenderPass();
+		bool SetRenderTargetDescriptor( const RenderTargetDescriptor & pRenderTargetDescriptor );
+		bool SetRenderTargetDescriptorDynamic( RenderTargetDescriptorDynamic & pRenderTargetDescriptor );
 
-		void SetRenderPassDynamicState( const GraphicsPipelineDynamicState & pDynamicState );
-		void ResetRenderPassDynamicState();
+		bool SetVertexSourceBindingDescriptor( const VertexSourceBindingDescriptor & pVertexSourceBindingDescriptor );
+		bool SetVertexSourceBindingDescriptorDynamic( VertexSourceBindingDescriptorDynamic & pVertexSourceBindingDescriptor );
 
-		bool SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPSO );
-		bool SetIAVertexStreamState( const IAVertexStreamImmutableState & pIAVertexStreamState );
-		bool SetIAVertexStreamState( const IAVertexStreamDynamicState & pIAVertexStreamState );
-		bool SetRenderTargetBindingState( const RenderTargetBindingImmutableState & pRenderTargetBindingState );
-		bool SetRenderTargetBindingState( const RenderTargetBindingDynamicState & pRenderTargetBindingState );
+		void CmdSetDynamicBlendConstantColor( const Math::RGBAColorR32Norm & pBlendConstantColor );
+		void CmdSetDynamicRenderTargetClearConfig( const RenderTargetAttachmentClearConfig & pClearConfig );
+		void CmdSetDynamicStencilTestRefValue( uint8 pStencilRefValue );
+		void CmdResetDynamicPipelineConfig( cppx::bitmask<EGraphicsPipelineDynamicConfigFlags> pConfigMask );
 
 		bool CmdSetViewport( const ViewportDesc & pViewportDesc );
 		bool CmdSetShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData );
@@ -86,58 +87,54 @@ namespace Ic3::Graphics::GCI
 		virtual void CmdDispatchCompute( uint32 pThrGroupSizeX, uint32 pThrGroupSizeY, uint32 pThrGroupSizeZ ) {} // = 0;
 		virtual void CmdDispatchComputeIndirect( uint32 pIndirectBufferOffset ) {} // = 0;
 
-		virtual void CmdDrawDirectIndexed( native_uint pIndicesNum, native_uint pIndicesOffset, native_uint pBaseVertexIndex ) = 0;
-		virtual void CmdDrawDirectIndexedInstanced( native_uint pIndicesNumPerInstance, native_uint pInstancesNum, native_uint pIndicesOffset ) = 0;
-		virtual void CmdDrawDirectNonIndexed( native_uint pVerticesNum, native_uint pVerticesOffset ) = 0;
-		virtual void CmdDrawDirectNonIndexedInstanced( native_uint pVerticesNumPerInstance, native_uint pInstancesNum, native_uint pVerticesOffset ) = 0;
+		virtual void CmdDrawDirectIndexed(
+				native_uint pIndicesNum,
+				native_uint pIndicesOffset,
+				native_uint pBaseVertexIndex ) = 0;
+
+		virtual void CmdDrawDirectIndexedInstanced(
+				native_uint pIndicesNumPerInstance,
+				native_uint pInstancesNum,
+				native_uint pIndicesOffset ) = 0;
+
+		virtual void CmdDrawDirectNonIndexed(
+				native_uint pVerticesNum,
+				native_uint pVerticesOffset ) = 0;
+
+		virtual void CmdDrawDirectNonIndexedInstanced(
+				native_uint pVerticesNumPerInstance,
+				native_uint pInstancesNum,
+				native_uint pVerticesOffset ) = 0;
 
 		virtual void CmdExecuteDeferredContext( CommandContextDeferred & pDeferredContext ) = 0;
 
+	protected:
+		const RenderPassDescriptor * GetCurrentRenderPassDescriptor() const noexcept;
+
+		void ValidateActiveRenderPassOrThrow() const;
+
+		virtual bool ValidateActiveRenderPass() const noexcept;
+
+		virtual bool OnBeginRenderPass(
+				const RenderPassDescriptor & pRenderPassDescriptor,
+				cppx::bitmask<ECommandListActionFlags> pFlags );
+
+		virtual bool OnBeginRenderPassDynamic(
+				RenderPassDescriptorDynamic & pRenderPassDescriptor,
+				cppx::bitmask<ECommandListActionFlags> pFlags );
+
+		virtual void OnEndRenderPass();
+
 	private:
-		bool OnBeginRenderPass( cppx::bitmask<ECommandListActionFlags> pFlags );
-		void OnEndRenderPass();
+		void OnBeginRenderPassUpdateInternal( cppx::bitmask<ECommandListActionFlags> pFlags );
 
 	protected:
+		//
 		std::atomic<bool> _listLockStatus = ATOMIC_VAR_INIT( false );
-
+		//
 		cppx::bitmask<uint32> _internalStateMask;
-
-		GraphicsPipelineStateController * _graphicsPipelineStateController = nullptr;
-	};
-
-	class IC3_GRAPHICS_GCI_CLASS CommandListRenderPassDefault : public CommandList
-	{
-	public:
-		CommandListRenderPassDefault(
-				CommandSystem & pCommandSystem,
-		ECommandListType pListType,
-				GraphicsPipelineStateController & pPipelineStateController );
-
-		virtual ~CommandListRenderPassDefault();
-
-		CPPX_ATTR_NO_DISCARD const RenderPassConfiguration & GetRenderPassConfiguration() const noexcept;
-
-		virtual bool BeginRenderPass(
-				const RenderPassConfigurationImmutableState & pRenderPassState,
-				cppx::bitmask<ECommandListActionFlags> pFlags ) override;
-
-		virtual bool BeginRenderPass(
-				const RenderPassConfigurationDynamicState & pRenderPassState,
-				cppx::bitmask<ECommandListActionFlags> pFlags ) override;
-
-		virtual void EndRenderPass() override;
-
-	protected:
-		virtual void ExecuteRenderPassLoadActions(
-				const RenderPassConfiguration & pRenderPassConfiguration,
-				const GraphicsPipelineDynamicState & pDynamicState ) = 0;
-
-		virtual void ExecuteRenderPassStoreActions(
-				const RenderPassConfiguration & pRenderPassConfiguration,
-				const GraphicsPipelineDynamicState & pDynamicState ) = 0;
-
-	private:
-		RenderPassConfiguration _currentRenderPassConfiguration;
+		//
+		GraphicsPipelineStateController * const _graphicsPipelineStateController = nullptr;
 	};
 
 } // namespace Ic3::Graphics::GCI

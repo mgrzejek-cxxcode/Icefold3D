@@ -7,7 +7,7 @@
 
 #include <cppx/stringUtils.h>
 
-#include <Ic3/NxMain/GCI/VertexFormatDescriptor.h>
+#include <Ic3/NxMain/GCI/VertexFormatSignature.h>
 #include <Ic3/NxMain/GCI/VertexFormatDescriptorUtils.h>
 
 int main( int pArgc, const char ** pArgv )
@@ -15,7 +15,7 @@ int main( int pArgc, const char ** pArgv )
 	{
 		using namespace Ic3;
 
-		VertexFormatDescriptorBuilder vfdBuilder{};
+		VertexFormatBuilderBase vfdBuilder{};
 		vfdBuilder.addAttribute( 0, cxStandardVertexAttributeKeyPosition );
 		vfdBuilder.addAttribute( 0, cxStandardVertexAttributeKeyNormal );
 		vfdBuilder.addAttribute( 0, cxStandardVertexAttributeKeyTangent );
@@ -28,14 +28,14 @@ int main( int pArgc, const char ** pArgv )
 
 		const auto sid1 = vfd->generateVertexFormatStringID();
 		const auto defArray0 = vfd->generateAttributeDefinitionArray();
-		const auto defArray1 = VertexFormatDescriptorBuilder::parseVertexFormatString( sid1 );
+		const auto defArray1 = VertexFormatBuilderBase::parseVertexFormatString( sid1 );
 
-		VertexFormatDescriptorBuilder vfdBuilder0{};
+		VertexFormatBuilderBase vfdBuilder0{};
 		vfdBuilder0.addAttributeList( cppx::bind_array_view( defArray0 ) );
 		auto vfdCopy0 = vfdBuilder0.createVertexFormatDescriptor( GCI::EPrimitiveTopology::TriangleList, GCI::EIndexDataFormat::Uint32 );
 		const auto sidCopy0 = vfd->generateVertexFormatStringID();
 
-		VertexFormatDescriptorBuilder vfdBuilder1{};
+		VertexFormatBuilderBase vfdBuilder1{};
 		vfdBuilder1.addAttributeList( cppx::bind_array_view( defArray1 ) );
 		auto vfdCopy1 = vfdBuilder1.createVertexFormatDescriptor( GCI::EPrimitiveTopology::TriangleList, GCI::EIndexDataFormat::Uint32 );
 		const auto sidCopy1 = vfd->generateVertexFormatStringID();

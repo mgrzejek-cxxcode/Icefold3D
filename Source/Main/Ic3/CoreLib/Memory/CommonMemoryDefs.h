@@ -22,30 +22,30 @@ namespace Ic3
     using MemoryRange = MemoryRegion::range_type;
 
 	/// @brief Represents an invalid memory offset, expressed as the maximum value of the memory_size_t type.
-	constexpr memory_size_t cxMemoryOffsetInvalid = cppx::meta::limits<memory_size_t>::max_value;
+	constexpr memory_size_t kMemoryOffsetInvalid = cppx::meta::limits<memory_size_t>::max_value;
 
 	/// @brief Represents maximum possible size of single block/region of memory.
-	constexpr memory_size_t cxMemorySizeMax = cppx::meta::limits<memory_size_t>::max_value;
+	constexpr memory_size_t kMemorySizeMax = cppx::meta::limits<memory_size_t>::max_value;
 
 	/// @brief Default alignment value for CPU-side (RAM) memory allocation.
-	inline constexpr uint32 cxMemoryCpuDefaultAlignment = PCL_MEMORY_BASE_ALIGNMENT;
+	inline constexpr uint32 kMemoryCPUDefaultAlignment = PCL_MEMORY_BASE_ALIGNMENT;
 
 	/// @brief Default alignment value for GPU-side (VideoRAM) memory allocation.
-	inline constexpr uint32 cxMemoryGPUDefaultAlignment = 64;
+	inline constexpr uint32 kMemoryGPUDefaultAlignment = 64;
 
 	/// @brief
 	struct AllocNewSizeExplicitTag
 	{};
 
 	/// @brief
-	inline constexpr AllocNewSizeExplicitTag cvAllocNewSizeExplicit{};
+	inline constexpr AllocNewSizeExplicitTag kAllocNewSizeExplicit{};
 
 }
 
 inline void * operator new( size_t pSize, const Ic3::AllocNewSizeExplicitTag &, size_t pExtraSize )
 {
 	const auto requestedObjectSize = pSize + pExtraSize;
-	const auto allocationSize = cppx::mem_get_aligned_value( requestedObjectSize, Ic3::cxMemoryCpuDefaultAlignment );
+	const auto allocationSize = cppx::mem_get_aligned_value( requestedObjectSize, Ic3::kMemoryCPUDefaultAlignment );
 	return std::malloc( allocationSize );
 }
 

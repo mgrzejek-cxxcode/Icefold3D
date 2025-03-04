@@ -1,13 +1,13 @@
 
 #pragma once
 
-#ifndef __IC3_GRAPHICS_HW3D_GLCOMMON_GPU_DEVICE_H__
-#define __IC3_GRAPHICS_HW3D_GLCOMMON_GPU_DEVICE_H__
+#ifndef __IC3_GRAPHICS_HW3D_GLC_GPU_DEVICE_H__
+#define __IC3_GRAPHICS_HW3D_GLC_GPU_DEVICE_H__
 
 #include "GLAPITranslationLayer.h"
-#include "State/GLPipelineImmutableStateFactory.h"
+#include "State/GLPipelineStateDescriptorFactory.h"
 #include <Ic3/Graphics/GCI/GPUDevice.h>
-#include <Ic3/Graphics/GCI/State/SharedImmutableStateCache.h>
+#include <Ic3/Graphics/GCI/State/PipelineStateDescriptorManager.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -16,6 +16,15 @@ namespace Ic3::Graphics::GCI
 	class GLGraphicsPipelineStateController;
 	class GLGraphicsPipelineStateObject;
 	class GLVertexStreamStateObject;
+
+	class GLGPUDeviceFeatureQuery : public GPUDeviceFeatureQuery
+	{
+	public:
+		GLGPUDeviceFeatureQuery() = default;
+		virtual ~GLGPUDeviceFeatureQuery() = default;
+
+		virtual MultiSamplingSettingsList EnumSupportedMultisamplingConfigs( ETextureFormat pFormat ) const noexcept override final;
+	};
 
 	/// @brief
 	class GLGPUDevice : public GPUDevice
@@ -32,7 +41,10 @@ namespace Ic3::Graphics::GCI
 		cppx::bitmask<EGLRuntimeSupportFlags> const mGLRuntimeSupportFlags;
 
 	public:
-		explicit GLGPUDevice( GLGPUDriver & pGPUDriver, GLPipelineImmutableStateFactory & pImmutableStateFactory );
+		explicit GLGPUDevice(
+				GLGPUDriver & pGPUDriver,
+				GLPipelineStateDescriptorFactory & pStateDescriptorFactory );
+
 		virtual ~GLGPUDevice();
 
 		CPPX_ATTR_NO_DISCARD virtual bool IsCompatibilityDevice() const noexcept = 0;
@@ -50,8 +62,11 @@ namespace Ic3::Graphics::GCI
 	    virtual bool _DrvOnSetPresentationLayer( PresentationLayerHandle pPresentationLayer ) override;
 
 		virtual GPUBufferHandle _DrvCreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo ) override final;
+
 	    virtual SamplerHandle _DrvCreateSampler( const SamplerCreateInfo & pCreateInfo ) override final;
+
 		virtual ShaderHandle _DrvCreateShader( const ShaderCreateInfo & pCreateInfo ) override final;
+
 		virtual TextureHandle _DrvCreateTexture( const TextureCreateInfo & pCreateInfo ) override final;
 
 		virtual RenderTargetTextureHandle _DrvCreateRenderTargetTexture(
@@ -61,9 +76,10 @@ namespace Ic3::Graphics::GCI
 				const GraphicsPipelineStateObjectCreateInfo & pCreateInfo ) override final;
 
 	private:
-		GLPipelineImmutableStateFactory * _immutableStateFactoryGL;
-		SharedImmutableStateCache _immutableStateCache;
-		std::unique_ptr<GLDebugOutput> _glDebugOutput;
+		GLPipelineStateDescriptorFactory * _glcPipelineStateDescriptorFactory;
+		PipelineStateDescriptorManager _pipelineStateDescriptorManager;
+		GLGPUDeviceFeatureQuery _glcDeviceFeatureQueryInterface;
+		std::unique_ptr<GLDebugOutput> _glcDebugOutput;
 	};
 
 	class GLGPUDeviceCore : public GLGPUDevice
@@ -75,7 +91,7 @@ namespace Ic3::Graphics::GCI
 		virtual bool IsCompatibilityDevice() const noexcept override final;
 
 	private:
-		GLPipelineImmutableStateFactoryCore _immutableStateFactoryCore;
+		GLPipelineStateDescriptorFactoryCore _immutableDescriptorFactoryCore;
 	};
 
 	class GLGPUDeviceCompat : public GLGPUDevice
@@ -87,9 +103,9 @@ namespace Ic3::Graphics::GCI
 		virtual bool IsCompatibilityDevice() const noexcept override final;
 
 	private:
-		GLPipelineImmutableStateFactoryCompat _immutableStateFactoryCompat;
+		GLPipelineStateDescriptorFactoryCompat _immutableDescriptorFactoryCompat;
 	};
 
 } // namespace Ic3::Graphics::GCI
 
-#endif // __IC3_GRAPHICS_HW3D_GLCOMMON_GPU_DEVICE_H__
+#endif // __IC3_GRAPHICS_HW3D_GLC_GPU_DEVICE_H__

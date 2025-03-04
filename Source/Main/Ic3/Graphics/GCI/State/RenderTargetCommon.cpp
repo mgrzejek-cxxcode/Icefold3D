@@ -7,6 +7,193 @@
 namespace Ic3::Graphics::GCI
 {
 
+	RenderTargetLayout TRenderTargetArrayConfiguration<RenderTargetAttachmentBinding>::GetRenderTargetLayout() const noexcept
+	{
+		return GCU::RTOGetRenderTargetLayoutForBinding( *this );
+	}
+
+	cppx::bitmask<ERTAttachmentFlags> TRenderTargetArrayConfiguration<RenderTargetAttachmentBinding>::GetResolveAttachmentsMask() const noexcept
+	{
+		cppx::bitmask<ERTAttachmentFlags> resolveAttachmentsMask = 0;
+
+		GCU::ForEachRTAttachmentIndex(
+			activeAttachmentsMask,
+			[&]( native_uint pAttachmentIndex, ERTAttachmentFlags pAttachmentBit ) -> bool {
+				if( attachments[pAttachmentIndex].resolveTexture )
+				{
+					resolveAttachmentsMask.set( pAttachmentBit );
+				}
+				return true;
+			});
+
+		return resolveAttachmentsMask;
+	}
+
+	namespace GCU
+	{
+
+		EGPUResourceUsageFlags RTOGetAttachmentRequiredUsageMask(
+				native_uint pAttachmentIndex,
+				cppx::bitmask<ERenderTargetBufferFlags> pOptionalRTAMask )
+		{
+			if( CXU::RTOIsAttachmentIndexValid( pAttachmentIndex ) )
+			{
+				if( CXU::RTOIsColorAttachmentIndexValid( pAttachmentIndex ) )
+				{
+					// If the query is for one of the color attachments, we need eGPUResourceUsageFlagRenderTargetColorBit.
+					return eGPUResourceUsageFlagRenderTargetColorBit;
+				}
+				else
+				{
+					if( pOptionalRTAMask.is_set( eRenderTargetBufferMaskDepthStencil ) )
+					{
+						// Depth-stencil usage requires eGPUResourceUsageMaskRenderTargetDepthStencil.
+						return eGPUResourceUsageMaskRenderTargetDepthStencil;
+					}
+					else if( pOptionalRTAMask.is_set( eRenderTargetBufferFlagDepthBit ) )
+					{
+						// Depth-only usage requires eGPUResourceUsageFlagRenderTargetDepthBit.
+						return eGPUResourceUsageFlagRenderTargetDepthBit;
+					}
+					else if( pOptionalRTAMask.is_set( eRenderTargetBufferFlagStencilBit ) )
+					{
+						// Stencil-only usage requires eGPUResourceUsageFlagRenderTargetStencilBit.
+						return eGPUResourceUsageFlagRenderTargetStencilBit;
+					}
+				}
+			}
+
+			// Returned mask is used for validation - we check whether the specified resource has valid usage
+			// configured, so that it can be attached to the pipeline as an RT attachment. Thus, in case of an
+			// invalid index we return the complete mask with all usages - then, even in naive, unchecked code
+			// like: if( someResource.HasUsage( RTOGetAttachmentRequiredUsageMask( eRTIndexDepthStencil ) ) )
+			// the behaviour will be correct (in the case above the check will fail - but returning 0, for example,
+			// would make this check successful).
+			return eGPUResourceUsageMaskAll;
+		}
+
+		cppx::bitmask<ERenderTargetBufferFlags> RTOGetBufferMaskForRenderTargetTextureType( ERenderTargetTextureType pRenderTargetTextureType )
+		{
+			return static_cast<uint32>( pRenderTargetTextureType ) & eRenderTargetBufferMaskAll;
+		}
+
+		RenderTargetLayout RTOGetRenderTargetLayoutForBinding( const RenderTargetBinding & pRenderTargetBinding )
+		{
+			RenderTargetLayout renderTargetLayout{};
+
+			const auto bindingValid = ForEachRTAttachmentIndex( pRenderTargetBinding.activeAttachmentsMask,
+				[&]( native_uint pIndex, ERTAttachmentFlags pAttachmentBit )
+				{
+					if( const auto & attachmentBinding = pRenderTargetBinding.attachments[pIndex] )
+					{
+						if( renderTargetLayout.sharedImageSize == cxTextureSize2DUndefined )
+						{
+							renderTargetLayout.sharedImageSize = attachmentBinding.baseTexture->mRTTextureLayout.imageRect;
+							renderTargetLayout.sharedMultiSamplingSettings.sampleCount = attachmentBinding.baseTexture->mRTTextureLayout.msaaLevel;
+							renderTargetLayout.sharedMultiSamplingSettings.sampleQuality = 1;
+						}
+						else if( renderTargetLayout.sharedImageSize != attachmentBinding.baseTexture->mRTTextureLayout.imageRect )
+						{
+							renderTargetLayout.sharedImageSize = cxTextureSize2DUndefined;
+							return false;
+						}
+						renderTargetLayout.attachments[pIndex].format = attachmentBinding.baseTexture->mRTTextureLayout.internalFormat;
+					}
+					return true;
+				});
+
+			if( bindingValid )
+			{
+				renderTargetLayout.activeAttachmentsMask = pRenderTargetBinding.activeAttachmentsMask;
+				renderTargetLayout.activeAttachmentsNum = pRenderTargetBinding.activeAttachmentsNum;
+			}
+
+			return renderTargetLayout;
+		}
+
+		RenderTargetLayout TranslateSystemVisualConfigToRenderTargetLayout( const System::VisualConfig & pSysVisualConfig )
+		{
+			ETextureFormat colorAttachmentFormat = ETextureFormat::Undefined;
+			switch( pSysVisualConfig.colorFormat )
+			{
+				case System::EColorFormat::B8G8R8:       colorAttachmentFormat = ETextureFormat::BGRX8UN;   break;
+				case System::EColorFormat::B8G8R8A8:     colorAttachmentFormat = ETextureFormat::BGRA8UN;   break;
+				case System::EColorFormat::B8G8R8A8SRGB: colorAttachmentFormat = ETextureFormat::BGRA8SRGB; break;
+				case System::EColorFormat::B8G8R8X8:     colorAttachmentFormat = ETextureFormat::BGRX8UN;   break;
+				case System::EColorFormat::R8G8B8A8:     colorAttachmentFormat = ETextureFormat::RGBA8UN;   break;
+				case System::EColorFormat::R8G8B8A8SRGB: colorAttachmentFormat = ETextureFormat::RGBA8SRGB; break;
+				case System::EColorFormat::R8G8B8X8:     colorAttachmentFormat = ETextureFormat::RGBX8UN;   break;
+				case System::EColorFormat::R10G10B10A2:  colorAttachmentFormat = ETextureFormat::BGRX8UN;   break;
+
+				default:
+					break;
+			}
+
+			ETextureFormat depthStencilAttachmentFormat = ETextureFormat::Undefined;
+			switch( pSysVisualConfig.depthStencilFormat )
+			{
+				case System::EDepthStencilFormat::D16:    depthStencilAttachmentFormat = ETextureFormat::D16UN;    break;
+				case System::EDepthStencilFormat::D24S8:  depthStencilAttachmentFormat = ETextureFormat::D24UNS8U; break;
+				case System::EDepthStencilFormat::D24X8:  depthStencilAttachmentFormat = ETextureFormat::D24UNX8;  break;
+				case System::EDepthStencilFormat::D32F:   depthStencilAttachmentFormat = ETextureFormat::D32F;     break;
+				case System::EDepthStencilFormat::D32FS8: depthStencilAttachmentFormat = ETextureFormat::D32F;     break;
+				default:
+					break;
+			}
+
+			RenderTargetLayout renderTargetLayout;
+			renderTargetLayout.activeAttachmentsMask = eRTAttachmentMaskDefaultC0DS;
+			renderTargetLayout.activeAttachmentsNum = 2;
+			renderTargetLayout.colorAttachments[0].format = colorAttachmentFormat;
+			renderTargetLayout.depthStencilAttachment.format = depthStencilAttachmentFormat;
+
+			return renderTargetLayout;
+		}
+
+		bool RTOValidateRenderTargetBinding( const RenderTargetBinding & pRenderTargetBinding )
+		{
+			if( const auto * firstActiveAttachmentRef = pRenderTargetBinding.FindFirstActiveAttachment() )
+			{
+				// Image Layout of the first attachment. This will serve as a reference point - all RT attachments
+				// are required to have the same layout (dimensions), so we can compare to any of the active ones.
+				const auto & commonImageLayout = firstActiveAttachmentRef->baseTexture->mRTTextureLayout;
+
+				auto attachmentsValid = ForEachRTAttachmentIndex( pRenderTargetBinding.activeAttachmentsMask,
+					[&]( native_uint pAttachmentIndex, ERTAttachmentFlags pAttachmentBit )
+					{
+						const auto & attachmentRef = pRenderTargetBinding.attachments[pAttachmentIndex];
+						if( !attachmentRef )
+						{
+							return false;
+						}
+						const auto requiredUsageFlags = GCU::RTOGetAttachmentRequiredUsageMask( pAttachmentIndex );
+						if( !attachmentRef.baseTexture->mResourceFlags.is_set( requiredUsageFlags ) )
+						{
+							return false;
+						}
+						const auto & textureLayout = attachmentRef.baseTexture->mRTTextureLayout;
+						if( textureLayout.imageRect != commonImageLayout.imageRect )
+						{
+							return false;
+						}
+						if( textureLayout.msaaLevel != commonImageLayout.msaaLevel )
+						{
+							return false;
+						}
+						return true;
+					} );
+
+				if( attachmentsValid )
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+	}
+/*
 	void RenderTargetBindingDefinition::ResetAttachmentsFlags() noexcept
 	{
 		attachmentsActionResolveMask = 0;
@@ -31,7 +218,7 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	namespace SMU
+	namespace GCU
 	{
 
 		const RenderTargetAttachmentBinding * GetRenderTargetBindingDefinitionFirstTarget(
@@ -65,7 +252,7 @@ namespace Ic3::Graphics::GCI
 						{
 							return false;
 						}
-						const auto requiredUsageFlags = CxDef::GetRTAttachmentRequiredUsageMask( pIndex );
+						const auto requiredUsageFlags = CXU::GetRTAttachmentRequiredUsageMask( pIndex );
 						if( !attachmentBinding.attachmentTexture->mResourceFlags.is_set_any_of( requiredUsageFlags ) )
 						{
 							return false;
@@ -156,7 +343,7 @@ namespace Ic3::Graphics::GCI
 		RenderTargetLayout GetRenderTargetLayoutDefaultBGRA8D24S8()
 		{
 			RenderTargetLayout rtLayout{};
-			rtLayout.activeAttachmentsMask = eRTAttachmentFlagColor0Bit | eRtAttachmentFlagDepthStencilBit;
+			rtLayout.activeAttachmentsMask = eRTAttachmentFlagColor0Bit | eRTAttachmentFlagDepthStencilBit;
 			rtLayout.sharedImageRect = cxTextureSize2DUndefined;
 			rtLayout.sharedMSAALevel = cxTextureMSAALevelUndefined;
 			rtLayout.colorAttachments[0].format = ETextureFormat::BGRA8UN;
@@ -177,7 +364,7 @@ namespace Ic3::Graphics::GCI
 		RenderTargetLayout GetRenderTargetLayoutDefaultRGBA8D24S8()
 		{
 			RenderTargetLayout rtLayout{};
-			rtLayout.activeAttachmentsMask = eRTAttachmentFlagColor0Bit | eRtAttachmentFlagDepthStencilBit;
+			rtLayout.activeAttachmentsMask = eRTAttachmentFlagColor0Bit | eRTAttachmentFlagDepthStencilBit;
 			rtLayout.sharedImageRect = cxTextureSize2DUndefined;
 			rtLayout.sharedMSAALevel = cxTextureMSAALevelUndefined;
 			rtLayout.colorAttachments[0].format = ETextureFormat::RGBA8UN;
@@ -194,7 +381,7 @@ namespace Ic3::Graphics::GCI
 		const RenderTargetLayout cvRenderTargetLayoutDefaultRGBA8D24S8 = GetRenderTargetLayoutDefaultRGBA8D24S8();
 	
 	}
-
+*/
 
 //	bool CreateRenderTargetLayout( const RenderTargetLayoutDesc & pRTLayoutDesc,
 //	                               RenderTargetLayout & pOutRTLayout )

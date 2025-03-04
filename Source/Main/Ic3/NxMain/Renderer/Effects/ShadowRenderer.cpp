@@ -6,7 +6,7 @@
 #include <Ic3/Graphics/GCI/GPUDevice.h>
 #include <Ic3/Graphics/GCI/Resources/RenderTargetTexture.h>
 #include <Ic3/Graphics/GCI/Resources/Texture.h>
-#include <Ic3/Graphics/GCI/State/PipelineStateObject.h>
+#include <Ic3/Graphics/GCI/State/GraphicsPipelineStateCommon.h>
 #include <Ic3/Graphics/GCI/State/Sampler.h>
 
 namespace Ic3
@@ -209,7 +209,7 @@ namespace Ic3
 			renderPass1LightConfig.depthStencilAttachment.clearConfig.depthValue = 1.0f;
 			renderPass1LightConfig.depthStencilAttachment.clearConfig.stencilValue = 0;
 
-			_gpuAPIState.renderPass1Light = _gpuDevice.CreateRenderPassConfigurationImmutableState( renderPass1LightConfig );
+			_gpuAPIState.renderPass1Light = _gpuDevice.CreateRenderPassConfigurationCompiledState( renderPass1LightConfig );
 		}
 
 		{
@@ -224,7 +224,7 @@ namespace Ic3
 			renderPass2ShadowConfig.depthStencilAttachment.clearConfig.depthValue = 1.0f;
 			renderPass2ShadowConfig.depthStencilAttachment.clearConfig.stencilValue = 0;
 
-			_gpuAPIState.renderPass2Shadow = _gpuDevice.CreateRenderPassConfigurationImmutableState( renderPass2ShadowConfig );
+			_gpuAPIState.renderPass2Shadow = _gpuDevice.CreateRenderPassConfigurationCompiledState( renderPass2ShadowConfig );
 		}
 	}
 
@@ -233,8 +233,8 @@ namespace Ic3
 		using namespace Ic3::Graphics::GCI;
 
 		{
-			auto vertexShaderPass1 = _shaderLibrary.getShader( "SID_SHADOW_0_PASS1_LIGHT_VS" );
-			auto pixelShaderPass1 = _shaderLibrary.getShader( "SID_SHADOW_0_PASS1_LIGHT_PS" );
+			auto vertexShaderPass1 = _shaderLibrary.GetShader( "SID_SHADOW_0_PASS1_LIGHT_VS" );
+			auto pixelShaderPass1 = _shaderLibrary.GetShader( "SID_SHADOW_0_PASS1_LIGHT_PS" );
 
 			GCI::GraphicsPipelineStateObjectCreateInfo psoPass1LightCreateInfo;
 			psoPass1LightCreateInfo.renderTargetLayout.activeAttachmentsMask = eRTAttachmentMaskDefaultDSOnly;
@@ -249,9 +249,9 @@ namespace Ic3
 			psoPass1LightCreateInfo.inputLayoutDefinition.activeAttributesMask =
 				eIAVertexAttributeFlagAttr0Bit | eIAVertexAttributeFlagAttr1Bit | eIAVertexAttributeFlagAttr2Bit | eIAVertexAttributeFlagAttr3Bit;
 			psoPass1LightCreateInfo.inputLayoutDefinition.attributeArray[0] = { { "POSITION", 0 }, GCI::EVertexAttribFormat::Vec3F32, 0, 0 };
-			psoPass1LightCreateInfo.inputLayoutDefinition.attributeArray[1] = { { "COLOR", 0 }, GCI::EVertexAttribFormat::Vec4F32, 0, GCI::cxIAVertexAttributeOffsetAppend };
-			psoPass1LightCreateInfo.inputLayoutDefinition.attributeArray[2] = { { "NORMAL", 0 }, GCI::EVertexAttribFormat::Vec3F32, 0, GCI::cxIAVertexAttributeOffsetAppend };
-			psoPass1LightCreateInfo.inputLayoutDefinition.attributeArray[3] = { { "TEXCOORD", 0 }, GCI::EVertexAttribFormat::Vec2F32, 0, GCI::cxIAVertexAttributeOffsetAppend };
+			psoPass1LightCreateInfo.inputLayoutDefinition.attributeArray[1] = { { "COLOR", 0 }, GCI::EVertexAttribFormat::Vec4F32, 0, GCI::kIAVertexAttributeOffsetAppend };
+			psoPass1LightCreateInfo.inputLayoutDefinition.attributeArray[2] = { { "NORMAL", 0 }, GCI::EVertexAttribFormat::Vec3F32, 0, GCI::kIAVertexAttributeOffsetAppend };
+			psoPass1LightCreateInfo.inputLayoutDefinition.attributeArray[3] = { { "TEXCOORD", 0 }, GCI::EVertexAttribFormat::Vec2F32, 0, GCI::kIAVertexAttributeOffsetAppend };
 			psoPass1LightCreateInfo.shaderSet.AddShader( vertexShaderPass1 );
 			psoPass1LightCreateInfo.shaderSet.AddShader( pixelShaderPass1 );
 			psoPass1LightCreateInfo.shaderInputSignatureDesc.activeShaderStagesMask = eShaderStageFlagGraphicsVertexBit;
@@ -278,8 +278,8 @@ namespace Ic3
 		}
 
 		{
-			auto vertexShaderPass2 = _shaderLibrary.getShader( "SID_SHADOW_0_PASS2_SHADOW_VS" );
-			auto pixelShaderPass2 = _shaderLibrary.getShader( "SID_SHADOW_0_PASS2_SHADOW_PS" );
+			auto vertexShaderPass2 = _shaderLibrary.GetShader( "SID_SHADOW_0_PASS2_SHADOW_VS" );
+			auto pixelShaderPass2 = _shaderLibrary.GetShader( "SID_SHADOW_0_PASS2_SHADOW_PS" );
 
 			GCI::GraphicsPipelineStateObjectCreateInfo psoPass2ShadowCreateInfo;
 			psoPass2ShadowCreateInfo.renderTargetLayout.activeAttachmentsMask = eRTAttachmentMaskDefaultC0DS;
@@ -295,9 +295,9 @@ namespace Ic3
 			psoPass2ShadowCreateInfo.inputLayoutDefinition.activeAttributesMask =
 				eIAVertexAttributeFlagAttr0Bit | eIAVertexAttributeFlagAttr1Bit | eIAVertexAttributeFlagAttr2Bit | eIAVertexAttributeFlagAttr3Bit;
 			psoPass2ShadowCreateInfo.inputLayoutDefinition.attributeArray[0] = { { "POSITION", 0 }, Ic3::Graphics::GCI::EVertexAttribFormat::Vec3F32, 0, 0 };
-			psoPass2ShadowCreateInfo.inputLayoutDefinition.attributeArray[1] = { { "COLOR", 0 }, Ic3::Graphics::GCI::EVertexAttribFormat::Vec4F32, 0, Ic3::Graphics::GCI::cxIAVertexAttributeOffsetAppend };
-			psoPass2ShadowCreateInfo.inputLayoutDefinition.attributeArray[2] = { { "NORMAL", 0 }, Ic3::Graphics::GCI::EVertexAttribFormat::Vec3F32, 0, Ic3::Graphics::GCI::cxIAVertexAttributeOffsetAppend };
-			psoPass2ShadowCreateInfo.inputLayoutDefinition.attributeArray[3] = { { "TEXCOORD", 0 }, Ic3::Graphics::GCI::EVertexAttribFormat::Vec2F32, 0, Ic3::Graphics::GCI::cxIAVertexAttributeOffsetAppend };
+			psoPass2ShadowCreateInfo.inputLayoutDefinition.attributeArray[1] = { { "COLOR", 0 }, Ic3::Graphics::GCI::EVertexAttribFormat::Vec4F32, 0, Ic3::Graphics::GCI::kIAVertexAttributeOffsetAppend };
+			psoPass2ShadowCreateInfo.inputLayoutDefinition.attributeArray[2] = { { "NORMAL", 0 }, Ic3::Graphics::GCI::EVertexAttribFormat::Vec3F32, 0, Ic3::Graphics::GCI::kIAVertexAttributeOffsetAppend };
+			psoPass2ShadowCreateInfo.inputLayoutDefinition.attributeArray[3] = { { "TEXCOORD", 0 }, Ic3::Graphics::GCI::EVertexAttribFormat::Vec2F32, 0, Ic3::Graphics::GCI::kIAVertexAttributeOffsetAppend };
 			psoPass2ShadowCreateInfo.shaderSet.AddShader( vertexShaderPass2 );
 			psoPass2ShadowCreateInfo.shaderSet.AddShader( pixelShaderPass2 );
 			psoPass2ShadowCreateInfo.shaderInputSignatureDesc.activeShaderStagesMask = eShaderStageMaskGraphicsVsPs;

@@ -91,7 +91,7 @@ namespace Ic3::Math
 		, fpAlpha( static_cast<TReal>( pColor.u8Alpha ) / static_cast<TReal>( cppx::meta::limits<uint8>::max_value ) )
 		{}
 
-		constexpr RGBAColor toU8Color() const
+		constexpr RGBAColor ToU8Color() const
 		{
 			return RGBAColor(
 				static_cast<uint8>( fpRed * cppx::meta::limits<uint8>::max_value  ),
@@ -128,35 +128,30 @@ namespace Ic3::Math
 	}
 
 	template <typename TReal>
-	inline Vec4f colorVector( const RGBAColorNorm<TReal> & pColor )
+	static inline Vec4f MakeColorVec4f( const RGBAColorNorm<TReal> & pColor )
 	{
 		return { pColor.fpRed, pColor.fpGreen, pColor.fpBlue, pColor.fpAlpha };
 	}
 
-	inline Vec4f colorVector( const RGBAColorU8 & pColor )
+	static inline Vec4f MakeColorVec4f( const RGBAColorU8 & pColor )
 	{
-		return colorVector( RGBAColorR32Norm( pColor ) );
+		return MakeColorVec4f( RGBAColorR32Norm( pColor ) );
 	}
 
-	RGBAColorU8 generateRandomColor();
+	RGBAColorU8 GenerateRandomColor();
 
-	namespace colors
-	{
+	constexpr RGBAColorU8 kColorBlueDeepSky{0x00, 0xB2, 0xEE};
+	constexpr RGBAColorU8 kColorBlueFacebookDark{0x3b, 0x59, 0x98};
+	constexpr RGBAColorU8 kColorBlueFacebookLight{0x8b, 0x9d, 0xc3};
+	constexpr RGBAColorU8 kColorBlueNavyDark{0x00, 0x00, 0x80};
+	constexpr RGBAColorU8 kColorBlueSignatory{0x00, 0x3F, 0x77};
+	constexpr RGBAColorU8 kColorPeachPuff{0xFF, 0xDA, 0xB9};
+	constexpr RGBAColorU8 kColorTeal{0x00, 0x80, 0x80};
+	constexpr RGBAColorU8 kColorTopaz{0x01, 0x98, 0xE1};
 
-		constexpr RGBAColorU8 cxColorBlueDeepSky{ 0x00, 0xB2, 0xEE };
-		constexpr RGBAColorU8 cxColorBlueFacebookDark{ 0x3b, 0x59, 0x98 };
-		constexpr RGBAColorU8 cxColorBlueFacebookLight{ 0x8b, 0x9d, 0xc3 };
-		constexpr RGBAColorU8 cxColorBlueNavyDark{ 0x00, 0x00, 0x80 };
-		constexpr RGBAColorU8 cxColorBlueSignatory{ 0x00, 0x3F, 0x77 };
-		constexpr RGBAColorU8 cxColorPeachPuff{ 0xFF, 0xDA, 0xB9 };
-		constexpr RGBAColorU8 cxColorTeal{ 0x00, 0x80, 0x80 };
-		constexpr RGBAColorU8 cxColorTopaz{ 0x01, 0x98, 0xE1 };
-
-		constexpr RGBAColorU8 CX_COLOR_BLACK_OPAQUE{ 0x00, 0x00, 0x00, 0xFF };
-		constexpr RGBAColorU8 CX_COLOR_BLACK_TRANSPARENT{ 0x00, 0x00, 0x00, 0x00 };
-		constexpr RGBAColorU8 CX_COLOR_WHITE_OPAQUE{ 0xFF, 0xFF, 0xFF, 0xFF };
-
-	}
+	constexpr RGBAColorU8 kColorBlackOpaque{0x00, 0x00, 0x00, 0xFF};
+	constexpr RGBAColorU8 kColorBlackTransparent{0x00, 0x00, 0x00, 0x00};
+	constexpr RGBAColorU8 kColorWhiteOpaque{0xFF, 0xFF, 0xFF, 0xFF};
 
 } // namespace Ic3::Math
 

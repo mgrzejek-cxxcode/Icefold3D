@@ -5,26 +5,10 @@
 namespace Ic3
 {
 
-	struct VertexStreamIndexCmpEqual
+	bool VertexInputStreamArrayConfig::CheckAttributeDefinitionCompatibility(
+			const VertexInputAttributeDefinition & pAttributeDefinition ) const noexcept
 	{
-		CPPX_ATTR_NO_DISCARD bool operator()( const VertexInputStream & pLhs, size_t pRhs ) const noexcept
-		{
-			return pLhs.streamIASlot == pRhs;
-		}
-	};
-
-	struct VertexStreamIndexCmpLess
-	{
-		CPPX_ATTR_NO_DISCARD bool operator()( const VertexInputStream & pLhs, size_t pRhs ) const noexcept
-		{
-			return pLhs.streamIASlot < pRhs;
-		}
-	};
-
-	bool VertexStreamArrayConfig::CheckAttributeDefinitionCompatibility(
-			const VertexAttributeDefinition & pAttributeDefinition ) const noexcept
-	{
-		if( const auto & targetAttributeStream = StreamAt( pAttributeDefinition.streamIASlot ) )
+		if( const auto & targetAttributeStream = StreamAt( pAttributeDefinition.vertexStreamSlot ) )
 		{
 			return targetAttributeStream.CheckAttributeCompatibility( pAttributeDefinition );
 		}
@@ -32,65 +16,65 @@ namespace Ic3
 		return true;
 	}
 
-	bool VertexStreamArrayConfig::AddActiveStream(
-			gci_input_assembler_slot_t pStreamIASlot,
-			EVertexDataRate pStreamDataRate )
+	bool VertexInputStreamArrayConfig::AddActiveStream(
+			gci_input_assembler_slot_t pStreamSlot,
+			GCI::EIAVertexAttributeDataRate pStreamDataRate )
 	{
-		if( pStreamDataRate == EVertexDataRate::Undefined )
+		if( pStreamDataRate == GCI::EIAVertexAttributeDataRate::Undefined )
 		{
 			return false;
 		}
 
-		if( IsStreamActive( pStreamIASlot ) )
+		if( _streamArray[pStreamSlot].IsInitialized() )
 		{
 			return true;
 		}
 
-		_AddStreamImpl( pStreamIASlot, pStreamDataRate );
+		_AddStreamImpl( pStreamSlot, pStreamDataRate );
 
 		return true;
 	}
 
-	bool VertexStreamArrayConfig::AppendAttribute(
-			gci_input_assembler_slot_t pStreamIASlot,
-			const GenericVertexAttribute & pAttribute )
+	bool VertexInputStreamArrayConfig::AppendAttribute(
+			gci_input_assembler_slot_t pStreamSlot,
+			const GenericVertexInputAttribute & pAttribute )
 	{
-		if( !cxGCIValidInputAssemblerSlotIndexRange.contains( pStreamIASlot ) )
+		if( !GCI::CXU::IAIsDataStreamVertexBufferSlotValid( pStreamSlot ) )
 		{
 			return false;
 		}
 
-		if( !IsStreamActive( pStreamIASlot ) )
+		if( !_streamArray[pStreamSlot].IsInitialized() )
 		{
 			return false;
 		}
 
-		_AppendAttributeImpl( _streamArray[pStreamIASlot], pAttribute );
+		_AppendAttributeImpl( _streamArray[pStreamSlot], pAttribute );
 
 		return true;
 	}
 
-	bool VertexStreamArrayConfig::AppendAttributeAuto(
-			gci_input_assembler_slot_t pStreamIASlot,
-			EVertexDataRate pStreamDataRate,
-			const GenericVertexAttribute & pAttribute )
+	bool VertexInputStreamArrayConfig::AppendAttributeAuto(
+			gci_input_assembler_slot_t pStreamSlot,
+			GCI::EIAVertexAttributeDataRate pStreamDataRate,
+			const GenericVertexInputAttribute & pAttribute )
 	{
-		if( !cxGCIValidInputAssemblerSlotIndexRange.contains( pStreamIASlot ) )
+		if( !GCI::CXU::IAIsDataStreamVertexBufferSlotValid( pStreamSlot ) )
 		{
 			return false;
 		}
 
-		if( !IsStreamActive( pStreamIASlot ) )
+		if( !_streamArray[pStreamSlot].IsInitialized() )
 		{
-			_AddStreamImpl( pStreamIASlot, pStreamDataRate );
+			_AddStreamImpl( pStreamSlot, pStreamDataRate );
 		}
 
-		_AppendAttributeImpl( _streamArray[pStreamIASlot], pAttribute );
+		_AppendAttributeImpl( _streamArray[pStreamSlot], pAttribute );
 
 		return true;
 	}
 
-	void VertexStreamArrayConfig::Reset()
+	void VertexInputStreamArrayConfig::Reset()
 	{
 		for( auto & vertexStream : _streamArray )
 		{
@@ -99,30 +83,31 @@ namespace Ic3
 
 		_activeStreamsNum = 0;
 		_activeStreamsMask.clear();
-		_activeStreamsRange = InputAssemblerSlotRange::max_range();
+		_activeStreamsRange = InputAssemblerSlotRange::empty_range();
 		_activeStreamsSlots.clear();
 	}
 
-	void VertexStreamArrayConfig::_AddStreamImpl( gci_input_assembler_slot_t pStreamIASlot, EVertexDataRate pStreamDataRate )
+	void VertexInputStreamArrayConfig::_AddStreamImpl( gci_input_assembler_slot_t pStreamSlot, GCI::EIAVertexAttributeDataRate pStreamDataRate )
 	{
-		auto & vertexStream = _streamArray[pStreamIASlot];
-		vertexStream.Init( pStreamIASlot, pStreamDataRate );
+		auto & vertexStream = _streamArray[pStreamSlot];
+		vertexStream.Init( pStreamSlot, pStreamDataRate );
 
 		_activeStreamsNum += 1;
-		_activeStreamsMask.set( GCI::CxDef::makeIAVertexBufferFlag( pStreamIASlot ) );
-		_activeStreamsRange.add( InputAssemblerSlotRange{ pStreamIASlot, pStreamIASlot } );
-		_activeStreamsSlots.insert( pStreamIASlot );
+		_activeStreamsMask.set( GCI::CXU::IAMakeVertexSourceVertexBufferBindingFlag( pStreamSlot ) );
+		_activeStreamsRange.add( InputAssemblerSlotRange{ pStreamSlot, pStreamSlot } );
+		_activeStreamsSlots.insert( pStreamSlot );
 	}
 
-	void VertexStreamArrayConfig::_AppendAttributeImpl( VertexInputStream & pStream, const GenericVertexAttribute & pAttribute )
+	void VertexInputStreamArrayConfig::_AppendAttributeImpl( VertexInputStream & pStream, const GenericVertexInputAttribute & pAttribute )
 	{
 		for( uint32 nComponent = 0; nComponent < pAttribute.semanticGroupSize; ++nComponent )
 		{
-			const auto genericAttributeSlotIndex = pAttribute.attributeIASlot + nComponent;
+			const auto genericAttributeSlot = pAttribute.attributeSlot + nComponent;
+			const auto genericAttributeDataStride = pAttribute.GetDataStride();;
 
 			pStream.activeAttributesNum += 1;
-			pStream.activeAttributesMask.set( GCI::CxDef::makeIAVertexAttributeFlag( genericAttributeSlotIndex ) );
-			pStream.dataStrideInBytes += pAttribute.GetDataStride();
+			pStream.activeAttributesMask.set( GCI::CXU::IAMakeVertexAttributeFlag( genericAttributeSlot ) );
+			pStream.dataStrideInBytes += genericAttributeDataStride;
 		}
 	}
 

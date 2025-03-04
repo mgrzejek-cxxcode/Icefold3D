@@ -13,7 +13,7 @@ namespace Ic3
 	enum : exception_category_value_t
 	{
 		E_EXCEPTION_CATEGORY_ENGINE_SUBMODULE_MAIN =
-			CxDef::declareExceptionCategory( EExceptionBaseType::EngineSubmodule, Ic3ExcCategoryIID( 0x01 ) ),
+			CXU::DeclareExceptionCategory( EExceptionBaseType::EngineSubmodule, Ic3ExcCategoryIID( 0x01 ) ),
 	};
 
 	class EngineMainSubModuleException : public EngineSubModuleException
@@ -29,7 +29,7 @@ namespace Ic3
 	enum : exception_code_value_t
 	{
 		E_EXC_ESM_MAIN_SCF_ERROR =
-			CxDef::declareExceptionCode( eExceptionCategoryEngineSubmodule, Ic3ExcCodeIID( 0x71 ) ),
+			CXU::DeclareExceptionCode( eExceptionCategoryEngineSubmodule, Ic3ExcCodeIID( 0x71 ) ),
 	};
 
 } // namespace Ic3

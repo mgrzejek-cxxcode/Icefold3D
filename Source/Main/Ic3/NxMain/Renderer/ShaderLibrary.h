@@ -17,25 +17,28 @@ namespace Ic3
 		explicit ShaderLibrary( const CoreEngineState & pCES );
 		~ShaderLibrary();
 
-		CPPX_ATTR_NO_DISCARD bool empty() const noexcept;
+		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept;
 
-		CPPX_ATTR_NO_DISCARD GCI::ShaderHandle getShader( GfxObjectID pShaderID ) const noexcept;
+		CPPX_ATTR_NO_DISCARD GCI::ShaderHandle GetShader( GfxObjectID pShaderID ) const noexcept;
 
-		CPPX_ATTR_NO_DISCARD GCI::ShaderHandle getShader( const GfxObjectName & pShaderName ) const noexcept;
+		CPPX_ATTR_NO_DISCARD GCI::ShaderHandle GetShader( const GfxObjectName & pShaderName ) const noexcept;
 
-		uint32 append( const ShaderLibrary & pOtherLibrary );
+		uint32 Append( const ShaderLibrary & pOtherLibrary, bool pOverwriteExisting = false );
 
-		bool registerShader( GfxObjectID pShaderID, GCI::ShaderHandle pShaderObject );
+		bool RegisterShader( GCI::ShaderHandle pShaderObject, GfxObjectID pShaderID, bool pOverwriteExisting = false );
 
-		bool registerShader( const GfxObjectName & pShaderName, GCI::ShaderHandle pShaderObject );
+		bool RegisterShader( GCI::ShaderHandle pShaderObject, const GfxObjectName & pShaderName, bool pOverwriteExisting = false );
+
+		bool RegisterShader( GCI::ShaderHandle pShaderObject, GfxObjectID pShaderID, const GfxObjectName & pShaderName, bool pOverwriteExisting = false );
 
 	private:
-		std::unordered_map<GfxObjectID, GCI::ShaderHandle> _shaderMap;
+		std::unordered_map<GfxObjectID, GCI::ShaderHandle> _shaderMapByID;
+		std::unordered_map<GfxObjectName, GCI::ShaderHandle> _shaderMapByName;
 	};
 
-	inline bool ShaderLibrary::empty() const noexcept
+	inline bool ShaderLibrary::IsEmpty() const noexcept
 	{
-		return _shaderMap.empty();
+		return _shaderMapByID.empty() && _shaderMapByName.empty();
 	}
 
 } // namespace Ic3

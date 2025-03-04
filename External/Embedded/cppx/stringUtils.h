@@ -2,7 +2,7 @@
 #ifndef __CPPX_STRING_UTILS_H__
 #define __CPPX_STRING_UTILS_H__
 
-#include "stringExt.h"
+#include "bitmask.h"
 #include <cctype>
 #include <cwctype>
 #include <functional>
@@ -44,12 +44,12 @@ namespace cppx
 	template <>
 	struct char_conv<char>
 	{
-		static inline char toLower( char pChar )
+		static inline char to_lower( char pChar )
 		{
 			return static_cast<char>( std::tolower( pChar ) );
 		}
 
-		static inline char toUpper( char pChar )
+		static inline char to_upper( char pChar )
 		{
 			return static_cast<char>( std::toupper( pChar ) );
 		}
@@ -58,12 +58,12 @@ namespace cppx
 	template <>
 	struct char_conv<wchar_t>
 	{
-		static inline wchar_t toLower( wchar_t pChar )
+		static inline wchar_t to_lower( wchar_t pChar )
 		{
 			return static_cast<char>( std::towlower( pChar ) );
 		}
 
-		static inline wchar_t toUpper( wchar_t pChar )
+		static inline wchar_t to_upper( wchar_t pChar )
 		{
 			return static_cast<char>( std::towupper( pChar ) );
 		}
@@ -167,13 +167,13 @@ namespace cppx
 		template <typename TPChar>
 		inline void make_lower_transform( std::basic_string<TPChar> & pInput )
 		{
-			std::transform( pInput.begin(), pInput.end(), pInput.begin(), char_conv<TPChar>::toLower );
+			std::transform( pInput.begin(), pInput.end(), pInput.begin(), char_conv<TPChar>::to_lower );
 		}
 
 		template <typename TPChar>
 		inline void make_upper_transform( std::basic_string<TPChar> & pInput )
 		{
-			std::transform( pInput.begin(), pInput.end(), pInput.begin(), char_conv<TPChar>::toUpper );
+			std::transform( pInput.begin(), pInput.end(), pInput.begin(), char_conv<TPChar>::to_upper );
 		}
 
 		template <typename TPChar>

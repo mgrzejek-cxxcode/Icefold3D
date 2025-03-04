@@ -5,9 +5,9 @@
 #define __IC3_GRAPHICS_HW3D_MTLCOMMON_GPU_DEVICE_H__
 
 #include "MTLPrerequisites.h"
-#include "State/MTL_pipelineImmutableStateFactory.h"
+#include "State/MTL_pipelineCompiledDescriptorFactory.h"
 #include <Ic3/Graphics/GCI/GPUDevice.h>
-#include <Ic3/Graphics/GCI/State/SharedImmutableStateCache.h>
+#include <Ic3/Graphics/GCI/State/SharedCompiledStateCache.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -44,8 +44,8 @@ namespace Ic3::Graphics::GCI
 				const GraphicsPipelineStateObjectCreateInfo & pCreateInfo ) override final;
 
 	private:
-		MetalPipelineImmutableStateFactory _immutableStateFactoryGL;
-		PipelineImmutableStateCache _immutableStateCache;
+		MetalPipelineStateDescriptorFactory _glcPipelineStateDescriptorFactory;
+		PipelineCompiledStateCache _stateDescriptorCache;
 	};
 
 } // namespace Ic3::Graphics::GCI
