@@ -89,7 +89,7 @@ namespace Ic3::Graphics::GCI
 						if( renderTargetLayout.sharedImageSize == cxTextureSize2DUndefined )
 						{
 							renderTargetLayout.sharedImageSize = attachmentBinding.baseTexture->mRTTextureLayout.imageRect;
-							renderTargetLayout.sharedMultiSamplingSettings.sampleCount = attachmentBinding.baseTexture->mRTTextureLayout.msaaLevel;
+							renderTargetLayout.sharedMultiSamplingSettings.sampleCount = cppx::numeric_cast<uint16>( attachmentBinding.baseTexture->mRTTextureLayout.msaaLevel );
 							renderTargetLayout.sharedMultiSamplingSettings.sampleQuality = 1;
 						}
 						else if( renderTargetLayout.sharedImageSize != attachmentBinding.baseTexture->mRTTextureLayout.imageRect )

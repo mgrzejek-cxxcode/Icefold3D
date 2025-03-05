@@ -36,6 +36,7 @@
 
 #define _Ic3DriverAPI( access ) access
 
+#include "Prerequisites/GCITypeInfo.h"
 #include "Prerequisites/CommonDefs.h"
 #include "Prerequisites/CommonTypes.h"
 #include "Prerequisites/CoreInterfaceDefs.h"
@@ -86,7 +87,7 @@ namespace Ic3::Graphics::GCI
 	// querying display topology and supported modes. Implemented with different APIs:
 	// OpenGL: Ic3::DisplayDriver (Win32 API/X11+XRandR/etc.)
 	// GLES: --//--
-	// DX11&12: Ic3::DisplayDriverDXGI (native data access)
+	// DX11&12: Ic3::DXGIDisplayDriver (native data access)
 	// Vulkan: Ic3::DisplayDriverVulkan
 	class DisplayManager;
 

@@ -71,11 +71,11 @@ namespace Ic3::System
 		WindowCreateInfo tempWindowCreateInfo;
 		tempWindowCreateInfo.frameGeometry.position = { 0, 0 };
 		tempWindowCreateInfo.frameGeometry.size = { 600, 600 };
-		tempWindowCreateInfo.frameGeometry.style = EFrameStyle::OVERLAY;
+		tempWindowCreateInfo.frameGeometry.style = EFrameStyle::Overlay;
 
 		VisualConfig legacyVisualConfig;
 		legacyVisualConfig = VisGetDefaultVisualConfigForSysWindow();
-		legacyVisualConfig.flags.set( E_VISUAL_ATTRIB_FLAG_LEGACY_BIT );
+		legacyVisualConfig.flags.set( eVisualAttribFlagLegacyBit );
 
 		auto & tmpSurfaceNativeData = mNativeData.initState->surfaceData;
 
@@ -129,7 +129,7 @@ namespace Ic3::System
 		_Win32DestroyGLSurface( tmpSurfaceNativeData );
 		Platform::Win32DestroyWindow( tmpSurfaceNativeData );
 
-		mNativeData.initState.Reset();
+		mNativeData.initState.reset();
 	}
 
 	OpenGLDisplaySurfaceHandle Win32OpenGLSystemDriver::_NativeCreateDisplaySurface(
@@ -145,25 +145,25 @@ namespace Ic3::System
 
 		_Win32CreateGLSurface( displaySurface->mNativeData, pCreateInfo.visualConfig );
 
-		if( pCreateInfo.flags.is_set( E_OPENGL_DISPLAY_SURFACE_CREATE_FLAG_SYNC_DISABLED_BIT ) )
+		if( pCreateInfo.flags.is_set( eOpenGLDisplaySurfaceCreateFlagSyncDisabledBit ) )
 		{
 			wglSwapIntervalEXT( 0 );
 		}
-		else if( pCreateInfo.flags.is_set( E_OPENGL_DISPLAY_SURFACE_CREATE_FLAG_SYNC_ADAPTIVE_BIT ) )
+		else if( pCreateInfo.flags.is_set( eOpenGLDisplaySurfaceCreateFlagSyncAdaptiveBit ) )
 		{
 			wglSwapIntervalEXT( -1 );
 		}
-		else if( pCreateInfo.flags.is_set( E_OPENGL_DISPLAY_SURFACE_CREATE_FLAG_SYNC_VERTICAL_BIT ) )
+		else if( pCreateInfo.flags.is_set( eOpenGLDisplaySurfaceCreateFlagSyncVerticalBit ) )
 		{
 			wglSwapIntervalEXT( 1 );
 		}
 
-		::ShowWindow( displaySurface->mNativeData.mHWND, SW_SHOWNORMAL );
+		::ShowWindow( displaySurface->mNativeData.hwnd, SW_SHOWNORMAL );
 
 		// TODO: Workaround to properly work with current engine's implementation. That should be turned into an explicit flag.
-		if( pCreateInfo.flags.is_set( E_OPENGL_DISPLAY_SURFACE_CREATE_FLAG_FULLSCREEN_BIT ) )
+		if( pCreateInfo.flags.is_set( eOpenGLDisplaySurfaceCreateFlagFullscreenBit ) )
 		{
-			::SetCapture( displaySurface->mNativeData.mHWND );
+			::SetCapture( displaySurface->mNativeData.hwnd );
 			::ShowCursor( FALSE );
 		}
 
@@ -181,12 +181,12 @@ namespace Ic3::System
 		auto displaySurface = CreateSysObject<Win32OpenGLDisplaySurface>( GetHandle<Win32OpenGLSystemDriver>() );
 
 		displaySurface->mNativeData.hdc = currentDC;
-		displaySurface->mNativeData.mHWND = ::WindowFromDC( currentDC );
+		displaySurface->mNativeData.hwnd = ::WindowFromDC( currentDC );
 		displaySurface->mNativeData.pixelFormatIndex = ::GetPixelFormat( currentDC );
 
 		CHAR surfaceWindowClassName[256];
-		::GetClassNameA( displaySurface->mNativeData.mHWND, surfaceWindowClassName, 255 );
-		auto wndProcModuleHandle = ::GetWindowLongPtrA( displaySurface->mNativeData.mHWND, GWLP_HINSTANCE );
+		::GetClassNameA( displaySurface->mNativeData.hwnd, surfaceWindowClassName, 255 );
+		auto wndProcModuleHandle = ::GetWindowLongPtrA( displaySurface->mNativeData.hwnd, GWLP_HINSTANCE );
 
 		displaySurface->mNativeData.wndClsName = surfaceWindowClassName;
 		displaySurface->mNativeData.moduleHandle = reinterpret_cast<HMODULE>( wndProcModuleHandle );
@@ -220,22 +220,22 @@ namespace Ic3::System
 			contextAPIProfile = WGL_CONTEXT_ES_PROFILE_BIT_EXT;
 		}
 
-		if( pCreateInfo.flags.is_set( E_OPENGL_RENDER_CONTEXT_CREATE_FLAG_ENABLE_DEBUG_BIT ) )
+		if( pCreateInfo.flags.is_set( eOpenGLRenderContextCreateFlagEnableDebugBit ) )
 		{
 			contextCreateFlags |= WGL_CONTEXT_DEBUG_BIT_ARB;
 		}
-		if( pCreateInfo.flags.is_set( E_OPENGL_RENDER_CONTEXT_CREATE_FLAG_FORWARD_COMPATIBLE_BIT ) )
+		if( pCreateInfo.flags.is_set( eOpenGLRenderContextCreateFlagForwardCompatibleBit ) )
 		{
 			contextCreateFlags |= WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
 		}
-		if( pCreateInfo.flags.is_set( E_OPENGL_RENDER_CONTEXT_CREATE_FLAG_ENABLE_SHARING_BIT ) )
+		if( pCreateInfo.flags.is_set( eOpenGLRenderContextCreateFlagEnableSharingBit ) )
 		{
 			if( pCreateInfo.shareContext )
 			{
 				auto * win32ShareContext = pCreateInfo.shareContext->QueryInterface<Win32OpenGLRenderContext>();
 				shareContextHandle = win32ShareContext->mNativeData.contextHandle;
 			}
-			else if( pCreateInfo.flags.is_set( E_OPENGL_RENDER_CONTEXT_CREATE_FLAG_SHARE_WITH_CURRENT_BIT ) )
+			else if( pCreateInfo.flags.is_set( eOpenGLRenderContextCreateFlagShareWithCurrentBit ) )
 			{
 				if( auto * currentWGLContext = ::wglGetCurrentContext() )
 				{
@@ -249,7 +249,7 @@ namespace Ic3::System
 			// Requested OpenGL API version: major part
 			WGL_CONTEXT_MAJOR_VERSION_ARB, pCreateInfo.requestedAPIVersion.num_major,
 			// Requested OpenGL API version: minor part
-			WGL_CONTEXT_MINOR_VERSION_ARB, pCreateInfo.requestedAPIVersion.mNumMinor,
+			WGL_CONTEXT_MINOR_VERSION_ARB, pCreateInfo.requestedAPIVersion.num_minor,
 			//
 			WGL_CONTEXT_PROFILE_MASK_ARB, contextAPIProfile,
 			//
@@ -311,7 +311,7 @@ namespace Ic3::System
 
 	bool Win32OpenGLSystemDriver::_NativeIsAPIClassSupported( EOpenGLAPIClass pAPIClass ) const
 	{
-		if( pAPIClass == EOpenGLAPIClass::OpenGLDesktop )
+		if( pAPIClass == EOpenGLAPIClass::Desktop )
 		{
 			return true;
 		}
@@ -347,7 +347,7 @@ namespace Ic3::System
 
 	EOpenGLAPIClass Win32OpenGLDisplaySurface::_NativeQuerySupportedAPIClass() const noexcept
 	{
-		return EOpenGLAPIClass::OpenGLDesktop;
+		return EOpenGLAPIClass::Desktop;
 	}
 
 	VisualConfig Win32OpenGLDisplaySurface::_NativeQueryVisualConfig() const
@@ -396,12 +396,12 @@ namespace Ic3::System
 
 	FrameSize Win32OpenGLDisplaySurface::_NativeQueryRenderAreaSize() const
 	{
-		return Platform::Win32GetFrameSize( mNativeData.mHWND, EFrameSizeMode::CLIENT_AREA );
+		return Platform::Win32GetFrameSize( mNativeData.hwnd, EFrameSizeMode::ClientArea );
 	}
 
 	bool Win32OpenGLDisplaySurface::_NativeSysValidate() const
 	{
-		return mNativeData.mHWND && mNativeData.hdc;
+		return mNativeData.hwnd && mNativeData.hdc;
 	}
 
 	void Win32OpenGLDisplaySurface::_NativeResize( const FrameSize & pFrameSize, EFrameSizeMode pSizeMode )
@@ -414,19 +414,19 @@ namespace Ic3::System
 
 	void Win32OpenGLDisplaySurface::_NativeSetTitle( const std::string & pTitle )
 	{
-		Platform::Win32SetFrameTitle( mNativeData.mHWND, pTitle );
+		Platform::Win32SetFrameTitle( mNativeData.hwnd, pTitle );
 	}
 
 	void Win32OpenGLDisplaySurface::_NativeUpdateGeometry(
 			const FrameGeometry & pFrameGeometry,
 			cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
 	{
-		Platform::Win32UpdateFrameGeometry( mNativeData.mHWND, pFrameGeometry, pUpdateFlags );
+		Platform::Win32UpdateFrameGeometry( mNativeData.hwnd, pFrameGeometry, pUpdateFlags );
 	}
 
 	FrameSize Win32OpenGLDisplaySurface::_NativeGetSize( EFrameSizeMode pSizeMode ) const
 	{
-		return Platform::Win32GetFrameSize( mNativeData.mHWND, pSizeMode );
+		return Platform::Win32GetFrameSize( mNativeData.hwnd, pSizeMode );
 	}
 
     bool Win32OpenGLDisplaySurface::_NativeIsFullscreen() const
@@ -473,7 +473,7 @@ namespace Ic3::System
 		void _Win32CreateGLSurface( Win32OpenGLDisplaySurfaceNativeData & pGLSurfaceNativeData,
 		                            const VisualConfig & pVisualConfig )
 		{
-			auto hdc = ::GetWindowDC( pGLSurfaceNativeData.mHWND );
+			auto hdc = ::GetWindowDC( pGLSurfaceNativeData.hwnd );
 			pGLSurfaceNativeData.hdc = hdc;
 
 			PIXELFORMATDESCRIPTOR pixelFormatDescriptor;
@@ -481,7 +481,7 @@ namespace Ic3::System
 			pixelFormatDescriptor.nSize = sizeof( PIXELFORMATDESCRIPTOR );
 			pixelFormatDescriptor.nVersion = 1;
 
-			if( pVisualConfig.flags.is_set( E_VISUAL_ATTRIB_FLAG_LEGACY_BIT ) )
+			if( pVisualConfig.flags.is_set( eVisualAttribFlagLegacyBit ) )
 			{
 				pGLSurfaceNativeData.pixelFormatIndex = _win32ChooseLegacyGLPixelFormat( hdc, pixelFormatDescriptor );
 			}
@@ -501,7 +501,7 @@ namespace Ic3::System
 		{
 			if( pGLSurfaceNativeData.hdc != nullptr )
 			{
-				::ReleaseDC( pGLSurfaceNativeData.mHWND, pGLSurfaceNativeData.hdc );
+				::ReleaseDC( pGLSurfaceNativeData.hwnd, pGLSurfaceNativeData.hdc );
 
 				pGLSurfaceNativeData.hdc = nullptr;
 				pGLSurfaceNativeData.pixelFormatIndex = 0;
@@ -578,7 +578,7 @@ namespace Ic3::System
 		std::vector<int> _win32QueryCompatiblePixelFormatList( HDC pDisplaySurfaceDC, int * pPixelFormatAttribList )
 		{
 			// Output array where system will store IDs of enumerated pixel formats.
-			int pixelFormatArray[CX_WIN32_WGL_MAX_PIXEL_FORMATS_NUM];
+			int pixelFormatArray[kWin32MaxWGLPixelFormatsNum];
 			// Number of pixel formats returned by the system.
 			UINT returnedPixelFormatsNum = 0U;
 
@@ -586,7 +586,7 @@ namespace Ic3::System
 			BOOL enumResult = ::wglChoosePixelFormatARB( pDisplaySurfaceDC,
 			                                             pPixelFormatAttribList,
 			                                             nullptr,
-			                                             CX_WIN32_WGL_MAX_PIXEL_FORMATS_NUM,
+			                                             kWin32MaxWGLPixelFormatsNum,
 			                                             pixelFormatArray,
 			                                             &returnedPixelFormatsNum );
 
@@ -605,7 +605,7 @@ namespace Ic3::System
 		std::vector<int> _win32QueryCompatiblePixelFormatList( HDC pDisplaySurfaceDC, const VisualConfig & pVisualConfig )
 		{
 			// Array for WGL_..._ARB pixel format attributes.
-			int pixelFormatAttributes[CX_WIN32_WGL_MAX_PIXEL_FORMAT_ATTRIBUTES_NUM * 2];
+			int pixelFormatAttributes[kWin32MaxWGLPixelFormatAttributesNum * 2];
 			// Translate provided visual config to a WGL attribute array.
 			_Win32GetWGLAttribArrayForVisualConfig( pVisualConfig, pixelFormatAttributes );
 
@@ -617,14 +617,14 @@ namespace Ic3::System
 			int doubleBufferRequestedState = TRUE;
 			int stereoModeRequestedState = FALSE;
 
-			if( pVisualConfig.flags.is_set( E_VISUAL_ATTRIB_FLAG_SINGLE_BUFFER_BIT ) &&
-			!pVisualConfig.flags.is_set( E_VISUAL_ATTRIB_FLAG_DOUBLE_BUFFER_BIT ) )
+			if( pVisualConfig.flags.is_set( eVisualAttribFlagSingleBufferBit ) &&
+			!pVisualConfig.flags.is_set( eVisualAttribFlagDoubleBufferBit ) )
 			{
 				doubleBufferRequestedState = FALSE;
 			}
 
-			if( pVisualConfig.flags.is_set( E_VISUAL_ATTRIB_FLAG_STEREO_DISPLAY_BIT ) &&
-			!pVisualConfig.flags.is_set( E_VISUAL_ATTRIB_FLAG_MONO_DISPLAY_BIT ) )
+			if( pVisualConfig.flags.is_set( eVisualAttribFlagStereoDisplayBit ) &&
+			!pVisualConfig.flags.is_set( eVisualAttribFlagMonoDisplayBit ) )
 			{
 				stereoModeRequestedState = TRUE;
 			}
@@ -638,7 +638,7 @@ namespace Ic3::System
 				WGL_SAMPLES_ARB
 			};
 
-			std::array<int, static_array_size( controlAttribArray )> attribValueArray{};
+			std::array<int, cppx::static_array_size( controlAttribArray )> attribValueArray{};
 			if( !_win32QueryPixelFormatAttributes( pDisplaySurfaceDC, pPixelFormatIndex, controlAttribArray, attribValueArray ) )
 			{
 				return -1;
@@ -687,29 +687,29 @@ namespace Ic3::System
 			pAttribArray[attribIndex++] = WGL_PIXEL_TYPE_ARB;
 			pAttribArray[attribIndex++] = WGL_TYPE_RGBA_ARB;
 
-			if( pVisualConfig.flags.is_set( E_VISUAL_ATTRIB_FLAG_DOUBLE_BUFFER_BIT ) )
+			if( pVisualConfig.flags.is_set( eVisualAttribFlagDoubleBufferBit ) )
 			{
 				pAttribArray[attribIndex++] = WGL_DOUBLE_BUFFER_ARB;
 				pAttribArray[attribIndex++] = GL_TRUE;
 			}
-			else if( pVisualConfig.flags.is_set( E_VISUAL_ATTRIB_FLAG_SINGLE_BUFFER_BIT ) )
+			else if( pVisualConfig.flags.is_set( eVisualAttribFlagSingleBufferBit ) )
 			{
 				pAttribArray[attribIndex++] = WGL_DOUBLE_BUFFER_ARB;
 				pAttribArray[attribIndex++] = GL_FALSE;
 			}
 
-			if( pVisualConfig.flags.is_set( E_VISUAL_ATTRIB_FLAG_MONO_DISPLAY_BIT ) )
+			if( pVisualConfig.flags.is_set( eVisualAttribFlagMonoDisplayBit ) )
 			{
 				pAttribArray[attribIndex++] = WGL_STEREO_ARB;
 				pAttribArray[attribIndex++] = GL_FALSE;
 			}
-			else if( pVisualConfig.flags.is_set( E_VISUAL_ATTRIB_FLAG_STEREO_DISPLAY_BIT ) )
+			else if( pVisualConfig.flags.is_set( eVisualAttribFlagStereoDisplayBit ) )
 			{
 				pAttribArray[attribIndex++] = WGL_STEREO_ARB;
 				pAttribArray[attribIndex++] = GL_TRUE;
 			}
 
-			if( pVisualConfig.flags.is_set( E_VISUAL_ATTRIB_FLAG_SRGB_CAPABLE_BIT ) )
+			if( pVisualConfig.flags.is_set( eVisualAttribFlagSRGBCapableBit ) )
 			{
 				pAttribArray[attribIndex++] = WGL_FRAMEBUFFER_SRGB_CAPABLE_ARB;
 				pAttribArray[attribIndex++] = GL_TRUE;

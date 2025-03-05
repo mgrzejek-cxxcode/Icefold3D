@@ -17,7 +17,7 @@ namespace Ic3::System
 		};
 	#if( IC3_SYSTEM_DSM_DRIVER_TYPE_SUPPORT_DXGI )
 		_privateData->driverFactoryMap[EDisplayDriverType::DXGI] = [this]() {
-			return CreateSysObject<DisplayDriverDXGI>( GetHandle<DisplayManager>() );
+			return CreateSysObject<DXGIDisplayDriver>( this->GetHandle<DisplayManager>() );
 		};
 	#endif
 	#if( IC3_SYSTEM_DSM_DRIVER_TYPE_SUPPORT_SDL )
@@ -74,13 +74,13 @@ namespace Ic3::System
 		}
 		else if( pDriverID == EDisplayDriverType::Default )
 		{
-		#if( PCL_TARGET_OS & PCL_TARGET_FLAG_OS_MSE )
+		#if( PCL_TARGET_OS & PCL_TARGET_FLAG_OS_WFA )
 			resolvedDriverID = EDisplayDriverType::DXGI;
 		#else
 			resolvedDriverID = EDisplayDriverType::Generic;
 		#endif
 		}
-	#if( PCL_TARGET_OS & PCL_TARGET_FLAG_OS_MSE )
+	#if( PCL_TARGET_OS & PCL_TARGET_FLAG_OS_WFA )
 		else if( pDriverID == EDisplayDriverType::DXGI )
 		{
 			resolvedDriverID = EDisplayDriverType::DXGI;
@@ -113,7 +113,7 @@ namespace Ic3::System
 
 	bool DisplayManager::CheckFrameGeometry( const FrameGeometry & pFrameGeometry ) const
 	{
-		const auto & framePos = pFrameGeometry.mPosition;
+		const auto & framePos = pFrameGeometry.position;
 		const auto & frameSize = pFrameGeometry.size;
 
 		auto screenSize = QueryDefaultDisplaySize();
@@ -158,7 +158,7 @@ namespace Ic3::System
 	{
 		auto resultGeometry = pFrameGeometry;
 
-		const auto & framePos = pFrameGeometry.mPosition;
+		const auto & framePos = pFrameGeometry.position;
 		const auto & frameSize = pFrameGeometry.size;
 
 		auto screenOffset = QueryDefaultDisplayOffset();
@@ -194,19 +194,19 @@ namespace Ic3::System
 
 		if( ( framePos.x < 0 ) || ( framePos.y < 0 ) )
 		{
-			resultGeometry.mPosition.x = static_cast<int32>( ( screenSize.x - resultGeometry.size.x ) / 2 );
-			resultGeometry.mPosition.y = static_cast<int32>( ( screenSize.y - resultGeometry.size.y ) / 2 );
+			resultGeometry.position.x = static_cast<int32>( ( screenSize.x - resultGeometry.size.x ) / 2 );
+			resultGeometry.position.y = static_cast<int32>( ( screenSize.y - resultGeometry.size.y ) / 2 );
 		}
 		else
 		{
 			auto maxPosX = static_cast<int32>( screenSize.x - resultGeometry.size.x );
 			auto maxPosY = static_cast<int32>( screenSize.y - resultGeometry.size.y );
-			resultGeometry.mPosition.x = cppx::get_min_of( resultGeometry.mPosition.x, maxPosX );
-			resultGeometry.mPosition.y = cppx::get_min_of( resultGeometry.mPosition.y, maxPosY );
+			resultGeometry.position.x = cppx::get_min_of( resultGeometry.position.x, maxPosX );
+			resultGeometry.position.y = cppx::get_min_of( resultGeometry.position.y, maxPosY );
 		}
 
-		resultGeometry.mPosition.x += screenOffset.x;
-		resultGeometry.mPosition.y += screenOffset.y;
+		resultGeometry.position.x += screenOffset.x;
+		resultGeometry.position.y += screenOffset.y;
 
 		return resultGeometry;
 	}

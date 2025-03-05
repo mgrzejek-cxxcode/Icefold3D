@@ -17,16 +17,16 @@ namespace Ic3::System
 
 		struct Win32WindowNativeData : public Win32EventSourceNativeData
 		{
-			ATOM mWndClsID = 0;
-			LPCSTR mWndClsName = nullptr;
-			HMODULE mModuleHandle = nullptr;
-			FrameGeometry mFSCachedGeometry = {};
+			ATOM wndClsID = 0;
+			LPCSTR wndClsName = nullptr;
+			HMODULE moduleHandle = nullptr;
+			FrameGeometry fsCachedGeometry = {};
 		};
 
 		struct Win32FrameGeometry
 		{
-			RECT mFrameRect;
-			DWORD mStyle;
+			RECT frameRect;
+			DWORD style;
 		};
 
 		void Win32CreateWindow( Win32WindowNativeData & pWindowNativeData, const WindowCreateInfo & pCreateInfo );

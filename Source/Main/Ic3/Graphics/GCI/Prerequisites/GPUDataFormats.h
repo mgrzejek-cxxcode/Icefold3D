@@ -102,6 +102,7 @@ namespace Ic3::Graphics::GCI
 		Double       = CXU::makeBaseDataTypeEnumValue( 8 , eGPUDataFormatFlagTypeFloatingPointBit ),
 		Uint24S8     = CXU::makeBaseDataTypeEnumValue( 4 , 0 ),
 	};
+	Ic3TypeInfoEnumDeclare( EBaseDataType );
 
 	enum class EIndexDataFormat : base_data_type_value_t
 	{
@@ -109,6 +110,7 @@ namespace Ic3::Graphics::GCI
 		Uint16 = static_cast<base_data_type_value_t>( EBaseDataType::Uint16 ),
 		Uint32 = static_cast<base_data_type_value_t>( EBaseDataType::Uint32 ),
 	};
+	Ic3TypeInfoEnumDeclare( EIndexDataFormat );
 
 	enum class ETextureFormat : texture_format_value_t
 	{
@@ -184,6 +186,7 @@ namespace Ic3::Graphics::GCI
 		BC7        = CXU::MakeTextureDataFormatEnumValue( 0xCC, EPixelDataLayout::S3TC, EBaseDataType::Undefined, 0, eGPUDataFormatFlagCompressedBit ),
 		BC7SRGB    = CXU::MakeTextureDataFormatEnumValue( 0xCD, EPixelDataLayout::S3TC, EBaseDataType::Undefined, 0, eGPUDataFormatMaskCompressedSRGB ),
 	};
+	Ic3TypeInfoEnumDeclare( ETextureFormat );
 
 	enum class EVertexAttribFormat : vertex_attrib_format_value_t
 	{
@@ -229,6 +232,7 @@ namespace Ic3::Graphics::GCI
 		Vec4U8N   = CXU::MakeVertexAttribFormatEnumValue( 4 , EBaseDataType::Ubyte   , eGPUDataFormatFlagNormalizedBit ),
 		Vec4U16N  = CXU::MakeVertexAttribFormatEnumValue( 4 , EBaseDataType::Uint16  , eGPUDataFormatFlagNormalizedBit ),
 	};
+	Ic3TypeInfoEnumDeclare( EVertexAttribFormat );
 
 	using EShaderInputConstantFormat = EVertexAttribFormat;
 

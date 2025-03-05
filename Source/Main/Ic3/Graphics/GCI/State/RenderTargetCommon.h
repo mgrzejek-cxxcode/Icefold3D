@@ -16,7 +16,7 @@ namespace Ic3::Graphics::GCI
 	struct RenderTargetAttachmentBinding;
 	struct RenderTargetAttachmentLayout;
 
-	Ic3DeclareClassHandle( RenderTargetTexture );
+	Ic3GCIDeclareClassHandle( RenderTargetTexture );
 
 	using RenderPassConfiguration = TRenderTargetArrayConfiguration<RenderPassAttachmentConfig>;
 	using RenderTargetBinding = TRenderTargetArrayConfiguration<RenderTargetAttachmentBinding>;

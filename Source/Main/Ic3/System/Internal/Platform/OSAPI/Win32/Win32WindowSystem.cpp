@@ -26,9 +26,10 @@ namespace Ic3::System
 
 		// Checks frame geometry/style definition which is to be applied to an existing frame (update).
 		// Returns a Win32-specific geometry format, validated and adjusted to the selected style.
-		Win32FrameGeometry _win32CheckFrameGeometryUpdate( HWND pWindowHwnd,
-		                                                   const FrameGeometry & pFrameGeometry,
-		                                                   cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags );
+		Win32FrameGeometry _win32CheckFrameGeometryUpdate(
+				HWND pWindowHwnd,
+				const FrameGeometry & pFrameGeometry,
+				cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags );
 
 	}
 
@@ -45,7 +46,7 @@ namespace Ic3::System
 
 		Platform::Win32CreateWindow( windowObject->mNativeData, pCreateInfo );
 
-		::ShowWindow( windowObject->mNativeData.mHWND, SW_SHOWNORMAL );
+		::ShowWindow( windowObject->mNativeData.hwnd, SW_SHOWNORMAL );
 
 		return windowObject;
 	}
@@ -74,19 +75,19 @@ namespace Ic3::System
 
 	void Win32Window::_NativeSetTitle( const std::string & pTitle )
 	{
-		Platform::Win32SetFrameTitle( mNativeData.mHWND, pTitle );
+		Platform::Win32SetFrameTitle( mNativeData.hwnd, pTitle );
 	}
 
 	void Win32Window::_NativeUpdateGeometry(
 			const FrameGeometry & pFrameGeometry,
 			cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
 	{
-		Platform::Win32UpdateFrameGeometry( mNativeData.mHWND, pFrameGeometry, pUpdateFlags );
+		Platform::Win32UpdateFrameGeometry( mNativeData.hwnd, pFrameGeometry, pUpdateFlags );
 	}
 
 	FrameSize Win32Window::_NativeGetSize( EFrameSizeMode pSizeMode ) const
 	{
-		return Platform::Win32GetFrameSize( mNativeData.mHWND, pSizeMode );
+		return Platform::Win32GetFrameSize( mNativeData.hwnd, pSizeMode );
 	}
 
 
@@ -98,34 +99,35 @@ namespace Ic3::System
 			// Register window class. Will fetch it if already registered.
 			_win32RegisterWndClass( pWindowNativeData );
 
-			auto geometryUpdateFlags = E_FRAME_GEOMETRY_UPDATE_FLAGS_ALL_DEFAULT;
 			auto win32FrameGeometry = _win32CheckFrameGeometry( pCreateInfo.frameGeometry );
 
-			HWND windowHwnd = ::CreateWindowExA( WS_EX_APPWINDOW | WS_EX_OVERLAPPEDWINDOW,
-			                                     pWindowNativeData.wndClsName,
-			                                     pCreateInfo.title.c_str(),
-			                                     win32FrameGeometry.style,
-			                                     win32FrameGeometry.frameRect.left,
-			                                     win32FrameGeometry.frameRect.top,
-			                                     win32FrameGeometry.frameRect.right - win32FrameGeometry.frameRect.left,
-			                                     win32FrameGeometry.frameRect.bottom - win32FrameGeometry.frameRect.top,
-			                                     nullptr,
-			                                     nullptr,
-			                                     pWindowNativeData.moduleHandle,
-			                                     &pWindowNativeData );
+			HWND windowHwnd = ::CreateWindowExA(
+					WS_EX_APPWINDOW | WS_EX_OVERLAPPEDWINDOW,
+					pWindowNativeData.wndClsName,
+					pCreateInfo.title.c_str(),
+					win32FrameGeometry.style,
+					win32FrameGeometry.frameRect.left,
+					win32FrameGeometry.frameRect.top,
+					win32FrameGeometry.frameRect.right - win32FrameGeometry.frameRect.left,
+					win32FrameGeometry.frameRect.bottom - win32FrameGeometry.frameRect.top,
+					nullptr,
+					nullptr,
+					pWindowNativeData.moduleHandle,
+					&pWindowNativeData );
 
 			if( windowHwnd == nullptr )
 			{
 				Ic3Throw( eExcCodeDebugPlaceholder );
 			}
 
-			::SetWindowPos( windowHwnd,
-			                nullptr,
-			                win32FrameGeometry.frameRect.left,
-			                win32FrameGeometry.frameRect.top,
-			                0, // Width of the frame
-			                0, // Height of the frame
-			                SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED );
+			::SetWindowPos(
+					windowHwnd,
+					nullptr,
+					win32FrameGeometry.frameRect.left,
+					win32FrameGeometry.frameRect.top,
+					 0, // Width of the frame
+					 0, // Height of the frame
+					SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED );
 
 			// Retrieve the current number of windows created with our class (ClassRefCounter).
 			auto wndClassRefCounter = ::GetClassLongPtrA( windowHwnd, 0 );
@@ -133,32 +135,32 @@ namespace Ic3::System
 			// Increment the counter and store the new value.
 			::SetClassLongPtrA( windowHwnd, 0, wndClassRefCounter + 1 );
 
-			pWindowNativeData.mHWND = windowHwnd;
+			pWindowNativeData.hwnd = windowHwnd;
 		}
 
 		void Win32DestroyWindow( Win32WindowNativeData & pWindowNativeData )
 		{
-			if( !pWindowNativeData.mHWND )
+			if( !pWindowNativeData.hwnd )
 			{
 				return;
 			}
 
 			// Retrieve the current number of windows created with our class (ClassRefCounter).
-			auto wndClassRefCounter = ::GetClassLongPtrA( pWindowNativeData.mHWND, 0 );
+			auto wndClassRefCounter = ::GetClassLongPtrA( pWindowNativeData.hwnd, 0 );
 
 			// We are destroying one of the windows, decrement the counter.
 			--wndClassRefCounter;
 
-			::SetClassLongPtrA( pWindowNativeData.mHWND, 0, wndClassRefCounter );
+			::SetClassLongPtrA( pWindowNativeData.hwnd, 0, wndClassRefCounter );
 
-			::DestroyWindow( pWindowNativeData.mHWND );
+			::DestroyWindow( pWindowNativeData.hwnd );
 
 			if( wndClassRefCounter == 0 )
 			{
 				::UnregisterClassA( pWindowNativeData.wndClsName, pWindowNativeData.moduleHandle );
 			}
 
-			pWindowNativeData.mHWND = nullptr;
+			pWindowNativeData.hwnd = nullptr;
 			pWindowNativeData.wndClsID = 0;
 			pWindowNativeData.wndClsName = nullptr;
 			pWindowNativeData.moduleHandle = nullptr;
@@ -166,7 +168,7 @@ namespace Ic3::System
 
 		void Win32ChangeWindowFullscreenState( Win32WindowNativeData & pWindowNativeData, bool pSetFullscreen )
 		{
-			const auto currentFullscreenState = pWindowNativeData.mSysWindowFlags.is_set( eWin32SystemWindowFlagWMStateFullscreen );
+			const auto currentFullscreenState = pWindowNativeData.sysWindowFlags.is_set( eWin32SystemWindowFlagWMStateFullscreen );
 
 			if( currentFullscreenState != pSetFullscreen )
 			{
@@ -181,19 +183,19 @@ namespace Ic3::System
 
 				// This is an asynchronous post. This functions returns immediately - the message will be
 				// put into the queue and fetched when the event system pulls the event queue next time.
-				::PostMessageA( pWindowNativeData.mHWND, messageID, wParam, 0 );
+				::PostMessageA( pWindowNativeData.hwnd, messageID, wParam, 0 );
 			}
 		}
 
 		void Win32UpdateWindowFullscreenState( Win32WindowNativeData & pWindowNativeData, bool pSetFullscreen )
 		{
 			FrameGeometry newFrameGeometry{};
-			cppx::bitmask<EFrameGeometryUpdateFlags> updateFlags = E_FRAME_GEOMETRY_UPDATE_FLAG_POSITION_BIT | E_FRAME_GEOMETRY_UPDATE_FLAG_STYLE_BIT;
+			cppx::bitmask<EFrameGeometryUpdateFlags> updateFlags = eFrameGeometryUpdateFlagPositionBit | eFrameGeometryUpdateFlagStyleBit;
 
 			if( pSetFullscreen )
 			{
 				// _win32QueryCurrentWindowGeometry() returns the geometry of the whole window, not only the client area!
-				pWindowNativeData.mFSCachedGeometry = _win32QueryCurrentWindowGeometry( pWindowNativeData.mHWND );
+				pWindowNativeData.fsCachedGeometry = _win32QueryCurrentWindowGeometry( pWindowNativeData.hwnd );
 
 				const auto screenDC = ::GetWindowDC( nullptr );
 
@@ -204,21 +206,21 @@ namespace Ic3::System
 				newFrameGeometry.position.y = -yBorderSize;
 				newFrameGeometry.size.x = ::GetDeviceCaps( screenDC, HORZRES ) + 2 * xBorderSize;
 				newFrameGeometry.size.y = ::GetDeviceCaps( screenDC, VERTRES ) + 2 * yBorderSize;
-				newFrameGeometry.style = EFrameStyle::OVERLAY;
-				updateFlags.set( E_FRAME_GEOMETRY_UPDATE_FLAG_SIZE_CLIENT_AREA_BIT );
+				newFrameGeometry.style = EFrameStyle::Overlay;
+				updateFlags.set( eFrameGeometryUpdateFlagSizeClientAreaBit );
 			}
 			else
 			{
 				// The geometry has the size of the whole window. That is because some window styles cannot be passed
 				// to AdjustWindowRect(). To get around that, we set the outer rect directly, bypassing adjustment.
 
-				newFrameGeometry = pWindowNativeData.mFSCachedGeometry;
-				updateFlags.set( E_FRAME_GEOMETRY_UPDATE_FLAG_SIZE_OUTER_RECT_BIT );
+				newFrameGeometry = pWindowNativeData.fsCachedGeometry;
+				updateFlags.set( eFrameGeometryUpdateFlagSizeOuterRectBit );
 			}
 
-			Win32UpdateFrameGeometry( pWindowNativeData.mHWND, newFrameGeometry, updateFlags );
+			Win32UpdateFrameGeometry( pWindowNativeData.hwnd, newFrameGeometry, updateFlags );
 
-			pWindowNativeData.mSysWindowFlags.setOrUnset( eWin32SystemWindowFlagWMStateFullscreen, pSetFullscreen );
+			pWindowNativeData.sysWindowFlags.set_or_unset( eWin32SystemWindowFlagWMStateFullscreen, pSetFullscreen );
 		}
 
 		void Win32SetFrameTitle( HWND pHWND, const std::string & pTitle )
@@ -234,19 +236,20 @@ namespace Ic3::System
 
 			::SetWindowLongA( pHWND, GWL_STYLE, win32Geometry.style );
 
-			::SetWindowPos( pHWND,
-			                nullptr,
-			                win32Geometry.frameRect.left, // X coordinate
-			                win32Geometry.frameRect.top, // Y coordinate
-			                win32Geometry.frameRect.right - win32Geometry.frameRect.left, // Width of the frame
-			                win32Geometry.frameRect.bottom - win32Geometry.frameRect.top, // Height of the frame
-			                SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW );
+			::SetWindowPos(
+					pHWND,
+					nullptr,
+					win32Geometry.frameRect.left, // X coordinate
+					win32Geometry.frameRect.top, // Y coordinate
+					win32Geometry.frameRect.right - win32Geometry.frameRect.left, // Width of the frame
+					win32Geometry.frameRect.bottom - win32Geometry.frameRect.top, // Height of the frame
+					SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW );
 		}
 
 		FrameSize Win32GetFrameSize( HWND pHWND, EFrameSizeMode pSizeMode )
 		{
 			RECT frameRect;
-			if( pSizeMode == EFrameSizeMode::CLIENT_AREA )
+			if( pSizeMode == EFrameSizeMode::ClientArea )
 			{
 				::GetClientRect( pHWND, &frameRect );
 				::AdjustWindowRect( &frameRect, WS_VISIBLE, FALSE );
@@ -265,7 +268,7 @@ namespace Ic3::System
 
 		bool Win32IsFullscreenWindow( const Win32WindowNativeData & pWindowNativeData )
 		{
-			return pWindowNativeData.mSysWindowFlags.is_set( Platform::eWin32SystemWindowFlagWMStateFullscreen );
+			return pWindowNativeData.sysWindowFlags.is_set( Platform::eWin32SystemWindowFlagWMStateFullscreen );
 		}
 
 		void _win32RegisterWndClass( Win32WindowNativeData & pWindowNativeData )
@@ -325,7 +328,7 @@ namespace Ic3::System
 			//
 			DWORD resultStyle = cppx::meta::limits<DWORD>::max_value;
 
-			switch ( pStyle )
+			switch( pStyle )
 			{
 				case EFrameStyle::Caption:
 				{
@@ -337,7 +340,7 @@ namespace Ic3::System
 					resultStyle = cvFixedFrameStyle;
 					break;
 				}
-				case EFrameStyle::OVERLAY:
+				case EFrameStyle::Overlay:
 				{
 					resultStyle = cvOverlayFrameStyle;
 					break;
@@ -359,8 +362,9 @@ namespace Ic3::System
 
 		EFrameStyle _win32QueryWindowStyle( HWND pHWND )
 		{
-			const DWORD cvStyleSupportMask = WS_CAPTION | WS_SYSMENU | WS_OVERLAPPED | WS_MINIMIZEBOX |
-			                                 WS_POPUP | WS_EX_TOPMOST | WS_SIZEBOX | WS_MAXIMIZEBOX;
+			const DWORD cvStyleSupportMask =
+					WS_CAPTION | WS_SYSMENU | WS_OVERLAPPED | WS_MINIMIZEBOX |
+					WS_POPUP | WS_EX_TOPMOST | WS_SIZEBOX | WS_MAXIMIZEBOX;
 
 			const auto cvWindowStyle = ::GetWindowLongA( pHWND, GWL_STYLE );
 
@@ -370,7 +374,7 @@ namespace Ic3::System
 
 			if( windowStyleMask.is_set( WS_POPUP ) && !windowStyleMask.is_set( WS_SYSMENU ) )
 			{
-				frameStyle = EFrameStyle::OVERLAY;
+				frameStyle = EFrameStyle::Overlay;
 			}
 			else if( windowStyleMask.is_set_any_of( WS_SIZEBOX | WS_MAXIMIZEBOX ) )
 			{
@@ -417,13 +421,14 @@ namespace Ic3::System
 			return win32Geometry;
 		}
 
-		Win32FrameGeometry _win32CheckFrameGeometryUpdate( HWND pWindowHwnd,
-		                                                   const FrameGeometry & pFrameGeometry,
-		                                                   cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
+		Win32FrameGeometry _win32CheckFrameGeometryUpdate(
+				HWND pWindowHwnd,
+				const FrameGeometry & pFrameGeometry,
+				cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags )
 		{
 			Win32FrameGeometry win32Geometry{};
 
-			if( pUpdateFlags.is_set( E_FRAME_GEOMETRY_UPDATE_FLAG_STYLE_BIT ) )
+			if( pUpdateFlags.is_set( eFrameGeometryUpdateFlagStyleBit ) )
 			{
 				// If the style-related flag is set, it means the window style will change.
 				// Current style is irrelevant - translate the new one and save it in result.
@@ -434,7 +439,7 @@ namespace Ic3::System
 				win32Geometry.style = ::GetWindowLongA( pWindowHwnd, GWL_STYLE );
 			}
 
-			if( pUpdateFlags.is_set_any_of( E_FRAME_GEOMETRY_UPDATE_FLAG_POSITION_BIT | E_FRAME_GEOMETRY_UPDATE_FLAG_SIZE_BIT ) )
+			if( pUpdateFlags.is_set_any_of( eFrameGeometryUpdateFlagPositionBit | eFrameGeometryUpdateFlagSizeBit ) )
 			{
 				RECT currentRect;
 				::GetWindowRect( pWindowHwnd, &currentRect );
@@ -444,12 +449,12 @@ namespace Ic3::System
 				auto frameWidth = currentRect.right - currentRect.left;
 				auto frameHeight = currentRect.bottom - currentRect.top;
 
-				if( pUpdateFlags.is_set( E_FRAME_GEOMETRY_UPDATE_FLAG_POSITION_BIT ) )
+				if( pUpdateFlags.is_set( eFrameGeometryUpdateFlagPositionBit ) )
 				{
 					framePosX = static_cast<LONG>( pFrameGeometry.position.x );
 					framePosY = static_cast<LONG>( pFrameGeometry.position.y );
 				}
-				if( pUpdateFlags.is_set( E_FRAME_GEOMETRY_UPDATE_FLAG_SIZE_BIT ) )
+				if( pUpdateFlags.is_set( eFrameGeometryUpdateFlagSizeBit ) )
 				{
 					frameWidth = static_cast<LONG>( pFrameGeometry.size.x );
 					frameHeight = static_cast<LONG>( pFrameGeometry.size.y );
@@ -460,7 +465,7 @@ namespace Ic3::System
 				win32Geometry.frameRect.right = framePosX + frameWidth;
 				win32Geometry.frameRect.bottom = framePosY + frameHeight;
 
-				if( pUpdateFlags.is_set( E_FRAME_GEOMETRY_UPDATE_FLAG_SIZE_CLIENT_AREA_BIT ) )
+				if( pUpdateFlags.is_set( eFrameGeometryUpdateFlagSizeClientAreaBit ) )
 				{
 					::AdjustWindowRect( &( win32Geometry.frameRect ), win32Geometry.style, FALSE );
 

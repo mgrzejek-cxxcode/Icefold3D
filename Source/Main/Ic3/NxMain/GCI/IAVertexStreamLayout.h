@@ -36,12 +36,12 @@ namespace Ic3
 		/**
 		 *
 		 */
-		uint8 dataStrideInBytes = 0;
+		GCI::EIAVertexAttributeDataRate streamDataRate = GCI::EIAVertexAttributeDataRate::Undefined;
 
 		/**
 		 *
 		 */
-		GCI::EIAVertexAttributeDataRate streamDataRate = GCI::EIAVertexAttributeDataRate::Undefined;
+		uint16 dataStrideInBytes = 0;
 
 		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept;
 

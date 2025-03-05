@@ -259,6 +259,7 @@ namespace Ic3::Graphics::GCI
 			Ic3CaseReturn( EBaseDataType::Uint32   , GL_UNSIGNED_INT      );
 			Ic3CaseReturn( EBaseDataType::Float16  , GL_HALF_FLOAT        );
 			Ic3CaseReturn( EBaseDataType::Float32  , GL_FLOAT             );
+			Ic3CaseReturn( EBaseDataType::Double   , GL_DOUBLE            );
 			Ic3CaseReturn( EBaseDataType::Uint24S8 , GL_UNSIGNED_INT_24_8 );
 		}
 		return GL_IC3_ERR_INVALID_PARAM;
@@ -557,6 +558,7 @@ namespace Ic3::Graphics::GCI
 			Ic3CaseReturn( ETextureFormat::D24UNX8    , GL_DEPTH_COMPONENT24  );
 			Ic3CaseReturn( ETextureFormat::X24S8U     , GL_DEPTH24_STENCIL8   );
 			Ic3CaseReturn( ETextureFormat::D32F       , GL_DEPTH_COMPONENT32F );
+			Ic3CaseReturn( ETextureFormat::D32FS8     , GL_DEPTH32F_STENCIL8 );
 		#if( IC3_GX_GL_FEATURE_SUPPORT_TEXTURE_FORMAT_COMPRESSED_BCX )
 			Ic3CaseReturn( ETextureFormat::BC1        , GL_TEX_FORMAT_COMPRESSED_BC1         );
 			Ic3CaseReturn( ETextureFormat::BC1SRGB    , GL_TEX_FORMAT_COMPRESSED_BC1_SRGBA   );
@@ -622,17 +624,21 @@ namespace Ic3::Graphics::GCI
 			Ic3CaseReturn( ETextureFormat::RGBA8IN    , GL_RGBA );
 			Ic3CaseReturn( ETextureFormat::RGBA8UN    , GL_RGBA );
 			Ic3CaseReturn( ETextureFormat::RGBA8SRGB  , GL_RGBA );
-			Ic3CaseReturn( ETextureFormat::R5G5B5A1   , GL_RGB5_A1            );
-			Ic3CaseReturn( ETextureFormat::R5G6B5     , GL_RGB565             );
-			Ic3CaseReturn( ETextureFormat::R9G9B9E5   , GL_RGB9_E5            );
-			Ic3CaseReturn( ETextureFormat::RGB10A2U   , GL_RGB10_A2UI         );
-			Ic3CaseReturn( ETextureFormat::RGB10A2UN  , GL_RGB10_A2           );
-			Ic3CaseReturn( ETextureFormat::R11G11B10F , GL_R11F_G11F_B10F     );
-			Ic3CaseReturn( ETextureFormat::D16UN      , GL_DEPTH_COMPONENT16  );
-			Ic3CaseReturn( ETextureFormat::D24UNS8U   , GL_DEPTH_STENCIL      );
-			Ic3CaseReturn( ETextureFormat::D24UNX8    , GL_DEPTH_STENCIL      );
-			Ic3CaseReturn( ETextureFormat::X24S8U     , GL_DEPTH_STENCIL      );
-			Ic3CaseReturn( ETextureFormat::D32F       , GL_DEPTH_COMPONENT    );
+
+			Ic3CaseReturn( ETextureFormat::R5G5B5A1   , GL_RGB5_A1        );
+			Ic3CaseReturn( ETextureFormat::R5G6B5     , GL_RGB565         );
+			Ic3CaseReturn( ETextureFormat::R9G9B9E5   , GL_RGB9_E5        );
+			Ic3CaseReturn( ETextureFormat::RGB10A2U   , GL_RGB10_A2UI     );
+			Ic3CaseReturn( ETextureFormat::RGB10A2UN  , GL_RGB10_A2       );
+			Ic3CaseReturn( ETextureFormat::R11G11B10F , GL_R11F_G11F_B10F );
+
+			Ic3CaseReturn( ETextureFormat::D16UN      , GL_DEPTH_COMPONENT16 );
+			Ic3CaseReturn( ETextureFormat::D24UNS8U   , GL_DEPTH_STENCIL     );
+			Ic3CaseReturn( ETextureFormat::D24UNX8    , GL_DEPTH_STENCIL     );
+			Ic3CaseReturn( ETextureFormat::X24S8U     , GL_DEPTH_STENCIL     );
+			Ic3CaseReturn( ETextureFormat::D32F       , GL_DEPTH_COMPONENT   );
+			Ic3CaseReturn( ETextureFormat::D32FS8     , GL_DEPTH_STENCIL     );
+
 		#if( IC3_GX_GL_FEATURE_SUPPORT_TEXTURE_FORMAT_COMPRESSED_BCX )
 			Ic3CaseReturn( ETextureFormat::BC1        , GL_TEX_FORMAT_COMPRESSED_BC1         );
 			Ic3CaseReturn( ETextureFormat::BC1SRGB    , GL_TEX_FORMAT_COMPRESSED_BC1_SRGBA   );

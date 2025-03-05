@@ -281,8 +281,8 @@ int main( int pArgc, const char ** pArgv )
 	evtDispatcher->setEventHandler(
 			EEventCodeIndex::InputKeyboard,
 			[&](const EventObject & pEvt) -> bool {
-				auto & keyMap = pEvt.uEvtInputKeyboard.mInputKeyboardState->mKeyStateMap;
-				if( pEvt.uEvtInputKeyboard.mKeyCode == EKeyCode::Escape )
+				auto & keyMap = pEvt.uEvtInputKeyboard.inputKeyboardState->keyStateMap;
+				if( pEvt.uEvtInputKeyboard.keyCode == EKeyCode::Escape )
 				{
 					evtDispatcher->postEventAppQuit();
 				}

@@ -15,3 +15,6 @@ if( "${IC3_COMPONENTS_BUILD_MODE}" STREQUAL "STATIC" )
     target_compile_definitions( Sample.GfxTest PRIVATE
             "IC3_BUILD_STATIC=1" )
 endif()
+
+set_target_properties( Sample.GfxTest PROPERTIES
+    VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" )

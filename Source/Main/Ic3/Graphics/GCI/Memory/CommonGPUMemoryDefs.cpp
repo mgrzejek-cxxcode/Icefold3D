@@ -4,28 +4,28 @@
 namespace Ic3::Graphics::GCI
 {
 
-	namespace memutil
+	namespace GCU
 	{
 
-		bool checkMemoryMapAccess( EGPUMemoryMapMode pRequestedMapMode, cppx::bitmask<EGPUMemoryFlags> pMemoryFlags )
+		bool MemCheckMapAccess( EGPUMemoryMapMode pRequestedMapMode, cppx::bitmask<EGPUMemoryFlags> pMemoryFlags )
 		{
 			auto mapRequestedAccessFlags = static_cast<uint32>( pRequestedMapMode ) & eGPUMemoryMapFlagAccessReadWriteBit;
 			return pMemoryFlags.is_set( mapRequestedAccessFlags );
 		}
 
-		StructuredResourceAlignedMemory alignStructuredResourceDataAuto(
+		StructuredResourceAlignedMemory MemAlignStructuredResourceDataAuto(
 				const void * pData,
 				native_uint pElementSize,
 				native_uint pElementsNum )
 		{
 			StructuredResourceAlignedMemory resourceMemory;
-			resourceMemory.metrics = computeStructuredResourceAlignedMemoryMetrics( pElementSize, pElementsNum );
-			resourceMemory.alignedBuffer = alignStructuredResourceData( pData, resourceMemory.metrics );
+			resourceMemory.metrics = MemComputeStructuredResourceAlignedMemoryMetrics( pElementSize, pElementsNum );
+			resourceMemory.alignedBuffer = MemAlignStructuredResourceData( pData, resourceMemory.metrics );
 
 			return resourceMemory;
 		}
 
-		cppx::dynamic_byte_array alignStructuredResourceData(
+		cppx::dynamic_byte_array MemAlignStructuredResourceData(
 				const void * pData,
 				native_uint pElementSize,
 				native_uint pElementsNum,
@@ -38,10 +38,10 @@ namespace Ic3::Graphics::GCI
 			memoryMetrics.storageSize = pElementsNum * pElementSize;
 			memoryMetrics.storageSizeAligned = pElementsNum * pAlignedStride;
 
-			return alignStructuredResourceData( pData, memoryMetrics );
+			return MemAlignStructuredResourceData( pData, memoryMetrics );
 		}
 
-		cppx::dynamic_byte_array alignStructuredResourceData(
+		cppx::dynamic_byte_array MemAlignStructuredResourceData(
 				const void * pData,
 				const StructuredResourceAlignedMemoryMetrics & pMetrics )
 		{
@@ -68,21 +68,21 @@ namespace Ic3::Graphics::GCI
 			return alignedData;
 		}
 
-		StructuredResourceAlignedMemoryMetrics computeStructuredResourceAlignedMemoryMetrics(
+		StructuredResourceAlignedMemoryMetrics MemComputeStructuredResourceAlignedMemoryMetrics(
 				gpu_memory_size_t pElementSize,
 				gpu_memory_size_t pElementsNum )
 		{
 			StructuredResourceAlignedMemoryMetrics memoryMetrics;
 			memoryMetrics.elementSize = pElementSize;
 			memoryMetrics.elementsNum = pElementsNum;
-			memoryMetrics.elementSizeAligned = computeStructuredResourceAlignedStride( pElementSize );
+			memoryMetrics.elementSizeAligned = MemComputeStructuredResourceAlignedStride( pElementSize );
 			memoryMetrics.storageSize = pElementSize * pElementsNum;
 			memoryMetrics.storageSizeAligned = memoryMetrics.elementSizeAligned * pElementsNum;
 
 			return memoryMetrics;
 		}
 
-		gpu_memory_size_t computeStructuredResourceAlignedStride( gpu_memory_size_t pElementSize )
+		gpu_memory_size_t MemComputeStructuredResourceAlignedStride( gpu_memory_size_t pElementSize )
 		{
 			return cppx::mem_get_aligned_value( pElementSize, 16 );
 		}

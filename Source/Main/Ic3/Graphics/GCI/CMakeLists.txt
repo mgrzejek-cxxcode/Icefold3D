@@ -6,7 +6,6 @@ set( IC3_GRAPHICS_GCI_SRC_FILES
         "Prerequisites/CoreInterfaceDefs.h"
         "Prerequisites/CoreInterfaceDefs.cpp"
         "Prerequisites/GPUDataFormats.h"
-        "Prerequisites/GPUDataFormats.cpp"
         "Prerequisites/VertexAttribFormatUtils.h"
 
         "Prerequisites.h"
@@ -145,6 +144,8 @@ set( IC3_GRAPHICS_GCI_SRC_FILES
         CommandListImplGenericRenderPass.h
         State/ShaderInputSignature.cpp
         State/ShaderInputSignature.h
+        TypeInfo/TPIDefsGCIEnum.cpp
+        Prerequisites/GCITypeInfo.h
 
 )
 

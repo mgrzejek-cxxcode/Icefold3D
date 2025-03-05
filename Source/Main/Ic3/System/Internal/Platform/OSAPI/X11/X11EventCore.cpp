@@ -226,7 +226,7 @@ namespace Ic3::System
 						const auto IsFullscreenWindow = Platform::X11IsFullscreenWindow( xSessionData.displayHandle, eventSourceNativeData->mWindowXID );
 
 						// This is the cached fullscreen state, updated on each change.
-						const auto previousFullscreenState = eventSourceNativeData->mSysWindowFlags.is_set( eX11SystemWindowFlagWMStateFullscreen );
+						const auto previousFullscreenState = eventSourceNativeData->sysWindowFlags.is_set( eX11SystemWindowFlagWMStateFullscreen );
 
 						if( IsFullscreenWindow != previousFullscreenState )
 						{
@@ -235,7 +235,7 @@ namespace Ic3::System
 							eWindowUpdateFullscreen.fullscreenState = IsFullscreenWindow ? EActiveState::ENABLED : EActiveState::DISABLED;
 							eWindowUpdateFullscreen.eventSource = &pEventSource;
 							// Save the current state inside the native data of the event source.
-							eventSourceNativeData->mSysWindowFlags.setOrUnset( eX11SystemWindowFlagWMStateFullscreen, IsFullscreenWindow );
+							eventSourceNativeData->sysWindowFlags.setOrUnset( eX11SystemWindowFlagWMStateFullscreen, IsFullscreenWindow );
 						}
 					}
 					break;
@@ -268,7 +268,7 @@ namespace Ic3::System
 				// [Source: https://tronche.com/gui/x/xlib/input/keyboard-encoding.html#KeySym]
 				case KeyPress:
 				{
-					auto & inputKeyboardState = eventController.getEventSystemSharedState().mInputKeyboardState;
+					auto & inputKeyboardState = eventController.getEventSystemSharedState().inputKeyboardState;
 
 					// XLookupKeysym requires non-const XKeyEvent parameter.
 					// Use locally copied one to keep the API right (we don't want to drop 'const for input event param).
@@ -277,15 +277,15 @@ namespace Ic3::System
 					auto keycode = _X11GetSysKeyCode( keysym );
 					auto & eInputKeyboard = pOutEvent.uEvtInputKeyboard;
                     eInputKeyboard.mEventCode = eEventCodeInputKeyboard;
-                    eInputKeyboard.mInputKeyboardState = &inputKeyboardState;
-                    eInputKeyboard.mKeyCode = keycode;
-                    eInputKeyboard.mKeyAction = EKeyActionType::Press;
+                    eInputKeyboard.inputKeyboardState = &inputKeyboardState;
+                    eInputKeyboard.keyCode = keycode;
+                    eInputKeyboard.keyAction = EKeyActionType::Press;
 
 					break;
 				}
 				case KeyRelease:
 				{
-                    auto & inputKeyboardState = eventController.getEventSystemSharedState().mInputKeyboardState;
+                    auto & inputKeyboardState = eventController.getEventSystemSharedState().inputKeyboardState;
 
 					// XLookupKeysym requires non-const XKeyEvent parameter.
 					// Use locally copied one to keep the API right (we don't want to drop 'const for input event param).
@@ -294,9 +294,9 @@ namespace Ic3::System
 					auto keycode = _X11GetSysKeyCode( keysym );
 					auto & eInputKeyboard = pOutEvent.uEvtInputKeyboard;
                     eInputKeyboard.mEventCode = eEventCodeInputKeyboard;
-                    eInputKeyboard.mInputKeyboardState = &inputKeyboardState;
-                    eInputKeyboard.mKeyCode = keycode;
-                    eInputKeyboard.mKeyAction = EKeyActionType::Release;
+                    eInputKeyboard.inputKeyboardState = &inputKeyboardState;
+                    eInputKeyboard.keyCode = keycode;
+                    eInputKeyboard.keyAction = EKeyActionType::Release;
 
 					break;
 				}

@@ -95,8 +95,8 @@ namespace Ic3::System
 			{
 				const auto frameGeometry = _OSXCheckFrameGeometry( pTargetScreen, pCreateInfo.frameGeometry );
 
-				nsWindow = [[NSOSXWindow alloc] initWithContentRect:frameGeometry.mFrameRect
-				                                styleMask:static_cast<NSWindowStyleMask>( frameGeometry.mStyle )
+				nsWindow = [[NSOSXWindow alloc] initWithContentRect:frameGeometry.frameRect
+				                                styleMask:static_cast<NSWindowStyleMask>( frameGeometry.style )
 				                                backing:NSBackingStoreBuffered
 				                                defer:NO
 				                                screen:pTargetScreen];
@@ -179,17 +179,17 @@ namespace Ic3::System
 
 			if( pUpdateFlags.is_set( eFrameGeometryUpdateFlagStyleBit ) )
 			{
-				[pNSWindow setStyleMask:static_cast<NSWindowStyleMask>( frameGeometry.mStyle )];
+				[pNSWindow setStyleMask:static_cast<NSWindowStyleMask>( frameGeometry.style )];
 			}
 
 			if( pUpdateFlags.is_set( eFrameGeometryUpdateFlagPositionBit ) )
 			{
-				[pNSWindow setFrameOrigin:frameGeometry.mFrameRect.origin];
+				[pNSWindow setFrameOrigin:frameGeometry.frameRect.origin];
 			}
 
 			if( pUpdateFlags.is_set( eFrameGeometryUpdateFlagSizeBit ) )
 			{
-				[pNSWindow setFrame:[pNSWindow frameRectForContentRect:frameGeometry.mFrameRect] display:YES];
+				[pNSWindow setFrame:[pNSWindow frameRectForContentRect:frameGeometry.frameRect] display:YES];
 			}
 		}
 		}
@@ -267,11 +267,11 @@ namespace Ic3::System
 			// Alternatively: CGDisplayPixelsHigh( kCGDirectMainDisplay ) ??
 			const auto screenRect = [pNSScreen frame];
 
-			auto xOrigin = static_cast<CGFloat>( pFrameGeometry.mPosition.x );
+			auto xOrigin = static_cast<CGFloat>( pFrameGeometry.position.x );
 
 			NSRect frameRect{};
-			frameRect.origin.x = static_cast<CGFloat>( pFrameGeometry.mPosition.x );
-			frameRect.origin.y = static_cast<CGFloat>( pFrameGeometry.mPosition.y );
+			frameRect.origin.x = static_cast<CGFloat>( pFrameGeometry.position.x );
+			frameRect.origin.y = static_cast<CGFloat>( pFrameGeometry.position.y );
 			frameRect.size.width = static_cast<CGFloat>( pFrameGeometry.size.x );
 			frameRect.size.height = static_cast<CGFloat>( pFrameGeometry.size.y );
 
@@ -279,8 +279,8 @@ namespace Ic3::System
 			frameRect.origin.y = screenRect.size.height - frameRect.origin.y - frameRect.size.height;
 
 			OSXFrameGeometry osxGeometry{};
-			osxGeometry.mFrameRect = frameRect;
-			osxGeometry.mStyle = OSXTranslateFrameStyle( pFrameGeometry.mStyle );
+			osxGeometry.frameRect = frameRect;
+			osxGeometry.style = OSXTranslateFrameStyle( pFrameGeometry.style );
 
 			return osxGeometry;
 		}
@@ -294,11 +294,11 @@ namespace Ic3::System
 
 			if( pUpdateFlags.is_set( eFrameGeometryUpdateFlagStyleBit ) )
 			{
-				osxGeometry.mStyle = OSXTranslateFrameStyle( pFrameGeometry.mStyle );
+				osxGeometry.style = OSXTranslateFrameStyle( pFrameGeometry.style );
 			}
 			else
 			{
-				osxGeometry.mStyle = [pNSWindow styleMask];
+				osxGeometry.style = [pNSWindow styleMask];
 			}
 
 			if( pUpdateFlags.is_set_any_of( eFrameGeometryUpdateFlagPositionBit | eFrameGeometryUpdateFlagSizeBit ) )
@@ -306,19 +306,19 @@ namespace Ic3::System
 				const auto screenRect = [[pNSWindow screen] frame];
 
 				NSRect frameRect{};
-				frameRect.origin.x = static_cast<CGFloat>( pFrameGeometry.mPosition.x );
-				frameRect.origin.y = static_cast<CGFloat>( pFrameGeometry.mPosition.y );
+				frameRect.origin.x = static_cast<CGFloat>( pFrameGeometry.position.x );
+				frameRect.origin.y = static_cast<CGFloat>( pFrameGeometry.position.y );
 				frameRect.size.width = static_cast<CGFloat>( pFrameGeometry.size.x );
 				frameRect.size.height = static_cast<CGFloat>( pFrameGeometry.size.y );
 
 				frameRect.origin.x = cppx::get_max_of( frameRect.origin.x, 0.0f );
 				frameRect.origin.y = screenRect.size.height - frameRect.origin.y - frameRect.size.height;
 
-				osxGeometry.mFrameRect = frameRect;
+				osxGeometry.frameRect = frameRect;
 			}
 			else
 			{
-				osxGeometry.mFrameRect = [pNSWindow frame];
+				osxGeometry.frameRect = [pNSWindow frame];
 			}
 
 			return osxGeometry;

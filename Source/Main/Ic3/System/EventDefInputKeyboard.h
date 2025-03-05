@@ -179,21 +179,21 @@ namespace Ic3::System
 
 	struct EvtSharedInputKeyboardState
 	{
-		KeyStateMap mKeyStateMap;
+		KeyStateMap keyStateMap;
 
-		cppx::bitmask<EKeyModifierFlags> mActiveModifiersMask = 0;
+		cppx::bitmask<EKeyModifierFlags> activeModifiersMask = 0;
 	};
 
 	struct EvtInputKeyboard : public EvtInput
 	{
 		//
-		EKeyActionType mKeyAction;
+		EKeyActionType keyAction;
 
 		//
-		EKeyCode mKeyCode;
+		EKeyCode keyCode;
 
 		//
-		const EvtSharedInputKeyboardState * mInputKeyboardState;
+		const EvtSharedInputKeyboardState * inputKeyboardState;
 	};
 
 	namespace Evt

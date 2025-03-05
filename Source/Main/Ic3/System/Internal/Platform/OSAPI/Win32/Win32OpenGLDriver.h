@@ -16,9 +16,9 @@ namespace Ic3::System
 	namespace Platform
 	{
 
-		inline constexpr size_t CX_WIN32_WGL_MAX_PIXEL_FORMATS_NUM = 256u;
+		inline constexpr size_t kWin32MaxWGLPixelFormatsNum = 256u;
 		
-		inline constexpr size_t CX_WIN32_WGL_MAX_PIXEL_FORMAT_ATTRIBUTES_NUM = 64u;
+		inline constexpr size_t kWin32MaxWGLPixelFormatAttributesNum = 64u;
 
 		struct Win32OpenGLDisplaySurfaceNativeData : public Win32WindowNativeData
 		{

@@ -10,32 +10,26 @@ namespace Ic3::Graphics::GCI
 	Ic3EnableCustomExceptionSupport();
 	Ic3EnableEnumTypeInfoSupport();
 
-#define Ic3GCIDeclareClassHandle( pClassName ) Ic3DeclareClassHandle( pClassName )
-#define Ic3GCIDeclareTypedefHandle( pAliasName, pTypeName ) Ic3DeclareTypedefHandle( pAliasName, pTypeName )
+	/// Declares handle type aliases for the specified GCI class.
+	#define Ic3GCIDeclareClassHandle( pClassName ) Ic3DeclareClassHandle( pClassName )
 
-	/// A special constant which can be used for object IDs to indicate that ID should be assigned automatically.
-	/// In most cases it is safe to assume that object address will be used as the ID (unless stated otherwise).
-	inline constexpr GfxObjectID cxGPUObjectIDAuto { cppx::meta::limits<uint64>::max_value };
-
-	/// An invalid object ID. Such IDs may refer to objects which are either uninitialised, marked for deletion,
-	/// or do not yet exist in the object management system. This ID also means "not found" in case of queries.
-	inline constexpr GfxObjectID cxGPUObjectIDInvalid { cppx::meta::limits<uint64>::max_value - 1 };
-
-	///
-	inline constexpr GfxObjectID cxGPUObjectIDEmpty { 0 };
+	/// Declares handle type aliases for the specified GCI type which is a typedef itself.
+	#define Ic3GCIDeclareTypedefHandle( pAliasName, pTypeName ) Ic3DeclareTypedefHandle( pAliasName, pTypeName )
 
 	/**
-	 *
+	 * Defines GPU driver configuration flags, used to control the initialization process when a driver is created.
+	 * Support for some of these flags may be driver-specific (limited by a specific API),
 	 */
 	enum EGPUDriverConfigFlags : uint32
 	{
-		eGPUDriverConfigFlagEnableDebugLayerBit         = 0x0001,
-		eGPUDriverConfigFlagEnableShaderDebugInfoBit    = 0x0002 | eGPUDriverConfigFlagEnableDebugLayerBit,
+		///
+		eGPUDriverConfigFlagEnableDebugLayerBit = 0x0001,
+		eGPUDriverConfigFlagEnableShaderDebugInfoBit = 0x0002 | eGPUDriverConfigFlagEnableDebugLayerBit,
 		eGPUDriverConfigFlagDisableMultiThreadAccessBit = 0x0010,
-		eGPUDriverConfigFlagForceCompatibilityBit       = 0x0100,
-		eGPUDriverConfigFlagForceCoreProfileBit         = 0x0200,
-		eGPUDriverConfigFlagUseReferenceDriverBit       = 0x8000,
-		eGPUDriverConfigMaskDefault                     = 0,
+		eGPUDriverConfigFlagForceCompatibilityBit = 0x0100,
+		eGPUDriverConfigFlagForceCoreProfileBit = 0x0200,
+		eGPUDriverConfigFlagUseReferenceDriverBit = 0x8000,
+		eGPUDriverConfigMaskDefault = 0,
 	};
 
 	inline constexpr uint32 kShaderStageIndexGraphicsVertex = 0;
@@ -107,12 +101,12 @@ namespace Ic3::Graphics::GCI
 	 */
 	enum EShaderStageFlags : uint32
 	{
-		eShaderStageFlagGraphicsVertexBit   = CXU::SHMakeShaderStageBit( kShaderStageIndexGraphicsVertex ),
-		eShaderStageFlagGraphicsHullBit     = CXU::SHMakeShaderStageBit( kShaderStageIndexGraphicsTessHull ),
-		eShaderStageFlagGraphicsDomainBit   = CXU::SHMakeShaderStageBit( kShaderStageIndexGraphicsTessDomain ),
+		eShaderStageFlagGraphicsVertexBit = CXU::SHMakeShaderStageBit( kShaderStageIndexGraphicsVertex ),
+		eShaderStageFlagGraphicsTessHullBit = CXU::SHMakeShaderStageBit( kShaderStageIndexGraphicsTessHull ),
+		eShaderStageFlagGraphicsTessDomainBit = CXU::SHMakeShaderStageBit( kShaderStageIndexGraphicsTessDomain ),
 		eShaderStageFlagGraphicsGeometryBit = CXU::SHMakeShaderStageBit( kShaderStageIndexGraphicsGeometry ),
-		eShaderStageFlagGraphicsPixelBit    = CXU::SHMakeShaderStageBit( kShaderStageIndexGraphicsPixel ),
-		eShaderStageFlagComputeBit          = CXU::SHMakeShaderStageBit( kShaderStageIndexCompute ),
+		eShaderStageFlagGraphicsPixelBit = CXU::SHMakeShaderStageBit( kShaderStageIndexGraphicsPixel ),
+		eShaderStageFlagComputeBit = CXU::SHMakeShaderStageBit( kShaderStageIndexCompute ),
 
 		/// Mask with all graphics stages bits set.
 		eShaderStageMaskGraphicsAll = cppx::make_lsfb_bitmask<uint32>( GCM::kShaderGraphicsStagesNum ),
@@ -140,13 +134,13 @@ namespace Ic3::Graphics::GCI
 	 */
 	enum EPipelineStageIndex : uint32
 	{
-		ePipelineStageIndexShaderGraphicsVertex   = kShaderStageIndexGraphicsVertex,
-		ePipelineStageIndexShaderGraphicsHull     = kShaderStageIndexGraphicsTessHull,
-		ePipelineStageIndexShaderGraphicsDomain   = kShaderStageIndexGraphicsTessDomain,
-		ePipelineStageIndexShaderGraphicsGeometry = kShaderStageIndexGraphicsGeometry,
-		ePipelineStageIndexShaderGraphicsPixel    = kShaderStageIndexGraphicsPixel,
-		ePipelineStageIndexShaderCompute          = kShaderStageIndexCompute,
-		ePipelineStageIndexShaderMax              = kShaderStageIndexMax,
+		ePipelineStageIndexShaderGraphicsVertex     = kShaderStageIndexGraphicsVertex,
+		ePipelineStageIndexShaderGraphicsTessHull   = kShaderStageIndexGraphicsTessHull,
+		ePipelineStageIndexShaderGraphicsTessDomain = kShaderStageIndexGraphicsTessDomain,
+		ePipelineStageIndexShaderGraphicsGeometry   = kShaderStageIndexGraphicsGeometry,
+		ePipelineStageIndexShaderGraphicsPixel      = kShaderStageIndexGraphicsPixel,
+		ePipelineStageIndexShaderCompute            = kShaderStageIndexCompute,
+		ePipelineStageIndexShaderMax                = kShaderStageIndexMax,
 
 		ePipelineStageIndexGenericHostAccess,
 		ePipelineStageIndexGenericResolve,
@@ -172,8 +166,8 @@ namespace Ic3::Graphics::GCI
 	enum EPipelineStageFlags : uint32
 	{
 		ePipelineStageFlagShaderGraphicsVertexBit      = eShaderStageFlagGraphicsVertexBit,
-		ePipelineStageFlagShaderGraphicsHullBit        = eShaderStageFlagGraphicsHullBit,
-		ePipelineStageFlagShaderGraphicsDomainBit      = eShaderStageFlagGraphicsDomainBit,
+		ePipelineStageFlagShaderGraphicsTessHullBit    = eShaderStageFlagGraphicsTessHullBit,
+		ePipelineStageFlagShaderGraphicsTessDomainBit  = eShaderStageFlagGraphicsTessDomainBit,
 		ePipelineStageFlagShaderGraphicsGeometryBit    = eShaderStageFlagGraphicsGeometryBit,
 		ePipelineStageFlagShaderGraphicsPixelBit       = eShaderStageFlagGraphicsPixelBit,
 		ePipelineStageFlagShaderComputeBit             = ePipelineStageIndexShaderCompute,

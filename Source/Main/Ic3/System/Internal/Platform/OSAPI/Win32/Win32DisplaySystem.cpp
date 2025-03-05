@@ -96,26 +96,26 @@ namespace Ic3::System
 			}
 
 			// Extract adapter UUID from the registry key. Devices referring to the same adapter have the same adapter UUID.
-			auto adapterUUID = GetUUIDString( adapterInfoGDI.DeviceKey );
+			auto adapterUUID = cppx::get_uuid_string( adapterInfoGDI.DeviceKey );
 			// Check if that adapter has been already added to the list of adapters (if there was already another device which referred to it).
 			auto adapterObject = _FindAdapterByUUID( adapterUUID );
 
 			if( adapterObject == nullptr )
 			{
 				auto newAdapterObject = CreateAdapter<Win32DisplayAdapter>( *this );
-				newAdapterObject->mNativeData.mDeviceUUID = std::move( adapterUUID );
-				newAdapterObject->mNativeData.mDeviceName = adapterInfoGDI.DeviceName;
+				newAdapterObject->mNativeData.deviceUUID = std::move( adapterUUID );
+				newAdapterObject->mNativeData.deviceName = adapterInfoGDI.DeviceName;
 
 				auto & adapterDesc = GetAdapterDescInternal( *newAdapterObject );
 				adapterDesc.name = adapterInfoGDI.DeviceString;
 
-				if( make_bitmask( adapterInfoGDI.StateFlags ).is_set( DISPLAY_DEVICE_ATTACHED_TO_DESKTOP ) )
+				if( cppx::make_bitmask( adapterInfoGDI.StateFlags ).is_set( DISPLAY_DEVICE_ATTACHED_TO_DESKTOP ) )
 				{
-					adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_ACTIVE_BIT );
+					adapterDesc.flags.set( eDisplayAdapterFlagActiveBit );
 				}
-				if( make_bitmask( adapterInfoGDI.StateFlags ).is_set( DISPLAY_DEVICE_PRIMARY_DEVICE ) )
+				if( cppx::make_bitmask( adapterInfoGDI.StateFlags ).is_set( DISPLAY_DEVICE_PRIMARY_DEVICE ) )
 				{
-					adapterDesc.flags.set( E_DISPLAY_ADAPTER_FLAG_PRIMARY_BIT );
+					adapterDesc.flags.set( eDisplayAdapterFlagPrimaryBit );
 				}
 
 				adapterObject = std::move( newAdapterObject );
@@ -131,16 +131,16 @@ namespace Ic3::System
 				}
 
 				auto outputObject = CreateOutput<Win32DisplayOutput>( *adapterObject );
-				outputObject->mNativeData.mDisplayDeviceName = adapterInfoGDI.DeviceName;
+				outputObject->mNativeData.displayDeviceName = adapterInfoGDI.DeviceName;
 				outputObject->mNativeData.outputID = outputInfoGDI.DeviceName;
 
 				auto & outputDesc = GetOutputDescInternal( *outputObject );
 				// NOTE: 'DISPLAY_DEVICE_PRIMARY_DEVICE' flag is not set in case of output devices (unlike adapters).
 				// Primary output can be detected by analysing at monitor flags and looking for MONITORINFOF_PRIMARY.
 				// See _win32MonitorEnumProc function above where this gets done.
-				if( make_bitmask( outputInfoGDI.StateFlags ).is_set( DISPLAY_DEVICE_ATTACHED_TO_DESKTOP ) )
+				if( cppx::make_bitmask( outputInfoGDI.StateFlags ).is_set( DISPLAY_DEVICE_ATTACHED_TO_DESKTOP ) )
 				{
-					outputDesc.flags.set( E_DISPLAY_OUTPUT_FLAG_ACTIVE_BIT );
+					outputDesc.flags.set( eDisplayOutputFlagActiveBit );
 				}
 			}
 		}
@@ -167,18 +167,18 @@ namespace Ic3::System
 			if( auto outputObject = win32DisplayDriver->_FindAnyOutputForDisplayDeviceName( gdiMonitorInfo.szDevice ) )
 			{
 				auto * win32OutputObject = outputObject->QueryInterface<Win32DisplayOutput>();
-				win32OutputObject->mNativeData.mGDIMonitorHandle = pMonitorHandle;
+				win32OutputObject->mNativeData.gdiMonitorHandle = pMonitorHandle;
 
 				auto & outputDesc = GetOutputDescInternal( *win32OutputObject );
-				outputDesc.name = strutil::convert_string_representation<char>( gdiMonitorInfo.szDevice );
+				outputDesc.name = cppx::strutil::convert_string_representation<char>( gdiMonitorInfo.szDevice );
 				outputDesc.screenRect.offset.x = gdiMonitorInfo.rcMonitor.left;
 				outputDesc.screenRect.offset.y = gdiMonitorInfo.rcMonitor.top;
 				outputDesc.screenRect.size.x = gdiMonitorInfo.rcMonitor.right - gdiMonitorInfo.rcMonitor.left;
 				outputDesc.screenRect.size.y = gdiMonitorInfo.rcMonitor.bottom - gdiMonitorInfo.rcMonitor.top;
 
-				if( make_bitmask( gdiMonitorInfo.dwFlags ).is_set( MONITORINFOF_PRIMARY ) )
+				if( cppx::make_bitmask( gdiMonitorInfo.dwFlags ).is_set( MONITORINFOF_PRIMARY ) )
 				{
-					outputDesc.flags.set( E_DISPLAY_OUTPUT_FLAG_PRIMARY_BIT );
+					outputDesc.flags.set( eDisplayOutputFlagPrimaryBit );
 				}
 			}
 		}
@@ -210,7 +210,7 @@ namespace Ic3::System
 
 		for( UINT displayModeIndex = 0; ; ++displayModeIndex )
 		{
-			auto * displayDeviceNameStr = outputWin32->mNativeData.mDisplayDeviceName.c_str();
+			auto * displayDeviceNameStr = outputWin32->mNativeData.displayDeviceName.c_str();
 
 			BOOL edsResult = ::EnumDisplaySettingsExA( displayDeviceNameStr, displayModeIndex, &gdiDevMode, 0 );
 
@@ -229,13 +229,13 @@ namespace Ic3::System
 			videoSettings.resolution.y = static_cast<uint32>( gdiDevMode.dmPelsHeight );
 			videoSettings.refreshRate = static_cast<uint16>( gdiDevMode.dmDisplayFrequency );
 
-			if( make_bitmask( gdiDevMode.dmDisplayFlags ).is_set( DM_INTERLACED ) )
+			if( cppx::make_bitmask( gdiDevMode.dmDisplayFlags ).is_set( DM_INTERLACED ) )
 			{
-				videoSettings.flags.set( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_INTERLACED_BIT );
+				videoSettings.flags.set( eDisplayVideoSettingsFlagScanInterlacedBit );
 			}
 			else
 			{
-				videoSettings.flags.set( E_DISPLAY_VIDEO_SETTINGS_FLAG_SCAN_PROGRESSIVE_BIT );
+				videoSettings.flags.set( eDisplayVideoSettingsFlagScanProgressiveBit );
 			}
 
 			auto settingsHash = DSMComputeVideoSettingsHash( pColorFormat, videoSettings );
@@ -245,7 +245,7 @@ namespace Ic3::System
 			}
 
 			auto videoModeObject = CreateVideoMode<Win32DisplayVideoMode>( *outputWin32, pColorFormat );
-			videoModeObject->mNativeData.mGDIModeInfo = gdiDevMode;
+			videoModeObject->mNativeData.gdiModeInfo = gdiDevMode;
 
 			auto & videoModeDesc = GetVideoModeDescInternal( *videoModeObject );
 			videoModeDesc.settings = videoSettings;
@@ -265,7 +265,7 @@ namespace Ic3::System
 	{
 		auto displayAdapter = FindAdapter( [&pUUID]( const DisplayAdapter & pAdapter ) -> bool {
 			auto * win32Adapter = pAdapter.QueryInterface<Win32DisplayAdapter>();
-			return win32Adapter->mNativeData.mDeviceUUID == pUUID;
+			return win32Adapter->mNativeData.deviceUUID == pUUID;
 		} );
 		return displayAdapter ? displayAdapter->GetHandle<Win32DisplayAdapter>() : nullptr;
 	}
@@ -276,7 +276,7 @@ namespace Ic3::System
 	{
 		auto displayOutput = pAdapter.FindOutput( [pDeviceName]( const DisplayOutput & pOutput ) -> bool {
 			auto * win32Output = pOutput.QueryInterface<Win32DisplayOutput>();
-			return win32Output->mNativeData.mDisplayDeviceName == pDeviceName;
+			return win32Output->mNativeData.displayDeviceName == pDeviceName;
 		} );
 		return displayOutput ? displayOutput->GetHandle<Win32DisplayOutput>() : nullptr;
 	}

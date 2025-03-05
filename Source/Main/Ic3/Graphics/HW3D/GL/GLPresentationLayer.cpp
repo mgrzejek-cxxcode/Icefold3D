@@ -14,9 +14,9 @@ namespace Ic3::Graphics::GCI
 		try
 		{
 		    System::OpenGLDisplaySurfaceCreateInfo surfaceCreateInfo;
-			surfaceCreateInfo.frameGeometry.mPosition = System::cxFramePosAuto;
+			surfaceCreateInfo.frameGeometry.position = System::cxFramePosAuto;
 			surfaceCreateInfo.frameGeometry.size = pPLCreateInfo.screenRect.size;
-			surfaceCreateInfo.frameGeometry.mStyle = System::EFrameStyle::Default;
+			surfaceCreateInfo.frameGeometry.style = System::EFrameStyle::Default;
 			surfaceCreateInfo.visualConfig = pPLCreateInfo.visualConfig;
 			surfaceCreateInfo.flags = 0u;
 

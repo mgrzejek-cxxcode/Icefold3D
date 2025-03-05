@@ -26,8 +26,8 @@ namespace Ic3::System
 
 		struct OSXFrameGeometry
 		{
-			NSRect mFrameRect;
-			NSUInteger mStyle;
+			NSRect frameRect;
+			NSUInteger style;
 		};
 
 		void OSXCreateWindow(

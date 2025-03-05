@@ -6,8 +6,8 @@ namespace Ic3
 {
 
 	bool VertexInputAttributeArrayConfig::CheckAttributeArraySpace(
-			native_uint pBaseAttributeSlot,
-			size_t pSemanticGroupSize ) const noexcept
+			uint32 pBaseAttributeSlot,
+			uint32 pSemanticGroupSize ) const noexcept
 	{
 		// First, check if the specified attribute range is valid at all.
 		if( !GCIUtils::IsAttributeLocationAndSizeValid( pBaseAttributeSlot, pSemanticGroupSize ) )
@@ -114,7 +114,7 @@ namespace Ic3
 
 			_activeAttributeSlotsNum += 1;
 			_activeAttributesMask.set( GCI::CXU::IAMakeVertexAttributeFlag( subAttributeSlot ) );
-			_activeAttributesSlots.insert( subAttributeSlot );
+			_activeAttributesSlots.insert( cppx::numeric_cast<gci_input_assembler_slot_t>( subAttributeSlot ) );
 		}
 
 		const auto lastAttributeIndex = pAttributeDefinition.attributeSlot + pAttributeDefinition.semanticGroupSize - 1;
@@ -137,7 +137,7 @@ namespace Ic3
 			gciAttributeDesc.attribInfo.dataFormat = pAttributeKey.uBaseDataFormat;
 			gciAttributeDesc.attribInfo.dataRate = pAttributeKey.GetDataRate();
 			gciAttributeDesc.semantics = static_cast<GCI::IAVertexAttributeSemantics>( GetShaderSemanticsForAttributeKey( pAttributeKey ) );
-			gciAttributeDesc.streamBinding.streamSlot = pVertexStreamSlot;
+			gciAttributeDesc.streamBinding.streamSlot = cppx::numeric_cast<decltype( gciAttributeDesc.streamBinding.streamSlot )>( pVertexStreamSlot );
 			gciAttributeDesc.streamBinding.streamRelativeOffset = pVertexStreamRelativeOffset;
 			return gciAttributeDesc;
 		}
@@ -232,8 +232,10 @@ namespace Ic3
 
 				if( baseDataType != GCI::EBaseDataType::Undefined )
 				{
-					const auto vertexAttributeFormatValue =
-							GCI::CXU::MakeVertexAttribFormatEnumValue( formatComponentsNum, baseDataType, dataFormatFlags );
+					const auto vertexAttributeFormatValue = MakeVertexAttribFormatEnumValue(
+						cppx::numeric_cast<uint8>( formatComponentsNum ),
+						baseDataType,
+						dataFormatFlags );
 
 					vertexAttributeFormat = static_cast<GCI::EVertexAttribFormat>( vertexAttributeFormatValue );
 				}

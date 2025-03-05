@@ -84,13 +84,13 @@ namespace Ic3::System
 		if( pCreateInfo.flags.is_set( eMetalDisplaySurfaceCreateFlagFullscreenBit ) )
 		{
 			surfaceCreateInfo.frameGeometry.size = cxFrameSizeMax;
-			surfaceCreateInfo.frameGeometry.mStyle = EFrameStyle::Overlay;
+			surfaceCreateInfo.frameGeometry.style = EFrameStyle::Overlay;
 		}
 		else
 		{
-			surfaceCreateInfo.frameGeometry.mPosition = pCreateInfo.frameGeometry.mPosition;
+			surfaceCreateInfo.frameGeometry.position = pCreateInfo.frameGeometry.position;
 			surfaceCreateInfo.frameGeometry.size = pCreateInfo.frameGeometry.size;
-			surfaceCreateInfo.frameGeometry.mStyle = pCreateInfo.frameGeometry.mStyle;
+			surfaceCreateInfo.frameGeometry.style = pCreateInfo.frameGeometry.style;
 		}
 
 		surfaceCreateInfo.frameGeometry = mDisplayManager->ValidateFrameGeometry( surfaceCreateInfo.frameGeometry );
@@ -149,9 +149,9 @@ namespace Ic3::System
 	void MetalDisplaySurface::ResizeClientArea( const FrameSize & pSize )
 	{
 		FrameGeometry newFrameGeometry{};
-		newFrameGeometry.mPosition = cxFramePosAuto;
+		newFrameGeometry.position = cxFramePosAuto;
 		newFrameGeometry.size = pSize;
-		newFrameGeometry.mStyle = EFrameStyle::Unspecified;
+		newFrameGeometry.style = EFrameStyle::Unspecified;
 
 		newFrameGeometry = mMetalDriver->mDisplayManager->ValidateFrameGeometry( newFrameGeometry );
 
@@ -162,9 +162,9 @@ namespace Ic3::System
 	void MetalDisplaySurface::ResizeFrame( const FrameSize & pSize )
 	{
 		FrameGeometry newFrameGeometry{};
-		newFrameGeometry.mPosition = cxFramePosAuto;
+		newFrameGeometry.position = cxFramePosAuto;
 		newFrameGeometry.size = pSize;
-		newFrameGeometry.mStyle = EFrameStyle::Unspecified;
+		newFrameGeometry.style = EFrameStyle::Unspecified;
 
 		newFrameGeometry = mMetalDriver->mDisplayManager->ValidateFrameGeometry( newFrameGeometry );
 

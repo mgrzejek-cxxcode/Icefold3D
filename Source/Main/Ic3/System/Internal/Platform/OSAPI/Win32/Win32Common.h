@@ -3,7 +3,7 @@
 #define __IC3_SYSTEM_PLATFORM_OSAPI_WIN32_COMMON_H__
 
 #include <Ic3/System/Prerequisites.h>
-#include <Ic3/System/Internal/Platform/Shared/MSE/MSECommon.h>
+#include <Ic3/System/Internal/Platform/Shared/WFA/WFACommon.h>
 #include <utility>
 #include <comdef.h>
 #include <windows.h>

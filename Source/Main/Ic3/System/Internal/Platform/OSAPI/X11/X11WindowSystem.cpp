@@ -136,7 +136,7 @@ namespace Ic3::System
 
 			// Window style requested for the window. There is no real "X11-equivalent" (like we have
 			// on other OSes), because of the separation between X Server and the actual Window Manager.
-			const auto windowStyle = pCreateInfo.frameGeometry.mStyle;
+			const auto windowStyle = pCreateInfo.frameGeometry.style;
 
 			// First thing to enforce requested window behaviour: action table. It defines what kind of actions
 			// (like moving, resizing, entering fullscreen) are allowed for a given window. Based on the style,
@@ -171,8 +171,8 @@ namespace Ic3::System
 			
 			XMoveWindow( xSessionData.displayHandle,
 			             pWindowNativeData.mWindowXID,
-			             static_cast<int>( pCreateInfo.frameGeometry.mPosition.x ),
-			             static_cast<int>( pCreateInfo.frameGeometry.mPosition.y ) );
+			             static_cast<int>( pCreateInfo.frameGeometry.position.x ),
+			             static_cast<int>( pCreateInfo.frameGeometry.position.y ) );
 
 			// Another observation: if this gets called before the initial XMoveWindow(), fullscreen windows
 			// appear at a wrong position (and, thus, usually - on the wrong screen as well). Confirmed at least
@@ -267,8 +267,8 @@ namespace Ic3::System
 			{
 				XMoveWindow( xSessionData.displayHandle,
 				             pWindowNativeData.mWindowXID,
-				             pFrameGeometry.mPosition.x,
-				             pFrameGeometry.mPosition.y );
+				             pFrameGeometry.position.x,
+				             pFrameGeometry.position.y );
 			}
 
 			if( pUpdateFlags.is_set( eFrameGeometryUpdateFlagSizeBit ) )
@@ -532,8 +532,8 @@ namespace Ic3::System
 			XSizeHints windowSizeHints;
 
 			windowSizeHints.flags = PPosition | PSize;
-			windowSizeHints.x = static_cast<int>( pFrameGeometry.mPosition.x );
-			windowSizeHints.y = static_cast<int>( pFrameGeometry.mPosition.y );
+			windowSizeHints.x = static_cast<int>( pFrameGeometry.position.x );
+			windowSizeHints.y = static_cast<int>( pFrameGeometry.position.y );
 			windowSizeHints.width = static_cast<int>( pFrameGeometry.size.x );
 			windowSizeHints.height = static_cast<int>( pFrameGeometry.size.y );
 

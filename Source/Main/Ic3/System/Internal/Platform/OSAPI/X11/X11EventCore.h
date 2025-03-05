@@ -37,7 +37,7 @@ namespace Ic3::System
 		{
 			XWindow mWindowXID = eXIDNone;
 
-			cppx::bitmask<uint32> mSysWindowFlags = 0;
+			cppx::bitmask<uint32> sysWindowFlags = 0;
 		};
 
 		struct NativeEventType

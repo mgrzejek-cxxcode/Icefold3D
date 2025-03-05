@@ -145,8 +145,8 @@ int main( int pArgc, const char ** pArgv )
 	evtDispatcher->SetEventHandler(
 			EEventCodeIndex::InputKeyboard,
 			[&](const EventObject & pEvt) -> bool {
-				auto & keyMap = pEvt.uEvtInputKeyboard.mInputKeyboardState->mKeyStateMap;
-				if( pEvt.uEvtInputKeyboard.mKeyCode == EKeyCode::Escape )
+				auto & keyMap = pEvt.uEvtInputKeyboard.inputKeyboardState->keyStateMap;
+				if( pEvt.uEvtInputKeyboard.keyCode == EKeyCode::Escape )
 				{
 					evtDispatcher->PostEventAppQuit();
 				}
@@ -470,26 +470,27 @@ int main( int pArgc, const char ** pArgv )
 			cb0DataBase.projectionMatrix = Ic3CameraProjection;
 			cb0DataBase.viewMatrix = cameraController.ComputeViewMatrixLH();
 
-			gxDriverState.cmdContext->BeginCommandSequence();
 			gxDriverState.presentationLayer->BindRenderTarget( *gxDriverState.cmdContext );
+
+			gxDriverState.cmdContext->BeginCommandSequence();
+			gxDriverState.cmdContext->SetVertexSourceBindingDescriptorDynamic( *vsbDescriptor );
+			gxDriverState.cmdContext->SetGraphicsPipelineStateObject( *mainPSO );
 			gxDriverState.cmdContext->BeginRenderPass( *scrRenderPassDescriptor );
 			{
 				gxDriverState.cmdContext->UpdateBufferDataUpload( *cbuffer0, cb0DataBase );
 
-				gxDriverState.cmdContext->SetVertexSourceBindingDescriptorDynamic( *vsbDescriptor );
-				gxDriverState.cmdContext->SetGraphicsPipelineStateObject( *mainPSO );
 
 				gxDriverState.cmdContext->CmdSetViewport( vpDescScreen );
 				gxDriverState.cmdContext->CmdSetShaderConstantBuffer( 0, *cbuffer0 );
 
 				gxDriverState.cmdContext->CmdDrawDirectIndexed( 36, 0 );
 
-				gxDriverState.presentationLayer->InvalidateRenderTarget( *gxDriverState.cmdContext );
 			}
 			gxDriverState.cmdContext->EndRenderPass();
 			gxDriverState.cmdContext->EndCommandSequence();
 			gxDriverState.cmdContext->Submit();
 
+			gxDriverState.presentationLayer->InvalidateRenderTarget( *gxDriverState.cmdContext );
 			gxDriverState.presentationLayer->Present();
 
 			// std::this_thread::sleep_for( std::chrono::milliseconds( 8 ) );

@@ -15,6 +15,7 @@ set( CMAKE_CXX_EXTENSIONS OFF )
 
 project( Icefold )
 
+message("VERSION: CMake ${CMAKE_VERSION}")
 message("ROOT: ${CMAKE_CURRENT_SOURCE_DIR}")
 
 include( "CMake/CMakeLists.txt" )

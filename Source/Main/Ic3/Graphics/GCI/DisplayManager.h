@@ -9,7 +9,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	Ic3DeclareClassHandle( DisplayManager );
+	Ic3GCIDeclareClassHandle( DisplayManager );
 
 	using AdapterList = std::vector<AdapterDesc>;
 	using OutputList = std::vector<OutputDesc>;

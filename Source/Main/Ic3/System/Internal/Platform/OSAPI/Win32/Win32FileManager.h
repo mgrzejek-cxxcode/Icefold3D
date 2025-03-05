@@ -17,7 +17,7 @@ namespace Ic3::System
 
 		struct Win32FileNativeData
 		{
-			HANDLE mFileHandle = nullptr;
+			HANDLE fileHandle = nullptr;
 			cppx::bitmask<EWin32FileFlags> flags = 0;
 		};
 

@@ -80,6 +80,13 @@ namespace cppx
 		{
 			return value;
 		}
+
+		template <typename TPResult>
+		from_string_conv_result<TPResult, TPChar> get_as() const noexcept
+		{
+			const auto resultValue = numeric_cast<TPResult>( value );
+			return { resultValue, processed_chars_num, next_char_ptr };
+		}
 	};
 
 	/// @brief
@@ -296,6 +303,110 @@ namespace cppx
 		}
 	};
 
+	template <>
+	struct from_string_proxy<int16_t>
+	{
+		static from_string_conv_result<int16_t, char> from_string( const char * pInputStr, integer_base pBase = integer_base::decimal )
+		{
+			return from_string_proxy<int32_t>::from_string( pInputStr, pBase ).get_as<int16_t>();
+		}
+
+		static from_string_conv_result<int16_t, wchar_t> from_string( const wchar_t * pInputStr, integer_base pBase = integer_base::decimal )
+		{
+			return from_string_proxy<int32_t>::from_string( pInputStr, pBase ).get_as<int16_t>();
+		}
+
+		template <typename TPChar>
+		static from_string_conv_result<int16_t, TPChar> from_string( const std::basic_string_view<TPChar> & pInputStr, uintptr_t pOffset = 0u, integer_base pBase = integer_base::decimal )
+		{
+			return from_string_proxy<int32_t>::from_string( pInputStr, pOffset, pBase ).template get_as<int16_t>();
+		}
+
+		template <typename TPChar>
+		static from_string_conv_result<int16_t, TPChar> from_string( const std::basic_string<TPChar> & pInputStr, uintptr_t pOffset = 0u, integer_base pBase = integer_base::decimal )
+		{
+			return from_string_proxy<int32_t>::from_string( pInputStr, pOffset, pBase ).template get_as<int16_t>();
+		}
+	};
+
+	template <>
+	struct from_string_proxy<uint16_t>
+	{
+		static from_string_conv_result<uint16_t, char> from_string( const char * pInputStr, integer_base pBase = integer_base::decimal )
+		{
+			return from_string_proxy<uint32_t>::from_string( pInputStr, pBase ).get_as<uint16_t>();
+		}
+
+		static from_string_conv_result<uint16_t, wchar_t> from_string( const wchar_t * pInputStr, integer_base pBase = integer_base::decimal )
+		{
+			return from_string_proxy<uint32_t>::from_string( pInputStr, pBase ).get_as<uint16_t>();
+		}
+
+		template <typename TPChar>
+		static from_string_conv_result<uint16_t, TPChar> from_string( const std::basic_string_view<TPChar> & pInputStr, uintptr_t pOffset = 0u, integer_base pBase = integer_base::decimal )
+		{
+			return from_string_proxy<uint32_t>::from_string( pInputStr, pOffset, pBase ).template get_as<uint16_t>();
+		}
+
+		template <typename TPChar>
+		static from_string_conv_result<uint16_t, TPChar> from_string( const std::basic_string<TPChar> & pInputStr, uintptr_t pOffset = 0u, integer_base pBase = integer_base::decimal )
+		{
+			return from_string_proxy<uint32_t>::from_string( pInputStr, pOffset, pBase ).template get_as<uint16_t>();
+		}
+	};
+
+	template <>
+	struct from_string_proxy<int8_t>
+	{
+		static from_string_conv_result<int8_t, char> from_string( const char * pInputStr, integer_base pBase = integer_base::decimal )
+		{
+			return from_string_proxy<int32_t>::from_string( pInputStr, pBase ).get_as<int8_t>();
+		}
+
+		static from_string_conv_result<int8_t, wchar_t> from_string( const wchar_t * pInputStr, integer_base pBase = integer_base::decimal )
+		{
+			return from_string_proxy<int32_t>::from_string( pInputStr, pBase ).get_as<int8_t>();
+		}
+
+		template <typename TPChar>
+		static from_string_conv_result<int8_t, TPChar> from_string( const std::basic_string_view<TPChar> & pInputStr, uintptr_t pOffset = 0u, integer_base pBase = integer_base::decimal )
+		{
+			return from_string_proxy<int32_t>::from_string( pInputStr, pOffset, pBase ).template get_as<int8_t>();
+		}
+
+		template <typename TPChar>
+		static from_string_conv_result<int8_t, TPChar> from_string( const std::basic_string<TPChar> & pInputStr, uintptr_t pOffset = 0u, integer_base pBase = integer_base::decimal )
+		{
+			return from_string_proxy<int32_t>::from_string( pInputStr, pOffset, pBase ).template get_as<int8_t>();
+		}
+	};
+
+	template <>
+	struct from_string_proxy<uint8_t>
+	{
+		static from_string_conv_result<uint8_t, char> from_string( const char * pInputStr, integer_base pBase = integer_base::decimal )
+		{
+			return from_string_proxy<uint32_t>::from_string( pInputStr, pBase ).get_as<uint8_t>();
+		}
+
+		static from_string_conv_result<uint8_t, wchar_t> from_string( const wchar_t * pInputStr, integer_base pBase = integer_base::decimal )
+		{
+			return from_string_proxy<uint32_t>::from_string( pInputStr, pBase ).get_as<uint8_t>();
+		}
+
+		template <typename TPChar>
+		static from_string_conv_result<uint8_t, TPChar> from_string( const std::basic_string_view<TPChar> & pInputStr, uintptr_t pOffset = 0u, integer_base pBase = integer_base::decimal )
+		{
+			return from_string_proxy<uint32_t>::from_string( pInputStr, pOffset, pBase ).template get_as<uint8_t>();
+		}
+
+		template <typename TPChar>
+		static from_string_conv_result<uint8_t, TPChar> from_string( const std::basic_string<TPChar> & pInputStr, uintptr_t pOffset = 0u, integer_base pBase = integer_base::decimal )
+		{
+			return from_string_proxy<uint32_t>::from_string( pInputStr, pOffset, pBase ).template get_as<uint8_t>();
+		}
+	};
+
 
 	/// @brief
 	template <typename TPChar, typename TPValue>
@@ -332,7 +443,7 @@ namespace cppx
 	template <typename TPValue, typename TPChar>
 	TPValue from_string( const std::basic_string<TPChar> & pInputStr, integer_base pBase, uintptr_t pOffset = 0u )
 	{
-		const auto convResult = from_string_proxy<TPValue>::from_string( pInputStr, pBase, pOffset );
+		const auto convResult = from_string_proxy<TPValue>::from_string( pInputStr, pOffset, pBase );
 		return static_cast<TPValue>( convResult );
 	}
 

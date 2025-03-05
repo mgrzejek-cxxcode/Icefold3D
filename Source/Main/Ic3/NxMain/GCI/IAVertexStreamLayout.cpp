@@ -107,7 +107,7 @@ namespace Ic3
 
 			pStream.activeAttributesNum += 1;
 			pStream.activeAttributesMask.set( GCI::CXU::IAMakeVertexAttributeFlag( genericAttributeSlot ) );
-			pStream.dataStrideInBytes += genericAttributeDataStride;
+			pStream.dataStrideInBytes += cppx::numeric_cast<decltype( pStream.dataStrideInBytes )>( genericAttributeDataStride );
 		}
 	}
 

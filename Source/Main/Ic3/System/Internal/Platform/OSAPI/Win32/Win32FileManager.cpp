@@ -88,7 +88,7 @@ namespace Ic3::System
 		while( win32FindFileHandle )
 		{
 			auto fileName = std::string( win32FindFileData.cFileName );
-			auto fileAttributes = make_bitmask( win32FindFileData.dwFileAttributes );
+			auto fileAttributes = cppx::make_bitmask( win32FindFileData.dwFileAttributes );
 
 			if( !fileAttributes.is_set( FILE_ATTRIBUTE_DIRECTORY ) && ( fileName != "." ) && ( fileName != ".." ) )
 			{
@@ -145,23 +145,23 @@ namespace Ic3::System
 
 	void Win32File::SetInternalWin32FileHandle( HANDLE pFileHandle )
 	{
-		Ic3DebugAssert( !mNativeData.mFileHandle );
-		mNativeData.mFileHandle = pFileHandle;
+		Ic3DebugAssert( !mNativeData.fileHandle );
+		mNativeData.fileHandle = pFileHandle;
 	}
 
 	void Win32File::_ReleaseWin32FileHandle()
 	{
-		if( mNativeData.mFileHandle )
+		if( mNativeData.fileHandle )
 		{
-			Platform::_win32CloseFile( mNativeData.mFileHandle );
-			mNativeData.mFileHandle = nullptr;
+			Platform::_win32CloseFile( mNativeData.fileHandle );
+			mNativeData.fileHandle = nullptr;
 		}
 	}
 
 	file_size_t Win32File::_NativeReadData( void * pTargetBuffer, file_size_t pReadSize )
 	{
 		DWORD readBytesNum = 0u;
-		auto readResult = ::ReadFile( mNativeData.mFileHandle, pTargetBuffer, pReadSize, &readBytesNum, nullptr );
+		auto readResult = ::ReadFile( mNativeData.fileHandle, pTargetBuffer, pReadSize, &readBytesNum, nullptr );
 
 		if( readResult && ( readBytesNum == 0 ) )
 		{
@@ -188,7 +188,7 @@ namespace Ic3::System
 	file_size_t Win32File::_NativeWriteData( const void * pData, file_size_t pWriteSize )
 	{
 		DWORD writtenBytesNum = 0u;
-		auto writeResult = ::WriteFile(  mNativeData.mFileHandle, pData, pWriteSize, &writtenBytesNum, nullptr );
+		auto writeResult = ::WriteFile(  mNativeData.fileHandle, pData, pWriteSize, &writtenBytesNum, nullptr );
 
 		if( !writeResult )
 		{
@@ -207,7 +207,7 @@ namespace Ic3::System
 
 		auto win32FPMoveMode = Platform::_Win32TranslateFilePointerRefPos( pRefPos );
 
-		u64FileOffset.LowPart = ::SetFilePointer( mNativeData.mFileHandle,
+		u64FileOffset.LowPart = ::SetFilePointer( mNativeData.fileHandle,
 		                                          u64FileOffset.LowPart,
 		                                          &( u64FileOffset.HighPart ),
 		                                          win32FPMoveMode );
@@ -233,7 +233,7 @@ namespace Ic3::System
 		LARGE_INTEGER u64GetFilePosition;
 		u64GetFilePosition.QuadPart = 0u;
 
-		::SetFilePointerEx( mNativeData.mFileHandle, u64SetFileOffset, &u64GetFilePosition, FILE_CURRENT );
+		::SetFilePointerEx( mNativeData.fileHandle, u64SetFileOffset, &u64GetFilePosition, FILE_CURRENT );
 
 		return cppx::numeric_cast<file_offset_t>( u64GetFilePosition.QuadPart );
 	}
@@ -243,7 +243,7 @@ namespace Ic3::System
 		LARGE_INTEGER u64FileSize;
 		u64FileSize.QuadPart = 0L;
 
-		::GetFileSizeEx( mNativeData.mFileHandle, &u64FileSize );
+		::GetFileSizeEx( mNativeData.fileHandle, &u64FileSize );
 
 		return cppx::numeric_cast<file_size_t>( u64FileSize.QuadPart );
 	}
@@ -256,15 +256,15 @@ namespace Ic3::System
 		LARGE_INTEGER u64GetFilePosition;
 		u64GetFilePosition.QuadPart = 0u;
 
-		::SetFilePointerEx( mNativeData.mFileHandle, u64SetFileOffset, &u64GetFilePosition, FILE_CURRENT );
+		::SetFilePointerEx( mNativeData.fileHandle, u64SetFileOffset, &u64GetFilePosition, FILE_CURRENT );
 		const auto previousFilePointer = u64GetFilePosition.QuadPart;
 
-		::SetFilePointerEx( mNativeData.mFileHandle, u64SetFileOffset, &u64GetFilePosition, FILE_END );
+		::SetFilePointerEx( mNativeData.fileHandle, u64SetFileOffset, &u64GetFilePosition, FILE_END );
 		const auto endFilePosition = u64GetFilePosition.QuadPart;
 
 		u64SetFileOffset.QuadPart = previousFilePointer;
 
-		::SetFilePointerEx( mNativeData.mFileHandle, u64SetFileOffset, nullptr, FILE_BEGIN );
+		::SetFilePointerEx( mNativeData.fileHandle, u64SetFileOffset, nullptr, FILE_BEGIN );
 
 		return cppx::numeric_cast<file_offset_t>( endFilePosition - previousFilePointer );
 	}
@@ -291,7 +291,7 @@ namespace Ic3::System
 			{
 				auto lastErrorCode = ::GetLastError();
 				auto errorMessage = Platform::WFAQuerySystemErrorMessage( lastErrorCode );
-				Ic3ThrowDesc( E_EXC_SYSTEM_FILE_OPEN_ERROR, std::move( errorMessage ) );
+				Ic3ThrowDesc( eEXCSystemFileOpenError, std::move( errorMessage ) );
 			}
 
 			return fileHandle;
@@ -371,7 +371,7 @@ namespace Ic3::System
 					win32FPMoveMode = FILE_END;
 					break;
 				}
-				case EFilePointerRefPos::PtrCurrent:
+				case EFilePointerRefPos::CurrentPos:
 				{
 					win32FPMoveMode = FILE_CURRENT;
 					break;

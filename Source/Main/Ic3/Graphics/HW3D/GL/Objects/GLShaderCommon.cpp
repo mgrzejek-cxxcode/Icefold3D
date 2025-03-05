@@ -117,7 +117,7 @@ namespace Ic3::Graphics::GCI
 					attributeFormatDesc.baseType = EBaseDataType::Float32;
 				}
 
-				attributeFormatDesc.baseComponentsNum = cppx::from_string<uint32>( vectorSizeStr );
+				attributeFormatDesc.baseComponentsNum = cppx::from_string<uint8>( vectorSizeStr );
 				attributeFormatDesc.semanticGroupSize = 1;
 			}
 			else if( std::regex_search( pAttributeFormatStr, regexMatch, reAttribFormatMat ) )
@@ -129,14 +129,14 @@ namespace Ic3::Graphics::GCI
 
 				if( matrixExtSizeStr.empty() )
 				{
-					const auto matrixSize = cppx::from_string<uint32>( matrixBaseSizeStr );
+					const auto matrixSize = cppx::from_string<uint8>( matrixBaseSizeStr );
 					attributeFormatDesc.baseComponentsNum = matrixSize;
 					attributeFormatDesc.semanticGroupSize = matrixSize;
 				}
 				else
 				{
-					const auto matrixColumnsNum = cppx::from_string<uint32>( matrixBaseSizeStr );
-					const auto matrixBaseElementsNum = cppx::from_string<uint32>( matrixExtSizeStr );
+					const auto matrixColumnsNum = cppx::from_string<uint8>( matrixBaseSizeStr );
+					const auto matrixBaseElementsNum = cppx::from_string<uint8>( matrixExtSizeStr );
 					attributeFormatDesc.baseComponentsNum = matrixBaseElementsNum;
 					attributeFormatDesc.semanticGroupSize = matrixColumnsNum;
 				}
@@ -181,7 +181,7 @@ namespace Ic3::Graphics::GCI
 							auto & attributeSignature = pInputSignature.attributeSignatures[attributeIndex];
 							attributeSignature.format = static_cast<EVertexAttribFormat>( attributeFormatValue );
 							attributeSignature.semanticName = attributeSemanticNameStr;
-							attributeSignature.semanticIndex = iSemanticIndex;
+							attributeSignature.semanticIndex = cppx::numeric_cast<uint8>( iSemanticIndex );
 
 							pInputSignature.activeAttributesMask.set( GCI::CXU::IAMakeVertexAttributeFlag( attributeIndex ) );
 						}

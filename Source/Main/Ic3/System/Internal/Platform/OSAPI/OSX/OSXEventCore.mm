@@ -321,42 +321,42 @@ namespace Ic3::System
 				{
 					auto & eInputKeyboard = pOutEvent.uEvtInputKeyboard;
 					eInputKeyboard.eventCode = eEventCodeInputKeyboard;
-					inputKeyboardState.mActiveModifiersMask = OSXTranslateModifierKeyFlags( [pNativeEvent.mNSEvent modifierFlags] );
-					eInputKeyboard.mInputKeyboardState = &inputKeyboardState;
-					eInputKeyboard.mKeyAction = EKeyActionType::Press;
-					eInputKeyboard.mKeyCode = _OSXGetSysKeyCodeV1( [pNativeEvent.mNSEvent keyCode] );
+					inputKeyboardState.activeModifiersMask = OSXTranslateModifierKeyFlags( [pNativeEvent.mNSEvent modifierFlags] );
+					eInputKeyboard.inputKeyboardState = &inputKeyboardState;
+					eInputKeyboard.keyAction = EKeyActionType::Press;
+					eInputKeyboard.keyCode = _OSXGetSysKeyCodeV1( [pNativeEvent.mNSEvent keyCode] );
 					break;
 				}
 				case eOSXEventIDGenericKeyUp:
 				{
 					auto & eInputKeyboard = pOutEvent.uEvtInputKeyboard;
 					eInputKeyboard.eventCode = eEventCodeInputKeyboard;
-					inputKeyboardState.mActiveModifiersMask = OSXTranslateModifierKeyFlags( [pNativeEvent.mNSEvent modifierFlags] );
-					eInputKeyboard.mInputKeyboardState = &inputKeyboardState;
-					eInputKeyboard.mKeyAction = EKeyActionType::Release;
-					eInputKeyboard.mKeyCode = _OSXGetSysKeyCodeV1( [pNativeEvent.mNSEvent keyCode] );
+					inputKeyboardState.activeModifiersMask = OSXTranslateModifierKeyFlags( [pNativeEvent.mNSEvent modifierFlags] );
+					eInputKeyboard.inputKeyboardState = &inputKeyboardState;
+					eInputKeyboard.keyAction = EKeyActionType::Release;
+					eInputKeyboard.keyCode = _OSXGetSysKeyCodeV1( [pNativeEvent.mNSEvent keyCode] );
 					break;
 				}
 				case eOSXEventIDGenericFlagsChanged:
 				{
 					const auto currentModifierFlags = OSXTranslateModifierKeyFlags( [pNativeEvent.mNSEvent modifierFlags] );
-					const auto previousModifierFlags = inputKeyboardState.mActiveModifiersMask;
+					const auto previousModifierFlags = inputKeyboardState.activeModifiersMask;
 					const auto modifierDiff = currentModifierFlags ^ previousModifierFlags;
 					const auto modifierKeyCode = Evt::GetModifierKeyCodeFromModifierFlags( modifierDiff );
 
 					auto & eInputKeyboard = pOutEvent.uEvtInputKeyboard;
 					eInputKeyboard.eventCode = eEventCodeInputKeyboard;
-					inputKeyboardState.mActiveModifiersMask = currentModifierFlags;
-					eInputKeyboard.mInputKeyboardState = &inputKeyboardState;
-					eInputKeyboard.mKeyCode = Evt::GetModifierKeyCodeFromModifierFlags( modifierDiff );
+					inputKeyboardState.activeModifiersMask = currentModifierFlags;
+					eInputKeyboard.inputKeyboardState = &inputKeyboardState;
+					eInputKeyboard.keyCode = Evt::GetModifierKeyCodeFromModifierFlags( modifierDiff );
 
 					if( !previousModifierFlags.is_set( modifierDiff ) )
 					{
-						eInputKeyboard.mKeyAction = EKeyActionType::Press;
+						eInputKeyboard.keyAction = EKeyActionType::Press;
 					}
 					else
 					{
-						eInputKeyboard.mKeyAction = EKeyActionType::Release;
+						eInputKeyboard.keyAction = EKeyActionType::Release;
 					}
 
 					break;

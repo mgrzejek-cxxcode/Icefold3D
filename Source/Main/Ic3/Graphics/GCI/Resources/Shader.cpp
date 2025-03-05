@@ -9,6 +9,7 @@ namespace Ic3::Graphics::GCI
 	{
 		const auto requiredBinaryStorageSize = pBinarySize - dataBufferFixedSize;
 		auto * shaderBinary = new( kAllocNewSizeExplicit, requiredBinaryStorageSize ) ShaderBinary();
+		shaderBinary->dataSizeInBytes = cppx::numeric_cast<uint32>( pBinarySize );
 		return std::unique_ptr<ShaderBinary>{ shaderBinary };
 	}
 

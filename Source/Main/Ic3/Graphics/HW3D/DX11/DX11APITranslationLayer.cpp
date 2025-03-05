@@ -171,7 +171,7 @@ namespace Ic3::Graphics::GCI
 		auto & dxgiFactory = pDX11GPUDevice.mDXGIFactory2;
 		ComPtr<IDXGISwapChain1> dxgiSwapChain1;
 		auto hResult = dxgiFactory->CreateSwapChainForHwnd( pDX11GPUDevice.mD3D11Device1.Get(),
-		                                                    sysWindowPtr->mNativeData.mHWND,
+		                                                    sysWindowPtr->mNativeData.hwnd,
 		                                                    &swapChainDesc,
 		                                                    nullptr,
 		                                                    nullptr,

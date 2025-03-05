@@ -79,7 +79,7 @@ namespace Ic3::Graphics::GCI
 			if( pCreateInfo.mDisplayConfigFlags.is_set( E_DISPLAY_CONFIGURATION_FLAG_FULLSCREEN_BIT ) )
 			{
 			    auto * win32Window = sysWindow->QueryInterface<System::Win32Window>();
-			    ::SetCapture( win32Window->mNativeData.mHWND );
+			    ::SetCapture( win32Window->mNativeData.hwnd );
 				::ShowCursor( FALSE );
 			}
         #endif
