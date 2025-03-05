@@ -42,20 +42,18 @@ namespace Ic3::Graphics::GCI
 			InitializeOpenGLAPI();
 		}
 
+	#if( IC3_GX_GL_FEATURE_SUPPORT_DEBUG_OUTPUT )
 		if( commandContext )
 		{
-			auto * openglGPUDevice = mGPUDevice.QueryInterface<GLGPUDevice>();
-			auto * openglDebugOutput = openglGPUDevice->GetDebugOutputInterface();
-
-			const auto enableDebugOutput = false;
-
-			if( openglDebugOutput && enableDebugOutput )
+			const auto * openglGPUDevice = mGPUDevice.QueryInterface<GLGPUDevice>();
+			if( auto * openglDebugOutput = openglGPUDevice->GetDebugOutputInterface() )
 			{
 			    openglDebugOutput->EnableDebugOutput( true );
 			    openglDebugOutput->EnableBreakOnEvent( true );
 			    openglDebugOutput->EnableSync( true );
 			}
 		}
+	#endif
 
 		return commandContext;
 	}

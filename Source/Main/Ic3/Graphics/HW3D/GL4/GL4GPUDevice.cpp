@@ -18,10 +18,12 @@ namespace Ic3::Graphics::GCI
 		auto driverConfigFlags = pDriver.GetConfigFlags();
 		auto gl4GPUDevice = CreateGfxObject<GL4GPUDevice>( pDriver );
 
+	#if( IC3_GX_GL_FEATURE_SUPPORT_DEBUG_OUTPUT )
 		if( driverConfigFlags.is_set( eGPUDriverConfigFlagEnableDebugLayerBit ) )
 		{
 			gl4GPUDevice->InitializeGLDebugOutput();
 		}
+	#endif
 
 		return gl4GPUDevice;
 	}

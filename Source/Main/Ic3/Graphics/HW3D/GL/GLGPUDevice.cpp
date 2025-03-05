@@ -47,7 +47,15 @@ namespace Ic3::Graphics::GCI
 	{
 		if( !_glcDebugOutput )
 		{
-			auto glcDebugOutput = GLDebugOutput::CreateInterface( GLDebugOutputVersion::ARBExt );
+			auto glcDebugOutput = GLDebugOutput::CreateInterface( GLDebugOutputVersion::KHRCore );
+			if( !glcDebugOutput )
+			{
+				glcDebugOutput = GLDebugOutput::CreateInterface( GLDebugOutputVersion::ARBExt );
+				if( !glcDebugOutput )
+				{
+					glcDebugOutput = GLDebugOutput::CreateInterface( GLDebugOutputVersion::AMDExt );
+				}
+			}
 			if( glcDebugOutput )
 			{
 				_glcDebugOutput = std::move( glcDebugOutput );

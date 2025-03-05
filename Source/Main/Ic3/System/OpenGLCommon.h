@@ -32,10 +32,10 @@
 
 /// @def IC3_SYSTEM_GL_ENABLE_ERROR_CHECKS
 /// @brief Controls the GL error-checking macros. If TRUE, they are replaced with appropriate calls. Otherwise, all calls are no-ops.
-/// @see Ic3OpenGLCheckLastResult
-/// @see Ic3OpenGLCheckLastError
-/// @see Ic3OpenGLHandleLastError
-/// @see Ic3OpenGLResetErrorQueue
+/// @see Ic3SysOpenGLCheckLastResult
+/// @see Ic3SysOpenGLCheckLastError
+/// @see Ic3SysOpenGLHandleLastError
+/// @see Ic3SysOpenGLResetErrorQueue
 #if !defined( IC3_SYSTEM_GL_ENABLE_ERROR_CHECKS )
 #  if( IC3_RELEASE_OPT_MAX )
 #    define IC3_SYSTEM_GL_ENABLE_ERROR_CHECKS 0
@@ -207,36 +207,36 @@ namespace Ic3::System
 
 } // namespace Ic3::System
 
-/// @def Ic3OpenGLCheckLastResult
+/// @def Ic3SysOpenGLCheckLastResult
 /// @brief A configuration-dependent macro which expands to either OpenGLCoreAPI::CheckLastResult() or an empty statement.
 /// @see IC3_SYSTEM_GL_ENABLE_ERROR_CHECKS
 /// @see Ic3::System::OpenGLCoreAPI::CheckLastResult
 
-/// @def Ic3OpenGLCheckLastError
+/// @def Ic3SysOpenGLCheckLastError
 /// @brief A configuration-dependent macro which expands to either OpenGLCoreAPI::CheckLastError() or an empty statement.
 /// @see IC3_SYSTEM_GL_ENABLE_ERROR_CHECKS
 /// @see Ic3::System::OpenGLCoreAPI::CheckLastError
 
-/// @def Ic3OpenGLHandleLastError
+/// @def Ic3SysOpenGLHandleLastError
 /// @brief A configuration-dependent macro which expands to either OpenGLCoreAPI::HandleLastError() or an empty statement.
 /// @see IC3_SYSTEM_GL_ENABLE_ERROR_CHECKS
 /// @see Ic3::System::OpenGLCoreAPI::HandleLastError
 
-/// @def Ic3OpenGLResetErrorQueue
+/// @def Ic3SysOpenGLResetErrorQueue
 /// @brief A configuration-dependent macro which expands to either OpenGLCoreAPI::ResetErrorQueue() or an empty statement.
 /// @see IC3_SYSTEM_GL_ENABLE_ERROR_CHECKS
 /// @see Ic3::System::OpenGLCoreAPI::ResetErrorQueue()
 
 #if( IC3_SYSTEM_GL_ENABLE_ERROR_CHECKS )
-#  define Ic3OpenGLCheckLastResult()            ::Ic3::System::OpenGLCoreAPI::CheckLastResult()
-#  define Ic3OpenGLCheckLastError( pErrorCode ) ::Ic3::System::OpenGLCoreAPI::CheckLastError( pErrorCode )
-#  define Ic3OpenGLHandleLastError()            ::Ic3::System::OpenGLCoreAPI::HandleLastError()
-#  define Ic3OpenGLResetErrorQueue()            ::Ic3::System::OpenGLCoreAPI::ResetErrorQueue()
+#  define Ic3SysOpenGLCheckLastResult()            ::Ic3::System::OpenGLCoreAPI::CheckLastResult()
+#  define Ic3SysOpenGLCheckLastError( pErrorCode ) ::Ic3::System::OpenGLCoreAPI::CheckLastError( pErrorCode )
+#  define Ic3SysOpenGLHandleLastError()            ::Ic3::System::OpenGLCoreAPI::HandleLastError()
+#  define Ic3SysOpenGLResetErrorQueue()            ::Ic3::System::OpenGLCoreAPI::ResetErrorQueue()
 #else
-#  define Ic3OpenGLCheckLastResult()
-#  define Ic3OpenGLCheckLastError( pErrorCode )
-#  define Ic3OpenGLHandleLastError()
-#  define Ic3OpenGLResetErrorQueue()
+#  define Ic3SysOpenGLCheckLastResult()
+#  define Ic3SysOpenGLCheckLastError( pErrorCode )
+#  define Ic3SysOpenGLHandleLastError()
+#  define Ic3SysOpenGLResetErrorQueue()
 #endif
 
 #endif // __IC3_SYSTEM_GFX_OPENGL_COMMON_H__

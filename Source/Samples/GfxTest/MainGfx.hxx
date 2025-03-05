@@ -44,6 +44,7 @@
 
 using namespace Ic3;
 using namespace GCI;
+using namespace Ic3::Math;
 using namespace Ic3::System;
 
 std::string sGxDriverName;
@@ -63,9 +64,9 @@ void InitializeGraphicsDriver( SysContextHandle pSysContext, GraphicsDriverState
 
 struct CB0Data
 {
-	Math::Mat4x4f modelMatrix;
-	Math::Mat4x4f viewMatrix;
-	Math::Mat4x4f projectionMatrix;
+	Mat4x4f modelMatrix;
+	Mat4x4f viewMatrix;
+	Mat4x4f projectionMatrix;
 };
 
 #include <Ic3/Graphics/HW3D/GL4/GL4GPUDriverAPI.h>
@@ -331,7 +332,7 @@ int main( int pArgc, const char ** pArgv )
 		rpConfig.activeAttachmentsNum = 2;
 		rpConfig.colorAttachments[0].loadAction = ERenderPassAttachmentLoadAction::Clear;
 		rpConfig.colorAttachments[0].storeAction = ERenderPassAttachmentStoreAction::Keep;
-		rpConfig.colorAttachments[0].loadParameters.opClear.clearConfig.colorValue = Math::RGBAColorR32Norm{ 0.6f, 0.6f, 0.6, 1.0f };
+		rpConfig.colorAttachments[0].loadParameters.opClear.clearConfig.colorValue = RGBAColorR32Norm{ 0.6f, 0.6f, 0.6, 1.0f };
 		rpConfig.colorAttachments[0].loadParameters.opClear.clearMask = eRenderTargetBufferFlagColorBit;
 		rpConfig.depthStencilAttachment.loadAction = ERenderPassAttachmentLoadAction::Clear;
 		rpConfig.depthStencilAttachment.storeAction = ERenderPassAttachmentStoreAction::Keep;
@@ -384,8 +385,8 @@ int main( int pArgc, const char ** pArgv )
 		mainPSO = gpuDevicePtr->CreateGraphicsPipelineStateObject( psoCI );
 	}
 
-	Math::Vec3f cameraOriginPoint{ 0.0f, 2.0f, -4.0f };
-	Math::Vec3f cameraTargetPoint{ 0.0f, 0.0f, 4.0f };
+	Vec3f cameraOriginPoint{ 0.0f, 2.0f, -4.0f };
+	Vec3f cameraTargetPoint{ 0.0f, 0.0f, 4.0f };
 	cameraController.Initialize( cameraOriginPoint, cameraTargetPoint, 60.0f );
 
 	GCI::ViewportDesc vpDescScreen{};
@@ -405,21 +406,21 @@ int main( int pArgc, const char ** pArgv )
 	vpDescTexture.depthRange.zFar = 1.0f;
 
 	const auto Ic3ViewTexture = lookAtLH(
-		Math::Vec3f{ 0.0f, 3.0f, -1.0f },
-		Math::Vec3f{ 0.0f, 0.0f, 5.0f },
-		Math::Vec3f{ 0.0f, 1.0f, 0.0f } );
+		Vec3f{ 0.0f, 3.0f, -1.0f },
+		Vec3f{ 0.0f, 0.0f, 5.0f },
+		Vec3f{ 0.0f, 1.0f, 0.0f } );
 
-	const auto Ic3ProjectionTexture = Math::perspectiveAspectLH<float>(
+	const auto Ic3ProjectionTexture = perspectiveAspectLH<float>(
 		cameraController.GetPerspectiveFOVAngle(), ( float )rtSize.x / ( float )rtSize.y, 0.1f, 1000.0f );
 
-	const auto Ic3CameraProjection = Math::perspectiveAspectLH<float>(
+	const auto Ic3CameraProjection = perspectiveAspectLH<float>(
 		cameraController.GetPerspectiveFOVAngle(), ( float )rtSize.x / ( float )rtSize.y, 1.0f, 1000.0f );
 
 	CB0Data cb0DataBase =
 	{
-		Math::identity4<float>(),
-		Math::identity4<float>(),
-		Math::identity4<float>()
+		identity4<float>(),
+		identity4<float>(),
+		identity4<float>()
 	};
 
 	GPUBufferDataUploadDesc cb0DataUploadDesc;
@@ -429,8 +430,8 @@ int main( int pArgc, const char ** pArgv )
 	bool rotate = false;
 
 	evtDispatcher->SetEventHandler(
-		System::EEventCodeIndex::InputMouseButton,
-		[&rotate]( const System::EventObject & pEvt ) -> bool {
+		EEventCodeIndex::InputMouseButton,
+		[&rotate]( const EventObject & pEvt ) -> bool {
 		const auto & eButton = pEvt.uEvtInputMouseButton;
 		if( eButton.buttonAction == EMouseButtonActionType::Click )
 		{
@@ -443,16 +444,16 @@ int main( int pArgc, const char ** pArgv )
 		return true;
 	} );
 	evtDispatcher->SetEventHandler(
-		System::EEventCodeIndex::InputMouseMove,
-		[&cameraController, &rotate]( const System::EventObject & pEvt ) -> bool {
+		EEventCodeIndex::InputMouseMove,
+		[&cameraController, &rotate]( const EventObject & pEvt ) -> bool {
 			//if( rotate )
 			{
 				const auto & emove = pEvt.uEvtInputMouseMove;
-				if( emove.buttonStateMask.is_set( System::eMouseButtonFlagLeftBit ) )
+				if( emove.buttonStateMask.is_set( eMouseButtonFlagLeftBit ) )
 				{
 					cameraController.RotateAroundOrigin( emove.movementDelta.x, emove.movementDelta.y );
 				}
-				else if( emove.buttonStateMask.is_set( System::eMouseButtonFlagRightBit ) )
+				else if( emove.buttonStateMask.is_set( eMouseButtonFlagRightBit ) )
 				{
 					cameraController.RotateAroundTarget( emove.movementDelta.x, emove.movementDelta.y );
 				}
@@ -460,7 +461,7 @@ int main( int pArgc, const char ** pArgv )
 			return true;
 	} );
 
-	while( runApp )
+	while( true )
 	{
 		if( gxDriverState.pauseAnimation )
 		{
@@ -470,6 +471,10 @@ int main( int pArgc, const char ** pArgv )
 		try
 		{
 			evtController->DispatchPendingEventsAuto();
+			if( !runApp )
+			{
+				break;
+			}
 
 			cb0DataBase.projectionMatrix = Ic3CameraProjection;
 			cb0DataBase.viewMatrix = cameraController.ComputeViewMatrixLH();
@@ -496,8 +501,6 @@ int main( int pArgc, const char ** pArgv )
 
 			gxDriverState.presentationLayer->InvalidateRenderTarget( *gxDriverState.cmdContext );
 			gxDriverState.presentationLayer->Present();
-
-			// std::this_thread::sleep_for( std::chrono::milliseconds( 8 ) );
 		}
 		catch( ... )
 		{

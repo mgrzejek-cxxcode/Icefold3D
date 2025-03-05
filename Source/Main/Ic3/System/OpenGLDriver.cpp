@@ -391,7 +391,7 @@ namespace Ic3::System
 			systemVersionInfo.vendorName.assign( reinterpret_cast<const char *>( vendorNameStr ) );
 		}
 
-		Ic3OpenGLResetErrorQueue();
+		Ic3SysOpenGLResetErrorQueue();
 
 		return systemVersionInfo;
 	}
