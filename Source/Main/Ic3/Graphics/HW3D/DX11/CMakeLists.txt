@@ -65,7 +65,7 @@ if( ${CM_EBS_SYSCONF_TARGET_FLAG_OSINFO_WFA} )
             "IC3_GRAPHICS_HWAPI_DX11_BUILD=1")
 
     target_include_directories( Ic3.Graphics.HW3D.DX11 PUBLIC
-            ${IC3_DRIVERS_INCLUDE_DIR_INTERNAL} )
+            ${IC3_GRAPHICS_HW3D_INCLUDE_DIR_INTERNAL} )
 
     target_link_libraries( Ic3.Graphics.HW3D.DX11 PUBLIC
             Ic3.Graphics.GCI

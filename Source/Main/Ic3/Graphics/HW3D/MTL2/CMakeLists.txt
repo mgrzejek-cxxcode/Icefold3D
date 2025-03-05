@@ -27,7 +27,7 @@ target_compile_definitions( Ic3.Graphics.HW3D.MTL2 PRIVATE
         "IC3_GRAPHICS_HWAPI_MTL2_BUILD=1" )
 
 target_include_directories( Ic3.Graphics.HW3D.MTL2 PUBLIC
-        ${IC3_DRIVERS_INCLUDE_DIR_INTERNAL} )
+        ${IC3_GRAPHICS_HW3D_INCLUDE_DIR_INTERNAL} )
 
 target_link_libraries( Ic3.Graphics.HW3D.MTL2 PUBLIC
         Ic3.Graphics.GCI

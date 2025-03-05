@@ -8,7 +8,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	static void initializeOpenGLAPI()
+	static void InitializeOpenGLAPI()
 	{
 		static std::atomic_flag sInitFlag = { ATOMIC_FLAG_INIT };
 
@@ -39,7 +39,7 @@ namespace Ic3::Graphics::GCI
 			// A dirty workaround. GLEW is no longer used at the system level (now we use only
 			// the minimal set of GLX/WGL functions), so it needs to happen here. This is best
 			// to be replaced with a custom API loader/manager.
-			initializeOpenGLAPI();
+			InitializeOpenGLAPI();
 		}
 
 		if( commandContext )

@@ -25,7 +25,7 @@ target_compile_definitions( Ic3.Graphics.HW3D.VK13 PRIVATE
         "IC3_GRAPHICS_HWAPI_VK10_BUILD=1")
 
 target_include_directories( Ic3.Graphics.HW3D.VK13 PUBLIC
-        ${IC3_DRIVERS_INCLUDE_DIR_INTERNAL} )
+        ${IC3_GRAPHICS_HW3D_INCLUDE_DIR_INTERNAL} )
 
 target_link_libraries( Ic3.Graphics.HW3D.VK13 PUBLIC
         Ic3.Graphics.GCI )

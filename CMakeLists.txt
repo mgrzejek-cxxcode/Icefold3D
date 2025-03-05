@@ -37,33 +37,38 @@ endif()
 ebsSetInternal( IC3_BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}" )
 ebsSetInternal( IC3_COMPONENTS_BUILD_MODE STATIC )
 
+ebsSetInternal( IC3_COMMON_MODULE_DEFINITIONS
+	"IC3_BUILD_STATIC=1"
+)
+
 ebsSetInternal( IC3_BASE_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}" )
+    "${CMAKE_CURRENT_SOURCE_DIR}"
+)
 
 ebsSetInternal( EXT_INCLUDE_DIR
 		"${IC3_BASE_DIR}/External/Embedded/"
         "${IC3_BASE_DIR}/External/Prebuilt/Include/"
-        )
+)
 
 ebsSetInternal( IC3_INCLUDE_DIR
 		"${IC3_BASE_DIR}/External/Embedded/"
         "${IC3_BASE_DIR}/External/Prebuilt/Include/"
         "${IC3_BASE_DIR}/Source/Main/"
-        )
+)
     
 ebsSetInternal( IC3_LINK_DIR
         "${IC3_BASE_DIR}/External/Prebuilt/Lib/Common"
         "${IC3_BASE_DIR}/External/Prebuilt/Lib/Common/${CM_EBS_SYSCONF_TARGET_ARCH}"
         "${IC3_BASE_DIR}/External/Prebuilt/Lib/Platform/${CM_EBS_SYSCONF_TARGET_LIBRARY_SUBDIR}"
         "${IC3_BASE_DIR}/External/Prebuilt/Lib/Platform/${CM_EBS_SYSCONF_TARGET_LIBRARY_SUBDIR}/${CM_EBS_SYSCONF_TARGET_ARCH}"
-        )
+)
 
 ebsSetInternal(IC3_MODULE_TARGET_LIST "")
 
 add_subdirectory( "External/Embedded" )
 add_subdirectory( "Source/Main" )
 add_subdirectory( "Source/Samples" )
-#add_subdirectory( "Source/Tools" )
+add_subdirectory( "Source/Tools" )
 
 message( STATUS "${IC3_MODULE_TARGET_LIST}")
 foreach( iceModule ${IC3_MODULE_TARGET_LIST} )

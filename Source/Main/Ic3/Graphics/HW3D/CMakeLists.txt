@@ -2,9 +2,9 @@
 set( IC3_GRAPHICS_HWAPI_INCLUDE_DIR
         "${IC3_INCLUDE_DIR}" )
 		
-set( IC3_DRIVERS_INCLUDE_DIR_INTERNAL
+set( IC3_GRAPHICS_HW3D_INCLUDE_DIR_INTERNAL
         ${IC3_DRIVERS_INCLUDE_DIR}
-        "${IC3_BASE_DIR}/source/engine/drivers" )
+        "${IC3_BASE_DIR}/Source/Main" )
 
 if( "${CM_EBS_SYSCONF_TARGET_SYSTEM}" STREQUAL "Android" )
     set( _IC3_GRAPHICS_HW3D_TARGET_LIST
@@ -50,8 +50,7 @@ ebsSetInternal( CM_EBS_IC3_GRAPHICS_HW3D_TARGET_LIST "${_IC3_GRAPHICS_HW3D_TARGE
 
 foreach( target ${_IC3_GRAPHICS_HW3D_TARGET_LIST} )
     add_subdirectory( "${target}" )
-#    if( TARGET "ts3drv-${target}" )
-#        set_property( TARGET "ts3drv-${target}" PROPERTY CXX_STANDARD 17 )
-#        target_compile_features( "ts3drv-${target}" PRIVATE cxx_std_17 )
-#    endif()
+    if( TARGET "Ic3.Graphics.HW3D.${target}" )
+        ebsAppendInternal( IC3_GRAPHICS_HW3D_ALL_AVAILABLE_TARGETS "Ic3.Graphics.HW3D.${target}" )
+    endif()
 endforeach()

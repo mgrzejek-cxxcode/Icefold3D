@@ -32,7 +32,7 @@ set_target_properties( Ic3.Graphics.HW3D.GL4 PROPERTIES
         OUTPUT_NAME "Ic3.Graphics.HW3D.GL4" )
 
 target_include_directories( Ic3.Graphics.HW3D.GL4 PUBLIC
-        ${IC3_DRIVERS_INCLUDE_DIR_INTERNAL} )
+        ${IC3_GRAPHICS_HW3D_INCLUDE_DIR_INTERNAL} )
 
 target_link_libraries( Ic3.Graphics.HW3D.GL4 PUBLIC
         Ic3.Graphics.GCI

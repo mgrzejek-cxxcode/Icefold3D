@@ -31,7 +31,7 @@ target_compile_definitions( Ic3.Graphics.HW3D.gles3 PRIVATE
         "GL_PLATFORM_TYPE_ES=1" )
 
 target_include_directories( Ic3.Graphics.HW3D.gles3 PUBLIC
-        ${IC3_DRIVERS_INCLUDE_DIR_INTERNAL} )
+        ${IC3_GRAPHICS_HW3D_INCLUDE_DIR_INTERNAL} )
 
 target_link_libraries( Ic3.Graphics.HW3D.gles3 PUBLIC
         Ic3.Graphics.GCI
