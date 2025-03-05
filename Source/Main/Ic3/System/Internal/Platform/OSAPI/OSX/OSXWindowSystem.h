@@ -3,7 +3,7 @@
 #define __IC3_SYSTEM_PLATFORM_OSAPI_OSX_WINDOW_SYSTEM_H__
 
 #include "OSXEventCore.h"
-#include <Ic3/System/WindowSystem.h>
+#include <Ic3/System/Core/WindowSystem.h>
 #import <AppKit/NSScreen.h>
 #import <AppKit/NSWindow.h>
 

@@ -1,9 +1,9 @@
 
 #include "DXPresentationLayer.h"
 #include "DXGPUDevice.h"
-#include <Ic3/System/DisplaySystem.h>
-#include <Ic3/System/WindowSystem.h>
-#include <Ic3/System/WindowNative.h>
+#include <Ic3/System/Core/DisplaySystem.h>
+#include <Ic3/System/Core/WindowSystem.h>
+#include <Ic3/System/Core/WindowNative.h>
 
 namespace Ic3::Graphics::GCI
 {

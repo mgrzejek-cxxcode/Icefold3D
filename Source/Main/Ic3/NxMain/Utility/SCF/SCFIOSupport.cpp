@@ -1,7 +1,7 @@
 
 #include "scfIOSupport.h"
 #include "scfIndexBuilder.h"
-#include <Ic3/System/FileManager.h>
+#include <Ic3/System/IO/FileManager.h>
 #include <Ic3/CoreLib/utility/gdsCore.h>
 #include <vector>
 
@@ -14,7 +14,7 @@ namespace Ic3
 
 	void SCFIOProxy::saveIndex( const std::string & pFilename, const SCFIndexBuilder & pBuilder )
 	{
-		auto file = _sysFileManager->openFile( pFilename, System::EFileOpenMode::WriteOverwrite );
+		auto file = _sysFileManager->openFile( pFilename, System::EIOAccessMode::WriteOverwrite );
 		if( !file )
 		{
 			return;
@@ -22,7 +22,7 @@ namespace Ic3
 
 		InternalFileWriteCallback fileWriteCallback =
 			[file]( const void * pInputData, uint64 pWriteSize ) -> uint64 {
-				const auto writeSize = cppx::numeric_cast<System::file_size_t>( pWriteSize );
+				const auto writeSize = cppx::numeric_cast<System::io_size_t>( pWriteSize );
 				return file->write( pInputData, writeSize, writeSize );
 			};
 
@@ -35,7 +35,7 @@ namespace Ic3
 
 	void SCFIOProxy::loadIndex( const std::string & pFilename, SCFIndex & pIndex )
 	{
-		auto file = _sysFileManager->openFile( pFilename, System::EFileOpenMode::ReadOnly );
+		auto file = _sysFileManager->openFile( pFilename, System::EIOAccessMode::ReadOnly );
 		if( !file )
 		{
 			return;
@@ -43,7 +43,7 @@ namespace Ic3
 
 		InternalFileReadCallback fileReadCallback =
 			[file]( void * pOutputBuffer, uint64 pReadSize ) -> uint64 {
-				const auto readSize = cppx::numeric_cast<System::file_size_t>( pReadSize );
+				const auto readSize = cppx::numeric_cast<System::io_size_t>( pReadSize );
 				return file->read( pOutputBuffer, readSize, readSize );
 			};
 
@@ -58,8 +58,8 @@ namespace Ic3
 
 		SCFIndex::ResourceDataReadCallback resourceDataReadCallback =
 			[file]( void * pOutputBuffer, uint64 pReadSize, uint64 pBaseOffset ) -> uint64 {
-				const auto readSize = cppx::numeric_cast<System::file_size_t>( pReadSize );
-				file->setFilePointer( cppx::numeric_cast<System::file_offset_t>( pBaseOffset ) );
+				const auto readSize = cppx::numeric_cast<System::io_size_t>( pReadSize );
+				file->setFilePointer( cppx::numeric_cast<System::io_offset_t>( pBaseOffset ) );
 				return file->read( pOutputBuffer, readSize, readSize );
 		};
 
@@ -140,7 +140,7 @@ namespace Ic3
 			auto & scfResource = pFolder.addResource( std::move( scfResourceInfo ) );
 
 			const auto skipResourceDataOffset = scfResource.mResourceInfo.dataOffset + scfResource.mResourceInfo.dataSize;
-			pSysFile->setFilePointer( static_cast<System::file_offset_t>( skipResourceDataOffset ) );
+			pSysFile->setFilePointer( static_cast<System::io_offset_t>( skipResourceDataOffset ) );
 		}
 
 		for( uint32 subFolderIndex = 0; subFolderIndex < pFolder.mFolderInfo.subFoldersNum; ++subFolderIndex )

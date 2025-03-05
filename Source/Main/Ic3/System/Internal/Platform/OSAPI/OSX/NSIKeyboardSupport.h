@@ -3,7 +3,7 @@
 #define __IC3_SYSTEM_PLATFORM_OSAPI_OSX_NS_NS_KEYBOARD_SUPPORT_H__
 
 #include "NSICommon.h"
-#include <Ic3/System/EventDefInputKeyboard.h>
+#include <Ic3/System/Events/EventDefInputKeyboard.h>
 
 namespace Ic3::System
 {

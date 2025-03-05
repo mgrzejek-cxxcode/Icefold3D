@@ -5,7 +5,7 @@
 #include <Ic3/Graphics/GCI/State/SamplerCommon.h>
 #include <Ic3/Graphics/GCI/Resources/ShaderCommon.h>
 #include <Ic3/Graphics/GCI/Resources/TextureCommon.h>
-#include <Ic3/System/WindowNative.h>
+#include <Ic3/System/Core/WindowNative.h>
 #include <cppx/stdHelperAlgo.h>
 
 namespace Ic3::Graphics::GCI

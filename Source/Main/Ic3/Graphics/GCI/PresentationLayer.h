@@ -5,9 +5,9 @@
 #define __IC3_GRAPHICS_GCI_PRESENTATION_LAYER_H__
 
 #include "DisplayCommon.h"
-#include <Ic3/System/DisplayCommon.h>
-#include <Ic3/System/EventCommon.h>
-#include <Ic3/System/WindowCommon.h>
+#include <Ic3/System/Core/DisplayCommon.h>
+#include <Ic3/System/Events/EventCommon.h>
+#include <Ic3/System/Core/WindowCommon.h>
 
 namespace Ic3::Graphics::GCI
 {

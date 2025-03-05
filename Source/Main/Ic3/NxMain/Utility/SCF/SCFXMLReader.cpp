@@ -1,13 +1,13 @@
 
 #include "scfXMLReader.h"
-#include <Ic3/System/FileManager.h>
+#include <Ic3/System/IO/FileManager.h>
 
 namespace Ic3
 {
 
 	SCFXMLRootNode SCFXMLReader::readFile( const std::string & pFilename )
 	{
-		auto file = _sysFileManager->openFile( pFilename, System::EFileOpenMode::ReadOnly );
+		auto file = _sysFileManager->openFile( pFilename, System::EIOAccessMode::ReadOnly );
 		if( !file )
 		{
 			return nullptr;

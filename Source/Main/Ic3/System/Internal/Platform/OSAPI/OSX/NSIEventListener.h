@@ -3,7 +3,7 @@
 #define __IC3_SYSTEM_PLATFORM_OSAPI_OSX_NS_INTERNAL_EVENT_LISTENER_H__
 
 #include "NSICommon.h"
-#include <Ic3/System/EventCommon.h>
+#include <Ic3/System/Events/EventCommon.h>
 
 #import <AppKit/NSWindow.h>
 

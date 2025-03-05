@@ -1,7 +1,7 @@
 
 #include "SystemDisplayManager.h"
-#include <Ic3/System/DisplayDriver.h>
-#include <Ic3/System/DisplaySystem.h>
+#include <Ic3/System/Core/DisplayDriver.h>
+#include <Ic3/System/Core/DisplaySystem.h>
 
 namespace Ic3::Graphics::GCI
 {

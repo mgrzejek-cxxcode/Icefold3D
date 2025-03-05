@@ -1,6 +1,6 @@
 
 #include "ScriptSystem.h"
-#include <Ic3/System/FileManager.h>
+#include <Ic3/System/IO/FileManager.h>
 #include <Ic3/System/SysContext.h>
 
 namespace Ic3::Script
@@ -21,7 +21,7 @@ namespace Ic3::Script
 	{
 		CompiledScript compiledScript{};
 
-		if( auto luaFile = _sysFileManager->OpenFile( pFileName, Ic3::System::EFileOpenMode::ReadOnly ) )
+		if( auto luaFile = _sysFileManager->OpenFile( pFileName, Ic3::System::EIOAccessMode::ReadOnly ) )
 		{
 			cppx::dynamic_byte_array luaScript;
 			luaFile->ReadAuto( luaScript );

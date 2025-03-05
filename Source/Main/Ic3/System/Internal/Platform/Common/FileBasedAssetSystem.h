@@ -2,8 +2,8 @@
 #ifndef __IC3_SYSTEM_PLATFORM_COMMON_FILE_BASED_ASSET_SYSTEM__
 #define __IC3_SYSTEM_PLATFORM_COMMON_FILE_BASED_ASSET_SYSTEM__
 
-#include <Ic3/System/AssetSystem.h>
-#include <Ic3/System/FileCommon.h>
+#include <Ic3/System/IO/AssetSystem.h>
+#include <Ic3/System/IO/FileCommon.h>
 
 #if( IC3_SYSTEM_USE_ASSET_SYSTEM_DEFAULT )
 namespace Ic3::System
@@ -114,13 +114,13 @@ namespace Ic3::System
 
 	private:
 		/// @copybrief Asset::_NativeReadData
-		virtual file_size_t _NativeReadData( void * pTargetBuffer, file_size_t pReadSize ) override final;
+		virtual io_size_t _NativeReadData( void * pTargetBuffer, io_size_t pReadSize ) override final;
 
 		/// @copybrief Asset::_NativeSetReadPointer
-		virtual file_offset_t _NativeSetReadPointer( file_offset_t pOffset, EFilePointerRefPos pRefPos ) override final;
+		virtual io_offset_t _NativeSetReadPointer( io_offset_t pOffset, EIOPointerRefPos pRefPos ) override final;
 
 		/// @copybrief Asset::_NativeGetSize
-		virtual file_size_t _NativeGetSize() const override final;
+		virtual io_size_t _NativeGetSize() const override final;
 	};
 
 } // namespace Ic3::System

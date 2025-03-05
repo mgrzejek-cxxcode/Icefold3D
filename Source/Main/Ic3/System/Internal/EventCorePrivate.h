@@ -2,8 +2,8 @@
 #ifndef __IC3_SYSTEM_INTERNAL_EVENT_CORE_PRIVATE_H__
 #define __IC3_SYSTEM_INTERNAL_EVENT_CORE_PRIVATE_H__
 
-#include <Ic3/System/EventCore.h>
-#include <Ic3/System/EventObject.h>
+#include "../Events/EventCore.h"
+#include "../Events/EventObject.h"
 
 #include <deque>
 #include <list>

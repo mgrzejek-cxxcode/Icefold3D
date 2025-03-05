@@ -2,7 +2,7 @@
 #ifndef __IC3_SYSTEM_PLATFORM_SHARED_EGL_OPENGL_DRIVER_H__
 #define __IC3_SYSTEM_PLATFORM_SHARED_EGL_OPENGL_DRIVER_H__
 
-#include <Ic3/System/OpenGLCommon.h>
+#include <Ic3/System/Gfx/OpenGLCommon.h>
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 #include "eglCoreUtils.h"

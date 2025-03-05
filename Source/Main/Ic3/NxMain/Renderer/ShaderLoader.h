@@ -6,7 +6,7 @@
 
 #include "CommonRendererDefs.h"
 #include <Ic3/Graphics/GCI/Resources/ShaderCommon.h>
-#include <Ic3/System/AssetCommon.h>
+#include <Ic3/System/IO/AssetCommon.h>
 
 namespace Ic3
 {

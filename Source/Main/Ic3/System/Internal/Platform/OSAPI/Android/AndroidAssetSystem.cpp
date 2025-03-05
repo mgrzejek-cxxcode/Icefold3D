@@ -1,6 +1,6 @@
 
-#include <Ic3/System/AssetSystemNative.h>
-#include <Ic3/System/FileCommon.h>
+#include <Ic3/System/IO/AssetSystemNative.h>
+#include <Ic3/System/IO/FileCommon.h>
 
 #if( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_ANDROID )
 namespace Ic3::System
@@ -9,7 +9,7 @@ namespace Ic3::System
 	namespace Platform
 	{
 
-		int _androidTranslateFilePointerRefPos( EFilePointerRefPos pFileRefPos );
+		int _androidTranslatEIOPointerRefPos( EIOPointerRefPos pFileRefPos );
 
 		AAsset * _androidResolveAsset(
 				AAssetManager * pAAssetManager,
@@ -187,46 +187,46 @@ namespace Ic3::System
 		}
 	}
 
-	file_size_t AndroidAsset::_NativeReadData( void * pTargetBuffer, file_size_t pReadSize )
+	io_size_t AndroidAsset::_NativeReadData( void * pTargetBuffer, io_size_t pReadSize )
 	{
 		int readResult = AAsset_read( mNativeData.mAndrAsset, pTargetBuffer, pReadSize );
-		return cppx::numeric_cast<file_size_t>( readResult );
+		return cppx::numeric_cast<io_size_t>( readResult );
 	}
 
-	file_offset_t AndroidAsset::_NativeSetReadPointer( file_offset_t pOffset, EFilePointerRefPos pRefPos )
+	io_offset_t AndroidAsset::_NativeSetReadPointer( io_offset_t pOffset, EIOPointerRefPos pRefPos )
 	{
-		auto seekOrigin = Platform::_androidTranslateFilePointerRefPos( pRefPos );
+		auto seekOrigin = Platform::_androidTranslatEIOPointerRefPos( pRefPos );
 		auto seekResult = AAsset_seek64( mNativeData.mAndrAsset, pOffset, seekOrigin );
-		return cppx::numeric_cast<file_offset_t>( seekResult );
+		return cppx::numeric_cast<io_offset_t>( seekResult );
 	}
 
-	file_size_t AndroidAsset::_NativeGetSize() const
+	io_size_t AndroidAsset::_NativeGetSize() const
 	{
 		auto assetSize = AAsset_getLength64( mNativeData.mAndrAsset );
-		return cppx::numeric_cast<file_offset_t>( assetSize );
+		return cppx::numeric_cast<io_offset_t>( assetSize );
 	}
 
 
 	namespace Platform
 	{
 
-		int _androidTranslateFilePointerRefPos( EFilePointerRefPos pFileRefPos )
+		int _androidTranslatEIOPointerRefPos( EIOPointerRefPos pFileRefPos )
 		{
 			int seekOrigin = 0;
 
 			switch( pFileRefPos )
 			{
-				case EFilePointerRefPos::FileBeg:
+				case EIOPointerRefPos::StreamBase:
 				{
 					seekOrigin = SEEK_SET;
 					break;
 				}
-				case EFilePointerRefPos::FileEnd:
+				case EIOPointerRefPos::StreamEnd:
 				{
 					seekOrigin = SEEK_END;
 					break;
 				}
-				case EFilePointerRefPos::PtrCurrent:
+				case EIOPointerRefPos::PtrCurrent:
 				{
 					seekOrigin = SEEK_CUR;
 					break;

@@ -2,8 +2,8 @@
 #ifndef __IC3_SYSTEM_PLATFORM_SHARED_DXGI_DISPLAY_SYSTEM_H__
 #define __IC3_SYSTEM_PLATFORM_SHARED_DXGI_DISPLAY_SYSTEM_H__
 
-#include <Ic3/System/DisplayConfiguration.h>
-#include <Ic3/System/DisplaySystem.h>
+#include <Ic3/System/Core/DisplayConfiguration.h>
+#include <Ic3/System/Core/DisplaySystem.h>
 #include "DXGICommon.h"
 
 #if( IC3_SYSTEM_DSM_DRIVER_TYPE_SUPPORT_DXGI )

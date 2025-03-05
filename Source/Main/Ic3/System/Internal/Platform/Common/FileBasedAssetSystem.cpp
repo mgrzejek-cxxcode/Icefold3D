@@ -1,8 +1,8 @@
 
 #include "FileBasedAssetSystem.h"
-#include <Ic3/System/FileManager.h>
+#include <Ic3/System/IO/FileManager.h>
 #include <Ic3/System/SysContext.h>
-#include <Ic3/System/AssetSystem.h>
+#include <Ic3/System/IO/AssetSystem.h>
 
 namespace Ic3::System
 {
@@ -45,7 +45,7 @@ namespace Ic3::System
 
 			if( mFileManager->CheckFileExists( combinedFilePath ) )
 			{
-				auto fileHandle = mFileManager->OpenFile( combinedFilePath, EFileOpenMode::ReadOnly );
+				auto fileHandle = mFileManager->OpenFile( combinedFilePath, EIOAccessMode::ReadOnly );
 
 				asset = CreateSysObject<FileAsset>( GetHandle<FileAssetLoader>() );
 				asset->SetName( std::move( pAssetPathInfo.file_name ) );
@@ -112,7 +112,7 @@ namespace Ic3::System
 
 			if( mFileManager->CheckFileExists( combinedFilePath ) )
 			{
-				auto fileHandle = mFileManager->OpenFile( combinedFilePath, EFileOpenMode::ReadOnly );
+				auto fileHandle = mFileManager->OpenFile( combinedFilePath, EIOAccessMode::ReadOnly );
 
 				asset = CreateSysObject<FileAsset>( GetHandle<FileAssetDirectory>() );
 				asset->SetName( std::move( assetPathInfo.file_name ) );
@@ -142,17 +142,17 @@ namespace Ic3::System
 
 	FileAsset::~FileAsset() noexcept = default;
 
-	file_size_t FileAsset::_NativeReadData( void * pTargetBuffer, file_size_t pReadSize )
+	io_size_t FileAsset::_NativeReadData( void * pTargetBuffer, io_size_t pReadSize )
 	{
 		return mNativeData.fileHandle->Read( pTargetBuffer, pReadSize );
 	}
 
-	file_offset_t FileAsset::_NativeSetReadPointer( file_offset_t pOffset, EFilePointerRefPos pRefPos )
+	io_offset_t FileAsset::_NativeSetReadPointer( io_offset_t pOffset, EIOPointerRefPos pRefPos )
 	{
 		return mNativeData.fileHandle->SetFilePointer( pOffset, pRefPos );
 	}
 
-	file_size_t FileAsset::_NativeGetSize() const
+	io_size_t FileAsset::_NativeGetSize() const
 	{
 		return mNativeData.fileHandle->GetSize();
 	}

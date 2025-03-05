@@ -3,8 +3,8 @@
 #define __IC3_SYSTEM_PLATFORM_OSAPI_ANDROID_DISPLAY_H__
 
 #include "AndroidCommon.h"
-#include <Ic3/System/DisplayConfiguration.h>
-#include <Ic3/System/DisplaySystem.h>
+#include <Ic3/System/Core/DisplayConfiguration.h>
+#include <Ic3/System/Core/DisplaySystem.h>
 
 namespace Ic3::System
 {

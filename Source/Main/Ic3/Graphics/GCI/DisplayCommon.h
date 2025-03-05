@@ -5,7 +5,7 @@
 #define __IC3_GRAPHICS_GCI_DISPLAY_COMMON_H__
 
 #include "Prerequisites.h"
-#include <Ic3/System/DisplayCommon.h>
+#include <Ic3/System/Core/DisplayCommon.h>
 
 namespace Ic3::Graphics::GCI
 {

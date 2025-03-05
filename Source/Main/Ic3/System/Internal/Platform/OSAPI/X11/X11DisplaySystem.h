@@ -3,8 +3,8 @@
 #define __IC3_SYSTEM_PLATFORM_OSAPI_X11_DISPLAY_SYSTEM_H__
 
 #include "X11Common.h"
-#include <Ic3/System/DisplayConfiguration.h>
-#include <Ic3/System/DisplaySystem.h>
+#include <Ic3/System/Core/DisplayConfiguration.h>
+#include <Ic3/System/Core/DisplaySystem.h>
 #include <X11/extensions/Xrandr.h>
 #include <cppx/version.h>
 #include <unordered_map>

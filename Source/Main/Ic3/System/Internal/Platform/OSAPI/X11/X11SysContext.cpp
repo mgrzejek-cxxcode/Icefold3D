@@ -7,7 +7,7 @@
 #include "X11OpenGLDriver.h"
 #include "X11WindowSystem.h"
 #include <Ic3/System/SysContextNative.h>
-#include <Ic3/System/AssetSystemNative.h>
+#include <Ic3/System/IO/AssetSystemNative.h>
 
 #if( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_X11 )
 namespace Ic3::System

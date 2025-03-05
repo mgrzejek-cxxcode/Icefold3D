@@ -1,5 +1,9 @@
 
 set( IC3_TOOLS_SRC_IceLogViewer
+    "Application.h"
+    "Application.cpp"
+    "UI/MainWindow.h"
+    "UI/MainWindow.cpp"
 )
 
 if( "${CM_EBS_SYSCONF_TARGET_SYSTEM}" STREQUAL "macOS" )
