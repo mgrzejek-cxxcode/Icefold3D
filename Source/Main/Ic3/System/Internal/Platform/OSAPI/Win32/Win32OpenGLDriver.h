@@ -44,7 +44,7 @@ namespace Ic3::System
 	}
 
 	/// @brief Win32-specific implementation of the OpenGLSystemDriver class.
-	class Win32OpenGLSystemDriver : public Win32NativeObject<OpenGLSystemDriver, Platform::Win32OpenGLSystemDriverNativeData>
+	class IC3_SYSTEM_CLASS Win32OpenGLSystemDriver : public Win32NativeObject<OpenGLSystemDriver, Platform::Win32OpenGLSystemDriverNativeData>
 	{
 	public:
 		Win32OpenGLSystemDriver( DisplayManagerHandle pDisplayManager );
@@ -100,7 +100,7 @@ namespace Ic3::System
 	};
 
 	/// @brief Win32-specific implementation of the OpenGLDisplaySurface class.
-	class Win32OpenGLDisplaySurface : public Win32NativeObject<OpenGLDisplaySurface, Platform::Win32OpenGLDisplaySurfaceNativeData>
+	class IC3_SYSTEM_CLASS Win32OpenGLDisplaySurface : public Win32NativeObject<OpenGLDisplaySurface, Platform::Win32OpenGLDisplaySurfaceNativeData>
 	{
 	public:
 		explicit Win32OpenGLDisplaySurface( Win32OpenGLSystemDriverHandle pGLSystemDriver );
@@ -145,7 +145,7 @@ namespace Ic3::System
 	};
 
 	/// @brief Win32-specific implementation of the OpenGLRenderContext class.
-	class Win32OpenGLRenderContext : public Win32NativeObject<OpenGLRenderContext, Platform::Win32OpenGLRenderContextNativeData>
+	class IC3_SYSTEM_CLASS Win32OpenGLRenderContext : public Win32NativeObject<OpenGLRenderContext, Platform::Win32OpenGLRenderContextNativeData>
 	{
 	public:
 		explicit Win32OpenGLRenderContext( Win32OpenGLSystemDriverHandle pGLSystemDriver );

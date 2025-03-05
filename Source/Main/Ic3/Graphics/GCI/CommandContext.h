@@ -12,7 +12,7 @@ namespace Ic3::Graphics::GCI
 
 	enum ECommandListActionFlags : uint32;
 
-	class CommandContext : public GPUDeviceChildObject
+	class IC3_GRAPHICS_GCI_CLASS CommandContext : public GPUDeviceChildObject
 	{
 	public:
 		CommandList * const mCommandList;
@@ -45,7 +45,7 @@ namespace Ic3::Graphics::GCI
 		bool CheckCommandListSupport( cppx::bitmask<ECommandObjectPropertyFlags> pCmdListFlags );
 	};
 
-	class CommandContextDirect : public CommandContext
+	class IC3_GRAPHICS_GCI_CLASS CommandContextDirect : public CommandContext
 	{
 	public:
 		virtual ~CommandContextDirect() = default;
@@ -65,7 +65,7 @@ namespace Ic3::Graphics::GCI
 		{}
 	};
 
-	class CommandContextDirectTransfer : public CommandContextDirect
+	class IC3_GRAPHICS_GCI_CLASS CommandContextDirectTransfer : public CommandContextDirect
 	{
 	public:
 		static ECommandContextType const sContextType = ECommandContextType::DirectTransfer;
@@ -111,7 +111,7 @@ namespace Ic3::Graphics::GCI
 		{}
 	};
 
-	class CommandContextDirectCompute : public CommandContextDirectTransfer
+	class IC3_GRAPHICS_GCI_CLASS CommandContextDirectCompute : public CommandContextDirectTransfer
 	{
 	public:
 		static ECommandContextType const sContextType = ECommandContextType::DirectCompute;
@@ -131,7 +131,7 @@ namespace Ic3::Graphics::GCI
 		{}
 	};
 
-	class CommandContextDirectGraphics : public CommandContextDirectCompute
+	class IC3_GRAPHICS_GCI_CLASS CommandContextDirectGraphics : public CommandContextDirectCompute
 	{
 	public:
 		static ECommandContextType const sContextType = ECommandContextType::DirectGraphics;
@@ -188,7 +188,7 @@ namespace Ic3::Graphics::GCI
 				native_uint pVerticesOffset );
 	};
 
-	class CommandContextDeferred : public CommandContext
+	class IC3_GRAPHICS_GCI_CLASS CommandContextDeferred : public CommandContext
 	{
 	public:
 		virtual ~CommandContextDeferred() = default;
@@ -204,7 +204,7 @@ namespace Ic3::Graphics::GCI
 
 	};
 
-	class CommandContextDeferredGraphics : public CommandContextDeferred
+	class IC3_GRAPHICS_GCI_CLASS CommandContextDeferredGraphics : public CommandContextDeferred
 	{
 	public:
 		static ECommandContextType const sContextType = ECommandContextType::DirectTransfer;

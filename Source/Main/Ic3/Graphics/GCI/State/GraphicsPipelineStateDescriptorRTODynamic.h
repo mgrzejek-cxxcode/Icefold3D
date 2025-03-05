@@ -16,7 +16,7 @@ namespace Ic3::Graphics::GCI
 	 * Represents a dynamic render pass configuration state (API-agnostic and modifiable)
 	 * @see RenderPassDescriptor
 	 */
-	class RenderPassDescriptorDynamic : public RTArrayDescriptorDynamicProxy<RenderPassDescriptor, RenderPassAttachmentConfig>
+	class IC3_GRAPHICS_GCI_CLASS RenderPassDescriptorDynamic : public RTArrayDescriptorDynamicProxy<RenderPassDescriptor, RenderPassAttachmentConfig>
 	{
 	public:
 		Ic3DeclareNonCopyable( RenderPassDescriptorDynamic );
@@ -44,7 +44,7 @@ namespace Ic3::Graphics::GCI
 	 * Represents a dynamic render pass configuration state (API-agnostic and modifiable)
 	 * @see RenderPassDescriptor
 	 */
-	class RenderTargetDescriptorDynamic : public RTArrayDescriptorDynamicProxy<RenderTargetDescriptor, RenderTargetAttachmentBinding>
+	class IC3_GRAPHICS_GCI_CLASS RenderTargetDescriptorDynamic : public RTArrayDescriptorDynamicProxy<RenderTargetDescriptor, RenderTargetAttachmentBinding>
 	{
 	public:
 		Ic3DeclareNonCopyable( RenderTargetDescriptorDynamic );

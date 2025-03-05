@@ -667,7 +667,7 @@ namespace Ic3::System
 
 	bool EventDispatcher::_PreProcessEvent( EventObject & pEvent )
 	{
-		const auto eventCategory = pEvent.category();
+		const auto eventCategory = pEvent.GetCategory();
 
 		auto & eventSystemSharedState = _eventControllerActiveRef->GetEventSystemSharedState();
 

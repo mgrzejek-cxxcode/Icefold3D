@@ -246,56 +246,6 @@ namespace Ic3::Graphics::GCI
 		}
 	};
 
-	//namespace defaults
-	//{
-
-		/// @brief A default blend configuration for an RT attachment.
-		/// This default config represents default set of options used for blending. The config is as follows:
-		/// - constantColor:         {0,0,0,0}
-		/// - factorSrcColor:        EBlendFactor::One
-		/// - factorSrcAlpha:        EBlendFactor::One
-		/// - factorDstColor:        EBlendFactor::Zero
-		/// - factorDstAlpha:        EBlendFactor::Zero
-		/// - opColor:               EBlendOp::Add
-		/// - opAlpha:               EBlendOp::Add
-		/// - renderTargetWriteMask: E_BLEND_WRITE_MASK_ALL
-		/// @see RTAttachmentBlendSettings
-		//IC3_GRAPHICS_GCI_OBJ const RenderTargetColorAttachmentBlendSettings cvCommonRenderTargetColorAttachmentBlendSettingsDefault;
-
-		/// @brief A default configuration for the depth test.
-		/// This default config represents default set of options used for depth testing. The config is as follows:
-		/// - depthCompFunc:  ECompFunc::Less
-		/// - depthWriteMask: EDepthWriteMask::All
-		//IC3_GRAPHICS_GCI_OBJ const DepthTestSettings cvCommonDepthTestSettingsDefault;
-
-		/// @brief A default configuration for the stencil test.
-		/// This default config represents default set of options used for stencil testing. The config is as follows:
-		/// - frontFace.compFunc:        ECompFunc::Always
-		/// - frontFace.opFail:          EStencilOp::Keep
-		/// - frontFace.opPassDepthFail: EStencilOp::Keep
-		/// - frontFace.opPassDepthPass: EStencilOp::Keep
-		/// - backFace.compFunc:         ECompFunc::Always
-		/// - backFace.opFail:           EStencilOp::Keep
-		/// - backFace.opPassDepthFail:  EStencilOp::Keep
-		/// - backFace.opPassDepthPass:  EStencilOp::Keep
-		/// - refValue:                  0
-		/// - readMask:                  E_STENCIL_MASK_READ_DEFAULT
-		/// - writeMask:                 E_STENCIL_MASK_WRITE_DEFAULT
-		//IC3_GRAPHICS_GCI_OBJ const StencilTestSettings cvCommonStencilTestSettingsDefault;
-
-		///
-		//IC3_GRAPHICS_GCI_OBJ const BlendSettings cvPipelineBlendSettingsDefault;
-
-		///
-		//IC3_GRAPHICS_GCI_OBJ const DepthStencilSettings cvPipelineDepthStencilSettingsDefault;
-
-		///
-		//IC3_GRAPHICS_GCI_OBJ const DepthStencilSettings cvPipelineDepthStencilSettingsEnableDepthTest;
-
-		///
-		//IC3_GRAPHICS_GCI_OBJ const RasterizerSettings cvPipelineRasterizerSettingsDefault;
-
-	//}
 
 	namespace GCU
 	{

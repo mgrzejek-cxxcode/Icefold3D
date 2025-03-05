@@ -22,7 +22,7 @@ namespace Ic3::Graphics::GCI
 	};
 
 	/// @brief
-	class RenderTargetTexture : public GPUResourceView
+	class IC3_GRAPHICS_GCI_CLASS RenderTargetTexture : public GPUResourceView
 	{
 		friend class GPUDevice;
 		friend class Texture;

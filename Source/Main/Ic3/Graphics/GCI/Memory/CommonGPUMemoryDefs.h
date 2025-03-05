@@ -128,8 +128,8 @@ namespace Ic3::Graphics::GCI
 
 	struct StructuredResourceAlignedMemoryMetrics
 	{
-		memory_align_t elementSize;
-		memory_align_t elementSizeAligned;
+		memory_size_t elementSize;
+		memory_size_t elementSizeAligned;
 		gpu_memory_size_t elementsNum;
 		gpu_memory_size_t storageSize;
 		gpu_memory_size_t storageSizeAligned;

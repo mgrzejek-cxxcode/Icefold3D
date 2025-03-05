@@ -152,24 +152,21 @@ set( IC3_GRAPHICS_GCI_SRC_FILES
 if( "${IC3_COMPONENTS_BUILD_MODE}" STREQUAL "STATIC" )
     add_library( Ic3.Graphics.GCI STATIC ${IC3_GRAPHICS_GCI_SRC_FILES} )
     target_compile_definitions( Ic3.Graphics.GCI PRIVATE
-            "IC3_BUILD_STATIC=1" )
+            "IC3_BUILD_STATIC=1"
+            "IC3_GRAPHICS_GCI_BUILD=1" )
 else()
     add_library( Ic3.Graphics.GCI SHARED ${IC3_GRAPHICS_GCI_SRC_FILES} )
+    target_compile_definitions( Ic3.Graphics.GCI PRIVATE
+            "IC3_GRAPHICS_GCI_BUILD=1"  )
 endif()
 
 set_target_properties( Ic3.Graphics.GCI PROPERTIES
-        OUTPUT_NAME "Ic3.Graphics.GCI"
-        )
-
-target_compile_definitions( Ic3.Graphics.GCI PRIVATE
-        "IC3_GRAPHICS_GCI_BUILD=1"
-        )
+        OUTPUT_NAME "Ic3.Graphics.GCI" )
 
 target_include_directories( Ic3.Graphics.GCI PUBLIC
-        "${IC3_INCLUDE_DIR}"
-        )
+        "${IC3_INCLUDE_DIR}"  )
 
 target_link_libraries( Ic3.Graphics.GCI PUBLIC
         Ic3.CoreLib
         Ic3.Math
-        )
+        Ic3.System )

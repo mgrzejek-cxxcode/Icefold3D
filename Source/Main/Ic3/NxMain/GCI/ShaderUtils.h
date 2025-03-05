@@ -21,7 +21,7 @@ namespace Ic3
 		 * @param pSourceLength 
 		 * @return 
 		 */
-		IC3_GRAPHICS_GCI_API_NO_DISCARD GCI::ShaderHandle CreateShaderFromSource(
+		IC3_NXMAIN_API_NO_DISCARD GCI::ShaderHandle CreateShaderFromSource(
 				GCI::GPUDevice & pGPUDevice,
 				GCI::EShaderType pShaderType,
 				const void * pSource,
@@ -49,7 +49,7 @@ namespace Ic3
 		 * @param pFilename 
 		 * @return 
 		 */
-		IC3_GRAPHICS_GCI_API_NO_DISCARD GCI::ShaderHandle CreateShaderFromFile(
+		IC3_NXMAIN_API_NO_DISCARD GCI::ShaderHandle CreateShaderFromFile(
 				GCI::GPUDevice & pGPUDevice,
 				GCI::EShaderType pShaderType,
 				const char * pFilename );

@@ -24,6 +24,10 @@
 #  include <GLES3/gl31.h>
 #endif
 
+//#if( IC3_SYSTEM_GL_PLATFORM_TYPE == IC3_SYSTEM_GL_PLATFORM_TYPE_DESKTOP )
+//#  define 
+//#endif
+
 #define IC3_SYSTEM_GL_ENABLE_ERROR_CHECKS 1
 
 /// @def IC3_SYSTEM_GL_ENABLE_ERROR_CHECKS
@@ -139,7 +143,7 @@ namespace Ic3::System
 		std::string vendorName;
 
 	public:
-		CPPX_ATTR_NO_DISCARD	std::string ToString() const;
+		IC3_SYSTEM_API_NODISCARD std::string ToString() const;
 	};
 
 	struct OpenGLErrorInfo
@@ -185,7 +189,7 @@ namespace Ic3::System
 
 	Ic3SetExceptionCategoryType( eExceptionCategorySystemOpenGL, GLSystemException );
 
-	class OpenGLCoreAPI
+	class IC3_SYSTEM_CLASS OpenGLCoreAPI
 	{
 	public:
 		static cppx::version QueryRuntimeVersion();

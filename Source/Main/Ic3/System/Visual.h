@@ -139,22 +139,22 @@ namespace Ic3::System
 	};
 
 	/// @brief Returns a ColorDesc structure representation of a specified EColorFormat.
-	IC3_SYSTEM_API const std::string & VisQueryColorFormatStr( EColorFormat pFormat );
+	IC3_SYSTEM_API_NODISCARD const std::string & VisQueryColorFormatStr( EColorFormat pFormat );
 
 	/// @brief Returns a ColorDesc structure representation of a specified EColorFormat.
-	IC3_SYSTEM_API const ColorDesc & VisGetDescForColorFormat( EColorFormat pFormat );
+	IC3_SYSTEM_API_NODISCARD const ColorDesc & VisGetDescForColorFormat( EColorFormat pFormat );
 
 	/// @brief Returns a DepthStencilDesc structure representation of a specified EDepthStencilFormat.
-	IC3_SYSTEM_API const DepthStencilDesc & VisGetDescForDepthStencilFormat( EDepthStencilFormat pFormat );
+	IC3_SYSTEM_API_NODISCARD const DepthStencilDesc & VisGetDescForDepthStencilFormat( EDepthStencilFormat pFormat );
 
 	/// @brief Returns an MSAADesc structure representation of a specified EMSAAMode.
-	IC3_SYSTEM_API const MSAADesc & VisGetDescForMSAAMode( EMSAAMode pMode );
+	IC3_SYSTEM_API_NODISCARD const MSAADesc & VisGetDescForMSAAMode( EMSAAMode pMode );
 
 	/// @brief Returns a ColorDesc structure representation of a specified EColorFormat.
-	IC3_SYSTEM_API const VisualConfig & VisGetDefaultVisualConfigForSysWindow();
+	IC3_SYSTEM_API_NODISCARD const VisualConfig & VisGetDefaultVisualConfigForSysWindow();
 
 	///
-	IC3_SYSTEM_API bool VisCheckColorFormatCompatibility( EColorFormat pFormat, uint8 pRed, uint8 pGreen, uint8 pBlue, uint8 pAlpha );
+	IC3_SYSTEM_API_NODISCARD bool VisCheckColorFormatCompatibility( EColorFormat pFormat, uint8 pRed, uint8 pGreen, uint8 pBlue, uint8 pAlpha );
 
 } // namespace Ic3::System
 

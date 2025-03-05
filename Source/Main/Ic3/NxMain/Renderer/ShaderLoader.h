@@ -118,7 +118,7 @@ namespace Ic3
 	/**
 	 *
 	 */
-	class ShaderLoader : public CoreEngineObject
+	class IC3_NXMAIN_CLASS ShaderLoader : public CoreEngineObject
 	{
 	public:
 		explicit ShaderLoader( const CoreEngineState & pCES );
@@ -228,7 +228,7 @@ namespace Ic3
 	/**
 	 *
 	 */
-	class ShaderLoaderMemoryBased : public ShaderLoader
+	class IC3_NXMAIN_CLASS ShaderLoaderMemoryBased : public ShaderLoader
 	{
 	public:
 		explicit ShaderLoaderMemoryBased( const CoreEngineState & pCES );
@@ -245,7 +245,7 @@ namespace Ic3
 	/**
 	 *
 	 */
-	class ShaderLoaderFileBased : public ShaderLoader
+	class IC3_NXMAIN_CLASS ShaderLoaderFileBased : public ShaderLoader
 	{
 	public:
 		ShaderLoaderFileBased(

@@ -73,7 +73,7 @@ namespace Ic3::System
 	};
 
 	/// @brief
-	class EventController : public SysObject
+	class IC3_SYSTEM_CLASS EventController : public SysObject
 	{
 		friend class EventDispatcher;
 		friend class EventSource;
@@ -207,7 +207,7 @@ namespace Ic3::System
 	};
 
 	/// @brief
-	class EventDispatcher : public SysObject
+	class IC3_SYSTEM_CLASS EventDispatcher : public SysObject
 	{
 		friend class EventController;
 

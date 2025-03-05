@@ -66,7 +66,7 @@ namespace Ic3::System
 			return ( uCode != eEventCodeUndefined ) && CXU::validateEventCode( uCode );
 		}
 
-		 CPPX_ATTR_NO_DISCARD constexpr EEventCategory category() const
+		CPPX_ATTR_NO_DISCARD constexpr EEventCategory GetCategory() const
 		{
 			return CXU::GetEventCodeCategory( uCode );
 		}

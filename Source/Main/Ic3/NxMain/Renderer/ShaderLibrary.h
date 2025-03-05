@@ -11,7 +11,7 @@
 namespace Ic3
 {
 
-	class ShaderLibrary : public CoreEngineObject
+	class IC3_NXMAIN_CLASS ShaderLibrary : public CoreEngineObject
 	{
 	public:
 		explicit ShaderLibrary( const CoreEngineState & pCES );

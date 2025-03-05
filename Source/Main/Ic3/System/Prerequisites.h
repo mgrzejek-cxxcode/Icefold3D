@@ -3,6 +3,7 @@
 #define __IC3_SYSTEM_PREREQUISITES_H__
 
 #include <Ic3/CoreLib/Exception.h>
+
 #include <cppx/bitmask.h>
 #include <cppx/utilities.h>
 #include <cppx/version.h>
@@ -14,26 +15,29 @@
 #if( IC3_BUILD_STATIC )
 #  define IC3_SYSTEM_API
 #  define IC3_SYSTEM_CLASS
-#  define IC3_SYSTEM_OBJ extern __cdecl
+#  define IC3_SYSTEM_OBJ extern
 #else
 #  if( IC3_SYSTEM_BUILD )
 #	define IC3_SYSTEM_API   PCL_ATTR_DLL_EXPORT
 #	define IC3_SYSTEM_CLASS PCL_ATTR_DLL_EXPORT
-#	define IC3_SYSTEM_OBJ   PCL_ATTR_DLL_EXPORT
+#	define IC3_SYSTEM_OBJ   PCL_ATTR_DLL_EXPORT extern
 #  else
 #	define IC3_SYSTEM_API   PCL_ATTR_DLL_IMPORT
 #	define IC3_SYSTEM_CLASS PCL_ATTR_DLL_IMPORT
-#	define IC3_SYSTEM_OBJ   PCL_ATTR_DLL_IMPORT
+#	define IC3_SYSTEM_OBJ   PCL_ATTR_DLL_IMPORT extern
 #  endif
 #endif
 
-#define IC3_SYSTEM_API_NODISCARD IC3_SYSTEM_API CPPX_ATTR_NO_DISCARD
+#define IC3_SYSTEM_API_NODISCARD  CPPX_ATTR_NO_DISCARD IC3_SYSTEM_API
 
 namespace Ic3::System
 {
 
 	Ic3EnableCustomExceptionSupport();
 	Ic3EnableEnumTypeInfoSupport();
+
+	///
+	#define Ic3TypeInfoEnumDeclareSystem( TPEnum ) Ic3TypeInfoEnumDeclareAPI( TPEnum, IC3_SYSTEM_API )
 
 	template <typename TPClass>
 	using TSysHandle = ::Ic3::TSharedHandle<TPClass>;
@@ -50,18 +54,18 @@ namespace Ic3::System
 
 	enum : exception_category_value_t
 	{
-		eExceptionCategorySystemCore    = CXU::DeclareExceptionCategory( EExceptionBaseType::System, 0x01 ),
-		eExceptionCategorySystemDisplay = CXU::DeclareExceptionCategory( EExceptionBaseType::System, 0x02 ),
-		eExceptionCategorySystemEvent   = CXU::DeclareExceptionCategory( EExceptionBaseType::System, 0x03 ),
-		eExceptionCategorySystemFile    = CXU::DeclareExceptionCategory( EExceptionBaseType::System, 0x04 ),
-		eExceptionCategorySystemMetal   = CXU::DeclareExceptionCategory( EExceptionBaseType::System, 0x05 ),
-		eExceptionCategorySystemOpenGL  = CXU::DeclareExceptionCategory( EExceptionBaseType::System, 0x07 ),
-		eExceptionCategorySystemWindow  = CXU::DeclareExceptionCategory( EExceptionBaseType::System, 0x09 ),
+		eExceptionCategorySystemCore    = Ic3::CXU::DeclareExceptionCategory( EExceptionBaseType::System, 0x01 ),
+		eExceptionCategorySystemDisplay = Ic3::CXU::DeclareExceptionCategory( EExceptionBaseType::System, 0x02 ),
+		eExceptionCategorySystemEvent   = Ic3::CXU::DeclareExceptionCategory( EExceptionBaseType::System, 0x03 ),
+		eExceptionCategorySystemFile    = Ic3::CXU::DeclareExceptionCategory( EExceptionBaseType::System, 0x04 ),
+		eExceptionCategorySystemMetal   = Ic3::CXU::DeclareExceptionCategory( EExceptionBaseType::System, 0x05 ),
+		eExceptionCategorySystemOpenGL  = Ic3::CXU::DeclareExceptionCategory( EExceptionBaseType::System, 0x07 ),
+		eExceptionCategorySystemWindow  = Ic3::CXU::DeclareExceptionCategory( EExceptionBaseType::System, 0x09 ),
 	};
 
 	enum : exception_code_value_t
 	{
-		eEXCSystemInterfaceNotSupported = CXU::DeclareExceptionCode( eExceptionCategorySystemCore, 0x04 ),
+		eEXCSystemInterfaceNotSupported = Ic3::CXU::DeclareExceptionCode( eExceptionCategorySystemCore, 0x04 ),
 	};
 
 	/// @brief Helper proxy-like base class for platform-specific types.

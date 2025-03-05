@@ -19,6 +19,7 @@ namespace Ic3::System
 		return strStream.str();
 	}
 
+
 	cppx::version OpenGLCoreAPI::QueryRuntimeVersion()
 	{
 		cppx::version resultVersion;

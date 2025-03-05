@@ -40,7 +40,7 @@ namespace Ic3::System
 
 	}
 
-	class Win32EventController : public Win32NativeObject<EventController, void>
+	class IC3_SYSTEM_CLASS Win32EventController : public Win32NativeObject<EventController, void>
 	{
 	public:
 		Win32EventController( SysContextHandle pSysContext );

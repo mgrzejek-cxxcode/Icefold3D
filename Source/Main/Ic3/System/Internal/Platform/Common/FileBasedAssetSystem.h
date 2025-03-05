@@ -53,7 +53,7 @@ namespace Ic3::System
 
 	}
 
-	class FileAssetLoader : public NativeObject<AssetLoader, Platform::FileAssetLoaderNativeData>
+	class IC3_SYSTEM_CLASS FileAssetLoader : public NativeObject<AssetLoader, Platform::FileAssetLoaderNativeData>
 	{
 	public:
 		FileManagerHandle const mFileManager;
@@ -76,7 +76,7 @@ namespace Ic3::System
 		virtual bool _NativeCheckDirectoryExists( const std::string & pDirectoryName ) const override final;
 	};
 	
-	class FileAssetDirectory : public NativeObject<AssetDirectory, Platform::FileAssetDirectoryNativeData>
+	class IC3_SYSTEM_CLASS FileAssetDirectory : public NativeObject<AssetDirectory, Platform::FileAssetDirectoryNativeData>
 	{
 		friend class FileAssetLoader;
 
@@ -101,7 +101,7 @@ namespace Ic3::System
 		virtual bool _NativeCheckAssetExists( const std::string & pAssetName ) const override final;
 	};
 
-	class FileAsset : public NativeObject<Asset, Platform::FileAssetNativeData>
+	class IC3_SYSTEM_CLASS FileAsset : public NativeObject<Asset, Platform::FileAssetNativeData>
 	{
 		friend class FileAssetLoader;
 		

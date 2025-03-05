@@ -22,7 +22,7 @@ namespace Ic3::System
 
 	}
 
-	class JavaNativeInterface final
+	class IC3_SYSTEM_CLASS JavaNativeInterface final
 	{
 	public:
 		JavaVMInstance * const mJVMInstance;

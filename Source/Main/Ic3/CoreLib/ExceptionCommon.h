@@ -74,8 +74,7 @@ namespace Ic3
         // Reserved value, used to count all enumerators. Must always be defined as the last one.
         Reserved
     };
-
-	Ic3TypeInfoEnumDeclare( EExceptionBaseType );
+	Ic3TypeInfoEnumDeclareCoreLib( EExceptionBaseType );
 
 	namespace CXU
 	{

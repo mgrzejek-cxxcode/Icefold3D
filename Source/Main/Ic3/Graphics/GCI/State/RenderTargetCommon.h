@@ -50,12 +50,17 @@ namespace Ic3::Graphics::GCI
 
 		RenderTargetTextureHandle resolveTexture;
 
-		explicit operator bool() const noexcept
+		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept
 		{
 			return IsActive();
 		}
 
-		bool IsActive() const noexcept
+		CPPX_ATTR_NO_DISCARD bool Equals( const RenderTargetAttachmentBinding & pOther ) const noexcept
+		{
+			return ( baseTexture == pOther.baseTexture ) && ( resolveTexture == pOther.resolveTexture );
+		}
+
+		CPPX_ATTR_NO_DISCARD bool IsActive() const noexcept
 		{
 			return baseTexture ? true : false;
 		}
@@ -74,12 +79,17 @@ namespace Ic3::Graphics::GCI
 	{
 		ETextureFormat format = ETextureFormat::Undefined;
 
-		explicit operator bool() const noexcept
+		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept
 		{
 			return IsValid();
 		}
 
-		bool IsValid() const noexcept
+		CPPX_ATTR_NO_DISCARD bool Equals( const RenderTargetAttachmentLayout & pOther ) const noexcept
+		{
+			return format == pOther.format;
+		}
+
+		CPPX_ATTR_NO_DISCARD bool IsValid() const noexcept
 		{
 			return format != ETextureFormat::Undefined;
 		}
@@ -111,32 +121,23 @@ namespace Ic3::Graphics::GCI
 		RenderTargetBinding rtArrayBinding;
 	};
 
-	namespace defaults
-	{
-
-		IC3_GRAPHICS_GCI_OBJ const RenderTargetLayout cvRenderTargetLayoutDefaultBGRA8;
-		IC3_GRAPHICS_GCI_OBJ const RenderTargetLayout cvRenderTargetLayoutDefaultBGRA8D24S8;
-		IC3_GRAPHICS_GCI_OBJ const RenderTargetLayout cvRenderTargetLayoutDefaultRGBA8;
-		IC3_GRAPHICS_GCI_OBJ const RenderTargetLayout cvRenderTargetLayoutDefaultRGBA8D24S8;
-
-	}
-
 	namespace GCU
 	{
 
-		CPPX_ATTR_NO_DISCARD EGPUResourceUsageFlags RTOGetAttachmentRequiredUsageMask(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD EGPUResourceUsageFlags RTOGetAttachmentRequiredUsageMask(
 				native_uint pAttachmentIndex,
 				cppx::bitmask<ERenderTargetBufferFlags> pOptionalRTAMask = 0 );
 
-		CPPX_ATTR_NO_DISCARD cppx::bitmask<ERenderTargetBufferFlags> RTOGetBufferMaskForRenderTargetTextureType(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD cppx::bitmask<ERenderTargetBufferFlags> RTOGetBufferMaskForRenderTargetTextureType(
 				ERenderTargetTextureType pRenderTargetTextureType );
 
-		CPPX_ATTR_NO_DISCARD RenderTargetLayout RTOGetRenderTargetLayoutForBinding( const RenderTargetBinding & pRenderTargetBinding );
+		IC3_GRAPHICS_GCI_API_NO_DISCARD RenderTargetLayout RTOGetRenderTargetLayoutForBinding(
+			const RenderTargetBinding & pRenderTargetBinding );
 
-		CPPX_ATTR_NO_DISCARD RenderTargetLayout TranslateSystemVisualConfigToRenderTargetLayout(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD RenderTargetLayout TranslateSystemVisualConfigToRenderTargetLayout(
 			const System::VisualConfig & pSysVisualConfig );
 
-		CPPX_ATTR_NO_DISCARD bool RTOValidateRenderTargetBinding( const RenderTargetBinding & pRenderTargetBinding );
+		IC3_GRAPHICS_GCI_API_NO_DISCARD bool RTOValidateRenderTargetBinding( const RenderTargetBinding & pRenderTargetBinding );
 
 	}
 

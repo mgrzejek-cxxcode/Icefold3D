@@ -9,7 +9,7 @@
 namespace Ic3::System
 {
 
-	class FileManager : public SysObject
+	class IC3_SYSTEM_CLASS FileManager : public SysObject
 	{
 	public:
 		explicit FileManager( SysContextHandle pSysContext );
@@ -41,7 +41,7 @@ namespace Ic3::System
 		virtual bool _NativeCheckFileExists( const std::string & pFilePath ) = 0;
 	};
 
-	class File : public SysObject
+	class IC3_SYSTEM_CLASS File : public SysObject
 	{
 	public:
 		FileManagerHandle const mFileManager;

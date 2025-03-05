@@ -42,7 +42,7 @@ namespace Ic3::System
     using DXGIDisplayVideoMode = NativeObject<DisplayVideoMode, Platform::DXGIDisplayVideoModeNativeData>;
 
 	/// @brief
-	class DXGIDisplayDriver : public NativeObject<DisplayDriver, Platform::DXGIDisplayDriverNativeData>
+	class IC3_SYSTEM_CLASS DXGIDisplayDriver : public NativeObject<DisplayDriver, Platform::DXGIDisplayDriverNativeData>
 	{
 	public:
 		explicit DXGIDisplayDriver( DisplayManagerHandle pDisplayManager );

@@ -26,6 +26,9 @@
 #  endif
 #endif
 
+#define IC3_CORELIB_API_NODISCARD \
+	IC3_CORELIB_API CPPX_ATTR_NO_DISCARD
+
 #if( IC3_DEBUG )
 #  define IC3_DEBUG_CODE( pCode ) pCode
 #else

@@ -11,14 +11,14 @@
 #  define IC3_GX_GL4_CLASS
 #  define IC3_GX_GL4_OBJ    extern
 #else
-#  if( IC3_DRIVER_GRAPHICS_HW3D_GL4_BUILD )
+#  if( IC3_GRAPHICS_HWAPI_GL4_BUILD )
 #    define IC3_GX_GL4_API    PCL_ATTR_DLL_EXPORT
 #    define IC3_GX_GL4_CLASS  PCL_ATTR_DLL_EXPORT
-#    define IC3_GX_GL4_OBJ    PCL_ATTR_DLL_EXPORT
+#    define IC3_GX_GL4_OBJ    PCL_ATTR_DLL_EXPORT extern
 #  else
 #    define IC3_GX_GL4_API    PCL_ATTR_DLL_IMPORT
 #    define IC3_GX_GL4_CLASS  PCL_ATTR_DLL_IMPORT
-#    define IC3_GX_GL4_OBJ    PCL_ATTR_DLL_IMPORT
+#    define IC3_GX_GL4_OBJ    PCL_ATTR_DLL_IMPORT extern
 #  endif
 #endif
 

@@ -13,7 +13,7 @@ namespace Ic3::Graphics::GCI
 	/**
 	 *
 	 */
-	class PipelineStateDescriptorFactory
+	class IC3_GRAPHICS_GCI_CLASS PipelineStateDescriptorFactory
 	{
 	public:
 		PipelineStateDescriptorFactory() = default;
@@ -52,7 +52,7 @@ namespace Ic3::Graphics::GCI
 	/**
 	 *
 	 */
-	class PipelineStateDescriptorFactoryNull : public PipelineStateDescriptorFactory
+	class IC3_GRAPHICS_GCI_CLASS PipelineStateDescriptorFactoryNull : public PipelineStateDescriptorFactory
 	{
 	public:
 		PipelineStateDescriptorFactoryNull() = default;

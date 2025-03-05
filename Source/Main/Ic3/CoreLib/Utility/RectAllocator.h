@@ -14,16 +14,18 @@ namespace Ic3
 			uint32 hLineAdvanceThreshold = cppx::meta::limits<uint32>::max_value;
 			uint32 hSpacing = 0;
 		};
+
 		struct VerticalLayout
 		{
 			uint32 baseLineHeight;
 			uint32 vSpacing = 0;
 		};
+
 		HorizontalLayout horizontalLayout;
 		VerticalLayout verticalLayout;
 	};
 
-	class RectAllocator
+	class IC3_CORELIB_CLASS RectAllocator
 	{
 	public:
 		RectAllocator( const Math::Vec2u32 & pBoundingRectDimensions, const RectAllocatorConfig & pAllocatorConfig );
@@ -37,6 +39,7 @@ namespace Ic3
 		void Reset();
 
 		CPPX_ATTR_NO_DISCARD bool CheckFreeSpace( const Math::Vec2u32 & pRect ) const;
+
         CPPX_ATTR_NO_DISCARD bool IsEmpty() const;
 
         CPPX_ATTR_NO_DISCARD const RectAllocatorConfig & getConfig() const

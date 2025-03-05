@@ -14,7 +14,7 @@ namespace Ic3::Graphics::GCI
 	{
 	};
 
-	class Texture : public GPUResource
+	class IC3_GRAPHICS_GCI_CLASS Texture : public GPUResource
 	{
 		friend class CommandList;
 		friend class TextureReference;
@@ -45,7 +45,7 @@ namespace Ic3::Graphics::GCI
 	namespace RCU
 	{
 
-		CPPX_ATTR_NO_DISCARD TextureDimensions GetValidTextureDimensions( ETextureClass pTexClass, const TextureDimensions & pDimensions );
+		IC3_GRAPHICS_GCI_API_NO_DISCARD TextureDimensions GetValidTextureDimensions( ETextureClass pTexClass, const TextureDimensions & pDimensions );
 
 	}
 

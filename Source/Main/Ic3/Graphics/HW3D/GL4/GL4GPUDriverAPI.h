@@ -10,7 +10,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	class GL4GPUDriverInterface : public GPUDriverInterface
+	class IC3_GX_GL4_CLASS GL4GPUDriverInterface : public GPUDriverInterface
 	{
 	public:
 		virtual GPUDriverHandle CreateDriver( const GPUDriverCreateInfo & pCreateInfo ) override final;

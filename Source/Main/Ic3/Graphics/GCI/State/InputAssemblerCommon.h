@@ -374,7 +374,7 @@ namespace Ic3::Graphics::GCI
 
 		Shader * vertexShaderWithBinary = nullptr;
 
-		CPPX_ATTR_NO_DISCARD virtual bool Validate() const noexcept override final;
+		IC3_GRAPHICS_GCI_API_NO_DISCARD virtual bool Validate() const noexcept override final;
 
 		CPPX_ATTR_NO_DISCARD pipeline_config_hash_t GetConfigHash() const noexcept
 		{

@@ -12,7 +12,7 @@ namespace Ic3::System
 
 	OpenGLSystemDriver::~OpenGLSystemDriver() noexcept = default;
 
-	OpenGLVersionSupportInfo OpenGLSystemDriver::initializePlatform()
+	OpenGLVersionSupportInfo OpenGLSystemDriver::InitializePlatform()
 	{
 		_NativeInitializePlatform();
 
@@ -239,15 +239,6 @@ namespace Ic3::System
 	OpenGLDisplaySurface::~OpenGLDisplaySurface() noexcept
 	{
 		ResetEventSourceNativeData();
-	}
-
-	void OpenGLDisplaySurface::ClearColorBuffer()
-	{
-		glClearColor( 0.24f, 0.72f, 0.4f, 1.0f );
-		Ic3OpenGLHandleLastError();
-
-		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-		Ic3OpenGLHandleLastError();
 	}
 
 	void OpenGLDisplaySurface::SwapBuffers()

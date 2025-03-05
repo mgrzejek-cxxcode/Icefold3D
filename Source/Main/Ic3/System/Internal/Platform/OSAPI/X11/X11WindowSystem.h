@@ -61,7 +61,7 @@ namespace Ic3::System
 
 	}
 
-	class X11WindowManager : public X11NativeObject<WindowManager, Platform::X11NativeDataCommon>
+	class IC3_SYSTEM_CLASS X11WindowManager : public X11NativeObject<WindowManager, Platform::X11NativeDataCommon>
 	{
 	public:
 		explicit X11WindowManager( X11DisplayManagerHandle pDisplayManager );
@@ -75,7 +75,7 @@ namespace Ic3::System
 		virtual void _NativeDestroyWindow( Window & pWindow ) override final;
 	};
 
-	class X11Window : public X11NativeObject<Window, Platform::X11WindowNativeData>
+	class IC3_SYSTEM_CLASS X11Window : public X11NativeObject<Window, Platform::X11WindowNativeData>
 	{
 		friend class X11WindowManager;
 

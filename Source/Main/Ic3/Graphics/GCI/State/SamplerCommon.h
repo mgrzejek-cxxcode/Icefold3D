@@ -85,9 +85,6 @@ namespace Ic3::Graphics::GCI
 		SamplerConfig samplerConfig;
 	};
 
-
-	IC3_GRAPHICS_GCI_OBJ const SamplerConfig cvSamplerConfigDefault;
-
 } // namespace Ic3::Graphics::GCI
 
 #endif // __IC3_GRAPHICS_GCI_SAMPLER_COMMON_H__

@@ -22,7 +22,7 @@ namespace Ic3::System
     /// This class is used for easy injection of useful stuff (debug logs, instance counting, lifetime control)
     /// into all classes created by the System Library. It also provides (and, thus, enforces!) SysContext
     /// access, so it doesn't have to be declared multiple times (for every separate class in the library).
-    class SysObject : public IDynamicObject
+    class IC3_SYSTEM_CLASS SysObject : public IDynamicObject
     {
     public:
         // Public handle to the SysContext. This is always non-null and specified at construction time.

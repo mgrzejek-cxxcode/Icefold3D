@@ -76,8 +76,8 @@ namespace Ic3::Graphics::GCI
 
 		void SetConfiguration( const TRenderTargetArrayConfiguration<TPAttachmentConfig> & pConfiguration ) noexcept
 		{
-			_SetColorAttachments( 0, GCM::kRTOMaxColorAttachmentsNum, pConfiguration.colorAttachmentConfigArray.data() );
-			_SetDepthStencilAttachment( pConfiguration.depthStencilAttachmentConfig );
+			_SetColorAttachments( 0, GCM::kRTOMaxColorAttachmentsNum, pConfiguration.colorAttachments.data() );
+			_SetDepthStencilAttachment( pConfiguration.depthStencilAttachment );
 		}
 
 		void SetColorAttachment(
@@ -136,7 +136,7 @@ namespace Ic3::Graphics::GCI
 			{
 				const auto colorAttachmentBit = CXU::RTOMakeAttachmentFlag( pColorAttachmentIndex );
 
-				auto & colorAttachmentConfig = _renderTargetArrayConfiguration.colorAttachmentConfigArray[pColorAttachmentIndex];
+				auto & colorAttachmentConfig = _renderTargetArrayConfiguration.colorAttachments[pColorAttachmentIndex];
 
 				if( !_renderTargetArrayConfiguration.activeAttachmentsMask.is_set( colorAttachmentBit ) )
 				{
@@ -171,11 +171,11 @@ namespace Ic3::Graphics::GCI
 
 					const auto colorAttachmentBit = CXU::RTOMakeAttachmentFlag( colorAttachmentIndex );
 
-					auto & colorAttachmentConfig = _renderTargetArrayConfiguration.colorAttachmentConfigArray[colorAttachmentIndex];
+					auto & colorAttachmentConfig = _renderTargetArrayConfiguration.colorAttachments[colorAttachmentIndex];
 
 					if( const auto & inputColorAttachmentConfig = pAttachmentConfigs[nColorAttachment] )
 					{
-						if( colorAttachmentConfig != inputColorAttachmentConfig )
+						if( !colorAttachmentConfig.Equals( inputColorAttachmentConfig ) )
 						{
 							if( !_renderTargetArrayConfiguration.activeAttachmentsMask.is_set( colorAttachmentBit ) )
 							{
@@ -219,7 +219,7 @@ namespace Ic3::Graphics::GCI
 				this->SetConfigChangedFlag();
 			}
 
-			return &( _renderTargetArrayConfiguration.depthStencilAttachmentConfig );
+			return &( _renderTargetArrayConfiguration.depthStencilAttachment );
 		}
 
 		void _SetDepthStencilAttachment( const TPAttachmentConfig & pAttachmentConfig )
@@ -228,7 +228,7 @@ namespace Ic3::Graphics::GCI
 
 			if( pAttachmentConfig )
 			{
-				if( _renderTargetArrayConfiguration.depthStencilAttachmentConfig != pAttachmentConfig )
+				if( !_renderTargetArrayConfiguration.depthStencilAttachment.Equals( pAttachmentConfig ) )
 				{
 					if( !_renderTargetArrayConfiguration.activeAttachmentsMask.is_set( eRTAttachmentFlagDepthStencilBit ) )
 					{
@@ -236,7 +236,7 @@ namespace Ic3::Graphics::GCI
 						_renderTargetArrayConfiguration.activeAttachmentsNum += 1;
 					}
 
-					_renderTargetArrayConfiguration.depthStencilAttachmentConfig = pAttachmentConfig;
+					_renderTargetArrayConfiguration.depthStencilAttachment = pAttachmentConfig;
 
 					configurationChanged = true;
 				}
@@ -248,7 +248,7 @@ namespace Ic3::Graphics::GCI
 					_renderTargetArrayConfiguration.activeAttachmentsMask.unset( eRTAttachmentFlagDepthStencilBit );
 					_renderTargetArrayConfiguration.activeAttachmentsNum -= 1;
 
-					_renderTargetArrayConfiguration.depthStencilAttachmentConfig.Reset();
+					_renderTargetArrayConfiguration.depthStencilAttachment.Reset();
 
 					configurationChanged = true;
 				}
@@ -276,7 +276,7 @@ namespace Ic3::Graphics::GCI
 
 					const auto colorAttachmentBit = CXU::RTOMakeAttachmentFlag( colorAttachmentIndex );
 
-					auto & colorAttachmentConfig = _renderTargetArrayConfiguration.colorAttachmentConfigArray[colorAttachmentIndex];
+					auto & colorAttachmentConfig = _renderTargetArrayConfiguration.colorAttachments[colorAttachmentIndex];
 
 					if( _renderTargetArrayConfiguration.activeAttachmentsMask.is_set( colorAttachmentBit ) )
 					{
@@ -303,7 +303,7 @@ namespace Ic3::Graphics::GCI
 				_renderTargetArrayConfiguration.activeAttachmentsMask.unset( eRTAttachmentFlagDepthStencilBit );
 				_renderTargetArrayConfiguration.activeAttachmentsNum -= 1;
 
-				_renderTargetArrayConfiguration.depthStencilAttachmentConfig.Reset();
+				_renderTargetArrayConfiguration.depthStencilAttachment.Reset();
 
 				this->SetConfigChangedFlag();
 			}

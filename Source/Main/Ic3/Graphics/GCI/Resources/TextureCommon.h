@@ -148,9 +148,19 @@ namespace Ic3::Graphics::GCI
 		using MipLevelInitDataDescArray = std::array<TextureMipSubLevelInitDataDesc, GCM::kTextureMaxMipLevelsNum>;
 		MipLevelInitDataDescArray mipLevelInitDataArray;
 		uint32 subTextureIndex;
+
+		CPPX_ATTR_NO_DISCARD TextureMipSubLevelInitDataDesc & GetMipLevelInitData( native_uint pMipLevel ) noexcept
+		{
+			return mipLevelInitDataArray[pMipLevel];
+		}
+
+		CPPX_ATTR_NO_DISCARD const TextureMipSubLevelInitDataDesc & GetMipLevelInitData( native_uint pMipLevel ) const noexcept
+		{
+			return mipLevelInitDataArray[pMipLevel];
+		}
 	};
 
-	struct TextureInitDataDesc
+	class IC3_GRAPHICS_GCI_CLASS TextureInitDataDesc
 	{
 	public:
 		TextureInitDataDesc() = default;
@@ -163,31 +173,42 @@ namespace Ic3::Graphics::GCI
 
 		using SubTextureInitDataDescArray = std::vector<TextureSubTextureInitDataDesc>;
 
+
+		explicit operator bool() const
+		{
+			return _subTextureInitDataBasePtr != nullptr;
+		}
+
+		void Initialize( const TextureDimensions & pDimensions, cppx::bitmask<ETextureInitFlags> pInitFlags = 0 );
+
+		void SetInitFlags( cppx::bitmask<ETextureInitFlags> pInitFlags );
+
+		void Swap( TextureInitDataDesc & pOther );
+
+		CPPX_ATTR_NO_DISCARD bool IsArray() const noexcept;
+
+		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept;
+
+		CPPX_ATTR_NO_DISCARD TextureInitDataDesc Copy() const noexcept;
+
+		CPPX_ATTR_NO_DISCARD cppx::bitmask<ETextureInitFlags> GetInitFlags() const noexcept;
+
+		CPPX_ATTR_NO_DISCARD const TextureSubTextureInitDataDesc * GetSubTextureInitDataArrayPtr() const noexcept;
+
+		CPPX_ATTR_NO_DISCARD TextureSubTextureInitDataDesc & GetSubTextureInitDesc( native_uint pSubTextureIndex ) noexcept;
+
+		CPPX_ATTR_NO_DISCARD const TextureSubTextureInitDataDesc & GetSubTextureInitDesc( native_uint pSubTextureIndex ) const noexcept;
+
+	private:
 		// Pointer to one or more TextureSubTextureInitDataDesc objects with init data for sub-textures.
 		// Points to either _subTextureInitDataSingleTexture member or the beginning of the data in the
 		// _subTextureInitDataTextureArray vector. This is an optimisation done for single textures
 		// (arraySize=1) in order to prevent dynamic allocation of memory. In few cases where the engine
 		// is used for allocating huge number of small non-array textures, this turned out to be an issue.
-		TextureSubTextureInitDataDesc * subTextureInitDataBasePtr = nullptr;
+		TextureSubTextureInitDataDesc * _subTextureInitDataBasePtr = nullptr;
 
-		cppx::bitmask<ETextureInitFlags> textureInitFlags = eTextureInitFlagGenerateMipmapsBit;
+		cppx::bitmask<ETextureInitFlags> _textureInitFlags;
 
-		explicit operator bool() const
-		{
-			return subTextureInitDataBasePtr != nullptr;
-		}
-
-		void Initialize( const TextureDimensions & pDimensions );
-
-		void Swap( TextureInitDataDesc & pOther );
-
-		CPPX_ATTR_NO_DISCARD bool IsArray() const;
-
-		CPPX_ATTR_NO_DISCARD bool IsEmpty() const;
-
-		CPPX_ATTR_NO_DISCARD TextureInitDataDesc copy() const;
-
-	private:
 		// Init data for single-layer (non-array) texture.
 		TextureSubTextureInitDataDesc _subTextureInitData;
 		

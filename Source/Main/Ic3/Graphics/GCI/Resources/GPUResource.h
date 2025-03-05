@@ -17,7 +17,7 @@ namespace Ic3::Graphics::GCI
 		cppx::bitmask<resource_flags_value_t> resourceFlags;
 	};
 
-	class GPUResource : public GPUDeviceChildObject
+	class IC3_GRAPHICS_GCI_CLASS GPUResource : public GPUDeviceChildObject
 	{
 	public:
 		EGPUResourceBaseType const mResourceBaseType;
@@ -64,7 +64,7 @@ namespace Ic3::Graphics::GCI
 		return _mappedMemory;
 	}
 
-	class GPUResourceView : public GPUDeviceChildObject
+	class IC3_GRAPHICS_GCI_CLASS GPUResourceView : public GPUDeviceChildObject
 	{
 	public:
 		EGPUResourceBaseType const mAliasedResourceType;

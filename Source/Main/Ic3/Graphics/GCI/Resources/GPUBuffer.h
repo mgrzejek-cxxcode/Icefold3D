@@ -15,7 +15,7 @@ namespace Ic3::Graphics::GCI
 		gpu_memory_size_t byteSize;
 	};
 
-	class GPUBuffer : public GPUResource
+	class IC3_GRAPHICS_GCI_CLASS GPUBuffer : public GPUResource
 	{
 		friend class CommandList;
 		friend class GPUBufferReference;

@@ -88,14 +88,14 @@
 #  define IC3_GX_GL_CLASS
 #  define IC3_GX_GL_OBJ    extern
 #else
-#  if( IC3_DRIVER_GRAPHICS_HW3D_GLC_BUILD )
+#  if( IC3_GRAPHICS_HWAPI_GL_BUILD )
 #    define IC3_GX_GL_API    PCL_ATTR_DLL_EXPORT
 #    define IC3_GX_GL_CLASS  PCL_ATTR_DLL_EXPORT
-#    define IC3_GX_GL_OBJ    PCL_ATTR_DLL_EXPORT
+#    define IC3_GX_GL_OBJ    PCL_ATTR_DLL_EXPORT extern
 #  else
 #    define IC3_GX_GL_API    PCL_ATTR_DLL_IMPORT
 #    define IC3_GX_GL_CLASS  PCL_ATTR_DLL_IMPORT
-#    define IC3_GX_GL_OBJ    PCL_ATTR_DLL_IMPORT
+#    define IC3_GX_GL_OBJ    PCL_ATTR_DLL_IMPORT extern
 #  endif
 #endif
 

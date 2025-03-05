@@ -13,7 +13,7 @@ namespace Ic3::System
 	Ic3DeclareClassHandle( WindowManager );
 
 	/// @brief
-	class WindowManager : public SysObject
+	class IC3_SYSTEM_CLASS WindowManager : public SysObject
 	{
 		friend class Window;
 
@@ -44,7 +44,7 @@ namespace Ic3::System
 	};
 
 	/// @brief
-	class Window : public Frame
+	class IC3_SYSTEM_CLASS Window : public Frame
 	{
 		friend class WindowManager;
 

@@ -18,7 +18,7 @@ namespace Ic3::System
 		cppx::bitmask<EMetalSurfaceCreateFlags> flags = 0;
 	};
 
-	class MetalDevice : public SysObject
+	class IC3_SYSTEM_CLASS MetalDevice : public SysObject
 	{
 	public:
 		std::unique_ptr<MetalDeviceData> const mDeviceData;
@@ -65,7 +65,7 @@ namespace Ic3::System
 		MetalDeviceHandle _defaultMetalDevice;
 	};
 
-	class MetalDisplaySurface : public Frame
+	class IC3_SYSTEM_CLASS MetalDisplaySurface : public Frame
 	{
 		friend class MetalSystemDriver;
 

@@ -23,7 +23,7 @@ namespace Ic3::System
 
 	}
 
-	class Win32FileManager : public Win32NativeObject<FileManager, void>
+	class IC3_SYSTEM_CLASS Win32FileManager : public Win32NativeObject<FileManager, void>
 	{
 	public:
 		explicit Win32FileManager( SysContextHandle pSysContext );
@@ -39,7 +39,7 @@ namespace Ic3::System
 		virtual bool _NativeCheckFileExists( const std::string & pFilePath ) override final;
 	};
 
-	class Win32File : public Win32NativeObject<File, Platform::Win32FileNativeData>
+	class IC3_SYSTEM_CLASS Win32File : public Win32NativeObject<File, Platform::Win32FileNativeData>
 	{
 		friend class Win32FileManager;
 

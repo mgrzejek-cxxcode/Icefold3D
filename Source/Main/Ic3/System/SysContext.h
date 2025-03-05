@@ -37,7 +37,7 @@ namespace Ic3::System
 	};
 
 	/// @brief
-	class SysContext : public IDynamicObject
+	class IC3_SYSTEM_CLASS SysContext : public IDynamicObject
 	{
 	public:
 		SysContext();

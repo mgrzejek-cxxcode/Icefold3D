@@ -16,7 +16,7 @@ namespace Ic3::Graphics::GCI
 	 * @note This descriptor type is created automatically by compatible APIs when an RP descriptor is requested.
 	 * @see RenderPassDescriptor
 	 */
-	class RenderPassDescriptorGeneric : public RenderPassDescriptor
+	class IC3_GRAPHICS_GCI_CLASS RenderPassDescriptorGeneric : public RenderPassDescriptor
 	{
 	public:
 		RenderPassConfiguration const mPassConfiguration;

@@ -135,6 +135,8 @@ namespace Ic3::Graphics::GCI
 
 	bool GLTextureObject::Release()
 	{
+		Ic3OpenGLHandleLastError();
+
 		glDeleteTextures( 1, &mGLHandle );
 		Ic3OpenGLHandleLastError();
 

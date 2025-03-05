@@ -23,7 +23,7 @@ namespace Ic3::System
 
 	}
 
-	class Win32SysContext : public NativeObject<SysContext, Platform::Win32SysContextNativeData>
+	class IC3_SYSTEM_CLASS Win32SysContext : public NativeObject<SysContext, Platform::Win32SysContextNativeData>
 	{
 	public:
 		Win32SysContext();

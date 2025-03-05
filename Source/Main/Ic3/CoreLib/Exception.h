@@ -65,13 +65,13 @@ namespace Ic3
 		/// Origin of the exception (file, line, function name) where the exception was thrown.
 		cppx::file_location_info fileLocationInfo;
 
-		CPPX_ATTR_NO_DISCARD std::string ToString() const;
+		IC3_CORELIB_API_NODISCARD std::string ToString() const;
 	};
 
 	/**
 	 * Base class for all exception types used in the Ic3 code. Inherits from std::exception.
 	 */
-	class Exception : public std::exception
+	class IC3_CORELIB_CLASS Exception : public std::exception
 	{
 	public:
 	    /// Exception info, containing details about this exception.

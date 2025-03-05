@@ -33,7 +33,7 @@
 #  endif
 #endif
 
-#define IC3_NXMAIN_API_NO_DISCARD IC3_NXMAIN_API CPPX_ATTR_NO_DISCARD
+#define IC3_NXMAIN_API_NO_DISCARD CPPX_ATTR_NO_DISCARD IC3_NXMAIN_API
 
 #include "Prerequisites/GCICommon.h"
 #include "Prerequisites/GeometryCommon.h"
@@ -45,7 +45,7 @@ namespace Ic3
 	template <typename TData>
 	using GeometryVertexStreamGenericArray = std::array<TData, GCM::kIAMaxDataStreamVertexBuffersNum>;
 
-	class CoreEngineObject : public IDynamicObject
+	class IC3_NXMAIN_CLASS CoreEngineObject : public IDynamicObject
 	{
 	public:
 		const CoreEngineState & mCES;

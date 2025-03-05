@@ -118,26 +118,23 @@ set( IC3_ENGINE_SRC_FILES
 if( "${IC3_COMPONENTS_BUILD_MODE}" STREQUAL "STATIC" )
     add_library( Ic3.NxMain STATIC ${IC3_ENGINE_SRC_FILES} )
     target_compile_definitions( Ic3.NxMain PRIVATE
-            "IC3_BUILD_STATIC=1")
+			"IC3_NXMAIN_BUILD=1"
+            "IC3_BUILD_STATIC=1" )
 else()
     add_library( Ic3.NxMain SHARED ${IC3_ENGINE_SRC_FILES} )
+    target_compile_definitions( Ic3.NxMain PRIVATE
+			"IC3_NXMAIN_BUILD=1" )
 endif()
 
 set_target_properties( Ic3.NxMain PROPERTIES
         OUTPUT_NAME "Ic3.NxMain" )
 
-target_compile_definitions( Ic3.NxMain PRIVATE
-        "IC3_NXMAIN_BUILD=1"
-		)
-
 target_include_directories( Ic3.NxMain PUBLIC
-		"${IC3_INCLUDE_DIR}"
-		)
+		"${IC3_INCLUDE_DIR}" )
 
 target_link_libraries( Ic3.NxMain PUBLIC
 		${ASSIMP_TARGET_NAME}
 		ext-freetype
 		ext-png
 		Ic3.CoreLib
-		Ic3.Graphics.GCI
-		)
+		Ic3.Graphics.GCI )

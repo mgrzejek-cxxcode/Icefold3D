@@ -187,7 +187,7 @@ namespace Ic3::System
 		for( const auto & videoMode : colorFormatData.videoModeInstanceList )
 		{
 			const auto & videoModeDesc = videoMode->GetModeDesc();
-			if( videoModeDesc.settings.matches( pVideoSettings ) )
+			if( videoModeDesc.settings.Matches( pVideoSettings ) )
 			{
 				return true;
 			}

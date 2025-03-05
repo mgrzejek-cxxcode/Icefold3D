@@ -17,7 +17,7 @@ namespace Ic3::System
 		eAssetOpenFlagNoExtensionBit = 0x0001
 	};
 
-	class AssetLoader : public SysObject
+	class IC3_SYSTEM_CLASS AssetLoader : public SysObject
 	{
 	public:
 		explicit AssetLoader( SysContextHandle pSysContext );
@@ -29,7 +29,7 @@ namespace Ic3::System
 
 		bool CheckDirectoryExists( const std::string & pDirectoryName ) const;
 
-		static cppx::dynamic_memory_buffer LoadAsset(
+		CPPX_ATTR_NO_DISCARD static cppx::dynamic_memory_buffer LoadAsset(
 				System::AssetLoader & pAssetLoader,
 				const std::string & pAssetPath,
 				bool pAppendNullTerm = false );
@@ -42,7 +42,7 @@ namespace Ic3::System
 		virtual bool _NativeCheckDirectoryExists( const std::string & pDirectoryName ) const = 0;
 	};
 
-	class AssetDirectory : public SysObject
+	class IC3_SYSTEM_CLASS AssetDirectory : public SysObject
 	{
 	public:
 		AssetLoaderHandle const mAssetLoader;
@@ -80,7 +80,7 @@ namespace Ic3::System
 		AssetNameList _assetNameList;
 	};
 
-	class Asset : public SysObject
+	class IC3_SYSTEM_CLASS Asset : public SysObject
 	{
 	public:
 		AssetDirectoryHandle const mAssetDirectory;

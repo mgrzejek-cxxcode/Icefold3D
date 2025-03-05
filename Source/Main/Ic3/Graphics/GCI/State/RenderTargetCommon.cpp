@@ -136,7 +136,7 @@ namespace Ic3::Graphics::GCI
 				case System::EDepthStencilFormat::D24S8:  depthStencilAttachmentFormat = ETextureFormat::D24UNS8U; break;
 				case System::EDepthStencilFormat::D24X8:  depthStencilAttachmentFormat = ETextureFormat::D24UNX8;  break;
 				case System::EDepthStencilFormat::D32F:   depthStencilAttachmentFormat = ETextureFormat::D32F;     break;
-				case System::EDepthStencilFormat::D32FS8: depthStencilAttachmentFormat = ETextureFormat::D32F;     break;
+				case System::EDepthStencilFormat::D32FS8: depthStencilAttachmentFormat = ETextureFormat::D32FS8;   break;
 				default:
 					break;
 			}
@@ -372,14 +372,6 @@ namespace Ic3::Graphics::GCI
 			return rtLayout;
 		}
 
-		const RenderTargetLayout cvRenderTargetLayoutDefaultBGRA8 = GetRenderTargetLayoutDefaultBGRA8();
-
-		const RenderTargetLayout cvRenderTargetLayoutDefaultBGRA8D24S8 = GetRenderTargetLayoutDefaultBGRA8D24S8();
-
-		const RenderTargetLayout cvRenderTargetLayoutDefaultRGBA8 = GetRenderTargetLayoutDefaultRGBA8();
-
-		const RenderTargetLayout cvRenderTargetLayoutDefaultRGBA8D24S8 = GetRenderTargetLayoutDefaultRGBA8D24S8();
-	
 	}
 */
 

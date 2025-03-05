@@ -20,7 +20,7 @@ namespace Ic3::System
 
 	}
 
-	class PosixFileManager : public FileManager
+	class IC3_SYSTEM_CLASS PosixFileManager : public FileManager
 	{
 	public:
 		explicit PosixFileManager( SysContextHandle pSysContext );
@@ -36,7 +36,7 @@ namespace Ic3::System
 		virtual bool _NativeCheckFileExists( const std::string & pFilePath ) override final;
 	};
 
-	class PosixFile : public NativeObject<File, Platform::PosixFileNativeData>
+	class IC3_SYSTEM_CLASS PosixFile : public NativeObject<File, Platform::PosixFileNativeData>
 	{
 		friend class PosixFileManager;
 

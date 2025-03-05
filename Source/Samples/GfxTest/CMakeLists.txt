@@ -1,8 +1,17 @@
 
+if( "${CM_EBS_SYSCONF_TARGET_SYSTEM}" STREQUAL "macOS" )
 set( IC3_SAMPLES_SRC_GfxTest
         "MeshDefs.h"
+        "MainGfx.hxx"
         "MainGfx.mm"
         )
+else()
+set( IC3_SAMPLES_SRC_GfxTest
+        "MeshDefs.h"
+        "MainGfx.hxx"
+        "MainGfx.cpp"
+        )
+endif()
 
 add_executable( Sample.GfxTest
         ${IC3_SAMPLES_SRC_GfxTest}

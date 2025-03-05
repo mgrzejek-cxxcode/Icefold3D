@@ -302,7 +302,7 @@ namespace Ic3::Graphics::GCI
 	namespace GCU
 	{
 
-		IC3_GRAPHICS_GCI_API RootSignature CreateRootSignature( const RootSignatureDesc & pSignatureDesc );
+		IC3_GRAPHICS_GCI_API_NO_DISCARD RootSignature CreateRootSignature( const RootSignatureDesc & pSignatureDesc );
 
 	}
 

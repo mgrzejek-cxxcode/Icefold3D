@@ -50,7 +50,7 @@ namespace Ic3::System
 
 	}
 
-	class Win32WindowManager : public WindowManager
+	class IC3_SYSTEM_CLASS Win32WindowManager : public WindowManager
 	{
 	public:
 		explicit Win32WindowManager( Win32DisplayManagerHandle pDisplayManager );
@@ -64,7 +64,7 @@ namespace Ic3::System
         virtual void _NativeDestroyWindow( Window & pWindow ) override final;
 	};
 
-	class Win32Window : public Win32NativeObject<Window, Platform::Win32WindowNativeData>
+	class IC3_SYSTEM_CLASS Win32Window : public Win32NativeObject<Window, Platform::Win32WindowNativeData>
 	{
 		friend class Win32WindowManager;
 

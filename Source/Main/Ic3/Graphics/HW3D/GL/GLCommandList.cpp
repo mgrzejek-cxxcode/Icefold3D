@@ -46,7 +46,7 @@ namespace Ic3::Graphics::GCI
 		const auto & drawTopologyProperties = _glcGraphicsPipelineStateController->GetCurrentDrawTopologyProperties();
 		const auto relativeIndexDataOffset = pIndicesOffset * drawTopologyProperties.indexBufferElementByteSize;
 		auto * baseIndexDataOffset = reinterpret_cast<void *>( drawTopologyProperties.indexBufferBaseOffset + relativeIndexDataOffset );
-
+		
 		glDrawElementsBaseVertex(
 				drawTopologyProperties.primitiveTopology,
 				static_cast<GLsizei>( pIndicesNum ),

@@ -14,7 +14,7 @@ namespace Ic3::Graphics::GCI
 
 	struct GLTextureInitDataDesc
 	{
-		TextureSubTextureInitDataDesc * subTextureInitDataPtr = nullptr;
+		const TextureSubTextureInitDataDesc * subTextureInitDataPtr = nullptr;
 		cppx::bitmask<ETextureInitFlags> textureInitFlags = 0;
 		GLenum openglPixelDataLayout = 0;
 		GLenum openglPixelDataType = 0;

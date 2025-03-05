@@ -51,7 +51,7 @@ namespace Ic3::System
 
 	}
 
-	class X11EventController : public X11NativeObject<EventController, Platform::X11NativeDataCommon>
+	class IC3_SYSTEM_CLASS X11EventController : public X11NativeObject<EventController, Platform::X11NativeDataCommon>
 	{
 	public:
 		X11EventController( SysContextHandle pSysContext );

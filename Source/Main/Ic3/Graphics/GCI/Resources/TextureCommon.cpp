@@ -12,14 +12,14 @@ namespace Ic3::Graphics::GCI
 			if( pSrcObject.IsArray() )
 			{
 				_subTextureInitDataArray = std::move( pSrcObject._subTextureInitDataArray );
-				subTextureInitDataBasePtr = _subTextureInitDataArray.data();
+				_subTextureInitDataBasePtr = _subTextureInitDataArray.data();
 			}
 			else
 			{
 				_subTextureInitData = pSrcObject._subTextureInitData;
-				subTextureInitDataBasePtr = &_subTextureInitData;
+				_subTextureInitDataBasePtr = &_subTextureInitData;
 			}
-			pSrcObject.subTextureInitDataBasePtr = nullptr;
+			pSrcObject._subTextureInitDataBasePtr = nullptr;
 		}
 	}
 
@@ -36,12 +36,12 @@ namespace Ic3::Graphics::GCI
 			if( pInitData.IsArray() )
 			{
 				_subTextureInitDataArray = pInitData._subTextureInitDataArray;
-				subTextureInitDataBasePtr = _subTextureInitDataArray.data();
+				_subTextureInitDataBasePtr = _subTextureInitDataArray.data();
 			}
 			else
 			{
 				_subTextureInitData = pInitData._subTextureInitData;
-				subTextureInitDataBasePtr = &_subTextureInitData;
+				_subTextureInitDataBasePtr = &_subTextureInitData;
 			}
 		}
 	}
@@ -52,24 +52,70 @@ namespace Ic3::Graphics::GCI
 		return *this;
 	}
 
-	void TextureInitDataDesc::Initialize( const TextureDimensions & pDimensions )
+	bool TextureInitDataDesc::IsArray() const noexcept
+	{
+		return !_subTextureInitDataArray.empty();
+	}
+
+	bool TextureInitDataDesc::IsEmpty() const noexcept
+	{
+		return _subTextureInitDataBasePtr == nullptr;
+	}
+
+	TextureInitDataDesc TextureInitDataDesc::Copy() const noexcept
+	{
+		TextureInitDataDesc copyResult;
+		if( _subTextureInitDataArray.empty() )
+		{
+			copyResult._subTextureInitData = _subTextureInitData;
+			copyResult._subTextureInitDataBasePtr = &( copyResult._subTextureInitData );
+		}
+		else
+		{
+			copyResult._subTextureInitDataArray = _subTextureInitDataArray;
+			copyResult._subTextureInitDataBasePtr = copyResult._subTextureInitDataArray.data();
+		}
+		return copyResult;
+	}
+
+	cppx::bitmask<ETextureInitFlags> TextureInitDataDesc::GetInitFlags() const noexcept
+	{
+		return _textureInitFlags;
+	}
+
+	const TextureSubTextureInitDataDesc * TextureInitDataDesc::GetSubTextureInitDataArrayPtr() const noexcept
+	{
+		return !_subTextureInitDataArray.empty() ? _subTextureInitDataArray.data() : nullptr;
+	}
+
+	TextureSubTextureInitDataDesc & TextureInitDataDesc::GetSubTextureInitDesc( native_uint pSubTextureIndex ) noexcept
+	{
+		return _subTextureInitDataArray[pSubTextureIndex];
+	}
+
+	const TextureSubTextureInitDataDesc & TextureInitDataDesc::GetSubTextureInitDesc( native_uint pSubTextureIndex ) const noexcept
+	{
+		return _subTextureInitDataArray[pSubTextureIndex];
+	}
+
+	void TextureInitDataDesc::Initialize( const TextureDimensions & pDimensions, cppx::bitmask<ETextureInitFlags> pInitFlags )
 	{
 		Ic3DebugAssert( pDimensions.arraySize > 0 );
 		Ic3DebugAssert( pDimensions.mipLevelsNum > 0 );
 
 		if( pDimensions.arraySize == 1 )
 		{
-			subTextureInitDataBasePtr = &_subTextureInitData;
+			_subTextureInitDataBasePtr = &_subTextureInitData;
 		}
 		else
 		{
 			_subTextureInitDataArray.resize( pDimensions.arraySize );
-			subTextureInitDataBasePtr = _subTextureInitDataArray.data();
+			_subTextureInitDataBasePtr = _subTextureInitDataArray.data();
 		}
 
 		for( uint32 subTextureIndex = 0; subTextureIndex < pDimensions.arraySize; ++subTextureIndex )
 		{
-			auto & subTextureInitData = subTextureInitDataBasePtr[subTextureIndex];
+			auto & subTextureInitData = _subTextureInitDataBasePtr[subTextureIndex];
 			subTextureInitData.subTextureIndex = subTextureIndex;
 
 			uint32 mipLevelWidth = pDimensions.width;
@@ -92,9 +138,16 @@ namespace Ic3::Graphics::GCI
 			if( pDimensions.mipLevelsNum > 1 )
 			{
 				const auto & sMipLevel = subTextureInitData.mipLevelInitDataArray[pDimensions.mipLevelsNum - 2];
-				Ic3DebugAssert((sMipLevel.mipWidth != 1 ) || (sMipLevel.mipHeight != 1 ) || (sMipLevel.mipDepth != 1 ) );
+				Ic3DebugAssert( ( sMipLevel.mipWidth != 1 ) || ( sMipLevel.mipHeight != 1 ) || ( sMipLevel.mipDepth != 1 ) );
 			}
 		}
+
+		_textureInitFlags = pInitFlags;
+	}
+
+	void TextureInitDataDesc::SetInitFlags( cppx::bitmask<ETextureInitFlags> pInitFlags )
+	{
+		_textureInitFlags = pInitFlags;
 	}
 
 	void TextureInitDataDesc::Swap( TextureInitDataDesc & pOther )
@@ -106,34 +159,8 @@ namespace Ic3::Graphics::GCI
 		else
 		{
 			std::swap( _subTextureInitDataArray, pOther._subTextureInitDataArray );
-			std::swap( subTextureInitDataBasePtr, pOther.subTextureInitDataBasePtr );
+			std::swap( _subTextureInitDataBasePtr, pOther._subTextureInitDataBasePtr );
 		}
-	}
-
-	bool TextureInitDataDesc::IsArray() const
-	{
-		return !_subTextureInitDataArray.empty();
-	}
-
-	bool TextureInitDataDesc::IsEmpty() const
-	{
-		return subTextureInitDataBasePtr == nullptr;
-	}
-
-	TextureInitDataDesc TextureInitDataDesc::copy() const
-	{
-		TextureInitDataDesc copyResult;
-		if( _subTextureInitDataArray.empty() )
-		{
-			copyResult._subTextureInitData = _subTextureInitData;
-			copyResult.subTextureInitDataBasePtr = &( copyResult._subTextureInitData );
-		}
-		else
-		{
-			copyResult._subTextureInitDataArray = _subTextureInitDataArray;
-			copyResult.subTextureInitDataBasePtr = copyResult._subTextureInitDataArray.data();
-		}
-		return copyResult;
 	}
 
 

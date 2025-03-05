@@ -60,7 +60,7 @@ namespace Ic3
 	}
 
 
-	class GCISharedStateLibrary : public CoreEngineObject
+	class IC3_NXMAIN_CLASS GCISharedStateLibrary : public CoreEngineObject
 	{
 	public:
 		ShaderLibraryHandle const mShaderLibrary;

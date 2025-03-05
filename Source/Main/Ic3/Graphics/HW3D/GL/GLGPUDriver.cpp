@@ -10,7 +10,7 @@ namespace Ic3::Graphics::GCI
 	GLGPUDriver::GLGPUDriver( System::OpenGLSystemDriverHandle pSysGLDriver )
 	: GPUDriver( pSysGLDriver->mSysContext )
 	, mSysGLDriver( std::move( pSysGLDriver ) )
-	{ }
+	{}
 
 	GLGPUDriver::~GLGPUDriver() = default;
 
@@ -21,7 +21,7 @@ namespace Ic3::Graphics::GCI
 		    auto sysDisplayManager = pSysContext->CreateDisplayManager();
 		    auto sysGLDriver = pSysContext->CreateOpenGLSystemDriver( sysDisplayManager );
 
-			sysGLDriver->initializePlatform();
+			sysGLDriver->InitializePlatform();
 
 			return sysGLDriver;
 		}

@@ -180,26 +180,25 @@ namespace Ic3::System
 
 		cppx::bitmask<EDisplayVideoSettingsFlags> flags = 0u;
 
-		CPPX_ATTR_NO_DISCARD bool equals( const DisplayVideoSettings & pOther ) const
+		CPPX_ATTR_NO_DISCARD bool Equals( const DisplayVideoSettings & pOther ) const
 		{
 			return ( resolution == pOther.resolution ) && ( refreshRate == pOther.refreshRate ) && ( flags == pOther.flags );
 		}
 
-		CPPX_ATTR_NO_DISCARD bool matches( const DisplayVideoSettings & pOther ) const
+		CPPX_ATTR_NO_DISCARD bool Matches( const DisplayVideoSettings & pOther ) const
 		{
-			return ( resolution == pOther.resolution ) && ( refreshRate == pOther.refreshRate ) &&
-					flags.is_set( pOther.flags );
+			return ( resolution == pOther.resolution ) && ( refreshRate == pOther.refreshRate ) && flags.is_set( pOther.flags );
 		}
 	};
 
 	inline bool operator==( const DisplayVideoSettings & pLhs, const DisplayVideoSettings & pRhs )
 	{
-		return pLhs.equals( pRhs );
+		return pLhs.Equals( pRhs );
 	}
 
 	inline bool operator!=( const DisplayVideoSettings & pLhs, const DisplayVideoSettings & pRhs )
 	{
-		return !pLhs.equals( pRhs );
+		return !pLhs.Equals( pRhs );
 	}
 
 	inline constexpr DisplayVideoSettings cvDisplayVideoSettingsEmpty { { 0U, 0U }, 0U, 0U };
@@ -240,7 +239,7 @@ namespace Ic3::System
 		cppx::bitmask<EDisplayAdapterFlags> flags = 0u;
 		std::string name;
 
-		std::string ToString() const;
+		IC3_SYSTEM_API_NODISCARD std::string ToString() const;
 	};
 
 	struct DisplayOutputDesc
@@ -252,7 +251,7 @@ namespace Ic3::System
 		std::string name;
 		ScreenRect screenRect;
 
-		std::string ToString() const;
+		IC3_SYSTEM_API_NODISCARD std::string ToString() const;
 	};
 
 	struct DisplayVideoModeDesc
@@ -264,7 +263,7 @@ namespace Ic3::System
 		EColorFormat colorFormat = EColorFormat::Unknown;
 		DisplayVideoSettings settings;
 
-		std::string ToString() const;
+		IC3_SYSTEM_API_NODISCARD std::string ToString() const;
 	};
 
 

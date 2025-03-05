@@ -10,7 +10,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	class RenderTargetArrayConfigStateDescriptor : public PipelineStateDescriptor
+	class IC3_GRAPHICS_GCI_CLASS RenderTargetArrayConfigStateDescriptor : public PipelineStateDescriptor
 	{
 	public:
 		RenderTargetArrayConfigStateDescriptor(
@@ -27,7 +27,7 @@ namespace Ic3::Graphics::GCI
 	 * @see RenderPassDescriptorNative
 	 * @see RenderPassDescriptorDynamic
 	 */
-	class RenderPassDescriptor : public RenderTargetArrayConfigStateDescriptor
+	class IC3_GRAPHICS_GCI_CLASS RenderPassDescriptor : public RenderTargetArrayConfigStateDescriptor
 	{
 	public:
 		RenderPassDescriptor(
@@ -57,7 +57,7 @@ namespace Ic3::Graphics::GCI
 
 	/**
 	 */
-	class RenderTargetDescriptor : public RenderTargetArrayConfigStateDescriptor
+	class IC3_GRAPHICS_GCI_CLASS RenderTargetDescriptor : public RenderTargetArrayConfigStateDescriptor
 	{
 	public:
 		RenderTargetDescriptor(
@@ -79,7 +79,7 @@ namespace Ic3::Graphics::GCI
 		 * @note This descriptor type is created automatically by compatible APIs when an RP descriptor is requested.
 		 * @see RenderPassDescriptor
 		 */
-		class RenderPassDescriptorNative : public RenderPassDescriptor
+		class IC3_GRAPHICS_GCI_CLASS RenderPassDescriptorNative : public RenderPassDescriptor
 		{
 			Ic3DeclareNonCopyable( RenderPassDescriptorNative );
 
@@ -93,7 +93,7 @@ namespace Ic3::Graphics::GCI
 
 		/**
 		 */
-		class RenderTargetDescriptorGeneric : public RenderTargetDescriptor
+		class IC3_GRAPHICS_GCI_CLASS RenderTargetDescriptorGeneric : public RenderTargetDescriptor
 		{
 		public:
 			RenderTargetBinding const mRenderTargetBinding;
@@ -116,7 +116,7 @@ namespace Ic3::Graphics::GCI
 
 		/**
 		 */
-		class RenderTargetDescriptorNative : public RenderTargetDescriptor
+		class IC3_GRAPHICS_GCI_CLASS RenderTargetDescriptorNative : public RenderTargetDescriptor
 		{
 			Ic3DeclareNonCopyable( RenderTargetDescriptorNative );
 

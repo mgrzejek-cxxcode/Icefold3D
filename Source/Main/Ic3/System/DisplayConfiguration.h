@@ -14,7 +14,7 @@ namespace Ic3::System
 	Ic3SysDeclareHandle( DisplayVideoMode );
 
 	/// @brief
-	class DisplayAdapter : public SysObject
+	class IC3_SYSTEM_CLASS DisplayAdapter : public SysObject
 	{
 		friend class DisplayDriver;
 
@@ -59,7 +59,7 @@ namespace Ic3::System
 	};
 
 	/// @brief
-	class DisplayOutput : public SysObject
+	class IC3_SYSTEM_CLASS DisplayOutput : public SysObject
 	{
 		friend class DisplayDriver;
 		friend class DisplayAdapter;
@@ -107,7 +107,7 @@ namespace Ic3::System
 	};
 
 	/// @brief
-	class DisplayVideoMode : public SysObject
+	class IC3_SYSTEM_CLASS DisplayVideoMode : public SysObject
 	{
 		friend class DisplayDriver;
 		friend class DisplayOutput;

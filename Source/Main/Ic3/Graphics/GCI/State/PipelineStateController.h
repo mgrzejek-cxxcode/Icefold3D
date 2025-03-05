@@ -12,7 +12,7 @@ namespace Ic3::Graphics::GCI
 	/*
 	 *
 	 */
-	class PipelineStateController : public GfxObject
+	class IC3_GRAPHICS_GCI_CLASS PipelineStateController : public GfxObject
 	{
 	public:
 		PipelineStateController() = default;

@@ -22,7 +22,7 @@ namespace Ic3::System
 
 	}
 
-	class X11SysContext : public NativeObject<SysContext, Platform::X11SysContextNativeData>
+	class IC3_SYSTEM_CLASS X11SysContext : public NativeObject<SysContext, Platform::X11SysContextNativeData>
 	{
 	public:
 		X11SysContext();

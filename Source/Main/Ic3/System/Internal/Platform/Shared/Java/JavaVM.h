@@ -40,7 +40,7 @@ namespace Ic3::System
 
 		struct JavaNativeInterfaceDeleter
 		{
-			void operator()( JavaNativeInterface * pJNI ) const;
+			IC3_SYSTEM_API void operator()( JavaNativeInterface * pJNI ) const;
 		};
 
 	}
@@ -49,7 +49,7 @@ namespace Ic3::System
 	/// @details
 	/// The core interface of the Java support layer. It is created for an existing JavaVM pointer,
 	/// provides abstraction on top of it and adds a thread-safe JNI management API.
-	class JavaVMInstance final
+	class IC3_SYSTEM_CLASS JavaVMInstance final
 	{
 		friend struct Platform::JavaNativeInterfaceDeleter;
 

@@ -49,13 +49,13 @@ namespace Ic3::System
 	}
 
 	cppx::dynamic_memory_buffer AssetLoader::LoadAsset(
-			System::AssetLoader & pAssetLoader,
+			AssetLoader & pAssetLoader,
 			const std::string & pAssetPath,
 			bool pAppendNullTerm )
 	{
 		auto psAsset = pAssetLoader.OpenSubAsset(
 				pAssetPath,
-				System::eAssetOpenFlagNoExtensionBit );
+				eAssetOpenFlagNoExtensionBit );
 
 		cppx::dynamic_memory_buffer resultBuffer{};
 

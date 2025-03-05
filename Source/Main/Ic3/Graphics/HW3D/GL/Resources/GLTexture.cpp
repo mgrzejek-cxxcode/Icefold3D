@@ -27,8 +27,8 @@ namespace Ic3::Graphics::GCI
 		openglCreateInfo.dimensions = RCU::GetValidTextureDimensions( pCreateInfo.texClass, pCreateInfo.dimensions );
 		openglCreateInfo.msaaLevel = pCreateInfo.msaaLevel;
 		openglCreateInfo.internalFormat = ATL::TranslateGLTextureInternalFormat( pCreateInfo.internalFormat );
-		openglCreateInfo.openglInitDataDesc.subTextureInitDataPtr = pCreateInfo.mInitDataDesc.subTextureInitDataBasePtr;
-		openglCreateInfo.openglInitDataDesc.textureInitFlags = pCreateInfo.mInitDataDesc.textureInitFlags;
+		openglCreateInfo.openglInitDataDesc.subTextureInitDataPtr = pCreateInfo.mInitDataDesc.GetSubTextureInitDataArrayPtr();
+		openglCreateInfo.openglInitDataDesc.textureInitFlags = pCreateInfo.mInitDataDesc.GetInitFlags();
 		auto textureInitDataBaseType = CXU::GetTextureFormatBaseDataType( pCreateInfo.internalFormat );
 		openglCreateInfo.openglInitDataDesc.openglPixelDataLayout = ATL::TranslateGLTexturePixelDataLayout( pCreateInfo.internalFormat );
 		openglCreateInfo.openglInitDataDesc.openglPixelDataType = ATL::TranslateGLBaseDataType( textureInitDataBaseType );

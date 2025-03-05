@@ -222,35 +222,32 @@ endif()
 if( "${IC3_COMPONENTS_BUILD_MODE}" STREQUAL "STATIC" )
     add_library( Ic3.System STATIC ${IC3_SYSTEM_SRC_FILES} )
     target_compile_definitions( Ic3.System PRIVATE
+            "IC3_SYSTEM_BUILD=1"
+            "GLEW_STATIC=1"
+            "GLEW_NO_GLU=1"
             "IC3_BUILD_STATIC=1" )
 else()
     add_library( Ic3.System SHARED ${IC3_SYSTEM_SRC_FILES} )
+    target_compile_definitions( Ic3.System PRIVATE
+            "IC3_SYSTEM_BUILD=1"
+            "GLEW_STATIC=1"
+            "GLEW_NO_GLU=1" )
 endif()
 
 set_target_properties( Ic3.System PROPERTIES
-        OUTPUT_NAME "Ic3.System"
-        )
+        OUTPUT_NAME "Ic3.System" )
 
 target_include_directories( Ic3.System PUBLIC
-        ${IC3_INCLUDE_DIR}
-        )
-
-target_compile_definitions( Ic3.System PUBLIC
-        IC3_SYSTEM_BUILD=1
-        GLEW_STATIC=1
-        GLEW_NO_GLU=1
-        )
+        ${IC3_INCLUDE_DIR} )
 
 target_link_libraries( Ic3.System PUBLIC
-        Ic3.CoreLib
-        )
+        Ic3.CoreLib )
 
 if( "${CM_EBS_SYSCONF_TARGET_SYSTEM}" STREQUAL "WinDesktop" )
     target_link_libraries( Ic3.System PUBLIC
             ext-glew
             opengl32.lib
-            DXGI.lib
-            )
+            DXGI.lib )
 endif()
 
 if( "${CM_EBS_SYSCONF_TARGET_SYSTEM}" STREQUAL "Android" )
@@ -258,8 +255,7 @@ if( "${CM_EBS_SYSCONF_TARGET_SYSTEM}" STREQUAL "Android" )
             Android
             log
             EGL
-            GLESv2
-            )
+            GLESv2 )
 endif()
 
 if( "${CM_EBS_SYSCONF_TARGET_SYSTEM}" STREQUAL "Linux" )
@@ -268,8 +264,7 @@ if( "${CM_EBS_SYSCONF_TARGET_SYSTEM}" STREQUAL "Linux" )
             X11
             Xrandr
             GL
-            GLX
-            )
+            GLX )
 endif()
 
 find_library(FrmLib_AppKit AppKit)
@@ -296,5 +291,5 @@ if( ${CM_EBS_SYSCONF_TARGET_FLAG_OSINFO_VULKAN} )
             #shaderc
             #shaderc_util
             #vulkan-1
-            )
+    )
 endif()

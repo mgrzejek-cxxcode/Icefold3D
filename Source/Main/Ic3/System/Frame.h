@@ -76,7 +76,7 @@ namespace Ic3::System
 
 	inline constexpr FrameGeometry CX_FRAME_GEOMETRY_DEFAULT{cxFramePosAuto, cxFrameSizeAuto, EFrameStyle::Default };
 
-	class Frame : public EventSource
+	class IC3_SYSTEM_CLASS Frame : public EventSource
 	{
 	public:
 		explicit Frame( SysContextHandle pSysContext );
@@ -94,11 +94,11 @@ namespace Ic3::System
 				const FrameGeometry & pFrameGeometry,
 				cppx::bitmask<EFrameGeometryUpdateFlags> pUpdateFlags ) = 0;
 
-		IC3_SYSTEM_API_NODISCARD virtual FrameSize GetClientAreaSize() const = 0;
+		CPPX_ATTR_NO_DISCARD virtual FrameSize GetClientAreaSize() const = 0;
 
-		IC3_SYSTEM_API_NODISCARD virtual FrameSize GetFrameSize() const = 0;
+		CPPX_ATTR_NO_DISCARD virtual FrameSize GetFrameSize() const = 0;
 
-		IC3_SYSTEM_API_NODISCARD virtual bool IsFullscreen() const = 0;
+		CPPX_ATTR_NO_DISCARD virtual bool IsFullscreen() const = 0;
 	};
 
 } // namespace Ic3::System

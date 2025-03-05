@@ -58,7 +58,7 @@ namespace Ic3::System
 	using X11DisplayVideoMode = X11NativeObject<DisplayVideoMode, Platform::X11DisplayVideoModeNativeData>;
 
 	/// @brief Implementation of DisplayManager for the X11 subsystem.
-	class X11DisplayManager : public X11NativeObject<DisplayManager, Platform::X11DisplayManagerNativeData>
+	class IC3_SYSTEM_CLASS X11DisplayManager : public X11NativeObject<DisplayManager, Platform::X11DisplayManagerNativeData>
 	{
 	public:
 		explicit X11DisplayManager( SysContextHandle pSysContext );
@@ -78,7 +78,7 @@ namespace Ic3::System
 	};
 
 	/// @brief Implementation of DisplayDriver for the X11 subsystem.
-	class X11DisplayDriver : public X11NativeObject<DisplayDriver, Platform::X11DisplayDriverNativeData>
+	class IC3_SYSTEM_CLASS X11DisplayDriver : public X11NativeObject<DisplayDriver, Platform::X11DisplayDriverNativeData>
 	{
 	public:
 		explicit X11DisplayDriver( X11DisplayManagerHandle pDisplayManager );

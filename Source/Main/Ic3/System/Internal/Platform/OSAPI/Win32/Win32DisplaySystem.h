@@ -47,7 +47,7 @@ namespace Ic3::System
 	using Win32DisplayVideoMode = Win32NativeObject<DisplayVideoMode, Platform::Win32DisplayVideoModeNativeData>;
 
 	/// @brief
-	class Win32DisplayManager : public DisplayManager
+	class IC3_SYSTEM_CLASS Win32DisplayManager : public DisplayManager
 	{
 	public:
 		explicit Win32DisplayManager( SysContextHandle pSysContext );
@@ -64,7 +64,7 @@ namespace Ic3::System
 	};
 
 	/// @brief
-	class Win32DisplayDriver : public Win32NativeObject<DisplayDriver, Platform::Win32DisplayDriverNativeData>
+	class IC3_SYSTEM_CLASS Win32DisplayDriver : public Win32NativeObject<DisplayDriver, Platform::Win32DisplayDriverNativeData>
 	{
 	public:
 		explicit Win32DisplayDriver( DisplayManagerHandle pDisplayManager );

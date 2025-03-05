@@ -10,7 +10,7 @@ namespace Ic3::System
 
 	Ic3SysDeclareHandle( EventController );
 
-	class EventSource : public SysObject
+	class IC3_SYSTEM_CLASS EventSource : public SysObject
 	{
 		friend class EventController;
 

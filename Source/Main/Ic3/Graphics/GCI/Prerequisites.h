@@ -8,10 +8,13 @@
 #include <Ic3/CoreLib/PixelCommon.h>
 #include <Ic3/CoreLib/MathImports.h>
 #include <Ic3/CoreLib/Utility/HFSIdentifier.h>
-#include <cppx/hash.h>
-#include <cppx/utilities.h>
 
 #include <Ic3/Graphics/Common/GraphicsCoreMetrics.h>
+
+#include <Ic3/System/Prerequisites.h>
+
+#include <cppx/hash.h>
+#include <cppx/utilities.h>
 
 #include <memory>
 
@@ -23,16 +26,16 @@
 #  if( IC3_GRAPHICS_GCI_BUILD )
 #    define IC3_GRAPHICS_GCI_API    PCL_ATTR_DLL_EXPORT
 #    define IC3_GRAPHICS_GCI_CLASS  PCL_ATTR_DLL_EXPORT
-#    define IC3_GRAPHICS_GCI_OBJ    PCL_ATTR_DLL_EXPORT
+#    define IC3_GRAPHICS_GCI_OBJ    PCL_ATTR_DLL_EXPORT extern
 #  else
 #    define IC3_GRAPHICS_GCI_API    PCL_ATTR_DLL_IMPORT
 #    define IC3_GRAPHICS_GCI_CLASS  PCL_ATTR_DLL_IMPORT
-#    define IC3_GRAPHICS_GCI_OBJ    PCL_ATTR_DLL_IMPORT
+#    define IC3_GRAPHICS_GCI_OBJ    PCL_ATTR_DLL_IMPORT extern
 #  endif
 #endif
 
 #define IC3_GRAPHICS_GCI_API_NO_DISCARD \
-	IC3_GRAPHICS_GCI_API CPPX_ATTR_NO_DISCARD
+	CPPX_ATTR_NO_DISCARD IC3_GRAPHICS_GCI_API
 
 #define _Ic3DriverAPI( access ) access
 

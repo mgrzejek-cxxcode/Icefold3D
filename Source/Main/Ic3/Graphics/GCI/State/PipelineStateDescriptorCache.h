@@ -15,7 +15,7 @@ namespace Ic3::Graphics::GCI
 	 * a single "CreateDescriptor", using overloading to automatically select the right method for a given state.
 	 * The selection is based on the type of the input configuration used to create a particular state object.
 	 */
-	class GraphicsPipelineStateDescriptorFactoryCacheAdapter
+	class IC3_GRAPHICS_GCI_CLASS GraphicsPipelineStateDescriptorFactoryCacheAdapter
 	{
 	public:
 		GraphicsPipelineStateDescriptorFactoryCacheAdapter( PipelineStateDescriptorFactory & pDescriptorFactory );

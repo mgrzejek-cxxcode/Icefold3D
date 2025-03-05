@@ -13,7 +13,7 @@ namespace Ic3::Graphics::GCI
 	/**
 	 *
 	 */
-	class GraphicsShaderLinkageDescriptor : public PipelineStateDescriptor
+	class IC3_GRAPHICS_GCI_CLASS GraphicsShaderLinkageDescriptor : public PipelineStateDescriptor
 	{
 		Ic3DeclareNonCopyable( GraphicsShaderLinkageDescriptor );
 
@@ -38,7 +38,7 @@ namespace Ic3::Graphics::GCI
 	/**
 	 *
 	 */
-	class GraphicsShaderLinkageDescriptorGenericSeparable : public GraphicsShaderLinkageDescriptor
+	class IC3_GRAPHICS_GCI_CLASS GraphicsShaderLinkageDescriptorGenericSeparable : public GraphicsShaderLinkageDescriptor
 	{
 	public:
 		GraphicsShaderBinding const mShaderBinding;
@@ -69,7 +69,7 @@ namespace Ic3::Graphics::GCI
 	namespace PIM
 	{
 
-		class GraphicsShaderLinkageDescriptorNative : public GraphicsShaderLinkageDescriptor
+		class IC3_GRAPHICS_GCI_CLASS GraphicsShaderLinkageDescriptorNative : public GraphicsShaderLinkageDescriptor
 		{
 		public:
 			GraphicsShaderLinkageDescriptorNative(

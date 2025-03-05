@@ -14,21 +14,22 @@ set( IC3_GRAPHICS_HWAPI_GL4_SRC_FILES
 message("${IC3_GRAPHICS_HWAPI_GL4_SRC_FILES}")
 
 if( "${IC3_COMPONENTS_BUILD_MODE}" STREQUAL "STATIC" )
-        add_library( Ic3.Graphics.HW3D.GL4 STATIC ${IC3_GRAPHICS_HWAPI_GL4_SRC_FILES} )
-        target_compile_definitions( Ic3.Graphics.HW3D.GL4 PRIVATE
-            "IC3_BUILD_STATIC=1")
+    add_library( Ic3.Graphics.HW3D.GL4 STATIC ${IC3_GRAPHICS_HWAPI_GL4_SRC_FILES} )
+    target_compile_definitions( Ic3.Graphics.HW3D.GL4 PRIVATE
+            "IC3_BUILD_STATIC=1"
+            "IC3_GRAPHICS_HWAPI_GL_BUILD=1"
+            "IC3_GRAPHICS_HWAPI_GL4_BUILD=1"
+            "GL_PLATFORM_TYPE_CORE=1")
 else()
-        add_library( Ic3.Graphics.HW3D.GL4 SHARED ${IC3_GRAPHICS_HWAPI_GL4_SRC_FILES} )
+    add_library( Ic3.Graphics.HW3D.GL4 SHARED ${IC3_GRAPHICS_HWAPI_GL4_SRC_FILES} )
+    target_compile_definitions( Ic3.Graphics.HW3D.GL4 PRIVATE
+            "IC3_GRAPHICS_HWAPI_GL_BUILD=1"
+            "IC3_GRAPHICS_HWAPI_GL4_BUILD=1"
+            "GL_PLATFORM_TYPE_CORE=1" )
 endif()
 
 set_target_properties( Ic3.Graphics.HW3D.GL4 PROPERTIES
         OUTPUT_NAME "Ic3.Graphics.HW3D.GL4" )
-
-target_compile_definitions( Ic3.Graphics.HW3D.GL4 PRIVATE
-        #"GLEW_STATIC=1"
-        "IC3_GRAPHICS_HWAPI_GL_BUILD=1"
-        "IC3_GRAPHICS_HWAPI_GL4_BUILD=1"
-        "GL_PLATFORM_TYPE_CORE=1" )
 
 target_include_directories( Ic3.Graphics.HW3D.GL4 PUBLIC
         ${IC3_DRIVERS_INCLUDE_DIR_INTERNAL} )

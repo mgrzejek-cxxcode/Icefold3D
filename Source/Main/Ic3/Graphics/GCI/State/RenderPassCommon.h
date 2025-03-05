@@ -5,6 +5,7 @@
 #define __IC3_GRAPHICS_GCI_RENDER_PASS_COMMON_H__
 
 #include "RenderTargetCommon.h"
+#include <cppx/memory.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -38,15 +39,19 @@ namespace Ic3::Graphics::GCI
 		/// Clear parameters are part of the dynamic pipeline state - they can be overwritten at runtime via a dedicated
 		/// command, without the necessity of re-creating the RenderPassDescriptor.
 		Clear = eRenderPassAttachmentActionFlagLoadClearBit,
+
 		/// Indicates that the pass does not have any dependency on the previous contents of the resource.
 		/// The resource may have the previous data or some uninitialized one. No guarantees are given.
 		Discard = eRenderPassAttachmentActionFlagLoadDiscardBit,
+
 		/// The contents of the attachment produced by a previous pass are to be loaded and made available for this pass.
 		/// This usually means that the attachment will be used as a source.
 		Fetch = eRenderPassAttachmentActionFlagLoadFetchBit,
+
 		/// The attachment is not used by the pass and can be made unavailable, potentially saving bandwidth and reducing
 		/// memory usage. Reading from or writing to an attachment with this action is prohibited.
 		RestrictAccess = eRenderPassAttachmentActionFlagAccessRestrictBit,
+
 		/// Load action is not specified. This implies a "do not care" scenario. No assumptions should be made about
 		/// the contents of an attachment when this action is specified.
 		Undefined = 0
@@ -61,16 +66,20 @@ namespace Ic3::Graphics::GCI
 		/// (but not necessarily have to) be discarded by the driver. There should be no assumptions about the
 		/// contents of an attachment that specifies this action after a render pass ends.
 		Discard = eRenderPassAttachmentActionFlagStoreDiscardBit,
+
 		/// The contents of the resource is to be preserved and kept after the pass is done.
 		/// This indicates there will be a dependency on the data in the future.
 		Keep = eRenderPassAttachmentActionFlagStoreKeepBit,
+
 		/// The contents of the resource is to be preserved and kept after the pass is done just like in case of Keep action.
 		/// In addition, the contents are resolved as described for the Resolve action. This is basically a combination of the two.
 		KeepResolve = eRenderPassAttachmentActionFlagStoreKeepBit | eRenderPassAttachmentActionFlagStoreResolveBit,
+
 		/// The contents of the attachment are potentially multi-sampled and are to be resolved at the end of a pass.
 		/// This requires that the RenderTargetBinding specifies an additional resolve buffer/texture that serves as
 		/// a target for the resolve operation.
 		Resolve = eRenderPassAttachmentActionFlagStoreResolveBit,
+
 		/// Store action is not specified. This implies a "do not care" scenario. No assumptions should be made about
 		/// the contents of an attachment when this action is specified.
 		Undefined = 0
@@ -89,6 +98,7 @@ namespace Ic3::Graphics::GCI
 		{
 			/// Clear configuration with values for color/depth/stencil buffers to clear with.
 			RenderTargetAttachmentClearConfig clearConfig;
+
 			/// Clear mask which controls buffers to be cleared:
 			/// - for color attachments the only valid bit is eRenderTargetBufferFlagColorBit,
 			/// - for depth/stencil attachment valid bits are eRenderTargetBufferFlagDepthBit and eRenderTargetBufferFlagStencilBit.
@@ -133,6 +143,11 @@ namespace Ic3::Graphics::GCI
 		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept
 		{
 			return !IsEmpty();
+		}
+
+		CPPX_ATTR_NO_DISCARD bool Equals( const RenderPassAttachmentConfig & pOther ) const noexcept
+		{
+			return cppx::mem_cmp_equal( *this, pOther );
 		}
 
 		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept
@@ -246,13 +261,13 @@ namespace Ic3::Graphics::GCI
 		 * This function is used by certain GPU drivers that support the known features of the render pass system,
 		 * so the attachments can be retrieved faster at runtime.
 		 */
-		void CacheAttachmentsWithActionFlags( cppx::bitmask<ERenderPassAttachmentActionFlags> pActionFlags );
+		IC3_GRAPHICS_GCI_API void CacheAttachmentsWithActionFlags( cppx::bitmask<ERenderPassAttachmentActionFlags> pActionFlags );
 
 		/**
 		 * Resets the internal bitmasks cache. Using GetAttachmentsMaskWithFlags() after this function is called,
 		 * causes it to retrieve the attachments via the non-cached GetAttachmentsMaskWith{Load|Store}Flags functions.
 		 */
-		void ResetCachedAttachments();
+		IC3_GRAPHICS_GCI_API void ResetCachedAttachments();
 	};
 
 	/**

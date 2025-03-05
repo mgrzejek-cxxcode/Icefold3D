@@ -16,6 +16,8 @@ namespace Ic3::Graphics::GCI
 	/// Declares handle type aliases for the specified GCI type which is a typedef itself.
 	#define Ic3GCIDeclareTypedefHandle( pAliasName, pTypeName ) Ic3DeclareTypedefHandle( pAliasName, pTypeName )
 
+	namespace System = ::Ic3::System;
+
 	/**
 	 * Defines GPU driver configuration flags, used to control the initialization process when a driver is created.
 	 * Support for some of these flags may be driver-specific (limited by a specific API),

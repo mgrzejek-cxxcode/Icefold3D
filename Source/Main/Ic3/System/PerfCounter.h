@@ -17,40 +17,40 @@ namespace Ic3::System
 	/// @brief
 	using perf_counter_ratio_t = std::pair<native_int, native_int>;
 
-	class PerfCounter
+	class IC3_SYSTEM_CLASS PerfCounter
 	{
 	public:
 	/// @brief Queries and returns the current value of a system-specific, high-performance clock.
 		/// Returned value should not be analysed or interpreted directly by the app - its unit is
 		/// platform-specific and my yield number of ticks, nanoseconds or some other type of duration.
-		IC3_SYSTEM_API_NODISCARD static perf_counter_value_t QueryCurrentStamp();
+		CPPX_ATTR_NO_DISCARD static perf_counter_value_t QueryCurrentStamp();
 
 		/// @brief Returns the resolution of a counter as a number of units which elapse during a period of one second.
-		IC3_SYSTEM_API_NODISCARD static perf_counter_res_t QueryResolution();
+		CPPX_ATTR_NO_DISCARD static perf_counter_res_t QueryResolution();
 
 		/// @brief Converts a difference between two PC stamps to a duration value using specified unit ratio.
 		/// Ratio represents a unit expressed as a fraction relative to a second. I.e. converting to nanoseconds
 		/// would be done by calling: ConvertToDuration( timeStampDiff, perf_counter_ratio_t{ 1, 1000000000 } );
-		IC3_SYSTEM_API_NODISCARD static long double ConvertToDuration(
+		CPPX_ATTR_NO_DISCARD static long double ConvertToDuration(
 				perf_counter_value_t pStampDiff,
 				const perf_counter_ratio_t & pUnitRatio );
 
 		/// @brief Converts a duration value back to a PC time stamp difference using specified unit ratio.
 		/// Assertion: ConvertFromDuration( ConvertToDuration( timeStampDiff, R ), R ) == timeStampDiff for any given R.
-		IC3_SYSTEM_API_NODISCARD static perf_counter_value_t ConvertFromDuration(
+		CPPX_ATTR_NO_DISCARD static perf_counter_value_t ConvertFromDuration(
 				long double pDuration,
 				const perf_counter_ratio_t & pUnitRatio );
 
 		/// @brief Helper function which converts a perf counter duration to a duration value in unit expressed as Ic3::EDurationPeriod.
 		template <cppx::duration_period tpPeriod>
-		IC3_SYSTEM_API_NODISCARD static long double ConvertToDuration( perf_counter_value_t pStampDiff )
+		CPPX_ATTR_NO_DISCARD static long double ConvertToDuration( perf_counter_value_t pStampDiff )
 		{
 			return ConvertToDuration( pStampDiff, cppx::duration_traits<tpPeriod>::unit_ratio );
 		}
 
 		/// @brief Helper function which converts a duration value in unit expressed as Ic3::EDurationPeriod back to a PC time stamp difference.
 		template <cppx::duration_period tpPeriod>
-		IC3_SYSTEM_API_NODISCARD static perf_counter_value_t ConvertFromDuration( const cppx::duration<tpPeriod> & pDuration )
+		CPPX_ATTR_NO_DISCARD static perf_counter_value_t ConvertFromDuration( const cppx::duration<tpPeriod> & pDuration )
 		{
 			return ConvertFromDuration( pDuration.count(), cppx::duration_traits<tpPeriod>::unit_ratio );
 		}

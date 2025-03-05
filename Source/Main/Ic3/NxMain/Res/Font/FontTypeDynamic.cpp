@@ -250,7 +250,7 @@ namespace Ic3
 			const auto & textureLayerDataDesc = textureCreateInfo.textureLayerInitDataArray[staticSubTextureIndex];
 
 			// Each font sub-texture has only one mip level, as mip-mapping is disabled for fonts.
-			auto & subTextureInitData = gpuTextureInitDataDesc.subTextureInitDataBasePtr[staticSubTextureIndex].mipLevelInitDataArray[0];
+			auto & subTextureInitData = gpuTextureInitDataDesc.GetSubTextureInitDesc( staticSubTextureIndex ).GetMipLevelInitData( 0 );
 			subTextureInitData.pointer = textureLayerDataDesc.initDataBuffer.data();
 			subTextureInitData.size = textureLayerDataDesc.initDataBuffer.size();
 		}
@@ -260,7 +260,7 @@ namespace Ic3
 			// Dynamic font layers come directly after the static/pre-rendered ones.
 			uint32 dynamicSubTextureIndex = cxStaticSubTexturesNum + dynamicSubTextureBaseIndex;
 
-			auto & subTextureInitData = gpuTextureInitDataDesc.subTextureInitDataBasePtr[dynamicSubTextureIndex].mipLevelInitDataArray[0];
+			auto & subTextureInitData = gpuTextureInitDataDesc.GetSubTextureInitDesc( dynamicSubTextureIndex ).GetMipLevelInitData( 0 );
 			subTextureInitData.pointer = nullptr;
 			subTextureInitData.size = 0;
 		}

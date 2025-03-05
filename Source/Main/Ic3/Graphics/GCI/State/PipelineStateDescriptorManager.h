@@ -10,7 +10,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	class PipelineStateDescriptorManager : public GPUDeviceChildObject
+	class IC3_GRAPHICS_GCI_CLASS PipelineStateDescriptorManager : public GPUDeviceChildObject
 	{
 		friend class GPUDevice;
 

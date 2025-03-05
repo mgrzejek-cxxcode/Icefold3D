@@ -56,6 +56,7 @@ namespace cppx
 	template <typename TPResult, typename TPInput>
 	inline TPResult numeric_cast( TPInput pInput )
 	{
+	#pragma warning( suppress : 4018 ) // C4018: '<=': signed/unsigned mismatch
 		cppx_debug_assert( pInput <= std::numeric_limits<TPResult>::max() );
 		return static_cast<TPResult>( pInput );
 	}

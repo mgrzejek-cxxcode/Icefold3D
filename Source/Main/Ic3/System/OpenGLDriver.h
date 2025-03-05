@@ -42,7 +42,7 @@ namespace Ic3::System
 	};
 
 	/// @brief
-	class OpenGLSystemDriver : public SysObject
+	class IC3_SYSTEM_CLASS OpenGLSystemDriver : public SysObject
 	{
 		friend class OpenGLDisplaySurface;
 		friend class OpenGLRenderContext;
@@ -56,7 +56,7 @@ namespace Ic3::System
 
 		/// @brief Initializes core OpenGL state and system-level interfaces.
 		/// This method also creates any additionally required
-		OpenGLVersionSupportInfo initializePlatform();
+		OpenGLVersionSupportInfo InitializePlatform();
 
 		const OpenGLVersionSupportInfo & GetVersionSupportInfo() const;
 
@@ -165,7 +165,7 @@ namespace Ic3::System
 	};
 
 	/// @brief
-	class OpenGLDisplaySurface : public Frame
+	class IC3_SYSTEM_CLASS OpenGLDisplaySurface : public Frame
 	{
 		friend class OpenGLSystemDriver;
 
@@ -175,8 +175,6 @@ namespace Ic3::System
 	public:
         explicit OpenGLDisplaySurface( OpenGLSystemDriverHandle pGLSystemDriver, void * pNativeData );
         virtual ~OpenGLDisplaySurface() noexcept;
-
-		void ClearColorBuffer();
 
 		/// @brief
 		void SwapBuffers();
@@ -256,7 +254,7 @@ namespace Ic3::System
 	};
 
 	/// @brief
-	class OpenGLRenderContext : public SysObject
+	class IC3_SYSTEM_CLASS OpenGLRenderContext : public SysObject
 	{
 		friend class OpenGLSystemDriver;
 

@@ -21,7 +21,7 @@ namespace Ic3::Graphics::GCI
 	};
 
 	/// @brief
-	class ShaderInputTexture : public GPUResourceView
+	class IC3_GRAPHICS_GCI_CLASS ShaderInputTexture : public GPUResourceView
 	{
 		friend class GPUDevice;
 		friend class Texture;

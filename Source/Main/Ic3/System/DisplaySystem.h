@@ -15,7 +15,7 @@ namespace Ic3::System
 	Ic3SysDeclareHandle( DisplayVideoMode );
 
 	/// @brief
-	class DisplayManager : public SysObject
+	class IC3_SYSTEM_CLASS DisplayManager : public SysObject
 	{
 	public:
 		explicit DisplayManager( SysContextHandle pSysContext );
@@ -54,7 +54,7 @@ namespace Ic3::System
 	};
 
 	/// @brief
-	class DisplayDriver : public SysObject
+	class IC3_SYSTEM_CLASS DisplayDriver : public SysObject
 	{
 		friend class DisplayManager;
 

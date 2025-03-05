@@ -161,7 +161,7 @@ namespace Ic3::System
 	file_size_t Win32File::_NativeReadData( void * pTargetBuffer, file_size_t pReadSize )
 	{
 		DWORD readBytesNum = 0u;
-		auto readResult = ::ReadFile( mNativeData.fileHandle, pTargetBuffer, pReadSize, &readBytesNum, nullptr );
+		auto readResult = ::ReadFile( mNativeData.fileHandle, pTargetBuffer, cppx::numeric_cast<DWORD>( pReadSize ), &readBytesNum, nullptr);
 
 		if( readResult && ( readBytesNum == 0 ) )
 		{
@@ -182,13 +182,13 @@ namespace Ic3::System
 			}
 		}
 
-		return cppx::numeric_cast<file_size_t>( readBytesNum );
+		return readBytesNum;
 	}
 
 	file_size_t Win32File::_NativeWriteData( const void * pData, file_size_t pWriteSize )
 	{
 		DWORD writtenBytesNum = 0u;
-		auto writeResult = ::WriteFile(  mNativeData.fileHandle, pData, pWriteSize, &writtenBytesNum, nullptr );
+		auto writeResult = ::WriteFile(  mNativeData.fileHandle, pData, cppx::numeric_cast< DWORD >( pWriteSize ), &writtenBytesNum, nullptr );
 
 		if( !writeResult )
 		{
@@ -197,7 +197,7 @@ namespace Ic3::System
 			Ic3ThrowDesc( eExcCodeDebugPlaceholder, std::move( errorMessage ) );
 		}
 
-		return cppx::numeric_cast<file_size_t>( writtenBytesNum );
+		return writtenBytesNum;
 	}
 
 	file_offset_t Win32File::_NativeSetFilePointer( file_offset_t pOffset, EFilePointerRefPos pRefPos )
