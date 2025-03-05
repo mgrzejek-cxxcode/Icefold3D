@@ -36,6 +36,7 @@
 
 #define _Ic3DriverAPI( access ) access
 
+#include "Prerequisites/GCITypeInfo.h"
 #include "Prerequisites/CommonDefs.h"
 #include "Prerequisites/CommonTypes.h"
 #include "Prerequisites/CoreInterfaceDefs.h"

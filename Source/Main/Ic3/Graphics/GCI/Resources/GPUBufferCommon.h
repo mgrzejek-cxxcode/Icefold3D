@@ -9,7 +9,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	Ic3DeclareClassHandle( GPUBuffer );
+	Ic3GCIDeclareClassHandle( GPUBuffer );
 
 	enum EGPUBufferDataCopyFlags : uint32
 	{

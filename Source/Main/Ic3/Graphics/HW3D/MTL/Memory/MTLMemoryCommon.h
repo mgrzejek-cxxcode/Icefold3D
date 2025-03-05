@@ -10,7 +10,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	namespace memutil
+	namespace GCU
 	{
 	}
 

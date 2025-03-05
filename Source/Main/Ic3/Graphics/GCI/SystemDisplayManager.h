@@ -9,7 +9,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	Ic3DeclareClassHandle( SystemDisplayManager );
+	Ic3GCIDeclareClassHandle( SystemDisplayManager );
 
 	struct SystemDisplayManagerCreateInfo
 	{

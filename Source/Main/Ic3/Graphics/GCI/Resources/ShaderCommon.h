@@ -10,7 +10,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	Ic3DeclareClassHandle( Shader );
+	Ic3GCIDeclareClassHandle( Shader );
 
 	namespace CXU
 	{

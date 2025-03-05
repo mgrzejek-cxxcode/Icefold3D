@@ -1,7 +1,7 @@
 
 set( IC3_SAMPLES_SRC_GfxTest
         "MeshDefs.h"
-        "MainGfx.cpp"
+        "MainGfx.mm"
         )
 
 add_executable( Sample.GfxTest

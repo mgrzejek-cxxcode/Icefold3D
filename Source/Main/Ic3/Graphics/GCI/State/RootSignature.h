@@ -15,8 +15,8 @@ namespace Ic3::Graphics::GCI
 	{
 		ACAllActive  = eShaderStageMaskAll,
 		ACGSVertex   = eShaderStageFlagGraphicsVertexBit,
-		ACGSHull     = eShaderStageFlagGraphicsHullBit,
-		ACGSDomain   = eShaderStageFlagGraphicsDomainBit,
+		ACGSHull     = eShaderStageFlagGraphicsTessHullBit,
+		ACGSDomain   = eShaderStageFlagGraphicsTessDomainBit,
 		ACGSGeometry = eShaderStageFlagGraphicsGeometryBit,
 		ACGSPixel    = eShaderStageFlagGraphicsPixelBit,
 		ACCSCompute  = eShaderStageFlagComputeBit,
