@@ -23,10 +23,11 @@ add_executable( Tool.IceLogViewer WIN32 MACOSX_BUNDLE
 )
 
 target_link_libraries( Tool.IceLogViewer PUBLIC
-    ${IC3_TOOLS_LINK_INPUT}
-    wxmono
+    "${IC3_TOOLS_LINK_INPUT}"
 )
 
 target_compile_definitions( Tool.IceLogViewer PRIVATE
     "${IC3_COMMON_MODULE_DEFINITIONS}"
 )
+
+setTargetWxWidgetsConfig( Tool.IceLogViewer )
