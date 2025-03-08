@@ -1,5 +1,5 @@
 
-#include <Ic3/System/FileManager.h>
+#include <Ic3/System/IO/FileManager.h>
 #include <Ic3/System/SysContextNative.h>
 #include <Ic3/Script/Lua/LuaScriptSystem.h>
 #include <Ic3/Script/Lua/RefData.h>
@@ -68,7 +68,7 @@ int main( int pArgc, const char ** pArgv )
 	const auto & tmiName = TMI::sName;
 
 //	cppx::dynamic_byte_array luaScript;
-//	auto luaFile = fsManager->openFile( "sx.lua", Ic3::System::EFileOpenMode::ReadOnly );
+//	auto luaFile = fsManager->openFile( "sx.lua", Ic3::System::EIOAccessMode::ReadOnly );
 //	luaFile->readAuto( luaScript );
 //
 //	std::string scriptText{};

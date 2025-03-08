@@ -7,7 +7,7 @@
 #include "CommonGraphicsConfig.h"
 #include "RenderTargetArrayUtils.h"
 #include "../Resources/TextureCommon.h"
-#include <Ic3/System/Visual.h>
+#include <Ic3/System/Core/Visual.h>
 
 namespace Ic3::Graphics::GCI
 {

@@ -1,7 +1,7 @@
 
 #include "DX12GPUDriver.h"
 #include "DX12GPUDevice.h"
-#include <Ic3/System/DisplayDriverNative.h>
+#include <Ic3/System/Core/DisplayDriverNative.h>
 
 namespace Ic3::Graphics::GCI
 {

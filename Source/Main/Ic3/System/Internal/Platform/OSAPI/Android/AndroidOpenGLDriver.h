@@ -3,7 +3,7 @@
 #define __IC3_SYSTEM_PLATFORM_OSAPI_ANDROID_OPENGL_DRIVER_H__
 
 #include "AndroidCommon.h"
-#include <Ic3/System/OpenGLDriver.h>
+#include <Ic3/System/Gfx/OpenGLDriver.h>
 #include <Ic3/System/Internal/Platform/Shared/EGL/EGLOpenGL.h>
 #include <GLES3/gl31.h>
 

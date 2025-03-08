@@ -2,7 +2,7 @@
 #ifndef __IC3_SYSTEM_PLATFORM_OSAPI_WIN32_OPENGL_DRIVER_H__
 #define __IC3_SYSTEM_PLATFORM_OSAPI_WIN32_OPENGL_DRIVER_H__
 
-#include <Ic3/System/OpenGLDriver.h>
+#include <Ic3/System/Gfx/OpenGLDriver.h>
 #include "Win32WindowSystem.h"
 #include <GL/wglew.h>
 

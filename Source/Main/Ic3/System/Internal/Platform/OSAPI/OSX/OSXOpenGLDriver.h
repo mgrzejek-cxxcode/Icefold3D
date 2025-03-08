@@ -3,7 +3,7 @@
 #define __IC3_SYSTEM_PLATFORM_OSAPI_OSX_OPENGL_DRIVER_H__
 
 #include "OSXWindowSystem.h"
-#include <Ic3/System/OpenGLDriver.h>
+#include <Ic3/System/Gfx/OpenGLDriver.h>
 
 #ifdef __clang__
 #  pragma clang diagnostic push

@@ -2,7 +2,7 @@
 #include "ShaderLoader.h"
 #include "ShaderLibrary.h"
 #include <Ic3/Graphics/GCI/GPUUtils.h>
-#include <Ic3/System/AssetSystem.h>
+#include <Ic3/System/IO/AssetSystem.h>
 
 #include <Ic3/Graphics/GCI/Resources/Shader.h>
 #include <Ic3/NxMain/GCI/ShaderUtils.h>

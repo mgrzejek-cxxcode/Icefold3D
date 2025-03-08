@@ -3,7 +3,7 @@
 #define __IC3_SYSTEM_PLATFORM_OSAPI_X11_WINDOW_SYSTEM_H__
 
 #include "X11EventCore.h"
-#include <Ic3/System/WindowSystem.h>
+#include <Ic3/System/Core/WindowSystem.h>
 
 namespace Ic3::System
 {

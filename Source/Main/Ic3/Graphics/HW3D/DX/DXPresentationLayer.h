@@ -6,7 +6,7 @@
 
 #include "DXPrerequisites.h"
 #include <Ic3/Graphics/GCI/PresentationLayer.h>
-#include <Ic3/System/WindowSystem.h>
+#include <Ic3/System/Core/WindowSystem.h>
 
 namespace Ic3::Graphics::GCI
 {

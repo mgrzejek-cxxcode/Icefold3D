@@ -15,8 +15,8 @@ set( CMAKE_CXX_EXTENSIONS OFF )
 
 project( Icefold )
 
-message("VERSION: CMake ${CMAKE_VERSION}")
-message("ROOT: ${CMAKE_CURRENT_SOURCE_DIR}")
+message("[Version]: CMake ${CMAKE_VERSION}")
+message("[Root Dir]: ${CMAKE_CURRENT_SOURCE_DIR}")
 
 include( "CMake/CMakeLists.txt" )
 
@@ -64,6 +64,70 @@ ebsSetInternal( IC3_LINK_DIR
 )
 
 ebsSetInternal(IC3_MODULE_TARGET_LIST "")
+
+function( ebsDisableQtSupportWithMessage pMessage )
+	message( WARNING "Qt support will be disabled. Reason: ${pMessage}." )
+	ebsSetInternal( IC3_CONFIG_QT_SUPPORT_FLAG FALSE )
+endfunction()
+
+function( ebsCheckQtConfigForWinDesktop )
+	if( $ENV{QT_ROOT} STREQUAL "" )
+		ebsDisableQtSupportWithMessage( "QT_ROOT environment variable is missing" )
+		return()
+	endif()
+	if( $ENV{QT_VERSION} STREQUAL "" )
+		ebsDisableQtSupportWithMessage( "QT_VERSION environment variable is missing" )
+		return()
+	endif()
+endfunction()
+
+function( ebsGenerateQtConfig )
+	if( "${CM_EBS_SYSCONF_TARGET_SYSTEM}" MATCHES "WinDesktop" ) # More will be added here as we go
+		# For desktop platfroms, we enable Qt support (used only for building desktop tools and utilities).
+		ebsSetInternal( IC3_CONFIG_QT_SUPPORT_FLAG TRUE )
+
+		if( "${CM_EBS_SYSCONF_TARGET_SYSTEM}" STREQUAL "WinDesktop" )
+			# Validate Windows-specific Qt configuration. This will automatically clear the support flag in case of an error.
+			ebsCheckQtConfigForWinDesktop()
+			# If still set, everything is fine and we can proceed.
+			if( IC3_CONFIG_QT_SUPPORT_FLAG )
+				# Unify the slashes to a common format (we don't like the backslashing mess).
+				string( REGEX REPLACE "\\\\" "/" IC3_CONFIG_QT_ROOT_TMP "$ENV{QT_ROOT}" )
+				ebsSetInternal( IC3_CONFIG_QT_ROOT "${IC3_CONFIG_QT_ROOT_TMP}" )
+				ebsSetInternal( IC3_CONFIG_QT_VERSION "$ENV{QT_VERSION}" )
+
+				if( "${CM_EBS_SYSCONF_HOST_COMPILER}" MATCHES "MSVC" )
+					if( "${CM_EBS_SYSCONF_HOST_TOOLSET_ARCH}" MATCHES "arm64" )
+						ebsSetInternal( IC3_CONFIG_QT_BASE_DIR "${IC3_CONFIG_QT_ROOT}/${IC3_CONFIG_QT_VERSION}/msvc${CM_EBS_SYSCONF_HOST_COMPILER_VERSION}_arm64" )
+					elseif( "${CM_EBS_SYSCONF_HOST_TOOLSET_ARCH}" MATCHES "x86-64" )
+						ebsSetInternal( IC3_CONFIG_QT_BASE_DIR "${IC3_CONFIG_QT_ROOT}/${IC3_CONFIG_QT_VERSION}/msvc${CM_EBS_SYSCONF_HOST_COMPILER_VERSION}_64" )
+					endif()
+				else()
+					# This might trigger in case of change of the Qt version or a new toolset version - adjust the logic above if necessary.
+					ebsDisableQtSupportWithMessage( "The current compiler (${CM_EBS_SYSCONF_HOST_COMPILER}) is not yet supported for Qt on this platform" )
+				endif()
+			endif()
+		endif()
+
+		if( IC3_CONFIG_QT_BASE_DIR )
+			message( STATUS "Qt support enabled. QT_BASE_DIR = ${IC3_CONFIG_QT_BASE_DIR}" )
+		endif()
+	else()
+		# This will also trigger for platform we have not added support for.
+		ebsDisableQtSupportWithMessage( "The current system (${CM_EBS_SYSCONF_TARGET_SYSTEM}) is not yet supported for Qt" )
+	endif()
+endfunction()
+
+ebsGenerateQtConfig()
+
+if( IC3_CONFIG_QT_SUPPORT_FLAG )
+	find_package( Qt6 REQUIRED COMPONENTS Core Gui Widgets )
+endif()
+
+function( ebsAddTargetQtSupport pTargetName pQtLibs )
+	target_include_directories( "${pTargetName}" PRIVATE :"${IC3_CONFIG_QT_BASE_DIR}/include" )
+	target_link_directories( "${pTargetName}" PRIVATE :"${IC3_CONFIG_QT_BASE_DIR}/lib" )
+endfunction()
 
 add_subdirectory( "External/Embedded" )
 add_subdirectory( "Source/Main" )

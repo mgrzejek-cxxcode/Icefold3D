@@ -3,7 +3,7 @@
 #define __IC3_SYSTEM_PLATFORM_OSAPI_NS_INTERNAL_OPENGL_H__
 
 #include "OSXWindowSystem.h"
-#include <Ic3/System/WindowCommon.h>
+#include <Ic3/System/Core/WindowCommon.h>
 
 #define GL_SILENCE_DEPRECATION 1
 

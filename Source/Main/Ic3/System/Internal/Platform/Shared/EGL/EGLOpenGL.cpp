@@ -1,6 +1,6 @@
 
 #include "EGLOpenGL.h"
-#include <Ic3/System/OpenGLDriver.h>
+#include <Ic3/System/Gfx/OpenGLDriver.h>
 
 namespace Ic3::System
 {

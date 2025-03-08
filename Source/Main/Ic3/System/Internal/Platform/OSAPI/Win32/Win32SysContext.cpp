@@ -7,7 +7,7 @@
 #include "Win32OpenGLDriver.h"
 #include "Win32WindowSystem.h"
 #include <Ic3/System/SysContextNative.h>
-#include <Ic3/System/AssetSystemNative.h>
+#include <Ic3/System/IO/AssetSystemNative.h>
 #include <process.h>
 #include <tlhelp32.h>
 

@@ -2,7 +2,7 @@
 #include <Ic3/Graphics/HW3D/GL/GLGPUDriver.h>
 #include <Ic3/Graphics/HW3D/GL/GLGPUDevice.h>
 #include <Ic3/Graphics/HW3D/GL/GLPresentationLayer.h>
-#include <Ic3/System/DisplaySystem.h>
+#include <Ic3/System/Core/DisplaySystem.h>
 
 namespace Ic3::Graphics::GCI
 {

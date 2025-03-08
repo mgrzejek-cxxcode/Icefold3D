@@ -3,12 +3,12 @@
 #define __IC3_SAMPLES_GFX_TEST_MAIN_GFX_HXX__
 
 
-#include <Ic3/System/DisplaySystem.h>
+#include <Ic3/System/Core/DisplaySystem.h>
 #include <Ic3/System/SysContext.h>
-#include <Ic3/System/EventCore.h>
-#include <Ic3/System/EventObject.h>
-#include <Ic3/System/OpenGLDriver.h>
-#include <Ic3/System/AssetSystemNative.h>
+#include <Ic3/System/Events/EventCore.h>
+#include <Ic3/System/Events/EventObject.h>
+#include <Ic3/System/Gfx/OpenGLDriver.h>
+#include <Ic3/System/IO/AssetSystemNative.h>
 #include <Ic3/System/PerfCounter.h>
 #include <Ic3/System/SysContextNative.h>
 

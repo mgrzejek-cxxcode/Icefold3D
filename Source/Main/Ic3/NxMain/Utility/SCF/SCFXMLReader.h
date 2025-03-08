@@ -5,7 +5,7 @@
 #define __IC3_NXMAIN_SCF_XML_PUBLIC_H__
 
 #include "scfXMLCommon.h"
-#include <Ic3/System/FileCommon.h>
+#include <Ic3/System/IO/FileCommon.h>
 
 namespace Ic3
 {

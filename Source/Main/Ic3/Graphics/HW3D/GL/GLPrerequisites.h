@@ -5,7 +5,7 @@
 #define __IC3_GRAPHICS_HW3D_GLC_PREREQUISITES_H__
 
 #include <Ic3/Graphics/GCI/Memory/CommonGPUMemoryDefs.h>
-#include <Ic3/System/OpenGLDriver.h>
+#include <Ic3/System/Gfx/OpenGLDriver.h>
 
 #define IC3_GX_GL_PLATFORM_TYPE_DESKTOP 0x7100
 #define IC3_GX_GL_PLATFORM_TYPE_ES   0x7200

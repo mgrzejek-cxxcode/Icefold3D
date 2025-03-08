@@ -3,8 +3,8 @@
 #define __IC3_SYSTEM_PLATFORM_OSAPI_OSX_EVENT_CORE_H__
 
 #include "OSXCommon.h"
-#include <Ic3/System/EventCore.h>
-#include <Ic3/System/EventObject.h>
+#include <Ic3/System/Events/EventCore.h>
+#include <Ic3/System/Events/EventObject.h>
 #include <cppx/bitUtils.h>
 
 #import <AppKit/NSEvent.h>

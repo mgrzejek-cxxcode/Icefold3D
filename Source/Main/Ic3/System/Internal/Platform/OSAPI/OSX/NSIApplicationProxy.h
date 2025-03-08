@@ -3,7 +3,7 @@
 #define __IC3_SYSTEM_PLATFORM_OSAPI_OSX_NS_OSX_APPLICATION_PROXY_H__
 
 #include "NSICommon.h"
-#include <Ic3/System/WindowCommon.h>
+#include <Ic3/System/Core/WindowCommon.h>
 #import <AppKit/NSApplication.h>
 #import <AppKit/NSWindow.h>
 

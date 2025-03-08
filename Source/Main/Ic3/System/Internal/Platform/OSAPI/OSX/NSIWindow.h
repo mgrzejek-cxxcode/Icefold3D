@@ -3,7 +3,7 @@
 #define __IC3_SYSTEM_PLATFORM_OSAPI_NS_INTERNAL_NS_WINDOW_H__
 
 #include "NSICommon.h"
-#include <Ic3/System/WindowCommon.h>
+#include <Ic3/System/Core/WindowCommon.h>
 #import <AppKit/NSWindow.h>
 
 /// @brief

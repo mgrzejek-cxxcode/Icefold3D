@@ -1,6 +1,6 @@
 
 #include "DX12coreAPIProxy.h"
-#include <Ic3/System/WindowSystem.h>
+#include <Ic3/System/Core/WindowSystem.h>
 
 namespace Ic3::Graphics::GCI
 {

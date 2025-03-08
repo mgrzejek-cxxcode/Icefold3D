@@ -3,7 +3,7 @@
 #include <Ic3/NxMain/exception.h>
 #include <cppx/pathNameIterator.h>
 #include <cppx/sortedArray.h>
-#include <Ic3/System/FileManager.h>
+#include <Ic3/System/IO/FileManager.h>
 
 #include <unordered_map>
 #include <unordered_set>
@@ -55,7 +55,7 @@ namespace Ic3
 			return {};
 		}
 
-		auto sourceFile = pSysFileManager->openFile( pFilename, System::EFileOpenMode::ReadOnly );
+		auto sourceFile = pSysFileManager->openFile( pFilename, System::EIOAccessMode::ReadOnly );
 		if( !sourceFile )
 		{
 			return {};
@@ -70,10 +70,10 @@ namespace Ic3
 				const auto readSize = mem_check_requested_copy_size( fileSize, pReadSize, pOffset );
 				if( readSize > 0 )
 				{
-					if( auto sourceFile = pSysFileManager->openFile( pFilename, System::EFileOpenMode::ReadOnly ) )
+					if( auto sourceFile = pSysFileManager->openFile( pFilename, System::EIOAccessMode::ReadOnly ) )
 					{
-						sourceFile->setFilePointer( cppx::numeric_cast<System::file_offset_t>( pOffset ) );
-						return sourceFile->readAuto( pTarget, cppx::numeric_cast<System::file_size_t>( readSize ) );
+						sourceFile->setFilePointer( cppx::numeric_cast<System::io_offset_t>( pOffset ) );
+						return sourceFile->readAuto( pTarget, cppx::numeric_cast<System::io_size_t>( readSize ) );
 					}
 				}
 				return 0;

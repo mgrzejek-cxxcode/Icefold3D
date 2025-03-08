@@ -9,13 +9,13 @@ namespace Ic3::System
 	namespace Platform
 	{
 
-		FILE * _PAOpenFileGeneric( const char * pFilePath, const char * pOpenMode );
+		FILE * _PAOpenFileGeneric( const char * pFilePath, const char * pAccessMode );
 
-		const char * _PATranslateFileOpenMode( EFileOpenMode pOpenMode );
+		const char * _PATranslatEIOAccessMode( EIOAccessMode pAccessMode );
 
 		bool _PACheckIsFile( const char * pFilePath );
 
-		int _PATranslateFilePointerRefPos( EFilePointerRefPos pFileRefPos );
+		int _PATranslatEIOPointerRefPos( EIOPointerRefPos pFileRefPos );
 
 		std::string _PAGenerateTempFileName();
 
@@ -27,9 +27,9 @@ namespace Ic3::System
 
 	PosixFileManager::~PosixFileManager() noexcept = default;
 
-	FileHandle PosixFileManager::_NativeOpenFile( std::string pFilePath, EFileOpenMode pOpenMode )
+	FileHandle PosixFileManager::_NativeOpenFile( std::string pFilePath, EIOAccessMode pAccessMode )
 	{
-		auto openMode = Platform::_PATranslateFileOpenMode( pOpenMode );
+		auto openMode = Platform::_PATranslatEIOAccessMode( pAccessMode );
 		auto filePtr = Platform::_PAOpenFileGeneric( pFilePath.c_str(), openMode );
 		auto fileObject = CreateSysObject<PosixFile>( GetHandle<PosixFileManager>() );
 		fileObject->setInternalFilePtr( filePtr );
@@ -143,21 +143,21 @@ namespace Ic3::System
 		}
 	}
 
-	file_size_t PosixFile::_NativeReadData( void * pTargetBuffer, file_size_t pReadSize )
+	io_size_t PosixFile::_NativeReadData( void * pTargetBuffer, io_size_t pReadSize )
 	{
 		auto readBytesNum = ::fread( pTargetBuffer, 1, pReadSize, mNativeData.mFilePtr );
-		return cppx::numeric_cast<file_size_t>( readBytesNum );
+		return cppx::numeric_cast<io_size_t>( readBytesNum );
 	}
 
-	file_size_t PosixFile::_NativeWriteData( const void * pData, file_size_t pWriteSize )
+	io_size_t PosixFile::_NativeWriteData( const void * pData, io_size_t pWriteSize )
 	{
 		auto writtenBytesNum = ::fwrite( pData, 1, pWriteSize, mNativeData.mFilePtr );
-		return cppx::numeric_cast<file_size_t>( writtenBytesNum );
+		return cppx::numeric_cast<io_size_t>( writtenBytesNum );
 	}
 
-	file_offset_t PosixFile::_NativeSetFilePointer( file_offset_t pOffset, EFilePointerRefPos pRefPos )
+	io_offset_t PosixFile::_NativeSetFilePointer( io_offset_t pOffset, EIOPointerRefPos pRefPos )
 	{
-		auto fileSeekPos = Platform::_PATranslateFilePointerRefPos( pRefPos );
+		auto fileSeekPos = Platform::_PATranslatEIOPointerRefPos( pRefPos );
 		auto seekResult = ::fseek( mNativeData.mFilePtr, static_cast<long>( pOffset ), fileSeekPos );
 
 		if( seekResult != 0 )
@@ -167,16 +167,16 @@ namespace Ic3::System
 		}
 
 		auto currentFilePointer = ::ftell( mNativeData.mFilePtr );
-		return static_cast<file_offset_t>( currentFilePointer );
+		return static_cast<io_offset_t>( currentFilePointer );
 	}
 
-	file_offset_t PosixFile::_NativeGetFilePointer() const
+	io_offset_t PosixFile::_NativeGetFilePointer() const
 	{
 		auto currentFilePointer = ::ftell( mNativeData.mFilePtr );
-		return static_cast<file_offset_t>( currentFilePointer );
+		return static_cast<io_offset_t>( currentFilePointer );
 	}
 
-	file_size_t PosixFile::_NativeGetSize() const
+	io_size_t PosixFile::_NativeGetSize() const
 	{
 		auto savedFilePointer = ::ftell( mNativeData.mFilePtr );
 		::fseek( mNativeData.mFilePtr, 0u, SEEK_END );
@@ -184,10 +184,10 @@ namespace Ic3::System
 		auto fileSize = ::ftell( mNativeData.mFilePtr );
 		::fseek( mNativeData.mFilePtr, savedFilePointer, SEEK_SET );
 
-		return static_cast<file_size_t>( fileSize );
+		return static_cast<io_size_t>( fileSize );
 	}
 
-	file_size_t PosixFile::_NativeGetRemainingBytes() const
+	io_size_t PosixFile::_NativeGetRemainingBytes() const
 	{
 		auto currentFilePointer = ::ftell( mNativeData.mFilePtr );
 		::fseek( mNativeData.mFilePtr, 0u, SEEK_END );
@@ -195,7 +195,7 @@ namespace Ic3::System
 		auto fileSize = ::ftell( mNativeData.mFilePtr );
 		::fseek( mNativeData.mFilePtr, currentFilePointer, SEEK_SET );
 
-		return static_cast<file_size_t>( fileSize - currentFilePointer );
+		return static_cast<io_size_t>( fileSize - currentFilePointer );
 	}
 
 	bool PosixFile::_NativeCheckEOF() const
@@ -212,9 +212,9 @@ namespace Ic3::System
 	namespace Platform
 	{
 
-		FILE * _PAOpenFileGeneric( const char * pFilePath, const char * pOpenMode )
+		FILE * _PAOpenFileGeneric( const char * pFilePath, const char * pAccessMode )
 		{
-			FILE * filePtr = fopen( pFilePath, pOpenMode );
+			FILE * filePtr = fopen( pFilePath, pAccessMode );
 
 			if( !filePtr )
 			{
@@ -225,14 +225,14 @@ namespace Ic3::System
 			return filePtr;
 		}
 
-		const char * _PATranslateFileOpenMode( EFileOpenMode pOpenMode )
+		const char * _PATranslatEIOAccessMode( EIOAccessMode pAccessMode )
 		{
-			switch( pOpenMode )
+			switch( pAccessMode )
 			{
-				case EFileOpenMode::ReadOnly: return "r";
-				case EFileOpenMode::ReadWrite: return "r+";
-				case EFileOpenMode::WriteAppend: return "a";
-				case EFileOpenMode::WriteOverwrite: return "w+";
+				case EIOAccessMode::ReadOnly: return "r";
+				case EIOAccessMode::ReadWrite: return "r+";
+				case EIOAccessMode::WriteAppend: return "a";
+				case EIOAccessMode::WriteOverwrite: return "w+";
 			}
 			return "r";
 		}
@@ -244,23 +244,23 @@ namespace Ic3::System
 			return ( statResult == 0 ) && ( ( statInfo.st_mode & S_IFMT ) == S_IFREG ) && ( ( statInfo.st_mode & S_IFMT ) == S_IFLNK );
 		}
 
-		int _PATranslateFilePointerRefPos( EFilePointerRefPos pFileRefPos )
+		int _PATranslatEIOPointerRefPos( EIOPointerRefPos pFileRefPos )
 		{
 			int fileSeekPos = 0;
 
 			switch( pFileRefPos )
 			{
-				case EFilePointerRefPos::FileBeg:
+				case EIOPointerRefPos::StreamBase:
 				{
 					fileSeekPos = SEEK_SET;
 					break;
 				}
-				case EFilePointerRefPos::FileEnd:
+				case EIOPointerRefPos::StreamEnd:
 				{
 					fileSeekPos = SEEK_END;
 					break;
 				}
-				case EFilePointerRefPos::CurrentPos:
+				case EIOPointerRefPos::CurrentPos:
 				{
 					fileSeekPos = SEEK_CUR;
 					break;

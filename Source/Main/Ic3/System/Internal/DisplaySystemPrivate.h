@@ -2,8 +2,8 @@
 #ifndef __IC3_SYSTEM_INTERNAL_DISPLAY_SYSTEM_PRIVATE_H__
 #define __IC3_SYSTEM_INTERNAL_DISPLAY_SYSTEM_PRIVATE_H__
 
-#include <Ic3/System/DisplayConfiguration.h>
-#include <Ic3/System/DisplaySystem.h>
+#include "../Core/DisplayConfiguration.h"
+#include "../Core/DisplaySystem.h"
 
 #include <deque>
 #include <map>

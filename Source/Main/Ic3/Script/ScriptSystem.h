@@ -4,7 +4,7 @@
 
 #include "Prerequisites.h"
 #include <cppx/byteArray.h>
-#include <Ic3/System/FileCommon.h>
+#include <Ic3/System/IO/FileCommon.h>
 
 namespace Ic3::Script
 {

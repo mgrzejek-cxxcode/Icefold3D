@@ -3,7 +3,7 @@
 #define __IC3_SYSTEM_PLATFORM_OSAPI_X11_OPENGL_DRIVER_H__
 
 #include "X11WindowSystem.h"
-#include <Ic3/System/OpenGLDriver.h>
+#include <Ic3/System/Gfx/OpenGLDriver.h>
 #include <GL/glx.h>
 
 namespace Ic3::System

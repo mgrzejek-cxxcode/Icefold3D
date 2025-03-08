@@ -3,8 +3,8 @@
 #define __IC3_SYSTEM_PLATFORM_OSAPI_WIN32_EVENT_CORE_H__
 
 #include "Win32Common.h"
-#include <Ic3/System/EventCore.h>
-#include <Ic3/System/EventObject.h>
+#include <Ic3/System/Events/EventCore.h>
+#include <Ic3/System/Events/EventObject.h>
 #include <windowsx.h> // For GET_X_LPARAM/GET_Y_LPARAM
 
 namespace Ic3::System
