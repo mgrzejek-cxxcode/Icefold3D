@@ -53,26 +53,22 @@ namespace Ic3::System
 
 	io_size_t File::ReadImpl( void * pTargetBuffer, io_size_t pReadSize )
 	{
-		if( !pTargetBuffer || ( pTargetBufferSize == 0 ) || ( pReadSize == 0 ) )
+		if( !pTargetBuffer || ( pReadSize == 0 ) )
 		{
 			return 0;
 		}
 
-		const auto readSize = cppx::get_min_of( pTargetBufferSize, pReadSize );
-
-		return _NativeReadData( pTargetBuffer, readSize );
+		return _NativeReadData( pTargetBuffer, pReadSize );
 	}
 
 	io_size_t File::WriteImpl( const void * pData , io_size_t pWriteSize )
 	{
-		if( !pData || ( pDataSize == 0 ) || ( pWriteSize == 0 ) )
+		if( !pData || ( pWriteSize == 0 ) )
 		{
 			return 0;
 		}
 
-		const auto writeSize = cppx::get_min_of( pDataSize, pWriteSize );
-
-		return _NativeWriteData( pData, writeSize );
+		return _NativeWriteData( pData, pWriteSize );
 	}
 
 

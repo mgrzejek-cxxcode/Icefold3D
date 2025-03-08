@@ -38,12 +38,12 @@ namespace Ic3::System
 		return true;
 	}
 
-	io_size_t Pipe::ReadImpl( void * pTargetBuffer, io_size_t pReadSize ) override
+	io_size_t Pipe::ReadImpl( void * pTargetBuffer, io_size_t pReadSize )
 	{
 		return _NativeReadData( pTargetBuffer, pReadSize );
 	}
 
-	io_size_t Pipe::WriteImpl( const void * pData , io_size_t pWriteSize ) override
+	io_size_t Pipe::WriteImpl( const void * pData , io_size_t pWriteSize )
 	{
 		return _NativeWriteData( pData, pWriteSize );
 	}

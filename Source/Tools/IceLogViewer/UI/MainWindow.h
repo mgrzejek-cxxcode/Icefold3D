@@ -4,30 +4,47 @@
 #ifndef __IC3_TOOLS_ICE_LOG_VIEWER_MAIN_WINDOW_H__
 #define __IC3_TOOLS_ICE_LOG_VIEWER_MAIN_WINDOW_H__
 
-#include <wx/wx.h>
+#include <QLabel>
+#include <QMainWindow>
 
 namespace Ic3::Tools::IceLogViewer
 {
 
-    class MainWindow : public wxFrame
-    {
-    public:
-        MainWindow( const wxString & pWindowTitle );
-        virtual ~MainWindow();
+	class Application;
 
-        void OnQuit( wxCommandEvent & pEvent );
+	class MainWindow : public QMainWindow
+	{
+	public:
+		MainWindow( Application & pApplicationInstance );
+		virtual ~MainWindow();
 
-        void OnAbout( wxCommandEvent & pEvent );
+	private:
+		void _Initialize();
+		void _InitializeActions();
+		void _InitializeMenus();
 
-	protected:
-		virtual bool Layout() override final;
+	private slots:
+		void _ShAbout();
 
-    private:
-        void InitializeBaseContent();
+	private:
+		Application * _applicationInstance;
 
-    private:
-        wxDECLARE_EVENT_TABLE();
-    };
+		QLabel * _qtLabelInfo;
+
+		QMenu * _qtMenuItemFile;
+		QMenu * _qtMenuItemEdit;
+		QMenu * _qtMenuItemTools;
+		QMenu * _qtMenuItemHelp;
+
+		QAction * _qtActFileConnect;
+		QAction * _qtActFileSave;
+		QAction * _qtActFileSaveAs;
+		QAction * _qtActFileQuit;
+		QAction * _qtActEditClear;
+		QAction * _qtActEditFilters;
+		QAction * _qtActToolsOptions;
+		QAction * _qtActHelpAbout;
+	};
 
 }
 

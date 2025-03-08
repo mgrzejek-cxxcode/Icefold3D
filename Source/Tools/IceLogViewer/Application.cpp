@@ -2,20 +2,21 @@
 #include "Application.h"
 #include "UI/MainWindow.h"
 
+#include <QScreen>
+
 namespace Ic3::Tools::IceLogViewer
 {
 
-	bool Application::OnInit()
+	Application::Application( int pArgc, char ** pArgv )
+	: QApplication( pArgc, pArgv )
+	, _qtAppScreen( Application::primaryScreen())
+	{}
+
+	Application ::~Application() = default;
+
+	QSize Application::GetDisplaySize() const noexcept
 	{
-		if( !wxApp::OnInit() )
-		{
-			return false;
-		}
-
-		auto * mainWindow = new MainWindow( "IceLogViewer v0.1-alpha" );
-		mainWindow->Show( true );
-
-		return true;
+		return _qtAppScreen->size();
 	}
 
 }

@@ -15,8 +15,8 @@ set( CMAKE_CXX_EXTENSIONS OFF )
 
 project( Icefold )
 
-message("VERSION: CMake ${CMAKE_VERSION}")
-message("ROOT: ${CMAKE_CURRENT_SOURCE_DIR}")
+message("[Version]: CMake ${CMAKE_VERSION}")
+message("[Root Dir]: ${CMAKE_CURRENT_SOURCE_DIR}")
 
 include( "CMake/CMakeLists.txt" )
 
@@ -65,87 +65,68 @@ ebsSetInternal( IC3_LINK_DIR
 
 ebsSetInternal(IC3_MODULE_TARGET_LIST "")
 
-if ("${CM_EBS_SYSCONF_TARGET_SYSTEM}" STREQUAL "macOS")
-	set( CMAKE_OSX_SYSROOT
-			"/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk" )
-
-	if( NOT CMAKE_C_COMPILER )
-		set( CMAKE_C_COMPILER
-				"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang" )
-	endif()
-
-	if (NOT CMAKE_CXX_COMPILER)
-		set( CMAKE_CXX_COMPILER
-				"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++" )
-	endif ()
-
-	if (NOT CMAKE_OBJC_COMPILER)
-		set( CMAKE_OBJC_COMPILER
-				"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang" )
-	endif ()
-
-	if (NOT CMAKE_OBJCXX_COMPILER)
-		set( CMAKE_OBJCXX_COMPILER
-				"/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++" )
-	endif ()
-
-	# ebsSetInternal( IC3_EXTERNAL_WX_OSX_PREBUILT_SUFFIX_LIB_DIR "unicode-3.2" )
-	# ebsSetInternal( IC3_EXTERNAL_WX_OSX_PREBUILT_SUFFIX_LIB_NAME "u-3.2" )
-	# ebsSetInternal( IC3_EXTERNAL_WX_OSX_PREBUILT_LIB_DIR "${IC3_BASE_DIR}/External/Embedded/wx-prebuilt-osx/lib/Debug" )
-	# ebsAppendInternal( IC3_EXTERNAL_WX_OSX_PREBUILT_INCLUDE_DIR "${IC3_BASE_DIR}/External/Embedded/wx/include" )
-
-	ebsAppendInternal( IC3_EXTERNAL_WX_OSX_PREBUILT_INCLUDE_DIR
-			"${IC3_BASE_DIR}/External/Embedded/wx-prebuilt-osx/lib/wx/include/osx_cocoa-${IC3_EXTERNAL_WX_OSX_PREBUILT_SUFFIX_LIB_DIR}" )
-endif ()
-
-if ("${CM_EBS_SYSCONF_TARGET_SYSTEM}" STREQUAL "macOS")
-	ebsSetInternal( IC3_TARGET_INCLUDE_DIR_WX "${IC3_EXTERNAL_WX_OSX_PREBUILT_INCLUDE_DIR}" )
-	ebsSetInternal( IC3_TARGET_LIB_DIR_WX "${IC3_EXTERNAL_WX_OSX_PREBUILT_LIB_DIR}" )
-	ebsSetInternal( IC3_TARGET_LINK_LIB_WX "wx_osx_cocoa${IC3_EXTERNAL_WX_OSX_PREBUILT_SUFFIX_LIB_NAME}" )
-else()
-	ebsSetInternal( IC3_TARGET_INCLUDE_DIR_WX "" )
-	ebsSetInternal( IC3_TARGET_LIB_DIR_WX "" )
-	ebsSetInternal( IC3_TARGET_LINK_LIB_WX "wxmono" )
-endif()
-
-function( setTargetWxWidgetsIncludePath pTargetName pBuildConfigFlags )
-	foreach( includeDirFlag ${pBuildConfigFlags} )
-		if("${includeDirFlag}" MATCHES "^-I" )
-			string( REGEX REPLACE "^-I" "" includeDir "${includeDirFlag}" )
-			list( APPEND IC3_WX_CONFIG_INCDIR_LIST "${includeDir}" )
-		endif()
-	endforeach()
-	target_include_directories( "${pTargetName}" PUBLIC "${IC3_WX_CONFIG_INCDIR_LIST}" )
+function( ebsDisableQtSupportWithMessage pMessage )
+	message( WARNING "Qt support will be disabled. Reason: ${pMessage}." )
+	ebsSetInternal( IC3_CONFIG_QT_SUPPORT_FLAG FALSE )
 endfunction()
 
-function( setTargetWxWidgetsConfig pTargetName )
-	set( WX_BUILD_BUILD_ARGS "--cxxflags;--static=yes" )
-	set( WX_BUILD_LINK_ARGS "--libs;--static=yes" )
-	if( CM_EBS_SYSCONF_TARGET_DEBUG_ENABLED )
-		set( WX_BUILD_BUILD_ARGS "${WX_BUILD_BUILD_ARGS};--debug=yes" )
-		set( WX_BUILD_LINK_ARGS "${WX_BUILD_LINK_ARGS};--debug=yes" )
+function( ebsCheckQtConfigForWinDesktop )
+	if( $ENV{QT_ROOT} STREQUAL "" )
+		ebsDisableQtSupportWithMessage( "QT_ROOT environment variable is missing" )
+		return()
 	endif()
-	execute_process( COMMAND wx-config ${WX_BUILD_BUILD_ARGS} OUTPUT_VARIABLE IC3_WX_CONFIG_BUILD_FLAGS )
-	execute_process( COMMAND wx-config ${WX_BUILD_LINK_ARGS} OUTPUT_VARIABLE IC3_WX_CONFIG_LINK_FLAGS )
+	if( $ENV{QT_VERSION} STREQUAL "" )
+		ebsDisableQtSupportWithMessage( "QT_VERSION environment variable is missing" )
+		return()
+	endif()
+endfunction()
 
-	string( REGEX REPLACE "[ ]+" " " IC3_WX_CONFIG_BUILD_FLAGS ${IC3_WX_CONFIG_BUILD_FLAGS} )
-	string( REGEX REPLACE "^[ \n\r]+" "" IC3_WX_CONFIG_BUILD_FLAGS ${IC3_WX_CONFIG_BUILD_FLAGS} )
-	string( REGEX REPLACE "[ \n\r]+$" "" IC3_WX_CONFIG_BUILD_FLAGS ${IC3_WX_CONFIG_BUILD_FLAGS} )
+function( ebsGenerateQtConfig )
+	if( "${CM_EBS_SYSCONF_TARGET_SYSTEM}" MATCHES "WinDesktop" ) # More will be added here as we go
+		# For desktop platfroms, we enable Qt support (used only for building desktop tools and utilities).
+		ebsSetInternal( IC3_CONFIG_QT_SUPPORT_FLAG TRUE )
 
-	string( REGEX REPLACE "[ ]+" " " IC3_WX_CONFIG_LINK_FLAGS ${IC3_WX_CONFIG_LINK_FLAGS} )
-	string( REGEX REPLACE "^[ \n\r]+" "" IC3_WX_CONFIG_LINK_FLAGS ${IC3_WX_CONFIG_LINK_FLAGS})
-	string( REGEX REPLACE "[ \n\r]+$" "" IC3_WX_CONFIG_LINK_FLAGS ${IC3_WX_CONFIG_LINK_FLAGS})
+		if( "${CM_EBS_SYSCONF_TARGET_SYSTEM}" STREQUAL "WinDesktop" )
+			# Validate Windows-specific Qt configuration. This will automatically clear the support flag in case of an error.
+			ebsCheckQtConfigForWinDesktop()
+			# If still set, everything is fine and we can proceed.
+			if( IC3_CONFIG_QT_SUPPORT_FLAG )
+				# Unify the slashes to a common format (we don't like the backslashing mess).
+				string( REGEX REPLACE "\\\\" "/" IC3_CONFIG_QT_ROOT_TMP "$ENV{QT_ROOT}" )
+				ebsSetInternal( IC3_CONFIG_QT_ROOT "${IC3_CONFIG_QT_ROOT_TMP}" )
+				ebsSetInternal( IC3_CONFIG_QT_VERSION "$ENV{QT_VERSION}" )
 
-	string(REGEX REPLACE " " ";" IC3_WX_CONFIG_BUILD_FLAGS_LIST ${IC3_WX_CONFIG_BUILD_FLAGS})
+				if( "${CM_EBS_SYSCONF_HOST_COMPILER}" MATCHES "MSVC" )
+					if( "${CM_EBS_SYSCONF_HOST_TOOLSET_ARCH}" MATCHES "arm64" )
+						ebsSetInternal( IC3_CONFIG_QT_BASE_DIR "${IC3_CONFIG_QT_ROOT}/${IC3_CONFIG_QT_VERSION}/msvc${CM_EBS_SYSCONF_HOST_COMPILER_VERSION}_arm64" )
+					elseif( "${CM_EBS_SYSCONF_HOST_TOOLSET_ARCH}" MATCHES "x86-64" )
+						ebsSetInternal( IC3_CONFIG_QT_BASE_DIR "${IC3_CONFIG_QT_ROOT}/${IC3_CONFIG_QT_VERSION}/msvc${CM_EBS_SYSCONF_HOST_COMPILER_VERSION}_64" )
+					endif()
+				else()
+					# This might trigger in case of change of the Qt version or a new toolset version - adjust the logic above if necessary.
+					ebsDisableQtSupportWithMessage( "The current compiler (${CM_EBS_SYSCONF_HOST_COMPILER}) is not yet supported for Qt on this platform" )
+				endif()
+			endif()
+		endif()
 
-	#message( STATUS "IC3_WX_CONFIG_BUILD_FLAGS: [${IC3_WX_CONFIG_BUILD_FLAGS}]" )
-	#message( STATUS "IC3_WX_CONFIG_LINK_FLAGS: [${IC3_WX_CONFIG_LINK_FLAGS}]" )
-	#message( STATUS "IC3_WX_CONFIG_BUILD_FLAGS_LIST: [${IC3_WX_CONFIG_BUILD_FLAGS_LIST}]" )
+		if( IC3_CONFIG_QT_BASE_DIR )
+			message( STATUS "Qt support enabled. QT_BASE_DIR = ${IC3_CONFIG_QT_BASE_DIR}" )
+		endif()
+	else()
+		# This will also trigger for platform we have not added support for.
+		ebsDisableQtSupportWithMessage( "The current system (${CM_EBS_SYSCONF_TARGET_SYSTEM}) is not yet supported for Qt" )
+	endif()
+endfunction()
 
-	target_compile_options( "${pTargetName}" PRIVATE "${IC3_WX_CONFIG_BUILD_FLAGS}" )
-	target_link_libraries( "${pTargetName}" PUBLIC "${IC3_WX_CONFIG_LINK_FLAGS}" )
+ebsGenerateQtConfig()
 
-	setTargetWxWidgetsIncludePath( ${pTargetName} "${IC3_WX_CONFIG_BUILD_FLAGS_LIST}" )
+if( IC3_CONFIG_QT_SUPPORT_FLAG )
+	find_package( Qt6 REQUIRED COMPONENTS Core Gui Widgets )
+endif()
+
+function( ebsAddTargetQtSupport pTargetName pQtLibs )
+	target_include_directories( "${pTargetName}" PRIVATE :"${IC3_CONFIG_QT_BASE_DIR}/include" )
+	target_link_directories( "${pTargetName}" PRIVATE :"${IC3_CONFIG_QT_BASE_DIR}/lib" )
 endfunction()
 
 add_subdirectory( "External/Embedded" )
