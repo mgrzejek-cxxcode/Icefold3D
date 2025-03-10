@@ -24,14 +24,34 @@ namespace Ic3::Graphics::GCI
 			ID3D11PixelShader * const mD3D11PixelShader;
 			ID3D11ComputeShader * const mD3D11ComputeShader;
 		};
+
 		ComPtr<ID3D11DeviceChild> const mD3D11ShaderReference;
 
-		DX11Shader( DX11GPUDevice & pGPUDevice, ComPtr<ID3D11VertexShader> pD3D11VertexShader, std::unique_ptr<ShaderBinary> pShaderBinary );
-		DX11Shader( DX11GPUDevice & pGPUDevice, ComPtr<ID3D11HullShader> pD3D11HullShader, std::unique_ptr<ShaderBinary> pShaderBinary );
-		DX11Shader( DX11GPUDevice & pGPUDevice, ComPtr<ID3D11DomainShader> pD3D11DomainShader, std::unique_ptr<ShaderBinary> pShaderBinary );
-		DX11Shader( DX11GPUDevice & pGPUDevice, ComPtr<ID3D11GeometryShader> pD3D11GeometryShader, std::unique_ptr<ShaderBinary> pShaderBinary );
-		DX11Shader( DX11GPUDevice & pGPUDevice, ComPtr<ID3D11PixelShader> pD3D11PixelShader, std::unique_ptr<ShaderBinary> pShaderBinary );
-		DX11Shader( DX11GPUDevice & pGPUDevice, ComPtr<ID3D11ComputeShader> pD3D11ComputeShader, std::unique_ptr<ShaderBinary> pShaderBinary );
+		DX11Shader(
+			DX11GPUDevice & pGPUDevice,
+			ComPtr<ID3D11VertexShader> pD3D11VertexShader,
+			std::unique_ptr<ShaderBinary> pShaderBinary );
+		DX11Shader(
+			DX11GPUDevice & pGPUDevice,
+			ComPtr<ID3D11HullShader> pD3D11HullShader,
+			std::unique_ptr<ShaderBinary> pShaderBinary );
+		DX11Shader(
+			DX11GPUDevice & pGPUDevice,
+			ComPtr<ID3D11DomainShader> pD3D11DomainShader,
+			std::unique_ptr<ShaderBinary> pShaderBinary );
+		DX11Shader(
+			DX11GPUDevice & pGPUDevice,
+			ComPtr<ID3D11GeometryShader> pD3D11GeometryShader,
+			std::unique_ptr<ShaderBinary> pShaderBinary );
+		DX11Shader(
+			DX11GPUDevice & pGPUDevice,
+			ComPtr<ID3D11PixelShader> pD3D11PixelShader,
+			std::unique_ptr<ShaderBinary> pShaderBinary );
+		DX11Shader(
+			DX11GPUDevice & pGPUDevice,
+			ComPtr<ID3D11ComputeShader> pD3D11ComputeShader,
+			std::unique_ptr<ShaderBinary> pShaderBinary );
+
 		virtual ~DX11Shader();
 
 		static DX11ShaderHandle Create( DX11GPUDevice & pDX11GPUDevice, const ShaderCreateInfo & pCreateInfo );

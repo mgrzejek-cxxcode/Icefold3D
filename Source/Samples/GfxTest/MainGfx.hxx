@@ -354,11 +354,10 @@ int main( int pArgc, const char ** pArgv )
 		offScrRenderPassDescriptor = gpuDevicePtr->CreateRenderPassDescriptor( rpdCreateInfo );
 	}
 
-	const auto kSDIDRootSignatureDefault = GCI::CXU::DeclarePipelineStateDescriptorIDRootSignature( 0x001 );
+	const auto kSDIDRootSignatureDefault = GCI::CXU::MakePipelineStateDescriptorIDRootSignature( 0x001 );
 	RootSignatureDescriptorHandle rsDescriptor;
 	{
 		RootSignatureDescriptorCreateInfo rsDescriptorCI;
-		rsDescriptorCI.descriptorID = kSDIDRootSignatureDefault;
 		rsDescriptorCI.rootSignatureDesc.activeShaderStagesMask = GCI::eShaderStageFlagGraphicsVertexBit | GCI::eShaderStageFlagGraphicsPixelBit;
 		rsDescriptorCI.rootSignatureDesc.descriptorSetsNum = 1;
 		rsDescriptorCI.rootSignatureDesc.descriptorSetArray[0].descriptorType = GCI::EShaderInputDescriptorType::Resource;
@@ -368,11 +367,10 @@ int main( int pArgc, const char ** pArgv )
 		rsDescriptor = gpuDevicePtr->CreateRootSignatureDescriptor( rsDescriptorCI );
 	}
 
-	const auto kSDIDGraphicsShaderLinkageDefault = GCI::CXU::DeclarePipelineStateDescriptorIDGraphicsShaderLinkage( 0x001 );
+	const auto kSDIDGraphicsShaderLinkageDefault = GCI::CXU::MakePipelineStateDescriptorIDGraphicsShaderLinkage( 0x001 );
 	GraphicsShaderLinkageDescriptorHandle gslDescriptor;
 	{
 		GraphicsShaderLinkageDescriptorCreateInfo gslDescriptorCI;
-		gslDescriptorCI.descriptorID = kSDIDGraphicsShaderLinkageDefault;
 		gslDescriptorCI.shaderBinding.AddShader( shaderLibrary->GetShader( "SID_DEFAULT_PASSTHROUGH_VS" ) );
 		gslDescriptorCI.shaderBinding.AddShader( shaderLibrary->GetShader( "SID_DEFAULT_PASSTHROUGH_PS" ) );
 		gslDescriptor = gpuDevicePtr->CreateGraphicsShaderLinkageDescriptor( gslDescriptorCI );
@@ -381,10 +379,10 @@ int main( int pArgc, const char ** pArgv )
 	GraphicsPipelineStateObjectHandle mainPSO;
 	{
 		GraphicsPipelineStateObjectCreateInfo psoCI;
-		psoCI.blendStateDescriptorID = GID::kGfxIDStateDescriptorBlendDefault;
-		psoCI.depthStencilStateDescriptorID = GID::kGfxIDStateDescriptorDepthStencilDepthTestEnable;
-		psoCI.rasterizerStateDescriptorID = GID::kGfxIDStateDescriptorRasterizerSolidCullBackCCW;
-		psoCI.vertexAttributeLayoutDescriptorID = GID::kGfxIDStateDescriptorIAVertexAttributeLayoutDefault;
+		psoCI.blendStateDescriptorID = gciSharedStateLibrary->sSharedDescriptors.descriptorIDBlendDefault;
+		psoCI.depthStencilStateDescriptorID = gciSharedStateLibrary->sSharedDescriptors.descriptorIDDepthStencilDepthTestEnable;
+		psoCI.rasterizerStateDescriptorID = gciSharedStateLibrary->sSharedDescriptors.descriptorIDRasterizerSolidCullBackCCW;
+		psoCI.vertexAttributeLayoutDescriptorID = gciSharedStateLibrary->sSharedDescriptors.descriptorIDIAVertexAttributeLayoutDefault;
 
 		psoCI.shaderLinkageStateDescriptor = gslDescriptor;
 		psoCI.rootSignatureDescriptor = rsDescriptor;

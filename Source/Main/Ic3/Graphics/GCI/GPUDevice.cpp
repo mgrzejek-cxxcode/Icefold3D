@@ -4,12 +4,14 @@
 #include "GPUDeviceNull.h"
 #include "GPUDriver.h"
 #include "PresentationLayer.h"
+#include "Resources/GPUBuffer.h"
 #include "Resources/Shader.h"
 #include "Resources/Texture.h"
 #include "Resources/RenderTargetTexture.h"
 #include "State/GraphicsPipelineStateDescriptorShader.h"
 #include "State/GraphicsPipelineStateCommon.h"
 #include "State/PipelineStateDescriptorManager.h"
+#include "State/Sampler.h"
 
 namespace Ic3::Graphics::GCI
 {
@@ -209,22 +211,42 @@ namespace Ic3::Graphics::GCI
 
 	GPUBufferHandle GPUDevice::CreateGPUBuffer( const GPUBufferCreateInfo & pCreateInfo )
 	{
-	    return _DrvCreateGPUBuffer( pCreateInfo );
+	    const auto gpuBufferObject = _DrvCreateGPUBuffer( pCreateInfo );
+		if( gpuBufferObject && pCreateInfo.gfxObjectUID )
+		{
+			gpuBufferObject->SetObjectUID( pCreateInfo.gfxObjectUID );
+		}
+		return gpuBufferObject;
 	}
 
 	SamplerHandle GPUDevice::CreateSampler( const SamplerCreateInfo & pCreateInfo )
 	{
-	    return _DrvCreateSampler( pCreateInfo );
+	    const auto samplerObject = _DrvCreateSampler( pCreateInfo );
+		if( samplerObject && pCreateInfo.gfxObjectUID )
+		{
+			samplerObject->SetObjectUID( pCreateInfo.gfxObjectUID );
+		}
+		return samplerObject;
 	}
 
 	ShaderHandle GPUDevice::CreateShader( const ShaderCreateInfo & pCreateInfo )
 	{
-	    return _DrvCreateShader( pCreateInfo );
+	    const auto shaderObject = _DrvCreateShader( pCreateInfo );
+		if( shaderObject && pCreateInfo.gfxObjectUID )
+		{
+			shaderObject->SetObjectUID( pCreateInfo.gfxObjectUID );
+		}
+		return shaderObject;
 	}
 
 	TextureHandle GPUDevice::CreateTexture( const TextureCreateInfo & pCreateInfo )
 	{
-	    return _DrvCreateTexture( pCreateInfo );
+	    const auto textureObject = _DrvCreateTexture( pCreateInfo );
+		if( textureObject && pCreateInfo.gfxObjectUID )
+		{
+			textureObject->SetObjectUID( pCreateInfo.gfxObjectUID );
+		}
+		return textureObject;
 	}
 
 	RenderTargetTextureHandle GPUDevice::CreateRenderTargetTexture( const RenderTargetTextureCreateInfo & pCreateInfo )
@@ -267,7 +289,7 @@ namespace Ic3::Graphics::GCI
 			if( !blendStateDescriptor && CXU::IsPipelineStateDescriptorIDValid( pCreateInfo.blendStateDescriptorID ) )
 			{
 				blendStateDescriptor =
-					mPipelineStateDescriptorManager->GetCachedDescriptorByID<BlendStateDescriptor>(
+					mPipelineStateDescriptorManager->GetCachedDescriptorOfTypeByID<BlendStateDescriptor>(
 						pCreateInfo.blendStateDescriptorID );
 
 				if( !blendStateDescriptor )
@@ -283,7 +305,7 @@ namespace Ic3::Graphics::GCI
 			if( !depthStencilStateDescriptor && CXU::IsPipelineStateDescriptorIDValid( pCreateInfo.depthStencilStateDescriptorID ) )
 			{
 				depthStencilStateDescriptor =
-					mPipelineStateDescriptorManager->GetCachedDescriptorByID<DepthStencilStateDescriptor>(
+					mPipelineStateDescriptorManager->GetCachedDescriptorOfTypeByID<DepthStencilStateDescriptor>(
 						pCreateInfo.depthStencilStateDescriptorID );
 
 				if( !depthStencilStateDescriptor )
@@ -299,7 +321,7 @@ namespace Ic3::Graphics::GCI
 			if( !rasterizerStateDescriptor && CXU::IsPipelineStateDescriptorIDValid( pCreateInfo.rasterizerStateDescriptorID ) )
 			{
 				rasterizerStateDescriptor =
-					mPipelineStateDescriptorManager->GetCachedDescriptorByID<RasterizerStateDescriptor>(
+					mPipelineStateDescriptorManager->GetCachedDescriptorOfTypeByID<RasterizerStateDescriptor>(
 						pCreateInfo.rasterizerStateDescriptorID );
 
 				if( !rasterizerStateDescriptor )
@@ -315,7 +337,7 @@ namespace Ic3::Graphics::GCI
 			if( !rootSignatureDescriptor && CXU::IsPipelineStateDescriptorIDValid( pCreateInfo.rootSignatureDescriptorID ) )
 			{
 				rootSignatureDescriptor =
-					mPipelineStateDescriptorManager->GetCachedDescriptorByID<RootSignatureDescriptor>(
+					mPipelineStateDescriptorManager->GetCachedDescriptorOfTypeByID<RootSignatureDescriptor>(
 						pCreateInfo.rootSignatureDescriptorID );
 
 				if( !rootSignatureDescriptor )
@@ -331,7 +353,7 @@ namespace Ic3::Graphics::GCI
 			if( !shaderLinkageStateDescriptor && CXU::IsPipelineStateDescriptorIDValid( pCreateInfo.shaderLinkageStateDescriptorID ) )
 			{
 				shaderLinkageStateDescriptor =
-					mPipelineStateDescriptorManager->GetCachedDescriptorByID<GraphicsShaderLinkageDescriptor>(
+					mPipelineStateDescriptorManager->GetCachedDescriptorOfTypeByID<GraphicsShaderLinkageDescriptor>(
 						pCreateInfo.shaderLinkageStateDescriptorID );
 
 				if( !shaderLinkageStateDescriptor )
@@ -347,7 +369,7 @@ namespace Ic3::Graphics::GCI
 			if( !vertexAttributeLayoutDescriptor && CXU::IsPipelineStateDescriptorIDValid( pCreateInfo.vertexAttributeLayoutDescriptorID ) )
 			{
 				vertexAttributeLayoutDescriptor =
-					mPipelineStateDescriptorManager->GetCachedDescriptorByID<VertexAttributeLayoutDescriptor>(
+					mPipelineStateDescriptorManager->GetCachedDescriptorOfTypeByID<VertexAttributeLayoutDescriptor>(
 						pCreateInfo.vertexAttributeLayoutDescriptorID );
 
 				if( !vertexAttributeLayoutDescriptor )
@@ -362,45 +384,39 @@ namespace Ic3::Graphics::GCI
 	}
 	
 	BlendStateDescriptorHandle GPUDevice::CreateBlendStateDescriptor(
-			const BlendStateDescriptorCreateInfo & pCreateInfo,
-			const cppx::immutable_string & pOptionalDescriptorName )
+			const BlendStateDescriptorCreateInfo & pCreateInfo )
 	{
-		return mPipelineStateDescriptorManager->CreateBlendStateDescriptor( pCreateInfo, pOptionalDescriptorName );
+		return mPipelineStateDescriptorManager->CreateBlendStateDescriptor( pCreateInfo );
 	}
 
 	DepthStencilStateDescriptorHandle GPUDevice::CreateDepthStencilStateDescriptor(
-			const DepthStencilStateDescriptorCreateInfo & pCreateInfo,
-			const cppx::immutable_string & pOptionalDescriptorName )
+			const DepthStencilStateDescriptorCreateInfo & pCreateInfo )
 	{
-		return mPipelineStateDescriptorManager->CreateDepthStencilStateDescriptor( pCreateInfo, pOptionalDescriptorName );
+		return mPipelineStateDescriptorManager->CreateDepthStencilStateDescriptor( pCreateInfo );
 	}
 
 	RasterizerStateDescriptorHandle GPUDevice::CreateRasterizerStateDescriptor(
-			const RasterizerStateDescriptorCreateInfo & pCreateInfo,
-			const cppx::immutable_string & pOptionalDescriptorName )
+			const RasterizerStateDescriptorCreateInfo & pCreateInfo )
 	{
-		return mPipelineStateDescriptorManager->CreateRasterizerStateDescriptor( pCreateInfo, pOptionalDescriptorName );
+		return mPipelineStateDescriptorManager->CreateRasterizerStateDescriptor( pCreateInfo );
 	}
 
 	GraphicsShaderLinkageDescriptorHandle GPUDevice::CreateGraphicsShaderLinkageDescriptor(
-			const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo,
-			const cppx::immutable_string & pOptionalDescriptorName )
+			const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo )
 	{
-		return mPipelineStateDescriptorManager->CreateGraphicsShaderLinkageDescriptor( pCreateInfo, pOptionalDescriptorName );
+		return mPipelineStateDescriptorManager->CreateGraphicsShaderLinkageDescriptor( pCreateInfo );
 	}
 
 	VertexAttributeLayoutDescriptorHandle GPUDevice::CreateVertexAttributeLayoutDescriptor(
-			const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo,
-			const cppx::immutable_string & pOptionalDescriptorName )
+			const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo )
 	{
-		return mPipelineStateDescriptorManager->CreateVertexAttributeLayoutDescriptor( pCreateInfo, pOptionalDescriptorName );
+		return mPipelineStateDescriptorManager->CreateVertexAttributeLayoutDescriptor( pCreateInfo );
 	}
 
 	RootSignatureDescriptorHandle GPUDevice::CreateRootSignatureDescriptor(
-			const RootSignatureDescriptorCreateInfo & pCreateInfo,
-			const cppx::immutable_string & pOptionalDescriptorName )
+			const RootSignatureDescriptorCreateInfo & pCreateInfo )
 	{
-		return mPipelineStateDescriptorManager->CreateRootSignatureDescriptor( pCreateInfo, pOptionalDescriptorName );
+		return mPipelineStateDescriptorManager->CreateRootSignatureDescriptor( pCreateInfo );
 	}
 
 	RenderPassDescriptorHandle GPUDevice::CreateRenderPassDescriptor(

@@ -80,7 +80,7 @@ namespace Ic3::Graphics::GCI
 		ECompFunc textureCompareFunc;
 	};
 
-	struct SamplerCreateInfo
+	struct SamplerCreateInfo : public GfxObjectCreateInfo
 	{
 		SamplerConfig samplerConfig;
 	};

@@ -170,6 +170,7 @@ namespace Ic3::Graphics::GCI
 
 		static TGfxHandle<GLVertexAttributeLayoutDescriptorCore> CreateInstance(
 				GLGPUDevice & pGPUDevice,
+				pipeline_state_descriptor_id_t pDescriptorID,
 				const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo );
 
 	private:
@@ -193,6 +194,7 @@ namespace Ic3::Graphics::GCI
 
 		static TGfxHandle<GLVertexAttributeLayoutDescriptorCompat> CreateInstance(
 				GLGPUDevice & pGPUDevice,
+				pipeline_state_descriptor_id_t pDescriptorID,
 				const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo );
 	};
 
@@ -212,6 +214,7 @@ namespace Ic3::Graphics::GCI
 
 		static TGfxHandle<GLVertexSourceBindingDescriptor> CreateInstance(
 				GLGPUDevice & pGPUDevice,
+				pipeline_state_descriptor_id_t pDescriptorID,
 				const VertexSourceBindingDescriptorCreateInfo & pCreateInfo );
 	};
 

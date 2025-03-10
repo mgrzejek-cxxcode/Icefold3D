@@ -96,6 +96,7 @@ namespace Ic3::Graphics::GCI
 
 		static TGfxHandle<GLBlendStateDescriptor> CreateInstance(
 				GLGPUDevice & pGPUDevice,
+				pipeline_state_descriptor_id_t pDescriptorID,
 				const BlendStateDescriptorCreateInfo & pCreateInfo );
 	};
 
@@ -118,6 +119,7 @@ namespace Ic3::Graphics::GCI
 
 		static TGfxHandle<GLDepthStencilStateDescriptor> CreateInstance(
 				GLGPUDevice & pGPUDevice,
+				pipeline_state_descriptor_id_t pDescriptorID,
 				const DepthStencilStateDescriptorCreateInfo & pCreateInfo );
 	};
 
@@ -140,6 +142,7 @@ namespace Ic3::Graphics::GCI
 
 		static TGfxHandle<GLRasterizerStateDescriptor> CreateInstance(
 				GLGPUDevice & pGPUDevice,
+				pipeline_state_descriptor_id_t pDescriptorID,
 				const RasterizerStateDescriptorCreateInfo & pCreateInfo );
 	};
 

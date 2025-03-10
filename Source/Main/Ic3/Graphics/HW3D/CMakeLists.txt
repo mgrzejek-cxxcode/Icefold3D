@@ -34,7 +34,7 @@ elseif( "${CM_EBS_SYSCONF_TARGET_SYSTEM}" STREQUAL "WinDesktop" )
     set( _IC3_GRAPHICS_HW3D_TARGET_LIST
             "GL"
             "GL4"
-            #"DX"
+            "DX"
             #"DX11"
             #"DX12"
             )

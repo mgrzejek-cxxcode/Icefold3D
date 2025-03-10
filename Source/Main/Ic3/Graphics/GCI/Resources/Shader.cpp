@@ -14,8 +14,8 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	Shader::Shader( GPUDevice & pGPUDevice, EShaderType pShaderType, GfxObjectID pShaderObjectID )
-	: TGfxObjectIDProxy( pShaderObjectID, pGPUDevice )
+	Shader::Shader( GPUDevice & pGPUDevice, EShaderType pShaderType )
+	: GPUDeviceChildObject( pGPUDevice )
 	, mShaderType( pShaderType )
 	{}
 

@@ -10,7 +10,7 @@
 namespace cppx
 {
 
-	template <typename TPChar = char>
+	template <typename TPChar>
 	class string_base_view
 	{
 		static_assert( meta::is_type_on_type_list<TPChar, char, wchar_t, char16_t, char32_t>::value, "Invalid char type for StringView" );
@@ -72,6 +72,11 @@ namespace cppx
 		operator std::basic_string_view<TPChar>() const noexcept
 		{
 			return { _basePtr, _length };
+		}
+
+		CPPX_ATTR_NO_DISCARD const char_type * data() const
+		{
+			return _basePtr;
 		}
 
 		CPPX_ATTR_NO_DISCARD const char_type * str() const

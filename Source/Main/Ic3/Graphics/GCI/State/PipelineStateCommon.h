@@ -28,7 +28,7 @@ namespace Ic3::Graphics::GCI
 	inline constexpr auto kSDIRenderTargetDescriptorScreenDefaultUID = CXU::MakePipelineStateDescriptorIDUserComponent( 0u );
 
 	inline constexpr auto kSDIRenderTargetDescriptorScreenDefault =
-			CXU::DeclarePipelineStateDescriptorID( EPipelineStateDescriptorType::DTRenderTarget, kSDIRenderTargetDescriptorScreenDefaultUID );
+			CXU::MakePipelineStateDescriptorID( EPipelineStateDescriptorType::DTRenderTarget, kSDIRenderTargetDescriptorScreenDefaultUID );
 
 	/*
 	 * @brief A monolithic state object, containing complete state information for the relative pipeline functionality.

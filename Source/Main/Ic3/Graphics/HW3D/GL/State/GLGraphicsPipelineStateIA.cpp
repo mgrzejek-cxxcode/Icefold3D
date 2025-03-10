@@ -98,6 +98,7 @@ namespace Ic3::Graphics::GCI
 
 	TGfxHandle<GLVertexAttributeLayoutDescriptorCore> GLVertexAttributeLayoutDescriptorCore::CreateInstance(
 			GLGPUDevice & pGPUDevice,
+			pipeline_state_descriptor_id_t pDescriptorID,
 			const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo )
 	{
 		const auto glcAttributeLayoutData = GCU::IATranslateVertexAttributeLayoutDefinitionGL( pCreateInfo.layoutDefinition );
@@ -110,7 +111,7 @@ namespace Ic3::Graphics::GCI
 
 		auto attributeLayoutDescriptor = CreateGfxObject<GLVertexAttributeLayoutDescriptorCore>(
 			pGPUDevice,
-			pCreateInfo.descriptorID,
+			pDescriptorID,
 			glcAttributeLayoutData,
 			std::move( vertexArrayObject ),
 			glcAttributeLayoutData.glcPrimitiveTopology );
@@ -131,13 +132,14 @@ namespace Ic3::Graphics::GCI
 
 	TGfxHandle<GLVertexAttributeLayoutDescriptorCompat> GLVertexAttributeLayoutDescriptorCompat::CreateInstance(
 			GLGPUDevice & pGPUDevice,
+			pipeline_state_descriptor_id_t pDescriptorID,
 			const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo )
 	{
 		const auto glcAttributeLayoutData = GCU::IATranslateVertexAttributeLayoutDefinitionGL( pCreateInfo.layoutDefinition );
 
 		auto attributeLayoutDescriptor = CreateGfxObject<GLVertexAttributeLayoutDescriptorCompat>(
 			pGPUDevice,
-			pCreateInfo.descriptorID,
+			pDescriptorID,
 			glcAttributeLayoutData );
 
 		return attributeLayoutDescriptor;
@@ -155,13 +157,14 @@ namespace Ic3::Graphics::GCI
 
 	TGfxHandle<GLVertexSourceBindingDescriptor> GLVertexSourceBindingDescriptor::CreateInstance(
 			GLGPUDevice & pGPUDevice,
+			pipeline_state_descriptor_id_t pDescriptorID,
 			const VertexSourceBindingDescriptorCreateInfo & pCreateInfo )
 	{
 		const auto glcSourceBindingData = GCU::IATranslateVertexSourceBindingDefinitionGL( pCreateInfo.bindingDefinition );
 
 		auto stateDescriptor = CreateGfxObject<GLVertexSourceBindingDescriptor>(
 			pGPUDevice,
-			pCreateInfo.descriptorID,
+			pDescriptorID,
 			glcSourceBindingData );
 
 		return stateDescriptor;

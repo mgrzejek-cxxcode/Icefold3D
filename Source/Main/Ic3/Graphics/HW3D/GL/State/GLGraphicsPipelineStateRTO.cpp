@@ -27,6 +27,7 @@ namespace Ic3::Graphics::GCI
 
 	TGfxHandle<GLRenderTargetDescriptor> GLRenderTargetDescriptor::CreateInstance(
 			GLGPUDevice & pGPUDevice,
+			pipeline_state_descriptor_id_t pDescriptorID,
 			const RenderTargetDescriptorCreateInfo & pCreateInfo )
 	{
 		if( !GCU::RTOValidateRenderTargetBinding( pCreateInfo.rtArrayBinding ) )
@@ -38,7 +39,7 @@ namespace Ic3::Graphics::GCI
 
 		auto glcRenderTargetBindingDescriptor = CreateGfxObject<GLRenderTargetDescriptor>(
 				pGPUDevice,
-				pCreateInfo.descriptorID,
+				pDescriptorID,
 				std::move( glcRenderTargetBindingStatic ) );
 
 		return glcRenderTargetBindingDescriptor;

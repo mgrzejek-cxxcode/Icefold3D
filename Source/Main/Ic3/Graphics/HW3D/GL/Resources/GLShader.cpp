@@ -7,12 +7,18 @@
 namespace Ic3::Graphics::GCI
 {
 
-	GLShader::GLShader( GLGPUDevice & pGPUDevice, EShaderType pShaderType, GLShaderObjectHandle pGLShaderObject )
+	GLShader::GLShader(
+			GLGPUDevice & pGPUDevice,
+			EShaderType pShaderType,
+			GLShaderObjectHandle pGLShaderObject )
 	: Shader( pGPUDevice, pShaderType )
 	, mGLShaderObject( std::move( pGLShaderObject ) )
 	{}
 
-	GLShader::GLShader( GLGPUDevice & pGPUDevice, EShaderType pShaderType, GLShaderProgramObjectHandle pGLShaderProgramObject )
+	GLShader::GLShader(
+			GLGPUDevice & pGPUDevice,
+			EShaderType pShaderType,
+			GLShaderProgramObjectHandle pGLShaderProgramObject )
 	: Shader( pGPUDevice, pShaderType )
 	, mGLShaderProgramObject( std::move( pGLShaderProgramObject ) )
 	{}
@@ -22,13 +28,17 @@ namespace Ic3::Graphics::GCI
 	GLShaderHandle GLShader::CreateInstance( GLGPUDevice & pGPUDevice, const ShaderCreateInfo & pCreateInfo )
 	{
 		return CreateInstanceFromSource(
-			pGPUDevice,
-			pCreateInfo.shaderType,
-			pCreateInfo.shaderSourceView.data(),
-			pCreateInfo.shaderSourceView.size() );
+				pGPUDevice,
+				pCreateInfo.shaderType,
+				pCreateInfo.shaderSourceView.data(),
+				pCreateInfo.shaderSourceView.size() );
 	}
 
-	GLShaderHandle GLShader::CreateInstanceFromSource( GLGPUDevice & pGPUDevice, EShaderType pShaderType, const void * pSource, size_t pSourceLength )
+	GLShaderHandle GLShader::CreateInstanceFromSource(
+			GLGPUDevice & pGPUDevice,
+			EShaderType pShaderType,
+			const void * pSource,
+			size_t pSourceLength )
 	{
 		const auto openglShaderType = ATL::translateShaderType( pShaderType );
 		const auto runtimeVersion = pGPUDevice.mSysGLSupportInfo.apiVersion;

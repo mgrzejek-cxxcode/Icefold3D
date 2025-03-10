@@ -5,18 +5,20 @@
 namespace Ic3::Graphics::GCI
 {
 
-	GfxObject::GfxObject() = default;
+	GfxObject::GfxObject()
+	: _gfxObjectID( kGfxObjectIDEmpty )
+	{}
 
 	GfxObject::~GfxObject() = default;
 
-	GfxObjectID GfxObject::GetObjectID() const noexcept
+	void GfxObject::SetObjectUID( GfxObjectUID pGfxObjectUID )
 	{
-		return kGfxObjectIDEmpty;
-	}
+		SetObjectID( pGfxObjectUID.id );
 
-	GfxObjectName GfxObject::GetObjectName() const noexcept
-	{
-		return nullptr;
+		if( pGfxObjectUID.name )
+		{
+			SetObjectDebugName( std::string( pGfxObjectUID.name ) );
+		}
 	}
 
 

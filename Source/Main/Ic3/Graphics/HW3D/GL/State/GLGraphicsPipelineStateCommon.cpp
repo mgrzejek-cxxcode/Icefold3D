@@ -19,13 +19,14 @@ namespace Ic3::Graphics::GCI
 
 	TGfxHandle<GLBlendStateDescriptor> GLBlendStateDescriptor::CreateInstance(
 			GLGPUDevice & pGPUDevice,
+			pipeline_state_descriptor_id_t pDescriptorID,
 			const BlendStateDescriptorCreateInfo & pCreateInfo )
 	{
 		const auto glcBlendSettings = GCU::TranslateBlendSettingsGL( pCreateInfo.blendSettings );
 
 		auto stateDescriptor = CreateGfxObject<GLBlendStateDescriptor>(
 				pGPUDevice,
-				pCreateInfo.descriptorID,
+				pDescriptorID,
 				pCreateInfo.blendSettings.flags,
 				glcBlendSettings );
 
@@ -46,13 +47,14 @@ namespace Ic3::Graphics::GCI
 
 	TGfxHandle<GLDepthStencilStateDescriptor> GLDepthStencilStateDescriptor::CreateInstance(
 			GLGPUDevice & pGPUDevice,
+			pipeline_state_descriptor_id_t pDescriptorID,
 			const DepthStencilStateDescriptorCreateInfo & pCreateInfo )
 	{
 		const auto glcDepthStencilSettings = GCU::TranslateDepthStencilSettingsGL( pCreateInfo.depthStencilSettings );
 
 		auto stateDescriptor = CreateGfxObject<GLDepthStencilStateDescriptor>(
 				pGPUDevice,
-				pCreateInfo.descriptorID,
+				pDescriptorID,
 				pCreateInfo.depthStencilSettings.commonFlags,
 				glcDepthStencilSettings );
 
@@ -73,13 +75,14 @@ namespace Ic3::Graphics::GCI
 
 	TGfxHandle<GLRasterizerStateDescriptor> GLRasterizerStateDescriptor::CreateInstance(
 			GLGPUDevice & pGPUDevice,
+			pipeline_state_descriptor_id_t pDescriptorID,
 			const RasterizerStateDescriptorCreateInfo & pCreateInfo )
 	{
 		const auto glcRasterizerSettings = GCU::TranslateRasterizerSettingsGL( pCreateInfo.rasterizerSettings );
 
 		auto stateDescriptor = CreateGfxObject<GLRasterizerStateDescriptor>(
 				pGPUDevice,
-				pCreateInfo.descriptorID,
+				pDescriptorID,
 				pCreateInfo.rasterizerSettings.flags,
 				glcRasterizerSettings );
 

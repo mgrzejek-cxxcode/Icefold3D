@@ -7,37 +7,55 @@
 namespace Ic3::Graphics::GCI
 {
 
-	DX11Shader::DX11Shader( DX11GPUDevice & pGPUDevice, ComPtr<ID3D11VertexShader> pD3D11VertexShader, std::unique_ptr<ShaderBinary> pShaderBinary )
+	DX11Shader::DX11Shader(
+			DX11GPUDevice & pGPUDevice,
+			ComPtr<ID3D11VertexShader> pD3D11VertexShader,
+			std::unique_ptr<ShaderBinary> pShaderBinary )
 	: Shader( pGPUDevice, EShaderType::GSVertex, std::move( pShaderBinary ) )
 	, mD3D11VertexShader( pD3D11VertexShader.Get() )
 	, mD3D11ShaderReference( pD3D11VertexShader )
 	{}
 
-	DX11Shader::DX11Shader( DX11GPUDevice & pGPUDevice, ComPtr<ID3D11HullShader> pD3D11HullShader, std::unique_ptr<ShaderBinary> pShaderBinary )
-	: Shader( pGPUDevice, EShaderType::GSHull, std::move( pShaderBinary ) )
+	DX11Shader::DX11Shader(
+			DX11GPUDevice & pGPUDevice,
+			ComPtr<ID3D11HullShader> pD3D11HullShader,
+			std::unique_ptr<ShaderBinary> pShaderBinary )
+	: Shader( pGPUDevice, EShaderType::GSTessHull, std::move( pShaderBinary ) )
 	, mD3D11HullShader( pD3D11HullShader.Get() )
 	, mD3D11ShaderReference( pD3D11HullShader )
 	{}
 
-	DX11Shader::DX11Shader( DX11GPUDevice & pGPUDevice, ComPtr<ID3D11DomainShader> pD3D11DomainShader, std::unique_ptr<ShaderBinary> pShaderBinary )
-	: Shader( pGPUDevice, EShaderType::GSDomain, std::move( pShaderBinary ) )
+	DX11Shader::DX11Shader(
+			DX11GPUDevice & pGPUDevice,
+			ComPtr<ID3D11DomainShader> pD3D11DomainShader,
+			std::unique_ptr<ShaderBinary> pShaderBinary )
+	: Shader( pGPUDevice, EShaderType::GSTessDomain, std::move( pShaderBinary ) )
 	, mD3D11DomainShader( pD3D11DomainShader.Get() )
 	, mD3D11ShaderReference( pD3D11DomainShader )
 	{}
 
-	DX11Shader::DX11Shader( DX11GPUDevice & pGPUDevice, ComPtr<ID3D11GeometryShader> pD3D11GeometryShader, std::unique_ptr<ShaderBinary> pShaderBinary )
+	DX11Shader::DX11Shader(
+			DX11GPUDevice & pGPUDevice,
+			ComPtr<ID3D11GeometryShader> pD3D11GeometryShader,
+			std::unique_ptr<ShaderBinary> pShaderBinary )
 	: Shader( pGPUDevice, EShaderType::GSGeometry, std::move( pShaderBinary ) )
 	, mD3D11GeometryShader( pD3D11GeometryShader.Get() )
 	, mD3D11ShaderReference( pD3D11GeometryShader )
 	{}
 
-	DX11Shader::DX11Shader( DX11GPUDevice & pGPUDevice, ComPtr<ID3D11PixelShader> pD3D11PixelShader, std::unique_ptr<ShaderBinary> pShaderBinary )
+	DX11Shader::DX11Shader(
+			DX11GPUDevice & pGPUDevice,
+			ComPtr<ID3D11PixelShader> pD3D11PixelShader,
+			std::unique_ptr<ShaderBinary> pShaderBinary )
 	: Shader( pGPUDevice, EShaderType::GSPixel, std::move( pShaderBinary ) )
 	, mD3D11PixelShader( pD3D11PixelShader.Get() )
 	, mD3D11ShaderReference( pD3D11PixelShader )
 	{}
 
-	DX11Shader::DX11Shader( DX11GPUDevice & pGPUDevice, ComPtr<ID3D11ComputeShader> pD3D11ComputeShader, std::unique_ptr<ShaderBinary> pShaderBinary )
+	DX11Shader::DX11Shader(
+			DX11GPUDevice & pGPUDevice,
+			ComPtr<ID3D11ComputeShader> pD3D11ComputeShader,
+			std::unique_ptr<ShaderBinary> pShaderBinary )
 	: Shader( pGPUDevice, EShaderType::CSCompute, std::move( pShaderBinary ) )
 	, mD3D11ComputeShader( pD3D11ComputeShader.Get() )
 	, mD3D11ShaderReference( pD3D11ComputeShader )

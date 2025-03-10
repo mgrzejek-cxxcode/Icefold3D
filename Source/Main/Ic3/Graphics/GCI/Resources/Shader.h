@@ -9,13 +9,13 @@
 namespace Ic3::Graphics::GCI
 {
 
-	class IC3_GRAPHICS_GCI_CLASS Shader : public TGfxObjectIDProxy<GPUDeviceChildObject>
+	class IC3_GRAPHICS_GCI_CLASS Shader : public GPUDeviceChildObject
 	{
 	public:
 		EShaderType const mShaderType;
 
 	public:
-		Shader( GPUDevice & pGPUDevice, EShaderType pShaderType, GfxObjectID pShaderObjectID = kGfxObjectIDEmpty );
+		Shader( GPUDevice & pGPUDevice, EShaderType pShaderType );
 		virtual ~Shader();
 
 		bool HasShaderBinaryCached() const noexcept;

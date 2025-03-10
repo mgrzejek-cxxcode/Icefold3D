@@ -21,13 +21,13 @@ namespace Ic3::Graphics::GCI
 		uint64 vertexAttributeLayoutDescriptorPtr;
 		uint64 vertexSourceBindingDescriptorPtr;
 
-		bool operator==( const GLVertexArrayObjectCachedID & pRhs ) const
+		bool operator==( const GLVertexArrayObjectCachedID & pRhs ) const noexcept
 		{
 			return ( vertexAttributeLayoutDescriptorPtr == pRhs.vertexAttributeLayoutDescriptorPtr ) &
 				   ( vertexSourceBindingDescriptorPtr == pRhs.vertexSourceBindingDescriptorPtr );
 		}
 
-		bool operator<( const GLVertexArrayObjectCachedID & pRhs ) const
+		bool operator<( const GLVertexArrayObjectCachedID & pRhs ) const noexcept
 		{
 			return ( vertexAttributeLayoutDescriptorPtr < pRhs.vertexAttributeLayoutDescriptorPtr ) ||
 			       ( ( vertexAttributeLayoutDescriptorPtr == pRhs.vertexAttributeLayoutDescriptorPtr ) &&

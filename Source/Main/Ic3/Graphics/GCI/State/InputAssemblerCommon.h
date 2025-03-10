@@ -380,6 +380,8 @@ namespace Ic3::Graphics::GCI
 	{
 		IAVertexSourceBindingDefinition bindingDefinition;
 
+		IC3_GRAPHICS_GCI_API_NO_DISCARD virtual bool Validate() const noexcept override final;
+
 		CPPX_ATTR_NO_DISCARD pipeline_config_hash_t GetConfigHash() const noexcept
 		{
 			return cppx::hash_compute<pipeline_config_hash_t::hash_algo>( bindingDefinition );

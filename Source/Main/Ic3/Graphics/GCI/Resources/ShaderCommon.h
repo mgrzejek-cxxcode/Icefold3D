@@ -80,11 +80,9 @@ namespace Ic3::Graphics::GCI
 	};
 
 	/// @brief
-	struct ShaderCreateInfo
+	struct ShaderCreateInfo : public GfxObjectCreateInfo
 	{
 		EShaderType shaderType = EShaderType::Unknown;
-
-		GfxObjectName shaderName;
 
 		cppx::bitmask<EShaderCreateFlags> createFlags = eShaderCreateFlagsDefault;
 

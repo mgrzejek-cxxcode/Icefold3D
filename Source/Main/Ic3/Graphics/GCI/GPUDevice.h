@@ -157,8 +157,7 @@ namespace Ic3::Graphics::GCI
 		 * @return
 		 */
 		BlendStateDescriptorHandle CreateBlendStateDescriptor(
-				const BlendStateDescriptorCreateInfo & pCreateInfo,
-				const cppx::immutable_string & pOptionalDescriptorName = {} );
+				const BlendStateDescriptorCreateInfo & pCreateInfo );
 
 		/**
 		 *
@@ -167,8 +166,7 @@ namespace Ic3::Graphics::GCI
 		 * @return
 		 */
 		DepthStencilStateDescriptorHandle CreateDepthStencilStateDescriptor(
-				const DepthStencilStateDescriptorCreateInfo & pCreateInfo,
-				const cppx::immutable_string & pOptionalDescriptorName = {} );
+				const DepthStencilStateDescriptorCreateInfo & pCreateInfo );
 
 		/**
 		 *
@@ -177,8 +175,7 @@ namespace Ic3::Graphics::GCI
 		 * @return
 		 */
 		RasterizerStateDescriptorHandle CreateRasterizerStateDescriptor(
-				const RasterizerStateDescriptorCreateInfo & pCreateInfo,
-				const cppx::immutable_string & pOptionalDescriptorName = {} );
+				const RasterizerStateDescriptorCreateInfo & pCreateInfo );
 
 		/**
 		 *
@@ -187,8 +184,7 @@ namespace Ic3::Graphics::GCI
 		 * @return
 		 */
 		GraphicsShaderLinkageDescriptorHandle CreateGraphicsShaderLinkageDescriptor(
-				const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo,
-				const cppx::immutable_string & pOptionalDescriptorName = {} );
+				const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo );
 
 		/**
 		 *
@@ -197,8 +193,7 @@ namespace Ic3::Graphics::GCI
 		 * @return
 		 */
 		VertexAttributeLayoutDescriptorHandle CreateVertexAttributeLayoutDescriptor(
-				const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo,
-				const cppx::immutable_string & pOptionalDescriptorName = {} );
+				const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo );
 
 		/**
 		 *
@@ -207,8 +202,7 @@ namespace Ic3::Graphics::GCI
 		 * @return
 		 */
 		RootSignatureDescriptorHandle CreateRootSignatureDescriptor(
-				const RootSignatureDescriptorCreateInfo & pCreateInfo,
-				const cppx::immutable_string & pOptionalDescriptorName = {} );
+				const RootSignatureDescriptorCreateInfo & pCreateInfo );
 
 		/**
 		 *

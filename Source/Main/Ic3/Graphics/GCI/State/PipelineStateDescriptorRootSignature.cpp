@@ -33,6 +33,7 @@ namespace Ic3::Graphics::GCI
 
 		TGfxHandle<RootSignatureDescriptorGeneric> RootSignatureDescriptorGeneric::CreateInstance(
 				GPUDevice & pGPUDevice,
+				pipeline_state_descriptor_id_t pDescriptorID,
 				const RootSignatureDescriptorCreateInfo & pCreateInfo )
 		{
 			auto rootSignature = GCU::CreateRootSignature( pCreateInfo.rootSignatureDesc );
@@ -43,7 +44,7 @@ namespace Ic3::Graphics::GCI
 
 			auto rootSignatureDescriptor = CreateDynamicObject<RootSignatureDescriptorGeneric>(
 				pGPUDevice,
-				pCreateInfo.descriptorID,
+				pDescriptorID,
 				std::move( rootSignature ) );
 
 			return rootSignatureDescriptor;

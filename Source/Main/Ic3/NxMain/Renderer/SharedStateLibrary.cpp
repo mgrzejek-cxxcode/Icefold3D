@@ -2,10 +2,18 @@
 #include "SharedStateLibrary.h"
 #include "ShaderLibrary.h"
 #include "../GCI/VertexFormatUtils.h"
+
 #include <Ic3/Graphics/GCI/GPUDevice.h>
+#include <Ic3/Graphics/GCI/State/GraphicsPipelineStateDescriptorCommon.h>
+#include <Ic3/Graphics/GCI/State/GraphicsPipelineStateDescriptorIA.h>
 
 namespace Ic3
 {
+
+	static GCISharedDescriptorsIDSet sSharedDescriptorsGlobalStore;
+
+	const GCISharedDescriptorsIDSet & GCISharedStateLibrary::sSharedDescriptors = sSharedDescriptorsGlobalStore;
+
 
 	GCISharedStateLibrary::GCISharedStateLibrary( ShaderLibrary & pShaderLibrary )
 	: CoreEngineObject( pShaderLibrary.mCES )
@@ -41,75 +49,72 @@ namespace Ic3
 	void GCISharedStateLibrary::InitializeDefaultBlendStateDescriptors()
 	{
 		GCI::BlendStateDescriptorCreateInfo descriptorCreateInfo{};
-		descriptorCreateInfo.flags = GCI::ePipelineStateDescriptorCreateMaskDefault;
 		descriptorCreateInfo.blendSettings = mCES.mGPUDevice->GetDefaultBlendSettings();
 		{
-			descriptorCreateInfo.descriptorID = GID::kGfxIDStateDescriptorBlendDefault;
-			mCES.mGPUDevice->CreateBlendStateDescriptor( descriptorCreateInfo );
+			const auto descriptor = mCES.mGPUDevice->CreateBlendStateDescriptor( descriptorCreateInfo );
+			sSharedDescriptorsGlobalStore.descriptorIDBlendDefault = descriptor->mDescriptorID;
 		}
 	}
 
 	void GCISharedStateLibrary::InitializeDefaultDepthStencilStateDescriptors()
 	{
 		GCI::DepthStencilStateDescriptorCreateInfo descriptorCreateInfo{};
-		descriptorCreateInfo.flags = GCI::ePipelineStateDescriptorCreateMaskDefault;
 		{
-			descriptorCreateInfo.descriptorID = GID::kGfxIDStateDescriptorDepthStencilDefault;
 			descriptorCreateInfo.depthStencilSettings = mCES.mGPUDevice->GetDefaultDepthStencilSettings();
-			mCES.mGPUDevice->CreateDepthStencilStateDescriptor( descriptorCreateInfo );
+			const auto descriptor = mCES.mGPUDevice->CreateDepthStencilStateDescriptor( descriptorCreateInfo );
+			sSharedDescriptorsGlobalStore.descriptorIDDepthStencilDefault = descriptor->mDescriptorID;
 		}
 		{
-			descriptorCreateInfo.descriptorID = GID::kGfxIDStateDescriptorDepthStencilDepthTestEnable;
 			descriptorCreateInfo.depthStencilSettings = mCES.mGPUDevice->GetDefaultDepthStencilSettingsWithDepthTestEnabled();
-			mCES.mGPUDevice->CreateDepthStencilStateDescriptor( descriptorCreateInfo );
+			const auto descriptor = mCES.mGPUDevice->CreateDepthStencilStateDescriptor( descriptorCreateInfo );
+			sSharedDescriptorsGlobalStore.descriptorIDDepthStencilDepthTestEnable = descriptor->mDescriptorID;
 		}
 	}
 
 	void GCISharedStateLibrary::InitializeDefaultRasterizerStateDescriptors()
 	{
 		GCI::RasterizerStateDescriptorCreateInfo descriptorCreateInfo{};
-		descriptorCreateInfo.flags = GCI::ePipelineStateDescriptorCreateMaskDefault;
 		{
-			descriptorCreateInfo.descriptorID = GID::kGfxIDStateDescriptorRasterizerSolidCullBackCCW;
 			descriptorCreateInfo.rasterizerSettings.cullMode = GCI::ECullMode::Back;
 			descriptorCreateInfo.rasterizerSettings.frontFaceVerticesOrder = GCI::ETriangleVerticesOrder::CounterClockwise;
 			descriptorCreateInfo.rasterizerSettings.primitiveFillMode = GCI::EPrimitiveFillMode::Solid;
-			mCES.mGPUDevice->CreateRasterizerStateDescriptor( descriptorCreateInfo );
+			const auto descriptor = mCES.mGPUDevice->CreateRasterizerStateDescriptor( descriptorCreateInfo );
+			sSharedDescriptorsGlobalStore.descriptorIDRasterizerSolidCullBackCCW = descriptor->mDescriptorID;
 		}
 		{
-			descriptorCreateInfo.descriptorID = GID::kGfxIDStateDescriptorRasterizerSolidCullBackCW;
 			descriptorCreateInfo.rasterizerSettings.cullMode = GCI::ECullMode::Back;
 			descriptorCreateInfo.rasterizerSettings.frontFaceVerticesOrder = GCI::ETriangleVerticesOrder::Clockwise;
 			descriptorCreateInfo.rasterizerSettings.primitiveFillMode = GCI::EPrimitiveFillMode::Solid;
-			mCES.mGPUDevice->CreateRasterizerStateDescriptor( descriptorCreateInfo );
+			const auto descriptor = mCES.mGPUDevice->CreateRasterizerStateDescriptor( descriptorCreateInfo );
+			sSharedDescriptorsGlobalStore.descriptorIDRasterizerSolidCullBackCW = descriptor->mDescriptorID;
 		}
 		{
-			descriptorCreateInfo.descriptorID = GID::kGfxIDStateDescriptorRasterizerSolidCullNoneCCW;
 			descriptorCreateInfo.rasterizerSettings.cullMode = GCI::ECullMode::None;
 			descriptorCreateInfo.rasterizerSettings.frontFaceVerticesOrder = GCI::ETriangleVerticesOrder::CounterClockwise;
 			descriptorCreateInfo.rasterizerSettings.primitiveFillMode = GCI::EPrimitiveFillMode::Solid;
-			mCES.mGPUDevice->CreateRasterizerStateDescriptor( descriptorCreateInfo );
+			const auto descriptor = mCES.mGPUDevice->CreateRasterizerStateDescriptor( descriptorCreateInfo );
+			sSharedDescriptorsGlobalStore.descriptorIDRasterizerSolidCullNoneCCW = descriptor->mDescriptorID;
 		}
 		{
-			descriptorCreateInfo.descriptorID = GID::kGfxIDStateDescriptorRasterizerSolidCullNoneCW;
 			descriptorCreateInfo.rasterizerSettings.cullMode = GCI::ECullMode::None;
 			descriptorCreateInfo.rasterizerSettings.frontFaceVerticesOrder = GCI::ETriangleVerticesOrder::Clockwise;
 			descriptorCreateInfo.rasterizerSettings.primitiveFillMode = GCI::EPrimitiveFillMode::Solid;
-			mCES.mGPUDevice->CreateRasterizerStateDescriptor( descriptorCreateInfo );
+			const auto descriptor = mCES.mGPUDevice->CreateRasterizerStateDescriptor( descriptorCreateInfo );
+			sSharedDescriptorsGlobalStore.descriptorIDRasterizerSolidCullNoneCW = descriptor->mDescriptorID;
 		}
 		{
-			descriptorCreateInfo.descriptorID = GID::kGfxIDStateDescriptorRasterizerWireframeCCW;
 			descriptorCreateInfo.rasterizerSettings.cullMode = GCI::ECullMode::None;
 			descriptorCreateInfo.rasterizerSettings.frontFaceVerticesOrder = GCI::ETriangleVerticesOrder::CounterClockwise;
 			descriptorCreateInfo.rasterizerSettings.primitiveFillMode = GCI::EPrimitiveFillMode::Wireframe;
-			mCES.mGPUDevice->CreateRasterizerStateDescriptor( descriptorCreateInfo );
+			const auto descriptor = mCES.mGPUDevice->CreateRasterizerStateDescriptor( descriptorCreateInfo );
+			sSharedDescriptorsGlobalStore.descriptorIDRasterizerWireframeCCW = descriptor->mDescriptorID;
 		}
 		{
-			descriptorCreateInfo.descriptorID = GID::kGfxIDStateDescriptorRasterizerWireframeCW;
 			descriptorCreateInfo.rasterizerSettings.cullMode = GCI::ECullMode::None;
 			descriptorCreateInfo.rasterizerSettings.frontFaceVerticesOrder = GCI::ETriangleVerticesOrder::Clockwise;
 			descriptorCreateInfo.rasterizerSettings.primitiveFillMode = GCI::EPrimitiveFillMode::Wireframe;
-			mCES.mGPUDevice->CreateRasterizerStateDescriptor( descriptorCreateInfo );
+			const auto descriptor = mCES.mGPUDevice->CreateRasterizerStateDescriptor( descriptorCreateInfo );
+			sSharedDescriptorsGlobalStore.descriptorIDRasterizerWireframeCW = descriptor->mDescriptorID;
 		}
 	}
 
@@ -125,11 +130,9 @@ namespace Ic3
 		}
 
 		GCI::VertexAttributeLayoutDescriptorCreateInfo descriptorCreateInfo{};
-		descriptorCreateInfo.flags = GCI::ePipelineStateDescriptorCreateMaskDefault;
 		descriptorCreateInfo.vertexShaderWithBinary = shaderPassthroughIADefaultVS.get();
 
         {
-			descriptorCreateInfo.descriptorID = GID::kGfxIDStateDescriptorIAVertexAttributeLayoutDefault;
         	GCIVertexAttributeLayoutBuilder gciAttributeLayoutBuilder{};
             gciAttributeLayoutBuilder.AddAttribute( 0, kVertexAttributeKeySysPosition );
             gciAttributeLayoutBuilder.AddAttribute( 0, kVertexAttributeKeySysFixedColorU8N );
@@ -137,12 +140,10 @@ namespace Ic3
             gciAttributeLayoutBuilder.AddAttribute( 0, kVertexAttributeKeySysTexCoord2D0 );
             descriptorCreateInfo.layoutDefinition =
                 gciAttributeLayoutBuilder.CreateGCIVertexAttributeLayoutDefinition( GCI::EPrimitiveTopology::TriangleList );
-
-	        auto vtxAttrLayoutSD = mCES.mGPUDevice->CreateVertexAttributeLayoutDescriptor( descriptorCreateInfo );
-	        vtxAttrLayoutSD.reset();
+	        const auto descriptor = mCES.mGPUDevice->CreateVertexAttributeLayoutDescriptor( descriptorCreateInfo );
+	        sSharedDescriptorsGlobalStore.descriptorIDIAVertexAttributeLayoutDefault = descriptor->mDescriptorID;
         }
         {
-			descriptorCreateInfo.descriptorID = GID::kGfxIDStateDescriptorIAVertexAttributeLayoutDefault16B;
         	GCIVertexAttributeLayoutBuilder gciAttributeLayoutBuilder{};
             gciAttributeLayoutBuilder.AddAttribute( 0, kVertexAttributeKeySysPosition, GCI::kIAVertexAttributePaddingAlign16 );
             gciAttributeLayoutBuilder.AddAttribute( 0, kVertexAttributeKeySysFixedColorF32, GCI::kIAVertexAttributePaddingAlign16 );
@@ -150,9 +151,8 @@ namespace Ic3
             gciAttributeLayoutBuilder.AddAttribute( 0, kVertexAttributeKeySysTexCoord2D0, GCI::kIAVertexAttributePaddingAlign16 );
             descriptorCreateInfo.layoutDefinition =
                 gciAttributeLayoutBuilder.CreateGCIVertexAttributeLayoutDefinition( GCI::EPrimitiveTopology::TriangleList );
-
-	        auto vtxAttrLayoutSD = mCES.mGPUDevice->CreateVertexAttributeLayoutDescriptor( descriptorCreateInfo );
-	        vtxAttrLayoutSD.reset();
+	        const auto descriptor = mCES.mGPUDevice->CreateVertexAttributeLayoutDescriptor( descriptorCreateInfo );
+	        sSharedDescriptorsGlobalStore.descriptorIDIAVertexAttributeLayoutDefault16B = descriptor->mDescriptorID;
         }
 	}
 

@@ -38,6 +38,7 @@ namespace Ic3::Graphics::GCI
 
 	TGfxHandle<RenderPassDescriptorGeneric> RenderPassDescriptorGeneric::CreateInstance(
 			GPUDevice & pGPUDevice,
+			pipeline_state_descriptor_id_t pDescriptorID,
 			const RenderPassDescriptorCreateInfo & pCreateInfo,
 			const std::initializer_list<ERenderPassAttachmentActionFlags> & pCachedAttachmentsWithFlags )
 	{
@@ -56,20 +57,21 @@ namespace Ic3::Graphics::GCI
 
 			return CreateDynamicObject<RenderPassDescriptorGeneric>(
 					pGPUDevice,
-					pCreateInfo.descriptorID,
+					pDescriptorID,
 					renderPassConfigurationCopy );
 		}
 		else
 		{
 			return CreateDynamicObject<RenderPassDescriptorGeneric>(
 					pGPUDevice,
-					pCreateInfo.descriptorID,
+					pDescriptorID,
 					pCreateInfo.passConfiguration );
 		}
 	}
 
 	TGfxHandle<RenderPassDescriptorGeneric> RenderPassDescriptorGeneric::CreateInstance(
 			GPUDevice & pGPUDevice,
+			pipeline_state_descriptor_id_t pDescriptorID,
 			const RenderPassDescriptorCreateInfo & pCreateInfo )
 	{
 		if( !GCU::RTOValidateRenderPassConfiguration( pCreateInfo.passConfiguration ) )
@@ -79,7 +81,7 @@ namespace Ic3::Graphics::GCI
 
 		return CreateDynamicObject<RenderPassDescriptorGeneric>(
 				pGPUDevice,
-				pCreateInfo.descriptorID,
+				pDescriptorID,
 				pCreateInfo.passConfiguration );
 	}
 

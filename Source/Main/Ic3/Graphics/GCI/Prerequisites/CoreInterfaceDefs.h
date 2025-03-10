@@ -10,8 +10,14 @@ namespace Ic3::Graphics::GCI
 	class GPUDriver;
 	class GPUDevice;
 
+	struct GfxObjectCreateInfo
+	{
+		GfxObjectUID gfxObjectUID = kGfxObjectIDEmpty;
+	};
+
 	/**
-	 *
+	 * Base type for all resource/state types in the GCI module. It provides basic functionality
+	 * like support for ID and debug name (debug builds only).
 	 */
 	class IC3_GRAPHICS_GCI_API GfxObject : public IDynamicObject
     {
@@ -20,17 +26,83 @@ namespace Ic3::Graphics::GCI
 		virtual ~GfxObject();
 
 		/**
-		 * XX
-		 * @return 
+		 * Returns the ID of this object. If the ID has not been set, kGfxObjectIDEmpty is returned instead.
+		 * @return ID of this object or kGfxObjectIDEmpty.
 		 */
-		CPPX_ATTR_NO_DISCARD virtual GfxObjectID GetObjectID() const noexcept;
+		CPPX_ATTR_NO_DISCARD GfxObjectID GetObjectID() const noexcept;
 
 		/**
-		 * XX
-		 * @return
+		 * Returns the debug name of this object, used to additionally identify objects in debug builds.
+		 * @return Debug name of this object or an empty string.
+		 *
+		 * @note
+		 * This function will return an empty string if either:
+		 * - debug name for the object has not been set, or
+		 * - module was not compiled in debug mode.
 		 */
-		CPPX_ATTR_NO_DISCARD virtual GfxObjectName GetObjectName() const noexcept;
+		CPPX_ATTR_NO_DISCARD cppx::string_view GetObjectDebugName() const noexcept;
+
+		/**
+		 *
+		 * @param pGfxObjectUID
+		 */
+		void SetObjectUID( GfxObjectUID pGfxObjectUID );
+
+		/**
+		 * Sets the ID for this object. IDs are associated only at the object level, i.e. association
+		 * between an object and its name is not propagated into any kind of global registry.
+		 * ID can be retrieved later on using GetObjectID().
+		 * @param pGfxObjectID An ID to set.
+		 */
+		void SetObjectID( GfxObjectID pGfxObjectID );
+
+		/**
+		 * Sets the debug name for this object. In debug builds this name serves as an additional way
+		 * to easily identify objects created by the engine.
+		 * Debug name can be retrieved later on using GetObjectDebugName().
+		 * @param pObjectDebugName A debug name to set.
+		 *
+		 * @note
+		 * Debug names are only present in debug builds. In case debug information is disabled
+		 * (e.g. in a release/optimized build), this function is a no-op.
+		 */
+		void SetObjectDebugName( std::string pObjectDebugName );
+
+	private:
+		GfxObjectID _gfxObjectID;
+
+	#if( IC3_DEBUG )
+		cppx::immutable_string _debugName;
+	#endif
     };
+
+	inline GfxObjectID GfxObject::GetObjectID() const noexcept
+	{
+		return _gfxObjectID;;
+	}
+
+	inline cppx::string_view GfxObject::GetObjectDebugName() const noexcept
+	{
+	#if( IC3_DEBUG )
+		return _debugName.str_view();
+	#else
+		return {};
+	#endif
+	}
+
+	inline void GfxObject::SetObjectID( GfxObjectID pGfxObjectID )
+	{
+		_gfxObjectID = pGfxObjectID;
+	}
+
+	inline void GfxObject::SetObjectDebugName( std::string pObjectDebugName )
+	{
+	#if( IC3_DEBUG )
+		_debugName = std::move( pObjectDebugName );
+	#else
+		Ic3UnusedParam( pObjectDebugName );
+	#endif
+	}
 
 	/**
 	 *
@@ -56,100 +128,6 @@ namespace Ic3::Graphics::GCI
 	public:
 		explicit GPUDeviceChildObject( GPUDevice & pGPUDevice );
 		virtual ~GPUDeviceChildObject();
-	};
-
-
-	/**
-	 *
-	 */
-	template <typename TPBase, bool tpEnableNameStorage = true>
-	class TGfxObjectNameProxy;
-
-	/**
-	 *
-	 */
-	template <typename TPBase>
-	class TGfxObjectNameProxy<TPBase, false> : public TPBase
-	{
-	public:
-		template <typename... TPArgs>
-		TGfxObjectNameProxy( TPArgs &&... pArgs )
-		: TPBase( std::forward<TPArgs>( pArgs )... )
-		{}
-	};
-
-	/**
-	 *
-	 */
-	template <typename TPBase>
-	class TGfxObjectNameProxy<TPBase, true> : public TPBase
-	{
-	public:
-		template <typename... TPArgs>
-		TGfxObjectNameProxy( TPArgs &&... pArgs )
-		: TPBase( std::forward<TPArgs>( pArgs )... )
-		{}
-
-		/**
-		 * @copydoc GfxObject::GetObjectName
-		 */
-		CPPX_ATTR_NO_DISCARD virtual GfxObjectName GetObjectName() const noexcept override
-		{
-			return _gfxObjectName;
-		}
-
-		/**
-		 *
-		 * @param pObjectName
-		 */
-		void SetObjectName( GfxObjectName pObjectName ) noexcept
-		{
-			_gfxObjectName = pObjectName;
-		}
-
-	private:
-		GfxObjectName _gfxObjectName;
-	};
-
-	/**
-	 *
-	 * @tparam TPBase
-	 */
-	template<typename TPBase, bool tpEnableNameStorage = false>
-	class TGfxObjectIDProxy : public TGfxObjectNameProxy<TPBase, tpEnableNameStorage>
-	{
-	public:
-		template<typename... TPArgs>
-		TGfxObjectIDProxy( const InitEmptyTag &, TPArgs && ...pArgs )
-		: TGfxObjectNameProxy<TPBase, tpEnableNameStorage>( std::forward<TPArgs>( pArgs )... )
-		, _gfxObjectID( kGfxObjectIDEmpty )
-		{}
-
-		template <typename... TPArgs>
-		TGfxObjectIDProxy( GfxObjectID pGfxObjectID, TPArgs && ...pArgs )
-		: TGfxObjectNameProxy<TPBase, tpEnableNameStorage>( std::forward<TPArgs>( pArgs )... )
-		, _gfxObjectID( pGfxObjectID )
-		{}
-
-		/**
-		 * @copydoc GfxObject::GetObjectID
-		 */
-		CPPX_ATTR_NO_DISCARD virtual GfxObjectID GetObjectID() const noexcept override final
-		{
-			return _gfxObjectID;
-		}
-
-		/**
-		 * 
-		 * @param pObjectID
-		 */
-		void SetObjectID( GfxObjectID pObjectID ) noexcept
-		{
-			_gfxObjectID = pObjectID;
-		}
-
-	private:
-		GfxObjectID _gfxObjectID;
 	};
 
 	/**

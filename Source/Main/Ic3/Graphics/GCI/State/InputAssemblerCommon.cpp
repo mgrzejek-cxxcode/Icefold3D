@@ -8,11 +8,20 @@ namespace Ic3::Graphics::GCI
 
 	bool VertexAttributeLayoutDescriptorCreateInfo::Validate() const noexcept
 	{
-		if( auto * shaderInputSignature = vertexShaderWithBinary->GetShaderInputSignature() )
+		if( PipelineStateDescriptorCreateInfoBase::Validate() )
 		{
-			return GCU::ValidateVertexAttributeLayoutDefinitionWithShaderInputSignature( layoutDefinition, *shaderInputSignature );
+			if( auto * shaderInputSignature = vertexShaderWithBinary->GetShaderInputSignature() )
+			{
+				return GCU::ValidateVertexAttributeLayoutDefinitionWithShaderInputSignature( layoutDefinition, *shaderInputSignature );
+			}
 		}
+
 		return true;
+	}
+
+	bool VertexSourceBindingDescriptorCreateInfo::Validate() const noexcept
+	{
+		return PipelineStateDescriptorCreateInfoBase::Validate();
 	}
 
 	namespace GCU

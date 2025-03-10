@@ -51,6 +51,80 @@ namespace Ic3::Graphics
 		return GenerateHfsIdentifier( pGfxObjectName );
 	}
 
+	/**
+	 *
+	 */
+	struct GfxObjectUID
+	{
+	public:
+		GfxObjectID id = kGfxObjectIDEmpty;
+
+		cppx::string_view name;
+
+	public:
+		constexpr GfxObjectUID() = default;
+
+		GfxObjectUID( const GfxObjectUID & ) = default;
+		GfxObjectUID & operator=( const GfxObjectUID & ) = default;
+
+		GfxObjectUID( GfxObjectID pObjectID )
+		: id( pObjectID )
+		{}
+
+		GfxObjectUID( cppx::string_view pObjectName )
+		: id( pObjectName ? GenerateGfxObjectID( pObjectName ) : kGfxObjectIDEmpty )
+		, name( pObjectName )
+		{}
+
+		GfxObjectUID( cppx::string_view pObjectName, GfxObjectID pObjectID )
+		: id( pObjectID )
+		, name( pObjectName )
+		{}
+
+		GfxObjectUID & operator=( GfxObjectID pObjectID )
+		{
+			id = pObjectID;
+			return *this;
+		}
+
+		GfxObjectUID & operator=( cppx::string_view pObjectName )
+		{
+			name = pObjectName;
+			id = pObjectName ? GenerateGfxObjectID( pObjectName ) : kGfxObjectIDEmpty;
+			return *this;
+		}
+
+		operator GfxObjectID() const noexcept
+		{
+			return id;
+		}
+
+		operator cppx::string_view () const noexcept
+		{
+			return name;
+		}
+
+		explicit operator bool() const noexcept
+		{
+			return !empty();
+		}
+
+		bool empty() const noexcept
+		{
+			return ( id != kGfxObjectIDEmpty ) && !name.empty();
+		}
+
+		bool operator==( const GfxObjectUID & pRhs ) const noexcept
+		{
+			return ( id == pRhs.id ) && ( name == pRhs.name );
+		}
+
+		bool operator!=( const GfxObjectUID & pRhs ) const noexcept
+		{
+			return ( id != pRhs.id ) || ( name != pRhs.name );
+		}
+	};
+
 } // namespace Ic3::Graphics
 
 #endif // __IC3_GRAPHICS_COMMON_GRAPHICS_CORE_DEFS_H__

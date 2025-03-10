@@ -199,7 +199,7 @@ namespace Ic3::Graphics::GCI
 		}
 	};
 
-	struct ResourceCreateInfo
+	struct ResourceCreateInfo : public GfxObjectCreateInfo
 	{
 		cppx::bitmask<resource_flags_value_t> resourceFlags = 0;
 

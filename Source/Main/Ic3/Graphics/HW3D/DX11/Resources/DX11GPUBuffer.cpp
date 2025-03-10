@@ -97,7 +97,7 @@ namespace Ic3::Graphics::GCI
 			return false;
 		}
 
-		constexpr uint32 cxDX11GPUBufferMemorySupportedFlags = E_GPU_MEMORY_MAP_FLAG_ACCESS_READ_WRITE_BIT;
+		constexpr uint32 cxDX11GPUBufferMemorySupportedFlags = eGPUMemoryMapFlagAccessReadWriteBit;
 		pCreateInfo.memoryFlags = pCreateInfo.memoryFlags & cxDX11GPUBufferMemorySupportedFlags;
 
 		return true;
@@ -111,36 +111,36 @@ namespace Ic3::Graphics::GCI
 		dx11GPUBufferDesc.resourceMiscFlags = 0;
 		dx11GPUBufferDesc.usage = D3D11_USAGE_DEFAULT;
 
-		if( pCreateInfo.resourceFlags.is_set( E_GPU_RESOURCE_CONTENT_FLAG_IMMUTABLE_BIT ) )
+		if( pCreateInfo.resourceFlags.is_set( eGPUResourceContentFlagImmutableBit ) )
 		{
 			dx11GPUBufferDesc.usage = D3D11_USAGE_IMMUTABLE;
 		}
-		if( pCreateInfo.resourceFlags.is_set_any_of( E_GPU_RESOURCE_USAGE_FLAG_TRANSFER_SOURCE_BIT ) )
+		if( pCreateInfo.resourceFlags.is_set_any_of( eGPUResourceUsageFlagTransferSourceBit ) )
 		{
 			dx11GPUBufferDesc.usage = D3D11_USAGE_STAGING;
 		}
-		if( pCreateInfo.resourceFlags.is_set( E_GPU_RESOURCE_CONTENT_FLAG_DYNAMIC_BIT ) && ( dx11GPUBufferDesc.usage != D3D11_USAGE_DYNAMIC ) )
+		if( pCreateInfo.resourceFlags.is_set( eGPUResourceContentFlagDynamicBit ) && ( dx11GPUBufferDesc.usage != D3D11_USAGE_DYNAMIC ) )
 		{
 			dx11GPUBufferDesc.usage = D3D11_USAGE_DYNAMIC;
 			dx11GPUBufferDesc.cpuAccessFlags.set( D3D11_CPU_ACCESS_WRITE );
 		}
 
-		if( pCreateInfo.memoryFlags.is_set( E_GPU_MEMORY_MAP_FLAG_ACCESS_READ_BIT ) )
+		if( pCreateInfo.memoryFlags.is_set( eGPUMemoryMapFlagAccessReadBit ) )
 		{
 			dx11GPUBufferDesc.cpuAccessFlags.set( D3D11_CPU_ACCESS_READ );
 		}
-		if( pCreateInfo.memoryFlags.is_set( E_GPU_MEMORY_MAP_FLAG_ACCESS_WRITE_BIT ) )
+		if( pCreateInfo.memoryFlags.is_set( eGPUMemoryMapFlagAccessWriteBit ) )
 		{
 			dx11GPUBufferDesc.cpuAccessFlags.set( D3D11_CPU_ACCESS_WRITE );
 		}
 
-		auto indirectBufferFlags = E_GPU_BUFFER_BIND_FLAG_INDIRECT_DISPATCH_BUFFER_BIT | E_GPU_BUFFER_BIND_FLAG_INDIRECT_DRAW_BUFFER_BIT;
+		auto indirectBufferFlags = eGPUBufferBindFlagIndirectDispatchBufferBit | eGPUBufferBindFlagIndirectDrawBufferBit;
 		if( pCreateInfo.resourceFlags.is_set_any_of( indirectBufferFlags ) )
 		{
 			dx11GPUBufferDesc.resourceMiscFlags.set( D3D11_RESOURCE_MISC_DRAWINDIRECT_ARGS );
 		}
 
-		if( pCreateInfo.resourceFlags.is_set_any_of( E_GPU_BUFFER_BIND_FLAG_SHADER_UAV_BUFFER_BIT ) )
+		if( pCreateInfo.resourceFlags.is_set_any_of( eGPUBufferBindFlagShaderUAVBufferBit ) )
 		{
 			dx11GPUBufferDesc.resourceMiscFlags.set( D3D11_RESOURCE_MISC_BUFFER_STRUCTURED );
 		}
@@ -217,7 +217,7 @@ namespace Ic3::Graphics::GCI
 		auto * d3d11DeviceContext1 = dx11CommandList->mD3D11DeviceContext1.Get();
 
 		cppx::bitmask<UINT> copyFlags = 0;
-		if( ( pCopyDesc.sourceBufferRegion.size == mBufferProperties.byteSize ) || pCopyDesc.flags.is_set( E_GPU_BUFFER_DATA_COPY_FLAG_MODE_INVALIDATE_BIT ) )
+		if( ( pCopyDesc.sourceBufferRegion.size == mBufferProperties.byteSize ) || pCopyDesc.flags.is_set( eGPUBufferDataCopyFlagModeInvalidateBit ) )
 		{
 			copyFlags.set( D3D11_COPY_DISCARD );
 		}
@@ -248,7 +248,7 @@ namespace Ic3::Graphics::GCI
 		auto * d3d11DeviceContext1 = dx11CommandList->mD3D11DeviceContext1.Get();
 
 		cppx::bitmask<UINT> updateFlags = 0;
-		if( ( pUploadDesc.bufferRegion.size == mBufferProperties.byteSize ) || pUploadDesc.flags.is_set( E_GPU_BUFFER_DATA_COPY_FLAG_MODE_INVALIDATE_BIT ) )
+		if( ( pUploadDesc.bufferRegion.size == mBufferProperties.byteSize ) || pUploadDesc.flags.is_set( eGPUBufferDataCopyFlagModeInvalidateBit ) )
 		{
 			updateFlags.set( D3D11_COPY_DISCARD );
 		}

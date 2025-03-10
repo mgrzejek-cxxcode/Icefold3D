@@ -51,6 +51,7 @@ namespace Ic3::Graphics::GCI
 
 			static TGfxHandle<RootSignatureDescriptorGeneric> CreateInstance(
 					GPUDevice & pGPUDevice,
+					pipeline_state_descriptor_id_t pDescriptorID,
 					const RootSignatureDescriptorCreateInfo & pCreateInfo );
 		};
 
