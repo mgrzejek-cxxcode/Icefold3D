@@ -106,6 +106,13 @@ int main( int pArgc, const char ** pArgv )
 
 	sGxDriverName = "GL4";
 
+	const auto mm1 = std::chrono::microseconds( 200 );
+
+	const auto ms2 = std::chrono::duration_cast<std::chrono::milliseconds>( mm1 );
+
+	const auto mm3 = cppx::duration<cppx::duration_unit::second>(1).get_as<cppx::duration_unit::nanosecond>();
+	const auto mm4 = cppx::duration_from_std( std::chrono::milliseconds( 450 ) ).get_as<cppx::duration_unit::second, double>();
+
 	SysContextCreateInfo sysContextCreateInfo;
 	auto sysContext = Platform::CreateSysContext( sysContextCreateInfo );
 
