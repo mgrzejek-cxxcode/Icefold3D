@@ -12,8 +12,6 @@ std::string GenerateRandomStr( size_t pLength = 32 )
 {
 	constexpr auto lettersNum = 'Z' - 'A' + 1;
 
-	srand( time( nullptr ) );
-
 	std::string result{};
 	result.reserve( pLength );
 
@@ -30,6 +28,8 @@ using namespace Ic3::System;
 
 int main()
 {
+	srand( time( nullptr ) );
+
 	SysContextCreateInfo sysContextCreateInfo;
 	auto sysContext = Platform::CreateSysContext( sysContextCreateInfo );
 	auto pipeFactory = sysContext->CreatePipeFactory();

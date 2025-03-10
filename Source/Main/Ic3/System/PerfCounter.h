@@ -46,7 +46,7 @@ namespace Ic3::System
 		CPPX_ATTR_NO_DISCARD static cppx::duration<tpDurationUnit, TPResultValue> ConvertToDuration( perf_counter_value_t pStampDiff )
 		{
 			const auto durationValue = ConvertToDuration( pStampDiff, cppx::duration_traits<tpDurationUnit, TPResultValue>::unit_ratio );
-			return cppx::duration<tpDurationUnit, TPResultValue>{ durationValue };
+			return cppx::duration<tpDurationUnit, TPResultValue>{ static_cast<TPResultValue>( durationValue ) };
 		}
 
 		/// @brief Helper function which converts a perf counter duration to a duration value in unit expressed as Ic3::EDurationPeriod.
@@ -86,6 +86,12 @@ namespace Ic3::System
 		CPPX_ATTR_NO_DISCARD static perf_counter_value_t ConvertFromDuration( const cppx::duration<tpDurationUnit> & pDuration )
 		{
 			return ConvertFromDuration( pDuration.count(), cppx::duration_traits<tpDurationUnit, TPResultValue>::unit_ratio );
+		}
+
+		template <cppx::duration_unit tpDurationUnit, typename TPValue>
+		CPPX_ATTR_NO_DISCARD static bool CheckTimeoutElapsed( perf_counter_value_t pBaseCounter, const cppx::duration<tpDurationUnit, TPValue> & pTimeout )
+		{
+			return PerfCounter::ConvertToDuration<tpDurationUnit, TPValue>( QueryCounter() - pBaseCounter ) >= pTimeout;
 		}
 	};
 

@@ -25,21 +25,17 @@ int main()
 
 	while( true )
 	{
-		if( msgPipe.IsDataAvailable() )
+		TextPipeMessage message{};
+		if( msgPipe.ReadMessage( message ) )
 		{
-			TextPipeMessage message{};
-			msgPipe.ReadMessage( message );
-			std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
+			Ic3DebugOutputFmt( "Message: %s", message.GetData() );
 		}
-		else
-		{
-			std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
-		}
+		std::this_thread::sleep_for( std::chrono::milliseconds( 200 ) );
 
 		if( !msgPipe.IsValid() )
 		{
 			Ic3DebugOutput( "PIPE INVALID" );
-			msgPipe = CreateMessageReadPipe<TextPipeMessage>( *pipeFactory, "ic3-log", ioInitTimeoutSettings );
+			msgPipe.Reconnect( ioInitTimeoutSettings );
 		}
 	}
 

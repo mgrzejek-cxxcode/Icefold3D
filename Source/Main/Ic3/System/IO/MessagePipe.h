@@ -65,6 +65,11 @@ namespace Ic3::System
 			return _pipeHandle->IsDataAvailable();
 		}
 
+		bool Reconnect( const IOTimeoutSettings & pTimeoutSettings = kIODefaultTimeoutSettings )
+		{
+			return _pipeHandle->Reconnect( pTimeoutSettings );
+		}
+
 		bool WriteMessage( const TPMessage & pMessage ) noexcept
 		{
 			if( !_pipeHandle->CheckAccess( eIOAccessFlagOpWrite ) )
@@ -105,8 +110,6 @@ namespace Ic3::System
 				return false;
 			}
 
-			Ic3DebugOutputFmt( "ReadMessage: reading header..." );
-
 			PipeMessageHeader messageHeader;
 			const auto headerReadSize = _pipeHandle->Read( &messageHeader, sizeof( messageHeader ) );
 			if( headerReadSize != sizeof( messageHeader ) )
@@ -115,27 +118,18 @@ namespace Ic3::System
 				return false;
 			}
 
-			Ic3DebugOutputFmt( "ReadMessage: messageHeader.messageSize=%u", messageHeader.messageSize );
-
-			Ic3DebugOutputFmt( "ReadMessage: waiting for message..." );
-
 			while( !_pipeHandle->IsDataAvailable() )
 			{
-				std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
+				std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 			}
 
-			Ic3DebugOutputFmt( "ReadMessage: reading message..." );
-
 			pMessage.Resize( messageHeader.messageSize );
-
 			const auto messageReadSize = _pipeHandle->Read( pMessage.GetData(), pMessage.GetSize() );
 			if( messageReadSize != pMessage.GetSize() )
 			{
 				Ic3DebugInterrupt();
 				return false;
 			}
-
-			Ic3DebugOutputFmt( "ReadMessage: message.text='%s'", pMessage.GetData() );
 
 			return true;
 		}
@@ -150,10 +144,8 @@ namespace Ic3::System
 		const cppx::immutable_string & pPipeName,
 		const IOTimeoutSettings & pTimeoutSettings = {} )
 	{
-		auto basePipe = pPipeFactory.CreateNamedPipeObject(
-			pPipeName,
-			EPipeDataMode::MessageStream,
-			EIOAccessMode::ReadOnly,
+		auto basePipe = pPipeFactory.CreateReadPipe(
+			{ pPipeName, EPipeDataMode::MessageStream },
 			pTimeoutSettings );
 		return MessagePipe<TPMessage>( basePipe );
 	}
@@ -164,10 +156,8 @@ namespace Ic3::System
 		const cppx::immutable_string & pPipeName,
 		const IOTimeoutSettings & pTimeoutSettings = {} )
 	{
-		auto basePipe = pPipeFactory.CreateNamedPipeObject(
-			pPipeName,
-			EPipeDataMode::MessageStream,
-			EIOAccessMode::WriteAppend,
+		auto basePipe = pPipeFactory.CreateWritePipe(
+			{ pPipeName, EPipeDataMode::MessageStream },
 			pTimeoutSettings );
 		return MessagePipe<TPMessage>( basePipe );
 	}

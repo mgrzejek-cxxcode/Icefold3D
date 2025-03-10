@@ -11,10 +11,24 @@ namespace Ic3::System
 	Ic3SysDeclareHandle( Pipe );
 	Ic3SysDeclareHandle( PipeFactory );
 
+	enum class EPipeType : enum_default_value_t
+	{
+		Unknown,
+		PTWrite,
+		PTRead
+	};
+
 	struct PipeProperties : public IODataStreamProperties
 	{
-		cppx::immutable_string fullyQualifiedPipeName;
+		EPipeType pipeType = EPipeType::Unknown;
 		EPipeDataMode pipeDataMode;
+		cppx::immutable_string fullyQualifiedPipeName;
+	};
+
+	struct PipeCreateInfo
+	{
+		cppx::immutable_string pipeName;
+		EPipeDataMode pipeDataMode = EPipeDataMode::ByteStream;
 	};
 
 	class PipeFactory : public SysObject
@@ -25,21 +39,21 @@ namespace Ic3::System
 
 		PipeHandle GetPipe(  const cppx::immutable_string & pPipeName  ) const noexcept;
 
-		PipeHandle CreateNamedPipeObject(
-			const cppx::immutable_string & pPipeName,
-			EPipeDataMode pPipeDataMode,
-			EIOAccessMode pAccessMode,
+		PipeHandle CreateWritePipe(
+			const PipeCreateInfo & pPipeCreateInfo,
+			const IOTimeoutSettings & pTimeoutSettings = kIODefaultTimeoutSettings );
+
+		PipeHandle CreateReadPipe(
+			const PipeCreateInfo & pPipeCreateInfo,
 			const IOTimeoutSettings & pTimeoutSettings = kIODefaultTimeoutSettings );
 
 	private:
-		virtual PipeHandle _NativeCreateNamedPipeReadAccess(
-			const cppx::immutable_string & pPipeName,
-			EPipeDataMode pPipeDataMode,
+		virtual PipeHandle _NativeCreateWritePipe(
+			const PipeCreateInfo & pPipeCreateInfo,
 			const IOTimeoutSettings & pTimeoutSettings ) = 0;
 
-		virtual PipeHandle _NativeCreateNamedPipeWriteAccess(
-			const cppx::immutable_string & pPipeName,
-			EPipeDataMode pPipeDataMode,
+		virtual PipeHandle _NativeCreateReadPipe(
+			const PipeCreateInfo & pPipeCreateInfo,
 			const IOTimeoutSettings & pTimeoutSettings ) = 0;
 
 	private:
@@ -50,8 +64,9 @@ namespace Ic3::System
 	class Pipe : public IODataStream
 	{
 	public:
-		cppx::immutable_string const mFullyQualifiedPipeName;
+		EPipeType const mPipeType;
 		EPipeDataMode const mPipeDataMode;
+		cppx::immutable_string const mFullyQualifiedPipeName;
 
 	public:
 		explicit Pipe( SysContextHandle pSysContext, const PipeProperties & pPipeProperties );
@@ -63,8 +78,7 @@ namespace Ic3::System
 
 		CPPX_ATTR_NO_DISCARD virtual io_size_t GetAvailableDataSize() const override final;
 
-		bool ReconnectReadPipe( const IOTimeoutSettings & pTimeoutSettings = kIODefaultTimeoutSettings );
-		bool ReconnectWritePipe( const IOTimeoutSettings & pTimeoutSettings = kIODefaultTimeoutSettings );
+		bool Reconnect( const IOTimeoutSettings & pTimeoutSettings = kIODefaultTimeoutSettings );
 
 	private:
 		virtual io_size_t ReadImpl( void * pTargetBuffer, io_size_t pReadSize ) override;

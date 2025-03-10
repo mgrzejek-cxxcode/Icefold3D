@@ -16,17 +16,17 @@ namespace Ic3::System
 
 		DWORD _Win32TranslatePipeDataModeToReadMode( EPipeDataMode pPipeDataMode );
 
-		HANDLE _Win32CreateReadPipe(
-			const std::string & pFullyQualifiedPipeName,
-			EPipeDataMode pPipeDataMode,
-			const IOTimeoutSettings & pTimeoutSettings );
-
 		HANDLE _Win32CreateWritePipe(
 			const std::string & pFullyQualifiedPipeName,
 			EPipeDataMode pPipeDataMode,
 			const IOTimeoutSettings & pTimeoutSettings );
 
-		void _Win32ClosePipe( HANDLE pPipeHandle, EIOAccessMode pAccessMode, bool pIsBrokenPipe );
+		HANDLE _Win32CreateReadPipe(
+			const std::string & pFullyQualifiedPipeName,
+			EPipeDataMode pPipeDataMode,
+			const IOTimeoutSettings & pTimeoutSettings );
+
+		void _Win32ClosePipe( HANDLE pPipeHandle, EPipeType pPipeType, bool pIsBrokenPipe );
 
 	}
 
@@ -37,54 +37,54 @@ namespace Ic3::System
 
 	Win32PipeFactory::~Win32PipeFactory() noexcept = default;
 
-	PipeHandle Win32PipeFactory::_NativeCreateNamedPipeReadAccess(
-		const cppx::immutable_string & pPipeName,
-		EPipeDataMode pPipeDataMode,
+	PipeHandle Win32PipeFactory::_NativeCreateWritePipe(
+		const PipeCreateInfo & pPipeCreateInfo,
 		const IOTimeoutSettings & pTimeoutSettings )
 	{
 		std::string fullyQualifiedPipeName = Platform::kWin32PipeNameBaseComponent;
-		fullyQualifiedPipeName.append( pPipeName.str() );
+		fullyQualifiedPipeName.append( pPipeCreateInfo.pipeName.str() );
 
-		auto win32PipeHandle = Platform::_Win32CreateReadPipe( fullyQualifiedPipeName, pPipeDataMode, pTimeoutSettings );
+		auto win32PipeHandle = Platform::_Win32CreateWritePipe( fullyQualifiedPipeName, pPipeCreateInfo.pipeDataMode, pTimeoutSettings );
 		if( !win32PipeHandle )
 		{
-			Ic3DebugOutputFmt( "Failed to open read pipe '%s'.", pPipeName.data() );
+			Ic3DebugOutputFmt( "Failed to create write pipe '%s'.", fullyQualifiedPipeName.data() );
 			return nullptr;
 		}
 
 		PipeProperties pipeProperties{};
-		pipeProperties.accessMode = EIOAccessMode::ReadOnly;
+		pipeProperties.pipeType = EPipeType::PTWrite;
+		pipeProperties.accessMode = EIOAccessMode::WriteAppend;
 		pipeProperties.fullyQualifiedPipeName = std::move( fullyQualifiedPipeName );
-		pipeProperties.pipeDataMode = pPipeDataMode;
+		pipeProperties.pipeDataMode = pPipeCreateInfo.pipeDataMode;
 
 		auto pipeObject = CreateSysObject<Win32Pipe>( mSysContext, pipeProperties );
-		pipeObject->SetInternalWin32PipeHandle( win32PipeHandle );
+		pipeObject->SetWin32PipeHandle( win32PipeHandle );
 
 		return pipeObject;
 	}
 
-	PipeHandle Win32PipeFactory::_NativeCreateNamedPipeWriteAccess(
-		const cppx::immutable_string & pPipeName,
-		EPipeDataMode pPipeDataMode,
+	PipeHandle Win32PipeFactory::_NativeCreateReadPipe(
+		const PipeCreateInfo & pPipeCreateInfo,
 		const IOTimeoutSettings & pTimeoutSettings )
 	{
 		std::string fullyQualifiedPipeName = Platform::kWin32PipeNameBaseComponent;
-		fullyQualifiedPipeName.append( pPipeName.str() );
+		fullyQualifiedPipeName.append( pPipeCreateInfo.pipeName.str() );
 
-		auto win32PipeHandle = Platform::_Win32CreateWritePipe( fullyQualifiedPipeName, pPipeDataMode, pTimeoutSettings );
+		auto win32PipeHandle = Platform::_Win32CreateReadPipe( fullyQualifiedPipeName, pPipeCreateInfo.pipeDataMode, pTimeoutSettings );
 		if( !win32PipeHandle )
 		{
-			Ic3DebugOutputFmt( "Failed to create write pipe '%s'.", pPipeName.data() );
+			Ic3DebugOutputFmt( "Failed to open read pipe '%s'.", fullyQualifiedPipeName.data() );
 			return nullptr;
 		}
 
 		PipeProperties pipeProperties{};
-		pipeProperties.accessMode = EIOAccessMode::WriteAppend;
+		pipeProperties.pipeType = EPipeType::PTRead;
+		pipeProperties.accessMode = EIOAccessMode::ReadOnly;
 		pipeProperties.fullyQualifiedPipeName = std::move( fullyQualifiedPipeName );
-		pipeProperties.pipeDataMode = pPipeDataMode;
+		pipeProperties.pipeDataMode = pPipeCreateInfo.pipeDataMode;
 
 		auto pipeObject = CreateSysObject<Win32Pipe>( mSysContext, pipeProperties );
-		pipeObject->SetInternalWin32PipeHandle( win32PipeHandle );
+		pipeObject->SetWin32PipeHandle( win32PipeHandle );
 
 		return pipeObject;
 	}
@@ -99,15 +99,14 @@ namespace Ic3::System
 		_ReleaseWin32PipeHandle();
 	}
 
-	void Win32Pipe::SetInternalWin32PipeHandle( HANDLE pPipeHandle )
+	bool Win32Pipe::IsPipeBroken() const noexcept
 	{
-		mNativeData.pipeHandle = pPipeHandle;
-	}
-
-	bool Win32Pipe::_NativePipeIsValid() const noexcept
-	{
+		// First, check the native pipe handle.
 		if( mNativeData.pipeHandle != nullptr )
 		{
+			// Use PeekNamedPipe to query the pipe status. We don't query any properties
+			// (not needed) - PeekNamedPipe will fail immediately of the specified pipe
+			// handle does not refer to a valid, active pipe.
 			const auto peekPipeResult = ::PeekNamedPipe(
 				mNativeData.pipeHandle,
 				nullptr,
@@ -116,13 +115,23 @@ namespace Ic3::System
 				nullptr,
 				nullptr );
 
-			if( peekPipeResult )
+			if( !peekPipeResult )
 			{
 				return true;
 			}
 		}
 
 		return false;
+	}
+
+	void Win32Pipe::SetWin32PipeHandle( HANDLE pPipeHandle )
+	{
+		mNativeData.pipeHandle = pPipeHandle;
+	}
+
+	bool Win32Pipe::_NativePipeIsValid() const noexcept
+	{
+		return mNativeData.pipeHandle && !IsPipeBroken();
 	}
 
 	io_size_t Win32Pipe::_NativePipeGetAvailableDataSize() const
@@ -135,6 +144,8 @@ namespace Ic3::System
 		DWORD totalBytesAvailableInPipe = 0;
 		DWORD currentMessageBytesLeft = 0;
 
+		// Get both totalBytes and bytesLeftForMessage. This will handle properly
+		// all possible pipes in both BYTES and MESSAGE modes (can be either here).
 		const auto readResult = ::PeekNamedPipe(
 			mNativeData.pipeHandle,
 			nullptr,
@@ -148,6 +159,8 @@ namespace Ic3::System
 			Platform::WFAGetLastSystemErrorAndPrintToDebugOutput( "PeekNamedPipe" );
 		}
 
+		// If there is data left for the message (message-based pipes) use that. Otherwise,
+		// simply return the total size of data available in the pipe for reading.
 		return ( currentMessageBytesLeft > 0 ) ? currentMessageBytesLeft : totalBytesAvailableInPipe;
 	}
 
@@ -199,9 +212,12 @@ namespace Ic3::System
 				const auto lastError = ::GetLastError();
 				if( lastError == ERROR_MORE_DATA )
 				{
+					// This is not an error, not really. It simply means that this read requested for
+					// less data than the message chunk in the pipe (only for message-based pipes).
 				}
 				else
 				{
+					// Any other error means the pipe got broken. Clean up and report.
 					_ReleaseWin32PipeHandle( true );
 					Platform::WFAPrintSystemErrorToDebugOutput( lastError, "ReadFile( Pipe )" );
 				}
@@ -237,7 +253,15 @@ namespace Ic3::System
 
 	bool Win32Pipe::_NativeReconnectReadPipe( const IOTimeoutSettings & pTimeoutSettings )
 	{
-		return false;
+		if( mNativeData.pipeHandle )
+		{
+			Platform::_Win32ClosePipe( mNativeData.pipeHandle, mPipeType, IsPipeBroken() );
+			mNativeData.pipeHandle = nullptr;
+		}
+
+		mNativeData.pipeHandle = Platform::_Win32CreateReadPipe( mFullyQualifiedPipeName.str(), mPipeDataMode, pTimeoutSettings );
+
+		return mNativeData.pipeHandle != nullptr;
 	}
 
 	bool Win32Pipe::_NativeReconnectWritePipe( const IOTimeoutSettings & pTimeoutSettings )
@@ -249,7 +273,7 @@ namespace Ic3::System
 	{
 		if( mNativeData.pipeHandle )
 		{
-			Platform::_Win32ClosePipe( mNativeData.pipeHandle, mAccessMode, pIsBrokenPipe );
+			Platform::_Win32ClosePipe( mNativeData.pipeHandle, mPipeType, pIsBrokenPipe );
 			mNativeData.pipeHandle = nullptr;
 		}
 	}
@@ -288,6 +312,94 @@ namespace Ic3::System
 			return 0;
 		}
 
+		HANDLE _Win32CreateWritePipe(
+			const std::string & pFullyQualifiedPipeName,
+			EPipeDataMode pPipeDataMode,
+			const IOTimeoutSettings & pTimeoutSettings )
+		{
+			HANDLE pipeHandle = INVALID_HANDLE_VALUE;
+
+			const auto win32PipeNameStr = pFullyQualifiedPipeName.c_str();
+			const auto win32PipeMode = _Win32TranslatePipeDataModeToWriteCreateFlags( pPipeDataMode );
+
+			SECURITY_ATTRIBUTES win32SecurityAttributes{};
+			win32SecurityAttributes.nLength = sizeof( SECURITY_ATTRIBUTES );
+			win32SecurityAttributes.bInheritHandle = FALSE;
+			win32SecurityAttributes.lpSecurityDescriptor = nullptr;
+
+			pipeHandle = ::CreateNamedPipeA(
+				win32PipeNameStr,
+				PIPE_ACCESS_OUTBOUND,
+				win32PipeMode,
+				1,
+				kWin32PipeInOutBufferSize,
+				kWin32PipeInOutBufferSize,
+				NMPWAIT_USE_DEFAULT_WAIT,
+				&win32SecurityAttributes );
+
+			if( pipeHandle == INVALID_HANDLE_VALUE )
+			{
+				WFAGetLastSystemErrorAndPrintToDebugOutput( "CreateNamedPipeA" );
+				pipeHandle = nullptr;
+			}
+
+			if( pipeHandle )
+			{
+				const auto startTimeStampCounter = PerfCounter::QueryCounter();
+
+				while( !PerfCounter::CheckTimeoutElapsed( startTimeStampCounter, pTimeoutSettings.waitTimeout ) )
+				{
+					auto connectResult = ::ConnectNamedPipe( pipeHandle, nullptr );
+					if( connectResult != FALSE )
+					{
+						break;
+					}
+					else
+					{
+						const auto lastError = ::GetLastError();
+						if( lastError == ERROR_PIPE_CONNECTED )
+						{
+							// This can happen if a client connects in the interval between the call to CreateNamedPipe()
+							// and the call to ConnectNamedPipe(). In this situation, there is a good connection between
+							// the client and the server, even though the function returns zero.
+							break;
+						}
+						else if( lastError == ERROR_NO_DATA )
+						{
+							// This means the pipe is somehow still in the connected state. Since the handle can be moved
+							// around by the OS-agnostic Pipe class, it is entirely possible we can end up in this situation.
+							// To fix this, we need to disconnect on the server side and retry the connection attempt.
+							::DisconnectNamedPipe( pipeHandle );
+
+							// Wait before the next try using the specified timeout settings.
+							std::this_thread::sleep_for( pTimeoutSettings.yieldTimeBetweenRetries.get_std() );
+						}
+						else
+						{
+							WFAGetLastSystemErrorAndPrintToDebugOutput( "ConnectNamedPipe" );
+
+							::CloseHandle( pipeHandle );
+							pipeHandle = nullptr;
+
+							break;
+						}
+					}
+				}
+			}
+
+
+			if( !pipeHandle )
+			{
+				Ic3DebugOutputFmt( "Could not initialize pipe %s.", win32PipeNameStr );
+			}
+			else
+			{
+				Ic3DebugOutputFmt( "Successfully initialized pipe %s.", win32PipeNameStr );
+			}
+
+			return pipeHandle;
+		}
+
 		HANDLE _Win32CreateReadPipe(
 			const std::string & pFullyQualifiedPipeName,
 			EPipeDataMode pPipeDataMode,
@@ -303,52 +415,50 @@ namespace Ic3::System
 			const auto win32PipeNameStr = pFullyQualifiedPipeName.c_str();
 			const auto startTimeStampCounter = PerfCounter::QueryCounter();
 
-			while( PerfCounter::ConvertToMilliseconds( PerfCounter::QueryCounter() - startTimeStampCounter ) < pTimeoutSettings.waitTimeout )
+			while( !PerfCounter::CheckTimeoutElapsed( startTimeStampCounter, pTimeoutSettings.waitTimeout ) )
 			{
-				if( pipeHandle == INVALID_HANDLE_VALUE )
+				// Open the pipe file. GENERIC_READ specifies the primary access, but we also need
+				// FILE_WRITE_ATTRIBUTES to update the pipe read mode (BYTE/MESSAGE) later on.
+				pipeHandle = ::CreateFileA(
+					win32PipeNameStr,
+					GENERIC_READ | FILE_WRITE_ATTRIBUTES,
+					0,
+					nullptr,
+					OPEN_EXISTING,
+					0,
+					nullptr );
+
+				// A valid handle returned means everything is good, and we are ready to use our pipe.
+				if( pipeHandle != INVALID_HANDLE_VALUE )
 				{
-					// Open the pipe file. GENERIC_READ specifies the primary access, but we also need
-					// FILE_WRITE_ATTRIBUTES to update the pipe read mode (BYTE/MESSAGE) later on.
-					pipeHandle = ::CreateFileA(
-						win32PipeNameStr,
-						GENERIC_READ | FILE_WRITE_ATTRIBUTES,
-						0,
-						nullptr,
-						OPEN_EXISTING,
-						0,
-						nullptr );
+					break;
+				}
 
-					// A valid handle returned means everything is good, and we are ready to use our pipe.
-					if( pipeHandle != INVALID_HANDLE_VALUE )
-					{
-						break;
-					}
-
-					const auto lastError = ::GetLastError();
-					if( lastError == ERROR_FILE_NOT_FOUND )
-					{
-						// If the result is ERROR_FILE_NOT_FOUND, it means that the server/writer has not created the pipe file yet (step 1).
-						// In this case, we need to keep waiting until it is done, according to the specified timeout settings.
-						std::this_thread::sleep_for( pTimeoutSettings.yieldTimeBetweenRetries.get_std() );
-					}
-					else if( lastError == ERROR_PIPE_BUSY )
-					{
-						// If the result is ERROR_PIPE_BUSY, it means that all allowed pipe instances are busy. In this case, we use the
-						// dedicated function, WaitNamedPipe() to wait the configured timeout until an instance is available. This has
-						// the advantage of this wait being signaled as soon as the server makes ConnectNamedPipe() call on the pipe.
-						::WaitNamedPipeA( win32PipeNameStr, pTimeoutSettings.yieldTimeBetweenRetries.get_count_as_milli<DWORD>() );
-					}
-					else
-					{
-						// Any other result is unexpected and means error. Log the message and return.
-						WFAGetLastSystemErrorAndPrintToDebugOutput();
-						break;
-					}
+				const auto lastError = ::GetLastError();
+				if( lastError == ERROR_FILE_NOT_FOUND )
+				{
+					// If the result is ERROR_FILE_NOT_FOUND, it means that the server/writer has not created the pipe file yet (step 1).
+					// In this case, we need to keep waiting until it is done, according to the specified timeout settings.
+					std::this_thread::sleep_for( pTimeoutSettings.yieldTimeBetweenRetries.get_std() );
+				}
+				else if( lastError == ERROR_PIPE_BUSY )
+				{
+					// If the result is ERROR_PIPE_BUSY, it means that all allowed pipe instances are busy. In this case, we use the
+					// dedicated function, WaitNamedPipe() to wait the configured timeout until an instance is available. This has
+					// the advantage of this wait being signaled as soon as the server makes ConnectNamedPipe() call on the pipe.
+					::WaitNamedPipeA( win32PipeNameStr, pTimeoutSettings.yieldTimeBetweenRetries.get_count_as_milli<DWORD>() );
+				}
+				else
+				{
+					// Any other result is unexpected and means error. Log the message and return.
+					WFAGetLastSystemErrorAndPrintToDebugOutput();
+					break;
 				}
 			}
 
 			if( pipeHandle == INVALID_HANDLE_VALUE )
 			{
+				// In case we ended up with an invalid handle, set it to null to indicate the failure.
 				pipeHandle = nullptr;
 			}
 
@@ -384,98 +494,11 @@ namespace Ic3::System
 			return pipeHandle;
 		}
 
-		HANDLE _Win32CreateWritePipe(
-			const std::string & pFullyQualifiedPipeName,
-			EPipeDataMode pPipeDataMode,
-			const IOTimeoutSettings & pTimeoutSettings )
-		{
-			HANDLE pipeHandle = INVALID_HANDLE_VALUE;
-
-			const auto win32PipeNameStr = pFullyQualifiedPipeName.c_str();
-			const auto win32PipeMode = _Win32TranslatePipeDataModeToWriteCreateFlags( pPipeDataMode );
-
-			SECURITY_ATTRIBUTES win32SecurityAttributes{};
-			win32SecurityAttributes.nLength = sizeof( SECURITY_ATTRIBUTES );
-			win32SecurityAttributes.bInheritHandle = FALSE;
-			win32SecurityAttributes.lpSecurityDescriptor = nullptr;
-
-			pipeHandle = ::CreateNamedPipeA(
-				win32PipeNameStr,
-				PIPE_ACCESS_OUTBOUND,
-				win32PipeMode,
-				1,
-				kWin32PipeInOutBufferSize,
-				kWin32PipeInOutBufferSize,
-				NMPWAIT_USE_DEFAULT_WAIT,
-				&win32SecurityAttributes );
-
-			if( pipeHandle == INVALID_HANDLE_VALUE )
-			{
-				WFAGetLastSystemErrorAndPrintToDebugOutput( "CreateNamedPipeA");
-				pipeHandle = nullptr;
-			}
-
-			if( pipeHandle )
-			{
-				const auto startTimeStampCounter = PerfCounter::QueryCounter();
-
-				while( PerfCounter::ConvertToMilliseconds( PerfCounter::QueryCounter() - startTimeStampCounter ) < pTimeoutSettings.waitTimeout )
-				{
-					auto connectResult = ::ConnectNamedPipe( pipeHandle, nullptr );
-					if( connectResult != FALSE )
-					{
-						break;
-					}
-					else
-					{
-						const auto lastError = ::GetLastError();
-						if( lastError == ERROR_PIPE_CONNECTED )
-						{
-							// This can happen if a client connects in the interval between the call to CreateNamedPipe()
-							// and the call to ConnectNamedPipe(). In this situation, there is a good connection between
-							// the client and the server, even though the function returns zero.
-							break;
-						}
-						else if( lastError == ERROR_NO_DATA )
-						{
-							// This means the pipe is somehow still in the connected state. Since the handle can be moved
-							// around by the OS-agnostic Pipe class, it is entirely possible we can end up in this situation.
-							// To fix this, we need to disconnect on the server side and retry the connection attempt.
-							::DisconnectNamedPipe( pipeHandle );
-						}
-						else
-						{
-							WFAGetLastSystemErrorAndPrintToDebugOutput( "ConnectNamedPipe" );
-
-							::CloseHandle( pipeHandle );
-							pipeHandle = nullptr;
-
-							break;
-						}
-					}
-
-					std::this_thread::sleep_for( pTimeoutSettings.yieldTimeBetweenRetries.get_std() );
-				}
-			}
-
-
-			if( !pipeHandle )
-			{
-				Ic3DebugOutputFmt( "Could not initialize pipe %s.", win32PipeNameStr );
-			}
-			else
-			{
-				Ic3DebugOutputFmt( "Successfully initialized pipe %s.", win32PipeNameStr );
-			}
-
-			return pipeHandle;
-		}
-
-		void _Win32ClosePipe( HANDLE pPipeHandle, EIOAccessMode pAccessMode, bool pIsBrokenPipe )
+		void _Win32ClosePipe( HANDLE pPipeHandle, EPipeType pPipeType, bool pIsBrokenPipe )
 		{
 			if( pPipeHandle )
 			{
-				if( !pIsBrokenPipe && cppx::make_bitmask( pAccessMode ).is_set( eIOAccessFlagOpWrite ) )
+				if( !pIsBrokenPipe && ( pPipeType == EPipeType::PTWrite ) )
 				{
 					// If the pipe is owned by the server component (has write access), we need to flush
 					// all buffers first, so the client gets chance to retrieve all the data from this pipe.

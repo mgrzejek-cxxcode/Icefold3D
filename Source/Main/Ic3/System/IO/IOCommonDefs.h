@@ -57,6 +57,8 @@ namespace Ic3::System
      */
     enum class EIOAccessMode : enum_default_value_t
     {
+        Undefined,
+
         // Open file for reading. If the specified file does not exist, an error is reported.
         // - File pointer is set to the <b>beginning</b>.
         // - Existing content is <b>preserved</b>.

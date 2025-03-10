@@ -26,14 +26,12 @@ namespace Ic3::System
 		virtual ~Win32PipeFactory() noexcept;
 
 	private:
-		virtual PipeHandle _NativeCreateNamedPipeReadAccess(
-			const cppx::immutable_string & pPipeName,
-			EPipeDataMode pPipeDataMode,
+		virtual PipeHandle _NativeCreateWritePipe(
+			const PipeCreateInfo & pPipeCreateInfo,
 			const IOTimeoutSettings & pTimeoutSettings ) override final;
 
-		virtual PipeHandle _NativeCreateNamedPipeWriteAccess(
-			const cppx::immutable_string & pPipeName,
-			EPipeDataMode pPipeDataMode,
+		virtual PipeHandle _NativeCreateReadPipe(
+			const PipeCreateInfo & pPipeCreateInfo,
 			const IOTimeoutSettings & pTimeoutSettings ) override final;
 	};
 
@@ -43,7 +41,9 @@ namespace Ic3::System
 		explicit Win32Pipe( SysContextHandle pSysContext, const PipeProperties & pPipeProperties );
 		virtual ~Win32Pipe() noexcept;
 
-		void SetInternalWin32PipeHandle( HANDLE pPipeHandle );
+		bool IsPipeBroken() const noexcept;
+
+		void SetWin32PipeHandle( HANDLE pPipeHandle );
 
 	private:
 		virtual bool _NativePipeIsValid() const noexcept override final;

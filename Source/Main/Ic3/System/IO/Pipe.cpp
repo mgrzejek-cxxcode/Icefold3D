@@ -16,33 +16,24 @@ namespace Ic3::System
 		return nullptr;
 	}
 
-	PipeHandle PipeFactory::CreateNamedPipeObject(
-			const cppx::immutable_string & pPipeName,
-			EPipeDataMode pPipeDataMode,
-			EIOAccessMode pAccessMode,
-			const IOTimeoutSettings & pTimeoutSettings )
+	PipeHandle PipeFactory::CreateWritePipe(
+		const PipeCreateInfo & pPipeCreateInfo,
+		const IOTimeoutSettings & pTimeoutSettings )
 	{
-		if( pAccessMode == EIOAccessMode::ReadWrite )
-		{
-			Ic3DebugOutput( "EIOAccessMode::ReadWrite is not a valid access for pipes" );
-			return nullptr;
-		}
-		else
-		{
-			if( pAccessMode == EIOAccessMode::ReadOnly )
-			{
-				return _NativeCreateNamedPipeReadAccess( pPipeName, pPipeDataMode, pTimeoutSettings );
-			}
-			else
-			{
-				return _NativeCreateNamedPipeWriteAccess( pPipeName, pPipeDataMode, pTimeoutSettings );
-			}
-		}
+		return _NativeCreateWritePipe( pPipeCreateInfo, pTimeoutSettings );
+	}
+
+	PipeHandle PipeFactory::CreateReadPipe(
+		const PipeCreateInfo & pPipeCreateInfo,
+		const IOTimeoutSettings & pTimeoutSettings )
+	{
+		return _NativeCreateReadPipe( pPipeCreateInfo, pTimeoutSettings );
 	}
 
 
 	Pipe::Pipe( SysContextHandle pSysContext, const PipeProperties & pPipeProperties )
 	: IODataStream( std::move( pSysContext ), pPipeProperties )
+	, mPipeType( pPipeProperties.pipeType )
 	, mFullyQualifiedPipeName( pPipeProperties.fullyQualifiedPipeName )
 	, mPipeDataMode( pPipeProperties.pipeDataMode )
 	{}
@@ -64,26 +55,16 @@ namespace Ic3::System
 		return _NativePipeGetAvailableDataSize();
 	}
 
-	bool Pipe::ReconnectReadPipe( const IOTimeoutSettings & pTimeoutSettings )
+	bool Pipe::Reconnect( const IOTimeoutSettings & pTimeoutSettings )
 	{
-		if( !CheckAccess( eIOAccessFlagOpRead ) )
+		if( mPipeType == EPipeType::PTWrite )
 		{
-			Ic3DebugInterrupt();
-			return false;
+			return _NativeReconnectWritePipe( pTimeoutSettings );
 		}
-
-		return _NativeReconnectReadPipe( pTimeoutSettings );
-	}
-
-	bool Pipe::ReconnectWritePipe( const IOTimeoutSettings & pTimeoutSettings )
-	{
-		if( !CheckAccess( eIOAccessFlagOpWrite ) )
+		else
 		{
-			Ic3DebugInterrupt();
-			return false;
+			return _NativeReconnectReadPipe( pTimeoutSettings );
 		}
-
-		return _NativeReconnectWritePipe( pTimeoutSettings );
 	}
 
 	io_size_t Pipe::ReadImpl( void * pTargetBuffer, io_size_t pReadSize )
