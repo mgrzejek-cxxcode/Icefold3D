@@ -1,0 +1,8 @@
+
+#ifndef __IC3_SYSTEM_PLATFORM_OSAPI_OSX_FILE_SYSTEM_H__
+#define __IC3_SYSTEM_PLATFORM_OSAPI_OSX_FILE_SYSTEM_H__
+
+#include "OSXCommon.h"
+#include "../../Shared/POSIX/POSIXFileSystem.h"
+
+#endif // __IC3_SYSTEM_PLATFORM_OSAPI_OSX_FILE_SYSTEM_H__

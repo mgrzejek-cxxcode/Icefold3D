@@ -14,7 +14,7 @@ namespace Ic3::System
 		return static_cast<perf_counter_value_t>( perfCounter.QuadPart );
 	}
 
-	perf_counter_res_t NativePerfCounterQueryResolution()
+	perf_counter_res_t NativePerfCounterGetResolution()
 	{
 		// "The frequency of the performance counter is fixed at system boot and is consistent across all processors.
 		// Therefore, the frequency need only be queried upon application initialization, and the result can be cached."

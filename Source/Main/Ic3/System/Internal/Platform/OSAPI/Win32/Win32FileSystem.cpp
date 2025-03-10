@@ -1,5 +1,5 @@
 
-#include <Ic3/System/IO/FileManagerNative.h>
+#include <Ic3/System/IO/FileSystemNative.h>
 
 #if( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_WIN32 )
 namespace Ic3::System
@@ -8,11 +8,11 @@ namespace Ic3::System
 	namespace Platform
 	{
 
-		HANDLE _win32OpenFileGeneric( const char * pFilePath, DWORD pFileAccess, DWORD pAccessMode, DWORD pFileFlags );
+		HANDLE _Win32OpenFileGeneric( const char * pFilePath, DWORD pFileAccess, DWORD pAccessMode, DWORD pFileFlags );
 
-		void _win32CloseFile( HANDLE pFileHandle );
+		void _Win32CloseFile( HANDLE pFileHandle );
 
-		DWORD _Win32TranslatEIOAccessModeToWin32Access( EIOAccessMode pAccessMode );
+		DWORD _Win32TranslateIOAccessModeToWin32FileAccess( EIOAccessMode pAccessMode );
 
 		DWORD _Win32TranslatEIOAccessModeToWin32CreationDisposition( EIOAccessMode pAccessMode );
 
@@ -31,11 +31,11 @@ namespace Ic3::System
 
 	FileHandle Win32FileManager::_NativeOpenFile( std::string pFilePath, EIOAccessMode pAccessMode )
 	{
-		const auto fileAccess = Platform::_Win32TranslatEIOAccessModeToWin32Access( pAccessMode );
+		const auto fileAccess = Platform::_Win32TranslateIOAccessModeToWin32FileAccess( pAccessMode );
 		const auto creationDisposition = Platform::_Win32TranslatEIOAccessModeToWin32CreationDisposition( pAccessMode );
 
-		auto fileHandle = Platform::_win32OpenFileGeneric( pFilePath.c_str(), fileAccess, creationDisposition, FILE_ATTRIBUTE_NORMAL );
-		auto fileObject = CreateSysObject<Win32File>( GetHandle<Win32FileManager>() );
+		auto fileHandle = Platform::_Win32OpenFileGeneric( pFilePath.c_str(), fileAccess, creationDisposition, FILE_ATTRIBUTE_NORMAL );
+		auto fileObject = CreateSysObject<Win32File>( GetHandle<Win32FileManager>(), pAccessMode );
 		fileObject->SetInternalWin32FileHandle( fileHandle );
 
 		return fileObject;
@@ -46,8 +46,8 @@ namespace Ic3::System
 		const auto fileAccess = GENERIC_READ | GENERIC_WRITE;
 		const auto creationDisposition = CREATE_ALWAYS;
 
-		auto fileHandle = Platform::_win32OpenFileGeneric( pFilePath.c_str(), fileAccess, creationDisposition, FILE_ATTRIBUTE_NORMAL );
-		auto fileObject = CreateSysObject<Win32File>( GetHandle<Win32FileManager>() );
+		auto fileHandle = Platform::_Win32OpenFileGeneric( pFilePath.c_str(), fileAccess, creationDisposition, FILE_ATTRIBUTE_NORMAL );
+		auto fileObject = CreateSysObject<Win32File>( GetHandle<Win32FileManager>(), EIOAccessMode::ReadWrite );
 		fileObject->SetInternalWin32FileHandle( fileHandle );
 
 		return fileObject;
@@ -60,8 +60,8 @@ namespace Ic3::System
 
 		auto tempFilePath = Platform::_Win32GenerateTempFileName();
 
-		auto fileHandle = Platform::_win32OpenFileGeneric( tempFilePath.c_str(), fileAccess, creationDisposition, FILE_ATTRIBUTE_TEMPORARY );
-		auto fileObject = CreateSysObject<Win32File>( GetHandle<Win32FileManager>() );
+		auto fileHandle = Platform::_Win32OpenFileGeneric( tempFilePath.c_str(), fileAccess, creationDisposition, FILE_ATTRIBUTE_TEMPORARY );
+		auto fileObject = CreateSysObject<Win32File>( GetHandle<Win32FileManager>(), EIOAccessMode::ReadWrite );
 		fileObject->SetInternalWin32FileHandle( fileHandle );
 
 		return fileObject;
@@ -134,8 +134,8 @@ namespace Ic3::System
 	}
 	
 	
-	Win32File::Win32File( FileManagerHandle pFileManager )
-	: Win32NativeObject( std::move( pFileManager ) )
+	Win32File::Win32File( FileManagerHandle pFileManager, EIOAccessMode pAccessMode )
+	: Win32NativeObject( std::move( pFileManager ), pAccessMode )
 	{}
 
 	Win32File::~Win32File() noexcept
@@ -153,9 +153,68 @@ namespace Ic3::System
 	{
 		if( mNativeData.fileHandle )
 		{
-			Platform::_win32CloseFile( mNativeData.fileHandle );
+			Platform::_Win32CloseFile( mNativeData.fileHandle );
 			mNativeData.fileHandle = nullptr;
 		}
+	}
+
+	bool Win32File::_NativeIsValid() const noexcept
+	{
+		return mNativeData.fileHandle != nullptr;
+	}
+
+	io_size_t Win32File::_NativeGetAvailableDataSize() const
+	{
+		LARGE_INTEGER u64SetFileOffset;
+		u64SetFileOffset.QuadPart = 0u;
+
+		LARGE_INTEGER u64GetFilePosition;
+		u64GetFilePosition.QuadPart = 0u;
+
+		::SetFilePointerEx( mNativeData.fileHandle, u64SetFileOffset, &u64GetFilePosition, FILE_CURRENT );
+		const auto previousFilePointer = u64GetFilePosition.QuadPart;
+
+		::SetFilePointerEx( mNativeData.fileHandle, u64SetFileOffset, &u64GetFilePosition, FILE_END );
+		const auto endFilePosition = u64GetFilePosition.QuadPart;
+
+		u64SetFileOffset.QuadPart = previousFilePointer;
+
+		::SetFilePointerEx( mNativeData.fileHandle, u64SetFileOffset, nullptr, FILE_BEGIN );
+
+		return cppx::numeric_cast<io_offset_t>( endFilePosition - previousFilePointer );
+	}
+
+	io_offset_t Win32File::_NativeGetFilePointer() const
+	{
+		LARGE_INTEGER u64SetFileOffset;
+		u64SetFileOffset.QuadPart = 0u;
+
+		LARGE_INTEGER u64GetFilePosition;
+		u64GetFilePosition.QuadPart = 0u;
+
+		::SetFilePointerEx( mNativeData.fileHandle, u64SetFileOffset, &u64GetFilePosition, FILE_CURRENT );
+
+		return cppx::numeric_cast<io_offset_t>( u64GetFilePosition.QuadPart );
+	}
+
+	io_size_t Win32File::_NativeGetSize() const
+	{
+		LARGE_INTEGER u64FileSize;
+		u64FileSize.QuadPart = 0L;
+
+		::GetFileSizeEx( mNativeData.fileHandle, &u64FileSize );
+
+		return cppx::numeric_cast<io_size_t>( u64FileSize.QuadPart );
+	}
+
+	bool Win32File::_NativeCheckEOF() const
+	{
+		return mNativeData.flags.is_set( Platform::eWin32FileFlagEOFBit );
+	}
+
+	bool Win32File::_NativeIsGood() const
+	{
+		return mNativeData.flags == 0;
 	}
 
 	io_size_t Win32File::_NativeReadData( void * pTargetBuffer, io_size_t pReadSize )
@@ -207,10 +266,11 @@ namespace Ic3::System
 
 		auto win32FPMoveMode = Platform::_Win32TranslatEIOPointerRefPos( pRefPos );
 
-		u64FileOffset.LowPart = ::SetFilePointer( mNativeData.fileHandle,
-		                                          u64FileOffset.LowPart,
-		                                          &( u64FileOffset.HighPart ),
-		                                          win32FPMoveMode );
+		u64FileOffset.LowPart = ::SetFilePointer(
+			mNativeData.fileHandle,
+			u64FileOffset.LowPart,
+			&(u64FileOffset.HighPart),
+			win32FPMoveMode );
 
 		if( u64FileOffset.LowPart == INVALID_SET_FILE_POINTER )
 		{
@@ -225,65 +285,11 @@ namespace Ic3::System
 		return cppx::numeric_cast<io_offset_t>( u64FileOffset.QuadPart );
 	}
 
-	io_offset_t Win32File::_NativeGetFilePointer() const
-	{
-		LARGE_INTEGER u64SetFileOffset;
-		u64SetFileOffset.QuadPart = 0u;
-
-		LARGE_INTEGER u64GetFilePosition;
-		u64GetFilePosition.QuadPart = 0u;
-
-		::SetFilePointerEx( mNativeData.fileHandle, u64SetFileOffset, &u64GetFilePosition, FILE_CURRENT );
-
-		return cppx::numeric_cast<io_offset_t>( u64GetFilePosition.QuadPart );
-	}
-
-	io_size_t Win32File::_NativeGetSize() const
-	{
-		LARGE_INTEGER u64FileSize;
-		u64FileSize.QuadPart = 0L;
-
-		::GetFileSizeEx( mNativeData.fileHandle, &u64FileSize );
-
-		return cppx::numeric_cast<io_size_t>( u64FileSize.QuadPart );
-	}
-
-	io_size_t Win32File::_NativeGetRemainingBytes() const
-	{
-		LARGE_INTEGER u64SetFileOffset;
-		u64SetFileOffset.QuadPart = 0u;
-
-		LARGE_INTEGER u64GetFilePosition;
-		u64GetFilePosition.QuadPart = 0u;
-
-		::SetFilePointerEx( mNativeData.fileHandle, u64SetFileOffset, &u64GetFilePosition, FILE_CURRENT );
-		const auto previousFilePointer = u64GetFilePosition.QuadPart;
-
-		::SetFilePointerEx( mNativeData.fileHandle, u64SetFileOffset, &u64GetFilePosition, FILE_END );
-		const auto endFilePosition = u64GetFilePosition.QuadPart;
-
-		u64SetFileOffset.QuadPart = previousFilePointer;
-
-		::SetFilePointerEx( mNativeData.fileHandle, u64SetFileOffset, nullptr, FILE_BEGIN );
-
-		return cppx::numeric_cast<io_offset_t>( endFilePosition - previousFilePointer );
-	}
-
-	bool Win32File::_NativeCheckEOF() const
-	{
-		return mNativeData.flags.is_set( Platform::eWin32FileFlagEOFBit );
-	}
-
-	bool Win32File::_NativeIsGood() const
-	{
-		return mNativeData.flags == 0;
-	}
-
 
 	namespace Platform
 	{
 
-		HANDLE _win32OpenFileGeneric( const char * pFilePath, DWORD pFileAccess, DWORD pAccessMode, DWORD pFileFlags )
+		HANDLE _Win32OpenFileGeneric( const char * pFilePath, DWORD pFileAccess, DWORD pAccessMode, DWORD pFileFlags )
 		{
 			auto fileHandle = ::CreateFileA( pFilePath, pFileAccess, 0u, nullptr, pAccessMode, pFileFlags, nullptr );
 
@@ -291,13 +297,13 @@ namespace Ic3::System
 			{
 				auto lastErrorCode = ::GetLastError();
 				auto errorMessage = Platform::WFAQuerySystemErrorMessage( lastErrorCode );
-				Ic3ThrowDesc( eEXCSystemFileOpenError, std::move( errorMessage ) );
+				Ic3ThrowDesc( eExcCodeSystemIOError, std::move( errorMessage ) );
 			}
 
 			return fileHandle;
 		}
 
-		void _win32CloseFile( HANDLE pFileHandle )
+		void _Win32CloseFile( HANDLE pFileHandle )
 		{
 			auto closeResult = ::CloseHandle( pFileHandle );
 
@@ -309,7 +315,7 @@ namespace Ic3::System
 			}
 		}
 
-		DWORD _Win32TranslatEIOAccessModeToWin32Access( EIOAccessMode pAccessMode )
+		DWORD _Win32TranslateIOAccessModeToWin32FileAccess( EIOAccessMode pAccessMode )
 		{
 			switch( pAccessMode )
 			{

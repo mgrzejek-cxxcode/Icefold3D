@@ -594,7 +594,7 @@ namespace Ic3::System
 		{
 			if( _PreProcessEvent( pEvent ) )
 			{
-				pEvent.uCommonData.timeStamp = PerfCounter::QueryCurrentStamp();
+				pEvent.uCommonData.timeStamp = PerfCounter::QueryCounter();
 
 				{
 					auto codeIndexValue = static_cast<size_t>( CXU::GetEventCodeCodeIndex( pEvent.uCode ) );
@@ -734,7 +734,7 @@ namespace Ic3::System
 				if( inputMouseState.lastPressButtonID == pMouseButtonEvent.buttonID )
 				{
 					auto lastClickDiff = pMouseButtonEvent.timeStamp - inputMouseState.lastPressTimestamp;
-					auto lastClickDiffMs = PerfCounter::ConvertToDuration<cppx::duration_period::millisecond>( lastClickDiff );
+					auto lastClickDiffMs = PerfCounter::ConvertToMilliseconds( lastClickDiff );
 					if( lastClickDiffMs <= eventSystemConfig.mouseClickSequenceTimeoutMs )
 					{
 						if( inputMouseState.currentMultiClickSequenceLength == 1 )

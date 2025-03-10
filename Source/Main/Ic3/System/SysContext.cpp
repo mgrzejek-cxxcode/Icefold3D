@@ -12,12 +12,12 @@ namespace Ic3::System
 			DisplayManagerHandle /* pDisplayManager */,
 			const MetalSystemDriverCreateInfo & /* pCreateInfo */ )
 	{
-		Ic3ThrowDesc( eEXCSystemInterfaceNotSupported, "Metal is not supported on the current operating system." );
+		Ic3ThrowDesc( eExcSystemInterfaceNotSupported, "Metal is not supported on the current operating system." );
 	}
 
 	OpenGLSystemDriverHandle SysContext::CreateOpenGLSystemDriver( DisplayManagerHandle /* pDisplayManager */ )
 	{
-		Ic3ThrowDesc( eEXCSystemInterfaceNotSupported, "OpenGL is not supported on the current operating system." );
+		Ic3ThrowDesc( eExcSystemInterfaceNotSupported, "OpenGL is not supported on the current operating system." );
 	}
 
 	std::string SysContext::QueryCurrentProcessExecutableDirectory() const

@@ -48,15 +48,13 @@ set( IC3_SYSTEM_SRC_FILES
         "IO/AssetSystem.h"
         "IO/AssetSystem.cpp"
         "IO/AssetSystemNative.h"
-        "IO/FileCommon.h"
-        "IO/FileCommon.cpp"
-        "IO/FileManager.h"
-        "IO/FileManager.cpp"
+        "IO/FileSystem.h"
+        "IO/FileSystem.cpp"
 		"IO/IOCommonDefs.h"
 		"IO/IODataStream.h"
 		"IO/IODataStream.cpp"
-		"IO/DataPipe.h"
-		"IO/DataPipe.cpp"
+		"IO/Pipe.h"
+		"IO/Pipe.cpp"
 		
 		"Internal/DisplaySystemPrivate.h"
 		"Internal/EventCorePrivate.h"
@@ -94,8 +92,8 @@ if( ${CM_EBS_SYSCONF_TARGET_FLAG_OSINFO_POSIX} )
             "Internal/Platform/Shared/POSIX/POSIXCommon.cpp"
             "Internal/Platform/Shared/POSIX/POSIXPerfCounter.h"
             "Internal/Platform/Shared/POSIX/POSIXPerfCounter.cpp"
-            "Internal/Platform/Shared/POSIX/POSIXFileManager.h"
-            "Internal/Platform/Shared/POSIX/POSIXFileManager.cpp"
+            "Internal/Platform/Shared/POSIX/POSIXFileSystem.h"
+            "Internal/Platform/Shared/POSIX/POSIXFileSystem.cpp"
             )
 endif()
 
@@ -120,7 +118,7 @@ if( "${CM_EBS_SYSCONF_TARGET_SYSTEM}" STREQUAL "Android" )
             "Internal/Platform/OSAPI/Android/AndroidDisplaySystem.cpp"
             "Internal/Platform/OSAPI/Android/AndroidEventCore.h"
             "Internal/Platform/OSAPI/Android/AndroidEventCore.cpp"
-            "Internal/Platform/OSAPI/Android/AndroidFileManager.h"
+            "Internal/Platform/OSAPI/Android/AndroidFileSystem.h"
             "Internal/Platform/OSAPI/Android/AndroidOpenGLDriver.h"
             "Internal/Platform/OSAPI/Android/AndroidOpenGLDriver.cpp"
             "Internal/Platform/OSAPI/Android/AndroidSysContext.h"
@@ -146,10 +144,8 @@ if( "${CM_EBS_SYSCONF_TARGET_SYSTEM}" STREQUAL "WinDesktop" )
             "Internal/Platform/OSAPI/Win32/Win32DisplaySystem.cpp"
             "Internal/Platform/OSAPI/Win32/Win32EventCore.h"
             "Internal/Platform/OSAPI/Win32/Win32EventCore.cpp"
-            "Internal/Platform/OSAPI/Win32/Win32FileAPI.h"
-            "Internal/Platform/OSAPI/Win32/Win32FileAPI.cpp"
-            "Internal/Platform/OSAPI/Win32/Win32FileManager.h"
-            "Internal/Platform/OSAPI/Win32/Win32FileManager.cpp"
+            "Internal/Platform/OSAPI/Win32/Win32FileSystem.h"
+            "Internal/Platform/OSAPI/Win32/Win32FileSystem.cpp"
             "Internal/Platform/OSAPI/Win32/Win32OpenGLDriver.h"
             "Internal/Platform/OSAPI/Win32/Win32OpenGLDriver.cpp"
             "Internal/Platform/OSAPI/Win32/Win32PipeAPI.h"
@@ -172,7 +168,7 @@ if( "${CM_EBS_SYSCONF_TARGET_SYSTEM}" STREQUAL "Linux" )
             "Internal/Platform/OSAPI/X11/X11DisplaySystem.cpp"
             "Internal/Platform/OSAPI/X11/X11EventCore.h"
             "Internal/Platform/OSAPI/X11/X11EventCore.cpp"
-            "Internal/Platform/OSAPI/X11/X11FileManager.h"
+            "Internal/Platform/OSAPI/X11/X11FileSystem.h"
             "Internal/Platform/OSAPI/X11/X11OpenGLDriver.h"
             "Internal/Platform/OSAPI/X11/X11OpenGLDriver.cpp"
             "Internal/Platform/OSAPI/X11/X11SysContext.h"
@@ -222,7 +218,8 @@ if( NOT "${CM_EBS_SYSTEM_ASSET_SYSTEM_SRC_FLAG}" )
             ${IC3_SYSTEM_SRC_FILES}
             "Internal/Platform/Common/FileBasedAssetSystem.h"
             "Internal/Platform/Common/FileBasedAssetSystem.cpp"
-            )
+            IO/MessagePipe.h
+    )
 endif()
 
 if( "${IC3_COMPONENTS_BUILD_MODE}" STREQUAL "STATIC" )

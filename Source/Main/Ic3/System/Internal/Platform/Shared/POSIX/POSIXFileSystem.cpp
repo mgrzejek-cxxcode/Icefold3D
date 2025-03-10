@@ -1,5 +1,5 @@
 
-#include "POSIXFileManager.h"
+#include "POSIXFileSystem.h"
 #include <dirent.h>
 #include <sys/stat.h>
 
@@ -187,7 +187,7 @@ namespace Ic3::System
 		return static_cast<io_size_t>( fileSize );
 	}
 
-	io_size_t PosixFile::_NativeGetRemainingBytes() const
+	io_size_t PosixFile::_NativeGetAvailableDataSize() const
 	{
 		auto currentFilePointer = ::ftell( mNativeData.mFilePtr );
 		::fseek( mNativeData.mFilePtr, 0u, SEEK_END );
@@ -219,7 +219,7 @@ namespace Ic3::System
 			if( !filePtr )
 			{
 				auto errnoString = Platform::PXAQueryErrnoStringByCode( errno );
-				Ic3ThrowDesc( eEXCSystemFileOpenError, std::move( errnoString ) );
+				Ic3ThrowDesc( eExcCodeSystemIOError, std::move( errnoString ) );
 			}
 
 			return filePtr;

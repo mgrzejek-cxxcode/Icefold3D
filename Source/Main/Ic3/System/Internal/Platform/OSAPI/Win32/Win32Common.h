@@ -11,17 +11,17 @@
 namespace Ic3::System
 {
 
-    namespace Platform
-    {
+	namespace Platform
+	{
 
 		enum EWin32SystemWindowFlags : uint32
 		{
 			eWin32SystemWindowFlagWMStateFullscreen = 0x8000
 		};
 
-        inline constexpr UINT CX_WIN32_MESSAGE_ID_FULLSCREEN_STATE_CHANGE = 0x0477;
+		inline constexpr UINT CX_WIN32_MESSAGE_ID_FULLSCREEN_STATE_CHANGE = 0x0477;
 
-    }
+	}
 
 	template <typename TBaseType, typename TNativeData>
 	class Win32NativeObject : public NativeObject<TBaseType, TNativeData>

@@ -1,34 +1,29 @@
 
-#include "FileManager.h"
+#include "FileSystem.h"
 
 namespace Ic3::System
 {
 
-	File::File( FileManagerHandle pFileManager )
-	: IODataStream( pFileManager->mSysContext )
+	File::File( FileManagerHandle pFileManager, EIOAccessMode pAccessMode )
+	: IODataStream( pFileManager->mSysContext, { pAccessMode } )
 	, mFileManager( std::move( pFileManager ) )
 	{}
 
 	File::~File() noexcept = default;
-
-	io_size_t File::GetRemainingBytes() const noexcept
-	{
-		return _NativeGetRemainingBytes();
-	}
 
 	bool File::IsSeekSupported() const noexcept
 	{
 		return true;
 	}
 
-	io_offset_t File::MoveFilePointer( io_offset_t pOffset )
+	bool File::IsValid() const noexcept
 	{
-		return _NativeSetFilePointer( pOffset, EIOPointerRefPos::CurrentPos );
+		return _NativeIsValid();
 	}
 
-	io_offset_t File::SetFilePointer( io_offset_t pOffset, EIOPointerRefPos pRefPos )
+	io_size_t File::GetAvailableDataSize() const
 	{
-		return _NativeSetFilePointer( pOffset, pRefPos );
+		return _NativeGetAvailableDataSize();
 	}
 
 	io_offset_t File::GetFilePointer() const
@@ -49,6 +44,16 @@ namespace Ic3::System
 	bool File::IsGood() const
 	{
 		return _NativeIsGood();
+	}
+
+	io_offset_t File::MoveFilePointer( io_offset_t pOffset )
+	{
+		return _NativeSetFilePointer( pOffset, EIOPointerRefPos::CurrentPos );
+	}
+
+	io_offset_t File::SetFilePointer( io_offset_t pOffset, EIOPointerRefPos pRefPos )
+	{
+		return _NativeSetFilePointer( pOffset, pRefPos );
 	}
 
 	io_size_t File::ReadImpl( void * pTargetBuffer, io_size_t pReadSize )

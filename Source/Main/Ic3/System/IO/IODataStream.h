@@ -9,15 +9,39 @@
 namespace Ic3::System
 {
 
+	struct IODataStreamProperties
+	{
+		EIOAccessMode accessMode;
+	};
+
 	class IC3_SYSTEM_CLASS IODataStream : public SysObject
 	{
 	public:
-		IODataStream( SysContextHandle pSysContext );
+		EIOAccessMode const mAccessMode;
+
+	public:
+		IODataStream( SysContextHandle pSysContext, const IODataStreamProperties & pIODataStreamProperties );
 		virtual ~IODataStream();
 
-		CPPX_ATTR_NO_DISCARD virtual io_size_t GetRemainingBytes() const noexcept = 0;
-
 		CPPX_ATTR_NO_DISCARD virtual bool IsSeekSupported() const noexcept = 0;
+
+		CPPX_ATTR_NO_DISCARD virtual bool IsValid() const noexcept = 0;
+
+		/**
+		 * @brief Returns the number of bytes in the stream that are available for reading.
+		 * @return The number of bytes in the stream that are available for reading.
+		 *
+		 * This function works similarly for all types of IO streams (files, pipes and sockets) with one
+		 * exception - message-based pipes (EPipeDataMode::MessageStream). For message-based pipes, if the
+		 * next message in the pipe is larger than the size specified, the number of remaining bytes is saved
+		 * and will be returned upon subsequent calls to this function (until the whole message is read).
+		 * When a new message waits in the stream, the returned value is the size of that message.
+		 */
+		CPPX_ATTR_NO_DISCARD virtual io_size_t GetAvailableDataSize() const = 0;
+
+		CPPX_ATTR_NO_DISCARD bool IsDataAvailable() const noexcept;
+
+		CPPX_ATTR_NO_DISCARD bool CheckAccess( cppx::bitmask<EIOAccessFlags> pAccessFlags ) const noexcept;
 
 		io_size_t Read( void * pTargetBuffer, io_size_t pTargetBufferSize, io_size_t pReadSize = kIOSizeMax );
 
@@ -56,7 +80,7 @@ namespace Ic3::System
 		template <typename TResizableBuffer>
 		io_size_t _ReadAuto( TResizableBuffer & pTarget, io_size_t pReadSize )
 		{
-			const auto remainingDataSize = GetRemainingBytes();
+			const auto remainingDataSize = GetAvailableDataSize();
 			const auto readSize = cppx::get_min_of( pReadSize, remainingDataSize );
 			if( pReadSize == 0 )
 			{

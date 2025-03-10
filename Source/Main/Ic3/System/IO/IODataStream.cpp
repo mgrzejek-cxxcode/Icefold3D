@@ -4,11 +4,22 @@
 namespace Ic3::System
 {
 
-    IODataStream::IODataStream( SysContextHandle pSysContext )
+    IODataStream::IODataStream( SysContextHandle pSysContext, const IODataStreamProperties & pIODataStreamProperties )
     : SysObject( pSysContext )
+    , mAccessMode( pIODataStreamProperties.accessMode )
     {}
 
     IODataStream::~IODataStream() = default;
+
+    bool IODataStream::IsDataAvailable() const noexcept
+    {
+        return GetAvailableDataSize() > 0;
+    }
+
+    bool IODataStream::CheckAccess( cppx::bitmask<EIOAccessFlags> pAccessFlags ) const noexcept
+    {
+        return cppx::make_bitmask( mAccessMode ).is_set( pAccessFlags );
+    }
 
     io_size_t IODataStream::Read( void * pTargetBuffer, io_size_t pTargetBufferSize, io_size_t pReadSize )
     {

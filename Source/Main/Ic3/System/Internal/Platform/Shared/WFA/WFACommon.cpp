@@ -51,6 +51,25 @@ namespace Ic3::System
 			return errorMessage;
 		}
 
+		void WFAGetLastSystemErrorAndPrintToDebugOutput( const char * pPrefix )
+		{
+			const auto lastErrorCode = ::GetLastError();
+			WFAPrintSystemErrorToDebugOutput( lastErrorCode, pPrefix );
+		}
+
+		void WFAPrintSystemErrorToDebugOutput( DWORD pErrorCode, const char * pPrefix )
+		{
+			const auto errorMessage = WFAQueryComErrorMessage( pErrorCode );
+			if( pPrefix )
+			{
+				Ic3DebugOutputFmt( "%s / GetLastError(): #%x - %s", pPrefix, pErrorCode, errorMessage.c_str() );
+			}
+			else
+			{
+				Ic3DebugOutputFmt( "GetLastError(): #%x  - %s", pErrorCode, errorMessage.c_str() );
+			}
+		}
+
 	}
 
 } // namespace Ic3::System

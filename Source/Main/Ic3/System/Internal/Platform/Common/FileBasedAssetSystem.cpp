@@ -1,6 +1,6 @@
 
 #include "FileBasedAssetSystem.h"
-#include <Ic3/System/IO/FileManager.h>
+#include <Ic3/System/IO/FileSystem.h>
 #include <Ic3/System/SysContext.h>
 #include <Ic3/System/IO/AssetSystem.h>
 
