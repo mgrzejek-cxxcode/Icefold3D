@@ -2,7 +2,7 @@
 #include "MTLAPITranslationLayer.h"
 #include <Ic3/Graphics/GCI/Resources/TextureCommon.h>
 #include <Ic3/Graphics/GCI/State/SamplerCommon.h>
-#include <Ic3/Math/Color.h>
+#include <cxm/color.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -112,7 +112,7 @@ namespace Ic3::Graphics::GCI
 
 	MTLSamplerBorderColor ATL::selectMTLSamplerBorderColor(
 			ETextureBorderPredefinedColor pPredefinedColor,
-			const Math::RGBAColorR32Norm & pCustomColor )
+			const cxm::rgba_color_r32_norm & pCustomColor )
 	{
 		auto selectedColor = pPredefinedColor;
 
@@ -120,15 +120,15 @@ namespace Ic3::Graphics::GCI
 		{
 			const auto u8Color = pCustomColor.ToU8Color();
 
-			if( u8Color == Ic3::Math::CX_COLOR_BLACK_OPAQUE )
+			if( u8Color == cxm::CX_COLOR_BLACK_OPAQUE )
 			{
 				selectedColor = ETextureBorderPredefinedColor::OpaqueBlack;
 			}
-			else if( u8Color == Ic3::Math::CX_COLOR_BLACK_TRANSPARENT )
+			else if( u8Color == cxm::CX_COLOR_BLACK_TRANSPARENT )
 			{
 				selectedColor = ETextureBorderPredefinedColor::TransparentBlack;
 			}
-			else if( u8Color == Ic3::Math::CX_COLOR_WHITE_OPAQUE )
+			else if( u8Color == cxm::CX_COLOR_WHITE_OPAQUE )
 			{
 				selectedColor = ETextureBorderPredefinedColor::OpaqueWhite;
 			}

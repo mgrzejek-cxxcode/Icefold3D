@@ -23,7 +23,7 @@ namespace Ic3
 	{
 		DynamicFontDesc fontDesc;
 		cppx::dynamic_byte_array binaryFontData;
-		Math::Vec2u32 fontResolutionHint;
+		cxm::vec2u32 fontResolutionHint;
 		std::vector<char_code_point_t> preloadGlyphSet;
 	};
 

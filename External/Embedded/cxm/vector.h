@@ -1,8 +1,8 @@
 
-#ifndef __IC3_MATH_VECTOR_BASE_H__
-#define __IC3_MATH_VECTOR_BASE_H__
+#ifndef __CXM_VECTOR_BASE_H__
+#define __CXM_VECTOR_BASE_H__
 
-#include "Prerequisites.h"
+#include "prerequisites.h"
 
 #if( PCL_COMPILER & PCL_COMPILER_CLANG )
 #  pragma clang diagnostic push
@@ -16,77 +16,77 @@
 #  pragma warning( disable: 4201 )  // 'Nonstandard extension used: nameless struct/union'
 #endif
 
-namespace Ic3::Math
+namespace cxm
 {
 
 	template <typename TPValue>
-	struct Vector4SIMDData
+	struct vector4_simd_data
 	{
-		using Type = TPValue[4];
+		using type = TPValue[4];
 	};
 
-#if( IC3_MATH_SIMD_USE_VX128F )
+#if( CXM_SIMD_USE_VX128F )
 	template <>
-	struct Vector4SIMDData<float>
+	struct vector4_simd_data<float>
 	{
-		using Type = __m128;
-	};
-#endif
-
-#if( IC3_MATH_SIMD_USE_VX128I )
-	template <>
-	struct Vector4SIMDData<int32>
-	{
-		using Type = __m128i;
-	};
-
-	template <>
-	struct Vector4SIMDData<uint32>
-	{
-		using Type = __m128i;
+		using type = __m128;
 	};
 #endif
 
-#if( IC3_MATH_SIMD_USE_VX256D )
+#if( CXM_SIMD_USE_VX128I )
 	template <>
-	struct Vector4SIMDData<double>
+	struct vector4_simd_data<int32>
 	{
-		using Type = __m256d;
+		using type = __m128i;
+	};
+
+	template <>
+	struct vector4_simd_data<uint32>
+	{
+		using type = __m128i;
 	};
 #endif
 
-#if( IC3_MATH_SIMD_USE_VX256I )
+#if( CXM_SIMD_USE_VX256D )
 	template <>
-	struct Vector4SIMDData<int64>
+	struct vector4_simd_data<double>
 	{
-		using Type = __m256i;
+		using type = __m256d;
+	};
+#endif
+
+#if( CXM_SIMD_USE_VX256I )
+	template <>
+	struct vector4_simd_data<int64>
+	{
+		using type = __m256i;
 	};
 
 	template <>
-	struct Vector4SIMDData<uint64>
+	struct vector4_simd_data<uint64>
 	{
-		using Type = __m256i;
+		using type = __m256i;
 	};
 #endif
 
 	template <typename TPValue, size_t tpSize>
-	struct VectorTraits
+	struct vector_traits
 	{
-		static const uint32 sLength = tpSize;
-		static const uint32 sByteSize = sizeof( TPValue ) * sLength;
+		static const uint32 length = tpSize;
+		static const uint32 byte_size = sizeof( TPValue ) * length;
 	};
 
 	template <typename TPValue, size_t tpSize>
-	struct Vector;
+	struct vector;
 
 	template <typename TPValue>
-	struct Vector<TPValue, 2>
+	struct vector<TPValue, 2>
 	{
 	public:
-		using Traits = VectorTraits<TPValue, 2>;
+		using traits_type = vector_traits<TPValue, 2>;
 
-		static const uint32 sLength = Traits::sLength;
-		static const uint32 sByteSize = Traits::sByteSize;
+		static const uint32 length = traits_type::length;
+		static const uint32 byte_size = traits_type::byte_size;
 
 		union
 		{
@@ -103,31 +103,31 @@ namespace Ic3::Math
 		};
 
 	public:
-		constexpr Vector( const Vector & ) = default;
-		constexpr Vector & operator=( const Vector & ) = default;
+		constexpr vector( const vector & ) = default;
+		constexpr vector & operator=( const vector & ) = default;
 
-		constexpr Vector() = default;
+		constexpr vector() = default;
 
 		template <typename TPOther>
-		constexpr explicit Vector( const Vector<TPOther, 2> & pVec ) noexcept
+		constexpr explicit vector( const vector<TPOther, 2> & pVec ) noexcept
 		: x( static_cast<TPValue>( pVec.x ) )
 		, y( static_cast<TPValue>( pVec.y ) )
 		{}
 
 		template <typename TPScalar, enable_if_scalar_t<TPScalar> = true>
-		constexpr explicit Vector( TPScalar pScalar ) noexcept
+		constexpr explicit vector( TPScalar pScalar ) noexcept
 		: x( static_cast<TPValue>( pScalar ) )
 		, y( static_cast<TPValue>( pScalar ) )
 		{}
 
 		template <typename TPScalar, enable_if_scalar_t<TPScalar> = true>
-		constexpr explicit Vector( const TPScalar * pData ) noexcept
+		constexpr explicit vector( const TPScalar * pData ) noexcept
 		: x( static_cast<TPValue>( pData[0] ) )
 		, y( static_cast<TPValue>( pData[1] ) )
 		{}
 
 		template <typename TX, typename TY>
-		constexpr Vector( TX pX, TY pY ) noexcept
+		constexpr vector( TX pX, TY pY ) noexcept
 		: x( static_cast<TPValue>( pX ) )
 		, y( static_cast<TPValue>( pY ) )
 		{}
@@ -144,25 +144,25 @@ namespace Ic3::Math
 
 		TPValue & operator[]( size_t pIndex ) noexcept
 		{
-			Ic3DebugAssert( pIndex < sLength )
+			cppx_debug_assert( pIndex < length )
 			return values[pIndex];
 		}
 
 		const TPValue & operator[]( size_t pIndex ) const noexcept
 		{
-			Ic3DebugAssert( pIndex < sLength )
+			cppx_debug_assert( pIndex < length )
 			return values[pIndex];
 		}
 	};
 
 	template <typename TPValue>
-	struct Vector<TPValue, 3>
+	struct vector<TPValue, 3>
 	{
 	public:
-		using Traits = VectorTraits<TPValue, 3>;
+		using traits_type = vector_traits<TPValue, 3>;
 
-		static const uint32 sLength = Traits::sLength;
-		static const uint32 sByteSize = Traits::sByteSize;
+		static const uint32 length = traits_type::length;
+		static const uint32 byte_size = traits_type::byte_size;
 
 		union
 		{
@@ -179,48 +179,48 @@ namespace Ic3::Math
 		};
 
 	public:
-		constexpr Vector( const Vector & ) = default;
-		constexpr Vector & operator=( const Vector & ) = default;
+		constexpr vector( const vector & ) = default;
+		constexpr vector & operator=( const vector & ) = default;
 
-		constexpr Vector() = default;
+		constexpr vector() = default;
 
 		template <typename TPOther>
-		constexpr explicit Vector( const Vector<TPOther, 3> & pVec ) noexcept
+		constexpr explicit vector( const vector<TPOther, 3> & pVec ) noexcept
 		: x( static_cast<TPValue>( pVec.x ) )
 		, y( static_cast<TPValue>( pVec.y ) )
 		, z( static_cast<TPValue>( pVec.z ) )
 		{}
 
 		template <typename TPScalar, enable_if_scalar_t<TPScalar> = true>
-		constexpr explicit Vector( TPScalar pScalar ) noexcept
+		constexpr explicit vector( TPScalar pScalar ) noexcept
 		: x( static_cast<TPValue>( pScalar ) )
 		, y( static_cast<TPValue>( pScalar ) )
 		, z( static_cast<TPValue>( pScalar ) )
 		{}
 
 		template <typename TPScalar, enable_if_scalar_t<TPScalar> = true>
-		constexpr explicit Vector( const TPScalar * pData ) noexcept
+		constexpr explicit vector( const TPScalar * pData ) noexcept
 		: x( static_cast<TPValue>( pData[0] ) )
 		, y( static_cast<TPValue>( pData[1] ) )
 		, z( static_cast<TPValue>( pData[2] ) )
 		{}
 
 		template <typename TXY, typename TZ>
-		constexpr Vector( const Vector<TXY, 2> & pVecXY, TZ pZ ) noexcept
+		constexpr vector( const vector<TXY, 2> & pVecXY, TZ pZ ) noexcept
 		: x( static_cast<TPValue>( pVecXY.x ) )
 		, y( static_cast<TPValue>( pVecXY.y ) )
 		, z( static_cast<TPValue>( pZ ) )
 		{}
 
 		template <typename TX, typename TYZ>
-		constexpr Vector( TX pX, const Vector<TYZ, 2> & pVecYZ ) noexcept
+		constexpr vector( TX pX, const vector<TYZ, 2> & pVecYZ ) noexcept
 		: x( static_cast<TPValue>( pX ) )
 		, y( static_cast<TPValue>( pVecYZ.y ) )
 		, z( static_cast<TPValue>( pVecYZ.z ) )
 		{}
 
 		template <typename TX, typename TY, typename TZ>
-		constexpr Vector( TX pX, TY pY, TZ pZ ) noexcept
+		constexpr vector( TX pX, TY pY, TZ pZ ) noexcept
 		: x( static_cast<TPValue>( pX ) )
 		, y( static_cast<TPValue>( pY ) )
 		, z( static_cast<TPValue>( pZ ) )
@@ -238,26 +238,26 @@ namespace Ic3::Math
 
 		TPValue & operator[]( size_t pIndex ) noexcept
 		{
-			Ic3DebugAssert( pIndex < sLength )
+			cppx_debug_assert( pIndex < length )
 			return values[pIndex];
 		}
 
 		const TPValue & operator[]( size_t pIndex ) const noexcept
 		{
-			Ic3DebugAssert( pIndex < sLength )
+			cppx_debug_assert( pIndex < length )
 			return values[pIndex];
 		}
 	};
 
 	template <typename TPValue>
-	struct Vector<TPValue, 4>
+	struct vector<TPValue, 4>
 	{
 	public:
-		using Traits = VectorTraits<TPValue, 4>;
-		using SIMDDataType = typename Vector4SIMDData<TPValue>::Type;
+		using traits_type = vector_traits<TPValue, 4>;
+		using SIMDDataType = typename vector4_simd_data<TPValue>::type;
 
-		static const uint32 sLength = Traits::sLength;
-		static const uint32 sByteSize = Traits::sByteSize;
+		static const uint32 length = traits_type::length;
+		static const uint32 byte_size = traits_type::byte_size;
 
 		union
 		{
@@ -280,17 +280,17 @@ namespace Ic3::Math
 		};
 
 	public:
-		constexpr Vector( const Vector & ) = default;
-		constexpr Vector & operator=( const Vector & ) = default;
+		constexpr vector( const vector & ) = default;
+		constexpr vector & operator=( const vector & ) = default;
 
-		constexpr Vector() = default;
+		constexpr vector() = default;
 
-		constexpr explicit Vector( SIMDDataType pMMV ) noexcept
+		constexpr explicit vector( SIMDDataType pMMV ) noexcept
 		: mmv( pMMV )
 		{}
 
 		template <typename TPOther>
-		constexpr explicit Vector( const Vector<TPOther, 4> & pVec ) noexcept
+		constexpr explicit vector( const vector<TPOther, 4> & pVec ) noexcept
 		: x( static_cast<TPValue>( pVec.x ) )
 		, y( static_cast<TPValue>( pVec.y ) )
 		, z( static_cast<TPValue>( pVec.z ) )
@@ -298,7 +298,7 @@ namespace Ic3::Math
 		{}
 
 		template <typename TPScalar, enable_if_scalar_t<TPScalar> = true>
-		constexpr explicit Vector( TPScalar pScalar ) noexcept
+		constexpr explicit vector( TPScalar pScalar ) noexcept
 		: x( static_cast<TPValue>( pScalar ) )
 		, y( static_cast<TPValue>( pScalar ) )
 		, z( static_cast<TPValue>( pScalar ) )
@@ -306,7 +306,7 @@ namespace Ic3::Math
 		{}
 
 		template <typename TPScalar, enable_if_scalar_t<TPScalar> = true>
-		constexpr explicit Vector( const TPScalar * pData ) noexcept
+		constexpr explicit vector( const TPScalar * pData ) noexcept
 		: x( static_cast<TPValue>( pData[0] ) )
 		, y( static_cast<TPValue>( pData[1] ) )
 		, z( static_cast<TPValue>( pData[2] ) )
@@ -314,7 +314,7 @@ namespace Ic3::Math
 		{}
 
 		template <typename TXY, typename TZ, typename TW>
-		constexpr Vector( const Vector<TXY, 2> & pVecXY, TZ pZ, TW pW ) noexcept
+		constexpr vector( const vector<TXY, 2> & pVecXY, TZ pZ, TW pW ) noexcept
 		: x( static_cast<TPValue>( pVecXY.x ) )
 		, y( static_cast<TPValue>( pVecXY.y ) )
 		, z( static_cast<TPValue>( pZ ) )
@@ -322,7 +322,7 @@ namespace Ic3::Math
 		{}
 
 		template <typename TX, typename TYZ, typename TW>
-		constexpr Vector( TX pX, const Vector<TYZ, 2> & pVecYZ, TW pW ) noexcept
+		constexpr vector( TX pX, const vector<TYZ, 2> & pVecYZ, TW pW ) noexcept
 		: x( static_cast<TPValue>( pX ) )
 		, y( static_cast<TPValue>( pVecYZ.y ) )
 		, z( static_cast<TPValue>( pVecYZ.z ) )
@@ -330,7 +330,7 @@ namespace Ic3::Math
 		{}
 
 		template <typename TX, typename TY, typename TZW>
-		constexpr Vector( TX pX, TPValue pY, const Vector<TZW, 2> & pVecZW ) noexcept
+		constexpr vector( TX pX, TPValue pY, const vector<TZW, 2> & pVecZW ) noexcept
 		: x( static_cast<TPValue>( pX ) )
 		, y( static_cast<TPValue>( pY ) )
 		, z( static_cast<TPValue>( pVecZW.z ) )
@@ -338,7 +338,7 @@ namespace Ic3::Math
 		{}
 
 		template <typename TXYZ, typename TW>
-		constexpr Vector( const Vector<TXYZ, 3> & pVecXYZ, TW pW ) noexcept
+		constexpr vector( const vector<TXYZ, 3> & pVecXYZ, TW pW ) noexcept
 		: x( static_cast<TPValue>( pVecXYZ.x ) )
 		, y( static_cast<TPValue>( pVecXYZ.y ) )
 		, z( static_cast<TPValue>( pVecXYZ.z ) )
@@ -346,7 +346,7 @@ namespace Ic3::Math
 		{}
 
 		template <typename TX, typename TYZW>
-		constexpr Vector( TX pX, const Vector<TYZW, 3> & pVecYZW ) noexcept
+		constexpr vector( TX pX, const vector<TYZW, 3> & pVecYZW ) noexcept
 		: x( static_cast<TPValue>( pX ) )
 		, y( static_cast<TPValue>( pVecYZW.y ) )
 		, z( static_cast<TPValue>( pVecYZW.z ) )
@@ -354,7 +354,7 @@ namespace Ic3::Math
 		{}
 
 		template <typename TX, typename TY, typename TZ, typename TW>
-		constexpr Vector( TX pX, TY pY, TZ pZ, TW pW ) noexcept
+		constexpr vector( TX pX, TY pY, TZ pZ, TW pW ) noexcept
 		: x( static_cast<TPValue>( pX ) )
 		, y( static_cast<TPValue>( pY ) )
 		, z( static_cast<TPValue>( pZ ) )
@@ -363,13 +363,13 @@ namespace Ic3::Math
 
 		TPValue & operator[]( size_t pIndex ) noexcept
 		{
-			Ic3DebugAssert( pIndex < sLength )
+			cppx_debug_assert( pIndex < length )
 			return values[pIndex];
 		}
 
 		const TPValue & operator[]( size_t pIndex ) const noexcept
 		{
-			Ic3DebugAssert( pIndex < sLength )
+			cppx_debug_assert( pIndex < length )
 			return values[pIndex];
 		}
 
@@ -383,71 +383,71 @@ namespace Ic3::Math
 			return &( values[0] );
 		}
 
-		SIMDDataType * simdPtr() noexcept
+		SIMDDataType * simd_ptr() noexcept
 		{
 			return &mmv;
 		}
 
-		const SIMDDataType * simdPtr() const noexcept
+		const SIMDDataType * simd_ptr() const noexcept
 		{
 			return &mmv;
 		}
 	};
 
 	template <typename TPValue>
-	using Vec2 = Vector<TPValue, 2>;
+	using vec2 = vector<TPValue, 2>;
 
 	template <typename TPValue>
-	using Vec3 = Vector<TPValue, 3>;
+	using vec3 = vector<TPValue, 3>;
 
 	template <typename TPValue>
-	using Vec4 = Vector<TPValue, 4>;
+	using vec4 = vector<TPValue, 4>;
 
 	template <typename TPValue>
-	using Vector2 = Vector<TPValue, 2>;
+	using vector2 = vector<TPValue, 2>;
 
 	template <typename TPValue>
-	using Vector3 = Vector<TPValue, 3>;
+	using vector3 = vector<TPValue, 3>;
 
 	template <typename TPValue>
-	using Vector4 = Vector<TPValue, 4>;
+	using vector4 = vector<TPValue, 4>;
 
-	using Vec2i16 = Vector2<int16>;
-	using Vec2u16 = Vector2<uint16>;
-	using Vec2i32 = Vector2<int32>;
-	using Vec2u32 = Vector2<uint32>;
-	using Vec2i64 = Vector2<int64>;
-	using Vec2u64 = Vector2<uint64>;
-	using Vec2f   = Vector2<float>;
-	using Vec2d   = Vector2<double>;
+	using vec2i16 = vector2<int16>;
+	using vec2u16 = vector2<uint16>;
+	using vec2i32 = vector2<int32>;
+	using vec2u32 = vector2<uint32>;
+	using vec2i64 = vector2<int64>;
+	using vec2u64 = vector2<uint64>;
+	using vec2f   = vector2<float>;
+	using vec2d   = vector2<double>;
 
-	using Vec3i32 = Vector3<int32>;
-	using Vec3u32 = Vector3<uint32>;
-	using Vec3i64 = Vector3<int64>;
-	using Vec3u64 = Vector3<uint64>;
-	using Vec3f   = Vector3<float>;
-	using Vec3d   = Vector3<double>;
+	using vec3i32 = vector3<int32>;
+	using vec3u32 = vector3<uint32>;
+	using vec3i64 = vector3<int64>;
+	using vec3u64 = vector3<uint64>;
+	using vec3f   = vector3<float>;
+	using vec3d   = vector3<double>;
 
-	using Vec4i16 = Vector4<int16>;
-	using Vec4u16 = Vector4<uint16>;
-	using Vec4i32 = Vector4<int32>;
-	using Vec4u32 = Vector4<uint32>;
-	using Vec4i64 = Vector4<int64>;
-	using Vec4u64 = Vector4<uint64>;
-	using Vec4u8n = Vector4<uint8>;
-	using Vec4f   = Vector4<float>;
-	using Vec4d   = Vector4<double>;
+	using vec4i16 = vector4<int16>;
+	using vec4u16 = vector4<uint16>;
+	using vec4i32 = vector4<int32>;
+	using vec4u32 = vector4<uint32>;
+	using vec4i64 = vector4<int64>;
+	using vec4u64 = vector4<uint64>;
+	using vec4u8n = vector4<uint8>;
+	using vec4f   = vector4<float>;
+	using vec4d   = vector4<double>;
 
-	using Pos2f  = Vector2<float>;
-	using Pos2i  = Vector2<int32>;
-	using Pos3f  = Vector3<float>;
-	using Pos3i  = Vector3<int32>;
-	using Size2f = Vector2<float>;
-	using Size2u = Vector2<uint32>;
-	using Size3f = Vector3<float>;
-	using Size3u = Vector3<uint32>;
+	using pos2f  = vector2<float>;
+	using pos2i  = vector2<int32>;
+	using pos3f  = vector3<float>;
+	using pos3i  = vector3<int32>;
+	using size2f = vector2<float>;
+	using size2u = vector2<uint32>;
+	using size3f = vector3<float>;
+	using size3u = vector3<uint32>;
 
-} // namespace Ic3::Math
+} // namespace cxm
 
 #if( PCL_COMPILER & PCL_COMPILER_CLANG )
 #  pragma clang diagnostic pop
@@ -457,4 +457,4 @@ namespace Ic3::Math
 #  pragma warning( pop )
 #endif
 
-#endif // __IC3_MATH_VECTOR_BASE_H__
+#endif // __CXM_VECTOR_BASE_H__

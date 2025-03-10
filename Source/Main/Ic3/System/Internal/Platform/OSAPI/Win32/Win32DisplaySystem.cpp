@@ -197,7 +197,7 @@ namespace Ic3::System
 			return;
 		}
 
-		if( ( colorFormatDesc.rgba.u8Red != 8 ) || ( colorFormatDesc.rgba.u8Green != 8 ) || ( colorFormatDesc.rgba.u8Blue != 8 ) )
+		if( ( colorFormatDesc.rgba.u8_red != 8 ) || ( colorFormatDesc.rgba.u8_green != 8 ) || ( colorFormatDesc.rgba.u8_blue != 8 ) )
 		{
 			return;
 		}

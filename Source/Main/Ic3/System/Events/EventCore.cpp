@@ -1,6 +1,7 @@
 
 #include "../Internal/EventCorePrivate.h"
-#include <Ic3/Math/VectorOps.h>
+
+#include <cxm/vectorOps.h>
 
 namespace Ic3::System
 {

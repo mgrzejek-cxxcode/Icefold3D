@@ -3,15 +3,18 @@ CMakeSettings.json
 
 *.pak
 
+.clang/
+.cmake-build/
+.cxx/
 .gradle/
 .idea/
 .vs/
 .vscode/
-.cxx/
 
 # OSX
 .DS_Store
 
+Bin/
 bin/
 build/
 cmake-bin-vs/
@@ -19,6 +22,7 @@ cmake-bin-vs2017/
 cmake-bin-vs2019/
 cmake-build-debug/
 cmake-build-release/
+Lib/
 out/
 
 # Doxygen

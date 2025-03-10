@@ -1,16 +1,16 @@
 
-#if !defined( __IC3_MATH_MATRIX_UTILS_H__ )
+#if !defined( __CXM_MATRIX_UTILS_H__ )
 #  error ""
 #endif
 
-#if !defined( IC3_MATH_SIMD_ENABLE_TRANSPOSE_WITH_UNPACK )
-#  define IC3_MATH_SIMD_ENABLE_TRANSPOSE_WITH_UNPACK 0
+#if !defined( CXM_SIMD_ENABLE_TRANSPOSE_WITH_UNPACK )
+#  define CXM_SIMD_ENABLE_TRANSPOSE_WITH_UNPACK 0
 #endif
 
-namespace Ic3::Math
+namespace cxm
 {
 
-#if( IC3_MATH_SIMD_USE_VX128F )
+#if( CXM_SIMD_USE_VX128F )
 
 	PCL_ATTR_ALWAYS_INLINE void _mm_transpose_mat4_128f( __m128 pM0, __m128 pM1, __m128 pM2, __m128 pM3, __m128 pResult[4] )
 	{
@@ -19,7 +19,7 @@ namespace Ic3::Math
 		// M2: [ M20, M21, M22, M23 ]
 		// M3: [ M30, M31, M32, M33 ]
 
-	#if( !IC3_MATH_SIMD_ENABLE_TRANSPOSE_WITH_UNPACK )
+	#if( !CXM_SIMD_ENABLE_TRANSPOSE_WITH_UNPACK )
 		const __m128 tmp0 = _mm_shuffle_ps( pM0, pM1, _MM_SHUFFLE_R( 0, 1, 0, 1 ) ); // [ M00, M01, M10, M11 ]
 		const __m128 tmp1 = _mm_shuffle_ps( pM0, pM1, _MM_SHUFFLE_R( 2, 3, 2, 3 ) ); // [ M02, M03, M12, M13 ]
 		const __m128 tmp2 = _mm_shuffle_ps( pM2, pM3, _MM_SHUFFLE_R( 0, 1, 0, 1 ) ); // [ M20, M21, M30, M31 ]
@@ -42,18 +42,18 @@ namespace Ic3::Math
 	#endif
 	}
 
-	PCL_ATTR_ALWAYS_INLINE Matrix4x4<float> transpose( const Matrix4x4<float> & pMatrix )
+	PCL_ATTR_ALWAYS_INLINE matrix4x4<float> transpose( const matrix4x4<float> & pMatrix )
 	{
-		Matrix4x4<float> result;
-		_mm_transpose_mat4_128f( pMatrix.mm0, pMatrix.mm1, pMatrix.mm2, pMatrix.mm3, result.simdPtr() );
+		matrix4x4<float> result;
+		_mm_transpose_mat4_128f( pMatrix.mm0, pMatrix.mm1, pMatrix.mm2, pMatrix.mm3, result.simd_ptr() );
 		return result;
 	}
 
-	PCL_ATTR_ALWAYS_INLINE void transposeInplace( Matrix4x4<float> & pMatrix )
+	PCL_ATTR_ALWAYS_INLINE void transpose_inplace( matrix4x4<float> & pMatrix )
 	{
-		_mm_transpose_mat4_128f( pMatrix.mm0, pMatrix.mm1, pMatrix.mm2, pMatrix.mm3, pMatrix.simdPtr() );
+		_mm_transpose_mat4_128f( pMatrix.mm0, pMatrix.mm1, pMatrix.mm2, pMatrix.mm3, pMatrix.simd_ptr() );
 	}
 
-#endif // IC3_MATH_SIMD_USE_VX128F
+#endif // CXM_SIMD_USE_VX128F
 
-} // namespace Ic3::Math
+} // namespace cxm

@@ -67,15 +67,15 @@ namespace Ic3
 
 			// Coordinates of a texture sub-rectangle which contains glyph's image.
 			// Stored as normalized values in range [0.0, 1.0].
-			Math::Rectf rect;
+			cxm::rect_f32 rect;
 		};
 
 		// Glyph metrics. A rather self-descriptive thing.
 		struct Metrics
 		{
-			Math::Vec2u32 advance;
-			Math::Vec2u32 bearing;
-			Math::Vec2u32 dimensions;
+			cxm::vec2u32 advance;
+			cxm::vec2u32 bearing;
+			cxm::vec2u32 dimensions;
 		};
 
 		char_code_point_t codePoint;
@@ -106,7 +106,7 @@ namespace Ic3
 				uint32 width;
 				uint32 height;
 			};
-			Math::Vec2u32 dimensions;
+			cxm::vec2u32 dimensions;
 		};
 
 		explicit operator bool() const

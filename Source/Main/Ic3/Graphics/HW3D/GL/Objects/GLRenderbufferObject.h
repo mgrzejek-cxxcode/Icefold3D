@@ -13,7 +13,7 @@ namespace Ic3::Graphics::GCI
 
 	struct GLRenderbufferCreateInfo
 	{
-		Math::Vec2u32 dimensions;
+		cxm::vec2u32 dimensions;
 		GLenum internalFormat = 0;
 		GLuint msaaLevel = 0;
 	};
@@ -21,7 +21,7 @@ namespace Ic3::Graphics::GCI
 	class GLRenderbufferObject : public GLObject
 	{
 	public:
-		Math::Vec2u32 const dimensions;
+		cxm::vec2u32 const dimensions;
 		GLenum const mGLInternalFormat;
 
 		GLRenderbufferObject( GLuint pHandle, const GLRenderbufferCreateInfo & pGLCreateInfo );

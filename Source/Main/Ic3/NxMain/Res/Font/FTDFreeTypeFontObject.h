@@ -32,7 +32,7 @@ namespace Ic3
 
 		FreeTypeFontFace * loadFace( uint32 pFontSize );
 
-		bool SetActiveFace( uint32 pFontSize, const Math::Vec2u32 & pFontResolution );
+		bool SetActiveFace( uint32 pFontSize, const cxm::vec2u32 & pFontResolution );
 
 		bool loadGlyph( char_code_point_t pCodePoint, FontGlyph * pOutGlyph, FontImageData * pOutGlyphImage );
 

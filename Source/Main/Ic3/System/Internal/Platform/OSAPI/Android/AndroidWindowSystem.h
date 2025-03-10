@@ -17,7 +17,7 @@ namespace Ic3::System
 		using AndroidWindowManagerNativeData = AndroidNativeDataCommon;
 		using AndroidWindowNativeData = AndroidNativeDataCommon;
 
-		IC3_SYSTEM_API_NODISCARD Math::Size2u AndroidQueryNativeWindowSize( ANativeWindow * pANativeWindow );
+		IC3_SYSTEM_API_NODISCARD cxm::size2u AndroidQueryNativeWindowSize( ANativeWindow * pANativeWindow );
 
 	}
 

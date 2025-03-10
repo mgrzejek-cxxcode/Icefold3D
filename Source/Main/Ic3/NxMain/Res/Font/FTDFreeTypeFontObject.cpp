@@ -62,7 +62,7 @@ namespace Ic3
 		return facePtr;
 	}
 
-	bool FreeTypeFontObject::SetActiveFace( uint32 pFontSize, const Math::Vec2u32 & pFontResolution )
+	bool FreeTypeFontObject::SetActiveFace( uint32 pFontSize, const cxm::vec2u32 & pFontResolution )
 	{
 		if( auto * ftFace = getFace( pFontSize ) )
 		{

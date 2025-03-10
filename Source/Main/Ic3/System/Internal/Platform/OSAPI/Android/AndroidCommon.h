@@ -5,7 +5,6 @@
 #include <Ic3/Platform/Android/AndroidNativeAppProxy.h>
 #include <Ic3/System/Prerequisites.h>
 #include <Ic3/System/Internal/Platform/Shared/Java/JavaCommon.h>
-#include <Ic3/Math/Vector.h>
 
 namespace Ic3::System
 {

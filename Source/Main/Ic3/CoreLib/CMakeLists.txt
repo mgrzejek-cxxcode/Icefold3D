@@ -1,67 +1,43 @@
 
 set( IC3_CORELIB_SRC_FILES
-		"Prerequisites/CoreDefs.h"
-		"Prerequisites/CoreEnums.h"
-		"Prerequisites/DebugLayer.h"
-		"Prerequisites/DynamicInterface.h"
-        "Prerequisites/DynamicInterface.cpp"
-        "Prerequisites/ResultCode.h"
-        "Prerequisites/SharedHandle.h"
+	"Prerequisites/CoreDefs.h"
+	"Prerequisites/CoreEnums.h"
+	"Prerequisites/DebugLayer.h"
+	"Prerequisites/DynamicInterface.h"
+	"Prerequisites/DynamicInterface.cpp"
+	"Prerequisites/ResultCode.h"
+	"Prerequisites/SharedHandle.h"
 
-        "Prerequisites.h"
-        "Prerequisites.cpp"
+	"Prerequisites.h"
+	"Prerequisites.cpp"
 
-        "Exception.h"
-		"Exception.cpp"
-		"ExceptionCommon.h"
-		"ReturnValueObject.h"
-		"ExceptionUtils.h"
-        "PixelCommon.h"
-        "MathImports.h"
+	"Exception.h"
+	"Exception.cpp"
+	"ExceptionCommon.h"
+	"ReturnValueObject.h"
+	"ExceptionUtils.h"
+	"PixelCommon.h"
+	"MathImports.h"
 
-        "Memory/CommonMemoryDefs.h"
+	"Memory/CommonMemoryDefs.h"
 
-		"Reflection/EnumTypeInfo.h"
-		"Reflection/EnumTypeInfo.cpp"
+	"Reflection/EnumTypeInfo.h"
+	"Reflection/EnumTypeInfo.cpp"
 
-		"Threading/CommonSyncDefs.h"
-		"Threading/Lockable.h"
-		"Threading/MutexCommon.h"
+	"Threading/CommonSyncDefs.h"
+	"Threading/Lockable.h"
+	"Threading/MutexCommon.h"
 
-		"TypeInfo/TPIDefsCoreEnum.cpp"
+	"TypeInfo/TPIDefsCoreEnum.cpp"
 
-        "Utility/GDSCore.h"
-		"Utility/HFSIdentifier.h"
-		"Utility/RectAllocator.h"
-		"Utility/RectAllocator.cpp"
-		"Utility/RXMLParser.h"
-		"Utility/RXMLParser.cpp"
-		"Utility/XMLTypes.h"
-		"Utility/XMLTypes.cpp"
-		)
+	"Utility/GDSCore.h"
+	"Utility/HFSIdentifier.h"
+	"Utility/RectAllocator.h"
+	"Utility/RectAllocator.cpp"
+	"Utility/RXMLParser.h"
+	"Utility/RXMLParser.cpp"
+	"Utility/XMLTypes.h"
+	"Utility/XMLTypes.cpp"
+)
 
-if( "${IC3_COMPONENTS_BUILD_MODE}" STREQUAL "STATIC" )
-    add_library( Ic3.CoreLib STATIC ${IC3_CORELIB_SRC_FILES} )
-    target_compile_definitions( Ic3.CoreLib PRIVATE
-			"IC3_BUILD_STATIC=1" )
-else()
-    add_library( Ic3.CoreLib SHARED ${IC3_CORELIB_SRC_FILES} )
-endif()
-
-ebsAppendInternal(IC3_MODULE_TARGET_LIST "Ic3.CoreLib")
-
-set_target_properties( Ic3.CoreLib PROPERTIES
-		OUTPUT_NAME "Ic3.CoreLib"
-		)
-
-target_compile_definitions( Ic3.CoreLib PRIVATE
-		"IC3_CORELIB_BUILD=1"
-		)
-
-target_include_directories( Ic3.CoreLib PUBLIC
-		"${IC3_INCLUDE_DIR}"
-		)
-
-target_link_libraries( Ic3.CoreLib PUBLIC
-		ext-cppx
-		)
+ic3AddCoreLib( Ic3.CoreLib ${IC3_CORELIB_SRC_FILES} )

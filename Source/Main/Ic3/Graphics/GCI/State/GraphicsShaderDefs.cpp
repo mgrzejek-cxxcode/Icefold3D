@@ -16,6 +16,7 @@ namespace Ic3::Graphics::GCI
 		catch( const std::bad_weak_ptr & pHandleException )
 		{
 			// TODO: Error
+			Ic3UnusedParam( pHandleException );
 		}
 	}
 

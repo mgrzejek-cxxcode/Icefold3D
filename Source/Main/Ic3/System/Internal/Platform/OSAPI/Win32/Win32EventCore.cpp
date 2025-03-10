@@ -1,7 +1,7 @@
 
 #include "Win32WindowSystem.h"
 #include <Ic3/System/Internal/EventCorePrivate.h>
-#include <Ic3/Math/VectorOps.h>
+#include <cxm/vectorOps.h>
 
 #if( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_WIN32 )
 namespace Ic3::System
@@ -348,7 +348,7 @@ namespace Ic3::System
 
 		bool _Win32TranslateInputEventMouse( Win32EventController & pEventController, const MSG & pMSG, EventObject & pOutEvent )
 		{
-			const auto cursorPos = Math::Vec2i32{
+			const auto cursorPos = cxm::vec2i32{
 				GET_X_LPARAM( pMSG.lParam ),
 				GET_Y_LPARAM( pMSG.lParam )
 			};

@@ -43,14 +43,14 @@ namespace Ic3::Graphics::GCI
 
 	struct ScreenRect
 	{
-		Math::Vec2i32 offset;
-		Math::Vec2u32 size;
+		cxm::vec2i32 offset;
+		cxm::vec2u32 size;
 	};
 
 	/// @brief
 	struct VideoSettings
 	{
-		Math::Size2u resolution;
+		cxm::size2u resolution;
 		uint16 refreshRate = 0u;
 		cppx::bitmask<EVideoSettingsFlags> flags = 0u;
 	};

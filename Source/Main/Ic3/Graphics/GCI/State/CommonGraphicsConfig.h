@@ -177,7 +177,7 @@ namespace Ic3::Graphics::GCI
 		/// Blending flags.
 		cppx::bitmask<EBlendConfigFlags> flags = 0;
 
-		Math::RGBAColorR32Norm constantColor;
+		cxm::rgba_color_r32_norm constantColor;
 
 		/// An array of blend settings for each RT attachment.
 		/// If eBlendConfigFlagEnableMRTIndependentBlendingBit is set, each active target uses its corresponding entry.

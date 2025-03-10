@@ -1,6 +1,7 @@
 
 add_subdirectory( "zlib" )
 add_subdirectory( "cppx" )
+add_subdirectory( "cxm" )
 add_subdirectory( "freetype" )
 add_subdirectory( "glew" )
 add_subdirectory( "lua" )
@@ -9,3 +10,12 @@ add_subdirectory( "assimp" )
 
 target_include_directories( ext-assimp PUBLIC "${ASSIMP_INCLUDE_DIRS}/assimp/include" )
 target_include_directories( ext-png PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/zlib" )
+
+ic3SetTargetOutputDir( "ext-zlib" )
+ic3SetTargetOutputDir( "ext-cppx" )
+ic3SetTargetOutputDir( "ext-cxm" )
+ic3SetTargetOutputDir( "ext-freetype" )
+ic3SetTargetOutputDir( "ext-glew" )
+ic3SetTargetOutputDir( "ext-lua" )
+ic3SetTargetOutputDir( "ext-png" )
+ic3SetTargetOutputDir( "ext-assimp" )

@@ -13,8 +13,8 @@ namespace Ic3
 
 	struct CBShadowData
 	{
-		Math::Mat4f m4fLightSpaceMatrix;
-		Math::Vec4f v4fShadowProperties;
+		cxm::mat4f m4fLightSpaceMatrix;
+		cxm::vec4f v4fShadowProperties;
 	};
 
 	struct ShadowConfig
@@ -28,11 +28,11 @@ namespace Ic3
 	public:
 		struct CurrentState
 		{
-			Math::Vec3f vLightPosition;
-			Math::Vec3f vLightTarget;
-			Math::Mat4f mLightView;
-			Math::Mat4f mLightProjection;
-			Math::Mat4f mLightSpace;
+			cxm::vec3f vLightPosition;
+			cxm::vec3f vLightTarget;
+			cxm::mat4f mLightView;
+			cxm::mat4f mLightProjection;
+			cxm::mat4f mLightSpace;
 		};
 
 		struct GPUAPIState
@@ -58,28 +58,28 @@ namespace Ic3
 
 		virtual void createRendererResources();
 
-		const Math::Mat4f & getLightProjectionMatrix() const
+		const cxm::mat4f & getLightProjectionMatrix() const
 		{
 			return _currentState.mLightProjection;
 		}
 
-		const Math::Mat4f & getLightViewMatrix() const
+		const cxm::mat4f & getLightViewMatrix() const
 		{
 			return _currentState.mLightView;
 		}
 
-		const Math::Mat4f & getLightSpaceMatrix() const
+		const cxm::mat4f & getLightSpaceMatrix() const
 		{
 			return _currentState.mLightSpace;
 		}
 
-		const Math::Vec3f & getLightPosition() const
+		const cxm::vec3f & getLightPosition() const
 		{
 			return _currentState.vLightPosition;
 		}
 
-		void setCSLightPosition( Math::Vec3f pLightPosition );
-		void setCSLightTarget( Math::Vec3f pLightTarget );
+		void setCSLightPosition( cxm::vec3f pLightPosition );
+		void setCSLightTarget( cxm::vec3f pLightTarget );
 
 		void setCSProjectionMatrixLightOrthoDefault();
 		void setCSProjectionMatrixLightPerspectiveDefault();

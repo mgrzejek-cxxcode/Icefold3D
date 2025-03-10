@@ -146,7 +146,7 @@ namespace Ic3::Graphics::GCI
 		 * @return Mask with the current config state - contains all bits for currently enabled dynamic configs.
 		 */
 		cppx::bitmask<EGraphicsPipelineDynamicConfigFlags> SetDynamicBlendConstantColor(
-				const Math::RGBAColorR32Norm & pBlendConstantColor );
+				const cxm::rgba_color_r32_norm & pBlendConstantColor );
 
 		/**
 		 * Sets the dynamic clear config that overrides the config from a RenderPassDescriptor.

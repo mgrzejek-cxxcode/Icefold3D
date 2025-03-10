@@ -8,31 +8,31 @@ namespace Ic3::System
 
 	// ColorDesc representation of values in EColorFormat enumeration.
 	static const ColorDesc sColorDescB8G8R8 {
-		Math::RGBAColorU8{ 8,  8,  8,  0 }, 24, EPixelOrder::BGR, EColorSpace::Linear };
+		cxm::rgba_color_u8{ 8,  8,  8,  0 }, 24, EPixelOrder::BGR, EColorSpace::Linear };
 
 	static const ColorDesc sColorDescB8G8R8A8 {
-		Math::RGBAColorU8{ 8,  8,  8,  8 }, 32, EPixelOrder::BGR, EColorSpace::Linear };
+		cxm::rgba_color_u8{ 8,  8,  8,  8 }, 32, EPixelOrder::BGR, EColorSpace::Linear };
 
 	static const ColorDesc sColorDescB8G8R8A8SRGB {
-		Math::RGBAColorU8{ 8,  8,  8,  8 }, 24, EPixelOrder::BGR, EColorSpace::SRGB };
+		cxm::rgba_color_u8{ 8,  8,  8,  8 }, 24, EPixelOrder::BGR, EColorSpace::SRGB };
 
 	static const ColorDesc sColorDescB8G8R8X8 {
-		Math::RGBAColorU8{ 8,  8,  8,  0 }, 32, EPixelOrder::BGR, EColorSpace::Linear };
+		cxm::rgba_color_u8{ 8,  8,  8,  0 }, 32, EPixelOrder::BGR, EColorSpace::Linear };
 
 	static const ColorDesc sColorDescR8G8B8A8 {
-		Math::RGBAColorU8{ 8,  8,  8,  8 }, 32, EPixelOrder::RGB, EColorSpace::Linear };
+		cxm::rgba_color_u8{ 8,  8,  8,  8 }, 32, EPixelOrder::RGB, EColorSpace::Linear };
 
 	static const ColorDesc sColorDescR8G8B8A8SRGB {
-		Math::RGBAColorU8{ 8,  8,  8,  8 }, 32, EPixelOrder::RGB, EColorSpace::SRGB };
+		cxm::rgba_color_u8{ 8,  8,  8,  8 }, 32, EPixelOrder::RGB, EColorSpace::SRGB };
 
 	static const ColorDesc sColorDescR8G8B8X8 {
-		Math::RGBAColorU8{ 8,  8,  8,  0 }, 32, EPixelOrder::RGB, EColorSpace::Linear };
+		cxm::rgba_color_u8{ 8,  8,  8,  0 }, 32, EPixelOrder::RGB, EColorSpace::Linear };
 
 	static const ColorDesc sColorDescR10G10B10A2 {
-		Math::RGBAColorU8{ 10, 10, 10, 2 }, 32, EPixelOrder::RGB, EColorSpace::Linear };
+		cxm::rgba_color_u8{ 10, 10, 10, 2 }, 32, EPixelOrder::RGB, EColorSpace::Linear };
 
 	static const ColorDesc sColorDescUnknown {
-			Math::RGBAColorU8{ 0, 0, 0, 0 }, 0, EPixelOrder::Unknown, EColorSpace::Unknown };
+			cxm::rgba_color_u8{ 0, 0, 0, 0 }, 0, EPixelOrder::Unknown, EColorSpace::Unknown };
 
 	const std::string & VisQueryColorFormatStr( EColorFormat pFormat )
 	{
@@ -128,7 +128,7 @@ namespace Ic3::System
 		const auto & colorDesc = VisGetDescForColorFormat( pFormat );
 		const auto & rgba = colorDesc.rgba;
 		// Format matches with a color spec if all channels have the exact same size.
-		return ( rgba.u8Red == pRed ) && ( rgba.u8Green == pGreen ) && ( rgba.u8Blue == pBlue ) && ( rgba.u8Alpha == pAlpha );
+		return ( rgba.u8_red == pRed ) && ( rgba.u8_green == pGreen ) && ( rgba.u8_blue == pBlue ) && ( rgba.u8_alpha == pAlpha );
 	}
 
 } // namespace Ic3::System

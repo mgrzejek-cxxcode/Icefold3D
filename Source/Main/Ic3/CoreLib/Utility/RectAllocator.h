@@ -2,7 +2,9 @@
 #ifndef __IC3_CORELIB_RECT_ALLOCATOR_H__
 #define __IC3_CORELIB_RECT_ALLOCATOR_H__
 
-#include "../MathImports.h"
+#include "../Prerequisites.h"
+
+#include <cxm/vectorOps.h>
 
 namespace Ic3
 {
@@ -28,17 +30,17 @@ namespace Ic3
 	class IC3_CORELIB_CLASS RectAllocator
 	{
 	public:
-		RectAllocator( const Math::Vec2u32 & pBoundingRectDimensions, const RectAllocatorConfig & pAllocatorConfig );
+		RectAllocator( const cxm::vec2u32 & pBoundingRectDimensions, const RectAllocatorConfig & pAllocatorConfig );
 		~RectAllocator();
 
-		bool AddRect( const Math::Vec2u32 & pRect, Math::Vec2u32 * pOutPosition );
+		bool AddRect( const cxm::vec2u32 & pRect, cxm::vec2u32 * pOutPosition );
 
 		void UpdateHorizontalLayout( RectAllocatorConfig::HorizontalLayout & pHorizontalLayout );
 		void UpdateVerticalLayout( RectAllocatorConfig::VerticalLayout & pVerticalLayout );
 
 		void Reset();
 
-		CPPX_ATTR_NO_DISCARD bool CheckFreeSpace( const Math::Vec2u32 & pRect ) const;
+		CPPX_ATTR_NO_DISCARD bool CheckFreeSpace( const cxm::vec2u32 & pRect ) const;
 
         CPPX_ATTR_NO_DISCARD bool IsEmpty() const;
 
@@ -48,9 +50,9 @@ namespace Ic3
 		}
 
 	private:
-		const Math::Vec2u32 _boundingRectDimensions;
+		const cxm::vec2u32 _boundingRectDimensions;
 		RectAllocatorConfig _config;
-		Math::Vec2u32       _allocPointerOffset;
+		cxm::vec2u32       _allocPointerOffset;
 		uint32              _rectCounter;
 	};
 	

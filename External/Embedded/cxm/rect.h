@@ -1,8 +1,8 @@
 
-#ifndef __IC3_MATH_RECT_H__
-#define __IC3_MATH_RECT_H__
+#ifndef __CXM_RECT_H__
+#define __CXM_RECT_H__
 
-#include "Vector.h"
+#include "vector.h"
 
 #if( PCL_COMPILER & PCL_COMPILER_CLANG )
 #  pragma clang diagnostic push
@@ -16,42 +16,42 @@
 #  pragma warning( disable: 4201 )  // 'Nonstandard extension used: nameless struct/union'
 #endif
 
-namespace Ic3::Math
+namespace cxm
 {
 
 	template <typename TPOffset, typename TPSize>
-	struct Rect
+	struct rect
 	{
 	public:
-		Vector2<TPOffset> offset;
-		Vector2<TPSize> size;
+		vector2<TPOffset> offset;
+		vector2<TPSize> size;
 
 	public:
-		constexpr Rect() = default;
+		constexpr rect() = default;
 
-		constexpr Rect( const Rect & ) = default;
-		constexpr Rect & operator=( const Rect & ) = default;
+		constexpr rect( const rect & ) = default;
+		constexpr rect & operator=( const rect & ) = default;
 
 		template <typename TPScalar, enable_if_scalar_t<TPScalar> = true>
-		constexpr explicit Rect( TPScalar pScalar ) noexcept
+		constexpr explicit rect( TPScalar pScalar ) noexcept
 		: offset( pScalar, pScalar )
 		, size( pScalar, pScalar )
 		{}
 
 		template <typename TPScalar, enable_if_scalar_t<TPScalar> = true>
-		constexpr Rect( TPScalar pWidth, TPScalar pHeight ) noexcept
+		constexpr rect( TPScalar pWidth, TPScalar pHeight ) noexcept
 		: offset( 0, 0 )
 		, size( pWidth, pHeight )
 		{}
 
 		template <typename TX, typename TY, typename TWidth, typename THeight>
-		constexpr Rect( TX pX, TY pY, TWidth pWidth, THeight pHeight = 0 ) noexcept
+		constexpr rect( TX pX, TY pY, TWidth pWidth, THeight pHeight = 0 ) noexcept
 		: offset( pX, pY )
 		, size( pWidth, ( pHeight == 0 ) ? pWidth : pHeight )
 		{}
 
 		template <typename T1, typename T2>
-		constexpr Rect( const Vector2<T1> & pOffset, const Vector2<T2> & pSize ) noexcept
+		constexpr rect( const vector2<T1> & pOffset, const vector2<T2> & pSize ) noexcept
 		: offset( pOffset )
 		, size( pSize )
 		{}
@@ -61,44 +61,44 @@ namespace Ic3::Math
 			return size.x * size.y;
 		}
 
-		CPPX_ATTR_NO_DISCARD bool isNonZero() const
+		CPPX_ATTR_NO_DISCARD bool is_non_zero() const
 		{
 			return ( size.x != 0 ) && ( size.y != 0 );
 		}
 
-		CPPX_ATTR_NO_DISCARD bool isZero() const
+		CPPX_ATTR_NO_DISCARD bool is_zero() const
 		{
 			return ( size.x == 0 ) || ( size.y == 0 );
 		}
 
-		CPPX_ATTR_NO_DISCARD TPSize getX() const noexcept
+		CPPX_ATTR_NO_DISCARD TPSize get_x() const noexcept
 		{
 			return offset.x;
 		}
 
-		CPPX_ATTR_NO_DISCARD TPSize getY() const noexcept
+		CPPX_ATTR_NO_DISCARD TPSize get_y() const noexcept
 		{
 			return offset.y;
 		}
 
-		CPPX_ATTR_NO_DISCARD TPSize getWidth() const noexcept
+		CPPX_ATTR_NO_DISCARD TPSize get_width() const noexcept
 		{
 			return size.x;
 		}
 
-		CPPX_ATTR_NO_DISCARD TPSize getHeight() const noexcept
+		CPPX_ATTR_NO_DISCARD TPSize get_height() const noexcept
 		{
 			return size.y;
 		}
 	};
 
-	using Recti32 = Rect<int32, uint32>;
-	using Rectu32 = Rect<uint32, uint32>;
-	using Recti64 = Rect<int64, uint64>;
-	using Rectu64 = Rect<uint64, uint64>;
-	using Rectf   = Rect<float, float>;
+	using rect_i32 = rect<int32, uint32>;
+	using rect_u32 = rect<uint32, uint32>;
+	using rect_i64 = rect<int64, uint64>;
+	using rect_u64 = rect<uint64, uint64>;
+	using rect_f32 = rect<float, float>;
 
-} // namespace Ic3::Math
+} // namespace cxm
 
 #if( PCL_COMPILER & PCL_COMPILER_CLANG )
 #  pragma clang diagnostic pop
@@ -108,4 +108,4 @@ namespace Ic3::Math
 #  pragma warning( pop )
 #endif
 
-#endif // __IC3_MATH_RECT_H__
+#endif // __CXM_RECT_H__

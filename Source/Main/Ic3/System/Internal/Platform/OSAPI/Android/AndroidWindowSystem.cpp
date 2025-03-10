@@ -47,9 +47,9 @@ namespace Ic3::System
 	namespace Platform
 	{
 
-		Math::Size2u AndroidQueryNativeWindowSize( ANativeWindow * pANativeWindow )
+		cxm::size2u AndroidQueryNativeWindowSize( ANativeWindow * pANativeWindow )
 		{
-			Math::Size2u resultSize{};
+			cxm::size2u resultSize{};
 
 			auto width = ANativeWindow_getWidth( pANativeWindow );
 			auto height = ANativeWindow_getHeight( pANativeWindow );

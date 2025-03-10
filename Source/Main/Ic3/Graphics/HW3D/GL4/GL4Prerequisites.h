@@ -11,7 +11,7 @@
 #  define IC3_GX_GL4_CLASS
 #  define IC3_GX_GL4_OBJ    extern
 #else
-#  if( IC3_GRAPHICS_HWAPI_GL4_BUILD )
+#  if( IC3_GRAPHICS_HW3D_GL4_BUILD )
 #    define IC3_GX_GL4_API    PCL_ATTR_DLL_EXPORT
 #    define IC3_GX_GL4_CLASS  PCL_ATTR_DLL_EXPORT
 #    define IC3_GX_GL4_OBJ    PCL_ATTR_DLL_EXPORT extern
@@ -19,6 +19,14 @@
 #    define IC3_GX_GL4_API    PCL_ATTR_DLL_IMPORT
 #    define IC3_GX_GL4_CLASS  PCL_ATTR_DLL_IMPORT
 #    define IC3_GX_GL4_OBJ    PCL_ATTR_DLL_IMPORT extern
+#  endif
+#endif
+
+#if( IC3_GRAPHICS_HW3D_GL4_BUILD )
+#  if( IC3_BUILD_STATIC )
+#    pragma message( "OpenGL4 Driver will be built as <StaticLib>" )
+#  else
+#    pragma message( "OpenGL4 Driver will be built as <DllLib>" )
 #  endif
 #endif
 
@@ -35,9 +43,9 @@
 #endif
 
 #if( !IC3_GX_GL4_USE_COMPAT_API )
-#  pragma message( "OpenGL 4 Driver will use <Core> API." )
+#  pragma message( "OpenGL4 Driver will use <Core> API." )
 #else
-#  pragma message( "OpenGL 4 Driver will use <Compat> API." )
+#  pragma message( "OpenGL4 Driver will use <Compat> API." )
 #endif
 
 namespace Ic3::Graphics::GCI

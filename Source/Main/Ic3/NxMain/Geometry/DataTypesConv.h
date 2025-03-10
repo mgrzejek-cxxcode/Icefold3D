@@ -5,7 +5,7 @@
 #define __IC3_NXMAIN_DATA_TYPES_CONV_H__
 
 #include "GeometryCommonDefs.h"
-#include <Ic3/Math/Vector.h>
+#include <cxm/vector.h>
 
 namespace Ic3
 {
@@ -44,7 +44,7 @@ namespace Ic3
 	};
 
 	template <typename TPValue, size_t tVectorSize>
-	struct GeometryDataConverter<Math::Vector<TPValue, tVectorSize>>
+	struct GeometryDataConverter<cxm::vector<TPValue, tVectorSize>>
 	{
 		template <typename TPOutput>
 		static DataTypeConversionFunction GetConversionFunction()

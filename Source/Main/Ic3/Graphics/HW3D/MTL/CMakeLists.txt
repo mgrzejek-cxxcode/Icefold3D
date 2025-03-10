@@ -1,5 +1,5 @@
 
-ebsSetInternal( IC3_GRAPHICS_HWAPI_MTLCOMMON_SRC_FILES
+ebsSetInternal( IC3_GRAPHICS_HW3D_MTLCOMMON_SRC_FILES
         "${CMAKE_CURRENT_SOURCE_DIR}/MTLPrerequisites.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/MTL_prerequisites.mm"
 

@@ -58,7 +58,7 @@ namespace Ic3::Graphics::GCI
 
 		virtual void SetFullscreenMode( bool pEnable ) override;
 
-		virtual Ic3::Math::Vec2u32 QueryRenderTargetSize() const override;
+		virtual cxm::vec2u32 QueryRenderTargetSize() const override;
 
 		/// @brief Creates new swap chain using provided Create params.
 		static GLScreenPresentationLayerHandle Create( GLGPUDevice & pDevice, const GLPresentationLayerCreateInfo & pCreateInfo );

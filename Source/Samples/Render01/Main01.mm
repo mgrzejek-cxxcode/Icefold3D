@@ -46,7 +46,7 @@
 using namespace Ic3;
 using namespace GCI;
 using namespace Ic3::System;
-namespace math = Ic3::Math;
+namespace math = cxm;
 
 std::string sGxDriverName;
 

@@ -5,7 +5,7 @@
 namespace Ic3
 {
 
-	RectAllocator::RectAllocator( const Math::Vec2u32 & pBoundingRectDimensions, const RectAllocatorConfig & pAllocatorConfig )
+	RectAllocator::RectAllocator( const cxm::vec2u32 & pBoundingRectDimensions, const RectAllocatorConfig & pAllocatorConfig )
 	: _boundingRectDimensions( pBoundingRectDimensions )
 	, _config( pAllocatorConfig )
 	, _allocPointerOffset( 0, 0 )
@@ -15,7 +15,7 @@ namespace Ic3
 	RectAllocator::~RectAllocator()
 	{}
 
-	bool RectAllocator::AddRect( const Math::Vec2u32 & pRect, Math::Vec2u32 * pOutPosition )
+	bool RectAllocator::AddRect( const cxm::vec2u32 & pRect, cxm::vec2u32 * pOutPosition )
 	{
 		// Spacing also serves to ensure, that glyph images won't be located
 		// too close to the border itself. Hence, we add it twice at this point.
@@ -99,7 +99,7 @@ namespace Ic3
 		_rectCounter = 0;
 	}
 
-	bool RectAllocator::CheckFreeSpace( const Math::Vec2u32 & pRect ) const
+	bool RectAllocator::CheckFreeSpace( const cxm::vec2u32 & pRect ) const
 	{
 		auto targetWidth = _config.horizontalLayout.hSpacing + pRect.x + _config.horizontalLayout.hSpacing;
 		auto targetHeight = _config.verticalLayout.vSpacing + pRect.y + _config.verticalLayout.vSpacing;

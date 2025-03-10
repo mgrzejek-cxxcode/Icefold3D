@@ -21,7 +21,7 @@ namespace Ic3::Graphics::GCI
 		GLenum minFilter;
 		GLenum textureCompareMode;
 		GLenum textureCompareFunc;
-		Math::RGBAColorR32Norm borderColor;
+		cxm::rgba_color_r32_norm borderColor;
 		std::pair<GLfloat, GLfloat> mipLODRange;
 	};
 

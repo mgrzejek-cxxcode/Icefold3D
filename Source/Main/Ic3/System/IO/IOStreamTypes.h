@@ -179,9 +179,9 @@ namespace Ic3::System
 	using IOWriteOnlyStream = IOWriteStreamProxy<IOBaseStream>;
 
 #if( !IC3_BUILD_STATIC )
-	extern IC3_SYSTEM_CLASS template class IOReadStreamProxy<IOBaseStream>;
-	extern IC3_SYSTEM_CLASS template class IOWriteStreamProxy<IOReadStreamProxy<IOBaseStream>>;
-	extern IC3_SYSTEM_CLASS template class IOWriteStreamProxy<IOBaseStream>;
+	extern template class IC3_SYSTEM_TEMPLATE IOReadStreamProxy<IOBaseStream>;
+	extern template class IC3_SYSTEM_TEMPLATE IOWriteStreamProxy<IOReadOnlyStream>;
+	extern template class IC3_SYSTEM_TEMPLATE IOWriteStreamProxy<IOBaseStream>;
 #endif
 
 } // namespace Ic3::System

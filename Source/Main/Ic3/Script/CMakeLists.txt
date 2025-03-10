@@ -23,28 +23,9 @@ set( IC3_SCRIPT_SRC_FILES
 	"Lua/Interop/LuaVariables.h"
 )
 
-if( "${IC3_COMPONENTS_BUILD_MODE}" STREQUAL "STATIC" )
-    add_library( Ic3.Script STATIC ${IC3_SCRIPT_SRC_FILES} )
-    target_compile_definitions( Ic3.Script PRIVATE
-			"IC3_BUILD_STATIC=1")
-else()
-    add_library( Ic3.Script SHARED ${IC3_SCRIPT_SRC_FILES} )
-endif()
-
-set_target_properties( Ic3.Script PROPERTIES
-		OUTPUT_NAME "Ic3.Script"
-		)
-
-target_compile_definitions( Ic3.Script PRIVATE
-		"IC3_SCRIPT_BUILD=1"
-		)
-
-target_include_directories( Ic3.Graphics.GCI PUBLIC
-		"${IC3_INCLUDE_DIR}"
-		)
+ic3AddCoreLib( Ic3.Script ${IC3_SCRIPT_SRC_FILES} )
 
 target_link_libraries( Ic3.Script PUBLIC
 		ext-lua
 		Ic3.CoreLib
-		Ic3.System
-		)
+		Ic3.System )

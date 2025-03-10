@@ -37,7 +37,7 @@ namespace Ic3::Graphics::GCI
 		mD3D12GraphicsCommandList->ExecuteBundle( dx12CmdContext->mD3D12GraphicsCommandList.Get() );
 	}
 
-	void DX12CommandContext::ClearColorTarget( const Math::RGBAColorR32Norm & pColor )
+	void DX12CommandContext::ClearColorTarget( const cxm::rgba_color_r32_norm & pColor )
 	{
 		Ic3DX12CmdContextVerifyGraphics( this );
 

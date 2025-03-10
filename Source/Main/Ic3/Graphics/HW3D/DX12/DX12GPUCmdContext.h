@@ -44,7 +44,7 @@ namespace Ic3::Graphics::GCI
 
 		virtual void ExecuteSecondaryContext( CommandContext & pSecondaryCmdContext ) override;
 
-		virtual void ClearColorTarget( const Math::RGBAColorR32Norm & pColor ) override;
+		virtual void ClearColorTarget( const cxm::rgba_color_r32_norm & pColor ) override;
 
 	private:
 		void SetRenderTargetState( const DX12RenderTargetState & pRenderTargetState );

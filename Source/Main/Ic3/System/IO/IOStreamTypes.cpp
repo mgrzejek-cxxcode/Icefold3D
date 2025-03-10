@@ -4,6 +4,13 @@
 namespace Ic3::System
 {
 
+#if( !IC3_BUILD_STATIC )
+	template class PCL_ATTR_DLL_EXPORT IOReadStreamProxy<IOBaseStream>;
+	template class PCL_ATTR_DLL_EXPORT IOWriteStreamProxy<IOReadOnlyStream>;
+	template class PCL_ATTR_DLL_EXPORT IOWriteStreamProxy<IOBaseStream>;
+#endif
+
+
 	IOBaseStream::IOBaseStream(
 		SysContextHandle pSysContext,
 		const IOStreamProperties & pIOStreamProperties )

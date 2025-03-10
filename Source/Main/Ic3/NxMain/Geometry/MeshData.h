@@ -142,12 +142,12 @@ namespace Ic3
 
 	struct VertexDefaultP3N3T
 	{
-		Math::Vec3f position;
-		Math::Vec3f normal;
-		Math::Vec4f color;
-		Math::Vec2f texCoord;
-		Math::Vec3f tangent;
-		Math::Vec3f biTangent;
+		cxm::vec3f position;
+		cxm::vec3f normal;
+		cxm::vec4f color;
+		cxm::vec2f texCoord;
+		cxm::vec3f tangent;
+		cxm::vec3f biTangent;
 	};
 
 //	namespace geom
@@ -160,8 +160,8 @@ namespace Ic3
 //
 //			for( native_uint iVertex = 0; iVertex < pMeshData.verticesNum; ++iVertex )
 //			{
-//				Math::Vec3f & vTangent = vertexArray[iVertex].tangent;
-//				Math::Vec3f & vBiNormal = vertexArray[iVertex].biTangent;
+//				cxm::vec3f & vTangent = vertexArray[iVertex].tangent;
+//				cxm::vec3f & vBiNormal = vertexArray[iVertex].biTangent;
 //				vTangent = { 0.0f, 0.0f, 0.0f };
 //				vBiNormal = { 0.0f, 0.0f, 0.0f };
 //				continue;
@@ -175,23 +175,23 @@ namespace Ic3
 //				const auto faceIndex1 = indexArray[iIndex + 1];
 //				const auto faceIndex2 = indexArray[iIndex + 2];
 //
-//				const Math::Vec3f & vPosition0 = vertexArray[faceIndex0].position;
-//				const Math::Vec3f & vPosition1 = vertexArray[faceIndex1].position;
-//				const Math::Vec3f & vPosition2 = vertexArray[faceIndex2].position;
+//				const cxm::vec3f & vPosition0 = vertexArray[faceIndex0].position;
+//				const cxm::vec3f & vPosition1 = vertexArray[faceIndex1].position;
+//				const cxm::vec3f & vPosition2 = vertexArray[faceIndex2].position;
 //
-//				const Math::Vec2f & vTexCoord0 = vertexArray[faceIndex0].texCoord;
-//				const Math::Vec2f & vTexCoord1 = vertexArray[faceIndex1].texCoord;
-//				const Math::Vec2f & vTexCoord2 = vertexArray[faceIndex2].texCoord;
+//				const cxm::vec2f & vTexCoord0 = vertexArray[faceIndex0].texCoord;
+//				const cxm::vec2f & vTexCoord1 = vertexArray[faceIndex1].texCoord;
+//				const cxm::vec2f & vTexCoord2 = vertexArray[faceIndex2].texCoord;
 //
-//				const Math::Vec3f & vNormal0 = vertexArray[faceIndex0].normal;
-//				const Math::Vec3f & vNormal1 = vertexArray[faceIndex1].normal;
-//				const Math::Vec3f & vNormal2 = vertexArray[faceIndex2].normal;
+//				const cxm::vec3f & vNormal0 = vertexArray[faceIndex0].normal;
+//				const cxm::vec3f & vNormal1 = vertexArray[faceIndex1].normal;
+//				const cxm::vec3f & vNormal2 = vertexArray[faceIndex2].normal;
 //
-//				const Math::Vec3f dPosition1 = vPosition1 - vPosition0;
-//				const Math::Vec3f dPosition2 = vPosition2 - vPosition0;
+//				const cxm::vec3f dPosition1 = vPosition1 - vPosition0;
+//				const cxm::vec3f dPosition2 = vPosition2 - vPosition0;
 //
-//				const Math::Vec2f dTexCoord1 = vTexCoord1 - vTexCoord0;
-//				const Math::Vec2f dTexCoord2 = vTexCoord2 - vTexCoord0;
+//				const cxm::vec2f dTexCoord1 = vTexCoord1 - vTexCoord0;
+//				const cxm::vec2f dTexCoord2 = vTexCoord2 - vTexCoord0;
 //
 //				// Calculate tangent and bitangent
 //				const auto r = 1.0f / ( dTexCoord1.x * dTexCoord2.y - dTexCoord1.y * dTexCoord2.x );
@@ -199,29 +199,29 @@ namespace Ic3
 //				const auto biTangent = ( dPosition2 * dTexCoord1.x - dPosition1 * dTexCoord2.x ) * r;
 //
 //
-//				Math::Vec3f & vTangent0 = vertexArray[faceIndex0].tangent;
-//				Math::Vec3f & vTangent1 = vertexArray[faceIndex1].tangent;
-//				Math::Vec3f & vTangent2 = vertexArray[faceIndex2].tangent;
+//				cxm::vec3f & vTangent0 = vertexArray[faceIndex0].tangent;
+//				cxm::vec3f & vTangent1 = vertexArray[faceIndex1].tangent;
+//				cxm::vec3f & vTangent2 = vertexArray[faceIndex2].tangent;
 //
-//				Math::Vec3f & vBiNormal0 = vertexArray[faceIndex0].biTangent;
-//				Math::Vec3f & vBiNormal1 = vertexArray[faceIndex1].biTangent;
-//				Math::Vec3f & vBiNormal2 = vertexArray[faceIndex2].biTangent;
+//				cxm::vec3f & vBiNormal0 = vertexArray[faceIndex0].biTangent;
+//				cxm::vec3f & vBiNormal1 = vertexArray[faceIndex1].biTangent;
+//				cxm::vec3f & vBiNormal2 = vertexArray[faceIndex2].biTangent;
 //
-//				vTangent0 += Math::normalize(tangent - vNormal0 * Math::dot( vNormal0, tangent ) );
-//				vTangent1 += Math::normalize(tangent - vNormal1 * Math::dot( vNormal1, tangent ) );
-//				vTangent2 += Math::normalize(tangent - vNormal2 * Math::dot( vNormal2, tangent ) );
+//				vTangent0 += cxm::normalize(tangent - vNormal0 * cxm::dot( vNormal0, tangent ) );
+//				vTangent1 += cxm::normalize(tangent - vNormal1 * cxm::dot( vNormal1, tangent ) );
+//				vTangent2 += cxm::normalize(tangent - vNormal2 * cxm::dot( vNormal2, tangent ) );
 //
-//				vBiNormal0 += Math::normalize( biTangent - vNormal0 * Math::dot( vNormal0, biTangent ) );
-//				vBiNormal1 += Math::normalize( biTangent - vNormal1 * Math::dot( vNormal1, biTangent ) );
-//				vBiNormal2 += Math::normalize( biTangent - vNormal2 * Math::dot( vNormal2, biTangent ) );
+//				vBiNormal0 += cxm::normalize( biTangent - vNormal0 * cxm::dot( vNormal0, biTangent ) );
+//				vBiNormal1 += cxm::normalize( biTangent - vNormal1 * cxm::dot( vNormal1, biTangent ) );
+//				vBiNormal2 += cxm::normalize( biTangent - vNormal2 * cxm::dot( vNormal2, biTangent ) );
 //			}
 //
 //			for( native_uint iVertex = 0; iVertex < pMeshData.verticesNum; ++iVertex )
 //			{
-//				Math::Vec3f & vTangent = vertexArray[iVertex].tangent;
-//				Math::Vec3f & vBiNormal = vertexArray[iVertex].biTangent;
-//				vTangent = Math::normalize( vTangent );
-//				vBiNormal = Math::normalize( vBiNormal );
+//				cxm::vec3f & vTangent = vertexArray[iVertex].tangent;
+//				cxm::vec3f & vBiNormal = vertexArray[iVertex].biTangent;
+//				vTangent = cxm::normalize( vTangent );
+//				vBiNormal = cxm::normalize( vBiNormal );
 //				continue;
 //			}
 //		}

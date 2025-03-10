@@ -10,7 +10,7 @@ namespace Ic3::Graphics::GCI
 
 	struct DX11BlendSettings : public D3D11_BLEND_DESC
 	{
-		Math::RGBAColorR32Norm ConstantFactor;
+		cxm::rgba_color_r32_norm ConstantFactor;
 	};
 
 	struct DX11DepthStencilSettings : public D3D11_DEPTH_STENCIL_DESC

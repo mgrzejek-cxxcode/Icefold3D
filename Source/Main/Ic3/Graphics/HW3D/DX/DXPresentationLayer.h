@@ -35,7 +35,7 @@ namespace Ic3::Graphics::GCI
 
 		virtual void SetFullscreenMode( bool pEnable ) override final;
 
-		virtual Ic3::Math::Vec2u32 QueryRenderTargetSize() const override;
+		virtual cxm::vec2u32 QueryRenderTargetSize() const override;
 
 	protected:
 	    static System::WindowHandle createSysWindow( DXGPUDevice & pGPUDevice, const PresentationLayerCreateInfo & pCreateInfo );

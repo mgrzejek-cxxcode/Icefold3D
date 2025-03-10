@@ -1,31 +1,31 @@
 
-#ifndef __IC3_MATH_MATRIX_UTILS_H__
-#define __IC3_MATH_MATRIX_UTILS_H__
+#ifndef __CXM_MATRIX_UTILS_H__
+#define __CXM_MATRIX_UTILS_H__
 
-#include "MatrixOps.h"
+#include "matrixOps.h"
 
-namespace Ic3::Math
+namespace cxm
 {
 
 	template <typename TPValue>
-	inline Matrix2x2<TPValue> identity2()
+	inline matrix2x2<TPValue> identity2()
 	{
 		constexpr auto cxOne = static_cast<TPValue>( 1 );
 		constexpr auto cxZero = static_cast<TPValue>( 0 );
 
-		return Matrix2x2<TPValue> {
+		return matrix2x2<TPValue> {
 			cxOne,  cxZero,
 			cxZero, cxOne
 		};
 	}
 
 	template <typename TPValue>
-	inline Matrix3x3<TPValue> identity3()
+	inline matrix3x3<TPValue> identity3()
 	{
 		constexpr auto cxOne = static_cast<TPValue>( 1 );
 		constexpr auto cxZero = static_cast<TPValue>( 0 );
 
-		return Matrix3x3<TPValue> {
+		return matrix3x3<TPValue> {
 			cxOne,  cxZero, cxZero,
 			cxZero, cxOne,  cxZero,
 			cxZero, cxZero, cxOne
@@ -33,12 +33,12 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline Matrix4x4<TPValue> identity4()
+	inline matrix4x4<TPValue> identity4()
 	{
 		constexpr auto cxOne = static_cast<TPValue>( 1 );
 		constexpr auto cxZero = static_cast<TPValue>( 0 );
 
-		return Matrix4x4<TPValue> {
+		return matrix4x4<TPValue> {
 			cxOne,  cxZero, cxZero, cxZero,
 			cxZero, cxOne,  cxZero, cxZero,
 			cxZero, cxZero, cxOne,  cxZero,
@@ -47,22 +47,22 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline void transposeInplace( Matrix2x2<TPValue> & pMatrix )
+	inline void transpose_inplace(matrix2x2<TPValue> & pMatrix )
 	{
 		std::swap( pMatrix[1][0], pMatrix[0][1] );
 	}
 
 	template <typename TPValue>
-	inline Matrix2x2<TPValue> transpose( const Matrix2x2<TPValue> & pMatrix )
+	inline matrix2x2<TPValue> transpose( const matrix2x2<TPValue> & pMatrix )
 	{
-		return Matrix2x2<TPValue> {
+		return matrix2x2<TPValue> {
 			pMatrix[0][0], pMatrix[1][0],
 			pMatrix[0][1], pMatrix[1][1]
 		};
 	}
 
 	template <typename TPValue>
-	inline void transposeInplace( Matrix3x3<TPValue> & pMatrix )
+	inline void transpose_inplace( matrix3x3<TPValue> & pMatrix )
 	{
 		std::swap( pMatrix[1][0], pMatrix[0][1]);
 		std::swap( pMatrix[2][0], pMatrix[0][2]);
@@ -70,9 +70,9 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline Matrix3x3<TPValue> transpose( const Matrix3x3<TPValue> & pMatrix )
+	inline matrix3x3<TPValue> transpose( const matrix3x3<TPValue> & pMatrix )
 	{
-		return Matrix3x3<TPValue> {
+		return matrix3x3<TPValue> {
 			pMatrix[0][0], pMatrix[1][0], pMatrix[2][0],
 			pMatrix[0][1], pMatrix[1][1], pMatrix[2][1],
 			pMatrix[0][2], pMatrix[1][2], pMatrix[2][2]
@@ -80,7 +80,7 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline void transposeInplace( Matrix4x4<TPValue> & pMatrix )
+	inline void transpose_inplace( matrix4x4<TPValue> & pMatrix )
 	{
 		std::swap( pMatrix[1][0], pMatrix[0][1]);
 		std::swap( pMatrix[2][0], pMatrix[0][2]);
@@ -91,9 +91,9 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline Matrix4x4<TPValue> transpose( const Matrix4x4<TPValue> & pMatrix )
+	inline matrix4x4<TPValue> transpose( const matrix4x4<TPValue> & pMatrix )
 	{
-		return Matrix4x4<TPValue> {
+		return matrix4x4<TPValue> {
 			pMatrix[0][0], pMatrix[1][0], pMatrix[2][0], pMatrix[3][0],
 			pMatrix[0][1], pMatrix[1][1], pMatrix[2][1], pMatrix[3][1],
 			pMatrix[0][2], pMatrix[1][2], pMatrix[2][2], pMatrix[3][2],
@@ -102,11 +102,11 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline Matrix2x2<TPValue> inverseTranspose( const Matrix2x2<TPValue> & pMatrix )
+	inline matrix2x2<TPValue> inverse_transpose( const matrix2x2<TPValue> & pMatrix )
 	{
 		const TPValue det = pMatrix[0][0] * pMatrix[1][1] - pMatrix[1][0] * pMatrix[0][1];
 
-		return Matrix2x2<TPValue> {
+		return matrix2x2<TPValue> {
 			+ ( pMatrix[1][1] / det ),
 			- ( pMatrix[0][1] / det ),
 			- ( pMatrix[1][0] / det ),
@@ -115,7 +115,7 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline Matrix3x3<TPValue> inverse( const Matrix3x3<TPValue> & pMatrix )
+	inline matrix3x3<TPValue> inverse( const matrix3x3<TPValue> & pMatrix )
 	{
 		const auto oneOverDet = static_cast<TPValue>( 1 ) / (
 				+ pMatrix[0][0] * (pMatrix[1][1] * pMatrix[2][2] - pMatrix[2][1] * pMatrix[1][2])
@@ -136,14 +136,14 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline Matrix3x3<TPValue> inverseTranspose( const Matrix3x3<TPValue> & pMatrix )
+	inline matrix3x3<TPValue> inverse_transpose( const matrix3x3<TPValue> & pMatrix )
 	{
 		const TPValue det =
 			+ pMatrix[0][0] * ( pMatrix[1][1] * pMatrix[2][2] - pMatrix[1][2] * pMatrix[2][1] )
 			- pMatrix[0][1] * ( pMatrix[1][0] * pMatrix[2][2] - pMatrix[1][2] * pMatrix[2][0] )
 			+ pMatrix[0][2] * ( pMatrix[1][0] * pMatrix[2][1] - pMatrix[1][1] * pMatrix[2][0] );
 
-		return Matrix3x3<TPValue> {
+		return matrix3x3<TPValue> {
 			( + ( pMatrix[1][1] * pMatrix[2][2] - pMatrix[2][1] * pMatrix[1][2] ) / det ),
 			( - ( pMatrix[1][0] * pMatrix[2][2] - pMatrix[2][0] * pMatrix[1][2] ) / det ),
 			( + ( pMatrix[1][0] * pMatrix[2][1] - pMatrix[2][0] * pMatrix[1][1] ) / det ),
@@ -157,7 +157,7 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline Matrix4x4<TPValue> inverseTranspose( const Matrix4x4<TPValue> & pMatrix )
+	inline matrix4x4<TPValue> inverse_transpose( const matrix4x4<TPValue> & pMatrix )
 	{
 		const TPValue tmp00 = pMatrix[2][2] * pMatrix[3][3] - pMatrix[3][2] * pMatrix[2][3];
 		const TPValue tmp01 = pMatrix[2][1] * pMatrix[3][3] - pMatrix[3][1] * pMatrix[2][3];
@@ -178,7 +178,7 @@ namespace Ic3::Math
 		const TPValue tmp16 = pMatrix[1][0] * pMatrix[2][2] - pMatrix[2][0] * pMatrix[1][2];
 		const TPValue tmp17 = pMatrix[1][0] * pMatrix[2][1] - pMatrix[2][0] * pMatrix[1][1];
 
-		Matrix4x4<TPValue> tmpInv;
+		matrix4x4<TPValue> tmpInv;
 
 		tmpInv[0][0] = + ( pMatrix[1][1] * tmp00 - pMatrix[1][2] * tmp01 + pMatrix[1][3] * tmp02 );
 		tmpInv[0][1] = - ( pMatrix[1][0] * tmp00 - pMatrix[1][2] * tmp03 + pMatrix[1][3] * tmp04 );
@@ -210,7 +210,7 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline Matrix4x4<TPValue> lookAtLH( const Vec3<TPValue> & pEyePos, const Vec3<TPValue> & pLookAt, const Vec3<TPValue> & pUpVec )
+	inline matrix4x4<TPValue> look_at_LH( const vec3<TPValue> & pEyePos, const vec3<TPValue> & pLookAt, const vec3<TPValue> & pUpVec )
 	{
 		const auto zAxis = normalize( pLookAt - pEyePos );
 		const auto xAxis = normalize( cross( pUpVec, zAxis ) );
@@ -220,7 +220,7 @@ namespace Ic3::Math
 		const TPValue yAxisEyeDot = dot( yAxis, pEyePos );
 		const TPValue zAxisEyeDot = dot( zAxis, pEyePos );
 
-		return Matrix4x4<TPValue> {
+		return matrix4x4<TPValue> {
 				xAxis.x, xAxis.y, xAxis.z, -xAxisEyeDot,
 				yAxis.x, yAxis.y, yAxis.z, -yAxisEyeDot,
 				zAxis.x, zAxis.y, zAxis.z, -zAxisEyeDot,
@@ -229,7 +229,7 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline Matrix4x4<TPValue> lookAtRH( const Vec3<TPValue> & pEyePos, const Vec3<TPValue> & pLookAt, const Vec3<TPValue> & pUpVec )
+	inline matrix4x4<TPValue> look_at_RH( const vec3<TPValue> & pEyePos, const vec3<TPValue> & pLookAt, const vec3<TPValue> & pUpVec )
 	{
 		const auto zAxis = normalize( pLookAt - pEyePos );
 		const auto xAxis = normalize( cross( zAxis, pUpVec ) );
@@ -239,7 +239,7 @@ namespace Ic3::Math
 		const TPValue yAxisEyeDot = dot( yAxis, pEyePos );
 		const TPValue zAxisEyeDot = dot( zAxis, pEyePos );
 
-		return Matrix4x4<TPValue> {
+		return matrix4x4<TPValue> {
 				xAxis.x, xAxis.y, xAxis.z, -xAxisEyeDot,
 				yAxis.x, yAxis.y, yAxis.z, -yAxisEyeDot,
 				-zAxis.x, -zAxis.y, -zAxis.z, zAxisEyeDot,
@@ -248,14 +248,14 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline Matrix4x4<TPValue> orthoCenterLH( TPValue pWidth, TPValue pHeight, TPValue pZNear, TPValue pZFar )
+	inline matrix4x4<TPValue> ortho_center_LH( TPValue pWidth, TPValue pHeight, TPValue pZNear, TPValue pZFar )
 	{
 		const TPValue mElem00 = static_cast<TPValue>( 2 ) / pWidth;
 		const TPValue mElem11 = static_cast<TPValue>( 2 ) / pHeight;
 		const TPValue mElem22 = static_cast<TPValue>( 1 ) / ( pZFar - pZNear );
 		const TPValue mElem23 = pZNear / ( pZNear - pZFar );
 
-		return Matrix4x4<TPValue> {
+		return matrix4x4<TPValue> {
 			mElem00, 0,       0,       0,
 			0,       mElem11, 0,       0,
 			0,       0,       mElem22, mElem23,
@@ -264,7 +264,7 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline Matrix4x4<TPValue> orthoOffCenterLH( TPValue pLeft, TPValue pRight, TPValue pBottom, TPValue pTop, TPValue pZNear, TPValue pZFar )
+	inline matrix4x4<TPValue> ortho_off_center_LH( TPValue pLeft, TPValue pRight, TPValue pBottom, TPValue pTop, TPValue pZNear, TPValue pZFar )
 	{
 		const TPValue mElem00 = static_cast<TPValue>( 2 ) / ( pRight - pLeft );
 		const TPValue mElem11 = static_cast<TPValue>( 2 ) / ( pTop - pBottom );
@@ -273,7 +273,7 @@ namespace Ic3::Math
 		const TPValue mElem13 = ( pBottom + pTop ) / ( pBottom - pTop );
 		const TPValue mElem23 = pZNear / ( pZNear - pZFar );
 
-		return Matrix4x4<TPValue> {
+		return matrix4x4<TPValue> {
 				mElem00, 0,       0,       mElem03,
 				0,       mElem11, 0,       mElem13,
 				0,       0,       mElem22, mElem23,
@@ -282,14 +282,14 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline Matrix4x4<TPValue> orthoCenterRH( TPValue pWidth, TPValue pHeight, TPValue pZNear, TPValue pZFar )
+	inline matrix4x4<TPValue> ortho_center_RH( TPValue pWidth, TPValue pHeight, TPValue pZNear, TPValue pZFar )
 	{
 		const TPValue mElem00 = static_cast<TPValue>( 2 ) / pWidth;
 		const TPValue mElem11 = static_cast<TPValue>( 2 ) / pHeight;
 		const TPValue mElem22 = static_cast<TPValue>( 1 ) / ( pZNear - pZFar );
 		const TPValue mElem23 = pZNear / ( pZNear - pZFar );
 
-		return Matrix4x4<TPValue> {
+		return matrix4x4<TPValue> {
 			mElem00, 0,       0,       0,
 			0,       mElem11, 0,       0,
 			0,       0,       mElem22, mElem23,
@@ -298,7 +298,7 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline Matrix4x4<TPValue> orthoOffCenterRH( TPValue pLeft, TPValue pRight, TPValue pBottom, TPValue pTop, TPValue pZNear, TPValue pZFar )
+	inline matrix4x4<TPValue> ortho_off_center_RH( TPValue pLeft, TPValue pRight, TPValue pBottom, TPValue pTop, TPValue pZNear, TPValue pZFar )
 	{
 		const TPValue mElem00 = static_cast<TPValue>( 2 ) / ( pRight - pLeft );
 		const TPValue mElem11 = static_cast<TPValue>( 2 ) / ( pTop - pBottom );
@@ -307,7 +307,7 @@ namespace Ic3::Math
 		const TPValue mElem13 = ( pBottom + pTop ) / ( pBottom - pTop );
 		const TPValue mElem23 = pZNear / ( pZNear - pZFar );
 
-		return Matrix4x4<TPValue> {
+		return matrix4x4<TPValue> {
 				mElem00, 0,       0,       mElem03,
 				0,       mElem11, 0,       mElem13,
 				0,       0,       mElem22, mElem23,
@@ -316,7 +316,7 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline Matrix4x4<TPValue> perspectiveAspectLH( TPValue pFOV, TPValue pAspectRatio, TPValue pZNear, TPValue pZFar )
+	inline matrix4x4<TPValue> perspective_aspect_LH( TPValue pFOV, TPValue pAspectRatio, TPValue pZNear, TPValue pZFar )
 	{
 		const TPValue halfTanFOV = std::tan( static_cast<TPValue>( 0.5 ) * pFOV );
 
@@ -325,7 +325,7 @@ namespace Ic3::Math
 		const TPValue mElem22 = ( pZFar + pZNear ) / ( pZFar - pZNear );
 		const TPValue mElem23 = ( 2 * pZFar * pZNear ) / ( pZNear - pZFar );
 
-		return Matrix4x4<TPValue> {
+		return matrix4x4<TPValue> {
 			mElem00, 0,       0,       0,
 			0,       mElem11, 0,       0,
 			0,       0,       mElem22, mElem23,
@@ -334,7 +334,7 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline Matrix4x4<TPValue> perspectiveAspectRH( TPValue pFOV, TPValue pAspectRatio, TPValue pZNear, TPValue pZFar )
+	inline matrix4x4<TPValue> perspective_aspect_RH( TPValue pFOV, TPValue pAspectRatio, TPValue pZNear, TPValue pZFar )
 	{
 		const TPValue halfTanFOV = std::tan( static_cast<TPValue>( 0.5 ) * pFOV );
 
@@ -343,7 +343,7 @@ namespace Ic3::Math
 		const TPValue mElem22 = ( pZFar + pZNear ) / ( pZNear - pZFar );
 		const TPValue mElem23 = ( 2 * pZFar * pZNear ) / ( pZNear - pZFar );
 
-		return Matrix4x4<TPValue> {
+		return matrix4x4<TPValue> {
 			mElem00, 0,       0,       0,
 			0,       mElem11, 0,       0,
 			0,       0,       mElem22, mElem23,
@@ -352,7 +352,7 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline Matrix4x4<TPValue> perspectiveRectLH( TPValue pFOV, TPValue pWidth, TPValue pHeight, TPValue pZNear, TPValue pZFar )
+	inline matrix4x4<TPValue> perspective_rect_LH( TPValue pFOV, TPValue pWidth, TPValue pHeight, TPValue pZNear, TPValue pZFar )
 	{
 		const TPValue fovFactor = std::cos( static_cast<TPValue>( 0.5 ) * pFOV ) / std::sin( static_cast<TPValue>( 0.5 ) * pFOV );
 
@@ -361,7 +361,7 @@ namespace Ic3::Math
 		const TPValue mElem22 = ( pZFar + pZNear ) / ( pZFar - pZNear );
 		const TPValue mElem23 = ( 2 * pZFar * pZNear ) / ( pZNear - pZFar );
 
-		return Matrix4x4<TPValue> {
+		return matrix4x4<TPValue> {
 			mElem00, 0,       0,       0,
 			0,       mElem11, 0,       0,
 			0,       0,       mElem22, mElem23,
@@ -370,7 +370,7 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline Matrix4x4<TPValue> perspectiveRectRH( TPValue pFOV, TPValue pWidth, TPValue pHeight, TPValue pZNear, TPValue pZFar )
+	inline matrix4x4<TPValue> perspective_rect_RH( TPValue pFOV, TPValue pWidth, TPValue pHeight, TPValue pZNear, TPValue pZFar )
 	{
 		const TPValue fovFactor = std::cos( static_cast<TPValue>( 0.5 ) * pFOV ) / std::sin( static_cast<TPValue>( 0.5 ) * pFOV );
 
@@ -379,7 +379,7 @@ namespace Ic3::Math
 		const TPValue mElem22 = ( pZFar + pZNear ) / ( pZFar - pZNear );
 		const TPValue mElem23 = ( 2 * pZFar * pZNear ) / ( pZNear - pZFar );
 
-		return Matrix4x4<TPValue> {
+		return matrix4x4<TPValue> {
 			mElem00, 0,        0,       0,
 			0,       mElem11,  0,       0,
 			0,       0,        mElem22, mElem23,
@@ -388,12 +388,12 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline Matrix4x4<TPValue> rotationAxisX( TPValue pAngle )
+	inline matrix4x4<TPValue> rotation_axis_X( TPValue pAngle )
 	{
 		const TPValue angleSin = std::sin( pAngle );
 		const TPValue angleCos = std::cos( pAngle );
 
-		return Matrix4x4<TPValue> {
+		return matrix4x4<TPValue> {
 			1, 0,         0,        0,
 			0, angleCos, -angleSin, 0,
 			0, angleSin,  angleCos, 0,
@@ -402,12 +402,12 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline Matrix4x4<TPValue> rotationAxisY( TPValue pAngle )
+	inline matrix4x4<TPValue> rotation_axis_Y( TPValue pAngle )
 	{
 		const TPValue angleSin = std::sin( pAngle );
 		const TPValue angleCos = std::cos( pAngle );
 
-		return Matrix4x4<TPValue> {
+		return matrix4x4<TPValue> {
 			 angleCos, 0, angleSin, 0,
 			 0,        1, 0,        0,
 			-angleSin, 0, angleCos, 0,
@@ -416,12 +416,12 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline Matrix4x4<TPValue> rotationAxisZ( TPValue pAngle )
+	inline matrix4x4<TPValue> rotation_axis_Z( TPValue pAngle )
 	{
 		const TPValue angleSin = std::sin( pAngle );
 		const TPValue angleCos = std::cos( pAngle );
 
-		return Matrix4x4<TPValue> {
+		return matrix4x4<TPValue> {
 			angleCos, -angleSin, 0, 0,
 			angleSin,  angleCos, 0, 0,
 			0,         0,        1, 0,
@@ -430,14 +430,14 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline Matrix4x4<TPValue> rotationCombined( const Vector3<TPValue> & pAxis, TPValue pAngle )
+	inline matrix4x4<TPValue> rotation_combined( const vector3<TPValue> & pAxis, TPValue pAngle )
 	{
 		const TPValue angleSin = std::sin( pAngle );
 		const TPValue angleCos = std::cos( pAngle );
 		const auto normalizedAxis = normalize( pAxis );
 		const auto icnAxis = normalizedAxis * ( static_cast<TPValue>( 1 ) - angleCos );
 
-		Matrix3x3<TPValue> rMat;
+		matrix3x3<TPValue> rMat;
 		rMat[0][0] = pAxis.x * icnAxis.x + angleCos;
 		rMat[0][1] = pAxis.x * icnAxis.y - pAxis.z * angleSin;
 		rMat[0][2] = pAxis.x * icnAxis.z + pAxis.y * angleSin;
@@ -450,7 +450,7 @@ namespace Ic3::Math
 		rMat[2][1] = pAxis.z * icnAxis.y + pAxis.y * angleSin;
 		rMat[2][2] = pAxis.z * icnAxis.z + angleCos;
 
-		return Matrix4x4<TPValue> {
+		return matrix4x4<TPValue> {
 			rMat.row0.x, rMat.row0.y, rMat.row0.z, 0,
 			rMat.row1.x, rMat.row1.y, rMat.row1.z, 0,
 			rMat.row2.x, rMat.row2.y, rMat.row2.z, 0,
@@ -459,9 +459,9 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline Matrix4x4<TPValue> scaling( TPValue pScaleX, TPValue pScaleY, TPValue pScaleZ )
+	inline matrix4x4<TPValue> scaling( TPValue pScaleX, TPValue pScaleY, TPValue pScaleZ )
 	{
-		return Matrix4x4<TPValue> {
+		return matrix4x4<TPValue> {
 			pScaleX, 0,       0,       0,
 			0,       pScaleY, 0,       0,
 			0,       0,       pScaleZ, 0,
@@ -470,9 +470,9 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline Matrix4x4<TPValue> translation( TPValue pMoveX, TPValue pMoveY, TPValue pMoveZ )
+	inline matrix4x4<TPValue> translation( TPValue pMoveX, TPValue pMoveY, TPValue pMoveZ )
 	{
-		return Matrix4x4<TPValue> {
+		return matrix4x4<TPValue> {
 			1, 0, 0, pMoveX,
 			0, 1, 0, pMoveY,
 			0, 0, 1, pMoveZ,
@@ -482,8 +482,8 @@ namespace Ic3::Math
 
 }
 
-#if( IC3_MATH_SIMD_ENABLE )
-#  include "MatrixUtilsSIMD.inl"
+#if( CXM_SIMD_ENABLE )
+#  include "matrixUtilsSIMD.inl"
 #endif
 
-#endif // __IC3_MATH_MATRIX_UTILS_H__
+#endif // __CXM_MATRIX_UTILS_H__

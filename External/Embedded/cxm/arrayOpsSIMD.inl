@@ -1,6 +1,6 @@
 
-#if !defined( __IC3_MATH_ARRAY_OPS_H__ )
-#  error ""
+#if !defined( __CXM_ARRAY_OPS_H__ )
+#  error ".inl files cannot be included directly - use the related header!"
 #endif
 
 #if( PCL_COMPILER & PCL_COMPILER_CLANG )
@@ -13,12 +13,12 @@
 #  pragma GCC diagnostic ignored "-Wignored-attributes"
 #endif
 
-namespace Ic3::Math
+namespace cxm
 {
 
-	namespace ArrayOps
+	namespace array_ops
 	{
-	#if( IC3_MATH_SIMD_USE_VX128F )
+	#if( CXM_SIMD_USE_VX128F )
 
 		inline void set( __m128 & pTarget, float pX, float pY, float pZ, float pW )
 		{
@@ -97,10 +97,10 @@ namespace Ic3::Math
 			return _mm_cvtss_f32( sqrtVector0 );
 		}
 
-	#endif // IC3_MATH_SIMD_USE_VX128F
+	#endif // CXM_SIMD_USE_VX128F
 	}
 
-} // namespace Ic3::Math
+} // namespace cxm
 
 #if( PCL_COMPILER & PCL_COMPILER_GCC )
 #  pragma GCC diagnostic pop

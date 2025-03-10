@@ -1,12 +1,12 @@
 
-#if !defined( __IC3_MATH_MATRIX_OPS_H__ )
+#if !defined( __CXM_MATRIX_OPS_H__ )
 #  error ""
 #endif
 
-namespace Ic3::Math
+namespace cxm
 {
 
-#if( IC3_MATH_SIMD_USE_VX128F )
+#if( CXM_SIMD_USE_VX128F )
 
 	PCL_ATTR_ALWAYS_INLINE __m128 _mm_mul_mat4_vec4_128f( __m128 pM0, __m128 pM1, __m128 pM2, __m128 pM3, __m128 pV0 )
 	{
@@ -22,18 +22,18 @@ namespace Ic3::Math
 		return result;
 	}
 
-	inline Vector4<float> mul( const Matrix4x4<float> & pMatrix, const Vector4<float> & pVector )
+	inline vector4<float> mul( const matrix4x4<float> & pMatrix, const vector4<float> & pVector )
 	{
-		Vector4<float> result;
+		vector4<float> result;
 		result.mmv = _mm_mul_mat4_vec4_128f( pMatrix.mm0, pMatrix.mm1, pMatrix.mm2, pMatrix.mm3, pVector.mmv );
 		return result;
 	}
 
-	inline void mul( const Matrix4x4<float> & pMatrix, const Vector4<float> & pVector, Vector4<float> & pResult )
+	inline void mul( const matrix4x4<float> & pMatrix, const vector4<float> & pVector, vector4<float> & pResult )
 	{
 		pResult.mmv = _mm_mul_mat4_vec4_128f( pMatrix.mm0, pMatrix.mm1, pMatrix.mm2, pMatrix.mm3, pVector.mmv );
 	}
 
-#endif // IC3_MATH_SIMD_USE_VX128F
+#endif // CXM_SIMD_USE_VX128F
 
-} // namespace Ic3::Math
+} // namespace cxm

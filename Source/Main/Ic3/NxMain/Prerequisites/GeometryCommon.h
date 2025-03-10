@@ -132,11 +132,11 @@ namespace Ic3
 		uint32 _elementStrideInBytes = 0;
 	};
 
-	using VtxAttrPosition2D = Math::Vec2f;
-	using VtxAttrPosition3D = Math::Vec3f;
-	using VtxAttrNormal = Math::Vec3f;
-	using VtxAttrTangent = Math::Vec3f;
-	using VtxAttrTexCoord2D = Math::Vec2f;
+	using VtxAttrPosition2D = cxm::vec2f;
+	using VtxAttrPosition3D = cxm::vec3f;
+	using VtxAttrNormal = cxm::vec3f;
+	using VtxAttrTangent = cxm::vec3f;
+	using VtxAttrTexCoord2D = cxm::vec2f;
 
 	struct VtxAttrNormalTangent
 	{

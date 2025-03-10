@@ -13,7 +13,7 @@ namespace Ic3
 
 	struct ImageFormatInfo
 	{
-		Math::Vec2u32 dimensions;
+		cxm::vec2u32 dimensions;
 		EPixelDataLayout pixelLayout;
 		uint16 bitDepth = 0;
 		uint16 pixelByteSize = 0;

@@ -321,7 +321,7 @@ namespace Ic3::Graphics::GCI
 	#endif
 	}
 
-	void GLGlobalStateCache::SetBlendConstantColor( const Math::RGBAColorR32Norm & pConstantColor )
+	void GLGlobalStateCache::SetBlendConstantColor( const cxm::rgba_color_r32_norm & pConstantColor )
 	{
 		auto & cachedBlendSettings = _cachedState.blendSettings;
 		if( cppx::mem_cmp_not_equal( pConstantColor, cachedBlendSettings.constantColor ) )

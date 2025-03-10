@@ -1,22 +1,22 @@
 
-#ifndef __IC3_MATH_MATRIX_OPS_H__
-#define __IC3_MATH_MATRIX_OPS_H__
+#ifndef __CXM_MATRIX_OPS_H__
+#define __CXM_MATRIX_OPS_H__
 
-#include "Matrix.h"
-#include "VectorOps.h"
+#include "matrix.h"
+#include "vectorOps.h"
 
-namespace Ic3::Math
+namespace cxm
 {
 
 	template <typename TPValue, size_t tpC>
-	inline void add( const Matrix<TPValue, 2, tpC> & pFirst, const Matrix<TPValue, 2, tpC> & pSecond, Matrix<TPValue, 2, tpC> & pResult )
+	inline void add( const matrix<TPValue, 2, tpC> & pFirst, const matrix<TPValue, 2, tpC> & pSecond, matrix<TPValue, 2, tpC> & pResult )
 	{
 		pResult.row0 = pFirst.row0 + pSecond.row0;
 		pResult.row1 = pFirst.row1 + pSecond.row1;
 	}
 
 	template <typename TPValue, size_t tpC>
-	inline void add( const Matrix<TPValue, 3, tpC> & pFirst, const Matrix<TPValue, 3, tpC> & pSecond, Matrix<TPValue, 3, tpC> & pResult )
+	inline void add( const matrix<TPValue, 3, tpC> & pFirst, const matrix<TPValue, 3, tpC> & pSecond, matrix<TPValue, 3, tpC> & pResult )
 	{
 		pResult.row0 = pFirst.row0 + pSecond.row0;
 		pResult.row1 = pFirst.row1 + pSecond.row1;
@@ -24,7 +24,7 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue, size_t tpC>
-	inline void add( const Matrix<TPValue, 4, tpC> & pFirst, const Matrix<TPValue, 4, tpC> & pSecond, Matrix<TPValue, 4, tpC> & pResult )
+	inline void add( const matrix<TPValue, 4, tpC> & pFirst, const matrix<TPValue, 4, tpC> & pSecond, matrix<TPValue, 4, tpC> & pResult )
 	{
 		pResult.row0 = pFirst.row0 + pSecond.row0;
 		pResult.row1 = pFirst.row1 + pSecond.row1;
@@ -41,14 +41,14 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue, size_t tpC>
-	inline void sub( const Matrix<TPValue, 2, tpC> & pFirst, const Matrix<TPValue, 2, tpC> & pSecond, Matrix<TPValue, 2, tpC> & pResult )
+	inline void sub( const matrix<TPValue, 2, tpC> & pFirst, const matrix<TPValue, 2, tpC> & pSecond, matrix<TPValue, 2, tpC> & pResult )
 	{
 		pResult.row0 = pFirst.row0 - pSecond.row0;
 		pResult.row1 = pFirst.row1 - pSecond.row1;
 	}
 
 	template <typename TPValue, size_t tpC>
-	inline void sub( const Matrix<TPValue, 3, tpC> & pFirst, const Matrix<TPValue, 3, tpC> & pSecond, Matrix<TPValue, 3, tpC> & pResult )
+	inline void sub( const matrix<TPValue, 3, tpC> & pFirst, const matrix<TPValue, 3, tpC> & pSecond, matrix<TPValue, 3, tpC> & pResult )
 	{
 		pResult.row0 = pFirst.row0 - pSecond.row0;
 		pResult.row1 = pFirst.row1 - pSecond.row1;
@@ -56,7 +56,7 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue, size_t tpC>
-	inline void sub( const Matrix<TPValue, 4, tpC> & pFirst, const Matrix<TPValue, 4, tpC> & pSecond, Matrix<TPValue, 4, tpC> & pResult )
+	inline void sub( const matrix<TPValue, 4, tpC> & pFirst, const matrix<TPValue, 4, tpC> & pSecond, matrix<TPValue, 4, tpC> & pResult )
 	{
 		pResult.row0 = pFirst.row0 - pSecond.row0;
 		pResult.row1 = pFirst.row1 - pSecond.row1;
@@ -73,7 +73,7 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue, size_t tpR, size_t tpN, size_t tpC>
-	inline void mul( const Matrix<TPValue, tpR, tpN> & pFirst, const Matrix<TPValue, tpN, tpC> & pSecond, Matrix<TPValue, tpR, tpC> & pResult )
+	inline void mul( const matrix<TPValue, tpR, tpN> & pFirst, const matrix<TPValue, tpN, tpC> & pSecond, matrix<TPValue, tpR, tpC> & pResult )
 	{
 		for( size_t fRowIndex = 0; fRowIndex < tpR; ++fRowIndex )
 		{
@@ -90,7 +90,7 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline void mul( const Matrix2x2<TPValue> & pFirst, const Matrix2x2<TPValue> & pSecond, Matrix2x2<TPValue> & pResult )
+	inline void mul( const matrix2x2<TPValue> & pFirst, const matrix2x2<TPValue> & pSecond, matrix2x2<TPValue> & pResult )
 	{
 		const auto firstE00MulSecondR0 = pFirst.row0[0] * pSecond.row0;
 		const auto firstE01MulSecondR1 = pFirst.row0[1] * pSecond.row1;
@@ -102,7 +102,7 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline void mul( const Matrix3x3<TPValue> & pFirst, const Matrix3x3<TPValue> & pSecond, Matrix3x3<TPValue> & pResult )
+	inline void mul( const matrix3x3<TPValue> & pFirst, const matrix3x3<TPValue> & pSecond, matrix3x3<TPValue> & pResult )
 	{
 		const auto firstE00MulSecondR0 = pFirst.row0[0] * pSecond.row0;
 		const auto firstE01MulSecondR1 = pFirst.row0[1] * pSecond.row1;
@@ -121,7 +121,7 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline void mul( const Matrix4x4<TPValue> & pFirst, const Matrix4x4<TPValue> & pSecond, Matrix4x4<TPValue> & pResult )
+	inline void mul( const matrix4x4<TPValue> & pFirst, const matrix4x4<TPValue> & pSecond, matrix4x4<TPValue> & pResult )
 	{
 		const auto firstE00MulSecondR0 = pFirst.row0[0] * pSecond.row0;
 		const auto firstE01MulSecondR1 = pFirst.row0[1] * pSecond.row1;
@@ -149,21 +149,21 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline void mul( const Matrix2x2<TPValue> & pMatrix, const Vector2<TPValue> & pVector, Vector2<TPValue> & pResult )
+	inline void mul( const matrix2x2<TPValue> & pMatrix, const vector2<TPValue> & pVector, vector2<TPValue> & pResult )
 	{
 		pResult[0] = pMatrix.row0 * pVector;
 		pResult[1] = pMatrix.row1 * pVector;
 	}
 
 	template <typename TPValue>
-	inline void mul( const Vector2<TPValue> & pVector, const Matrix2x2<TPValue> & pMatrix, Vector2<TPValue> & pResult )
+	inline void mul( const vector2<TPValue> & pVector, const matrix2x2<TPValue> & pMatrix, vector2<TPValue> & pResult )
 	{
 		pResult[0] = dot( pVector, pMatrix.column( 0 ) );
 		pResult[1] = dot( pVector, pMatrix.column( 1 ) );
 	}
 
 	template <typename TPValue>
-	inline void mul( const Matrix3x3<TPValue> & pMatrix, const Vector3<TPValue> & pVector, Vector3<TPValue> & pResult )
+	inline void mul( const matrix3x3<TPValue> & pMatrix, const vector3<TPValue> & pVector, vector3<TPValue> & pResult )
 	{
 		pResult.x = pMatrix.row0 * pVector;
 		pResult.y = pMatrix.row1 * pVector;
@@ -171,7 +171,7 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline void mul( const Vector3<TPValue> & pVector, const Matrix3x3<TPValue> & pMatrix, Vector3<TPValue> & pResult )
+	inline void mul( const vector3<TPValue> & pVector, const matrix3x3<TPValue> & pMatrix, vector3<TPValue> & pResult )
 	{
 		pResult[0] = dot( pVector, pMatrix.column( 0 ) );
 		pResult[1] = dot( pVector, pMatrix.column( 1 ) );
@@ -179,7 +179,7 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline void mul( const Matrix4x4<TPValue> & pMatrix, const Vector4<TPValue> & pVector, Vector4<TPValue> & pResult )
+	inline void mul( const matrix4x4<TPValue> & pMatrix, const vector4<TPValue> & pVector, vector4<TPValue> & pResult )
 	{
 		pResult.x = dot( pMatrix.row0, pVector );
 		pResult.y = dot( pMatrix.row1, pVector );
@@ -188,7 +188,7 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue>
-	inline void mul( const Vector4<TPValue> & pVector, const Matrix4x4<TPValue> & pMatrix, Vector4<TPValue> & pResult )
+	inline void mul( const vector4<TPValue> & pVector, const matrix4x4<TPValue> & pMatrix, vector4<TPValue> & pResult )
 	{
 		pResult[0] = dot( pVector, pMatrix.column( 0 ) );
 		pResult[1] = dot( pVector, pMatrix.column( 1 ) );
@@ -197,33 +197,33 @@ namespace Ic3::Math
 	}
 
 	template <typename TPValue, size_t tpN>
-	inline Matrix<TPValue, tpN, tpN> mul( const Matrix<TPValue, tpN, tpN> & pFirst, const Matrix<TPValue, tpN, tpN> & pSecond )
+	inline matrix<TPValue, tpN, tpN> mul( const matrix<TPValue, tpN, tpN> & pFirst, const matrix<TPValue, tpN, tpN> & pSecond )
 	{
-		Matrix<TPValue, tpN, tpN> result;
+		matrix<TPValue, tpN, tpN> result;
 		mul( pFirst, pSecond, result );
 		return result;
 	}
 
 	template <typename TPValue, size_t tpN>
-	inline Vector<TPValue, tpN> mul( const Matrix<TPValue, tpN, tpN> & pMatrix, const Vector<TPValue, tpN> & pVector )
+	inline vector<TPValue, tpN> mul( const matrix<TPValue, tpN, tpN> & pMatrix, const vector<TPValue, tpN> & pVector )
 	{
-		Vector<TPValue, tpN> result;
+		vector<TPValue, tpN> result;
 		mul( pMatrix, pVector, result );
 		return result;
 	}
 
 	template <typename TPValue, size_t tpN>
-	inline Vector<TPValue, tpN> mul( const Vector<TPValue, tpN> & pVector, const Matrix<TPValue, tpN, tpN> & pMatrix )
+	inline vector<TPValue, tpN> mul( const vector<TPValue, tpN> & pVector, const matrix<TPValue, tpN, tpN> & pMatrix )
 	{
-		Vector<TPValue, tpN> result;
+		vector<TPValue, tpN> result;
 		mul( pVector, pMatrix, result );
 		return result;
 	}
 
-} // namespace Ic3::Math
+} // namespace cxm
 
-#if( IC3_MATH_SIMD_ENABLE )
-//#  include "matrixOpsSIMD.inl"
+#if( CXM_SIMD_ENABLE )
+#  include "matrixOpsSIMD.inl"
 #endif
 
 #endif //TESSLINE_3DX_MATRIXOPS_H

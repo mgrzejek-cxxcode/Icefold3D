@@ -3,12 +3,13 @@
 #define __IC3_SYSTEM_EVENT_DEF_INPUT_MOUSE_H__
 
 #include "EventDefInput.h"
-#include <Ic3/Math/Vector.h>
+
+#include <cxm/vector.h>
 
 namespace Ic3::System
 {
 
-	using MouseCursorPos = Math::Vec2i32;
+	using MouseCursorPos = cxm::vec2i32;
 
 	// Represents invalid mouse position. Used as a default value for last position registered.
 	inline constexpr MouseCursorPos CX_EVENT_MOUSE_POS_INVALID {cppx::cve::int32_max, cppx::cve::int32_max };
@@ -68,9 +69,9 @@ namespace Ic3::System
 	{
 		cppx::bitmask<EMouseButtonFlagBits> buttonStateMask;
 
-		Math::Vec2i32 cursorPos;
+		cxm::vec2i32 cursorPos;
 
-		Math::Vec2i32 cursorPosWindowRelative;
+		cxm::vec2i32 cursorPosWindowRelative;
 
 		const EvtSharedInputMouseState * inputMouseState;
 	};
@@ -87,13 +88,13 @@ namespace Ic3::System
 	struct EvtInputMouseMove : public EvtInputMouse
 	{
 		//
-		Math::Vec2i32 movementDelta;
+		cxm::vec2i32 movementDelta;
 	};
 
 	struct EvtInputMouseScroll : public EvtInputMouse
 	{
 		//
-		Math::Vec2d scrollDelta;
+		cxm::vec2d scrollDelta;
 
 		//
 		EMouseScrollDirection scrollDirection;

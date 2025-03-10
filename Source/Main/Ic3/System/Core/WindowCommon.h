@@ -3,7 +3,8 @@
 #define __IC3_SYSTEM_WINDOW_COMMON_H__
 
 #include "Visual.h"
-#include <Ic3/Math/Vector.h>
+
+#include <cxm/vector.h>
 
 namespace Ic3::System
 {
@@ -11,8 +12,8 @@ namespace Ic3::System
     Ic3SysDeclareHandle( Window );
 	Ic3SysDeclareHandle( WindowManager );
 
-	using FramePos = Math::Pos2i;
-	using FrameSize = Math::Size2u;
+	using FramePos = cxm::pos2i;
+	using FrameSize = cxm::size2u;
 
 	/// @brief Predefined frame position: auto. When used, frame is spawned centered.
 	inline constexpr FramePos cxFramePosAuto {-1, -1 };

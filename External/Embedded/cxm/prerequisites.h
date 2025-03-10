@@ -1,53 +1,53 @@
 
-#ifndef __IC3_MATH_PREREQUISITES_H__
-#define __IC3_MATH_PREREQUISITES_H__
+#ifndef __CXM_PREREQUISITES_H__
+#define __CXM_PREREQUISITES_H__
 
-#include <Ic3/CoreLib/Prerequisites.h>
+#include <cppx/prerequisites.h>
 #include <cmath>
 
 #if( PCL_FEATURE_EIS )
-#  define IC3_MATH_SIMD_ENABLE 1
+#  define CXM_SIMD_ENABLE 1
 #  if( PCL_EIS_SUPPORT_LEVEL & PCL_EIS_FEATURE_SSE ) // SSE -> float[4] (__m128)
-#    define IC3_MATH_SIMD_USE_VX128F 1
+#    define CXM_SIMD_USE_VX128F 1
 #  else
-#    define IC3_MATH_SIMD_USE_VX128F 0
+#    define CXM_SIMD_USE_VX128F 0
 #  endif
 #  if( PCL_EIS_SUPPORT_LEVEL & PCL_EIS_FEATURE_SSE2 ) // SSE2 -> int32[4] (__m128i)
-#    define IC3_MATH_SIMD_USE_VX128I 1
+#    define CXM_SIMD_USE_VX128I 1
 #  else
-#    define IC3_MATH_SIMD_USE_VX128I 0
+#    define CXM_SIMD_USE_VX128I 0
 #  endif
 #  if( PCL_EIS_SUPPORT_LEVEL & PCL_EIS_FEATURE_AVX ) // AVX -> double[4] (__m256d)
-#    define IC3_MATH_SIMD_USE_VX256D 1
+#    define CXM_SIMD_USE_VX256D 1
 #  else
-#    define IC3_MATH_SIMD_USE_VX256D 0
+#    define CXM_SIMD_USE_VX256D 0
 #  endif
 #  if( PCL_EIS_SUPPORT_LEVEL & PCL_EIS_FEATURE_AVX2 ) // AVX2 -> int64[4] (__m256i)
-#    define IC3_MATH_SIMD_USE_VX256I 1
+#    define CXM_SIMD_USE_VX256I 1
 #  else
-#    define IC3_MATH_SIMD_USE_VX256I 0
+#    define CXM_SIMD_USE_VX256I 0
 #  endif
 #endif
 
-namespace Ic3::Math
+namespace cxm
 {
 
 	template <typename TPValue, size_t tpSize>
-	using Array = TPValue[tpSize];
+	using array = TPValue[tpSize];
 
 	template <typename TPValue>
-	using Array2 = Array<TPValue, 2>;
+	using array2 = array<TPValue, 2>;
 
 	template <typename TPValue>
-	using Array3 = Array<TPValue, 3>;
+	using array3 = array<TPValue, 3>;
 
 	template <typename TPValue>
-	using Array4 = Array<TPValue, 4>;
+	using array4 = array<TPValue, 4>;
 
 	template <typename TPScalar>
 	using enable_if_scalar_t = std::enable_if_t<std::is_arithmetic<TPScalar>::value, bool>;
 
-	namespace Constants
+	namespace constants
 	{
 
 		constexpr float FLT_PI           = 3.1415926536f;
@@ -100,6 +100,6 @@ namespace Ic3::Math
 
 	}
 
-} // namespace Ic3::Math
+} // namespace cxm
 
-#endif // __IC3_MATH_PREREQUISITES_H__
+#endif // __CXM_PREREQUISITES_H__

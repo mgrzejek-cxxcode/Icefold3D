@@ -34,11 +34,11 @@ namespace Ic3
 
 		struct Orientation
 		{
-			Math::Vec3f origin;
-			Math::Vec3f target;
-			Math::Vec3f vForward;
-			Math::Vec3f vRight;
-			Math::Vec3f vUp;
+			cxm::vec3f origin;
+			cxm::vec3f target;
+			cxm::vec3f vForward;
+			cxm::vec3f vRight;
+			cxm::vec3f vUp;
 			float originTargetDistance;
 		};
 

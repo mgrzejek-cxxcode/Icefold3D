@@ -35,33 +35,125 @@ if( "${CM_EBS_SYSCONF_HOST_COMPILER}" STREQUAL "MSVC" )
 endif()
 
 ebsSetInternal( IC3_BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}" )
-ebsSetInternal( IC3_COMPONENTS_BUILD_MODE STATIC )
-
-ebsSetInternal( IC3_COMMON_MODULE_DEFINITIONS
-	"IC3_BUILD_STATIC=1"
-)
-
-ebsSetInternal( IC3_BASE_DIR
-    "${CMAKE_CURRENT_SOURCE_DIR}"
-)
 
 ebsSetInternal( EXT_INCLUDE_DIR
-		"${IC3_BASE_DIR}/External/Embedded/"
-        "${IC3_BASE_DIR}/External/Prebuilt/Include/"
+	"${IC3_BASE_DIR}/External/Embedded/"
+	"${IC3_BASE_DIR}/External/Prebuilt/Include/"
 )
 
 ebsSetInternal( IC3_INCLUDE_DIR
-		"${IC3_BASE_DIR}/External/Embedded/"
-        "${IC3_BASE_DIR}/External/Prebuilt/Include/"
-        "${IC3_BASE_DIR}/Source/Main/"
+	"${IC3_BASE_DIR}/External/Embedded/"
+	"${IC3_BASE_DIR}/External/Prebuilt/Include/"
+	"${IC3_BASE_DIR}/Source/Main/"
 )
-    
+
 ebsSetInternal( IC3_LINK_DIR
-        "${IC3_BASE_DIR}/External/Prebuilt/Lib/Common"
-        "${IC3_BASE_DIR}/External/Prebuilt/Lib/Common/${CM_EBS_SYSCONF_TARGET_ARCH}"
-        "${IC3_BASE_DIR}/External/Prebuilt/Lib/Platform/${CM_EBS_SYSCONF_TARGET_LIBRARY_SUBDIR}"
-        "${IC3_BASE_DIR}/External/Prebuilt/Lib/Platform/${CM_EBS_SYSCONF_TARGET_LIBRARY_SUBDIR}/${CM_EBS_SYSCONF_TARGET_ARCH}"
+	"${IC3_BASE_DIR}/External/Prebuilt/Lib/Common"
+	"${IC3_BASE_DIR}/External/Prebuilt/Lib/Common/${CM_EBS_SYSCONF_TARGET_ARCH}"
+	"${IC3_BASE_DIR}/External/Prebuilt/Lib/Platform/${CM_EBS_SYSCONF_TARGET_LIBRARY_SUBDIR}"
+	"${IC3_BASE_DIR}/External/Prebuilt/Lib/Platform/${CM_EBS_SYSCONF_TARGET_LIBRARY_SUBDIR}/${CM_EBS_SYSCONF_TARGET_ARCH}"
 )
+
+if( NOT IC3_BUILD_DYNAMIC_LIBS )
+	ebsSetInternal( IC3_COMPONENTS_BUILD_MODE STATIC )
+	ebsSetInternal( IC3_COMMON_MODULE_DEFINITIONS "IC3_BUILD_STATIC=1" )
+else()
+	ebsSetInternal( IC3_COMPONENTS_BUILD_MODE DYNAMIC )
+	ebsSetInternal( IC3_COMMON_MODULE_DEFINITIONS "IC3_BUILD_STATIC=0" )
+endif()
+
+if( "${IC3_COMPONENTS_BUILD_MODE}" STREQUAL "DYNAMIC" )
+	ebsSetInternal( IC3_COMPONENT_LIB_TYPE "LibDll" )
+	ebsSetInternal( IC3_COMPONENT_LIB_DIR_SUFFIX "dll" )
+else()
+	ebsSetInternal( IC3_COMPONENT_LIB_TYPE "LibStatic" )
+	ebsSetInternal( IC3_COMPONENT_LIB_DIR_SUFFIX "static" )
+endif()
+
+function( ic3SetTargetOutputDir pTargetName )
+	if( TARGET "${pTargetName}" )
+		string( TOLOWER "${CM_EBS_SYSCONF_HOST_COMPILER}" TID_COMPILER )
+		string( TOLOWER "${CM_EBS_SYSCONF_TARGET_BUILDCONFIG}" TID_BUILDCONFIG )
+
+		set( TID_SYSTEM "${CM_EBS_SYSCONF_TARGET_SYSTEM}")
+		set( TID_ARCH "${CM_EBS_SYSCONF_TARGET_ARCH}" )
+		set( TID_LIBSUFFIX "${IC3_COMPONENT_LIB_DIR_SUFFIX}" )
+
+		set_target_properties("${pTargetName}"
+				PROPERTIES
+				ARCHIVE_OUTPUT_DIRECTORY "${IC3_BASE_DIR}/Lib/${TID_SYSTEM}/${TID_COMPILER}.${TID_ARCH}.${TID_LIBSUFFIX}.${TID_BUILDCONFIG}"
+				LIBRARY_OUTPUT_DIRECTORY "${IC3_BASE_DIR}/Lib/${TID_SYSTEM}/${TID_COMPILER}.${TID_ARCH}.${TID_LIBSUFFIX}.${TID_BUILDCONFIG}"
+				RUNTIME_OUTPUT_DIRECTORY "${IC3_BASE_DIR}/Bin/${TID_SYSTEM}/${TID_COMPILER}.${TID_ARCH}.${TID_LIBSUFFIX}.${TID_BUILDCONFIG}"
+		)
+	endif()
+endfunction()
+
+function( ic3SetCoreTargetCompileDefinitions pTargetName )
+	# Target is the name of one of the main ("core") Ic3 targets, (e.g. Ic3.Graphics.HW3D.DX11).
+	if( TARGET "${pTargetName}" )
+		# Turn the target name into all-uppercase (e.g. IC3.GRAPHICS.HW3D.DX11).
+		string( TOUPPER "${pTargetName}" TARGET_BUILD_STR_BASE )
+		# Replace dots with underscores (e.g. IC3_GRAPHICS_HW3D_DX11).
+		string( REPLACE "." "_" TARGET_BUILD_STR_BASE "${TARGET_BUILD_STR_BASE}")
+		# Construct the project specific build flag (e.g. IC3_GRAPHICS_HW3D_DX11_BUILD=1).
+		set( TARGET_BUILD_DEFINE "${TARGET_BUILD_STR_BASE}_BUILD=1" )
+		message( "TARGET_BUILD_DEFINE: ${TARGET_BUILD_DEFINE}" )
+		# Check for Graphics.HW3D targets where we have two build vars (e.g. GL4 and GL, DX11 and DX, etc).
+		if( "${TARGET_BUILD_STR_BASE}" MATCHES "IC3_GRAPHICS_HW3D_([A-Za-z0-9]+)" )
+			# IC3_GRAPHICS_HW3D_DX11 -> IC3_GRAPHICS_HW3D_DX
+			string( REGEX REPLACE "((ES)?[0-9]+)$" "" TARGET_BUILD_DEFINE_HW3D_COMMON "${TARGET_BUILD_STR_BASE}" )
+			set( TARGET_BUILD_DEFINE_HW3D_COMMON "${TARGET_BUILD_DEFINE_HW3D_COMMON}_BUILD=1" )
+			message( "TARGET_BUILD_DEFINE_HW3D_COMMON: ${TARGET_BUILD_DEFINE_HW3D_COMMON}" )
+		endif()
+		# Add standard compile definitions required for all modules
+		target_compile_definitions( ${pTargetName} PRIVATE
+				# This contains build mode for libraries and other shared definitions.
+				"${IC3_COMMON_MODULE_DEFINITIONS}"
+				# This is the project specific build flag (e.g. IC3_GRAPHICS_GCI_BUILD=1).
+				"${TARGET_BUILD_DEFINE}"
+				# Also add HW3D-specific second build define (this will be empty for other targets)
+				"${TARGET_BUILD_DEFINE_HW3D_COMMON}"
+		)
+	endif()
+endfunction()
+
+function( ic3AddTarget pTargetType pTargetName pSources )
+	if( "${pTargetType}" STREQUAL "Application" )
+		add_executable( "${pTargetName}" "${pSources};${ARGN}" )
+	elseif( "${pTargetType}" STREQUAL "LibDll" )
+		add_library( "${pTargetName}" SHARED "${pSources};${ARGN}" )
+	elseif( "${pTargetType}" STREQUAL "LibStatic" )
+		add_library( "${pTargetName}" STATIC "${pSources};${ARGN}" )
+	endif()
+
+	set_target_properties( ${pTargetName} PROPERTIES
+			OUTPUT_NAME "${pTargetName}" )
+
+	ebsSetInternal( IC3_TARGET_TYPE_${pTargetName} "${pTargetType}" )
+	ebsAppendInternal( IC3_TARGET_LIST "${pTargetName}" )
+
+	if( "${pTargetName}" MATCHES "Ic3.Graphics.HW3D.([A-Za-z0-9]+)" )
+		ebsAppendInternal( IC3_TARGET_LIST_GRAPHICS_HW3D "${pTargetName}" )
+	endif()
+
+	ic3SetTargetOutputDir( "${pTargetName}" )
+	ic3SetCoreTargetCompileDefinitions( "${pTargetName}" )
+endfunction()
+
+function( ic3AddCoreApp pTargetName pSources )
+	ic3AddTarget( "Application" "${pTargetName}" "${pSources};${ARGN}" )
+	target_include_directories( "${pTargetName}" PUBLIC "${IC3_INCLUDE_DIR}" )
+endfunction()
+
+function( ic3AddCoreLib pTargetName pSources )
+	ic3AddTarget( "${IC3_COMPONENT_LIB_TYPE}" "${pTargetName}" "${pSources};${ARGN}" )
+	target_include_directories( "${pTargetName}" PUBLIC "${IC3_INCLUDE_DIR}" )
+	target_link_libraries( "${pTargetName}" PUBLIC ext-cppx ext-cxm )
+endfunction()
+
+function( ic3AddExternalLib pTargetName pSources )
+	ic3AddTarget( "${IC3_COMPONENT_LIB_TYPE}" "${pTargetName}" "${pSources};${ARGN}" )
+endfunction()
 
 ebsSetInternal(IC3_MODULE_TARGET_LIST "")
 
@@ -97,10 +189,18 @@ function( ebsGenerateQtConfig )
 				ebsSetInternal( IC3_CONFIG_QT_VERSION "$ENV{QT_VERSION}" )
 
 				if( "${CM_EBS_SYSCONF_HOST_COMPILER}" MATCHES "MSVC" )
-					if( "${CM_EBS_SYSCONF_HOST_TOOLSET_ARCH}" MATCHES "arm64" )
+					if( "${CM_EBS_SYSCONF_TARGET_ARCH}" MATCHES "arm64" )
 						ebsSetInternal( IC3_CONFIG_QT_BASE_DIR "${IC3_CONFIG_QT_ROOT}/${IC3_CONFIG_QT_VERSION}/msvc${CM_EBS_SYSCONF_HOST_COMPILER_VERSION}_arm64" )
-					elseif( "${CM_EBS_SYSCONF_HOST_TOOLSET_ARCH}" MATCHES "x86-64" )
+					elseif( "${CM_EBS_SYSCONF_TARGET_ARCH}" MATCHES "x86_64" )
 						ebsSetInternal( IC3_CONFIG_QT_BASE_DIR "${IC3_CONFIG_QT_ROOT}/${IC3_CONFIG_QT_VERSION}/msvc${CM_EBS_SYSCONF_HOST_COMPILER_VERSION}_64" )
+					else()
+						ebsDisableQtSupportWithMessage("The current arch (${CM_EBS_SYSCONF_TARGET_ARCH}) is not yet supported for Qt with this compiler (MSVC)")
+					endif()
+				elseif( "${CM_EBS_SYSCONF_HOST_COMPILER}" MATCHES "MinGW" )
+					if( "${CM_EBS_SYSCONF_TARGET_ARCH}" MATCHES "x86_64" )
+						ebsSetInternal(IC3_CONFIG_QT_BASE_DIR "${IC3_CONFIG_QT_ROOT}/${IC3_CONFIG_QT_VERSION}/mingw_64")
+					else()
+						ebsDisableQtSupportWithMessage("The current arch (${CM_EBS_SYSCONF_TARGET_ARCH}) is not yet supported for Qt with this compiler (MinGW)")
 					endif()
 				else()
 					# This might trigger in case of change of the Qt version or a new toolset version - adjust the logic above if necessary.
@@ -124,7 +224,7 @@ if( IC3_CONFIG_QT_SUPPORT_FLAG )
 	find_package( Qt6 REQUIRED COMPONENTS Core Gui Widgets )
 endif()
 
-function( ebsAddTargetQtSupport pTargetName pQtLibs )
+function( ic3AddTargetQtSupport pTargetName pQtLibs )
 	target_include_directories( "${pTargetName}" PRIVATE :"${IC3_CONFIG_QT_BASE_DIR}/include" )
 	target_link_directories( "${pTargetName}" PRIVATE :"${IC3_CONFIG_QT_BASE_DIR}/lib" )
 endfunction()

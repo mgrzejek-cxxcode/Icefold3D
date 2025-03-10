@@ -374,16 +374,16 @@ namespace Ic3::System
 			if( pVisualConfig.colorDesc.rgba.u32Code != 0 )
 			{
 				pAttribArray[attribIndex++] = EGL_RED_SIZE;
-				pAttribArray[attribIndex++] = pVisualConfig.colorDesc.rgba.u8Red;
+				pAttribArray[attribIndex++] = pVisualConfig.colorDesc.rgba.u8_red;
 
 				pAttribArray[attribIndex++] = EGL_GREEN_SIZE;
-				pAttribArray[attribIndex++] = pVisualConfig.colorDesc.rgba.u8Green;
+				pAttribArray[attribIndex++] = pVisualConfig.colorDesc.rgba.u8_green;
 
 				pAttribArray[attribIndex++] = EGL_BLUE_SIZE;
-				pAttribArray[attribIndex++] = pVisualConfig.colorDesc.rgba.u8Blue;
+				pAttribArray[attribIndex++] = pVisualConfig.colorDesc.rgba.u8_blue;
 
 				pAttribArray[attribIndex++] = EGL_ALPHA_SIZE;
-				pAttribArray[attribIndex++] = pVisualConfig.colorDesc.rgba.u8Alpha;
+				pAttribArray[attribIndex++] = pVisualConfig.colorDesc.rgba.u8_alpha;
 			}
 
 			if( pVisualConfig.depthStencilDesc.depthBufferSize != 0 )

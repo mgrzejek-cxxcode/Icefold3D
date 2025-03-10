@@ -79,7 +79,7 @@ namespace Ic3::Graphics::GCI
 
 		CPPX_ATTR_NO_DISCARD PresentationLayer * GetPresentationLayer() const noexcept;
 
-		CPPX_ATTR_NO_DISCARD const Math::RGBAColorU8 & GetDefaultClearColor() const noexcept;
+		CPPX_ATTR_NO_DISCARD const cxm::rgba_color_u8 & GetDefaultClearColor() const noexcept;
 
 		CPPX_ATTR_NO_DISCARD const RenderTargetAttachmentClearConfig & GetDefaultClearConfig() const noexcept;
 

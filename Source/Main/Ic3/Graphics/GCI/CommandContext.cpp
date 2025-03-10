@@ -206,7 +206,7 @@ namespace Ic3::Graphics::GCI
 		return mCommandList->SetVertexSourceBindingDescriptorDynamic( pVertexSourceBindingDescriptor );
 	}
 
-	void CommandContextDirectGraphics::CmdSetDynamicBlendConstantColor( const Math::RGBAColorR32Norm & pBlendConstantColor )
+	void CommandContextDirectGraphics::CmdSetDynamicBlendConstantColor( const cxm::rgba_color_r32_norm & pBlendConstantColor )
 	{
 		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDirectGraphics ) );
 		return mCommandList->CmdSetDynamicBlendConstantColor( pBlendConstantColor );
@@ -373,7 +373,7 @@ namespace Ic3::Graphics::GCI
 		return mCommandList->SetVertexSourceBindingDescriptorDynamic( pVertexSourceBindingDescriptor );
 	}
 
-	void CommandContextDeferredGraphics::CmdSetDynamicBlendConstantColor( const Math::RGBAColorR32Norm & pBlendConstantColor )
+	void CommandContextDeferredGraphics::CmdSetDynamicBlendConstantColor( const cxm::rgba_color_r32_norm & pBlendConstantColor )
 	{
 		Ic3DebugAssert( CheckCommandListSupport( eCommandObjectPropertyMaskContextFamilyDeferredGraphics ) );
 		return mCommandList->CmdSetDynamicBlendConstantColor( pBlendConstantColor );
