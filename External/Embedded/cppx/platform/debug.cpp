@@ -34,13 +34,15 @@ namespace cppx
 				va_end( varArgsList );
 			}
 
-			printf(localBuffer);
+			printf( "%s\n", localBuffer );
+			fflush( stdout );
 			// PCL_DEBUG_OUTPUT( localBuffer );
 		}
 
 		void debug_default_print_handler( const char * pText, size_t pLength )
 		{
-			printf(pText);
+			printf( "%s\n", pText );
+			fflush( stdout );
 			//PCL_DEBUG_OUTPUT( pText );
 		}
 
