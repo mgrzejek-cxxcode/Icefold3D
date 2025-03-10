@@ -21,6 +21,7 @@ namespace Ic3::Graphics::GCI
 	: GPUDeviceChildObject( pCommandSystem.mGPUDevice )
 	, mCommandSystem( &pCommandSystem )
 	, mListType( pListType )
+	, mCommandFlags( static_cast<ECommandObjectPropertyFlags>( pListType ) & eCommandObjectPropertyMaskAll )
 	, _graphicsPipelineStateController( &pPipelineStateController )
 	{}
 

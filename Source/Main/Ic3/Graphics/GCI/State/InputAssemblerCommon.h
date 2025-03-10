@@ -67,19 +67,18 @@ namespace Ic3::Graphics::GCI
 	/**
 	 * Definition of a vertex input attribute.
 	 */
-	#pragma pack( push, 1 )
-	struct __attribute__(( packed )) IAVertexAttributeInfo
+	struct IAVertexAttributeInfo
 	{
+		/**
+		 * Format of the attribute's data.
+		 */
+		EVertexAttribFormat dataFormat = EVertexAttribFormat::Undefined;
+
 		/**
 		 * Base attribute index. Allowed values are from 0 to (GCM::kIAMaxVertexAttributesNum - 1).
 		 * For multi-component attributes, this is the index of the first occupied attribute slot.
 		 */
 		input_assembler_index_t attributeSlot = kIAVertexAttributeSlotUndefined;
-
-		/**
-		 * Format of the attribute's data.
-		 */
-		EVertexAttribFormat dataFormat = EVertexAttribFormat::Undefined;
 
 		/**
 		 *
@@ -109,10 +108,8 @@ namespace Ic3::Graphics::GCI
 			dataFormat = EVertexAttribFormat::Undefined;
 		}
 	};
-	#pragma pack( pop )
 
-	#pragma pack( push, 1 )
-	struct __attribute__(( packed )) IAVertexAttributeSemantics
+	struct IAVertexAttributeSemantics
 	{
 		/**
 		 * Semantic name of the attribute. This is the name that identifies the attribute in the shader.
@@ -140,10 +137,8 @@ namespace Ic3::Graphics::GCI
 			semanticIndex = 0;
 		}
 	};
-	#pragma pack( pop )
 
-	#pragma pack( push, 1 )
-	struct __attribute__(( packed )) IAVertexAttributeStreamBinding
+	struct IAVertexAttributeStreamBinding
 	{
 		/**
 		 *
@@ -161,7 +156,6 @@ namespace Ic3::Graphics::GCI
 			streamSlot = kIAVertexStreamSlotUndefined;
 		}
 	};
-	#pragma pack( pop )
 
 	struct IAVertexAttributeDesc
 	{

@@ -292,8 +292,6 @@ namespace Ic3::Graphics::GCI
 			versionStr.append( 1, '0' );
 			pShaderSource = std::regex_replace( pShaderSource, reUtilVersionNumber, versionStr );
 
-			Ic3DebugOutput( pShaderSource.data() );
-
 			return true;
 		}
 

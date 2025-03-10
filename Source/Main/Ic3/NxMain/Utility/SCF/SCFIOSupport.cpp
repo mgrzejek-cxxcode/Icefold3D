@@ -1,7 +1,7 @@
 
 #include "scfIOSupport.h"
 #include "scfIndexBuilder.h"
-#include <Ic3/System/IO/FileManager.h>
+#include <Ic3/System/IO/FileSystem.h>
 #include <Ic3/CoreLib/utility/gdsCore.h>
 #include <vector>
 

@@ -71,6 +71,9 @@ struct CB0Data
 
 #include <Ic3/Graphics/HW3D/GL4/GL4GPUDriverAPI.h>
 
+#include <IC3/System/IO/Pipe.h>
+#include <IC3/System/IO/MessagePipe.h>
+
 int main( int pArgc, const char ** pArgv )
 {
 //    {
@@ -494,7 +497,6 @@ int main( int pArgc, const char ** pArgv )
 			gxDriverState.cmdContext->BeginRenderPass( *scrRenderPassDescriptor );
 			{
 				gxDriverState.cmdContext->UpdateBufferDataUpload( *cbuffer0, cb0DataBase );
-
 
 				gxDriverState.cmdContext->CmdSetViewport( vpDescScreen );
 				gxDriverState.cmdContext->CmdSetShaderConstantBuffer( 0, *cbuffer0 );

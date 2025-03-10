@@ -35,7 +35,7 @@ namespace Ic3
 
 	inline bool GenericVertexInputAttribute::IsActive() const noexcept
 	{
-		return dataFormat != GCI::EVertexAttribFormat::Undefined;
+		return GCI::CXU::IAIsVertexAttributeSlotValid( attributeSlot ) && ( dataFormat != GCI::EVertexAttribFormat::Undefined );
 	}
 
 	inline bool GenericVertexInputAttribute::IsBaseAttribute() const noexcept

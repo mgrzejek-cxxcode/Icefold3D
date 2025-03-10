@@ -132,7 +132,10 @@ endfunction()
 add_subdirectory( "External/Embedded" )
 add_subdirectory( "Source/Main" )
 add_subdirectory( "Source/Samples" )
-add_subdirectory( "Source/Tools" )
+
+if( IC3_CONFIG_QT_SUPPORT_FLAG )
+	add_subdirectory( "Source/Tools" )
+endif()
 
 message( STATUS "${IC3_MODULE_TARGET_LIST}")
 foreach( iceModule ${IC3_MODULE_TARGET_LIST} )

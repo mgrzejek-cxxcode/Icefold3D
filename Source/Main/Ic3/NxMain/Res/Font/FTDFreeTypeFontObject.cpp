@@ -170,7 +170,7 @@ namespace Ic3
 
 		cppx::dynamic_byte_array ftFontData;
 		ftFontData.resize( pFontDataSize );
-		ftFontData.setData( pFontData, pFontDataSize );
+		ftFontData.set_data( pFontData, pFontDataSize );
 
 		return std::make_unique<FreeTypeFontObject>( ftLibrary, std::move( ftFontData ) );
 	}

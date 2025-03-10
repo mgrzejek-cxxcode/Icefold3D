@@ -1,6 +1,6 @@
 
 #include "scfXMLReader.h"
-#include <Ic3/System/IO/FileManager.h>
+#include <Ic3/System/IO/FileSystem.h>
 
 namespace Ic3
 {

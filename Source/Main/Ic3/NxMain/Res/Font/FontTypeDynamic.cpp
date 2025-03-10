@@ -187,7 +187,7 @@ namespace Ic3
 				{
 					const auto srcByteOffset = imageRowIndex * glyphSourceImage.dataRowPitch;
 					const auto targetByteOffset = ( baseTargetPixelOffset + ( imageRowIndex * cxTextureWidth ) ) * cxPixelByteSize;
-					auto * targetBufferBtr = currentTextureLayer->initDataBuffer.dataOffset( targetByteOffset );
+					auto * targetBufferBtr = currentTextureLayer->initDataBuffer.data_offset( targetByteOffset );
 					cppx::mem_copy( targetBufferBtr, cxTextureSize, glyphSourceImage.data + srcByteOffset, srcDataRowSize );
 				}
 

@@ -108,7 +108,7 @@ namespace Ic3
 
 	uint32 VertexFormatSignature::GetElementStrideForAttributeUnchecked( VertexAttributeKey pAttributeKey ) const noexcept
 	{
-		const auto & genericAttribute = _inputAttributeArrayLayout[pAttributeKey.uBaseSlot];
+		const auto & genericAttribute = _inputAttributeArrayLayout[pAttributeKey.GetBaseSlot()];
 		const auto & attributeStream = _inputStreamArrayConfig[genericAttribute.vertexStreamSlot];
 		return attributeStream.dataStrideInBytes;
 	}

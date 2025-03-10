@@ -31,6 +31,10 @@
 #define PCL_BSWAP32	__builtin_bswap32
 #define PCL_BSWAP64	__builtin_bswap64
 
+#define PCL_POPCNT16 __builtin_popcount
+#define PCL_POPCNT32 __builtin_popcountl
+#define PCL_POPCNT64 __builtin_popcountll
+
 #define PCL_ROTL16( x, n ) ( (x << n) | (x >> (16-n)) )
 #define PCL_ROTL32( x, n ) ( (x << n) | (x >> (32-n)) )
 #define PCL_ROTL64( x, n ) ( (x << n) | (x >> (64-n)) )

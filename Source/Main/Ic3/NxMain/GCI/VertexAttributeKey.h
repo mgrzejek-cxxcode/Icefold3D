@@ -21,31 +21,33 @@ namespace Ic3
 
 	union VertexAttributeKey
 	{
-		struct
+		struct EncodedData
 		{
 			/// Base slot (index) of the attribute. 4 bits, values from 0 to 15.
-			uint8 uBaseSlot : 4;
+			uint8 baseSlot : 4;
 
 			/// Semantic group size (number of attributes with the same semantic). 4 bits, values from 1 to 4.
-			uint8 uSemanticGroupSize : 4;
+			uint8 semanticGroupSize : 4;
 
 			/// Additional vertex key flags.
 			/// @see EVertexAttributeKeyFlags
-			cppx::bitmask<EVertexAttributeKeyFlags> uAttributeKeyFlags;
+			cppx::bitmask<EVertexAttributeKeyFlags> attributeKeyFlags;
 
 			/// Semantic flags of the attribute.
 			/// @see EVertexAttributeSemanticFlags
-			cppx::bitmask<EVertexAttributeSemanticFlags> uSemanticFlags;
+			cppx::bitmask<EVertexAttributeSemanticFlags> semanticFlags;
 
 			/// Base attribute format, i.e. the format of the data stored in a single attribute slot.
-			GCI::EVertexAttribFormat uBaseDataFormat;
+			GCI::EVertexAttribFormat baseDataFormat;
 		};
 
 		/// Attribute key info encoded into a single 64-bit value.
-		vertex_attribute_key_value_t value;
+		vertex_attribute_key_value_t uValue;
+
+		EncodedData uEncodedData;
 
 		constexpr VertexAttributeKey( vertex_attribute_key_value_t pValue = 0 )
-		: value( pValue )
+		: uValue( pValue )
 		{}
 
 		constexpr VertexAttributeKey(
@@ -54,21 +56,37 @@ namespace Ic3
 				GCI::EVertexAttribFormat pBaseDataFormat,
 				cppx::bitmask<EVertexAttributeSemanticFlags> pSemanticFlags,
 				cppx::bitmask<EVertexAttributeKeyFlags> pAttributeKeyFlags )
-		: uBaseSlot( static_cast<uint8>( pBaseSlot ) & 0xF )
-		, uSemanticGroupSize( static_cast<uint8>( pSemanticGroupSize ) & 0xF )
-		, uSemanticFlags( pSemanticFlags & eVertexAttributeSemanticMaskAll )
-		, uAttributeKeyFlags( pAttributeKeyFlags & eVertexAttributeKeyMaskAll )
-		, uBaseDataFormat( pBaseDataFormat )
+		: uEncodedData{
+			static_cast<uint8>( pBaseSlot & 0xF ),
+			static_cast<uint8>( pSemanticGroupSize & 0xF ),
+			pAttributeKeyFlags & eVertexAttributeKeyMaskAll,
+			pSemanticFlags & eVertexAttributeSemanticMaskAll,
+			pBaseDataFormat }
 		{}
 
 		CPPX_ATTR_NO_DISCARD operator vertex_attribute_key_value_t() const noexcept
 		{
-			return value;
+			return uValue;
+		}
+
+		CPPX_ATTR_NO_DISCARD uint8 GetBaseSlot() const noexcept
+		{
+			return uEncodedData.baseSlot;
+		}
+
+		CPPX_ATTR_NO_DISCARD GCI::EVertexAttribFormat GetBaseDataFormat() const noexcept
+		{
+			return uEncodedData.baseDataFormat;
+		}
+
+		CPPX_ATTR_NO_DISCARD uint8 GetSemanticGroupSize() const noexcept
+		{
+			return uEncodedData.semanticGroupSize;
 		}
 
 		CPPX_ATTR_NO_DISCARD uint32 GetBaseByteSize() const noexcept
 		{
-			return GCI::CXU::GetVertexAttribFormatByteSize( uBaseDataFormat );
+			return GCI::CXU::GetVertexAttribFormatByteSize( uEncodedData.baseDataFormat );
 		}
 
 		CPPX_ATTR_NO_DISCARD GCI::EIAVertexAttributeDataRate GetDataRate() const noexcept
@@ -78,25 +96,25 @@ namespace Ic3
 
 		CPPX_ATTR_NO_DISCARD cppx::bitmask<EVertexAttributeSemanticFlags> GetSemanticFlags() const noexcept
 		{
-			return uSemanticFlags;
+			return uEncodedData.semanticFlags;
 		}
 
 		CPPX_ATTR_NO_DISCARD cppx::bitmask<EVertexAttributeKeyFlags> GetAttributeKeyFlags() const noexcept
 		{
-			return uAttributeKeyFlags;
+			return uEncodedData.attributeKeyFlags;
 		}
 
 		CPPX_ATTR_NO_DISCARD cppx::bitmask<GCI::EIAVertexAttributeFlags> GetAttributeMask() const noexcept
 		{
-			return GCI::CXU::IAMakeVertexAttributeFlag( uBaseSlot ) |
-			       ( ( uSemanticGroupSize > 1 ) ? GCI::CXU::IAMakeVertexAttributeFlag( uBaseSlot + 1 ) : 0u ) |
-			       ( ( uSemanticGroupSize > 2 ) ? GCI::CXU::IAMakeVertexAttributeFlag( uBaseSlot + 2 ) : 0u ) |
-			       ( ( uSemanticGroupSize > 3 ) ? GCI::CXU::IAMakeVertexAttributeFlag( uBaseSlot + 3 ) : 0u );
+			return GCI::CXU::IAMakeVertexAttributeFlag( uEncodedData.baseSlot ) |
+			       ( ( uEncodedData.semanticGroupSize > 1 ) ? GCI::CXU::IAMakeVertexAttributeFlag( uEncodedData.baseSlot + 1 ) : 0u ) |
+			       ( ( uEncodedData.semanticGroupSize > 2 ) ? GCI::CXU::IAMakeVertexAttributeFlag( uEncodedData.baseSlot + 2 ) : 0u ) |
+			       ( ( uEncodedData.semanticGroupSize > 3 ) ? GCI::CXU::IAMakeVertexAttributeFlag( uEncodedData.baseSlot + 3 ) : 0u );
 		}
 
 		CPPX_ATTR_NO_DISCARD bool IsAttributePerInstance() const noexcept
 		{
-			return uAttributeKeyFlags.is_set( eVertexAttributeKeyFlagPerInstanceBit );
+			return uEncodedData.attributeKeyFlags.is_set( eVertexAttributeKeyFlagPerInstanceBit );
 		}
 	};
 

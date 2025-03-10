@@ -15,8 +15,7 @@ namespace Ic3
 	/**
 	 *
 	 */
-	#pragma pack( push, 1 )
-	struct __attribute__(( packed )) VertexInputStream
+	struct VertexInputStream
 	{
 		/**
 		 *
@@ -55,7 +54,6 @@ namespace Ic3
 
 		void Reset();
 	};
-	#pragma pack( pop )
 
 	/**
 	 *

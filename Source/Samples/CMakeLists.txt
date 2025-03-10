@@ -26,5 +26,6 @@ set( IC3_SAMPLES_LINK_INPUT ${IC3_SAMPLES_LINK_INPUT} ${IC3_GRAPHICS_HW3D_ALL_AV
 message( STATUS "IC3_GRAPHICS_HW3D_ALL_AVAILABLE_TARGETS -> ${IC3_GRAPHICS_HW3D_ALL_AVAILABLE_TARGETS}" )
 
 add_subdirectory( "GfxTest" )
+
 add_subdirectory( "SysPipeClient" )
 add_subdirectory( "SysPipeServer" )

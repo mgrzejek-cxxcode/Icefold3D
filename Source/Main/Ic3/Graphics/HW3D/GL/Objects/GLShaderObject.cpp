@@ -37,8 +37,6 @@ namespace Ic3::Graphics::GCI
 			return nullptr;
 		}
 
-		Ic3DebugOutput( (const char*)pSource );
-
 		auto shaderObject = Create( pGLShaderType );
 		if( !shaderObject )
 		{
@@ -141,11 +139,15 @@ namespace Ic3::Graphics::GCI
 			cppx::dynamic_byte_array infoLogBuffer;
 			infoLogBuffer.resize( infoLogLength );
 
-			glGetShaderInfoLog( mGLHandle, static_cast<GLsizei>( infoLogLength ), nullptr, infoLogBuffer.dataAs<GLchar>() );
+			glGetShaderInfoLog(
+				mGLHandle,
+				static_cast<GLsizei>( infoLogLength ),
+				nullptr,
+				infoLogBuffer.data_as<GLchar>() );
 			Ic3OpenGLHandleLastError();
 
 			// Note: length returned by the GL includes null terminator!
-			infoLog.assign( infoLogBuffer.dataAs<GLchar>(), infoLogLength - 1 );
+			infoLog.assign( infoLogBuffer.data_as<GLchar>(), infoLogLength - 1 );
 		}
 
 		return infoLog;
@@ -161,11 +163,15 @@ namespace Ic3::Graphics::GCI
 			cppx::dynamic_byte_array sourceBuffer;
 			sourceBuffer.resize( sourceLength );
 
-			glGetShaderSource( mGLHandle, static_cast<GLsizei>( sourceLength ), nullptr, sourceBuffer.dataAs<GLchar>() );
+			glGetShaderSource(
+				mGLHandle,
+				static_cast<GLsizei>( sourceLength ),
+				nullptr,
+				sourceBuffer.data_as<GLchar>() );
 			Ic3OpenGLHandleLastError();
 
 			// Note: length returned by the GL includes null terminator!
-			source.assign( sourceBuffer.dataAs<GLchar>(), sourceLength - 1 );
+			source.assign( sourceBuffer.data_as<GLchar>(), sourceLength - 1 );
 		}
 
 		return source;
