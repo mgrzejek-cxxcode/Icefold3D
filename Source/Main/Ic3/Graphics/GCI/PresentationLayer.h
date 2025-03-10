@@ -43,7 +43,7 @@ namespace Ic3::Graphics::GCI
 
 		virtual void SetFullscreenMode( bool pEnable ) = 0;
 
-		virtual Ic3::Math::Vec2u32 QueryRenderTargetSize() const = 0;
+		virtual cxm::vec2u32 QueryRenderTargetSize() const = 0;
 	};
 
 } // namespace Ic3::Graphics::GCI

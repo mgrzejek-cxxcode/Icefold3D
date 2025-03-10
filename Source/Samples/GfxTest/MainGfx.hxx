@@ -37,14 +37,15 @@
 #include <Ic3/NxMain/Renderer/ShaderLoader.h>
 #include <Ic3/NxMain/Renderer/SharedStateLibrary.h>
 
+#include <cxm/matrix.h>
+
 #include <chrono>
 #include <thread>
 
 #include "MeshDefs.h"
 
 using namespace Ic3;
-using namespace GCI;
-using namespace Ic3::Math;
+using namespace Ic3::GCI;
 using namespace Ic3::System;
 
 std::string sGxDriverName;
@@ -64,12 +65,15 @@ void InitializeGraphicsDriver( SysContextHandle pSysContext, GraphicsDriverState
 
 struct CB0Data
 {
-	Mat4x4f modelMatrix;
-	Mat4x4f viewMatrix;
-	Mat4x4f projectionMatrix;
+	cxm::mat4x4f modelMatrix;
+	cxm::mat4x4f viewMatrix;
+	cxm::mat4x4f projectionMatrix;
 };
 
 #include <Ic3/Graphics/HW3D/GL4/GL4GPUDriverAPI.h>
+
+#include <IC3/System/IO/Pipe.h>
+#include <IC3/System/IO/MessagePipe.h>
 
 int main( int pArgc, const char ** pArgv )
 {
@@ -106,11 +110,18 @@ int main( int pArgc, const char ** pArgv )
 
 	sGxDriverName = "GL4";
 
+	const auto mm1 = std::chrono::microseconds( 200 );
+
+	const auto ms2 = std::chrono::duration_cast<std::chrono::milliseconds>( mm1 );
+
+	const auto mm3 = cppx::duration<cppx::duration_unit::second>(1).get_as<cppx::duration_unit::nanosecond>();
+	const auto mm4 = cppx::duration_from_std( std::chrono::milliseconds( 450 ) ).get_as<cppx::duration_unit::second, double>();
+
 	SysContextCreateInfo sysContextCreateInfo;
 	auto sysContext = Platform::CreateSysContext( sysContextCreateInfo );
 
 	Platform::AssetLoaderCreateInfoNativeParams aslCreateInfoNP;
-	aslCreateInfoNP.relativeAssetRootDir = "Assets";
+	aslCreateInfoNP.absoluteAssetRootDir = "C:/Dev/Repo/CxxCode/Icefold3D/Assets";
 	AssetLoaderCreateInfo aslCreateInfo;
 	aslCreateInfo.nativeParams = &aslCreateInfoNP;
 	auto assetLoader = sysContext->CreateAssetLoader( aslCreateInfo );
@@ -332,7 +343,7 @@ int main( int pArgc, const char ** pArgv )
 		rpConfig.activeAttachmentsNum = 2;
 		rpConfig.colorAttachments[0].loadAction = ERenderPassAttachmentLoadAction::Clear;
 		rpConfig.colorAttachments[0].storeAction = ERenderPassAttachmentStoreAction::Keep;
-		rpConfig.colorAttachments[0].loadParameters.opClear.clearConfig.colorValue = RGBAColorR32Norm{ 0.6f, 0.6f, 0.6, 1.0f };
+		rpConfig.colorAttachments[0].loadParameters.opClear.clearConfig.colorValue = cxm::rgba_color_r32_norm{ 0.6f, 0.6f, 0.6, 1.0f };
 		rpConfig.colorAttachments[0].loadParameters.opClear.clearMask = eRenderTargetBufferFlagColorBit;
 		rpConfig.depthStencilAttachment.loadAction = ERenderPassAttachmentLoadAction::Clear;
 		rpConfig.depthStencilAttachment.storeAction = ERenderPassAttachmentStoreAction::Keep;
@@ -385,8 +396,8 @@ int main( int pArgc, const char ** pArgv )
 		mainPSO = gpuDevicePtr->CreateGraphicsPipelineStateObject( psoCI );
 	}
 
-	Vec3f cameraOriginPoint{ 0.0f, 2.0f, -4.0f };
-	Vec3f cameraTargetPoint{ 0.0f, 0.0f, 4.0f };
+	cxm::vec3f cameraOriginPoint{ 0.0f, 2.0f, -4.0f };
+	cxm::vec3f cameraTargetPoint{ 0.0f, 0.0f, 4.0f };
 	cameraController.Initialize( cameraOriginPoint, cameraTargetPoint, 60.0f );
 
 	GCI::ViewportDesc vpDescScreen{};
@@ -405,22 +416,22 @@ int main( int pArgc, const char ** pArgv )
 	vpDescTexture.depthRange.zNear = 0.0f;
 	vpDescTexture.depthRange.zFar = 1.0f;
 
-	const auto Ic3ViewTexture = lookAtLH(
-		Vec3f{ 0.0f, 3.0f, -1.0f },
-		Vec3f{ 0.0f, 0.0f, 5.0f },
-		Vec3f{ 0.0f, 1.0f, 0.0f } );
+	const auto Ic3ViewTexture = cxm::look_at_LH(
+		cxm::vec3f{ 0.0f, 3.0f, -1.0f },
+		cxm::vec3f{ 0.0f, 0.0f, 5.0f },
+		cxm::vec3f{ 0.0f, 1.0f, 0.0f } );
 
-	const auto Ic3ProjectionTexture = perspectiveAspectLH<float>(
+	const auto Ic3ProjectionTexture = cxm::perspective_aspect_LH(
 		cameraController.GetPerspectiveFOVAngle(), ( float )rtSize.x / ( float )rtSize.y, 0.1f, 1000.0f );
 
-	const auto Ic3CameraProjection = perspectiveAspectLH<float>(
+	const auto Ic3CameraProjection = cxm::perspective_aspect_LH(
 		cameraController.GetPerspectiveFOVAngle(), ( float )rtSize.x / ( float )rtSize.y, 1.0f, 1000.0f );
 
 	CB0Data cb0DataBase =
 	{
-		identity4<float>(),
-		identity4<float>(),
-		identity4<float>()
+		cxm::identity4<float>(),
+		cxm::identity4<float>(),
+		cxm::identity4<float>()
 	};
 
 	GPUBufferDataUploadDesc cb0DataUploadDesc;
@@ -487,7 +498,6 @@ int main( int pArgc, const char ** pArgv )
 			gxDriverState.cmdContext->BeginRenderPass( *scrRenderPassDescriptor );
 			{
 				gxDriverState.cmdContext->UpdateBufferDataUpload( *cbuffer0, cb0DataBase );
-
 
 				gxDriverState.cmdContext->CmdSetViewport( vpDescScreen );
 				gxDriverState.cmdContext->CmdSetShaderConstantBuffer( 0, *cbuffer0 );

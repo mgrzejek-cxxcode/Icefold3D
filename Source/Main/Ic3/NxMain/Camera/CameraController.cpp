@@ -8,7 +8,7 @@ namespace Ic3
 	: mCameraState( _cameraState )
 	{}
 
-	void CameraController::Initialize( const Math::Vec3f & pOrigin, const Math::Vec3f & pTarget, float pFOVAngle )
+	void CameraController::Initialize( const cxm::vec3f & pOrigin, const cxm::vec3f & pTarget, float pFOVAngle )
 	{
 		auto vForward = pTarget - pOrigin;
 		_cameraState.configuration.movementSensitivity = 1.0f;
@@ -16,18 +16,18 @@ namespace Ic3
 		_cameraState.configuration.rotationSensitivity = 0.0075f;
 		_cameraState.orientation.origin = pOrigin;
 		_cameraState.orientation.target = pTarget;
-		_cameraState.orientation.originTargetDistance = Math::length( vForward );
-		_cameraState.orientation.vForward = Math::normalize( vForward );
-		_cameraState.orientation.vRight = Math::normalize( Math::cross( Math::Vec3f( 0, 1, 0 ), _cameraState.orientation.vForward ) );
-		_cameraState.orientation.vUp = Math::normalize( Math::cross( _cameraState.orientation.vForward, _cameraState.orientation.vRight ) );
+		_cameraState.orientation.originTargetDistance = cxm::length( vForward );
+		_cameraState.orientation.vForward = cxm::normalize( vForward );
+		_cameraState.orientation.vRight = cxm::normalize( cxm::cross( cxm::vec3f( 0, 1, 0 ), _cameraState.orientation.vForward ) );
+		_cameraState.orientation.vUp = cxm::normalize( cxm::cross( _cameraState.orientation.vForward, _cameraState.orientation.vRight ) );
 		_cameraState.rotation.roll = 0.0f;
 
-		auto xzLength = Math::length( Math::Vec2f( _cameraState.orientation.vForward.x, _cameraState.orientation.vForward.z ) );
+		auto xzLength = cxm::length( cxm::vec2f( _cameraState.orientation.vForward.x, _cameraState.orientation.vForward.z ) );
 		auto xzSin = _cameraState.orientation.vForward.x / xzLength;
 		auto xzCos = _cameraState.orientation.vForward.z / xzLength;
 		_cameraState.rotation.yaw = static_cast<float>( atan2( xzSin, xzCos ) );
 
-		auto yzLength = Math::length( Math::Vec2f( _cameraState.orientation.vForward.y, _cameraState.orientation.vForward.z ) );
+		auto yzLength = cxm::length( cxm::vec2f( _cameraState.orientation.vForward.y, _cameraState.orientation.vForward.z ) );
 		auto yzSin = _cameraState.orientation.vForward.y / yzLength;
 		auto yzCos = _cameraState.orientation.vForward.z / yzLength;
 		_cameraState.rotation.pitch = static_cast<float>( atan2( yzSin, yzCos ) );
@@ -36,14 +36,14 @@ namespace Ic3
 		_cameraState.projection.fovAngle = pFOVAngle;
 	}
 
-	void CameraController::SetTarget( const Math::Vec2f & pTarget )
+	void CameraController::SetTarget( const cxm::vec2f & pTarget )
 	{
-		auto target = Math::Vec3f( pTarget.x, pTarget.y, _cameraState.orientation.target.z );
+		auto target = cxm::vec3f( pTarget.x, pTarget.y, _cameraState.orientation.target.z );
 		auto vForward = target - _cameraState.orientation.origin;
 
 		_cameraState.orientation.target = target;
-		_cameraState.orientation.originTargetDistance = Math::length( vForward );
-		_cameraState.orientation.vForward = Math::normalize( vForward );
+		_cameraState.orientation.originTargetDistance = cxm::length( vForward );
+		_cameraState.orientation.vForward = cxm::normalize( vForward );
 
 		UpdateRotation();
 	}
@@ -56,7 +56,7 @@ namespace Ic3
 
 	void CameraController::MoveFlat( float pFactor )
 	{
-		_cameraState.orientation.origin += pFactor * Math::Vec3f( _cameraState.orientation.vForward.x, 0.0f, _cameraState.orientation.vForward.z );
+		_cameraState.orientation.origin += pFactor * cxm::vec3f( _cameraState.orientation.vForward.x, 0.0f, _cameraState.orientation.vForward.z );
 		_cameraState.orientation.target = _cameraState.orientation.origin + ( _cameraState.orientation.vForward * _cameraState.orientation.originTargetDistance );
 	}
 
@@ -68,13 +68,13 @@ namespace Ic3
 
 	void CameraController::MoveSideFlat( float pFactor )
 	{
-		_cameraState.orientation.origin += pFactor * Math::Vec3f( _cameraState.orientation.vRight.x, 0.0f, _cameraState.orientation.vRight.z );
+		_cameraState.orientation.origin += pFactor * cxm::vec3f( _cameraState.orientation.vRight.x, 0.0f, _cameraState.orientation.vRight.z );
 		_cameraState.orientation.target = _cameraState.orientation.origin + ( _cameraState.orientation.vForward * _cameraState.orientation.originTargetDistance );
 	}
 
 	void CameraController::MoveUpDown( float pFactor )
 	{
-		_cameraState.orientation.origin += pFactor * Math::Vec3f( 0, 1, 0 );
+		_cameraState.orientation.origin += pFactor * cxm::vec3f( 0, 1, 0 );
 		_cameraState.orientation.target = _cameraState.orientation.origin + ( _cameraState.orientation.vForward * _cameraState.orientation.originTargetDistance );
 	}
 
@@ -136,18 +136,18 @@ namespace Ic3
 		_cameraState.projection.fovAngleDiff = fovModifier;
 	}
 
-	Math::Mat4f CameraController::ComputeViewMatrixLH()
+	cxm::mat4f CameraController::ComputeViewMatrixLH()
 	{
-		auto viewMatrix = Math::lookAtLH(
+		auto viewMatrix = cxm::look_at_LH(
 				_cameraState.orientation.origin,
 				_cameraState.orientation.target,
 				_cameraState.orientation.vUp );
 		return viewMatrix;
 	}
 
-	Math::Mat4f CameraController::ComputeViewMatrixRH()
+	cxm::mat4f CameraController::ComputeViewMatrixRH()
 	{
-		auto viewMatrix = Math::lookAtRH(
+		auto viewMatrix = cxm::look_at_RH(
 				_cameraState.orientation.origin,
 				_cameraState.orientation.target,
 				_cameraState.orientation.vUp );
@@ -157,12 +157,12 @@ namespace Ic3
 	float CameraController::GetPerspectiveFOVAngle() const
 	{
 		auto fovAngle = _cameraState.projection.fovAngle - _cameraState.projection.fovAngleDiff;
-		return fovAngle * Math::Constants::FLT_RAD_1DEG;
+		return fovAngle * cxm::constants::FLT_RAD_1DEG;
 	}
 
 	void CameraController::UpdateRotation()
 	{
-		constexpr auto cxFullAngle = Math::Constants::FLT_RAD_360DEG;
+		constexpr auto cxFullAngle = cxm::constants::FLT_RAD_360DEG;
 		
 		if( _cameraState.rotation.yaw > cxFullAngle )
 		{
@@ -198,19 +198,19 @@ namespace Ic3
 		auto sinRoll = std::sin( _cameraState.rotation.roll );
 		auto cosRoll = std::cos( _cameraState.rotation.roll );
 
-		Math::Vec3f vcForward;
+		cxm::vec3f vcForward;
 		vcForward.x = cosPitch * sinYaw;
 		vcForward.y = sinPitch;
 		vcForward.z = cosPitch * cosYaw;
 
-		Math::Vec3f vcUp;
+		cxm::vec3f vcUp;
 		vcUp.x = -sinRoll * cosYaw - cosRoll * sinPitch * sinYaw;
 		vcUp.y =  cosRoll * cosPitch;
 		vcUp.z =  sinRoll * sinYaw - cosRoll * sinPitch * cosYaw;
 
 		_cameraState.orientation.vForward = vcForward;
 		_cameraState.orientation.vUp = vcUp;
-		_cameraState.orientation.vRight = Math::normalize( Math::cross( _cameraState.orientation.vUp, _cameraState.orientation.vForward ) );
+		_cameraState.orientation.vRight = cxm::normalize( cxm::cross( _cameraState.orientation.vUp, _cameraState.orientation.vForward ) );
 	}
 
 } // namespace Ic3

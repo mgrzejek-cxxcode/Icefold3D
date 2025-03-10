@@ -3,8 +3,9 @@
 #include "Win32AssetSystem.h"
 #include "Win32DisplaySystem.h"
 #include "Win32EventCore.h"
-#include "Win32FileManager.h"
+#include "Win32FileSystem.h"
 #include "Win32OpenGLDriver.h"
+#include "Win32PipeAPI.h"
 #include "Win32WindowSystem.h"
 #include <Ic3/System/SysContextNative.h>
 #include <Ic3/System/IO/AssetSystemNative.h>
@@ -65,6 +66,11 @@ namespace Ic3::System
 
 		return CreateSysObject<Win32OpenGLSystemDriver>( pDisplayManager->GetHandle<Win32DisplayManager>() );
 	}
+
+	PipeFactoryHandle Win32SysContext::CreatePipeFactory()
+    {
+	    return CreateSysObject<Win32PipeFactory>( GetHandle<Win32SysContext>() );
+    }
 
 	WindowManagerHandle Win32SysContext::CreateWindowManager( DisplayManagerHandle pDisplayManager )
 	{

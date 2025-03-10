@@ -133,8 +133,8 @@ namespace Ic3
 				uint32 pVertexStreamRelativeOffset )
 		{
 			GCI::IAVertexAttributeDesc gciAttributeDesc{};
-			gciAttributeDesc.attribInfo.attributeSlot = pAttributeKey.uBaseSlot;
-			gciAttributeDesc.attribInfo.dataFormat = pAttributeKey.uBaseDataFormat;
+			gciAttributeDesc.attribInfo.attributeSlot = pAttributeKey.GetBaseSlot();
+			gciAttributeDesc.attribInfo.dataFormat = pAttributeKey.GetBaseDataFormat();
 			gciAttributeDesc.attribInfo.dataRate = pAttributeKey.GetDataRate();
 			gciAttributeDesc.semantics = static_cast<GCI::IAVertexAttributeSemantics>( GetShaderSemanticsForAttributeKey( pAttributeKey ) );
 			gciAttributeDesc.streamBinding.streamSlot = cppx::numeric_cast<decltype( gciAttributeDesc.streamBinding.streamSlot )>( pVertexStreamSlot );

@@ -12,7 +12,7 @@ namespace Ic3::System
 		return static_cast<uint64>( timeSpec.tv_sec ) * 1000000000u + static_cast<uint64>( timeSpec.tv_nsec );
 	}
 
-	perf_counter_res_t NativePerfCounterQueryResolution()
+	perf_counter_res_t NativePerfCounterGetResolution()
 	{
 		return 1000000000u;
 	}

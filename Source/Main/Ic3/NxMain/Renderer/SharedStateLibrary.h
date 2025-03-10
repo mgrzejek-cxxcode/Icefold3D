@@ -52,7 +52,7 @@ namespace Ic3
 				GCI::CXU::DeclarePipelineStateDescriptorIDVertexAttributeLayout( 0x001 );
 
 		inline constexpr auto kGfxIDStateDescriptorIAVertexAttributeLayoutDefault16B =
-				GCI::CXU::DeclarePipelineStateDescriptorIDVertexAttributeLayout( 0x001 );
+				GCI::CXU::DeclarePipelineStateDescriptorIDVertexAttributeLayout( 0x002 );
 
 		inline constexpr auto kGfxIDStateDescriptorGraphicsShaderLinkagePassthroughIADefault =
 				GCI::CXU::DeclarePipelineStateDescriptorIDGraphicsShaderLinkage( 0x001 );

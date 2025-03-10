@@ -34,7 +34,7 @@ namespace Ic3::Graphics::GCI
 		cppx::bitmask<ERTAttachmentFlags> attachmentsMask;
 		cppx::bitmask<EBlendConfigFlags> flags;
 		GLRenderTargetColorAttachmentBlendSettings attachments[GCM::kRTOMaxColorAttachmentsNum];
-		Math::RGBAColorR32Norm constantColor;
+		cxm::rgba_color_r32_norm constantColor;
 	};
 
 	struct GLDepthStencilSettings

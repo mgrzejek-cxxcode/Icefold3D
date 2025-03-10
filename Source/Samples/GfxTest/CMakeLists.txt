@@ -16,14 +16,12 @@ else()
     )
 endif()
 
-add_executable( Sample.GfxTest
-    ${IC3_SAMPLES_SRC_GfxTest}
-)
+#add_executable( Sample.GfxTest
+#
+#)
+
+ic3AddCoreApp( Sample.GfxTest ${IC3_SAMPLES_SRC_GfxTest} )
 
 target_link_libraries( Sample.GfxTest PUBLIC
     ${IC3_SAMPLES_LINK_INPUT}
-)
-
-target_compile_definitions( Sample.GfxTest PRIVATE
-    "${IC3_COMMON_MODULE_DEFINITIONS}"
 )

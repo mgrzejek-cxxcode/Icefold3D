@@ -23,15 +23,15 @@
 #define PCL_DEBUG_OUTPUT( text )  utputDebugStringA("%s\n", text)
 #define PCL_SLEEP( miliseconds )  leep(miliseconds)
 
-#define PCL_BSWAP16( n )  ( ((n & 0xFF00) >> 8) | ((n & 0x00FF) << 8) )
+#define PCL_BSWAP16( n )  ( ( ( n & 0xFF00 ) >> 8 ) | ( ( n & 0x00FF ) << 8 ) )
 #define PCL_BSWAP32       _bswap
 #define PCL_BSWAP64       _bswap64
 
-#define PCL_ROTL16( x, n )  ( (x << n) | (x >> (16-n)) )
+#define PCL_ROTL16( x, n )  ( ( x << n ) | ( x >> ( 16 - n ) ) )
 #define PCL_ROTL32          _rotl
 #define PCL_ROTL64          _lrotl
 
-#define PCL_ROTR16( x, n )  ( (x >> n) | (x << (16-n)) )
+#define PCL_ROTR16( x, n )  ( ( x >> n ) | ( x << ( 16 - n ) ) )
 #define PCL_ROTR32          _rotr
 #define PCL_ROTR64          _lrotr
 

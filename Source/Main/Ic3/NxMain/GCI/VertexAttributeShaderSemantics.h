@@ -126,7 +126,7 @@ namespace Ic3
 				VertexAttributeKey pAttributeKey,
 				uint32 pSemanticIndex = 0 )
 		{
-			return GCIUtils::GetSemanticsFromAttributeFlags( pAttributeKey.uAttributeKeyFlags, pSemanticIndex );
+			return GCIUtils::GetSemanticsFromAttributeFlags( pAttributeKey.GetSemanticFlags(), pSemanticIndex );
 		}
 
 	}

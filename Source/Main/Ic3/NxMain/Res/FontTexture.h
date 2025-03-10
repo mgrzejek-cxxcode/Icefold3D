@@ -58,8 +58,8 @@ namespace Ic3
 //		size_t dataSize;
 //		size_t dataRowPitch;
 //		uint32 subTextureIndex;
-//		Math::Vec2u32 targetOffset;
-//		Math::Vec2u32 targetRect;
+//		cxm::vec2u32 targetOffset;
+//		cxm::vec2u32 targetRect;
 //
 //		explicit operator bool() const
 //		{

@@ -144,7 +144,7 @@ namespace Ic3::System
 
 		IC3_SYSTEM_API_NODISCARD EMouseButtonID OSXQueryMouseButtonID( NSEvent * pNSEvent );
 
-		IC3_SYSTEM_API_NODISCARD Math::Vec2i32 OSXQueryMouseRelativePosition( NSEvent * pNSEvent );
+		IC3_SYSTEM_API_NODISCARD cxm::vec2i32 OSXQueryMouseRelativePosition( NSEvent * pNSEvent );
 
 		IC3_SYSTEM_API_NODISCARD cppx::bitmask<EOSXMouseScrollEventFlags> OSXQueryMouseScrollEventFlags( const NativeEventType & pNativeEvent );
 

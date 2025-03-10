@@ -54,7 +54,7 @@ namespace Ic3::Graphics::GCI
 		void ApplyDepthStencilSettings( const GLDepthStencilSettings & pDepthStencilSettings, uint8 pStencilTestRefValueO );
 		void ApplyRasterizerSettings( const GLRasterizerSettings & pRasterizerSettings );
 
-		void SetBlendConstantColor( const Math::RGBAColorR32Norm & pConstantColor );
+		void SetBlendConstantColor( const cxm::rgba_color_r32_norm & pConstantColor );
 
 		void Reset();
 

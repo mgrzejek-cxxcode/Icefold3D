@@ -44,6 +44,9 @@ namespace Ic3::System
 		/// @copybrief SysContext::CreateOpenGLSystemDriver
 		virtual OpenGLSystemDriverHandle CreateOpenGLSystemDriver( DisplayManagerHandle pDisplayManager ) override final;
 
+		/// @copybrief SysContext::CreatePipeFactory
+		virtual PipeFactoryHandle CreatePipeFactory() override final;
+
 		/// @copybrief SysContext::CreateWindowManager
 		virtual WindowManagerHandle CreateWindowManager( DisplayManagerHandle pDisplayManager ) override final;
 

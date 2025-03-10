@@ -35,7 +35,7 @@ namespace Ic3::Graphics::GCI
 
 		MTLSamplerBorderColor selectMTLSamplerBorderColor(
 				ETextureBorderPredefinedColor pPredefinedColor,
-				const Math::RGBAColorR32Norm & pCustomColor );
+				const cxm::rgba_color_r32_norm & pCustomColor );
 
 	}
 

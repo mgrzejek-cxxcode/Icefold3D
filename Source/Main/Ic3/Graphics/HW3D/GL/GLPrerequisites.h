@@ -32,13 +32,13 @@
 
 #if !defined( IC3_GX_GL_TARGET )
 #  if( IC3_GX_GL_PLATFORM_TYPE == IC3_GX_GL_PLATFORM_TYPE_DESKTOP )
-#    if defined( IC3_GRAPHICS_HWAPI_GL3_BUILD )
+#    if defined( IC3_GRAPHICS_HW3D_GL3_BUILD )
 #      define IC3_GX_GL_TARGET IC3_GX_GL_TARGET_GL32
-#    elif defined( IC3_GRAPHICS_HWAPI_GL4_BUILD )
+#    elif defined( IC3_GRAPHICS_HW3D_GL4_BUILD )
 #      define IC3_GX_GL_TARGET IC3_GX_GL_TARGET_GL43
 #    endif
 #  elif( IC3_GX_GL_PLATFORM_TYPE == IC3_GX_GL_PLATFORM_TYPE_ES )
-#    if defined( IC3_GRAPHICS_HWAPI_GLES_BUILD )
+#    if defined( IC3_GRAPHICS_HW3D_GLES_BUILD )
 #      define IC3_GX_GL_TARGET IC3_GX_GL_TARGET_ES31
 #    endif
 #  endif
@@ -140,7 +140,7 @@
 #  define IC3_GX_GL_CLASS
 #  define IC3_GX_GL_OBJ    extern
 #else
-#  if( IC3_GRAPHICS_HWAPI_GL_BUILD )
+#  if( IC3_GRAPHICS_HW3D_GL_BUILD )
 #    define IC3_GX_GL_API    PCL_ATTR_DLL_EXPORT
 #    define IC3_GX_GL_CLASS  PCL_ATTR_DLL_EXPORT
 #    define IC3_GX_GL_OBJ    PCL_ATTR_DLL_EXPORT extern

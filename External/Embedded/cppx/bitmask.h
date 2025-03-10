@@ -255,7 +255,7 @@ namespace cppx
 		}
 
 	private:
-		value_type  _value;
+		value_type _value;
 	};
 
 	template <typename TPBaseType>

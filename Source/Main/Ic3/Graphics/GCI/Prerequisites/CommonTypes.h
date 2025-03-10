@@ -4,8 +4,8 @@
 #ifndef __IC3_GRAPHICS_GCI_COMMON_TYPES_H__
 #define __IC3_GRAPHICS_GCI_COMMON_TYPES_H__
 
-#include <Ic3/Math/Color.h>
-#include <Ic3/Math/Vector.h>
+#include <cxm/color.h>
+#include <cxm/vector.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -18,8 +18,8 @@ namespace Ic3::Graphics::GCI
 			float zFar;
 		};
 
-		Math::Vec2u32 origin;
-		Math::Size2u size;
+		cxm::vec2u32 origin;
+		cxm::size2u size;
 		DepthRange depthRange;
 	};
 

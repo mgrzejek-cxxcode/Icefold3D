@@ -142,7 +142,7 @@ namespace Ic3::Graphics::GCI
 	}
 
 	cppx::bitmask<EGraphicsPipelineDynamicConfigFlags> GraphicsPipelineStateController::SetDynamicBlendConstantColor(
-			const Math::RGBAColorR32Norm & pBlendConstantColor )
+			const cxm::rgba_color_r32_norm & pBlendConstantColor )
 	{
 		_currentPipelineDynamicConfig.blendConstantColor = pBlendConstantColor;
 		_currentPipelineDynamicConfig.activeStateMask.set( eGraphicsPipelineDynamicConfigFlagBlendConstantColorBit );

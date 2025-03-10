@@ -17,7 +17,7 @@ namespace Ic3
 		EFontBaseType baseType = EFontBaseType::Unknown;
 		std::string fontID;
 		font_size_t fontSize = 0;
-		Math::Vec2u32 textureDimensions = { 0, 0 };
+		cxm::vec2u32 textureDimensions = { 0, 0 };
 		GCI::ETextureFormat textureFormat = GCI::ETextureFormat::Undefined;
 		cppx::bitmask<EFontPropertyFlags> propertyFlags = 0;
 

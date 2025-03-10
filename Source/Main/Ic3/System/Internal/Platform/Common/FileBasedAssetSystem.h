@@ -3,7 +3,7 @@
 #define __IC3_SYSTEM_PLATFORM_COMMON_FILE_BASED_ASSET_SYSTEM__
 
 #include <Ic3/System/IO/AssetSystem.h>
-#include <Ic3/System/IO/FileCommon.h>
+#include <Ic3/System/IO/IOCommonDefs.h>
 
 #if( IC3_SYSTEM_USE_ASSET_SYSTEM_DEFAULT )
 namespace Ic3::System

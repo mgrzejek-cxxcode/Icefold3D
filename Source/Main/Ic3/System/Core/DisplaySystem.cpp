@@ -37,7 +37,7 @@ namespace Ic3::System
 			return nullptr;
 		}
 
-		auto & factoryCallback = _privateData->driverFactoryMap.at( pDriverID );
+		const auto & factoryCallback = _privateData->driverFactoryMap.at( pDriverID );
 		auto displayDriver = factoryCallback();
 
 		return displayDriver;
@@ -59,7 +59,7 @@ namespace Ic3::System
 
 		// Resolve the driver ID. This will return EDisplayDriverType::Unknown
 		// if the specified driver is not supported on the current system.
-		auto resolvedDriverID = ResolveDisplayDriverID( pDriverID );
+		const auto resolvedDriverID = ResolveDisplayDriverID( pDriverID );
 
 		return resolvedDriverID != EDisplayDriverType::Unknown;
 	}
@@ -116,8 +116,8 @@ namespace Ic3::System
 		const auto & framePos = pFrameGeometry.position;
 		const auto & frameSize = pFrameGeometry.size;
 
-		auto screenSize = QueryDefaultDisplaySize();
-		auto minFrameSize = QueryMinWindowSize();
+		const auto screenSize = QueryDefaultDisplaySize();
+		const auto minFrameSize = QueryMinWindowSize();
 
 		if( frameSize != cxFrameSizeMax )
 		{
@@ -142,8 +142,8 @@ namespace Ic3::System
 				return false;
 			}
 
-			auto maxPosX = static_cast<int32>( screenSize.x - frameSize.x );
-			auto maxPosY = static_cast<int32>( screenSize.y - frameSize.y );
+			const auto maxPosX = static_cast<int32>( screenSize.x - frameSize.x );
+			const auto maxPosY = static_cast<int32>( screenSize.y - frameSize.y );
 
 			if( ( framePos.x > maxPosX ) || ( framePos.y > maxPosY ) )
 			{
@@ -161,9 +161,9 @@ namespace Ic3::System
 		const auto & framePos = pFrameGeometry.position;
 		const auto & frameSize = pFrameGeometry.size;
 
-		auto screenOffset = QueryDefaultDisplayOffset();
-		auto screenSize = QueryDefaultDisplaySize();
-		auto minFrameSize = QueryMinWindowSize();
+		const auto screenOffset = QueryDefaultDisplayOffset();
+		const auto screenSize = QueryDefaultDisplaySize();
+		const auto minFrameSize = QueryMinWindowSize();
 
 		if( frameSize == cxFrameSizeMax )
 		{
@@ -199,8 +199,8 @@ namespace Ic3::System
 		}
 		else
 		{
-			auto maxPosX = static_cast<int32>( screenSize.x - resultGeometry.size.x );
-			auto maxPosY = static_cast<int32>( screenSize.y - resultGeometry.size.y );
+			const auto maxPosX = static_cast<int32>( screenSize.x - resultGeometry.size.x );
+			const auto maxPosY = static_cast<int32>( screenSize.y - resultGeometry.size.y );
 			resultGeometry.position.x = cppx::get_min_of( resultGeometry.position.x, maxPosX );
 			resultGeometry.position.y = cppx::get_min_of( resultGeometry.position.y, maxPosY );
 		}
@@ -281,7 +281,7 @@ namespace Ic3::System
 
 	const DisplayOutputList & DisplayDriver::GetOutputList( dsm_index_t pAdapterIndex ) const
 	{
-		auto * adapter = GetAdapter( pAdapterIndex );
+		const auto * adapter = GetAdapter( pAdapterIndex );
 		return adapter->GetOutputList();
 	}
 
@@ -304,14 +304,14 @@ namespace Ic3::System
 
 	DisplayOutput * DisplayDriver::GetDefaultOutput( dsm_index_t pAdapterIndex ) const
 	{
-		auto * adapter = GetAdapter( pAdapterIndex );
+		const auto * adapter = GetAdapter( pAdapterIndex );
 		return adapter->GetDefaultOutput();
 	}
 
 	DisplayOutput * DisplayDriver::GetOutput( dsm_output_id_t pOutputID ) const
 	{
-		auto adapterIndex = DSMExtractOutputIDAdapterIndex( pOutputID );
-		auto outputIndex = DSMExtractOutputIDOutputIndex( pOutputID );
+		const auto adapterIndex = DSMExtractOutputIDAdapterIndex( pOutputID );
+		const auto outputIndex = DSMExtractOutputIDOutputIndex( pOutputID );
 
 		auto * adapter = GetAdapter( adapterIndex );
 
@@ -387,7 +387,7 @@ namespace Ic3::System
 						result.append( 1, '\t' );
 						result.append( outputDesc.ToString() );
 
-						auto colorFormats = output->GetSupportedColorFormatList();
+						const auto colorFormats = output->GetSupportedColorFormatList();
 						for( auto colorFormat : colorFormats )
 						{
 							auto colorFormatStr = VisQueryColorFormatStr( colorFormat );
@@ -474,13 +474,13 @@ namespace Ic3::System
 
 	void DisplayDriver::_enumVideoModes()
 	{
-		for( auto & adapterPtr : _privateData->adapterInstanceList )
+		for( const auto & adapterPtr : _privateData->adapterInstanceList )
 		{
 			const auto & adapterOutputList = adapterPtr->GetOutputList();
 
 			for( auto * output : adapterOutputList )
 			{
-				for( auto colorFormat : cvColorFormatArray )
+				for( const auto colorFormat : cvColorFormatArray )
 				{
 					_NativeEnumVideoModes( *output, colorFormat );
 				}
@@ -545,7 +545,7 @@ namespace Ic3::System
 					_privateData->activeAdaptersNum += 1;
 				}
 
-				auto adapterActiveOutputsNum = adapterPtr->ValidateOutputsConfiguration();
+				const auto adapterActiveOutputsNum = adapterPtr->ValidateOutputsConfiguration();
 
 				_privateData->combinedActiveOutputsNum += adapterActiveOutputsNum;
 
@@ -559,7 +559,7 @@ namespace Ic3::System
 				// In case the adapter Has been set, but this bit is missing, emit a warning. It may be an
 				// intentional choice, but also an error or missing driver-specific init code.
 
-				auto & adapterDesc = _privateData->primaryAdapter->GetAdapterDescInternal();
+				const auto & adapterDesc = _privateData->primaryAdapter->GetAdapterDescInternal();
 				if( !adapterDesc.flags.is_set( eDisplayAdapterFlagPrimaryBit ) )
 				{
 					Ic3DebugOutput(
@@ -573,7 +573,7 @@ namespace Ic3::System
 				// there Has not been any adapter marked as PRIMARY. In this case, just select the first
 				// one, update its state and set as the default one.
 
-				auto & firstAdapter = _privateData->adapterInstanceList.front();
+				const auto & firstAdapter = _privateData->adapterInstanceList.front();
 				auto & firstAdapterDesc = firstAdapter->GetAdapterDescInternal();
 				firstAdapterDesc.flags.set( eDisplayAdapterFlagPrimaryBit );
 				_privateData->primaryAdapter = firstAdapter.get();

@@ -3,7 +3,7 @@
 #include <Ic3/NxMain/exception.h>
 #include <cppx/pathNameIterator.h>
 #include <cppx/sortedArray.h>
-#include <Ic3/System/IO/FileManager.h>
+#include <Ic3/System/IO/FileSystem.h>
 
 #include <unordered_map>
 #include <unordered_set>

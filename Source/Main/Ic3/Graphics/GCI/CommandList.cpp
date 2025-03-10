@@ -21,6 +21,7 @@ namespace Ic3::Graphics::GCI
 	: GPUDeviceChildObject( pCommandSystem.mGPUDevice )
 	, mCommandSystem( &pCommandSystem )
 	, mListType( pListType )
+	, mCommandFlags( static_cast<ECommandObjectPropertyFlags>( pListType ) & eCommandObjectPropertyMaskAll )
 	, _graphicsPipelineStateController( &pPipelineStateController )
 	{}
 
@@ -265,7 +266,7 @@ namespace Ic3::Graphics::GCI
 		return _graphicsPipelineStateController->SetVertexSourceBindingDescriptorDynamic( pVertexSourceBindingDescriptor );
 	}
 
-	void CommandList::CmdSetDynamicBlendConstantColor( const Math::RGBAColorR32Norm & pBlendConstantColor )
+	void CommandList::CmdSetDynamicBlendConstantColor( const cxm::rgba_color_r32_norm & pBlendConstantColor )
 	{
 	}
 

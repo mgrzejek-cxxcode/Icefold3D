@@ -3,7 +3,7 @@
 #define __IC3_SYSTEM_ASSET_SYSTEM_H__
 
 #include "AssetCommon.h"
-#include "FileCommon.h"
+#include "IOCommonDefs.h"
 #include "../SysObject.h"
 #include <cppx/fsUtils.h>
 #include <cppx/memoryBuffer.h>

@@ -170,7 +170,7 @@ namespace Ic3
 					currentTextureLayer->initDataBuffer.fill( 0 );
 				}
 
-				Math::Vec2u32 glyphImageTextureOffset;
+				cxm::vec2u32 glyphImageTextureOffset;
 				// This should never fail, because we already checked the available space (checkFreeSpace() above).
 				// If this assertion triggers, it means, that the current glyph is bigger than the texture rect itself.
 				if( !textureLayerAllocator.AddRect( glyphSourceImage.dimensions, &glyphImageTextureOffset ) )
@@ -187,7 +187,7 @@ namespace Ic3
 				{
 					const auto srcByteOffset = imageRowIndex * glyphSourceImage.dataRowPitch;
 					const auto targetByteOffset = ( baseTargetPixelOffset + ( imageRowIndex * cxTextureWidth ) ) * cxPixelByteSize;
-					auto * targetBufferBtr = currentTextureLayer->initDataBuffer.dataOffset( targetByteOffset );
+					auto * targetBufferBtr = currentTextureLayer->initDataBuffer.data_offset( targetByteOffset );
 					cppx::mem_copy( targetBufferBtr, cxTextureSize, glyphSourceImage.data + srcByteOffset, srcDataRowSize );
 				}
 

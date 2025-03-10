@@ -12,13 +12,13 @@ namespace Ic3
 
 	struct RLConstantBufferDataCommonModel
 	{
-		Math::Mat4f m4fModelMatrix;
+		cxm::mat4f m4fModelMatrix;
 	};
 
 	struct RLConstantBufferDataCommonScene
 	{
-		Math::Mat4f m4fViewMatrix;
-		Math::Mat4f m4fProjectionMatrix;
+		cxm::mat4f m4fViewMatrix;
+		cxm::mat4f m4fProjectionMatrix;
 	};
 
 	class Renderer

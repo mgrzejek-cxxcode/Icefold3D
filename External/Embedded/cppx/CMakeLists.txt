@@ -72,30 +72,15 @@ set( CPPX_SRC_FILES
         "sync/spinLock.h"
 )
 
-if( "${CM_EBS_SYSCONF_TARGET_SYSTEM}" STREQUAL "Android" )
-        set( CPPX_SRC_FILES
-                ${CPPX_SRC_FILES}
-                "platform/android/androidNativeAppProxy.h"
-                "platform/android/androidNativeAppProxy.cpp"
-        )
-endif()
-
-add_library( ext-cppx STATIC
-        ${CPPX_SRC_FILES}
-)
+add_library( ext-cppx STATIC ${CPPX_SRC_FILES} )
 
 set_property( TARGET ext-cppx PROPERTY CXX_STANDARD 17 )
 target_compile_features( ext-cppx PUBLIC cxx_std_17 )
 
-set_target_properties( ext-cppx PROPERTIES
-        OUTPUT_NAME ext-cppx
-)
-
 target_include_directories( ext-cppx PUBLIC
-        "${EXT_INCLUDE_DIR}"
+	"${EXT_INCLUDE_DIR}"
 )
 
 target_link_libraries( ext-cppx PUBLIC
-        ext-zlib
+	ext-zlib
 )
-        

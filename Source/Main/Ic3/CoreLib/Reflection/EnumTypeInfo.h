@@ -5,6 +5,7 @@
 #define __IC3_CORELIB_ENUM_TYPE_INFO_H__
 
 #include "../Prerequisites.h"
+
 #include <deque>
 #include <unordered_map>
 

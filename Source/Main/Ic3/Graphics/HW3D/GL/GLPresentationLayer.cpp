@@ -134,7 +134,7 @@ namespace Ic3::Graphics::GCI
 		mSysGLDisplaySurface->SetFullscreenMode( pEnable );
 	}
 
-	Ic3::Math::Vec2u32 GLScreenPresentationLayer::QueryRenderTargetSize() const
+	cxm::vec2u32 GLScreenPresentationLayer::QueryRenderTargetSize() const
 	{
 		return mSysGLDisplaySurface->QueryRenderAreaSize();
 	}

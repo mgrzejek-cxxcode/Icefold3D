@@ -14,13 +14,13 @@
 namespace Ic3::Graphics::GCI
 {
 	
-	static const Math::RGBAColorU8 kDefaultClearColorDriver0     { 0x11, 0x66, 0xCC, 0xFF };
-	static const Math::RGBAColorU8 kDefaultClearColorDriverDX11  { 0x77, 0xAA, 0x5F, 0xFF };
-	static const Math::RGBAColorU8 kDefaultClearColorDriverDX12  { 0x22, 0x88, 0x3F, 0xFF };
-	static const Math::RGBAColorU8 kDefaultClearColorDriverMTL2  { 0xFF, 0x99, 0x66, 0xFF };
-	static const Math::RGBAColorU8 kDefaultClearColorDriverGL4   { 0x55, 0x88, 0xAA, 0xFF };
-	static const Math::RGBAColorU8 kDefaultClearColorDriverGLES3 { 0x7A, 0x00, 0x4D, 0xFF };
-	static const Math::RGBAColorU8 kDefaultClearColorDriverVK1   { 0x8F, 0x0F, 0x1F, 0xFF };
+	static const cxm::rgba_color_u8 kDefaultClearColorDriver0     { 0x11, 0x66, 0xCC, 0xFF };
+	static const cxm::rgba_color_u8 kDefaultClearColorDriverDX11  { 0x77, 0xAA, 0x5F, 0xFF };
+	static const cxm::rgba_color_u8 kDefaultClearColorDriverDX12  { 0x22, 0x88, 0x3F, 0xFF };
+	static const cxm::rgba_color_u8 kDefaultClearColorDriverMTL2  { 0xFF, 0x99, 0x66, 0xFF };
+	static const cxm::rgba_color_u8 kDefaultClearColorDriverGL4   { 0x55, 0x88, 0xAA, 0xFF };
+	static const cxm::rgba_color_u8 kDefaultClearColorDriverGLES3 { 0x7A, 0x00, 0x4D, 0xFF };
+	static const cxm::rgba_color_u8 kDefaultClearColorDriverVK1   { 0x8F, 0x0F, 0x1F, 0xFF };
 
 	enum EGPUDeviceInternalStateFlags : uint32
 	{
@@ -78,7 +78,7 @@ namespace Ic3::Graphics::GCI
 		return _presentationLayer.get();
 	}
 
-	const Math::RGBAColorU8 & GPUDevice::GetDefaultClearColor() const noexcept
+	const cxm::rgba_color_u8 & GPUDevice::GetDefaultClearColor() const noexcept
 	{
 		switch( mGPUDriverID )
 		{
@@ -123,7 +123,7 @@ namespace Ic3::Graphics::GCI
 		{
 			eRTAttachmentMaskDefaultC0DS,
 			eBlendConfigMaskDefault,
-			Math::kColorBlackOpaque,
+			cxm::kColorBlackOpaque,
 			{
 				EBlendFactor::One,
 				EBlendFactor::Zero,

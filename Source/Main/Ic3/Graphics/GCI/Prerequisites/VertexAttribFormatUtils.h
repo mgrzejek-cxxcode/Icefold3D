@@ -70,25 +70,25 @@ namespace Ic3::Graphics::GCI
 	struct QVertexAttribFormatDataTypeTraits;
 
 	template <size_t tpSize>
-	struct QVertexAttribFormatDataTypeTraits<Math::Vector<int64, tpSize>>;
+	struct QVertexAttribFormatDataTypeTraits<cxm::vector<int64, tpSize>>;
 
 	template <size_t tpSize>
-	struct QVertexAttribFormatDataTypeTraits<Math::Vector<uint64, tpSize>>;
+	struct QVertexAttribFormatDataTypeTraits<cxm::vector<uint64, tpSize>>;
 
 	template <size_t tpSize>
-	struct QVertexAttribFormatDataTypeTraits<Math::Vector<double, tpSize>>;
+	struct QVertexAttribFormatDataTypeTraits<cxm::vector<double, tpSize>>;
 
 	template <size_t tpRows, size_t tpColumns>
-	struct QVertexAttribFormatDataTypeTraits<Math::Matrix<int64, tpRows, tpColumns>>;
+	struct QVertexAttribFormatDataTypeTraits<cxm::matrix<int64, tpRows, tpColumns>>;
 
 	template <size_t tpRows, size_t tpColumns>
-	struct QVertexAttribFormatDataTypeTraits<Math::Matrix<uint64, tpRows, tpColumns>>;
+	struct QVertexAttribFormatDataTypeTraits<cxm::matrix<uint64, tpRows, tpColumns>>;
 
 	template <size_t tpRows, size_t tpColumns>
-	struct QVertexAttribFormatDataTypeTraits<Math::Matrix<double, tpRows, tpColumns>>;
+	struct QVertexAttribFormatDataTypeTraits<cxm::matrix<double, tpRows, tpColumns>>;
 
 	template <typename TPScalar, size_t tpSize>
-	struct QVertexAttribFormatDataTypeTraits<Math::Vector<TPScalar, tpSize>>
+	struct QVertexAttribFormatDataTypeTraits<cxm::vector<TPScalar, tpSize>>
 	{
 		using BaseDataType = TPScalar;
 
@@ -104,7 +104,7 @@ namespace Ic3::Graphics::GCI
 	};
 
 	template <typename TPScalar, size_t tpRows, size_t tpColumns>
-	struct QVertexAttribFormatDataTypeTraits<Math::Matrix<TPScalar, tpRows, tpColumns>>
+	struct QVertexAttribFormatDataTypeTraits<cxm::matrix<TPScalar, tpRows, tpColumns>>
 	{
 		using BaseDataType = TPScalar;
 
@@ -120,7 +120,7 @@ namespace Ic3::Graphics::GCI
 	};
 
 	template <>
-	struct QVertexAttribFormatDataTypeTraits<Math::RGBAColor>
+	struct QVertexAttribFormatDataTypeTraits<cxm::rgba_color>
 	{
 		using BaseDataType = uint8;
 
@@ -136,7 +136,7 @@ namespace Ic3::Graphics::GCI
 	};
 
 	template <>
-	struct QVertexAttribFormatDataTypeTraits<Math::RGBAColorNorm<float>>
+	struct QVertexAttribFormatDataTypeTraits<cxm::rgba_color_norm<float>>
 	{
 		using BaseDataType = float;
 

@@ -79,7 +79,7 @@ namespace Ic3::Graphics::GCI
 
 		CPPX_ATTR_NO_DISCARD PresentationLayer * GetPresentationLayer() const noexcept;
 
-		CPPX_ATTR_NO_DISCARD const Math::RGBAColorU8 & GetDefaultClearColor() const noexcept;
+		CPPX_ATTR_NO_DISCARD const cxm::rgba_color_u8 & GetDefaultClearColor() const noexcept;
 
 		CPPX_ATTR_NO_DISCARD const RenderTargetAttachmentClearConfig & GetDefaultClearConfig() const noexcept;
 
@@ -156,7 +156,7 @@ namespace Ic3::Graphics::GCI
 		 * @param pOptionalDescriptorName
 		 * @return
 		 */
-		CPPX_ATTR_NO_DISCARD BlendStateDescriptorHandle CreateBlendStateDescriptor(
+		BlendStateDescriptorHandle CreateBlendStateDescriptor(
 				const BlendStateDescriptorCreateInfo & pCreateInfo,
 				const cppx::immutable_string & pOptionalDescriptorName = {} );
 
@@ -166,7 +166,7 @@ namespace Ic3::Graphics::GCI
 		 * @param pOptionalDescriptorName
 		 * @return
 		 */
-		CPPX_ATTR_NO_DISCARD DepthStencilStateDescriptorHandle CreateDepthStencilStateDescriptor(
+		DepthStencilStateDescriptorHandle CreateDepthStencilStateDescriptor(
 				const DepthStencilStateDescriptorCreateInfo & pCreateInfo,
 				const cppx::immutable_string & pOptionalDescriptorName = {} );
 
@@ -176,7 +176,7 @@ namespace Ic3::Graphics::GCI
 		 * @param pOptionalDescriptorName
 		 * @return
 		 */
-		CPPX_ATTR_NO_DISCARD RasterizerStateDescriptorHandle CreateRasterizerStateDescriptor(
+		RasterizerStateDescriptorHandle CreateRasterizerStateDescriptor(
 				const RasterizerStateDescriptorCreateInfo & pCreateInfo,
 				const cppx::immutable_string & pOptionalDescriptorName = {} );
 
@@ -186,7 +186,7 @@ namespace Ic3::Graphics::GCI
 		 * @param pOptionalDescriptorName
 		 * @return
 		 */
-		CPPX_ATTR_NO_DISCARD GraphicsShaderLinkageDescriptorHandle CreateGraphicsShaderLinkageDescriptor(
+		GraphicsShaderLinkageDescriptorHandle CreateGraphicsShaderLinkageDescriptor(
 				const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo,
 				const cppx::immutable_string & pOptionalDescriptorName = {} );
 
@@ -196,7 +196,7 @@ namespace Ic3::Graphics::GCI
 		 * @param pOptionalDescriptorName
 		 * @return
 		 */
-		CPPX_ATTR_NO_DISCARD VertexAttributeLayoutDescriptorHandle CreateVertexAttributeLayoutDescriptor(
+		VertexAttributeLayoutDescriptorHandle CreateVertexAttributeLayoutDescriptor(
 				const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo,
 				const cppx::immutable_string & pOptionalDescriptorName = {} );
 
@@ -206,7 +206,7 @@ namespace Ic3::Graphics::GCI
 		 * @param pOptionalDescriptorName
 		 * @return
 		 */
-		CPPX_ATTR_NO_DISCARD RootSignatureDescriptorHandle CreateRootSignatureDescriptor(
+		RootSignatureDescriptorHandle CreateRootSignatureDescriptor(
 				const RootSignatureDescriptorCreateInfo & pCreateInfo,
 				const cppx::immutable_string & pOptionalDescriptorName = {} );
 

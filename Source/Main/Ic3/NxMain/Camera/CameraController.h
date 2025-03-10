@@ -16,9 +16,9 @@ namespace Ic3
 
 		CameraController();
 
-		void Initialize( const Math::Vec3f & pOrigin, const Math::Vec3f & pTarget, float pFOVAngle );
+		void Initialize( const cxm::vec3f & pOrigin, const cxm::vec3f & pTarget, float pFOVAngle );
 
-		void SetTarget( const Math::Vec2f & pTarget );
+		void SetTarget( const cxm::vec2f & pTarget );
 
 		void Move( float pFactor = 1.0f );
 		void MoveFlat( float pFactor = 1.0f );
@@ -30,8 +30,8 @@ namespace Ic3
 		void RotateAroundTarget( float pYaw, float pPitch );
 		void Zoom( int32 pZoomFactor );
 
-		Math::Mat4f ComputeViewMatrixLH();
-		Math::Mat4f ComputeViewMatrixRH();
+		cxm::mat4f ComputeViewMatrixLH();
+		cxm::mat4f ComputeViewMatrixRH();
 
 		float GetPerspectiveFOVAngle() const;
 

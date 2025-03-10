@@ -1,10 +1,12 @@
 
 #include "AndroidEventCore.h"
 #include "AndroidSysContext.h"
+
 #include <Ic3/System/Internal/EventCorePrivate.h>
+#include <cxm/vectorOps.h>
+
 #include <android/input.h>
 #include <android/keycodes.h>
-#include <Ic3/Math/VectorOps.h>
 
 #if( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_ANDROID )
 namespace Ic3::System

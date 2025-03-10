@@ -1,5 +1,4 @@
 
-add_subdirectory( "Ic3/Math" )
 add_subdirectory( "Ic3/CoreLib" )
 add_subdirectory( "Ic3/System" )
 add_subdirectory( "Ic3/Graphics/GCI" )

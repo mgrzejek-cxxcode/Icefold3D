@@ -27,12 +27,12 @@ namespace Ic3
 			uint32 pVertexStreamRelativeOffset )
 	{
 		VertexInputAttributeDefinition attributeDefinition{};
-		attributeDefinition.attributeSlot = pAttributeKey.uBaseSlot;
-		attributeDefinition.semanticGroupSize = pAttributeKey.uSemanticGroupSize;
-		attributeDefinition.baseDataFormat = pAttributeKey.uBaseDataFormat;
+		attributeDefinition.attributeSlot = pAttributeKey.GetBaseSlot();
+		attributeDefinition.semanticGroupSize = pAttributeKey.GetSemanticGroupSize();
+		attributeDefinition.baseDataFormat = pAttributeKey.GetBaseDataFormat();
 		attributeDefinition.dataPadding = cppx::numeric_cast<decltype( attributeDefinition.dataPadding )>( pDataPadding );
-		attributeDefinition.semanticName = GCIUtils::GetSemanticNameFromAttributeFlags( pAttributeKey.uSemanticFlags );
-		attributeDefinition.semanticFlags = pAttributeKey.uSemanticFlags;
+		attributeDefinition.semanticName = GCIUtils::GetSemanticNameFromAttributeFlags( pAttributeKey.GetSemanticFlags() );
+		attributeDefinition.semanticFlags = pAttributeKey.GetSemanticFlags();
 		attributeDefinition.dataRate = pAttributeKey.GetDataRate();
 		attributeDefinition.vertexStreamSlot = cppx::numeric_cast<decltype( attributeDefinition.vertexStreamSlot )>( pVertexStreamSlot );
 		attributeDefinition.vertexStreamRelativeOffset = pVertexStreamRelativeOffset;
@@ -48,9 +48,9 @@ namespace Ic3
 			uint32 pVertexStreamRelativeOffset )
 	{
 		VertexInputAttributeDefinition attributeDefinition{};
-		attributeDefinition.attributeSlot = cppx::numeric_cast<decltype( attributeDefinition.attributeSlot )>( pAttributeKey.uBaseSlot );
-		attributeDefinition.semanticGroupSize = pAttributeKey.uSemanticGroupSize;
-		attributeDefinition.baseDataFormat = pAttributeKey.uBaseDataFormat;
+		attributeDefinition.attributeSlot = pAttributeKey.GetBaseSlot();
+		attributeDefinition.semanticGroupSize = pAttributeKey.GetSemanticGroupSize();
+		attributeDefinition.baseDataFormat = pAttributeKey.GetBaseDataFormat();
 		attributeDefinition.dataPadding = cppx::numeric_cast<decltype( attributeDefinition.dataPadding )>( pDataPadding );
 		attributeDefinition.semanticName = pAttributeShaderSemantics.semanticName;
 		attributeDefinition.semanticFlags = pAttributeShaderSemantics.semanticFlags;

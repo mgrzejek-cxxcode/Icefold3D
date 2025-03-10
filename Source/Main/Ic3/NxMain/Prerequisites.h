@@ -4,12 +4,12 @@
 
 #include <Ic3/CoreLib/Prerequisites.h>
 
-#include <Ic3/Math/Vector.h>
-#include <Ic3/Math/VectorOps.h>
-#include <Ic3/Math/Rect.h>
-#include <Ic3/Math/Matrix.h>
-#include <Ic3/Math/MatrixOps.h>
-#include <Ic3/Math/MatrixUtils.h>
+#include <cxm/vector.h>
+#include <cxm/vectorOps.h>
+#include <cxm/rect.h>
+#include <cxm/matrix.h>
+#include <cxm/matrixOps.h>
+#include <cxm/matrixUtils.h>
 
 #include <cppx/arrayView.h>
 #include <cppx/immutableString.h>

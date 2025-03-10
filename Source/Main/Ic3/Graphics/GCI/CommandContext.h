@@ -160,7 +160,7 @@ namespace Ic3::Graphics::GCI
 		bool SetVertexSourceBindingDescriptor( const VertexSourceBindingDescriptor & pVertexSourceBindingDescriptor );
 		bool SetVertexSourceBindingDescriptorDynamic( VertexSourceBindingDescriptorDynamic & pVertexSourceBindingDescriptor );
 
-		void CmdSetDynamicBlendConstantColor( const Math::RGBAColorR32Norm & pBlendConstantColor );
+		void CmdSetDynamicBlendConstantColor( const cxm::rgba_color_r32_norm & pBlendConstantColor );
 		void CmdSetDynamicRenderTargetClearConfig( const RenderTargetAttachmentClearConfig & pClearConfig );
 		void CmdSetDynamicStencilTestRefValue( uint8 pStencilRefValue );
 		void CmdResetDynamicPipelineConfig( cppx::bitmask<EGraphicsPipelineDynamicConfigFlags> pConfigMask = eGraphicsPipelineDynamicConfigMaskAll );
@@ -233,7 +233,7 @@ namespace Ic3::Graphics::GCI
 		bool SetVertexSourceBindingDescriptor( const VertexSourceBindingDescriptor & pVertexSourceBindingDescriptor );
 		bool SetVertexSourceBindingDescriptorDynamic( VertexSourceBindingDescriptorDynamic & pVertexSourceBindingDescriptor );
 
-		void CmdSetDynamicBlendConstantColor( const Math::RGBAColorR32Norm & pBlendConstantColor );
+		void CmdSetDynamicBlendConstantColor( const cxm::rgba_color_r32_norm & pBlendConstantColor );
 		void CmdSetDynamicRenderTargetClearConfig( const RenderTargetAttachmentClearConfig & pClearConfig );
 		void CmdSetDynamicStencilTestRefValue( uint8 pStencilRefValue );
 		void CmdResetDynamicPipelineConfig( cppx::bitmask<EGraphicsPipelineDynamicConfigFlags> pConfigMask = eGraphicsPipelineDynamicConfigMaskAll );

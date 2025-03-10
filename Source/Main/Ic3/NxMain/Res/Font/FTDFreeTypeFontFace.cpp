@@ -179,7 +179,7 @@ namespace Ic3
 		return true;
 	}
 
-	bool FreeTypeFontFace::setFontResolution( const Math::Vec2u32 & pFontResolution )
+	bool FreeTypeFontFace::setFontResolution( const cxm::vec2u32 & pFontResolution )
 	{
 		auto fontRes = pFontResolution;
 

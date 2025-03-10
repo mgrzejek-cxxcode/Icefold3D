@@ -40,7 +40,7 @@ namespace Ic3::Graphics::GCI
 	{
 	}
 
-	Ic3::Math::Vec2u32 VKScreenPresentationLayer::QueryRenderTargetSize() const
+	cxm::vec2u32 VKScreenPresentationLayer::QueryRenderTargetSize() const
 	{
 		return {};
 	}

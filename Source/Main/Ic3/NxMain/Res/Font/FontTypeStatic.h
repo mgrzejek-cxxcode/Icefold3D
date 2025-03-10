@@ -15,26 +15,26 @@ namespace Ic3
 			uint16 lineHeight;
 			uint16 base;
 			uint32 pagesNum;
-			Math::Vec4u16 padding;
-			Math::Vec2u16 spacing;
-			Math::Vec2u16 scale;
-			Math::RGBAColorU8 pixelFormat;
+			cxm::vec4u16 padding;
+			cxm::vec2u16 spacing;
+			cxm::vec2u16 scale;
+			cxm::rgba_color_u8 pixelFormat;
 			std::string faceName;
 		};
 
 		struct FontBMFPageDesc
 		{
 			uint32 id;
-			Math::Vec2u32 textureDimensions = { 0, 0 };
+			cxm::vec2u32 textureDimensions = { 0, 0 };
 			dynamic_memory_buffer imageData;
 		};
 
 		struct FontBMFCharDesc
 		{
 			char_code_point_t codePoint;
-			Math::Vec2u32 position;
-			Math::Vec2u16 size;
-			Math::Vec2u16 offset;
+			cxm::vec2u32 position;
+			cxm::vec2u16 size;
+			cxm::vec2u16 offset;
 			uint16 xadvance;
 			uint16 pageID;
 		};

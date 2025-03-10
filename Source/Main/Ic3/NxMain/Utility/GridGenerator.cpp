@@ -5,9 +5,9 @@ namespace Ic3
 {
 
 	GridGeometry GridGenerator::generate(
-			const Math::Vec3f & pOrigin,
-			const Math::Vec2u32 & pGridSize,
-			const Math::Vec2f & pAdvance,
+			const cxm::vec3f & pOrigin,
+			const cxm::vec2u32 & pGridSize,
+			const cxm::vec2f & pAdvance,
 			GCI::ETriangleVerticesOrder pVerticesOrder )
 	{
 		GridGeometry gridGeometry;
@@ -29,9 +29,9 @@ namespace Ic3
 	}
 
 	GridGeometry GridGenerator::generateIndexed(
-			const Math::Vec3f& pOrigin,
-			const Math::Vec2u32& pGridSize,
-			const Math::Vec2f & pAdvance,
+			const cxm::vec3f& pOrigin,
+			const cxm::vec2u32& pGridSize,
+			const cxm::vec2f & pAdvance,
 			GCI::ETriangleVerticesOrder pVerticesOrder )
 	{
 		GridGeometry gridGeometry;
@@ -55,37 +55,37 @@ namespace Ic3
 	}
 
 	void GridGenerator::_generateVerticesIndexed(
-			const Math::Vec3f & pOrigin,
-			const Math::Vec2u32 & pGridSize,
-			const Math::Vec2f & pAdvance,
+			const cxm::vec3f & pOrigin,
+			const cxm::vec2u32 & pGridSize,
+			const cxm::vec2f & pAdvance,
 			GridGeometry * pGeometry)
 	{
 	}
 
 	void GridGenerator::_generateVerticesNoIndexClockwise(
-			const Math::Vec3f & pOrigin,
-			const Math::Vec2u32 & pGridSize,
-			const Math::Vec2f & pAdvance,
+			const cxm::vec3f & pOrigin,
+			const cxm::vec2u32 & pGridSize,
+			const cxm::vec2f & pAdvance,
 			GridGeometry * pGeometry)
 	{
 	}
 
 	void GridGenerator::_generateVerticesNoIndexCounterClockwise(
-			const Math::Vec3f & pOrigin,
-			const Math::Vec2u32 & pGridSize,
-			const Math::Vec2f & pAdvance,
+			const cxm::vec3f & pOrigin,
+			const cxm::vec2u32 & pGridSize,
+			const cxm::vec2f & pAdvance,
 			GridGeometry * pGeometry)
 	{
 	}
 
 	void GridGenerator::_generateIndicesClockwise(
-			const Math::Vec2u32 & pGridSize,
+			const cxm::vec2u32 & pGridSize,
 			GridGeometry * pGeometry)
 	{
 	}
 
 	void GridGenerator::_generateIndicesCounterClockwise(
-			const Math::Vec2u32 & pGridSize,
+			const cxm::vec2u32 & pGridSize,
 			GridGeometry * pGeometry)
 	{
 	}

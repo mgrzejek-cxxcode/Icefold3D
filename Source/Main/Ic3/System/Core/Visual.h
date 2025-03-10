@@ -3,7 +3,8 @@
 #define __IC3_SYSTEM_VISUAL_H__
 
 #include "../Prerequisites.h"
-#include <Ic3/Math/Color.h>
+
+#include <cxm/color.h>
 
 namespace Ic3::System
 {
@@ -95,7 +96,7 @@ namespace Ic3::System
 
 	struct ColorDesc
 	{
-		Math::RGBAColorU8 rgba;
+		cxm::rgba_color_u8 rgba;
 		uint32 size = 0;
 		EPixelOrder pixelOrder = EPixelOrder::Unknown;
 		EColorSpace colorSpace = EColorSpace::Unknown;

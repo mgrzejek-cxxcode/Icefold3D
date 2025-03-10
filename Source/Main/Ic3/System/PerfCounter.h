@@ -23,36 +23,75 @@ namespace Ic3::System
 	/// @brief Queries and returns the current value of a system-specific, high-performance clock.
 		/// Returned value should not be analysed or interpreted directly by the app - its unit is
 		/// platform-specific and my yield number of ticks, nanoseconds or some other type of duration.
-		CPPX_ATTR_NO_DISCARD static perf_counter_value_t QueryCurrentStamp();
+		CPPX_ATTR_NO_DISCARD static perf_counter_value_t QueryCounter();
 
 		/// @brief Returns the resolution of a counter as a number of units which elapse during a period of one second.
-		CPPX_ATTR_NO_DISCARD static perf_counter_res_t QueryResolution();
+		CPPX_ATTR_NO_DISCARD static perf_counter_res_t GetResolution();
 
 		/// @brief Converts a difference between two PC stamps to a duration value using specified unit ratio.
 		/// Ratio represents a unit expressed as a fraction relative to a second. I.e. converting to nanoseconds
 		/// would be done by calling: ConvertToDuration( timeStampDiff, perf_counter_ratio_t{ 1, 1000000000 } );
-		CPPX_ATTR_NO_DISCARD static long double ConvertToDuration(
+		CPPX_ATTR_NO_DISCARD static double ConvertToDuration(
 				perf_counter_value_t pStampDiff,
 				const perf_counter_ratio_t & pUnitRatio );
 
 		/// @brief Converts a duration value back to a PC time stamp difference using specified unit ratio.
 		/// Assertion: ConvertFromDuration( ConvertToDuration( timeStampDiff, R ), R ) == timeStampDiff for any given R.
 		CPPX_ATTR_NO_DISCARD static perf_counter_value_t ConvertFromDuration(
-				long double pDuration,
+				double pDuration,
 				const perf_counter_ratio_t & pUnitRatio );
 
 		/// @brief Helper function which converts a perf counter duration to a duration value in unit expressed as Ic3::EDurationPeriod.
-		template <cppx::duration_period tpPeriod>
-		CPPX_ATTR_NO_DISCARD static long double ConvertToDuration( perf_counter_value_t pStampDiff )
+		template <cppx::duration_unit tpDurationUnit, typename TPResultValue = double>
+		CPPX_ATTR_NO_DISCARD static cppx::duration<tpDurationUnit, TPResultValue> ConvertToDuration( perf_counter_value_t pStampDiff )
 		{
-			return ConvertToDuration( pStampDiff, cppx::duration_traits<tpPeriod>::unit_ratio );
+			const auto durationValue = ConvertToDuration( pStampDiff, cppx::duration_traits<tpDurationUnit, TPResultValue>::unit_ratio );
+			return cppx::duration<tpDurationUnit, TPResultValue>{ static_cast<TPResultValue>( durationValue ) };
+		}
+
+		/// @brief Helper function which converts a perf counter duration to a duration value in unit expressed as Ic3::EDurationPeriod.
+		template <typename TPDuration>
+		CPPX_ATTR_NO_DISCARD static cppx::duration<TPDuration::unit, typename TPDuration::value_type> ConvertToDuration( perf_counter_value_t pStampDiff )
+		{
+			const auto durationValue = ConvertToDuration( pStampDiff, cppx::duration_traits<TPDuration::unit, typename TPDuration::value_type>::unit_ratio );
+			return TPDuration{ durationValue };
+		}
+
+		template <typename TPResultValue = double>
+		CPPX_ATTR_NO_DISCARD static cppx::duration<cppx::duration_unit::nanosecond, TPResultValue> ConvertToNanoseconds( perf_counter_value_t pStampDiff )
+		{
+			return ConvertToDuration<cppx::duration_unit::nanosecond, TPResultValue>( pStampDiff  );
+		}
+
+		template <typename TPResultValue = double>
+		CPPX_ATTR_NO_DISCARD static cppx::duration<cppx::duration_unit::microsecond, TPResultValue> ConvertToMicroseconds( perf_counter_value_t pStampDiff )
+		{
+			return ConvertToDuration<cppx::duration_unit::microsecond, TPResultValue>( pStampDiff  );
+		}
+
+		template <typename TPResultValue = double>
+		CPPX_ATTR_NO_DISCARD static cppx::duration<cppx::duration_unit::millisecond, TPResultValue> ConvertToMilliseconds( perf_counter_value_t pStampDiff )
+		{
+			return ConvertToDuration<cppx::duration_unit::millisecond, TPResultValue>( pStampDiff  );
+		}
+
+		template <typename TPResultValue = double>
+		CPPX_ATTR_NO_DISCARD static cppx::duration<cppx::duration_unit::second, TPResultValue> ConvertToSeconds( perf_counter_value_t pStampDiff )
+		{
+			return ConvertToDuration<cppx::duration_unit::second, TPResultValue>( pStampDiff  );
 		}
 
 		/// @brief Helper function which converts a duration value in unit expressed as Ic3::EDurationPeriod back to a PC time stamp difference.
-		template <cppx::duration_period tpPeriod>
-		CPPX_ATTR_NO_DISCARD static perf_counter_value_t ConvertFromDuration( const cppx::duration<tpPeriod> & pDuration )
+		template <cppx::duration_unit tpDurationUnit, typename TPResultValue = double>
+		CPPX_ATTR_NO_DISCARD static perf_counter_value_t ConvertFromDuration( const cppx::duration<tpDurationUnit> & pDuration )
 		{
-			return ConvertFromDuration( pDuration.count(), cppx::duration_traits<tpPeriod>::unit_ratio );
+			return ConvertFromDuration( pDuration.count(), cppx::duration_traits<tpDurationUnit, TPResultValue>::unit_ratio );
+		}
+
+		template <cppx::duration_unit tpDurationUnit, typename TPValue>
+		CPPX_ATTR_NO_DISCARD static bool CheckTimeoutElapsed( perf_counter_value_t pBaseCounter, const cppx::duration<tpDurationUnit, TPValue> & pTimeout )
+		{
+			return PerfCounter::ConvertToDuration<tpDurationUnit, TPValue>( QueryCounter() - pBaseCounter ) >= pTimeout;
 		}
 	};
 

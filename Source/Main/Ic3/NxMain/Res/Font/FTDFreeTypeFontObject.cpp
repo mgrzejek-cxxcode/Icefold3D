@@ -62,7 +62,7 @@ namespace Ic3
 		return facePtr;
 	}
 
-	bool FreeTypeFontObject::SetActiveFace( uint32 pFontSize, const Math::Vec2u32 & pFontResolution )
+	bool FreeTypeFontObject::SetActiveFace( uint32 pFontSize, const cxm::vec2u32 & pFontResolution )
 	{
 		if( auto * ftFace = getFace( pFontSize ) )
 		{
@@ -170,7 +170,7 @@ namespace Ic3
 
 		cppx::dynamic_byte_array ftFontData;
 		ftFontData.resize( pFontDataSize );
-		ftFontData.setData( pFontData, pFontDataSize );
+		ftFontData.set_data( pFontData, pFontDataSize );
 
 		return std::make_unique<FreeTypeFontObject>( ftLibrary, std::move( ftFontData ) );
 	}

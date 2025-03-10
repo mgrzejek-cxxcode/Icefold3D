@@ -58,9 +58,9 @@ namespace Ic3
 	{
 		struct RGBEndpoints
 		{
-			Math::Vec3i32 red;
-			Math::Vec3i32 green;
-			Math::Vec3i32 blue;
+			cxm::vec3i32 red;
+			cxm::vec3i32 green;
+			cxm::vec3i32 blue;
 		};
 
 		struct RGBGamma

@@ -16,15 +16,18 @@
 #  define IC3_SYSTEM_API
 #  define IC3_SYSTEM_CLASS
 #  define IC3_SYSTEM_OBJ extern
+#  define IC3_SYSTEM_TEMPLATE
 #else
 #  if( IC3_SYSTEM_BUILD )
-#	define IC3_SYSTEM_API   PCL_ATTR_DLL_EXPORT
-#	define IC3_SYSTEM_CLASS PCL_ATTR_DLL_EXPORT
-#	define IC3_SYSTEM_OBJ   PCL_ATTR_DLL_EXPORT extern
+#	define IC3_SYSTEM_API       PCL_ATTR_DLL_EXPORT
+#	define IC3_SYSTEM_CLASS     PCL_ATTR_DLL_EXPORT
+#	define IC3_SYSTEM_OBJ       PCL_ATTR_DLL_EXPORT extern
+#   define IC3_SYSTEM_TEMPLATE
 #  else
-#	define IC3_SYSTEM_API   PCL_ATTR_DLL_IMPORT
-#	define IC3_SYSTEM_CLASS PCL_ATTR_DLL_IMPORT
-#	define IC3_SYSTEM_OBJ   PCL_ATTR_DLL_IMPORT extern
+#	define IC3_SYSTEM_API       PCL_ATTR_DLL_IMPORT
+#	define IC3_SYSTEM_CLASS     PCL_ATTR_DLL_IMPORT
+#	define IC3_SYSTEM_OBJ       PCL_ATTR_DLL_IMPORT extern
+#   define IC3_SYSTEM_TEMPLATE  PCL_ATTR_DLL_IMPORT
 #  endif
 #endif
 
@@ -57,7 +60,7 @@ namespace Ic3::System
 		eExceptionCategorySystemCore    = Ic3::CXU::DeclareExceptionCategory( EExceptionBaseType::System, 0x01 ),
 		eExceptionCategorySystemDisplay = Ic3::CXU::DeclareExceptionCategory( EExceptionBaseType::System, 0x02 ),
 		eExceptionCategorySystemEvent   = Ic3::CXU::DeclareExceptionCategory( EExceptionBaseType::System, 0x03 ),
-		eExceptionCategorySystemFile    = Ic3::CXU::DeclareExceptionCategory( EExceptionBaseType::System, 0x04 ),
+		eExceptionCategorySystemIO      = Ic3::CXU::DeclareExceptionCategory( EExceptionBaseType::System, 0x04 ),
 		eExceptionCategorySystemMetal   = Ic3::CXU::DeclareExceptionCategory( EExceptionBaseType::System, 0x05 ),
 		eExceptionCategorySystemOpenGL  = Ic3::CXU::DeclareExceptionCategory( EExceptionBaseType::System, 0x07 ),
 		eExceptionCategorySystemWindow  = Ic3::CXU::DeclareExceptionCategory( EExceptionBaseType::System, 0x09 ),
@@ -65,7 +68,7 @@ namespace Ic3::System
 
 	enum : exception_code_value_t
 	{
-		eEXCSystemInterfaceNotSupported = Ic3::CXU::DeclareExceptionCode( eExceptionCategorySystemCore, 0x04 ),
+		eExcSystemInterfaceNotSupported = Ic3::CXU::DeclareExceptionCode( eExceptionCategorySystemCore, 0x04 ),
 	};
 
 	/// @brief Helper proxy-like base class for platform-specific types.

@@ -24,6 +24,7 @@ namespace Ic3::System
 	Ic3SysDeclareHandle( FileManager );
 	Ic3SysDeclareHandle( MetalSystemDriver );
 	Ic3SysDeclareHandle( OpenGLSystemDriver );
+	Ic3SysDeclareHandle( PipeFactory );
 	Ic3SysDeclareHandle( WindowManager );
 
 	struct AssetLoaderCreateInfo
@@ -56,6 +57,8 @@ namespace Ic3::System
 				const MetalSystemDriverCreateInfo & pCreateInfo );
 
 		virtual OpenGLSystemDriverHandle CreateOpenGLSystemDriver( DisplayManagerHandle pDisplayManager );
+
+		virtual PipeFactoryHandle CreatePipeFactory() = 0;
 
 		virtual WindowManagerHandle CreateWindowManager( DisplayManagerHandle pDisplayManager ) = 0;
 

@@ -2,6 +2,7 @@
 #include <Ic3/System/Prerequisites.h>
 #include "WFACommon.h"
 #include <comdef.h>
+#include <cppx/stringUtils.h>
 
 #if( PCL_TARGET_OS & PCL_TARGET_FLAG_OS_WFA )
 namespace Ic3::System
@@ -12,15 +13,29 @@ namespace Ic3::System
 
 		std::string WFAQueryComErrorMessage( HRESULT pHResult )
 		{
-			_com_error comError{ pHResult };
-			_bstr_t comErrorString{ comError.ErrorMessage() };
-
 			std::string errorMessage;
+
+		#if( PCL_COMPILER & PCL_COMPILER_MSVC )
+
+			const auto comError = _com_error{ pHResult };
+			const auto comErrorString = _bstr_t{ comError.ErrorMessage() };
+
 			if( comErrorString.length() > 0 )
 			{
 				const auto * strBuffer = static_cast<const char *>( comErrorString );
 				errorMessage.assign( strBuffer, comErrorString.length() );
 			}
+
+		#elif( PCL_COMPILER & PCL_COMPILER_MINGW64 )
+
+			const auto comError = _com_error{ pHResult };
+			const auto * comErrorString = comError.ErrorMessage();
+
+			errorMessage.assign( comErrorString, std::char_traits<TCHAR>::length( comErrorString ) );
+
+		#else
+			#error "Unsupported platform configuration!"
+		#endif
 
 			return errorMessage;
 		}
@@ -49,6 +64,25 @@ namespace Ic3::System
 			}
 
 			return errorMessage;
+		}
+
+		void WFAGetLastSystemErrorAndPrintToDebugOutput( const char * pPrefix )
+		{
+			const auto lastErrorCode = ::GetLastError();
+			WFAPrintSystemErrorToDebugOutput( lastErrorCode, pPrefix );
+		}
+
+		void WFAPrintSystemErrorToDebugOutput( DWORD pErrorCode, const char * pPrefix )
+		{
+			const auto errorMessage = WFAQueryComErrorMessage( pErrorCode );
+			if( pPrefix )
+			{
+				Ic3DebugOutputFmt( "%s / GetLastError(): #%x - %s", pPrefix, pErrorCode, errorMessage.c_str() );
+			}
+			else
+			{
+				Ic3DebugOutputFmt( "GetLastError(): #%x  - %s", pErrorCode, errorMessage.c_str() );
+			}
 		}
 
 	}

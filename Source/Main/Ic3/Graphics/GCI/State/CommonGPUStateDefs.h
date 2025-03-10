@@ -352,7 +352,7 @@ namespace Ic3::Graphics::GCI
 
 	struct RenderTargetAttachmentClearConfig
 	{
-		Math::RGBAColorR32Norm colorValue;
+		cxm::rgba_color_r32_norm colorValue;
 
 		float depthValue = 1.0f;
 
@@ -369,7 +369,7 @@ namespace Ic3::Graphics::GCI
 		cppx::bitmask<EGraphicsPipelineDynamicConfigFlags> activeStateMask = 0;
 
 		// Constant color used for blending. Overrides color specified as a part of the BlendState within a PSO.
-		Math::RGBAColorR32Norm blendConstantColor;
+		cxm::rgba_color_r32_norm blendConstantColor;
 
 		// Global clear values used to clear attachments when a render pass starts. It overrides clear settings
 		// for *ALL* attachments for which "Clear" was defined as the "Load" action in a given render pass.

@@ -30,24 +30,24 @@ namespace Ic3
 		initializePipelineStateObjects();
 	}
 
-	void ShadowRenderer::setCSLightPosition( Math::Vec3f pLightPosition )
+	void ShadowRenderer::setCSLightPosition( cxm::vec3f pLightPosition )
 	{
 		_currentState.vLightPosition = pLightPosition;
 	}
 
-	void ShadowRenderer::setCSLightTarget( Math::Vec3f pLightTarget )
+	void ShadowRenderer::setCSLightTarget( cxm::vec3f pLightTarget )
 	{
 		_currentState.vLightTarget = pLightTarget;
 	}
 
 	void ShadowRenderer::setCSProjectionMatrixLightOrthoDefault()
 	{
-		_currentState.mLightProjection = Math::orthoOffCenterLH( -32.0f, 32.0f, -32.0f, 32.0f, 1.0f, 64.0f );
+		_currentState.mLightProjection = cxm::orthoOffCenterLH( -32.0f, 32.0f, -32.0f, 32.0f, 1.0f, 64.0f );
 	}
 
 	void ShadowRenderer::setCSProjectionMatrixLightPerspectiveDefault()
 	{
-		_currentState.mLightProjection = Math::perspectiveAspectLH( Math::Constants::FLT_RAD_90DEG, 1.0f, 1.0f, 24.0f );
+		_currentState.mLightProjection = cxm::perspectiveAspectLH( cxm::constants::FLT_RAD_90DEG, 1.0f, 1.0f, 24.0f );
 	}
 
 	void ShadowRenderer::updateMatricesForLightPass( GCI::CommandContext & pCommandContext )
@@ -57,8 +57,8 @@ namespace Ic3
 		Ic3DebugAssert( pCommandContext.CheckFeatureSupport( ECommandObjectPropertyMaskContextFamilyDirectGraphics ) );
 		auto * directGraphicsContext = pCommandContext.QueryInterface<CommandContextDirectGraphics>();
 
-		_currentState.mLightView = Math::lookAtLH( _currentState.vLightPosition, _currentState.vLightTarget, { 0.0f, 1.0f, 0.0f } );
-		_currentState.mLightSpace = Math::mul( _currentState.mLightProjection, _currentState.mLightView );
+		_currentState.mLightView = cxm::lookAtLH( _currentState.vLightPosition, _currentState.vLightTarget, { 0.0f, 1.0f, 0.0f } );
+		_currentState.mLightSpace = cxm::mul( _currentState.mLightProjection, _currentState.mLightView );
 
 		CBShadowData cbShadowData;
 		cbShadowData.m4fLightSpaceMatrix = _currentState.mLightSpace;
@@ -190,7 +190,7 @@ namespace Ic3
 			samplerPass2ShadowCreateInfo.samplerConfig.addressModeConfig.coordW = ETextureAddressMode::ClampToColor;
 			samplerPass2ShadowCreateInfo.samplerConfig.textureCompareMode = ETextureCompareMode::RefToTexture;
 			samplerPass2ShadowCreateInfo.samplerConfig.textureCompareFunc = ECompFunc::LessEqual;
-			samplerPass2ShadowCreateInfo.samplerConfig.borderColor = Math::RGBAColorR32Norm{ 1.0f, 0.0f, 0.0f, 0.0f };
+			samplerPass2ShadowCreateInfo.samplerConfig.borderColor = cxm::rgba_color_r32_norm{ 1.0f, 0.0f, 0.0f, 0.0f };
 
 			_gpuAPIState.samplerPass2Shadow = _gpuDevice.CreateSampler( samplerPass2ShadowCreateInfo );
 		}

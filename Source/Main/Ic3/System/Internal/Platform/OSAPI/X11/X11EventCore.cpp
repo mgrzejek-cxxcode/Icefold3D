@@ -1,8 +1,10 @@
 
 #include "X11EventCore.h"
 #include "X11WindowSystem.h"
+
 #include <Ic3/System/Internal/EventCorePrivate.h>
-#include <Ic3/Math/VectorOps.h>
+
+#include <cxm/vectorOps.h>
 #include <X11/keysym.h>
 
 #if( PCL_TARGET_SYSAPI == PCL_TARGET_SYSAPI_X11 )
@@ -324,7 +326,7 @@ namespace Ic3::System
 				case MotionNotify:
 				{
                     auto & inputMouseState = eventController.getEventSystemSharedState().inputMouseState;
-					const Math::Vec2i32 cursorPos { pXEvent.xmotion.x, pXEvent.xmotion.y };
+					const cxm::vec2i32 cursorPos { pXEvent.xmotion.x, pXEvent.xmotion.y };
 
 					if( inputMouseState.lastCursorPos == CX_EVENT_MOUSE_POS_INVALID )
 					{

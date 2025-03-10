@@ -126,8 +126,41 @@ namespace Ic3
 	/**
 	 * Represents a generic vertex attribute, i.e. contents of a single IA-level attribute slot.
 	 */
-	struct GenericVertexInputAttribute : public GCI::IAVertexAttributeInfo
+	struct GenericVertexInputAttribute
 	{
+		/**
+		 * Format of the attribute's data.
+		 */
+		GCI::EVertexAttribFormat dataFormat = GCI::EVertexAttribFormat::Undefined;
+
+		/**
+		 * Base attribute index. Allowed values are from 0 to (GCM::kIAMaxVertexAttributesNum - 1).
+		 * For multi-component attributes, this is the index of the first occupied attribute slot.
+		 */
+		GCI::input_assembler_index_t attributeSlot = GCI::kIAVertexAttributeSlotUndefined;
+
+		/**
+		 * An index of a vertex buffer slot this attribute is fetched from.
+		 */
+		uint8 vertexStreamSlot;
+
+		/**
+		 * Data padding placed after the attribute's data in its data stream. The final data stride for an attribute
+		 * is calculated as: (size of dataFormat in bytes) + dataPadding.
+		 */
+		uint8 dataPadding;
+
+		/**
+		 *
+		 */
+		GCI::EIAVertexAttributeDataRate dataRate = GCI::EIAVertexAttributeDataRate::Undefined;
+
+		/**
+		 * Semantic name of the attribute.
+		 * @see VertexAttributeShaderSemantics:: semanticName
+		 */
+		cppx::immutable_string semanticName;
+
 		/**
 		 * Semantic index of the attribute. Semantic group is a group of 2, 3 or 4 attributes that
 		 * share the same semantic name. Semantic group occupies continuous range of IA slots and
@@ -146,26 +179,9 @@ namespace Ic3
 		uint8 semanticGroupSize;
 
 		/**
-		 * Semantic name of the attribute.
-		 * @see VertexAttributeShaderSemantics:: semanticName
-		 */
-		cppx::immutable_string semanticName;
-
-		/**
 		 *
 		 */
 		cppx::bitmask<EVertexAttributeSemanticFlags> semanticFlags;
-
-		/**
-		 * Data padding placed after the attribute's data in its data stream. The final data stride for an attribute
-		 * is calculated as: (size of dataFormat in bytes) + dataPadding.
-		 */
-		uint8 dataPadding;
-
-		/**
-		 * An index of a vertex buffer slot this attribute is fetched from.
-		 */
-		uint8 vertexStreamSlot;
 
 		/**
 		 * An offset from the start of the vertex buffer data to the beginning of the attribute's data.

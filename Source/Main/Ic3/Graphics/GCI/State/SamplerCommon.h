@@ -71,7 +71,7 @@ namespace Ic3::Graphics::GCI
 	{
 		using MipLODRange = cppx::range<float>;
 		TextureCoordAddressModeConfig addressModeConfig;
-		Math::RGBAColorR32Norm borderColor;
+		cxm::rgba_color_r32_norm borderColor;
 		ETextureBorderPredefinedColor borderPredefinedColor;
 		TextureFilterConfig filterConfig;
 		MipLODRange mipLODRange;

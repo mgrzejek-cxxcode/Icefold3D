@@ -715,19 +715,19 @@ namespace Ic3::System
 				pAttribArray[attribIndex++] = GL_TRUE;
 			}
 
-			if( pVisualConfig.colorDesc.rgba.u32Code != 0 )
+			if( pVisualConfig.colorDesc.rgba.u32_code != 0 )
 			{
 				pAttribArray[attribIndex++] = WGL_RED_BITS_ARB;
-				pAttribArray[attribIndex++] = pVisualConfig.colorDesc.rgba.u8Red;
+				pAttribArray[attribIndex++] = pVisualConfig.colorDesc.rgba.u8_red;
 
 				pAttribArray[attribIndex++] = WGL_GREEN_BITS_ARB;
-				pAttribArray[attribIndex++] = pVisualConfig.colorDesc.rgba.u8Green;
+				pAttribArray[attribIndex++] = pVisualConfig.colorDesc.rgba.u8_green;
 
 				pAttribArray[attribIndex++] = WGL_BLUE_BITS_ARB;
-				pAttribArray[attribIndex++] = pVisualConfig.colorDesc.rgba.u8Blue;
+				pAttribArray[attribIndex++] = pVisualConfig.colorDesc.rgba.u8_blue;
 
 				pAttribArray[attribIndex++] = WGL_ALPHA_BITS_ARB;
-				pAttribArray[attribIndex++] = pVisualConfig.colorDesc.rgba.u8Alpha;
+				pAttribArray[attribIndex++] = pVisualConfig.colorDesc.rgba.u8_alpha;
 			}
 
 			if( ( pVisualConfig.msaaDesc.bufferCount != 0 ) && ( pVisualConfig.msaaDesc.quality != 0 ) )

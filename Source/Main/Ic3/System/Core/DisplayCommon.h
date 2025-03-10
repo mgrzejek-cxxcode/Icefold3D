@@ -4,10 +4,11 @@
 
 #include "Visual.h"
 
-#include <Ic3/Math/VectorOps.h>
 #include <cppx/arrayView.h>
 #include <cppx/bitmask.h>
 #include <cppx/uuid.h>
+#include <cxm/vectorOps.h>
+
 #include <functional>
 
 #if( PCL_COMPILER & PCL_COMPILER_CLANG )
@@ -48,8 +49,8 @@ namespace Ic3::System
 	using dsm_output_id_t = uint32;
 	using dsm_video_mode_id_t = uint64;
 	using dsm_video_settings_hash_t = uint64;
-	using DisplayOffset = Math::Pos2i;
-	using DisplaySize = Math::Size2u;
+	using DisplayOffset = cxm::pos2i;
+	using DisplaySize = cxm::size2u;
 
 	using DisplayAdapterList = std::vector<DisplayAdapter *>;
 	using DisplayOutputList = std::vector<DisplayOutput *>;

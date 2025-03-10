@@ -253,7 +253,7 @@ namespace cppx
 	template <typename TPOffset, typename TPSize, typename TPLimit>
 	inline region<TPSize, TPOffset> get_valid_region( const region<TPSize, TPOffset> & pRegion, TPLimit pSizeLimit )
 	{
-		get_valid_region( pRegion.offset, pRegion.size, pSizeLimit );
+		return get_valid_region( pRegion.offset, pRegion.size, pSizeLimit );
 	}
 
 }

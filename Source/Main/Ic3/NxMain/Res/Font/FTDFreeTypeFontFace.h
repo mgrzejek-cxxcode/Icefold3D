@@ -19,7 +19,7 @@ namespace Ic3
 	{
 		uint32 faceIndex;
 		uint32 fontSize;
-		Math::Vec2u32 fontResolutionHint;
+		cxm::vec2u32 fontResolutionHint;
 	};
 
 	struct FreeTypeFontFaceCreateInfo
@@ -47,7 +47,7 @@ namespace Ic3
 
 		bool loadKerning( const CharCodePointPair & pCharCPPair, FT_Pos * pOutKerning );
 
-		bool setFontResolution( const Math::Vec2u32 & pFontResolution );
+		bool setFontResolution( const cxm::vec2u32 & pFontResolution );
 
 		void resetGlyphCache();
 
@@ -88,7 +88,7 @@ namespace Ic3
 		FT_Face _ftFace;
 		uint32 _faceIndex;
 		uint32 _fontSize;
-		Math::Vec2u32 _fontResolution;
+		cxm::vec2u32 _fontResolution;
 		FTGlyphDataCache _glyphDataCache;
 		FTGlyphBitmapCache _glyph_BITmapCache;
 	};

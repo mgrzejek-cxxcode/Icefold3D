@@ -46,7 +46,7 @@
 using namespace Ic3;
 using namespace GCI;
 using namespace Ic3::System;
-namespace math = Ic3::Math;
+namespace math = cxm;
 
 std::string sGxDriverName;
 
@@ -535,8 +535,8 @@ int main( int pArgc, const char ** pArgv )
 
 	const uint32 VNUM = 36;
 
-	System::perf_counter_value_t u1ts = System::PerfCounter::queryCurrentStamp();
-	System::perf_counter_value_t u2ts = System::PerfCounter::queryCurrentStamp();
+	System::perf_counter_value_t u1ts = System::PerfCounter::QueryCounter();
+	System::perf_counter_value_t u2ts = System::PerfCounter::QueryCounter();
 
 	const float update1ts = 25.0f;
 	const float update2ts = 25.0f;

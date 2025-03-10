@@ -286,11 +286,15 @@ namespace Ic3::Graphics::GCI
 			cppx::dynamic_byte_array infoLogBuffer;
 			infoLogBuffer.resize( infoLogLength );
 
-			glGetProgramInfoLog( mGLHandle, static_cast<GLsizei>( infoLogLength ), nullptr, infoLogBuffer.dataAs<GLchar>() );
+			glGetProgramInfoLog(
+				mGLHandle,
+				static_cast<GLsizei>( infoLogLength ),
+				nullptr,
+				infoLogBuffer.data_as<GLchar>() );
 			Ic3OpenGLHandleLastError();
 
 			// Note: length returned by the GL includes null terminator!
-			infoLog.assign( infoLogBuffer.dataAs<GLchar>(), infoLogLength - 1 );
+			infoLog.assign( infoLogBuffer.data_as<GLchar>(), infoLogLength - 1 );
 		}
 
 		return infoLog;
@@ -306,7 +310,12 @@ namespace Ic3::Graphics::GCI
 			GLenum binaryFormatTag = 0u;
 			GLsizei writtenDataSize = 0u;
 
-			glGetProgramBinary( mGLHandle, static_cast<GLsizei>( binarySize ), &writtenDataSize, &binaryFormatTag, pBinary.dataBuffer );
+			glGetProgramBinary(
+				mGLHandle,
+				static_cast<GLsizei>( binarySize ),
+				&writtenDataSize,
+				&binaryFormatTag,
+				pBinary.dataBuffer );
 			Ic3OpenGLHandleLastError();
 
 			pBinary.driverSpecificFormatTag = binaryFormatTag;

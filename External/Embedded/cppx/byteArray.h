@@ -68,44 +68,44 @@ namespace cppx
 			return _storageMemoryPtr;
 		}
 
-		CPPX_ATTR_NO_DISCARD byte * dataOffset( size_t pOffset ) noexcept
+		CPPX_ATTR_NO_DISCARD byte * data_offset( size_t pOffset ) noexcept
 		{
 			cppx_debug_assert( pOffset < _dataSize );
 			return _storageMemoryPtr + pOffset;
 		}
 
-		CPPX_ATTR_NO_DISCARD const byte * dataOffset( size_t pOffset ) const noexcept
+		CPPX_ATTR_NO_DISCARD const byte * data_offset( size_t pOffset ) const noexcept
 		{
 			cppx_debug_assert( pOffset < _dataSize );
 			return _storageMemoryPtr + pOffset;
 		}
 
 		template <typename TPResult>
-		CPPX_ATTR_NO_DISCARD TPResult * dataAs() noexcept
+		CPPX_ATTR_NO_DISCARD TPResult * data_as() noexcept
 		{
 			cppx_debug_assert( _dataSize % sizeof( TPResult ) == 0 );
 			return reinterpret_cast<TPResult *>( data() );
 		}
 
 		template <typename TPResult>
-		CPPX_ATTR_NO_DISCARD const TPResult * dataAs() const noexcept
+		CPPX_ATTR_NO_DISCARD const TPResult * data_as() const noexcept
 		{
 			cppx_debug_assert( _dataSize % sizeof( TPResult ) == 0 );
 			return reinterpret_cast<TPResult *>( data() );
 		}
 
 		template <typename TPResult>
-		CPPX_ATTR_NO_DISCARD TPResult * dataOffsetAs( size_t pOffset ) noexcept
+		CPPX_ATTR_NO_DISCARD TPResult * data_offset_as( size_t pOffset ) noexcept
 		{
 			cppx_debug_assert( ( _dataSize - pOffset ) % sizeof( TPResult ) == 0 );
-			return reinterpret_cast<TPResult *>( dataOffset( pOffset ) );
+			return reinterpret_cast<TPResult *>( data_offset( pOffset ) );
 		}
 
 		template <typename TPResult>
-		CPPX_ATTR_NO_DISCARD const TPResult * dataOffsetAs( size_t pOffset ) const noexcept
+		CPPX_ATTR_NO_DISCARD const TPResult * data_offset_as( size_t pOffset ) const noexcept
 		{
 			cppx_debug_assert( ( _dataSize - pOffset ) % sizeof( TPResult ) == 0 );
-			return reinterpret_cast<TPResult *>( dataOffset( pOffset ) );
+			return reinterpret_cast<TPResult *>( data_offset( pOffset ) );
 		}
 
 		CPPX_ATTR_NO_DISCARD bool empty() const noexcept
@@ -133,7 +133,7 @@ namespace cppx
 			return pFillCount;
 		}
 
-		size_t setData( const void * pData, size_t pDataSize, size_t pSetOffset = 0 )
+		size_t set_data( const void * pData, size_t pDataSize, size_t pSetOffset = 0 )
 		{
 			if( !pData || ( pDataSize == 0 ) || ( pSetOffset >= _dataSize ) )
 			{
@@ -225,7 +225,7 @@ namespace cppx
 		dynamic_byte_array & assign( const dynamic_byte_array & pOther )
 		{
 			resize( pOther.size() );
-			setData( pOther.data(), pOther.size(), 0 );
+			set_data( pOther.data(), pOther.size(), 0 );
 			return *this;
 		}
 

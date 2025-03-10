@@ -19,7 +19,7 @@ namespace Ic3
 
 	struct SVF2DDefault
 	{
-		Math::Vec3f position;
+		cxm::vec3f position;
 	};
 
 } // namespace Ic3

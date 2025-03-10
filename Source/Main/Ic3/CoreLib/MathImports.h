@@ -6,11 +6,11 @@
 
 #include "Prerequisites.h"
 
-#include <Ic3/Math/Color.h>
-#include <Ic3/Math/Vector.h>
-#include <Ic3/Math/VectorOps.h>
-#include <Ic3/Math/Rect.h>
-#include <Ic3/Math/Matrix.h>
-#include <Ic3/Math/MatrixOps.h>
+#include <cxm/color.h>
+#include <cxm/vector.h>
+#include <cxm/vectorOps.h>
+#include <cxm/rect.h>
+#include <cxm/matrix.h>
+#include <cxm/matrixOps.h>
 
 #endif // __IC3_CORELIB_MATH_IMPORTS_H__
