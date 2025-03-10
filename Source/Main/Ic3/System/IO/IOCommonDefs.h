@@ -9,20 +9,21 @@ namespace Ic3::System
 {
 
     class File;
-    class Pipe;
+    class ReadPipe;
+    class WritePipe;
 
+    Ic3SysDeclareHandle( File );
     Ic3SysDeclareHandle( FileManager );
     Ic3SysDeclareHandle( PipeFactory );
+    Ic3SysDeclareHandle( ReadPipe );
+    Ic3SysDeclareHandle( WritePipe );
 
     using file_char_t = char;
     using io_offset_t = native_int;
     using io_size_t = native_uint;
 
-    using FileHandle = std::shared_ptr<File>;
     using FileList = std::vector<FileHandle>;
-
     using FileNameList = std::vector<std::string>;
-    using PipeHandle = std::shared_ptr<Pipe>;
 
     inline constexpr auto kIOSizeMax = cppx::meta::limits<io_size_t>::max_value;
 

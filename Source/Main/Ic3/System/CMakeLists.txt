@@ -51,8 +51,8 @@ set( IC3_SYSTEM_SRC_FILES
         "IO/FileSystem.h"
         "IO/FileSystem.cpp"
 		"IO/IOCommonDefs.h"
-		"IO/IODataStream.h"
-		"IO/IODataStream.cpp"
+		"IO/IOStreamTypes.h"
+		"IO/IOStreamTypes.cpp"
 		"IO/Pipe.h"
 		"IO/Pipe.cpp"
 		

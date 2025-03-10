@@ -5,7 +5,7 @@ namespace Ic3::System
 {
 
 	File::File( FileManagerHandle pFileManager, EIOAccessMode pAccessMode )
-	: IODataStream( pFileManager->mSysContext, { pAccessMode } )
+	: IOReadWriteStream( pFileManager->mSysContext, { pAccessMode } )
 	, mFileManager( std::move( pFileManager ) )
 	{}
 

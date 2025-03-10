@@ -20,9 +20,9 @@ namespace Ic3::System
 
 		CPPX_ATTR_NO_DISCARD std::string WFAQuerySystemErrorMessage( DWORD pErrorCode );
 
-		CPPX_ATTR_NO_DISCARD void WFAGetLastSystemErrorAndPrintToDebugOutput( const char * pPrefix = nullptr );
+		void WFAGetLastSystemErrorAndPrintToDebugOutput( const char * pPrefix = nullptr );
 
-		CPPX_ATTR_NO_DISCARD void WFAPrintSystemErrorToDebugOutput( DWORD pErrorCode, const char * pPrefix = nullptr );
+		void WFAPrintSystemErrorToDebugOutput( DWORD pErrorCode, const char * pPrefix = nullptr );
 
 	}
 

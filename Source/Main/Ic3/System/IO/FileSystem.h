@@ -2,7 +2,7 @@
 #ifndef __IC3_SYSTEM_FILE_SYSTEM_H__
 #define __IC3_SYSTEM_FILE_SYSTEM_H__
 
-#include "IODataStream.h"
+#include "IOStreamTypes.h"
 #include "../SysObject.h"
 
 namespace Ic3::System
@@ -40,7 +40,7 @@ namespace Ic3::System
 		virtual bool _NativeCheckFileExists( const std::string & pFilePath ) = 0;
 	};
 
-	class IC3_SYSTEM_CLASS File : public IODataStream
+	class IC3_SYSTEM_CLASS File : public IOReadWriteStream
 	{
 	public:
 		FileManagerHandle const mFileManager;

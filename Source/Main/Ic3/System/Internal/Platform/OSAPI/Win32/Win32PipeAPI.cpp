@@ -2,6 +2,8 @@
 #include "Win32PipeAPI.h"
 #include <IC3/System/PerfCounter.h>
 
+#include <thread>
+
 namespace Ic3::System
 {
 
@@ -9,8 +11,8 @@ namespace Ic3::System
 	{
 
 		static const char * kWin32PipeNameBaseComponent = "\\\\.\\pipe\\LOCAL\\";
-		static constexpr auto kWin32PipeInOutBufferSize = 4 * 1024;
 
+		static constexpr auto kWin32PipeInOutBufferSize = 4 * 1024;
 
 		DWORD _Win32TranslatePipeDataModeToWriteCreateFlags( EPipeDataMode pPipeDataMode );
 
@@ -26,8 +28,6 @@ namespace Ic3::System
 			EPipeDataMode pPipeDataMode,
 			const IOTimeoutSettings & pTimeoutSettings );
 
-		void _Win32ClosePipe( HANDLE pPipeHandle, EPipeType pPipeType, bool pIsBrokenPipe );
-
 	}
 
 
@@ -37,33 +37,7 @@ namespace Ic3::System
 
 	Win32PipeFactory::~Win32PipeFactory() noexcept = default;
 
-	PipeHandle Win32PipeFactory::_NativeCreateWritePipe(
-		const PipeCreateInfo & pPipeCreateInfo,
-		const IOTimeoutSettings & pTimeoutSettings )
-	{
-		std::string fullyQualifiedPipeName = Platform::kWin32PipeNameBaseComponent;
-		fullyQualifiedPipeName.append( pPipeCreateInfo.pipeName.str() );
-
-		auto win32PipeHandle = Platform::_Win32CreateWritePipe( fullyQualifiedPipeName, pPipeCreateInfo.pipeDataMode, pTimeoutSettings );
-		if( !win32PipeHandle )
-		{
-			Ic3DebugOutputFmt( "Failed to create write pipe '%s'.", fullyQualifiedPipeName.data() );
-			return nullptr;
-		}
-
-		PipeProperties pipeProperties{};
-		pipeProperties.pipeType = EPipeType::PTWrite;
-		pipeProperties.accessMode = EIOAccessMode::WriteAppend;
-		pipeProperties.fullyQualifiedPipeName = std::move( fullyQualifiedPipeName );
-		pipeProperties.pipeDataMode = pPipeCreateInfo.pipeDataMode;
-
-		auto pipeObject = CreateSysObject<Win32Pipe>( mSysContext, pipeProperties );
-		pipeObject->SetWin32PipeHandle( win32PipeHandle );
-
-		return pipeObject;
-	}
-
-	PipeHandle Win32PipeFactory::_NativeCreateReadPipe(
+	ReadPipeHandle Win32PipeFactory::_NativeCreateReadPipe(
 		const PipeCreateInfo & pPipeCreateInfo,
 		const IOTimeoutSettings & pTimeoutSettings )
 	{
@@ -83,88 +57,46 @@ namespace Ic3::System
 		pipeProperties.fullyQualifiedPipeName = std::move( fullyQualifiedPipeName );
 		pipeProperties.pipeDataMode = pPipeCreateInfo.pipeDataMode;
 
-		auto pipeObject = CreateSysObject<Win32Pipe>( mSysContext, pipeProperties );
+		auto pipeObject = CreateSysObject<Win32ReadPipe>( mSysContext, pipeProperties );
+		pipeObject->SetWin32PipeHandle( win32PipeHandle );
+
+		return pipeObject;
+	}
+
+	WritePipeHandle Win32PipeFactory::_NativeCreateWritePipe(
+		const PipeCreateInfo & pPipeCreateInfo,
+		const IOTimeoutSettings & pTimeoutSettings )
+	{
+		std::string fullyQualifiedPipeName = Platform::kWin32PipeNameBaseComponent;
+		fullyQualifiedPipeName.append( pPipeCreateInfo.pipeName.str() );
+
+		auto win32PipeHandle = Platform::_Win32CreateWritePipe( fullyQualifiedPipeName, pPipeCreateInfo.pipeDataMode, pTimeoutSettings );
+		if( !win32PipeHandle )
+		{
+			Ic3DebugOutputFmt( "Failed to create write pipe '%s'.", fullyQualifiedPipeName.data() );
+			return nullptr;
+		}
+
+		PipeProperties pipeProperties{};
+		pipeProperties.pipeType = EPipeType::PTWrite;
+		pipeProperties.accessMode = EIOAccessMode::WriteAppend;
+		pipeProperties.fullyQualifiedPipeName = std::move( fullyQualifiedPipeName );
+		pipeProperties.pipeDataMode = pPipeCreateInfo.pipeDataMode;
+
+		auto pipeObject = CreateSysObject<Win32WritePipe>( mSysContext, pipeProperties );
 		pipeObject->SetWin32PipeHandle( win32PipeHandle );
 
 		return pipeObject;
 	}
 
 
-	Win32Pipe::Win32Pipe( SysContextHandle pSysContext, const PipeProperties & pPipeProperties )
-	: Win32NativeObject( std::move( pSysContext ), pPipeProperties )
+	Win32ReadPipe::Win32ReadPipe( SysContextHandle pSysContext, const PipeProperties & pPipeProperties )
+	: Win32BasePipe<ReadPipe>( std::move( pSysContext ), pPipeProperties )
 	{}
 
-	Win32Pipe::~Win32Pipe() noexcept
-	{
-		_ReleaseWin32PipeHandle();
-	}
+	Win32ReadPipe::~Win32ReadPipe() noexcept = default;
 
-	bool Win32Pipe::IsPipeBroken() const noexcept
-	{
-		// First, check the native pipe handle.
-		if( mNativeData.pipeHandle != nullptr )
-		{
-			// Use PeekNamedPipe to query the pipe status. We don't query any properties
-			// (not needed) - PeekNamedPipe will fail immediately of the specified pipe
-			// handle does not refer to a valid, active pipe.
-			const auto peekPipeResult = ::PeekNamedPipe(
-				mNativeData.pipeHandle,
-				nullptr,
-				0,
-				nullptr,
-				nullptr,
-				nullptr );
-
-			if( !peekPipeResult )
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	void Win32Pipe::SetWin32PipeHandle( HANDLE pPipeHandle )
-	{
-		mNativeData.pipeHandle = pPipeHandle;
-	}
-
-	bool Win32Pipe::_NativePipeIsValid() const noexcept
-	{
-		return mNativeData.pipeHandle && !IsPipeBroken();
-	}
-
-	io_size_t Win32Pipe::_NativePipeGetAvailableDataSize() const
-	{
-		if( !mNativeData.pipeHandle )
-		{
-			return 0;
-		}
-
-		DWORD totalBytesAvailableInPipe = 0;
-		DWORD currentMessageBytesLeft = 0;
-
-		// Get both totalBytes and bytesLeftForMessage. This will handle properly
-		// all possible pipes in both BYTES and MESSAGE modes (can be either here).
-		const auto readResult = ::PeekNamedPipe(
-			mNativeData.pipeHandle,
-			nullptr,
-			0,
-			nullptr,
-			&totalBytesAvailableInPipe,
-			&currentMessageBytesLeft );
-
-		if( !readResult )
-		{
-			Platform::WFAGetLastSystemErrorAndPrintToDebugOutput( "PeekNamedPipe" );
-		}
-
-		// If there is data left for the message (message-based pipes) use that. Otherwise,
-		// simply return the total size of data available in the pipe for reading.
-		return ( currentMessageBytesLeft > 0 ) ? currentMessageBytesLeft : totalBytesAvailableInPipe;
-	}
-
-	io_size_t Win32Pipe::_NativePipeReadData( void * pTargetBuffer, io_size_t pReadSize )
+	io_size_t Win32ReadPipe::_NativePipeReadData( void * pTargetBuffer, io_size_t pReadSize )
 	{
 		BOOL readResult = FALSE;
 
@@ -192,7 +124,7 @@ namespace Ic3::System
 			const auto lastError = ::GetLastError();
 			if( lastError == ERROR_BROKEN_PIPE )
 			{
-				_ReleaseWin32PipeHandle( true );
+				ReleaseWin32PipeHandle();
 			}
 
 			Platform::WFAPrintSystemErrorToDebugOutput( lastError, "PeekNamedPipe" );
@@ -218,7 +150,7 @@ namespace Ic3::System
 				else
 				{
 					// Any other error means the pipe got broken. Clean up and report.
-					_ReleaseWin32PipeHandle( true );
+					ReleaseWin32PipeHandle();
 					Platform::WFAPrintSystemErrorToDebugOutput( lastError, "ReadFile( Pipe )" );
 				}
 			}
@@ -227,7 +159,32 @@ namespace Ic3::System
 		return cppx::numeric_cast<io_size_t>( readBytesNum );
 	}
 
-	io_size_t Win32Pipe::_NativePipeWriteData( const void * pData, io_size_t pWriteSize )
+	bool Win32ReadPipe::_NativeReconnectReadPipe( const IOTimeoutSettings & pTimeoutSettings )
+	{
+		if( mNativeData.pipeHandle )
+		{
+			Platform::Win32ClosePipe( mNativeData.pipeHandle, EPipeType::PTRead );
+			mNativeData.pipeHandle = nullptr;
+		}
+
+		mNativeData.pipeHandle = Platform::_Win32CreateReadPipe( mFullyQualifiedPipeName.str(), mPipeDataMode, pTimeoutSettings );
+
+		return mNativeData.pipeHandle != nullptr;
+	}
+
+	io_size_t Win32ReadPipe::_NativePipeGetAvailableDataSize() const
+	{
+		return Platform::Win32GetPipeAvailableDataSize( this->mNativeData.pipeHandle );
+	}
+
+
+	Win32WritePipe::Win32WritePipe( SysContextHandle pSysContext, const PipeProperties & pPipeProperties )
+	: Win32BasePipe<WritePipe>( std::move( pSysContext ), pPipeProperties )
+	{}
+
+	Win32WritePipe::~Win32WritePipe() noexcept = default;
+
+	io_size_t Win32WritePipe::_NativePipeWriteData( const void * pData, io_size_t pWriteSize )
 	{
 		DWORD writeSize = 0;
 		const auto writeResult = ::WriteFile(
@@ -242,7 +199,7 @@ namespace Ic3::System
 			const auto lastError = ::GetLastError();
 			if( lastError == ERROR_BROKEN_PIPE )
 			{
-				_ReleaseWin32PipeHandle( true );
+				ReleaseWin32PipeHandle();
 			}
 
 			Platform::WFAPrintSystemErrorToDebugOutput( lastError, "WriteFile( Pipe )" );
@@ -251,11 +208,11 @@ namespace Ic3::System
 		return cppx::numeric_cast<io_size_t>( writeSize );
 	}
 
-	bool Win32Pipe::_NativeReconnectReadPipe( const IOTimeoutSettings & pTimeoutSettings )
+	bool Win32WritePipe::_NativeReconnectWritePipe( const IOTimeoutSettings & pTimeoutSettings )
 	{
 		if( mNativeData.pipeHandle )
 		{
-			Platform::_Win32ClosePipe( mNativeData.pipeHandle, mPipeType, IsPipeBroken() );
+			Platform::Win32ClosePipe( mNativeData.pipeHandle, EPipeType::PTWrite );
 			mNativeData.pipeHandle = nullptr;
 		}
 
@@ -264,23 +221,84 @@ namespace Ic3::System
 		return mNativeData.pipeHandle != nullptr;
 	}
 
-	bool Win32Pipe::_NativeReconnectWritePipe( const IOTimeoutSettings & pTimeoutSettings )
-	{
-		return false;
-	}
-
-	void Win32Pipe::_ReleaseWin32PipeHandle( bool pIsBrokenPipe )
-	{
-		if( mNativeData.pipeHandle )
-		{
-			Platform::_Win32ClosePipe( mNativeData.pipeHandle, mPipeType, pIsBrokenPipe );
-			mNativeData.pipeHandle = nullptr;
-		}
-	}
-
 
 	namespace Platform
 	{
+
+		bool Win32IsPipeBroken( HANDLE pPipeHandle )
+		{
+			// First, check the native pipe handle.
+			if( pPipeHandle )
+			{
+				// Use PeekNamedPipe to query the pipe status. We don't query any properties
+				// (not needed) - PeekNamedPipe will fail immediately of the specified pipe
+				// handle does not refer to a valid, active pipe.
+				const auto peekPipeResult = ::PeekNamedPipe(
+					pPipeHandle,
+					nullptr,
+					0,
+					nullptr,
+					nullptr,
+					nullptr );
+
+				if( !peekPipeResult && ( ::GetLastError() == ERROR_BROKEN_PIPE ) )
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		void Win32ClosePipe( HANDLE pPipeHandle, EPipeType pPipeType )
+		{
+			if( pPipeHandle )
+			{
+				if( ( pPipeType == EPipeType::PTWrite ) && !Win32IsPipeBroken( pPipeHandle ) )
+				{
+					// If the pipe is owned by the server component (has write access), we need to flush
+					// all buffers first, so the client gets chance to retrieve all the data from this pipe.
+					::FlushFileBuffers( pPipeHandle );
+
+					// After flush has been made, we can now disconnect the pipe.
+					::DisconnectNamedPipe( pPipeHandle );
+				}
+
+				// Finally, we close the handle to the pipe. For clients (read access),
+				// this is the only thing that needs to be done to clear up the pipe.
+				::CloseHandle( pPipeHandle );
+			}
+		}
+
+		io_size_t Win32GetPipeAvailableDataSize( HANDLE pPipeHandle )
+		{
+			if( !pPipeHandle )
+			{
+				return 0;
+			}
+
+			DWORD totalBytesAvailableInPipe = 0;
+			DWORD currentMessageBytesLeft = 0;
+
+			// Get both totalBytes and bytesLeftForMessage. This will handle properly
+			// all possible pipes in both BYTES and MESSAGE modes (can be either here).
+			const auto readResult = ::PeekNamedPipe(
+				pPipeHandle,
+				nullptr,
+				0,
+				nullptr,
+				&totalBytesAvailableInPipe,
+				&currentMessageBytesLeft );
+
+			if( !readResult )
+			{
+				Platform::WFAGetLastSystemErrorAndPrintToDebugOutput( "PeekNamedPipe" );
+			}
+
+			// If there is data left for the message (message-based pipes) use that. Otherwise,
+			// simply return the total size of data available in the pipe for reading.
+			return ( currentMessageBytesLeft > 0 ) ? currentMessageBytesLeft : totalBytesAvailableInPipe;
+		}
 
 		DWORD _Win32TranslatePipeDataModeToWriteCreateFlags( EPipeDataMode pPipeDataMode )
 		{
@@ -492,25 +510,6 @@ namespace Ic3::System
 			}
 
 			return pipeHandle;
-		}
-
-		void _Win32ClosePipe( HANDLE pPipeHandle, EPipeType pPipeType, bool pIsBrokenPipe )
-		{
-			if( pPipeHandle )
-			{
-				if( !pIsBrokenPipe && ( pPipeType == EPipeType::PTWrite ) )
-				{
-					// If the pipe is owned by the server component (has write access), we need to flush
-					// all buffers first, so the client gets chance to retrieve all the data from this pipe.
-					::FlushFileBuffers( pPipeHandle );
-					// After flush has been made, we can now disconnect the pipe.
-					::DisconnectNamedPipe( pPipeHandle );
-				}
-
-				// Finally, we close the handle to the pipe. For clients (read access),
-				// this is the only thing that needs to be done to clear up the pipe.
-				::CloseHandle( pPipeHandle );
-			}
 		}
 
 	}
