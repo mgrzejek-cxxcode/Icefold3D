@@ -9,7 +9,7 @@ namespace Ic3::Graphics::GCI
 	GraphicsShaderLinkageDescriptor::GraphicsShaderLinkageDescriptor(
 			GPUDevice & pGPUDevice,
 			const GraphicsShaderBindingCommonConfig & pCommonShaderBindingConfig )
-	: PipelineStateDescriptor( pGPUDevice )
+	: CachedPipelineStateDescriptor( pGPUDevice )
 	, mCommonShaderBindingConfig( pCommonShaderBindingConfig )
 	{}
 

@@ -32,7 +32,7 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~RTArrayDescriptorDynamicProxy() = default;
 
-		CPPX_ATTR_NO_DISCARD virtual bool IsAttachmentActive( native_uint pAttachmentIndex ) const noexcept override final
+		CPPX_ATTR_NO_DISCARD virtual bool IsAttachmentConfigured( native_uint pAttachmentIndex ) const noexcept override final
 		{
 			return _renderTargetArrayConfiguration.activeAttachmentsMask.is_set( CXU::RTOMakeAttachmentFlag( pAttachmentIndex ) );
 		}
@@ -55,6 +55,11 @@ namespace Ic3::Graphics::GCI
 		CPPX_ATTR_NO_DISCARD native_uint CountActiveColorAttachments() const noexcept
 		{
 			return ( _renderTargetArrayConfiguration.activeAttachmentsMask & eRTAttachmentMaskColorAll ).count_bits();
+		}
+
+		CPPX_ATTR_NO_DISCARD const TPAttachmentConfig * GetAttachmentConfig( native_uint pAttachmentIndex ) const noexcept
+		{
+			return _renderTargetArrayConfiguration.GetAttachment( pAttachmentIndex  );
 		}
 
 		CPPX_ATTR_NO_DISCARD const TRenderTargetArrayConfiguration<TPAttachmentConfig> & GetRenderTargetArrayConfiguration() const noexcept

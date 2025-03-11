@@ -8,7 +8,7 @@
 #include "GLGraphicsPipelineStateRTO.h"
 #include "GLVertexArrayObjectCache.h"
 #include "GLGlobalStateCache.h"
-#include <Ic3/Graphics/GCI/State/GraphicsPipelineStateImplGenericRenderPass.h>
+#include <Ic3/Graphics/GCI/State/GraphicsPipelineStateImplRenderPassGeneric.h>
 #include <Ic3/Graphics/GCI/State/GraphicsPipelineStateImplSeparableState.h>
 
 namespace Ic3::Graphics::GCI
@@ -23,7 +23,7 @@ namespace Ic3::Graphics::GCI
 	class GLGraphicsShaderLinkageDescriptorCompat;
 
 	/// @brief
-	class GLGraphicsPipelineStateController : public GraphicsPipelineStateControllerGenericRenderPass<GraphicsPipelineStateControllerSeparable>
+	class GLGraphicsPipelineStateController : public GraphicsPipelineStateControllerRenderPassGeneric<GraphicsPipelineStateControllerSeparable>
 	{
 		friend class GLCommandList;
 
@@ -36,17 +36,17 @@ namespace Ic3::Graphics::GCI
 		virtual bool ApplyStateChanges() override;
 
 		/**
-		 * @see GraphicsPipelineStateControllerGenericRenderPass::SetRenderPassDescriptor()
+		 * @see GraphicsPipelineStateControllerRenderPassGeneric::SetRenderPassDescriptor()
 		 */
 		virtual bool SetRenderPassDescriptor( const RenderPassDescriptor & pRenderPassDescriptor ) override final;
 
 		/**
-		 * @see GraphicsPipelineStateControllerGenericRenderPass::SetRenderPassDescriptorDynamic()
+		 * @see GraphicsPipelineStateControllerRenderPassGeneric::SetRenderPassDescriptorDynamic()
 		 */
 		virtual bool SetRenderPassDescriptorDynamic( RenderPassDescriptorDynamic & pRenderPassDescriptor ) override final;
 
 		/**
-		 * @see GraphicsPipelineStateControllerGenericRenderPass::ResetRenderPassDescriptor()
+		 * @see GraphicsPipelineStateControllerRenderPassGeneric::ResetRenderPassDescriptor()
 		 */
 		virtual void ResetRenderPassDescriptor() override final;
 
@@ -96,7 +96,7 @@ namespace Ic3::Graphics::GCI
 		CPPX_ATTR_NO_DISCARD const GLIAVertexSourceBinding & GetGLIAVertexSourceBinding() const noexcept;
 
 	private:
-		using BaseStateControllerType = GraphicsPipelineStateControllerGenericRenderPass<GraphicsPipelineStateControllerSeparable>;
+		using BaseStateControllerType = GraphicsPipelineStateControllerRenderPassGeneric<GraphicsPipelineStateControllerSeparable>;
 
 		virtual void UpdateShaderInputInlineConstantData(
 				const GLGraphicsShaderLinkageDescriptor & pShaderLinkageDescriptor,

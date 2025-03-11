@@ -137,7 +137,7 @@ namespace Ic3::Graphics::GCI
 	};
 
 	///
-	class GLVertexAttributeLayoutDescriptor : public PIM::VertexAttributeLayoutDescriptorNative
+	class GLVertexAttributeLayoutDescriptor : public HW3DPipelineStateDescriptor<VertexAttributeLayoutDescriptor>
 	{
 	public:
 		GLVertexAttributeLayoutDescriptor(
@@ -194,7 +194,7 @@ namespace Ic3::Graphics::GCI
 	};
 
 	///
-	class GLVertexSourceBindingDescriptor : public PIM::VertexSourceBindingDescriptorNative
+	class GLVertexSourceBindingDescriptor : public HW3DPipelineStateDescriptor<VertexSourceBindingDescriptor>
 	{
 	public:
 		GLIAVertexSourceBinding const mGLVertexSourceBinding;

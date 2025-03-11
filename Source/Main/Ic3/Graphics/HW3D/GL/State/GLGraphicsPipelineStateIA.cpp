@@ -75,7 +75,7 @@ namespace Ic3::Graphics::GCI
 	GLVertexAttributeLayoutDescriptor::GLVertexAttributeLayoutDescriptor(
 			GLGPUDevice & pGPUDevice,
 			const IAVertexAttributeLayoutCommonConfig & pCommonAttributeLayoutConfig )
-	: PIM::VertexAttributeLayoutDescriptorNative( pGPUDevice, pCommonAttributeLayoutConfig )
+	: HW3DPipelineStateDescriptor( pGPUDevice, pCommonAttributeLayoutConfig )
 	{}
 
 	GLVertexAttributeLayoutDescriptor::~GLVertexAttributeLayoutDescriptor() = default;
@@ -138,7 +138,7 @@ namespace Ic3::Graphics::GCI
 	GLVertexSourceBindingDescriptor::GLVertexSourceBindingDescriptor(
 			GLGPUDevice & pGPUDevice,
 			const GLIAVertexSourceBinding & pGLVertexSourceBinding )
-	: PIM::VertexSourceBindingDescriptorNative( pGPUDevice, pGLVertexSourceBinding )
+	: HW3DPipelineStateDescriptor( pGPUDevice, pGLVertexSourceBinding )
 	, mGLVertexSourceBinding( pGLVertexSourceBinding )
 	{}
 

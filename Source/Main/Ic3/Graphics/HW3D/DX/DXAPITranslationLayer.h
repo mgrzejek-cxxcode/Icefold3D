@@ -11,10 +11,10 @@ namespace Ic3::Graphics::GCI
 
 	struct TextureDimensions;
 
-    using resource_flags_value_t = uint32;
+	using resource_flags_value_t = uint32;
 
-    enum EGPUDriverConfigFlags : uint32;
-    enum ETextureCubeMapFace : uint32;
+	enum EGPUDriverConfigFlags : uint32;
+	enum ETextureCubeMapFace : uint32;
 
 	using DXGIGetDebugInterfaceType = HRESULT ( WINAPI * )( const GUID &, void ** );
 

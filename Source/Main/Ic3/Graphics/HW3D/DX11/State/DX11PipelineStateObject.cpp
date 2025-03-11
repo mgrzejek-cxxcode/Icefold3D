@@ -56,7 +56,7 @@ namespace Ic3::Graphics::GCI
 		return *( mSeparableStates.iaInputLayout->QueryInterface<DX11VertexAttributeLayoutDescriptor>() );
 	}
 
-	GpaHandle<DX11GraphicsPipelineStateObject> DX11GraphicsPipelineStateObject::Create(
+	TGfxHandle<DX11GraphicsPipelineStateObject> DX11GraphicsPipelineStateObject::Create(
 			DX11GPUDevice & pGPUDevice,
 			const GraphicsPipelineStateObjectCreateInfo & pCreateInfo )
 	{

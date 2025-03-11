@@ -10,20 +10,16 @@ namespace Ic3::Graphics::GCI
 
 	RenderPassDescriptorDynamic::~RenderPassDescriptorDynamic() = default;
 
-	bool RenderPassDescriptorDynamic::CheckAttachmentLoadActionFlags(
-			uint32 pAttachmentIndex,
-			cppx::bitmask<ERenderPassAttachmentActionFlags> pActionFlags ) const noexcept
+	ERenderPassAttachmentLoadAction RenderPassDescriptorDynamic::GetAttachmentLoadAction( native_uint pAttachmentIndex ) const noexcept
 	{
-		const auto * renderPassAttachmentConfig = GetRenderTargetArrayConfiguration().GetAttachment( pAttachmentIndex );
-		return renderPassAttachmentConfig->HasLoadActionFlags( pActionFlags );
+		const auto * renderPassAttachmentConfig = GetAttachmentConfig( pAttachmentIndex );
+		return renderPassAttachmentConfig ? renderPassAttachmentConfig->loadAction : ERenderPassAttachmentLoadAction::Undefined;
 	}
 
-	bool RenderPassDescriptorDynamic::CheckAttachmentStoreActionFlags(
-			uint32 pAttachmentIndex,
-			cppx::bitmask<ERenderPassAttachmentActionFlags> pActionFlags ) const noexcept
+	ERenderPassAttachmentStoreAction RenderPassDescriptorDynamic::GetAttachmentStoreAction( native_uint pAttachmentIndex ) const noexcept
 	{
-		const auto * renderPassAttachmentConfig = GetRenderTargetArrayConfiguration().GetAttachment( pAttachmentIndex );
-		return renderPassAttachmentConfig->HasStoreActionFlags( pActionFlags );
+		const auto * renderPassAttachmentConfig = GetAttachmentConfig( pAttachmentIndex );
+		return renderPassAttachmentConfig ? renderPassAttachmentConfig->storeAction : ERenderPassAttachmentStoreAction::Undefined;
 	}
 
 	TGfxHandle<RenderPassDescriptorDynamic> RenderPassDescriptorDynamic::CreateNew( GPUDevice & pGPUDevice )

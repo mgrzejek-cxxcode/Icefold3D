@@ -42,10 +42,10 @@ namespace Ic3::Graphics::GCI
 		return *( mSeparableDescriptors.rasterizerStateDescriptor->QueryInterface<GLRasterizerStateDescriptor>() );
 	}
 
-	const PIM::RootSignatureDescriptorGeneric & GLGraphicsPipelineStateObject::GetRootSignatureDescriptor() const noexcept
+	const RootSignatureDescriptorGeneric & GLGraphicsPipelineStateObject::GetRootSignatureDescriptor() const noexcept
 	{
 		Ic3DebugAssert( mSeparableDescriptors.rootSignatureDescriptor );
-		return *( mSeparableDescriptors.rootSignatureDescriptor->QueryInterface<PIM::RootSignatureDescriptorGeneric>() );
+		return *( mSeparableDescriptors.rootSignatureDescriptor->QueryInterface<RootSignatureDescriptorGeneric>() );
 	}
 
 	const GLGraphicsShaderLinkageDescriptor & GLGraphicsPipelineStateObject::GetShaderLinkageDescriptor() const noexcept

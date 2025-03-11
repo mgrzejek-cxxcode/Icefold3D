@@ -30,10 +30,12 @@ namespace Ic3::Graphics::GCI
 
 	void DXScreenPresentationLayer::Resize( uint32 pWidth, uint32 pHeight )
 	{
+		mSysWindow->ResizeClientArea( { pWidth, pHeight } );
 	}
 
 	void DXScreenPresentationLayer::SetFullscreenMode( bool pEnable )
 	{
+		mSysWindow->SetFullscreenMode( true );
 	}
 
 	cxm::vec2u32 DXScreenPresentationLayer::QueryRenderTargetSize() const
@@ -41,21 +43,23 @@ namespace Ic3::Graphics::GCI
 		return mSysWindow->GetClientAreaSize();
 	}
 
-	System::WindowHandle DXScreenPresentationLayer::createSysWindow( DXGPUDevice & pGPUDevice, const PresentationLayerCreateInfo & pCreateInfo )
+	System::WindowHandle DXScreenPresentationLayer::CreateSysWindow(
+			DXGPUDevice & pGPUDevice,
+			const PresentationLayerCreateInfo & pCreateInfo )
 	{
 		try
 		{
 			auto sysWindowManager = pCreateInfo.sysWindowManager;
 			if( !sysWindowManager )
 			{
-			    auto sysDisplayManager = pCreateInfo.sysDisplayManager;
-			    if( !sysDisplayManager )
-			    {
-			        Ic3DebugAssert( pGPUDevice.mSysContext );
-			        sysDisplayManager = pGPUDevice.mSysContext->CreateDisplayManager();
-			    }
-			    Ic3DebugAssert( pGPUDevice.mSysContext );
-			    sysWindowManager = pGPUDevice.mSysContext->CreateWindowManager( sysDisplayManager );
+				auto sysDisplayManager = pCreateInfo.sysDisplayManager;
+				if( !sysDisplayManager )
+				{
+					Ic3DebugAssert( pGPUDevice.mSysContext );
+					sysDisplayManager = pGPUDevice.mSysContext->CreateDisplayManager();
+				}
+				Ic3DebugAssert( pGPUDevice.mSysContext );
+				sysWindowManager = pGPUDevice.mSysContext->CreateWindowManager( sysDisplayManager );
 			}
 
 			System::WindowCreateInfo windowCreateInfo;
@@ -75,14 +79,14 @@ namespace Ic3::Graphics::GCI
 
 			auto sysWindow = sysWindowManager->createWindow( windowCreateInfo );
 
-        #if( PCL_TARGET_OS == PCL_TARGET_OS_WINDESKTOP )
+		#if( PCL_TARGET_OS == PCL_TARGET_OS_WINDESKTOP )
 			if( pCreateInfo.mDisplayConfigFlags.is_set( E_DISPLAY_CONFIGURATION_FLAG_FULLSCREEN_BIT ) )
 			{
-			    auto * win32Window = sysWindow->QueryInterface<System::Win32Window>();
-			    ::SetCapture( win32Window->mNativeData.hwnd );
+				auto * win32Window = sysWindow->QueryInterface<System::Win32Window>();
+				::SetCapture( win32Window->mNativeData.hwnd );
 				::ShowCursor( FALSE );
 			}
-        #endif
+		#endif
 
 			return sysWindow;
 		}

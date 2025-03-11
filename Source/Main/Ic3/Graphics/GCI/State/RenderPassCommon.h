@@ -155,24 +155,24 @@ namespace Ic3::Graphics::GCI
 			return ( loadAction == ERenderPassAttachmentLoadAction::Undefined ) && ( storeAction == ERenderPassAttachmentStoreAction::Undefined );
 		}
 
-		CPPX_ATTR_NO_DISCARD bool IsLoadActionDefined() const noexcept
+		CPPX_ATTR_NO_DISCARD bool IsLoadActionSet() const noexcept
 		{
-			return cppx::make_bitmask( loadAction ).is_set_any_of( eRenderPassAttachmentActionMaskLoadAll );
+			return loadAction != ERenderPassAttachmentLoadAction::Undefined;
 		}
 
-		CPPX_ATTR_NO_DISCARD bool IsStoreActionDefined() const noexcept
+		CPPX_ATTR_NO_DISCARD bool IsStoreActionSet() const noexcept
 		{
-			return cppx::make_bitmask( storeAction ).is_set_any_of( eRenderPassAttachmentActionMaskStoreAll );
+			return storeAction != ERenderPassAttachmentStoreAction::Undefined;
 		}
 
 		CPPX_ATTR_NO_DISCARD bool HasLoadActionFlags( ERenderPassAttachmentActionFlags pLoadFlags ) const noexcept
 		{
-			return cppx::make_bitmask( loadAction ).is_set( pLoadFlags );
+			return cppx::make_bitmask( loadAction ).is_set( pLoadFlags & eRenderPassAttachmentActionMaskLoadAll );
 		}
 
-		CPPX_ATTR_NO_DISCARD bool HasStoreActionFlags( ERenderPassAttachmentActionFlags pLoadFlags ) const noexcept
+		CPPX_ATTR_NO_DISCARD bool HasStoreActionFlags( ERenderPassAttachmentActionFlags pStoreFlags ) const noexcept
 		{
-			return cppx::make_bitmask( storeAction ).is_set( pLoadFlags );
+			return cppx::make_bitmask( storeAction ).is_set( pStoreFlags & eRenderPassAttachmentActionMaskStoreAll );
 		}
 
 		void Reset()

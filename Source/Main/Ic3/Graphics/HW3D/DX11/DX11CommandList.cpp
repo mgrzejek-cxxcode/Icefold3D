@@ -15,7 +15,7 @@ namespace Ic3::Graphics::GCI
 {
 
 	DX11CommandList::DX11CommandList( DX11CommandSystem & pDX11CommandSystem, ECommandListType pListType, ComPtr<ID3D11DeviceContext1> pD3D11DeviceContext1 )
-	: CommandListGenericRenderPass( pDX11CommandSystem, pListType, _graphicsPipelineStateControllerDX11 )
+	: CommandListRenderPassGeneric( pDX11CommandSystem, pListType, _graphicsPipelineStateControllerDX11 )
 	, mD3D11Device1( pDX11CommandSystem.mD3D11Device1 )
 	, mD3D11DeviceContext1( std::move( pD3D11DeviceContext1 ) )
 	, _graphicsPipelineStateControllerDX11( *this )

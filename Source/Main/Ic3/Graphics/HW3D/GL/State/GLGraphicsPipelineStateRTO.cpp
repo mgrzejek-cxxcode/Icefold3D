@@ -12,13 +12,13 @@ namespace Ic3::Graphics::GCI
 	GLRenderTargetDescriptor::GLRenderTargetDescriptor(
 			GLGPUDevice & pGPUDevice,
 			GLRenderTargetBindingStatic pGLRenderTargetBinding )
-	: PIM::RenderTargetDescriptorNative( pGPUDevice )
+	: HW3DPipelineStateDescriptor( pGPUDevice )
 	, mGLRenderTargetBinding( std::move( pGLRenderTargetBinding ) )
 	{}
 
 	GLRenderTargetDescriptor::~GLRenderTargetDescriptor() = default;
 
-	bool GLRenderTargetDescriptor::IsAttachmentActive( native_uint pAttachmentIndex ) const noexcept
+	bool GLRenderTargetDescriptor::IsAttachmentConfigured( native_uint pAttachmentIndex ) const noexcept
 	{
 		Ic3DebugAssert( CXU::RTOIsAttachmentIndexValid( pAttachmentIndex ) );
 		return mGLRenderTargetBinding.activeAttachmentsMask.is_set( CXU::RTOMakeAttachmentFlag( pAttachmentIndex ) );

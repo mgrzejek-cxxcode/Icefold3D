@@ -1,8 +1,8 @@
 
 set( IC3_GRAPHICS_HW3D_DX_SRC_FILES
-    "${CMAKE_CURRENT_SOURCE_DIR}/prerequisites/DXCommonShaderDefs.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/prerequisites/DXErrorUtils.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/prerequisites/DXErrorUtils.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Prerequisites/DXCommonShaderDefs.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Prerequisites/DXErrorUtils.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Prerequisites/DXErrorUtils.cpp"
 
     "${CMAKE_CURRENT_SOURCE_DIR}/DXPrerequisites.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/DXPrerequisites.cpp"

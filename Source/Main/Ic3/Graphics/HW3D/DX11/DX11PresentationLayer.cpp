@@ -23,7 +23,7 @@ namespace Ic3::Graphics::GCI
 
 	DX11ScreenPresentationLayerHandle DX11ScreenPresentationLayer::Create( DX11GPUDevice & pDevice, const DX11PresentationLayerCreateInfo & pCreateInfo )
 	{
-		auto sysWindow = createSysWindow( pDevice, pCreateInfo );
+		auto sysWindow = CreateSysWindow( pDevice, pCreateInfo );
 		Ic3DebugAssert( sysWindow );
 
 		auto dxgiSwapChain = ATL::CreateD3D11SwapChainForSystemWindow( pDevice, sysWindow.get() );

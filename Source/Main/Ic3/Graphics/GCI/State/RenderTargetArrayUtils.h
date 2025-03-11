@@ -117,14 +117,12 @@ namespace Ic3::Graphics::GCI
 
 		CPPX_ATTR_NO_DISCARD TPAttachmentConfig * GetAttachment( native_uint pAttachmentIndex ) noexcept
 		{
-			Ic3DebugAssert( CXU::RTOIsAttachmentIndexValid( pAttachmentIndex ) );
-			return &( attachments[pAttachmentIndex] );
+			return CXU::RTOIsAttachmentIndexValid( pAttachmentIndex ) ? &( attachments[pAttachmentIndex] ) : nullptr;
 		}
 
 		CPPX_ATTR_NO_DISCARD const TPAttachmentConfig * GetAttachment( native_uint pAttachmentIndex ) const noexcept
 		{
-			Ic3DebugAssert( CXU::RTOIsAttachmentIndexValid( pAttachmentIndex ) );
-			return &( attachments[pAttachmentIndex] );
+			return CXU::RTOIsAttachmentIndexValid( pAttachmentIndex ) ? &( attachments[pAttachmentIndex] ) : nullptr;
 		}
 
 		CPPX_ATTR_NO_DISCARD const TPAttachmentConfig * FindFirstActiveAttachment( native_uint pFirstIndex = 0 ) const noexcept

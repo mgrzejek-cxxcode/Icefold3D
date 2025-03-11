@@ -24,7 +24,7 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~MetalGraphicsPipelineStateObject();
 
-		static GpaHandle<MetalGraphicsPipelineStateObject> Create(
+		static TGfxHandle<MetalGraphicsPipelineStateObject> Create(
 				MetalGPUDevice & pGPUDevice,
 				const GraphicsPipelineStateObjectCreateInfo & pCreateInfo );
 	};

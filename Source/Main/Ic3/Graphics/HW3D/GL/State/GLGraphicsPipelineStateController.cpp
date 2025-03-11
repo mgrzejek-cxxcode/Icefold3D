@@ -238,7 +238,7 @@ namespace Ic3::Graphics::GCI
 
 		if( baseResult )
 		{
-			const auto & rootSignatureDescriptor = GetCurrentPSORootSignatureDescriptor<PIM::RootSignatureDescriptorGeneric>();
+			const auto & rootSignatureDescriptor = GetCurrentPSORootSignatureDescriptor<RootSignatureDescriptorGeneric>();
 			Ic3DebugAssert( rootSignatureDescriptor.mRootSignature );
 
 			const auto & constantInfo = rootSignatureDescriptor.mRootSignature.GetConstantInfo( pParamRefID );
@@ -258,7 +258,7 @@ namespace Ic3::Graphics::GCI
 
 		if( baseResult )
 		{
-			const auto & rootSignatureDescriptor = GetCurrentPSORootSignatureDescriptor<PIM::RootSignatureDescriptorGeneric>();
+			const auto & rootSignatureDescriptor = GetCurrentPSORootSignatureDescriptor<RootSignatureDescriptorGeneric>();
 			Ic3DebugAssert( rootSignatureDescriptor.mRootSignature );
 
 			const auto & descriptorInfo = rootSignatureDescriptor.mRootSignature.GetDescriptorInfo( pParamRefID );
@@ -286,7 +286,7 @@ namespace Ic3::Graphics::GCI
 
 		if( baseResult )
 		{
-			const auto & rootSignatureDescriptor = GetCurrentPSORootSignatureDescriptor<PIM::RootSignatureDescriptorGeneric>();
+			const auto & rootSignatureDescriptor = GetCurrentPSORootSignatureDescriptor<RootSignatureDescriptorGeneric>();
 			Ic3DebugAssert( rootSignatureDescriptor.mRootSignature );
 
 			const auto & descriptorInfo = rootSignatureDescriptor.mRootSignature.GetDescriptorInfo( pParamRefID );
@@ -316,7 +316,7 @@ namespace Ic3::Graphics::GCI
 
 		if( baseResult )
 		{
-			const auto & rootSignatureDescriptor = GetCurrentPSORootSignatureDescriptor<PIM::RootSignatureDescriptorGeneric>();
+			const auto & rootSignatureDescriptor = GetCurrentPSORootSignatureDescriptor<RootSignatureDescriptorGeneric>();
 			Ic3DebugAssert( rootSignatureDescriptor.mRootSignature );
 
 			const auto & descriptorInfo = rootSignatureDescriptor.mRootSignature.GetDescriptorInfo( pParamRefID );

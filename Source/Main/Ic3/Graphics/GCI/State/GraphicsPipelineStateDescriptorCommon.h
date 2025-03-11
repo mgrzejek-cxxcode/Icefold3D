@@ -13,7 +13,7 @@ namespace Ic3::Graphics::GCI
 	/**
 	 *
 	 */
-	class IC3_GRAPHICS_GCI_CLASS BlendStateDescriptor : public PipelineStateDescriptor
+	class IC3_GRAPHICS_GCI_CLASS BlendStateDescriptor : public CachedPipelineStateDescriptor<PipelineStateDescriptor>
 	{
 	public:
 		cppx::bitmask<EBlendConfigFlags> const mBlendFlags;
@@ -33,7 +33,7 @@ namespace Ic3::Graphics::GCI
 	/**
 	 *
 	 */
-	class IC3_GRAPHICS_GCI_CLASS DepthStencilStateDescriptor : public PipelineStateDescriptor
+	class IC3_GRAPHICS_GCI_CLASS DepthStencilStateDescriptor : public CachedPipelineStateDescriptor<PipelineStateDescriptor>
 	{
 	public:
 		cppx::bitmask<EDepthStencilConfigFlags> mDepthStencilFlags;
@@ -53,7 +53,7 @@ namespace Ic3::Graphics::GCI
 	/**
 	 *
 	 */
-	class IC3_GRAPHICS_GCI_CLASS RasterizerStateDescriptor : public PipelineStateDescriptor
+	class IC3_GRAPHICS_GCI_CLASS RasterizerStateDescriptor : public CachedPipelineStateDescriptor<PipelineStateDescriptor>
 	{
 	public:
 		cppx::bitmask<ERasterizerConfigFlags> const mRasterizerFlags;

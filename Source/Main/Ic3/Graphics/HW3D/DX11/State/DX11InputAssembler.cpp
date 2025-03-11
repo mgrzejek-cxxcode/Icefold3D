@@ -20,7 +20,7 @@ namespace Ic3::Graphics::GCI
 
 	DX11VertexAttributeLayoutDescriptor::~DX11VertexAttributeLayoutDescriptor() = default;
 
-	GpaHandle<DX11VertexAttributeLayoutDescriptor> DX11VertexAttributeLayoutDescriptor::CreateInstance(
+	TGfxHandle<DX11VertexAttributeLayoutDescriptor> DX11VertexAttributeLayoutDescriptor::CreateInstance(
 			DX11GPUDevice & pGPUDevice,
 			const IAVertexAttributeLayoutDefinition & pAttributeLayoutDefinition,
 			const ShaderBinary & pVertexShaderBinary )
@@ -62,7 +62,7 @@ namespace Ic3::Graphics::GCI
 
 	DX11VertexSourceBindingDescriptor::~DX11VertexSourceBindingDescriptor() = default;
 
-	GpaHandle<DX11VertexSourceBindingDescriptor> DX11VertexSourceBindingDescriptor::CreateInstance(
+	TGfxHandle<DX11VertexSourceBindingDescriptor> DX11VertexSourceBindingDescriptor::CreateInstance(
 			DX11GPUDevice & pGPUDevice,
 			const IADataStreamArrayConfiguration & pSourceBindingDefinition )
 	{

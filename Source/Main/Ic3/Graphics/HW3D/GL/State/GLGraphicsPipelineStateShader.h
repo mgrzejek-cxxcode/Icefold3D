@@ -15,7 +15,7 @@ namespace Ic3::Graphics::GCI
 	Ic3GLDeclareOpenGLObjectHandle( GLShaderProgramObject );
 
 	/// @brief
-	class GLGraphicsShaderLinkageDescriptor : public PIM::GraphicsShaderLinkageDescriptorNative
+	class GLGraphicsShaderLinkageDescriptor : public HW3DPipelineStateDescriptor<GraphicsShaderLinkageDescriptor>
 	{
 	public:
 		Ic3DeclareNonCopyable( GLGraphicsShaderLinkageDescriptor )

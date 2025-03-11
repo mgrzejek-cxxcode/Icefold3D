@@ -1,0 +1,29 @@
+
+#include "PipelineStateImplRootSignatureGeneric.h"
+
+namespace Ic3::Graphics::GCI
+{
+
+	RootSignatureDescriptorGeneric::RootSignatureDescriptorGeneric( GPUDevice & pGPUDevice, RootSignature pRootSignature  )
+	: RootSignatureDescriptor( pGPUDevice )
+	, mRootSignature( std::move( pRootSignature ) )
+	{}
+
+	RootSignatureDescriptorGeneric::~RootSignatureDescriptorGeneric() = default;
+
+	TGfxHandle<RootSignatureDescriptorGeneric> RootSignatureDescriptorGeneric::CreateInstance(
+			GPUDevice & pGPUDevice,
+			const RootSignatureDescriptorCreateInfo & pCreateInfo )
+	{
+		auto rootSignature = GCU::CreateRootSignature( pCreateInfo.rootSignatureDesc );
+		if( !rootSignature )
+		{
+			return nullptr;
+		}
+
+		const auto rootSignatureDescriptor = CreateDynamicObject<RootSignatureDescriptorGeneric>( pGPUDevice, std::move( rootSignature ) );
+
+		return rootSignatureDescriptor;
+	}
+
+}

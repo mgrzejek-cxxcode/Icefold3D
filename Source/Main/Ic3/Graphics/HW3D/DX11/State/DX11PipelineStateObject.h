@@ -32,7 +32,7 @@ namespace Ic3::Graphics::GCI
 
 		CPPX_ATTR_NO_DISCARD const DX11VertexAttributeLayoutDescriptor & GetIAVertexAttributeLayout() const noexcept;
 
-		static GpaHandle<DX11GraphicsPipelineStateObject> Create(
+		static TGfxHandle<DX11GraphicsPipelineStateObject> Create(
 				DX11GPUDevice & pGPUDevice,
 				const GraphicsPipelineStateObjectCreateInfo & pCreateInfo );
 	};

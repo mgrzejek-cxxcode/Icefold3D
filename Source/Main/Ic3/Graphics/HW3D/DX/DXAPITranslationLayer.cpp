@@ -42,7 +42,7 @@ namespace Ic3::Graphics::GCI
 			// TODO: warning
 		}
 		dxgiDebugInterface = std::move( dxgiDebugInterface1 );
-	#elif( IC3_DRIVER_GRAPHICS_HW3D_DX11_BUILD )
+	#elif( IC3_GRAPHICS_HW3D_DX_BUILD )
 		auto DXGIGetDebugInterface = LoadDXGIDebugLegacyLoader();
 		auto hResult = DXGIGetDebugInterface( IID_PPV_ARGS( &dxgiDebugInterface ) );
 		if( FAILED( hResult ) )
@@ -69,7 +69,7 @@ namespace Ic3::Graphics::GCI
 		{
 			// TODO: warning
 		}
-	#elif( IC3_DRIVER_GRAPHICS_HW3D_DX11_BUILD )
+	#elif( IC3_GRAPHICS_HW3D_DX_BUILD )
 		auto DXGIGetDebugInterface = LoadDXGIDebugLegacyLoader();
 		auto hResult = DXGIGetDebugInterface( IID_PPV_ARGS( &dxgiInfoQueue ) );
 		if( FAILED( hResult ) )
@@ -83,7 +83,7 @@ namespace Ic3::Graphics::GCI
 
 	uint32 ATL::GetDXGITextureFormatBPP( DXGI_FORMAT pDXGIFormat )
 	{
-	    switch( pDXGIFormat )
+		switch( pDXGIFormat )
 		{
 			Ic3CaseReturn( DXGI_FORMAT_UNKNOWN                    , 0   );
 			Ic3CaseReturn( DXGI_FORMAT_R32G32B32A32_TYPELESS      , 128 );
@@ -266,9 +266,9 @@ namespace Ic3::Graphics::GCI
 
 	DXGI_FORMAT ATL::TranslateDXTextureFormat( ETextureFormat pTextureFormat )
 	{
-	    switch( pTextureFormat )
+		switch( pTextureFormat )
 		{
-            Ic3CaseReturn( ETextureFormat::UNKNOWN    , DXGI_FORMAT_UNKNOWN              );
+			Ic3CaseReturn( ETextureFormat::UNKNOWN    , DXGI_FORMAT_UNKNOWN              );
 			Ic3CaseReturn( ETextureFormat::R32F       , DXGI_FORMAT_R32_FLOAT            );
 			Ic3CaseReturn( ETextureFormat::R32I       , DXGI_FORMAT_R32_SINT             );
 			Ic3CaseReturn( ETextureFormat::R32U       , DXGI_FORMAT_R32_UINT             );
@@ -298,15 +298,15 @@ namespace Ic3::Graphics::GCI
 			Ic3CaseReturn( ETextureFormat::RG8U       , DXGI_FORMAT_R8G8_UINT            );
 			Ic3CaseReturn( ETextureFormat::RG8IN      , DXGI_FORMAT_R8G8_SNORM           );
 			Ic3CaseReturn( ETextureFormat::RG8UN      , DXGI_FORMAT_R8G8_UNORM           );
-            Ic3CaseReturn( ETextureFormat::BGRX8UN    , DXGI_FORMAT_B8G8R8X8_UNORM       );
-            Ic3CaseReturn( ETextureFormat::BGRX8SRGB  , DXGI_FORMAT_B8G8R8X8_UNORM_SRGB  );
-            Ic3CaseReturn( ETextureFormat::BGRA8UN    , DXGI_FORMAT_B8G8R8A8_UNORM       );
-            Ic3CaseReturn( ETextureFormat::BGRA8SRGB  , DXGI_FORMAT_B8G8R8A8_UNORM_SRGB  );
-            Ic3CaseReturn( ETextureFormat::RGBA8I     , DXGI_FORMAT_R8G8B8A8_SINT        );
-            Ic3CaseReturn( ETextureFormat::RGBA8U     , DXGI_FORMAT_R8G8B8A8_UINT        );
-            Ic3CaseReturn( ETextureFormat::RGBA8IN    , DXGI_FORMAT_R8G8B8A8_SNORM       );
-            Ic3CaseReturn( ETextureFormat::RGBA8UN    , DXGI_FORMAT_R8G8B8A8_UNORM       );
-            Ic3CaseReturn( ETextureFormat::RGBA8SRGB  , DXGI_FORMAT_R8G8B8A8_UNORM_SRGB  );
+			Ic3CaseReturn( ETextureFormat::BGRX8UN    , DXGI_FORMAT_B8G8R8X8_UNORM       );
+			Ic3CaseReturn( ETextureFormat::BGRX8SRGB  , DXGI_FORMAT_B8G8R8X8_UNORM_SRGB  );
+			Ic3CaseReturn( ETextureFormat::BGRA8UN    , DXGI_FORMAT_B8G8R8A8_UNORM       );
+			Ic3CaseReturn( ETextureFormat::BGRA8SRGB  , DXGI_FORMAT_B8G8R8A8_UNORM_SRGB  );
+			Ic3CaseReturn( ETextureFormat::RGBA8I     , DXGI_FORMAT_R8G8B8A8_SINT        );
+			Ic3CaseReturn( ETextureFormat::RGBA8U     , DXGI_FORMAT_R8G8B8A8_UINT        );
+			Ic3CaseReturn( ETextureFormat::RGBA8IN    , DXGI_FORMAT_R8G8B8A8_SNORM       );
+			Ic3CaseReturn( ETextureFormat::RGBA8UN    , DXGI_FORMAT_R8G8B8A8_UNORM       );
+			Ic3CaseReturn( ETextureFormat::RGBA8SRGB  , DXGI_FORMAT_R8G8B8A8_UNORM_SRGB  );
 
 			Ic3CaseReturn( ETextureFormat::R5G5B5A1   , DXGI_FORMAT_B5G5R5A1_UNORM     );
 			Ic3CaseReturn( ETextureFormat::R5G6B5     , DXGI_FORMAT_B5G6R5_UNORM       );
@@ -409,7 +409,7 @@ namespace Ic3::Graphics::GCI
 
 	DXGI_FORMAT ATL::TranslateDXVertexAttribFormat( EVertexAttribFormat pVertexAttribFormat )
 	{
-	    switch( pVertexAttribFormat )
+		switch( pVertexAttribFormat )
 		{
 			Ic3CaseReturn( EVertexAttribFormat::F16      , DXGI_FORMAT_R16_FLOAT          );
 			Ic3CaseReturn( EVertexAttribFormat::F32      , DXGI_FORMAT_R32_FLOAT          );
@@ -451,7 +451,7 @@ namespace Ic3::Graphics::GCI
 			Ic3CaseReturn( EVertexAttribFormat::Vec4U8N  , DXGI_FORMAT_R8G8B8A8_UNORM     );
 			Ic3CaseReturn( EVertexAttribFormat::Vec4U16N , DXGI_FORMAT_R16G16B16A16_UNORM );
 		};
-	    return DXGI_FORMAT_UNKNOWN;
+		return DXGI_FORMAT_UNKNOWN;
 	}
 
 } // namespace Ic3::Graphics::GCI

@@ -1,14 +1,13 @@
 
-#include "DX11RenderTarget.h"
+#include "DX11GraphicsPipelineStateRTO.h"
 #include "../DX11APITranslationLayer.h"
 #include "../DX11gpuDevice.h"
 #include "../Resources/DX11Texture.h"
-#include <Ic3/Graphics/GCI/Resources/RenderTargetTexture.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	DX11RenderTargetBindingCompiledState::DX11RenderTargetBindingCompiledState(
+	DX11RenderTargetDescriptor::DX11RenderTargetDescriptor(
 			DX11GPUDevice & pGPUDevice,
 			const RenderTargetLayout & pRenderTargetLayout,
 			DX11RenderTargetBinding pDX11RTBindingData )
@@ -16,17 +15,17 @@ namespace Ic3::Graphics::GCI
 	, mDX11RTBindingData( std::move( pDX11RTBindingData ) )
 	{}
 
-	DX11RenderTargetBindingCompiledState::~DX11RenderTargetBindingCompiledState() = default;
+	DX11RenderTargetDescriptor::~DX11RenderTargetDescriptor() = default;
 
-	GpaHandle<DX11RenderTargetBindingCompiledState> DX11RenderTargetBindingCompiledState::CreateInstance(
+	TGfxHandle<DX11RenderTargetDescriptor> DX11RenderTargetDescriptor::CreateInstance(
 			DX11GPUDevice & pGPUDevice,
-			const RenderTargetBindingDefinition & pBindingDefinition )
+			const RenderTargetDescriptorCreateInfo & pCreateInfo )
 	{
 		const auto renderTargetLayout = GCU::GetRenderTargetLayoutForBindingDefinition( pBindingDefinition );
 
 		auto dx11RTBindingData = GCU::CreateRenderTargetBindingDX11( pGPUDevice, pBindingDefinition );
 
-		auto stateDescriptor = CreateGfxObject<DX11RenderTargetBindingCompiledState>(
+		auto stateDescriptor = CreateGfxObject<DX11RenderTargetDescriptor>(
 				pGPUDevice,
 				renderTargetLayout,
 				std::move( dx11RTBindingData ) );
@@ -34,7 +33,7 @@ namespace Ic3::Graphics::GCI
 		return stateDescriptor;
 	}
 
-	GpaHandle<DX11RenderTargetBindingCompiledState> DX11RenderTargetBindingCompiledState::CreateForScreen(
+	TGfxHandle<DX11RenderTargetDescriptor> DX11RenderTargetDescriptor::CreateForScreen(
 			DX11GPUDevice & pGPUDevice,
 			ComPtr<ID3D11Texture2D> pColorBuffer,
 			ComPtr<ID3D11Texture2D> pDepthStencilBuffer )
@@ -67,7 +66,7 @@ namespace Ic3::Graphics::GCI
 		dx11RTBindingData.depthStencilAttachment.d3d11SubResourceIndex = 0;
 		dx11RTBindingData.d3d11DepthStencilAttachmentDSView = depthStencilBufferDSView.Get();
 
-		auto stateDescriptor = CreateGfxObject<DX11RenderTargetBindingCompiledState>(
+		auto stateDescriptor = CreateGfxObject<DX11RenderTargetDescriptor>(
 				pGPUDevice,
 				renderTargetLayout,
 				std::move( dx11RTBindingData ) );

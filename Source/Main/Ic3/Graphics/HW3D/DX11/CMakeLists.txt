@@ -28,21 +28,22 @@ set( IC3_GRAPHICS_HW3D_DX11_SRC_FILES
 	"Resources/DX11Texture.h"
 	"Resources/DX11Texture.cpp"
 
+	"State/DX11GraphicsPipelineStateCommon.h"
+	"State/DX11GraphicsPipelineStateCommon.cpp"
+	"State/DX11GraphicsPipelineStateRTO.h"
+	"State/DX11GraphicsPipelineStateRTO.cpp"
+
 	"State/DX11PipelineStateController.h"
 	"State/DX11PipelineStateController.cpp"
 	"State/DX11PipelineStateObject.h"
 	"State/DX11PipelineStateObject.cpp"
 
-	"State/DX11CommonGraphicsConfig.cpp"
-	"State/DX11CommonGraphicsConfig.h"
 	"State/DX11GraphicsShaderState.h"
 
 	"State/DX11InputAssembler.cpp"
 	"State/DX11InputAssembler.h"
 	"State/DX11PipelineImmutableStateFactory.cpp"
 	"State/DX11PipelineImmutableStateFactory.h"
-	"State/DX11RenderTarget.cpp"
-	"State/DX11RenderTarget.h"
 )
 
 ic3AddCoreLib( Ic3.Graphics.HW3D.DX11 ${IC3_GRAPHICS_HW3D_DX11_SRC_FILES} )

@@ -6,7 +6,7 @@
 
 #include "../GLPrerequisites.h"
 #include <Ic3/Graphics/GCI/State/GraphicsPipelineStateImplSeparableState.h>
-#include <Ic3/Graphics/GCI/State/PipelineStateDescriptorRootSignature.h>
+#include <Ic3/Graphics/GCI/State/PipelineStateImplRootSignatureGeneric.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -31,7 +31,7 @@ namespace Ic3::Graphics::GCI
 
 		CPPX_ATTR_NO_DISCARD const GLRasterizerStateDescriptor & GetRasterizerStateDescriptor() const noexcept;
 
-		CPPX_ATTR_NO_DISCARD const PIM::RootSignatureDescriptorGeneric & GetRootSignatureDescriptor() const noexcept;
+		CPPX_ATTR_NO_DISCARD const RootSignatureDescriptorGeneric & GetRootSignatureDescriptor() const noexcept;
 
 		CPPX_ATTR_NO_DISCARD const GLGraphicsShaderLinkageDescriptor & GetShaderLinkageDescriptor() const noexcept;
 

@@ -12,7 +12,7 @@ namespace Ic3::Graphics::GCI
 {
 
 	/// @brief
-	class  DX11CommandList : public CommandListGenericRenderPass
+	class  DX11CommandList : public CommandListRenderPassGeneric
 	{
 		friend class DX11CommandSystem;
 

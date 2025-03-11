@@ -24,13 +24,9 @@ namespace Ic3::Graphics::GCI
 		RenderPassDescriptorDynamic( GPUDevice & pGPUDevice );
 		virtual ~RenderPassDescriptorDynamic();
 
-		CPPX_ATTR_NO_DISCARD virtual bool CheckAttachmentLoadActionFlags(
-				uint32 pAttachmentIndex,
-				cppx::bitmask<ERenderPassAttachmentActionFlags> pActionFlags ) const noexcept override final;
+		virtual ERenderPassAttachmentLoadAction GetAttachmentLoadAction( native_uint pAttachmentIndex ) const noexcept override final;
 
-		CPPX_ATTR_NO_DISCARD virtual bool CheckAttachmentStoreActionFlags(
-				uint32 pAttachmentIndex,
-				cppx::bitmask<ERenderPassAttachmentActionFlags> pActionFlags ) const noexcept override final;
+		virtual ERenderPassAttachmentStoreAction GetAttachmentStoreAction( native_uint pAttachmentIndex ) const noexcept override final;
 
 		static TGfxHandle<RenderPassDescriptorDynamic> CreateNew( GPUDevice & pGPUDevice );
 	};

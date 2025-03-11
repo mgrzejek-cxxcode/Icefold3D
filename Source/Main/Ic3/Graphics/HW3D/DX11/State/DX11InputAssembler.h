@@ -80,7 +80,7 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~DX11VertexAttributeLayoutDescriptor();
 
-		static GpaHandle<DX11VertexAttributeLayoutDescriptor> CreateInstance(
+		static TGfxHandle<DX11VertexAttributeLayoutDescriptor> CreateInstance(
 				DX11GPUDevice & pGPUDevice,
 				const IAVertexAttributeLayoutDefinition & pAttributeLayoutDefinition,
 				const ShaderBinary & pVertexShaderBinary );
@@ -100,7 +100,7 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~DX11VertexSourceBindingDescriptor();
 
-		static GpaHandle<DX11VertexSourceBindingDescriptor> CreateInstance(
+		static TGfxHandle<DX11VertexSourceBindingDescriptor> CreateInstance(
 				DX11GPUDevice & pGPUDevice,
 				const IADataStreamArrayConfiguration & pSourceBindingDefinition );
 	};

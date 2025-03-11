@@ -80,7 +80,7 @@ namespace Ic3::Graphics::GCI
 	/**
 	 *
 	 */
-	class GLBlendStateDescriptor : public BlendStateDescriptor
+	class GLBlendStateDescriptor : public HW3DPipelineStateDescriptor<BlendStateDescriptor>
 	{
 	public:
 		GLBlendSettings const mGLBlendSettings;
@@ -101,7 +101,7 @@ namespace Ic3::Graphics::GCI
 	/**
 	 *
 	 */
-	class GLDepthStencilStateDescriptor : public DepthStencilStateDescriptor
+	class GLDepthStencilStateDescriptor : public HW3DPipelineStateDescriptor<DepthStencilStateDescriptor>
 	{
 	public:
 		GLDepthStencilSettings const mGLDepthStencilSettings;
@@ -122,7 +122,7 @@ namespace Ic3::Graphics::GCI
 	/**
 	 *
 	 */
-	class GLRasterizerStateDescriptor : public RasterizerStateDescriptor
+	class GLRasterizerStateDescriptor : public HW3DPipelineStateDescriptor<RasterizerStateDescriptor>
 	{
 	public:
 		GLRasterizerSettings const mGLRasterizerSettings;
@@ -144,14 +144,14 @@ namespace Ic3::Graphics::GCI
 	namespace GCU
 	{
 
-		CPPX_ATTR_NO_DISCARD GLBlendSettings TranslateBlendSettingsGL( const BlendSettings & pSettings );
+		CPPX_ATTR_NO_DISCARD GLBlendSettings TranslateBlendSettingsGL( const BlendSettings & pBlendSettings );
 
-		CPPX_ATTR_NO_DISCARD GLDepthStencilSettings TranslateDepthStencilSettingsGL( const DepthStencilSettings & pSettings );
+		CPPX_ATTR_NO_DISCARD GLDepthStencilSettings TranslateDepthStencilSettingsGL( const DepthStencilSettings & pDepthStencilSettings );
 
-		CPPX_ATTR_NO_DISCARD GLRasterizerSettings TranslateRasterizerSettingsGL( const RasterizerSettings & pSettings );
+		CPPX_ATTR_NO_DISCARD GLRasterizerSettings TranslateRasterizerSettingsGL( const RasterizerSettings & pRasterizerSettings );
 
 		CPPX_ATTR_NO_DISCARD GLRenderTargetColorAttachmentBlendSettings TranslateRenderTargetColorAttachmentBlendSettingsGL(
-				const RenderTargetColorAttachmentBlendSettings & pSettings );
+				const RenderTargetColorAttachmentBlendSettings & pColorAttachmentBlendSettings );
 
 	}
 

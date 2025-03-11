@@ -18,7 +18,7 @@
 #  define IC3_GX_DX11_CLASS
 #  define IC3_GX_DX11_OBJ    extern
 #else
-#  if( IC3_DRIVER_GRAPHICS_HW3D_DX11_BUILD )
+#  if( IC3_GRAPHICS_HW3D_DX_BUILD )
 #    define IC3_GX_DX11_API    PCL_ATTR_DLL_EXPORT
 #    define IC3_GX_DX11_CLASS  PCL_ATTR_DLL_EXPORT
 #    define IC3_GX_DX11_OBJ    PCL_ATTR_DLL_EXPORT
@@ -40,7 +40,7 @@ namespace Ic3::Graphics::GCI
 	class DX11RasterizerStateDescriptor;
 	class DX11VertexAttributeLayoutDescriptor;
 	class DX11VertexSourceBindingDescriptor;
-	class DX11RenderTargetBindingCompiledState;
+	class DX11RenderTargetDescriptor;
 
 	Ic3GCIDeclareClassHandle( DX11CommandList );
 	Ic3GCIDeclareClassHandle( DX11CommandSystem );

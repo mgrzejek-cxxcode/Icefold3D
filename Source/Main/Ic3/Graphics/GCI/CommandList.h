@@ -109,7 +109,7 @@ namespace Ic3::Graphics::GCI
 		virtual void CmdExecuteDeferredContext( CommandContextDeferred & pDeferredContext ) = 0;
 
 	protected:
-		const RenderPassDescriptor * GetCurrentRenderPassDescriptor() const noexcept;
+		GraphicsPipelineStateController * GetStateController() const noexcept;
 
 		void ValidateActiveRenderPassOrThrow() const;
 

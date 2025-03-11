@@ -5,8 +5,8 @@
 #include "GLGraphicsPipelineStateIA.h"
 #include "GLGraphicsPipelineStateRTO.h"
 #include "../GLGPUDevice.h"
-#include <IC3/Graphics/GCI/State/PipelineStateDescriptorRootSignature.h>
-#include <IC3/Graphics/GCI/State/GraphicsPipelineStateImplGenericRenderPass.h>
+#include <IC3/Graphics/GCI/State/GraphicsPipelineStateImplRenderPassGeneric.h>
+#include <IC3/Graphics/GCI/State/PipelineStateImplRootSignatureGeneric.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -44,7 +44,7 @@ namespace Ic3::Graphics::GCI
 	RootSignatureDescriptorHandle GLPipelineStateDescriptorFactory::CreateRootSignatureDescriptor(
 			const RootSignatureDescriptorCreateInfo & pCreateInfo )
 	{
-		return PIM::RootSignatureDescriptorGeneric::CreateInstance( mGLGPUDevice, pCreateInfo );
+		return RootSignatureDescriptorGeneric::CreateInstance( mGLGPUDevice, pCreateInfo );
 	}
 
 	RenderPassDescriptorHandle GLPipelineStateDescriptorFactory::CreateRenderPassDescriptor(

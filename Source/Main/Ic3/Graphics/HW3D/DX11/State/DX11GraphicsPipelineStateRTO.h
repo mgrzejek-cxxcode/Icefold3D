@@ -6,7 +6,7 @@
 
 #include "../Resources/DX11Texture.h"
 #include <Ic3/Graphics/GCI/Resources/TextureReference.h>
-#include <Ic3/Graphics/GCI/State/RenderTargetCompiledStates.h>
+#include <Ic3/Graphics/GCI/State/GraphicsPipelineStateDescriptorRTO.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -49,36 +49,34 @@ namespace Ic3::Graphics::GCI
 		}
 	};
 
-	struct DX11RenderTargetBinding
+	struct DX11RenderTargetBinding : public RenderTargetArrayCommonConfig
 	{
-		cppx::bitmask<ERTAttachmentFlags> activeAttachmentsMask = 0;
-
-		DX11RenderTargetColorAttachment colorAttachments[GCM::RT_MAX_COLOR_ATTACHMENTS_NUM];
+		DX11RenderTargetColorAttachment colorAttachments[GCM::kRTOMaxColorAttachmentsNum];
 		DX11RenderTargetDepthStencilAttachment depthStencilAttachment;
-		DX11RenderTargetResolveAttachment resolveAttachments[GCM::RT_MAX_COMBINED_ATTACHMENTS_NUM];
+		DX11RenderTargetResolveAttachment resolveAttachments[GCM::kRTOMaxCombinedAttachmentsNum];
 
-		ID3D11RenderTargetView * d3d11ColorAttachmentRTViewArray[GCM::RT_MAX_COLOR_ATTACHMENTS_NUM];
+		ID3D11RenderTargetView * d3d11ColorAttachmentRTViewArray[GCM::kRTOMaxColorAttachmentsNum];
 		ID3D11DepthStencilView * d3d11DepthStencilAttachmentDSView;
 	};
 
-	class DX11RenderTargetBindingCompiledState : public RenderTargetBindingCompiledState
+	class DX11RenderTargetDescriptor : public PIM::RenderTargetDescriptorNative
 	{
 	public:
-		DX11RenderTargetBinding const mDX11RTBindingData;
+		DX11RenderTargetBinding const mDX11RenderTargetBinding;
 
 	public:
-		DX11RenderTargetBindingCompiledState(
+		DX11RenderTargetDescriptor(
 				DX11GPUDevice & pGPUDevice,
 				const RenderTargetLayout & pRenderTargetLayout,
 				DX11RenderTargetBinding pDX11RTBindingData );
 
-		virtual ~DX11RenderTargetBindingCompiledState();
+		virtual ~DX11RenderTargetDescriptor();
 
-		static GpaHandle<DX11RenderTargetBindingCompiledState> CreateInstance(
+		static TGfxHandle<DX11RenderTargetDescriptor> CreateInstance(
 				DX11GPUDevice & pGPUDevice,
-				const RenderTargetBindingDefinition & pBindingDefinition );
+				const RenderTargetDescriptorCreateInfo & pCreateInfo );
 
-		static GpaHandle<DX11RenderTargetBindingCompiledState> CreateForScreen(
+		static TGfxHandle<DX11RenderTargetDescriptor> CreateForScreen(
 				DX11GPUDevice & pGPUDevice,
 				ComPtr<ID3D11Texture2D> pColorBuffer,
 				ComPtr<ID3D11Texture2D> pDepthStencilBuffer );
