@@ -33,7 +33,7 @@ namespace Ic3::Graphics::GCI
 
 		virtual void CmdExecuteDeferredContext( CommandContextDeferred & pDeferredContext ) override;
 
-	friendapi:
+	friendapi( private ):
 		ID3D11Query * ReleaseExecutionSyncQuery();
 
 	private:

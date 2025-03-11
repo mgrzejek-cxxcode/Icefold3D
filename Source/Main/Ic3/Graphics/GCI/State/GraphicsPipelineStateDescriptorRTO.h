@@ -13,10 +13,7 @@ namespace Ic3::Graphics::GCI
 	class IC3_GRAPHICS_GCI_CLASS RenderTargetArrayConfigStateDescriptor : public PipelineStateDescriptor
 	{
 	public:
-		RenderTargetArrayConfigStateDescriptor(
-				GPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID );
-
+		RenderTargetArrayConfigStateDescriptor( GPUDevice & pGPUDevice );
 		virtual ~RenderTargetArrayConfigStateDescriptor();
 
 		CPPX_ATTR_NO_DISCARD virtual bool IsAttachmentActive( native_uint pAttachmentIndex ) const noexcept = 0;
@@ -30,10 +27,7 @@ namespace Ic3::Graphics::GCI
 	class IC3_GRAPHICS_GCI_CLASS RenderPassDescriptor : public RenderTargetArrayConfigStateDescriptor
 	{
 	public:
-		RenderPassDescriptor(
-				GPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID );
-
+		RenderPassDescriptor( GPUDevice & pGPUDevice );
 		virtual ~RenderPassDescriptor();
 
 		CPPX_ATTR_NO_DISCARD virtual EPipelineStateDescriptorType GetDescriptorType() const noexcept override final;
@@ -60,10 +54,7 @@ namespace Ic3::Graphics::GCI
 	class IC3_GRAPHICS_GCI_CLASS RenderTargetDescriptor : public RenderTargetArrayConfigStateDescriptor
 	{
 	public:
-		RenderTargetDescriptor(
-				GPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID );
-
+		RenderTargetDescriptor( GPUDevice & pGPUDevice );
 		virtual ~RenderTargetDescriptor();
 
 		CPPX_ATTR_NO_DISCARD virtual EPipelineStateDescriptorType GetDescriptorType() const noexcept override final;
@@ -84,10 +75,7 @@ namespace Ic3::Graphics::GCI
 			Ic3DeclareNonCopyable( RenderPassDescriptorNative );
 
 		public:
-			RenderPassDescriptorNative(
-					GPUDevice & pGPUDevice,
-					pipeline_state_descriptor_id_t pDescriptorID );
-
+			RenderPassDescriptorNative( GPUDevice & pGPUDevice );
 			virtual ~RenderPassDescriptorNative();
 		};
 
@@ -99,11 +87,7 @@ namespace Ic3::Graphics::GCI
 			RenderTargetBinding const mRenderTargetBinding;
 
 		public:
-			RenderTargetDescriptorGeneric(
-					GPUDevice & pGPUDevice,
-					pipeline_state_descriptor_id_t pDescriptorID,
-					const RenderTargetBinding & pTargetBinding );
-
+			RenderTargetDescriptorGeneric( GPUDevice & pGPUDevice, const RenderTargetBinding & pTargetBinding );
 			virtual ~RenderTargetDescriptorGeneric();
 
 			CPPX_ATTR_NO_DISCARD virtual bool IsAttachmentActive( native_uint pAttachmentIndex ) const noexcept override final;
@@ -121,10 +105,7 @@ namespace Ic3::Graphics::GCI
 			Ic3DeclareNonCopyable( RenderTargetDescriptorNative );
 
 		public:
-			RenderTargetDescriptorNative(
-					GPUDevice & pGPUDevice,
-					pipeline_state_descriptor_id_t pDescriptorID );
-
+			RenderTargetDescriptorNative( GPUDevice & pGPUDevice );
 			virtual ~RenderTargetDescriptorNative();
 		};
 

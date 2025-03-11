@@ -18,41 +18,32 @@ namespace Ic3::Graphics::GCI
 		virtual ~GLPipelineStateDescriptorFactory();
 
 		virtual GraphicsShaderLinkageDescriptorHandle CreateGraphicsShaderLinkageDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo ) override = 0;
 
 		virtual VertexAttributeLayoutDescriptorHandle CreateVertexAttributeLayoutDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo ) override = 0;
 
 		virtual GPUDevice & GetGPUDevice() const noexcept override final;
 
 		virtual BlendStateDescriptorHandle CreateBlendStateDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const BlendStateDescriptorCreateInfo & pCreateInfo ) override final;
 
 		virtual DepthStencilStateDescriptorHandle CreateDepthStencilStateDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const DepthStencilStateDescriptorCreateInfo & pCreateInfo ) override final;
 
 		virtual RasterizerStateDescriptorHandle CreateRasterizerStateDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const RasterizerStateDescriptorCreateInfo & pCreateInfo ) override final;
 
 		virtual RootSignatureDescriptorHandle CreateRootSignatureDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const RootSignatureDescriptorCreateInfo & pCreateInfo ) override final;
 
 		virtual RenderPassDescriptorHandle CreateRenderPassDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const RenderPassDescriptorCreateInfo & pCreateInfo ) override final;
 
 		virtual RenderTargetDescriptorHandle CreateRenderTargetDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const RenderTargetDescriptorCreateInfo & pCreateInfo ) override final;
 
 		virtual VertexSourceBindingDescriptorHandle CreateVertexSourceBindingDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const VertexSourceBindingDescriptorCreateInfo & pCreateInfo ) override final;
 	};
 
@@ -63,11 +54,9 @@ namespace Ic3::Graphics::GCI
 		virtual ~GLPipelineStateDescriptorFactoryCore();
 
 		virtual GraphicsShaderLinkageDescriptorHandle CreateGraphicsShaderLinkageDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo ) override final;
 
 		virtual VertexAttributeLayoutDescriptorHandle CreateVertexAttributeLayoutDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo ) override final;
 	};
 
@@ -78,11 +67,9 @@ namespace Ic3::Graphics::GCI
 		virtual ~GLPipelineStateDescriptorFactoryCompat();
 
 		virtual GraphicsShaderLinkageDescriptorHandle CreateGraphicsShaderLinkageDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo ) override final;
 
 		virtual VertexAttributeLayoutDescriptorHandle CreateVertexAttributeLayoutDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo ) override final;
 	};
 

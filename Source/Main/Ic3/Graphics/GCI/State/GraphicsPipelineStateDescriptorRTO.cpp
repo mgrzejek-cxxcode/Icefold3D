@@ -6,10 +6,8 @@ namespace Ic3::Graphics::GCI
 
 	//!! RenderTargetArrayConfigStateDescriptor
 
-	RenderTargetArrayConfigStateDescriptor::RenderTargetArrayConfigStateDescriptor(
-			GPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID )
-	: PipelineStateDescriptor( pGPUDevice, pDescriptorID )
+	RenderTargetArrayConfigStateDescriptor::RenderTargetArrayConfigStateDescriptor( GPUDevice & pGPUDevice )
+	: PipelineStateDescriptor( pGPUDevice )
 	{}
 
 	RenderTargetArrayConfigStateDescriptor::~RenderTargetArrayConfigStateDescriptor() = default;
@@ -17,10 +15,8 @@ namespace Ic3::Graphics::GCI
 
 	//!! RenderPassDescriptor
 
-	RenderPassDescriptor::RenderPassDescriptor(
-			GPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID )
-	: RenderTargetArrayConfigStateDescriptor( pGPUDevice, pDescriptorID )
+	RenderPassDescriptor::RenderPassDescriptor( GPUDevice & pGPUDevice )
+	: RenderTargetArrayConfigStateDescriptor( pGPUDevice )
 	{}
 
 	RenderPassDescriptor::~RenderPassDescriptor() = default;
@@ -47,10 +43,8 @@ namespace Ic3::Graphics::GCI
 
 	//!! RenderTargetDescriptor
 
-	RenderTargetDescriptor::RenderTargetDescriptor(
-			GPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID )
-	: RenderTargetArrayConfigStateDescriptor( pGPUDevice, pDescriptorID )
+	RenderTargetDescriptor::RenderTargetDescriptor( GPUDevice & pGPUDevice )
+	: RenderTargetArrayConfigStateDescriptor( pGPUDevice )
 	{}
 
 	RenderTargetDescriptor::~RenderTargetDescriptor() = default;
@@ -66,10 +60,8 @@ namespace Ic3::Graphics::GCI
 
 		//!! RenderPassDescriptorNative
 
-		RenderPassDescriptorNative::RenderPassDescriptorNative(
-				GPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID )
-		: RenderPassDescriptor( pGPUDevice, pDescriptorID )
+		RenderPassDescriptorNative::RenderPassDescriptorNative( GPUDevice & pGPUDevice )
+		: RenderPassDescriptor( pGPUDevice )
 		{}
 
 		RenderPassDescriptorNative::~RenderPassDescriptorNative() = default;
@@ -77,11 +69,8 @@ namespace Ic3::Graphics::GCI
 
 		//!! RenderTargetDescriptorGeneric
 
-		RenderTargetDescriptorGeneric::RenderTargetDescriptorGeneric(
-				GPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
-				const RenderTargetBinding & pTargetBinding )
-		: RenderTargetDescriptor( pGPUDevice, pDescriptorID )
+		RenderTargetDescriptorGeneric::RenderTargetDescriptorGeneric( GPUDevice & pGPUDevice, const RenderTargetBinding & pTargetBinding )
+		: RenderTargetDescriptor( pGPUDevice )
 		{}
 
 		RenderTargetDescriptorGeneric::~RenderTargetDescriptorGeneric() = default;
@@ -103,10 +92,8 @@ namespace Ic3::Graphics::GCI
 
 		//!! RenderPassDescriptorNative
 
-		RenderTargetDescriptorNative::RenderTargetDescriptorNative(
-				GPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID )
-		: RenderTargetDescriptor( pGPUDevice, pDescriptorID )
+		RenderTargetDescriptorNative::RenderTargetDescriptorNative( GPUDevice & pGPUDevice )
+		: RenderTargetDescriptor( pGPUDevice )
 		{}
 
 		RenderTargetDescriptorNative::~RenderTargetDescriptorNative() = default;

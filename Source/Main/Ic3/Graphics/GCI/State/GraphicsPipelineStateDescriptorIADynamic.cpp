@@ -5,7 +5,7 @@ namespace Ic3::Graphics::GCI
 {
 
 	VertexSourceBindingDescriptorDynamic::VertexSourceBindingDescriptorDynamic( GPUDevice & pGPUDevice )
-	: PipelineStateDescriptorDynamic<VertexSourceBindingDescriptor>( pGPUDevice, kPipelineStateDescriptorIDAuto, _vertexSourceBinding )
+	: PipelineStateDescriptorDynamic<VertexSourceBindingDescriptor>( pGPUDevice, _vertexSourceBinding )
 	{}
 
 	VertexSourceBindingDescriptorDynamic::~VertexSourceBindingDescriptorDynamic() = default;

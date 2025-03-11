@@ -22,11 +22,7 @@ namespace Ic3::Graphics::GCI
 	public:
 		Ic3DeclareNonCopyable( VertexAttributeLayoutDescriptor );
 
-		VertexAttributeLayoutDescriptor(
-				GPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
-				const IAVertexAttributeLayoutCommonConfig & pCommonAttributeLayoutConfig );
-
+		VertexAttributeLayoutDescriptor( GPUDevice & pGPUDevice, const IAVertexAttributeLayoutCommonConfig & pCommonAttributeLayoutConfig );
 		virtual ~VertexAttributeLayoutDescriptor();
 
 		CPPX_ATTR_NO_DISCARD virtual EPipelineStateDescriptorType GetDescriptorType() const noexcept override final;
@@ -46,11 +42,7 @@ namespace Ic3::Graphics::GCI
 	public:
 		Ic3DeclareNonCopyable( VertexSourceBindingDescriptor );
 
-		VertexSourceBindingDescriptor(
-				GPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
-				const IAVertexSourceBindingCommonConfig & pCommonSourceBindingConfig );
-
+		VertexSourceBindingDescriptor( GPUDevice & pGPUDevice, const IAVertexSourceBindingCommonConfig & pCommonSourceBindingConfig );
 		virtual ~VertexSourceBindingDescriptor();
 
 		CPPX_ATTR_NO_DISCARD virtual EPipelineStateDescriptorType GetDescriptorType() const noexcept override final;
@@ -70,11 +62,7 @@ namespace Ic3::Graphics::GCI
 			Ic3DeclareNonCopyable( VertexAttributeLayoutDescriptorNative );
 
 		public:
-			VertexAttributeLayoutDescriptorNative(
-					GPUDevice & pGPUDevice,
-					pipeline_state_descriptor_id_t pDescriptorID,
-					const IAVertexAttributeLayoutCommonConfig & pCommonAttributeLayoutConfig );
-
+			VertexAttributeLayoutDescriptorNative( GPUDevice & pGPUDevice, const IAVertexAttributeLayoutCommonConfig & pCommonAttributeLayoutConfig );
 			virtual ~VertexAttributeLayoutDescriptorNative();
 		};
 
@@ -87,11 +75,7 @@ namespace Ic3::Graphics::GCI
 			Ic3DeclareNonCopyable( VertexSourceBindingDescriptorNative );
 
 		public:
-			VertexSourceBindingDescriptorNative(
-					GPUDevice & pGPUDevice,
-					pipeline_state_descriptor_id_t pDescriptorID,
-					const IAVertexSourceBindingCommonConfig & pCommonSourceBindingConfig );
-
+			VertexSourceBindingDescriptorNative( GPUDevice & pGPUDevice, const IAVertexSourceBindingCommonConfig & pCommonSourceBindingConfig );
 			virtual ~VertexSourceBindingDescriptorNative();
 		};
 

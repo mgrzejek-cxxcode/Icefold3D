@@ -11,9 +11,8 @@ namespace Ic3::Graphics::GCI
 
 	GLRenderTargetDescriptor::GLRenderTargetDescriptor(
 			GLGPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID,
 			GLRenderTargetBindingStatic pGLRenderTargetBinding )
-	: PIM::RenderTargetDescriptorNative( pGPUDevice, pDescriptorID )
+	: PIM::RenderTargetDescriptorNative( pGPUDevice )
 	, mGLRenderTargetBinding( std::move( pGLRenderTargetBinding ) )
 	{}
 
@@ -27,7 +26,6 @@ namespace Ic3::Graphics::GCI
 
 	TGfxHandle<GLRenderTargetDescriptor> GLRenderTargetDescriptor::CreateInstance(
 			GLGPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID,
 			const RenderTargetDescriptorCreateInfo & pCreateInfo )
 	{
 		if( !GCU::RTOValidateRenderTargetBinding( pCreateInfo.rtArrayBinding ) )
@@ -37,17 +35,13 @@ namespace Ic3::Graphics::GCI
 
 		auto glcRenderTargetBindingStatic = GCU::RTOTranslateRenderTargetBindingForStaticDescriptorGL( pCreateInfo.rtArrayBinding );
 
-		auto glcRenderTargetBindingDescriptor = CreateGfxObject<GLRenderTargetDescriptor>(
-				pGPUDevice,
-				pDescriptorID,
-				std::move( glcRenderTargetBindingStatic ) );
+		const auto glcRenderTargetBindingDescriptor = CreateGfxObject<GLRenderTargetDescriptor>( pGPUDevice, std::move( glcRenderTargetBindingStatic ) );
 
 		return glcRenderTargetBindingDescriptor;
 	}
 
 	TGfxHandle<GLRenderTargetDescriptor> GLRenderTargetDescriptor::CreateForScreen(
 			GLGPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID,
 			const RenderTargetLayout & pRenderTargetLayout )
 	{
 		GLRenderTargetBindingStatic glcRenderTargetBindingStatic{};
@@ -57,10 +51,7 @@ namespace Ic3::Graphics::GCI
 		glcRenderTargetBindingStatic.baseFramebuffer = GLFramebufferObject::CreateForDefaultFramebuffer();
 		glcRenderTargetBindingStatic.resolveFramebuffer = nullptr;
 
-		auto glcRenderTargetBindingDescriptor = CreateGfxObject<GLRenderTargetDescriptor>(
-				pGPUDevice,
-				pDescriptorID,
-				std::move( glcRenderTargetBindingStatic ) );
+		const auto glcRenderTargetBindingDescriptor = CreateGfxObject<GLRenderTargetDescriptor>( pGPUDevice, std::move( glcRenderTargetBindingStatic ) );
 
 		return glcRenderTargetBindingDescriptor;
 	}

@@ -90,7 +90,7 @@ namespace Ic3::System
 		/// @brief Releases all JNI resources created for the current thread.
 		void ReleaseCurrentThreadState();
 
-	friendapi:
+	friendapi( private ):
 		/// @brief Used by JavaNativeInterfaceDeleter, called when JNI objects is to be destroyed.
 		void OnJavaNativeInterfacePtrDestroy( JavaNativeInterface * pJNI );
 

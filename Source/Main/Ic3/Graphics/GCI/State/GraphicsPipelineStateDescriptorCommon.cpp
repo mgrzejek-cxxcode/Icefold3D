@@ -6,9 +6,8 @@ namespace Ic3::Graphics::GCI
 
 	BlendStateDescriptor::BlendStateDescriptor(
 			GPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID,
 			cppx::bitmask<EBlendConfigFlags> pBlendFlags )
-	: PipelineStateDescriptor( pGPUDevice, pDescriptorID )
+	: PipelineStateDescriptor( pGPUDevice )
 	, mBlendFlags( pBlendFlags & eBlendConfigMaskAll )
 	{}
 
@@ -22,9 +21,8 @@ namespace Ic3::Graphics::GCI
 
 	DepthStencilStateDescriptor::DepthStencilStateDescriptor(
 			GPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID,
 			cppx::bitmask<EDepthStencilConfigFlags> pDepthStencilFlags )
-	: PipelineStateDescriptor( pGPUDevice, pDescriptorID )
+	: PipelineStateDescriptor( pGPUDevice )
 	, mDepthStencilFlags( pDepthStencilFlags & eDepthStencilConfigMaskAll )
 	{}
 
@@ -38,9 +36,8 @@ namespace Ic3::Graphics::GCI
 
 	RasterizerStateDescriptor::RasterizerStateDescriptor(
 			GPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID,
 			cppx::bitmask<ERasterizerConfigFlags> pRasterizerFlags )
-	: PipelineStateDescriptor( pGPUDevice, pDescriptorID )
+	: PipelineStateDescriptor( pGPUDevice )
 	, mRasterizerFlags( pRasterizerFlags & eRasterizerConfigMaskAll )
 	{}
 

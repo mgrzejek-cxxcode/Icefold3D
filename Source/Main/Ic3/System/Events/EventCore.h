@@ -153,7 +153,7 @@ namespace Ic3::System
 
 		CPPX_ATTR_NO_DISCARD bool IsEventSourceRegistered( const EventSource & pEventSource ) const noexcept;
 
-	friendapi:
+	friendapi( protected ):
 		// Used by the EventSource class. It is called inside its destructor.
 		void OnEventSourceDestroy( EventSource & pEventSource ) noexcept;
 
@@ -240,7 +240,7 @@ namespace Ic3::System
 
 		CPPX_ATTR_NO_DISCARD cppx::bitmask<EEventSystemConfigFlags> GetEventSystemConfigFlags() const;
 
-	friendapi:
+	friendapi( private ):
 		const EventSystemConfig & GetEventSystemConfig() const;
 
 	private:

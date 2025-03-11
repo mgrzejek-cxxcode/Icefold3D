@@ -6,9 +6,8 @@ namespace Ic3::Graphics::GCI
 
 	RenderPassDescriptorGeneric::RenderPassDescriptorGeneric(
 			GPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID,
 			const RenderPassConfiguration & pRenderPassConfiguration )
-	: RenderPassDescriptor( pGPUDevice, pDescriptorID )
+	: RenderPassDescriptor( pGPUDevice )
 	, mPassConfiguration( pRenderPassConfiguration )
 	{}
 
@@ -38,7 +37,6 @@ namespace Ic3::Graphics::GCI
 
 	TGfxHandle<RenderPassDescriptorGeneric> RenderPassDescriptorGeneric::CreateInstance(
 			GPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID,
 			const RenderPassDescriptorCreateInfo & pCreateInfo,
 			const std::initializer_list<ERenderPassAttachmentActionFlags> & pCachedAttachmentsWithFlags )
 	{
@@ -55,23 +53,16 @@ namespace Ic3::Graphics::GCI
 				renderPassConfigurationCopy.CacheAttachmentsWithActionFlags( attachmentActionFlags );
 			}
 
-			return CreateDynamicObject<RenderPassDescriptorGeneric>(
-					pGPUDevice,
-					pDescriptorID,
-					renderPassConfigurationCopy );
+			return CreateDynamicObject<RenderPassDescriptorGeneric>( pGPUDevice, renderPassConfigurationCopy );
 		}
 		else
 		{
-			return CreateDynamicObject<RenderPassDescriptorGeneric>(
-					pGPUDevice,
-					pDescriptorID,
-					pCreateInfo.passConfiguration );
+			return CreateDynamicObject<RenderPassDescriptorGeneric>( pGPUDevice, pCreateInfo.passConfiguration );
 		}
 	}
 
 	TGfxHandle<RenderPassDescriptorGeneric> RenderPassDescriptorGeneric::CreateInstance(
 			GPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID,
 			const RenderPassDescriptorCreateInfo & pCreateInfo )
 	{
 		if( !GCU::RTOValidateRenderPassConfiguration( pCreateInfo.passConfiguration ) )
@@ -79,10 +70,7 @@ namespace Ic3::Graphics::GCI
 			return nullptr;
 		}
 
-		return CreateDynamicObject<RenderPassDescriptorGeneric>(
-				pGPUDevice,
-				pDescriptorID,
-				pCreateInfo.passConfiguration );
+		return CreateDynamicObject<RenderPassDescriptorGeneric>( pGPUDevice, pCreateInfo.passConfiguration );
 	}
 
 } // namespace Ic3::Graphics::GCI

@@ -44,8 +44,8 @@ namespace Ic3::System
 		explicit PosixFile( FileManagerHandle pFileManager );
 		virtual ~PosixFile() noexcept;
 
-	friendapi:
-		void setInternalFilePtr( FILE * pFilePtr );
+	friendapi( private ):
+		void SetInternalFilePtr( FILE * pFilePtr );
 
 	private:
 		void _ReleasePosixFileHandle();

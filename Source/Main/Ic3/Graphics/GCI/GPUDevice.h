@@ -210,7 +210,8 @@ namespace Ic3::Graphics::GCI
 		 * @return
 		 */
 		CPPX_ATTR_NO_DISCARD RenderPassDescriptorHandle CreateRenderPassDescriptor(
-				const RenderPassDescriptorCreateInfo & pCreateInfo );
+				const RenderPassDescriptorCreateInfo & pCreateInfo,
+				pipeline_state_descriptor_id_t pDescriptorID = kPipelineStateDescriptorIDInvalid );
 
 		/**
 		 *
@@ -218,7 +219,8 @@ namespace Ic3::Graphics::GCI
 		 * @return
 		 */
 		CPPX_ATTR_NO_DISCARD RenderTargetDescriptorHandle CreateRenderTargetDescriptor(
-				const RenderTargetDescriptorCreateInfo & pCreateInfo );
+				const RenderTargetDescriptorCreateInfo & pCreateInfo,
+				pipeline_state_descriptor_id_t pDescriptorID = kPipelineStateDescriptorIDInvalid );
 
 		/**
 		 *
@@ -226,7 +228,8 @@ namespace Ic3::Graphics::GCI
 		 * @return
 		 */
 		CPPX_ATTR_NO_DISCARD VertexSourceBindingDescriptorHandle CreateVertexSourceBindingDescriptor(
-				const VertexSourceBindingDescriptorCreateInfo & pCreateInfo );
+				const VertexSourceBindingDescriptorCreateInfo & pCreateInfo,
+				pipeline_state_descriptor_id_t pDescriptorID = kPipelineStateDescriptorIDInvalid );
 
 		/**
 		 *

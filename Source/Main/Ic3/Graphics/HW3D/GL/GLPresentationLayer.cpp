@@ -93,10 +93,7 @@ namespace Ic3::Graphics::GCI
 		rtoLayoutForScreen.sharedMultiSamplingSettings.sampleCount = pCreateInfo.visualConfig.msaaDesc.bufferCount;
 		rtoLayoutForScreen.sharedMultiSamplingSettings.sampleQuality = pCreateInfo.visualConfig.msaaDesc.quality;
 
-		auto renderTargetDescriptor = GLRenderTargetDescriptor::CreateForScreen(
-				pGPUDevice,
-				kSDIRenderTargetDescriptorScreenDefault,
-				rtoLayoutForScreen );
+		auto renderTargetDescriptor = GLRenderTargetDescriptor::CreateForScreen( pGPUDevice, rtoLayoutForScreen );
 		Ic3DebugAssert( renderTargetDescriptor );
 		
 		auto presentationLayer = CreateGfxObject<GLScreenPresentationLayer>( pGPUDevice, sysGLSurface, renderTargetDescriptor );

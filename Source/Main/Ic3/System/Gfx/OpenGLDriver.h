@@ -148,7 +148,7 @@ namespace Ic3::System
 		 */ 
 		CPPX_ATTR_NO_DISCARD bool IsRenderContextBound() const;
 
-	friendapi:
+	friendapi( private ):
 		/**
 		 * Used by the OpenGLDisplaySurface class. Releases OS-level state of the specified surface.
 		 */ 

@@ -26,10 +26,8 @@ namespace Ic3::Graphics::GCI
 	public:
 		Ic3DeclareNonCopyable( RTArrayDescriptorDynamicProxy );
 
-		RTArrayDescriptorDynamicProxy(
-				GPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID = kPipelineStateDescriptorIDAuto )
-		: PipelineStateDescriptorDynamic<TPBaseDescriptor>( pGPUDevice, pDescriptorID )
+		RTArrayDescriptorDynamicProxy( GPUDevice & pGPUDevice )
+		: PipelineStateDescriptorDynamic<TPBaseDescriptor>( pGPUDevice )
 		{}
 
 		virtual ~RTArrayDescriptorDynamicProxy() = default;

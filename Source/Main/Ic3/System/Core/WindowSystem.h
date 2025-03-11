@@ -31,7 +31,7 @@ namespace Ic3::System
 
 		CPPX_ATTR_NO_DISCARD uint32 GetActiveWindowsNum() const;
 
-	friendapi:
+	friendapi( private ):
 		// Used by the Window class.
 		// Destroys system-level window internals without invalidating 'pWindow' itself.
 		virtual void ReleaseSystemWindow( Window & pWindow ) noexcept;

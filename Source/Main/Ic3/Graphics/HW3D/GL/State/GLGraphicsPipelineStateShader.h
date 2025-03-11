@@ -22,7 +22,6 @@ namespace Ic3::Graphics::GCI
 
 		GLGraphicsShaderLinkageDescriptor(
 				GLGPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const GraphicsShaderBindingCommonConfig & pCommonShaderBindingConfig );
 
 		virtual ~GLGraphicsShaderLinkageDescriptor();
@@ -43,7 +42,6 @@ namespace Ic3::Graphics::GCI
 
 		GLGraphicsShaderLinkageDescriptorCore(
 				GLGPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const GraphicsShaderBindingCommonConfig & pCommonShaderBindingConfig,
 				GLShaderPipelineObjectHandle pGLShaderPipelineObject );
 
@@ -51,7 +49,6 @@ namespace Ic3::Graphics::GCI
 
 		CPPX_ATTR_NO_DISCARD static TGfxHandle<GLGraphicsShaderLinkageDescriptorCore> CreateInstance(
 				GLGPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo );
 	};
 
@@ -66,7 +63,6 @@ namespace Ic3::Graphics::GCI
 
 		GLGraphicsShaderLinkageDescriptorCompat(
 				GLGPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const GraphicsShaderBindingCommonConfig & pCommonShaderBindingConfig,
 				GLShaderProgramObjectHandle pGLShaderProgramObject );
 
@@ -74,7 +70,6 @@ namespace Ic3::Graphics::GCI
 
 		CPPX_ATTR_NO_DISCARD static TGfxHandle<GLGraphicsShaderLinkageDescriptorCompat> CreateInstance(
 				GLGPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo );
 	};
 

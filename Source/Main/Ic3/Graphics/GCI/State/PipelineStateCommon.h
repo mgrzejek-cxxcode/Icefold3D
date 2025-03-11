@@ -30,6 +30,36 @@ namespace Ic3::Graphics::GCI
 	inline constexpr auto kSDIRenderTargetDescriptorScreenDefault =
 			CXU::MakePipelineStateDescriptorID( EPipelineStateDescriptorType::DTRenderTarget, kSDIRenderTargetDescriptorScreenDefaultUID );
 
+	struct PipelineStateDescriptoCreateResultBase
+	{
+		PipelineStateDescriptorHandle descriptor;
+
+		pipeline_state_descriptor_id_t descriptorID = kPipelineStateDescriptorIDInvalid;
+
+		explicit operator bool() const noexcept
+		{
+			return static_cast<bool>( descriptor );
+		}
+	};
+	
+	template <typename TPDescriptorType>
+	struct TPipelineStateDescriptoCreateResult
+	{
+		TGfxHandle<TPDescriptorType> descriptor;
+
+		pipeline_state_descriptor_id_t descriptorID = kPipelineStateDescriptorIDInvalid;
+
+		explicit operator bool() const noexcept
+		{
+			return static_cast<bool>( descriptor );
+		}
+
+		operator PipelineStateDescriptoCreateResultBase() const noexcept
+		{
+			return { descriptor, descriptorID };
+		}
+	};
+
 	/*
 	 * @brief A monolithic state object, containing complete state information for the relative pipeline functionality.
 	 * PipelineStateObject serves as a base class for all concrete PSO subtypes. There are two main types of PSOs:

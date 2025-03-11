@@ -85,77 +85,77 @@ namespace Ic3::Graphics::GCI
 	BlendStateDescriptorHandle PipelineStateDescriptorManager::CreateBlendStateDescriptor(
 			const BlendStateDescriptorCreateInfo & pCreateInfo )
 	{
-		auto stateDescriptor = CreateCachedDescriptor<BlendStateDescriptor>( pCreateInfo );
-		if( !stateDescriptor && pCreateInfo.gfxObjectUID )
+		const auto createResult = CreateCachedDescriptor<BlendStateDescriptor>( pCreateInfo );
+		if( createResult )
 		{
-			stateDescriptor->SetObjectUID( pCreateInfo.gfxObjectUID );
+			UpdateDescriptorCoreInfo( *createResult.descriptor, createResult.descriptorID, pCreateInfo.gfxObjectUID );
 		}
-		return stateDescriptor;
+		return createResult.descriptor;
 	}
 
 	DepthStencilStateDescriptorHandle PipelineStateDescriptorManager::CreateDepthStencilStateDescriptor(
 			const DepthStencilStateDescriptorCreateInfo & pCreateInfo )
 	{
-		auto stateDescriptor = CreateCachedDescriptor<DepthStencilStateDescriptor>( pCreateInfo );
-		if( !stateDescriptor && pCreateInfo.gfxObjectUID )
+		const auto createResult = CreateCachedDescriptor<DepthStencilStateDescriptor>( pCreateInfo );
+		if( createResult )
 		{
-			stateDescriptor->SetObjectUID( pCreateInfo.gfxObjectUID );
+			UpdateDescriptorCoreInfo( *createResult.descriptor, createResult.descriptorID, pCreateInfo.gfxObjectUID );
 		}
-		return stateDescriptor;
+		return createResult.descriptor;
 	}
 
 	RasterizerStateDescriptorHandle PipelineStateDescriptorManager::CreateRasterizerStateDescriptor(
 			const RasterizerStateDescriptorCreateInfo & pCreateInfo )
 	{
-		auto stateDescriptor = CreateCachedDescriptor<RasterizerStateDescriptor>( pCreateInfo );
-		if( !stateDescriptor && pCreateInfo.gfxObjectUID )
+		const auto createResult = CreateCachedDescriptor<RasterizerStateDescriptor>( pCreateInfo );
+		if( createResult )
 		{
-			stateDescriptor->SetObjectUID( pCreateInfo.gfxObjectUID );
+			UpdateDescriptorCoreInfo( *createResult.descriptor, createResult.descriptorID, pCreateInfo.gfxObjectUID );
 		}
-		return stateDescriptor;
+		return createResult.descriptor;
 	}
 
 	GraphicsShaderLinkageDescriptorHandle PipelineStateDescriptorManager::CreateGraphicsShaderLinkageDescriptor(
 			const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo )
 	{
-		auto stateDescriptor = CreateCachedDescriptor<GraphicsShaderLinkageDescriptor>( pCreateInfo );
-		if( stateDescriptor && pCreateInfo.gfxObjectUID )
+		const auto createResult = CreateCachedDescriptor<GraphicsShaderLinkageDescriptor>( pCreateInfo );
+		if( createResult )
 		{
-			stateDescriptor->SetObjectUID( pCreateInfo.gfxObjectUID );
+			UpdateDescriptorCoreInfo( *createResult.descriptor, createResult.descriptorID, pCreateInfo.gfxObjectUID );
 		}
-		return stateDescriptor;
+		return createResult.descriptor;
 	}
 
 	VertexAttributeLayoutDescriptorHandle PipelineStateDescriptorManager::CreateVertexAttributeLayoutDescriptor(
 			const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo )
 	{
-		auto stateDescriptor = CreateCachedDescriptor<VertexAttributeLayoutDescriptor>( pCreateInfo );
-		if( stateDescriptor && pCreateInfo.gfxObjectUID )
+		const auto createResult = CreateCachedDescriptor<VertexAttributeLayoutDescriptor>( pCreateInfo );
+		if( createResult )
 		{
-			stateDescriptor->SetObjectUID( pCreateInfo.gfxObjectUID );
+			UpdateDescriptorCoreInfo( *createResult.descriptor, createResult.descriptorID, pCreateInfo.gfxObjectUID );
 		}
-		return stateDescriptor;
+		return createResult.descriptor;
 	}
 
 	RootSignatureDescriptorHandle PipelineStateDescriptorManager::CreateRootSignatureDescriptor(
 			const RootSignatureDescriptorCreateInfo & pCreateInfo )
 	{
-		auto stateDescriptor = CreateCachedDescriptor<RootSignatureDescriptor>( pCreateInfo );
-		if( !stateDescriptor && pCreateInfo.gfxObjectUID )
+		const auto createResult = CreateCachedDescriptor<RootSignatureDescriptor>( pCreateInfo );
+		if( createResult )
 		{
-			stateDescriptor->SetObjectUID( pCreateInfo.gfxObjectUID );
+			UpdateDescriptorCoreInfo( *createResult.descriptor, createResult.descriptorID, pCreateInfo.gfxObjectUID );
 		}
-		return stateDescriptor;
+		return createResult.descriptor;
 	}
 
 	RenderPassDescriptorHandle PipelineStateDescriptorManager::CreateRenderPassDescriptor(
 			const RenderPassDescriptorCreateInfo & pCreateInfo,
 			pipeline_state_descriptor_id_t pDescriptorID )
 	{
-		const auto stateDescriptor = _descriptorFactory.CreateRenderPassDescriptor( pDescriptorID, pCreateInfo );
-		if( stateDescriptor && pCreateInfo.gfxObjectUID )
+		const auto stateDescriptor = _descriptorFactory.CreateRenderPassDescriptor( pCreateInfo );
+		if( stateDescriptor )
 		{
-			stateDescriptor->SetObjectUID( pCreateInfo.gfxObjectUID );
+			UpdateDescriptorCoreInfo( *stateDescriptor, pDescriptorID, pCreateInfo.gfxObjectUID );
 		}
 		return stateDescriptor;
 	}
@@ -164,10 +164,10 @@ namespace Ic3::Graphics::GCI
 			const RenderTargetDescriptorCreateInfo & pCreateInfo,
 			pipeline_state_descriptor_id_t pDescriptorID )
 	{
-		const auto stateDescriptor = _descriptorFactory.CreateRenderTargetDescriptor( pDescriptorID, pCreateInfo );
-		if( stateDescriptor && pCreateInfo.gfxObjectUID )
+		const auto stateDescriptor = _descriptorFactory.CreateRenderTargetDescriptor( pCreateInfo );
+		if( stateDescriptor )
 		{
-			stateDescriptor->SetObjectUID( pCreateInfo.gfxObjectUID );
+			UpdateDescriptorCoreInfo( *stateDescriptor, pDescriptorID, pCreateInfo.gfxObjectUID );
 		}
 		return stateDescriptor;
 	}
@@ -176,10 +176,10 @@ namespace Ic3::Graphics::GCI
 			const VertexSourceBindingDescriptorCreateInfo & pCreateInfo,
 			pipeline_state_descriptor_id_t pDescriptorID )
 	{
-		const auto stateDescriptor = _descriptorFactory.CreateVertexSourceBindingDescriptor( pDescriptorID, pCreateInfo );
-		if( stateDescriptor && pCreateInfo.gfxObjectUID )
+		const auto stateDescriptor = _descriptorFactory.CreateVertexSourceBindingDescriptor( pCreateInfo );
+		if( stateDescriptor )
 		{
-			stateDescriptor->SetObjectUID( pCreateInfo.gfxObjectUID );
+			UpdateDescriptorCoreInfo( *stateDescriptor, pDescriptorID, pCreateInfo.gfxObjectUID );
 		}
 		return stateDescriptor;
 	}
@@ -192,6 +192,22 @@ namespace Ic3::Graphics::GCI
 		_graphicsPipelineStateDescriptorCache.ResetSubCache<GraphicsShaderLinkageDescriptor>();
 		_graphicsPipelineStateDescriptorCache.ResetSubCache<VertexAttributeLayoutDescriptor>();
 		_graphicsPipelineStateDescriptorCache.ResetSubCache<RootSignatureDescriptor>();
+	}
+
+	void PipelineStateDescriptorManager::UpdateDescriptorCoreInfo(
+			PipelineStateDescriptor & pDescriptor,
+			pipeline_state_descriptor_id_t pDescriptorID,
+			const GfxObjectUID & pObjectUID )
+	{
+		if( !pDescriptor.HasValidDescriptoIDSet() && CXU::IsPipelineStateDescriptorIDValid( pDescriptorID ) )
+		{
+			pDescriptor.SetDescriptorID( pDescriptorID );
+		}
+
+		if( pObjectUID )
+		{
+			pDescriptor.SetObjectUID( pObjectUID );
+		}
 	}
 	
 } // namespace Ic3::graphics::GCI

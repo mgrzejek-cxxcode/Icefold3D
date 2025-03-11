@@ -32,7 +32,7 @@ namespace Ic3::System
 		auto openMode = Platform::_PATranslatEIOAccessMode( pAccessMode );
 		auto filePtr = Platform::_PAOpenFileGeneric( pFilePath.c_str(), openMode );
 		auto fileObject = CreateSysObject<PosixFile>( GetHandle<PosixFileManager>() );
-		fileObject->setInternalFilePtr( filePtr );
+		fileObject->SetInternalFilePtr( filePtr );
 
 		return fileObject;
 	}
@@ -41,7 +41,7 @@ namespace Ic3::System
 	{
 		auto filePtr = Platform::_PAOpenFileGeneric( pFilePath.c_str(), "w+" );
 		auto fileObject = CreateSysObject<PosixFile>( GetHandle<PosixFileManager>() );
-		fileObject->setInternalFilePtr( filePtr );
+		fileObject->SetInternalFilePtr( filePtr );
 
 		return fileObject;
 	}
@@ -52,7 +52,7 @@ namespace Ic3::System
 
 		auto filePtr = Platform::_PAOpenFileGeneric( tempFilePath.c_str(), "w+" );
 		auto fileObject = CreateSysObject<PosixFile>( GetHandle<PosixFileManager>() );
-		fileObject->setInternalFilePtr( filePtr );
+		fileObject->SetInternalFilePtr( filePtr );
 
 		return fileObject;
 	}
@@ -128,7 +128,7 @@ namespace Ic3::System
 		_ReleasePosixFileHandle();
 	}
 
-	void PosixFile::setInternalFilePtr( FILE * pFilePtr )
+	void PosixFile::SetInternalFilePtr( FILE * pFilePtr )
 	{
 		Ic3DebugAssert( !mNativeData.mFilePtr );
 		mNativeData.mFilePtr = pFilePtr;

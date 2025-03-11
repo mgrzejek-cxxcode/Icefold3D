@@ -18,10 +18,7 @@ namespace Ic3::Graphics::GCI
 		Ic3DeclareNonCopyable( RootSignatureDescriptor );
 
 	public:
-		RootSignatureDescriptor(
-				GPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID );
-
+		RootSignatureDescriptor( GPUDevice & pGPUDevice );
 		virtual ~RootSignatureDescriptor();
 
 		CPPX_ATTR_NO_DISCARD virtual EPipelineStateDescriptorType GetDescriptorType() const noexcept override final;
@@ -42,16 +39,11 @@ namespace Ic3::Graphics::GCI
 			RootSignature const mRootSignature;
 
 		public:
-			RootSignatureDescriptorGeneric(
-					GPUDevice & pGPUDevice,
-					pipeline_state_descriptor_id_t pDescriptorID,
-					RootSignature pRootSignature );
-
+			RootSignatureDescriptorGeneric( GPUDevice & pGPUDevice, RootSignature pRootSignature );
 			virtual ~RootSignatureDescriptorGeneric();
 
-			static TGfxHandle<RootSignatureDescriptorGeneric> CreateInstance(
+			CPPX_ATTR_NO_DISCARD static TGfxHandle<RootSignatureDescriptorGeneric> CreateInstance(
 					GPUDevice & pGPUDevice,
-					pipeline_state_descriptor_id_t pDescriptorID,
 					const RootSignatureDescriptorCreateInfo & pCreateInfo );
 		};
 

@@ -47,7 +47,7 @@ namespace Ic3::System
 		explicit Win32File( FileManagerHandle pFileManager, EIOAccessMode pAccessMode );
 		virtual ~Win32File() noexcept;
 
-	friendapi:
+	friendapi( private ):
 		void SetInternalWin32FileHandle( HANDLE pFileHandle );
 
 	private:

@@ -142,7 +142,6 @@ namespace Ic3::Graphics::GCI
 	public:
 		GLVertexAttributeLayoutDescriptor(
 				GLGPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const IAVertexAttributeLayoutCommonConfig & pCommonAttributeLayoutConfig );
 
 		virtual ~GLVertexAttributeLayoutDescriptor();
@@ -161,7 +160,6 @@ namespace Ic3::Graphics::GCI
 	public:
 		GLVertexAttributeLayoutDescriptorCore(
 				GLGPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const IAVertexAttributeLayoutCommonConfig & pCommonAttributeLayoutConfig,
 				GLVertexArrayObjectHandle pGLVertexArrayObject,
 				GLenum pGLPrimitiveTopology );
@@ -170,7 +168,6 @@ namespace Ic3::Graphics::GCI
 
 		static TGfxHandle<GLVertexAttributeLayoutDescriptorCore> CreateInstance(
 				GLGPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo );
 
 	private:
@@ -187,14 +184,12 @@ namespace Ic3::Graphics::GCI
 	public:
 		GLVertexAttributeLayoutDescriptorCompat(
 				GLGPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const GLIAVertexAttributeLayout & pGLVertexAttributeLayout );
 
 		virtual ~GLVertexAttributeLayoutDescriptorCompat();
 
 		static TGfxHandle<GLVertexAttributeLayoutDescriptorCompat> CreateInstance(
 				GLGPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo );
 	};
 
@@ -207,14 +202,12 @@ namespace Ic3::Graphics::GCI
 	public:
 		GLVertexSourceBindingDescriptor(
 				GLGPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const GLIAVertexSourceBinding & pGLVertexSourceBinding );
 
 		virtual ~GLVertexSourceBindingDescriptor();
 
 		static TGfxHandle<GLVertexSourceBindingDescriptor> CreateInstance(
 				GLGPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const VertexSourceBindingDescriptorCreateInfo & pCreateInfo );
 	};
 

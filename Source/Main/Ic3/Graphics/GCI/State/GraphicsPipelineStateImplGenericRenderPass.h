@@ -24,7 +24,6 @@ namespace Ic3::Graphics::GCI
 	public:
 		RenderPassDescriptorGeneric(
 				GPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const RenderPassConfiguration & pRenderPassConfiguration );
 
 		virtual ~RenderPassDescriptorGeneric();
@@ -41,13 +40,11 @@ namespace Ic3::Graphics::GCI
 
 		static TGfxHandle<RenderPassDescriptorGeneric> CreateInstance(
 				GPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const RenderPassDescriptorCreateInfo & pCreateInfo,
 				const std::initializer_list<ERenderPassAttachmentActionFlags> & pCachedAttachmentsWithFlags );
 
 		static TGfxHandle<RenderPassDescriptorGeneric> CreateInstance(
 				GPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const RenderPassDescriptorCreateInfo & pCreateInfo );
 	};
 

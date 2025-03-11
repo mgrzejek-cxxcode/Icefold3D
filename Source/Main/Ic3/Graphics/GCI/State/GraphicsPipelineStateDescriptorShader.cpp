@@ -8,9 +8,8 @@ namespace Ic3::Graphics::GCI
 
 	GraphicsShaderLinkageDescriptor::GraphicsShaderLinkageDescriptor(
 			GPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID,
 			const GraphicsShaderBindingCommonConfig & pCommonShaderBindingConfig )
-	: PipelineStateDescriptor( pGPUDevice, pDescriptorID )
+	: PipelineStateDescriptor( pGPUDevice )
 	, mCommonShaderBindingConfig( pCommonShaderBindingConfig )
 	{}
 
@@ -36,9 +35,8 @@ namespace Ic3::Graphics::GCI
 
 	GraphicsShaderLinkageDescriptorGenericSeparable::GraphicsShaderLinkageDescriptorGenericSeparable(
 			GPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID,
 			const GraphicsShaderBinding & pBindingConfiguration )
-	: GraphicsShaderLinkageDescriptor( pGPUDevice, pDescriptorID, pBindingConfiguration )
+	: GraphicsShaderLinkageDescriptor( pGPUDevice, pBindingConfiguration )
 	{}
 
 	GraphicsShaderLinkageDescriptorGenericSeparable::~GraphicsShaderLinkageDescriptorGenericSeparable() = default;
@@ -56,21 +54,19 @@ namespace Ic3::Graphics::GCI
 
 	TGfxHandle<GraphicsShaderLinkageDescriptorGenericSeparable> GraphicsShaderLinkageDescriptorGenericSeparable::CreateFromBindingConfiguration(
 			GPUDevice & pGPUDevice,
-			const GraphicsShaderBinding & pBindingConfiguration,
-			pipeline_state_descriptor_id_t pDescriptorID ) noexcept
+			const GraphicsShaderBinding & pBindingConfiguration ) noexcept
 	{
 		if( !GCU::SHValidateGraphicsShaderBinding( pBindingConfiguration ) )
 		{
 			return nullptr;
 		}
 
-		return CreateDynamicObject<GraphicsShaderLinkageDescriptorGenericSeparable>( pGPUDevice, pDescriptorID, pBindingConfiguration );
+		return CreateDynamicObject<GraphicsShaderLinkageDescriptorGenericSeparable>( pGPUDevice, pBindingConfiguration );
 	}
 
 	TGfxHandle<GraphicsShaderLinkageDescriptorGenericSeparable> GraphicsShaderLinkageDescriptorGenericSeparable::CreateFromShaderArray(
 			GPUDevice & pGPUDevice,
-			const GraphicsShaderArray & pShaderArray,
-			pipeline_state_descriptor_id_t pDescriptorID ) noexcept
+			const GraphicsShaderArray & pShaderArray ) noexcept
 	{
 		if( !pShaderArray[kShaderStageIndexGraphicsVertex] || !pShaderArray[kShaderStageIndexGraphicsPixel] )
 		{
@@ -85,7 +81,7 @@ namespace Ic3::Graphics::GCI
 		GraphicsShaderBinding shaderBinding{};
 		shaderBinding.SetShaders( pShaderArray );
 
-		return CreateDynamicObject<GraphicsShaderLinkageDescriptorGenericSeparable>( pGPUDevice, pDescriptorID, shaderBinding );
+		return CreateDynamicObject<GraphicsShaderLinkageDescriptorGenericSeparable>( pGPUDevice, shaderBinding );
 	}
 
 }

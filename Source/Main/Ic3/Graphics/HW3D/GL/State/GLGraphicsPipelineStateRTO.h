@@ -62,7 +62,6 @@ namespace Ic3::Graphics::GCI
 	public:
 		GLRenderTargetDescriptor(
 				GLGPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				GLRenderTargetBindingStatic pGLRenderTargetBinding );
 
 		virtual ~GLRenderTargetDescriptor();
@@ -71,12 +70,10 @@ namespace Ic3::Graphics::GCI
 
 		static TGfxHandle<GLRenderTargetDescriptor> CreateInstance(
 				GLGPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const RenderTargetDescriptorCreateInfo & pCreateInfo );
 
 		static TGfxHandle<GLRenderTargetDescriptor> CreateForScreen(
 				GLGPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const RenderTargetLayout & pRenderTargetLayout );
 	};
 

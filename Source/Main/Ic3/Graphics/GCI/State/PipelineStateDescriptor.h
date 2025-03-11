@@ -20,12 +20,10 @@ namespace Ic3::Graphics::GCI
 	class IC3_GRAPHICS_GCI_CLASS PipelineStateDescriptor : public GPUDeviceChildObject
 	{
 		friend class PipelineStateController;
+		friend class PipelineStateDescriptorManager;
 
 	public:
-		pipeline_state_descriptor_id_t const mDescriptorID;
-
-	public:
-		PipelineStateDescriptor( GPUDevice & pGPUDevice, pipeline_state_descriptor_id_t pDescriptorID );
+		PipelineStateDescriptor( GPUDevice & pGPUDevice );
 		virtual ~PipelineStateDescriptor();
 
 		/**
@@ -92,8 +90,14 @@ namespace Ic3::Graphics::GCI
 		template <typename TPDriverDataType>
 		CPPX_ATTR_NO_DISCARD TDynamicDescriptorDriverState<TPDriverDataType> * GetDynamicDriverStateAs() const;
 
+		//doc
+		CPPX_ATTR_NO_DISCARD pipeline_state_descriptor_id_t GetDescriptorID() const noexcept;
+
+		//doc
+		CPPX_ATTR_NO_DISCARD pipeline_state_descriptor_id_t HasValidDescriptoIDSet() const noexcept;
+
 	protected:
-		using descriptor_internal_flags_value_t = uint32;
+		using descriptor_internal_flags_value_t = uint16;
 
 		void SetInternalFlags( cppx::bitmask<descriptor_internal_flags_value_t> pInternalFlags ) noexcept;
 
@@ -102,6 +106,10 @@ namespace Ic3::Graphics::GCI
 		bool CheckInternalFlags( cppx::bitmask<descriptor_internal_flags_value_t> pInternalFlags ) const noexcept;
 
 		cppx::bitmask<descriptor_internal_flags_value_t> GetInternalFlags() const noexcept;
+
+	friendapi( private ):
+		//doc
+		void SetDescriptorID( pipeline_state_descriptor_id_t pDescriptorID ) noexcept;
 
 	private:
 		/**
@@ -126,6 +134,7 @@ namespace Ic3::Graphics::GCI
 		CPPX_ATTR_NO_DISCARD TDynamicDescriptorDriverState<TPDriverDataType> * InitializeDynamicDriverState( TPArgs && ...pArgs );
 
 	private:
+		pipeline_state_descriptor_id_t _descriptorID;
 		cppx::bitmask<descriptor_internal_flags_value_t> _internalFlags;
 	};
 
@@ -140,6 +149,21 @@ namespace Ic3::Graphics::GCI
 		auto * dynamicStatePtr = GetDynamicDriverState();
 
 		return dynamic_cast_dbg<TDynamicDescriptorDriverState<TPDriverDataType> *>( dynamicStatePtr );
+	}
+
+	inline pipeline_state_descriptor_id_t PipelineStateDescriptor::GetDescriptorID() const noexcept
+	{
+		return _descriptorID;
+	}
+
+	inline pipeline_state_descriptor_id_t PipelineStateDescriptor::HasValidDescriptoIDSet() const noexcept
+	{
+		return CXU::IsPipelineStateDescriptorIDValid( _descriptorID );
+	}
+
+	inline void PipelineStateDescriptor::SetDescriptorID( pipeline_state_descriptor_id_t pDescriptorID ) noexcept
+	{
+		_descriptorID = pDescriptorID;
 	}
 
 	template <typename TPDriverDataType, typename... TPArgs>

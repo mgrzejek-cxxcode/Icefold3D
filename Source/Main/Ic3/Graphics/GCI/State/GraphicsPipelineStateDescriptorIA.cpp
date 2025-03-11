@@ -7,9 +7,8 @@ namespace Ic3::Graphics::GCI
 
 	VertexAttributeLayoutDescriptor::VertexAttributeLayoutDescriptor(
 			GPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID,
 			const IAVertexAttributeLayoutCommonConfig & pCommonAttributeLayoutConfig )
-	: PipelineStateDescriptor( pGPUDevice, pDescriptorID )
+	: PipelineStateDescriptor( pGPUDevice )
 	, mCommonAttributeLayoutConfig( pCommonAttributeLayoutConfig )
 	{}
 
@@ -23,9 +22,8 @@ namespace Ic3::Graphics::GCI
 
 	VertexSourceBindingDescriptor::VertexSourceBindingDescriptor(
 			GPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID,
 			const IAVertexSourceBindingCommonConfig & pCommonSourceBindingConfig )
-	: PipelineStateDescriptor( pGPUDevice, pDescriptorID )
+	: PipelineStateDescriptor( pGPUDevice )
 	, mCommonSourceBindingConfig( pCommonSourceBindingConfig )
 	{}
 
@@ -44,9 +42,8 @@ namespace Ic3::Graphics::GCI
 
 		VertexAttributeLayoutDescriptorNative::VertexAttributeLayoutDescriptorNative(
 				GPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const IAVertexAttributeLayoutCommonConfig & pCommonAttributeLayoutConfig )
-		: VertexAttributeLayoutDescriptor( pGPUDevice, pDescriptorID, pCommonAttributeLayoutConfig )
+		: VertexAttributeLayoutDescriptor( pGPUDevice, pCommonAttributeLayoutConfig )
 		{}
 
 		VertexAttributeLayoutDescriptorNative::~VertexAttributeLayoutDescriptorNative() = default;
@@ -56,9 +53,8 @@ namespace Ic3::Graphics::GCI
 
 		VertexSourceBindingDescriptorNative::VertexSourceBindingDescriptorNative(
 				GPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const IAVertexSourceBindingCommonConfig & pCommonSourceBindingConfig )
-		: VertexSourceBindingDescriptor( pGPUDevice, pDescriptorID, pCommonSourceBindingConfig )
+		: VertexSourceBindingDescriptor( pGPUDevice, pCommonSourceBindingConfig )
 		{}
 
 		VertexSourceBindingDescriptorNative::~VertexSourceBindingDescriptorNative() = default;

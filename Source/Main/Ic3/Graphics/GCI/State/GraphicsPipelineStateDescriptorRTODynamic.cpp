@@ -4,10 +4,8 @@
 namespace Ic3::Graphics::GCI
 {
 
-	RenderPassDescriptorDynamic::RenderPassDescriptorDynamic(
-			GPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID )
-	: RTArrayDescriptorDynamicProxy<RenderPassDescriptor, RenderPassAttachmentConfig>( pGPUDevice, pDescriptorID )
+	RenderPassDescriptorDynamic::RenderPassDescriptorDynamic( GPUDevice & pGPUDevice )
+	: RTArrayDescriptorDynamicProxy<RenderPassDescriptor, RenderPassAttachmentConfig>( pGPUDevice )
 	{}
 
 	RenderPassDescriptorDynamic::~RenderPassDescriptorDynamic() = default;
@@ -28,27 +26,21 @@ namespace Ic3::Graphics::GCI
 		return renderPassAttachmentConfig->HasStoreActionFlags( pActionFlags );
 	}
 
-	TGfxHandle<RenderPassDescriptorDynamic> RenderPassDescriptorDynamic::CreateNew(
-			GPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID )
+	TGfxHandle<RenderPassDescriptorDynamic> RenderPassDescriptorDynamic::CreateNew( GPUDevice & pGPUDevice )
 	{
-		return CreateDynamicObject<RenderPassDescriptorDynamic>( pGPUDevice, pDescriptorID );
+		return CreateDynamicObject<RenderPassDescriptorDynamic>( pGPUDevice );
 	}
 
 
-	RenderTargetDescriptorDynamic::RenderTargetDescriptorDynamic(
-			GPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID )
-	: RTArrayDescriptorDynamicProxy<RenderTargetDescriptor, RenderTargetAttachmentBinding>( pGPUDevice, pDescriptorID )
+	RenderTargetDescriptorDynamic::RenderTargetDescriptorDynamic( GPUDevice & pGPUDevice )
+	: RTArrayDescriptorDynamicProxy<RenderTargetDescriptor, RenderTargetAttachmentBinding>( pGPUDevice )
 	{}
 
 	RenderTargetDescriptorDynamic::~RenderTargetDescriptorDynamic() = default;
 
-	TGfxHandle<RenderTargetDescriptorDynamic> RenderTargetDescriptorDynamic::CreateNew(
-			GPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID )
+	TGfxHandle<RenderTargetDescriptorDynamic> RenderTargetDescriptorDynamic::CreateNew( GPUDevice & pGPUDevice )
 	{
-		return CreateDynamicObject<RenderTargetDescriptorDynamic>( pGPUDevice, pDescriptorID );
+		return CreateDynamicObject<RenderTargetDescriptorDynamic>( pGPUDevice );
 	}
 
 } // namespace Ic3::Graphics::GCI

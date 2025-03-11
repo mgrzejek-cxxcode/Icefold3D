@@ -238,12 +238,12 @@ namespace Ic3::Graphics::GCI
 		const SeparableGraphicsPSDSet & pSeparableGraphicsDescriptors ) noexcept
 		{
 			GraphicsPipelineStateObjectDescriptorIDSet descriptorsIDSet{};
-			descriptorsIDSet.descIDBlend = pSeparableGraphicsDescriptors.blendStateDescriptor->mDescriptorID;
-			descriptorsIDSet.descIDDepthStencil = pSeparableGraphicsDescriptors.depthStencilStateDescriptor->mDescriptorID;
-			descriptorsIDSet.descIDRasterizer = pSeparableGraphicsDescriptors.rasterizerStateDescriptor->mDescriptorID;
-			descriptorsIDSet.descIDRootSignature = pSeparableGraphicsDescriptors.rootSignatureDescriptor->mDescriptorID;
-			descriptorsIDSet.descIDShaderLinkage = pSeparableGraphicsDescriptors.shaderLinkageStateDescriptor->mDescriptorID;
-			descriptorsIDSet.descIDVertexAttributeLayout = pSeparableGraphicsDescriptors.vertexAttributeLayoutDescriptor->mDescriptorID;
+			descriptorsIDSet.descIDBlend = pSeparableGraphicsDescriptors.blendStateDescriptor->GetDescriptorID();
+			descriptorsIDSet.descIDDepthStencil = pSeparableGraphicsDescriptors.depthStencilStateDescriptor->GetDescriptorID();
+			descriptorsIDSet.descIDRasterizer = pSeparableGraphicsDescriptors.rasterizerStateDescriptor->GetDescriptorID();
+			descriptorsIDSet.descIDRootSignature = pSeparableGraphicsDescriptors.rootSignatureDescriptor->GetDescriptorID();
+			descriptorsIDSet.descIDShaderLinkage = pSeparableGraphicsDescriptors.shaderLinkageStateDescriptor->GetDescriptorID();
+			descriptorsIDSet.descIDVertexAttributeLayout = pSeparableGraphicsDescriptors.vertexAttributeLayoutDescriptor->GetDescriptorID();
 			return descriptorsIDSet;
 
 		}

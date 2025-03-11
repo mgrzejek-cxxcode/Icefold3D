@@ -9,9 +9,8 @@ namespace Ic3::Graphics::GCI
 
 	GLGraphicsShaderLinkageDescriptor::GLGraphicsShaderLinkageDescriptor(
 			GLGPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID,
 			const GraphicsShaderBindingCommonConfig & pCommonShaderBindingConfig )
-	: GraphicsShaderLinkageDescriptorNative( pGPUDevice, pDescriptorID, _commonShaderBindingConfig )
+	: GraphicsShaderLinkageDescriptorNative( pGPUDevice, _commonShaderBindingConfig )
 	, _commonShaderBindingConfig( pCommonShaderBindingConfig )
 	{}
 
@@ -20,10 +19,9 @@ namespace Ic3::Graphics::GCI
 
 	GLGraphicsShaderLinkageDescriptorCore::GLGraphicsShaderLinkageDescriptorCore(
 			GLGPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID,
 			const GraphicsShaderBindingCommonConfig & pCommonShaderBindingConfig,
 			GLShaderPipelineObjectHandle pGLShaderPipelineObject )
-	: GLGraphicsShaderLinkageDescriptor( pGPUDevice, pDescriptorID, pCommonShaderBindingConfig )
+	: GLGraphicsShaderLinkageDescriptor( pGPUDevice, pCommonShaderBindingConfig )
 	, mGLShaderPipelineObject( std::move( pGLShaderPipelineObject ) )
 	{}
 
@@ -31,7 +29,6 @@ namespace Ic3::Graphics::GCI
 
 	TGfxHandle<GLGraphicsShaderLinkageDescriptorCore> GLGraphicsShaderLinkageDescriptorCore::CreateInstance(
 			GLGPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID,
 			const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo )
 	{
 		auto shaderPipelineObject = GCU::CreateGraphicsShaderPipelineObjectGL( pCreateInfo.shaderBinding );
@@ -42,7 +39,6 @@ namespace Ic3::Graphics::GCI
 
 		auto stateDescriptor = CreateGfxObject<GLGraphicsShaderLinkageDescriptorCore>(
 				pGPUDevice,
-				pDescriptorID,
 				pCreateInfo.shaderBinding,
 				std::move( shaderPipelineObject ) );
 
@@ -52,10 +48,9 @@ namespace Ic3::Graphics::GCI
 
 	GLGraphicsShaderLinkageDescriptorCompat::GLGraphicsShaderLinkageDescriptorCompat(
 			GLGPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID,
 			const GraphicsShaderBindingCommonConfig & pCommonShaderBindingConfig,
 			GLShaderProgramObjectHandle pGLShaderProgramObject )
-	: GLGraphicsShaderLinkageDescriptor( pGPUDevice, pDescriptorID, pCommonShaderBindingConfig )
+	: GLGraphicsShaderLinkageDescriptor( pGPUDevice, pCommonShaderBindingConfig )
 	, mGLShaderProgramObject( std::move( pGLShaderProgramObject ) )
 	{}
 
@@ -63,7 +58,6 @@ namespace Ic3::Graphics::GCI
 
 	TGfxHandle<GLGraphicsShaderLinkageDescriptorCompat> GLGraphicsShaderLinkageDescriptorCompat::CreateInstance(
 			GLGPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID,
 			const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo )
 	{
 		auto shaderProgramObject = GCU::CreateGraphicsShaderProgramObjectGL( pCreateInfo.shaderBinding );
@@ -74,7 +68,6 @@ namespace Ic3::Graphics::GCI
 
 		auto stateDescriptor = CreateGfxObject<GLGraphicsShaderLinkageDescriptorCompat>(
 				pGPUDevice,
-				pDescriptorID,
 				pCreateInfo.shaderBinding,
 				std::move( shaderProgramObject ) );
 

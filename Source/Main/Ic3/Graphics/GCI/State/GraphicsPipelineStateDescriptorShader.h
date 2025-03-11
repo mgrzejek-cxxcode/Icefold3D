@@ -23,7 +23,6 @@ namespace Ic3::Graphics::GCI
 	public:
 		GraphicsShaderLinkageDescriptor(
 				GPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const GraphicsShaderBindingCommonConfig & pCommonShaderBindingConfig );
 
 		virtual ~GraphicsShaderLinkageDescriptor();
@@ -46,7 +45,6 @@ namespace Ic3::Graphics::GCI
 	public:
 		GraphicsShaderLinkageDescriptorGenericSeparable(
 				GPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const GraphicsShaderBinding & pBindingConfiguration );
 
 		virtual ~GraphicsShaderLinkageDescriptorGenericSeparable();
@@ -57,13 +55,11 @@ namespace Ic3::Graphics::GCI
 
 		CPPX_ATTR_NO_DISCARD static TGfxHandle<GraphicsShaderLinkageDescriptorGenericSeparable> CreateFromBindingConfiguration(
 				GPUDevice & pGPUDevice,
-				const GraphicsShaderBinding & pBindingConfiguration,
-				pipeline_state_descriptor_id_t pDescriptorID = kPipelineStateDescriptorIDAuto ) noexcept;
+				const GraphicsShaderBinding & pBindingConfiguration ) noexcept;
 
 		CPPX_ATTR_NO_DISCARD static TGfxHandle<GraphicsShaderLinkageDescriptorGenericSeparable> CreateFromShaderArray(
 				GPUDevice & pGPUDevice,
-				const GraphicsShaderArray & pShaderArray,
-				pipeline_state_descriptor_id_t pDescriptorID = kPipelineStateDescriptorIDAuto ) noexcept;
+				const GraphicsShaderArray & pShaderArray ) noexcept;
 	};
 
 	namespace PIM
@@ -74,9 +70,8 @@ namespace Ic3::Graphics::GCI
 		public:
 			GraphicsShaderLinkageDescriptorNative(
 					GPUDevice & pGPUDevice,
-					pipeline_state_descriptor_id_t pDescriptorID,
 					const GraphicsShaderBindingCommonConfig & pCommonShaderBindingConfig )
-			: GraphicsShaderLinkageDescriptor( pGPUDevice, pDescriptorID, pCommonShaderBindingConfig )
+			: GraphicsShaderLinkageDescriptor( pGPUDevice, pCommonShaderBindingConfig )
 			{}
 
 			virtual ~GraphicsShaderLinkageDescriptorNative() = default;

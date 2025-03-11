@@ -74,9 +74,8 @@ namespace Ic3::Graphics::GCI
 
 	GLVertexAttributeLayoutDescriptor::GLVertexAttributeLayoutDescriptor(
 			GLGPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID,
 			const IAVertexAttributeLayoutCommonConfig & pCommonAttributeLayoutConfig )
-	: PIM::VertexAttributeLayoutDescriptorNative( pGPUDevice, pDescriptorID, pCommonAttributeLayoutConfig )
+	: PIM::VertexAttributeLayoutDescriptorNative( pGPUDevice, pCommonAttributeLayoutConfig )
 	{}
 
 	GLVertexAttributeLayoutDescriptor::~GLVertexAttributeLayoutDescriptor() = default;
@@ -84,11 +83,10 @@ namespace Ic3::Graphics::GCI
 
 	GLVertexAttributeLayoutDescriptorCore::GLVertexAttributeLayoutDescriptorCore(
 			GLGPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID,
 			const IAVertexAttributeLayoutCommonConfig & pCommonAttributeLayoutConfig,
 			GLVertexArrayObjectHandle pGLVertexArrayObject,
 			GLenum pGLPrimitiveTopology )
-	: GLVertexAttributeLayoutDescriptor( pGPUDevice, pDescriptorID, _commonAttributeLayoutConfig )
+	: GLVertexAttributeLayoutDescriptor( pGPUDevice, _commonAttributeLayoutConfig )
 	, mGLVertexArrayObject( std::move( pGLVertexArrayObject ) )
 	, mGLPrimitiveTopology( pGLPrimitiveTopology )
 	, _commonAttributeLayoutConfig( pCommonAttributeLayoutConfig )
@@ -98,7 +96,6 @@ namespace Ic3::Graphics::GCI
 
 	TGfxHandle<GLVertexAttributeLayoutDescriptorCore> GLVertexAttributeLayoutDescriptorCore::CreateInstance(
 			GLGPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID,
 			const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo )
 	{
 		const auto glcAttributeLayoutData = GCU::IATranslateVertexAttributeLayoutDefinitionGL( pCreateInfo.layoutDefinition );
@@ -109,9 +106,8 @@ namespace Ic3::Graphics::GCI
 			return nullptr;
 		}
 
-		auto attributeLayoutDescriptor = CreateGfxObject<GLVertexAttributeLayoutDescriptorCore>(
+		const auto attributeLayoutDescriptor = CreateGfxObject<GLVertexAttributeLayoutDescriptorCore>(
 			pGPUDevice,
-			pDescriptorID,
 			glcAttributeLayoutData,
 			std::move( vertexArrayObject ),
 			glcAttributeLayoutData.glcPrimitiveTopology );
@@ -122,9 +118,8 @@ namespace Ic3::Graphics::GCI
 
 	GLVertexAttributeLayoutDescriptorCompat::GLVertexAttributeLayoutDescriptorCompat(
 			GLGPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID,
 			const GLIAVertexAttributeLayout & pGLVertexAttributeLayout )
-	: GLVertexAttributeLayoutDescriptor( pGPUDevice, pDescriptorID, pGLVertexAttributeLayout )
+	: GLVertexAttributeLayoutDescriptor( pGPUDevice, pGLVertexAttributeLayout )
 	, mGLVertexAttributeLayout( pGLVertexAttributeLayout )
 	{}
 
@@ -132,24 +127,18 @@ namespace Ic3::Graphics::GCI
 
 	TGfxHandle<GLVertexAttributeLayoutDescriptorCompat> GLVertexAttributeLayoutDescriptorCompat::CreateInstance(
 			GLGPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID,
 			const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo )
 	{
 		const auto glcAttributeLayoutData = GCU::IATranslateVertexAttributeLayoutDefinitionGL( pCreateInfo.layoutDefinition );
-
-		auto attributeLayoutDescriptor = CreateGfxObject<GLVertexAttributeLayoutDescriptorCompat>(
-			pGPUDevice,
-			pDescriptorID,
-			glcAttributeLayoutData );
+		const auto attributeLayoutDescriptor = CreateGfxObject<GLVertexAttributeLayoutDescriptorCompat>( pGPUDevice, glcAttributeLayoutData );
 
 		return attributeLayoutDescriptor;
 	}
 
 	GLVertexSourceBindingDescriptor::GLVertexSourceBindingDescriptor(
 			GLGPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID,
 			const GLIAVertexSourceBinding & pGLVertexSourceBinding )
-	: PIM::VertexSourceBindingDescriptorNative( pGPUDevice, pDescriptorID, pGLVertexSourceBinding )
+	: PIM::VertexSourceBindingDescriptorNative( pGPUDevice, pGLVertexSourceBinding )
 	, mGLVertexSourceBinding( pGLVertexSourceBinding )
 	{}
 
@@ -157,15 +146,10 @@ namespace Ic3::Graphics::GCI
 
 	TGfxHandle<GLVertexSourceBindingDescriptor> GLVertexSourceBindingDescriptor::CreateInstance(
 			GLGPUDevice & pGPUDevice,
-			pipeline_state_descriptor_id_t pDescriptorID,
 			const VertexSourceBindingDescriptorCreateInfo & pCreateInfo )
 	{
 		const auto glcSourceBindingData = GCU::IATranslateVertexSourceBindingDefinitionGL( pCreateInfo.bindingDefinition );
-
-		auto stateDescriptor = CreateGfxObject<GLVertexSourceBindingDescriptor>(
-			pGPUDevice,
-			pDescriptorID,
-			glcSourceBindingData );
+		const auto stateDescriptor = CreateGfxObject<GLVertexSourceBindingDescriptor>( pGPUDevice, glcSourceBindingData );
 
 		return stateDescriptor;
 	}

@@ -41,7 +41,7 @@
 #  define IC3_DEBUG_INIT( ... )
 #endif
 
-#define friendapi protected
+#define friendapi( pAccess ) pAccess
 
 #include "Prerequisites/DebugLayer.h"
 #include "Prerequisites/CoreDefs.h"

@@ -21,29 +21,17 @@ namespace Ic3::Graphics::GCI
 		GraphicsPipelineStateDescriptorFactoryCacheAdapter( PipelineStateDescriptorFactory & pDescriptorFactory );
 		~GraphicsPipelineStateDescriptorFactoryCacheAdapter();
 
-		BlendStateDescriptorHandle CreateDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
-				const BlendStateDescriptorCreateInfo & pCreateInfo );
+		BlendStateDescriptorHandle CreateDescriptor( const BlendStateDescriptorCreateInfo & pCreateInfo );
 
-		DepthStencilStateDescriptorHandle CreateDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
-				const DepthStencilStateDescriptorCreateInfo & pCreateInfo );
+		DepthStencilStateDescriptorHandle CreateDescriptor( const DepthStencilStateDescriptorCreateInfo & pCreateInfo );
 
-		RasterizerStateDescriptorHandle CreateDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
-				const RasterizerStateDescriptorCreateInfo & pCreateInfo );
+		RasterizerStateDescriptorHandle CreateDescriptor( const RasterizerStateDescriptorCreateInfo & pCreateInfo );
 
-		GraphicsShaderLinkageDescriptorHandle CreateDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
-				const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo );
+		GraphicsShaderLinkageDescriptorHandle CreateDescriptor( const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo );
 
-		VertexAttributeLayoutDescriptorHandle CreateDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
-				const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo );
+		VertexAttributeLayoutDescriptorHandle CreateDescriptor( const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo );
 
-		RootSignatureDescriptorHandle CreateDescriptor(
-				pipeline_state_descriptor_id_t pDescriptorID,
-				const RootSignatureDescriptorCreateInfo & pCreateInfo );
+		RootSignatureDescriptorHandle CreateDescriptor( const RootSignatureDescriptorCreateInfo & pCreateInfo );
 
 	private:
 		PipelineStateDescriptorFactory * _descriptorFactory;
@@ -59,7 +47,7 @@ namespace Ic3::Graphics::GCI
 	/**
 	 * 
 	 */
-	class GraphicsPipelineStateDescriptorCache
+	class IC3_GRAPHICS_GCI_CLASS GraphicsPipelineStateDescriptorCache
 	{
 	public:
 		template <typename TPDescriptorType>
@@ -68,16 +56,7 @@ namespace Ic3::Graphics::GCI
 		PipelineStateDescriptorFactory & mDescriptorFactory;
 
 	public:
-		GraphicsPipelineStateDescriptorCache( PipelineStateDescriptorFactory & pDescriptorFactory )
-		: mDescriptorFactory( pDescriptorFactory )
-		, _descriptorFactoryAdapter( pDescriptorFactory )
-		, _cacheUnitBlendState( _descriptorFactoryAdapter )
-		, _cacheUnitDepthStencilState( _descriptorFactoryAdapter )
-		, _cacheUnitRasterizerState( _descriptorFactoryAdapter )
-		, _cacheUnitGraphicsShaderLinkage( _descriptorFactoryAdapter )
-		, _cacheUnitVertexAttributeLayout( _descriptorFactoryAdapter )
-		, _cacheUnitRootSignature( _descriptorFactoryAdapter )
-		{}
+		GraphicsPipelineStateDescriptorCache( PipelineStateDescriptorFactory & pDescriptorFactory );
 
 		template <typename TPDescriptorType>
 		CPPX_ATTR_NO_DISCARD const PipelineStateDescriptorCacheUnit<TPDescriptorType> & GetSubCache() const
@@ -101,7 +80,7 @@ namespace Ic3::Graphics::GCI
 		}
 
 		template <typename TPDescriptorType, typename TPCreateInfo>
-		TGfxHandle<TPDescriptorType> CreateDescriptor( const TPCreateInfo & pCreateInfo )
+		TPipelineStateDescriptoCreateResult<TPDescriptorType> CreateDescriptor( const TPCreateInfo & pCreateInfo )
 		{
 			PipelineStateDescriptorCacheUnit<TPDescriptorType> & descriptorCacheUnit = _GetCacheUnit<TPDescriptorType>();
 			return descriptorCacheUnit.CreateDescriptor( pCreateInfo );
@@ -114,38 +93,7 @@ namespace Ic3::Graphics::GCI
 			return descriptorCacheUnit.Reset();
 		}
 
-		void Reset( cppx::bitmask<EPipelineStateDescriptorTypeFlags> pResetMask = ePipelineStateDescriptorTypeMaskAll )
-		{
-			if( pResetMask.is_set( ePipelineStateDescriptorTypeFlagBlendBit ) )
-			{
-				_cacheUnitBlendState.Reset();
-			}
-
-			if( pResetMask.is_set( ePipelineStateDescriptorTypeFlagDepthStencilBit ) )
-			{
-				_cacheUnitDepthStencilState.Reset();
-			}
-
-			if( pResetMask.is_set( ePipelineStateDescriptorTypeFlagRasterizerBit ) )
-			{
-				_cacheUnitRasterizerState.Reset();
-			}
-
-			if( pResetMask.is_set( ePipelineStateDescriptorTypeFlagGraphicsShaderLinkageBit ) )
-			{
-				_cacheUnitGraphicsShaderLinkage.Reset();
-			}
-
-			if( pResetMask.is_set( ePipelineStateDescriptorTypeFlagIAVertexAttributeLayoutBit ) )
-			{
-				_cacheUnitVertexAttributeLayout.Reset();
-			}
-
-			if( pResetMask.is_set( ePipelineStateDescriptorTypeFlagRootSignatureBit ) )
-			{
-				_cacheUnitRootSignature.Reset();
-			}
-		}
+		void Reset( cppx::bitmask<EPipelineStateDescriptorTypeFlags> pResetMask = ePipelineStateDescriptorTypeMaskAll );
 
 	private:
 		template <typename TPDescriptorType>

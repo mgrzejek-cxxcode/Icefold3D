@@ -88,7 +88,6 @@ namespace Ic3::Graphics::GCI
 	public:
 		GLBlendStateDescriptor(
 				GLGPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				cppx::bitmask<EBlendConfigFlags> pBlendFlags,
 				const GLBlendSettings & pGLBlendSettings );
 
@@ -96,7 +95,6 @@ namespace Ic3::Graphics::GCI
 
 		static TGfxHandle<GLBlendStateDescriptor> CreateInstance(
 				GLGPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const BlendStateDescriptorCreateInfo & pCreateInfo );
 	};
 
@@ -111,7 +109,6 @@ namespace Ic3::Graphics::GCI
 	public:
 		GLDepthStencilStateDescriptor(
 				GLGPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				cppx::bitmask<EDepthStencilConfigFlags> pDepthStencilFlags,
 				const GLDepthStencilSettings & pGLDepthStencilSettings );
 
@@ -119,7 +116,6 @@ namespace Ic3::Graphics::GCI
 
 		static TGfxHandle<GLDepthStencilStateDescriptor> CreateInstance(
 				GLGPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const DepthStencilStateDescriptorCreateInfo & pCreateInfo );
 	};
 
@@ -134,7 +130,6 @@ namespace Ic3::Graphics::GCI
 	public:
 		GLRasterizerStateDescriptor(
 				GLGPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				cppx::bitmask<ERasterizerConfigFlags> pRasterizerFlags,
 				const GLRasterizerSettings & pGLRasterizerSettings );
 
@@ -142,7 +137,6 @@ namespace Ic3::Graphics::GCI
 
 		static TGfxHandle<GLRasterizerStateDescriptor> CreateInstance(
 				GLGPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				const RasterizerStateDescriptorCreateInfo & pCreateInfo );
 	};
 

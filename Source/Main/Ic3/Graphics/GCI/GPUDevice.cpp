@@ -420,21 +420,24 @@ namespace Ic3::Graphics::GCI
 	}
 
 	RenderPassDescriptorHandle GPUDevice::CreateRenderPassDescriptor(
-			const RenderPassDescriptorCreateInfo & pCreateInfo )
+			const RenderPassDescriptorCreateInfo & pCreateInfo,
+			pipeline_state_descriptor_id_t pDescriptorID )
 	{
-		return mPipelineStateDescriptorManager->CreateRenderPassDescriptor( pCreateInfo );
+		return mPipelineStateDescriptorManager->CreateRenderPassDescriptor( pCreateInfo, pDescriptorID );
 	}
 
 	RenderTargetDescriptorHandle GPUDevice::CreateRenderTargetDescriptor(
-			const RenderTargetDescriptorCreateInfo & pCreateInfo )
+			const RenderTargetDescriptorCreateInfo & pCreateInfo,
+			pipeline_state_descriptor_id_t pDescriptorID )
 	{
-		return mPipelineStateDescriptorManager->CreateRenderTargetDescriptor( pCreateInfo );
+		return mPipelineStateDescriptorManager->CreateRenderTargetDescriptor( pCreateInfo, pDescriptorID );
 	}
 
 	VertexSourceBindingDescriptorHandle GPUDevice::CreateVertexSourceBindingDescriptor(
-			const VertexSourceBindingDescriptorCreateInfo & pCreateInfo )
+			const VertexSourceBindingDescriptorCreateInfo & pCreateInfo,
+			pipeline_state_descriptor_id_t pDescriptorID )
 	{
-		return mPipelineStateDescriptorManager->CreateVertexSourceBindingDescriptor( pCreateInfo );
+		return mPipelineStateDescriptorManager->CreateVertexSourceBindingDescriptor( pCreateInfo, pDescriptorID );
 	}
 
 	std::unique_ptr<CommandContext> GPUDevice::AcquireCommandContext( ECommandContextType pContextType )

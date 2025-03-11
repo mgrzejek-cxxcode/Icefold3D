@@ -7,9 +7,9 @@ namespace Ic3::Graphics::GCI
 
 	/// #PipelineStateDescriptor
 
-	PipelineStateDescriptor::PipelineStateDescriptor( GPUDevice & pGPUDevice, pipeline_state_descriptor_id_t pDescriptorID )
+	PipelineStateDescriptor::PipelineStateDescriptor( GPUDevice & pGPUDevice )
 	: GPUDeviceChildObject( pGPUDevice )
-	, mDescriptorID( pDescriptorID )
+	, _descriptorID( kPipelineStateDescriptorIDInvalid )
 	{}
 
 	PipelineStateDescriptor::~PipelineStateDescriptor() = default;

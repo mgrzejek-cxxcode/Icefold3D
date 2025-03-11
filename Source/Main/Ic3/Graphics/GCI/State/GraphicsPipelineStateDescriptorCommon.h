@@ -23,7 +23,6 @@ namespace Ic3::Graphics::GCI
 
 		BlendStateDescriptor(
 				GPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				cppx::bitmask<EBlendConfigFlags> pBlendFlags );
 
 		virtual ~BlendStateDescriptor();
@@ -44,7 +43,6 @@ namespace Ic3::Graphics::GCI
 
 		DepthStencilStateDescriptor(
 				GPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				cppx::bitmask<EDepthStencilConfigFlags> pDepthStencilFlags );
 
 		virtual ~DepthStencilStateDescriptor();
@@ -65,7 +63,6 @@ namespace Ic3::Graphics::GCI
 
 		RasterizerStateDescriptor(
 				GPUDevice & pGPUDevice,
-				pipeline_state_descriptor_id_t pDescriptorID,
 				cppx::bitmask<ERasterizerConfigFlags> pRasterizerFlags );
 
 		virtual ~RasterizerStateDescriptor();

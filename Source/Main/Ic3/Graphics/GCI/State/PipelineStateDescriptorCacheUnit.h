@@ -4,7 +4,7 @@
 #ifndef __IC3_GRAPHICS_GCI_PIPELINE_STATE_DESCRIPTOR_CACHE_UNIT_H__
 #define __IC3_GRAPHICS_GCI_PIPELINE_STATE_DESCRIPTOR_CACHE_UNIT_H__
 
-#include "CommonGPUStateDefs.h"
+#include "PipelineStateCommon.h"
 
 #include <cppx/hash.h>
 #include <cppx/immutableString.h>
@@ -12,6 +12,8 @@
 
 namespace Ic3::Graphics::GCI
 {
+
+	class GraphicsPipelineStateDescriptorCache;
 
 	/**
 	 *
@@ -32,10 +34,10 @@ namespace Ic3::Graphics::GCI
 	#define Ic3DefinePipelineStateDescriptorTraits( pDescriptorType, pInputConfig, pFactoryInterface ) \
 		template <> struct PipelineStateDescriptorTraits<pDescriptorType##Descriptor> { \
 			using DescriptorType = pDescriptorType##Descriptor; \
-            using CreateInfoType = pDescriptorType##DescriptorCreateInfo; \
+			using CreateInfoType = pDescriptorType##DescriptorCreateInfo; \
 			using InputConfigType = pInputConfig; \
 			using FactoryInterface = pFactoryInterface; \
-            static inline constexpr auto sDescriptorType = EPipelineStateDescriptorType::DT##pDescriptorType; \
+			static inline constexpr auto sDescriptorType = EPipelineStateDescriptorType::DT##pDescriptorType; \
 		};
 
 	/**
@@ -55,8 +57,8 @@ namespace Ic3::Graphics::GCI
 
 	public:
 		PipelineStateDescriptorCacheUnit( FactoryInterface & pFactoryInterface )
-		: _descriptorInstanceCounter( 0 )
-		, _descriptorFactoryInterface( pFactoryInterface )
+		: _descriptorFactoryInterface( pFactoryInterface )
+		, _descriptorInstanceCounter( 0 )
 		{}
 
 		~PipelineStateDescriptorCacheUnit() = default;
@@ -83,7 +85,7 @@ namespace Ic3::Graphics::GCI
 			return stateObjectIter != _descriptorIDToObjectMap.end();
 		}
 
-		TGfxHandle<TPDescriptorType> CreateDescriptor( const CreateInfoType & pCreateInfo )
+		TPipelineStateDescriptoCreateResult<TPDescriptorType> CreateDescriptor( const CreateInfoType & pCreateInfo )
 		{
 			return _CreateNewCachedDescriptor( pCreateInfo );
 		}
@@ -164,7 +166,7 @@ namespace Ic3::Graphics::GCI
 			return descriptorIDUserComponent;
 		}
 
-		TGfxHandle<TPDescriptorType> _CreateNewCachedDescriptor( const CreateInfoType & pCreateInfo ) noexcept
+		TPipelineStateDescriptoCreateResult<TPDescriptorType> _CreateNewCachedDescriptor( const CreateInfoType & pCreateInfo ) noexcept
 		{
 			// Cast the createInfo object to the required base type - compile-time check in case of future refactoring.
 			const auto & baseCreateInfo = static_cast<const PipelineStateDescriptorCreateInfoBase &>( pCreateInfo );
@@ -178,13 +180,18 @@ namespace Ic3::Graphics::GCI
 			// return it immediately and avoid creating another one with the same config.
 			if( const auto existingDescriptorWithSameHash = _GetDescriptorWithConfigHash( configHash ) )
 			{
-				return existingDescriptorWithSameHash;
+				return { existingDescriptorWithSameHash };
 			}
 
 			const auto descriptorIDUserComponent = _GenerateDescriptorAutoIDUserComponent();
-			const auto descriptorAutoID = CXU::MakePipelineStateDescriptorID( sDescriptorType, descriptorIDUserComponent );
+			const auto cachedDescriptorAutoID = CXU::MakePipelineStateDescriptorID( sDescriptorType, descriptorIDUserComponent );
+			Ic3DebugAssert( CXU::IsPipelineStateDescriptorIDValid( cachedDescriptorAutoID ) );
 
-			auto newStateDescriptor = _descriptorFactoryInterface.CreateDescriptor( descriptorAutoID, pCreateInfo );
+			auto newStateDescriptor = _descriptorFactoryInterface.CreateDescriptor( pCreateInfo );
+			if( !cachedDescriptorAutoID )
+			{
+				return { nullptr };
+			}
 
 			CachedDescriptorData descriptorData{};
 			descriptorData.inputConfigHash = configHash;
@@ -193,20 +200,21 @@ namespace Ic3::Graphics::GCI
 			// Save the descriptor in the cache, referenced by its ID. This action may overwrite the existing
 			// descriptor, as determined by _DetermineCacheStoreAction() function. See the documentation of
 			// ePipelineStateDescriptorCreateFlagCachePolicyOverwriteConfig for details.
-			_descriptorIDToObjectMap[descriptorAutoID] = std::move( descriptorData );
+			_descriptorIDToObjectMap[cachedDescriptorAutoID] = std::move( descriptorData );
 
 			// Associate the computed hash of the descriptor configuration, so it can be
 			// retrieved later on, if another descriptor with the same config is requested.
-			_configHashToDescriptorIDMap[configHash.value] = descriptorAutoID;
+			_configHashToDescriptorIDMap[configHash.value] = cachedDescriptorAutoID;
 
-			return newStateDescriptor;;
+			return { newStateDescriptor, cachedDescriptorAutoID };
 		}
 
 	private:
-		std::atomic<uint32> _descriptorInstanceCounter = 0;
-
 		// Adapter for the state factory. Allows the cache to simply call Create() for every state type.
 		FactoryInterface & _descriptorFactoryInterface;
+
+		//
+		std::atomic<uint32> _descriptorInstanceCounter = 0;
 
 		// The actual Map which serves as a storage for cached objects.
 		DescriptorIDToObjectMap _descriptorIDToObjectMap;
