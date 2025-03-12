@@ -19,12 +19,12 @@ namespace Ic3::Graphics::GCI
 			reinterpret_cast<uint64>( &pGLVertexSourceBinding )
 		};
 
-		auto cachedEntryIter = _persistentVertexArrayObjectMap.find( cachedID );
-		if( cachedEntryIter == _persistentVertexArrayObjectMap.end() )
+		auto cachedEntryIter = _vertexArrayObjectMap.find( cachedID );
+		if( cachedEntryIter == _vertexArrayObjectMap.end() )
 		{
 			auto vertexArrayObject = GCU::IACreateVertexArrayObjectLayoutStreamCombinedGL( pGLAttributeLayoutDefinition, pGLVertexSourceBinding );
 
-			auto insertResult = _persistentVertexArrayObjectMap.emplace( cachedID, std::move( vertexArrayObject ) );
+			auto insertResult = _vertexArrayObjectMap.emplace( cachedID, std::move( vertexArrayObject ) );
 
 			cachedEntryIter = insertResult.first;
 		}
@@ -34,7 +34,7 @@ namespace Ic3::Graphics::GCI
 
 	void GLVertexArrayObjectCache::Reset()
 	{
-		_persistentVertexArrayObjectMap.clear();
+		_vertexArrayObjectMap.clear();
 	}
 
 }

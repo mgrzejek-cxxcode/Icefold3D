@@ -22,7 +22,31 @@ namespace Ic3
 		virtual ~IDynamicObject() = default;
 
 		template <typename TPInterfaceSubClass>
-		CPPX_ATTR_NO_DISCARD TPInterfaceSubClass * GetInterface()
+		CPPX_ATTR_NO_DISCARD TPInterfaceSubClass & GetRef() noexcept
+		{
+			return *( GetInterface<TPInterfaceSubClass>() );
+		}
+		
+		template <typename TPInterfaceSubClass>
+		CPPX_ATTR_NO_DISCARD const TPInterfaceSubClass & GetRef() const noexcept
+		{
+			return *( GetInterface<TPInterfaceSubClass>() );
+		}
+		
+		template <typename TPInterfaceSubClass>
+		CPPX_ATTR_NO_DISCARD TPInterfaceSubClass & QueryRef()
+		{
+			return *( QueryInterface<TPInterfaceSubClass>() );
+		}
+		
+		template <typename TPInterfaceSubClass>
+		CPPX_ATTR_NO_DISCARD const TPInterfaceSubClass & QueryRef() const
+		{
+			return *( QueryInterface<TPInterfaceSubClass>() );
+		}
+
+		template <typename TPInterfaceSubClass>
+		CPPX_ATTR_NO_DISCARD TPInterfaceSubClass * GetInterface() noexcept
 		{
 		#if( IC3_DEBUG )
 			return dynamic_cast_check<TPInterfaceSubClass *>( this );
@@ -32,7 +56,7 @@ namespace Ic3
 		}
 
 		template <typename TPInterfaceSubClass>
-		CPPX_ATTR_NO_DISCARD const TPInterfaceSubClass * GetInterface() const
+		CPPX_ATTR_NO_DISCARD const TPInterfaceSubClass * GetInterface() const noexcept
 		{
 		#if( IC3_DEBUG )
 			return dynamic_cast_check<const TPInterfaceSubClass *>( this );
@@ -62,7 +86,7 @@ namespace Ic3
 		}
 
 		template <typename TPInterfaceSubClass>
-		CPPX_ATTR_NO_DISCARD TSharedHandle<TPInterfaceSubClass> GetHandle()
+		CPPX_ATTR_NO_DISCARD TSharedHandle<TPInterfaceSubClass> GetHandle() noexcept
 		{
 		#if( IC3_DEBUG )
 			return dynamic_ptr_cast_check<TPInterfaceSubClass>( shared_from_this() );
@@ -72,7 +96,7 @@ namespace Ic3
 		}
 
 		template <typename TPInterfaceSubClass>
-		CPPX_ATTR_NO_DISCARD TSharedHandle<const TPInterfaceSubClass> GetHandle() const
+		CPPX_ATTR_NO_DISCARD TSharedHandle<const TPInterfaceSubClass> GetHandle() const noexcept
 		{
 		#if( IC3_DEBUG )
 			return dynamic_ptr_cast_check<const TPInterfaceSubClass>( shared_from_this() );

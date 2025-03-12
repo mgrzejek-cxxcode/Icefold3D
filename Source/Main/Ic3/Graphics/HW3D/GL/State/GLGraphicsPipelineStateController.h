@@ -6,7 +6,6 @@
 
 #include "GLGraphicsPipelineStateIA.h"
 #include "GLGraphicsPipelineStateRTO.h"
-#include "GLVertexArrayObjectCache.h"
 #include "GLGlobalStateCache.h"
 #include <Ic3/Graphics/GCI/State/GraphicsPipelineStateImplRenderPassGeneric.h>
 #include <Ic3/Graphics/GCI/State/GraphicsPipelineStateImplSeparableState.h>
@@ -29,8 +28,11 @@ namespace Ic3::Graphics::GCI
 		friend class GLCommandList;
 
 	public:
-		GLGraphicsPipelineStateController();
-		~GLGraphicsPipelineStateController();
+		GLGPUDevice & mGLGPUDevice;
+
+	public:
+		GLGraphicsPipelineStateController( GLCommandList & pGLCommandList );
+		virtual ~GLGraphicsPipelineStateController();
 
 		CPPX_ATTR_NO_DISCARD const GLDrawTopologyProperties & GetCurrentDrawTopologyProperties() const noexcept;
 
@@ -127,6 +129,9 @@ namespace Ic3::Graphics::GCI
 	class GLGraphicsPipelineStateControllerCore : public GLGraphicsPipelineStateController
 	{
 	public:
+		GLGraphicsPipelineStateControllerCore( GLCommandList & pGLCommandList );
+		virtual ~GLGraphicsPipelineStateControllerCore();
+
 		virtual bool ApplyStateChanges() override final;
 
 	private:
@@ -141,6 +146,9 @@ namespace Ic3::Graphics::GCI
 	class GLGraphicsPipelineStateControllerCompat : public GLGraphicsPipelineStateController
 	{
 	public:
+		GLGraphicsPipelineStateControllerCompat( GLCommandList & pGLCommandList );
+		virtual ~GLGraphicsPipelineStateControllerCompat();
+
 		virtual bool ApplyStateChanges() override final;
 
 	private:
@@ -152,9 +160,6 @@ namespace Ic3::Graphics::GCI
 		const GLVertexArrayObject & GetCachedVertexArrayObject(
 				const GLIAVertexAttributeLayout & pGLAttributeLayoutDefinition,
 				const GLIAVertexSourceBinding & pGLVertexSourceBinding );
-
-	private:
-		GLVertexArrayObjectCache _vaoCache;
 	};
 
 } // namespace Ic3::Graphics::GCI

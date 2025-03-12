@@ -29,7 +29,7 @@ namespace Ic3::Graphics::GCI
 		virtual CommandSync SubmitContext( CommandContextDirect & pContext, const CommandContextSubmitInfo & pSubmitInfo ) override;
 
 		// OpenGL-specific thing coming from the fact, that context creation requires target surface (Drawable on X11,
-		// HDC on Win32, EGLSurface on Android, etc.). GPUDevice::setPresentationLayer was actually introduced only to
+		// HDC on Win32, EGLSurface on Android, etc.). GPUDevice::SetPresentationLayer was actually introduced only to
 		// make tis possible in at least a bit natural way. So, when PresentationLayer is set, GL-level onSet() gets
 		// the surface and passes it here, so CmdManager has the surface when a CmdContext is created.
 		// Also, that is the reason why no context is created in Initialize() function and the requirement of having

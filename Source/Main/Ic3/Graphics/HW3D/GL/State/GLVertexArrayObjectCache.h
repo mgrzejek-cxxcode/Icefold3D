@@ -18,20 +18,17 @@ namespace Ic3::Graphics::GCI
 
 	struct GLVertexArrayObjectCachedID
 	{
-		uint64 vertexAttributeLayoutDescriptorPtr;
-		uint64 vertexSourceBindingDescriptorPtr;
+		uint64 adObjAddr;
+		uint64 bdObjAddr;
 
 		bool operator==( const GLVertexArrayObjectCachedID & pRhs ) const noexcept
 		{
-			return ( vertexAttributeLayoutDescriptorPtr == pRhs.vertexAttributeLayoutDescriptorPtr ) &
-				   ( vertexSourceBindingDescriptorPtr == pRhs.vertexSourceBindingDescriptorPtr );
+			return ( adObjAddr == pRhs.adObjAddr ) && ( bdObjAddr == pRhs.bdObjAddr );
 		}
 
 		bool operator<( const GLVertexArrayObjectCachedID & pRhs ) const noexcept
 		{
-			return ( vertexAttributeLayoutDescriptorPtr < pRhs.vertexAttributeLayoutDescriptorPtr ) ||
-			       ( ( vertexAttributeLayoutDescriptorPtr == pRhs.vertexAttributeLayoutDescriptorPtr ) &&
-			       	 ( vertexSourceBindingDescriptorPtr < pRhs.vertexSourceBindingDescriptorPtr ) );
+			return ( adObjAddr < pRhs.adObjAddr ) || ( ( adObjAddr == pRhs.adObjAddr ) && ( bdObjAddr < pRhs.bdObjAddr ) );
 		}
 	};
 
@@ -48,8 +45,8 @@ namespace Ic3::Graphics::GCI
 		void Reset();
 
 	private:
-		using PersistentVertexArrayObjectMap = std::map<GLVertexArrayObjectCachedID, GLVertexArrayObjectHandle>;
-		PersistentVertexArrayObjectMap _persistentVertexArrayObjectMap;
+		using VertexArrayObjectMap = std::map<GLVertexArrayObjectCachedID, GLVertexArrayObjectHandle>;
+		VertexArrayObjectMap _vertexArrayObjectMap;
 	};
 
 }

@@ -25,6 +25,11 @@ namespace Ic3::Graphics::GCI
 		}
 	#endif
 
+		if( gl4GPUDevice->IsCompatibilityDevice() )
+		{
+			gl4GPUDevice->InitializeGLVertexArrayObjectCache();
+		}
+
 		return gl4GPUDevice;
 	}
 

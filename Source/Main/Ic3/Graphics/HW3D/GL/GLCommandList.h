@@ -73,6 +73,7 @@ namespace Ic3::Graphics::GCI
 				ECommandListType pListType,
 				System::OpenGLRenderContextHandle pSysGLRenderContext )
 		: GLCommandList( pGLCommandSystem, pListType, pSysGLRenderContext, _graphicsPipelineStateControllerCore )
+		, _graphicsPipelineStateControllerCore( *this )
 		{}
 
 	private:
@@ -87,6 +88,7 @@ namespace Ic3::Graphics::GCI
 				ECommandListType pListType,
 				System::OpenGLRenderContextHandle pSysGLRenderContext )
 		: GLCommandList( pGLCommandSystem, pListType, pSysGLRenderContext, _graphicsPipelineStateControllerCompat )
+		, _graphicsPipelineStateControllerCompat( *this )
 		{}
 
 	private:

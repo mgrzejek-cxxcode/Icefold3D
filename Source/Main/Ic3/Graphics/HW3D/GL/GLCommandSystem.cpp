@@ -45,12 +45,12 @@ namespace Ic3::Graphics::GCI
 	#if( IC3_GX_GL_FEATURE_SUPPORT_DEBUG_OUTPUT )
 		if( commandContext )
 		{
-			const auto * openglGPUDevice = mGPUDevice.QueryInterface<GLGPUDevice>();
-			if( auto * openglDebugOutput = openglGPUDevice->GetDebugOutputInterface() )
+			const auto * glcGPUDevice = mGPUDevice.QueryInterface<GLGPUDevice>();
+			if( auto * glcDebugOuput = glcGPUDevice->GetDebugOutputInterface() )
 			{
-			    openglDebugOutput->EnableDebugOutput( true );
-			    openglDebugOutput->EnableBreakOnEvent( true );
-			    openglDebugOutput->EnableSync( true );
+			    glcDebugOuput->EnableDebugOutput( true );
+			    glcDebugOuput->EnableBreakOnEvent( true );
+			    glcDebugOuput->EnableSync( true );
 			}
 		}
 	#endif
@@ -112,13 +112,13 @@ namespace Ic3::Graphics::GCI
 	{
 		Ic3DebugAssert( !_mainCommandList );
 
-		auto * openglGPUDevice = mGPUDevice.QueryInterface<GLGPUDevice>();
-		Ic3DebugAssert( openglGPUDevice );
+		auto * glcGPUDevice = mGPUDevice.QueryInterface<GLGPUDevice>();
+		Ic3DebugAssert( glcGPUDevice );
 
-		auto sysGLRenderContext = GLCommandSystem::CreateSysGLRenderContext( *openglGPUDevice, _targetSysGLSurface );
+		auto sysGLRenderContext = GLCommandSystem::CreateSysGLRenderContext( *glcGPUDevice, _targetSysGLSurface );
 		Ic3DebugAssert( sysGLRenderContext );
 
-		if( openglGPUDevice->IsCompatibilityDevice() )
+		if( glcGPUDevice->IsCompatibilityDevice() )
 		{
 			_mainCommandList = CreateGfxObject<GLCommandListCompat>( *this, ECommandListType::DirectGraphics, sysGLRenderContext );
 		}

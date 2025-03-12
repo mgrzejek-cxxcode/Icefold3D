@@ -79,7 +79,7 @@ struct CB0Data
 #define GX_DRIVER_ID_DX11 11
 #define GX_DRIVER_ID_GL4 43
 
-#define GX_DRIVER_ID GX_DRIVER_ID_DX11
+#define GX_DRIVER_ID GX_DRIVER_ID_GL4
 
 int main( int pArgc, const char ** pArgv )
 {
@@ -427,7 +427,7 @@ int main( int pArgc, const char ** pArgv )
 
 	const auto Ic3ViewTexture = cxm::look_at_LH(
 		cxm::vec3f{ 0.0f, 3.0f, -1.0f },
-		cxm::vec3f{ 0.0f, 0.0f, 5.0f },
+		cxm::vec3f{ 0.0f, 0.0f, -0.5f },
 		cxm::vec3f{ 0.0f, 1.0f, 0.0f } );
 
 	const auto Ic3ProjectionTexture = cxm::perspective_aspect_LH(

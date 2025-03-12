@@ -5,6 +5,8 @@
 #include "EventSource.h"
 #include <functional>
 
+#undef RegisterEventSource
+
 namespace Ic3::System
 {
 

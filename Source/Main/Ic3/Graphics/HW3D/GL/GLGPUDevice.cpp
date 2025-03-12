@@ -9,6 +9,7 @@
 #include "Resources/GLTexture.h"
 #include "State/GLGraphicsPipelineStateObject.h"
 #include "State/GLGraphicsPipelineStateController.h"
+#include "State/GLVertexArrayObjectCache.h"
 
 namespace Ic3::Graphics::GCI
 {
@@ -24,11 +25,6 @@ namespace Ic3::Graphics::GCI
 
 	GLGPUDevice::~GLGPUDevice() = default;
 
-	GLDebugOutput * GLGPUDevice::GetDebugOutputInterface() const
-	{
-		return _glcDebugOutput.get();
-	}
-
 	void GLGPUDevice::WaitForCommandSync( CommandSync & pCommandSync )
 	{
 		if( pCommandSync )
@@ -41,6 +37,22 @@ namespace Ic3::Graphics::GCI
 			releaseGLCommandSyncData( pCommandSync.syncData );
 			pCommandSync.syncData = nullptr;
 		}
+	}
+
+	GLDebugOutput * GLGPUDevice::GetDebugOutputInterface() const
+	{
+		return _glcDebugOutput.get();
+	}
+
+	GLVertexArrayObjectCache * GLGPUDevice::GetVertexArrayObjectCache() const
+	{
+		return _glcVertexArrayObjectCache.get();
+	}
+
+	void GLGPUDevice::InitializeCommandSystem()
+	{
+		Ic3DebugAssert( !_commandSystem );
+		_commandSystem = CreateGfxObject<GLCommandSystem>( *this );
 	}
 
 	bool GLGPUDevice::InitializeGLDebugOutput()
@@ -64,10 +76,10 @@ namespace Ic3::Graphics::GCI
 		return _glcDebugOutput ? true : false;
 	}
 
-	void GLGPUDevice::InitializeCommandSystem()
+	void GLGPUDevice::InitializeGLVertexArrayObjectCache()
 	{
-		Ic3DebugAssert( !_commandSystem );
-		_commandSystem = CreateGfxObject<GLCommandSystem>( *this );
+		Ic3DebugAssert( !_glcVertexArrayObjectCache );
+		_glcVertexArrayObjectCache = std::make_unique<GLVertexArrayObjectCache>();
 	}
 
 	bool GLGPUDevice::_DrvOnSetPresentationLayer( PresentationLayerHandle pPresentationLayer )

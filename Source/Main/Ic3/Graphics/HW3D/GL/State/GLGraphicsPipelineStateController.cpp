@@ -6,13 +6,15 @@
 #include "GLGraphicsPipelineStateRTO.h"
 #include "GLGraphicsPipelineStateObject.h"
 #include "GLVertexArrayObjectCache.h"
-#include "../Objects/GLFramebufferObject.h"
-#include "../Objects/GLShaderPipelineObject.h"
-#include "../Objects/GLVertexArrayObject.h"
-#include "../Resources/GLGPUBuffer.h"
-#include "../Resources/GLSampler.h"
-#include "../Resources/GLShader.h"
-#include "../Resources/GLTexture.h"
+#include <Ic3/Graphics/HW3D/GL/GLCommandList.h>
+#include <Ic3/Graphics/HW3D/GL/GLGPUDevice.h>
+#include <Ic3/Graphics/HW3D/GL/Objects/GLFramebufferObject.h>
+#include <Ic3/Graphics/HW3D/GL/Objects/GLShaderPipelineObject.h>
+#include <Ic3/Graphics/HW3D/GL/Objects/GLVertexArrayObject.h>
+#include <Ic3/Graphics/HW3D/GL/Resources/GLGPUBuffer.h>
+#include <Ic3/Graphics/HW3D/GL/Resources/GLSampler.h>
+#include <Ic3/Graphics/HW3D/GL/Resources/GLShader.h>
+#include <Ic3/Graphics/HW3D/GL/Resources/GLTexture.h>
 
 #include <Ic3/Graphics/GCI/State/GraphicsPipelineStateDescriptorIADynamic.h>
 #include <Ic3/Graphics/GCI/State/GraphicsPipelineStateDescriptorRTODynamic.h>
@@ -22,8 +24,9 @@
 namespace Ic3::Graphics::GCI
 {
 
-	GLGraphicsPipelineStateController::GLGraphicsPipelineStateController()
+	GLGraphicsPipelineStateController::GLGraphicsPipelineStateController( GLCommandList & pGLCommandList )
 	: BaseStateControllerType()
+	, mGLGPUDevice( pGLCommandList.mGPUDevice.GetRef<GLGPUDevice>() )
 	{}
 
 	GLGraphicsPipelineStateController::~GLGraphicsPipelineStateController() = default;
@@ -400,6 +403,11 @@ namespace Ic3::Graphics::GCI
 	}
 
 
+	GLGraphicsPipelineStateControllerCore::GLGraphicsPipelineStateControllerCore( GLCommandList & pGLCommandList )
+	: GLGraphicsPipelineStateController( pGLCommandList )
+	{}
+
+	GLGraphicsPipelineStateControllerCore::~GLGraphicsPipelineStateControllerCore() = default;
 
 	bool GLGraphicsPipelineStateControllerCore::ApplyStateChanges()
 	{
@@ -515,6 +523,12 @@ namespace Ic3::Graphics::GCI
 	}
 
 
+	GLGraphicsPipelineStateControllerCompat::GLGraphicsPipelineStateControllerCompat( GLCommandList & pGLCommandList )
+	: GLGraphicsPipelineStateController( pGLCommandList )
+	{}
+
+	GLGraphicsPipelineStateControllerCompat::~GLGraphicsPipelineStateControllerCompat() = default;
+
 	bool GLGraphicsPipelineStateControllerCompat::ApplyStateChanges()
 	{
 		cppx::bitmask<uint32> executedUpdatesMask = 0;
@@ -583,7 +597,9 @@ namespace Ic3::Graphics::GCI
 			const GLIAVertexAttributeLayout & pGLAttributeLayoutDefinition,
 			const GLIAVertexSourceBinding & pGLVertexSourceBinding )
 	{
-		return _vaoCache.GetOrCreate( pGLAttributeLayoutDefinition, pGLVertexSourceBinding );
+		auto * glcVertexArrayObjectCache = mGLGPUDevice.GetVertexArrayObjectCache();
+		Ic3DebugAssert( glcVertexArrayObjectCache );
+		return glcVertexArrayObjectCache->GetOrCreate( pGLAttributeLayoutDefinition, pGLVertexSourceBinding );
 	}
 
 } // namespace Ic3::Graphics::GCI

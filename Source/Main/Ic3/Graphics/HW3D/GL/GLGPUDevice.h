@@ -15,7 +15,7 @@ namespace Ic3::Graphics::GCI
 	class GLCommandContext;
 	class GLGraphicsPipelineStateController;
 	class GLGraphicsPipelineStateObject;
-	class GLVertexStreamStateObject;
+	class GLVertexArrayObjectCache;
 
 	class GLGPUDeviceFeatureQuery : public GPUDeviceFeatureQuery
 	{
@@ -49,14 +49,18 @@ namespace Ic3::Graphics::GCI
 
 		CPPX_ATTR_NO_DISCARD virtual bool IsCompatibilityDevice() const noexcept = 0;
 
-		GLDebugOutput * GetDebugOutputInterface() const;
-
 		virtual void WaitForCommandSync( CommandSync & pCommandSync ) override;
 
-	protected:
-		bool InitializeGLDebugOutput();
+		GLDebugOutput * GetDebugOutputInterface() const;
 
+		GLVertexArrayObjectCache * GetVertexArrayObjectCache() const;
+
+	protected:
 		virtual void InitializeCommandSystem() override;
+
+		bool InitializeGLDebugOutput();
+		
+		void InitializeGLVertexArrayObjectCache();
 
 	private:
 	    virtual bool _DrvOnSetPresentationLayer( PresentationLayerHandle pPresentationLayer ) override;
@@ -80,6 +84,7 @@ namespace Ic3::Graphics::GCI
 		PipelineStateDescriptorManager _pipelineStateDescriptorManager;
 		GLGPUDeviceFeatureQuery _glcDeviceFeatureQueryInterface;
 		std::unique_ptr<GLDebugOutput> _glcDebugOutput;
+		std::unique_ptr<GLVertexArrayObjectCache> _glcVertexArrayObjectCache;
 	};
 
 	class GLGPUDeviceCore : public GLGPUDevice

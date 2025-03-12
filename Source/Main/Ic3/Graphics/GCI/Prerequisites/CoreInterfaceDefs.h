@@ -20,7 +20,7 @@ namespace Ic3::Graphics::GCI
 	 * like support for ID and debug name (debug builds only).
 	 */
 	class IC3_GRAPHICS_GCI_API GfxObject : public IDynamicObject
-    {
+	{
 	public:
 		GfxObject();
 		virtual ~GfxObject();
@@ -74,7 +74,7 @@ namespace Ic3::Graphics::GCI
 	#if( IC3_DEBUG )
 		cppx::immutable_string _debugName;
 	#endif
-    };
+	};
 
 	inline GfxObjectID GfxObject::GetObjectID() const noexcept
 	{
@@ -107,19 +107,19 @@ namespace Ic3::Graphics::GCI
 	/**
 	 *
 	 */
-    class IC3_GRAPHICS_GCI_API GPUDriverChildObject : public GfxObject
-    {
-    public:
-	    GPUDriver & mGPUDriver;
+	class IC3_GRAPHICS_GCI_API GPUDriverChildObject : public GfxObject
+	{
+	public:
+		GPUDriver & mGPUDriver;
 
-    public:
-	    explicit GPUDriverChildObject( GPUDriver & pGPUDriver );
-	    virtual ~GPUDriverChildObject();
-    };
+	public:
+		explicit GPUDriverChildObject( GPUDriver & pGPUDriver );
+		virtual ~GPUDriverChildObject();
+	};
 
-    /**
-     *
-     */
+	/**
+	 *
+	 */
 	class IC3_GRAPHICS_GCI_API GPUDeviceChildObject : public GfxObject
 	{
 	public:
