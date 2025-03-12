@@ -1,5 +1,7 @@
 
 set( IC3_GRAPHICS_HW3D_DX11_SRC_FILES
+	${IC3_GRAPHICS_HW3D_DX_SRC_FILES}
+
 	"DX11Prerequisites.h"
 	"DX11Prerequisites.cpp"
 
@@ -30,20 +32,17 @@ set( IC3_GRAPHICS_HW3D_DX11_SRC_FILES
 
 	"State/DX11GraphicsPipelineStateCommon.h"
 	"State/DX11GraphicsPipelineStateCommon.cpp"
+	"State/DX11GraphicsPipelineStateController.h"
+	"State/DX11GraphicsPipelineStateController.cpp"
+	"State/DX11GraphicsPipelineStateIA.h"
+	"State/DX11GraphicsPipelineStateIA.cpp"
+	"State/DX11GraphicsPipelineStateObject.h"
+	"State/DX11GraphicsPipelineStateObject.cpp"
 	"State/DX11GraphicsPipelineStateRTO.h"
 	"State/DX11GraphicsPipelineStateRTO.cpp"
-
-	"State/DX11PipelineStateController.h"
-	"State/DX11PipelineStateController.cpp"
-	"State/DX11PipelineStateObject.h"
-	"State/DX11PipelineStateObject.cpp"
-
-	"State/DX11GraphicsShaderState.h"
-
-	"State/DX11InputAssembler.cpp"
-	"State/DX11InputAssembler.h"
-	"State/DX11PipelineImmutableStateFactory.cpp"
-	"State/DX11PipelineImmutableStateFactory.h"
+	"State/DX11GraphicsPipelineStateShader.h"
+	"State/DX11PipelineStateDescriptorFactory.h"
+	"State/DX11PipelineStateDescriptorFactory.cpp"
 )
 
 ic3AddCoreLib( Ic3.Graphics.HW3D.DX11 ${IC3_GRAPHICS_HW3D_DX11_SRC_FILES} )

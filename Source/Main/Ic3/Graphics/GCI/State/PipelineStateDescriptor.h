@@ -56,6 +56,12 @@ namespace Ic3::Graphics::GCI
 		CPPX_ATTR_NO_DISCARD virtual bool IsCachedDescriptorType() const noexcept = 0;
 
 		/**
+		 * @brief 
+		 * @return 
+		 */
+		CPPX_ATTR_NO_DISCARD virtual bool IsHardwareDescriptor() const noexcept = 0;
+
+		/**
 		 * Returns true if this descriptor is a dynamic descriptor. Dynamic descriptor is a descriptor class
 		 * that does not contain any API-specific properties, i.e. it is defined fully at the GCI abstraction level
 		 * and their configuration can be updated on the fly, without re-creating the descriptor via GPUDevice.
@@ -138,7 +144,7 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~CachedPipelineStateDescriptor() = default;
 
-		CPPX_ATTR_NO_DISCARD virtual bool IsCachedDescriptorType() const noexcept override final
+		virtual bool IsCachedDescriptorType() const noexcept override final
 		{
 			return true;
 		}
@@ -158,7 +164,26 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~NonCachedPipelineStateDescriptor() = default;
 
-		CPPX_ATTR_NO_DISCARD virtual bool IsCachedDescriptorType() const noexcept override final
+		virtual bool IsCachedDescriptorType() const noexcept override final
+		{
+			return false;
+		}
+	};
+
+	/**
+	 * @brief 
+	 * @tparam TPBaseDescriptor 
+	 */
+	template <typename TPBaseDescriptor>
+	class GCIPipelineStateDescriptor : public TPBaseDescriptor
+	{
+	public:
+		template <typename... TPArgs>
+		GCIPipelineStateDescriptor( TPArgs && ...pArgs )
+		: TPBaseDescriptor( std::forward<TPArgs>( pArgs )... )
+		{}
+
+		virtual bool IsHardwareDescriptor() const noexcept
 		{
 			return false;
 		}
@@ -176,6 +201,11 @@ namespace Ic3::Graphics::GCI
 		HW3DPipelineStateDescriptor( TPArgs && ...pArgs )
 		: TPBaseDescriptor( std::forward<TPArgs>( pArgs )... )
 		{}
+
+		virtual bool IsHardwareDescriptor() const noexcept
+		{
+			return true;
+		}
 	};
 
 } // namespace Ic3::Graphics::GCI

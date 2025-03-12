@@ -11,18 +11,18 @@ namespace Ic3::Graphics::GCI
 	GLVertexArrayObjectCache::~GLVertexArrayObjectCache() = default;
 
 	const GLVertexArrayObject & GLVertexArrayObjectCache::GetOrCreate(
-			const GLIAVertexAttributeLayout & pGLVertexAttributeLayout,
+			const GLIAVertexAttributeLayout & pGLAttributeLayoutDefinition,
 			const GLIAVertexSourceBinding & pGLVertexSourceBinding )
 	{
 		GLVertexArrayObjectCachedID cachedID{
-			reinterpret_cast<uint64>( &pGLVertexAttributeLayout ),
+			reinterpret_cast<uint64>( &pGLAttributeLayoutDefinition ),
 			reinterpret_cast<uint64>( &pGLVertexSourceBinding )
 		};
 
 		auto cachedEntryIter = _persistentVertexArrayObjectMap.find( cachedID );
 		if( cachedEntryIter == _persistentVertexArrayObjectMap.end() )
 		{
-			auto vertexArrayObject = GCU::IACreateVertexArrayObjectLayoutStreamCombinedGL( pGLVertexAttributeLayout, pGLVertexSourceBinding );
+			auto vertexArrayObject = GCU::IACreateVertexArrayObjectLayoutStreamCombinedGL( pGLAttributeLayoutDefinition, pGLVertexSourceBinding );
 
 			auto insertResult = _persistentVertexArrayObjectMap.emplace( cachedID, std::move( vertexArrayObject ) );
 

@@ -10,7 +10,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	class DX11GPUDriverInterface : public GPUDriverInterface
+	class IC3_GX_DX11_CLASS DX11GPUDriverInterface : public GPUDriverInterface
 	{
 	public:
 		virtual GPUDriverHandle CreateDriver( const GPUDriverCreateInfo & pCreateInfo ) override final;

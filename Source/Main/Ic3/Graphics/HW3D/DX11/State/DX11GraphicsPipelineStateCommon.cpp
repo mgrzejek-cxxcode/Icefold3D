@@ -10,9 +10,11 @@ namespace Ic3::Graphics::GCI
 	DX11BlendStateDescriptor::DX11BlendStateDescriptor(
 			DX11GPUDevice & pGPUDevice,
 			cppx::bitmask<EBlendConfigFlags> pBlendFlags,
-			ComPtr<ID3D11BlendState> pD3D11BlendState )
-	: BlendStateDescriptor( pGPUDevice, pBlendFlags )
+			ComPtr<ID3D11BlendState> pD3D11BlendState,
+			const cxm::rgba_color_r32_norm & pConstantFactor )
+	: HW3DPipelineStateDescriptor( pGPUDevice, pBlendFlags )
 	, mD3D11BlendState( pD3D11BlendState )
+	, mConstantFactor( pConstantFactor )
 	{}
 
 	DX11BlendStateDescriptor::~DX11BlendStateDescriptor() = default;
@@ -37,7 +39,8 @@ namespace Ic3::Graphics::GCI
 		auto stateDescriptor = CreateGfxObject<DX11BlendStateDescriptor>(
 				pGPUDevice,
 				pCreateInfo.blendSettings.flags,
-				d3d11BlendState );
+				d3d11BlendState,
+				dx11BlendSettings.ConstantFactor );
 
 		return stateDescriptor;
 	}
@@ -47,7 +50,7 @@ namespace Ic3::Graphics::GCI
 			DX11GPUDevice & pGPUDevice,
 			cppx::bitmask<EDepthStencilConfigFlags> pDepthStencilFlags,
 			ComPtr<ID3D11DepthStencilState> pD3D11DepthStencilState )
-	: DepthStencilStateDescriptor( pGPUDevice, pDepthStencilFlags )
+	: HW3DPipelineStateDescriptor( pGPUDevice, pDepthStencilFlags )
 	, mD3D11DepthStencilState( pD3D11DepthStencilState )
 	{}
 
@@ -83,7 +86,7 @@ namespace Ic3::Graphics::GCI
 			DX11GPUDevice & pGPUDevice,
 			cppx::bitmask<ERasterizerConfigFlags> pRasterizerFlags,
 			ComPtr<ID3D11RasterizerState> pD3D11RasterizerState )
-	: RasterizerStateDescriptor( pGPUDevice, pRasterizerFlags )
+	: HW3DPipelineStateDescriptor( pGPUDevice, pRasterizerFlags )
 	, mD3D11RasterizerState( pD3D11RasterizerState )
 	{}
 

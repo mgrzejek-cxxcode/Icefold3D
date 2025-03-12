@@ -47,22 +47,34 @@ namespace Ic3::Graphics::GCI
 	{
 		cppx::bitmask<ERTAttachmentFlags> activeAttachmentsMask = 0;
 
-		uint32 activeAttachmentsNum = 0;
-
 		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept
 		{
 			return !IsEmpty();
 		}
 
-		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept
+		CPPX_ATTR_NO_DISCARD uint32 GetActiveAttachmentsNum() const noexcept
 		{
-			return activeAttachmentsMask.empty() || ( activeAttachmentsNum == 0 );
+			return ( activeAttachmentsMask & eRTAttachmentMaskAll ).count_bits();
 		}
 
-		void ResetActiveAttachmentInfo() noexcept
+		CPPX_ATTR_NO_DISCARD uint32 GetActiveColorAttachmentsNum() const noexcept
+		{
+			return ( activeAttachmentsMask & eRTAttachmentMaskColorAll ).count_bits();
+		}
+
+		CPPX_ATTR_NO_DISCARD bool IsDepthStencilAttachmentActive() const noexcept
+		{
+			return activeAttachmentsMask.is_set( eRTAttachmentFlagDepthStencilBit );
+		}
+
+		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept
+		{
+			return activeAttachmentsMask.empty();
+		}
+
+		void ResetActiveAttachmentsMask() noexcept
 		{
 			activeAttachmentsMask.clear();
-			activeAttachmentsNum = 0;
 		}
 	};
 
@@ -96,7 +108,6 @@ namespace Ic3::Graphics::GCI
 			if( &pRhs != this )
 			{
 				activeAttachmentsMask = pRhs.activeAttachmentsMask;
-				activeAttachmentsNum = pRhs.activeAttachmentsNum;
 				attachments = pRhs.attachments;
 			}
 
@@ -140,7 +151,6 @@ namespace Ic3::Graphics::GCI
 		void UpdateActiveAttachmentInfo() noexcept
 		{
 			activeAttachmentsMask.clear();
-			activeAttachmentsNum = 0;
 
 			ForEachRTAttachmentIndex( eRTAttachmentMaskAll,
 				[&]( native_uint pIndex, ERTAttachmentFlags pAttachmentBit )
@@ -148,7 +158,6 @@ namespace Ic3::Graphics::GCI
 					if( const auto & attachmentConfig = attachments[pIndex] )
 					{
 						activeAttachmentsMask.set( pAttachmentBit );
-						activeAttachmentsNum += 1;
 					}
 					return true;
 				});
@@ -161,7 +170,6 @@ namespace Ic3::Graphics::GCI
 				attachmentConfig.Reset();
 			}
 			activeAttachmentsMask.clear();
-			activeAttachmentsNum = 0;
 		}
 	};
 

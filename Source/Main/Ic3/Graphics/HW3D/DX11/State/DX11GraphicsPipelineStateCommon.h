@@ -14,23 +14,27 @@ namespace Ic3::Graphics::GCI
 	};
 
 	struct DX11DepthStencilSettings : public D3D11_DEPTH_STENCIL_DESC
-	{};
+	{
+	};
 
 	struct DX11RasterizerSettings : public D3D11_RASTERIZER_DESC
-	{};
+	{
+	};
 
 
 	///
-	class DX11BlendStateDescriptor : public BlendStateDescriptor
+	class DX11BlendStateDescriptor : public HW3DPipelineStateDescriptor<BlendStateDescriptor>
 	{
 	public:
 		ComPtr<ID3D11BlendState> const mD3D11BlendState;
+		cxm::rgba_color_r32_norm const mConstantFactor;
 
 	public:
 		DX11BlendStateDescriptor(
 				DX11GPUDevice & pGPUDevice,
 				cppx::bitmask<EBlendConfigFlags> pBlendFlags,
-				ComPtr<ID3D11BlendState> pD3D11BlendState );
+				ComPtr<ID3D11BlendState> pD3D11BlendState,
+				const cxm::rgba_color_r32_norm & pConstantFactor );
 
 		virtual ~DX11BlendStateDescriptor();
 
@@ -40,7 +44,7 @@ namespace Ic3::Graphics::GCI
 	};
 
 	///
-	class DX11DepthStencilStateDescriptor : public DepthStencilStateDescriptor
+	class DX11DepthStencilStateDescriptor : public HW3DPipelineStateDescriptor<DepthStencilStateDescriptor>
 	{
 	public:
 		ComPtr<ID3D11DepthStencilState> const mD3D11DepthStencilState;
@@ -59,7 +63,7 @@ namespace Ic3::Graphics::GCI
 	};
 
 	///
-	class DX11RasterizerStateDescriptor : public RasterizerStateDescriptor
+	class DX11RasterizerStateDescriptor : public HW3DPipelineStateDescriptor<RasterizerStateDescriptor>
 	{
 	public:
 		ComPtr<ID3D11RasterizerState> const mD3D11RasterizerState;

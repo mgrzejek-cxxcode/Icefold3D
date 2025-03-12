@@ -178,6 +178,8 @@
 
 #if( defined( PCL_DEBUG ) && PCL_DEBUG )
 #  define PCL_BUILD_TYPE PCL_BUILD_TYPE_DEBUG
+#elif( defined( PCL_RELEASE ) && PCL_RELEASE )
+#  define PCL_BUILD_TYPE PCL_BUILD_TYPE_RELEASE
 #endif
 
 #if !defined( PCL_BUILD_TYPE )

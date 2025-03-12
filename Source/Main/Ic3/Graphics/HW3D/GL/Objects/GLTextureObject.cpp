@@ -124,7 +124,7 @@ namespace Ic3::Graphics::GCI
 			glGetTexLevelParameteriv( textureBindTarget, 0, GL_TEXTURE_INTERNAL_FORMAT, &textureInternalFormat );
 			Ic3OpenGLHandleLastError();
 
-			auto internalFormatBPP = ATL::QueryGLTextureInternalFormatBPP( textureInternalFormat );
+			auto internalFormatBPP = ATL::GLQueryTextureInternalFormatBPP( textureInternalFormat );
 			auto texturePixelCount = textureWidth * textureHeight * textureDepth;
 
 			textureImageSize = texturePixelCount * internalFormatBPP / 8;

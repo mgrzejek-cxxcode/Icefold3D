@@ -10,7 +10,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	class IC3_GRAPHICS_GCI_CLASS RootSignatureDescriptorGeneric : public RootSignatureDescriptor
+	class IC3_GRAPHICS_GCI_CLASS RootSignatureDescriptorGeneric : public GCIPipelineStateDescriptor<RootSignatureDescriptor>
 	{
 		Ic3DeclareNonCopyable( RootSignatureDescriptorGeneric );
 

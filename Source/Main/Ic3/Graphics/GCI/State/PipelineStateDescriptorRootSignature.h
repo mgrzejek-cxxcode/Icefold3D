@@ -13,7 +13,7 @@ namespace Ic3::Graphics::GCI
 	/**
 	 *
 	 */
-	class IC3_GRAPHICS_GCI_CLASS RootSignatureDescriptor : public CachedPipelineStateDescriptor<PipelineStateDescriptor>
+	class IC3_GRAPHICS_GCI_CLASS RootSignatureDescriptor : public GCIPipelineStateDescriptor<CachedPipelineStateDescriptor<PipelineStateDescriptor>>
 	{
 		Ic3DeclareNonCopyable( RootSignatureDescriptor );
 

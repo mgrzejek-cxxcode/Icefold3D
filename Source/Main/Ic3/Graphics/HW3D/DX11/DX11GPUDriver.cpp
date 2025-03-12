@@ -14,10 +14,10 @@ namespace Ic3::Graphics::GCI
 	DX11GPUDriverHandle DX11GPUDriver::Create( const DX11GPUDriverCreateInfo & pCreateInfo )
 	{
 		constexpr auto dx11SupportedGPUConfigFlags =
-			E_GPU_DRIVER_CONFIG_FLAG_ENABLE_DEBUG_LAYER_BIT |
-			E_GPU_DRIVER_CONFIG_FLAG_ENABLE_SHADER_DEBUG_INFO_BIT |
-			E_GPU_DRIVER_CONFIG_FLAG_DISABLE_MULTI_THREAD_ACCESS_BIT |
-			E_GPU_DRIVER_CONFIG_FLAG_USE_REFERENCE_DRIVER_BIT;
+			eGPUDriverConfigFlagEnableDebugLayerBit |
+			eGPUDriverConfigFlagEnableShaderDebugInfoBit |
+			eGPUDriverConfigFlagDisableMultiThreadAccessBit |
+			eGPUDriverConfigFlagUseReferenceDriverBit;
 
 		auto dx11GPUDriver = CreateGfxObject<DX11GPUDriver>( pCreateInfo.sysContext );
 		dx11GPUDriver->SetConfigFlags( pCreateInfo.configFlags & dx11SupportedGPUConfigFlags );

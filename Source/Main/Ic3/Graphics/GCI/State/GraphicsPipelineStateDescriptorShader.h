@@ -37,7 +37,7 @@ namespace Ic3::Graphics::GCI
 	/**
 	 *
 	 */
-	class IC3_GRAPHICS_GCI_CLASS GraphicsShaderLinkageDescriptorGenericSeparable : public GraphicsShaderLinkageDescriptor
+	class IC3_GRAPHICS_GCI_CLASS GraphicsShaderLinkageDescriptorGenericSeparable : public GCIPipelineStateDescriptor<GraphicsShaderLinkageDescriptor>
 	{
 	public:
 		GraphicsShaderBinding const mShaderBinding;
@@ -45,7 +45,7 @@ namespace Ic3::Graphics::GCI
 	public:
 		GraphicsShaderLinkageDescriptorGenericSeparable(
 				GPUDevice & pGPUDevice,
-				const GraphicsShaderBinding & pBindingConfiguration );
+				const GraphicsShaderBinding & pShaderBinding );
 
 		virtual ~GraphicsShaderLinkageDescriptorGenericSeparable();
 

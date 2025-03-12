@@ -29,7 +29,7 @@ namespace Ic3::Graphics::GCI
 		openglRenderbufferCreateInfo.dimensions.y = pCreateInfo.rtTextureLayout.imageRect.height;
 		openglRenderbufferCreateInfo.msaaLevel = pCreateInfo.rtTextureLayout.msaaLevel;
 		openglRenderbufferCreateInfo.internalFormat =
-				ATL::TranslateGLTextureInternalFormat( pCreateInfo.rtTextureLayout.internalFormat );
+				ATL::GLTranslateTextureInternalFormat( pCreateInfo.rtTextureLayout.internalFormat );
 
 		auto openglRenderbuffer = GLRenderbufferObject::Create( openglRenderbufferCreateInfo );
 		if( !openglRenderbuffer )

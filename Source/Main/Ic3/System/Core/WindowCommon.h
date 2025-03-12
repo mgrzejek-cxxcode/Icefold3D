@@ -53,7 +53,7 @@ namespace Ic3::System
 		EFrameStyle style;
 	};
 
-	inline constexpr FrameGeometry CX_FRAME_GEOMETRY_DEFAULT{cxFramePosAuto, cxFrameSizeAuto, EFrameStyle::Default };
+	inline constexpr FrameGeometry CX_FRAME_GEOMETRY_DEFAULT{ cxFramePosAuto, cxFrameSizeAuto, EFrameStyle::Default };
 
 	struct WindowCreateInfo
 	{

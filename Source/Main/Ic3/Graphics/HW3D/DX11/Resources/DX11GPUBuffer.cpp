@@ -12,8 +12,8 @@ namespace Ic3::Graphics::GCI
 		const ResourceMemoryInfo & pResourceMemory,
 		const GPUBufferProperties & pBufferProperties,
 		ComPtr<ID3D11Buffer> pD3D11Buffer )
-    : GPUBuffer( pDX11GPUDevice, pResourceMemory, pBufferProperties )
-    , mD3D11Buffer( std::move( pD3D11Buffer ) )
+	: GPUBuffer( pDX11GPUDevice, pResourceMemory, pBufferProperties )
+	, mD3D11Buffer( std::move( pD3D11Buffer ) )
 	{ }
 
 	DX11GPUBuffer::~DX11GPUBuffer() = default;
@@ -111,7 +111,7 @@ namespace Ic3::Graphics::GCI
 		dx11GPUBufferDesc.resourceMiscFlags = 0;
 		dx11GPUBufferDesc.usage = D3D11_USAGE_DEFAULT;
 
-		if( pCreateInfo.resourceFlags.is_set( eGPUResourceContentFlagImmutableBit ) )
+		/*if( pCreateInfo.resourceFlags.is_set( eGPUResourceContentFlagImmutableBit ) )
 		{
 			dx11GPUBufferDesc.usage = D3D11_USAGE_IMMUTABLE;
 		}
@@ -123,7 +123,7 @@ namespace Ic3::Graphics::GCI
 		{
 			dx11GPUBufferDesc.usage = D3D11_USAGE_DYNAMIC;
 			dx11GPUBufferDesc.cpuAccessFlags.set( D3D11_CPU_ACCESS_WRITE );
-		}
+		}*/
 
 		if( pCreateInfo.memoryFlags.is_set( eGPUMemoryMapFlagAccessReadBit ) )
 		{
@@ -150,7 +150,7 @@ namespace Ic3::Graphics::GCI
 
 	bool DX11GPUBuffer::MapRegion( void * pCommandObject, const GPUMemoryRegion & pRegion, EGPUMemoryMapMode pMapMode )
 	{
-		auto * d3d11DeviceContext1 = GCU::GetD3D11DeviceContextFromCommandList( pCommandObject );
+		auto * d3d11DeviceContext1 = GCU::DX11GetD3D11DeviceContextFromCommandList( pCommandObject );
 
 		auto d3d11MapMode = ATL::TranslateDX11BufferMapFlags( pMapMode, mResourceMemory.memoryFlags );
 		Ic3DebugAssert( d3d11MapMode != 0 );
@@ -177,7 +177,7 @@ namespace Ic3::Graphics::GCI
 
 	void DX11GPUBuffer::Unmap( void * pCommandObject )
 	{
-		auto * d3d11DeviceContext1 = GCU::GetD3D11DeviceContextFromCommandList( pCommandObject );
+		auto * d3d11DeviceContext1 = GCU::DX11GetD3D11DeviceContextFromCommandList( pCommandObject );
 
 		d3d11DeviceContext1->Unmap( mD3D11Buffer.Get(), 0 );
 
@@ -186,7 +186,7 @@ namespace Ic3::Graphics::GCI
 
 	void DX11GPUBuffer::FlushMappedRegion( void * pCommandObject, const GPUMemoryRegion & pRegion )
 	{
-		auto * d3d11DeviceContext1 = GCU::GetD3D11DeviceContextFromCommandList( pCommandObject );
+		auto * d3d11DeviceContext1 = GCU::DX11GetD3D11DeviceContextFromCommandList( pCommandObject );
 
 		d3d11DeviceContext1->Unmap( mD3D11Buffer.Get(), 0 );
 
@@ -201,7 +201,7 @@ namespace Ic3::Graphics::GCI
 	{
 		if( pRegion.size == mBufferProperties.byteSize )
 		{
-			auto * d3d11DeviceContext1 = GCU::GetD3D11DeviceContextFromCommandList( pCommandObject );
+			auto * d3d11DeviceContext1 = GCU::DX11GetD3D11DeviceContextFromCommandList( pCommandObject );
 			d3d11DeviceContext1->DiscardResource( mD3D11Buffer.Get() );
 		}
 	}
@@ -253,22 +253,22 @@ namespace Ic3::Graphics::GCI
 			updateFlags.set( D3D11_COPY_DISCARD );
 		}
 
-        if( pUploadDesc.bufferRegion.size == mBufferProperties.byteSize )
-        {
-            d3d11DeviceContext1->UpdateSubresource1( mD3D11Buffer.Get(), 0, nullptr, pUploadDesc.inputDataDesc.pointer, 0, 0, updateFlags );
-        }
-        else
-        {
-            D3D11_BOX targetBufferBox;
-            targetBufferBox.top = 0;
-            targetBufferBox.bottom = 1;
-            targetBufferBox.front = 0;
-            targetBufferBox.back = 1;
-            targetBufferBox.left = cppx::numeric_cast<UINT>( pUploadDesc.bufferRegion.offset );
-            targetBufferBox.right = cppx::numeric_cast<UINT>( pUploadDesc.bufferRegion.offset + pUploadDesc.bufferRegion.size );
+		if( pUploadDesc.bufferRegion.size == mBufferProperties.byteSize )
+		{
+			d3d11DeviceContext1->UpdateSubresource1( mD3D11Buffer.Get(), 0, nullptr, pUploadDesc.inputDataDesc.pointer, 0, 0, updateFlags );
+		}
+		else
+		{
+			D3D11_BOX targetBufferBox;
+			targetBufferBox.top = 0;
+			targetBufferBox.bottom = 1;
+			targetBufferBox.front = 0;
+			targetBufferBox.back = 1;
+			targetBufferBox.left = cppx::numeric_cast<UINT>( pUploadDesc.bufferRegion.offset );
+			targetBufferBox.right = cppx::numeric_cast<UINT>( pUploadDesc.bufferRegion.offset + pUploadDesc.bufferRegion.size );
 
-            d3d11DeviceContext1->UpdateSubresource1( mD3D11Buffer.Get(), 0, &targetBufferBox, pUploadDesc.inputDataDesc.pointer, 0, 0, updateFlags );
-        }
+			d3d11DeviceContext1->UpdateSubresource1( mD3D11Buffer.Get(), 0, &targetBufferBox, pUploadDesc.inputDataDesc.pointer, 0, 0, updateFlags );
+		}
 	}
 
 	bool DX11GPUBuffer::ValidateMapRequest( const GPUMemoryRegion & pRegion, const EGPUMemoryMapMode & pMapMode )

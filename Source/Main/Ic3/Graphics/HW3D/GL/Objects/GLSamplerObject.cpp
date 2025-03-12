@@ -74,7 +74,7 @@ namespace Ic3::Graphics::GCI
 		Ic3OpenGLCheckLastResult();
 
 	#if( IC3_GX_GL_FEATURE_SUPPORT_TEXTURE_EXTENDED_ADDRESS_MODE )
-		glSamplerParameterfv( mGLHandle, GL_TEXTURE_BORDER_COLOR, &( pSamplerState.borderColor.mRGBA[0] ) );
+		glSamplerParameterfv( mGLHandle, GL_TEXTURE_BORDER_COLOR, &( pSamplerState.borderColor.uv_rgba[0] ) );
 		Ic3OpenGLCheckLastResult();
 	#endif
 

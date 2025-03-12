@@ -7,7 +7,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	static System::OpenGLDisplaySurfaceHandle createSysGLSurface(
+	static System::OpenGLDisplaySurfaceHandle CreateSysGLSurface(
 			System::OpenGLSystemDriverHandle pSysGLDriver,
 			const GLPresentationLayerCreateInfo & pPLCreateInfo )
 	{
@@ -82,7 +82,7 @@ namespace Ic3::Graphics::GCI
 
 	GLScreenPresentationLayerHandle GLScreenPresentationLayer::Create( GLGPUDevice & pGPUDevice, const GLPresentationLayerCreateInfo & pCreateInfo )
 	{
-		auto sysGLSurface = createSysGLSurface( pGPUDevice.mSysGLDriver, pCreateInfo );
+		auto sysGLSurface = CreateSysGLSurface( pGPUDevice.mSysGLDriver, pCreateInfo );
 		Ic3DebugAssert( sysGLSurface );
 
 		const auto surfaceVisualConfig = sysGLSurface->QueryVisualConfig();

@@ -32,7 +32,6 @@ namespace Ic3::Graphics::GCI
 			if( !activeStagesMask.is_set( stageBit ) )
 			{
 				activeStagesMask.set( stageBit );
-				activeStagesNum += 1;
 			}
 		}
 	}
@@ -40,7 +39,6 @@ namespace Ic3::Graphics::GCI
 	void GraphicsShaderBinding::SetShaders( const GraphicsShaderArray & pShaderArray )
 	{
 		activeStagesMask.clear();
-		activeStagesNum = 0;
 
 		for( uint32 stageIndex = 0; stageIndex < GCM::kShaderGraphicsStagesNum; ++stageIndex )
 		{
@@ -52,7 +50,6 @@ namespace Ic3::Graphics::GCI
 				commonShaderArray[stageIndex] = shaderHandle;
 
 				activeStagesMask.set( stageBit );
-				activeStagesNum += 1;
 			}
 			else
 			{
@@ -84,7 +81,6 @@ namespace Ic3::Graphics::GCI
 			if( activeStagesMask.is_set( stageBit ) )
 			{
 				activeStagesMask.unset( stageBit );
-				activeStagesNum -= 1;
 			}
 		}
 	}
@@ -99,7 +95,6 @@ namespace Ic3::Graphics::GCI
 	void GraphicsShaderBinding::UpdateActiveStagesInfo() noexcept
 	{
 		activeStagesMask.clear();
-		activeStagesNum = 0;
 
 		for( const auto & shaderHandle : commonShaderArray )
 		{
@@ -108,7 +103,6 @@ namespace Ic3::Graphics::GCI
 				const auto stageBit = CXU::SHGetShaderStageBit( shaderHandle->mShaderType );
 
 				activeStagesMask.set( stageBit );
-				activeStagesNum += 1;
 			}
 		}
 	}
@@ -136,11 +130,6 @@ namespace Ic3::Graphics::GCI
 
 		bool SHValidateGraphicsShaderBinding( const GraphicsShaderBinding & pBindingConfiguration ) noexcept
 		{
-			if( pBindingConfiguration.activeStagesMask.count_bits() != pBindingConfiguration.activeStagesNum )
-			{
-				return false;
-			}
-
 			for( uint32 stageIndex = 0; stageIndex < GCM::kShaderGraphicsStagesNum; ++stageIndex )
 			{
 				const auto & shaderHandle = pBindingConfiguration.commonShaderArray[stageIndex];

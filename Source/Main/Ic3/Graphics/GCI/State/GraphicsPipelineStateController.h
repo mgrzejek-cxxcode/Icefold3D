@@ -47,25 +47,6 @@ namespace Ic3::Graphics::GCI
 		virtual bool ApplyStateChanges() = 0;
 
 		/**
-		 * 
-		 * @param pRenderPassDescriptor 
-		 * @return 
-		 */
-		virtual bool SetRenderPassDescriptor( const RenderPassDescriptor & pRenderPassDescriptor );
-
-		/**
-		 * 
-		 * @param pRenderPassDescriptor 
-		 * @return 
-		 */
-		virtual bool SetRenderPassDescriptorDynamic( RenderPassDescriptorDynamic & pRenderPassDescriptor );
-
-		/**
-		 * 
-		 */
-		virtual void ResetRenderPassDescriptor();
-
-		/**
 		 * Binds the specified GraphicsPipelineStateObject to the pipeline. Returns true if any change has been made.
 		 * @param pGraphicsPipelineStateObject
 		 * @return True if anything has been changed or false otherwise.
@@ -90,6 +71,25 @@ namespace Ic3::Graphics::GCI
 		 * Subclasses should always call the base method first and check the result before doing the actual update.
 		 */
 		virtual bool ResetGraphicsPipelineStateObject();
+
+		/**
+		 * 
+		 * @param pRenderPassDescriptor 
+		 * @return 
+		 */
+		virtual bool SetRenderPassDescriptor( const RenderPassDescriptor & pRenderPassDescriptor );
+
+		/**
+		 * 
+		 * @param pRenderPassDescriptor 
+		 * @return 
+		 */
+		virtual bool SetRenderPassDescriptorDynamic( RenderPassDescriptorDynamic & pRenderPassDescriptor );
+
+		/**
+		 * 
+		 */
+		virtual void ResetRenderPassDescriptor();
 
 		/**
 		 *

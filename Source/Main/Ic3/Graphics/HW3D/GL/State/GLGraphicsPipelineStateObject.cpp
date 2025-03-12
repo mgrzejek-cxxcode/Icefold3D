@@ -24,53 +24,53 @@ namespace Ic3::Graphics::GCI
 
 	GLGraphicsPipelineStateObject::~GLGraphicsPipelineStateObject() = default;
 
-	const GLBlendStateDescriptor & GLGraphicsPipelineStateObject::GetBlendStateDescriptor() const noexcept
+	const GLBlendStateDescriptor & GLGraphicsPipelineStateObject::GetGLBlendStateDescriptor() const noexcept
 	{
 		Ic3DebugAssert( mSeparableDescriptors.blendStateDescriptor );
 		return *( mSeparableDescriptors.blendStateDescriptor->QueryInterface<GLBlendStateDescriptor>() );
 	}
 
-	const GLDepthStencilStateDescriptor & GLGraphicsPipelineStateObject::GetDepthStencilStateDescriptor() const noexcept
+	const GLDepthStencilStateDescriptor & GLGraphicsPipelineStateObject::GetGLDepthStencilStateDescriptor() const noexcept
 	{
 		Ic3DebugAssert( mSeparableDescriptors.depthStencilStateDescriptor );
 		return *( mSeparableDescriptors.depthStencilStateDescriptor->QueryInterface<GLDepthStencilStateDescriptor>() );
 	}
 
-	const GLRasterizerStateDescriptor & GLGraphicsPipelineStateObject::GetRasterizerStateDescriptor() const noexcept
+	const GLRasterizerStateDescriptor & GLGraphicsPipelineStateObject::GetGLRasterizerStateDescriptor() const noexcept
 	{
 		Ic3DebugAssert( mSeparableDescriptors.rasterizerStateDescriptor );
 		return *( mSeparableDescriptors.rasterizerStateDescriptor->QueryInterface<GLRasterizerStateDescriptor>() );
 	}
 
-	const RootSignatureDescriptorGeneric & GLGraphicsPipelineStateObject::GetRootSignatureDescriptor() const noexcept
-	{
-		Ic3DebugAssert( mSeparableDescriptors.rootSignatureDescriptor );
-		return *( mSeparableDescriptors.rootSignatureDescriptor->QueryInterface<RootSignatureDescriptorGeneric>() );
-	}
-
-	const GLGraphicsShaderLinkageDescriptor & GLGraphicsPipelineStateObject::GetShaderLinkageDescriptor() const noexcept
+	const GLGraphicsShaderLinkageDescriptor & GLGraphicsPipelineStateObject::GetGLShaderLinkageDescriptor() const noexcept
 	{
 		Ic3DebugAssert( mSeparableDescriptors.shaderLinkageStateDescriptor );
 		return *( mSeparableDescriptors.shaderLinkageStateDescriptor->QueryInterface<GLGraphicsShaderLinkageDescriptor>() );
 	}
 
-	const GLVertexAttributeLayoutDescriptor & GLGraphicsPipelineStateObject::GetVertexAttributeLayoutDescriptor() const noexcept
+	const GLVertexAttributeLayoutDescriptor & GLGraphicsPipelineStateObject::GetGLVertexAttributeLayoutDescriptor() const noexcept
 	{
 		Ic3DebugAssert( mSeparableDescriptors.vertexAttributeLayoutDescriptor );
 		return *( mSeparableDescriptors.vertexAttributeLayoutDescriptor->QueryInterface<GLVertexAttributeLayoutDescriptor>() );
 	}
 
-	TGfxHandle<GLGraphicsPipelineStateObject> GLGraphicsPipelineStateObject::Create(
+	const GLRootSignatureDescriptor & GLGraphicsPipelineStateObject::GetGLRootSignatureDescriptor() const noexcept
+	{
+		Ic3DebugAssert( mSeparableDescriptors.rootSignatureDescriptor );
+		return *( mSeparableDescriptors.rootSignatureDescriptor->QueryInterface<RootSignatureDescriptorGeneric>() );
+	}
+
+	TGfxHandle<GLGraphicsPipelineStateObject> GLGraphicsPipelineStateObject::CreateInstance(
 			GLGPUDevice & pGPUDevice,
 			const GraphicsPipelineStateObjectCreateInfo & pCreateInfo )
 	{
-		SeparableGraphicsPSDSet separableStates{};
-		separableStates.blendStateDescriptor = pCreateInfo.blendStateDescriptor;
-		separableStates.depthStencilStateDescriptor = pCreateInfo.depthStencilStateDescriptor;
-		separableStates.rasterizerStateDescriptor = pCreateInfo.rasterizerStateDescriptor;
-		separableStates.rootSignatureDescriptor = pCreateInfo.rootSignatureDescriptor;
-		separableStates.shaderLinkageStateDescriptor = pCreateInfo.shaderLinkageStateDescriptor;
-		separableStates.vertexAttributeLayoutDescriptor = pCreateInfo.vertexAttributeLayoutDescriptor;
+		SeparableGraphicsPSDSet separableDescriptorSet{};
+		separableDescriptorSet.blendStateDescriptor = pCreateInfo.blendStateDescriptor;
+		separableDescriptorSet.depthStencilStateDescriptor = pCreateInfo.depthStencilStateDescriptor;
+		separableDescriptorSet.rasterizerStateDescriptor = pCreateInfo.rasterizerStateDescriptor;
+		separableDescriptorSet.rootSignatureDescriptor = pCreateInfo.rootSignatureDescriptor;
+		separableDescriptorSet.shaderLinkageStateDescriptor = pCreateInfo.shaderLinkageStateDescriptor;
+		separableDescriptorSet.vertexAttributeLayoutDescriptor = pCreateInfo.vertexAttributeLayoutDescriptor;
 
 		const auto & renderTargetLayout = pCreateInfo.renderTargetLayout;
 
@@ -78,7 +78,7 @@ namespace Ic3::Graphics::GCI
 				pGPUDevice,
 				pCreateInfo.baseObjectID,
 				pCreateInfo.renderTargetLayout,
-				separableStates );
+				separableDescriptorSet );
 
 		return graphicsPSO;
 	}

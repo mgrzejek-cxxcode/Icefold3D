@@ -16,32 +16,36 @@ namespace Ic3::Graphics::GCI
 	enum EGPUDriverConfigFlags : uint32;
 	enum ETextureCubeMapFace : uint32;
 
+	enum class EIAVertexAttributeDataRate : uint8;
+
 	using DXGIGetDebugInterfaceType = HRESULT ( WINAPI * )( const GUID &, void ** );
 
 	namespace ATL
 	{
 
-		DXGIGetDebugInterfaceType LoadDXGIDebugLegacyLoader();
+		DXGIGetDebugInterfaceType DXGILoadDebugLegacyLoader();
 
-		ComPtr<IDXGIDebug> QueryDXGIDebugInterface( cppx::bitmask<EGPUDriverConfigFlags> pDriverConfigFlags );
+		ComPtr<IDXGIDebug> DXGIQueryDebugInterface( cppx::bitmask<EGPUDriverConfigFlags> pDriverConfigFlags );
 
-		ComPtr<IDXGIInfoQueue> QueryDXGIDebugInfoQueue( cppx::bitmask<EGPUDriverConfigFlags> pDriverConfigFlags );
+		ComPtr<IDXGIInfoQueue> DXGIQueryDebugInfoQueue( cppx::bitmask<EGPUDriverConfigFlags> pDriverConfigFlags );
 
-		uint32 GetDXGITextureFormatBPP( DXGI_FORMAT pDXGIFormat );
+		uint32 DXGIGetTextureFormatBPP( DXGI_FORMAT pDXGIFormat );
 
-		const char * GetDXShaderTargetStr( DXShaderTarget pShaderTarget );
+		const char * DXGetShaderTargetStr( DXShaderTarget pShaderTarget );
 
-		uint32 ComputeDXTextureMemoryByteSize( const TextureDimensions & pTextDimensions, DXGI_FORMAT pFormat );
+		uint32 DXComputeTextureMemoryByteSize( const TextureDimensions & pTextDimensions, DXGI_FORMAT pFormat );
 
-		cppx::bitmask<UINT> TranslateDXShaderCompileFlags( cppx::bitmask<uint32> pShaderCreateFlags, bool pDebugDevice );
+		cppx::bitmask<UINT> DXTranslateShaderCompileFlags( cppx::bitmask<uint32> pShaderCreateFlags, bool pDebugDevice );
 
-		DXGI_FORMAT TranslateDXShaderCompileFlags( EBaseDataType pBaseDataType );
+		DXGI_FORMAT DXTranslateBaseDataType( EBaseDataType pBaseDataType );
 
-		DXGI_FORMAT TranslateDXTextureFormat( ETextureFormat pTextureFormat );
+		DXGI_FORMAT DXTranslateTextureFormat( ETextureFormat pTextureFormat );
 
-		ETextureFormat TranslateDXTextureFormatInv( DXGI_FORMAT pDXGIFormat );
+		ETextureFormat DXTranslateTextureFormatInv( DXGI_FORMAT pDXGIFormat );
 
-		DXGI_FORMAT TranslateDXVertexAttribFormat( EVertexAttribFormat pVertexAttribFormat );
+		DXGI_FORMAT DXTranslateVertexAttribFormat( EVertexAttribFormat pVertexAttribFormat );
+
+		DXGI_FORMAT DXTranslateIndexDataFormat( EIndexDataFormat pIndexAttribFormat );
 
 	};
 

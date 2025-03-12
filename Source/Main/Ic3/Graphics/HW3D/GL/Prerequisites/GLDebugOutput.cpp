@@ -69,7 +69,7 @@ namespace Ic3::Graphics::GCI
 
 	const char * GLDebugOutput::GetExtensionName() const
 	{
-		return ATL::TranslateGLDebugOutputExtensionName( _apiVersion );
+		return ATL::GLTranslateDebugOutputExtensionName( _apiVersion );
 	}
 
 	uint64 GLDebugOutput::GetEventsCounter() const
@@ -219,8 +219,8 @@ namespace Ic3::Graphics::GCI
 					"- Description: %s\n"\
 					"----------------------------------------------------------------------\n",
 		          pEventID,
-		          ATL::TranslateGLDebugEventCategoryStrAMD( pEventCategory ),
-		          ATL::TranslateGLDebugEventSeverityStr( pEventSeverity ),
+		          ATL::GLTranslateDebugEventCategoryStrAMD( pEventCategory ),
+		          ATL::GLTranslateDebugEventSeverityStr( pEventSeverity ),
 		          pMessage );
 
 		ProcessEvent( pEventSeverity, eventInfoBuffer );
@@ -291,9 +291,9 @@ namespace Ic3::Graphics::GCI
 					"- Description: %s\n"\
 					"----------------------------------------------------------------------\n",
 		          pEventID,
-		          ATL::TranslateGLDebugEventSourceStr( pEventSource ),
-		          ATL::TranslateGLDebugEventTypeStr( pEventType ),
-		          ATL::TranslateGLDebugEventSeverityStr( pEventSeverity ),
+		          ATL::GLTranslateDebugEventSourceStr( pEventSource ),
+		          ATL::GLTranslateDebugEventTypeStr( pEventType ),
+		          ATL::GLTranslateDebugEventSeverityStr( pEventSeverity ),
 		          pMessage );
 
 		ProcessEvent( pEventSeverity, eventInfoBuffer );
@@ -365,9 +365,9 @@ namespace Ic3::Graphics::GCI
 		           "- Description: %s\n"\
 		           "----------------------------------------------------------------------\n",
 		          pEventID,
-		          ATL::TranslateGLDebugEventSourceStr( pEventSource ),
-		          ATL::TranslateGLDebugEventTypeStr( pEventType ),
-		          ATL::TranslateGLDebugEventSeverityStr( pEventSeverity ),
+		          ATL::GLTranslateDebugEventSourceStr( pEventSource ),
+		          ATL::GLTranslateDebugEventTypeStr( pEventType ),
+		          ATL::GLTranslateDebugEventSeverityStr( pEventSeverity ),
 		          pMessage );
 
 		ProcessEvent( pEventSeverity, eventInfoBuffer );
@@ -416,7 +416,7 @@ namespace Ic3::Graphics::GCI
 
 	const char * GLDebugOutput::GetExtensionName() const
 	{
-		return ATL::TranslateGLDebugOutputExtensionName( GLDebugOutputVersion::Unknown );
+		return ATL::GLTranslateDebugOutputExtensionName( GLDebugOutputVersion::Unknown );
 	}
 
 	uint64 GLDebugOutput::GetEventsCounter() const

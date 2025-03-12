@@ -7,8 +7,8 @@
 #include "Resources/DX11Sampler.h"
 #include "Resources/DX11Shader.h"
 #include "Resources/DX11Texture.h"
-#include "State/DX11pipelineStateController.h"
-#include "State/DX11pipelineStateObject.h"
+#include "State/DX11GraphicsPipelineStateController.h"
+#include "State/DX11GraphicsPipelineStateObject.h"
 #include <Ic3/Graphics/GCI/CommandContext.h>
 
 namespace Ic3::Graphics::GCI
@@ -45,25 +45,46 @@ namespace Ic3::Graphics::GCI
 		CommandList::EndCommandSequence();
 	}
 
-	void DX11CommandList::CmdDrawDirectIndexed( native_uint pIndicesNum, native_uint pIndicesOffset, native_uint pBaseVertexIndex )
+	void DX11CommandList::CmdDrawDirectIndexed(
+			native_uint pIndicesNum,
+			native_uint pIndicesOffset,
+			native_uint pBaseVertexIndex )
 	{
 		_graphicsPipelineStateControllerDX11.ApplyStateChanges();
-		mD3D11DeviceContext1->DrawIndexed( pIndicesNum, pIndicesOffset, pBaseVertexIndex );
+		mD3D11DeviceContext1->DrawIndexed(
+				pIndicesNum,
+				pIndicesOffset,
+				pBaseVertexIndex );
 	}
 
-	void DX11CommandList::CmdDrawDirectIndexedInstanced( native_uint pIndicesNumPerInstance, native_uint pInstancesNum, native_uint pIndicesOffset )
+	void DX11CommandList::CmdDrawDirectIndexedInstanced(
+			native_uint pIndicesNumPerInstance,
+			native_uint pInstancesNum,
+			native_uint pIndicesOffset )
 	{
 		_graphicsPipelineStateControllerDX11.ApplyStateChanges();
-		mD3D11DeviceContext1->DrawIndexedInstanced( pIndicesNumPerInstance, pInstancesNum, pIndicesOffset, 0, 0 );
+		mD3D11DeviceContext1->DrawIndexedInstanced(
+				pIndicesNumPerInstance,
+				pInstancesNum,
+				pIndicesOffset,
+				0,
+				0 );
 	}
 
-	void DX11CommandList::CmdDrawDirectNonIndexed( native_uint pVerticesNum, native_uint pVerticesOffset )
+	void DX11CommandList::CmdDrawDirectNonIndexed(
+			native_uint pVerticesNum,
+			native_uint pVerticesOffset )
 	{
 		_graphicsPipelineStateControllerDX11.ApplyStateChanges();
-		mD3D11DeviceContext1->Draw( pVerticesNum, pVerticesOffset );
+		mD3D11DeviceContext1->Draw(
+				pVerticesNum,
+				pVerticesOffset );
 	}
 
-	void DX11CommandList::CmdDrawDirectNonIndexedInstanced( native_uint pVerticesNumPerInstance, native_uint pInstancesNum, native_uint pVerticesOffset )
+	void DX11CommandList::CmdDrawDirectNonIndexedInstanced(
+			native_uint pVerticesNumPerInstance,
+			native_uint pInstancesNum,
+			native_uint pVerticesOffset )
 	{
 	}
 
@@ -89,13 +110,13 @@ namespace Ic3::Graphics::GCI
 			const RenderPassConfiguration & pRenderPassConfiguration,
 			const GraphicsPipelineDynamicConfig & pDynamicConfig )
 	{
-		if( pRenderPassConfiguration.attachmentsActionClearMask != 0 )
+		if( pRenderPassConfiguration.GetAttachmentsMaskWithFlags( eRenderPassAttachmentActionFlagLoadClearBit ) != 0 )
 		{
-			GCU::RenderPassClearRenderTargetDX11(
+			GCU::RTORenderPassExecuteOpLoadClearDX11(
 					mD3D11DeviceContext1.Get(),
-					_graphicsPipelineStateControllerDX11.GetCurrentRenderTargetBinding(),
+					_graphicsPipelineStateControllerDX11.GetDX11RenderTargetBinding(),
 					pRenderPassConfiguration,
-					pDynamicState );
+				pDynamicConfig );
 		}
 	}
 
@@ -103,13 +124,13 @@ namespace Ic3::Graphics::GCI
 			const RenderPassConfiguration & pRenderPassConfiguration,
 			const GraphicsPipelineDynamicConfig & pDynamicConfig )
 	{
-		if( pRenderPassConfiguration.attachmentsActionResolveMask != 0 )
+		if( pRenderPassConfiguration.GetAttachmentsMaskWithFlags( eRenderPassAttachmentActionFlagStoreResolveBit ) != 0 )
 		{
-			GCU::RenderPassResolveRenderTargetDX11(
+			GCU::RTORenderPassExecuteOpStoreResolveDX11(
 					mD3D11DeviceContext1.Get(),
-					_graphicsPipelineStateControllerDX11.GetCurrentRenderTargetBinding(),
+					_graphicsPipelineStateControllerDX11.GetDX11RenderTargetBinding(),
 					pRenderPassConfiguration,
-					pDynamicState );
+					pDynamicConfig );
 		}
 	}
 

@@ -20,7 +20,7 @@ namespace Ic3::Graphics::GCI
 		D3D11_USAGE usage;
 	};
 
-	class DX11GPUBuffer : public GPUBuffer
+	class IC3_GX_DX11_CLASS DX11GPUBuffer : public GPUBuffer
 	{
 	public:
 		ComPtr<ID3D11Buffer> const mD3D11Buffer;

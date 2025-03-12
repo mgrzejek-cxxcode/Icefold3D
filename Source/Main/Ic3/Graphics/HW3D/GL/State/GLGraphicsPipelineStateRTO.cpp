@@ -35,9 +35,9 @@ namespace Ic3::Graphics::GCI
 
 		auto glcRenderTargetBindingStatic = GCU::RTOTranslateRenderTargetBindingForStaticDescriptorGL( pCreateInfo.rtArrayBinding );
 
-		const auto glcRenderTargetBindingDescriptor = CreateGfxObject<GLRenderTargetDescriptor>( pGPUDevice, std::move( glcRenderTargetBindingStatic ) );
+		const auto glcRenderTargetDescriptor = CreateGfxObject<GLRenderTargetDescriptor>( pGPUDevice, std::move( glcRenderTargetBindingStatic ) );
 
-		return glcRenderTargetBindingDescriptor;
+		return glcRenderTargetDescriptor;
 	}
 
 	TGfxHandle<GLRenderTargetDescriptor> GLRenderTargetDescriptor::CreateForScreen(
@@ -47,13 +47,12 @@ namespace Ic3::Graphics::GCI
 		GLRenderTargetBindingStatic glcRenderTargetBindingStatic{};
 		glcRenderTargetBindingStatic.renderTargetLayout = pRenderTargetLayout;
 		glcRenderTargetBindingStatic.activeAttachmentsMask = pRenderTargetLayout.activeAttachmentsMask;
-		glcRenderTargetBindingStatic.activeAttachmentsNum = pRenderTargetLayout.activeAttachmentsNum;
 		glcRenderTargetBindingStatic.baseFramebuffer = GLFramebufferObject::CreateForDefaultFramebuffer();
 		glcRenderTargetBindingStatic.resolveFramebuffer = nullptr;
 
-		const auto glcRenderTargetBindingDescriptor = CreateGfxObject<GLRenderTargetDescriptor>( pGPUDevice, std::move( glcRenderTargetBindingStatic ) );
+		const auto glcRenderTargetDescriptor = CreateGfxObject<GLRenderTargetDescriptor>( pGPUDevice, std::move( glcRenderTargetBindingStatic ) );
 
-		return glcRenderTargetBindingDescriptor;
+		return glcRenderTargetDescriptor;
 	}
 
 
@@ -149,7 +148,6 @@ namespace Ic3::Graphics::GCI
 				GLRenderTargetBindingDynamic & pOutGLRenderTargetBinding )
 		{
 			pOutGLRenderTargetBinding.activeAttachmentsMask = pRenderTargetBinding.activeAttachmentsMask;
-			pOutGLRenderTargetBinding.activeAttachmentsNum = pRenderTargetBinding.activeAttachmentsNum;
 			pOutGLRenderTargetBinding.renderTargetLayout = pRenderTargetBinding.GetRenderTargetLayout();
 
 			pOutGLRenderTargetBinding.baseFramebuffer =
@@ -174,7 +172,6 @@ namespace Ic3::Graphics::GCI
 				GLRenderTargetBindingStatic & pOutGLRenderTargetBinding )
 		{
 			pOutGLRenderTargetBinding.activeAttachmentsMask = pRenderTargetBinding.activeAttachmentsMask;
-			pOutGLRenderTargetBinding.activeAttachmentsNum = pRenderTargetBinding.activeAttachmentsNum;
 			pOutGLRenderTargetBinding.renderTargetLayout = pRenderTargetBinding.GetRenderTargetLayout();
 			pOutGLRenderTargetBinding.gciBindings = pRenderTargetBinding.attachments;
 
@@ -215,10 +212,10 @@ namespace Ic3::Graphics::GCI
 						}
 
 						GLfloat clearColorArray[4] = {
-							clearConfig->colorValue.fpRed,
-							clearConfig->colorValue.fpGreen,
-							clearConfig->colorValue.fpBlue,
-							clearConfig->colorValue.fpAlpha
+							clearConfig->colorValue.ufp_red,
+							clearConfig->colorValue.ufp_green,
+							clearConfig->colorValue.ufp_blue,
+							clearConfig->colorValue.ufp_alpha
 						};
 
 						glClearBufferfv( GL_COLOR, pColorAttachmentIndex, clearColorArray );
@@ -265,7 +262,7 @@ namespace Ic3::Graphics::GCI
 				const GLRenderTargetBinding & pGLRenderTargetBinding )
 		{
 			const auto attachmentsStoreResolveMask =
-					pRenderPassConfiguration.GetAttachmentsMaskWithLoadFlags( eRenderPassAttachmentActionFlagLoadClearBit );
+					pRenderPassConfiguration.GetAttachmentsMaskWithStoreFlags( eRenderPassAttachmentActionFlagStoreResolveBit );
 
 			auto resolvedAttachmentsMask = cppx::make_bitmask_tp<ERTAttachmentFlags>();
 

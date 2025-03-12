@@ -158,7 +158,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	// class RenderPassConfigurationCompiledStateDefault;
+	class RootSignatureDescriptorGeneric;
 
 	class GLBlendStateDescriptor;
 	class GLDepthStencilStateDescriptor;
@@ -173,6 +173,8 @@ namespace Ic3::Graphics::GCI
 	Ic3GCIDeclareClassHandle( GLGPUDevice );
 	Ic3GCIDeclareClassHandle( GLGPUDriver );
 	Ic3GCIDeclareClassHandle( GLPresentationLayer );
+
+	Ic3GCIDeclareTypedefHandle( GLRootSignatureDescriptor, RootSignatureDescriptorGeneric );
 
 } // namespace Ic3::Graphics::GCI
 

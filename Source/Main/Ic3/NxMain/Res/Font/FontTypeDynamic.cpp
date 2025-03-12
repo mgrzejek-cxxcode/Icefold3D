@@ -242,7 +242,7 @@ namespace Ic3
 			textureCreateInfo.gpuTextureCreateInfo.dimensions.arraySize = cxTotalSubTexturesNum;
 		}
 
-		auto & gpuTextureInitDataDesc = textureCreateInfo.gpuTextureCreateInfo.mInitDataDesc;
+		auto & gpuTextureInitDataDesc = textureCreateInfo.gpuTextureCreateInfo.initDataDesc;
 		gpuTextureInitDataDesc.Initialize( textureCreateInfo.gpuTextureCreateInfo.dimensions );
 
 		for( uint32 staticSubTextureIndex = 0; staticSubTextureIndex < cxStaticSubTexturesNum; ++staticSubTextureIndex )

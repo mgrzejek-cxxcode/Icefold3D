@@ -5,14 +5,14 @@
 #define __IC3_GRAPHICS_HW3D_DX11_COMMAND_LIST_H__
 
 #include "DX11Prerequisites.h"
-#include "State/DX11pipelineStateController.h"
-#include <Ic3/Graphics/GCI/CommandList.h>
+#include "State/DX11GraphicsPipelineStateController.h"
+#include <Ic3/Graphics/GCI/CommandListImplRenderPassGeneric.h>
 
 namespace Ic3::Graphics::GCI
 {
 
 	/// @brief
-	class  DX11CommandList : public CommandListRenderPassGeneric
+	class IC3_GX_DX11_CLASS DX11CommandList : public CommandListRenderPassGeneric
 	{
 		friend class DX11CommandSystem;
 
@@ -20,16 +20,35 @@ namespace Ic3::Graphics::GCI
 		ComPtr<ID3D11Device1> const mD3D11Device1 = nullptr;
 		ComPtr<ID3D11DeviceContext1> const mD3D11DeviceContext1 = nullptr;
 
-		DX11CommandList( DX11CommandSystem & pDX11CommandSystem, ECommandListType pListType, ComPtr<ID3D11DeviceContext1> pD3D11DeviceContext1 );
+	public:
+		DX11CommandList(
+				DX11CommandSystem & pDX11CommandSystem,
+				ECommandListType pListType,
+				ComPtr<ID3D11DeviceContext1> pD3D11DeviceContext1 );
+
 		virtual ~DX11CommandList();
 
 		virtual void BeginCommandSequence() override;
 		virtual void EndCommandSequence() override;
 
-		virtual void CmdDrawDirectIndexed( native_uint pIndicesNum, native_uint pIndicesOffset, native_uint pBaseVertexIndex ) override;
-		virtual void CmdDrawDirectIndexedInstanced( native_uint pIndicesNumPerInstance, native_uint pInstancesNum, native_uint pIndicesOffset ) override;
-		virtual void CmdDrawDirectNonIndexed( native_uint pVerticesNum, native_uint pVerticesOffset ) override;
-		virtual void CmdDrawDirectNonIndexedInstanced( native_uint pVerticesNumPerInstance, native_uint pInstancesNum, native_uint pVerticesOffset ) override;
+		virtual void CmdDrawDirectIndexed(
+				native_uint pIndicesNum,
+				native_uint pIndicesOffset,
+				native_uint pBaseVertexIndex ) override;
+
+		virtual void CmdDrawDirectIndexedInstanced(
+				native_uint pIndicesNumPerInstance,
+				native_uint pInstancesNum,
+				native_uint pIndicesOffset ) override;
+
+		virtual void CmdDrawDirectNonIndexed(
+				native_uint pVerticesNum,
+				native_uint pVerticesOffset ) override;
+
+		virtual void CmdDrawDirectNonIndexedInstanced(
+				native_uint pVerticesNumPerInstance,
+				native_uint pInstancesNum,
+				native_uint pVerticesOffset ) override;
 
 		virtual void CmdExecuteDeferredContext( CommandContextDeferred & pDeferredContext ) override;
 

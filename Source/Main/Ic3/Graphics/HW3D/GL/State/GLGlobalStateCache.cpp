@@ -161,10 +161,10 @@ namespace Ic3::Graphics::GCI
 				if( cppx::mem_cmp_not_equal( blendConstantColor, cachedBlendSettings.constantColor ) )
 				{
 					glBlendColor(
-						blendConstantColor.fpRed,
-						blendConstantColor.fpGreen,
-						blendConstantColor.fpBlue,
-						blendConstantColor.fpAlpha );
+						blendConstantColor.ufp_red,
+						blendConstantColor.ufp_green,
+						blendConstantColor.ufp_blue,
+						blendConstantColor.ufp_alpha );
 					Ic3OpenGLHandleLastError();
 					cachedBlendSettings.constantColor = pBlendSettings.constantColor;
 				}
@@ -327,10 +327,10 @@ namespace Ic3::Graphics::GCI
 		if( cppx::mem_cmp_not_equal( pConstantColor, cachedBlendSettings.constantColor ) )
 		{
 			glBlendColor(
-					pConstantColor.fpRed,
-					pConstantColor.fpGreen,
-					pConstantColor.fpBlue,
-					pConstantColor.fpAlpha );
+					pConstantColor.ufp_red,
+					pConstantColor.ufp_green,
+					pConstantColor.ufp_blue,
+					pConstantColor.ufp_alpha );
 			Ic3OpenGLHandleLastError();
 			cachedBlendSettings.constantColor = pConstantColor;
 		}

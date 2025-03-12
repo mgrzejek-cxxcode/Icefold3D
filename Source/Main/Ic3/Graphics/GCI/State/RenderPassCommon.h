@@ -290,8 +290,7 @@ namespace Ic3::Graphics::GCI
 		{
 			return cppx::hash_compute<pipeline_config_hash_t::hash_algo>(
 					passConfiguration.attachments,
-					passConfiguration.activeAttachmentsMask,
-					passConfiguration.activeAttachmentsNum );
+					passConfiguration.activeAttachmentsMask );
 		}
 	};
 

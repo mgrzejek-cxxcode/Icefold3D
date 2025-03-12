@@ -334,7 +334,7 @@ namespace Ic3::Graphics::GCI
 		const bool nonEmptyInitData = pGLCreateInfo.initDataDesc ? true : false;
 		const bool copyDataOnInit = nonEmptyInitData && ( pGLCreateInfo.initDataDesc.size == pGLCreateInfo.size );
 
-		const auto storageInitFlags = ATL::ChooseGLBufferStorageFlags( pGLCreateInfo.bindTarget, pGLCreateInfo.resourceFlags, pGLCreateInfo.memoryFlags );
+		const auto storageInitFlags = ATL::GLChooseBufferStorageFlags( pGLCreateInfo.bindTarget, pGLCreateInfo.resourceFlags, pGLCreateInfo.memoryFlags );
 		const auto * storageInitDataPtr = copyDataOnInit ? pGLCreateInfo.initDataDesc.pointer : nullptr;
 
 		glBufferStorage(
@@ -362,7 +362,7 @@ namespace Ic3::Graphics::GCI
 			const auto mapMode =
 		        static_cast<EGPUMemoryMapMode>( static_cast<uint32>( pGLCreateInfo.memoryFlags & eGPUMemoryAccessMaskCPUAll ) );
 
-			auto openglMapFlags = ATL::TranslateGLBufferMapFlags( mapMode, pGLCreateInfo.memoryFlags );
+			auto openglMapFlags = ATL::GLTranslateBufferMapFlags( mapMode, pGLCreateInfo.memoryFlags );
 			if( MapPersistent( openglMapFlags ) )
 			{
 				_persistentMapPointer = QueryMappedPtr();
@@ -377,7 +377,7 @@ namespace Ic3::Graphics::GCI
 		const bool nonEmptyInitData = pGLCreateInfo.initDataDesc ? true : false;
 		const bool copyDataOnInit = nonEmptyInitData && ( pGLCreateInfo.initDataDesc.size == pGLCreateInfo.size );
 
-		const auto usagePolicy = ATL::ChooseGLBufferUsagePolicy( pGLCreateInfo.bindTarget, pGLCreateInfo.resourceFlags );
+		const auto usagePolicy = ATL::GLChooseBufferUsagePolicy( pGLCreateInfo.bindTarget, pGLCreateInfo.resourceFlags );
 
 		glBufferData(
 			pGLCreateInfo.bindTarget,

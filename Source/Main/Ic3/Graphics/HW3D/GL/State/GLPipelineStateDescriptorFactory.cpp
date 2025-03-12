@@ -4,7 +4,7 @@
 #include "GLGraphicsPipelineStateShader.h"
 #include "GLGraphicsPipelineStateIA.h"
 #include "GLGraphicsPipelineStateRTO.h"
-#include "../GLGPUDevice.h"
+#include <Ic3/Graphics/HW3D/GL/GLGPUDevice.h>
 #include <IC3/Graphics/GCI/State/GraphicsPipelineStateImplRenderPassGeneric.h>
 #include <IC3/Graphics/GCI/State/PipelineStateImplRootSignatureGeneric.h>
 

@@ -6,6 +6,39 @@
 namespace Ic3
 {
 
+	namespace GCIUtils
+	{
+
+		VertexInputAttributeDefinition MakeVertexInputAttributeDefinition(
+			uint32 pVertexStreamSlot,
+			VertexAttributeKey pAttributeKey,
+			uint32 pDataPadding,
+			uint32 pVertexStreamRelativeOffset );
+
+		VertexInputAttributeDefinition MakeVertexInputAttributeDefinition(
+			uint32 pVertexStreamSlot,
+			VertexAttributeKey pAttributeKey,
+			const VertexAttributeShaderSemantics & pAttributeShaderSemantics,
+			uint32 pDataPadding,
+			uint32 pVertexStreamRelativeOffset );
+
+		VertexInputAttributeDefinition MakeVertexInputAttributeSemanticGroupDefinition(
+			uint32 pVertexStreamSlot,
+			uint32 pBaseAttributeSlot,
+			const VertexAttributeShaderSemantics & pAttributeShaderSemantics,
+			uint32 pSemanticGroupSize,
+			GCI::EVertexAttribFormat pBaseDataFormat,
+			uint32 pDataPadding,
+			uint32 pVertexStreamRelativeOffset,
+			GCI::EIAVertexAttributeDataRate pDataRate );
+
+		GCI::IAVertexAttributeSemantics IAProcessAttributeSemantics( const GCI::IAVertexAttributeSemantics & pInputSemantics );
+
+		GCI::IAVertexAttributeSemantics IAProcessAttributeSemantics( const cppx::immutable_string & pSemanticName, native_uint pSemanticIndex );
+
+	}
+
+
 	VertexFormatBuilderBase & VertexFormatBuilderBase::AddAttribute( VertexInputAttributeDefinition pAttributeDefinition )
 	{
 		if( !pAttributeDefinition.IsValid() )
@@ -408,15 +441,13 @@ namespace Ic3
 				gciAttributeDesc.attribInfo.attributeSlot = genericAttribute.attributeSlot;
 				gciAttributeDesc.attribInfo.dataFormat = genericAttribute.dataFormat;
 				gciAttributeDesc.attribInfo.dataRate = genericAttribute.dataRate;
-				gciAttributeDesc.semantics.semanticName = genericAttribute.semanticName;
-				gciAttributeDesc.semantics.semanticIndex = genericAttribute.semanticIndex;
+				gciAttributeDesc.semantics = GCIUtils::IAProcessAttributeSemantics( genericAttribute.semanticName, genericAttribute.semanticIndex );
 				gciAttributeDesc.streamBinding.streamSlot = genericAttribute.vertexStreamSlot;
 				gciAttributeDesc.streamBinding.streamRelativeOffset = genericAttribute.vertexStreamRelativeOffset;
 			}
 		}
 
 		pLayoutDefinition.activeAttributesMask = attributeArrayConfig.GetActiveAttributesMask();
-		pLayoutDefinition.activeAttributesNum = attributeArrayConfig.GetActiveAttributeSlotsNum();
 		pLayoutDefinition.primitiveTopology = pPrimitiveTopology;
 
 		return true;
@@ -448,6 +479,44 @@ namespace Ic3
 				uint32 pDataPadding,
 				uint32 pVertexStreamRelativeOffset,
 				GCI::EIAVertexAttributeDataRate pDataRate);
+
+		GCI::IAVertexAttributeSemantics IAProcessAttributeSemantics( const GCI::IAVertexAttributeSemantics & pInputSemantics )
+		{
+			return IAProcessAttributeSemantics( pInputSemantics.semanticName, pInputSemantics.semanticIndex );
+		}
+
+		GCI::IAVertexAttributeSemantics IAProcessAttributeSemantics( const cppx::immutable_string & pSemanticName, native_uint pSemanticIndex )
+		{
+			static const auto reStrDX11AttrNameSemanticsCombined = R"(^[A-Za-z]+([0-9]*)$)";
+			static const std::regex reDX11AttrNameSemanticsCombined{ reStrDX11AttrNameSemanticsCombined };
+
+			static const auto reStrDX11AttrNameSemanticIndexOnly = R"(([0-9]*)$)";
+			static const std::regex reDX11AttrNameSemanticIndexOnly{ reStrDX11AttrNameSemanticIndexOnly };
+
+			GCI::IAVertexAttributeSemantics resultSemantics{};
+			resultSemantics.semanticName = pSemanticName;
+			resultSemantics.semanticIndex = pSemanticIndex;
+
+			std::smatch regexMatch;
+			if( std::regex_search( resultSemantics.semanticName.str(), regexMatch, reDX11AttrNameSemanticsCombined ) )
+			{
+				const auto attributeSemanticIndexStr = regexMatch[1].str();
+				if( !attributeSemanticIndexStr.empty() )
+				{
+					const auto attributeSemanticIndex = cppx::from_string<uint32>( attributeSemanticIndexStr );
+					Ic3DebugAssert( ( resultSemantics.semanticIndex == 0 ) || ( attributeSemanticIndex == resultSemantics.semanticIndex ) );
+
+					if( resultSemantics.semanticIndex == 0 )
+					{
+						resultSemantics.semanticIndex = cppx::numeric_cast< uint8 >( attributeSemanticIndex );
+					}
+
+					resultSemantics.semanticName = std::regex_replace( resultSemantics.semanticName.str(), reDX11AttrNameSemanticIndexOnly, "" );
+				}
+			}
+
+			return resultSemantics;
+		}
 
 	}
 

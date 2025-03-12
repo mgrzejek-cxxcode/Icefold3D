@@ -1,8 +1,8 @@
 
 #pragma once
 
-#ifndef __IC3_GRAPHICS_HW3D_DX11_RENDER_TARGET_H__
-#define __IC3_GRAPHICS_HW3D_DX11_RENDER_TARGET_H__
+#ifndef __IC3_GRAPHICS_HW3D_DX11_GRAPHICS_PIPELINE_STATE_RTO_H__
+#define __IC3_GRAPHICS_HW3D_DX11_GRAPHICS_PIPELINE_STATE_RTO_H__
 
 #include "../Resources/DX11Texture.h"
 #include <Ic3/Graphics/GCI/Resources/TextureReference.h>
@@ -51,15 +51,30 @@ namespace Ic3::Graphics::GCI
 
 	struct DX11RenderTargetBinding : public RenderTargetArrayCommonConfig
 	{
+		RenderTargetLayout renderTargetLayout;
+
 		DX11RenderTargetColorAttachment colorAttachments[GCM::kRTOMaxColorAttachmentsNum];
 		DX11RenderTargetDepthStencilAttachment depthStencilAttachment;
 		DX11RenderTargetResolveAttachment resolveAttachments[GCM::kRTOMaxCombinedAttachmentsNum];
 
-		ID3D11RenderTargetView * d3d11ColorAttachmentRTViewArray[GCM::kRTOMaxColorAttachmentsNum];
-		ID3D11DepthStencilView * d3d11DepthStencilAttachmentDSView;
+		ID3D11RenderTargetView * d3d11ColorAttachmentRTViewArray[GCM::kRTOMaxColorAttachmentsNum]{};
+		ID3D11DepthStencilView * d3d11DepthStencilAttachmentDSView = nullptr;
 	};
 
-	class DX11RenderTargetDescriptor : public PIM::RenderTargetDescriptorNative
+	struct DX11RenderTargetBindingStatic : public DX11RenderTargetBinding
+	{
+		// Dynamic RT descriptors store GCI::RenderTargetBinding, so they contain active
+		// texture references on their own - on the DX11 level, we only need D3D11 resources.
+	};
+
+	struct DX11RenderTargetBindingDynamic : public DX11RenderTargetBinding
+	{
+		// An array of RenderTargetAttachmentBinding objects, holding
+		// active references to the textures/buffers used by a descriptor.
+		TRenderTargetAttachmentPropertyArray<RenderTargetAttachmentBinding> gciBindings;
+	};
+
+	class IC3_GX_DX11_CLASS DX11RenderTargetDescriptor : public HW3DPipelineStateDescriptor<RenderTargetDescriptor>
 	{
 	public:
 		DX11RenderTargetBinding const mDX11RenderTargetBinding;
@@ -67,14 +82,15 @@ namespace Ic3::Graphics::GCI
 	public:
 		DX11RenderTargetDescriptor(
 				DX11GPUDevice & pGPUDevice,
-				const RenderTargetLayout & pRenderTargetLayout,
-				DX11RenderTargetBinding pDX11RTBindingData );
+				DX11RenderTargetBinding pDX11RenderTargetBinding );
 
 		virtual ~DX11RenderTargetDescriptor();
 
+		virtual bool IsAttachmentConfigured( native_uint pAttachmentIndex ) const noexcept override final;
+
 		static TGfxHandle<DX11RenderTargetDescriptor> CreateInstance(
 				DX11GPUDevice & pGPUDevice,
-				const RenderTargetDescriptorCreateInfo & pCreateInfo );
+				const RenderTargetBinding & pRenderTargetBinding );
 
 		static TGfxHandle<DX11RenderTargetDescriptor> CreateForScreen(
 				DX11GPUDevice & pGPUDevice,
@@ -86,33 +102,38 @@ namespace Ic3::Graphics::GCI
 	namespace GCU
 	{
 
-		CPPX_ATTR_NO_DISCARD RenderTargetLayout GetRenderTargetLayoutForScreenDX11(
-				ID3D11Texture2D * pColorBuffer,
-				ID3D11Texture2D * pDepthStencilBuffer );
+		CPPX_ATTR_NO_DISCARD RenderTargetLayout RTOGetRenderTargetLayoutForScreenDX11(
+				ID3D11Texture2D * pD3D11ColorBufferTexture,
+				ID3D11Texture2D * pD3D11DepthStencilBufferTexture );
 
-		CPPX_ATTR_NO_DISCARD DX11RenderTargetColorAttachment CreateRenderTargetColorAttachmentDX11(
+		CPPX_ATTR_NO_DISCARD DX11RenderTargetColorAttachment RTOCreateColorAttachmentDX11(
 				DX11GPUDevice & pGPUDevice,
 				const TextureReference & pAttachmentTextureRef );
 
-		CPPX_ATTR_NO_DISCARD DX11RenderTargetDepthStencilAttachment CreateRenderTargetDepthStencilAttachmentDX11(
+		CPPX_ATTR_NO_DISCARD DX11RenderTargetDepthStencilAttachment RTOCreateDepthStencilAttachmentDX11(
 				DX11GPUDevice & pGPUDevice,
 				const TextureReference & pAttachmentTextureRef );
 
-		CPPX_ATTR_NO_DISCARD DX11RenderTargetResolveAttachment CreateRenderTargetResolveAttachmentDX11(
+		CPPX_ATTR_NO_DISCARD DX11RenderTargetResolveAttachment RTOCreateResolveAttachmentDX11(
 				const TextureReference & pAttachmentTextureRef );
 
-		CPPX_ATTR_NO_DISCARD DX11RenderTargetBinding CreateRenderTargetBindingDX11(
+		CPPX_ATTR_NO_DISCARD DX11RenderTargetBinding RTOCreateRenderTargetBindingDX11(
 				DX11GPUDevice & pGPUDevice,
-				const RenderTargetBindingDefinition & pBindingDefinition );
+				const RenderTargetBinding & pRenderTargetBinding );
 
-		void RenderPassClearRenderTargetDX11(
-				ID3D11DeviceContext1 * pD3D1DeviceContext,
-				const DX11RenderTargetBinding & pRenderTargetBinding,
+		CPPX_ATTR_NO_DISCARD bool RTOUpdateRenderTargetBindingDX11(
+				DX11GPUDevice & pGPUDevice,
+				const RenderTargetBinding & pRenderTargetBinding,
+				DX11RenderTargetBinding & pOutDX11RenderTargetBinding );
+
+		void RTORenderPassExecuteOpLoadClearDX11(
+				ID3D11DeviceContext1 * pD3D11DeviceContext,
+				const DX11RenderTargetBinding & pDX11RenderTargetBinding,
 				const RenderPassConfiguration & pRenderPassConfiguration,
 				const GraphicsPipelineDynamicConfig & pDynamicConfig );
 
-		void RenderPassResolveRenderTargetDX11(
-				ID3D11DeviceContext1 * pD3D1DeviceContext,
+		void RTORenderPassExecuteOpStoreResolveDX11(
+				ID3D11DeviceContext1 * pD3D11DeviceContext,
 				const DX11RenderTargetBinding & pRenderTargetBinding,
 				const RenderPassConfiguration & pRenderPassConfiguration,
 				const GraphicsPipelineDynamicConfig & pDynamicConfig );
@@ -121,4 +142,4 @@ namespace Ic3::Graphics::GCI
 	
 } // namespace Ic3::Graphics::GCI
 
-#endif // __IC3_GRAPHICS_HW3D_DX11_RENDER_TARGET_H__
+#endif // __IC3_GRAPHICS_HW3D_DX11_GRAPHICS_PIPELINE_STATE_RTO_H__

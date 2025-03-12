@@ -80,7 +80,7 @@ namespace Ic3
 
 		CPPX_ATTR_NO_DISCARD uint32 GetActiveStreamsNum() const noexcept;
 
-		CPPX_ATTR_NO_DISCARD cppx::bitmask<GCI::EVertexSourceBindingFlags> GetActiveStreamsMask() const noexcept;
+		CPPX_ATTR_NO_DISCARD cppx::bitmask<GCI::EIAVertexSourceBindingFlags> GetActiveStreamsMask() const noexcept;
 
 		CPPX_ATTR_NO_DISCARD const InputAssemblerSlotRange & GetActiveStreamsRange() const noexcept;
 
@@ -116,7 +116,7 @@ namespace Ic3
 	private:
 		VertexInputStreamArray _streamArray;
 
-		cppx::bitmask<GCI::EVertexSourceBindingFlags> _activeStreamsMask;
+		cppx::bitmask<GCI::EIAVertexSourceBindingFlags> _activeStreamsMask;
 
 		uint32 _activeStreamsNum = 0;
 

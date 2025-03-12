@@ -82,7 +82,7 @@ namespace Ic3
 		return _activeStreamsNum;
 	}
 
-	inline cppx::bitmask<GCI::EVertexSourceBindingFlags> VertexInputStreamArrayConfig::GetActiveStreamsMask() const noexcept
+	inline cppx::bitmask<GCI::EIAVertexSourceBindingFlags> VertexInputStreamArrayConfig::GetActiveStreamsMask() const noexcept
 	{
 		return _activeStreamsMask;
 	}

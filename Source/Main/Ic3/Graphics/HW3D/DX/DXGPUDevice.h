@@ -10,14 +10,18 @@
 namespace Ic3::Graphics::GCI
 {
 
-	class DXGPUDevice : public GPUDevice
+	class IC3_GX_DX_CLASS DXGPUDevice : public GPUDevice
 	{
 	public:
 		ComPtr<IDXGIFactory2> const mDXGIFactory2;
 		ComPtr<IDXGIDebug> const mDXGIDebug;
 		ComPtr<IDXGIInfoQueue> const mDXGIInfoQueue;
 
-		explicit DXGPUDevice( DXGPUDriver & pDXGPUDriver, ComPtr<IDXGIFactory2> pDXGIFactory2 );
+		explicit DXGPUDevice(
+				DXGPUDriver & pDXGPUDriver,
+				GPUDeviceFeatureQuery * pFeatureQueryInterface,
+				PipelineStateDescriptorManager * pPipelineStateDescriptorManager,
+				ComPtr<IDXGIFactory2> pDXGIFactory2 );
 		virtual ~DXGPUDevice();
 	};
 

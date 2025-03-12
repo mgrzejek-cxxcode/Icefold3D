@@ -42,7 +42,7 @@ namespace Ic3::Graphics::GCI
 		~GLVertexArrayObjectCache();
 
 		const GLVertexArrayObject & GetOrCreate(
-				const GLIAVertexAttributeLayout & pGLVertexAttributeLayout,
+				const GLIAVertexAttributeLayout & pGLAttributeLayoutDefinition,
 				const GLIAVertexSourceBinding & pGLVertexSourceBinding );
 
 		void Reset();

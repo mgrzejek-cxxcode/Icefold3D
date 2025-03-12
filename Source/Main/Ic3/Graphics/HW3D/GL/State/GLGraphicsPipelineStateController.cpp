@@ -41,10 +41,9 @@ namespace Ic3::Graphics::GCI
 		{
 			if( _stateUpdateMask.is_set_any_of( eGraphicsStateUpdateMaskSeparableStatesAll ) )
 			{
-				const auto * glcGraphicsPipelineStateObject =
-					_currentPipelineBindings.pipelineStateObject->QueryInterface<GLGraphicsPipelineStateObject>();
-				const auto commonPipelineStateObjectUpdateMask = BindCommonConfigDescriptors( *glcGraphicsPipelineStateObject );
-				executedUpdatesMask.set( commonPipelineStateObjectUpdateMask );
+				const auto * glcGraphicsPipelineStateObject = GetCurrentGraphicsPipelineStateObject<GLGraphicsPipelineStateObject>();
+				const auto commonConfigDescriptorsUpdateMask = BindCommonConfigDescriptors( *glcGraphicsPipelineStateObject );
+				executedUpdatesMask.set( commonConfigDescriptorsUpdateMask );
 			}
 		}
 
@@ -59,9 +58,17 @@ namespace Ic3::Graphics::GCI
 		return !executedUpdatesMask.empty();
 	}
 
+	bool GLGraphicsPipelineStateController::SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPipelineStateObject )
+	{
+		return BaseStateControllerType::SetGraphicsPipelineStateObject( pGraphicsPipelineStateObject );
+	}
 
-	bool GLGraphicsPipelineStateController::SetRenderPassDescriptor(
-			const RenderPassDescriptor & pRenderPassDescriptor )
+	bool GLGraphicsPipelineStateController::ResetGraphicsPipelineStateObject()
+	{
+		return BaseStateControllerType::ResetGraphicsPipelineStateObject();
+	}
+
+	bool GLGraphicsPipelineStateController::SetRenderPassDescriptor( const RenderPassDescriptor & pRenderPassDescriptor )
 	{
 		return BaseStateControllerType::SetRenderPassDescriptor( pRenderPassDescriptor );
 	}
@@ -75,27 +82,15 @@ namespace Ic3::Graphics::GCI
 	{
 		BaseStateControllerType::ResetRenderPassDescriptor();
 	}
-	bool GLGraphicsPipelineStateController::SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPipelineStateObject )
-	{
-		return BaseStateControllerType::SetGraphicsPipelineStateObject( pGraphicsPipelineStateObject );
-	}
-
-	bool GLGraphicsPipelineStateController::ResetGraphicsPipelineStateObject()
-	{
-		return BaseStateControllerType::ResetGraphicsPipelineStateObject();
-	}
 
 	bool GLGraphicsPipelineStateController::SetRenderTargetDescriptor(
 			const RenderTargetDescriptor & pRenderTargetDescriptor )
 	{
-		const bool updateResult = BaseStateControllerType::SetRenderTargetDescriptor(
-				pRenderTargetDescriptor );
+		const bool updateResult = BaseStateControllerType::SetRenderTargetDescriptor( pRenderTargetDescriptor );
 
 		if( updateResult )
 		{
 			const auto * glcRenderTargetDescriptor = pRenderTargetDescriptor.QueryInterface<GLRenderTargetDescriptor>();
-			Ic3DebugAssert( glcRenderTargetDescriptor );
-
 			_glcCurrentPipelineBindings.renderTargetBinding = &( glcRenderTargetDescriptor->mGLRenderTargetBinding );
 		}
 
@@ -110,12 +105,11 @@ namespace Ic3::Graphics::GCI
 
 		if( updateResult )
 		{
-			auto * glcRenderTargetDriverState = pRenderTargetDescriptor.GetDynamicDriverStateAs<GLRenderTargetBindingDynamic>();
-			if( !glcRenderTargetDriverState )
+			if( !pRenderTargetDescriptor.IsDynamicDriverStateInitialized() )
 			{
-				Ic3DebugAssert( !pRenderTargetDescriptor.IsDynamicDriverStateInitialized() );
-				glcRenderTargetDriverState = InitializeDynamicDriverStateForDescriptor<GLRenderTargetBindingDynamic>( pRenderTargetDescriptor );
+				InitializeDynamicDriverStateForDescriptor<GLRenderTargetBindingDynamic>( pRenderTargetDescriptor );
 			}
+			auto * glcRenderTargetDriverState = pRenderTargetDescriptor.GetDynamicDriverStateAs<GLRenderTargetBindingDynamic>();
 
 			auto & glcRenderTargetBinding = glcRenderTargetDriverState->mDriverData;
 			if( &glcRenderTargetBinding != _glcCurrentPipelineBindings.renderTargetBinding )
@@ -151,14 +145,11 @@ namespace Ic3::Graphics::GCI
 	bool GLGraphicsPipelineStateController::SetVertexSourceBindingDescriptor(
 			const VertexSourceBindingDescriptor & pVertexSourceBindingDescriptor)
 	{
-		const bool updateResult = BaseStateControllerType::SetVertexSourceBindingDescriptor(
-				pVertexSourceBindingDescriptor );
+		const bool updateResult = BaseStateControllerType::SetVertexSourceBindingDescriptor( pVertexSourceBindingDescriptor );
 
 		if( updateResult )
 		{
 			const auto * glcVertexSourceBindingDescriptor = pVertexSourceBindingDescriptor.QueryInterface<GLVertexSourceBindingDescriptor>();
-			Ic3DebugAssert( glcVertexSourceBindingDescriptor );
-
 			_glcCurrentPipelineBindings.vertexSourceBinding = &( glcVertexSourceBindingDescriptor->mGLVertexSourceBinding );
 		}
 
@@ -168,8 +159,7 @@ namespace Ic3::Graphics::GCI
 	bool GLGraphicsPipelineStateController::SetVertexSourceBindingDescriptorDynamic(
 			VertexSourceBindingDescriptorDynamic & pVertexSourceBindingDescriptor )
 	{
-		const bool updateResult = BaseStateControllerType::SetVertexSourceBindingDescriptorDynamic(
-				pVertexSourceBindingDescriptor );
+		const bool updateResult = BaseStateControllerType::SetVertexSourceBindingDescriptorDynamic( pVertexSourceBindingDescriptor );
 
 		if( updateResult )
 		{
@@ -177,7 +167,6 @@ namespace Ic3::Graphics::GCI
 			{
 				InitializeDynamicDriverStateForDescriptor<GLIAVertexSourceBinding>( pVertexSourceBindingDescriptor );
 			}
-
 			auto * glcVertexSourceBindingDriverState = pVertexSourceBindingDescriptor.GetDynamicDriverStateAs<GLIAVertexSourceBinding>();
 
 			auto & glcVertexSourceBinding = glcVertexSourceBindingDriverState->mDriverData;
@@ -341,32 +330,32 @@ namespace Ic3::Graphics::GCI
 		return *( _glcCurrentPipelineBindings.renderTargetBinding );
 	}
 
-	const GLIAVertexSourceBinding & GLGraphicsPipelineStateController::GetGLIAVertexSourceBinding() const noexcept
+	const GLIAVertexSourceBinding & GLGraphicsPipelineStateController::GetGLVertexSourceBinding() const noexcept
 	{
 		return *( _glcCurrentPipelineBindings.vertexSourceBinding );
 	}
 
 	cppx::bitmask<uint32> GLGraphicsPipelineStateController::BindCommonConfigDescriptors(
-		const GLGraphicsPipelineStateObject & pGraphicsPipelineStateObject )
+		const GLGraphicsPipelineStateObject & pGLGraphicsPipelineStateObject )
 	{
 		cppx::bitmask<uint32> executedUpdatesMask = 0;
 
 		if( _stateUpdateMask.is_set( eGraphicsStateUpdateFlagSeparableStateBlendBit ) )
 		{
-			const auto & blendStateDescriptor = pGraphicsPipelineStateObject.GetBlendStateDescriptor();
+			const auto & glcBlendStateDescriptor = pGLGraphicsPipelineStateObject.GetGLBlendStateDescriptor();
 			const auto & dynamicPipelineConfig = GetPipelineDynamicConfig();
 
 			const bool setConstantColor =
-				blendStateDescriptor.mGLBlendSettings.flags.is_set( eBlendConfigFlagSetFixedBlendConstantsBit ) &&
+				glcBlendStateDescriptor.mGLBlendSettings.flags.is_set( eBlendConfigFlagSetFixedBlendConstantsBit ) &&
 				!dynamicPipelineConfig.activeStateMask.is_set( eGraphicsPipelineDynamicConfigFlagBlendConstantColorBit );
 
-			_glcGlobalStateCache.ApplyBlendSettings( blendStateDescriptor.mGLBlendSettings, setConstantColor );
+			_glcGlobalStateCache.ApplyBlendSettings( glcBlendStateDescriptor.mGLBlendSettings, setConstantColor );
 			executedUpdatesMask.set( eGraphicsStateUpdateFlagSeparableStateBlendBit );
 		}
 
 		if( _stateUpdateMask.is_set( eGraphicsStateUpdateFlagSeparableStateDepthStencilBit ) )
 		{
-			const auto & depthStencilStateDescriptor = pGraphicsPipelineStateObject.GetDepthStencilStateDescriptor();
+			const auto & glcDepthStencilStateDescriptor = pGLGraphicsPipelineStateObject.GetGLDepthStencilStateDescriptor();
 			const auto & dynamicPipelineConfig = GetPipelineDynamicConfig();
 
 			const auto setDefaultStencilRefValue =
@@ -375,19 +364,25 @@ namespace Ic3::Graphics::GCI
 			const auto stencilRefValue =
 				setDefaultStencilRefValue ? kPipelineConfigDefaultStencilTestRefValue : dynamicPipelineConfig.stencilTestRefValue;
 
-			_glcGlobalStateCache.ApplyDepthStencilSettings( depthStencilStateDescriptor.mGLDepthStencilSettings, stencilRefValue );
+			_glcGlobalStateCache.ApplyDepthStencilSettings( glcDepthStencilStateDescriptor.mGLDepthStencilSettings, stencilRefValue );
 			executedUpdatesMask.set( eGraphicsStateUpdateFlagSeparableStateDepthStencilBit );
 		}
 
 		if( _stateUpdateMask.is_set( eGraphicsStateUpdateFlagSeparableStateRasterizerBit ) )
 		{
-			const auto & rasterizerStateDescriptor = pGraphicsPipelineStateObject.GetRasterizerStateDescriptor();
+			const auto & glcRasterizerStateDescriptor = pGLGraphicsPipelineStateObject.GetGLRasterizerStateDescriptor();
 
-			_glcGlobalStateCache.ApplyRasterizerSettings( rasterizerStateDescriptor.mGLRasterizerSettings );
+			_glcGlobalStateCache.ApplyRasterizerSettings( glcRasterizerStateDescriptor.mGLRasterizerSettings );
 			executedUpdatesMask.set( eGraphicsStateUpdateFlagSeparableStateRasterizerBit );
 		}
 
 		return executedUpdatesMask;
+	}
+
+	void GLGraphicsPipelineStateController::ApplyGLRenderTargetBinding( const GLRenderTargetBinding & pGLRenderTargetBinding )
+	{
+		glBindFramebuffer( GL_FRAMEBUFFER, pGLRenderTargetBinding.baseFramebuffer->mGLHandle );
+		Ic3OpenGLHandleLastError();
 	}
 
 	void GLGraphicsPipelineStateController::ApplyGraphicsPipelineDynamicConfig( const GraphicsPipelineDynamicConfig & pDynamicPipelineConfig )
@@ -396,18 +391,12 @@ namespace Ic3::Graphics::GCI
 		{
 
 			glBlendColor(
-					pDynamicPipelineConfig.blendConstantColor.fpRed,
-					pDynamicPipelineConfig.blendConstantColor.fpGreen,
-					pDynamicPipelineConfig.blendConstantColor.fpBlue,
-					pDynamicPipelineConfig.blendConstantColor.fpAlpha );
+					pDynamicPipelineConfig.blendConstantColor.ufp_red,
+					pDynamicPipelineConfig.blendConstantColor.ufp_green,
+					pDynamicPipelineConfig.blendConstantColor.ufp_blue,
+					pDynamicPipelineConfig.blendConstantColor.ufp_alpha );
 			Ic3OpenGLHandleLastError();
 		}
-	}
-
-	void GLGraphicsPipelineStateController::ApplyGLRenderTargetBinding( const GLRenderTargetBinding & pGLRenderTargetBinding )
-	{
-		glBindFramebuffer( GL_FRAMEBUFFER, pGLRenderTargetBinding.baseFramebuffer->mGLHandle );
-		Ic3OpenGLHandleLastError();
 	}
 
 
@@ -439,7 +428,7 @@ namespace Ic3::Graphics::GCI
 
 			if( _stateUpdateMask.is_set_any_of( eGraphicsStateUpdateMaskCombinedInputAssembler ) )
 			{
-				const auto & glcVertexSourceBinding = GetGLIAVertexSourceBinding();
+				const auto & glcVertexSourceBinding = GetGLVertexSourceBinding();
 
 				// Execute bindings for vertex buffers.
 				const auto & vertexBufferBindings = glcVertexSourceBinding.vertexBufferBindings;
@@ -547,7 +536,7 @@ namespace Ic3::Graphics::GCI
 				const auto & glcVertexAttributeLayoutDescriptor =
 						GetCurrentPSOVertexAttributeLayoutDescriptor<GLVertexAttributeLayoutDescriptorCompat>();
 
-				const auto & glcVertexSourceBinding = GetGLIAVertexSourceBinding();
+				const auto & glcVertexSourceBinding = GetGLVertexSourceBinding();
 
 				const auto & vertexArrayObject = GetCachedVertexArrayObject(
 						glcVertexAttributeLayoutDescriptor.mGLVertexAttributeLayout,
@@ -591,10 +580,10 @@ namespace Ic3::Graphics::GCI
 	}
 
 	const GLVertexArrayObject & GLGraphicsPipelineStateControllerCompat::GetCachedVertexArrayObject(
-			const GLIAVertexAttributeLayout & pGLVertexAttributeLayout,
+			const GLIAVertexAttributeLayout & pGLAttributeLayoutDefinition,
 			const GLIAVertexSourceBinding & pGLVertexSourceBinding )
 	{
-		return _vaoCache.GetOrCreate( pGLVertexAttributeLayout, pGLVertexSourceBinding );
+		return _vaoCache.GetOrCreate( pGLAttributeLayoutDefinition, pGLVertexSourceBinding );
 	}
 
 } // namespace Ic3::Graphics::GCI

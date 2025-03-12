@@ -41,22 +41,23 @@ namespace Ic3::Graphics::GCI
 		};
 
 		const D3D_FEATURE_LEVEL * requestedFeatureLevelPtr = &( featureLevelArray[0] );
-		UINT requestedFeatureLevelCount = static_cast<UINT>( static_array_size( featureLevelArray ) );
+		UINT requestedFeatureLevelCount = static_cast<UINT>( cppx::static_array_size( featureLevelArray ) );
 
 		ComPtr<ID3D11Device> d3d11Device;
 		ComPtr<ID3D11DeviceContext> d3d11DeviceContext;
 		D3D_FEATURE_LEVEL targetFeatureLevel;
 
-		auto hResult = ::D3D11CreateDevice( nullptr,
-		                                    pDeviceType,
-		                                    nullptr,
-		                                    CreateDeviceFlags,
-		                                    requestedFeatureLevelPtr,
-		                                    requestedFeatureLevelCount,
-		                                    D3D11_SDK_VERSION,
-		                                    d3d11Device.GetAddressOf(),
-		                                    &targetFeatureLevel,
-		                                    d3d11DeviceContext.GetAddressOf() );
+		auto hResult = ::D3D11CreateDevice(
+				nullptr,
+				pDeviceType,
+				nullptr,
+				CreateDeviceFlags,
+				requestedFeatureLevelPtr,
+				requestedFeatureLevelCount,
+				D3D11_SDK_VERSION,
+				d3d11Device.GetAddressOf(),
+				&targetFeatureLevel,
+				d3d11DeviceContext.GetAddressOf() );
 
 		while( hResult != S_OK )
 		{
@@ -87,16 +88,17 @@ namespace Ic3::Graphics::GCI
 			}
 
 			// Try again.
-			hResult = ::D3D11CreateDevice( nullptr,
-			                               pDeviceType,
-			                               nullptr,
-			                               CreateDeviceFlags,
-			                               requestedFeatureLevelPtr,
-			                               requestedFeatureLevelCount,
-			                               D3D11_SDK_VERSION,
-			                               d3d11Device.GetAddressOf(),
-			                               &targetFeatureLevel,
-			                               d3d11DeviceContext.GetAddressOf() );
+			hResult = ::D3D11CreateDevice(
+					nullptr,
+					pDeviceType,
+					nullptr,
+					CreateDeviceFlags,
+					requestedFeatureLevelPtr,
+					requestedFeatureLevelCount,
+					D3D11_SDK_VERSION,
+					d3d11Device.GetAddressOf(),
+					&targetFeatureLevel,
+					d3d11DeviceContext.GetAddressOf() );
 		}
 
 		if( FAILED( hResult ) )
@@ -169,13 +171,16 @@ namespace Ic3::Graphics::GCI
 		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 
 		auto & dxgiFactory = pDX11GPUDevice.mDXGIFactory2;
+
 		ComPtr<IDXGISwapChain1> dxgiSwapChain1;
-		auto hResult = dxgiFactory->CreateSwapChainForHwnd( pDX11GPUDevice.mD3D11Device1.Get(),
-		                                                    sysWindowPtr->mNativeData.hwnd,
-		                                                    &swapChainDesc,
-		                                                    nullptr,
-		                                                    nullptr,
-		                                                    dxgiSwapChain1.GetAddressOf() );
+		auto hResult = dxgiFactory->CreateSwapChainForHwnd(
+				pDX11GPUDevice.mD3D11Device1.Get(),
+				sysWindowPtr->mNativeData.hwnd,
+				&swapChainDesc,
+				nullptr,
+				nullptr,
+				dxgiSwapChain1.GetAddressOf() );
+
 		if( FAILED( hResult ) )
 		{
 			return nullptr;
@@ -187,15 +192,15 @@ namespace Ic3::Graphics::GCI
 	UINT ATL::TranslateDX11GPUDeviceCreateFlags( cppx::bitmask<EGPUDriverConfigFlags> pDriverConfigFlags )
 	{
 		cppx::bitmask<UINT> deviceCreateFlags = 0;
-		if( pDriverConfigFlags.is_set( E_GPU_DRIVER_CONFIG_FLAG_ENABLE_DEBUG_LAYER_BIT ) )
-		{
-			deviceCreateFlags.set( D3D11_CREATE_DEVICE_DEBUG );
-		}
-		if( pDriverConfigFlags.is_set( E_GPU_DRIVER_CONFIG_FLAG_ENABLE_SHADER_DEBUG_INFO_BIT ) )
+		if( pDriverConfigFlags.is_set( eGPUDriverConfigFlagEnableShaderDebugInfoBit ) )
 		{
 			deviceCreateFlags.set( D3D11_CREATE_DEVICE_DEBUGGABLE );
 		}
-		if( pDriverConfigFlags.is_set( E_GPU_DRIVER_CONFIG_FLAG_DISABLE_MULTI_THREAD_ACCESS_BIT ) )
+		if( pDriverConfigFlags.is_set( eGPUDriverConfigFlagEnableDebugLayerBit ) )
+		{
+			deviceCreateFlags.set( D3D11_CREATE_DEVICE_DEBUG );
+		}
+		if( pDriverConfigFlags.is_set( eGPUDriverConfigFlagDisableMultiThreadAccessBit ) )
 		{
 			deviceCreateFlags.set( D3D11_CREATE_DEVICE_SINGLETHREADED );
 		}
@@ -239,21 +244,21 @@ namespace Ic3::Graphics::GCI
 
 	UINT8 ATL::TranslateDX11BlendRenderTargetWriteMask( cppx::bitmask<EBlendWriteMaskFlags> pWriteMask )
 	{
-		auto d3d11WriteMask = make_bitmask<UINT8>( 0 );
+		auto d3d11WriteMask = cppx::make_bitmask<UINT8>( 0 );
 
-		if( pWriteMask.is_set( E_BLEND_WRITE_MASK_CHANNEL_RED ) )
+		if( pWriteMask.is_set( eBlendWriteMaskChannelRed ) )
 		{
 			d3d11WriteMask.set( D3D11_COLOR_WRITE_ENABLE_RED );
 		}
-		if( pWriteMask.is_set( E_BLEND_WRITE_MASK_CHANNEL_GREEN ) )
+		if( pWriteMask.is_set( eBlendWriteMaskChannelGreen ) )
 		{
 			d3d11WriteMask.set( D3D11_COLOR_WRITE_ENABLE_GREEN );
 		}
-		if( pWriteMask.is_set( E_BLEND_WRITE_MASK_CHANNEL_BLUE ) )
+		if( pWriteMask.is_set( eBlendWriteMaskChannelBlue ) )
 		{
 			d3d11WriteMask.set( D3D11_COLOR_WRITE_ENABLE_BLUE );
 		}
-		if( pWriteMask.is_set( E_BLEND_WRITE_MASK_CHANNEL_ALPHA ) )
+		if( pWriteMask.is_set( eBlendWriteMaskChannelAlpha ) )
 		{
 			d3d11WriteMask.set( D3D11_COLOR_WRITE_ENABLE_ALPHA );
 		}
@@ -264,11 +269,11 @@ namespace Ic3::Graphics::GCI
 	cppx::bitmask<D3D11_CLEAR_FLAG> ATL::TranslateDX11RTClearDepthStencilFlags( cppx::bitmask<ERenderTargetBufferFlags> pClearFlags )
 	{
 		cppx::bitmask<D3D11_CLEAR_FLAG> d3d11ClearDSFlags = 0;
-		if( pClearFlags.is_set( E_RENDER_TARGET_BUFFER_FLAG_DEPTH_BIT ) )
+		if( pClearFlags.is_set( eRenderTargetBufferFlagDepthBit ) )
 		{
 			d3d11ClearDSFlags.set( D3D11_CLEAR_DEPTH );
 		}
-		if( pClearFlags.is_set( E_RENDER_TARGET_BUFFER_FLAG_STENCIL_BIT ) )
+		if( pClearFlags.is_set( eRenderTargetBufferFlagStencilBit ) )
 		{
 			d3d11ClearDSFlags.set( D3D11_CLEAR_STENCIL );
 		}
@@ -278,27 +283,27 @@ namespace Ic3::Graphics::GCI
 	UINT ATL::TranslateDX11BufferBindFlags( cppx::bitmask<resource_flags_value_t> pBufferFlags )
 	{
 		cppx::bitmask<UINT> d3d11BindFlags = 0;
-		if( pBufferFlags.is_set( E_GPU_BUFFER_BIND_FLAG_CONSTANT_BUFFER_BIT ) )
+		if( pBufferFlags.is_set( eGPUBufferBindFlagConstantBufferBit ) )
 		{
 			d3d11BindFlags.set( D3D11_BIND_CONSTANT_BUFFER );
 		}
-		if( pBufferFlags.is_set( E_GPU_BUFFER_BIND_FLAG_VERTEX_BUFFER_BIT ) )
+		if( pBufferFlags.is_set( eGPUBufferBindFlagVertexBufferBit ) )
 		{
 			d3d11BindFlags.set( D3D11_BIND_VERTEX_BUFFER );
 		}
-		if( pBufferFlags.is_set( E_GPU_BUFFER_BIND_FLAG_INDEX_BUFFER_BIT ) )
+		if( pBufferFlags.is_set( eGPUBufferBindFlagIndexBufferBit ) )
 		{
 			d3d11BindFlags.set( D3D11_BIND_INDEX_BUFFER );
 		}
-		if( pBufferFlags.is_set( E_GPU_BUFFER_BIND_FLAG_SHADER_INPUT_BUFFER_BIT ) )
+		if( pBufferFlags.is_set( eGPUBufferBindFlagShaderInputBufferBit ) )
 		{
 			d3d11BindFlags.set( D3D11_BIND_SHADER_RESOURCE );
 		}
-		if( pBufferFlags.is_set( E_GPU_BUFFER_BIND_FLAG_SHADER_UAV_BUFFER_BIT ) )
+		if( pBufferFlags.is_set( eGPUBufferBindFlagShaderUAVBufferBit ) )
 		{
 			d3d11BindFlags.set( D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS );
 		}
-		if( pBufferFlags.is_set( E_GPU_BUFFER_BIND_FLAG_STREAM_OUTPUT_BUFFER_BIT ) )
+		if( pBufferFlags.is_set( eGPUBufferBindFlagStreamOutputBufferBit ) )
 		{
 			d3d11BindFlags.set( D3D11_BIND_STREAM_OUTPUT );
 		}
@@ -393,13 +398,13 @@ namespace Ic3::Graphics::GCI
 	{
 		switch( pShaderType )
 		{
-			Ic3CaseReturn( EShaderType::Unknown    , D3D11_UNDEFINED<D3D11_SHADER_TYPE> );
-			Ic3CaseReturn( EShaderType::GSVertex   , D3D11_VERTEX_SHADER );
-			Ic3CaseReturn( EShaderType::GSHull     , D3D11_HULL_SHADER );
-			Ic3CaseReturn( EShaderType::GSDomain   , D3D11_DOMAIN_SHADER );
-			Ic3CaseReturn( EShaderType::GSGeometry , D3D11_GEOMETRY_SHADER );
-			Ic3CaseReturn( EShaderType::GSPixel    , D3D11_PIXEL_SHADER );
-			Ic3CaseReturn( EShaderType::CSCompute  , D3D11_COMPUTE_SHADER );
+			Ic3CaseReturn( EShaderType::Unknown      , D3D11_UNDEFINED<D3D11_SHADER_TYPE> );
+			Ic3CaseReturn( EShaderType::GSVertex     , D3D11_VERTEX_SHADER );
+			Ic3CaseReturn( EShaderType::GSTessHull   , D3D11_HULL_SHADER );
+			Ic3CaseReturn( EShaderType::GSTessDomain , D3D11_DOMAIN_SHADER );
+			Ic3CaseReturn( EShaderType::GSGeometry   , D3D11_GEOMETRY_SHADER );
+			Ic3CaseReturn( EShaderType::GSPixel      , D3D11_PIXEL_SHADER );
+			Ic3CaseReturn( EShaderType::CSCompute    , D3D11_COMPUTE_SHADER );
 		}
 		return D3D11_INVALID<D3D11_SHADER_TYPE>;
 	}
@@ -438,15 +443,15 @@ namespace Ic3::Graphics::GCI
 	UINT ATL::TranslateDX11ETextureBindFlags( cppx::bitmask<resource_flags_value_t> pTextureFlags )
 	{
 		cppx::bitmask<UINT> d3d11BindFlags = 0;
-		if( pTextureFlags.is_set( E_GPU_RESOURCE_USAGE_FLAG_SHADER_INPUT_BIT ) )
+		if( pTextureFlags.is_set( eGPUResourceUsageFlagShaderInputBit ) )
 		{
 			d3d11BindFlags.set( D3D11_BIND_SHADER_RESOURCE );
 		}
-		if( pTextureFlags.is_set( E_GPU_RESOURCE_USAGE_FLAG_RENDER_TARGET_COLOR_BIT ) )
+		if( pTextureFlags.is_set( eGPUResourceUsageFlagRenderTargetColorBit ) )
 		{
 			d3d11BindFlags.set( D3D11_BIND_RENDER_TARGET );
 		}
-		if( pTextureFlags.is_set_any_of( E_GPU_RESOURCE_USAGE_MASK_RENDER_TARGET_DEPTH_STENCIL ) )
+		if( pTextureFlags.is_set_any_of( eGPUResourceUsageMaskRenderTargetDepthStencil ) )
 		{
 			d3d11BindFlags.set( D3D11_BIND_DEPTH_STENCIL );
 		}
@@ -456,6 +461,19 @@ namespace Ic3::Graphics::GCI
 	D3D11_FILTER ATL::TranslateDX11ETextureFilter( ETextureFilter magFilter, ETextureFilter minFilter, ETextureMipMode mipMode, uint32 anisotropyLevel )
 	{
 		return D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	}
+
+	D3D11_INPUT_CLASSIFICATION ATL::DXTranslateVertexAttribDataRate( EIAVertexAttributeDataRate pDataRate )
+	{
+		if( pDataRate == EIAVertexAttributeDataRate::PerInstance )
+		{
+			return D3D11_INPUT_PER_INSTANCE_DATA;
+		}
+		else
+		{
+			return D3D11_INPUT_PER_VERTEX_DATA;
+		}
+		return static_cast< D3D11_INPUT_CLASSIFICATION >( cppx::meta::limits<uint32>::max_value );
 	}
 
 } // namespace Ic3::Graphics::GCI

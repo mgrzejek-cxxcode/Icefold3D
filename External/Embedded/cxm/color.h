@@ -61,43 +61,43 @@ namespace cxm
 
 		struct
 		{
-			TPReal fpRed;
-			TPReal fpGreen;
-			TPReal fpBlue;
-			TPReal fpAlpha;
+			TPReal ufp_red;
+			TPReal ufp_green;
+			TPReal ufp_blue;
+			TPReal ufp_alpha;
 		};
 
-		TPReal mRGBA[4];
+		TPReal uv_rgba[4];
 
 	public:
 		constexpr rgba_color_norm() noexcept
-		: fpRed( static_cast<TPReal>( 0 ) )
-		, fpGreen( static_cast<TPReal>( 0 ) )
-		, fpBlue( static_cast<TPReal>( 0 ) )
-		, fpAlpha( static_cast<TPReal>( 1 ) )
+		: ufp_red( static_cast<TPReal>( 0 ) )
+		, ufp_green( static_cast<TPReal>( 0 ) )
+		, ufp_blue( static_cast<TPReal>( 0 ) )
+		, ufp_alpha( static_cast<TPReal>( 1 ) )
 		{}
 
 		constexpr rgba_color_norm( TPReal pRed, TPReal pGreen, TPReal pBlue, TPReal pAlpha = static_cast<TPReal>( 1 ) ) noexcept
-		: fpRed( pRed )
-		, fpGreen( pGreen )
-		, fpBlue( pBlue )
-		, fpAlpha( pAlpha )
+		: ufp_red( pRed )
+		, ufp_green( pGreen )
+		, ufp_blue( pBlue )
+		, ufp_alpha( pAlpha )
 		{}
 
 		constexpr rgba_color_norm( rgba_color pColor )
-		: fpRed( static_cast<TPReal>( pColor.u8_red ) / static_cast<TPReal>( cppx::meta::limits<uint8>::max_value ) )
-		, fpGreen( static_cast<TPReal>( pColor.u8_green ) / static_cast<TPReal>( cppx::meta::limits<uint8>::max_value ) )
-		, fpBlue( static_cast<TPReal>( pColor.u8_blue ) / static_cast<TPReal>( cppx::meta::limits<uint8>::max_value ) )
-		, fpAlpha( static_cast<TPReal>( pColor.u8_alpha ) / static_cast<TPReal>( cppx::meta::limits<uint8>::max_value ) )
+		: ufp_red( static_cast<TPReal>( pColor.u8_red ) / static_cast<TPReal>( cppx::meta::limits<uint8>::max_value ) )
+		, ufp_green( static_cast<TPReal>( pColor.u8_green ) / static_cast<TPReal>( cppx::meta::limits<uint8>::max_value ) )
+		, ufp_blue( static_cast<TPReal>( pColor.u8_blue ) / static_cast<TPReal>( cppx::meta::limits<uint8>::max_value ) )
+		, ufp_alpha( static_cast<TPReal>( pColor.u8_alpha ) / static_cast<TPReal>( cppx::meta::limits<uint8>::max_value ) )
 		{}
 
 		constexpr rgba_color ToU8Color() const
 		{
 			return rgba_color(
-				static_cast<uint8>( fpRed * cppx::meta::limits<uint8>::max_value  ),
-				static_cast<uint8>( fpGreen * cppx::meta::limits<uint8>::max_value  ),
-				static_cast<uint8>( fpBlue * cppx::meta::limits<uint8>::max_value  ),
-				static_cast<uint8>( fpAlpha * cppx::meta::limits<uint8>::max_value  ) );
+				static_cast<uint8>( ufp_red * cppx::meta::limits<uint8>::max_value  ),
+				static_cast<uint8>( ufp_green * cppx::meta::limits<uint8>::max_value  ),
+				static_cast<uint8>( ufp_blue * cppx::meta::limits<uint8>::max_value  ),
+				static_cast<uint8>( ufp_alpha * cppx::meta::limits<uint8>::max_value  ) );
 		}
 	};
 
@@ -118,19 +118,19 @@ namespace cxm
 	template <typename TPReal>
 	inline bool operator==( const rgba_color_norm<TPReal> & pLhs, const rgba_color_norm<TPReal> & pRhs )
 	{
-		return ( pLhs.fpRed == pRhs.fpRed ) && ( pLhs.fpGreen == pRhs.fpGreen ) && ( pLhs.fpBlue == pRhs.fpBlue ) && ( pLhs.fpAlpha == pRhs.fpAlpha );
+		return ( pLhs.ufp_red == pRhs.ufp_red ) && ( pLhs.ufp_green == pRhs.ufp_green ) && ( pLhs.ufp_blue == pRhs.ufp_blue ) && ( pLhs.ufp_alpha == pRhs.ufp_alpha );
 	}
 
 	template <typename TPReal>
 	inline bool operator!=( const rgba_color_norm<TPReal> & pLhs, const rgba_color_norm<TPReal> & pRhs )
 	{
-		return ( pLhs.fpRed != pRhs.fpRed ) || ( pLhs.fpGreen != pRhs.fpGreen ) || ( pLhs.fpBlue != pRhs.fpBlue ) || ( pLhs.fpAlpha != pRhs.fpAlpha );
+		return ( pLhs.ufp_red != pRhs.ufp_red ) || ( pLhs.ufp_green != pRhs.ufp_green ) || ( pLhs.ufp_blue != pRhs.ufp_blue ) || ( pLhs.ufp_alpha != pRhs.ufp_alpha );
 	}
 
 	template <typename TPReal>
 	static inline vec4f make_color_vec4f( const rgba_color_norm<TPReal> & pColor )
 	{
-		return { pColor.fpRed, pColor.fpGreen, pColor.fpBlue, pColor.fpAlpha };
+		return { pColor.ufp_red, pColor.ufp_green, pColor.ufp_blue, pColor.ufp_alpha };
 	}
 
 	static inline vec4f make_color_vec4f( const rgba_color_u8 & pColor )

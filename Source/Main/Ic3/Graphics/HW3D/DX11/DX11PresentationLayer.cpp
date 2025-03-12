@@ -3,7 +3,7 @@
 #include "DX11CommandList.h"
 #include "DX11APITranslationLayer.h"
 #include "DX11GPUDevice.h"
-#include "State/DX11RenderTarget.h"
+#include "State/DX11GraphicsPipelineStateRTO.h"
 #include <Ic3/Graphics/GCI/CommandContext.h>
 
 namespace Ic3::Graphics::GCI
@@ -13,10 +13,10 @@ namespace Ic3::Graphics::GCI
 			DX11GPUDevice & pDevice,
 			System::WindowHandle pSysWindow,
 			ComPtr<IDXGISwapChain1> pDXGISwapChain1,
-			RenderTargetBindingCompiledStateHandle pScreenRenderTargetBindingState )
+			DX11RenderTargetDescriptorHandle pDX11ScreenRenderTargetDescriptor )
 	: DXScreenPresentationLayer( pDevice, pSysWindow, std::move( pDXGISwapChain1 ) )
 	, mD3D11Device1( pDevice.mD3D11Device1 )
-	, mScreenRenderTargetBindingState( pScreenRenderTargetBindingState )
+	, mDX11ScreenRenderTargetDescriptor( pDX11ScreenRenderTargetDescriptor )
 	{}
 
 	DX11ScreenPresentationLayer::~DX11ScreenPresentationLayer() = default;
@@ -51,7 +51,7 @@ namespace Ic3::Graphics::GCI
 			return false;
 		}
 
-		auto renderTargetState = DX11RenderTargetBindingCompiledState::CreateForScreen( pDevice, backBufferRTTexture, backBufferDSTexture );
+		auto renderTargetState = DX11RenderTargetDescriptor::CreateForScreen( pDevice, backBufferRTTexture, backBufferDSTexture );
 		Ic3DebugAssert( renderTargetState );
 
 		auto presentationLayer = CreateGfxObject<DX11ScreenPresentationLayer>( pDevice, sysWindow, std::move( dxgiSwapChain ), renderTargetState );
@@ -62,7 +62,7 @@ namespace Ic3::Graphics::GCI
 	void DX11ScreenPresentationLayer::BindRenderTarget( CommandContext & pCommandContext )
 	{
 		auto * directGraphicsContext = pCommandContext.QueryInterface<CommandContextDirectGraphics>();
-		directGraphicsContext->SetRenderTargetBindingState( *mScreenRenderTargetBindingState );
+		directGraphicsContext->SetRenderTargetDescriptor( *mDX11ScreenRenderTargetDescriptor );
 
 		// auto * dx11CommandList = pCmdContext->mCommandList->QueryInterface<DX11CommandList>();
 		// auto * backBufferRTView = GetBackBufferRTView();

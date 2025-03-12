@@ -25,19 +25,19 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~GLGraphicsPipelineStateObject();
 
-		CPPX_ATTR_NO_DISCARD const GLBlendStateDescriptor & GetBlendStateDescriptor() const noexcept;
+		CPPX_ATTR_NO_DISCARD const GLBlendStateDescriptor & GetGLBlendStateDescriptor() const noexcept;
 
-		CPPX_ATTR_NO_DISCARD const GLDepthStencilStateDescriptor & GetDepthStencilStateDescriptor() const noexcept;
+		CPPX_ATTR_NO_DISCARD const GLDepthStencilStateDescriptor & GetGLDepthStencilStateDescriptor() const noexcept;
 
-		CPPX_ATTR_NO_DISCARD const GLRasterizerStateDescriptor & GetRasterizerStateDescriptor() const noexcept;
+		CPPX_ATTR_NO_DISCARD const GLRasterizerStateDescriptor & GetGLRasterizerStateDescriptor() const noexcept;
 
-		CPPX_ATTR_NO_DISCARD const RootSignatureDescriptorGeneric & GetRootSignatureDescriptor() const noexcept;
+		CPPX_ATTR_NO_DISCARD const GLGraphicsShaderLinkageDescriptor & GetGLShaderLinkageDescriptor() const noexcept;
 
-		CPPX_ATTR_NO_DISCARD const GLGraphicsShaderLinkageDescriptor & GetShaderLinkageDescriptor() const noexcept;
+		CPPX_ATTR_NO_DISCARD const GLVertexAttributeLayoutDescriptor & GetGLVertexAttributeLayoutDescriptor() const noexcept;
 
-		CPPX_ATTR_NO_DISCARD const GLVertexAttributeLayoutDescriptor & GetVertexAttributeLayoutDescriptor() const noexcept;
+		CPPX_ATTR_NO_DISCARD const GLRootSignatureDescriptor & GetGLRootSignatureDescriptor() const noexcept;
 
-		static TGfxHandle<GLGraphicsPipelineStateObject> Create(
+		static TGfxHandle<GLGraphicsPipelineStateObject> CreateInstance(
 				GLGPUDevice & pGPUDevice,
 				const GraphicsPipelineStateObjectCreateInfo & pCreateInfo );
 	};

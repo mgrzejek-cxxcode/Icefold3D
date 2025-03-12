@@ -32,8 +32,8 @@
 namespace Ic3::Graphics::GCI
 {
 
-	class GraphicsShaderLinkageCompiledStateSeparable;
-	class RenderPassConfigurationCompiledStateDefault;
+	class GraphicsShaderLinkageDescriptorGenericSeparable;
+	class RootSignatureDescriptorGeneric;
 
 	class DX11BlendStateDescriptor;
 	class DX11DepthStencilStateDescriptor;
@@ -48,14 +48,16 @@ namespace Ic3::Graphics::GCI
 	Ic3GCIDeclareClassHandle( DX11GPUDriver );
 	Ic3GCIDeclareClassHandle( DX11PresentationLayer );
 
-	Ic3GCIDeclareTypedefHandle( DX11GraphicsShaderLinkageCompiledState, GraphicsShaderLinkageCompiledStateSeparable );
-	Ic3GCIDeclareTypedefHandle( DX11RenderPassConfigurationCompiledState, RenderPassConfigurationCompiledStateDefault );
+	Ic3GCIDeclareClassHandle( DX11RenderTargetDescriptor );
+
+	Ic3GCIDeclareTypedefHandle( DX11GraphicsShaderLinkageDescriptor, GraphicsShaderLinkageDescriptorGenericSeparable );
+	Ic3GCIDeclareTypedefHandle( DX11RootSignatureDescriptor, RootSignatureDescriptorGeneric );
 
 
 	namespace GCU
 	{
 
-		CPPX_ATTR_NO_DISCARD ID3D11DeviceContext1 * GetD3D11DeviceContextFromCommandList( void * pDX11CommandList );
+		CPPX_ATTR_NO_DISCARD ID3D11DeviceContext1 * DX11GetD3D11DeviceContextFromCommandList( void * pDX11CommandList );
 
 	}
 

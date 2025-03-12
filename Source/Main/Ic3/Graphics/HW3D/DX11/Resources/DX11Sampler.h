@@ -12,7 +12,7 @@ namespace Ic3::Graphics::GCI
 
 	Ic3DeclareClassHandle( DX11Sampler );
 
-	class DX11Sampler : public Sampler
+	class IC3_GX_DX11_CLASS DX11Sampler : public Sampler
 	{
 	public:
 		ComPtr<ID3D11SamplerState> const mD3D11SamplerState;

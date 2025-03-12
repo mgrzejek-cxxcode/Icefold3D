@@ -5,7 +5,7 @@ namespace Ic3::Graphics::GCI
 {
 
 	RootSignatureDescriptor::RootSignatureDescriptor( GPUDevice & pGPUDevice )
-	: CachedPipelineStateDescriptor( pGPUDevice )
+	: GCIPipelineStateDescriptor( pGPUDevice )
 	{}
 
 	RootSignatureDescriptor::~RootSignatureDescriptor() = default;

@@ -5,7 +5,7 @@ namespace Ic3::Graphics::GCI
 {
 
 	RootSignatureDescriptorGeneric::RootSignatureDescriptorGeneric( GPUDevice & pGPUDevice, RootSignature pRootSignature  )
-	: RootSignatureDescriptor( pGPUDevice )
+	: GCIPipelineStateDescriptor( pGPUDevice )
 	, mRootSignature( std::move( pRootSignature ) )
 	{}
 

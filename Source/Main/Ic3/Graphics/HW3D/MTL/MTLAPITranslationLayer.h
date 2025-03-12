@@ -12,26 +12,26 @@ namespace Ic3::Graphics::GCI
 	namespace ATL
 	{
 
-		// GLenum TranslateGLBaseDataType( EBaseDataType pBaseDataType );
-		// GLenum TranslateGLBlendFactor( EBlendFactor pBlendFactor );
-		// GLenum TranslateGLBlendOp( EBlendOp pBlendOp );
-		// GLenum TranslateGLBufferBindTarget( EGPUBufferTarget pBufferTarget );
-		// GLenum TranslateGLBufferMapFlags( EGPUMemoryMapMode pMapMode, cppx::bitmask<EGPUMemoryFlags> pMemoryFlags );
+		// GLenum GLTranslateBaseDataType( EBaseDataType pBaseDataType );
+		// GLenum GLTranslateBlendFactor( EBlendFactor pBlendFactor );
+		// GLenum GLTranslateBlendOp( EBlendOp pBlendOp );
+		// GLenum GLTranslateBufferBindTarget( EGPUBufferTarget pBufferTarget );
+		// GLenum GLTranslateBufferMapFlags( EGPUMemoryMapMode pMapMode, cppx::bitmask<EGPUMemoryFlags> pMemoryFlags );
 		MTLCompareFunction translateMTLCompFunc( ECompFunc pCompFunc );
-		// GLenum TranslateGLCullMode( ECullMode pCullMode );
-		// GLenum TranslateGLIndexDataFormat( EIndexDataFormat pIndexDataFormat );
-		// GLenum TranslateGLPrimitiveFillMode( EPrimitiveFillMode pFillMode );
-		// GLenum TranslateGLPrimitiveTopology( EPrimitiveTopology pTopology );
-		// GLenum translateShaderType( EShaderType pShaderType );
+		// GLenum GLTranslateCullMode( ECullMode pCullMode );
+		// GLenum GLTranslateIndexDataFormat( EIndexDataFormat pIndexDataFormat );
+		// GLenum GLTranslatePrimitiveFillMode( EPrimitiveFillMode pFillMode );
+		// GLenum GLTranslatePrimitiveTopology( EPrimitiveTopology pTopology );
+		// GLenum GLTranslateShaderType( EShaderType pShaderType );
 		MTLStencilOperation translateMTLStencilOp( EStencilOp pStencilOp );
 		MTLSamplerAddressMode translateMTLTextureAddressMode( ETextureAddressMode pAddressMode );
 		MTLSamplerBorderColor translateMTLTextureBorderPredefinedColor( ETextureBorderPredefinedColor pColor );
 		MTLSamplerMinMagFilter translateMTLTextureFilter( ETextureFilter pFilter );
 		MTLSamplerMipFilter translateMTLTextureMipMode( ETextureMipMode pMipMode );
-		// GLenum TranslateGLTextureBindTarget( ETextureClass pTextureDimensionClass );
-		// GLenum TranslateGLTextureInternalFormat( ETextureFormat pTextureFormat );
-		// GLenum TranslateGLTexturePixelDataLayout( ETextureFormat pTextureFormat );
-		// GLenum TranslateGLTriangleVerticesOrder( ETriangleVerticesOrder pVerticesOrder );
+		// GLenum GLTranslateTextureBindTarget( ETextureClass pTextureDimensionClass );
+		// GLenum GLTranslateTextureInternalFormat( ETextureFormat pTextureFormat );
+		// GLenum GLTranslateTexturePixelDataLayout( ETextureFormat pTextureFormat );
+		// GLenum GLTranslateTriangleVerticesOrder( ETriangleVerticesOrder pVerticesOrder );
 
 		MTLSamplerBorderColor selectMTLSamplerBorderColor(
 				ETextureBorderPredefinedColor pPredefinedColor,

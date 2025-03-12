@@ -21,8 +21,8 @@ namespace Ic3::Graphics::GCI
 	{
 		DX11PresentationLayerCreateInfo dx11CreateInfo;
 		dx11CreateInfo.screenRect = pCreateInfo.screenRect;
-		dx11CreateInfo.mVisualConfig = pCreateInfo.mVisualConfig;
-		dx11CreateInfo.mDisplayConfigFlags = pCreateInfo.mDisplayConfigFlags;
+		dx11CreateInfo.visualConfig = pCreateInfo.visualConfig;
+		dx11CreateInfo.displayConfigFlags = pCreateInfo.displayConfigFlags;
 
 		auto * deviceDX11 = pDevice.QueryInterface<DX11GPUDevice>();
 		return DX11ScreenPresentationLayer::Create( *deviceDX11, dx11CreateInfo );

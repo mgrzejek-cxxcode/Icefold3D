@@ -55,7 +55,7 @@ namespace Ic3::Graphics::GCI
 	 * @tparam TPBaseDescriptor
 	 */
 	template <typename TPBaseDescriptor>
-	class PipelineStateDescriptorDynamic : public TPBaseDescriptor
+	class PipelineStateDescriptorDynamic : public GCIPipelineStateDescriptor<TPBaseDescriptor>
 	{
 		friend class PipelineStateController;
 
@@ -64,7 +64,7 @@ namespace Ic3::Graphics::GCI
 
 		template <typename... TPArgs>
 		PipelineStateDescriptorDynamic( TPArgs && ...pArgs )
-		: TPBaseDescriptor( std::forward<TPArgs>( pArgs )... )
+		: GCIPipelineStateDescriptor( std::forward<TPArgs>( pArgs )... )
 		{
 			SetConfigChangedFlag();
 		}

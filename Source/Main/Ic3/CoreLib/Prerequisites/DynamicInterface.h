@@ -35,9 +35,9 @@ namespace Ic3
 		CPPX_ATTR_NO_DISCARD const TPInterfaceSubClass * GetInterface() const
 		{
 		#if( IC3_DEBUG )
-		    return dynamic_cast_check<const TPInterfaceSubClass *>( this );
+			return dynamic_cast_check<const TPInterfaceSubClass *>( this );
 		#else
-		    return static_cast<const TPInterfaceSubClass *>( this );
+			return static_cast<const TPInterfaceSubClass *>( this );
 		#endif
 		}
 
@@ -117,16 +117,16 @@ namespace Ic3
 		return objectHandle;
 	}
 
-    template <typename TPClass, typename TPDeleter, typename... TPArgs>
-    CPPX_ATTR_NO_DISCARD inline TSharedHandle<TPClass> CreateDynamicObjectWithDeleter( TPDeleter pDeleter, TPArgs && ...pArgs )
-    {
-        auto objectHandle = std::shared_ptr<TPClass>{ new TPClass( std::forward<TPArgs>( pArgs )... ), std::forward<TPDeleter>( pDeleter ) };
-    #if( IC3_DEBUG )
-        // This will trigger a compile-time error if TPClass is not a subclass of IDynamicObject.
-        static_cast<IDynamicObject *>( objectHandle.get() );
-    #endif
-        return objectHandle;
-    }
+	template <typename TPClass, typename TPDeleter, typename... TPArgs>
+	CPPX_ATTR_NO_DISCARD inline TSharedHandle<TPClass> CreateDynamicObjectWithDeleter( TPDeleter pDeleter, TPArgs && ...pArgs )
+	{
+		auto objectHandle = std::shared_ptr<TPClass>{ new TPClass( std::forward<TPArgs>( pArgs )... ), std::forward<TPDeleter>( pDeleter ) };
+	#if( IC3_DEBUG )
+		// This will trigger a compile-time error if TPClass is not a subclass of IDynamicObject.
+		static_cast<IDynamicObject *>( objectHandle.get() );
+	#endif
+		return objectHandle;
+	}
 
 	template <typename TPResultType, typename TPInputType>
 	CPPX_ATTR_NO_DISCARD inline std::unique_ptr<TPResultType> MoveInterfaceUniquePtr( std::unique_ptr<TPInputType> pUPtr )
@@ -168,25 +168,25 @@ namespace Ic3
 	}
 
 #define Ic3DeclareClassHandle( pClassName ) \
-    class pClassName; \
-    using pClassName##Handle = TSharedHandle<pClassName>; \
-    using pClassName##TWeakHandle = TWeakHandle<pClassName>; \
-    using Const##pClassName##Handle = TSharedHandle<const pClassName>; \
-    using Const##pClassName##WeakHandle = TWeakHandle<const pClassName>
+	class pClassName; \
+	using pClassName##Handle = TSharedHandle<pClassName>; \
+	using pClassName##TWeakHandle = TWeakHandle<pClassName>; \
+	using Const##pClassName##Handle = TSharedHandle<const pClassName>; \
+	using Const##pClassName##WeakHandle = TWeakHandle<const pClassName>
 
 #define Ic3DeclareInterfaceHandle( pInterfaceName ) \
-    class pInterfaceName; \
-    using pInterfaceName##Handle = TSharedHandle<pInterfaceName>; \
-    using pInterfaceName##WeakHandle = TWeakHandle<pInterfaceName>; \
-    using ConstpInterfaceName##Handle = TSharedHandle<const pInterfaceName>; \
-    using ConstpInterfaceName##WeakHandle = TWeakHandle<const pInterfaceName>
+	class pInterfaceName; \
+	using pInterfaceName##Handle = TSharedHandle<pInterfaceName>; \
+	using pInterfaceName##WeakHandle = TWeakHandle<pInterfaceName>; \
+	using ConstpInterfaceName##Handle = TSharedHandle<const pInterfaceName>; \
+	using ConstpInterfaceName##WeakHandle = TWeakHandle<const pInterfaceName>
 
 #define Ic3DeclareTypedefHandle( pAliasName, pTypeName ) \
-    using pAliasName = pTypeName; \
-    using pAliasName##Handle = TSharedHandle<pAliasName>; \
-    using pAliasName##WeakHandle = TWeakHandle<pAliasName>; \
-    using Const##pAliasName##Handle = TSharedHandle<const pAliasName>; \
-    using Const##pAliasName##WeakHandle = TWeakHandle<const pAliasName>
+	using pAliasName = pTypeName; \
+	using pAliasName##Handle = TSharedHandle<pAliasName>; \
+	using pAliasName##WeakHandle = TWeakHandle<pAliasName>; \
+	using Const##pAliasName##Handle = TSharedHandle<const pAliasName>; \
+	using Const##pAliasName##WeakHandle = TWeakHandle<const pAliasName>
 
 }
 

@@ -7,7 +7,7 @@ namespace Ic3::Graphics::GCI
 	RenderPassDescriptorGeneric::RenderPassDescriptorGeneric(
 			GPUDevice & pGPUDevice,
 			const RenderPassConfiguration & pRenderPassConfiguration )
-	: RenderPassDescriptor( pGPUDevice )
+	: GCIPipelineStateDescriptor( pGPUDevice )
 	, mPassConfiguration( pRenderPassConfiguration )
 	{}
 

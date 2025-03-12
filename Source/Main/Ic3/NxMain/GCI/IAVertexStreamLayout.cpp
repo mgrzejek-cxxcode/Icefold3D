@@ -93,7 +93,7 @@ namespace Ic3
 		vertexStream.Init( pStreamSlot, pStreamDataRate );
 
 		_activeStreamsNum += 1;
-		_activeStreamsMask.set( GCI::CXU::IAMakeVertexSourceVertexBufferBindingFlag( pStreamSlot ) );
+		_activeStreamsMask.set( GCI::CXU::IAMakeVertexBufferBindingFlag( pStreamSlot ) );
 		_activeStreamsRange.add( InputAssemblerSlotRange{ pStreamSlot, pStreamSlot } );
 		_activeStreamsSlots.insert( pStreamSlot );
 	}

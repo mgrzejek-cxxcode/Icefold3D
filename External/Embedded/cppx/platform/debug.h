@@ -7,7 +7,7 @@
 #include <cstdarg>
 
 #if !defined( CPPX_CONFIG_CORE_ENABLE_DEBUG )
-#  if( PCL_BUILD_TYPE_DEBUG )
+#  if( PCL_BUILD_TYPE == PCL_BUILD_TYPE_DEBUG )
 #    define CPPX_CONFIG_CORE_ENABLE_DEBUG 1
 #  else
 #    define CPPX_CONFIG_CORE_ENABLE_DEBUG 0
