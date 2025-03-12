@@ -8,7 +8,7 @@
 #include "GLGraphicsPipelineStateRTO.h"
 #include "GLVertexArrayObjectCache.h"
 #include "GLGlobalStateCache.h"
-#include <Ic3/Graphics/GCI/State/GraphicsPipelineStateImplGenericRenderPass.h>
+#include <Ic3/Graphics/GCI/State/GraphicsPipelineStateImplRenderPassGeneric.h>
 #include <Ic3/Graphics/GCI/State/GraphicsPipelineStateImplSeparableState.h>
 
 namespace Ic3::Graphics::GCI
@@ -23,7 +23,8 @@ namespace Ic3::Graphics::GCI
 	class GLGraphicsShaderLinkageDescriptorCompat;
 
 	/// @brief
-	class GLGraphicsPipelineStateController : public GraphicsPipelineStateControllerGenericRenderPass<GraphicsPipelineStateControllerSeparable>
+	class GLGraphicsPipelineStateController
+			: public GraphicsPipelineStateControllerRenderPassGeneric<GraphicsPipelineStateControllerSeparable>
 	{
 		friend class GLCommandList;
 
@@ -36,21 +37,6 @@ namespace Ic3::Graphics::GCI
 		virtual bool ApplyStateChanges() override;
 
 		/**
-		 * @see GraphicsPipelineStateControllerGenericRenderPass::SetRenderPassDescriptor()
-		 */
-		virtual bool SetRenderPassDescriptor( const RenderPassDescriptor & pRenderPassDescriptor ) override final;
-
-		/**
-		 * @see GraphicsPipelineStateControllerGenericRenderPass::SetRenderPassDescriptorDynamic()
-		 */
-		virtual bool SetRenderPassDescriptorDynamic( RenderPassDescriptorDynamic & pRenderPassDescriptor ) override final;
-
-		/**
-		 * @see GraphicsPipelineStateControllerGenericRenderPass::ResetRenderPassDescriptor()
-		 */
-		virtual void ResetRenderPassDescriptor() override final;
-
-		/**
 		 * @see GraphicsPipelineStateController::SetGraphicsPipelineStateObject()
 		 */
 		virtual bool SetGraphicsPipelineStateObject( const GraphicsPipelineStateObject & pGraphicsPipelineStateObject ) override;
@@ -59,6 +45,21 @@ namespace Ic3::Graphics::GCI
 		 * @see GraphicsPipelineStateController::ResetGraphicsPipelineStateObject()
 		 */
 		virtual bool ResetGraphicsPipelineStateObject() override;
+
+		/**
+		 * @see GraphicsPipelineStateControllerRenderPassGeneric::SetRenderPassDescriptor()
+		 */
+		virtual bool SetRenderPassDescriptor( const RenderPassDescriptor & pRenderPassDescriptor ) override final;
+
+		/**
+		 * @see GraphicsPipelineStateControllerRenderPassGeneric::SetRenderPassDescriptorDynamic()
+		 */
+		virtual bool SetRenderPassDescriptorDynamic( RenderPassDescriptorDynamic & pRenderPassDescriptor ) override final;
+
+		/**
+		 * @see GraphicsPipelineStateControllerRenderPassGeneric::ResetRenderPassDescriptor()
+		 */
+		virtual void ResetRenderPassDescriptor() override final;
 
 		/**
 		 * @see GraphicsPipelineStateController::SetRenderTargetDescriptor()
@@ -85,6 +86,7 @@ namespace Ic3::Graphics::GCI
 		virtual bool ResetVertexSourceBindingDescriptor() override;
 
 		virtual bool SetViewport( const ViewportDesc & pViewportDesc ) override;
+
 		virtual bool SetShaderConstant( shader_input_ref_id_t pParamRefID, const void * pData ) override;
 		virtual bool SetShaderConstantBuffer( shader_input_ref_id_t pParamRefID, GPUBuffer & pConstantBuffer ) override;
 		virtual bool SetShaderTextureImage( shader_input_ref_id_t pParamRefID, Texture & pTexture ) override;
@@ -93,21 +95,21 @@ namespace Ic3::Graphics::GCI
 	protected:
 		CPPX_ATTR_NO_DISCARD const GLRenderTargetBinding & GetGLRenderTargetBinding() const noexcept;
 
-		CPPX_ATTR_NO_DISCARD const GLIAVertexSourceBinding & GetGLIAVertexSourceBinding() const noexcept;
+		CPPX_ATTR_NO_DISCARD const GLIAVertexSourceBinding & GetGLVertexSourceBinding() const noexcept;
 
 	private:
-		using BaseStateControllerType = GraphicsPipelineStateControllerGenericRenderPass<GraphicsPipelineStateControllerSeparable>;
+		using BaseStateControllerType = GraphicsPipelineStateControllerRenderPassGeneric<GraphicsPipelineStateControllerSeparable>;
 
 		virtual void UpdateShaderInputInlineConstantData(
 				const GLGraphicsShaderLinkageDescriptor & pShaderLinkageDescriptor,
 				const ShaderInputParameterConstant & pConstantInfo,
 				const void * pConstantData ) = 0;
 
-		cppx::bitmask<uint32> BindCommonConfigDescriptors( const GLGraphicsPipelineStateObject & pGraphicsPipelineStateObject );
-
-		static void ApplyGraphicsPipelineDynamicConfig( const GraphicsPipelineDynamicConfig & pDynamicPipelineConfig );
+		cppx::bitmask<uint32> BindCommonConfigDescriptors( const GLGraphicsPipelineStateObject & pGLGraphicsPipelineStateObject );
 
 		static void ApplyGLRenderTargetBinding( const GLRenderTargetBinding & pGLRenderTargetBinding );
+
+		static void ApplyGraphicsPipelineDynamicConfig( const GraphicsPipelineDynamicConfig & pDynamicPipelineConfig );
 
 	protected:
 		struct GLCurrentPipelineBindings
@@ -148,7 +150,7 @@ namespace Ic3::Graphics::GCI
 				const void * pConstantData ) override final;
 
 		const GLVertexArrayObject & GetCachedVertexArrayObject(
-				const GLIAVertexAttributeLayout & pGLVertexAttributeLayout,
+				const GLIAVertexAttributeLayout & pGLAttributeLayoutDefinition,
 				const GLIAVertexSourceBinding & pGLVertexSourceBinding );
 
 	private:

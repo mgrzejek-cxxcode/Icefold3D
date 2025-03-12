@@ -21,7 +21,8 @@ namespace Ic3::Graphics::GCI
 
 	struct GLIAVertexAttributeInfo
 	{
-		uint16 streamIndex;
+		uint8 attributeIndex;
+		uint8 streamIndex;
 		uint8 normalized;
 		uint8 componentsNum;
 		GLenum baseType;
@@ -97,6 +98,7 @@ namespace Ic3::Graphics::GCI
 		union
 		{
 			InterleavedBindingsArray interleavedBindings;
+
 			SeparateBindings separateBindings;
 		};
 
@@ -137,7 +139,7 @@ namespace Ic3::Graphics::GCI
 	};
 
 	///
-	class GLVertexAttributeLayoutDescriptor : public PIM::VertexAttributeLayoutDescriptorNative
+	class GLVertexAttributeLayoutDescriptor : public HW3DPipelineStateDescriptor<VertexAttributeLayoutDescriptor>
 	{
 	public:
 		GLVertexAttributeLayoutDescriptor(
@@ -184,7 +186,7 @@ namespace Ic3::Graphics::GCI
 	public:
 		GLVertexAttributeLayoutDescriptorCompat(
 				GLGPUDevice & pGPUDevice,
-				const GLIAVertexAttributeLayout & pGLVertexAttributeLayout );
+				const GLIAVertexAttributeLayout & pGLAttributeLayoutDefinition );
 
 		virtual ~GLVertexAttributeLayoutDescriptorCompat();
 
@@ -194,7 +196,7 @@ namespace Ic3::Graphics::GCI
 	};
 
 	///
-	class GLVertexSourceBindingDescriptor : public PIM::VertexSourceBindingDescriptorNative
+	class GLVertexSourceBindingDescriptor : public HW3DPipelineStateDescriptor<VertexSourceBindingDescriptor>
 	{
 	public:
 		GLIAVertexSourceBinding const mGLVertexSourceBinding;
@@ -216,7 +218,7 @@ namespace Ic3::Graphics::GCI
 
 		// VertexAttributeLayout
 
-		CPPX_ATTR_NO_DISCARD GLIAVertexAttributeInfo IATranslateVertexAttributeInfoGL(
+		CPPX_ATTR_NO_DISCARD GLIAVertexAttributeInfo IATranslateVertexAttributeDescGL(
 				const IAVertexAttributeDesc & pVertexAttributeDesc );
 
 		CPPX_ATTR_NO_DISCARD GLIAVertexAttributeLayout IATranslateVertexAttributeLayoutDefinitionGL(
@@ -233,11 +235,11 @@ namespace Ic3::Graphics::GCI
 
 		CPPX_ATTR_NO_DISCARD GLIAVertexBufferArrayBindings IATranslateVertexBufferReferencesGL(
 				const IAVertexBufferReferenceArray & pVertexBufferReferences,
-				cppx::bitmask<EVertexSourceBindingFlags> pBindingMask );
+				cppx::bitmask<EIAVertexSourceBindingFlags> pBindingMask );
 
 		uint32 IAUpdateVertexBufferReferencesGL(
 				const IAVertexBufferReferenceArray & pVertexBufferReferences,
-				cppx::bitmask<EVertexSourceBindingFlags> pBindingMask,
+				cppx::bitmask<EIAVertexSourceBindingFlags> pBindingMask,
 				GLIAVertexBufferArrayBindings & pOutGLBindings );
 
 		CPPX_ATTR_NO_DISCARD GLIAIndexBufferBinding IATranslateIndexBufferReferenceGL(
@@ -253,19 +255,19 @@ namespace Ic3::Graphics::GCI
 		// VertexArrayObject
 
 		CPPX_ATTR_NO_DISCARD GLVertexArrayObjectHandle IACreateVertexArrayObjectLayoutOnlyGL(
-				const GLIAVertexAttributeLayout & pGLVertexAttributeLayout ) noexcept;
+				const GLIAVertexAttributeLayout & pGLAttributeLayoutDefinition ) noexcept;
 
 		bool IAUpdateGLVertexArrayObjectLayoutOnly(
 				GLVertexArrayObject & pGLVertexArrayObject,
-				const GLIAVertexAttributeLayout & pGLVertexAttributeLayout ) noexcept;
+				const GLIAVertexAttributeLayout & pGLAttributeLayoutDefinition ) noexcept;
 
 		CPPX_ATTR_NO_DISCARD GLVertexArrayObjectHandle IACreateVertexArrayObjectLayoutStreamCombinedGL(
-				const GLIAVertexAttributeLayout & pGLVertexAttributeLayout,
+				const GLIAVertexAttributeLayout & pGLAttributeLayoutDefinition,
 				const GLIAVertexSourceBinding & pSourceBindingDefinition ) noexcept;
 
 		bool IAUpdateVertexArrayObjectLayoutStreamCombinedGL(
 				GLVertexArrayObject & pVertexArrayObject,
-				const GLIAVertexAttributeLayout & pGLVertexAttributeLayout,
+				const GLIAVertexAttributeLayout & pGLAttributeLayoutDefinition,
 				const GLIAVertexSourceBinding & pSourceBindingDefinition ) noexcept;
 
 	}

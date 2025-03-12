@@ -1,5 +1,5 @@
 
-#include "GraphicsPipelineStateImplGenericRenderPass.h"
+#include "GraphicsPipelineStateImplRenderPassGeneric.h"
 
 namespace Ic3::Graphics::GCI
 {
@@ -7,32 +7,28 @@ namespace Ic3::Graphics::GCI
 	RenderPassDescriptorGeneric::RenderPassDescriptorGeneric(
 			GPUDevice & pGPUDevice,
 			const RenderPassConfiguration & pRenderPassConfiguration )
-	: RenderPassDescriptor( pGPUDevice )
+	: GCIPipelineStateDescriptor( pGPUDevice )
 	, mPassConfiguration( pRenderPassConfiguration )
 	{}
 
 	RenderPassDescriptorGeneric::~RenderPassDescriptorGeneric() = default;
 
-	bool RenderPassDescriptorGeneric::IsAttachmentActive( native_uint pAttachmentIndex ) const noexcept
+	bool RenderPassDescriptorGeneric::IsAttachmentConfigured( native_uint pAttachmentIndex ) const noexcept
 	{
 		const auto * attachmentConfig = mPassConfiguration.GetAttachment( pAttachmentIndex );
 		return !attachmentConfig->IsEmpty();
 	}
 
-	bool RenderPassDescriptorGeneric::CheckAttachmentLoadActionFlags(
-			uint32 pAttachmentIndex,
-			cppx::bitmask<ERenderPassAttachmentActionFlags> pActionFlags ) const noexcept
+	ERenderPassAttachmentLoadAction RenderPassDescriptorGeneric::GetAttachmentLoadAction( native_uint pAttachmentIndex ) const noexcept
 	{
 		const auto * attachmentConfig = mPassConfiguration.GetAttachment( pAttachmentIndex );
-		return !attachmentConfig->HasLoadActionFlags( pActionFlags & eRenderPassAttachmentActionMaskLoadAll );
+		return attachmentConfig ? attachmentConfig->loadAction : ERenderPassAttachmentLoadAction::Undefined;
 	}
 
-	bool RenderPassDescriptorGeneric::CheckAttachmentStoreActionFlags(
-			uint32 pAttachmentIndex,
-			cppx::bitmask<ERenderPassAttachmentActionFlags> pActionFlags ) const noexcept
+	ERenderPassAttachmentStoreAction RenderPassDescriptorGeneric::GetAttachmentStoreAction( native_uint pAttachmentIndex ) const noexcept
 	{
 		const auto * attachmentConfig = mPassConfiguration.GetAttachment( pAttachmentIndex );
-		return !attachmentConfig->HasStoreActionFlags( pActionFlags & eRenderPassAttachmentActionMaskStoreAll );
+		return attachmentConfig ? attachmentConfig->storeAction : ERenderPassAttachmentStoreAction::Undefined;
 	}
 
 	TGfxHandle<RenderPassDescriptorGeneric> RenderPassDescriptorGeneric::CreateInstance(

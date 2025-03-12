@@ -21,7 +21,7 @@ namespace Ic3::Graphics::GCI
 
 	MetalGraphicsPipelineStateObject::~MetalGraphicsPipelineStateObject() = default;
 
-	GpaHandle<MetalGraphicsPipelineStateObject> MetalGraphicsPipelineStateObject::Create(
+	TGfxHandle<MetalGraphicsPipelineStateObject> MetalGraphicsPipelineStateObject::Create(
 			MetalGPUDevice & pGPUDevice,
 			const GraphicsPipelineStateObjectCreateInfo & pCreateInfo )
 	{

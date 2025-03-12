@@ -35,8 +35,7 @@ namespace Ic3::Graphics::GCI
 			PipelineStateDescriptorDynamic<TPBaseDescriptor> & pPipelineStateDescriptorDynamic,
 			TPArgs && ...pArgs )
 		{
-			auto * baseDescriptorPtr = static_cast<PipelineStateDescriptor *>( &pPipelineStateDescriptorDynamic );
-			return baseDescriptorPtr->InitializeDynamicDriverState<TPDriverDataType>( std::forward<TPArgs>( pArgs )... );
+			return pPipelineStateDescriptorDynamic.InitializeDynamicDriverState<TPDriverDataType>( std::forward<TPArgs>( pArgs )... );
 		}
 
 		/**
@@ -60,7 +59,7 @@ namespace Ic3::Graphics::GCI
 		void ResetDynamicDescriptorConfigurationModifiedState(
 				PipelineStateDescriptorDynamic<TPBaseDescriptor> & pPipelineStateDescriptorDynamic ) noexcept
 		{
-			pPipelineStateDescriptorDynamic.ResetConfigurationModifiedState();;
+			pPipelineStateDescriptorDynamic.ResetConfigurationModifiedState();
 		}
 	};
 

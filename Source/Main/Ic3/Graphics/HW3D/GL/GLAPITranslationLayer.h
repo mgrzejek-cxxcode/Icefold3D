@@ -13,59 +13,59 @@ namespace Ic3::Graphics::GCI
 	namespace ATL
 	{
 
-		GLenum ChooseGLBufferStorageFlags( GLenum pBindTarget, cppx::bitmask<resource_flags_value_t> pBufferFlags, cppx::bitmask<EGPUMemoryFlags> pMemoryFlags );
+		GLenum GLChooseBufferStorageFlags( GLenum pBindTarget, cppx::bitmask<resource_flags_value_t> pBufferFlags, cppx::bitmask<EGPUMemoryFlags> pMemoryFlags );
 
-		GLenum ChooseGLBufferUsagePolicy( GLenum pBindTarget, cppx::bitmask<resource_flags_value_t> pBufferFlags );
+		GLenum GLChooseBufferUsagePolicy( GLenum pBindTarget, cppx::bitmask<resource_flags_value_t> pBufferFlags );
 
-		GLenum ChooseGLTextureMagFilter( ETextureFilter pMagFilter, ETextureMipMode pMipMode );
+		GLenum GLChooseTextureMagFilter( ETextureFilter pMagFilter, ETextureMipMode pMipMode );
 
-		GLenum ChooseGLTextureMinFilter( ETextureFilter pMinFilter, ETextureMipMode pMipMode );
+		GLenum GLChooseTextureMinFilter( ETextureFilter pMinFilter, ETextureMipMode pMipMode );
 
-		GLsizei QueryGLTextureInternalFormatBPP( GLenum pGLInternalFormat );
+		GLsizei GLQueryTextureInternalFormatBPP( GLenum pGLInternalFormat );
 
-		GLenum TranslateGLBaseDataType( EBaseDataType pBaseDataType );
+		GLenum GLTranslateBaseDataType( EBaseDataType pBaseDataType );
 
-		GLenum TranslateGLBlendFactor( EBlendFactor pBlendFactor );
+		GLenum GLTranslateBlendFactor( EBlendFactor pBlendFactor );
 
-		GLenum TranslateGLBlendOp( EBlendOp pBlendOp );
+		GLenum GLTranslateBlendOp( EBlendOp pBlendOp );
 
-		GLenum TranslateGLBufferBindTarget( EGPUBufferTarget pBufferTarget );
+		GLenum GLTranslateBufferBindTarget( EGPUBufferTarget pBufferTarget );
 
-		GLenum TranslateGLBufferMapFlags( EGPUMemoryMapMode pMapMode, cppx::bitmask<EGPUMemoryFlags> pMemoryFlags );
+		GLenum GLTranslateBufferMapFlags( EGPUMemoryMapMode pMapMode, cppx::bitmask<EGPUMemoryFlags> pMemoryFlags );
 
-		GLenum TranslateGLCompFunc( ECompFunc pCompFunc );
+		GLenum GLTranslateCompFunc( ECompFunc pCompFunc );
 
-		GLenum TranslateGLCullMode( ECullMode pCullMode );
+		GLenum GLTranslateCullMode( ECullMode pCullMode );
 
-		GLenum TranslateGLIndexDataFormat( EIndexDataFormat pIndexDataFormat );
+		GLenum GLTranslateIndexDataFormat( EIndexDataFormat pIndexDataFormat );
 
-		GLenum TranslateGLPrimitiveFillMode( EPrimitiveFillMode pFillMode );
+		GLenum GLTranslatePrimitiveFillMode( EPrimitiveFillMode pFillMode );
 
-		GLenum TranslateGLPrimitiveTopology( EPrimitiveTopology pTopology );
+		GLenum GLTranslatePrimitiveTopology( EPrimitiveTopology pTopology );
 
-		GLenum translateShaderType( EShaderType pShaderType );
+		GLenum GLTranslateShaderType( EShaderType pShaderType );
 
-		GLenum TranslateGLStencilOp( EStencilOp pStencilOp );
+		GLenum GLTranslateStencilOp( EStencilOp pStencilOp );
 
-		GLenum TranslateGLTextureAddressMode( ETextureAddressMode pAddressMode );
+		GLenum GLTranslateTextureAddressMode( ETextureAddressMode pAddressMode );
 
-		GLenum TranslateGLTextureBindTarget( ETextureClass pTextureDimensionClass );
+		GLenum GLTranslateTextureBindTarget( ETextureClass pTextureDimensionClass );
 
-		GLenum TranslateGLTextureInternalFormat( ETextureFormat pTextureFormat );
+		GLenum GLTranslateTextureInternalFormat( ETextureFormat pTextureFormat );
 
-		GLenum TranslateGLTexturePixelDataLayout( ETextureFormat pTextureFormat );
+		GLenum GLTranslateTexturePixelDataLayout( ETextureFormat pTextureFormat );
 
-		GLenum TranslateGLTriangleVerticesOrder( ETriangleVerticesOrder pVerticesOrder );
+		GLenum GLTranslateTriangleVerticesOrder( ETriangleVerticesOrder pVerticesOrder );
 
-		const char * TranslateGLDebugOutputExtensionName( GLDebugOutputVersion pDebugOutputVersion );
+		const char * GLTranslateDebugOutputExtensionName( GLDebugOutputVersion pDebugOutputVersion );
 
-		const char * TranslateGLDebugEventCategoryStrAMD( GLenum pEventCategory );
+		const char * GLTranslateDebugEventCategoryStrAMD( GLenum pEventCategory );
 
-		const char * TranslateGLDebugEventSeverityStr( GLenum pEventSeverity );
+		const char * GLTranslateDebugEventSeverityStr( GLenum pEventSeverity );
 
-		const char * TranslateGLDebugEventSourceStr( GLenum pEventSource );
+		const char * GLTranslateDebugEventSourceStr( GLenum pEventSource );
 
-		const char * TranslateGLDebugEventTypeStr( GLenum pEventType );
+		const char * GLTranslateDebugEventTypeStr( GLenum pEventType );
 
 	}
 

@@ -12,16 +12,6 @@ namespace Ic3::Graphics::GCI
 				const IAVertexAttributeLayoutDefinition & pLayoutDefinition,
 				const ShaderInputSignature & pShaderInputSignature )
 		{
-			if( pLayoutDefinition.activeAttributesNum != pShaderInputSignature.activeAttributesMask.count_bits() )
-			{
-				Ic3DebugOutputFmt(
-						"[IAVertexAttributeLayout/ShaderInputSignature] Layout definition has activeAttributesNum=%u, in signature: %u (mask).",
-						static_cast<uint32>( pLayoutDefinition.activeAttributesNum ),
-						static_cast<uint32>( pShaderInputSignature.activeAttributesMask.count_bits() ) );
-
-				return false;
-			}
-
 			if( pLayoutDefinition.activeAttributesMask != pShaderInputSignature.activeAttributesMask )
 			{
 				Ic3DebugOutputFmt(

@@ -13,7 +13,7 @@ namespace Ic3::Graphics::GCI
 	/**
 	 *
 	 */
-	class IC3_GRAPHICS_GCI_CLASS GraphicsShaderLinkageDescriptor : public PipelineStateDescriptor
+	class IC3_GRAPHICS_GCI_CLASS GraphicsShaderLinkageDescriptor : public CachedPipelineStateDescriptor<PipelineStateDescriptor>
 	{
 		Ic3DeclareNonCopyable( GraphicsShaderLinkageDescriptor );
 
@@ -37,7 +37,7 @@ namespace Ic3::Graphics::GCI
 	/**
 	 *
 	 */
-	class IC3_GRAPHICS_GCI_CLASS GraphicsShaderLinkageDescriptorGenericSeparable : public GraphicsShaderLinkageDescriptor
+	class IC3_GRAPHICS_GCI_CLASS GraphicsShaderLinkageDescriptorGenericSeparable : public GCIPipelineStateDescriptor<GraphicsShaderLinkageDescriptor>
 	{
 	public:
 		GraphicsShaderBinding const mShaderBinding;
@@ -45,7 +45,7 @@ namespace Ic3::Graphics::GCI
 	public:
 		GraphicsShaderLinkageDescriptorGenericSeparable(
 				GPUDevice & pGPUDevice,
-				const GraphicsShaderBinding & pBindingConfiguration );
+				const GraphicsShaderBinding & pShaderBinding );
 
 		virtual ~GraphicsShaderLinkageDescriptorGenericSeparable();
 
@@ -61,23 +61,6 @@ namespace Ic3::Graphics::GCI
 				GPUDevice & pGPUDevice,
 				const GraphicsShaderArray & pShaderArray ) noexcept;
 	};
-
-	namespace PIM
-	{
-
-		class IC3_GRAPHICS_GCI_CLASS GraphicsShaderLinkageDescriptorNative : public GraphicsShaderLinkageDescriptor
-		{
-		public:
-			GraphicsShaderLinkageDescriptorNative(
-					GPUDevice & pGPUDevice,
-					const GraphicsShaderBindingCommonConfig & pCommonShaderBindingConfig )
-			: GraphicsShaderLinkageDescriptor( pGPUDevice, pCommonShaderBindingConfig )
-			{}
-
-			virtual ~GraphicsShaderLinkageDescriptorNative() = default;
-		};
-
-	} // namespace PIM
 
 } // namespace Ic3::Graphics::GCI
 

@@ -82,6 +82,13 @@ namespace Ic3::Graphics::GCI
 			return ( pStageIndex < GCM::kShaderCombinedStagesNum ) ? ( 1 << pStageIndex ) : 0u;
 		}
 
+		/// @brief Returns
+		template <typename... TPIntegers>
+		CPPX_ATTR_NO_DISCARD inline constexpr uint32 SHMakeShaderStageBit( native_uint pStageIndex, TPIntegers && ...pRest )
+		{
+			return SHMakeShaderStageBit( pStageIndex ) | SHMakeShaderStageBit( std::forward<TPIntegers>( pRest )... );
+		}
+
 		/**
 		 * @brief Returns a 32-bit value which is a bit flag matching the graphics shader stage specified using its index.
 		 * @return One of eShaderStageFlagGraphicsXXXBit values for a valid graphics stage index or 0 otherwise, returned as uint32.
@@ -89,6 +96,13 @@ namespace Ic3::Graphics::GCI
 		CPPX_ATTR_NO_DISCARD inline constexpr uint32 SHMakeGraphicsShaderStageBit( native_uint pGraphicsStageIndex )
 		{
 			return ( pGraphicsStageIndex < GCM::kShaderGraphicsStagesNum ) ? ( 1 << pGraphicsStageIndex ) : 0u;
+		}
+
+		/// @brief Returns
+		template <typename... TPIntegers>
+		CPPX_ATTR_NO_DISCARD inline constexpr uint32 SHMakeGraphicsShaderStageBit( native_uint pGraphicsStageIndex, TPIntegers && ...pRest )
+		{
+			return SHMakeGraphicsShaderStageBit( pGraphicsStageIndex ) | SHMakeGraphicsShaderStageBit( std::forward<TPIntegers>( pRest )... );
 		}
 
 	} // namespace CXU

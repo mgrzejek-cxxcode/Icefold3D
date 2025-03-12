@@ -12,7 +12,7 @@ namespace Ic3::Graphics::GCI
 	}
 
 	inline bool GraphicsPipelineStateController::IsDynamicPipelineConfigEnabled(
-				cppx::bitmask<EGraphicsPipelineDynamicConfigFlags> pConfigMask ) const noexcept
+			cppx::bitmask<EGraphicsPipelineDynamicConfigFlags> pConfigMask ) const noexcept
 	{
 		return _currentPipelineDynamicConfig.activeStateMask.is_set( pConfigMask & eGraphicsPipelineDynamicConfigMaskAll );
 	}

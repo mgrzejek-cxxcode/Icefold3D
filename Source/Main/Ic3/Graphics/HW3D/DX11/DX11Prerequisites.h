@@ -18,7 +18,7 @@
 #  define IC3_GX_DX11_CLASS
 #  define IC3_GX_DX11_OBJ    extern
 #else
-#  if( IC3_DRIVER_GRAPHICS_HW3D_DX11_BUILD )
+#  if( IC3_GRAPHICS_HW3D_DX_BUILD )
 #    define IC3_GX_DX11_API    PCL_ATTR_DLL_EXPORT
 #    define IC3_GX_DX11_CLASS  PCL_ATTR_DLL_EXPORT
 #    define IC3_GX_DX11_OBJ    PCL_ATTR_DLL_EXPORT
@@ -32,15 +32,15 @@
 namespace Ic3::Graphics::GCI
 {
 
-	class GraphicsShaderLinkageCompiledStateSeparable;
-	class RenderPassConfigurationCompiledStateDefault;
+	class GraphicsShaderLinkageDescriptorGenericSeparable;
+	class RootSignatureDescriptorGeneric;
 
 	class DX11BlendStateDescriptor;
 	class DX11DepthStencilStateDescriptor;
 	class DX11RasterizerStateDescriptor;
 	class DX11VertexAttributeLayoutDescriptor;
 	class DX11VertexSourceBindingDescriptor;
-	class DX11RenderTargetBindingCompiledState;
+	class DX11RenderTargetDescriptor;
 
 	Ic3GCIDeclareClassHandle( DX11CommandList );
 	Ic3GCIDeclareClassHandle( DX11CommandSystem );
@@ -48,14 +48,16 @@ namespace Ic3::Graphics::GCI
 	Ic3GCIDeclareClassHandle( DX11GPUDriver );
 	Ic3GCIDeclareClassHandle( DX11PresentationLayer );
 
-	Ic3GCIDeclareTypedefHandle( DX11GraphicsShaderLinkageCompiledState, GraphicsShaderLinkageCompiledStateSeparable );
-	Ic3GCIDeclareTypedefHandle( DX11RenderPassConfigurationCompiledState, RenderPassConfigurationCompiledStateDefault );
+	Ic3GCIDeclareClassHandle( DX11RenderTargetDescriptor );
+
+	Ic3GCIDeclareTypedefHandle( DX11GraphicsShaderLinkageDescriptor, GraphicsShaderLinkageDescriptorGenericSeparable );
+	Ic3GCIDeclareTypedefHandle( DX11RootSignatureDescriptor, RootSignatureDescriptorGeneric );
 
 
 	namespace GCU
 	{
 
-		CPPX_ATTR_NO_DISCARD ID3D11DeviceContext1 * GetD3D11DeviceContextFromCommandList( void * pDX11CommandList );
+		CPPX_ATTR_NO_DISCARD ID3D11DeviceContext1 * DX11GetD3D11DeviceContextFromCommandList( void * pDX11CommandList );
 
 	}
 

@@ -105,7 +105,6 @@ namespace Ic3::Graphics::GCI
 			if( bindingValid )
 			{
 				renderTargetLayout.activeAttachmentsMask = pRenderTargetBinding.activeAttachmentsMask;
-				renderTargetLayout.activeAttachmentsNum = pRenderTargetBinding.activeAttachmentsNum;
 			}
 
 			return renderTargetLayout;
@@ -143,7 +142,6 @@ namespace Ic3::Graphics::GCI
 
 			RenderTargetLayout renderTargetLayout;
 			renderTargetLayout.activeAttachmentsMask = eRTAttachmentMaskDefaultC0DS;
-			renderTargetLayout.activeAttachmentsNum = 2;
 			renderTargetLayout.colorAttachments[0].format = colorAttachmentFormat;
 			renderTargetLayout.depthStencilAttachment.format = depthStencilAttachmentFormat;
 

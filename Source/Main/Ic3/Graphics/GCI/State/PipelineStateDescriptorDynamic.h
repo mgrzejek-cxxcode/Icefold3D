@@ -55,7 +55,7 @@ namespace Ic3::Graphics::GCI
 	 * @tparam TPBaseDescriptor
 	 */
 	template <typename TPBaseDescriptor>
-	class PipelineStateDescriptorDynamic : public TPBaseDescriptor
+	class PipelineStateDescriptorDynamic : public GCIPipelineStateDescriptor<TPBaseDescriptor>
 	{
 		friend class PipelineStateController;
 
@@ -64,7 +64,7 @@ namespace Ic3::Graphics::GCI
 
 		template <typename... TPArgs>
 		PipelineStateDescriptorDynamic( TPArgs && ...pArgs )
-		: TPBaseDescriptor( std::forward<TPArgs>( pArgs )... )
+		: GCIPipelineStateDescriptor( std::forward<TPArgs>( pArgs )... )
 		{
 			SetConfigChangedFlag();
 		}
@@ -79,14 +79,40 @@ namespace Ic3::Graphics::GCI
 			return true;
 		}
 
-		CPPX_ATTR_NO_DISCARD virtual bool IsDynamicDriverStateInitialized() const noexcept override final
+		/**
+		 * Returns true if the dynamic driver data has been initialized or false otherwise.
+		 * For non-dynamic, static descriptors (IsDynamicDescriptor() == false), this always returns false.
+		 * @return True if the dynamic driver data has been initialized or false otherwise.
+		 */
+		CPPX_ATTR_NO_DISCARD bool IsDynamicDriverStateInitialized() const noexcept
 		{
 			return static_cast<bool>( _dynamicDriverState );
 		}
+		/**
+		 * Returns the pointer to the descriptor's dynamic driver data or null if it has not been initialized.
+		 * @return The pointer to the descriptor's dynamic driver data or null if it has not been initialized.
+		 */
 
-		CPPX_ATTR_NO_DISCARD virtual DynamicDescriptorDriverState * GetDynamicDriverState() const noexcept override final
+		CPPX_ATTR_NO_DISCARD DynamicDescriptorDriverState * GetDynamicDriverState() const noexcept
 		{
 			return _dynamicDriverState.get();
+		}
+
+		/**
+		 * Returns the pointer to the descriptor's dynamic driver data or null if it has not been initialized.
+		 * The return type is TDynamicDescriptorDriverState<TPDriverDataType> (a base pointer returned by the
+		 * subclass is cast) and should match the actual data type used by the calling driver.
+		 * @return The pointer to the descriptor's dynamic driver data or null if it has not been initialized.
+		 *
+		 * @note
+		 * This function can be only called on dynamic descriptors (IsDynamicDescriptor() == true). In case of
+		 * 'this' is an ordinary, static descriptor, an exception is thrown.
+		 */
+		template <typename TPDriverDataType>
+		CPPX_ATTR_NO_DISCARD TDynamicDescriptorDriverState<TPDriverDataType> * GetDynamicDriverStateAs() const
+		{
+			auto * dynamicStatePtr = GetDynamicDriverState();
+			return dynamic_cast_dbg<TDynamicDescriptorDriverState<TPDriverDataType> *>( dynamicStatePtr );
 		}
 
 	protected:
@@ -101,12 +127,21 @@ namespace Ic3::Graphics::GCI
 
 	private:
 		/**
-		 * Implementation of #PipelineStateDescriptorDynamic::SetDynamicDriverState.
-		 * @see PipelineStateDescriptorDynamic::SetDynamicDriverState
+		 *
+		 * @return
+		 *
+		 * @note
+		 * Similar to SetDynamicDriverState(), this function is const and requires the member that stores
+		 * the driver data to be mutable - this is because driver data is totally independent of the rest of
+		 * the descriptor's state and created also for const-qualified objects.
 		 */
-		virtual void SetDynamicDriverState( DynamicDescriptorDriverState * pDynamicDriverState ) noexcept override final
+		template <typename TPDriverDataType, typename... TPArgs>
+		CPPX_ATTR_NO_DISCARD TDynamicDescriptorDriverState<TPDriverDataType> * InitializeDynamicDriverState( TPArgs && ...pArgs )
 		{
-			_dynamicDriverState.reset( pDynamicDriverState );
+			auto dynamicDriverState = std::make_unique<TDynamicDescriptorDriverState<TPDriverDataType>>( std::forward<TPArgs>( pArgs )... );
+			auto * dynamicDriverStatePtr = dynamicDriverState.get();
+			_dynamicDriverState = std::move( dynamicDriverState );
+			return dynamicDriverStatePtr;
 		}
 
 		/**

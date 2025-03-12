@@ -46,7 +46,7 @@ namespace Ic3::Graphics::GCI
 		cppx::bitmask<resource_flags_value_t> resourceFlags;
 	};
 
-	class DX11Texture : public Texture
+	class IC3_GX_DX11_CLASS DX11Texture : public Texture
 	{
 		friend class DX11RenderBuffer;
 
@@ -121,23 +121,23 @@ namespace Ic3::Graphics::GCI
 				DX11GPUDevice & pDX11GPUDevice,
 				const DX11TextureCreateInfo & pCreateInfo );
 
-		CPPX_ATTR_NO_DISCARD DX11TextureData create2DTextureResourceDX11(
+		CPPX_ATTR_NO_DISCARD DX11TextureData DX11Create2DTextureResource(
 				DX11GPUDevice & pDX11GPUDevice,
 				const DX11TextureCreateInfo & pCreateInfo );
 
-		CPPX_ATTR_NO_DISCARD DX11TextureData create2DMSTextureResourceDX11(
+		CPPX_ATTR_NO_DISCARD DX11TextureData DX11Create2DMSTextureResource(
 				DX11GPUDevice & pDX11GPUDevice,
 				const DX11TextureCreateInfo & pCreateInfo );
 
-		CPPX_ATTR_NO_DISCARD DX11TextureData create3DTextureResourceDX11(
+		CPPX_ATTR_NO_DISCARD DX11TextureData DX11Create3DTextureResource(
 				DX11GPUDevice & pDX11GPUDevice,
 				const DX11TextureCreateInfo & pCreateInfo );
 
-		CPPX_ATTR_NO_DISCARD ComPtr<ID3D11ShaderResourceView> create2DTextureDefaultShaderResourceViewDX11(
+		CPPX_ATTR_NO_DISCARD ComPtr<ID3D11ShaderResourceView> DX11Create2DTextureDefaultShaderResourceView(
 				ETextureClass pTexClass,
 				const ComPtr<ID3D11Texture2D> & pD3D11Texture2D );
 
-		CPPX_ATTR_NO_DISCARD ComPtr<ID3D11ShaderResourceView> create3DTextureDefaultShaderResourceViewDX11(
+		CPPX_ATTR_NO_DISCARD ComPtr<ID3D11ShaderResourceView> DX11Create3DTextureDefaultShaderResourceView(
 				const ComPtr<ID3D11Texture3D> & pD3D11Texture3D );
 
 		CPPX_ATTR_NO_DISCARD bool checkIsDXGIFormatDepthStencilDX11( DXGI_FORMAT pDXGIFormat );
@@ -150,9 +150,9 @@ namespace Ic3::Graphics::GCI
 
 		DXGI_FORMAT GetSRVFormatForTypelessFormatDX11( DXGI_FORMAT pDXGIFormat, cppx::bitmask<ERenderTargetBufferFlags> pRTBufferMask );
 
-		CPPX_ATTR_NO_DISCARD DX11TextureInitDataDesc translateTextureInitDataDescDX11( const TextureCreateInfo & pCreateInfo );
+		CPPX_ATTR_NO_DISCARD DX11TextureInitDataDesc DX11TranslateTextureInitDataDesc( const TextureCreateInfo & pCreateInfo );
 
-		CPPX_ATTR_NO_DISCARD DX11TextureUsageDesc translateTextureUsageDescDX11( const TextureCreateInfo & pCreateInfo );
+		CPPX_ATTR_NO_DISCARD DX11TextureUsageDesc DX11TranslateTextureUsageDesc( const TextureCreateInfo & pCreateInfo );
 
 	}
 

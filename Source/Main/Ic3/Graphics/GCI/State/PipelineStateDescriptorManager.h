@@ -69,7 +69,7 @@ namespace Ic3::Graphics::GCI
 				pipeline_state_descriptor_id_t pDescriptorID = kPipelineStateDescriptorIDInvalid );
 
 		template <typename TPDescriptorType, typename TPCreateInfo>
-		TPipelineStateDescriptoCreateResult<TPDescriptorType> CreateCachedDescriptor( const TPCreateInfo & pCreateInfo );
+		TGfxHandle<TPDescriptorType> CreateCachedDescriptor( const TPCreateInfo & pCreateInfo );
 
 		void ResetCache();
 
@@ -85,9 +85,14 @@ namespace Ic3::Graphics::GCI
 	};
 
 	template <typename TPDescriptorType, typename TPCreateInfo>
-	inline TPipelineStateDescriptoCreateResult<TPDescriptorType> PipelineStateDescriptorManager::CreateCachedDescriptor( const TPCreateInfo & pCreateInfo )
+	inline TGfxHandle<TPDescriptorType> PipelineStateDescriptorManager::CreateCachedDescriptor( const TPCreateInfo & pCreateInfo )
 	{
-		return _graphicsPipelineStateDescriptorCache.CreateDescriptor<TPDescriptorType>( pCreateInfo );
+		auto createResult = _graphicsPipelineStateDescriptorCache.CreateDescriptor<TPDescriptorType>( pCreateInfo );
+		if( createResult )
+		{
+			UpdateDescriptorCoreInfo( *createResult.descriptor, createResult.descriptorID, pCreateInfo.gfxObjectUID );
+		}
+		return createResult.descriptor;
 	}
 
 	inline PipelineStateDescriptorHandle PipelineStateDescriptorManager::GetCachedDescriptorByID(

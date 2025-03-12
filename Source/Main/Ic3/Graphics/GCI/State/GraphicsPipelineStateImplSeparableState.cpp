@@ -34,13 +34,13 @@ namespace Ic3::Graphics::GCI
 			pipeline_state_object_id_t pStateObjectID,
 			const RenderTargetLayout & pRenderTargetLayout,
 			const SeparableGraphicsPSDSet & pSeparableDescriptors,
-			const GraphicsShaderBinding & pBindingConfiguration )
+			const GraphicsShaderBinding & pGraphicsShaderBinding )
 	: GraphicsPipelineStateObjectSeparable(
 		pGPUDevice,
 		pStateObjectID,
 		pRenderTargetLayout,
 		pSeparableDescriptors )
-	, mBindingConfiguration( pBindingConfiguration )
+	, mShaderBinding( pGraphicsShaderBinding )
 	{}
 
 	GraphicsPipelineStateObjectSeparableShader::~GraphicsPipelineStateObjectSeparableShader() = default;
@@ -190,35 +190,35 @@ namespace Ic3::Graphics::GCI
 	{
 		auto stateUpdateMask = cppx::make_bitmask<uint64>( 0 );
 
-		auto * vertexShader = pSeparableShaderGraphicsPSO.mBindingConfiguration[EShaderType::GSVertex];
+		auto * vertexShader = pSeparableShaderGraphicsPSO.mShaderBinding[EShaderType::GSVertex];
 		if( vertexShader != _separableShadersCache.vertexShader )
 		{
 			_separableShadersCache.vertexShader = vertexShader;
 			stateUpdateMask.set( eGraphicsStateUpdateFlagSeparableShaderVertexBit );
 		}
 
-		auto * tessHullShader = pSeparableShaderGraphicsPSO.mBindingConfiguration[EShaderType::GSTessHull];
+		auto * tessHullShader = pSeparableShaderGraphicsPSO.mShaderBinding[EShaderType::GSTessHull];
 		if( tessHullShader != _separableShadersCache.tessHullShader )
 		{
 			_separableShadersCache.tessHullShader = tessHullShader;
 			stateUpdateMask.set( eGraphicsStateUpdateFlagSeparableShaderHullBit );
 		}
 
-		auto * tessDomainShader = pSeparableShaderGraphicsPSO.mBindingConfiguration[EShaderType::GSTessDomain];
+		auto * tessDomainShader = pSeparableShaderGraphicsPSO.mShaderBinding[EShaderType::GSTessDomain];
 		if( tessDomainShader != _separableShadersCache.tessDomainShader )
 		{
 			_separableShadersCache.tessDomainShader = tessDomainShader;
 			stateUpdateMask.set( eGraphicsStateUpdateFlagSeparableShaderDomainBit );
 		}
 
-		auto * geometryShader = pSeparableShaderGraphicsPSO.mBindingConfiguration[EShaderType::GSGeometry];
+		auto * geometryShader = pSeparableShaderGraphicsPSO.mShaderBinding[EShaderType::GSGeometry];
 		if( geometryShader != _separableShadersCache.geometryShader )
 		{
 			_separableShadersCache.geometryShader = geometryShader;
 			stateUpdateMask.set( eGraphicsStateUpdateFlagSeparableShaderGeometryBit );
 		}
 
-		auto * pixelShader = pSeparableShaderGraphicsPSO.mBindingConfiguration[EShaderType::GSPixel];
+		auto * pixelShader = pSeparableShaderGraphicsPSO.mShaderBinding[EShaderType::GSPixel];
 		if( pixelShader != _separableShadersCache.pixelShader )
 		{
 			_separableShadersCache.pixelShader = pixelShader;

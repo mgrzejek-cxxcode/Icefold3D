@@ -18,6 +18,7 @@ struct VSOutputData
 {
 	float4 psPosition : SV_POSITION;
 	float2 psTexCoord0 : TEXCOORD0;
+	float4 psColor : COLOR;
 };
 
 VSOutputData main( VSInputData pVSInput )
@@ -29,6 +30,7 @@ VSOutputData main( VSInputData pVSInput )
 	
 	VSOutputData vsOutput;
 	vsOutput.psPosition = vertexPos;
+	vsOutput.psColor = pVSInput.vColor;
 	vsOutput.psTexCoord0 = pVSInput.vTexCoord0;
 	
 	return vsOutput;

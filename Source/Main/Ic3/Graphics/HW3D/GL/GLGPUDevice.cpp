@@ -123,7 +123,7 @@ namespace Ic3::Graphics::GCI
 	GraphicsPipelineStateObjectHandle GLGPUDevice::_DrvCreateGraphicsPipelineStateObject(
 			const GraphicsPipelineStateObjectCreateInfo & pCreateInfo )
 	{
-		auto glcGraphicsPSO = GLGraphicsPipelineStateObject::Create( *this, pCreateInfo );
+		auto glcGraphicsPSO = GLGraphicsPipelineStateObject::CreateInstance( *this, pCreateInfo );
 		Ic3DebugAssert( glcGraphicsPSO );
 
 		return glcGraphicsPSO;

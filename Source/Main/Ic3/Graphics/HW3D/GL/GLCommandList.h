@@ -6,7 +6,7 @@
 
 #include "GLPrerequisites.h"
 #include "State/GLGraphicsPipelineStateController.h"
-#include <Ic3/Graphics/GCI/CommandListImplGenericRenderPass.h>
+#include <Ic3/Graphics/GCI/CommandListImplRenderPassGeneric.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -14,7 +14,7 @@ namespace Ic3::Graphics::GCI
 	class GLShaderProgramObject;
 
 	/// @brief
-	class GLCommandList : public PIM::CommandListGenericRenderPass
+	class GLCommandList : public CommandListRenderPassGeneric
 	{
 	public:
 		System::OpenGLRenderContextHandle const mSysGLRenderContext;

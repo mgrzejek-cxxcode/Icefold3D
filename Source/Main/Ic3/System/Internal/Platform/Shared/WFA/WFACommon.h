@@ -16,13 +16,13 @@ namespace Ic3::System
 	namespace Platform
 	{
 
-		CPPX_ATTR_NO_DISCARD std::string WFAQueryComErrorMessage( HRESULT pHResult );
+		IC3_SYSTEM_API_NODISCARD std::string WFAQueryComErrorMessage( HRESULT pHResult );
 
-		CPPX_ATTR_NO_DISCARD std::string WFAQuerySystemErrorMessage( DWORD pErrorCode );
+		IC3_SYSTEM_API_NODISCARD std::string WFAQuerySystemErrorMessage( DWORD pErrorCode );
 
-		void WFAGetLastSystemErrorAndPrintToDebugOutput( const char * pPrefix = nullptr );
+		IC3_SYSTEM_API void WFAGetLastSystemErrorAndPrintToDebugOutput( const char * pPrefix = nullptr );
 
-		void WFAPrintSystemErrorToDebugOutput( DWORD pErrorCode, const char * pPrefix = nullptr );
+		IC3_SYSTEM_API void WFAPrintSystemErrorToDebugOutput( DWORD pErrorCode, const char * pPrefix = nullptr );
 
 	}
 

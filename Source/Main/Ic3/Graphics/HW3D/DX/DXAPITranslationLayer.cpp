@@ -8,7 +8,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	DXGIGetDebugInterfaceType ATL::LoadDXGIDebugLegacyLoader()
+	DXGIGetDebugInterfaceType ATL::DXGILoadDebugLegacyLoader()
 	{
 		HMODULE dxgiDebugLib = ::LoadLibraryExA( "dxgidebug.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32 );
 		if( !dxgiDebugLib )
@@ -25,9 +25,9 @@ namespace Ic3::Graphics::GCI
 		return reinterpret_cast<DXGIGetDebugInterfaceType>( dxgiProcAddress );
 	}
 
-	ComPtr<IDXGIDebug> ATL::QueryDXGIDebugInterface( cppx::bitmask<EGPUDriverConfigFlags> pDriverConfigFlags )
+	ComPtr<IDXGIDebug> ATL::DXGIQueryDebugInterface( cppx::bitmask<EGPUDriverConfigFlags> pDriverConfigFlags )
 	{
-		if( !pDriverConfigFlags.is_set( E_GPU_DRIVER_CONFIG_FLAG_ENABLE_DEBUG_LAYER_BIT ) )
+		if( !pDriverConfigFlags.is_set( eGPUDriverConfigFlagEnableDebugLayerBit ) )
 		{
 			return nullptr;
 		}
@@ -42,8 +42,8 @@ namespace Ic3::Graphics::GCI
 			// TODO: warning
 		}
 		dxgiDebugInterface = std::move( dxgiDebugInterface1 );
-	#elif( IC3_DRIVER_GRAPHICS_HW3D_DX11_BUILD )
-		auto DXGIGetDebugInterface = LoadDXGIDebugLegacyLoader();
+	#elif( IC3_GRAPHICS_HW3D_DX_BUILD )
+		auto DXGIGetDebugInterface = DXGILoadDebugLegacyLoader();
 		auto hResult = DXGIGetDebugInterface( IID_PPV_ARGS( &dxgiDebugInterface ) );
 		if( FAILED( hResult ) )
 		{
@@ -54,9 +54,9 @@ namespace Ic3::Graphics::GCI
 		return dxgiDebugInterface;
 	}
 
-	ComPtr<IDXGIInfoQueue> ATL::QueryDXGIDebugInfoQueue( cppx::bitmask<EGPUDriverConfigFlags> pDriverConfigFlags )
+	ComPtr<IDXGIInfoQueue> ATL::DXGIQueryDebugInfoQueue( cppx::bitmask<EGPUDriverConfigFlags> pDriverConfigFlags )
 	{
-		if( !pDriverConfigFlags.is_set( E_GPU_DRIVER_CONFIG_FLAG_ENABLE_DEBUG_LAYER_BIT ) )
+		if( !pDriverConfigFlags.is_set( eGPUDriverConfigFlagEnableDebugLayerBit ) )
 		{
 			return nullptr;
 		}
@@ -69,8 +69,8 @@ namespace Ic3::Graphics::GCI
 		{
 			// TODO: warning
 		}
-	#elif( IC3_DRIVER_GRAPHICS_HW3D_DX11_BUILD )
-		auto DXGIGetDebugInterface = LoadDXGIDebugLegacyLoader();
+	#elif( IC3_GRAPHICS_HW3D_DX_BUILD )
+		auto DXGIGetDebugInterface = DXGILoadDebugLegacyLoader();
 		auto hResult = DXGIGetDebugInterface( IID_PPV_ARGS( &dxgiInfoQueue ) );
 		if( FAILED( hResult ) )
 		{
@@ -81,9 +81,9 @@ namespace Ic3::Graphics::GCI
 		return dxgiInfoQueue;
 	}
 
-	uint32 ATL::GetDXGITextureFormatBPP( DXGI_FORMAT pDXGIFormat )
+	uint32 ATL::DXGIGetTextureFormatBPP( DXGI_FORMAT pDXGIFormat )
 	{
-	    switch( pDXGIFormat )
+		switch( pDXGIFormat )
 		{
 			Ic3CaseReturn( DXGI_FORMAT_UNKNOWN                    , 0   );
 			Ic3CaseReturn( DXGI_FORMAT_R32G32B32A32_TYPELESS      , 128 );
@@ -189,7 +189,7 @@ namespace Ic3::Graphics::GCI
 		return DXGI_FORMAT_UNKNOWN;
 	}
 
-	const char * ATL::GetDXShaderTargetStr( DXShaderTarget pShaderTarget )
+	const char * ATL::DXGetShaderTargetStr( DXShaderTarget pShaderTarget )
 	{
 		static const char * const shaderTargetStrArray[] =
 		{
@@ -204,12 +204,12 @@ namespace Ic3::Graphics::GCI
 			"ps_5_0",
 			"cs_5_0",
 		};
-		return static_array_element( shaderTargetStrArray, pShaderTarget );
+		return cppx::static_array_element( shaderTargetStrArray, pShaderTarget );
 	}
 
-	uint32 ATL::ComputeDXTextureMemoryByteSize( const TextureDimensions & pTextDimensions, DXGI_FORMAT pFormat )
+	uint32 ATL::DXComputeTextureMemoryByteSize( const TextureDimensions & pTextDimensions, DXGI_FORMAT pFormat )
 	{
-		const uint64 formatBitSize = GetDXGITextureFormatBPP( pFormat );
+		const uint64 formatBitSize = DXGIGetTextureFormatBPP( pFormat );
 		const uint64 totalPixelCount = pTextDimensions.width * pTextDimensions.height * pTextDimensions.depth * pTextDimensions.arraySize;
 
 		uint64 totalBaseBitSize = totalPixelCount * formatBitSize;
@@ -224,29 +224,29 @@ namespace Ic3::Graphics::GCI
 		return static_cast<uint32>( ( double )totalBaseBitSize / ( double )byteSizeDivisor );
 	}
 
-	cppx::bitmask<UINT> ATL::TranslateDXShaderCompileFlags( cppx::bitmask<uint32> pShaderCreateFlags, bool pDebugDevice )
+	cppx::bitmask<UINT> ATL::DXTranslateShaderCompileFlags( cppx::bitmask<uint32> pShaderCreateFlags, bool pDebugDevice )
 	{
 		cppx::bitmask<UINT> compileFlags = 0;
-		if( pDebugDevice || pShaderCreateFlags.is_set( E_SHADER_CREATE_FLAG_DEBUG_BIT ) )
+		if( pDebugDevice || pShaderCreateFlags.is_set( eShaderCreateFlagDebugBit ) )
 		{
 			compileFlags.set( D3DCOMPILE_DEBUG );
 		}
-		if( pDebugDevice || pShaderCreateFlags.is_set( E_SHADER_CREATE_FLAG_OPTIMIZATION_DISABLE_BIT ) )
+		if( pDebugDevice || pShaderCreateFlags.is_set( eShaderCreateFlagOptimizationDisableBit ) )
 		{
 			compileFlags.set( D3DCOMPILE_SKIP_OPTIMIZATION );
 		}
-		if( pShaderCreateFlags.is_set( E_SHADER_CREATE_FLAG_OPTIMIZATION_L0_BIT ) )
+		if( pShaderCreateFlags.is_set( eShaderCreateFlagOptimizationL0Bit ) )
 		{
 			compileFlags.set( D3DCOMPILE_OPTIMIZATION_LEVEL0 );
 		}
-		if( !pDebugDevice || pShaderCreateFlags.is_set( E_SHADER_CREATE_FLAG_OPTIMIZATION_L1_BIT ) )
+		if( !pDebugDevice || pShaderCreateFlags.is_set( eShaderCreateFlagOptimizationL1Bit ) )
 		{
 			compileFlags.set( D3DCOMPILE_OPTIMIZATION_LEVEL3 );
 		}
 		return compileFlags;
 	}
 
-	DXGI_FORMAT ATL::TranslateDXShaderCompileFlags( EBaseDataType pBaseDataType )
+	DXGI_FORMAT ATL::DXTranslateBaseDataType( EBaseDataType pBaseDataType )
 	{
 		switch( pBaseDataType )
 		{
@@ -264,11 +264,11 @@ namespace Ic3::Graphics::GCI
 		return DXGI_FORMAT_UNKNOWN;
 	}
 
-	DXGI_FORMAT ATL::TranslateDXTextureFormat( ETextureFormat pTextureFormat )
+	DXGI_FORMAT ATL::DXTranslateTextureFormat( ETextureFormat pTextureFormat )
 	{
-	    switch( pTextureFormat )
+		switch( pTextureFormat )
 		{
-            Ic3CaseReturn( ETextureFormat::UNKNOWN    , DXGI_FORMAT_UNKNOWN              );
+			Ic3CaseReturn( ETextureFormat::Undefined  , DXGI_FORMAT_UNKNOWN              );
 			Ic3CaseReturn( ETextureFormat::R32F       , DXGI_FORMAT_R32_FLOAT            );
 			Ic3CaseReturn( ETextureFormat::R32I       , DXGI_FORMAT_R32_SINT             );
 			Ic3CaseReturn( ETextureFormat::R32U       , DXGI_FORMAT_R32_UINT             );
@@ -298,15 +298,15 @@ namespace Ic3::Graphics::GCI
 			Ic3CaseReturn( ETextureFormat::RG8U       , DXGI_FORMAT_R8G8_UINT            );
 			Ic3CaseReturn( ETextureFormat::RG8IN      , DXGI_FORMAT_R8G8_SNORM           );
 			Ic3CaseReturn( ETextureFormat::RG8UN      , DXGI_FORMAT_R8G8_UNORM           );
-            Ic3CaseReturn( ETextureFormat::BGRX8UN    , DXGI_FORMAT_B8G8R8X8_UNORM       );
-            Ic3CaseReturn( ETextureFormat::BGRX8SRGB  , DXGI_FORMAT_B8G8R8X8_UNORM_SRGB  );
-            Ic3CaseReturn( ETextureFormat::BGRA8UN    , DXGI_FORMAT_B8G8R8A8_UNORM       );
-            Ic3CaseReturn( ETextureFormat::BGRA8SRGB  , DXGI_FORMAT_B8G8R8A8_UNORM_SRGB  );
-            Ic3CaseReturn( ETextureFormat::RGBA8I     , DXGI_FORMAT_R8G8B8A8_SINT        );
-            Ic3CaseReturn( ETextureFormat::RGBA8U     , DXGI_FORMAT_R8G8B8A8_UINT        );
-            Ic3CaseReturn( ETextureFormat::RGBA8IN    , DXGI_FORMAT_R8G8B8A8_SNORM       );
-            Ic3CaseReturn( ETextureFormat::RGBA8UN    , DXGI_FORMAT_R8G8B8A8_UNORM       );
-            Ic3CaseReturn( ETextureFormat::RGBA8SRGB  , DXGI_FORMAT_R8G8B8A8_UNORM_SRGB  );
+			Ic3CaseReturn( ETextureFormat::BGRX8UN    , DXGI_FORMAT_B8G8R8X8_UNORM       );
+			Ic3CaseReturn( ETextureFormat::BGRX8SRGB  , DXGI_FORMAT_B8G8R8X8_UNORM_SRGB  );
+			Ic3CaseReturn( ETextureFormat::BGRA8UN    , DXGI_FORMAT_B8G8R8A8_UNORM       );
+			Ic3CaseReturn( ETextureFormat::BGRA8SRGB  , DXGI_FORMAT_B8G8R8A8_UNORM_SRGB  );
+			Ic3CaseReturn( ETextureFormat::RGBA8I     , DXGI_FORMAT_R8G8B8A8_SINT        );
+			Ic3CaseReturn( ETextureFormat::RGBA8U     , DXGI_FORMAT_R8G8B8A8_UINT        );
+			Ic3CaseReturn( ETextureFormat::RGBA8IN    , DXGI_FORMAT_R8G8B8A8_SNORM       );
+			Ic3CaseReturn( ETextureFormat::RGBA8UN    , DXGI_FORMAT_R8G8B8A8_UNORM       );
+			Ic3CaseReturn( ETextureFormat::RGBA8SRGB  , DXGI_FORMAT_R8G8B8A8_UNORM_SRGB  );
 
 			Ic3CaseReturn( ETextureFormat::R5G5B5A1   , DXGI_FORMAT_B5G5R5A1_UNORM     );
 			Ic3CaseReturn( ETextureFormat::R5G6B5     , DXGI_FORMAT_B5G6R5_UNORM       );
@@ -337,11 +337,11 @@ namespace Ic3::Graphics::GCI
 		return DXGI_FORMAT_UNKNOWN;
 	}
 
-	ETextureFormat ATL::TranslateDXTextureFormatInv( DXGI_FORMAT pDXGIFormat )
+	ETextureFormat ATL::DXTranslateTextureFormatInv( DXGI_FORMAT pDXGIFormat )
 	{
 		switch( pDXGIFormat )
 		{
-			Ic3CaseReturn( DXGI_FORMAT_UNKNOWN             , ETextureFormat::UNKNOWN    );
+			Ic3CaseReturn( DXGI_FORMAT_UNKNOWN             , ETextureFormat::Undefined  );
 			Ic3CaseReturn( DXGI_FORMAT_R32_FLOAT           , ETextureFormat::R32F       );
 			Ic3CaseReturn( DXGI_FORMAT_R32_SINT            , ETextureFormat::R32I       );
 			Ic3CaseReturn( DXGI_FORMAT_R32_UINT            , ETextureFormat::R32U       );
@@ -404,12 +404,12 @@ namespace Ic3::Graphics::GCI
 			Ic3CaseReturn( DXGI_FORMAT_BC7_UNORM           , ETextureFormat::BC7        );
 			Ic3CaseReturn( DXGI_FORMAT_BC7_UNORM_SRGB      , ETextureFormat::BC7SRGB    );
 		};
-		return ETextureFormat::UNKNOWN;
+		return ETextureFormat::Undefined;
 	}
 
-	DXGI_FORMAT ATL::TranslateDXVertexAttribFormat( EVertexAttribFormat pVertexAttribFormat )
+	DXGI_FORMAT ATL::DXTranslateVertexAttribFormat( EVertexAttribFormat pVertexAttribFormat )
 	{
-	    switch( pVertexAttribFormat )
+		switch( pVertexAttribFormat )
 		{
 			Ic3CaseReturn( EVertexAttribFormat::F16      , DXGI_FORMAT_R16_FLOAT          );
 			Ic3CaseReturn( EVertexAttribFormat::F32      , DXGI_FORMAT_R32_FLOAT          );
@@ -451,7 +451,20 @@ namespace Ic3::Graphics::GCI
 			Ic3CaseReturn( EVertexAttribFormat::Vec4U8N  , DXGI_FORMAT_R8G8B8A8_UNORM     );
 			Ic3CaseReturn( EVertexAttribFormat::Vec4U16N , DXGI_FORMAT_R16G16B16A16_UNORM );
 		};
-	    return DXGI_FORMAT_UNKNOWN;
+		return DXGI_FORMAT_UNKNOWN;
+	}
+	
+	DXGI_FORMAT ATL::DXTranslateIndexDataFormat( EIndexDataFormat pIndexAttribFormat )
+	{
+		if( pIndexAttribFormat == EIndexDataFormat::Uint16 )
+		{
+			return DXGI_FORMAT_R16_UINT;
+		}
+		else if( pIndexAttribFormat == EIndexDataFormat::Uint32 )
+		{
+			return DXGI_FORMAT_R32_UINT;
+		}
+		return DXGI_FORMAT_UNKNOWN;
 	}
 
 } // namespace Ic3::Graphics::GCI

@@ -46,10 +46,10 @@ namespace Ic3::Graphics::GCI
 		pOutD3D11SamplerConfig.MaxLOD = pSamplerConfig.mipLODRange.end;
 		pOutD3D11SamplerConfig.MipLODBias = pSamplerConfig.mipLODBias;
 
-		pOutD3D11SamplerConfig.BorderColor[0] = pSamplerConfig.borderColor.mRGBA[0];
-		pOutD3D11SamplerConfig.BorderColor[1] = pSamplerConfig.borderColor.mRGBA[1];
-		pOutD3D11SamplerConfig.BorderColor[2] = pSamplerConfig.borderColor.mRGBA[2];
-		pOutD3D11SamplerConfig.BorderColor[3] = pSamplerConfig.borderColor.mRGBA[3];
+		pOutD3D11SamplerConfig.BorderColor[0] = pSamplerConfig.borderColor.uv_rgba[0];
+		pOutD3D11SamplerConfig.BorderColor[1] = pSamplerConfig.borderColor.uv_rgba[1];
+		pOutD3D11SamplerConfig.BorderColor[2] = pSamplerConfig.borderColor.uv_rgba[2];
+		pOutD3D11SamplerConfig.BorderColor[3] = pSamplerConfig.borderColor.uv_rgba[3];
 
 		pOutD3D11SamplerConfig.Filter = ATL::TranslateDX11ETextureFilter(
 				pSamplerConfig.filterConfig.magFilter,

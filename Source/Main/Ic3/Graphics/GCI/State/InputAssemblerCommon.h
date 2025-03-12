@@ -57,7 +57,7 @@ namespace Ic3::Graphics::GCI
 	/**
 	 *
 	 */
-	enum EIAVertexAttributeDataRate : uint8
+	enum class EIAVertexAttributeDataRate : uint8
 	{
 		PerVertex,
 		PerInstance,
@@ -84,6 +84,11 @@ namespace Ic3::Graphics::GCI
 		 *
 		 */
 		EIAVertexAttributeDataRate dataRate = EIAVertexAttributeDataRate::Undefined;
+
+		/**
+		 * @brief 
+		 */
+		uint16 instanceStepRate = 0;
 
 		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept
 		{
@@ -190,11 +195,6 @@ namespace Ic3::Graphics::GCI
 	struct IAVertexAttributeLayoutCommonConfig
 	{
 		/**
-		 * Number of active attributes enabled for the IA stage.
-		 */
-		native_uint activeAttributesNum = 0;
-
-		/**
 		 * Active attributes mask. It contains all bits corresponding to attributes active as part of this descriptor.
 		 * @see EIAVertexAttributeFlags
 		 */
@@ -213,13 +213,17 @@ namespace Ic3::Graphics::GCI
 
 		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept
 		{
-			return activeAttributesMask.empty() || ( activeAttributesNum == 0 );
+			return activeAttributesMask.empty();
 		}
 
-		void ResetActiveAttributesInfo() noexcept
+		CPPX_ATTR_NO_DISCARD uint32 GetActiveAttributesNum() const noexcept
+		{
+			return ( activeAttributesMask & eIAVertexAttributeMaskAll ).count_bits();
+		}
+
+		void ResetActiveAttributesMask() noexcept
 		{
 			activeAttributesMask.clear();
-			activeAttributesNum = 0;
 		}
 
 		CPPX_ATTR_NO_DISCARD bool IsAttributeActive( native_uint pAttributeIndex ) const noexcept
@@ -243,13 +247,14 @@ namespace Ic3::Graphics::GCI
 				attributeDesc.Reset();
 			}
 
-			ResetActiveAttributesInfo();
+			ResetActiveAttributesMask();
 		}
 	};
 
 	struct IAVertexStreamBufferReference
 	{
 		GPUBufferReference sourceBuffer;
+
 		gpu_memory_size_t relativeOffset = 0;
 
 		explicit operator bool() const noexcept
@@ -314,29 +319,41 @@ namespace Ic3::Graphics::GCI
 	 */
 	struct IAVertexSourceBindingCommonConfig
 	{
-		cppx::bitmask<EVertexSourceBindingFlags> activeStreamsMask;
-
-		uint32 activeStreamsNum = 0;
+		cppx::bitmask<EIAVertexSourceBindingFlags> activeStreamsMask;
 
 		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept
 		{
 			return !IsEmpty();
 		}
 
-		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept
+		CPPX_ATTR_NO_DISCARD uint32 GetActiveBuffersNum() const noexcept
 		{
-			return activeStreamsMask.empty() || ( activeStreamsNum == 0 );
+			return ( activeStreamsMask & eVertexSourceBindingMaskAll ).count_bits();
 		}
 
-		void ResetActiveStreamsInfo() noexcept
+		CPPX_ATTR_NO_DISCARD uint32 GetActiveVertexBuffersNum() const noexcept
+		{
+			return ( activeStreamsMask & eVertexSourceBindingMaskVertexBufferAllBits ).count_bits();
+		}
+
+		CPPX_ATTR_NO_DISCARD bool IsIndexBufferActive() const noexcept
+		{
+			return activeStreamsMask.is_set( eIAVertexSourceBindingFlagIndexBufferBit  );
+		}
+
+		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept
+		{
+			return activeStreamsMask.empty();
+		}
+
+		void ResetActiveStreamsMask() noexcept
 		{
 			activeStreamsMask.clear();
-			activeStreamsNum = 0;
 		}
 
 		CPPX_ATTR_NO_DISCARD bool IsVertexBufferActive( native_uint pVertexBufferIndex ) const noexcept
 		{
-			const auto vertexBufferBit = CXU::IAMakeVertexSourceVertexBufferBindingFlag( pVertexBufferIndex );
+			const auto vertexBufferBit = CXU::IAMakeVertexBufferBindingFlag( pVertexBufferIndex );
 			return activeStreamsMask.is_set( vertexBufferBit );
 		}
 	};
@@ -358,7 +375,7 @@ namespace Ic3::Graphics::GCI
 			}
 			indexBufferReference.Reset();
 
-			ResetActiveStreamsInfo();
+			ResetActiveStreamsMask();
 		}
 	};
 
@@ -435,7 +452,7 @@ namespace Ic3::Graphics::GCI
 				const IAVertexBufferReferenceArray & pVertexBufferReferences ) noexcept;
 
 		template <typename TPFunction>
-		inline bool ForEachVertexBufferIndex( cppx::bitmask<EVertexSourceBindingFlags> pActiveVertexBuffersMask, TPFunction pFunction )
+		inline bool ForEachVertexBufferIndex( cppx::bitmask<EIAVertexSourceBindingFlags> pActiveVertexBuffersMask, TPFunction pFunction )
 		{
 			// A local copy of the active attachments mask. Bits of already processed attachments
 			// are removed, so when the value reaches 0, we can immediately stop further processing.
@@ -446,13 +463,13 @@ namespace Ic3::Graphics::GCI
 			     CXU::IAIsDataStreamVertexBufferSlotValid( vertexBufferIndex ) && !activeVertexBuffersMask.empty();
 			     ++vertexBufferIndex )
 			{
-				const auto vertexBufferBit = CXU::IAMakeVertexSourceVertexBufferBindingFlag( vertexBufferIndex );
+				const auto vertexBufferBit = CXU::IAMakeVertexBufferBindingFlag( vertexBufferIndex );
 				// Check if the attachments mask has this bit set.
 				if( activeVertexBuffersMask.is_set( vertexBufferBit ) )
 				{
 					// The function returns false if there was some internal error condition
 					// and the processing should be aborted.
-					if( !pFunction( vertexBufferIndex, static_cast<EVertexSourceBindingFlags>( vertexBufferBit ) ) )
+					if( !pFunction( vertexBufferIndex, static_cast<EIAVertexSourceBindingFlags>( vertexBufferBit ) ) )
 					{
 						return false;
 					}
@@ -469,7 +486,7 @@ namespace Ic3::Graphics::GCI
 		inline bool ForEachVertexBufferIndexInRange(
 				native_uint pFirstVertexBufferIndex,
 				native_uint pVertexBufferCount,
-				cppx::bitmask<EVertexSourceBindingFlags> pActiveVertexBuffersMask,
+				cppx::bitmask<EIAVertexSourceBindingFlags> pActiveVertexBuffersMask,
 				TPFunction pFunction )
 		{
 			// A local copy of the active attachments mask. Bits of already processed attachments
@@ -483,7 +500,7 @@ namespace Ic3::Graphics::GCI
 			     CXU::IAIsDataStreamVertexBufferSlotValid( vertexBufferIndex ) && ( vertexBufferIndex < lastVertexBufferIndex ) && !activeVertexBuffersMask.empty();
 			     ++vertexBufferIndex )
 			{
-				const auto vertexBufferBit = CXU::IAMakeVertexSourceVertexBufferBindingFlag( vertexBufferIndex );
+				const auto vertexBufferBit = CXU::IAMakeVertexBufferBindingFlag( vertexBufferIndex );
 				// Check if the attachments mask has this bit set.
 				if( activeVertexBuffersMask.is_set( vertexBufferBit ) )
 				{

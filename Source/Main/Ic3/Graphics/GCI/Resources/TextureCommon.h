@@ -229,7 +229,7 @@ namespace Ic3::Graphics::GCI
 		uint32 msaaLevel = 0;
 		TextureDimensions dimensions{0, 0, 1, 1, 1 };
 		ETextureFormat internalFormat;
-		TextureInitDataDesc mInitDataDesc;
+		TextureInitDataDesc initDataDesc;
 
 		explicit operator bool() const
 		{

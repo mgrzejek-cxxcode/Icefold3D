@@ -7,13 +7,13 @@
 namespace Ic3::Graphics::GCI
 {
 
-	static System::OpenGLDisplaySurfaceHandle createSysGLSurface(
+	static System::OpenGLDisplaySurfaceHandle CreateSysGLSurface(
 			System::OpenGLSystemDriverHandle pSysGLDriver,
 			const GLPresentationLayerCreateInfo & pPLCreateInfo )
 	{
 		try
 		{
-		    System::OpenGLDisplaySurfaceCreateInfo surfaceCreateInfo;
+			System::OpenGLDisplaySurfaceCreateInfo surfaceCreateInfo;
 			surfaceCreateInfo.frameGeometry.position = System::cxFramePosAuto;
 			surfaceCreateInfo.frameGeometry.size = pPLCreateInfo.screenRect.size;
 			surfaceCreateInfo.frameGeometry.style = System::EFrameStyle::Default;
@@ -29,7 +29,7 @@ namespace Ic3::Graphics::GCI
 		#elif( IC3_GX_GL_TARGET == IC3_GX_GL_TARGET_ES31 )
 			surfaceCreateInfo.runtimeVersionDesc.apiVersion.num_major = 3;
 			surfaceCreateInfo.runtimeVersionDesc.apiVersion.mNumMinor = 1;
-        #endif
+		#endif
 
 			if( pPLCreateInfo.displayConfigFlags.is_set( eDisplayConfigurationFlagFullscreenBit ) )
 			{
@@ -82,7 +82,7 @@ namespace Ic3::Graphics::GCI
 
 	GLScreenPresentationLayerHandle GLScreenPresentationLayer::Create( GLGPUDevice & pGPUDevice, const GLPresentationLayerCreateInfo & pCreateInfo )
 	{
-		auto sysGLSurface = createSysGLSurface( pGPUDevice.mSysGLDriver, pCreateInfo );
+		auto sysGLSurface = CreateSysGLSurface( pGPUDevice.mSysGLDriver, pCreateInfo );
 		Ic3DebugAssert( sysGLSurface );
 
 		const auto surfaceVisualConfig = sysGLSurface->QueryVisualConfig();

@@ -8,7 +8,7 @@ namespace Ic3::Graphics::GCI
 	VertexAttributeLayoutDescriptor::VertexAttributeLayoutDescriptor(
 			GPUDevice & pGPUDevice,
 			const IAVertexAttributeLayoutCommonConfig & pCommonAttributeLayoutConfig )
-	: PipelineStateDescriptor( pGPUDevice )
+	: CachedPipelineStateDescriptor( pGPUDevice )
 	, mCommonAttributeLayoutConfig( pCommonAttributeLayoutConfig )
 	{}
 
@@ -23,7 +23,7 @@ namespace Ic3::Graphics::GCI
 	VertexSourceBindingDescriptor::VertexSourceBindingDescriptor(
 			GPUDevice & pGPUDevice,
 			const IAVertexSourceBindingCommonConfig & pCommonSourceBindingConfig )
-	: PipelineStateDescriptor( pGPUDevice )
+	: NonCachedPipelineStateDescriptor( pGPUDevice )
 	, mCommonSourceBindingConfig( pCommonSourceBindingConfig )
 	{}
 
@@ -33,32 +33,5 @@ namespace Ic3::Graphics::GCI
 	{
 		return EPipelineStateDescriptorType::DTVertexSourceBinding;
 	}
-
-
-	namespace PIM
-	{
-
-		//!! VertexAttributeLayoutDescriptorNative
-
-		VertexAttributeLayoutDescriptorNative::VertexAttributeLayoutDescriptorNative(
-				GPUDevice & pGPUDevice,
-				const IAVertexAttributeLayoutCommonConfig & pCommonAttributeLayoutConfig )
-		: VertexAttributeLayoutDescriptor( pGPUDevice, pCommonAttributeLayoutConfig )
-		{}
-
-		VertexAttributeLayoutDescriptorNative::~VertexAttributeLayoutDescriptorNative() = default;
-
-
-		//!! VertexSourceBindingDescriptorNative
-
-		VertexSourceBindingDescriptorNative::VertexSourceBindingDescriptorNative(
-				GPUDevice & pGPUDevice,
-				const IAVertexSourceBindingCommonConfig & pCommonSourceBindingConfig )
-		: VertexSourceBindingDescriptor( pGPUDevice, pCommonSourceBindingConfig )
-		{}
-
-		VertexSourceBindingDescriptorNative::~VertexSourceBindingDescriptorNative() = default;
-
-	} // namespace PIM
 
 }

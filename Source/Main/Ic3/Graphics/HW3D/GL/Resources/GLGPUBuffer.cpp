@@ -47,7 +47,7 @@ namespace Ic3::Graphics::GCI
 		}
 
 		GLBufferCreateInfo openglCreateInfo;
-		openglCreateInfo.bindTarget = ATL::TranslateGLBufferBindTarget( initialBufferTarget );
+		openglCreateInfo.bindTarget = ATL::GLTranslateBufferBindTarget( initialBufferTarget );
 		openglCreateInfo.size = static_cast<GLuint>( createInfo.bufferSize );
 		openglCreateInfo.resourceFlags = createInfo.resourceFlags;
 		openglCreateInfo.memoryFlags = createInfo.memoryFlags;
@@ -112,7 +112,7 @@ namespace Ic3::Graphics::GCI
 		}
 		else
 		{
-			const auto openglMapFlags = ATL::TranslateGLBufferMapFlags( pMapMode, mResourceMemory.memoryFlags );
+			const auto openglMapFlags = ATL::GLTranslateBufferMapFlags( pMapMode, mResourceMemory.memoryFlags );
 			if( mGLBufferObject->Map( pRegion.offset, pRegion.size, openglMapFlags ) )
 			{
 				mappedMemoryPtr = mGLBufferObject->QueryMappedPtr();

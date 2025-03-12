@@ -8,7 +8,7 @@
 #include "Resources/DX11Sampler.h"
 #include "Resources/DX11Shader.h"
 #include "Resources/DX11Texture.h"
-#include "State/DX11pipelineStateObject.h"
+#include "State/DX11GraphicsPipelineStateObject.h"
 
 namespace Ic3::Graphics::GCI
 {
@@ -17,14 +17,16 @@ namespace Ic3::Graphics::GCI
 			DX11GPUDriver & pDriver,
 			ComPtr<ID3D11Device1> pD3D11Device1,
 			ComPtr<ID3D11Debug> pD3D11Debug )
-	: DXGPUDevice( pDriver, ATL::QueryDXGIFactoryForD3D11Device( pD3D11Device1 ) )
+	: DXGPUDevice(
+		pDriver,
+		&_dx11DeviceFeatureQueryInterface,
+		&_pipelineStateDescriptorManager,
+		ATL::QueryDXGIFactoryForD3D11Device( pD3D11Device1 ) )
 	, mD3D11Device1( std::move( pD3D11Device1 ) )
 	, mD3D11DebugInterface( std::move( pD3D11Debug ) )
-	, _immutableDescriptorFactoryDX11( *this )
-	, _stateDescriptorCache( _immutableDescriptorFactoryDX11 )
-	{
-		SetCompiledStateCache( _stateDescriptorCache );
-	}
+	, _dx11PipelineStateDescriptorFactory( *this )
+	, _pipelineStateDescriptorManager( *this, _dx11PipelineStateDescriptorFactory )
+	{}
 
 	DX11GPUDevice::~DX11GPUDevice() = default;
 
@@ -34,7 +36,7 @@ namespace Ic3::Graphics::GCI
 		auto deviceCreateFlags = ATL::TranslateDX11GPUDeviceCreateFlags( driverConfigFlags );
 
 		D3D_DRIVER_TYPE deviceDriverType = D3D_DRIVER_TYPE_HARDWARE;
-		if( driverConfigFlags.is_set( E_GPU_DRIVER_CONFIG_FLAG_USE_REFERENCE_DRIVER_BIT ) )
+		if( driverConfigFlags.is_set( eGPUDriverConfigFlagUseReferenceDriverBit ) )
 		{
 			deviceDriverType = D3D_DRIVER_TYPE_REFERENCE;
 		}
@@ -115,7 +117,7 @@ namespace Ic3::Graphics::GCI
 	GraphicsPipelineStateObjectHandle DX11GPUDevice::_DrvCreateGraphicsPipelineStateObject(
 			const GraphicsPipelineStateObjectCreateInfo & pCreateInfo )
 	{
-		auto dx11GraphicsPSO = DX11GraphicsPipelineStateObject::Create( *this, pCreateInfo );
+		auto dx11GraphicsPSO = DX11GraphicsPipelineStateObject::CreateInstance( *this, pCreateInfo );
 		Ic3DebugAssert( dx11GraphicsPSO );
 		return dx11GraphicsPSO;
 	}

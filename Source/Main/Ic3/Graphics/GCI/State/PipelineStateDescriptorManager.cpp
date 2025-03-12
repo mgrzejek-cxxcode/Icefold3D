@@ -85,67 +85,37 @@ namespace Ic3::Graphics::GCI
 	BlendStateDescriptorHandle PipelineStateDescriptorManager::CreateBlendStateDescriptor(
 			const BlendStateDescriptorCreateInfo & pCreateInfo )
 	{
-		const auto createResult = CreateCachedDescriptor<BlendStateDescriptor>( pCreateInfo );
-		if( createResult )
-		{
-			UpdateDescriptorCoreInfo( *createResult.descriptor, createResult.descriptorID, pCreateInfo.gfxObjectUID );
-		}
-		return createResult.descriptor;
+		return CreateCachedDescriptor<BlendStateDescriptor>( pCreateInfo );
 	}
 
 	DepthStencilStateDescriptorHandle PipelineStateDescriptorManager::CreateDepthStencilStateDescriptor(
 			const DepthStencilStateDescriptorCreateInfo & pCreateInfo )
 	{
-		const auto createResult = CreateCachedDescriptor<DepthStencilStateDescriptor>( pCreateInfo );
-		if( createResult )
-		{
-			UpdateDescriptorCoreInfo( *createResult.descriptor, createResult.descriptorID, pCreateInfo.gfxObjectUID );
-		}
-		return createResult.descriptor;
+		return CreateCachedDescriptor<DepthStencilStateDescriptor>( pCreateInfo );
 	}
 
 	RasterizerStateDescriptorHandle PipelineStateDescriptorManager::CreateRasterizerStateDescriptor(
 			const RasterizerStateDescriptorCreateInfo & pCreateInfo )
 	{
-		const auto createResult = CreateCachedDescriptor<RasterizerStateDescriptor>( pCreateInfo );
-		if( createResult )
-		{
-			UpdateDescriptorCoreInfo( *createResult.descriptor, createResult.descriptorID, pCreateInfo.gfxObjectUID );
-		}
-		return createResult.descriptor;
+		return CreateCachedDescriptor<RasterizerStateDescriptor>( pCreateInfo );
 	}
 
 	GraphicsShaderLinkageDescriptorHandle PipelineStateDescriptorManager::CreateGraphicsShaderLinkageDescriptor(
 			const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo )
 	{
-		const auto createResult = CreateCachedDescriptor<GraphicsShaderLinkageDescriptor>( pCreateInfo );
-		if( createResult )
-		{
-			UpdateDescriptorCoreInfo( *createResult.descriptor, createResult.descriptorID, pCreateInfo.gfxObjectUID );
-		}
-		return createResult.descriptor;
+		return CreateCachedDescriptor<GraphicsShaderLinkageDescriptor>( pCreateInfo );
 	}
 
 	VertexAttributeLayoutDescriptorHandle PipelineStateDescriptorManager::CreateVertexAttributeLayoutDescriptor(
 			const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo )
 	{
-		const auto createResult = CreateCachedDescriptor<VertexAttributeLayoutDescriptor>( pCreateInfo );
-		if( createResult )
-		{
-			UpdateDescriptorCoreInfo( *createResult.descriptor, createResult.descriptorID, pCreateInfo.gfxObjectUID );
-		}
-		return createResult.descriptor;
+		return CreateCachedDescriptor<VertexAttributeLayoutDescriptor>( pCreateInfo );
 	}
 
 	RootSignatureDescriptorHandle PipelineStateDescriptorManager::CreateRootSignatureDescriptor(
 			const RootSignatureDescriptorCreateInfo & pCreateInfo )
 	{
-		const auto createResult = CreateCachedDescriptor<RootSignatureDescriptor>( pCreateInfo );
-		if( createResult )
-		{
-			UpdateDescriptorCoreInfo( *createResult.descriptor, createResult.descriptorID, pCreateInfo.gfxObjectUID );
-		}
-		return createResult.descriptor;
+		return CreateCachedDescriptor<RootSignatureDescriptor>( pCreateInfo );
 	}
 
 	RenderPassDescriptorHandle PipelineStateDescriptorManager::CreateRenderPassDescriptor(

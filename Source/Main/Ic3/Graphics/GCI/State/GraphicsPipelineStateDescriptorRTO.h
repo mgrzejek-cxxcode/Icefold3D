@@ -10,106 +10,132 @@
 namespace Ic3::Graphics::GCI
 {
 
+	/**
+	 * @brief Common base class for descriptors that represent configuration related to RTA (Render Target Array).
+	 * 
+	 * This class serves as a base type for descriptors that configure different aspects of the pipeline related
+	 * to RT attachments. Its current implementations are:
+	 * - RenderPassDescriptor: configures attachments actions during a single render pass
+	 * - RenderTargetDescriptor: defines resources bound to the RTA binding points
+	 */
 	class IC3_GRAPHICS_GCI_CLASS RenderTargetArrayConfigStateDescriptor : public PipelineStateDescriptor
 	{
 	public:
 		RenderTargetArrayConfigStateDescriptor( GPUDevice & pGPUDevice );
 		virtual ~RenderTargetArrayConfigStateDescriptor();
 
-		CPPX_ATTR_NO_DISCARD virtual bool IsAttachmentActive( native_uint pAttachmentIndex ) const noexcept = 0;
+		/**
+		 * @brief Returns true if the resource at the specified index is configured, or false otherwise.
+		 * 
+		 * RenderTargetArrayConfigStateDescriptor-based implementations configure an array of RT attachments.
+		 * This functions returns true if the current descriptor has a valid configuration set for the specified
+		 * attachments. This can have different meanings for different descriptors, for example:
+		 * - RenderPassDescriptor: an attachment is configured if either load or store action (or both) are set
+		 *   (and enabled) for the given attachment.
+		 * - RenderTargetDescriptor: an attachment is configured if an RT texture is bound to the RT array for
+		 *   the specified attachment.
+		 * 
+		 * @param pAttachmentIndex 
+		 * @return True if the resource at the specified index is configured, or false otherwise.
+		 */
+		CPPX_ATTR_NO_DISCARD virtual bool IsAttachmentConfigured( native_uint pAttachmentIndex ) const noexcept = 0;
 	};
 
 	/**
-	 * Represents render pass configuration state that controls operations executed on RT attachments when an RP begins/ends.
-	 * @see RenderPassDescriptorNative
+	 * @brief Represents render pass configuration state that controls operations executed on RT attachments when an RP begins/ends.
+	 * 
+	 * RenderPassDescriptor is a non-cached descriptor which means they are created directly by the descriptor factory and each
+	 * one is managed solely by the owner (no additional references are stored). RenderPassDescriptor is also available in a dynamic
+	 * form, as RenderPassDescriptorDynamic.
 	 * @see RenderPassDescriptorDynamic
 	 */
-	class IC3_GRAPHICS_GCI_CLASS RenderPassDescriptor : public RenderTargetArrayConfigStateDescriptor
+	class IC3_GRAPHICS_GCI_CLASS RenderPassDescriptor : public NonCachedPipelineStateDescriptor<RenderTargetArrayConfigStateDescriptor>
 	{
 	public:
 		RenderPassDescriptor( GPUDevice & pGPUDevice );
 		virtual ~RenderPassDescriptor();
 
+		/**
+		 * @brief Implements PipelineStateDescitpro::GetDescriptorType.
+		 */
 		CPPX_ATTR_NO_DISCARD virtual EPipelineStateDescriptorType GetDescriptorType() const noexcept override final;
 
-		CPPX_ATTR_NO_DISCARD virtual bool CheckAttachmentLoadActionFlags(
-				uint32 pAttachmentIndex,
-				cppx::bitmask<ERenderPassAttachmentActionFlags> pActionFlags ) const noexcept = 0;
+		/**
+		 * @brief 
+		 * @param pAttachmentIndex 
+		 * @return 
+		 */
+		CPPX_ATTR_NO_DISCARD virtual ERenderPassAttachmentLoadAction GetAttachmentLoadAction( native_uint pAttachmentIndex ) const noexcept = 0;
 
-		CPPX_ATTR_NO_DISCARD virtual bool CheckAttachmentStoreActionFlags(
-				uint32 pAttachmentIndex,
-				cppx::bitmask<ERenderPassAttachmentActionFlags> pActionFlags ) const noexcept = 0;
+		/**
+		 * @brief 
+		 * @param pAttachmentIndex 
+		 * @return 
+		 */
+		CPPX_ATTR_NO_DISCARD virtual ERenderPassAttachmentStoreAction GetAttachmentStoreAction( native_uint pAttachmentIndex ) const noexcept = 0;
 
+		/**
+		 * @brief 
+		 * 
+		 * @param pAttachmentIndex 
+		 * @param pActionFlags 
+		 * @return 
+		 */
+		CPPX_ATTR_NO_DISCARD bool CheckAttachmentLoadActionFlags(
+				native_uint pAttachmentIndex,
+				cppx::bitmask<ERenderPassAttachmentActionFlags> pActionFlags ) const noexcept;
+
+		/**
+		 * @brief 
+		 * @param pAttachmentIndex 
+		 * @param pActionFlags 
+		 * @return 
+		 */
+		CPPX_ATTR_NO_DISCARD bool CheckAttachmentStoreActionFlags(
+				native_uint pAttachmentIndex,
+				cppx::bitmask<ERenderPassAttachmentActionFlags> pActionFlags ) const noexcept;
+
+		/**
+		 * @brief 
+		 * 
+		 * @param pAttachmentIndex 
+		 * @param pLoadAction 
+		 * @return 
+		 */
 		CPPX_ATTR_NO_DISCARD bool CheckAttachmentLoadAction(
-				uint32 pAttachmentIndex,
-				ERenderPassAttachmentLoadAction pAction ) const noexcept;
+				native_uint pAttachmentIndex,
+				ERenderPassAttachmentLoadAction pLoadAction ) const noexcept;
 
+		/**
+		 * @brief 
+		 * @param pAttachmentIndex 
+		 * @param pStoreAction 
+		 * @return 
+		 */
 		CPPX_ATTR_NO_DISCARD bool CheckAttachmentStoreAction(
-				uint32 pAttachmentIndex,
-				ERenderPassAttachmentLoadAction pAction ) const noexcept;
+				native_uint pAttachmentIndex,
+				ERenderPassAttachmentStoreAction pStoreAction ) const noexcept;
 	};
 
 	/**
+	 * @brief Represents render target array binding, i.e. set of RT-enabled textures/buffers used outputs for rendering.
+	 * 
+	 * RenderTargetDescriptor is a non-cached descriptor which means they are created directly by the descriptor factory and each
+	 * one is managed solely by the owner (no additional references are stored). RenderTargetDescriptor is also available in a dynamic
+	 * form, as RenderTargetDescriptorDynamic.
+	 * @see RenderTargetDescriptorDynamic
 	 */
-	class IC3_GRAPHICS_GCI_CLASS RenderTargetDescriptor : public RenderTargetArrayConfigStateDescriptor
+	class IC3_GRAPHICS_GCI_CLASS RenderTargetDescriptor : public NonCachedPipelineStateDescriptor<RenderTargetArrayConfigStateDescriptor>
 	{
 	public:
 		RenderTargetDescriptor( GPUDevice & pGPUDevice );
 		virtual ~RenderTargetDescriptor();
 
+		/**
+		 * @brief Implements PipelineStateDescitpro::GetDescriptorType.
+		 */
 		CPPX_ATTR_NO_DISCARD virtual EPipelineStateDescriptorType GetDescriptorType() const noexcept override final;
 	};
-
-	/// namespace PIM: Private Implementation
-	namespace PIM
-	{
-
-
-		/**
-		 * Represents a static render pass configuration state translated into the API-specific format.
-		 * @note This descriptor type is created automatically by compatible APIs when an RP descriptor is requested.
-		 * @see RenderPassDescriptor
-		 */
-		class IC3_GRAPHICS_GCI_CLASS RenderPassDescriptorNative : public RenderPassDescriptor
-		{
-			Ic3DeclareNonCopyable( RenderPassDescriptorNative );
-
-		public:
-			RenderPassDescriptorNative( GPUDevice & pGPUDevice );
-			virtual ~RenderPassDescriptorNative();
-		};
-
-		/**
-		 */
-		class IC3_GRAPHICS_GCI_CLASS RenderTargetDescriptorGeneric : public RenderTargetDescriptor
-		{
-		public:
-			RenderTargetBinding const mRenderTargetBinding;
-
-		public:
-			RenderTargetDescriptorGeneric( GPUDevice & pGPUDevice, const RenderTargetBinding & pTargetBinding );
-			virtual ~RenderTargetDescriptorGeneric();
-
-			CPPX_ATTR_NO_DISCARD virtual bool IsAttachmentActive( native_uint pAttachmentIndex ) const noexcept override final;
-
-			static TGfxHandle<RenderTargetDescriptorGeneric> CreateFromRenderTargetBinding(
-					GPUDevice & pGPUDevice,
-					const RenderTargetBinding & pRenderTargetBinding,
-					pipeline_state_descriptor_id_t pDescriptorID = kPipelineStateDescriptorIDAuto );
-		};
-
-		/**
-		 */
-		class IC3_GRAPHICS_GCI_CLASS RenderTargetDescriptorNative : public RenderTargetDescriptor
-		{
-			Ic3DeclareNonCopyable( RenderTargetDescriptorNative );
-
-		public:
-			RenderTargetDescriptorNative( GPUDevice & pGPUDevice );
-			virtual ~RenderTargetDescriptorNative();
-		};
-
-	} // namespace PIM
 
 } // namespace Ic3::Graphics::GCI
 

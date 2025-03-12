@@ -337,6 +337,11 @@ namespace Ic3::Graphics::GCI
 		return _graphicsPipelineStateController->SetShaderTextureSampler( pParamRefID, pSampler );
 	}
 
+	GraphicsPipelineStateController * CommandList::GetStateController() const noexcept
+	{
+		return _graphicsPipelineStateController;
+	}
+
 	void CommandList::ValidateActiveRenderPassOrThrow() const
 	{
 		if( !ValidateActiveRenderPass() )

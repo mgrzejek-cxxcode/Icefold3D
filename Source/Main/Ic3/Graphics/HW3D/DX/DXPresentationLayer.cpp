@@ -30,10 +30,12 @@ namespace Ic3::Graphics::GCI
 
 	void DXScreenPresentationLayer::Resize( uint32 pWidth, uint32 pHeight )
 	{
+		mSysWindow->ResizeClientArea( { pWidth, pHeight } );
 	}
 
 	void DXScreenPresentationLayer::SetFullscreenMode( bool pEnable )
 	{
+		mSysWindow->SetFullscreenMode( true );
 	}
 
 	cxm::vec2u32 DXScreenPresentationLayer::QueryRenderTargetSize() const
@@ -41,48 +43,50 @@ namespace Ic3::Graphics::GCI
 		return mSysWindow->GetClientAreaSize();
 	}
 
-	System::WindowHandle DXScreenPresentationLayer::createSysWindow( DXGPUDevice & pGPUDevice, const PresentationLayerCreateInfo & pCreateInfo )
+	System::WindowHandle DXScreenPresentationLayer::CreateSysWindow(
+			DXGPUDevice & pGPUDevice,
+			const PresentationLayerCreateInfo & pCreateInfo )
 	{
 		try
 		{
 			auto sysWindowManager = pCreateInfo.sysWindowManager;
 			if( !sysWindowManager )
 			{
-			    auto sysDisplayManager = pCreateInfo.sysDisplayManager;
-			    if( !sysDisplayManager )
-			    {
-			        Ic3DebugAssert( pGPUDevice.mSysContext );
-			        sysDisplayManager = pGPUDevice.mSysContext->CreateDisplayManager();
-			    }
-			    Ic3DebugAssert( pGPUDevice.mSysContext );
-			    sysWindowManager = pGPUDevice.mSysContext->CreateWindowManager( sysDisplayManager );
+				auto sysDisplayManager = pCreateInfo.sysDisplayManager;
+				if( !sysDisplayManager )
+				{
+					Ic3DebugAssert( pGPUDevice.mSysContext );
+					sysDisplayManager = pGPUDevice.mSysContext->CreateDisplayManager();
+				}
+				Ic3DebugAssert( pGPUDevice.mSysContext );
+				sysWindowManager = pGPUDevice.mSysContext->CreateWindowManager( sysDisplayManager );
 			}
 
 			System::WindowCreateInfo windowCreateInfo;
-			windowCreateInfo.mTitle = "DXWindow";
+			windowCreateInfo.title = "DXWindow";
 
-			if( pCreateInfo.mDisplayConfigFlags.is_set( E_DISPLAY_CONFIGURATION_FLAG_FULLSCREEN_BIT ) )
+			if( pCreateInfo.displayConfigFlags.is_set( eDisplayConfigurationFlagFullscreenBit ) )
 			{
-				windowCreateInfo.mFrameGeometry.size = System::CX_FRAME_SIZE_MAX;
-				windowCreateInfo.mFrameGeometry.style = System::EFrameStyle::OVERLAY;
+				windowCreateInfo.frameGeometry.size = System::cxFrameSizeMax;
+				windowCreateInfo.frameGeometry.style = System::EFrameStyle::Overlay;
 			}
 			else
 			{
-				windowCreateInfo.mFrameGeometry.position = pCreateInfo.screenRect.offset;
-				windowCreateInfo.mFrameGeometry.size = pCreateInfo.screenRect.size;
-				windowCreateInfo.mFrameGeometry.style = System::EFrameStyle::Fixed;
+				windowCreateInfo.frameGeometry.position = pCreateInfo.screenRect.offset;
+				windowCreateInfo.frameGeometry.size = pCreateInfo.screenRect.size;
+				windowCreateInfo.frameGeometry.style = System::EFrameStyle::Fixed;
 			}
 
-			auto sysWindow = sysWindowManager->createWindow( windowCreateInfo );
+			auto sysWindow = sysWindowManager->CreateWindow( windowCreateInfo );
 
-        #if( PCL_TARGET_OS == PCL_TARGET_OS_WINDESKTOP )
-			if( pCreateInfo.mDisplayConfigFlags.is_set( E_DISPLAY_CONFIGURATION_FLAG_FULLSCREEN_BIT ) )
+		#if( PCL_TARGET_OS == PCL_TARGET_OS_WINDESKTOP )
+			if( pCreateInfo.displayConfigFlags.is_set( eDisplayConfigurationFlagFullscreenBit ) )
 			{
-			    auto * win32Window = sysWindow->QueryInterface<System::Win32Window>();
-			    ::SetCapture( win32Window->mNativeData.hwnd );
+				auto * win32Window = sysWindow->QueryInterface<System::Win32Window>();
+				::SetCapture( win32Window->mNativeData.hwnd );
 				::ShowCursor( FALSE );
 			}
-        #endif
+		#endif
 
 			return sysWindow;
 		}

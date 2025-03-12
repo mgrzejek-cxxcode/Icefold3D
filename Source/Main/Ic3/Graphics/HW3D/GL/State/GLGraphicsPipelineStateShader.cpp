@@ -10,7 +10,7 @@ namespace Ic3::Graphics::GCI
 	GLGraphicsShaderLinkageDescriptor::GLGraphicsShaderLinkageDescriptor(
 			GLGPUDevice & pGPUDevice,
 			const GraphicsShaderBindingCommonConfig & pCommonShaderBindingConfig )
-	: GraphicsShaderLinkageDescriptorNative( pGPUDevice, _commonShaderBindingConfig )
+	: HW3DPipelineStateDescriptor( pGPUDevice, _commonShaderBindingConfig )
 	, _commonShaderBindingConfig( pCommonShaderBindingConfig )
 	{}
 

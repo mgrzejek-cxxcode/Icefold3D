@@ -32,7 +32,7 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~RTArrayDescriptorDynamicProxy() = default;
 
-		CPPX_ATTR_NO_DISCARD virtual bool IsAttachmentActive( native_uint pAttachmentIndex ) const noexcept override final
+		CPPX_ATTR_NO_DISCARD virtual bool IsAttachmentConfigured( native_uint pAttachmentIndex ) const noexcept override final
 		{
 			return _renderTargetArrayConfiguration.activeAttachmentsMask.is_set( CXU::RTOMakeAttachmentFlag( pAttachmentIndex ) );
 		}
@@ -55,6 +55,11 @@ namespace Ic3::Graphics::GCI
 		CPPX_ATTR_NO_DISCARD native_uint CountActiveColorAttachments() const noexcept
 		{
 			return ( _renderTargetArrayConfiguration.activeAttachmentsMask & eRTAttachmentMaskColorAll ).count_bits();
+		}
+
+		CPPX_ATTR_NO_DISCARD const TPAttachmentConfig * GetAttachmentConfig( native_uint pAttachmentIndex ) const noexcept
+		{
+			return _renderTargetArrayConfiguration.GetAttachment( pAttachmentIndex  );
 		}
 
 		CPPX_ATTR_NO_DISCARD const TRenderTargetArrayConfiguration<TPAttachmentConfig> & GetRenderTargetArrayConfiguration() const noexcept
@@ -106,8 +111,7 @@ namespace Ic3::Graphics::GCI
 
 		void ResetAllFlags()
 		{
-			_renderTargetArrayConfiguration.activeAttachmentsMask.clear();
-			_renderTargetArrayConfiguration.activeAttachmentsNum = 0;
+			_renderTargetArrayConfiguration.ResetActiveAttachmentsMask();
 		}
 
 		void ResetColorAttachment( native_uint pColorAttachmentIndex )
@@ -139,7 +143,6 @@ namespace Ic3::Graphics::GCI
 				if( !_renderTargetArrayConfiguration.activeAttachmentsMask.is_set( colorAttachmentBit ) )
 				{
 					_renderTargetArrayConfiguration.activeAttachmentsMask.set( colorAttachmentBit );
-					_renderTargetArrayConfiguration.activeAttachmentsNum += 1;
 				}
 
 				this->SetConfigChangedFlag();
@@ -178,11 +181,9 @@ namespace Ic3::Graphics::GCI
 							if( !_renderTargetArrayConfiguration.activeAttachmentsMask.is_set( colorAttachmentBit ) )
 							{
 								_renderTargetArrayConfiguration.activeAttachmentsMask.set( colorAttachmentBit );
-								_renderTargetArrayConfiguration.activeAttachmentsNum += 1;
 							}
 
 							colorAttachmentConfig = inputColorAttachmentConfig;
-
 							configurationChanged = true;
 						}
 					}
@@ -191,10 +192,7 @@ namespace Ic3::Graphics::GCI
 						if( _renderTargetArrayConfiguration.activeAttachmentsMask.is_set( colorAttachmentBit ) )
 						{
 							_renderTargetArrayConfiguration.activeAttachmentsMask.unset( colorAttachmentBit );
-							_renderTargetArrayConfiguration.activeAttachmentsNum -= 1;
-
 							colorAttachmentConfig.Reset();
-
 							configurationChanged = true;
 						}
 					}
@@ -212,8 +210,6 @@ namespace Ic3::Graphics::GCI
 			if( !_renderTargetArrayConfiguration.activeAttachmentsMask.is_set( eRTAttachmentFlagDepthStencilBit ) )
 			{
 				_renderTargetArrayConfiguration.activeAttachmentsMask.set( eRTAttachmentFlagDepthStencilBit );
-				_renderTargetArrayConfiguration.activeAttachmentsNum += 1;
-
 				this->SetConfigChangedFlag();
 			}
 
@@ -231,11 +227,9 @@ namespace Ic3::Graphics::GCI
 					if( !_renderTargetArrayConfiguration.activeAttachmentsMask.is_set( eRTAttachmentFlagDepthStencilBit ) )
 					{
 						_renderTargetArrayConfiguration.activeAttachmentsMask.set( eRTAttachmentFlagDepthStencilBit );
-						_renderTargetArrayConfiguration.activeAttachmentsNum += 1;
 					}
 
 					_renderTargetArrayConfiguration.depthStencilAttachment = pAttachmentConfig;
-
 					configurationChanged = true;
 				}
 			}
@@ -244,10 +238,7 @@ namespace Ic3::Graphics::GCI
 				if( _renderTargetArrayConfiguration.activeAttachmentsMask.is_set( eRTAttachmentFlagDepthStencilBit ) )
 				{
 					_renderTargetArrayConfiguration.activeAttachmentsMask.unset( eRTAttachmentFlagDepthStencilBit );
-					_renderTargetArrayConfiguration.activeAttachmentsNum -= 1;
-
 					_renderTargetArrayConfiguration.depthStencilAttachment.Reset();
-
 					configurationChanged = true;
 				}
 			}
@@ -279,10 +270,7 @@ namespace Ic3::Graphics::GCI
 					if( _renderTargetArrayConfiguration.activeAttachmentsMask.is_set( colorAttachmentBit ) )
 					{
 						_renderTargetArrayConfiguration.activeAttachmentsMask.unset( colorAttachmentBit );
-						_renderTargetArrayConfiguration.activeAttachmentsNum -= 1;
-
 						colorAttachmentConfig.Reset();
-
 						configurationChanged = true;
 					}
 				}
@@ -299,8 +287,6 @@ namespace Ic3::Graphics::GCI
 			if( _renderTargetArrayConfiguration.activeAttachmentsMask.is_set( eRTAttachmentFlagDepthStencilBit ) )
 			{
 				_renderTargetArrayConfiguration.activeAttachmentsMask.unset( eRTAttachmentFlagDepthStencilBit );
-				_renderTargetArrayConfiguration.activeAttachmentsNum -= 1;
-
 				_renderTargetArrayConfiguration.depthStencilAttachment.Reset();
 
 				this->SetConfigChangedFlag();

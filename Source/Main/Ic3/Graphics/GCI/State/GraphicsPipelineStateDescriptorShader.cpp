@@ -9,7 +9,7 @@ namespace Ic3::Graphics::GCI
 	GraphicsShaderLinkageDescriptor::GraphicsShaderLinkageDescriptor(
 			GPUDevice & pGPUDevice,
 			const GraphicsShaderBindingCommonConfig & pCommonShaderBindingConfig )
-	: PipelineStateDescriptor( pGPUDevice )
+	: CachedPipelineStateDescriptor( pGPUDevice )
 	, mCommonShaderBindingConfig( pCommonShaderBindingConfig )
 	{}
 
@@ -35,8 +35,9 @@ namespace Ic3::Graphics::GCI
 
 	GraphicsShaderLinkageDescriptorGenericSeparable::GraphicsShaderLinkageDescriptorGenericSeparable(
 			GPUDevice & pGPUDevice,
-			const GraphicsShaderBinding & pBindingConfiguration )
-	: GraphicsShaderLinkageDescriptor( pGPUDevice, pBindingConfiguration )
+			const GraphicsShaderBinding & pShaderBinding )
+	: GCIPipelineStateDescriptor( pGPUDevice, pShaderBinding )
+	, mShaderBinding( pShaderBinding )
 	{}
 
 	GraphicsShaderLinkageDescriptorGenericSeparable::~GraphicsShaderLinkageDescriptorGenericSeparable() = default;

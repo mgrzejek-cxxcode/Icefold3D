@@ -13,20 +13,24 @@ namespace Ic3::Graphics::GCI
 
 	Ic3DeclareClassHandle( DXPresentationLayer );
 
-	class IC3_GX_DXCOMMON_CLASS DXPresentationLayer : public PresentationLayer
+	class IC3_GX_DX_CLASS DXPresentationLayer : public PresentationLayer
 	{
 	public:
 		DXPresentationLayer( GPUDevice & pDevice );
 		virtual ~DXPresentationLayer();
 	};
 
-	class IC3_GX_DXCOMMON_CLASS DXScreenPresentationLayer : public DXPresentationLayer
+	class IC3_GX_DX_CLASS DXScreenPresentationLayer : public DXPresentationLayer
 	{
 	public:
 		System::WindowHandle const mSysWindow;
 		ComPtr<IDXGISwapChain1> const mDXGISwapChain1;
 
-		DXScreenPresentationLayer( GPUDevice & pDevice, System::WindowHandle pSysWindow, ComPtr<IDXGISwapChain1> pDXGISwapChain1 ) noexcept;
+		DXScreenPresentationLayer(
+				GPUDevice & pDevice,
+				System::WindowHandle pSysWindow,
+				ComPtr<IDXGISwapChain1> pDXGISwapChain1 ) noexcept;
+
 		virtual ~DXScreenPresentationLayer() noexcept;
 
 		virtual System::EventSource * GetInternalSystemEventSource() const noexcept override;
@@ -38,7 +42,9 @@ namespace Ic3::Graphics::GCI
 		virtual cxm::vec2u32 QueryRenderTargetSize() const override;
 
 	protected:
-	    static System::WindowHandle createSysWindow( DXGPUDevice & pGPUDevice, const PresentationLayerCreateInfo & pCreateInfo );
+	    static System::WindowHandle CreateSysWindow(
+				DXGPUDevice & pGPUDevice,
+				const PresentationLayerCreateInfo & pCreateInfo );
 	};
 
 } // namespace Ic3::Graphics::GCI

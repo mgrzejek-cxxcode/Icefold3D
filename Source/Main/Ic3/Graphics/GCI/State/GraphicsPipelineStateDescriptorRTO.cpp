@@ -16,7 +16,7 @@ namespace Ic3::Graphics::GCI
 	//!! RenderPassDescriptor
 
 	RenderPassDescriptor::RenderPassDescriptor( GPUDevice & pGPUDevice )
-	: RenderTargetArrayConfigStateDescriptor( pGPUDevice )
+	: NonCachedPipelineStateDescriptor( pGPUDevice )
 	{}
 
 	RenderPassDescriptor::~RenderPassDescriptor() = default;
@@ -26,25 +26,43 @@ namespace Ic3::Graphics::GCI
 		return EPipelineStateDescriptorType::DTRenderPass;
 	}
 
-	bool RenderPassDescriptor::CheckAttachmentLoadAction(
-				uint32 pAttachmentIndex,
-				ERenderPassAttachmentLoadAction pAction ) const noexcept
+	bool RenderPassDescriptor::CheckAttachmentLoadActionFlags(
+			native_uint pAttachmentIndex,
+			cppx::bitmask<ERenderPassAttachmentActionFlags> pActionFlags ) const noexcept
 	{
-		return CheckAttachmentLoadActionFlags( pAttachmentIndex, pAction );
+		const auto attachmentLoadAction = GetAttachmentLoadAction( pAttachmentIndex );
+		return cppx::make_bitmask( attachmentLoadAction ).is_set( pActionFlags );
+	}
+
+	bool RenderPassDescriptor::CheckAttachmentStoreActionFlags(
+			native_uint pAttachmentIndex,
+			cppx::bitmask<ERenderPassAttachmentActionFlags> pActionFlags ) const noexcept
+	{
+		const auto attachmentStoreAction = GetAttachmentStoreAction( pAttachmentIndex );
+		return cppx::make_bitmask( attachmentStoreAction ).is_set( pActionFlags );
+	}
+
+	bool RenderPassDescriptor::CheckAttachmentLoadAction(
+			native_uint pAttachmentIndex,
+			ERenderPassAttachmentLoadAction pLoadAction ) const noexcept
+	{
+		const auto attachmentLoadAction = GetAttachmentLoadAction( pAttachmentIndex );
+		return attachmentLoadAction == pLoadAction;
 	}
 
 	bool RenderPassDescriptor::CheckAttachmentStoreAction(
-			uint32 pAttachmentIndex,
-			ERenderPassAttachmentLoadAction pAction ) const noexcept
+			native_uint pAttachmentIndex,
+			ERenderPassAttachmentStoreAction pStoreAction ) const noexcept
 	{
-		return CheckAttachmentStoreActionFlags( pAttachmentIndex, pAction );
+		const auto attachmentStoreAction = GetAttachmentStoreAction( pAttachmentIndex );
+		return attachmentStoreAction == pStoreAction;
 	}
 
 
 	//!! RenderTargetDescriptor
 
 	RenderTargetDescriptor::RenderTargetDescriptor( GPUDevice & pGPUDevice )
-	: RenderTargetArrayConfigStateDescriptor( pGPUDevice )
+	: NonCachedPipelineStateDescriptor( pGPUDevice )
 	{}
 
 	RenderTargetDescriptor::~RenderTargetDescriptor() = default;
@@ -52,52 +70,6 @@ namespace Ic3::Graphics::GCI
 	EPipelineStateDescriptorType RenderTargetDescriptor::GetDescriptorType() const noexcept
 	{
 		return EPipelineStateDescriptorType::DTRenderTarget;
-	}
-
-
-	namespace PIM
-	{
-
-		//!! RenderPassDescriptorNative
-
-		RenderPassDescriptorNative::RenderPassDescriptorNative( GPUDevice & pGPUDevice )
-		: RenderPassDescriptor( pGPUDevice )
-		{}
-
-		RenderPassDescriptorNative::~RenderPassDescriptorNative() = default;
-
-
-		//!! RenderTargetDescriptorGeneric
-
-		RenderTargetDescriptorGeneric::RenderTargetDescriptorGeneric( GPUDevice & pGPUDevice, const RenderTargetBinding & pTargetBinding )
-		: RenderTargetDescriptor( pGPUDevice )
-		{}
-
-		RenderTargetDescriptorGeneric::~RenderTargetDescriptorGeneric() = default;
-
-		bool RenderTargetDescriptorGeneric::IsAttachmentActive( native_uint pAttachmentIndex ) const noexcept
-		{
-			const auto * attachmentBinding = mRenderTargetBinding.GetAttachment( pAttachmentIndex );
-			return attachmentBinding->IsActive();
-		}
-
-		TGfxHandle<RenderTargetDescriptorGeneric> RenderTargetDescriptorGeneric::CreateFromRenderTargetBinding(
-				GPUDevice & pGPUDevice,
-				const RenderTargetBinding & pRenderTargetBinding,
-				pipeline_state_descriptor_id_t pDescriptorID )
-		{
-			return nullptr;
-		}
-
-
-		//!! RenderPassDescriptorNative
-
-		RenderTargetDescriptorNative::RenderTargetDescriptorNative( GPUDevice & pGPUDevice )
-		: RenderTargetDescriptor( pGPUDevice )
-		{}
-
-		RenderTargetDescriptorNative::~RenderTargetDescriptorNative() = default;
-
 	}
 
 }

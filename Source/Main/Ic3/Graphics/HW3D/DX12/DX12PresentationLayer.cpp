@@ -34,7 +34,7 @@ namespace Ic3::Graphics::GCI
 		auto * d3d12PresentQueue = pDX12Device.GetD3D12DeviceQueue( E_DEVICE_COMMAND_QUEUE_ID_PRESENT );
 		Ic3DebugAssert( d3d12PresentQueue );
 
-		auto * exfWindow = createSysWindow( pDX12Device, pCreateInfo );
+		auto * exfWindow = CreateSysWindow( pDX12Device, pCreateInfo );
 		Ic3DebugAssert( exfWindow );
 
 		auto dxgiSwapChain3 = DX12CoreAPIProxy::CreateD3D12SwapChainForExfWindow( d3d12PresentQueue, exfWindow, pCreateInfo.dxgiFlags );

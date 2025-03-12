@@ -54,7 +54,7 @@ namespace Ic3::Graphics::GCI
 	};
 
 
-	class GLRenderTargetDescriptor : public PIM::RenderTargetDescriptorNative
+	class GLRenderTargetDescriptor : public HW3DPipelineStateDescriptor<RenderTargetDescriptor>
 	{
 	public:
 		GLRenderTargetBindingStatic const mGLRenderTargetBinding;
@@ -66,7 +66,7 @@ namespace Ic3::Graphics::GCI
 
 		virtual ~GLRenderTargetDescriptor();
 
-		CPPX_ATTR_NO_DISCARD virtual bool IsAttachmentActive( native_uint pAttachmentIndex ) const noexcept override final;
+		CPPX_ATTR_NO_DISCARD virtual bool IsAttachmentConfigured( native_uint pAttachmentIndex ) const noexcept override final;
 
 		static TGfxHandle<GLRenderTargetDescriptor> CreateInstance(
 				GLGPUDevice & pGPUDevice,

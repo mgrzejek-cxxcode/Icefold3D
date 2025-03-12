@@ -1,46 +1,43 @@
 
-#include "DX11RenderTarget.h"
-#include "../DX11APITranslationLayer.h"
-#include "../DX11gpuDevice.h"
-#include "../Resources/DX11Texture.h"
+#include "DX11GraphicsPipelineStateRTO.h"
 #include <Ic3/Graphics/GCI/Resources/RenderTargetTexture.h>
+#include <Ic3/Graphics/HW3D/DX11/DX11APITranslationLayer.h>
+#include <Ic3/Graphics/HW3D/DX11/DX11gpuDevice.h>
+#include <Ic3/Graphics/HW3D/DX11/Resources/DX11Texture.h>
 
 namespace Ic3::Graphics::GCI
 {
 
-	DX11RenderTargetBindingCompiledState::DX11RenderTargetBindingCompiledState(
+	DX11RenderTargetDescriptor::DX11RenderTargetDescriptor(
 			DX11GPUDevice & pGPUDevice,
-			const RenderTargetLayout & pRenderTargetLayout,
-			DX11RenderTargetBinding pDX11RTBindingData )
-	: RenderTargetBindingCompiledState( pGPUDevice, pRenderTargetLayout )
-	, mDX11RTBindingData( std::move( pDX11RTBindingData ) )
+			DX11RenderTargetBinding pDX11RenderTargetBinding )
+	: HW3DPipelineStateDescriptor( pGPUDevice )
+	, mDX11RenderTargetBinding( std::move( pDX11RenderTargetBinding ) )
 	{}
 
-	DX11RenderTargetBindingCompiledState::~DX11RenderTargetBindingCompiledState() = default;
+	DX11RenderTargetDescriptor::~DX11RenderTargetDescriptor() = default;
 
-	GpaHandle<DX11RenderTargetBindingCompiledState> DX11RenderTargetBindingCompiledState::CreateInstance(
-			DX11GPUDevice & pGPUDevice,
-			const RenderTargetBindingDefinition & pBindingDefinition )
+	bool DX11RenderTargetDescriptor::IsAttachmentConfigured( native_uint pAttachmentIndex ) const noexcept
 	{
-		const auto renderTargetLayout = GCU::GetRenderTargetLayoutForBindingDefinition( pBindingDefinition );
-
-		auto dx11RTBindingData = GCU::CreateRenderTargetBindingDX11( pGPUDevice, pBindingDefinition );
-
-		auto stateDescriptor = CreateGfxObject<DX11RenderTargetBindingCompiledState>(
-				pGPUDevice,
-				renderTargetLayout,
-				std::move( dx11RTBindingData ) );
-
-		return stateDescriptor;
+		return mDX11RenderTargetBinding.activeAttachmentsMask.is_set( CXU::RTOMakeAttachmentFlag( pAttachmentIndex ) );
 	}
 
-	GpaHandle<DX11RenderTargetBindingCompiledState> DX11RenderTargetBindingCompiledState::CreateForScreen(
+	TGfxHandle<DX11RenderTargetDescriptor> DX11RenderTargetDescriptor::CreateInstance(
+			DX11GPUDevice & pGPUDevice,
+			const RenderTargetBinding & pRenderTargetBinding )
+	{
+		auto dx11RenderTargetBinding = GCU::RTOCreateRenderTargetBindingDX11( pGPUDevice, pRenderTargetBinding );
+
+		auto dx11RenderTargetDescriptor = CreateGfxObject<DX11RenderTargetDescriptor>( pGPUDevice, std::move( dx11RenderTargetBinding ) );
+
+		return dx11RenderTargetDescriptor;
+	}
+
+	TGfxHandle<DX11RenderTargetDescriptor> DX11RenderTargetDescriptor::CreateForScreen(
 			DX11GPUDevice & pGPUDevice,
 			ComPtr<ID3D11Texture2D> pColorBuffer,
 			ComPtr<ID3D11Texture2D> pDepthStencilBuffer )
 	{
-		const auto renderTargetLayout = GCU::GetRenderTargetLayoutForScreenDX11( pColorBuffer.Get(), pDepthStencilBuffer.Get() );
-
 		ComPtr<ID3D11RenderTargetView> colorBufferRTView;
 		auto hResult = pGPUDevice.mD3D11Device1->CreateRenderTargetView( pColorBuffer.Get(), nullptr, colorBufferRTView.GetAddressOf() );
 		if( FAILED( hResult ) )
@@ -56,8 +53,7 @@ namespace Ic3::Graphics::GCI
 		}
 
 		DX11RenderTargetBinding dx11RTBindingData;
-		mem_set_zero( dx11RTBindingData.d3d11ColorAttachmentRTViewArray );
-		dx11RTBindingData.activeAttachmentsMask = E_RT_ATTACHMENT_MASK_DEFAULT_C0_DS;
+		dx11RTBindingData.activeAttachmentsMask = eRTAttachmentMaskDefaultC0DS;
 		dx11RTBindingData.colorAttachments[0].d3d11RTView = colorBufferRTView;
 		dx11RTBindingData.colorAttachments[0].d3d11Resource = pColorBuffer.Get();
 		dx11RTBindingData.colorAttachments[0].d3d11SubResourceIndex = 0;
@@ -66,41 +62,40 @@ namespace Ic3::Graphics::GCI
 		dx11RTBindingData.depthStencilAttachment.d3d11Resource = pDepthStencilBuffer.Get();
 		dx11RTBindingData.depthStencilAttachment.d3d11SubResourceIndex = 0;
 		dx11RTBindingData.d3d11DepthStencilAttachmentDSView = depthStencilBufferDSView.Get();
+		dx11RTBindingData.renderTargetLayout = GCU::RTOGetRenderTargetLayoutForScreenDX11( pColorBuffer.Get(), pDepthStencilBuffer.Get() );
 
-		auto stateDescriptor = CreateGfxObject<DX11RenderTargetBindingCompiledState>(
-				pGPUDevice,
-				renderTargetLayout,
-				std::move( dx11RTBindingData ) );
+		auto dx11RenderTargetDescriptor = CreateGfxObject<DX11RenderTargetDescriptor>( pGPUDevice, std::move( dx11RTBindingData ) );
 
-		return stateDescriptor;
+		return dx11RenderTargetDescriptor;
 	}
 
 
 	namespace GCU
 	{
 
-		RenderTargetLayout GetRenderTargetLayoutForScreenDX11(
-				ID3D11Texture2D * pColorBuffer,
-				ID3D11Texture2D * pDepthStencilBuffer )
+		RenderTargetLayout RTOGetRenderTargetLayoutForScreenDX11(
+				ID3D11Texture2D * pD3D11ColorBufferTexture,
+				ID3D11Texture2D * pD3D11DepthStencilBufferTexture )
 		{
 			D3D11_TEXTURE2D_DESC colorBufferTextureDesc;
-			pColorBuffer->GetDesc( & colorBufferTextureDesc );
+			pD3D11ColorBufferTexture->GetDesc( & colorBufferTextureDesc );
 
 			D3D11_TEXTURE2D_DESC depthStencilBufferTextureDesc;
-			pDepthStencilBuffer->GetDesc( & depthStencilBufferTextureDesc );
+			pD3D11DepthStencilBufferTexture->GetDesc( & depthStencilBufferTextureDesc );
 
 			RenderTargetLayout renderTargetLayout;
-			renderTargetLayout.activeAttachmentsMask = E_RT_ATTACHMENT_MASK_DEFAULT_C0_DS;
-			renderTargetLayout.sharedImageRect.width = colorBufferTextureDesc.Width;
-			renderTargetLayout.sharedImageRect.height = colorBufferTextureDesc.Height;
-			renderTargetLayout.sharedMSAALevel = colorBufferTextureDesc.SampleDesc.Count;
-			renderTargetLayout.colorAttachments[0].format = ATL::TranslateDXTextureFormatInv( colorBufferTextureDesc.Format );
-			renderTargetLayout.depthStencilAttachment.format = ATL::TranslateDXTextureFormatInv( depthStencilBufferTextureDesc.Format );
+			renderTargetLayout.activeAttachmentsMask = eRTAttachmentMaskDefaultC0DS;
+			renderTargetLayout.sharedImageSize.width = colorBufferTextureDesc.Width;
+			renderTargetLayout.sharedImageSize.height = colorBufferTextureDesc.Height;
+			renderTargetLayout.sharedMultiSamplingSettings.sampleCount = cppx::numeric_cast<uint16>( colorBufferTextureDesc.SampleDesc.Count );
+			renderTargetLayout.sharedMultiSamplingSettings.sampleQuality = cppx::numeric_cast<uint16>( colorBufferTextureDesc.SampleDesc.Quality );
+			renderTargetLayout.colorAttachments[0].format = ATL::DXTranslateTextureFormatInv( colorBufferTextureDesc.Format );
+			renderTargetLayout.depthStencilAttachment.format = ATL::DXTranslateTextureFormatInv( depthStencilBufferTextureDesc.Format );
 
 			return renderTargetLayout;
 		}
 
-		DX11RenderTargetColorAttachment CreateRenderTargetColorAttachmentDX11(
+		DX11RenderTargetColorAttachment RTOCreateColorAttachmentDX11(
 				DX11GPUDevice & pGPUDevice,
 				const TextureReference & pAttachmentTextureRef )
 		{
@@ -212,7 +207,7 @@ namespace Ic3::Graphics::GCI
 			return dx11ColorAttachment;
 		}
 
-		DX11RenderTargetDepthStencilAttachment CreateRenderTargetDepthStencilAttachmentDX11(
+		DX11RenderTargetDepthStencilAttachment RTOCreateDepthStencilAttachmentDX11(
 				DX11GPUDevice & pGPUDevice,
 				const TextureReference & pAttachmentTextureRef )
 		{
@@ -308,7 +303,7 @@ namespace Ic3::Graphics::GCI
 			return dx11DepthStencilAttachment;
 		}
 
-		DX11RenderTargetResolveAttachment CreateRenderTargetResolveAttachmentDX11(
+		DX11RenderTargetResolveAttachment RTOCreateResolveAttachmentDX11(
 				const TextureReference & pAttachmentTextureRef )
 		{
 			auto * dx11Texture = pAttachmentTextureRef->QueryInterface<DX11Texture>();
@@ -384,145 +379,169 @@ namespace Ic3::Graphics::GCI
 			DX11RenderTargetResolveAttachment dx11ResolveAttachment;
 			dx11ResolveAttachment.d3d11Resource = d3d11AttachmentResource;
 			dx11ResolveAttachment.d3d11SubResourceIndex = d3d11AttachmentSubResourceIndex;
+			dx11ResolveAttachment.targetDXGIFormat = targetDXGIFormat;
 
 			return dx11ResolveAttachment;
 		}
 
-		DX11RenderTargetBinding CreateRenderTargetBindingDX11(
+		DX11RenderTargetBinding RTOCreateRenderTargetBindingDX11(
 				DX11GPUDevice & pGPUDevice,
-				const RenderTargetBindingDefinition & pBindingDefinition )
+				const RenderTargetBinding & pRenderTargetBinding )
 		{
 			DX11RenderTargetBinding dx11RenderTargetBinding;
-
-			for( native_uint caIndex = 0; caIndex < GCM::RT_MAX_COLOR_ATTACHMENTS_NUM; ++caIndex )
-			{
-				const auto attachmentBit = CXU::MakeRTAttachmentFlag( caIndex );
-				if( pBindingDefinition.activeAttachmentsMask.is_set( attachmentBit ) )
-				{
-					if( const auto & attachmentBinding = pBindingDefinition.colorAttachments[caIndex] )
-					{
-						auto & colorAttachmentTextureRef = attachmentBinding.attachmentTexture->mTargetTexture;
-						auto dx11ColorAttachment = GCU::CreateRenderTargetColorAttachmentDX11( pGPUDevice, colorAttachmentTextureRef );
-
-						dx11RenderTargetBinding.colorAttachments[caIndex] = dx11ColorAttachment;
-						dx11RenderTargetBinding.d3d11ColorAttachmentRTViewArray[caIndex] = dx11ColorAttachment.d3d11RTView.Get();
-						dx11RenderTargetBinding.activeAttachmentsMask.set( attachmentBit );
-
-						if( pBindingDefinition.attachmentsActionResolveMask.is_set( attachmentBit ) )
-						{
-							Ic3DebugAssert( attachmentBinding.resolveTexture );
-
-							auto dx11ResolveAttachmentTexture = CreateRenderTargetResolveAttachmentDX11( attachmentBinding.resolveTexture->mTargetTexture );
-							dx11RenderTargetBinding.resolveAttachments[caIndex] = dx11ResolveAttachmentTexture;
-						}
-					}
-				}
-				else
-				{
-					dx11RenderTargetBinding.d3d11ColorAttachmentRTViewArray[caIndex] = nullptr;
-				}
-			}
-
-			if( pBindingDefinition.activeAttachmentsMask.is_set( E_RT_ATTACHMENT_FLAG_DEPTH_STENCIL_BIT ) )
-			{
-				if( const auto & attachmentBinding = pBindingDefinition.depthStencilAttachment )
-				{
-					auto & dsAttachmentTextureRef = attachmentBinding.attachmentTexture->mTargetTexture;
-					auto dx11DepthStencilAttachment = GCU::CreateRenderTargetDepthStencilAttachmentDX11( pGPUDevice, dsAttachmentTextureRef );
-
-					dx11RenderTargetBinding.depthStencilAttachment = dx11DepthStencilAttachment;
-					dx11RenderTargetBinding.d3d11DepthStencilAttachmentDSView = dx11DepthStencilAttachment.d3d11DSView.Get();
-					dx11RenderTargetBinding.activeAttachmentsMask.set( E_RT_ATTACHMENT_FLAG_DEPTH_STENCIL_BIT );
-
-					if( pBindingDefinition.attachmentsActionResolveMask.is_set( E_RT_ATTACHMENT_FLAG_DEPTH_STENCIL_BIT ) )
-					{
-						Ic3DebugAssert( attachmentBinding.resolveTexture );
-
-						auto dx11ResolveAttachmentTexture = CreateRenderTargetResolveAttachmentDX11( attachmentBinding.resolveTexture->mTargetTexture );
-						dx11RenderTargetBinding.resolveAttachments[eRTAttachmentIndexDepthStencil] = dx11ResolveAttachmentTexture;
-					}
-				}
-			}
-			else
-			{
-				dx11RenderTargetBinding.d3d11DepthStencilAttachmentDSView = nullptr;
-			}
-
+			RTOUpdateRenderTargetBindingDX11( pGPUDevice, pRenderTargetBinding, dx11RenderTargetBinding );
 			return dx11RenderTargetBinding;
 		}
 
-		void RenderPassClearRenderTargetDX11(
-				ID3D11DeviceContext1 * pD3D1DeviceContext,
-				const DX11RenderTargetBinding & pRenderTargetBinding,
-				const RenderPassConfiguration & pRenderPassConfiguration,
-				const GraphicsPipelineDynamicConfig & pDynamicConfig )
+		bool RTOUpdateRenderTargetBindingDX11(
+			DX11GPUDevice & pGPUDevice,
+			const RenderTargetBinding & pRenderTargetBinding,
+			DX11RenderTargetBinding & pOutDX11RenderTargetBinding )
 		{
 			ForEachRTColorAttachmentIndex(
 					pRenderTargetBinding.activeAttachmentsMask,
-					[&]( native_uint pIndex, ERTAttachmentFlags pAttachmentBit )
-					{
-						if( pRenderPassConfiguration.attachmentsActionClearMask.is_set( pAttachmentBit ) )
-						{
-							auto * d3d11AttachmentRTView = pRenderTargetBinding.d3d11ColorAttachmentRTViewArray[pIndex];
-							const auto & clearConfig = pRenderPassConfiguration.colorAttachments[pIndex].clearConfig;
+					[&]( native_uint pColorAttachmentIndex, ERTAttachmentFlags pAttachmentBit ) {
+						auto * colorAttachmentBinding = pRenderTargetBinding.GetAttachment( pColorAttachmentIndex );
+						auto & baseTextureReference = colorAttachmentBinding->baseTexture->mTargetTexture;
+						
+						auto dx11ColorAttachment = RTOCreateColorAttachmentDX11( pGPUDevice, baseTextureReference );
 
-							pD3D1DeviceContext->ClearRenderTargetView(
-									d3d11AttachmentRTView,
-									clearConfig.colorValue.mRGBA );
+						pOutDX11RenderTargetBinding.colorAttachments[pColorAttachmentIndex] = dx11ColorAttachment;
+						pOutDX11RenderTargetBinding.d3d11ColorAttachmentRTViewArray[pColorAttachmentIndex] = dx11ColorAttachment.d3d11RTView.Get();
+						pOutDX11RenderTargetBinding.activeAttachmentsMask.set( pAttachmentBit );
+
+						if( colorAttachmentBinding->resolveTexture )
+						{
+							auto dx11ResolveAttachmentTexture = RTOCreateResolveAttachmentDX11( colorAttachmentBinding->resolveTexture->mTargetTexture );
+							pOutDX11RenderTargetBinding.resolveAttachments[pColorAttachmentIndex] = dx11ResolveAttachmentTexture;
 						}
+
 						return true;
 					} );
 
-			if( pRenderPassConfiguration.attachmentsActionClearMask.is_set( E_RT_ATTACHMENT_FLAG_DEPTH_STENCIL_BIT ) )
+			if( pRenderTargetBinding.activeAttachmentsMask.is_set( eRTAttachmentFlagDepthStencilBit ) )
 			{
-				auto * d3d11AttachmentDSView = pRenderTargetBinding.d3d11DepthStencilAttachmentDSView;
-				const auto & clearConfig = pRenderPassConfiguration.depthStencilAttachment.clearConfig;
-				const auto d3d11ClearMask = ATL::TranslateDX11RTClearDepthStencilFlags( pRenderPassConfiguration.depthStencilAttachment.clearMask );
+				auto * depthStencilAttachmentBinding = pRenderTargetBinding.GetAttachment( kRTOAttachmentIndexDepthStencil );
+				auto & baseTextureReference = depthStencilAttachmentBinding->baseTexture->mTargetTexture;
 
-				pD3D1DeviceContext->ClearDepthStencilView(
-						d3d11AttachmentDSView,
-						d3d11ClearMask,
-						static_cast<FLOAT>( clearConfig.depthValue ),
-						static_cast<UINT8>( clearConfig.stencilValue ) );
+				auto dx11DepthStencilAttachment = RTOCreateDepthStencilAttachmentDX11( pGPUDevice, baseTextureReference );
+
+				pOutDX11RenderTargetBinding.depthStencilAttachment = dx11DepthStencilAttachment;
+				pOutDX11RenderTargetBinding.d3d11DepthStencilAttachmentDSView = dx11DepthStencilAttachment.d3d11DSView.Get();
+				pOutDX11RenderTargetBinding.activeAttachmentsMask.set( eRTAttachmentFlagDepthStencilBit );
+
+				if( depthStencilAttachmentBinding->resolveTexture )
+				{
+					auto dx11ResolveAttachmentTexture = RTOCreateResolveAttachmentDX11( depthStencilAttachmentBinding->resolveTexture->mTargetTexture );
+					pOutDX11RenderTargetBinding.resolveAttachments[kRTOAttachmentIndexDepthStencil] = dx11ResolveAttachmentTexture;
+				}
+			}
+
+			pOutDX11RenderTargetBinding.activeAttachmentsMask = pRenderTargetBinding.activeAttachmentsMask;
+			pOutDX11RenderTargetBinding.renderTargetLayout = pRenderTargetBinding.GetRenderTargetLayout();
+
+			return !pOutDX11RenderTargetBinding.IsEmpty();
+		}
+
+		void RTORenderPassExecuteOpLoadClearDX11(
+				ID3D11DeviceContext1 * pD3D11DeviceContext,
+				const DX11RenderTargetBinding & pDX11RenderTargetBinding,
+				const RenderPassConfiguration & pRenderPassConfiguration,
+				const GraphicsPipelineDynamicConfig & pDynamicConfig )
+		{
+			// Dynamic configuration overwrites the values specified via descriptors.
+			// The activeStateMask member tells us which state override is enabled.
+			const bool clearConfigOverride = pDynamicConfig.activeStateMask.is_set(
+				eGraphicsPipelineDynamicConfigFlagRenderTargetClearConfigBit );
+
+			const auto attachmentsLoadClearMask =
+				pRenderPassConfiguration.GetAttachmentsMaskWithLoadFlags( eRenderPassAttachmentActionFlagLoadClearBit );
+
+			auto clearedAttachmentsMask = cppx::make_bitmask_tp<ERTAttachmentFlags>();
+
+			if( !attachmentsLoadClearMask.empty() )
+			{
+				ForEachRTColorAttachmentIndex(
+						attachmentsLoadClearMask,
+						[&]( native_uint pColorAttachmentIndex, ERTAttachmentFlags pAttachmentBit ) {
+							const auto * attachmentConfig = pRenderPassConfiguration.GetAttachment( pColorAttachmentIndex );
+							const auto * clearConfig = &( attachmentConfig->loadParameters.opClear.clearConfig );
+
+							if( clearConfigOverride )
+							{
+								clearConfig = &( pDynamicConfig.renderTargetClearConfig );
+							}
+
+							auto * d3d11AttachmentRTView = pDX11RenderTargetBinding.d3d11ColorAttachmentRTViewArray[pColorAttachmentIndex];
+
+							pD3D11DeviceContext->ClearRenderTargetView(
+								d3d11AttachmentRTView,
+								clearConfig->colorValue.uv_rgba );
+							return true;
+						} );
+
+				if( attachmentsLoadClearMask.is_set( eRTAttachmentFlagDepthStencilBit ) )
+				{
+					const auto * attachmentConfig = pRenderPassConfiguration.GetAttachment( kRTOAttachmentIndexDepthStencil );
+					const auto * clearConfig = &( attachmentConfig->loadParameters.opClear.clearConfig );
+
+					if( clearConfigOverride )
+					{
+						clearConfig = &( pDynamicConfig.renderTargetClearConfig );
+					}
+
+					auto * d3d11AttachmentDSView = pDX11RenderTargetBinding.d3d11DepthStencilAttachmentDSView;
+					const auto d3d11ClearMask = ATL::TranslateDX11RTClearDepthStencilFlags( attachmentConfig->loadParameters.opClear.clearMask );
+
+					pD3D11DeviceContext->ClearDepthStencilView(
+							d3d11AttachmentDSView,
+							d3d11ClearMask,
+							static_cast<FLOAT>( clearConfig->depthValue ),
+							static_cast<UINT8>( clearConfig->stencilValue ) );
+				}
 			}
 		}
 
-		void RenderPassResolveRenderTargetDX11(
-				ID3D11DeviceContext1 * pD3D1DeviceContext,
+		void RTORenderPassExecuteOpStoreResolveDX11(
+				ID3D11DeviceContext1 * pD3D11DeviceContext,
 				const DX11RenderTargetBinding & pRenderTargetBinding,
 				const RenderPassConfiguration & pRenderPassConfiguration,
 				const GraphicsPipelineDynamicConfig & pDynamicConfig )
 		{
-			ForEachRTAttachmentIndex(
-					pRenderTargetBinding.activeAttachmentsMask,
-					[&]( native_uint pIndex, ERTAttachmentFlags pAttachmentBit )
-					{
-						if( pRenderPassConfiguration.attachmentsActionResolveMask.is_set( pAttachmentBit ) )
-						{
-							const auto & sourceAttachment = pRenderTargetBinding.colorAttachments[pIndex];
-							const auto & destAttachment = pRenderTargetBinding.resolveAttachments[pIndex];
+			const auto attachmentsStoreResolveMask =
+				pRenderPassConfiguration.GetAttachmentsMaskWithStoreFlags( eRenderPassAttachmentActionFlagStoreResolveBit );
 
-							pD3D1DeviceContext->ResolveSubresource(
+			auto resolvedAttachmentsMask = cppx::make_bitmask_tp<ERTAttachmentFlags>();
+
+			if( !attachmentsStoreResolveMask.empty() )
+			{
+				ForEachRTAttachmentIndex(
+						pRenderTargetBinding.activeAttachmentsMask,
+						[&]( native_uint pColorAttachmentIndex, ERTAttachmentFlags pAttachmentBit ) {
+							const auto & sourceAttachment = pRenderTargetBinding.colorAttachments[pColorAttachmentIndex];
+							const auto & destAttachment = pRenderTargetBinding.resolveAttachments[pColorAttachmentIndex];
+
+							pD3D11DeviceContext->ResolveSubresource(
 									destAttachment.d3d11Resource,
 									destAttachment.d3d11SubResourceIndex,
 									sourceAttachment.d3d11Resource,
 									sourceAttachment.d3d11SubResourceIndex,
 									destAttachment.targetDXGIFormat );
-						}
-						return true;
-					} );
+							return true;
+						} );
 
-			if( pRenderPassConfiguration.attachmentsActionResolveMask.is_set( E_RT_ATTACHMENT_FLAG_DEPTH_STENCIL_BIT ) )
-			{
-				auto * d3d11AttachmentDSView = pRenderTargetBinding.d3d11DepthStencilAttachmentDSView;
-				const auto & clearConfig = pRenderPassConfiguration.depthStencilAttachment.clearConfig;
-				const auto d3d11ClearMask = ATL::TranslateDX11RTClearDepthStencilFlags( pRenderPassConfiguration.depthStencilAttachment.clearMask );
+				if( attachmentsStoreResolveMask.is_set( eRTAttachmentFlagDepthStencilBit ) )
+				{
+					const auto & sourceAttachment = pRenderTargetBinding.depthStencilAttachment;
+					const auto & destAttachment = pRenderTargetBinding.resolveAttachments[kRTOAttachmentIndexDepthStencil];
 
-				pD3D1DeviceContext->ClearDepthStencilView(
-						d3d11AttachmentDSView,
-						d3d11ClearMask,
-						static_cast<FLOAT>( clearConfig.depthValue ),
-						static_cast<UINT8>( clearConfig.stencilValue ) );
+					pD3D11DeviceContext->ResolveSubresource(
+							destAttachment.d3d11Resource,
+							destAttachment.d3d11SubResourceIndex,
+							sourceAttachment.d3d11Resource,
+							sourceAttachment.d3d11SubResourceIndex,
+							destAttachment.targetDXGIFormat );
+				}
 			}
 		}
 

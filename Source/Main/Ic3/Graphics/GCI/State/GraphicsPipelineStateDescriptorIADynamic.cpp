@@ -17,17 +17,17 @@ namespace Ic3::Graphics::GCI
 
 	bool VertexSourceBindingDescriptorDynamic::IsIndexBufferActive() const noexcept
 	{
-		return _vertexSourceBinding.activeStreamsMask.is_set( eVertexSourceBindingFlagIndexBufferBit );
+		return _vertexSourceBinding.activeStreamsMask.is_set( eIAVertexSourceBindingFlagIndexBufferBit );
 	}
 
 	bool VertexSourceBindingDescriptorDynamic::IsVertexBufferActive( native_uint pVertexBufferIndex ) const noexcept
 	{
-		return _vertexSourceBinding.activeStreamsMask.is_set( CXU::IAMakeVertexSourceVertexBufferBindingFlag( pVertexBufferIndex ) );
+		return _vertexSourceBinding.activeStreamsMask.is_set( CXU::IAMakeVertexBufferBindingFlag( pVertexBufferIndex ) );
 	}
 
 	bool VertexSourceBindingDescriptorDynamic::IsBufferActive( native_uint pBufferIndex ) const noexcept
 	{
-		return _vertexSourceBinding.activeStreamsMask.is_set( CXU::IAMakeVertexSourceBufferBindingFlag( pBufferIndex ) );
+		return _vertexSourceBinding.activeStreamsMask.is_set( CXU::IAMakeVertexSourceBindingFlag( pBufferIndex ) );
 	}
 
 	native_uint VertexSourceBindingDescriptorDynamic::CountActiveVertexBuffers() const noexcept
@@ -85,8 +85,7 @@ namespace Ic3::Graphics::GCI
 
 	void VertexSourceBindingDescriptorDynamic::ResetAllFlags()
 	{
-		_vertexSourceBinding.activeStreamsMask.clear();
-		_vertexSourceBinding.activeStreamsNum = 0;
+		_vertexSourceBinding.ResetActiveStreamsMask();
 	}
 
 	void VertexSourceBindingDescriptorDynamic::ResetVertexBufferReference( native_uint pVertexBufferIndex )
@@ -115,14 +114,13 @@ namespace Ic3::Graphics::GCI
 	{
 		if( CXU::IAIsDataStreamVertexBufferSlotValid( pVertexBufferIndex ) )
 		{
-			const auto vertexBufferBit = CXU::IAMakeVertexSourceVertexBufferBindingFlag( pVertexBufferIndex );
+			const auto vertexBufferBit = CXU::IAMakeVertexBufferBindingFlag( pVertexBufferIndex );
 
 			auto & vertexBufferReference = _vertexSourceBinding.vertexBufferReferences[pVertexBufferIndex];
 
 			if( !_vertexSourceBinding.activeStreamsMask.is_set( vertexBufferBit ) )
 			{
 				_vertexSourceBinding.activeStreamsMask.set( vertexBufferBit );
-				_vertexSourceBinding.activeStreamsNum += 1;
 			}
 
 			return &vertexBufferReference;
@@ -146,7 +144,7 @@ namespace Ic3::Graphics::GCI
 					break;
 				}
 
-				const auto vertexBufferBit = CXU::IAMakeVertexSourceVertexBufferBindingFlag( vertexBufferIndex );
+				const auto vertexBufferBit = CXU::IAMakeVertexBufferBindingFlag( vertexBufferIndex );
 
 				auto & vertexBufferReference = _vertexSourceBinding.vertexBufferReferences[vertexBufferIndex];
 
@@ -155,7 +153,6 @@ namespace Ic3::Graphics::GCI
 					if( !_vertexSourceBinding.activeStreamsMask.is_set( vertexBufferBit ) )
 					{
 						_vertexSourceBinding.activeStreamsMask.set( vertexBufferBit );
-						_vertexSourceBinding.activeStreamsNum += 1;
 					}
 
 					vertexBufferReference = inputVertexBufferReference;
@@ -165,7 +162,6 @@ namespace Ic3::Graphics::GCI
 					if( _vertexSourceBinding.activeStreamsMask.is_set( vertexBufferBit ) )
 					{
 						_vertexSourceBinding.activeStreamsMask.unset( vertexBufferBit );
-						_vertexSourceBinding.activeStreamsNum -= 1;
 					}
 
 					vertexBufferReference.Reset();
@@ -176,10 +172,9 @@ namespace Ic3::Graphics::GCI
 
 	IAIndexBufferReference * VertexSourceBindingDescriptorDynamic::_SetIndexBufferActive()
 	{
-		if( !_vertexSourceBinding.activeStreamsMask.is_set( eVertexSourceBindingFlagIndexBufferBit ) )
+		if( !_vertexSourceBinding.activeStreamsMask.is_set( eIAVertexSourceBindingFlagIndexBufferBit ) )
 		{
-			_vertexSourceBinding.activeStreamsMask.set( eVertexSourceBindingFlagIndexBufferBit );
-			_vertexSourceBinding.activeStreamsNum += 1;
+			_vertexSourceBinding.activeStreamsMask.set( eIAVertexSourceBindingFlagIndexBufferBit );
 		}
 
 		return &( _vertexSourceBinding.indexBufferReference );
@@ -189,20 +184,18 @@ namespace Ic3::Graphics::GCI
 	{
 		if( pBufferReference )
 		{
-			if( !_vertexSourceBinding.activeStreamsMask.is_set( eVertexSourceBindingFlagIndexBufferBit ) )
+			if( !_vertexSourceBinding.activeStreamsMask.is_set( eIAVertexSourceBindingFlagIndexBufferBit ) )
 			{
-				_vertexSourceBinding.activeStreamsMask.set( eVertexSourceBindingFlagIndexBufferBit );
-				_vertexSourceBinding.activeStreamsNum += 1;
+				_vertexSourceBinding.activeStreamsMask.set( eIAVertexSourceBindingFlagIndexBufferBit );
 			}
 
 			_vertexSourceBinding.indexBufferReference = pBufferReference;
 		}
 		else
 		{
-			if( _vertexSourceBinding.activeStreamsMask.is_set( eVertexSourceBindingFlagIndexBufferBit ) )
+			if( _vertexSourceBinding.activeStreamsMask.is_set( eIAVertexSourceBindingFlagIndexBufferBit ) )
 			{
-				_vertexSourceBinding.activeStreamsMask.unset( eVertexSourceBindingFlagIndexBufferBit );
-				_vertexSourceBinding.activeStreamsNum -= 1;
+				_vertexSourceBinding.activeStreamsMask.unset( eIAVertexSourceBindingFlagIndexBufferBit );
 			}
 
 			_vertexSourceBinding.indexBufferReference.Reset();
@@ -223,14 +216,13 @@ namespace Ic3::Graphics::GCI
 					break;
 				}
 
-				const auto vertexBufferBit = CXU::IAMakeVertexSourceVertexBufferBindingFlag( vertexBufferIndex );
+				const auto vertexBufferBit = CXU::IAMakeVertexBufferBindingFlag( vertexBufferIndex );
 
 				auto & vertexBufferReference = _vertexSourceBinding.vertexBufferReferences[vertexBufferIndex];
 
 				if( _vertexSourceBinding.activeStreamsMask.is_set( vertexBufferBit ) )
 				{
 					_vertexSourceBinding.activeStreamsMask.unset( vertexBufferBit );
-					_vertexSourceBinding.activeStreamsNum -= 1;
 				}
 
 				vertexBufferReference.Reset();
@@ -240,10 +232,9 @@ namespace Ic3::Graphics::GCI
 
 	void VertexSourceBindingDescriptorDynamic::_ResetIndexBufferReference()
 	{
-		if( _vertexSourceBinding.activeStreamsMask.is_set( eVertexSourceBindingFlagIndexBufferBit ) )
+		if( _vertexSourceBinding.activeStreamsMask.is_set( eIAVertexSourceBindingFlagIndexBufferBit ) )
 		{
-			_vertexSourceBinding.activeStreamsMask.unset( eVertexSourceBindingFlagIndexBufferBit );
-			_vertexSourceBinding.activeStreamsNum -= 1;
+			_vertexSourceBinding.activeStreamsMask.unset( eIAVertexSourceBindingFlagIndexBufferBit );
 		}
 
 		_vertexSourceBinding.indexBufferReference.Reset();

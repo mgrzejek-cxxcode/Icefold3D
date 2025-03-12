@@ -10,7 +10,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	class IC3_GX_DXCOMMON_CLASS DXGPUDriver : public GPUDriver
+	class IC3_GX_DX_CLASS DXGPUDriver : public GPUDriver
 	{
 	public:
 		explicit DXGPUDriver( System::SysContextHandle pSysContext ) noexcept;

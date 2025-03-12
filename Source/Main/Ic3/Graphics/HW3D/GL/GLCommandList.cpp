@@ -19,7 +19,7 @@ namespace Ic3::Graphics::GCI
 			ECommandListType pListType,
 			System::OpenGLRenderContextHandle pSysGLRenderContext,
 			GLGraphicsPipelineStateController & pStateController )
-	: CommandListGenericRenderPass( pGLCommandSystem, pListType, pStateController )
+	: CommandListRenderPassGeneric( pGLCommandSystem, pListType, pStateController )
 	, mSysGLRenderContext( pSysGLRenderContext )
 	, _glcGraphicsPipelineStateController( &pStateController )
 	{}

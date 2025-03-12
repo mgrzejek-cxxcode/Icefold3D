@@ -70,10 +70,16 @@ struct CB0Data
 	cxm::mat4x4f projectionMatrix;
 };
 
+#include <Ic3/Graphics/HW3D/DX11/DX11GPUDriverAPI.h>
 #include <Ic3/Graphics/HW3D/GL4/GL4GPUDriverAPI.h>
 
 #include <IC3/System/IO/Pipe.h>
 #include <IC3/System/IO/MessagePipe.h>
+
+#define GX_DRIVER_ID_DX11 11
+#define GX_DRIVER_ID_GL4 43
+
+#define GX_DRIVER_ID GX_DRIVER_ID_DX11
 
 int main( int pArgc, const char ** pArgv )
 {
@@ -108,7 +114,11 @@ int main( int pArgc, const char ** pArgv )
 //		Ic3DebugOutput( sidCopy1.c_str() );
 //    }
 
+#if( GX_DRIVER_ID == GX_DRIVER_ID_DX11 )
+	sGxDriverName = "DX11";
+#elif( GX_DRIVER_ID == GX_DRIVER_ID_GL4 )
 	sGxDriverName = "GL4";
+#endif
 
 	const auto mm1 = std::chrono::microseconds( 200 );
 
@@ -127,8 +137,14 @@ int main( int pArgc, const char ** pArgv )
 	auto assetLoader = sysContext->CreateAssetLoader( aslCreateInfo );
 
 	GraphicsDriverState gxDriverState;
-	gxDriverState.driverID = "GL4";
+	gxDriverState.driverID = sGxDriverName;
+
+
+#if( GX_DRIVER_ID == GX_DRIVER_ID_DX11 )
+	gxDriverState.driverInterface = std::make_unique<DX11GPUDriverInterface>();
+#elif( GX_DRIVER_ID == GX_DRIVER_ID_GL4 )
 	gxDriverState.driverInterface = std::make_unique<GL4GPUDriverInterface>();
+#endif
 
 	srand( time( nullptr ) );
 
@@ -301,7 +317,7 @@ int main( int pArgc, const char ** pArgv )
 	GCI::TextureHandle texRTDepthStencil;
 	GCI::RenderTargetTextureHandle texRTDepthStencilRT;
 	{
-		GCI::TextureCreateInfo texRTDepthStencilCI;
+		GCI::TextureCreateInfo texRTDepthStencilCI{};
 		texRTDepthStencilCI.texClass = GCI::ETextureClass::T2D;
 		texRTDepthStencilCI.dimensions.width = rtSize.x;
 		texRTDepthStencilCI.dimensions.height = rtSize.y;
@@ -318,10 +334,9 @@ int main( int pArgc, const char ** pArgv )
 
 	GCI::RenderPassDescriptorHandle scrRenderPassDescriptor;
 	{
-		RenderPassDescriptorCreateInfo rpdCreateInfo;
+		RenderPassDescriptorCreateInfo rpdCreateInfo{};
 		auto & rpConfig = rpdCreateInfo.passConfiguration;
 		rpConfig.activeAttachmentsMask = eRTAttachmentMaskDefaultC0DS;
-		rpConfig.activeAttachmentsNum = 2;
 		rpConfig.colorAttachments[0].loadAction = ERenderPassAttachmentLoadAction::Clear;
 		rpConfig.colorAttachments[0].storeAction = ERenderPassAttachmentStoreAction::Keep;
 		rpConfig.colorAttachments[0].loadParameters.opClear.clearConfig.colorValue = gpuDevicePtr->GetDefaultClearColor();
@@ -337,10 +352,9 @@ int main( int pArgc, const char ** pArgv )
 
 	GCI::RenderPassDescriptorHandle offScrRenderPassDescriptor;
 	{
-		RenderPassDescriptorCreateInfo rpdCreateInfo;
+		RenderPassDescriptorCreateInfo rpdCreateInfo{};
 		auto & rpConfig = rpdCreateInfo.passConfiguration;
 		rpConfig.activeAttachmentsMask = eRTAttachmentMaskDefaultC0DS;
-		rpConfig.activeAttachmentsNum = 2;
 		rpConfig.colorAttachments[0].loadAction = ERenderPassAttachmentLoadAction::Clear;
 		rpConfig.colorAttachments[0].storeAction = ERenderPassAttachmentStoreAction::Keep;
 		rpConfig.colorAttachments[0].loadParameters.opClear.clearConfig.colorValue = cxm::rgba_color_r32_norm{ 0.6f, 0.6f, 0.6, 1.0f };
@@ -354,10 +368,9 @@ int main( int pArgc, const char ** pArgv )
 		offScrRenderPassDescriptor = gpuDevicePtr->CreateRenderPassDescriptor( rpdCreateInfo );
 	}
 
-	const auto kSDIDRootSignatureDefault = GCI::CXU::MakePipelineStateDescriptorIDRootSignature( 0x001 );
 	RootSignatureDescriptorHandle rsDescriptor;
 	{
-		RootSignatureDescriptorCreateInfo rsDescriptorCI;
+		RootSignatureDescriptorCreateInfo rsDescriptorCI{};
 		rsDescriptorCI.rootSignatureDesc.activeShaderStagesMask = GCI::eShaderStageFlagGraphicsVertexBit | GCI::eShaderStageFlagGraphicsPixelBit;
 		rsDescriptorCI.rootSignatureDesc.descriptorSetsNum = 1;
 		rsDescriptorCI.rootSignatureDesc.descriptorSetArray[0].descriptorType = GCI::EShaderInputDescriptorType::Resource;
@@ -367,10 +380,9 @@ int main( int pArgc, const char ** pArgv )
 		rsDescriptor = gpuDevicePtr->CreateRootSignatureDescriptor( rsDescriptorCI );
 	}
 
-	const auto kSDIDGraphicsShaderLinkageDefault = GCI::CXU::MakePipelineStateDescriptorIDGraphicsShaderLinkage( 0x001 );
 	GraphicsShaderLinkageDescriptorHandle gslDescriptor;
 	{
-		GraphicsShaderLinkageDescriptorCreateInfo gslDescriptorCI;
+		GraphicsShaderLinkageDescriptorCreateInfo gslDescriptorCI{};
 		gslDescriptorCI.shaderBinding.AddShader( shaderLibrary->GetShader( "SID_DEFAULT_PASSTHROUGH_VS" ) );
 		gslDescriptorCI.shaderBinding.AddShader( shaderLibrary->GetShader( "SID_DEFAULT_PASSTHROUGH_PS" ) );
 		gslDescriptor = gpuDevicePtr->CreateGraphicsShaderLinkageDescriptor( gslDescriptorCI );
@@ -378,17 +390,16 @@ int main( int pArgc, const char ** pArgv )
 
 	GraphicsPipelineStateObjectHandle mainPSO;
 	{
-		GraphicsPipelineStateObjectCreateInfo psoCI;
+		GraphicsPipelineStateObjectCreateInfo psoCI{};
 		psoCI.blendStateDescriptorID = gciSharedStateLibrary->sSharedDescriptors.descriptorIDBlendDefault;
-		psoCI.depthStencilStateDescriptorID = gciSharedStateLibrary->sSharedDescriptors.descriptorIDDepthStencilDepthTestEnable;
-		psoCI.rasterizerStateDescriptorID = gciSharedStateLibrary->sSharedDescriptors.descriptorIDRasterizerSolidCullBackCCW;
+		psoCI.depthStencilStateDescriptorID = gciSharedStateLibrary->sSharedDescriptors.descriptorIDDepthStencilDefault;
+		psoCI.rasterizerStateDescriptorID = gciSharedStateLibrary->sSharedDescriptors.descriptorIDRasterizerSolidCullNoneCCW;
 		psoCI.vertexAttributeLayoutDescriptorID = gciSharedStateLibrary->sSharedDescriptors.descriptorIDIAVertexAttributeLayoutDefault;
 
 		psoCI.shaderLinkageStateDescriptor = gslDescriptor;
 		psoCI.rootSignatureDescriptor = rsDescriptor;
 
 		psoCI.renderTargetLayout.activeAttachmentsMask = eRTAttachmentMaskDefaultC0DS;
-		psoCI.renderTargetLayout.activeAttachmentsNum = 2;
 		psoCI.renderTargetLayout.colorAttachments[0].format = ETextureFormat::BGRA8UN;
 		psoCI.renderTargetLayout.depthStencilAttachment.format = ETextureFormat::D24UNS8U;
 		mainPSO = gpuDevicePtr->CreateGraphicsPipelineStateObject( psoCI );

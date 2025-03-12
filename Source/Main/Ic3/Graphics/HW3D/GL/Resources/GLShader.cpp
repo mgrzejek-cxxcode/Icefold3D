@@ -40,7 +40,7 @@ namespace Ic3::Graphics::GCI
 			const void * pSource,
 			size_t pSourceLength )
 	{
-		const auto openglShaderType = ATL::translateShaderType( pShaderType );
+		const auto openglShaderType = ATL::GLTranslateShaderType( pShaderType );
 		const auto runtimeVersion = pGPUDevice.mSysGLSupportInfo.apiVersion;
 
 		std::string shaderSource{ reinterpret_cast<const char *>( pSource ), pSourceLength };

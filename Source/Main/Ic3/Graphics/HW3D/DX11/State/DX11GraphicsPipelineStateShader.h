@@ -6,7 +6,7 @@
 
 #include "../DX11Prerequisites.h"
 #include <Ic3/Graphics/GCI/State/GraphicsPipelineStateDescriptorShader.h>
-#include <Ic3/Graphics/GCI/State/SeparablePipelineState.h>
+#include <Ic3/Graphics/GCI/State/GraphicsPipelineStateImplSeparableState.h>
 
 namespace Ic3::Graphics::GCI
 {

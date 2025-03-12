@@ -79,78 +79,113 @@ namespace Ic3::Graphics::GCI
 	namespace CXU
 	{
 
-		inline constexpr bool IAIsVertexAttributeComponentsNumValid( native_uint pComponentsNum ) noexcept
+		CPPX_ATTR_NO_DISCARD inline constexpr bool IAIsVertexAttributeComponentsNumValid( native_uint pComponentsNum ) noexcept
 		{
 			return ( pComponentsNum > 0 ) && ( pComponentsNum <= GCM::kIAMaxVertexAttributeComponentsNum );
 		}
 
-		inline constexpr bool IAIsVertexAttributeSemanticGroupSizeValid( native_uint pSemanticGroupSize ) noexcept
+		CPPX_ATTR_NO_DISCARD inline constexpr bool IAIsVertexAttributeSemanticGroupSizeValid( native_uint pSemanticGroupSize ) noexcept
 		{
 			return ( pSemanticGroupSize > 0 ) && ( pSemanticGroupSize <= GCM::kIAMaxVertexAttributeSemanticGroupSize );
 		}
 
 		/// @brief
-		inline constexpr uint32 IAMakeVertexAttributeFlag( native_uint pAttribIndex )
+		CPPX_ATTR_NO_DISCARD inline constexpr uint32 IAMakeVertexAttributeFlag( native_uint pAttribIndex )
 		{
 			return ( pAttribIndex < GCM::kIAMaxVertexAttributesNum ) ? ( 1 << pAttribIndex ) : 0u;
 		}
 
+		/// @brief
+		template <typename... TPIntegers>
+		CPPX_ATTR_NO_DISCARD inline constexpr uint32 IAMakeVertexAttributeFlag( native_uint pFirstIndex, TPIntegers && ...pRest )
+		{
+			return IAMakeVertexAttributeFlag( pFirstIndex ) | IAMakeVertexAttributeFlag( std::forward<TPIntegers>( pRest )... );
+		}
+
 		/// @brief Returns
-		inline constexpr uint32 IAMakeVertexSourceBufferBindingFlag( native_uint pStreamIndex )
+		CPPX_ATTR_NO_DISCARD inline constexpr uint32 IAMakeVertexSourceBindingFlag( native_uint pStreamIndex )
 		{
 			return ( pStreamIndex < GCM::kIAMaxDataStreamCombinedBuffersNum ) ? ( 1 << pStreamIndex ) : 0u;
 		}
 
+		/// @brief Returns
+		template <typename... TPIntegers>
+		CPPX_ATTR_NO_DISCARD inline constexpr uint32 IAMakeVertexSourceBindingFlag( native_uint pStreamIndex, TPIntegers && ...pRest )
+		{
+			return IAMakeVertexSourceBindingFlag( pStreamIndex ) | IAMakeVertexSourceBindingFlag( std::forward<TPIntegers>( pRest )... );
+		}
+
 		/// @brief
-		inline constexpr uint32 IAMakeVertexSourceVertexBufferBindingFlag( native_uint pStreamIndex )
+		CPPX_ATTR_NO_DISCARD inline constexpr uint32 IAMakeVertexBufferBindingFlag( native_uint pStreamIndex )
 		{
 			return ( pStreamIndex < GCM::kIAMaxDataStreamVertexBuffersNum ) ? ( 1 << pStreamIndex ) : 0u;
 		}
 
 		/// @brief Returns
-		inline constexpr uint32 IAMakeVertexSourceIndexBufferBindingFlag()
+		template <typename... TPIntegers>
+		CPPX_ATTR_NO_DISCARD inline constexpr uint32 IAMakeVertexBufferBindingFlag( native_uint pStreamIndex, TPIntegers && ...pRest )
+		{
+			return IAMakeVertexBufferBindingFlag( pStreamIndex ) | IAMakeVertexBufferBindingFlag( std::forward<TPIntegers>( pRest )... );
+		}
+
+		/// @brief Returns
+		CPPX_ATTR_NO_DISCARD inline constexpr uint32 IAMakeIndexBufferBindingFlag()
 		{
 			return ( 1 << GCM::kIAMaxDataStreamVertexBuffersNum );
 		}
 
 		/// @brief
-		inline constexpr uint32 RTOMakeAttachmentFlag( native_uint pAttachmentIndex )
+		CPPX_ATTR_NO_DISCARD inline constexpr uint32 RTOMakeAttachmentFlag( native_uint pAttachmentIndex )
 		{
 			return ( pAttachmentIndex < GCM::kRTOMaxCombinedAttachmentsNum ) ? ( 1 << pAttachmentIndex ) : 0u;
 		}
 
+		/// @brief Returns
+		template <typename... TPIntegers>
+		CPPX_ATTR_NO_DISCARD inline constexpr uint32 RTOMakeAttachmentFlag( native_uint pAttachmentIndex, TPIntegers && ...pRest )
+		{
+			return RTOMakeAttachmentFlag( pAttachmentIndex ) | RTOMakeAttachmentFlag( std::forward<TPIntegers>( pRest )... );
+		}
+
 		/// @brief
-		inline constexpr uint32 RTOMakeColorAttachmentFlag( native_uint pColorAttachmentIndex )
+		CPPX_ATTR_NO_DISCARD inline constexpr uint32 RTOMakeColorAttachmentFlag( native_uint pColorAttachmentIndex )
 		{
 			return ( pColorAttachmentIndex < GCM::kRTOMaxColorAttachmentsNum ) ? ( 1 << pColorAttachmentIndex ) : 0u;
 		}
 
+		/// @brief Returns
+		template <typename... TPIntegers>
+		CPPX_ATTR_NO_DISCARD inline constexpr uint32 RTOMakeColorAttachmentFlag( native_uint pColorAttachmentIndex, TPIntegers && ...pRest )
+		{
+			return RTOMakeColorAttachmentFlag( pColorAttachmentIndex ) | RTOMakeColorAttachmentFlag( std::forward<TPIntegers>( pRest )... );
+		}
+
 		/// @brief
-		inline constexpr uint32 RTOMakeDepthStencilAttachmentFlag()
+		CPPX_ATTR_NO_DISCARD inline constexpr uint32 RTOMakeDepthStencilAttachmentFlag()
 		{
 			return ( 1 << GCM::kRTOMaxColorAttachmentsNum );
 		}
 
 		/// @brief
-		inline constexpr bool IAIsVertexAttributeSlotValid( native_uint pAttributeSlot )
+		CPPX_ATTR_NO_DISCARD inline constexpr bool IAIsVertexAttributeSlotValid( native_uint pAttributeSlot )
 		{
 			return pAttributeSlot < GCM::kIAMaxVertexAttributesNum;
 		}
 
 		/// @brief
-		inline constexpr bool IAIsDataStreamVertexBufferSlotValid( native_uint pVertexBufferSlor )
+		CPPX_ATTR_NO_DISCARD inline constexpr bool IAIsDataStreamVertexBufferSlotValid( native_uint pVertexBufferSlor )
 		{
 			return pVertexBufferSlor < GCM::kIAMaxDataStreamVertexBuffersNum;
 		}
 
 		/// @brief
-		inline constexpr bool RTOIsAttachmentIndexValid( native_uint pAttachmentIndex )
+		CPPX_ATTR_NO_DISCARD inline constexpr bool RTOIsAttachmentIndexValid( native_uint pAttachmentIndex )
 		{
 			return pAttachmentIndex < GCM::kRTOMaxCombinedAttachmentsNum;
 		}
 
 		/// @brief
-		inline constexpr bool RTOIsColorAttachmentIndexValid( native_uint pColorAttachmentIndex )
+		CPPX_ATTR_NO_DISCARD inline constexpr bool RTOIsColorAttachmentIndexValid( native_uint pColorAttachmentIndex )
 		{
 			return pColorAttachmentIndex < GCM::kRTOMaxColorAttachmentsNum;
 		}
@@ -173,22 +208,22 @@ namespace Ic3::Graphics::GCI
 	};
 
 	/// @brief
-	enum EVertexSourceBindingFlags : uint32
+	enum EIAVertexSourceBindingFlags : uint32
 	{
-		eVertexSourceBindingFlagVertexBuffer0Bit  = CXU::IAMakeVertexSourceVertexBufferBindingFlag( 0 ),
-		eVertexSourceBindingFlagVertexBuffer1Bit  = CXU::IAMakeVertexSourceVertexBufferBindingFlag( 1 ),
-		eVertexSourceBindingFlagVertexBuffer2Bit  = CXU::IAMakeVertexSourceVertexBufferBindingFlag( 2 ),
-		eVertexSourceBindingFlagVertexBuffer3Bit  = CXU::IAMakeVertexSourceVertexBufferBindingFlag( 3 ),
-		eVertexSourceBindingFlagVertexBuffer4Bit  = CXU::IAMakeVertexSourceVertexBufferBindingFlag( 4 ),
-		eVertexSourceBindingFlagVertexBuffer5Bit  = CXU::IAMakeVertexSourceVertexBufferBindingFlag( 5 ),
-		eVertexSourceBindingFlagVertexBuffer6Bit  = CXU::IAMakeVertexSourceVertexBufferBindingFlag( 6 ),
-		eVertexSourceBindingFlagVertexBuffer7Bit  = CXU::IAMakeVertexSourceVertexBufferBindingFlag( 7 ),
-		eVertexSourceBindingFlagVertexBuffer8Bit  = CXU::IAMakeVertexSourceVertexBufferBindingFlag( 8 ),
-		eVertexSourceBindingFlagIndexBufferBit    = CXU::IAMakeVertexSourceIndexBufferBindingFlag(),
+		eIAVertexSourceBindingFlagVertexBuffer0Bit  = CXU::IAMakeVertexBufferBindingFlag( 0 ),
+		eIAVertexSourceBindingFlagVertexBuffer1Bit  = CXU::IAMakeVertexBufferBindingFlag( 1 ),
+		eIAVertexSourceBindingFlagVertexBuffer2Bit  = CXU::IAMakeVertexBufferBindingFlag( 2 ),
+		eIAVertexSourceBindingFlagVertexBuffer3Bit  = CXU::IAMakeVertexBufferBindingFlag( 3 ),
+		eIAVertexSourceBindingFlagVertexBuffer4Bit  = CXU::IAMakeVertexBufferBindingFlag( 4 ),
+		eIAVertexSourceBindingFlagVertexBuffer5Bit  = CXU::IAMakeVertexBufferBindingFlag( 5 ),
+		eIAVertexSourceBindingFlagVertexBuffer6Bit  = CXU::IAMakeVertexBufferBindingFlag( 6 ),
+		eIAVertexSourceBindingFlagVertexBuffer7Bit  = CXU::IAMakeVertexBufferBindingFlag( 7 ),
+		eIAVertexSourceBindingFlagVertexBuffer8Bit  = CXU::IAMakeVertexBufferBindingFlag( 8 ),
+		eIAVertexSourceBindingFlagIndexBufferBit    = CXU::IAMakeIndexBufferBindingFlag(),
 
 		eVertexSourceBindingMaskVertexBufferAllBits = cppx::make_lsfb_bitmask<uint32>( GCM::kIAMaxDataStreamVertexBuffersNum ),
 
-		eVertexSourceBindingMaskAll = eVertexSourceBindingMaskVertexBufferAllBits | eVertexSourceBindingFlagIndexBufferBit
+		eVertexSourceBindingMaskAll = eVertexSourceBindingMaskVertexBufferAllBits | eIAVertexSourceBindingFlagIndexBufferBit
 	};
 
 	/// @brief
@@ -222,6 +257,9 @@ namespace Ic3::Graphics::GCI
 	enum ERTAttachmentFlags : uint16
 	{
 		eRTAttachmentFlagColor0Bit       = CXU::RTOMakeAttachmentFlag( 0 ),
+		eRTAttachmentFlagColor1Bit       = CXU::RTOMakeAttachmentFlag( 1 ),
+		eRTAttachmentFlagColor2Bit       = CXU::RTOMakeAttachmentFlag( 2 ),
+		eRTAttachmentFlagColor3Bit       = CXU::RTOMakeAttachmentFlag( 3 ),
 		eRTAttachmentFlagDepthStencilBit = CXU::RTOMakeAttachmentFlag( kRTOAttachmentIndexDepthStencil ),
 		eRTAttachmentMaskColorAll        = cppx::make_lsfb_bitmask<uint32>( GCM::kRTOMaxColorAttachmentsNum ),
 		eRTAttachmentMaskAll             = eRTAttachmentMaskColorAll | eRTAttachmentFlagDepthStencilBit,
@@ -356,62 +394,32 @@ namespace Ic3::Graphics::GCI
 	namespace CXU
 	{
 
-		inline constexpr uint16 MakePipelineStateDescriptorIDUserComponent( native_uint pUserIDComponent )
+		CPPX_ATTR_NO_DISCARD inline constexpr uint16 MakePipelineStateDescriptorIDUserComponent( native_uint pUserIDComponent )
 		{
 			return ( static_cast<uint16>( pUserIDComponent ) & 0x0FFF );
 		}
 
-		inline constexpr pipeline_state_descriptor_id_t MakePipelineStateDescriptorID( EPipelineStateDescriptorType pDescriptorType, native_uint pUserIDComponent )
+		CPPX_ATTR_NO_DISCARD inline constexpr pipeline_state_descriptor_id_t MakePipelineStateDescriptorID( EPipelineStateDescriptorType pDescriptorType, native_uint pUserIDComponent )
 		{
 			return ( ( static_cast<uint16>( pDescriptorType ) << 12 ) | MakePipelineStateDescriptorIDUserComponent( pUserIDComponent ) );
 		}
 
-		inline constexpr pipeline_state_descriptor_id_t MakePipelineStateDescriptorIDBlendState( uint16 pUserIDComponent )
-		{
-			return MakePipelineStateDescriptorID( EPipelineStateDescriptorType::DTBlendState, pUserIDComponent );
-		}
-
-		inline constexpr pipeline_state_descriptor_id_t MakePipelineStateDescriptorIDDepthStencilState( uint16 pUserIDComponent )
-		{
-			return MakePipelineStateDescriptorID( EPipelineStateDescriptorType::DTDepthStencilState, pUserIDComponent );
-		}
-
-		inline constexpr pipeline_state_descriptor_id_t MakePipelineStateDescriptorIDRasterizerState( uint16 pUserIDComponent )
-		{
-			return MakePipelineStateDescriptorID( EPipelineStateDescriptorType::DTRasterizerState, pUserIDComponent );
-		}
-
-		inline constexpr pipeline_state_descriptor_id_t MakePipelineStateDescriptorIDGraphicsShaderLinkage( uint16 pUserIDComponent )
-		{
-			return MakePipelineStateDescriptorID( EPipelineStateDescriptorType::DTGraphicsShaderLinkage, pUserIDComponent );
-		}
-
-		inline constexpr pipeline_state_descriptor_id_t MakePipelineStateDescriptorIDVertexAttributeLayout( uint16 pUserIDComponent )
-		{
-			return MakePipelineStateDescriptorID( EPipelineStateDescriptorType::DTVertexAttributeLayout, pUserIDComponent );
-		}
-
-		inline constexpr pipeline_state_descriptor_id_t MakePipelineStateDescriptorIDRootSignature( uint16 pUserIDComponent )
-		{
-			return MakePipelineStateDescriptorID( EPipelineStateDescriptorType::DTRootSignature, pUserIDComponent );
-		}
-
-		inline constexpr pipeline_state_descriptor_id_t MakePipelineStateDescriptorIDRenderPass( uint16 pUserIDComponent )
+		CPPX_ATTR_NO_DISCARD inline constexpr pipeline_state_descriptor_id_t MakePipelineStateDescriptorIDRenderPass( uint16 pUserIDComponent )
 		{
 			return MakePipelineStateDescriptorID( EPipelineStateDescriptorType::DTRenderPass, pUserIDComponent );
 		}
 
-		inline constexpr pipeline_state_descriptor_id_t MakePipelineStateDescriptorIDRenderTarget( uint16 pUserIDComponent )
+		CPPX_ATTR_NO_DISCARD inline constexpr pipeline_state_descriptor_id_t MakePipelineStateDescriptorIDRenderTarget( uint16 pUserIDComponent )
 		{
 			return MakePipelineStateDescriptorID( EPipelineStateDescriptorType::DTRenderTarget, pUserIDComponent );
 		}
 
-		inline constexpr pipeline_state_descriptor_id_t MakePipelineStateDescriptorIDVertexSourceBinding( uint16 pUserIDComponent )
+		CPPX_ATTR_NO_DISCARD inline constexpr pipeline_state_descriptor_id_t MakePipelineStateDescriptorIDVertexSourceBinding( uint16 pUserIDComponent )
 		{
 			return MakePipelineStateDescriptorID( EPipelineStateDescriptorType::DTVertexSourceBinding, pUserIDComponent );
 		}
 
-		inline constexpr EPipelineStateDescriptorType GetPipelineStateDescriptorIDTypeComponent( pipeline_state_descriptor_id_t pDescriptorID )
+		CPPX_ATTR_NO_DISCARD inline constexpr EPipelineStateDescriptorType GetPipelineStateDescriptorIDTypeComponent( pipeline_state_descriptor_id_t pDescriptorID )
 		{
 			const auto descriptorTypeComponent = ( ( pDescriptorID & 0xF000 ) >> 12 );
 
@@ -420,12 +428,12 @@ namespace Ic3::Graphics::GCI
 				   EPipelineStateDescriptorType::Invalid;
 		}
 
-		inline constexpr uint16 GetPipelineStateDescriptorIDUserComponent( pipeline_state_descriptor_id_t pDescriptorID )
+		CPPX_ATTR_NO_DISCARD inline constexpr uint16 GetPipelineStateDescriptorIDUserComponent( pipeline_state_descriptor_id_t pDescriptorID )
 		{
 			return ( pDescriptorID & 0x0FFF );
 		}
 
-		inline constexpr bool IsPipelineStateDescriptorIDValid( pipeline_state_descriptor_id_t pDescriptorID )
+		CPPX_ATTR_NO_DISCARD inline constexpr bool IsPipelineStateDescriptorIDValid( pipeline_state_descriptor_id_t pDescriptorID )
 		{
 			const auto typeComponent = GetPipelineStateDescriptorIDTypeComponent( pDescriptorID );
 			const auto userIDComponent = GetPipelineStateDescriptorIDUserComponent( pDescriptorID );

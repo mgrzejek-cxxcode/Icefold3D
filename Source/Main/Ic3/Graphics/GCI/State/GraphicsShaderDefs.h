@@ -15,23 +15,24 @@ namespace Ic3::Graphics::GCI
 		///
 		cppx::bitmask<EShaderStageFlags> activeStagesMask;
 
-		///
-		uint32 activeStagesNum;
-
 		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept
 		{
 			return !IsEmpty();
 		}
 
+		CPPX_ATTR_NO_DISCARD uint32 GetActiveStagesNum() const noexcept
+		{
+			return ( activeStagesMask & eShaderStageMaskGraphicsAll ).count_bits();
+		}
+
 		CPPX_ATTR_NO_DISCARD bool IsEmpty() const noexcept
 		{
-			return activeStagesMask.empty() || ( activeStagesNum == 0 );
+			return activeStagesMask.empty();
 		}
 
 		void ResetActiveStagesInfo() noexcept
 		{
 			activeStagesMask.clear();
-			activeStagesNum = 0;
 		}
 	};
 
@@ -83,7 +84,6 @@ namespace Ic3::Graphics::GCI
 			{
 				commonShaderArray = pRhs.commonShaderArray;
 				activeStagesMask = pRhs.activeStagesMask;
-				activeStagesNum = pRhs.activeStagesNum;
 			}
 			return *this;
 		}
@@ -124,8 +124,7 @@ namespace Ic3::Graphics::GCI
 		{
 			return cppx::hash_compute<pipeline_config_hash_t::hash_algo>(
 					shaderBinding.commonShaderArray,
-					shaderBinding.activeStagesMask,
-					shaderBinding.activeStagesNum );
+					shaderBinding.activeStagesMask );
 		}
 	};
 

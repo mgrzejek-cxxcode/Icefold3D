@@ -57,6 +57,8 @@ namespace Ic3::Graphics::GCI
 
 		D3D11_FILTER TranslateDX11ETextureFilter( ETextureFilter magFilter, ETextureFilter minFilter, ETextureMipMode mipMode, uint32 anisotropyLevel );
 
+		D3D11_INPUT_CLASSIFICATION DXTranslateVertexAttribDataRate( EIAVertexAttributeDataRate pDataRate );
+
 	};
 
 } // namespace Ic3::Graphics::GCI

@@ -5,6 +5,7 @@ set( IC3_GRAPHICS_GCI_SRC_FILES
     "Prerequisites/CommonTypes.h"
     "Prerequisites/CoreInterfaceDefs.h"
     "Prerequisites/CoreInterfaceDefs.cpp"
+    "Prerequisites/GCITypeInfo.h"
     "Prerequisites/GPUDataFormats.h"
     "Prerequisites/VertexAttribFormatUtils.h"
 
@@ -16,6 +17,8 @@ set( IC3_GRAPHICS_GCI_SRC_FILES
     "CommandContext.cpp"
     "CommandList.h"
     "CommandList.cpp"
+    "CommandListImplRenderPassGeneric.h"
+    "CommandListImplRenderPassGeneric.cpp"
     "CommandSystem.h"
     "CommandSystem.cpp"
     "DisplayCommon.h"
@@ -23,6 +26,8 @@ set( IC3_GRAPHICS_GCI_SRC_FILES
     "DisplayManager.cpp"
     "GPUDevice.h"
     "GPUDevice.cpp"
+    "GPUDeviceFeatureQuery.h"
+    "GPUDeviceFeatureQuery.cpp"
     "GPUDeviceNull.h"
     "GPUDriver.h"
     "GPUDriver.cpp"
@@ -82,6 +87,7 @@ set( IC3_GRAPHICS_GCI_SRC_FILES
     "State/GraphicsPipelineStateCommon.h"
     "State/GraphicsPipelineStateCommon.cpp"
     "State/GraphicsPipelineStateController.h"
+    "State/GraphicsPipelineStateController.inl"
     "State/GraphicsPipelineStateController.cpp"
     "State/PipelineStateDescriptorCache.h"
     "State/PipelineStateDescriptorCache.cpp"
@@ -89,6 +95,8 @@ set( IC3_GRAPHICS_GCI_SRC_FILES
     "State/GraphicsPipelineStateDescriptorCommon.cpp"
     "State/GraphicsPipelineStateDescriptorIA.h"
     "State/GraphicsPipelineStateDescriptorIA.cpp"
+    "State/GraphicsPipelineStateDescriptorIADynamic.h"
+    "State/GraphicsPipelineStateDescriptorIADynamic.cpp"
     "State/GraphicsPipelineStateDescriptorRTArrayCommon.h"
     "State/GraphicsPipelineStateDescriptorRTO.h"
     "State/GraphicsPipelineStateDescriptorRTO.cpp"
@@ -96,6 +104,12 @@ set( IC3_GRAPHICS_GCI_SRC_FILES
     "State/GraphicsPipelineStateDescriptorRTODynamic.cpp"
     "State/GraphicsPipelineStateDescriptorShader.h"
     "State/GraphicsPipelineStateDescriptorShader.cpp"
+    "State/GraphicsPipelineStateImplRenderPassGeneric.h"
+    "State/GraphicsPipelineStateImplRenderPassGeneric.cpp"
+    "State/GraphicsPipelineStateImplSeparableState.h"
+    "State/GraphicsPipelineStateImplSeparableState.inl"
+    "State/GraphicsPipelineStateImplSeparableState.cpp"
+
     "State/GraphicsShaderDefs.h"
     "State/GraphicsShaderDefs.cpp"
 
@@ -112,40 +126,29 @@ set( IC3_GRAPHICS_GCI_SRC_FILES
     "State/SamplerCommon.cpp"
     "State/RootSignature.h"
     "State/RootSignature.cpp"
-    "State/PipelineStateDescriptorRootSignature.h"
-    "State/PipelineStateDescriptorRootSignature.cpp"
 
     "State/PipelineStateCommon.h"
     "State/PipelineStateCommon.cpp"
+    "State/PipelineStateController.h"
+    "State/PipelineStateController.cpp"
+    "State/PipelineStateDescriptor.h"
+    "State/PipelineStateDescriptor.cpp"
     "State/PipelineStateDescriptorCacheUnit.h"
     "State/PipelineStateDescriptorCacheUnit.cpp"
+    "State/PipelineStateDescriptorDynamic.h"
     "State/PipelineStateDescriptorFactory.h"
     "State/PipelineStateDescriptorFactory.cpp"
     "State/PipelineStateDescriptorManager.h"
     "State/PipelineStateDescriptorManager.cpp"
-    "State/GraphicsPipelineStateCommon.h"
-    "State/GraphicsPipelineStateCommon.cpp"
-    "State/GraphicsPipelineStateImplSeparableState.h"
-    "State/GraphicsPipelineStateImplSeparableState.cpp"
+    "State/PipelineStateDescriptorRootSignature.h"
+    "State/PipelineStateDescriptorRootSignature.cpp"
+    "State/PipelineStateImplRootSignatureGeneric.h"
+    "State/PipelineStateImplRootSignatureGeneric.cpp"
 
-    State/PipelineStateDescriptor.cpp
-    State/PipelineStateDescriptor.h
-    State/PipelineStateController.cpp
-    State/PipelineStateController.h
-    State/PipelineStateDescriptorDynamic.h
-    State/GraphicsPipelineStateDescriptorIADynamic.cpp
-    State/GraphicsPipelineStateDescriptorIADynamic.h
-    GPUDeviceFeatureQuery.h
-    GPUDeviceFeatureQuery.cpp
-    State/GraphicsPipelineStateController.inl
-    State/GraphicsPipelineStateImplGenericRenderPass.h
-    State/GraphicsPipelineStateImplGenericRenderPass.cpp
-    State/GraphicsPipelineStateImplSeparableState.inl
-    CommandListImplGenericRenderPass.h
-    State/ShaderInputSignature.cpp
-    State/ShaderInputSignature.h
-    TypeInfo/TPIDefsGCIEnum.cpp
-    Prerequisites/GCITypeInfo.h
+    "State/ShaderInputSignature.h"
+    "State/ShaderInputSignature.cpp"
+
+    "TypeInfo/TPIDefsGCIEnum.cpp"
 
 )
 

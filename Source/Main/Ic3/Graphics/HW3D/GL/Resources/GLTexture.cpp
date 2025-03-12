@@ -23,15 +23,15 @@ namespace Ic3::Graphics::GCI
 	GLTextureHandle GLTexture::CreateDefault( GLGPUDevice & pGPUDevice, const TextureCreateInfo & pCreateInfo )
 	{
 		GLTextureCreateInfo openglCreateInfo;
-		openglCreateInfo.bindTarget = ATL::TranslateGLTextureBindTarget( pCreateInfo.texClass );
+		openglCreateInfo.bindTarget = ATL::GLTranslateTextureBindTarget( pCreateInfo.texClass );
 		openglCreateInfo.dimensions = RCU::GetValidTextureDimensions( pCreateInfo.texClass, pCreateInfo.dimensions );
 		openglCreateInfo.msaaLevel = pCreateInfo.msaaLevel;
-		openglCreateInfo.internalFormat = ATL::TranslateGLTextureInternalFormat( pCreateInfo.internalFormat );
-		openglCreateInfo.openglInitDataDesc.subTextureInitDataPtr = pCreateInfo.mInitDataDesc.GetSubTextureInitDataArrayPtr();
-		openglCreateInfo.openglInitDataDesc.textureInitFlags = pCreateInfo.mInitDataDesc.GetInitFlags();
+		openglCreateInfo.internalFormat = ATL::GLTranslateTextureInternalFormat( pCreateInfo.internalFormat );
+		openglCreateInfo.openglInitDataDesc.subTextureInitDataPtr = pCreateInfo.initDataDesc.GetSubTextureInitDataArrayPtr();
+		openglCreateInfo.openglInitDataDesc.textureInitFlags = pCreateInfo.initDataDesc.GetInitFlags();
 		auto textureInitDataBaseType = CXU::GetTextureFormatBaseDataType( pCreateInfo.internalFormat );
-		openglCreateInfo.openglInitDataDesc.openglPixelDataLayout = ATL::TranslateGLTexturePixelDataLayout( pCreateInfo.internalFormat );
-		openglCreateInfo.openglInitDataDesc.openglPixelDataType = ATL::TranslateGLBaseDataType( textureInitDataBaseType );
+		openglCreateInfo.openglInitDataDesc.openglPixelDataLayout = ATL::GLTranslateTexturePixelDataLayout( pCreateInfo.internalFormat );
+		openglCreateInfo.openglInitDataDesc.openglPixelDataType = ATL::GLTranslateBaseDataType( textureInitDataBaseType );
 
 		GLTextureObjectHandle openglTextureObject = nullptr;
 		if( pGPUDevice.IsCompatibilityDevice() )
@@ -63,7 +63,7 @@ namespace Ic3::Graphics::GCI
 		textureLayout.internalFormat = pCreateInfo.internalFormat;
 		textureLayout.msaaLevel = pCreateInfo.msaaLevel;
 		textureLayout.storageSize = cppx::numeric_cast<uint32>( glcTextureByteSize );
-		textureLayout.bitsPerPixel = ATL::QueryGLTextureInternalFormatBPP( glcTextureInternalFormat );
+		textureLayout.bitsPerPixel = ATL::GLQueryTextureInternalFormatBPP( glcTextureInternalFormat );
 
 		auto openglTexture = CreateDynamicObject<GLTexture>(
 			pGPUDevice,

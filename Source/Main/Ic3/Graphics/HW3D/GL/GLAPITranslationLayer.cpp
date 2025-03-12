@@ -10,7 +10,7 @@
 namespace Ic3::Graphics::GCI
 {
 #if( IC3_GX_GL_TARGET == IC3_GX_GL_TARGET_GL43 )
-	GLenum ATL::ChooseGLBufferStorageFlags( GLenum pBindTarget, cppx::bitmask<resource_flags_value_t> pBufferFlags, cppx::bitmask<EGPUMemoryFlags> pMemoryFlags )
+	GLenum ATL::GLChooseBufferStorageFlags( GLenum pBindTarget, cppx::bitmask<resource_flags_value_t> pBufferFlags, cppx::bitmask<EGPUMemoryFlags> pMemoryFlags )
 	{
 		cppx::bitmask<GLenum> storageFlags = 0;
 
@@ -51,7 +51,7 @@ namespace Ic3::Graphics::GCI
 	}
 #endif
 
-	GLenum ATL::ChooseGLBufferUsagePolicy( GLenum pBindTarget, cppx::bitmask<resource_flags_value_t> pBufferFlags )
+	GLenum ATL::GLChooseBufferUsagePolicy( GLenum pBindTarget, cppx::bitmask<resource_flags_value_t> pBufferFlags )
 	{
 		// Usage constants have standard values. Use that fact to avoid huge if-else.
 		// Basically, we first select between DYNAMIC, STREAM and STATIC and then advance
@@ -99,7 +99,7 @@ namespace Ic3::Graphics::GCI
 		return usagePolicy;
 	}
 
-	GLenum ATL::ChooseGLTextureMagFilter( ETextureFilter pMagFilter, ETextureMipMode pMipMode )
+	GLenum ATL::GLChooseTextureMagFilter( ETextureFilter pMagFilter, ETextureMipMode pMipMode )
 	{
 		GLenum magFilter = GL_INVALID_VALUE;
 
@@ -119,7 +119,7 @@ namespace Ic3::Graphics::GCI
 		return magFilter;
 	}
 
-	GLenum ATL::ChooseGLTextureMinFilter( ETextureFilter pMinFilter, ETextureMipMode pMipMode )
+	GLenum ATL::GLChooseTextureMinFilter( ETextureFilter pMinFilter, ETextureMipMode pMipMode )
 	{
 		GLenum minFilter = GL_INVALID_VALUE;
 
@@ -172,7 +172,7 @@ namespace Ic3::Graphics::GCI
 		return minFilter;
 	}
 
-	GLsizei ATL::QueryGLTextureInternalFormatBPP( GLenum pGLInternalFormat )
+	GLsizei ATL::GLQueryTextureInternalFormatBPP( GLenum pGLInternalFormat )
 	{
 		switch( pGLInternalFormat )
 		{
@@ -245,7 +245,7 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::TranslateGLBaseDataType( EBaseDataType pBaseDataType )
+	GLenum ATL::GLTranslateBaseDataType( EBaseDataType pBaseDataType )
 	{
 		switch( pBaseDataType )
 		{
@@ -265,7 +265,7 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::TranslateGLBlendFactor( EBlendFactor pBlendFactor )
+	GLenum ATL::GLTranslateBlendFactor( EBlendFactor pBlendFactor )
 	{
 		switch( pBlendFactor )
 		{
@@ -286,7 +286,7 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::TranslateGLBlendOp( EBlendOp pBlendOp )
+	GLenum ATL::GLTranslateBlendOp( EBlendOp pBlendOp )
 	{
 		switch( pBlendOp )
 		{
@@ -300,7 +300,7 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::TranslateGLBufferBindTarget( EGPUBufferTarget pBufferTarget )
+	GLenum ATL::GLTranslateBufferBindTarget( EGPUBufferTarget pBufferTarget )
 	{
 		switch( pBufferTarget )
 		{
@@ -319,7 +319,7 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::TranslateGLBufferMapFlags( EGPUMemoryMapMode pMapMode, cppx::bitmask<EGPUMemoryFlags> pMemoryFlags )
+	GLenum ATL::GLTranslateBufferMapFlags( EGPUMemoryMapMode pMapMode, cppx::bitmask<EGPUMemoryFlags> pMemoryFlags )
 	{
 		cppx::bitmask<uint32> resourceMapFlags = static_cast<uint32>( pMapMode );
 		cppx::bitmask<GLenum> openglMapFlags = 0;
@@ -355,7 +355,7 @@ namespace Ic3::Graphics::GCI
 		return openglMapFlags;
 	}
 
-	GLenum ATL::TranslateGLCompFunc( ECompFunc pCompFunc )
+	GLenum ATL::GLTranslateCompFunc( ECompFunc pCompFunc )
 	{
 		switch( pCompFunc )
 		{
@@ -372,7 +372,7 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::TranslateGLCullMode( ECullMode pCullMode )
+	GLenum ATL::GLTranslateCullMode( ECullMode pCullMode )
 	{
 		switch( pCullMode )
 		{
@@ -384,7 +384,7 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::TranslateGLIndexDataFormat( EIndexDataFormat pIndexDataFormat )
+	GLenum ATL::GLTranslateIndexDataFormat( EIndexDataFormat pIndexDataFormat )
 	{
 		switch( pIndexDataFormat )
 		{
@@ -395,7 +395,7 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::TranslateGLPrimitiveFillMode( EPrimitiveFillMode pFillMode )
+	GLenum ATL::GLTranslatePrimitiveFillMode( EPrimitiveFillMode pFillMode )
 	{
 	#if( IC3_GX_GL_FEATURE_SUPPORT_PRIMITIVE_FILL_MODE )
 		switch( pFillMode )
@@ -408,7 +408,7 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::TranslateGLPrimitiveTopology( EPrimitiveTopology pTopology )
+	GLenum ATL::GLTranslatePrimitiveTopology( EPrimitiveTopology pTopology )
 	{
 		switch( pTopology )
 		{
@@ -431,7 +431,7 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::translateShaderType( EShaderType pShaderType )
+	GLenum ATL::GLTranslateShaderType( EShaderType pShaderType )
 	{
 		switch( pShaderType )
 		{
@@ -452,7 +452,7 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::TranslateGLStencilOp( EStencilOp pStencilOp )
+	GLenum ATL::GLTranslateStencilOp( EStencilOp pStencilOp )
 	{
 		switch( pStencilOp )
 		{
@@ -469,7 +469,7 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::TranslateGLTextureAddressMode( ETextureAddressMode pAddressMode )
+	GLenum ATL::GLTranslateTextureAddressMode( ETextureAddressMode pAddressMode )
 	{
 		switch( pAddressMode )
 		{
@@ -486,7 +486,7 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::TranslateGLTextureBindTarget( ETextureClass pTextureDimensionClass )
+	GLenum ATL::GLTranslateTextureBindTarget( ETextureClass pTextureDimensionClass )
 	{
 		switch( pTextureDimensionClass )
 		{
@@ -501,7 +501,7 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::TranslateGLTextureInternalFormat( ETextureFormat pTextureFormat )
+	GLenum ATL::GLTranslateTextureInternalFormat( ETextureFormat pTextureFormat )
 	{
 		switch( pTextureFormat )
 		{
@@ -579,7 +579,7 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::TranslateGLTexturePixelDataLayout( ETextureFormat pTextureFormat )
+	GLenum ATL::GLTranslateTexturePixelDataLayout( ETextureFormat pTextureFormat )
 	{
 		switch( pTextureFormat )
 		{
@@ -659,7 +659,7 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	GLenum ATL::TranslateGLTriangleVerticesOrder( ETriangleVerticesOrder pVerticesOrder )
+	GLenum ATL::GLTranslateTriangleVerticesOrder( ETriangleVerticesOrder pVerticesOrder )
 	{
 		switch( pVerticesOrder )
 		{
@@ -669,7 +669,7 @@ namespace Ic3::Graphics::GCI
 		return GL_IC3_ERR_INVALID_PARAM;
 	}
 
-	const char * ATL::TranslateGLDebugOutputExtensionName( GLDebugOutputVersion pDebugOutputVersion )
+	const char * ATL::GLTranslateDebugOutputExtensionName( GLDebugOutputVersion pDebugOutputVersion )
 	{
 		switch( pDebugOutputVersion )
 		{
@@ -681,7 +681,7 @@ namespace Ic3::Graphics::GCI
 		return "Unknown";
 	}
 
-	const char * ATL::TranslateGLDebugEventCategoryStrAMD( GLenum pEventCategory )
+	const char * ATL::GLTranslateDebugEventCategoryStrAMD( GLenum pEventCategory )
 	{
 	#if( IC3_GX_GL_FEATURE_SUPPORT_DEBUG_OUTPUT )
 		switch( pEventCategory )
@@ -699,7 +699,7 @@ namespace Ic3::Graphics::GCI
 		return "Unknown";
 	}
 
-	const char * ATL::TranslateGLDebugEventSeverityStr( GLenum pEventSeverity )
+	const char * ATL::GLTranslateDebugEventSeverityStr( GLenum pEventSeverity )
 	{
 	#if( IC3_GX_GL_FEATURE_SUPPORT_DEBUG_OUTPUT )
 	    switch( pEventSeverity )
@@ -713,7 +713,7 @@ namespace Ic3::Graphics::GCI
 		return "Unknown";
 	}
 
-	const char * ATL::TranslateGLDebugEventSourceStr( GLenum pEventSource )
+	const char * ATL::GLTranslateDebugEventSourceStr( GLenum pEventSource )
 	{
 	#if( IC3_GX_GL_FEATURE_SUPPORT_DEBUG_OUTPUT )
 	    switch( pEventSource )
@@ -729,7 +729,7 @@ namespace Ic3::Graphics::GCI
 		return "Unknown";
 	}
 
-	const char * ATL::TranslateGLDebugEventTypeStr( GLenum pEventType )
+	const char * ATL::GLTranslateDebugEventTypeStr( GLenum pEventType )
 	{
 	#if( IC3_GX_GL_FEATURE_SUPPORT_DEBUG_OUTPUT )
 	    switch( pEventType )

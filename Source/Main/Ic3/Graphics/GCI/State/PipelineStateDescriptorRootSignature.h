@@ -13,7 +13,7 @@ namespace Ic3::Graphics::GCI
 	/**
 	 *
 	 */
-	class IC3_GRAPHICS_GCI_CLASS RootSignatureDescriptor : public PipelineStateDescriptor
+	class IC3_GRAPHICS_GCI_CLASS RootSignatureDescriptor : public GCIPipelineStateDescriptor<CachedPipelineStateDescriptor<PipelineStateDescriptor>>
 	{
 		Ic3DeclareNonCopyable( RootSignatureDescriptor );
 
@@ -23,31 +23,6 @@ namespace Ic3::Graphics::GCI
 
 		CPPX_ATTR_NO_DISCARD virtual EPipelineStateDescriptorType GetDescriptorType() const noexcept override final;
 	};
-
-
-	namespace PIM
-	{
-
-		/**
-		 *
-		 */
-		class IC3_GRAPHICS_GCI_CLASS RootSignatureDescriptorGeneric : public RootSignatureDescriptor
-		{
-			Ic3DeclareNonCopyable( RootSignatureDescriptorGeneric );
-
-		public:
-			RootSignature const mRootSignature;
-
-		public:
-			RootSignatureDescriptorGeneric( GPUDevice & pGPUDevice, RootSignature pRootSignature );
-			virtual ~RootSignatureDescriptorGeneric();
-
-			CPPX_ATTR_NO_DISCARD static TGfxHandle<RootSignatureDescriptorGeneric> CreateInstance(
-					GPUDevice & pGPUDevice,
-					const RootSignatureDescriptorCreateInfo & pCreateInfo );
-		};
-
-	} // namespace PIM
 
 } // namespace Ic3::Graphics::GCI
 

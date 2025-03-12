@@ -125,7 +125,7 @@ namespace Ic3::Graphics::GCI
 	{
 	public:
 		///
-		const GraphicsShaderBinding & mBindingConfiguration;
+		const GraphicsShaderBinding & mShaderBinding;
 
 	public:
 		GraphicsPipelineStateObjectSeparableShader(
@@ -133,7 +133,7 @@ namespace Ic3::Graphics::GCI
 				pipeline_state_object_id_t pStateObjectID,
 				const RenderTargetLayout & pRenderTargetLayout,
 				const SeparableGraphicsPSDSet & pSeparableDescriptors,
-				const GraphicsShaderBinding & pBindingConfiguration );
+				const GraphicsShaderBinding & pGraphicsShaderBinding );
 
 		virtual ~GraphicsPipelineStateObjectSeparableShader();
 	};

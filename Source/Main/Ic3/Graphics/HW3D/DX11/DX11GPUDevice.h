@@ -4,16 +4,28 @@
 #ifndef __IC3_GRAPHICS_HW3D_DX11_GPU_DEVICE_H__
 #define __IC3_GRAPHICS_HW3D_DX11_GPU_DEVICE_H__
 
-#include "DX11Prerequisites.h"
-#include "State/DX11pipelineCompiledDescriptorFactory.h"
-#include <Ic3/Graphics/HW3D/DX/DXgpuDevice.h>
-#include <Ic3/Graphics/GCI/State/SharedCompiledStateCache.h>
+#include "DX11APITranslationLayer.h"
+#include "State/DX11PipelineStateDescriptorFactory.h"
+#include <Ic3/Graphics/HW3D/DX/DXGPUDevice.h>
+#include <Ic3/Graphics/GCI/State/PipelineStateDescriptorManager.h>
 
 namespace Ic3::Graphics::GCI
 {
 
 	struct DX11GPUDeviceCreateInfo : public GPUDeviceCreateInfo
 	{
+	};
+
+	class IC3_GX_DX11_CLASS DX11GPUDeviceFeatureQuery : public GPUDeviceFeatureQuery
+	{
+	public:
+		DX11GPUDeviceFeatureQuery() = default;
+		virtual ~DX11GPUDeviceFeatureQuery() = default;
+
+		virtual MultiSamplingSettingsList EnumSupportedMultisamplingConfigs( ETextureFormat pFormat ) const noexcept override final
+		{
+			return {};
+		}
 	};
 
 	/// @brief
@@ -52,8 +64,9 @@ namespace Ic3::Graphics::GCI
 				const GraphicsPipelineStateObjectCreateInfo & pCreateInfo ) override final;
 
 	private:
-		DX11PipelineStateDescriptorFactory _immutableDescriptorFactoryDX11;
-		PipelineCompiledStateCache _stateDescriptorCache;
+		DX11PipelineStateDescriptorFactory _dx11PipelineStateDescriptorFactory;
+		PipelineStateDescriptorManager _pipelineStateDescriptorManager;
+		DX11GPUDeviceFeatureQuery _dx11DeviceFeatureQueryInterface;
 	};
 
 } // namespace Ic3::Graphics::GCI
