@@ -316,7 +316,7 @@ namespace Ic3::Graphics::GCI
 			return ( pFormat != EVertexAttribFormat::Undefined ) && ( pFormat != EVertexAttribFormat::Undefined );
 		}
 
-		CPPX_ATTR_NO_DISCARD inline constexpr uint32 GetVertexAttribFormatByteSize( EVertexAttribFormat pFormat ) noexcept
+		CPPX_ATTR_NO_DISCARD inline constexpr uint16 GetVertexAttribFormatByteSize( EVertexAttribFormat pFormat ) noexcept
 		{
 			Ic3DebugAssert( pFormat != EVertexAttribFormat::Undefined );
 			return GetBaseDataTypeByteSize( GetVertexAttribFormatBaseDataType( pFormat ) ) * GetVertexAttribFormatComponentsNum( pFormat );

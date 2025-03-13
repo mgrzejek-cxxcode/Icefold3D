@@ -52,9 +52,9 @@ namespace Ic3::Graphics::GCI
 	{
 		_graphicsPipelineStateControllerDX11.ApplyStateChanges();
 		mD3D11DeviceContext1->DrawIndexed(
-				pIndicesNum,
-				pIndicesOffset,
-				pBaseVertexIndex );
+				cppx::numeric_cast<UINT>( pIndicesNum ),
+				cppx::numeric_cast<UINT>( pIndicesOffset) ,
+				cppx::numeric_cast<INT>( pBaseVertexIndex ) );
 	}
 
 	void DX11CommandList::CmdDrawDirectIndexedInstanced(
@@ -64,9 +64,9 @@ namespace Ic3::Graphics::GCI
 	{
 		_graphicsPipelineStateControllerDX11.ApplyStateChanges();
 		mD3D11DeviceContext1->DrawIndexedInstanced(
-				pIndicesNumPerInstance,
-				pInstancesNum,
-				pIndicesOffset,
+				cppx::numeric_cast<UINT>( pIndicesNumPerInstance ),
+				cppx::numeric_cast<UINT>( pInstancesNum ),
+				cppx::numeric_cast<UINT>( pIndicesOffset ),
 				0,
 				0 );
 	}
@@ -77,8 +77,8 @@ namespace Ic3::Graphics::GCI
 	{
 		_graphicsPipelineStateControllerDX11.ApplyStateChanges();
 		mD3D11DeviceContext1->Draw(
-				pVerticesNum,
-				pVerticesOffset );
+				cppx::numeric_cast<UINT>( pVerticesNum ),
+				cppx::numeric_cast<UINT>( pVerticesOffset ) );
 	}
 
 	void DX11CommandList::CmdDrawDirectNonIndexedInstanced(
@@ -86,6 +86,15 @@ namespace Ic3::Graphics::GCI
 			native_uint pInstancesNum,
 			native_uint pVerticesOffset )
 	{
+		// TODO: Review DrawInstanced() parameters when working on instancing, StartInstanceLocation seems to be missing!
+		Ic3DebugInterrupt(); 
+
+		_graphicsPipelineStateControllerDX11.ApplyStateChanges();
+		mD3D11DeviceContext1->DrawInstanced(
+			cppx::numeric_cast<UINT>( pVerticesNumPerInstance ),
+			cppx::numeric_cast<UINT>( pInstancesNum ),
+			cppx::numeric_cast<UINT>( pVerticesOffset ),
+			0 );
 	}
 
 	void DX11CommandList::CmdExecuteDeferredContext( CommandContextDeferred & pDeferredContext )

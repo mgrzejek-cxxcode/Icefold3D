@@ -153,7 +153,7 @@ namespace Ic3::Graphics::GCI
 		if( updateResult )
 		{
 			const auto * glcVertexSourceBindingDescriptor = pVertexSourceBindingDescriptor.QueryInterface<GLVertexSourceBindingDescriptor>();
-			_glcCurrentPipelineBindings.vertexSourceBinding = &( glcVertexSourceBindingDescriptor->mGLVertexSourceBinding );
+			_glcCurrentPipelineBindings.vertexSourceBinding = glcVertexSourceBindingDescriptor->mGLVertexSourceBinding.get();
 		}
 
 		return updateResult;
@@ -168,23 +168,28 @@ namespace Ic3::Graphics::GCI
 		{
 			if( !pVertexSourceBindingDescriptor.IsDynamicDriverStateInitialized() )
 			{
-				InitializeDynamicDriverStateForDescriptor<GLIAVertexSourceBinding>( pVertexSourceBindingDescriptor );
-			}
-			auto * glcVertexSourceBindingDriverState = pVertexSourceBindingDescriptor.GetDynamicDriverStateAs<GLIAVertexSourceBinding>();
+				auto * glcVertexSourceBindingDriverState =
+					InitializeDynamicDriverStateForDescriptor<GLIAVertexSourceBindingPtr>( pVertexSourceBindingDescriptor );
 
-			auto & glcVertexSourceBinding = glcVertexSourceBindingDriverState->mDriverData;
-			if( &glcVertexSourceBinding != _glcCurrentPipelineBindings.vertexSourceBinding )
+				const auto activeVertexBuffersNum = pVertexSourceBindingDescriptor.CountActiveVertexBuffers();
+				glcVertexSourceBindingDriverState->mDriverData = MakeUniqueDynamicallySizedTemplate<GLIAVertexSourceBinding>( activeVertexBuffersNum );
+			}
+
+			auto * glcVertexSourceBindingDriverState = pVertexSourceBindingDescriptor.GetDynamicDriverStateAs<GLIAVertexSourceBindingPtr>();
+			auto & glcVertexSourceBindingPtr = glcVertexSourceBindingDriverState->mDriverData;
+
+			if( glcVertexSourceBindingPtr.get() != _glcCurrentPipelineBindings.vertexSourceBinding )
 			{
 				if( IsDynamicDescriptorConfigurationModified( pVertexSourceBindingDescriptor ) )
 				{
 					GCU::IAUpdateVertexSourceBindingDefinitionGL(
 							pVertexSourceBindingDescriptor.GetVertexSourceBindingDefinition(),
-							glcVertexSourceBinding );
+							*glcVertexSourceBindingPtr );
 
 					ResetDynamicDescriptorConfigurationModifiedState( pVertexSourceBindingDescriptor );
 				}
 
-				_glcCurrentPipelineBindings.vertexSourceBinding = &glcVertexSourceBinding;
+				_glcCurrentPipelineBindings.vertexSourceBinding = glcVertexSourceBindingPtr.get();
 			}
 
 		}
@@ -333,7 +338,7 @@ namespace Ic3::Graphics::GCI
 		return *( _glcCurrentPipelineBindings.renderTargetBinding );
 	}
 
-	const GLIAVertexSourceBinding & GLGraphicsPipelineStateController::GetGLVertexSourceBinding() const noexcept
+	const GLIAVertexSourceBindingBase & GLGraphicsPipelineStateController::GetGLVertexSourceBinding() const noexcept
 	{
 		return *( _glcCurrentPipelineBindings.vertexSourceBinding );
 	}
@@ -438,10 +443,8 @@ namespace Ic3::Graphics::GCI
 			{
 				const auto & glcVertexSourceBinding = GetGLVertexSourceBinding();
 
-				// Execute bindings for vertex buffers.
-				const auto & vertexBufferBindings = glcVertexSourceBinding.vertexBufferBindings;
 				// Vertex buffer bindings are executed directly by the state controller - no caching is done here..
-				ApplyVertexBufferBindings( vertexBufferBindings );
+				ApplyVertexBufferBindings( glcVertexSourceBinding );
 
 				// Execute the binding for the index buffer.
 				const auto & indexBufferBinding = glcVertexSourceBinding.indexBufferBinding;
@@ -479,47 +482,18 @@ namespace Ic3::Graphics::GCI
 				pConstantData );
 	}
 
-	void GLGraphicsPipelineStateControllerCore::ApplyVertexBufferBindings( const GLIAVertexBufferArrayBindings & pVertexBufferBindings )
+
+	void GLGraphicsPipelineStateControllerCore::ApplyVertexBufferBindings( const GLIAVertexSourceBindingBase & pGLVertexSourceBinding )
 	{
-	#if( IC3_GX_GL_PLATFORM_TYPE == IC3_GX_GL_PLATFORM_TYPE_ES )
-		for( const auto & activeVertexBuffersRange : pVertexBufferBindings.activeRanges )
+		for( const auto & vertexBufferBinding : pGLVertexSourceBinding.vertexBufferBindings )
 		{
-			for( uint32 bindingOffset = 0; bindingOffset < activeVertexBuffersRange.length; ++bindingOffset )
-			{
-				const auto & vertexBufferBinding =
-						pVertexBufferBindings.interleavedBindings[activeVertexBuffersRange.firstIndex + bindingOffset];
-
-				glBindVertexBuffer(
-						streamIndex,
-						vertexBufferBinding.handle,
-						vertexBufferBinding.offset,
-						vertexBufferBinding.stride );
-				Ic3OpenGLHandleLastError();
-			}
-		}
-	#else
-		// Bind all vertex buffers at once using multi-bind. Note, that this also updates the unused bind slots,
-		// to properly have buffer object '0' set as the source VBO (deactivating it). Doing that makes profiling
-		// and debugging a lot easier (unused buffers from previous passes did some confusion in few cases).
-		// glBindVertexBuffers(
-		// 	0u,
-		// 	GCM::IA_MAX_VERTEX_BUFFER_BINDINGS_NUM,
-		// 	&( pVertexBufferBindings.separateBindings.handleArray[0] ),
-		// 	&( pVertexBufferBindings.separateBindings.offsetArray[0] ),
-		// 	&( pVertexBufferBindings.separateBindings.strideArray[0] ) );
-		// Ic3OpenGLHandleLastError();
-
-		for( const auto & activeVertexBuffersRange : pVertexBufferBindings.activeRanges )
-		{
-			glBindVertexBuffers(
-					activeVertexBuffersRange.firstIndex,
-					activeVertexBuffersRange.length,
-					&( pVertexBufferBindings.separateBindings.handleArray[activeVertexBuffersRange.firstIndex] ),
-					&( pVertexBufferBindings.separateBindings.offsetArray[activeVertexBuffersRange.firstIndex] ),
-					&( pVertexBufferBindings.separateBindings.strideArray[activeVertexBuffersRange.firstIndex] ) );
+			glBindVertexBuffer(
+				vertexBufferBinding.streamIndex,
+				vertexBufferBinding.handle,
+				vertexBufferBinding.offset,
+				vertexBufferBinding.stride );
 			Ic3OpenGLHandleLastError();
 		}
-	#endif
 	}
 
 
@@ -595,7 +569,7 @@ namespace Ic3::Graphics::GCI
 
 	const GLVertexArrayObject & GLGraphicsPipelineStateControllerCompat::GetCachedVertexArrayObject(
 			const GLIAVertexAttributeLayout & pGLAttributeLayoutDefinition,
-			const GLIAVertexSourceBinding & pGLVertexSourceBinding )
+			const GLIAVertexSourceBindingBase & pGLVertexSourceBinding )
 	{
 		auto * glcVertexArrayObjectCache = mGLGPUDevice.GetVertexArrayObjectCache();
 		Ic3DebugAssert( glcVertexArrayObjectCache );

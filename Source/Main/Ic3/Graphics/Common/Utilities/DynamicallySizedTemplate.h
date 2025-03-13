@@ -1,0 +1,242 @@
+
+#ifndef __IC3_GRAPHICS_COMMON_DYNAMICALLY_SIZED_TEMPLATE_H__
+#define __IC3_GRAPHICS_COMMON_DYNAMICALLY_SIZED_TEMPLATE_H__
+
+/*
+ * An implementation of few simple utility functions used to implement an efficient way of
+ * storing dynamically-sized API data. Consider the following definition from the DX11 renderer:
+ *
+ * struct DX11RenderTargetBinding : public RenderTargetArrayCommonConfig
+ * {
+ * 	 RenderTargetLayout renderTargetLayout;
+ *
+ * 	 DX11RenderTargetColorAttachment        colorAttachments[GCM::kRTOMaxColorAttachmentsNum];
+ * 	 DX11RenderTargetResolveAttachment      colorResolveAttachments[GCM::kRTOMaxColorAttachmentsNum];
+ * 	 ID3D11RenderTargetView *               colorAttachmentRTVs[GCM::kRTOMaxColorAttachmentsNum];
+ *
+ * 	 DX11RenderTargetDepthStencilAttachment depthStencilAttachment;
+ * 	 DX11RenderTargetResolveAttachment      depthStencilResolveAttachment;
+ * 	 ID3D11DepthStencilView *               depthStencilAttachmentDSV;
+ * };
+ *
+ * The engine supports up to kRTOMaxColorAttachmentsNum RT color attachments, so in order to properly
+ * handle it we can either:
+ * 1) Define space for maximum number of allowed elements (example above). This has an advantage in some
+ *    APIs (like D3D11) where a continuous array can be spcified in a single API call (reduced API overhead),
+ *    but quickly creates a huge problem with memory overhead - the struct above weights hefty ~600 bytes
+ *    and this is just for ONE binding set. This is huge waste of memory, especially given that in a lot
+ *    of situations RTA definition will reference just one color attachment and one depth-stencil attachment.
+ *    It gets even worse when it comes to Input Assembler stuff (up to 16 attributes and 16 vertex buffers).
+ * 2) An alternative would be, of course, dynamic allocation. This, however, introduces an additional level
+ *    of indirection, few more allocations and deallocation per object and - most importantly - makes our data
+ *    spread across different regions of memory.
+ * 
+ * In order to address this, a replacement shown below has been used instead:
+ *
+ * struct DX11RenderTargetBindingBase : public RenderTargetArrayCommonConfig
+ * {
+ * 	 // Number of elements pointed to by the pointers below
+ * 	 uint32 colorAttachmentsNum;
+ *	 
+ * 	 DX11RenderTargetColorAttachment *   colorAttachments;        // Points to DX11RenderTargetBinding<N>::colorAttachmentsArray
+ * 	 DX11RenderTargetResolveAttachment * colorResolveAttachments; // Points to DX11RenderTargetBinding<N>::colorResolveAttachmentsArray
+ * 	 ID3D11RenderTargetView *            colorAttachmentRTVs;     // Points to DX11RenderTargetBinding<N>::colorAttachmentRTVsArray
+ * };
+ *
+ * template <uint32 N>
+ * struct DX11RenderTargetBinding : public DX11RenderTargetBindingBase
+ * {
+ * 	 RenderTargetLayout renderTargetLayout;
+ *
+ * 	 DX11RenderTargetColorAttachment        colorAttachmentsArray[N];
+ * 	 DX11RenderTargetResolveAttachment      colorResolveAttachmentsArray[N];
+ * 	 ID3D11RenderTargetView *               colorAttachmentRTVsArray[N];
+ * 
+ * 	 DX11RenderTargetDepthStencilAttachment depthStencilAttachment;
+ * 	 DX11RenderTargetResolveAttachment      depthStencilResolveAttachment;
+ * 	 ID3D11DepthStencilView *               depthStencilAttachmentDSV;
+ * };
+ * 
+ * In the API, we now use DX11RenderTargetBindingBase instead of DX11RenderTargetBinding and treats its internal
+ * pointers as a usual, dynamically-allocated memory, but they actually point to the data in the object itself.
+ * To create an instance of such a templated class, we use a helper function, CreateDynamicallySizedTemplate()
+ * which is a simple wrapper over a big switch-case over a set of fixed values.
+ * The current limit is 32 which is more than enough - the usage of this solution is primarily to aid with the
+ * graphics API data, where 32 is a limit that covers everything which is used with high frequency.
+ * 
+ * In the example above (DX11RenderTargetBinding) after re-implementation using this approach, the size of an object
+ * created for two attachments (Color0 + DepthStencil) has been reduced from the mentioned ~600 bytes to just 56 bytes.
+ * 
+ * 
+ * There are few common GCI classes implementing this concepts specifically for a certain portion of the GCI state.
+ * They can be found under Ic3/Graphics/GCI/Utilities and start with a prefix "DST" (Dynamically Sized Template).
+ *
+ */
+
+#include <Ic3/CoreLib/Prerequisites.h>
+
+namespace Ic3
+{
+
+	/*
+	 * Below functions serve as "factories" for the templates like the one in the example above. To create,
+	 * let's say, DX11RenderTargetBinding for 2 color attachments, we could do:
+	 * 
+	 * auto rtBinding = CreateDynamicallySizedTemplate<DX11RenderTargetBinding>( 2 );
+	 * 
+	 * Return type for those functions is of course defined as the base type (e.g. DX11RenderTargetBindingBase),
+	 * which is not a template itself - to avoid additional variations of functions being generated by the compiler.
+	 * This type is impossible to deduce automatically, so we use T<0> specialization: each class template is specialized
+	 * for <0> and a type alias for the base class. This specialization is also stripped of all data, so the compiler
+	 * won't throw an error due to zero-size fixed array that would be normally generated for T<0>.
+	 */
+
+
+	/**
+	 * @brief Creates an instance of the statically-sized class template and returns it as a raw pointer.
+	 * @param pSize Size used as a class template argument.
+	 * @return A pointer to the created object, allocated on the heap with operator new().
+	 */
+	template <template<native_uint> class TP>
+	inline typename TP<0>::BaseType * CreateDynamicallySizedTemplate( native_uint pSize )
+	{
+		switch( pSize )
+		{
+			case 1: return new TP<1>();
+			case 2: return new TP<2>();
+			case 3: return new TP<3>();
+			case 4: return new TP<4>();
+			case 5: return new TP<5>();
+			case 6: return new TP<6>();
+			case 7: return new TP<7>();
+			case 8: return new TP<8>();
+			case 9: return new TP<9>();
+
+			case 10: return new TP<10>();
+			case 11: return new TP<11>();
+			case 12: return new TP<12>();
+			case 13: return new TP<13>();
+			case 14: return new TP<14>();
+			case 15: return new TP<15>();
+			case 16: return new TP<16>();
+			case 17: return new TP<17>();
+			case 18: return new TP<18>();
+			case 19: return new TP<19>();
+
+			case 20: return new TP<20>();
+			case 21: return new TP<21>();
+			case 22: return new TP<22>();
+			case 23: return new TP<23>();
+			case 24: return new TP<24>();
+			case 25: return new TP<25>();
+			case 26: return new TP<26>();
+			case 27: return new TP<27>();
+			case 28: return new TP<28>();
+			case 29: return new TP<29>();
+
+			case 30: return new TP<30>();
+			case 31: return new TP<31>();
+			case 32: return new TP<32>();
+		}
+
+		return nullptr;
+	}
+
+	/**
+	 * @brief Creates an instance of the statically-sized class template and returns it as an std::unique_ptr<>.
+	 * @param pSize Size used as a class template argument.
+	 * @return An std::unique_ptr<> with the created object, allocated with std::make_unique().
+	 */
+	template <template<native_uint> class TP>
+	inline std::unique_ptr<typename TP<0>::BaseType> MakeUniqueDynamicallySizedTemplate( native_uint pSize )
+	{
+		switch( pSize )
+		{
+			case 0:  return std::make_unique<TP<0>>();
+			case 1:  return std::make_unique<TP<1>>();
+			case 2:  return std::make_unique<TP<2>>();
+			case 3:  return std::make_unique<TP<3>>();
+			case 4:  return std::make_unique<TP<4>>();
+			case 5:  return std::make_unique<TP<5>>();
+			case 6:  return std::make_unique<TP<6>>();
+			case 7:  return std::make_unique<TP<7>>();
+			case 8:  return std::make_unique<TP<8>>();
+			case 9:  return std::make_unique<TP<9>>();
+			case 10: return std::make_unique<TP<10>>();
+			case 11: return std::make_unique<TP<11>>();
+			case 12: return std::make_unique<TP<12>>();
+			case 13: return std::make_unique<TP<13>>();
+			case 14: return std::make_unique<TP<14>>();
+			case 15: return std::make_unique<TP<15>>();
+			case 16: return std::make_unique<TP<16>>();
+		}
+
+		return nullptr;
+	}
+
+	template <template<native_uint, native_uint> class TP, native_uint tpSize1>
+	inline std::unique_ptr<typename TP<0, 0>::BaseType> MakeUniqueDynamicallySizedTemplate( native_uint pSize2 )
+	{
+		switch( pSize2 )
+		{
+			case 0:  return std::make_unique<TP<tpSize1, 0>>();
+			case 1:  return std::make_unique<TP<tpSize1, 1>>();
+			case 2:  return std::make_unique<TP<tpSize1, 2>>();
+			case 3:  return std::make_unique<TP<tpSize1, 3>>();
+			case 4:  return std::make_unique<TP<tpSize1, 4>>();
+			case 5:  return std::make_unique<TP<tpSize1, 5>>();
+			case 6:  return std::make_unique<TP<tpSize1, 6>>();
+			case 7:  return std::make_unique<TP<tpSize1, 7>>();
+			case 8:  return std::make_unique<TP<tpSize1, 8>>();
+			case 9:  return std::make_unique<TP<tpSize1, 9>>();
+			case 10: return std::make_unique<TP<tpSize1, 10>>();
+			case 11: return std::make_unique<TP<tpSize1, 11>>();
+			case 12: return std::make_unique<TP<tpSize1, 12>>();
+			case 13: return std::make_unique<TP<tpSize1, 13>>();
+			case 14: return std::make_unique<TP<tpSize1, 14>>();
+			case 15: return std::make_unique<TP<tpSize1, 15>>();
+			case 16: return std::make_unique<TP<tpSize1, 16>>();
+		}
+
+		return nullptr;
+	}
+
+	/**
+	 * @brief A variation of the DST creation function that works on templates with TWO size parameters.
+	 * @tparam tpSize1
+	 * @param pSize2
+	 * @return
+	 *
+	 * An example usage of this function is to create instances of DSTRenderTargetBinding which uses two separate
+	 * size patameters - one describes the number of output attachments and the second - resolve attachments (often 0).
+	 */
+	template <template<native_uint, native_uint> class TP>
+	inline std::unique_ptr<typename TP<0, 0>::BaseType> MakeUniqueDynamicallySizedTemplate( native_uint pSize1, native_uint pSize2 )
+	{
+		switch( pSize1 )
+		{
+			case 0:  return MakeUniqueDynamicallySizedTemplate<TP, 0>( pSize2 );
+			case 1:  return MakeUniqueDynamicallySizedTemplate<TP, 1>( pSize2 );
+			case 2:  return MakeUniqueDynamicallySizedTemplate<TP, 2>( pSize2 );
+			case 3:  return MakeUniqueDynamicallySizedTemplate<TP, 3>( pSize2 );
+			case 4:  return MakeUniqueDynamicallySizedTemplate<TP, 4>( pSize2 );
+			case 5:  return MakeUniqueDynamicallySizedTemplate<TP, 5>( pSize2 );
+			case 6:  return MakeUniqueDynamicallySizedTemplate<TP, 6>( pSize2 );
+			case 7:  return MakeUniqueDynamicallySizedTemplate<TP, 7>( pSize2 );
+			case 8:  return MakeUniqueDynamicallySizedTemplate<TP, 8>( pSize2 );
+			case 9:  return MakeUniqueDynamicallySizedTemplate<TP, 9>( pSize2 );
+			case 10: return MakeUniqueDynamicallySizedTemplate<TP, 10>( pSize2 );
+			case 11: return MakeUniqueDynamicallySizedTemplate<TP, 11>( pSize2 );
+			case 12: return MakeUniqueDynamicallySizedTemplate<TP, 12>( pSize2 );
+			case 13: return MakeUniqueDynamicallySizedTemplate<TP, 13>( pSize2 );
+			case 14: return MakeUniqueDynamicallySizedTemplate<TP, 14>( pSize2 );
+			case 15: return MakeUniqueDynamicallySizedTemplate<TP, 15>( pSize2 );
+			case 16: return MakeUniqueDynamicallySizedTemplate<TP, 16>( pSize2 );
+		}
+
+		return nullptr;
+	}
+
+} // namespace Ic3
+
+#endif // __IC3_GRAPHICS_COMMON_DYNAMICALLY_SIZED_TEMPLATE_H__

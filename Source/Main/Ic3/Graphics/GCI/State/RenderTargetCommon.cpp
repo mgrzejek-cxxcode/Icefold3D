@@ -12,12 +12,15 @@ namespace Ic3::Graphics::GCI
 		return GCU::RTOGetRenderTargetLayoutForBinding( *this );
 	}
 
-	cppx::bitmask<ERTAttachmentFlags> TRenderTargetArrayConfiguration<RenderTargetAttachmentBinding>::GetResolveAttachmentsMask() const noexcept
+	cppx::bitmask<ERTAttachmentFlags> TRenderTargetArrayConfiguration<RenderTargetAttachmentBinding>::GetResolveAttachmentsMask(
+			cppx::bitmask<ERTAttachmentFlags> pFilterMask ) const noexcept
 	{
+		const auto attachmentsInclusionMask = activeAttachmentsMask & pFilterMask;
+
 		cppx::bitmask<ERTAttachmentFlags> resolveAttachmentsMask = 0;
 
 		GCU::ForEachRTAttachmentIndex(
-			activeAttachmentsMask,
+			attachmentsInclusionMask,
 			[&]( native_uint pAttachmentIndex, ERTAttachmentFlags pAttachmentBit ) -> bool {
 				if( attachments[pAttachmentIndex].resolveTexture )
 				{
@@ -28,6 +31,37 @@ namespace Ic3::Graphics::GCI
 
 		return resolveAttachmentsMask;
 	}
+
+	uint32 TRenderTargetArrayConfiguration<RenderTargetAttachmentBinding>::GetResolveAttachmentsNum(
+			cppx::bitmask<ERTAttachmentFlags> pFilterMask ) const noexcept
+	{
+		const auto attachmentsInclusionMask = activeAttachmentsMask & pFilterMask;
+
+		uint32 resolveAttachmentsNum = 0;
+
+		GCU::ForEachRTAttachmentIndex(
+			attachmentsInclusionMask,
+			[&]( native_uint pAttachmentIndex, ERTAttachmentFlags pAttachmentBit ) -> bool {
+			if( attachments[pAttachmentIndex].resolveTexture )
+			{
+				resolveAttachmentsNum += 1;
+			}
+			return true;
+		} );
+
+		return resolveAttachmentsNum;
+	}
+
+	cppx::bitmask<ERTAttachmentFlags> TRenderTargetArrayConfiguration<RenderTargetAttachmentBinding>::GetResolveColorAttachmentsMask() const noexcept
+	{
+		return GetResolveAttachmentsMask( eRTAttachmentMaskColorAll );
+	}
+
+	uint32 TRenderTargetArrayConfiguration<RenderTargetAttachmentBinding>::GetResolveColorAttachmentsNum() const noexcept
+	{
+		return GetResolveAttachmentsNum( eRTAttachmentMaskColorAll );
+	}
+
 
 	namespace GCU
 	{

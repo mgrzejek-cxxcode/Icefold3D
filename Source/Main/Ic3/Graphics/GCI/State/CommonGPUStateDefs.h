@@ -61,6 +61,8 @@ namespace Ic3::Graphics::GCI
 	using pipeline_state_descriptor_id_t = uint16;
 	using pipeline_state_object_id_t = uint64;
 
+	using rta_index_t = uint16;
+
 	using shader_input_ref_id_t = uint64;
 	using shader_input_index_t = uint32;
 
@@ -201,6 +203,9 @@ namespace Ic3::Graphics::GCI
 	///
 	inline constexpr auto kRTOAttachmentIndexDepthStencil = static_cast<native_uint>( GCM::kRTOMaxColorAttachmentsNum );
 
+	///
+	inline constexpr auto kRTOAttachmentIndexUndefined = static_cast< native_uint >( GCM::kRTOMaxCombinedAttachmentsNum );
+
 	enum class EPipelineType : uint32
 	{
 		Compute,
@@ -221,9 +226,9 @@ namespace Ic3::Graphics::GCI
 		eIAVertexSourceBindingFlagVertexBuffer8Bit  = CXU::IAMakeVertexBufferBindingFlag( 8 ),
 		eIAVertexSourceBindingFlagIndexBufferBit    = CXU::IAMakeIndexBufferBindingFlag(),
 
-		eVertexSourceBindingMaskVertexBufferAllBits = cppx::make_lsfb_bitmask<uint32>( GCM::kIAMaxDataStreamVertexBuffersNum ),
+		eIAVertexSourceBindingMaskVertexBufferAllBits = cppx::make_lsfb_bitmask<uint32>( GCM::kIAMaxDataStreamVertexBuffersNum ),
 
-		eVertexSourceBindingMaskAll = eVertexSourceBindingMaskVertexBufferAllBits | eIAVertexSourceBindingFlagIndexBufferBit
+		eIAVertexSourceBindingMaskAll = eIAVertexSourceBindingMaskVertexBufferAllBits | eIAVertexSourceBindingFlagIndexBufferBit
 	};
 
 	/// @brief

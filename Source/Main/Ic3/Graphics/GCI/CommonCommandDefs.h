@@ -26,14 +26,14 @@ namespace Ic3::Graphics::GCI
 
 	using gpu_cmd_device_queue_id_t = native_uint;
 
-    enum : gpu_cmd_device_queue_id_t
-    {
-        eDeviceCommandQueueIdDefaultGraphics = 0u,
-        eDeviceCommandQueueIdDefaultCompute = 1u,
-        eDeviceCommandQueueIdDefaultTransfer = 2u,
-        eDeviceCommandQueueIdPresent = 3u,
-        eDeviceCommandQueueIdUnknown = cppx::meta::limits<gpu_cmd_device_queue_id_t>::max_value,
-    };
+	enum : gpu_cmd_device_queue_id_t
+	{
+		eDeviceCommandQueueIdDefaultGraphics = 0u,
+		eDeviceCommandQueueIdDefaultCompute = 1u,
+		eDeviceCommandQueueIdDefaultTransfer = 2u,
+		eDeviceCommandQueueIdPresent = 3u,
+		eDeviceCommandQueueIdUnknown = cppx::meta::limits<gpu_cmd_device_queue_id_t>::max_value,
+	};
 
 	enum ECommandListActionFlags : uint32
 	{

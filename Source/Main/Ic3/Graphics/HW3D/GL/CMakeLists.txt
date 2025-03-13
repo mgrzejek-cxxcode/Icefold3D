@@ -73,6 +73,8 @@ set( IC3_GRAPHICS_HW3D_GL_SRC_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/State/GLGraphicsPipelineStateRTO.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/State/GLGraphicsPipelineStateShader.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/State/GLGraphicsPipelineStateShader.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/State/GLInputAssemblerCommon.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/State/GLInputAssemblerCommon.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/State/GLPipelineStateDescriptorFactory.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/State/GLPipelineStateDescriptorFactory.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/State/GLVertexArrayObjectCache.h"

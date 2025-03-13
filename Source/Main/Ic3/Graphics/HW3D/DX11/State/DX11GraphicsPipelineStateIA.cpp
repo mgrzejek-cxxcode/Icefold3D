@@ -1,7 +1,7 @@
 
 #include "DX11GraphicsPipelineStateIA.h"
 #include <Ic3/Graphics/HW3D/DX11/DX11APITranslationLayer.h>
-#include <Ic3/Graphics/HW3D/DX11/DX11gpuDevice.h>
+#include <Ic3/Graphics/HW3D/DX11/DX11GPUDevice.h>
 #include <Ic3/Graphics/HW3D/DX11/Resources/DX11GPUBuffer.h>
 #include <Ic3/Graphics/HW3D/DX11/Resources/DX11Shader.h>
 
@@ -56,9 +56,9 @@ namespace Ic3::Graphics::GCI
 
 	DX11VertexSourceBindingDescriptor::DX11VertexSourceBindingDescriptor(
 			DX11GPUDevice & pGPUDevice,
-			const DX11IAVertexSourceBinding & pDX11VertexSourceBinding )
-	: HW3DPipelineStateDescriptor( pGPUDevice, mDX11VertexSourceBinding )
-	, mDX11VertexSourceBinding( pDX11VertexSourceBinding )
+			DX11IAVertexSourceBindingPtr pDX11VertexSourceBinding )
+	: HW3DPipelineStateDescriptor( pGPUDevice, *pDX11VertexSourceBinding )
+	, mDX11VertexSourceBinding( std::move( pDX11VertexSourceBinding ) )
 	{}
 
 	DX11VertexSourceBindingDescriptor::~DX11VertexSourceBindingDescriptor() = default;
@@ -67,11 +67,10 @@ namespace Ic3::Graphics::GCI
 			DX11GPUDevice & pGPUDevice,
 			const IAVertexSourceBindingDefinition & pVertexSourceBindingDefinition )
 	{
-		const auto dx11SourceBindingDefinition = GCU::DX11IATranslateVertexSourceBindingDefinition( pVertexSourceBindingDefinition );
+		auto dx11VertexSourceBinding = GCU::DX11IACreateVertexSourceBinding( pVertexSourceBindingDefinition );
+		auto dx11VertexSourceDescriptor = CreateGfxObject<DX11VertexSourceBindingDescriptor>( pGPUDevice, std::move( dx11VertexSourceBinding ) );
 
-		const auto stateDescriptor = CreateGfxObject<DX11VertexSourceBindingDescriptor>( pGPUDevice, dx11SourceBindingDefinition );
-
-		return stateDescriptor;
+		return dx11VertexSourceDescriptor;
 	}
 
 	
@@ -127,56 +126,71 @@ namespace Ic3::Graphics::GCI
 			return dx11AttributeLayoutDefinition;
 		}
 
-		DX11IAVertexSourceBinding DX11IATranslateVertexSourceBindingDefinition(
-			const IAVertexSourceBindingDefinition & pVertexSourceBindingDefinition )
+		DX11IAVertexSourceBindingPtr DX11IACreateVertexSourceBinding(
+				const IAVertexSourceBindingDefinition & pVertexSourceBindingDefinition )
 		{
-			DX11IAVertexSourceBinding dx11VertexSourceBinding;
-			DX11IAUpdateVertexSourceBindingDefinition( pVertexSourceBindingDefinition, dx11VertexSourceBinding );
+			const auto activeVertexBuffersNum = pVertexSourceBindingDefinition.GetActiveVertexBuffersNum();
+			auto dx11VertexSourceBinding = MakeUniqueDynamicallySizedTemplate<DX11IAVertexSourceBinding>( activeVertexBuffersNum );
+
+			DX11IAUpdateVertexSourceBindingDefinition( pVertexSourceBindingDefinition, *dx11VertexSourceBinding );
+
 			return dx11VertexSourceBinding;
 		}
 
-		bool DX11IAUpdateVertexSourceBindingDefinition(
-			const IAVertexSourceBindingDefinition & pVertexSourceBindingDefinition,
-			DX11IAVertexSourceBinding & pOutDX11VertexSourceBinding )
+		void DX11IAUpdateVertexSourceBindingDefinition(
+				const IAVertexSourceBindingDefinition & pVertexSourceBindingDefinition,
+				DX11IAVertexSourceBindingBase & pOutDX11VertexSourceBinding )
 		{
+			uint32 activeVertexBuffersNum = 0;
 
-			for( native_uint vertexStreamIndex = 0; vertexStreamIndex < GCM::kIAMaxDataStreamVertexBuffersNum; ++vertexStreamIndex )
+			for( native_uint vertexStreamIndex = 0; CXU::IAIsDataStreamVertexBufferSlotValid( vertexStreamIndex ); ++vertexStreamIndex )
 			{
-				const auto & inputVertexBufferRef = pVertexSourceBindingDefinition.vertexBufferReferences[vertexStreamIndex];
 				const auto bufferBindingBit = CXU::IAMakeVertexBufferBindingFlag( vertexStreamIndex );
 
-				if( inputVertexBufferRef && pVertexSourceBindingDefinition.activeStreamsMask.is_set( bufferBindingBit ) )
+				const auto & inputVertexBufferRef = pVertexSourceBindingDefinition.vertexBufferReferences[vertexStreamIndex];
+				if( inputVertexBufferRef && pVertexSourceBindingDefinition.IsVertexBufferActive( vertexStreamIndex ) )
 				{
 					const auto * dx11VertexBuffer = inputVertexBufferRef.sourceBuffer->QueryInterface<DX11GPUBuffer>();
 
-					pOutDX11VertexSourceBinding.vertexBufferBindings.bindingData.bufferArray[vertexStreamIndex] =
-							dx11VertexBuffer->mD3D11Buffer.Get();
+					pOutDX11VertexSourceBinding.SetVertexStreamIndexMapping( vertexStreamIndex, activeVertexBuffersNum );
 
-					pOutDX11VertexSourceBinding.vertexBufferBindings.bindingData.offsetArray[vertexStreamIndex] =
-							cppx::numeric_cast<UINT>( inputVertexBufferRef.relativeOffset );
+					pOutDX11VertexSourceBinding.vertexBufferBindings[activeVertexBuffersNum].buffer = dx11VertexBuffer->mD3D11Buffer.Get();
+					pOutDX11VertexSourceBinding.vertexBufferBindings[activeVertexBuffersNum].offset = cppx::numeric_cast<UINT>( inputVertexBufferRef.relativeOffset );
+					pOutDX11VertexSourceBinding.vertexBufferBindings[activeVertexBuffersNum].stride = cppx::numeric_cast<UINT>( inputVertexBufferRef.refParams.vertexStride );
 
-					pOutDX11VertexSourceBinding.vertexBufferBindings.bindingData.strideArray[vertexStreamIndex] =
-							cppx::numeric_cast<UINT>( inputVertexBufferRef.refParams.vertexStride );
+					pOutDX11VertexSourceBinding.activeStreamsMask.set( bufferBindingBit );
+					
+					++activeVertexBuffersNum;
+				}
+				else
+				{
+					// This stream is inactive (no vertex buffer referenced). Set this special value to indicate this.
+					pOutDX11VertexSourceBinding.SetVertexStreamIndexInactive( vertexStreamIndex );
+					pOutDX11VertexSourceBinding.activeStreamsMask.unset( bufferBindingBit );
 				}
 			}
 
-			if( pVertexSourceBindingDefinition.indexBufferReference && pVertexSourceBindingDefinition.activeStreamsMask.is_set( eIAVertexSourceBindingFlagIndexBufferBit ) )
+			const auto & inputIndexBufferRef = pVertexSourceBindingDefinition.indexBufferReference;
+			if( inputIndexBufferRef && pVertexSourceBindingDefinition.IsIndexBufferActive() )
 			{
 				const auto * dx11IndexBuffer = pVertexSourceBindingDefinition.indexBufferReference.sourceBuffer->QueryInterface<DX11GPUBuffer>();
 
 				pOutDX11VertexSourceBinding.indexBufferBinding.buffer = dx11IndexBuffer->mD3D11Buffer.Get();
+				pOutDX11VertexSourceBinding.indexBufferBinding.offset = cppx::numeric_cast<UINT>( inputIndexBufferRef.relativeOffset );
+				pOutDX11VertexSourceBinding.indexBufferBinding.format = ATL::DXTranslateIndexDataFormat( inputIndexBufferRef.refParams.indexFormat );
 
-				pOutDX11VertexSourceBinding.indexBufferBinding.offset =
-						cppx::numeric_cast<UINT>( pVertexSourceBindingDefinition.indexBufferReference.relativeOffset );
-
-				pOutDX11VertexSourceBinding.indexBufferBinding.format =
-						ATL::DXTranslateIndexDataFormat( pVertexSourceBindingDefinition.indexBufferReference.refParams.indexFormat );
+				pOutDX11VertexSourceBinding.activeStreamsMask.set( eIAVertexSourceBindingFlagIndexBufferBit );
 			}
+			else
+			{
+				const auto * dx11IndexBuffer = pVertexSourceBindingDefinition.indexBufferReference.sourceBuffer->QueryInterface<DX11GPUBuffer>();
 
-			pOutDX11VertexSourceBinding.activeStreamsMask = pVertexSourceBindingDefinition.activeStreamsMask;
-			pOutDX11VertexSourceBinding.vertexBufferBindings.activeRanges = GCU::IAGenerateActiveVertexBuffersRanges( pVertexSourceBindingDefinition.vertexBufferReferences );
+				pOutDX11VertexSourceBinding.indexBufferBinding.buffer = nullptr;
+				pOutDX11VertexSourceBinding.indexBufferBinding.offset = 0;
+				pOutDX11VertexSourceBinding.indexBufferBinding.format = DXGI_FORMAT_UNKNOWN;
 
-			return !pOutDX11VertexSourceBinding.IsEmpty();
+				pOutDX11VertexSourceBinding.activeStreamsMask.unset( eIAVertexSourceBindingFlagIndexBufferBit );
+			}
 		}
 
 	}

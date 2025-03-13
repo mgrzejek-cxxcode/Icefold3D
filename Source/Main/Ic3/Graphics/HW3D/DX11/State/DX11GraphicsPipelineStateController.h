@@ -91,9 +91,9 @@ namespace Ic3::Graphics::GCI
 		virtual bool SetShaderTextureSampler( shader_input_ref_id_t pParamRefID, Sampler & pSampler ) override;
 
 	protected:
-		CPPX_ATTR_NO_DISCARD const DX11RenderTargetBinding & GetDX11RenderTargetBinding() const noexcept;
+		CPPX_ATTR_NO_DISCARD const DX11RenderTargetBindingBase & GetDX11RenderTargetBinding() const noexcept;
 
-		CPPX_ATTR_NO_DISCARD const DX11IAVertexSourceBinding & GetDX11VertexSourceBinding() const noexcept;
+		CPPX_ATTR_NO_DISCARD const DX11IAVertexSourceBindingBase & GetDX11VertexSourceBinding() const noexcept;
 
 	private:
 		using BaseStateControllerType = GraphicsPipelineStateControllerRenderPassGeneric<GraphicsPipelineStateControllerSeparableShader>;
@@ -102,9 +102,9 @@ namespace Ic3::Graphics::GCI
 		
 		cppx::bitmask<uint32> BindSeparableGraphicsShaders( const SeparableShaderCache & pSeparableShaders );
 
-		void SetDX11RenderTargetBinding( const DX11RenderTargetBinding & pDX11RenderTargetBinding );
+		void SetDX11RenderTargetBinding( const DX11RenderTargetBindingBase & pDX11RenderTargetBinding );
 		
-		void SetDX11VertexSourceBinding( const DX11IAVertexSourceBinding & pDX11VertexSourceBinding );
+		void SetDX11VertexSourceBinding( const DX11IAVertexSourceBindingBase & pDX11VertexSourceBinding );
 
 		static const cxm::rgba_color_r32_norm * SelectBlendConstantFactor(
 			const DX11BlendStateDescriptor & pDX11BlendStateDescriptor,
@@ -117,9 +117,9 @@ namespace Ic3::Graphics::GCI
 	private:
 		struct DX11CurrentPipelineBindings
 		{
-			const DX11RenderTargetBinding * renderTargetBinding = nullptr;
+			const DX11RenderTargetBindingBase * renderTargetBinding = nullptr;
 
-			const DX11IAVertexSourceBinding * vertexSourceBinding = nullptr;
+			const DX11IAVertexSourceBindingBase * vertexSourceBinding = nullptr;
 		};
 
 

@@ -4,7 +4,7 @@
 
 #include "Prerequisites.h"
 #include <cppx/byteArray.h>
-#include <Ic3/System/IO/FileCommon.h>
+#include <Ic3/System/IO/FileSystem.h>
 
 namespace Ic3::Script
 {
@@ -20,7 +20,7 @@ namespace Ic3::Script
 		}
 	};
 
-	class ScriptSystem : public IDynamicObject
+	class IC3_SCRIPT_CLASS ScriptSystem : public IDynamicObject
 	{
 	public:
 		System::SysContextHandle const mSysContext;

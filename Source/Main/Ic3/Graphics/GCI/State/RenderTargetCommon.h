@@ -105,7 +105,15 @@ namespace Ic3::Graphics::GCI
 	{
 		IC3_GRAPHICS_GCI_API_NO_DISCARD RenderTargetLayout GetRenderTargetLayout() const noexcept;
 
-		IC3_GRAPHICS_GCI_API_NO_DISCARD cppx::bitmask<ERTAttachmentFlags> GetResolveAttachmentsMask() const noexcept;
+		IC3_GRAPHICS_GCI_API_NO_DISCARD cppx::bitmask<ERTAttachmentFlags> GetResolveAttachmentsMask(
+				cppx::bitmask<ERTAttachmentFlags> pFilterMask = eRTAttachmentMaskAll ) const noexcept;
+
+		IC3_GRAPHICS_GCI_API_NO_DISCARD uint32 GetResolveAttachmentsNum(
+				cppx::bitmask<ERTAttachmentFlags> pFilterMask = eRTAttachmentMaskAll ) const noexcept;
+
+		IC3_GRAPHICS_GCI_API_NO_DISCARD cppx::bitmask<ERTAttachmentFlags> GetResolveColorAttachmentsMask() const noexcept;
+
+		IC3_GRAPHICS_GCI_API_NO_DISCARD uint32 GetResolveColorAttachmentsNum() const noexcept;
 	};
 
 	template <>

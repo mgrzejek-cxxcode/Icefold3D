@@ -64,7 +64,7 @@ namespace Ic3::Graphics::GCI
 
 		template <typename... TPArgs>
 		PipelineStateDescriptorDynamic( TPArgs && ...pArgs )
-		: GCIPipelineStateDescriptor( std::forward<TPArgs>( pArgs )... )
+		: GCIPipelineStateDescriptor<TPBaseDescriptor>( std::forward<TPArgs>( pArgs )... )
 		{
 			SetConfigChangedFlag();
 		}

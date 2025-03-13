@@ -88,12 +88,12 @@ namespace Ic3::Graphics::GCI
 			return vertexBufferBindingList;
 		}
 
-		VertexSourceBindingRageList IAGenerateActiveVertexBuffersRanges(
+		VertexSourceBindingRangeList IAGenerateActiveVertexBuffersRanges(
 				const IAVertexBufferReferenceArray & pVertexBufferReferences ) noexcept
 		{
 			const auto activeVertexBuffersNum = IAGetActiveVertexBuffersNum( pVertexBufferReferences );
 
-			VertexSourceBindingRageList vertexBufferActiveRanges{};
+			VertexSourceBindingRangeList vertexBufferActiveRanges{};
 
 			if( activeVertexBuffersNum > 0 )
 			{

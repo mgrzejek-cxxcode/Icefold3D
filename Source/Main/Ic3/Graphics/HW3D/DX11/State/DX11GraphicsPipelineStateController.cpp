@@ -95,7 +95,7 @@ namespace Ic3::Graphics::GCI
 		if( updateResult )
 		{
 			const auto * dx11RenderTargetDescriptor = pRenderTargetDescriptor.QueryInterface<DX11RenderTargetDescriptor>();
-			_dx11CurrentPipelineBindings.renderTargetBinding = &( dx11RenderTargetDescriptor->mDX11RenderTargetBinding );
+			_dx11CurrentPipelineBindings.renderTargetBinding = dx11RenderTargetDescriptor->mDX11RenderTargetBinding.get();
 		}
 
 		return updateResult;
@@ -109,24 +109,31 @@ namespace Ic3::Graphics::GCI
 		{
 			if( !pRenderTargetDescriptor.IsDynamicDriverStateInitialized() )
 			{
-				InitializeDynamicDriverStateForDescriptor<DX11RenderTargetBinding>( pRenderTargetDescriptor );
-			}
-			auto * dx11RenderTargetDriverState = pRenderTargetDescriptor.GetDynamicDriverStateAs<DX11RenderTargetBinding>();
+				auto * dx11RenderTargetBindingDriverState =
+					InitializeDynamicDriverStateForDescriptor<DX11RenderTargetBindingPtr>( pRenderTargetDescriptor );
 
-			auto & dx11RenderTargetBinding = dx11RenderTargetDriverState->mDriverData;
-			if( &dx11RenderTargetBinding != _dx11CurrentPipelineBindings.renderTargetBinding )
+				const auto activeColorOutputAttachmentsNum = pRenderTargetDescriptor.GetRenderTargetArrayConfiguration().GetActiveColorAttachmentsNum();
+				const auto activeColorResolveAttachmentsNum = pRenderTargetDescriptor.GetRenderTargetArrayConfiguration().GetResolveColorAttachmentsNum();
+
+				dx11RenderTargetBindingDriverState->mDriverData =
+					MakeUniqueDynamicallySizedTemplate<DX11RenderTargetBinding>( activeColorOutputAttachmentsNum, activeColorResolveAttachmentsNum );
+			}
+			auto * dx11RenderTargetBindingDriverState = pRenderTargetDescriptor.GetDynamicDriverStateAs<DX11RenderTargetBindingPtr>();
+			auto & dx11RenderTargetBindingPtr = dx11RenderTargetBindingDriverState->mDriverData;
+
+			if( dx11RenderTargetBindingPtr.get() != _dx11CurrentPipelineBindings.renderTargetBinding )
 			{
 				if( IsDynamicDescriptorConfigurationModified( pRenderTargetDescriptor ) )
 				{
 					GCU::RTOUpdateRenderTargetBindingDX11(
 						*( mGPUDevice.QueryInterface<DX11GPUDevice>() ),
 						pRenderTargetDescriptor.GetRenderTargetArrayConfiguration(),
-						dx11RenderTargetBinding );
+						*dx11RenderTargetBindingPtr );
 
 					ResetDynamicDescriptorConfigurationModifiedState( pRenderTargetDescriptor );
 				}
 
-				_dx11CurrentPipelineBindings.renderTargetBinding = &dx11RenderTargetBinding;
+				_dx11CurrentPipelineBindings.renderTargetBinding = dx11RenderTargetBindingPtr.get();
 			}
 		}
 
@@ -152,7 +159,7 @@ namespace Ic3::Graphics::GCI
 		if( updateResult )
 		{
 			const auto * dx11VertexSourceBindingDescriptor = pVertexSourceBindingDescriptor.QueryInterface<DX11VertexSourceBindingDescriptor>();
-			_dx11CurrentPipelineBindings.vertexSourceBinding = &( dx11VertexSourceBindingDescriptor->mDX11VertexSourceBinding );
+			_dx11CurrentPipelineBindings.vertexSourceBinding = dx11VertexSourceBindingDescriptor->mDX11VertexSourceBinding.get();
 		}
 
 		return updateResult;
@@ -166,24 +173,31 @@ namespace Ic3::Graphics::GCI
 		{
 			if( !pVertexSourceBindingDescriptor.IsDynamicDriverStateInitialized() )
 			{
-				InitializeDynamicDriverStateForDescriptor<DX11IAVertexSourceBinding>( pVertexSourceBindingDescriptor );
+				auto * dx11VertexSourceBindingDriverState =
+					InitializeDynamicDriverStateForDescriptor<DX11IAVertexSourceBindingPtr>( pVertexSourceBindingDescriptor );
+
+				const auto activeVertexBuffersNum = pVertexSourceBindingDescriptor.CountActiveVertexBuffers();
+
+				dx11VertexSourceBindingDriverState->mDriverData =
+					MakeUniqueDynamicallySizedTemplate<DX11IAVertexSourceBinding>( activeVertexBuffersNum );
 			}
-			auto * dx11VertexSourceBindingDriverState = pVertexSourceBindingDescriptor.GetDynamicDriverStateAs<DX11IAVertexSourceBinding>();
+
+			auto * dx11VertexSourceBindingDriverState = pVertexSourceBindingDescriptor.GetDynamicDriverStateAs<DX11IAVertexSourceBindingPtr>();
+			auto & dx11VertexSourcetBindingPtr = dx11VertexSourceBindingDriverState->mDriverData;
 
 
-			auto & dx11VertexSourceBinding = dx11VertexSourceBindingDriverState->mDriverData;
-			if( &dx11VertexSourceBinding != _dx11CurrentPipelineBindings.vertexSourceBinding )
+			if( dx11VertexSourcetBindingPtr.get() != _dx11CurrentPipelineBindings.vertexSourceBinding )
 			{
 				if( IsDynamicDescriptorConfigurationModified( pVertexSourceBindingDescriptor ) )
 				{
 					GCU::DX11IAUpdateVertexSourceBindingDefinition(
 						pVertexSourceBindingDescriptor.GetVertexSourceBindingDefinition(),
-						dx11VertexSourceBinding );
+						*dx11VertexSourcetBindingPtr );
 
 					ResetDynamicDescriptorConfigurationModifiedState( pVertexSourceBindingDescriptor );
 				}
 
-				_dx11CurrentPipelineBindings.vertexSourceBinding = &dx11VertexSourceBinding;
+				_dx11CurrentPipelineBindings.vertexSourceBinding = dx11VertexSourcetBindingPtr.get();
 			}
 
 		}
@@ -392,12 +406,12 @@ namespace Ic3::Graphics::GCI
 		return !updatedStagesMask.empty();
 	}
 
-	const DX11RenderTargetBinding & DX11GraphicsPipelineStateController::GetDX11RenderTargetBinding() const noexcept
+	const DX11RenderTargetBindingBase & DX11GraphicsPipelineStateController::GetDX11RenderTargetBinding() const noexcept
 	{
 		return *( _dx11CurrentPipelineBindings.renderTargetBinding );
 	}
 
-	const DX11IAVertexSourceBinding & DX11GraphicsPipelineStateController::GetDX11VertexSourceBinding() const noexcept
+	const DX11IAVertexSourceBindingBase & DX11GraphicsPipelineStateController::GetDX11VertexSourceBinding() const noexcept
 	{
 		return *( _dx11CurrentPipelineBindings.vertexSourceBinding );
 	}
@@ -499,49 +513,35 @@ namespace Ic3::Graphics::GCI
 		return executedUpdatesMask;
 	}
 
-	void DX11GraphicsPipelineStateController::SetDX11RenderTargetBinding( const DX11RenderTargetBinding & pDX11RenderTargetBinding )
+	void DX11GraphicsPipelineStateController::SetDX11RenderTargetBinding( const DX11RenderTargetBindingBase & pDX11RenderTargetBinding )
 	{
-		ID3D11RenderTargetView * const * d3d11RenderTargetViewArrayPtr = nullptr;
-		ID3D11DepthStencilView * d3d11DepthStencilView = nullptr;
-
-		UINT renderTargetColorAttachmentsNum = 0;
-
-		if( !pDX11RenderTargetBinding.IsEmpty() )
-		{
-			d3d11RenderTargetViewArrayPtr = &( pDX11RenderTargetBinding.d3d11ColorAttachmentRTViewArray[0] );
-			renderTargetColorAttachmentsNum = pDX11RenderTargetBinding.GetActiveColorAttachmentsNum();
-		}
-		
-		if( pDX11RenderTargetBinding.IsDepthStencilAttachmentActive() )
-		{
-			d3d11DepthStencilView = pDX11RenderTargetBinding.d3d11DepthStencilAttachmentDSView;
-		}
+		DX11UnwrappedRenderTargetBinding dx11UnwrappedRenderTargetBinding{};
+		dx11UnwrappedRenderTargetBinding.SetBindings( pDX11RenderTargetBinding );
 
 		mDX11CommandList->mD3D11DeviceContext1->OMSetRenderTargets(
-				renderTargetColorAttachmentsNum,
-				d3d11RenderTargetViewArrayPtr,
-				d3d11DepthStencilView );
+				static_cast<UINT>( dx11UnwrappedRenderTargetBinding.colorAttachmentRTVArray.size() ),
+				dx11UnwrappedRenderTargetBinding.colorAttachmentRTVArray.data(),
+				dx11UnwrappedRenderTargetBinding.depthStencilAttachmentDSV );
 	}
 
-	void DX11GraphicsPipelineStateController::SetDX11VertexSourceBinding( const DX11IAVertexSourceBinding & pDX11VertexSourceBinding )
+	void DX11GraphicsPipelineStateController::SetDX11VertexSourceBinding( const DX11IAVertexSourceBindingBase & pDX11VertexSourceBinding )
 	{
-		const auto & vertexBufferArrayBindings = pDX11VertexSourceBinding.vertexBufferBindings;
-		const auto & indexBufferBinding = pDX11VertexSourceBinding.indexBufferBinding;
+		DX11UnwrappedVertexBufferBindings dx11UnwrappedVertexBufferBindings{};
+		dx11UnwrappedVertexBufferBindings.SetBindings( pDX11VertexSourceBinding );
 
-		for( const auto & activeVertexStreamRange : vertexBufferArrayBindings.activeRanges )
-		{
-			mDX11CommandList->mD3D11DeviceContext1->IASetVertexBuffers(
-				activeVertexStreamRange.firstIndex,
-				activeVertexStreamRange.length,
-				&( vertexBufferArrayBindings.bindingData.bufferArray[activeVertexStreamRange.firstIndex] ),
-				&( vertexBufferArrayBindings.bindingData.strideArray[activeVertexStreamRange.firstIndex] ),
-				&( vertexBufferArrayBindings.bindingData.offsetArray[activeVertexStreamRange.firstIndex] ) );
-		}
+		const auto vertexBuffersBindRange = cppx::make_range<UINT>( 0, dx11UnwrappedVertexBufferBindings.vertexBufferArray.size() - 1 );
+
+		mDX11CommandList->mD3D11DeviceContext1->IASetVertexBuffers(
+			vertexBuffersBindRange.begin,
+			vertexBuffersBindRange.length(),
+			dx11UnwrappedVertexBufferBindings.vertexBufferArray.data(),
+			dx11UnwrappedVertexBufferBindings.vertexBufferStrideArray.data(),
+			dx11UnwrappedVertexBufferBindings.vertexBufferOffsetArray.data() );
 
 		mDX11CommandList->mD3D11DeviceContext1->IASetIndexBuffer(
-			indexBufferBinding.buffer,
-			indexBufferBinding.format,
-			indexBufferBinding.offset );
+			pDX11VertexSourceBinding.indexBufferBinding.buffer,
+			pDX11VertexSourceBinding.indexBufferBinding.format,
+			pDX11VertexSourceBinding.indexBufferBinding.offset );
 	}
 
 	const cxm::rgba_color_r32_norm * DX11GraphicsPipelineStateController::SelectBlendConstantFactor(

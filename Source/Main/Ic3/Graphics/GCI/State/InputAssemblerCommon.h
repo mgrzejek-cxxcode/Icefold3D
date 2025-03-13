@@ -200,10 +200,6 @@ namespace Ic3::Graphics::GCI
 		 */
 		cppx::bitmask<EIAVertexAttributeFlags> activeAttributesMask;
 
-		/**
-		 * Primitive topology used to render vertices.
-		 * @see EPrimitiveTopology
-		 */
 		EPrimitiveTopology primitiveTopology = EPrimitiveTopology::Undefined;
 
 		CPPX_ATTR_NO_DISCARD explicit operator bool() const noexcept
@@ -328,12 +324,12 @@ namespace Ic3::Graphics::GCI
 
 		CPPX_ATTR_NO_DISCARD uint32 GetActiveBuffersNum() const noexcept
 		{
-			return ( activeStreamsMask & eVertexSourceBindingMaskAll ).count_bits();
+			return ( activeStreamsMask & eIAVertexSourceBindingMaskAll ).count_bits();
 		}
 
 		CPPX_ATTR_NO_DISCARD uint32 GetActiveVertexBuffersNum() const noexcept
 		{
-			return ( activeStreamsMask & eVertexSourceBindingMaskVertexBufferAllBits ).count_bits();
+			return ( activeStreamsMask & eIAVertexSourceBindingMaskVertexBufferAllBits ).count_bits();
 		}
 
 		CPPX_ATTR_NO_DISCARD bool IsIndexBufferActive() const noexcept
@@ -426,7 +422,7 @@ namespace Ic3::Graphics::GCI
 	/**
 	 * An alias for a dynamic array with the ranges of bound vertex buffers.
 	 */
-	using VertexSourceBindingRageList = std::vector<IAVertexStreamArrayRange>;
+	using VertexSourceBindingRangeList = std::vector<IAVertexStreamArrayRange>;
 
 	namespace GCU
 	{
@@ -448,7 +444,7 @@ namespace Ic3::Graphics::GCI
 				const IAVertexBufferReferenceArray & pVertexBufferReferences ) noexcept;
 
 		/// @brief
-		IC3_GRAPHICS_GCI_API_NO_DISCARD VertexSourceBindingRageList IAGenerateActiveVertexBuffersRanges(
+		IC3_GRAPHICS_GCI_API_NO_DISCARD VertexSourceBindingRangeList IAGenerateActiveVertexBuffersRanges(
 				const IAVertexBufferReferenceArray & pVertexBufferReferences ) noexcept;
 
 		template <typename TPFunction>
@@ -456,7 +452,7 @@ namespace Ic3::Graphics::GCI
 		{
 			// A local copy of the active attachments mask. Bits of already processed attachments
 			// are removed, so when the value reaches 0, we can immediately stop further processing.
-			auto activeVertexBuffersMask = pActiveVertexBuffersMask & eVertexSourceBindingMaskVertexBufferAllBits;
+			auto activeVertexBuffersMask = pActiveVertexBuffersMask & eIAVertexSourceBindingMaskVertexBufferAllBits;
 
 			for( // Iterate over the valid vertex buffer index range.
 			     native_uint vertexBufferIndex = 0;
@@ -491,7 +487,7 @@ namespace Ic3::Graphics::GCI
 		{
 			// A local copy of the active attachments mask. Bits of already processed attachments
 			// are removed, so when the value reaches 0, we can immediately stop further processing.
-			auto activeVertexBuffersMask = pActiveVertexBuffersMask & eVertexSourceBindingMaskVertexBufferAllBits;
+			auto activeVertexBuffersMask = pActiveVertexBuffersMask & eIAVertexSourceBindingMaskVertexBufferAllBits;
 
 			const auto lastVertexBufferIndex = pFirstVertexBufferIndex + pVertexBufferCount - 1;
 

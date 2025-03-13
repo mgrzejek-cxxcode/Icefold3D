@@ -27,5 +27,6 @@ message( STATUS "IC3_GRAPHICS_HW3D_ALL_AVAILABLE_TARGETS -> ${IC3_GRAPHICS_HW3D_
 
 add_subdirectory( "GfxTest" )
 
+add_subdirectory( "Script01" )
 add_subdirectory( "SysPipeClient" )
 add_subdirectory( "SysPipeServer" )

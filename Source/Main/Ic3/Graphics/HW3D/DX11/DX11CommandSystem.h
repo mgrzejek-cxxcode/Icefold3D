@@ -6,6 +6,7 @@
 
 #include "DX11Prerequisites.h"
 #include <Ic3/Graphics/GCI/CommandSystem.h>
+#include <list>
 #include <mutex>
 
 namespace Ic3::Graphics::GCI

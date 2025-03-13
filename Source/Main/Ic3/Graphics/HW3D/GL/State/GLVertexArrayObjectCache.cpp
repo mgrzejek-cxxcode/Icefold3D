@@ -12,7 +12,7 @@ namespace Ic3::Graphics::GCI
 
 	const GLVertexArrayObject & GLVertexArrayObjectCache::GetOrCreate(
 			const GLIAVertexAttributeLayout & pGLAttributeLayoutDefinition,
-			const GLIAVertexSourceBinding & pGLVertexSourceBinding )
+			const GLIAVertexSourceBindingBase & pGLVertexSourceBinding )
 	{
 		GLVertexArrayObjectCachedID cachedID{
 			reinterpret_cast<uint64>( &pGLAttributeLayoutDefinition ),

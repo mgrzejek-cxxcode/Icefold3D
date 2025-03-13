@@ -35,7 +35,7 @@ namespace Ic3::Graphics::GCI
 			PipelineStateDescriptorDynamic<TPBaseDescriptor> & pPipelineStateDescriptorDynamic,
 			TPArgs && ...pArgs )
 		{
-			return pPipelineStateDescriptorDynamic.InitializeDynamicDriverState<TPDriverDataType>( std::forward<TPArgs>( pArgs )... );
+			return pPipelineStateDescriptorDynamic.template InitializeDynamicDriverState<TPDriverDataType>( std::forward<TPArgs>( pArgs )... );
 		}
 
 		/**

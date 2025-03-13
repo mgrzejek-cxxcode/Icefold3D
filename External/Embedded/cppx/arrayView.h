@@ -37,6 +37,11 @@ namespace cppx
 		: _dataPtr( nullptr )
 		, _size( 0 )
 		{}
+		
+		array_view( std::nullptr_t )
+		: _dataPtr( nullptr )
+		, _size( 0 )
+		{}
 
 		array_view( TPValue * pMemory, size_t pSize )
 		: _dataPtr( pMemory )

@@ -62,6 +62,16 @@ namespace Ic3::Graphics::GCI
 			return ( activeAttachmentsMask & eRTAttachmentMaskColorAll ).count_bits();
 		}
 
+		CPPX_ATTR_NO_DISCARD bool IsAttachmentActive( native_uint pAttachmentIndex ) const noexcept
+		{
+			return activeAttachmentsMask.is_set( CXU::RTOMakeAttachmentFlag( pAttachmentIndex ) );
+		}
+
+		CPPX_ATTR_NO_DISCARD bool IsColorAttachmentActive( native_uint pColorAttachmentIndex ) const noexcept
+		{
+			return activeAttachmentsMask.is_set( CXU::RTOMakeColorAttachmentFlag( pColorAttachmentIndex ) );
+		}
+
 		CPPX_ATTR_NO_DISCARD bool IsDepthStencilAttachmentActive() const noexcept
 		{
 			return activeAttachmentsMask.is_set( eRTAttachmentFlagDepthStencilBit );

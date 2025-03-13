@@ -97,7 +97,7 @@ namespace Ic3::Graphics::GCI
 	protected:
 		CPPX_ATTR_NO_DISCARD const GLRenderTargetBinding & GetGLRenderTargetBinding() const noexcept;
 
-		CPPX_ATTR_NO_DISCARD const GLIAVertexSourceBinding & GetGLVertexSourceBinding() const noexcept;
+		CPPX_ATTR_NO_DISCARD const GLIAVertexSourceBindingBase & GetGLVertexSourceBinding() const noexcept;
 
 	private:
 		using BaseStateControllerType = GraphicsPipelineStateControllerRenderPassGeneric<GraphicsPipelineStateControllerSeparable>;
@@ -118,7 +118,7 @@ namespace Ic3::Graphics::GCI
 		{
 			const GLRenderTargetBinding * renderTargetBinding = nullptr;
 
-			const GLIAVertexSourceBinding * vertexSourceBinding = nullptr;
+			const GLIAVertexSourceBindingBase * vertexSourceBinding = nullptr;
 		};
 
 		GLDrawTopologyProperties _glcCurrentDrawTopologyProperties;
@@ -140,7 +140,7 @@ namespace Ic3::Graphics::GCI
 				const ShaderInputParameterConstant & pConstantInfo,
 				const void * pConstantData ) override final;
 
-		static void ApplyVertexBufferBindings( const GLIAVertexBufferArrayBindings & pVertexBufferBindings );
+		static void ApplyVertexBufferBindings( const GLIAVertexSourceBindingBase & pGLVertexSourceBinding );
 	};
 
 	class GLGraphicsPipelineStateControllerCompat : public GLGraphicsPipelineStateController
@@ -159,7 +159,7 @@ namespace Ic3::Graphics::GCI
 
 		const GLVertexArrayObject & GetCachedVertexArrayObject(
 				const GLIAVertexAttributeLayout & pGLAttributeLayoutDefinition,
-				const GLIAVertexSourceBinding & pGLVertexSourceBinding );
+				const GLIAVertexSourceBindingBase & pGLVertexSourceBinding );
 	};
 
 } // namespace Ic3::Graphics::GCI

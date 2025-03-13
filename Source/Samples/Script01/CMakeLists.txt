@@ -1,6 +1,6 @@
 
 set( IC3_SAMPLES_SRC_Script01
-        "Main.mm"
+        "Main.cpp"
         )
 
 add_executable( Sample.Script01
@@ -9,7 +9,6 @@ add_executable( Sample.Script01
 
 target_link_libraries( Sample.Script01 PUBLIC
         Ic3.CoreLib
-        Ic3.Script
         Ic3.System
         Ic3.NxMain
         )

@@ -42,7 +42,7 @@ namespace Ic3::Script
 	{
 		auto * targetBuffer = reinterpret_cast<cppx::dynamic_byte_array *>( pArg );
 		targetBuffer->resize( pLength );
-		targetBuffer->setData( pData, pLength, 0 );
+		targetBuffer->set_data( pData, pLength, 0 );
 
 		return 0;
 	}

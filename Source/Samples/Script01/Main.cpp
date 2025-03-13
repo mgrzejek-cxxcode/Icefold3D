@@ -1,5 +1,5 @@
 
-#include <Ic3/System/IO/FileManager.h>
+#include <Ic3/System/IO/FileSystem.h>
 #include <Ic3/System/SysContextNative.h>
 #include <Ic3/Script/Lua/LuaScriptSystem.h>
 #include <Ic3/Script/Lua/RefData.h>
@@ -8,11 +8,20 @@
 #include <cppx/stringUtils.h>
 
 #include <Ic3/NxMain/GCI/VertexFormatSignature.h>
-#include <Ic3/NxMain/GCI/VertexFormatDescriptorUtils.h>
+#include <Ic3/NxMain/GCI/VertexFormatUtils.h>
+
+#include <Ic3/Graphics/Common/Utilities/DynamicallySizedTemplate.h>
+#include <Ic3/Graphics/GCI/Utilities/HWVertexSourceBinding.h>
+
+using Gbase = Ic3::Graphics::GCI::DSTVertexSourceBindingBase<int, int>;
+
+template <native_uint tpSize>
+using Gdata = Ic3::Graphics::GCI::DSTVertexSourceBinding<tpSize, int, int>;
 
 int main( int pArgc, const char ** pArgv )
 {
-	{
+	auto * rr = Ic3::CreateDynamicallySizedTemplate<Gdata>( 4 );
+	/*{
 		using namespace Ic3;
 
 		VertexFormatBuilderBase vfdBuilder{};
@@ -45,14 +54,10 @@ int main( int pArgc, const char ** pArgv )
 		Ic3DebugOutput( sidCopy1.c_str() );
 
 		return 0;
-	}
+	}*/
 
-	///////////////////////////////////////////////////
-	///////////////////////////////////////////////////
-	///////////////////////////////////////////////////
-	// "s0<a0POSITION:3F32|a1NORMAL:3F32|a2TANGENT:3F32|a3BITANGENT:3F32|a5TEXCOORD0:2F32>_s1<a10INSTANCE_MATRIX:4F32[4]>_s2<a14INSTANCE_UDATA:2F32[2]>"
 
-	printf("%u\n", (uint32)sizeof(std::exception_ptr));
+	/*printf("%u\n", (uint32)sizeof(std::exception_ptr));
 
 	Ic3::System::SysContextCreateInfo sysContextCreateInfo;
 	auto sysContext = Ic3::System::Platform::CreateSysContext( sysContextCreateInfo );
@@ -67,36 +72,36 @@ int main( int pArgc, const char ** pArgv )
 	using TMI = Ic3::Script::SmTypeMetaInfo<Ic3::Script::SomeInterface::ExampleClass>;
 	const auto & tmiName = TMI::sName;
 
-//	cppx::dynamic_byte_array luaScript;
-//	auto luaFile = fsManager->openFile( "sx.lua", Ic3::System::EIOAccessMode::ReadOnly );
-//	luaFile->readAuto( luaScript );
-//
-//	std::string scriptText{};
-//	scriptText.assign( ( const char * )luaScript.data(), luaScript.size() );
+	cppx::dynamic_byte_array luaScript;
+	auto luaFile = fsManager->openFile( "sx.lua", Ic3::System::EIOAccessMode::ReadOnly );
+	luaFile->readAuto( luaScript );
 
-	// auto compiledScript = luaScriptSystem->compileFile( "sx2", "sx2.lua" );
+	std::string scriptText{};
+	scriptText.assign( ( const char * )luaScript.data(), luaScript.size() );
+
+	 auto compiledScript = luaScriptSystem->compileFile( "sx2", "sx2.lua" );
 
 	Ic3::Script::RefData::registerType( luaScriptSystem );
 
 	luaL_dofile( luaScriptSystem->getLuaContext()->luaState, "sx.lua" );
 	luaL_dofile( luaScriptSystem->getLuaContext()->luaState, "sx2.lua" );
 
-	// scriptSystem->executeCompiledScript( compiledScript );
+	 scriptSystem->executeCompiledScript( compiledScript );
 
-//	CompiledScript* cs = nullptr;
-//
-//	File ux_file = File::Open("sx.lua", FileOpenMode::Open_Existing);
-//
-//	if(ux_file)
-//	{
-//		DynamicDataArray<Byte> uxd;
-//		ux_file.ReadAll(uxd);
-//
-//		cs = sce.CompileScript("", uxd.GetDataPtr(), uxd.Size());
-//
-//		sce.Execute(cs);
-//		sce.Parse(String((const char*)uxd.GetDataPtr(), uxd.Size()));
-//	}
+	CompiledScript* cs = nullptr;
+
+	File ux_file = File::Open("sx.lua", FileOpenMode::Open_Existing);
+
+	if(ux_file)
+	{
+		DynamicDataArray<Byte> uxd;
+		ux_file.ReadAll(uxd);
+
+		cs = sce.CompileScript("", uxd.GetDataPtr(), uxd.Size());
+
+		sce.Execute(cs);
+		sce.Parse(String((const char*)uxd.GetDataPtr(), uxd.Size()));
+	}*/
 
 	return 0;
 }

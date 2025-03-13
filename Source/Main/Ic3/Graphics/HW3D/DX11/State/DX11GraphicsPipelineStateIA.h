@@ -7,6 +7,7 @@
 #include "../DX11Prerequisites.h"
 #include <Ic3/Graphics/GCI/Resources/ShaderCommon.h>
 #include <Ic3/Graphics/GCI/State/GraphicsPipelineStateDescriptorIA.h>
+#include <Ic3/Graphics/GCI/Utilities/DSTVertexSourceBinding.h>
 
 namespace Ic3::Graphics::GCI
 {
@@ -19,11 +20,10 @@ namespace Ic3::Graphics::GCI
 		D3D11_PRIMITIVE_TOPOLOGY d3d11PrimitiveTopology;
 	};
 
-	struct DX11IAIndexBufferBinding
+	struct DX11IBufferBinding
 	{
 		ID3D11Buffer * buffer;
 		UINT offset;
-		DXGI_FORMAT format;
 
 		explicit operator bool() const noexcept
 		{
@@ -31,31 +31,48 @@ namespace Ic3::Graphics::GCI
 		}
 	};
 
-	struct DX11IAVertexBufferArrayBindings
+	struct DX11IAVertexBufferBinding : public DX11IBufferBinding
 	{
-		struct BindingData
-		{
-			ID3D11Buffer * bufferArray[GCM::kIAMaxDataStreamVertexBuffersNum];
-			UINT offsetArray[GCM::kIAMaxDataStreamVertexBuffersNum];
-			UINT strideArray[GCM::kIAMaxDataStreamVertexBuffersNum];
-		};
-
-		VertexSourceBindingRageList activeRanges;
-
-		BindingData bindingData;
-
-		explicit operator bool() const
-		{
-			return !activeRanges.empty();
-		}
+		UINT index;
+		UINT stride;
 	};
 
-	/// @brief
-	struct DX11IAVertexSourceBinding : public IAVertexSourceBindingCommonConfig
+	struct DX11IAIndexBufferBinding : public DX11IBufferBinding
 	{
-		DX11IAVertexBufferArrayBindings vertexBufferBindings;
+		DXGI_FORMAT format;
+	};
 
-		DX11IAIndexBufferBinding indexBufferBinding;
+	using DX11IAVertexSourceBindingBase = DSTVertexSourceBindingBase<DX11IAVertexBufferBinding, DX11IAIndexBufferBinding>;
+
+	template <native_uint tpActiveVertexBuffersNum>
+	using DX11IAVertexSourceBinding = DSTVertexSourceBinding<DX11IAVertexSourceBindingBase, tpActiveVertexBuffersNum>;
+
+	using DX11IAVertexSourceBindingPtr = std::unique_ptr<DX11IAVertexSourceBindingBase>;
+
+	struct DX11UnwrappedVertexBufferBindings
+	{
+		std::array<ID3D11Buffer *, GCM::kIAMaxDataStreamVertexBuffersNum> vertexBufferArray;
+		std::array<UINT, GCM::kIAMaxDataStreamVertexBuffersNum> vertexBufferOffsetArray;
+		std::array<UINT, GCM::kIAMaxDataStreamVertexBuffersNum> vertexBufferStrideArray;
+
+		void SetBindings( const DX11IAVertexSourceBindingBase & pDX11IAVertexSourceBinding )
+		{
+			for( native_uint vertexBufferIndex = 0; vertexBufferIndex < GCM::kIAMaxDataStreamVertexBuffersNum; ++vertexBufferIndex )
+			{
+				if( const auto * dx11VertexBufferBinding = pDX11IAVertexSourceBinding.GetBindingForVertexStream( vertexBufferIndex ) )
+				{
+					vertexBufferArray[vertexBufferIndex] = dx11VertexBufferBinding->buffer;
+					vertexBufferOffsetArray[vertexBufferIndex] = dx11VertexBufferBinding->offset;
+					vertexBufferStrideArray[vertexBufferIndex] = dx11VertexBufferBinding->stride;
+				}
+				else
+				{
+					vertexBufferArray[vertexBufferIndex] = nullptr;
+					vertexBufferOffsetArray[vertexBufferIndex] = 0;
+					vertexBufferStrideArray[vertexBufferIndex] = 0;
+				}
+			}
+		}
 	};
 
 	///
@@ -88,12 +105,12 @@ namespace Ic3::Graphics::GCI
 	class IC3_GX_DX11_CLASS DX11VertexSourceBindingDescriptor : public HW3DPipelineStateDescriptor<VertexSourceBindingDescriptor>
 	{
 	public:
-		DX11IAVertexSourceBinding const mDX11VertexSourceBinding;
+		DX11IAVertexSourceBindingPtr const mDX11VertexSourceBinding;
 
 	public:
 		DX11VertexSourceBindingDescriptor(
 				DX11GPUDevice & pGPUDevice,
-				const DX11IAVertexSourceBinding & pDX11VertexSourceBinding );
+				DX11IAVertexSourceBindingPtr pDX11VertexSourceBinding );
 
 		virtual ~DX11VertexSourceBindingDescriptor();
 
@@ -116,12 +133,12 @@ namespace Ic3::Graphics::GCI
 
 		// VertexSourceBinding
 
-		CPPX_ATTR_NO_DISCARD DX11IAVertexSourceBinding DX11IATranslateVertexSourceBindingDefinition(
+		CPPX_ATTR_NO_DISCARD DX11IAVertexSourceBindingPtr DX11IACreateVertexSourceBinding(
 				const IAVertexSourceBindingDefinition & pVertexSourceBindingDefinition );
 
-		CPPX_ATTR_NO_DISCARD bool DX11IAUpdateVertexSourceBindingDefinition(
+		CPPX_ATTR_NO_DISCARD void DX11IAUpdateVertexSourceBindingDefinition(
 				const IAVertexSourceBindingDefinition & pVertexSourceBindingDefinition,
-				DX11IAVertexSourceBinding & pOutDX11VertexSourceBinding );
+				DX11IAVertexSourceBindingBase & pOutDX11VertexSourceBinding );
 		
 	}
 

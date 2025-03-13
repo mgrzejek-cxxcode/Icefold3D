@@ -150,6 +150,10 @@ set( IC3_GRAPHICS_GCI_SRC_FILES
 
     "TypeInfo/TPIDefsGCIEnum.cpp"
 
+    "Utilities/DSTRenderTargetBinding.h"
+    "Utilities/DSTVertexAttributeLayout.h"
+    "Utilities/DSTVertexSourceBinding.h"
+
 )
 
 ic3AddCoreLib( Ic3.Graphics.GCI ${IC3_GRAPHICS_GCI_SRC_FILES} )

@@ -32,7 +32,7 @@ namespace Ic3::Graphics::GCI
 
 	native_uint VertexSourceBindingDescriptorDynamic::CountActiveVertexBuffers() const noexcept
 	{
-		return ( _vertexSourceBinding.activeStreamsMask & eVertexSourceBindingMaskVertexBufferAllBits ).count_bits();
+		return ( _vertexSourceBinding.activeStreamsMask & eIAVertexSourceBindingMaskVertexBufferAllBits ).count_bits();
 	}
 
 	const IAVertexSourceBindingDefinition & VertexSourceBindingDescriptorDynamic::GetVertexSourceBindingDefinition() const noexcept

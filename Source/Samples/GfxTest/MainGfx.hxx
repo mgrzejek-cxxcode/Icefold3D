@@ -79,7 +79,7 @@ struct CB0Data
 #define GX_DRIVER_ID_DX11 11
 #define GX_DRIVER_ID_GL4 43
 
-#define GX_DRIVER_ID GX_DRIVER_ID_GL4
+#define GX_DRIVER_ID GX_DRIVER_ID_DX11
 
 int main( int pArgc, const char ** pArgv )
 {

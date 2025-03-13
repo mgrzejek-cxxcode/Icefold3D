@@ -2,14 +2,13 @@
 #ifndef __IC3_GRAPHICS_HW3D_GLC_VERTEX_ARRAY_OBJECT_CACHE_H__
 #define __IC3_GRAPHICS_HW3D_GLC_VERTEX_ARRAY_OBJECT_CACHE_H__
 
-#include "../GLPrerequisites.h"
+#include <Ic3/Graphics/HW3D/GL/State/GLInputAssemblerCommon.h>
 #include <map>
 
 namespace Ic3::Graphics::GCI
 {
 
 	struct GLIAVertexAttributeLayout;
-	struct GLIAVertexSourceBinding;
 
 	class GLVertexAttributeLayoutDescriptorCompat;
 	class GLVertexSourceBindingDescriptor;
@@ -40,7 +39,7 @@ namespace Ic3::Graphics::GCI
 
 		const GLVertexArrayObject & GetOrCreate(
 				const GLIAVertexAttributeLayout & pGLAttributeLayoutDefinition,
-				const GLIAVertexSourceBinding & pGLVertexSourceBinding );
+				const GLIAVertexSourceBindingBase & pGLVertexSourceBinding );
 
 		void Reset();
 
