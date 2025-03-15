@@ -32,7 +32,7 @@ namespace Ic3::Graphics::GCI
 		}
 
 		SetCallbackActive( pEnable );
-		Ic3DebugOutputFmt( "Debug output has been %s.", pEnable ? "enabled" : "disabled" );
+		Ic3DebugOutputGL( "Debug output has been %s.", pEnable ? "enabled" : "disabled" );
 	}
 
 	void GLDebugOutput::EnableSync( bool pEnable )
@@ -149,7 +149,7 @@ namespace Ic3::Graphics::GCI
 			auto apiVersion = debugOutputInterface->GetVersion();
 			const char * extensionName = debugOutputInterface->GetExtensionName();
 
-			Ic3DebugOutputFmt( "GLDebugOutput object has been initialized (version %u: %s)", apiVersion, extensionName );
+			Ic3DebugOutputGL( "GLDebugOutput object has been initialized (version %u: %s)", apiVersion, extensionName );
 
 		}
 
@@ -160,7 +160,7 @@ namespace Ic3::Graphics::GCI
 	{
 		++_processedEventsNum;
 
-		Ic3DebugOutput( pEventInfo );
+		Ic3DebugOutputGL( pEventInfo );
 
 		if( ( pEventSeverity == GL_DEBUG_SEVERITY_HIGH_ARB ) && _stateFlags.is_set( eStateFlagEnableBreakOnEvent ) )
 		{
@@ -211,13 +211,7 @@ namespace Ic3::Graphics::GCI
 		char eventInfoBuffer[sEventInfoBufferSize];
 		snprintf( eventInfoBuffer,
 		          sEventInfoBufferSize,
-		          "\n----------------------------------------------------------------------\n"\
-					"[GL Debug Event (via AMD_debug_output)]\n\n"\
-					"- ID: %u\n"\
-					"- Category: %s\n"\
-					"- Severity: %s\n\n"\
-					"- Description: %s\n"\
-					"----------------------------------------------------------------------\n",
+		          "GLDebugOutput (AMD_debug_output) |%u|%s|%s|%s",
 		          pEventID,
 		          ATL::GLTranslateDebugEventCategoryStrAMD( pEventCategory ),
 		          ATL::GLTranslateDebugEventSeverityStr( pEventSeverity ),
@@ -282,14 +276,7 @@ namespace Ic3::Graphics::GCI
 		char eventInfoBuffer[sEventInfoBufferSize];
 		snprintf( eventInfoBuffer,
 		          sEventInfoBufferSize,
-		          "\n----------------------------------------------------------------------\n"\
-					"[GL Debug Event (via ARB_debug_output)]\n\n"\
-					"- ID: %u\n"\
-					"- Source: %s\n"\
-					"- Type: %s\n"\
-					"- Severity: %s\n\n"\
-					"- Description: %s\n"\
-					"----------------------------------------------------------------------\n",
+		          "GLDebugOutput (ARB_debug_output) |%u|%s|%s|%s|%s",
 		          pEventID,
 		          ATL::GLTranslateDebugEventSourceStr( pEventSource ),
 		          ATL::GLTranslateDebugEventTypeStr( pEventType ),
@@ -299,9 +286,9 @@ namespace Ic3::Graphics::GCI
 		ProcessEvent( pEventSeverity, eventInfoBuffer );
 	}
 
-	void GLDebugOutputARBExt::EventCallback( GLuint pEventID,
-	                                         GLenum pEventSource,
+	void GLDebugOutputARBExt::EventCallback( GLenum pEventSource,
 	                                         GLenum pEventType,
+	                                         GLuint pEventID,
 	                                         GLenum pEventSeverity,
 	                                         GLsizei pLength,
 	                                         const GLchar * pMessage,
@@ -356,14 +343,7 @@ namespace Ic3::Graphics::GCI
 		char eventInfoBuffer[sEventInfoBufferSize];
 		snprintf( eventInfoBuffer,
 		          sEventInfoBufferSize,
-		          "\n----------------------------------------------------------------------\n"\
-		           "[GL Debug Event (via KHR_debug)]\n\n"\
-		           "- ID: %u\n"\
-		           "- Source: %s\n"\
-		           "- Type: %s\n"\
-		           "- Severity: %s\n\n"\
-		           "- Description: %s\n"\
-		           "----------------------------------------------------------------------\n",
+		           "GLDebugOutput (KHR_debug) |%u|%s|%s|%s|%s",
 		          pEventID,
 		          ATL::GLTranslateDebugEventSourceStr( pEventSource ),
 		          ATL::GLTranslateDebugEventTypeStr( pEventType ),
@@ -373,9 +353,9 @@ namespace Ic3::Graphics::GCI
 		ProcessEvent( pEventSeverity, eventInfoBuffer );
 	}
 
-	void GLDebugOutputKHRCore::EventCallback( GLuint pEventID,
-	                                          GLenum pEventSource,
+	void GLDebugOutputKHRCore::EventCallback( GLenum pEventSource,
 	                                          GLenum pEventType,
+	                                          GLuint pEventID,
 	                                          GLenum pEventSeverity,
 	                                          GLsizei pLength,
 	                                          const GLchar * pMessage,

@@ -43,7 +43,7 @@ namespace Ic3
 	{
 		if( !pAttributeDefinition.IsValid() )
 		{
-			Ic3DebugOutput( "" );
+			Ic3DebugOutputNx( "" );
 		}
 		else
 		{
@@ -64,8 +64,8 @@ namespace Ic3
 		attributeDefinition.semanticGroupSize = pAttributeKey.GetSemanticGroupSize();
 		attributeDefinition.baseDataFormat = pAttributeKey.GetBaseDataFormat();
 		attributeDefinition.dataPadding = cppx::numeric_cast<decltype( attributeDefinition.dataPadding )>( pDataPadding );
-		attributeDefinition.semanticName = GCIUtils::GetSemanticNameFromAttributeFlags( pAttributeKey.GetSemanticFlags() );
-		attributeDefinition.semanticFlags = pAttributeKey.GetSemanticFlags();
+		attributeDefinition.semantics.semanticName = GCIUtils::GetSemanticNameFromAttributeFlags( pAttributeKey.GetSemanticFlags() );
+		attributeDefinition.semantics.semanticFlags = pAttributeKey.GetSemanticFlags();
 		attributeDefinition.dataRate = pAttributeKey.GetDataRate();
 		attributeDefinition.vertexStreamSlot = cppx::numeric_cast<decltype( attributeDefinition.vertexStreamSlot )>( pVertexStreamSlot );
 		attributeDefinition.vertexStreamRelativeOffset = pVertexStreamRelativeOffset;
@@ -85,8 +85,8 @@ namespace Ic3
 		attributeDefinition.semanticGroupSize = pAttributeKey.GetSemanticGroupSize();
 		attributeDefinition.baseDataFormat = pAttributeKey.GetBaseDataFormat();
 		attributeDefinition.dataPadding = cppx::numeric_cast<decltype( attributeDefinition.dataPadding )>( pDataPadding );
-		attributeDefinition.semanticName = pAttributeShaderSemantics.semanticName;
-		attributeDefinition.semanticFlags = pAttributeShaderSemantics.semanticFlags;
+		attributeDefinition.semantics.semanticName = pAttributeShaderSemantics.semanticName;
+		attributeDefinition.semantics.semanticFlags = pAttributeShaderSemantics.semanticFlags;
 		attributeDefinition.dataRate = pAttributeKey.GetDataRate();
 		attributeDefinition.vertexStreamSlot = cppx::numeric_cast<decltype( attributeDefinition.vertexStreamSlot )>( pVertexStreamSlot );
 		attributeDefinition.vertexStreamRelativeOffset = pVertexStreamRelativeOffset;
@@ -108,8 +108,8 @@ namespace Ic3
 		attributeDefinition.semanticGroupSize = 1;
 		attributeDefinition.baseDataFormat = pDataFormat;
 		attributeDefinition.dataPadding = cppx::numeric_cast<decltype( attributeDefinition.dataPadding )>( pDataPadding );
-		attributeDefinition.semanticName = pAttributeShaderSemantics.semanticName;
-		attributeDefinition.semanticFlags = pAttributeShaderSemantics.semanticFlags;
+		attributeDefinition.semantics.semanticName = pAttributeShaderSemantics.semanticName;
+		attributeDefinition.semantics.semanticFlags = pAttributeShaderSemantics.semanticFlags;
 		attributeDefinition.dataRate = pDataRate;
 		attributeDefinition.vertexStreamSlot = cppx::numeric_cast<decltype( attributeDefinition.vertexStreamSlot )>( pVertexStreamSlot );
 		attributeDefinition.vertexStreamRelativeOffset = pVertexStreamRelativeOffset;
@@ -132,8 +132,8 @@ namespace Ic3
 		attributeDefinition.semanticGroupSize = cppx::numeric_cast<decltype( attributeDefinition.semanticGroupSize )>( pSemanticGroupSize );
 		attributeDefinition.baseDataFormat = pBaseDataFormat;
 		attributeDefinition.dataPadding = cppx::numeric_cast<decltype( attributeDefinition.dataPadding )>( pDataPadding );
-		attributeDefinition.semanticName = pAttributeShaderSemantics.semanticName;
-		attributeDefinition.semanticFlags = pAttributeShaderSemantics.semanticFlags;
+		attributeDefinition.semantics.semanticName = pAttributeShaderSemantics.semanticName;
+		attributeDefinition.semantics.semanticFlags = pAttributeShaderSemantics.semanticFlags;
 		attributeDefinition.dataRate = pDataRate;
 		attributeDefinition.vertexStreamSlot = cppx::numeric_cast<decltype( attributeDefinition.vertexStreamSlot )>( pVertexStreamSlot );
 		attributeDefinition.vertexStreamRelativeOffset = pVertexStreamRelativeOffset;
@@ -156,7 +156,7 @@ namespace Ic3
 	}
 
 	VertexFormatBuilderBase & VertexFormatBuilderBase::AddAttributeList(
-			const cppx::array_view<const VertexInputAttributeDefinition> & pAttributeDefinitionList )
+			const cppx::array_view<VertexInputAttributeDefinition> & pAttributeDefinitionList )
 	{
 		for( const auto & attributeDefinition : pAttributeDefinitionList )
 		{
@@ -442,8 +442,8 @@ namespace Ic3
 				gciAttributeDesc.attribInfo.dataFormat = genericAttribute.dataFormat;
 				gciAttributeDesc.attribInfo.dataRate = genericAttribute.dataRate;
 				gciAttributeDesc.semantics = GCIUtils::IAProcessAttributeSemantics( genericAttribute.semanticName, genericAttribute.semanticIndex );
-				gciAttributeDesc.streamBinding.streamSlot = genericAttribute.vertexStreamSlot;
-				gciAttributeDesc.streamBinding.streamRelativeOffset = genericAttribute.vertexStreamRelativeOffset;
+				gciAttributeDesc.vertexStreamBinding.streamSlot = genericAttribute.vertexStreamSlot;
+				gciAttributeDesc.vertexStreamBinding.streamRelativeOffset = genericAttribute.vertexStreamRelativeOffset;
 			}
 		}
 

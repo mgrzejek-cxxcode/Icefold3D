@@ -210,7 +210,7 @@ namespace Ic3::Graphics::GCI
 				{
 					auto * errorStr = (const char *)errorMessagesBuffer->GetBufferPointer();
 					std::string err{ errorStr };;
-					Ic3DebugOutput( errorStr );
+					Ic3DebugOutputDX11( errorStr );
 					Ic3DebugInterrupt();
 				}
 

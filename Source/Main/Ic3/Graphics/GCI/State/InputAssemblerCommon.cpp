@@ -12,7 +12,7 @@ namespace Ic3::Graphics::GCI
 		{
 			if( auto * shaderInputSignature = vertexShaderWithBinary->GetShaderInputSignature() )
 			{
-				return GCU::ValidateVertexAttributeLayoutDefinitionWithShaderInputSignature( layoutDefinition, *shaderInputSignature );
+				return Utilities::ValidateVertexAttributeLayoutDefinitionWithShaderInputSignature( layoutDefinition, *shaderInputSignature );
 			}
 		}
 
@@ -24,7 +24,7 @@ namespace Ic3::Graphics::GCI
 		return PipelineStateDescriptorCreateInfoBase::Validate();
 	}
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		cppx::bitmask<EIAVertexAttributeFlags> IAGetActiveVertexAttributesMask(

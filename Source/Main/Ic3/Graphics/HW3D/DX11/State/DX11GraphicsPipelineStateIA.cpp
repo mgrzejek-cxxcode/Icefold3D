@@ -12,13 +12,13 @@ namespace Ic3::Graphics::GCI
 
 	DX11VertexAttributeLayoutDescriptor::DX11VertexAttributeLayoutDescriptor(
 			DX11GPUDevice & pGPUDevice,
-			const IAVertexAttributeLayoutCommonConfig & pCommonAttributeLayoutConfig,
+			const IAVertexAttributeLayoutMetaData & pAttributeLayoutMetaData,
 			ComPtr<ID3D11InputLayout> pD3D11InputLayout,
 			D3D11_PRIMITIVE_TOPOLOGY pD3D11PrimitiveTopology )
-	: HW3DPipelineStateDescriptor( pGPUDevice, _commonAttributeLayoutConfig )
+	: HW3DPipelineStateDescriptor( pGPUDevice, _attributeLayoutMetaData )
 	, mD3D11InputLayout( pD3D11InputLayout )
 	, mD3D11PrimitiveTopology( pD3D11PrimitiveTopology )
-	, _commonAttributeLayoutConfig( pCommonAttributeLayoutConfig )
+	, _attributeLayoutMetaData( pAttributeLayoutMetaData )
 	{}
 
 	DX11VertexAttributeLayoutDescriptor::~DX11VertexAttributeLayoutDescriptor() = default;
@@ -28,7 +28,7 @@ namespace Ic3::Graphics::GCI
 			const IAVertexAttributeLayoutDefinition & pAttributeLayoutDefinition,
 			const ShaderBinary & pVertexShaderBinary )
 	{
-		const auto dx11AttributeLayoutDefinition = GCU::DX11IATranslateVertexAttributeLayoutDefinition( pAttributeLayoutDefinition );
+		const auto dx11AttributeLayoutDefinition = Utilities::DX11IATranslateVertexAttributeLayoutDefinition( pAttributeLayoutDefinition );
 
 		ComPtr<ID3D11InputLayout> d3d11InputLayout;
 		const auto hResult = pGPUDevice.mD3D11Device1->CreateInputLayout(
@@ -67,26 +67,26 @@ namespace Ic3::Graphics::GCI
 			DX11GPUDevice & pGPUDevice,
 			const IAVertexSourceBindingDefinition & pVertexSourceBindingDefinition )
 	{
-		auto dx11VertexSourceBinding = GCU::DX11IACreateVertexSourceBinding( pVertexSourceBindingDefinition );
+		auto dx11VertexSourceBinding = Utilities::DX11IACreateVertexSourceBinding( pVertexSourceBindingDefinition );
 		auto dx11VertexSourceDescriptor = CreateGfxObject<DX11VertexSourceBindingDescriptor>( pGPUDevice, std::move( dx11VertexSourceBinding ) );
 
 		return dx11VertexSourceDescriptor;
 	}
 
 	
-	namespace GCU
+	namespace Utilities
 	{
 
-		D3D11_INPUT_ELEMENT_DESC DX11IATranslateIAVertexAttributeDesc(
+		D3D11_INPUT_ELEMENT_DESC DX11IATranslateVertexAttributeDesc(
 				const IAVertexAttributeDesc & pVertexAttributeDesc )
 		{
 			D3D11_INPUT_ELEMENT_DESC d3D11InputElementDesc;
 
-			d3D11InputElementDesc.AlignedByteOffset = static_cast<UINT>( pVertexAttributeDesc.streamBinding.streamRelativeOffset );
+			d3D11InputElementDesc.AlignedByteOffset = static_cast<UINT>( pVertexAttributeDesc.vertexStreamBinding.streamRelativeOffset );
 			d3D11InputElementDesc.SemanticName = pVertexAttributeDesc.semantics.semanticName.data();
 			d3D11InputElementDesc.SemanticIndex = pVertexAttributeDesc.semantics.semanticIndex;
 			d3D11InputElementDesc.Format = ATL::DXTranslateVertexAttribFormat( pVertexAttributeDesc.attribInfo.dataFormat );
-			d3D11InputElementDesc.InputSlot = pVertexAttributeDesc.streamBinding.streamSlot;
+			d3D11InputElementDesc.InputSlot = pVertexAttributeDesc.vertexStreamBinding.streamSlot;
 			d3D11InputElementDesc.InputSlotClass = ATL::DXTranslateVertexAttribDataRate( pVertexAttributeDesc.attribInfo.dataRate );
 			d3D11InputElementDesc.InstanceDataStepRate = pVertexAttributeDesc.attribInfo.instanceStepRate;
 
@@ -108,7 +108,7 @@ namespace Ic3::Graphics::GCI
 					auto & d3D11InputElementDesc = dx11AttributeLayoutDefinition.d3d11AttributeArray[currentVertexAttributesNum];
 
 					// Translate the attribute data. This includes the relative offset.
-					d3D11InputElementDesc = DX11IATranslateIAVertexAttributeDesc( inputAttributeDesc );
+					d3D11InputElementDesc = DX11IATranslateVertexAttributeDesc( inputAttributeDesc );
 
 					++currentVertexAttributesNum;
 

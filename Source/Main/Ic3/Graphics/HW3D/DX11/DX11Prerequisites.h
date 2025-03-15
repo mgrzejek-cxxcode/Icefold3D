@@ -29,6 +29,9 @@
 #  endif
 #endif
 
+#define Ic3DebugOutputDX11( ... )                 Ic3DebugOutput(                 "Ic3.Graphics.HW3D.DX11", __VA_ARGS__ )
+#define Ic3DebugOutputDX11Ex( pMessageType, ... ) Ic3DebugOutputEx( pMessageType, "Ic3.Graphics.HW3D.DX11", __VA_ARGS__ )
+
 namespace Ic3::Graphics::GCI
 {
 
@@ -54,7 +57,7 @@ namespace Ic3::Graphics::GCI
 	Ic3GCIDeclareTypedefHandle( DX11RootSignatureDescriptor, RootSignatureDescriptorGeneric );
 
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		CPPX_ATTR_NO_DISCARD ID3D11DeviceContext1 * DX11GetD3D11DeviceContextFromCommandList( void * pDX11CommandList );

@@ -52,7 +52,7 @@ namespace Ic3
 	{
 		if( !Graphics::IsGfxObjectIDValid( pShaderID ) || !pShaderObject )
 		{
-			Ic3DebugOutput( "Cannot register shader: invalid ID or shader handle" );
+			Ic3DebugOutputNx( "Cannot register shader: invalid ID or shader handle" );
 			return false;
 		}
 
@@ -81,7 +81,7 @@ namespace Ic3
 	{
 		if( pShaderName.empty() || !pShaderObject )
 		{
-			Ic3DebugOutput( "Cannot register shader: invalid name or shader handle" );
+			Ic3DebugOutputNx( "Cannot register shader: invalid name or shader handle" );
 			return false;
 		}
 

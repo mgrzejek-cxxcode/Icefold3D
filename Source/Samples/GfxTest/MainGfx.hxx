@@ -32,7 +32,6 @@
 
 #include <Ic3/NxMain/Camera/CameraController.h>
 #include <Ic3/NxMain/GCI/VertexFormatSignature.h>
-#include <Ic3/NxMain/GCI/VertexFormatUtils.h>
 #include <Ic3/NxMain/Renderer/ShaderLibrary.h>
 #include <Ic3/NxMain/Renderer/ShaderLoader.h>
 #include <Ic3/NxMain/Renderer/SharedStateLibrary.h>
@@ -79,7 +78,7 @@ struct CB0Data
 #define GX_DRIVER_ID_DX11 11
 #define GX_DRIVER_ID_GL4 43
 
-#define GX_DRIVER_ID GX_DRIVER_ID_DX11
+#define GX_DRIVER_ID GX_DRIVER_ID_GL4
 
 int main( int pArgc, const char ** pArgv )
 {
@@ -189,7 +188,7 @@ int main( int pArgc, const char ** pArgv )
 		}
 		if( keyMap[EKeyCode::CtrlLeft] )
 		{
-			Ic3DebugOutput( "CTRL_LEFT" );
+			Ic3DebugOutputNx( "CTRL_LEFT" );
 		}
 		if( keyMap[EKeyCode::CharW] )
 		{

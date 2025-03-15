@@ -4,7 +4,7 @@
 #ifndef __IC3_NXMAIN_VERTEX_ATTRIBUTE_COMMON_DEFS_H__
 #define __IC3_NXMAIN_VERTEX_ATTRIBUTE_COMMON_DEFS_H__
 
-#include "IACommonDefs.h"
+#include "VertexFormatCommon.h"
 
 namespace Ic3
 {
@@ -118,9 +118,8 @@ namespace Ic3
 		}
 	};
 
-	namespace GCIUtils
+	namespace VertexFormat
 	{
-		using namespace GCI::CXU;
 
 		/**
 		 * Builds a VertexAttributeKey value from the specified attribute properties.
@@ -168,87 +167,118 @@ namespace Ic3
 			return MakeVertexAttributeKey( pBaseSlot, pComponentsNum, pBaseDataFormat, pSemanticFlags, eVertexAttributeKeyFlagPerInstanceBit );
 		}
 
+		/**
+		 *
+		 * @param pAttributeKey
+		 * @param pSemanticIndex
+		 * @return
+		 */
+		CPPX_ATTR_NO_DISCARD inline VertexAttributeShaderSemantics GetShaderSemanticsForAttributeKey(
+			VertexAttributeKey pAttributeKey,
+			uint32 pSemanticIndex = 0 )
+		{
+			return GetSemanticsFromAttributeFlags( pAttributeKey.GetSemanticFlags(), pSemanticIndex );
+		}
+
+		IC3_NXMAIN_API_NO_DISCARD VertexInputAttributeDefinition MakeAttributeDefinition(
+			uint32 pVertexStreamSlot,
+			VertexAttributeKey pAttributeKey,
+			uint32 pDataPadding = 0,
+			uint32 pVertexStreamRelativeOffset = kVertexAttributeOffsetAppend );
+
+		/**
+		 * @brief 
+		 * @param pAttributeKey 
+		 * @param pVertexStreamSlot 
+		 * @param pVertexStreamRelativeOffset 
+		 * @return 
+		 */
+		IC3_NXMAIN_API_NO_DISCARD inline GCI::IAVertexAttributeDesc GCIMakeVertexAttributeDesc(
+			VertexAttributeKey pAttributeKey,
+			uint32 pVertexStreamSlot,
+			uint32 pVertexStreamRelativeOffset );
+
 	}
 
 	/// Pre-defined vertex position: three 32-bit floats, located at slot 0.
 	inline constexpr VertexAttributeKey kVertexAttributeKeySysPosition =
-			GCIUtils::MakeVertexAttributeKeyV( 0, GCI::EVertexAttribFormat::Vec3F32, eVertexAttributeSemanticFlagPositionBit );
+			VertexFormat::MakeVertexAttributeKeyV( 0, GCI::EVertexAttribFormat::Vec3F32, eVertexAttributeSemanticFlagPositionBit );
 
 	/// Pre-defined vertex normal: three 32-bit floats, located at slot 1.
 	inline constexpr VertexAttributeKey kVertexAttributeKeySysNormal =
-			GCIUtils::MakeVertexAttributeKeyV( 1, GCI::EVertexAttribFormat::Vec3F32, eVertexAttributeSemanticFlagNormalBit );
+			VertexFormat::MakeVertexAttributeKeyV( 1, GCI::EVertexAttribFormat::Vec3F32, eVertexAttributeSemanticFlagNormalBit );
 
 	/// Pre-defined vertex tangent: three 32-bit floats, located at slot 2.
 	inline constexpr VertexAttributeKey kVertexAttributeKeySysTangent =
-			GCIUtils::MakeVertexAttributeKeyV( 2, GCI::EVertexAttribFormat::Vec3F32, eVertexAttributeSemanticFlagTangentBit );
+			VertexFormat::MakeVertexAttributeKeyV( 2, GCI::EVertexAttribFormat::Vec3F32, eVertexAttributeSemanticFlagTangentBit );
 
 	/// Pre-defined vertex bi-tangent: three 32-bit floats, located at slot 3.
 	inline constexpr VertexAttributeKey kVertexAttributeKeySysBiTangent =
-			GCIUtils::MakeVertexAttributeKeyV( 3, GCI::EVertexAttribFormat::Vec3F32, eVertexAttributeSemanticFlagBiTangentBit );
+			VertexFormat::MakeVertexAttributeKeyV( 3, GCI::EVertexAttribFormat::Vec3F32, eVertexAttributeSemanticFlagBiTangentBit );
 
 	/// Pre-defined vertex fixed color: four 32-bit float values, located at slot 4.
 	inline constexpr VertexAttributeKey kVertexAttributeKeySysFixedColorF32 =
-			GCIUtils::MakeVertexAttributeKeyV( 4, GCI::EVertexAttribFormat::Vec4F32, eVertexAttributeSemanticFlagFixedColorBit );
+			VertexFormat::MakeVertexAttributeKeyV( 4, GCI::EVertexAttribFormat::Vec4F32, eVertexAttributeSemanticFlagFixedColorBit );
 
 	/// Pre-defined vertex fixed color: four 8-bit uint values (normalized), located at slot 4.
 	inline constexpr VertexAttributeKey kVertexAttributeKeySysFixedColorU8N =
-			GCIUtils::MakeVertexAttributeKeyV( 4, GCI::EVertexAttribFormat::Vec4U8N, eVertexAttributeSemanticFlagFixedColorBit );
+			VertexFormat::MakeVertexAttributeKeyV( 4, GCI::EVertexAttribFormat::Vec4U8N, eVertexAttributeSemanticFlagFixedColorBit );
 
 	/// Pre-defined 2D vertex tex coord 0: two 32-bit floats, located at slot 5.
 	inline constexpr VertexAttributeKey kVertexAttributeKeySysTexCoord2D0 =
-			GCIUtils::MakeVertexAttributeKeyV( 5, GCI::EVertexAttribFormat::Vec2F32, eVertexAttributeSemanticFlagTexCoord0Bit );
+			VertexFormat::MakeVertexAttributeKeyV( 5, GCI::EVertexAttribFormat::Vec2F32, eVertexAttributeSemanticFlagTexCoord0Bit );
 
 	/// Pre-defined 2D vertex tex coord 1: two 32-bit floats, located at slot 6.
 	inline constexpr VertexAttributeKey kVertexAttributeKeySysTexCoord2D1 =
-			GCIUtils::MakeVertexAttributeKeyV( 6, GCI::EVertexAttribFormat::Vec2F32, eVertexAttributeSemanticFlagTexCoord1Bit );
+			VertexFormat::MakeVertexAttributeKeyV( 6, GCI::EVertexAttribFormat::Vec2F32, eVertexAttributeSemanticFlagTexCoord1Bit );
 
 	/// Pre-defined 2D vertex tex coord 0&1 combined: four 32-bit floats, located at slot 5.
 	inline constexpr VertexAttributeKey kVertexAttributeKeySysTexCoord2D01Combined =
-			GCIUtils::MakeVertexAttributeKeyV( 5, GCI::EVertexAttribFormat::Vec4F32, eVertexAttributeSemanticMaskTexCoordP01 );
+			VertexFormat::MakeVertexAttributeKeyV( 5, GCI::EVertexAttribFormat::Vec4F32, eVertexAttributeSemanticMaskTexCoordP01 );
 
 	/// Pre-defined 2D vertex tex coord 2: two 32-bit floats, located at slot 7.
 	inline constexpr VertexAttributeKey kVertexAttributeKeySysTexCoord2 =
-			GCIUtils::MakeVertexAttributeKeyV( 7, GCI::EVertexAttribFormat::Vec2F32, eVertexAttributeSemanticFlagTexCoord2Bit );
+			VertexFormat::MakeVertexAttributeKeyV( 7, GCI::EVertexAttribFormat::Vec2F32, eVertexAttributeSemanticFlagTexCoord2Bit );
 
 	/// Pre-defined 2D vertex tex coord 3: two 32-bit floats, located at slot 8.
 	inline constexpr VertexAttributeKey kVertexAttributeKeySysTexCoord3 =
-			GCIUtils::MakeVertexAttributeKeyV( 8, GCI::EVertexAttribFormat::Vec2F32, eVertexAttributeSemanticFlagTexCoord3Bit );
+			VertexFormat::MakeVertexAttributeKeyV( 8, GCI::EVertexAttribFormat::Vec2F32, eVertexAttributeSemanticFlagTexCoord3Bit );
 
 	/// Pre-defined 2D vertex tex coord 2&3 combined: four 32-bit floats, located at slot 7.
 	inline constexpr VertexAttributeKey kVertexAttributeKeySysTexCoord2D23Combined =
-			GCIUtils::MakeVertexAttributeKeyV( 7, GCI::EVertexAttribFormat::Vec4F32, eVertexAttributeSemanticMaskTexCoordP23 );
+			VertexFormat::MakeVertexAttributeKeyV( 7, GCI::EVertexAttribFormat::Vec4F32, eVertexAttributeSemanticMaskTexCoordP23 );
 
 	/// Pre-defined 3D vertex tex coord 0: three 32-bit floats, located at slot 5.
 	inline constexpr VertexAttributeKey kVertexAttributeKeySysTexCoord3D0 =
-			GCIUtils::MakeVertexAttributeKeyV( 5, GCI::EVertexAttribFormat::Vec3F32, eVertexAttributeSemanticFlagTexCoord0Bit );
+			VertexFormat::MakeVertexAttributeKeyV( 5, GCI::EVertexAttribFormat::Vec3F32, eVertexAttributeSemanticFlagTexCoord0Bit );
 
 	/// Pre-defined 3D vertex tex coord 1: three 32-bit floats, located at slot 6.
 	inline constexpr VertexAttributeKey kVertexAttributeKeySysTexCoord3D1 =
-			GCIUtils::MakeVertexAttributeKeyV( 6, GCI::EVertexAttribFormat::Vec3F32, eVertexAttributeSemanticFlagTexCoord1Bit );
+			VertexFormat::MakeVertexAttributeKeyV( 6, GCI::EVertexAttribFormat::Vec3F32, eVertexAttributeSemanticFlagTexCoord1Bit );
 
 	/// Pre-defined 3D vertex tex coord 2: three 32-bit floats, located at slot 7.
 	inline constexpr VertexAttributeKey kVertexAttributeKeySysTexCoord3D2 =
-			GCIUtils::MakeVertexAttributeKeyV( 7, GCI::EVertexAttribFormat::Vec3F32, eVertexAttributeSemanticFlagTexCoord2Bit );
+			VertexFormat::MakeVertexAttributeKeyV( 7, GCI::EVertexAttribFormat::Vec3F32, eVertexAttributeSemanticFlagTexCoord2Bit );
 
 	/// Pre-defined 3D vertex tex coord 3: three 32-bit floats, located at slot 8.
 	inline constexpr VertexAttributeKey kVertexAttributeKeySysTexCoord3D3 =
-			GCIUtils::MakeVertexAttributeKeyV( 8, GCI::EVertexAttribFormat::Vec3F32, eVertexAttributeSemanticFlagTexCoord3Bit );
+			VertexFormat::MakeVertexAttributeKeyV( 8, GCI::EVertexAttribFormat::Vec3F32, eVertexAttributeSemanticFlagTexCoord3Bit );
 
 	/// Pre-defined vertex blend indices: four 32-bit floats, located at slot 8.
 	inline constexpr VertexAttributeKey kVertexAttributeKeySysBlendIndices =
-			GCIUtils::MakeVertexAttributeKeyV( 8, GCI::EVertexAttribFormat::Vec4U32, eVertexAttributeSemanticFlagBlendIndicesBit );
+			VertexFormat::MakeVertexAttributeKeyV( 8, GCI::EVertexAttribFormat::Vec4U32, eVertexAttributeSemanticFlagBlendIndicesBit );
 
 	/// Pre-defined vertex blend weights: four 32-bit floats, located at slot 9.
 	inline constexpr VertexAttributeKey kVertexAttributeKeySysBlendWeights =
-			GCIUtils::MakeVertexAttributeKeyV( 9, GCI::EVertexAttribFormat::Vec4F32, eVertexAttributeSemanticFlagBlendWeightsBit );
+			VertexFormat::MakeVertexAttributeKeyV( 9, GCI::EVertexAttribFormat::Vec4F32, eVertexAttributeSemanticFlagBlendWeightsBit );
 
 	/// Pre-defined instance matrix
 	inline constexpr VertexAttributeKey kVertexAttributeKeySysInstanceMatrix =
-			GCIUtils::MakeVertexAttributeKeyI( 10, 4, GCI::EVertexAttribFormat::Vec4F32, eVertexAttributeSemanticFlagInstanceMatrixBit );
+			VertexFormat::MakeVertexAttributeKeyI( 10, 4, GCI::EVertexAttribFormat::Vec4F32, eVertexAttributeSemanticFlagInstanceMatrixBit );
 
 	/// Pre-defined instance user data
 	inline constexpr VertexAttributeKey kVertexAttributeKeySysInstanceUserData =
-			GCIUtils::MakeVertexAttributeKeyI( 14, 2, GCI::EVertexAttribFormat::Vec2F32, eVertexAttributeSemanticFlagInstanceUserDataBit );
+			VertexFormat::MakeVertexAttributeKeyI( 14, 2, GCI::EVertexAttribFormat::Vec2F32, eVertexAttributeSemanticFlagInstanceUserDataBit );
 
 } // namespace Ic3
 

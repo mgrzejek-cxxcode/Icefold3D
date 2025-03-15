@@ -125,7 +125,7 @@ namespace Ic3::Graphics::GCI
 			{
 				if( IsDynamicDescriptorConfigurationModified( pRenderTargetDescriptor ) )
 				{
-					GCU::RTOUpdateRenderTargetBindingDX11(
+					Utilities::RTOUpdateRenderTargetBindingDX11(
 						*( mGPUDevice.QueryInterface<DX11GPUDevice>() ),
 						pRenderTargetDescriptor.GetRenderTargetArrayConfiguration(),
 						*dx11RenderTargetBindingPtr );
@@ -190,7 +190,7 @@ namespace Ic3::Graphics::GCI
 			{
 				if( IsDynamicDescriptorConfigurationModified( pVertexSourceBindingDescriptor ) )
 				{
-					GCU::DX11IAUpdateVertexSourceBindingDefinition(
+					Utilities::DX11IAUpdateVertexSourceBindingDefinition(
 						pVertexSourceBindingDescriptor.GetVertexSourceBindingDefinition(),
 						*dx11VertexSourcetBindingPtr );
 
@@ -529,7 +529,7 @@ namespace Ic3::Graphics::GCI
 		DX11UnwrappedVertexBufferBindings dx11UnwrappedVertexBufferBindings{};
 		dx11UnwrappedVertexBufferBindings.SetBindings( pDX11VertexSourceBinding );
 
-		const auto vertexBuffersBindRange = cppx::make_range<UINT>( 0, dx11UnwrappedVertexBufferBindings.vertexBufferArray.size() - 1 );
+		const auto vertexBuffersBindRange = cppx::make_range_from_bounds<UINT>( 0, dx11UnwrappedVertexBufferBindings.vertexBufferArray.size() - 1 );
 
 		mDX11CommandList->mD3D11DeviceContext1->IASetVertexBuffers(
 			vertexBuffersBindRange.begin,

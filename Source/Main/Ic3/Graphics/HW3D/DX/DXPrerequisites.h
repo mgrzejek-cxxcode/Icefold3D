@@ -33,6 +33,9 @@
 #  endif
 #endif
 
+#define Ic3DebugOutputDX( ... )                 Ic3DebugOutput(                 "Ic3.Graphics.HW3D.DX", __VA_ARGS__ )
+#define Ic3DebugOutputDXEx( pMessageType, ... ) Ic3DebugOutputEx( pMessageType, "Ic3.Graphics.HW3D.DX", __VA_ARGS__ )
+
 #include "Prerequisites/DXCommonShaderDefs.h"
 #include "Prerequisites/DXErrorUtils.h"
 

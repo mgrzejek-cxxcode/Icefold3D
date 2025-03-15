@@ -24,11 +24,11 @@ namespace Ic3
 			}
 			else
 			{
-				Ic3DebugOutputFmt( "Failed to import mesh: %s", meshInputDesc.sourceFilename.c_str() );
+				Ic3DebugOutputNxFmt( "Failed to import mesh: %s", meshInputDesc.sourceFilename.c_str() );
 			}
 		}
 
-		Ic3DebugOutputFmt(
+		Ic3DebugOutputNxFmt(
 				"Imported -%u- meshes out of -%u- specified",
 				( uint32 )meshGroupData->getMeshesNum(),
 				( uint32 )pGroupDesc.size() );

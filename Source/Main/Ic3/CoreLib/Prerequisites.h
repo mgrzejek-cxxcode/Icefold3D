@@ -43,6 +43,9 @@
 
 #define friendapi( pAccess ) pAccess
 
+#define Ic3DebugOutputCore( ... )                 Ic3DebugOutput(                 "Ic3.CoreLib", __VA_ARGS__ )
+#define Ic3DebugOutputCoreEx( pMessageType, ... ) Ic3DebugOutputEx( pMessageType, "Ic3.CoreLib", __VA_ARGS__ )
+
 #include "Prerequisites/DebugLayer.h"
 #include "Prerequisites/CoreDefs.h"
 #include "Prerequisites/CoreEnums.h"

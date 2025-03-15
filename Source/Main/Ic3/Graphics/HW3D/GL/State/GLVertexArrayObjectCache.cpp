@@ -22,7 +22,7 @@ namespace Ic3::Graphics::GCI
 		auto cachedEntryIter = _vertexArrayObjectMap.find( cachedID );
 		if( cachedEntryIter == _vertexArrayObjectMap.end() )
 		{
-			auto vertexArrayObject = GCU::IACreateVertexArrayObjectLayoutStreamCombinedGL( pGLAttributeLayoutDefinition, pGLVertexSourceBinding );
+			auto vertexArrayObject = Utilities::IACreateVertexArrayObjectLayoutStreamCombinedGL( pGLAttributeLayoutDefinition, pGLVertexSourceBinding );
 
 			auto insertResult = _vertexArrayObjectMap.emplace( cachedID, std::move( vertexArrayObject ) );
 

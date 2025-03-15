@@ -5,133 +5,98 @@
 
 namespace Ic3
 {
-	inline VertexFormatSignature::operator bool() const noexcept
+	inline VertexFormatSignatureBase::operator bool() const noexcept
 	{
 		return IsValid();
 	}
 
-	inline bool VertexFormatSignature::IsEmpty() const noexcept
+	inline bool VertexFormatSignatureBase::IsEmpty() const noexcept
 	{
-		return _inputAttributeArrayLayout.IsEmpty();
+		return mInternalLayout.IsEmpty();
 	}
 
-	inline bool VertexFormatSignature::IsValid() const noexcept
+	inline bool VertexFormatSignatureBase::IsValid() const noexcept
 	{
-		return !IsEmpty() &&
-				( _indexDataFormat != GCI::EIndexDataFormat::Undefined ) &&
-				( _primitiveTopology != GCI::EPrimitiveTopology::Undefined );
+		return !mInternalLayout.IsEmpty() &&
+		       ( _indexDataFormat != GCI::EIndexDataFormat::Undefined ) &&
+		       ( _primitiveTopology != GCI::EPrimitiveTopology::Undefined );
 	}
 
-	inline bool VertexFormatSignature::IsIndexedVertexFormat() const noexcept
+	inline bool VertexFormatSignatureBase::IsIndexedVertexFormat() const noexcept
 	{
 		return _indexDataFormat != GCI::EIndexDataFormat::Undefined;
 	}
 
-	inline uint32 VertexFormatSignature::GetIndexDataSize() const noexcept
+	inline uint32 VertexFormatSignatureBase::GetIndexDataSize() const noexcept
 	{
 		return GCI::CXU::GetIndexDataFormatByteSize( _indexDataFormat );
 	}
 
-	inline bool VertexFormatSignature::HasAttributeWithSemantics( cppx::string_view pSemanticName ) const noexcept
+	inline bool VertexFormatSignatureBase::HasAttributeWithSemantics( EVertexAttributeSemanticID pAttributeSemanticID ) const noexcept
 	{
-		const auto resolvedAttributeIndex = ResolveAttributeRef( pSemanticName, 0 );
-		return resolvedAttributeIndex != GCI::kIAVertexAttributeSlotUndefined;
+		return false;
 	}
 
-	inline bool VertexFormatSignature::HasAttributeWithSemantics( const VertexAttributeShaderSemantics & pSemantics ) const noexcept
+	inline bool VertexFormatSignatureBase::HasAttributeWithSemantics( cppx::string_view pSemanticName ) const noexcept
 	{
-		const auto resolvedAttributeIndex = ResolveAttributeRef( pSemantics );
-		return resolvedAttributeIndex != GCI::kIAVertexAttributeSlotUndefined;
+		return false;
 	}
 
-	inline bool VertexFormatSignature::HasAttributeWithSemantics( cppx::bitmask<EVertexAttributeSemanticFlags> pAttributeSemanticFlags ) const noexcept
+	inline const GenericVertexInputAttribute * VertexFormatSignatureBase::GetAttribute( native_uint pAttributeSlot ) const noexcept
 	{
-		const auto resolvedAttributeIndex = ResolveAttributeRef( pAttributeSemanticFlags, 0 );
-		return resolvedAttributeIndex != GCI::kIAVertexAttributeSlotUndefined;
+		return mInternalLayout.GetAttributeAtSlot( pAttributeSlot );
 	}
 
-	inline const GenericVertexInputAttribute * VertexFormatSignature::GetAttribute( native_uint pAttributeSlot ) const noexcept
+	inline const GenericVertexInputAttribute * VertexFormatSignatureBase::GetAttribute( EVertexAttributeSemanticID pAttributeSemanticID ) const noexcept
 	{
-		return _inputAttributeArrayLayout.AttributePtr( pAttributeSlot );
+		return nullptr;
 	}
 
-	inline const GenericVertexInputAttribute * VertexFormatSignature::GetAttribute( const VertexAttributeShaderSemantics & pSemantics ) const noexcept
+	inline const GenericVertexInputAttribute * VertexFormatSignatureBase::GetAttribute( cppx::string_view pSemanticName ) const noexcept
 	{
-		const auto resolvedAttributeIndex = ResolveAttributeRef( pSemantics );
-		return _inputAttributeArrayLayout.AttributePtr( resolvedAttributeIndex );
+		return nullptr;
 	}
 
-	inline const GenericVertexInputAttribute * VertexFormatSignature::GetAttribute( VertexAttributeKey pAttributeKey, uint32 pSemanticIndex ) const noexcept
-	{
-		const auto resolvedAttributeIndex = ResolveAttributeRef( pAttributeKey, pSemanticIndex );
-		return _inputAttributeArrayLayout.AttributePtr( resolvedAttributeIndex );
-	}
-
-	inline const GenericVertexInputAttribute * VertexFormatSignature::GetAttribute( cppx::string_view pSemanticName, uint32 pSemanticIndex ) const noexcept
-	{
-		const auto resolvedAttributeIndex = ResolveAttributeRef( pSemanticName, pSemanticIndex );
-		return _inputAttributeArrayLayout.AttributePtr( resolvedAttributeIndex );
-	}
-
-	inline const GenericVertexInputAttribute * VertexFormatSignature::GetAttribute( cppx::bitmask<EVertexAttributeSemanticFlags> pAttributeSemanticFlags, uint32 pSemanticIndex ) const noexcept
-	{
-		const auto resolvedAttributeIndex = ResolveAttributeRef( pAttributeSemanticFlags, pSemanticIndex );
-		return _inputAttributeArrayLayout.AttributePtr( resolvedAttributeIndex );
-	}
-
-	inline const VertexInputStream * VertexFormatSignature::GetStreamForAttribute( native_uint pAttributeSlot ) const noexcept
+	inline const VertexInputStream * VertexFormatSignatureBase::GetStreamForAttribute( native_uint pAttributeSlot ) const noexcept
 	{
 		const auto * attributePtr = GetAttribute( pAttributeSlot );
 		return attributePtr ? GetStream( attributePtr->vertexStreamSlot ) : nullptr;
 	}
 
-	inline const VertexInputStream * VertexFormatSignature::GetStreamForAttribute( VertexAttributeKey pAttributeKey ) const noexcept
+	inline const VertexInputStream * VertexFormatSignatureBase::GetStreamForAttribute( EVertexAttributeSemanticID pAttributeSemanticID ) const noexcept
 	{
-		const auto * attributePtr = GetAttribute( pAttributeKey );
-		return attributePtr ? GetStream( attributePtr->vertexStreamSlot ) : nullptr;
+		return nullptr;
 	}
 
-	inline const VertexInputStream * VertexFormatSignature::GetStreamForAttribute( const VertexAttributeShaderSemantics & pSemantics ) const noexcept
-	{
-		const auto * attributePtr = GetAttribute( pSemantics );
-		return attributePtr ? GetStream( attributePtr->vertexStreamSlot ) : nullptr;
-	}
-
-	inline const VertexInputStream * VertexFormatSignature::GetStreamForAttribute( cppx::string_view pSemanticName ) const noexcept
+	inline const VertexInputStream * VertexFormatSignatureBase::GetStreamForAttribute( cppx::string_view pSemanticName ) const noexcept
 	{
 		const auto * attributePtr = GetAttribute( pSemanticName );
 		return attributePtr ? GetStream( attributePtr->vertexStreamSlot ) : nullptr;
 	}
 
-	inline const VertexInputStream * VertexFormatSignature::GetStreamForAttribute( cppx::bitmask<EVertexAttributeSemanticFlags> pAttributeSemanticFlags ) const noexcept
+	inline const VertexInputStream * VertexFormatSignatureBase::GetStream( native_uint pStreamSlot ) const noexcept
 	{
-		const auto * attributePtr = GetAttribute( pAttributeSemanticFlags );
-		return attributePtr ? GetStream( attributePtr->vertexStreamSlot ) : nullptr;
+		return mInternalLayout.GetStreamAtSlot( pStreamSlot );
 	}
 
-	inline const VertexInputStream * VertexFormatSignature::GetStream( native_uint pStreamSlot ) const noexcept
+	cppx::array_view<input_assembler_slot_t> VertexFormatSignatureBase::GetActiveAttributeSlots() const noexcept
 	{
-		return _inputStreamArrayConfig.StreamPtr( pStreamSlot );
+		return mInternalLayout.GetActiveAttributeSlotsView();
 	}
 
-	inline InputAssemblerSlotArray VertexFormatSignature::GetActiveAttributesSlots() const noexcept
+	cppx::array_view<input_assembler_slot_t> VertexFormatSignatureBase::GetActiveStreamSlots() const noexcept
 	{
-		return _inputAttributeArrayLayout.GetActiveAttributesSlots();
+		return mInternalLayout.GetActiveStreamSlotsView();
 	}
 
-	inline InputAssemblerSlotArray VertexFormatSignature::GetActiveStreamsSlots() const noexcept
+	inline bool VertexFormatSignatureBase::IsAttributeActive( native_uint pAttributeSlot ) const noexcept
 	{
-		return _inputStreamArrayConfig.GetActiveStreamsSlots();
+		return mInternalLayout.IsAttributeActive( pAttributeSlot );
 	}
 
-	inline bool VertexFormatSignature::IsAttributeActive( native_uint pAttributeSlot ) const
+	inline bool VertexFormatSignatureBase::IsStreamActive( native_uint pStreamSlot ) const noexcept
 	{
-		return _inputAttributeArrayLayout.IsAttributeActive( pAttributeSlot );
-	}
-
-	inline bool VertexFormatSignature::IsVertexStreamActive( native_uint pStreamSlot ) const
-	{
-		return _inputStreamArrayConfig.IsStreamActive( pStreamSlot );
+		return mInternalLayout.IsStreamActive( pStreamSlot );
 	}
 
 } // namespace Ic3

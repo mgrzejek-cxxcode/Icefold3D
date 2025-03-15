@@ -159,7 +159,7 @@ namespace Ic3::Graphics::GCI
 
 			auto sysVersionInfo = sysGLRenderContext->QuerySystemVersionInfo();
 			auto sysVersionInfoStr = sysVersionInfo.ToString();
-			Ic3DebugOutputFmt( "%s\n", sysVersionInfoStr.c_str() );
+			Ic3DebugOutputGL( sysVersionInfoStr.c_str() );
 		}
 		catch ( ... )
 		{

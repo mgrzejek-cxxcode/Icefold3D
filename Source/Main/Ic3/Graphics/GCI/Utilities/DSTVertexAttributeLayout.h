@@ -35,11 +35,13 @@ namespace Ic3::Graphics::GCI
 
 		void SetVertexStreamIndexMapping( native_uint pVertexStreamIndex, native_uint pArrayIndex )
 		{
+			Ic3DebugAssert( CXU::IAIsDataStreamVertexBufferSlotValid( pVertexStreamIndex ) );
 			vertexStreamIndexMapping[pVertexStreamIndex] = cppx::numeric_cast< uint8 >( pArrayIndex );
 		}
 
 		void SetVertexStreamIndexInactive( native_uint pVertexStreamIndex )
 		{
+			Ic3DebugAssert( CXU::IAIsDataStreamVertexBufferSlotValid( pVertexStreamIndex ) );
 			vertexStreamIndexMapping[pVertexStreamIndex] = kIAVertexStreamSlotUndefined;
 		}
 

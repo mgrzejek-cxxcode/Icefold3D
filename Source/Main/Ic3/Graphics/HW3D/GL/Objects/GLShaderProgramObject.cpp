@@ -168,7 +168,7 @@ namespace Ic3::Graphics::GCI
 		if( linkStatus == GL_FALSE )
 		{
 			auto infoLog = GetInfoLog();
-			Ic3DebugOutput( infoLog.data() );
+			Ic3DebugOutputGL( infoLog.data() );
 			Ic3DebugInterrupt();
 			return false;
 		}
@@ -187,7 +187,7 @@ namespace Ic3::Graphics::GCI
 		if( validateStatus == GL_FALSE )
 		{
 			auto infoLog = GetInfoLog();
-			Ic3DebugOutput( infoLog.data() );
+			Ic3DebugOutputGL( infoLog.data() );
 			Ic3DebugInterrupt();
 			return false;
 		}

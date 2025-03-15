@@ -1,32 +1,36 @@
 
-#if !defined( __IC3_NXMAIN_IA_COMMON_DEFS_H__ )
+#if !defined( __IC3_NXMAIN_VERTEX_FORMAT_COMMON_H__ )
 #  error ".inl files must be included only via their related headers!"
 #endif
 
 namespace Ic3
 {
 
-	// @VertexAttributeDefinition
-
 	inline uint32 VertexInputAttributeDefinition::GetDataSizeInBytes() const noexcept
 	{
 		return GCI::CXU::GetVertexAttribFormatByteSize( baseDataFormat );
 	}
 
+	inline uint32 VertexInputAttributeDefinition::GetDataStride() const noexcept
+	{
+		return GetDataSizeInBytes() + dataPadding;
+	}
+
 	inline bool VertexInputAttributeDefinition::IsValid() const noexcept
 	{
-		return GCIUtils::IsAttributeLocationAndSizeValid( attributeSlot, semanticGroupSize ) &&
-		       GCIUtils::IAIsDataStreamVertexBufferSlotValid( vertexStreamSlot ) &&
+		return GCI::Utilities::IAIsAttributeSemanticGroupValid( attributeSlot, semanticGroupSize ) &&
+		       GCI::CXU::IAIsDataStreamVertexBufferSlotValid( vertexStreamSlot ) &&
 		       ( baseDataFormat != GCI::EVertexAttribFormat::Undefined ) &&
-		       !semanticName.empty();
+		       !semantics.semanticName.empty();
 	}
 
 	inline bool VertexInputAttributeDefinition::HasAppendAsRelativeOffset() const noexcept
 	{
-		return ( vertexStreamRelativeOffset == GCI::kIAVertexAttributeOffsetAppend );
+		return ( vertexStreamRelativeOffset == kVertexAttributeOffsetAppend ) ||
+		       ( vertexStreamRelativeOffset == kVertexAttributeOffsetAppendAligned16 );
 	}
 
-	// @GenericVertexAttribute
+
 
 	inline GenericVertexInputAttribute::operator bool() const noexcept
 	{
@@ -94,8 +98,8 @@ namespace Ic3
 		dataRate = pDefinition.dataRate;
 		semanticIndex = 0;
 		semanticGroupSize = cppx::numeric_cast<decltype( semanticGroupSize )>( pDefinition.semanticGroupSize );
-		semanticName = pDefinition.semanticName;
-		semanticFlags = pDefinition.semanticFlags;
+		semanticName = pDefinition.semantics.semanticName;
+		semanticFlags = pDefinition.semantics.semanticFlags;
 		dataPadding = cppx::numeric_cast<decltype( dataPadding )>( pDefinition.dataPadding );
 		vertexStreamSlot = cppx::numeric_cast<decltype( vertexStreamSlot )>( pDefinition.vertexStreamSlot );
 		vertexStreamRelativeOffset = cppx::numeric_cast<decltype( vertexStreamRelativeOffset )>( pDefinition.vertexStreamRelativeOffset );
@@ -137,21 +141,45 @@ namespace Ic3
 	}
 
 
-	namespace GCIUtils
+
+	inline VertexInputStream::operator bool() const noexcept
 	{
+		return IsActive();
+	}
+	
+	inline bool VertexInputStream::IsActive() const noexcept
+	{
+		return IsInitialized() && !activeAttributesMask.empty();
+	}
 
-		inline bool IsAttributeLocationAndSizeValid( uint32 pAttributeBaseSlot, uint32 pSemanticGroupSize = 1 )
-		{
-			return ( pAttributeBaseSlot != GCI::kIAVertexAttributeSlotUndefined ) &&
-			       // Vertex attribute index should be in the valid range of supported values.
-			       GCI::CXU::IAIsVertexAttributeSlotValid( pAttributeBaseSlot ) &&
-			       // Each attribute has to have at least one component and no more than the GCI-level limit.
-			       GCI::CXU::IAIsVertexAttributeSemanticGroupSizeValid( pSemanticGroupSize ) &&
-			       // Attributes can have multiple components (e.g. a 4x4 matrix is a 4-component attribute, with each component
-			       // being a 4-element vector). Even though the base index is valid, we need to check all potential sub-attributes.
-			       GCI::CXU::IAIsVertexAttributeSlotValid( pAttributeBaseSlot + pSemanticGroupSize - 1 );
-		}
+	inline bool VertexInputStream::IsInitialized() const noexcept
+	{
+		return GCI::CXU::IAIsDataStreamVertexBufferSlotValid( streamSlot ) && ( streamDataRate != GCI::EIAVertexAttributeDataRate::Undefined );
+	}
 
-	} // namespace GCU
+	inline bool VertexInputStream::IsSameAs( const VertexInputStream & pOther ) const noexcept
+	{
+		return ( activeAttributesMask == pOther.activeAttributesMask ) &&
+		       ( streamSlot == pOther.streamSlot ) &&
+		       ( streamDataRate == pOther.streamDataRate ) &&
+		       ( dataStrideInBytes == pOther.dataStrideInBytes );
+	}
+
+	inline bool VertexInputStream::CheckAttributeCompatibility( const VertexInputAttributeDefinition & pAttributeDefinition ) const noexcept
+	{
+		return ( streamDataRate == GCI::EIAVertexAttributeDataRate::Undefined ) || ( pAttributeDefinition.dataRate == streamDataRate );
+	}
+
+	inline void VertexInputStream::Init( uint16 pStreamSlot, GCI::EIAVertexAttributeDataRate pDataRate )
+	{
+		streamSlot = pStreamSlot;
+		streamDataRate = pDataRate;
+	}
+
+	inline void VertexInputStream::Reset()
+	{
+		streamSlot = GCI::kIAVertexAttributeSlotUndefined;
+		streamDataRate = GCI::EIAVertexAttributeDataRate::Undefined;
+	}
 
 }

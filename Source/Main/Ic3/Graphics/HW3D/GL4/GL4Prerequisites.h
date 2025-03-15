@@ -48,6 +48,9 @@
 #  pragma message( "OpenGL4 Driver will use <Compat> API." )
 #endif
 
+#define Ic3DebugOutputGL4( ... )                 Ic3DebugOutput(                 "Ic3.Graphics.HW3D.GL4", __VA_ARGS__ )
+#define Ic3DebugOutputGL4Ex( pMessageType, ... ) Ic3DebugOutputEx( pMessageType, "Ic3.Graphics.HW3D.GL4", __VA_ARGS__ )
+
 namespace Ic3::Graphics::GCI
 {
 

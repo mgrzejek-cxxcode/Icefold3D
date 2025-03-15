@@ -29,7 +29,7 @@ namespace Ic3::Graphics::GCI
 	template <typename TPAttachmentProperty>
 	using TRenderTargetColorAttachmentPropertyArray = std::array<TPAttachmentProperty, GCM::kRTOMaxColorAttachmentsNum>;
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		template <typename TPFunction>
@@ -183,7 +183,7 @@ namespace Ic3::Graphics::GCI
 		}
 	};
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		template <typename TPFunction>

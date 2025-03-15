@@ -22,6 +22,9 @@
 #  endif
 #endif
 
+#define Ic3DebugOutputGLES3( ... )                 Ic3DebugOutput(                 "Ic3.Graphics.HW3D.GLES3", __VA_ARGS__ )
+#define Ic3DebugOutputGLES3Ex( pMessageType, ... ) Ic3DebugOutputEx( pMessageType, "Ic3.Graphics.HW3D.GLES3", __VA_ARGS__ )
+
 namespace Ic3::Graphics::GCI
 {
 

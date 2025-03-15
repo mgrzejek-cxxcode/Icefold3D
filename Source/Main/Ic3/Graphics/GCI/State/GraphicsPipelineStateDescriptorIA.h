@@ -17,12 +17,12 @@ namespace Ic3::Graphics::GCI
 	class IC3_GRAPHICS_GCI_CLASS VertexAttributeLayoutDescriptor : public CachedPipelineStateDescriptor<PipelineStateDescriptor>
 	{
 	public:
-		const IAVertexAttributeLayoutCommonConfig & mCommonAttributeLayoutConfig;
+		const IAVertexAttributeLayoutMetaData & mAttributeLayoutMetaData;
 
 	public:
 		Ic3DeclareNonCopyable( VertexAttributeLayoutDescriptor );
 
-		VertexAttributeLayoutDescriptor( GPUDevice & pGPUDevice, const IAVertexAttributeLayoutCommonConfig & pCommonAttributeLayoutConfig );
+		VertexAttributeLayoutDescriptor( GPUDevice & pGPUDevice, const IAVertexAttributeLayoutMetaData & pAttributeLayoutMetaData );
 		virtual ~VertexAttributeLayoutDescriptor();
 
 		CPPX_ATTR_NO_DISCARD virtual EPipelineStateDescriptorType GetDescriptorType() const noexcept override final;

@@ -10,12 +10,12 @@ namespace Ic3::System
 	std::string OpenGLSystemVersionInfo::ToString() const
 	{
 		std::ostringstream strStream;
-		strStream << "[OpenGL Rendering Context Information]\n";
-		strStream << "> API version: " << apiVersion.num_major << "." << apiVersion.num_minor << "\n";
-		strStream << "> Runtime version: " << apiVersionStr << "\n";
-		strStream << "> GLSL version: " << glslVersionStr << "\n";
-		strStream << "> Renderer ID: " << rendererName << "\n";
-		strStream << "> Vendor Name: " << vendorName;
+		strStream << "OpenGL Rendering Context Information\n";
+		strStream << "\tAPI version: " << apiVersion.num_major << "." << apiVersion.num_minor << "\n";
+		strStream << "\tRuntime version: " << apiVersionStr << "\n";
+		strStream << "\tGLSL version: " << glslVersionStr << "\n";
+		strStream << "\tRenderer ID: " << rendererName << "\n";
+		strStream << "\tVendor Name: " << vendorName;
 		return strStream.str();
 	}
 
@@ -53,7 +53,7 @@ namespace Ic3::System
 		if( errorCode != GL_NO_ERROR )
 		{
 			auto * errorMessageStr = translateErrorCode( errorCode );
-			Ic3DebugOutputFmt( "OpenGL API error: %s.", errorMessageStr );
+			Ic3DebugOutputSys( "OpenGL API error: %s.", errorMessageStr );
 			Ic3DebugInterrupt();
 		}
 	}
@@ -69,7 +69,7 @@ namespace Ic3::System
 				break;
 			}
 			auto * errorMessageStr = translateErrorCode( errorCode );
-			Ic3DebugOutputFmt( "OpenGL API error: %s.", errorMessageStr );
+			Ic3DebugOutputSys( "OpenGL API error: %s.", errorMessageStr );
 			++errorsNum;
 		}
 	}
@@ -82,11 +82,11 @@ namespace Ic3::System
 			{ GL_STACK_OVERFLOW  , "GL_STACK_OVERFLOW"  },
 			{ GL_STACK_UNDERFLOW , "GL_STACK_UNDERFLOW" },
 		#endif
-			{ GL_INVALID_ENUM				  , "GL_INVALID_ENUM"				  },
-			{ GL_INVALID_VALUE				 , "GL_INVALID_VALUE"				 },
-			{ GL_INVALID_OPERATION			 , "GL_INVALID_OPERATION"			 },
+			{ GL_INVALID_ENUM				   , "GL_INVALID_ENUM"				    },
+			{ GL_INVALID_VALUE				   , "GL_INVALID_VALUE"				    },
+			{ GL_INVALID_OPERATION			   , "GL_INVALID_OPERATION"			    },
 			{ GL_INVALID_FRAMEBUFFER_OPERATION , "GL_INVALID_FRAMEBUFFER_OPERATION" },
-			{ GL_OUT_OF_MEMORY				 , "GL_OUT_OF_MEMORY"				 },
+			{ GL_OUT_OF_MEMORY				   , "GL_OUT_OF_MEMORY"				    },
 		};
 		return cppx::get_map_value_ref_or_default( errorStringMap, pError, "UNKNOWN_ERROR" );
 	}

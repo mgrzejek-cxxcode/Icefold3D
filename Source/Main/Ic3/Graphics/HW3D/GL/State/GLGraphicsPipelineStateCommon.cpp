@@ -20,7 +20,7 @@ namespace Ic3::Graphics::GCI
 			GLGPUDevice & pGPUDevice,
 			const BlendStateDescriptorCreateInfo & pCreateInfo )
 	{
-		const auto glcBlendSettings = GCU::TranslateBlendSettingsGL( pCreateInfo.blendSettings );
+		const auto glcBlendSettings = Utilities::TranslateBlendSettingsGL( pCreateInfo.blendSettings );
 
 		auto stateDescriptor = CreateGfxObject<GLBlendStateDescriptor>(
 				pGPUDevice,
@@ -45,7 +45,7 @@ namespace Ic3::Graphics::GCI
 			GLGPUDevice & pGPUDevice,
 			const DepthStencilStateDescriptorCreateInfo & pCreateInfo )
 	{
-		const auto glcDepthStencilSettings = GCU::TranslateDepthStencilSettingsGL( pCreateInfo.depthStencilSettings );
+		const auto glcDepthStencilSettings = Utilities::TranslateDepthStencilSettingsGL( pCreateInfo.depthStencilSettings );
 
 		auto stateDescriptor = CreateGfxObject<GLDepthStencilStateDescriptor>(
 				pGPUDevice,
@@ -70,7 +70,7 @@ namespace Ic3::Graphics::GCI
 			GLGPUDevice & pGPUDevice,
 			const RasterizerStateDescriptorCreateInfo & pCreateInfo )
 	{
-		const auto glcRasterizerSettings = GCU::TranslateRasterizerSettingsGL( pCreateInfo.rasterizerSettings );
+		const auto glcRasterizerSettings = Utilities::TranslateRasterizerSettingsGL( pCreateInfo.rasterizerSettings );
 
 		auto stateDescriptor = CreateGfxObject<GLRasterizerStateDescriptor>(
 				pGPUDevice,
@@ -81,7 +81,7 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		GLBlendSettings TranslateBlendSettingsGL( const BlendSettings & pBlendSettings )
@@ -94,7 +94,7 @@ namespace Ic3::Graphics::GCI
 			{
 				if( !pBlendSettings.flags.is_set( eBlendConfigFlagEnableMRTIndependentBlendingBit ) )
 				{
-					openglBlendSettings.attachments[0] = GCU::TranslateRenderTargetColorAttachmentBlendSettingsGL( pBlendSettings.attachments[0] );
+					openglBlendSettings.attachments[0] = Utilities::TranslateRenderTargetColorAttachmentBlendSettingsGL( pBlendSettings.attachments[0] );
 				}
 				else
 				{
@@ -102,7 +102,7 @@ namespace Ic3::Graphics::GCI
 						[&]( native_uint pIndex, ERTAttachmentFlags pAttachmentBit )
 						{
 							auto & openglAttachmentSettings = openglBlendSettings.attachments[pIndex];
-							openglAttachmentSettings = GCU::TranslateRenderTargetColorAttachmentBlendSettingsGL( pBlendSettings.attachments[pIndex] );
+							openglAttachmentSettings = Utilities::TranslateRenderTargetColorAttachmentBlendSettingsGL( pBlendSettings.attachments[pIndex] );
 							openglAttachmentSettings.blendActive = true;
 							return true;
 						} );

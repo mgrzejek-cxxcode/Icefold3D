@@ -31,7 +31,7 @@ namespace Ic3::Graphics::GCI
 			GLGPUDevice & pGPUDevice,
 			const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo )
 	{
-		auto shaderPipelineObject = GCU::CreateGraphicsShaderPipelineObjectGL( pCreateInfo.shaderBinding );
+		auto shaderPipelineObject = Utilities::CreateGraphicsShaderPipelineObjectGL( pCreateInfo.shaderBinding );
 		if( !shaderPipelineObject )
 		{
 			return nullptr;
@@ -60,7 +60,7 @@ namespace Ic3::Graphics::GCI
 			GLGPUDevice & pGPUDevice,
 			const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo )
 	{
-		auto shaderProgramObject = GCU::CreateGraphicsShaderProgramObjectGL( pCreateInfo.shaderBinding );
+		auto shaderProgramObject = Utilities::CreateGraphicsShaderProgramObjectGL( pCreateInfo.shaderBinding );
 		if( !shaderProgramObject )
 		{
 			return nullptr;
@@ -75,7 +75,7 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		GLShaderPipelineObjectHandle CreateGraphicsShaderPipelineObjectGL( const GraphicsShaderBinding & pBindingConfiguration )

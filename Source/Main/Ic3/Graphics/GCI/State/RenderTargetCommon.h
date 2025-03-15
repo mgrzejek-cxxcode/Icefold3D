@@ -129,7 +129,7 @@ namespace Ic3::Graphics::GCI
 		RenderTargetBinding rtArrayBinding;
 	};
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		IC3_GRAPHICS_GCI_API_NO_DISCARD EGPUResourceUsageFlags RTOGetAttachmentRequiredUsageMask(

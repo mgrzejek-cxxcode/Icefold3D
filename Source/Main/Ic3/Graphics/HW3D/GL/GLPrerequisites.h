@@ -151,6 +151,9 @@
 #  endif
 #endif
 
+#define Ic3DebugOutputGL( ... )                 Ic3DebugOutput(                 "Ic3.Graphics.HW3D.GL", __VA_ARGS__ )
+#define Ic3DebugOutputGLEx( pMessageType, ... ) Ic3DebugOutputEx( pMessageType, "Ic3.Graphics.HW3D.GL", __VA_ARGS__ )
+
 #include "Prerequisites/GLCommonDefs.h"
 #include "Prerequisites/GLDebugOutput.h"
 #include "Prerequisites/GLObject.h"

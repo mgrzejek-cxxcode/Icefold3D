@@ -254,7 +254,7 @@ namespace Ic3::Graphics::GCI
 		if( !pCreateInfo.bindFlags.is_set_any_of(
 				eGPUResourceUsageFlagRenderTargetColorBit | eGPUResourceUsageMaskRenderTargetDepthStencil ) )
 		{
-			Ic3DebugOutput( "No RT attachment bind flags specified for the RT texture (E_GPU_RESOURCE_USAGE_xxx_RENDER_TARGET_yyy)." );
+			Ic3DebugOutputGCI( "No RT attachment bind flags specified for the RT texture (E_GPU_RESOURCE_USAGE_xxx_RENDER_TARGET_yyy)." );
 			return nullptr;
 		}
 
@@ -263,7 +263,7 @@ namespace Ic3::Graphics::GCI
 			const auto & targetTextureResourceFlags = pCreateInfo.targetTexture->mTextureProperties.resourceFlags;
 			if( !targetTextureResourceFlags.is_set( pCreateInfo.bindFlags & eGPUResourceUsageMaskAll ) )
 			{
-				Ic3DebugOutput( "Target texture for Render Target is not compatible with specified bind flags (E_GPU_RESOURCE_USAGE_xxx)." );
+				Ic3DebugOutputGCI( "Target texture for Render Target is not compatible with specified bind flags (E_GPU_RESOURCE_USAGE_xxx)." );
 				return nullptr;
 			}
 		}

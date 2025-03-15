@@ -88,7 +88,7 @@ namespace Ic3::Graphics::GCI
 		if ( compileStatus != GL_TRUE )
 		{
 			auto infoLog = GetInfoLog();
-			Ic3DebugOutput( infoLog.data() );
+			Ic3DebugOutputGL( infoLog.data() );
 			Ic3DebugInterrupt();
 			return false;
 		}

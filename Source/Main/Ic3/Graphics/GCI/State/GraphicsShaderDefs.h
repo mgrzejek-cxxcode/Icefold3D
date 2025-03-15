@@ -128,7 +128,7 @@ namespace Ic3::Graphics::GCI
 		}
 	};
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		/// @brief

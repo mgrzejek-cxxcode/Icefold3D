@@ -7,9 +7,6 @@
 namespace Ic3::Graphics::GCI
 {
 
-	Ic3EnableCustomExceptionSupport();
-	Ic3EnableEnumTypeInfoSupport();
-
 	/// Declares handle type aliases for the specified GCI class.
 	#define Ic3GCIDeclareClassHandle( pClassName ) Ic3DeclareClassHandle( pClassName )
 

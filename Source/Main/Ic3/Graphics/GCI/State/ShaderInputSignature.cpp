@@ -5,7 +5,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		bool ValidateVertexAttributeLayoutDefinitionWithShaderInputSignature(
@@ -14,7 +14,7 @@ namespace Ic3::Graphics::GCI
 		{
 			if( pLayoutDefinition.activeAttributesMask != pShaderInputSignature.activeAttributesMask )
 			{
-				Ic3DebugOutputFmt(
+				Ic3DebugOutputGCI(
 						"[IAVertexAttributeLayout/ShaderInputSignature] Layout definition has activeAttributesMask=%u, in signature: %u.",
 						static_cast<uint32>( pLayoutDefinition.activeAttributesMask ),
 						static_cast<uint32>( pShaderInputSignature.activeAttributesMask ) );
@@ -29,7 +29,7 @@ namespace Ic3::Graphics::GCI
 
 				if( attributeDesc.IsActive() != attributeSignature.IsActive() )
 				{
-					Ic3DebugOutputFmt(
+					Ic3DebugOutputGCI(
 							"[IAVertexAttributeLayout/ShaderInputSignature] Attribute desc at index %u: %s, in signature: %s.",
 							iAttributeIndex,
 							attributeDesc.IsActive() ? "active" : "inactive",
@@ -42,7 +42,7 @@ namespace Ic3::Graphics::GCI
 				{
 					if( attributeDesc.attribInfo.attributeSlot != iAttributeIndex )
 					{
-						Ic3DebugOutputFmt(
+						Ic3DebugOutputGCI(
 								"[IAVertexAttributeLayout/ShaderInputSignature] Attribute desc at index %u has attributeSlot=%u.",
 								iAttributeIndex,
 								static_cast<uint32>( iAttributeIndex ) );
@@ -63,7 +63,7 @@ namespace Ic3::Graphics::GCI
 						    CXU::IsBaseDataTypeIntegral( layoutDescAttrBaseType ) &&
 						    CXU::IsBaseDataTypeFloatingPoint( shaderAttrBaseType ) )
 						{
-							Ic3DebugOutputFmt(
+							Ic3DebugOutputGCI(
 									"[IAVertexAttributeLayout/ShaderInputSignature] Attribute desc at index %u: has format=%x (integral, normalized), in signature: %x (floating-point).",
 									iAttributeIndex,
 									static_cast<uint32>( attributeDesc.attribInfo.dataFormat ),
@@ -71,7 +71,7 @@ namespace Ic3::Graphics::GCI
 						}
 						else
 						{
-							Ic3DebugOutputFmt(
+							Ic3DebugOutputGCI(
 									"[IAVertexAttributeLayout/ShaderInputSignature] Attribute desc at index %u: format=%x, in signature: %x.",
 									iAttributeIndex,
 									static_cast<uint32>( attributeDesc.attribInfo.dataFormat ),
@@ -83,7 +83,7 @@ namespace Ic3::Graphics::GCI
 
 					if( attributeDesc.semantics.semanticName != attributeSignature.semanticName )
 					{
-						Ic3DebugOutputFmt(
+						Ic3DebugOutputGCI(
 								"[IAVertexAttributeLayout/ShaderInputSignature] Attribute desc at index %u: semanticName=%x, in signature: %x.",
 								iAttributeIndex,
 								attributeDesc.semantics.semanticName.data(),
@@ -94,7 +94,7 @@ namespace Ic3::Graphics::GCI
 
 					if( attributeDesc.semantics.semanticIndex != attributeSignature.semanticIndex )
 					{
-						Ic3DebugOutputFmt(
+						Ic3DebugOutputGCI(
 								"[IAVertexAttributeLayout/ShaderInputSignature] Attribute desc at index %u: semanticIndex=%u, in signature: %u.",
 								iAttributeIndex,
 								attributeDesc.semantics.semanticIndex,
@@ -128,6 +128,6 @@ namespace Ic3::Graphics::GCI
 		}
 
 
-	} // namespace GCU
+	} // namespace Utilities
 
 } // namespace Ic3::Graphics::GCI

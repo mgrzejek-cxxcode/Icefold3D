@@ -57,7 +57,7 @@ namespace Ic3::Graphics::GCI
 			GPUDevice & pGPUDevice,
 			const GraphicsShaderBinding & pBindingConfiguration ) noexcept
 	{
-		if( !GCU::SHValidateGraphicsShaderBinding( pBindingConfiguration ) )
+		if( !Utilities::SHValidateGraphicsShaderBinding( pBindingConfiguration ) )
 		{
 			return nullptr;
 		}
@@ -74,7 +74,7 @@ namespace Ic3::Graphics::GCI
 			return nullptr;
 		}
 
-		if( !GCU::SHValidateGraphicsShaderArray( pShaderArray ) )
+		if( !Utilities::SHValidateGraphicsShaderArray( pShaderArray ) )
 		{
 			return nullptr;
 		}

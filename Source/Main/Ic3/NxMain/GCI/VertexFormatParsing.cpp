@@ -1,148 +1,16 @@
 
-#include "IAVertexAttribLayout.h"
+#include "VertexFormatParsing.h"
+#include "VertexFormatCombinedLayout.h"
+#include <Ic3/Graphics/GCI/State/InputAssemblerCommon.h>
 #include <regex>
 
 namespace Ic3
 {
 
-	bool VertexInputAttributeArrayConfig::CheckAttributeArraySpace(
-			uint32 pBaseAttributeSlot,
-			uint32 pSemanticGroupSize ) const noexcept
-	{
-		// First, check if the specified attribute range is valid at all.
-		if( !GCIUtils::IsAttributeLocationAndSizeValid( pBaseAttributeSlot, pSemanticGroupSize ) )
-		{
-			return false;
-		}
-
-		// Quick check: if the specified attribute range is completely outside the range of active attributes,
-		// we can immediately return with success (no attribute outside this range is an active attribute).
-		if( !_activeAttributesRange.overlaps_with( cppx::make_range<uint32>( pBaseAttributeSlot, pBaseAttributeSlot + pSemanticGroupSize ) ) )
-		{
-			return true;
-		}
-
-		// Iterate over the specified range and check the attributes. If at least one is already an active one,
-		// return false (attributes cannot be redefined after they are specified).
-		// Note: The range check above doesn't imply there is no space because the range may not be continuous.
-		// Consider: If the layout has two active attributes: 0 and 5 the _activeAttributesRange would be <0;5>.
-		// However, there are 4 unused attributes in that range that can be used.
-		for( uint32 iSubAttribute = 0; iSubAttribute < pSemanticGroupSize; ++iSubAttribute )
-		{
-			const auto attributeIndex = pBaseAttributeSlot + iSubAttribute;
-			const auto & attributeRef = _attributeArray[attributeIndex];
-
-			if( attributeRef.IsActive() )
-			{
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	bool VertexInputAttributeArrayConfig::CheckAttributeDefinitionCompatibility(
-			const VertexInputAttributeDefinition & pAttributeDefinition ) const noexcept
-	{
-		if( !pAttributeDefinition.IsValid() )
-		{
-			return false;
-		}
-
-		if( !CheckAttributeArraySpace( pAttributeDefinition.attributeSlot, pAttributeDefinition.semanticGroupSize ) )
-		{
-			return false;
-		}
-
-		return true;
-	}
-
-	GenericVertexInputAttribute * VertexInputAttributeArrayConfig::AddAttribute(
-			const VertexInputAttributeDefinition & pAttributeDefinition )
-	{
-		if( !CheckAttributeDefinitionCompatibility( pAttributeDefinition ) )
-		{
-			return nullptr;
-		}
-
-		return _AddAttributeImpl( pAttributeDefinition );
-	}
-
-	void VertexInputAttributeArrayConfig::Reset()
-	{
-		for( auto & attribute : _attributeArray )
-		{
-			attribute.Reset();
-		}
-
-		_activeBaseAttributesNum = 0;
-		_activeAttributeSlotsNum = 0;
-		_activeAttributesMask.clear();
-		_activeAttributeSemanticsMask.clear();
-		_activeAttributesRange = InputAssemblerSlotRange::empty_range();
-		_activeAttributesSlots.clear();
-		_semanticNameMap.clear();
-	}
-
-	GenericVertexInputAttribute * VertexInputAttributeArrayConfig::_AddAttributeImpl(
-			const VertexInputAttributeDefinition & pAttributeDefinition )
-	{
-		if( !CheckAttributeDefinitionCompatibility( pAttributeDefinition ) )
-		{
-			return nullptr;
-		}
-
-		_activeAttributesSlots.reserve( _activeAttributesSlots.size() + pAttributeDefinition.semanticGroupSize );
-
-		auto & baseAttribute = _attributeArray[pAttributeDefinition.attributeSlot];
-
-		baseAttribute.InitBaseAttributeFromDefinition( pAttributeDefinition );
-
-		_activeBaseAttributesNum += 1;
-		_activeAttributeSlotsNum += 1;
-		_activeAttributesMask.set( GCI::CXU::IAMakeVertexAttributeFlag( pAttributeDefinition.attributeSlot ) );
-		_activeAttributeSemanticsMask.set( baseAttribute.semanticFlags );
-		_activeAttributesSlots.insert( pAttributeDefinition.attributeSlot );
-		_semanticNameMap[baseAttribute.semanticName.str_view()] = pAttributeDefinition.attributeSlot;
-
-		for( uint32 nSemanticComponent = 1; nSemanticComponent < pAttributeDefinition.semanticGroupSize; ++nSemanticComponent )
-		{
-			const auto subAttributeSlot = pAttributeDefinition.attributeSlot + nSemanticComponent;
-
-			auto & subAttribute = _attributeArray[subAttributeSlot];
-			subAttribute.InitSemanticSubAttributeFromBaseAttribute( baseAttribute, nSemanticComponent );
-
-			_activeAttributeSlotsNum += 1;
-			_activeAttributesMask.set( GCI::CXU::IAMakeVertexAttributeFlag( subAttributeSlot ) );
-			_activeAttributesSlots.insert( cppx::numeric_cast<gci_input_assembler_slot_t>( subAttributeSlot ) );
-		}
-
-		const auto lastAttributeIndex = pAttributeDefinition.attributeSlot + pAttributeDefinition.semanticGroupSize - 1;
-		_activeAttributesRange.add( InputAssemblerSlotRange{ pAttributeDefinition.attributeSlot, lastAttributeIndex } );
-
-		return &baseAttribute;
-	}
-
-
-	namespace GCIUtils
+	namespace VertexFormat
 	{
 
-		GCI::IAVertexAttributeDesc MakeGCIAttributeDesc(
-				VertexAttributeKey pAttributeKey,
-				uint32 pVertexStreamSlot,
-				uint32 pVertexStreamRelativeOffset )
-		{
-			GCI::IAVertexAttributeDesc gciAttributeDesc{};
-			gciAttributeDesc.attribInfo.attributeSlot = pAttributeKey.GetBaseSlot();
-			gciAttributeDesc.attribInfo.dataFormat = pAttributeKey.GetBaseDataFormat();
-			gciAttributeDesc.attribInfo.dataRate = pAttributeKey.GetDataRate();
-			gciAttributeDesc.semantics = static_cast<GCI::IAVertexAttributeSemantics>( GetShaderSemanticsForAttributeKey( pAttributeKey ) );
-			gciAttributeDesc.streamBinding.streamSlot = cppx::numeric_cast<decltype( gciAttributeDesc.streamBinding.streamSlot )>( pVertexStreamSlot );
-			gciAttributeDesc.streamBinding.streamRelativeOffset = pVertexStreamRelativeOffset;
-			return gciAttributeDesc;
-		}
-
-		GCI::EVertexAttribFormat GetAttributeFormatFromStringIdentifier( const std::string & pAttribFormatStringID )
+		GCI::EVertexAttribFormat ParseAttributeFormatSerialString( const std::string & pAttributeFormatSerialString )
 		{
 			static const std::string cvReStrBaseFormat{ R"(([1-4])(F|I|U)(8|16|32)(N)?)" };
 			static const std::regex cvRegexBaseFormat{ cvReStrBaseFormat };
@@ -150,7 +18,7 @@ namespace Ic3
 			auto vertexAttributeFormat = GCI::EVertexAttribFormat::Undefined;
 
 			std::smatch regexMatch;
-			if( std::regex_search( pAttribFormatStringID, regexMatch, cvRegexBaseFormat ) )
+			if( std::regex_search( pAttributeFormatSerialString, regexMatch, cvRegexBaseFormat ) )
 			{
 				const auto & formatComponentsNumStr = regexMatch[1].str();
 				const auto & formatBaseTypeStr = regexMatch[2].str();
@@ -232,7 +100,7 @@ namespace Ic3
 
 				if( baseDataType != GCI::EBaseDataType::Undefined )
 				{
-					const auto vertexAttributeFormatValue = MakeVertexAttribFormatEnumValue(
+					const auto vertexAttributeFormatValue = GCI::CXU::MakeVertexAttribFormatEnumValue(
 						cppx::numeric_cast<uint8>( formatComponentsNum ),
 						baseDataType,
 						dataFormatFlags );
@@ -339,7 +207,7 @@ namespace Ic3
 			return nullptr;
 		}
 
-		std::string GenerateVertexAttributeFormatString( const GenericVertexInputAttribute & pAttribute )
+		std::string GenerateAttributeSerialString( const GenericVertexInputAttribute & pAttribute )
 		{
 			std::string formatStr;
 			formatStr.reserve( 16 );
@@ -376,6 +244,210 @@ namespace Ic3
 			}
 
 			return formatStr;
+		}
+
+		// Example VFS (second stream S1 set intentionally as empty):
+		// "#S0(V)<A0POSITION:0:3F32|A1NORMAL:12:3F32|A2TANGENT:24:3F32|A3BITANGENT:36:3F32|A5TEXCOORD0:48:2F32>#S1(I)<>#S2(I)<A14INSTANCE_UDATA:0:2F32[2]>"
+
+		// Attribute format: A{1}{2}:{3}:{4}[+{5}][[{6}]]
+		// {1} -> Input Assembler slot
+		// {2} -> Semantic name
+		// {3} -> Relative offset (from start of the Vertex Stream)
+		// {4} -> Base format (format of a single component)
+		// {5} -> Additional per-component padding (OPTIONAL)
+		// {6} -> Array size (i.e. number of components, i.e. number of occupied slots) (OPTIONAL)
+		// Example: A14INSTANCE_DATA:0:2F32[2]
+		// Meaning: Attribute "INSTANCE_DATA" starts at slot 14 and has 2 components (occupies 2 IA slots).
+		//          Each component is a 2-component vector of 32-bit floats. Attribute's data is located at the
+		//          beginning of its vertex stream (relative offset = 0).
+		#define RE_STR_VFS_ATTRIBUTE R"(A([0-9]+)([A-Z][A-Za-z0-9_]+)\:([0-9]+)\:([A-Z0-9]+)(\+([0-9]+))?(\[([0-9])\])?)"
+
+		// Stream format: S{1}({2})<{3}>
+		// {1} -> Input Assembler slot
+		// {2} -> Data rate: "V" means per-vertex, "I" means per-instance.
+		// {3} -> List of attributes separated with "|" (OPTIONAL).
+		#define RE_STR_VFS_STREAM R"(S([0-9]+)\((V|I)\)\=([0-9]+)<([a-zA-Z0-9_:|\+\[\]]+)?>)"
+
+		static const std::regex cvReVfsAttribute{ RE_STR_VFS_ATTRIBUTE };
+		static const std::regex cvReVfsStream{ RE_STR_VFS_STREAM };
+
+		std::string GenerateVertexFormatSignatureSerialString(
+				const VertexFormatCombinedLayoutBase & pVertexFormatCombinedLayout )
+		{
+			std::string vertexStreamStrings[GCM::kIAMaxDataStreamVertexBuffersNum];
+
+			const auto & activeAttributes = pVertexFormatCombinedLayout.GetActiveAttributesView();
+			for( const auto & genericAttribute : activeAttributes )
+			{
+				Ic3DebugAssert( genericAttribute.IsActive() )
+				if( genericAttribute.IsBaseAttribute() )
+				{
+					const auto attributeFormatStr = GenerateAttributeSerialString( genericAttribute );
+					if( !vertexStreamStrings[genericAttribute.vertexStreamSlot].empty() )
+					{
+						vertexStreamStrings[genericAttribute.vertexStreamSlot].append( 1, '|' );
+					}
+					vertexStreamStrings[genericAttribute.vertexStreamSlot].append( attributeFormatStr );
+				}
+			}
+
+			std::string resultStringID;
+
+			const auto & activeStreams = pVertexFormatCombinedLayout.GetActiveStreamsView();
+			for( const auto & vertexStream : activeStreams )
+			{
+				if( vertexStream.IsActive() )
+				{
+					if( !vertexStreamStrings[vertexStream.streamSlot].empty() )
+					{
+						resultStringID.append( 1, '#' );
+						resultStringID.append( 1, 'S' );
+						resultStringID.append( std::to_string( vertexStream.streamSlot ) );
+						resultStringID.append( 1, '(' );
+						resultStringID.append( 1, ( vertexStream.streamDataRate == GCI::EIAVertexAttributeDataRate::PerInstance ) ? 'I' : 'V' );
+						resultStringID.append( 1, ')' );
+						resultStringID.append( 1, '=' );
+						resultStringID.append( std::to_string( vertexStream.dataStrideInBytes ) );
+						resultStringID.append( 1, '<' );
+						resultStringID.append( vertexStreamStrings[vertexStream.streamSlot] );
+						resultStringID.append( 1, '>' );
+					}
+				}
+			}
+
+			return resultStringID;
+		}
+
+		std::vector<VertexInputAttributeDefinition> ParseVertexFormatSignatureSerialString(
+			const std::string_view & pVertexFormatString )
+		{
+			std::vector<VertexInputAttributeDefinition> vertexAttribsDefinitions{};
+
+			using StrArray = std::vector<std::string>;
+			auto vertexStreamStrings = cppx::strutil::split_string_ex<StrArray>(
+					pVertexFormatString, '#', []( auto & pResult, auto * pStr, auto pLength ) {
+						pResult.push_back( std::string( pStr, pLength ) );
+					} );
+
+			StrArray vsAttributesStrings{};
+			for( const auto & vertexStreamStr : vertexStreamStrings )
+			{
+				std::smatch regexMatch;
+				if( std::regex_search( vertexStreamStr, regexMatch, cvReVfsStream ) )
+				{
+					if( regexMatch.size() < 3 )
+					{
+						continue;
+					}
+
+					// [0]: The whole matched expression.
+					const auto & debugView = regexMatch[0].str();
+					// [1]: Stream slot.
+					const auto & streamIndexStr = regexMatch[1].str();
+					// [2]: Stream data rate (V - per-vertex, I - per-instance).
+					const auto & streamDataRateStr = regexMatch[2].str();
+					// [3]: Stream data stride (in bytes).
+					const auto & streamDataStrideStr = regexMatch[3].str();
+					// [4]: String with attributes contained within this stream.
+					const auto & streamAttributesCombinedStr = regexMatch[4].str();
+
+					if( streamIndexStr.empty() || streamDataRateStr.empty() || streamAttributesCombinedStr.empty() )
+					{
+						continue;
+					}
+
+					const auto streamIndex = cppx::from_string_or_default<uint8>( streamIndexStr, GCI::kIAVertexStreamSlotUndefined );
+					if( !GCI::CXU::IAIsDataStreamVertexBufferSlotValid( streamIndex ) )
+					{
+						continue;
+					}
+
+					const auto streamDataRate = ( streamDataRateStr == "I" ) ? GCI::EIAVertexAttributeDataRate::PerInstance : GCI::EIAVertexAttributeDataRate::PerVertex;
+
+					cppx::strutil::split_string(
+							streamAttributesCombinedStr, '|',
+							[&vsAttributesStrings]( auto * pStr, auto pLength ) {
+								vsAttributesStrings.push_back( std::string( pStr, pLength ) );
+							} );
+
+					for( const auto & attributeStr : vsAttributesStrings )
+					{
+						if( std::regex_search( attributeStr, regexMatch, cvReVfsAttribute ) )
+						{
+							const auto regexSize= regexMatch.size();
+
+							// Let's assume the following attribute string: A12INSTANCE_MATRIX:64:3F32+4[4].
+							// (Per-instance matrix, located at slot 12 (12 is the base slot, i.e. slot of the first component),
+							// consisted of four components of type Vec3f (3F32), each with 4 bytes of added padding)
+
+							// [0]: The whole matched expression.
+							const auto & attribDebugView = regexMatch[0].str();
+							// [1]: Attribute slot (example: "12").
+							const auto & attributeSlotStr = regexMatch[1].str();
+							// [2]: The semantic name of the attribute (example: "INSTANCE_MATRIX").
+							const auto & attribSemanticsStr = regexMatch[2].str();
+							// [3]: Attribute offset relative to the beginning of its vertex stream (example: "64").
+							const auto & attribRelativeOffsetStr = regexMatch[3].str();
+							// [4]: The type of single component (example: "3F32").
+							const auto & attribBaseFormatStr = regexMatch[4].str();
+
+							// [5/Optional]: Per-component padding specification (example: "+4"). Not used in parsing.
+							// [6/Optional]: Value of the per-component padding (example: "4").
+							const auto & dataPaddingValueStr = regexMatch[6].str();
+
+							// [7/Optional]: Array suffix for multi-slot/-component attribs (example: "[4]"). Not used in parsing.
+							// [8/Optional]: Size of the array for multi-slot/-component attributes (example: "4").
+							const auto & semanticGroupSizeValueStr = regexMatch[8].str();
+
+							if( attributeSlotStr.empty() || attribSemanticsStr.empty() || attribBaseFormatStr.empty() )
+							{
+								continue;
+							}
+
+							const auto attributeSlot =
+								cppx::from_string_or_default<uint8>( attributeSlotStr, GCI::kIAVertexAttributeSlotUndefined );
+							
+							const auto attribRelativeOffset =
+								cppx::from_string_or_default<uint32>( attribRelativeOffsetStr, GCI::kIAVertexAttributeOffsetInvalid );
+							
+							const auto semanticGroupSize =
+								cppx::from_string_or_default<uint8>( semanticGroupSizeValueStr, 1u );
+							
+							const auto dataPadding =
+								cppx::from_string_or_default<uint8>( dataPaddingValueStr, 0u );
+
+							if( !GCU::IAIsAttributeSemanticGroupValid( attributeSlot, semanticGroupSize ) || ( attribRelativeOffset == GCI::kIAVertexAttributeOffsetInvalid ) )
+							{
+								continue;
+							}
+
+							auto & attributeDefinition = vertexAttribsDefinitions.emplace_back();
+							attributeDefinition.attributeSlot = attributeSlot;
+							attributeDefinition.vertexStreamSlot = streamIndex;
+							attributeDefinition.baseDataFormat = ParseAttributeFormatSerialString( attribBaseFormatStr );
+							attributeDefinition.semanticGroupSize = semanticGroupSize;
+							attributeDefinition.dataPadding = dataPadding;
+							attributeDefinition.vertexStreamRelativeOffset = attribRelativeOffset;
+							attributeDefinition.dataRate = streamDataRate;
+
+							if( const auto resolvedSemanticName = ResolveShaderSemanticShortName( attribSemanticsStr ) )
+							{
+								attributeDefinition.semantics.semanticName = resolvedSemanticName;
+							}
+							else
+							{
+								attributeDefinition.semantics.semanticName = attribSemanticsStr;
+							}
+
+							attributeDefinition.semantics.semanticFlags = GetSemanticFlagsFromAttributeName( attributeDefinition.semantics.semanticName );
+						}
+					}
+
+					vsAttributesStrings.clear();
+				}
+			}
+
+			return vertexAttribsDefinitions;
 		}
 
 	}

@@ -107,7 +107,7 @@ namespace Ic3::Graphics::GCI
 		}
 	}
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		bool SHValidateGraphicsShaderArray( const GraphicsShaderArray & pShaderArray ) noexcept
@@ -163,7 +163,7 @@ namespace Ic3::Graphics::GCI
 
 	}
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		cppx::bitmask<EShaderStageFlags> GetActiveShaderStagesMask( const GraphicsShaderArray & pShaderArray ) noexcept

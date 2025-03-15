@@ -33,6 +33,9 @@
 
 #define IC3_SYSTEM_API_NODISCARD  CPPX_ATTR_NO_DISCARD IC3_SYSTEM_API
 
+#define Ic3DebugOutputSys( ... )                 Ic3DebugOutput(                 "Ic3.System", __VA_ARGS__ )
+#define Ic3DebugOutputSysEx( pMessageType, ... ) Ic3DebugOutputEx( pMessageType, "Ic3.System", __VA_ARGS__ )
+
 namespace Ic3::System
 {
 

@@ -147,7 +147,7 @@ namespace Ic3::Graphics::GCI
 
 			if( descriptorIDUserComponent > kPipelineStateDescriptorSingleTypeLimit )
 			{
-				Ic3DebugOutputFmt(
+				Ic3DebugOutputGCI(
 						"Error: maximum number of descriptors (%u) of type %s has been exceeded.",
 						kPipelineStateDescriptorSingleTypeLimit,
 						QueryEnumTypeInfo<EPipelineStateDescriptorType>().GetConstantName( sDescriptorType ).c_str() );
@@ -157,7 +157,7 @@ namespace Ic3::Graphics::GCI
 
 			if( descriptorIDUserComponent == kPipelineStateDescriptorSingleTypeLimit )
 			{
-				Ic3DebugOutputFmt(
+				Ic3DebugOutputGCI(
 						"Warning: maximum number of descriptors (%u) of type %s reached.",
 						kPipelineStateDescriptorSingleTypeLimit,
 						QueryEnumTypeInfo<EPipelineStateDescriptorType>().GetConstantName( sDescriptorType ).c_str() );

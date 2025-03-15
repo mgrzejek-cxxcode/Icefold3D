@@ -247,7 +247,7 @@ namespace Ic3::Graphics::GCI
 	};
 
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		IC3_GRAPHICS_GCI_API_NO_DISCARD cppx::bitmask<ERTAttachmentFlags> GetBlendActiveAttachmentMask( const BlendSettings & pBlendSettings );

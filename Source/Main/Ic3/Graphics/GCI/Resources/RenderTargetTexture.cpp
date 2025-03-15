@@ -12,7 +12,7 @@ namespace Ic3::Graphics::GCI
 			TextureReference pTargetTexture )
 	: GPUResourceView( pGPUDevice, EGPUResourceBaseType::Texture, pTargetTexture->mTextureProperties.resourceFlags )
 	, mRTTextureType( pRTTextureType )
-	, mRTBufferMask( GCU::RTOGetBufferMaskForRenderTargetTextureType( pRTTextureType ) )
+	, mRTBufferMask( Utilities::RTOGetBufferMaskForRenderTargetTextureType( pRTTextureType ) )
 	, mRTTextureLayout( pRTTextureLayout )
 	, mTargetTexture( pTargetTexture )
 	{}
@@ -25,7 +25,7 @@ namespace Ic3::Graphics::GCI
 			cppx::bitmask<resource_flags_value_t> pRenderBufferFlags )
 	: GPUResourceView( pGPUDevice, EGPUResourceBaseType::Texture, pRenderBufferFlags )
 	, mRTTextureType( pRTTextureType )
-	, mRTBufferMask( GCU::RTOGetBufferMaskForRenderTargetTextureType( pRTTextureType ) )
+	, mRTBufferMask( Utilities::RTOGetBufferMaskForRenderTargetTextureType( pRTTextureType ) )
 	, mRTTextureLayout( pRTTextureLayout )
 	, mTargetTexture()
 	, _internalRenderBuffer( pInternalRenderBuffer )

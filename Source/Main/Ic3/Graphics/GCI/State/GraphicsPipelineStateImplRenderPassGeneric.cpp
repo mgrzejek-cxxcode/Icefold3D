@@ -36,7 +36,7 @@ namespace Ic3::Graphics::GCI
 			const RenderPassDescriptorCreateInfo & pCreateInfo,
 			const std::initializer_list<ERenderPassAttachmentActionFlags> & pCachedAttachmentsWithFlags )
 	{
-		if( !GCU::RTOValidateRenderPassConfiguration( pCreateInfo.passConfiguration ) )
+		if( !Utilities::RTOValidateRenderPassConfiguration( pCreateInfo.passConfiguration ) )
 		{
 			return nullptr;
 		}
@@ -61,7 +61,7 @@ namespace Ic3::Graphics::GCI
 			GPUDevice & pGPUDevice,
 			const RenderPassDescriptorCreateInfo & pCreateInfo )
 	{
-		if( !GCU::RTOValidateRenderPassConfiguration( pCreateInfo.passConfiguration ) )
+		if( !Utilities::RTOValidateRenderPassConfiguration( pCreateInfo.passConfiguration ) )
 		{
 			return nullptr;
 		}

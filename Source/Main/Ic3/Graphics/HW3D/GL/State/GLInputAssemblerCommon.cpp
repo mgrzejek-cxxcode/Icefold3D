@@ -7,7 +7,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		GLIAVertexAttributeDesc IATranslateVertexAttributeDescGL(
@@ -16,9 +16,9 @@ namespace Ic3::Graphics::GCI
 			GLIAVertexAttributeDesc glcAttributeDesc{};
 
 			glcAttributeDesc.attributeSlot = pVertexAttributeDesc.attribInfo.attributeSlot;
-			glcAttributeDesc.vertexStreamSlot = pVertexAttributeDesc.streamBinding.streamSlot;
+			glcAttributeDesc.vertexStreamSlot = pVertexAttributeDesc.vertexStreamBinding.streamSlot;
 			glcAttributeDesc.instanceRate = pVertexAttributeDesc.attribInfo.instanceStepRate;
-			glcAttributeDesc.vertexStreamRelativeOffset = pVertexAttributeDesc.streamBinding.streamRelativeOffset;
+			glcAttributeDesc.vertexStreamRelativeOffset = pVertexAttributeDesc.vertexStreamBinding.streamRelativeOffset;
 			glcAttributeDesc.byteSize = CXU::GetVertexAttribFormatByteSize( pVertexAttributeDesc.attribInfo.dataFormat );
 
 			const auto attributeBaseType = CXU::GetVertexAttribFormatBaseDataType( pVertexAttributeDesc.attribInfo.dataFormat );

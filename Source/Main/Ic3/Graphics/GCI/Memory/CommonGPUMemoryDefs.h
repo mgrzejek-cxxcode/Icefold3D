@@ -162,7 +162,7 @@ namespace Ic3::Graphics::GCI
 		}
 	};
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		/// @brief Returns true if the requested memory Map mode is valid for the memory with given properties (flags).

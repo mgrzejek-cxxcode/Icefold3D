@@ -35,7 +35,7 @@ namespace Ic3::Graphics::GCI
 	
 	static uint32 ComputeConstantDwordSize( size_t pByteSize );
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		RootSignature CreateRootSignature( const RootSignatureDesc & pRootSignatureDesc )

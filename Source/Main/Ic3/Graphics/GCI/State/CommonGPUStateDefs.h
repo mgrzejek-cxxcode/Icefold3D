@@ -92,42 +92,42 @@ namespace Ic3::Graphics::GCI
 		}
 
 		/// @brief
-		CPPX_ATTR_NO_DISCARD inline constexpr uint32 IAMakeVertexAttributeFlag( native_uint pAttribIndex )
+		CPPX_ATTR_NO_DISCARD inline constexpr uint32 IAMakeVertexAttributeFlag( native_uint pAttributeSlot )
 		{
-			return ( pAttribIndex < GCM::kIAMaxVertexAttributesNum ) ? ( 1 << pAttribIndex ) : 0u;
+			return ( pAttributeSlot < GCM::kIAMaxVertexAttributesNum ) ? ( 1 << pAttributeSlot ) : 0u;
 		}
 
 		/// @brief
 		template <typename... TPIntegers>
-		CPPX_ATTR_NO_DISCARD inline constexpr uint32 IAMakeVertexAttributeFlag( native_uint pFirstIndex, TPIntegers && ...pRest )
+		CPPX_ATTR_NO_DISCARD inline constexpr uint32 IAMakeVertexAttributeFlag( native_uint pFirstSlot, TPIntegers && ...pRest )
 		{
-			return IAMakeVertexAttributeFlag( pFirstIndex ) | IAMakeVertexAttributeFlag( std::forward<TPIntegers>( pRest )... );
+			return IAMakeVertexAttributeFlag( pFirstSlot ) | IAMakeVertexAttributeFlag( std::forward<TPIntegers>( pRest )... );
 		}
 
 		/// @brief Returns
-		CPPX_ATTR_NO_DISCARD inline constexpr uint32 IAMakeVertexSourceBindingFlag( native_uint pStreamIndex )
+		CPPX_ATTR_NO_DISCARD inline constexpr uint32 IAMakeVertexSourceBindingFlag( native_uint pStreamSlot )
 		{
-			return ( pStreamIndex < GCM::kIAMaxDataStreamCombinedBuffersNum ) ? ( 1 << pStreamIndex ) : 0u;
+			return ( pStreamSlot < GCM::kIAMaxDataStreamCombinedBuffersNum ) ? ( 1 << pStreamSlot ) : 0u;
 		}
 
 		/// @brief Returns
 		template <typename... TPIntegers>
-		CPPX_ATTR_NO_DISCARD inline constexpr uint32 IAMakeVertexSourceBindingFlag( native_uint pStreamIndex, TPIntegers && ...pRest )
+		CPPX_ATTR_NO_DISCARD inline constexpr uint32 IAMakeVertexSourceBindingFlag( native_uint pFirstSlot, TPIntegers && ...pRest )
 		{
-			return IAMakeVertexSourceBindingFlag( pStreamIndex ) | IAMakeVertexSourceBindingFlag( std::forward<TPIntegers>( pRest )... );
+			return IAMakeVertexSourceBindingFlag( pFirstSlot ) | IAMakeVertexSourceBindingFlag( std::forward<TPIntegers>( pRest )... );
 		}
 
 		/// @brief
-		CPPX_ATTR_NO_DISCARD inline constexpr uint32 IAMakeVertexBufferBindingFlag( native_uint pStreamIndex )
+		CPPX_ATTR_NO_DISCARD inline constexpr uint32 IAMakeVertexBufferBindingFlag( native_uint pVertexBufferSlot )
 		{
-			return ( pStreamIndex < GCM::kIAMaxDataStreamVertexBuffersNum ) ? ( 1 << pStreamIndex ) : 0u;
+			return ( pVertexBufferSlot < GCM::kIAMaxDataStreamVertexBuffersNum ) ? ( 1 << pVertexBufferSlot ) : 0u;
 		}
 
 		/// @brief Returns
 		template <typename... TPIntegers>
-		CPPX_ATTR_NO_DISCARD inline constexpr uint32 IAMakeVertexBufferBindingFlag( native_uint pStreamIndex, TPIntegers && ...pRest )
+		CPPX_ATTR_NO_DISCARD inline constexpr uint32 IAMakeVertexBufferBindingFlag( native_uint pFirstSlot, TPIntegers && ...pRest )
 		{
-			return IAMakeVertexBufferBindingFlag( pStreamIndex ) | IAMakeVertexBufferBindingFlag( std::forward<TPIntegers>( pRest )... );
+			return IAMakeVertexBufferBindingFlag( pFirstSlot ) | IAMakeVertexBufferBindingFlag( std::forward<TPIntegers>( pRest )... );
 		}
 
 		/// @brief Returns
@@ -175,9 +175,9 @@ namespace Ic3::Graphics::GCI
 		}
 
 		/// @brief
-		CPPX_ATTR_NO_DISCARD inline constexpr bool IAIsDataStreamVertexBufferSlotValid( native_uint pVertexBufferSlor )
+		CPPX_ATTR_NO_DISCARD inline constexpr bool IAIsDataStreamVertexBufferSlotValid( native_uint pVertexBufferSlot )
 		{
-			return pVertexBufferSlor < GCM::kIAMaxDataStreamVertexBuffersNum;
+			return pVertexBufferSlot < GCM::kIAMaxDataStreamVertexBuffersNum;
 		}
 
 		/// @brief
@@ -304,7 +304,7 @@ namespace Ic3::Graphics::GCI
 
 		_Reserved
 	};
-	Ic3TypeInfoEnumDeclare( EPipelineStateDescriptorType );
+	Ic3TypeInfoEnumDeclareGraphicsGCI( EPipelineStateDescriptorType );
 
 	inline constexpr auto kPipelineStateDescriptorTypeMaxValue = static_cast<uint16>( EPipelineStateDescriptorType::_Reserved ) - 1;
 

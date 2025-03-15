@@ -51,7 +51,7 @@ namespace Ic3::Graphics::GCI
 		 * @param pFlg
 		 * @return
 		 */
-		CPPX_ATTR_NO_DISCARD inline constexpr base_data_type_value_t makeBaseDataTypeEnumValue( uint8 pBsz, uint8 pFlg = 0 ) noexcept
+		CPPX_ATTR_NO_DISCARD inline constexpr base_data_type_value_t MakeBaseDataTypeEnumValue( uint8 pBsz, uint8 pFlg = 0 ) noexcept
 		{
 			// Note: EVertexAttribFormat (and related functionality) relies on the fact that last 8 bits are flags (this
 			// is shared with other enums to fit into certain size limits). Plan carefully before changing the bit layout.
@@ -89,18 +89,18 @@ namespace Ic3::Graphics::GCI
 
 	enum class EBaseDataType : base_data_type_value_t
 	{
-		Undefined    = CXU::makeBaseDataTypeEnumValue( 0 , 0 ),
-		Bool         = CXU::makeBaseDataTypeEnumValue( 1 , 0 ),
-		Byte         = CXU::makeBaseDataTypeEnumValue( 1 , eGPUDataFormatMaskSInt ),
-		Ubyte        = CXU::makeBaseDataTypeEnumValue( 1 , eGPUDataFormatMaskUInt ),
-		Int16        = CXU::makeBaseDataTypeEnumValue( 2 , eGPUDataFormatMaskSInt ),
-		Uint16       = CXU::makeBaseDataTypeEnumValue( 2 , eGPUDataFormatMaskUInt ),
-		Int32        = CXU::makeBaseDataTypeEnumValue( 4 , eGPUDataFormatMaskSInt ),
-		Uint32       = CXU::makeBaseDataTypeEnumValue( 4 , eGPUDataFormatMaskUInt ),
-		Float16      = CXU::makeBaseDataTypeEnumValue( 2 , eGPUDataFormatFlagTypeFloatingPointBit ),
-		Float32      = CXU::makeBaseDataTypeEnumValue( 4 , eGPUDataFormatFlagTypeFloatingPointBit ),
-		Double       = CXU::makeBaseDataTypeEnumValue( 8 , eGPUDataFormatFlagTypeFloatingPointBit ),
-		Uint24S8     = CXU::makeBaseDataTypeEnumValue( 4 , 0 ),
+		Undefined    = CXU::MakeBaseDataTypeEnumValue( 0 , 0 ),
+		Bool         = CXU::MakeBaseDataTypeEnumValue( 1 , 0 ),
+		Byte         = CXU::MakeBaseDataTypeEnumValue( 1 , eGPUDataFormatMaskSInt ),
+		Ubyte        = CXU::MakeBaseDataTypeEnumValue( 1 , eGPUDataFormatMaskUInt ),
+		Int16        = CXU::MakeBaseDataTypeEnumValue( 2 , eGPUDataFormatMaskSInt ),
+		Uint16       = CXU::MakeBaseDataTypeEnumValue( 2 , eGPUDataFormatMaskUInt ),
+		Int32        = CXU::MakeBaseDataTypeEnumValue( 4 , eGPUDataFormatMaskSInt ),
+		Uint32       = CXU::MakeBaseDataTypeEnumValue( 4 , eGPUDataFormatMaskUInt ),
+		Float16      = CXU::MakeBaseDataTypeEnumValue( 2 , eGPUDataFormatFlagTypeFloatingPointBit ),
+		Float32      = CXU::MakeBaseDataTypeEnumValue( 4 , eGPUDataFormatFlagTypeFloatingPointBit ),
+		Double       = CXU::MakeBaseDataTypeEnumValue( 8 , eGPUDataFormatFlagTypeFloatingPointBit ),
+		Uint24S8     = CXU::MakeBaseDataTypeEnumValue( 4 , 0 ),
 	};
 	Ic3TypeInfoEnumDeclareGraphicsGCI( EBaseDataType );
 
@@ -313,18 +313,18 @@ namespace Ic3::Graphics::GCI
 
 		CPPX_ATTR_NO_DISCARD inline constexpr bool IsVertexAttribFormatValid( EVertexAttribFormat pFormat ) noexcept
 		{
-			return ( pFormat != EVertexAttribFormat::Undefined ) && ( pFormat != EVertexAttribFormat::Undefined );
+			return pFormat != EVertexAttribFormat::Undefined;
 		}
 
 		CPPX_ATTR_NO_DISCARD inline constexpr uint16 GetVertexAttribFormatByteSize( EVertexAttribFormat pFormat ) noexcept
 		{
-			Ic3DebugAssert( pFormat != EVertexAttribFormat::Undefined );
+			Ic3DebugAssert( IsVertexAttribFormatValid( pFormat ) );
 			return GetBaseDataTypeByteSize( GetVertexAttribFormatBaseDataType( pFormat ) ) * GetVertexAttribFormatComponentsNum( pFormat );
 		}
 
 	}
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		inline ETextureFormat GetTextureFormatForGraphicsPixelLayout( EPixelDataLayout pPixelLayout )

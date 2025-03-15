@@ -47,7 +47,7 @@ namespace Ic3::System
 		auto win32PipeHandle = Platform::_Win32CreateReadPipe( fullyQualifiedPipeName, pPipeCreateInfo.pipeDataMode, pTimeoutSettings );
 		if( !win32PipeHandle )
 		{
-			Ic3DebugOutputFmt( "Failed to open read pipe '%s'.", fullyQualifiedPipeName.data() );
+			Ic3DebugOutputSys( "Failed to open read pipe '%s'.", fullyQualifiedPipeName.data() );
 			return nullptr;
 		}
 
@@ -73,7 +73,7 @@ namespace Ic3::System
 		auto win32PipeHandle = Platform::_Win32CreateWritePipe( fullyQualifiedPipeName, pPipeCreateInfo.pipeDataMode, pTimeoutSettings );
 		if( !win32PipeHandle )
 		{
-			Ic3DebugOutputFmt( "Failed to create write pipe '%s'.", fullyQualifiedPipeName.data() );
+			Ic3DebugOutputSys( "Failed to create write pipe '%s'.", fullyQualifiedPipeName.data() );
 			return nullptr;
 		}
 
@@ -408,11 +408,11 @@ namespace Ic3::System
 
 			if( !pipeHandle )
 			{
-				Ic3DebugOutputFmt( "Could not initialize pipe %s.", win32PipeNameStr );
+				Ic3DebugOutputSys( "Could not initialize pipe %s.", win32PipeNameStr );
 			}
 			else
 			{
-				Ic3DebugOutputFmt( "Successfully initialized pipe %s.", win32PipeNameStr );
+				Ic3DebugOutputSys( "Successfully initialized pipe %s.", win32PipeNameStr );
 			}
 
 			return pipeHandle;
@@ -502,11 +502,11 @@ namespace Ic3::System
 
 			if( !pipeHandle )
 			{
-				Ic3DebugOutputFmt( "Could not connect to pipe %s.", win32PipeNameStr );
+				Ic3DebugOutputSys( "Could not connect to pipe %s.", win32PipeNameStr );
 			}
 			else
 			{
-				Ic3DebugOutputFmt( "Successfully connected to pipe %s.", win32PipeNameStr );
+				Ic3DebugOutputSys( "Successfully connected to pipe %s.", win32PipeNameStr );
 			}
 
 			return pipeHandle;

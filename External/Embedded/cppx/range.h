@@ -136,12 +136,38 @@ namespace cppx
 		}
 	};
 
+	template <typename TPValue>
+	inline bool operator==( const range<TPValue> & pLhs, const range<TPValue> & pRhs )
+	{
+		return ( pLhs.begin == pRhs.begin ) && ( pLhs.end == pRhs.end );
+	}
+
+	template <typename TPValue>
+	inline bool operator!=( const range<TPValue> & pLhs, const range<TPValue> & pRhs )
+	{
+		return ( pLhs.begin != pRhs.begin ) || ( pLhs.end != pRhs.end );
+	}
+
 	template <typename TPValue, typename TPBegin, typename TPEnd>
-	inline range<TPValue> make_range( TPBegin pBegin, TPEnd pEnd )
+	inline range<TPValue> make_range_from_bounds( TPBegin pBegin, TPEnd pEnd )
 	{
 		const auto begin = numeric_cast<TPValue>( pBegin );
 		const auto end = numeric_cast<TPValue>( pEnd );
 		return range<TPValue>{ begin, end };
+	}
+	
+	template <typename TPValue, typename TPStart, typename TPLength>
+	inline range<TPValue> make_range_from_size( TPStart pStart, TPLength pLength )
+	{
+		const auto begin = numeric_cast<TPValue>( pStart );
+		const auto end = begin + numeric_cast<TPValue>( pLength ) - 1;
+		return range<TPValue>{ begin, end };
+	}
+	
+	template <typename TPValue>
+	inline range<TPValue> make_empty_range()
+	{
+		return range<TPValue>::empty_range();
 	}
 
 	template <typename TPValue>

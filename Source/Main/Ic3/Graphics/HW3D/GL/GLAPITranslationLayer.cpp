@@ -423,7 +423,7 @@ namespace Ic3::Graphics::GCI
 			Ic3CaseReturn( EPrimitiveTopology::LineStripAdj     , GL_LINE_STRIP_ADJACENCY );
 			Ic3CaseReturn( EPrimitiveTopology::TriangleListAdj  , GL_TRIANGLES_ADJACENCY );
 			Ic3CaseReturn( EPrimitiveTopology::TriangleStripAdj , GL_TRIANGLE_STRIP_ADJACENCY );
-        #endif
+		#endif
 		#if( IC3_GX_GL_FEATURE_SUPPORT_PRIMITIVE_TYPE_PATCHES )
 			Ic3CaseReturn( EPrimitiveTopology::TesselationPatch , GL_PATCHES );
 		#endif
@@ -440,11 +440,11 @@ namespace Ic3::Graphics::GCI
 			Ic3CaseReturn( EShaderType::GSPixel    , GL_FRAGMENT_SHADER );
 		#if( IC3_GX_GL_FEATURE_SUPPORT_SHADER_TYPE_GEOMETRY )
 			Ic3CaseReturn( EShaderType::GSGeometry , GL_GEOMETRY_SHADER );
-        #endif
+		#endif
 		#if( IC3_GX_GL_FEATURE_SUPPORT_SHADER_TYPE_TESSELATION )
 			Ic3CaseReturn( EShaderType::GSTessHull   , GL_TESS_CONTROL_SHADER );
 			Ic3CaseReturn( EShaderType::GSTessDomain , GL_TESS_EVALUATION_SHADER );
-        #endif
+		#endif
 		#if( IC3_GX_GL_FEATURE_SUPPORT_SHADER_TYPE_COMPUTE )
 			Ic3CaseReturn( EShaderType::CSCompute , GL_COMPUTE_SHADER );
 		#endif
@@ -686,14 +686,14 @@ namespace Ic3::Graphics::GCI
 	#if( IC3_GX_GL_FEATURE_SUPPORT_DEBUG_OUTPUT )
 		switch( pEventCategory )
 		{
-			Ic3CaseReturn( GL_DEBUG_CATEGORY_API_ERROR_AMD          , "API error"          );
-			Ic3CaseReturn( GL_DEBUG_CATEGORY_WINDOW_SYSTEM_AMD      , "Window system"      );
-			Ic3CaseReturn( GL_DEBUG_CATEGORY_DEPRECATION_AMD        , "Deprecation"        );
-			Ic3CaseReturn( GL_DEBUG_CATEGORY_UNDEFINED_BEHAVIOR_AMD , "Undefined behavior" );
-			Ic3CaseReturn( GL_DEBUG_CATEGORY_PERFORMANCE_AMD        , "Performance"        );
-			Ic3CaseReturn( GL_DEBUG_CATEGORY_SHADER_COMPILER_AMD    , "Shader compiler"    );
-			Ic3CaseReturn( GL_DEBUG_CATEGORY_APPLICATION_AMD        , "Application"        );
-			Ic3CaseReturn( GL_DEBUG_CATEGORY_OTHER_AMD              , "Other"              );
+			Ic3CaseReturn( GL_DEBUG_CATEGORY_API_ERROR_AMD          , "APIError"    );
+			Ic3CaseReturn( GL_DEBUG_CATEGORY_WINDOW_SYSTEM_AMD      , "WinSystem"   );
+			Ic3CaseReturn( GL_DEBUG_CATEGORY_DEPRECATION_AMD        , "Deprecation" );
+			Ic3CaseReturn( GL_DEBUG_CATEGORY_UNDEFINED_BEHAVIOR_AMD , "Undefined"   );
+			Ic3CaseReturn( GL_DEBUG_CATEGORY_PERFORMANCE_AMD        , "Performance" );
+			Ic3CaseReturn( GL_DEBUG_CATEGORY_SHADER_COMPILER_AMD    , "ShaderC"     );
+			Ic3CaseReturn( GL_DEBUG_CATEGORY_APPLICATION_AMD        , "Application" );
+			Ic3CaseReturn( GL_DEBUG_CATEGORY_OTHER_AMD              , "Other"       );
 		}
 	#endif
 		return "Unknown";
@@ -702,12 +702,12 @@ namespace Ic3::Graphics::GCI
 	const char * ATL::GLTranslateDebugEventSeverityStr( GLenum pEventSeverity )
 	{
 	#if( IC3_GX_GL_FEATURE_SUPPORT_DEBUG_OUTPUT )
-	    switch( pEventSeverity )
+		switch( pEventSeverity )
 		{
-			Ic3CaseReturn( GL_DEBUG_SEVERITY_HIGH_ARB     , "High"         );
-			Ic3CaseReturn( GL_DEBUG_SEVERITY_MEDIUM_ARB   , "Medium"       );
-			Ic3CaseReturn( GL_DEBUG_SEVERITY_LOW_ARB      , "Low"          );
-			Ic3CaseReturn( GL_DEBUG_SEVERITY_NOTIFICATION , "Notification" );
+			Ic3CaseReturn( GL_DEBUG_SEVERITY_HIGH_ARB     , "High"   );
+			Ic3CaseReturn( GL_DEBUG_SEVERITY_MEDIUM_ARB   , "Medium" );
+			Ic3CaseReturn( GL_DEBUG_SEVERITY_LOW_ARB      , "Low"    );
+			Ic3CaseReturn( GL_DEBUG_SEVERITY_NOTIFICATION , "Notify" );
 		}
 	#endif
 		return "Unknown";
@@ -716,14 +716,14 @@ namespace Ic3::Graphics::GCI
 	const char * ATL::GLTranslateDebugEventSourceStr( GLenum pEventSource )
 	{
 	#if( IC3_GX_GL_FEATURE_SUPPORT_DEBUG_OUTPUT )
-	    switch( pEventSource )
+		switch( pEventSource )
 		{
-			Ic3CaseReturn( GL_DEBUG_SOURCE_API_ARB             , "GL API"          );
-			Ic3CaseReturn( GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB   , "Window system"   );
-			Ic3CaseReturn( GL_DEBUG_SOURCE_SHADER_COMPILER_ARB , "Shader compiler" );
-			Ic3CaseReturn( GL_DEBUG_SOURCE_THIRD_PARTY_ARB     , "Third party"     );
-			Ic3CaseReturn( GL_DEBUG_SOURCE_APPLICATION_ARB     , "Application"     );
-			Ic3CaseReturn( GL_DEBUG_SOURCE_OTHER_ARB           , "Other"           );
+			Ic3CaseReturn( GL_DEBUG_SOURCE_API_ARB             , "OpenGLAPI"   );
+			Ic3CaseReturn( GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB   , "WinSystem"   );
+			Ic3CaseReturn( GL_DEBUG_SOURCE_SHADER_COMPILER_ARB , "ShaderC"     );
+			Ic3CaseReturn( GL_DEBUG_SOURCE_THIRD_PARTY_ARB     , "3rdParty"    );
+			Ic3CaseReturn( GL_DEBUG_SOURCE_APPLICATION_ARB     , "Application" );
+			Ic3CaseReturn( GL_DEBUG_SOURCE_OTHER_ARB           , "Other"       );
 		}
 	#endif
 		return "Unknown";
@@ -732,14 +732,17 @@ namespace Ic3::Graphics::GCI
 	const char * ATL::GLTranslateDebugEventTypeStr( GLenum pEventType )
 	{
 	#if( IC3_GX_GL_FEATURE_SUPPORT_DEBUG_OUTPUT )
-	    switch( pEventType )
+		switch( pEventType )
 		{
-			Ic3CaseReturn( GL_DEBUG_TYPE_ERROR_ARB               , "GL API"          );
-			Ic3CaseReturn( GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_ARB , "Window system"   );
-			Ic3CaseReturn( GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB  , "Shader compiler" );
-			Ic3CaseReturn( GL_DEBUG_TYPE_PORTABILITY_ARB         , "Third party"     );
-			Ic3CaseReturn( GL_DEBUG_TYPE_PERFORMANCE_ARB         , "Application"     );
-			Ic3CaseReturn( GL_DEBUG_TYPE_OTHER_ARB               , "Other"           );
+			Ic3CaseReturn( GL_DEBUG_TYPE_ERROR_ARB               , "APIError"    );
+			Ic3CaseReturn( GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_ARB , "Deprecation" );
+			Ic3CaseReturn( GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB  , "Undefined"   );
+			Ic3CaseReturn( GL_DEBUG_TYPE_PORTABILITY_ARB         , "Portability" );
+			Ic3CaseReturn( GL_DEBUG_TYPE_PERFORMANCE_ARB         , "Performance" );
+			Ic3CaseReturn( GL_DEBUG_TYPE_OTHER_ARB               , "Other"       );
+			Ic3CaseReturn( GL_DEBUG_TYPE_MARKER                  , "Marker"      );
+			Ic3CaseReturn( GL_DEBUG_TYPE_PUSH_GROUP              , "PushGroup"   );
+			Ic3CaseReturn( GL_DEBUG_TYPE_POP_GROUP               , "PopGroup"    );
 		}
 	#endif
 		return "Unknown";

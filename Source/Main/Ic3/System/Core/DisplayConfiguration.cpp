@@ -141,7 +141,7 @@ namespace Ic3::System
 				auto & outputDesc = _privateData->primaryOutput->GetOutputDescInternal();
 				if( !outputDesc.flags.is_set( eDisplayOutputFlagPrimaryBit ) )
 				{
-					Ic3DebugOutputFmt(
+					Ic3DebugOutputSys(
 						"Primary/Default output of [%s] selected by the driver does not have "\
 						"E_DISPLAY_ADAPTER_FLAG_PRIMARY_BIT set. Is that intentional?",
 						_privateData->adapterDesc.name.c_str() );

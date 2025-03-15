@@ -274,14 +274,14 @@ namespace cppx
 		}
 
 		template <typename TPChar>
-		inline std::basic_string<TPChar> extract_short_file_path( const std::basic_string<TPChar> & pFilename, TPChar pPathSeparator )
+		inline std::basic_string<TPChar> extract_short_file_path( const std::basic_string<TPChar> & pFilename, TPChar pPathSeparator = PCL_ENV_DEFAULT_PATH_DELIMITER )
 		{
 			std::basic_string<TPChar> shortFilename = pFilename;
-			size_t filenameSeparator = shortFilename.find_last_of( pPathSeparator, 0 );
+			size_t filenameSeparatorPos = shortFilename.find_last_of( pPathSeparator );
 
-			if( filenameSeparator != std::basic_string<TPChar>::npos )
+			if( filenameSeparatorPos != std::basic_string<TPChar>::npos )
 			{
-				size_t lastDirSep = shortFilename.find_last_of( pPathSeparator, filenameSeparator );
+				size_t lastDirSep = shortFilename.find_last_of( pPathSeparator, filenameSeparatorPos );
 				if( lastDirSep != std::basic_string<TPChar>::npos )
 				{
 					shortFilename.erase( 0, lastDirSep + 1 );
@@ -292,9 +292,33 @@ namespace cppx
 		}
 
 		template <typename TPChar>
-		inline std::basic_string<TPChar> extract_short_file_path( const TPChar * pFilename, TPChar pPathSeparator )
+		inline std::basic_string<TPChar> extract_short_file_path( const TPChar * pFilename, TPChar pPathSeparator = PCL_ENV_DEFAULT_PATH_DELIMITER )
 		{
-			return extract_short_file_path( std::basic_string<TPChar>{pFilename}, pPathSeparator );
+			return extract_short_file_path( std::basic_string<TPChar>{ pFilename }, pPathSeparator );
+		}
+
+		template <typename TPChar>
+		inline std::basic_string<TPChar> extract_short_function_name( const std::basic_string<TPChar> & pFunctionName, TPChar pNameSeparator = ':' )
+		{
+			std::basic_string<TPChar> shortFunctionName = pFunctionName;
+			size_t functionNameSeparatorPos = shortFunctionName.find_last_of( pNameSeparator );
+
+			if( functionNameSeparatorPos != std::basic_string<TPChar>::npos )
+			{
+				size_t lastNameSep = shortFunctionName.find_last_of( pNameSeparator, functionNameSeparatorPos );
+				if( lastNameSep != std::basic_string<TPChar>::npos )
+				{
+					shortFunctionName.erase( 0, lastNameSep + 1 );
+				}
+			}
+
+			return shortFunctionName;
+		}
+
+		template <typename TPChar>
+		inline std::basic_string<TPChar> extract_short_function_name( const TPChar * pFunctionName, TPChar pNameSeparator = ':' )
+		{
+			return extract_short_function_name( std::basic_string<TPChar>{ pFunctionName }, pNameSeparator );
 		}
 
 	}

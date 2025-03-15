@@ -71,7 +71,7 @@ namespace Ic3::Graphics::GCI
 	/**
 	 * @brief Complete OpenGL-specific definition of vertex attribute layout for the Input Assembler.
 	 */
-	struct GLIAVertexAttributeLayout : public IAVertexAttributeLayoutCommonConfig
+	struct GLIAVertexAttributeLayout : public IAVertexAttributeLayoutMetaData
 	{
 		/// An array of GLIAVertexAttributeDesc values for every attribute in the IA array.
 		GLIAVertexAttributeDescArray glcAttributeArray;
@@ -143,7 +143,7 @@ namespace Ic3::Graphics::GCI
 	/// An alias for unique_ptr<> to the base vertex source bidning class (GLIAVertexSourceBindingBase).
 	using GLIAVertexSourceBindingPtr = std::unique_ptr<GLIAVertexSourceBindingBase>;
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		// VertexAttributeLayout

@@ -96,7 +96,7 @@ namespace Ic3::Graphics::GCI
 	{
 		if( pRenderPassConfiguration.GetAttachmentsMaskWithFlags( eRenderPassAttachmentActionFlagLoadClearBit ) != 0 )
 		{
-			GCU::RTORenderPassExecuteOpLoadClearGL( pRenderPassConfiguration, pDynamicConfig );
+			Utilities::RTORenderPassExecuteOpLoadClearGL( pRenderPassConfiguration, pDynamicConfig );
 		}
 	}
 
@@ -106,7 +106,7 @@ namespace Ic3::Graphics::GCI
 	{
 		if( pRenderPassConfiguration.GetAttachmentsMaskWithFlags( eRenderPassAttachmentActionFlagStoreResolveBit ) != 0 )
 		{
-			GCU::RTORenderPassExecuteOpStoreResolveGL(
+			Utilities::RTORenderPassExecuteOpStoreResolveGL(
 					pRenderPassConfiguration,
 					_glcGraphicsPipelineStateController->GetGLRenderTargetBinding());
 		}

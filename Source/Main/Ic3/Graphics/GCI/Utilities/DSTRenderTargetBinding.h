@@ -64,21 +64,25 @@ namespace Ic3::Graphics::GCI
 
 		void SetColorOutputAttachmentIndexMapping( native_uint pColorAttachmentIndex, native_uint pArrayIndex )
 		{
+			Ic3DebugAssert( CXU::RTOIsColorAttachmentIndexValid( pColorAttachmentIndex ) );
 			colorOutputAttachmentIndexMapping[pColorAttachmentIndex] = cppx::numeric_cast<uint8>( pArrayIndex );
 		}
 
 		void SetColorOutputAttachmentIndexInactive( native_uint pColorAttachmentIndex )
 		{
+			Ic3DebugAssert( CXU::RTOIsColorAttachmentIndexValid( pColorAttachmentIndex ) );
 			colorOutputAttachmentIndexMapping[pColorAttachmentIndex] = kRTOAttachmentIndexUndefined;
 		}
 
 		void SetColorResolveAttachmentIndexMapping( native_uint pColorAttachmentIndex, native_uint pArrayIndex )
 		{
+			Ic3DebugAssert( CXU::RTOIsColorAttachmentIndexValid( pColorAttachmentIndex ) );
 			colorResolveAttachmentIndexMapping[pColorAttachmentIndex] = cppx::numeric_cast<uint8>( pArrayIndex );
 		}
 
 		void SetColorResolveAttachmentIndexInactive( native_uint pColorAttachmentIndex )
 		{
+			Ic3DebugAssert( CXU::RTOIsColorAttachmentIndexValid( pColorAttachmentIndex ) );
 			colorResolveAttachmentIndexMapping[pColorAttachmentIndex] = kRTOAttachmentIndexUndefined;
 		}
 

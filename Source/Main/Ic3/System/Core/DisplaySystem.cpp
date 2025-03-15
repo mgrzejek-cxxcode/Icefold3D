@@ -562,7 +562,7 @@ namespace Ic3::System
 				const auto & adapterDesc = _privateData->primaryAdapter->GetAdapterDescInternal();
 				if( !adapterDesc.flags.is_set( eDisplayAdapterFlagPrimaryBit ) )
 				{
-					Ic3DebugOutput(
+					Ic3DebugOutputSys(
 						"Primary/Default adapter selected by the driver does not have "\
 						"E_DISPLAY_ADAPTER_FLAG_PRIMARY_BIT set. Is that intentional?" );
 				}

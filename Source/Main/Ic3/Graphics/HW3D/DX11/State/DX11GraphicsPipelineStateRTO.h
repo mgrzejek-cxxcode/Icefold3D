@@ -120,7 +120,7 @@ namespace Ic3::Graphics::GCI
 	};
 
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		CPPX_ATTR_NO_DISCARD RenderTargetLayout RTOGetRenderTargetLayoutForScreenDX11(

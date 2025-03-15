@@ -23,7 +23,7 @@ namespace Ic3::Graphics::GCI
 			DX11GPUDevice & pGPUDevice,
 			const BlendStateDescriptorCreateInfo & pCreateInfo )
 	{
-		const auto dx11BlendSettings = GCU::TranslateBlendSettingsDX11( pCreateInfo.blendSettings );
+		const auto dx11BlendSettings = Utilities::TranslateBlendSettingsDX11( pCreateInfo.blendSettings );
 
 		ComPtr<ID3D11BlendState> d3d11BlendState;
 		const auto hResult = pGPUDevice.mD3D11Device1->CreateBlendState(
@@ -60,7 +60,7 @@ namespace Ic3::Graphics::GCI
 			DX11GPUDevice & pGPUDevice,
 			const DepthStencilStateDescriptorCreateInfo & pCreateInfo )
 	{
-		const auto dx11DepthStencilSettings = GCU::TranslateDepthStencilSettingsDX11( pCreateInfo.depthStencilSettings );
+		const auto dx11DepthStencilSettings = Utilities::TranslateDepthStencilSettingsDX11( pCreateInfo.depthStencilSettings );
 
 		ComPtr<ID3D11DepthStencilState> d3d11DepthStencilState;
 		const auto hResult = pGPUDevice.mD3D11Device1->CreateDepthStencilState(
@@ -97,7 +97,7 @@ namespace Ic3::Graphics::GCI
 			const RasterizerStateDescriptorCreateInfo & pCreateInfo )
 	{
 
-		const auto dx11RasterizerSettings = GCU::TranslateRasterizerSettingsDX11( pCreateInfo.rasterizerSettings );
+		const auto dx11RasterizerSettings = Utilities::TranslateRasterizerSettingsDX11( pCreateInfo.rasterizerSettings );
 
 		ComPtr<ID3D11RasterizerState> d3d11RasterizerState;
 		const auto hResult = pGPUDevice.mD3D11Device1->CreateRasterizerState(
@@ -118,7 +118,7 @@ namespace Ic3::Graphics::GCI
 		return stateDescriptor;
 	}
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		DX11BlendSettings TranslateBlendSettingsDX11( const BlendSettings & pBlendSettings )
@@ -135,7 +135,7 @@ namespace Ic3::Graphics::GCI
 			{
 				if( !dx11BlendSettings.IndependentBlendEnable )
 				{
-					dx11BlendSettings.RenderTarget[0] = GCU::TranslateRenderTargetColorAttachmentBlendSettingsDX11( pBlendSettings.attachments[0] );
+					dx11BlendSettings.RenderTarget[0] = Utilities::TranslateRenderTargetColorAttachmentBlendSettingsDX11( pBlendSettings.attachments[0] );
 					dx11BlendSettings.IndependentBlendEnable = FALSE;
 				}
 				else
@@ -144,7 +144,7 @@ namespace Ic3::Graphics::GCI
 						[&]( native_uint pIndex, ERTAttachmentFlags pAttachmentBit )
 						{
 							auto & dx11AttachmentSettings = dx11BlendSettings.RenderTarget[pIndex];
-							dx11AttachmentSettings = GCU::TranslateRenderTargetColorAttachmentBlendSettingsDX11( pBlendSettings.attachments[pIndex] );
+							dx11AttachmentSettings = Utilities::TranslateRenderTargetColorAttachmentBlendSettingsDX11( pBlendSettings.attachments[pIndex] );
 							dx11AttachmentSettings.BlendEnable = TRUE;
 							return true;
 						} );

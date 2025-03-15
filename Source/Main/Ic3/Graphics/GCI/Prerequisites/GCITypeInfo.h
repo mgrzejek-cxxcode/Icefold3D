@@ -9,10 +9,11 @@
 namespace Ic3::Graphics::GCI
 {
 
+	Ic3EnableCustomExceptionSupport();
 	Ic3EnableEnumTypeInfoSupport();
 
     ///
-	#define Ic3TypeInfoEnumDeclareGraphicsGCI( TPEnum ) Ic3TypeInfoEnumDeclareAPI( TPEnum, IC3_GRAPHICS_GCI_API )
+	#define Ic3TypeInfoEnumDeclareGraphicsGCI( TPEnum ) Ic3TypeInfoEnumDeclareAPI( IC3_GRAPHICS_GCI_API, TPEnum )
 
 } // namespace Ic3::Graphics::GCI
 

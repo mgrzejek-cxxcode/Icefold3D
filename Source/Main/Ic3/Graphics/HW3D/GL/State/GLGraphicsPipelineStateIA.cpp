@@ -10,8 +10,8 @@ namespace Ic3::Graphics::GCI
 
 	GLVertexAttributeLayoutDescriptor::GLVertexAttributeLayoutDescriptor(
 			GLGPUDevice & pGPUDevice,
-			const IAVertexAttributeLayoutCommonConfig & pCommonAttributeLayoutConfig )
-	: HW3DPipelineStateDescriptor( pGPUDevice, pCommonAttributeLayoutConfig )
+			const IAVertexAttributeLayoutMetaData & pAttributeLayoutMetaData )
+	: HW3DPipelineStateDescriptor( pGPUDevice, pAttributeLayoutMetaData )
 	{}
 
 	GLVertexAttributeLayoutDescriptor::~GLVertexAttributeLayoutDescriptor() = default;
@@ -19,13 +19,13 @@ namespace Ic3::Graphics::GCI
 
 	GLVertexAttributeLayoutDescriptorCore::GLVertexAttributeLayoutDescriptorCore(
 			GLGPUDevice & pGPUDevice,
-			const IAVertexAttributeLayoutCommonConfig & pCommonAttributeLayoutConfig,
+			const IAVertexAttributeLayoutMetaData & pAttributeLayoutMetaData,
 			GLVertexArrayObjectHandle pGLVertexArrayObject,
 			GLenum pGLPrimitiveTopology )
-	: GLVertexAttributeLayoutDescriptor( pGPUDevice, _commonAttributeLayoutConfig )
+	: GLVertexAttributeLayoutDescriptor( pGPUDevice, _attributeLayoutMetaData )
 	, mGLVertexArrayObject( std::move( pGLVertexArrayObject ) )
 	, mGLPrimitiveTopology( pGLPrimitiveTopology )
-	, _commonAttributeLayoutConfig( pCommonAttributeLayoutConfig )
+	, _attributeLayoutMetaData( pAttributeLayoutMetaData )
 	{}
 
 	GLVertexAttributeLayoutDescriptorCore::~GLVertexAttributeLayoutDescriptorCore() = default;
@@ -34,9 +34,9 @@ namespace Ic3::Graphics::GCI
 			GLGPUDevice & pGPUDevice,
 			const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo )
 	{
-		const auto glcAttributeLayoutData = GCU::IATranslateVertexAttributeLayoutDefinitionGL( pCreateInfo.layoutDefinition );
+		const auto glcAttributeLayoutData = Utilities::IATranslateVertexAttributeLayoutDefinitionGL( pCreateInfo.layoutDefinition );
 
-		auto vertexArrayObject = GCU::IACreateVertexArrayObjectLayoutOnlyGL( glcAttributeLayoutData );
+		auto vertexArrayObject = Utilities::IACreateVertexArrayObjectLayoutOnlyGL( glcAttributeLayoutData );
 		if( !vertexArrayObject )
 		{
 			return nullptr;
@@ -65,7 +65,7 @@ namespace Ic3::Graphics::GCI
 			GLGPUDevice & pGPUDevice,
 			const VertexAttributeLayoutDescriptorCreateInfo & pCreateInfo )
 	{
-		const auto glcAttributeLayoutData = GCU::IATranslateVertexAttributeLayoutDefinitionGL( pCreateInfo.layoutDefinition );
+		const auto glcAttributeLayoutData = Utilities::IATranslateVertexAttributeLayoutDefinitionGL( pCreateInfo.layoutDefinition );
 		const auto attributeLayoutDescriptor = CreateGfxObject<GLVertexAttributeLayoutDescriptorCompat>( pGPUDevice, glcAttributeLayoutData );
 
 		return attributeLayoutDescriptor;
@@ -84,7 +84,7 @@ namespace Ic3::Graphics::GCI
 			GLGPUDevice & pGPUDevice,
 			const VertexSourceBindingDescriptorCreateInfo & pCreateInfo )
 	{
-		auto glcVertexSourceBindingPtr = GCU::IATranslateVertexSourceBindingDefinitionGL( pCreateInfo.bindingDefinition );
+		auto glcVertexSourceBindingPtr = Utilities::IATranslateVertexSourceBindingDefinitionGL( pCreateInfo.bindingDefinition );
 		const auto stateDescriptor = CreateGfxObject<GLVertexSourceBindingDescriptor>( pGPUDevice, std::move( glcVertexSourceBindingPtr ) );
 
 		return stateDescriptor;

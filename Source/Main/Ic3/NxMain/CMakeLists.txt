@@ -15,25 +15,39 @@ set( IC3_NXMAIN_SRC_FILES
 
 	"GCI/CommonGCIDefs.h"
 	"GCI/ConstantBufferProxy.h"
-	# "GCI/GCRBufferCommon.h"
-	# "GCI/GCRBuffer.h"
-	# "GCI/GCRBuffer.cpp"
-	"GCI/IACommonDefs.h"
-	"GCI/IAVertexStreamLayout.h"
-	"GCI/IAVertexStreamLayout.inl"
-	"GCI/IAVertexStreamLayout.cpp"
-	"GCI/IAVertexAttribLayout.h"
-	"GCI/IAVertexAttribLayout.inl"
-	"GCI/IAVertexAttribLayout.cpp"
+
+	#"GCI/IACommonDefs.h"
+	#"GCI/IAVertexStreamLayout.h"
+	#"GCI/IAVertexStreamLayout.inl"
+	#"GCI/IAVertexStreamLayout.cpp"
+	#"GCI/IAVertexAttribLayout.h"
+	#"GCI/IAVertexAttribLayout.inl"
+	#"GCI/IAVertexAttribLayout.cpp"
+	#"GCI/VertexAttributeShaderSemantics.h"
+	#"GCI/VertexAttributeShaderSemantics.cpp"
+
+	"GCI/ShaderResourceDefs.h"
+	"GCI/ShaderUtils.h"
+	"GCI/ShaderUtils.cpp"
+
+	"GCI/VertexAttributeKey.h"
+	"GCI/VertexAttributeKey.cpp"
 	"GCI/VertexAttributeShaderSemantics.h"
 	"GCI/VertexAttributeShaderSemantics.cpp"
-	"GCI/ShaderResourceDefs.h"
-	"GCI/VertexAttributeKey.h"
+	"GCI/VertexFormatCombinedLayout.h"
+	"GCI/VertexFormatCombinedLayout.cpp"
+	"GCI/VertexFormatCommon.h"
+	"GCI/VertexFormatCommon.inl"
+	"GCI/VertexFormatCommon.cpp"
+	"GCI/VertexFormatParsing.h"
+	"GCI/VertexFormatParsing.cpp"
 	"GCI/VertexFormatSignature.h"
 	"GCI/VertexFormatSignature.inl"
 	"GCI/VertexFormatSignature.cpp"
-	"GCI/VertexFormatUtils.h"
-	"GCI/VertexFormatUtils.cpp"
+
+	# "GCI/VertexFormatUtils.h"
+	# "GCI/VertexFormatUtils.cpp"
+
 
 	#"Geometry/VertexPipelineConfig.h"
 	#"Geometry/VertexPipelineConfig.cpp"
@@ -79,9 +93,6 @@ set( IC3_NXMAIN_SRC_FILES
 	"Res/ResourceManager.cpp"
 
 	"TypeInfo/TPIEngineEnum.cpp"
-	GCI/ShaderUtils.h
-	GCI/ShaderUtils.cpp
-	GCI/IACommonDefs.cpp
 
 	#"Geometry/IndexedMeshDataBufferBuilder.h"
 	#"Geometry/MeshData.h"

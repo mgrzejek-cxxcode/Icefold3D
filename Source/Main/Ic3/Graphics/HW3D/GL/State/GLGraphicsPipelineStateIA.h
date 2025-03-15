@@ -16,7 +16,7 @@ namespace Ic3::Graphics::GCI
 	public:
 		GLVertexAttributeLayoutDescriptor(
 				GLGPUDevice & pGPUDevice,
-				const IAVertexAttributeLayoutCommonConfig & pCommonAttributeLayoutConfig );
+				const IAVertexAttributeLayoutMetaData & pAttributeLayoutMetaData );
 
 		virtual ~GLVertexAttributeLayoutDescriptor();
 	};
@@ -34,7 +34,7 @@ namespace Ic3::Graphics::GCI
 	public:
 		GLVertexAttributeLayoutDescriptorCore(
 				GLGPUDevice & pGPUDevice,
-				const IAVertexAttributeLayoutCommonConfig & pCommonAttributeLayoutConfig,
+				const IAVertexAttributeLayoutMetaData & pAttributeLayoutMetaData,
 				GLVertexArrayObjectHandle pGLVertexArrayObject,
 				GLenum pGLPrimitiveTopology );
 
@@ -46,7 +46,7 @@ namespace Ic3::Graphics::GCI
 
 	private:
 		// Common config of the attribute layout. Since we removed all the data, we need to explicitly store this here.
-		IAVertexAttributeLayoutCommonConfig _commonAttributeLayoutConfig;
+		IAVertexAttributeLayoutMetaData _attributeLayoutMetaData;
 	};
 
 	///

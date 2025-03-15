@@ -15,7 +15,7 @@ namespace Ic3::Graphics::GCI
 			GPUDevice & pGPUDevice,
 			const RootSignatureDescriptorCreateInfo & pCreateInfo )
 	{
-		auto rootSignature = GCU::CreateRootSignature( pCreateInfo.rootSignatureDesc );
+		auto rootSignature = Utilities::CreateRootSignature( pCreateInfo.rootSignatureDesc );
 		if( !rootSignature )
 		{
 			return nullptr;

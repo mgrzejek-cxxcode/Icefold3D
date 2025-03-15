@@ -35,6 +35,12 @@
 
 #define IC3_NXMAIN_API_NO_DISCARD CPPX_ATTR_NO_DISCARD IC3_NXMAIN_API
 
+#define Ic3DebugOutputNx( ... )                  Ic3DebugOutputEx( ::Ic3::eDebugMTDefault, "Ic3.NxMain", __VA_ARGS__ )
+#define Ic3DebugOutputNxEx( pMessageType, ... )  Ic3DebugOutputEx( pMessageType,           "Ic3.NxMain", __VA_ARGS__ )
+#define Ic3DebugOutputNxWarn( ... )              Ic3DebugOutputEx( ::Ic3::eDebugMTWarning, "Ic3.NxMain", __VA_ARGS__ )
+#define Ic3DebugOutputNxError( ... )             Ic3DebugOutputEx( ::Ic3::eDebugMTWarning, "Ic3.NxMain", __VA_ARGS__ )
+
+#include "Prerequisites/NxmTypeInfo.h"
 #include "Prerequisites/GCICommon.h"
 #include "Prerequisites/GeometryCommon.h"
 #include "Prerequisites/CoreEngineState.h"

@@ -21,7 +21,7 @@ namespace Ic3
 		VirtualFolder
 	};
 
-	Ic3TypeInfoEnumDeclare( ESCFEntryType );
+	Ic3TypeInfoEnumDeclareNXM( ESCFEntryType );
 
 	struct SCFEntryInfo
 	{

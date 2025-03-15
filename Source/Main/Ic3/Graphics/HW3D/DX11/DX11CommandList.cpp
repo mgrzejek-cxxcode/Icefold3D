@@ -121,7 +121,7 @@ namespace Ic3::Graphics::GCI
 	{
 		if( pRenderPassConfiguration.GetAttachmentsMaskWithFlags( eRenderPassAttachmentActionFlagLoadClearBit ) != 0 )
 		{
-			GCU::RTORenderPassExecuteOpLoadClearDX11(
+			Utilities::RTORenderPassExecuteOpLoadClearDX11(
 					mD3D11DeviceContext1.Get(),
 					_graphicsPipelineStateControllerDX11.GetDX11RenderTargetBinding(),
 					pRenderPassConfiguration,
@@ -135,7 +135,7 @@ namespace Ic3::Graphics::GCI
 	{
 		if( pRenderPassConfiguration.GetAttachmentsMaskWithFlags( eRenderPassAttachmentActionFlagStoreResolveBit ) != 0 )
 		{
-			GCU::RTORenderPassExecuteOpStoreResolveDX11(
+			Utilities::RTORenderPassExecuteOpStoreResolveDX11(
 					mD3D11DeviceContext1.Get(),
 					_graphicsPipelineStateControllerDX11.GetDX11RenderTargetBinding(),
 					pRenderPassConfiguration,

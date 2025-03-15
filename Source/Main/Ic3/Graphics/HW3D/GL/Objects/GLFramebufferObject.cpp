@@ -68,7 +68,7 @@ namespace Ic3::Graphics::GCI
 			GLenum pActiveBindTarget )
 	{
 		const auto framebufferBindTarget = CheckActiveBindTarget( pActiveBindTarget );
-		const auto fboAttachmentID = GCU::RTOGetGLFramebufferDepthStencilAttachmentIDForRTBufferMask( pBufferMask );
+		const auto fboAttachmentID = Utilities::RTOGetGLFramebufferDepthStencilAttachmentIDForRTBufferMask( pBufferMask );
 
 		glFramebufferRenderbuffer(
 				framebufferBindTarget,
@@ -153,7 +153,7 @@ namespace Ic3::Graphics::GCI
 			GLenum pActiveBindTarget )
 	{
 		const auto framebufferBindTarget = CheckActiveBindTarget( pActiveBindTarget );
-		const auto fboAttachmentID = GCU::RTOGetGLFramebufferDepthStencilAttachmentIDForRTBufferMask( pBufferMask );
+		const auto fboAttachmentID = Utilities::RTOGetGLFramebufferDepthStencilAttachmentIDForRTBufferMask( pBufferMask );
 
 		switch( pGLTexture.mGLTextureBindTarget )
 		{

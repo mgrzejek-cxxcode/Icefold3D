@@ -231,7 +231,7 @@ namespace Ic3::Graphics::GCI
 				if( initDataEntriesNum != textureSubResourcesNum )
 				{
 					Ic3DebugInterrupt();
-					Ic3DebugOutput( "Warn: init data must fill the whole resource. Texture will be created with default content." );
+					Ic3DebugOutputDX11( "Warn: init data must fill the whole resource. Texture will be created with default content." );
 				}
 				else
 				{

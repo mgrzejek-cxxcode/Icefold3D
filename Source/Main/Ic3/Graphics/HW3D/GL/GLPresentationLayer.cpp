@@ -88,7 +88,7 @@ namespace Ic3::Graphics::GCI
 		const auto surfaceVisualConfig = sysGLSurface->QueryVisualConfig();
 		const auto surfaceSize = sysGLSurface->GetClientAreaSize();
 
-		auto rtoLayoutForScreen = GCU::TranslateSystemVisualConfigToRenderTargetLayout( surfaceVisualConfig );
+		auto rtoLayoutForScreen = Utilities::TranslateSystemVisualConfigToRenderTargetLayout( surfaceVisualConfig );
 		rtoLayoutForScreen.sharedImageSize = { surfaceSize.x, surfaceSize.y };
 		rtoLayoutForScreen.sharedMultiSamplingSettings.sampleCount = pCreateInfo.visualConfig.msaaDesc.bufferCount;
 		rtoLayoutForScreen.sharedMultiSamplingSettings.sampleQuality = pCreateInfo.visualConfig.msaaDesc.quality;

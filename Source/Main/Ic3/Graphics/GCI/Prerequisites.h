@@ -39,6 +39,9 @@
 
 #define _Ic3DriverAPI( access ) access
 
+#define Ic3DebugOutputGCI( ... )                 Ic3DebugOutput(                 "Ic3.Graphics.GCI", __VA_ARGS__ )
+#define Ic3DebugOutputGCIEx( pMessageType, ... ) Ic3DebugOutputEx( pMessageType, "Ic3.Graphics.GCI", __VA_ARGS__ )
+
 #include "Prerequisites/GCITypeInfo.h"
 #include "Prerequisites/CommonDefs.h"
 #include "Prerequisites/CommonTypes.h"
@@ -65,7 +68,7 @@ namespace Ic3::Graphics::GCI
 	/// @namespace RCU
 	/// @brief Resource Utilities, used to interact with resources and provide additional, common functionalities.
 
-	/// @namespace GCU
+	/// @namespace Utilities
 	/// @brief State Management Utilities, used to provide helper methods related to GPU state management.
 
 	// Same for all drivers. A top-level interface for querying capabilities and

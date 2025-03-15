@@ -51,7 +51,7 @@ namespace Ic3
 				const cppx::array_view<VertexInputAttributeDefinition> & pAttributeDefinitionList );
 
 		VertexFormatBuilderBase & AddAttributeList(
-				const cppx::array_view<const VertexInputAttributeDefinition> & pAttributeDefinitionList );
+				const cppx::array_view<VertexInputAttributeDefinition> & pAttributeDefinitionList );
 
 	protected:
 		static bool GenerateVertexFormatData(

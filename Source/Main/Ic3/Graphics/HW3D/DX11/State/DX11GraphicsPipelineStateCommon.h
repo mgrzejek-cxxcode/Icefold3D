@@ -82,7 +82,7 @@ namespace Ic3::Graphics::GCI
 	};
 
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		CPPX_ATTR_NO_DISCARD DX11BlendSettings TranslateBlendSettingsDX11( const BlendSettings & pBlendSettings );

@@ -8,19 +8,11 @@
 #include <cppx/stringUtils.h>
 
 #include <Ic3/NxMain/GCI/VertexFormatSignature.h>
-#include <Ic3/NxMain/GCI/VertexFormatUtils.h>
 
 #include <Ic3/Graphics/Common/Utilities/DynamicallySizedTemplate.h>
-#include <Ic3/Graphics/GCI/Utilities/HWVertexSourceBinding.h>
-
-using Gbase = Ic3::Graphics::GCI::DSTVertexSourceBindingBase<int, int>;
-
-template <native_uint tpSize>
-using Gdata = Ic3::Graphics::GCI::DSTVertexSourceBinding<tpSize, int, int>;
 
 int main( int pArgc, const char ** pArgv )
 {
-	auto * rr = Ic3::CreateDynamicallySizedTemplate<Gdata>( 4 );
 	/*{
 		using namespace Ic3;
 

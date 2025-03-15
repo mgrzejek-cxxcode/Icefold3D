@@ -204,13 +204,13 @@ namespace Ic3::Graphics::GCI
 		SeparableShaderCache _separableShadersCache;
 	};
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		IC3_GRAPHICS_GCI_API_NO_DISCARD GraphicsPipelineStateObjectDescriptorIDSet GetDescriptorsIDSetForSeparablePSO(
 			const SeparableGraphicsPSDSet & pSeparableGraphicsDescriptors ) noexcept;
 
-	} // namespace GCU
+	} // namespace Utilities
 
 } // namespace Ic3::Graphics::GCI
 

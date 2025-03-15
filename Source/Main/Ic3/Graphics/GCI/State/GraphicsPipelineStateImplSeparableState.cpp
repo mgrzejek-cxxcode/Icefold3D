@@ -20,7 +20,7 @@ namespace Ic3::Graphics::GCI
 		pGPUDevice,
 		pStateObjectID,
 		pRenderTargetLayout,
-		GCU::GetDescriptorsIDSetForSeparablePSO( pSeparableDescriptors ) )
+		Utilities::GetDescriptorsIDSetForSeparablePSO( pSeparableDescriptors ) )
 	, mSeparableDescriptors( pSeparableDescriptors )
 	{}
 
@@ -231,7 +231,7 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		GraphicsPipelineStateObjectDescriptorIDSet GetDescriptorsIDSetForSeparablePSO(
@@ -248,6 +248,6 @@ namespace Ic3::Graphics::GCI
 
 		}
 
-	} // namespace GCU
+	} // namespace Utilities
 
 } // namespace Ic3::Graphics::GCI

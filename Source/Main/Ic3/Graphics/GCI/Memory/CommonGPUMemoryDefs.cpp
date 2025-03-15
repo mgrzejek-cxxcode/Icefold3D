@@ -4,7 +4,7 @@
 namespace Ic3::Graphics::GCI
 {
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		bool MemCheckMapAccess( EGPUMemoryMapMode pRequestedMapMode, cppx::bitmask<EGPUMemoryFlags> pMemoryFlags )

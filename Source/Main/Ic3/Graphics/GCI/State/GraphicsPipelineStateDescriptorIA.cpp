@@ -7,9 +7,9 @@ namespace Ic3::Graphics::GCI
 
 	VertexAttributeLayoutDescriptor::VertexAttributeLayoutDescriptor(
 			GPUDevice & pGPUDevice,
-			const IAVertexAttributeLayoutCommonConfig & pCommonAttributeLayoutConfig )
+			const IAVertexAttributeLayoutMetaData & pAttributeLayoutMetaData )
 	: CachedPipelineStateDescriptor( pGPUDevice )
-	, mCommonAttributeLayoutConfig( pCommonAttributeLayoutConfig )
+	, mAttributeLayoutMetaData( pAttributeLayoutMetaData )
 	{}
 
 	VertexAttributeLayoutDescriptor::~VertexAttributeLayoutDescriptor() = default;

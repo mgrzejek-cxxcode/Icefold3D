@@ -66,7 +66,7 @@ namespace Ic3::Graphics::GCI
 
 		if( pActionFlags & eRenderPassAttachmentActionMaskLoadAll )
 		{
-			GCU::ForEachRTAttachmentIndex( activeAttachmentsMask,
+			Utilities::ForEachRTAttachmentIndex( activeAttachmentsMask,
 				[&]( native_uint pAttachmentIndex, ERTAttachmentFlags pAttachmentBit )
 				{
 					if( const auto * attachmentConfig = GetAttachment( pAttachmentIndex ) )
@@ -90,7 +90,7 @@ namespace Ic3::Graphics::GCI
 
 		if( pActionFlags & eRenderPassAttachmentActionMaskStoreAll )
 		{
-			GCU::ForEachRTAttachmentIndex(
+			Utilities::ForEachRTAttachmentIndex(
 				activeAttachmentsMask,
 				[&]( native_uint pAttachmentIndex, ERTAttachmentFlags pAttachmentBit ) -> bool
 				{
@@ -122,7 +122,7 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		bool RTOValidateRenderPassConfiguration( const RenderPassConfiguration & pRenderPassConfiguration )

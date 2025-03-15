@@ -1,6 +1,6 @@
 
-#ifndef __IC3_NXMAIN_COMMON_GPA_DEFS_H__
-#define __IC3_NXMAIN_COMMON_GPA_DEFS_H__
+#ifndef __IC3_NXMAIN_COMMON_GCI_DEFS_H__
+#define __IC3_NXMAIN_COMMON_GCI_DEFS_H__
 
 #include "../Prerequisites.h"
 #include <Ic3/Graphics/GCI/Resources/GPUBufferCommon.h>
@@ -10,6 +10,7 @@ namespace Ic3
 {
 
 	namespace GCM = Graphics::GCM;
+	namespace GCU = Graphics::GCI::Utilities;
 
 	using vertex_attribute_key_value_t = uint64;
 
@@ -165,4 +166,4 @@ namespace Ic3
 
 } // namespace Ic3
 
-#endif // __IC3_NXMAIN_COMMON_GPA_DEFS_H__
+#endif // __IC3_NXMAIN_COMMON_GCI_DEFS_H__

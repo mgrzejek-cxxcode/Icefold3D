@@ -3,6 +3,7 @@ set( IC3_CORELIB_SRC_FILES
 	"Prerequisites/CoreDefs.h"
 	"Prerequisites/CoreEnums.h"
 	"Prerequisites/DebugLayer.h"
+	"Prerequisites/DebugLayer.cpp"
 	"Prerequisites/DynamicInterface.h"
 	"Prerequisites/DynamicInterface.cpp"
 	"Prerequisites/ResultCode.h"

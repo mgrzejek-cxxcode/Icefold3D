@@ -26,7 +26,7 @@ namespace Ic3::Graphics::GCI
 			DX11GPUDevice & pGPUDevice,
 			const RenderTargetBinding & pRenderTargetBinding )
 	{
-		auto dx11RenderTargetBinding = GCU::RTOCreateRenderTargetBindingDX11( pGPUDevice, pRenderTargetBinding );
+		auto dx11RenderTargetBinding = Utilities::RTOCreateRenderTargetBindingDX11( pGPUDevice, pRenderTargetBinding );
 		auto dx11RenderTargetDescriptor = CreateGfxObject<DX11RenderTargetDescriptor>( pGPUDevice, std::move( dx11RenderTargetBinding ) );
 
 		return dx11RenderTargetDescriptor;
@@ -38,14 +38,14 @@ namespace Ic3::Graphics::GCI
 			ComPtr<ID3D11Texture2D> pDepthStencilBuffer )
 	{
 
-		auto dx11RenderTargetBinding = GCU::RTOCreateRenderTargetBindingForScreenDX11( pGPUDevice, pColorBuffer, pDepthStencilBuffer );
+		auto dx11RenderTargetBinding = Utilities::RTOCreateRenderTargetBindingForScreenDX11( pGPUDevice, pColorBuffer, pDepthStencilBuffer );
 		auto dx11RenderTargetDescriptor = CreateGfxObject<DX11RenderTargetDescriptor>( pGPUDevice, std::move( dx11RenderTargetBinding ) );
 
 		return dx11RenderTargetDescriptor;
 	}
 
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		RenderTargetLayout RTOGetRenderTargetLayoutForScreenDX11(

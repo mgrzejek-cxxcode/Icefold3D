@@ -9,7 +9,7 @@ namespace Ic3::Graphics::GCI
 
 	RenderTargetLayout TRenderTargetArrayConfiguration<RenderTargetAttachmentBinding>::GetRenderTargetLayout() const noexcept
 	{
-		return GCU::RTOGetRenderTargetLayoutForBinding( *this );
+		return Utilities::RTOGetRenderTargetLayoutForBinding( *this );
 	}
 
 	cppx::bitmask<ERTAttachmentFlags> TRenderTargetArrayConfiguration<RenderTargetAttachmentBinding>::GetResolveAttachmentsMask(
@@ -19,7 +19,7 @@ namespace Ic3::Graphics::GCI
 
 		cppx::bitmask<ERTAttachmentFlags> resolveAttachmentsMask = 0;
 
-		GCU::ForEachRTAttachmentIndex(
+		Utilities::ForEachRTAttachmentIndex(
 			attachmentsInclusionMask,
 			[&]( native_uint pAttachmentIndex, ERTAttachmentFlags pAttachmentBit ) -> bool {
 				if( attachments[pAttachmentIndex].resolveTexture )
@@ -39,7 +39,7 @@ namespace Ic3::Graphics::GCI
 
 		uint32 resolveAttachmentsNum = 0;
 
-		GCU::ForEachRTAttachmentIndex(
+		Utilities::ForEachRTAttachmentIndex(
 			attachmentsInclusionMask,
 			[&]( native_uint pAttachmentIndex, ERTAttachmentFlags pAttachmentBit ) -> bool {
 			if( attachments[pAttachmentIndex].resolveTexture )
@@ -63,7 +63,7 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		EGPUResourceUsageFlags RTOGetAttachmentRequiredUsageMask(
@@ -198,7 +198,7 @@ namespace Ic3::Graphics::GCI
 						{
 							return false;
 						}
-						const auto requiredUsageFlags = GCU::RTOGetAttachmentRequiredUsageMask( pAttachmentIndex );
+						const auto requiredUsageFlags = Utilities::RTOGetAttachmentRequiredUsageMask( pAttachmentIndex );
 						if( !attachmentRef.baseTexture->mResourceFlags.is_set( requiredUsageFlags ) )
 						{
 							return false;
@@ -250,7 +250,7 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		const RenderTargetAttachmentBinding * GetRenderTargetBindingDefinitionFirstTarget(

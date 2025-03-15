@@ -14,7 +14,7 @@ namespace Ic3::Graphics::GCI
 
 	using DX11IAVertexAttributeDescArray = std::array<D3D11_INPUT_ELEMENT_DESC, GCM::kIAMaxVertexAttributesNum>;
 
-	struct DX11IAVertexAttributeLayoutDefinition : public IAVertexAttributeLayoutCommonConfig
+	struct DX11IAVertexAttributeLayoutDefinition : public IAVertexAttributeLayoutMetaData
 	{
 		DX11IAVertexAttributeDescArray d3d11AttributeArray;
 		D3D11_PRIMITIVE_TOPOLOGY d3d11PrimitiveTopology;
@@ -86,7 +86,7 @@ namespace Ic3::Graphics::GCI
 	public:
 		DX11VertexAttributeLayoutDescriptor(
 				DX11GPUDevice & pGPUDevice,
-				const IAVertexAttributeLayoutCommonConfig & pCommonAttributeLayoutConfig,
+				const IAVertexAttributeLayoutMetaData & pAttributeLayoutMetaData,
 				ComPtr<ID3D11InputLayout> pD3D11InputLayout,
 				D3D11_PRIMITIVE_TOPOLOGY pD3D11PrimitiveTopology );
 
@@ -98,7 +98,7 @@ namespace Ic3::Graphics::GCI
 				const ShaderBinary & pVertexShaderBinary );
 
 	private:
-		IAVertexAttributeLayoutCommonConfig _commonAttributeLayoutConfig;
+		IAVertexAttributeLayoutMetaData _attributeLayoutMetaData;
 	};
 
 	///
@@ -120,12 +120,12 @@ namespace Ic3::Graphics::GCI
 	};
 	
 	
-	namespace GCU
+	namespace Utilities
 	{
 
 		// VertexAttributeLayout
 
-		CPPX_ATTR_NO_DISCARD D3D11_INPUT_ELEMENT_DESC DX11IATranslateIAVertexAttributeDesc(
+		CPPX_ATTR_NO_DISCARD D3D11_INPUT_ELEMENT_DESC DX11IATranslateVertexAttributeDesc(
 				const IAVertexAttributeDesc & pVertexAttributeDesc );
 
 		CPPX_ATTR_NO_DISCARD DX11IAVertexAttributeLayoutDefinition DX11IATranslateVertexAttributeLayoutDefinition(

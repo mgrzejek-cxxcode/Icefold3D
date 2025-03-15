@@ -119,7 +119,7 @@ namespace Ic3::Graphics::GCI
 			{
 				if( IsDynamicDescriptorConfigurationModified( pRenderTargetDescriptor ) )
 				{
-					GCU::RTOUpdateRenderTargetBindingForDynamicDescriptorGL(
+					Utilities::RTOUpdateRenderTargetBindingForDynamicDescriptorGL(
 							pRenderTargetDescriptor.GetRenderTargetArrayConfiguration(),
 							glcRenderTargetBinding );
 
@@ -182,7 +182,7 @@ namespace Ic3::Graphics::GCI
 			{
 				if( IsDynamicDescriptorConfigurationModified( pVertexSourceBindingDescriptor ) )
 				{
-					GCU::IAUpdateVertexSourceBindingDefinitionGL(
+					Utilities::IAUpdateVertexSourceBindingDefinitionGL(
 							pVertexSourceBindingDescriptor.GetVertexSourceBindingDefinition(),
 							*glcVertexSourceBindingPtr );
 
@@ -474,7 +474,7 @@ namespace Ic3::Graphics::GCI
 		auto constantBaseType = CXU::GetVertexAttribFormatBaseDataType( pConstantInfo.iFormat );
 		auto constantLength = CXU::GetVertexAttribFormatComponentsNum( pConstantInfo.iFormat );
 
-		GCU::UpdateUniformDataCurrentGL(
+		Utilities::UpdateUniformDataCurrentGL(
 				*( glcShaderLinkageDescriptorCore->mGLShaderPipelineObject ),
 				pConstantInfo.iStageIndex,
 				constantBaseType,
@@ -559,7 +559,7 @@ namespace Ic3::Graphics::GCI
 		auto constantBaseType = CXU::GetVertexAttribFormatBaseDataType( pConstantInfo.iFormat );
 		auto constantLength = CXU::GetVertexAttribFormatComponentsNum( pConstantInfo.iFormat );
 
-		GCU::UpdateUniformDataExplicitGL(
+		Utilities::UpdateUniformDataExplicitGL(
 				*( glcShaderLinkageDescriptorCompat->mGLShaderProgramObject ),
 				pConstantInfo.iStageIndex,
 				constantBaseType,

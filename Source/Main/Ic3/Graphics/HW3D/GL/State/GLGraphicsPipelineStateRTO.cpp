@@ -28,12 +28,12 @@ namespace Ic3::Graphics::GCI
 			GLGPUDevice & pGPUDevice,
 			const RenderTargetDescriptorCreateInfo & pCreateInfo )
 	{
-		if( !GCU::RTOValidateRenderTargetBinding( pCreateInfo.rtArrayBinding ) )
+		if( !Utilities::RTOValidateRenderTargetBinding( pCreateInfo.rtArrayBinding ) )
 		{
 			return nullptr;
 		}
 
-		auto glcRenderTargetBindingStatic = GCU::RTOTranslateRenderTargetBindingForStaticDescriptorGL( pCreateInfo.rtArrayBinding );
+		auto glcRenderTargetBindingStatic = Utilities::RTOTranslateRenderTargetBindingForStaticDescriptorGL( pCreateInfo.rtArrayBinding );
 
 		const auto glcRenderTargetDescriptor = CreateGfxObject<GLRenderTargetDescriptor>( pGPUDevice, std::move( glcRenderTargetBindingStatic ) );
 
@@ -56,7 +56,7 @@ namespace Ic3::Graphics::GCI
 	}
 
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		GLFramebufferObjectHandle RTOCreateFramebufferObject(
@@ -74,7 +74,7 @@ namespace Ic3::Graphics::GCI
 				return nullptr;
 			}
 
-			GCU::ForEachRTColorAttachmentIndex(
+			Utilities::ForEachRTColorAttachmentIndex(
 				pAttachmentMask,
 				[&pRenderTargetBinding, &framebufferObject]( native_uint pColorAttachmentIndex, ERTAttachmentFlags pAttachmentBit ) -> bool
 				{

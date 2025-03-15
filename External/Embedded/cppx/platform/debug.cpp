@@ -9,7 +9,7 @@ namespace cppx
 
 		void debug_output_impl( const char * pFormat, ... )
 		{
-			const size_t localBufferSize = 4096;
+			const size_t localBufferSize = 1024;
 			char localBuffer[localBufferSize];
 
 			size_t printCount = 0;

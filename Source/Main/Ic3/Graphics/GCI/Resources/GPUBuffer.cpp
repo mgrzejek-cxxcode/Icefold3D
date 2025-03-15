@@ -31,7 +31,7 @@ namespace Ic3::Graphics::GCI
 			return false;
 		}
 
-		if( !GCU::MemCheckMapAccess( pMapMode, mResourceMemory.memoryFlags ) )
+		if( !Utilities::MemCheckMapAccess( pMapMode, mResourceMemory.memoryFlags ) )
 		{
 			return false;
 		}

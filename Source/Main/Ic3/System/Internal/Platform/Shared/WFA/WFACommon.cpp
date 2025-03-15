@@ -77,11 +77,11 @@ namespace Ic3::System
 			const auto errorMessage = WFAQueryComErrorMessage( pErrorCode );
 			if( pPrefix )
 			{
-				Ic3DebugOutputFmt( "%s / GetLastError(): #%x - %s", pPrefix, pErrorCode, errorMessage.c_str() );
+				Ic3DebugOutputSys( "%s / GetLastError(): #%x - %s", pPrefix, pErrorCode, errorMessage.c_str() );
 			}
 			else
 			{
-				Ic3DebugOutputFmt( "GetLastError(): #%x  - %s", pErrorCode, errorMessage.c_str() );
+				Ic3DebugOutputSys( "GetLastError(): #%x  - %s", pErrorCode, errorMessage.c_str() );
 			}
 		}
 

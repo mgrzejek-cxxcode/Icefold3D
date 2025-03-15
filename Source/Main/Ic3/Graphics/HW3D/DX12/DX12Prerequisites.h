@@ -29,6 +29,9 @@
 #  endif
 #endif
 
+#define Ic3DebugOutputDX12( ... )                 Ic3DebugOutput(                 "Ic3.Graphics.HW3D.DX12", __VA_ARGS__ )
+#define Ic3DebugOutputDX12Ex( pMessageType, ... ) Ic3DebugOutputEx( pMessageType, "Ic3.Graphics.HW3D.DX12", __VA_ARGS__ )
+
 #include "Prerequisites/DX2coreDefs.h"
 
 namespace Ic3::Graphics::GCI

@@ -73,7 +73,7 @@ namespace Ic3::Graphics::GCI
 				const GraphicsShaderLinkageDescriptorCreateInfo & pCreateInfo );
 	};
 
-	namespace GCU
+	namespace Utilities
 	{
 
 		CPPX_ATTR_NO_DISCARD GLShaderPipelineObjectHandle CreateGraphicsShaderPipelineObjectGL(

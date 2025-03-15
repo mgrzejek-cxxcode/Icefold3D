@@ -65,6 +65,8 @@ namespace cppx
 		, line_number( pLineNumber )
 		{}
 
+		CPPX_ATTR_NO_DISCARD std::string to_short_string() const;
+
 		CPPX_ATTR_NO_DISCARD std::string to_string() const;
 	};
 
